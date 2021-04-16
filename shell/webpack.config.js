@@ -7,6 +7,15 @@ const sveltePreprocess = require("svelte-preprocess");
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
 
+let auth_api_endpoint = "https://auth.circles.name";
+if (process.env.DEPLOY_ENVIRONMENT === "main") {
+  auth_api_endpoint = "https://auth.circles.name";
+} else if (process.env.DEPLOY_ENVIRONMENT === "dev") {
+  auth_api_endpoint = "https://dev.auth.circles.name";
+}
+
+console.log(`Auth Endpoint Url: ${auth_api_endpoint}`);
+
 const sveltePath = path.resolve("node_modules", "svelte");
 
 module.exports = {
@@ -40,7 +49,7 @@ module.exports = {
         loader: 'string-replace-loader',
         options: {
           search: '__AUTH_API_ENDPOINT__',
-          replace: prod ? "https://auth.circles.name" : "https://dev.auth.circles.name",
+          replace: auth_api_endpoint,
           flags: 'g'
         }
       },

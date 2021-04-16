@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export NODE_ENV=$1
+export DEPLOY_ENVIRONMENT=$1
 
 echo "Installing build dependencies .."
 npm i
