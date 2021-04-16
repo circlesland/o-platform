@@ -18,8 +18,7 @@ import Success from "./shared/atoms/Success.svelte";
 import Error from "./shared/atoms/Error.svelte";
 import App from "src/App.svelte";
 import {AnyEventObject} from "xstate";
-import {Generate} from "@o-platform/o-utils/dist/generate";
-import {setClient} from "svelte-apollo";
+import {Generate} from "@o-platform/o-utils/dist/generate";;
 
 dayjs.extend(relativeTime)
 
@@ -189,7 +188,7 @@ const shell: IShell = {
 };
 
 async function connectToApi() {
-  const apiConnection = new ApiConnection("https://auth.circles.name/");
+  const apiConnection = new ApiConnection("__AUTH_API_ENDPOINT__/");
   shell.authClient = await apiConnection.client.subscribeToResult();
 }
 connectToApi().then(() => {

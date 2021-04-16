@@ -1,4 +1,7 @@
 #!/bin/bash
+
+export NODE_ENV=$1
+
 echo "Installing build dependencies .."
 npm i
 npx --no-install lerna bootstrap || exit

@@ -36,6 +36,15 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.ts$/,
+        loader: 'string-replace-loader',
+        options: {
+          search: '__AUTH_API_ENDPOINT__',
+          replace: prod ? "https://auth.circles.name" : "https://dev.auth.circles.name",
+          flags: 'g'
+        }
+      },
+      {
         test: /\.tsx?$/,
         use: "ts-loader",
         exclude: [/node_modules/],
