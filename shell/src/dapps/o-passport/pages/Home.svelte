@@ -1,6 +1,6 @@
 <script lang="ts">
-  import {createOrRestoreKey} from "../processes/createOrRestoreKey";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+  import { createOrRestoreKey } from "../processes/createOrRestoreKey";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
@@ -8,9 +8,9 @@
   import Error from "../../../shared/atoms/Error.svelte";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import Success from "../../../shared/atoms/Success.svelte";
-  import {upsertIdentity} from "../processes/upsertIdentity";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
-  import {onMount} from "svelte";
+  import { upsertIdentity } from "../processes/upsertIdentity";
+  import { Generate } from "@o-platform/o-utils/dist/generate";
+  import { onMount } from "svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
 
   export let params: {
@@ -75,17 +75,22 @@
     window.o.publishEvent(requestEvent);
   }
 </script>
+
 <PassportHeader />
 
 <div class="flex flex-col self-center text-center -mt-12 ">
   <div class="avatar self-center">
     <div class="w-24 h-24 rounded-full  mb-4">
-      <img src="https://i.pravatar.cc/500?img=32" />
+      <img
+        src="https://upload.wikimedia.org/wikipedia/en/c/c3/Blofeldpleasance67.jpg"
+      />
     </div>
   </div>
   <h2 class="card-title">Ernst Stavro Blofeld</h2>
   <small class="break-all">
     0x87asdgt9adsofz98ad6fs8as7odft9aszf98pasdzfasdg
   </small>
+  <small class="break-all"> Country </small>
+  <small class="break-all">Statement</small>
   <button class="btn btn-primary w-1/2 mt-4 self-center">Edit Profile</button>
 </div>

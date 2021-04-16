@@ -1,50 +1,68 @@
 <script lang="ts">
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import {push} from "svelte-spa-router";
+  import { push } from "svelte-spa-router";
   import gql from "graphql-tag";
+  import Time from "svelte-time";
 
-  import {query} from "svelte-apollo";
-  import {setClient} from "svelte-apollo";
+  import { query } from "svelte-apollo";
+  import { setClient } from "svelte-apollo";
   setClient(<any>window.o.theGraphClient);
 
-  $:transactions = query(gql`
-    query notifications($safe:String!) {
-      notifications(where: {type: "HUB_TRANSFER" safe: $safe}) {
-        time
-        transactionHash
-        hubTransfer {
-          from
-          to
-          amount
+  let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
+
+  $: transactions = query(
+    gql`
+      query notifications($safe: String!) {
+        notifications(where: { type: "HUB_TRANSFER", safe: $safe }) {
+          time
+          transactionHash
+          hubTransfer {
+            from
+            to
+            amount
+          }
         }
       }
-    }`,
+    `,
     {
       variables: {
-        safe: "0x9a0bbbbd3789f184ca88f2f6a40f42406cb842ac"
-      }
-    });
+        safe: "0x9a0bbbbd3789f184ca88f2f6a40f42406cb842ac",
+      },
+    }
+  );
 
   function loadDetailPage(path) {
     push("#/banking/transactions/" + path);
   }
+
+  function dateOlderThanSevenDays(unixTime: number) {
+    return timestampSevenDays > unixTime;
+  }
 </script>
 
-<BankingHeader/>
-
-
+<BankingHeader />
 
 <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
   {#if $transactions.loading}
     Loading offers...
   {:else if $transactions.error}
-    <b>An error occurred while loading the recent activities:</b> <br/>{$transactions.error.message}
+    <b>An error occurred while loading the recent activities:</b>
+    <br />{$transactions.error.message}
   {:else if $transactions.data && $transactions.data.notifications && $transactions.data.notifications.length > 0}
     {#each $transactions.data.notifications as notification}
+      {console.log(notification)}
       <div>
-        when: {notification.time}<br/>
-        from: {notification.hubTransfer.from}<br/>
-        to: {notification.hubTransfer.to}<br/>
+        when: {notification.time}<br />
+        {#if dateOlderThanSevenDays(notification.time)}
+          <Time
+            timestamp={new Date(notification.time * 1000)}
+            format="D. MMMM YYYY"
+          />
+        {:else}
+          <Time relative timestamp={new Date(notification.time * 1000)} /><br />
+        {/if}
+        from: {notification.hubTransfer.from}<br />
+        to: {notification.hubTransfer.to}<br />
         amount: {notification.hubTransfer.amount}
       </div>
     {/each}
@@ -52,8 +70,6 @@
     <span>No recent activities</span>
   {/if}
 </div>
-
-
 
 <div class="mx-4 -mt-6">
   <section
@@ -66,7 +82,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="/images/common/circles.png"/>
+            <img src="/images/common/circles.png" />
           </div>
         </div>
       </div>
@@ -99,7 +115,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="https://i.pravatar.cc/500?img=42"/>
+            <img src="https://i.pravatar.cc/500?img=42" />
           </div>
         </div>
       </div>
@@ -132,7 +148,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="https://i.pravatar.cc/500?img=12"/>
+            <img src="https://i.pravatar.cc/500?img=12" />
           </div>
         </div>
       </div>

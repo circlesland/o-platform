@@ -3,13 +3,14 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import TextAutocompleteEditor from "../../../../../packages/o-editors/src/TextAutocompleteEditor.svelte";
+import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import CurrencyTransfer from "../../../../../packages/o-editors/src/CurrencyTransfer.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transferXdai } from "./transferXdai";
 import { transferCircles } from "./transferCircles";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import gql from "graphql-tag";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -21,20 +22,27 @@ export type TransferContextData = {
   acceptSummary?: boolean;
 };
 
-const userNames = [
-  { id: 1, name: "Markus", code: "#FFFFFF" },
-  { id: 2, name: "Martin", code: "#FF0000" },
-  { id: 3, name: "Martina", code: "#FF00FF" },
-  { id: 4, name: "Michael", code: "#00FF00" },
-  { id: 5, name: "Bruce", code: "#0000FF" },
-  { id: 6, name: "Berry", code: "#000000" },
-  { id: 7, name: "Tina", code: "#FF00FF" },
-  { id: 8, name: "Frank", code: "#FF00FF" },
-  { id: 9, name: "Samuel", code: "#FF00FF" },
-  { id: 10, name: "Sandra", code: "#00FF00" },
-  { id: 11, name: "markus San", code: "#0000FF" },
-  { id: 12, name: "Klaus", code: "#000000" },
-];
+const trustUsersQuery = {
+  query: gql`
+    query safe($id: String!) {
+      safe(id: $id) {
+        incoming {
+          userAddress
+          canSendToAddress
+          limit
+        }
+        outgoing {
+          userAddress
+          canSendToAddress
+          limit
+        }
+      }
+    }
+  `,
+  variables: {
+    id: "0xd460db4cfa021c42edeb7e555d904400dab65ecc",
+  },
+};
 
 /**
  * This is the context on which the process will work.
@@ -78,10 +86,14 @@ const processDefinition = (processId: string) =>
       },
       recipientAddress: prompt<TransferContext, any>({
         fieldName: "recipientAddress",
-        component: TextAutocompleteEditor,
+        component: DropdownSelectEditor,
         params: {
           label: strings.labelRecipientAddress,
-          data: userNames,
+          graphql: true,
+          graphqlQuery: trustUsersQuery,
+          optionIdentifier: "canSendToAddress",
+          getOptionLabel: (option) => option.canSendToAddress,
+          getSelectionLabel: (option) => option.canSendToAddress,
         },
         navigation: {
           next: "#tokens",

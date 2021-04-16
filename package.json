@@ -4,7 +4,6 @@
   "devDependencies": {
     "lerna": "^3.22.1",
     "prisma": "2.18.0",
-    "simple-svelte-autocomplete": "^1.2.4",
     "svelte-tabs": "^1.1.0",
     "typescript": "^4.1.3"
   },

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
+  import TokensHeader from "../atoms/TokensHeader.svelte";
 
   export let params: {
     from: string;
@@ -9,7 +9,7 @@
   };
 </script>
 
-<BankingDetailHeader amount={params.blockNo} type={"positive"} />
+<TokensHeader amount={params.blockNo} type={"positive"} />
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-1 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">

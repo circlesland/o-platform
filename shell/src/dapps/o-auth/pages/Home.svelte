@@ -1,6 +1,6 @@
 <script lang="ts">
-  import {authenticate} from "../processes/authenticate";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+  import { authenticate } from "../processes/authenticate";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
@@ -9,10 +9,10 @@
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import Success from "../../../shared/atoms/Success.svelte";
   import ProcessContainer from "../../../shared/molecules/ProcessContainer.svelte";
-  import {Process} from "@o-platform/o-process/dist/interfaces/process";
-  import {Subscription} from "rxjs";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
-  import {ProcessStarted} from "@o-platform/o-process/dist/events/processStarted";
+  import { Process } from "@o-platform/o-process/dist/interfaces/process";
+  import { Subscription } from "rxjs";
+  import { Generate } from "@o-platform/o-utils/dist/generate";
+  import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
 
   let devHome = true;
   let devDash = false;
@@ -53,17 +53,23 @@
           },
         };
         return ctx;
-      });
+      }
+    );
 
     requestEvent.id = Generate.randomHexString(8);
 
-    answerSubscription = window.o.events.subscribe(event => {
+    answerSubscription = window.o.events.subscribe((event) => {
       console.log("Home.svelte: received event: ", event);
-      if (event.responseToId == requestEvent.id && event.type == "shell.processStarted") {
+      if (
+        event.responseToId == requestEvent.id &&
+        event.type == "shell.processStarted"
+      ) {
         const processStarted = <ProcessStarted>event;
         answerSubscription.unsubscribe();
-        runningProcess = window.o.stateMachines.findById(processStarted.processId);
-        console.log("Home.svelte: displaying process:", runningProcess)
+        runningProcess = window.o.stateMachines.findById(
+          processStarted.processId
+        );
+        console.log("Home.svelte: displaying process:", runningProcess);
       }
     });
 
@@ -87,13 +93,12 @@
               on:stopped={() => {
                 isOpen = false;
                 runningProcess = null;
-              }} />{
-            /if}
+              }}
+            />{/if}
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="font-primary">
-</div>
+<div class="font-primary" />

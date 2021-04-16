@@ -4,8 +4,9 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import TextEditor from "../../../../../packages/o-editors/src/TextEditor.svelte";
-import TextAutocompleteEditor from "../../../../../packages/o-editors/src/TextAutocompleteEditor.svelte";
+import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import gql from "graphql-tag";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -28,20 +29,27 @@ const strings = {
   labelTrustLimit: "Enter the trust limit (0-100)",
 };
 
-const trustList = [
-  { id: 1, name: "White", code: "#FFFFFF" },
-  { id: 2, name: "Red", code: "#FF0000" },
-  { id: 3, name: "Yellow", code: "#FF00FF" },
-  { id: 4, name: "Green", code: "#00FF00" },
-  { id: 5, name: "Blue", code: "#0000FF" },
-  { id: 6, name: "Black", code: "#000000" },
-  { id: 7, name: "Yeller", code: "#FF00FF" },
-  { id: 8, name: "Yelleri", code: "#FF00FF" },
-  { id: 9, name: "Yellera", code: "#FF00FF" },
-  { id: 10, name: "Yellero", code: "#00FF00" },
-  { id: 11, name: "Yellomatic", code: "#0000FF" },
-  { id: 12, name: "Black", code: "#000000" },
-];
+const trustUsersQuery = {
+  query: gql`
+    query safe($id: String!) {
+      safe(id: $id) {
+        incoming {
+          userAddress
+          canSendToAddress
+          limit
+        }
+        outgoing {
+          userAddress
+          canSendToAddress
+          limit
+        }
+      }
+    }
+  `,
+  variables: {
+    id: "0xd460db4cfa021c42edeb7e555d904400dab65ecc",
+  },
+};
 
 const processDefinition = (processId: string) =>
   createMachine<SetTrustContext, any>({
@@ -66,10 +74,14 @@ const processDefinition = (processId: string) =>
       },
       trustReceiver: prompt<SetTrustContext, any>({
         fieldName: "trustReceiver",
-        component: TextAutocompleteEditor,
+        component: DropdownSelectEditor,
         params: {
           label: strings.labelTrustReceiver,
-          data: trustList,
+          graphql: true,
+          graphqlQuery: trustUsersQuery,
+          optionIdentifier: "canSendToAddress",
+          getOptionLabel: (option) => option.canSendToAddress,
+          getSelectionLabel: (option) => option.canSendToAddress,
         },
         navigation: {
           next: "#checkTrustLimit",

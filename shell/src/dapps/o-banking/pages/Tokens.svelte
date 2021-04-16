@@ -1,27 +1,105 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import BankingHeader from "../atoms/BankingHeader.svelte";
-
+  import { onMount } from "svelte";
+  import TokensHeader from "../atoms/TokensHeader.svelte";
+  import { push } from "svelte-spa-router";
 </script>
-<BankingHeader />
 
-<a href="#/banking/tokens/GNRL" class="underline">
-  <div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">GENERAL TOKENS</div>
-</a>
-<div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">ALL CIRCLES</div>
+<TokensHeader />
 
-<div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">ALL MY xDAI</div>
+<div class="mx-4 -mt-6">
+  <section
+    on:click|once={() => push("#/banking/tokens/GNRL")}
+    class="flex items-center justify-center mb-2 text-circlesdarkblue"
+  >
+    <div
+      class="flex items-center bg-white shadow p-4 w-full space-x-2 sm:space-x-6"
+    >
+      <div class="mr-2 text-center">
+        <div class="avatar">
+          <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
+            <img src="/images/common/circles.png" />
+          </div>
+        </div>
+      </div>
 
-<div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">ALL MY xATS</div>
+      <div class="text-left">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold">Circles</h2>
+        </div>
+      </div>
 
-<hr />
+      <div class="flex flex-1 flex-col justify-items-end">
+        <div class="self-end text-2xl sm:text-3xl">
+          <span>200.00</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section
+    on:click|once={() => push("#/banking/tokens/GNRL")}
+    class="flex items-center justify-center mb-2 text-circlesdarkblue"
+  >
+    <div
+      class="flex items-center bg-white shadow p-4 w-full space-x-2 sm:space-x-6"
+    >
+      <div class="mr-2 text-center">
+        <div class="avatar">
+          <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
+            <img
+              src="https://gblobscdn.gitbook.com/spaces%2F-Lpi9AHj62wscNlQjI-l%2Favatar.png?alt=media"
+            />
+          </div>
+        </div>
+      </div>
 
-<div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">PERSONAL TOKENS</div>
+      <div class="text-left">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold">xDai</h2>
+        </div>
+      </div>
 
-<div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">MY CIRCLES</div>
+      <div class="flex flex-1 flex-col justify-items-end">
+        <div class="self-end text-2xl sm:text-3xl">
+          <span>1</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section
+    on:click|once={() => push("#/banking/tokens/GNRL")}
+    class="flex items-center justify-center mb-2 text-circlesdarkblue"
+  >
+    <div
+      class="flex items-center bg-white shadow p-4 w-full space-x-2 sm:space-x-6"
+    >
+      <div class="mr-2 text-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-12 w-12"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
 
-<div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">Martin CRC</div>
+      <div class="text-left">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold">Invite Credits</h2>
+        </div>
+      </div>
 
-<div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">THOR CRC</div>
-
-<div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">DAN CRC</div>
+      <div class="flex flex-1 flex-col justify-items-end">
+        <div class="self-end text-2xl sm:text-3xl">
+          <span>10</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
