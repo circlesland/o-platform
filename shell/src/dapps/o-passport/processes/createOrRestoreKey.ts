@@ -147,7 +147,7 @@ const processDefinition = (processId: string) =>
         id: "success",
         type: 'final',
         entry: (context, event) => {
-          window.location = <any>"http://localhost:5000/#/passport/profile";
+          window.location = <any>"/#/passport/profile";
         },
         data: (context, event: PlatformEvent) => {
           return "yeah!";
