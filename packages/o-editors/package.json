@@ -1,0 +1,13 @@
+{
+  "name": "@o-platform/o-editors",
+  "version": "0.1.0",
+  "description": "Editors intended for the use with dapp processes",
+  "dependencies": {
+    "@o-platform/o-process":"0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  },
+  "author": "Daniel Janz & Samuel Andert (Basic Income Lab GmbH)",
+  "license": "LGPL-3.0-or-later"
+}

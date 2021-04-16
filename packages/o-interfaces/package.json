@@ -1,0 +1,19 @@
+{
+  "name": "@o-platform/o-interfaces",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@o-platform/o-utils": "0.1.0",
+    "@o-platform/o-events": "0.1.0",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  },
+  "author": "Daniel Janz & Samuel Andert (Basic Income Lab GmbH)",
+  "license": "LGPL-3.0-or-later"
+}

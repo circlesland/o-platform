@@ -1,0 +1,12 @@
+@font-face {
+  font-family: "Ostrich Sans Heavy";
+  src: url("./../fonts/OstrichSans-Heavy.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Now Alt Light";
+  src: url("./../fonts/NowAlt-Light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
