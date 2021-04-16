@@ -24,9 +24,9 @@
 
   $: {
     if (params && params.code) {
-      authenticateWithCircles("circles.land", params.code);
+      authenticateWithCircles("__APP_ID__", params.code);
     } else {
-      authenticateWithCircles("circles.land");
+      authenticateWithCircles("__APP_ID__");
     }
   }
 

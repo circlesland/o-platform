@@ -8,10 +8,13 @@ const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
 
 let auth_api_endpoint = "https://auth.circles.name";
+let app_id = "circles.land";
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   auth_api_endpoint = "https://auth.circles.name";
+  app_id = "circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "dev") {
   auth_api_endpoint = "https://dev.auth.circles.name";
+  app_id = "dev.circles.land";
 }
 
 console.log(`Auth Endpoint Url: ${auth_api_endpoint}`);
@@ -50,6 +53,15 @@ module.exports = {
         options: {
           search: '__AUTH_API_ENDPOINT__',
           replace: auth_api_endpoint,
+          flags: 'g'
+        }
+      },
+      {
+        test: /\.ts$/,
+        loader: 'string-replace-loader',
+        options: {
+          search: '__APP_ID__',
+          replace: app_id,
           flags: 'g'
         }
       },

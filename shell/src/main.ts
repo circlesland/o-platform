@@ -18,7 +18,7 @@ import Success from "./shared/atoms/Success.svelte";
 import Error from "./shared/atoms/Error.svelte";
 import App from "src/App.svelte";
 import {AnyEventObject} from "xstate";
-import {Generate} from "@o-platform/o-utils/dist/generate";;
+import {Generate} from "@o-platform/o-utils/dist/generate";
 
 dayjs.extend(relativeTime)
 

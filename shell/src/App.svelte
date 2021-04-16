@@ -213,7 +213,7 @@
         <div class="flex justify-around ">
           <button
             class="mb-4 btn btn-outline bg-base-100"
-            on:click={() => authenticateWithCircles("circles.land")}
+            on:click={() => authenticateWithCircles("__APP_ID__")}
           >
             {#if !isOpen}
               <img
