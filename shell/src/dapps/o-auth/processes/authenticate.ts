@@ -93,7 +93,8 @@ const processDefinition = (processId: string) =>
         id: "requestAuthCode",
         invoke: {
           src: async (context) => {
-            const result = await window.o.authClient.mutate({
+            const authClient = await window.o.authClient.client.subscribeToResult();
+            const result = await authClient.mutate({
               mutation: gql`
                 mutation loginWithEmail(
                   $appId: String!
@@ -140,7 +141,8 @@ const processDefinition = (processId: string) =>
         id: "exchangeCodeForToken",
         invoke: {
           src: async (context) => {
-            const result = await window.o.authClient.mutate({
+            const authClient = await window.o.authClient.client.subscribeToResult();
+            const result = await authClient.mutate({
               mutation: gql`
                 mutation verify($oneTimeToken: String!) {
                   verify(oneTimeToken: $oneTimeToken) {

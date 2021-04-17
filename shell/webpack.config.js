@@ -7,17 +7,25 @@ const sveltePreprocess = require("svelte-preprocess");
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
 
-let auth_api_endpoint = "https://auth.circles.name";
+let auth_endpoint = "https://auth.circles.name";
+let api_endpoint = "https://api.circles.land";
 let auth_app_id = "circles.land";
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
-  auth_api_endpoint = "https://auth.circles.name";
+  auth_endpoint = "https://auth.circles.name";
+  api_endpoint = "https://api.circles.land";
   auth_app_id = "circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "dev") {
-  auth_api_endpoint = "https://dev.auth.circles.name";
+  auth_endpoint = "https://dev.auth.circles.name";
+  api_endpoint = "https://dev.api.circles.land";
   auth_app_id = "dev.circles.land";
+} else if (process.env.DEPLOY_ENVIRONMENT === "local") {
+  auth_endpoint = "https://dev.auth.circles.name";
+  api_endpoint = "https://local.api.circles.land";
+  auth_app_id = "local.circles.land";
 }
 
-console.log(`Auth Endpoint Url: ${auth_api_endpoint}`);
+console.log(`Auth Endpoint Url: ${auth_endpoint}`);
+console.log(`Api Endpoint Url: ${api_endpoint}`);
 console.log(`Auth AppId: ${auth_app_id}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
@@ -52,8 +60,17 @@ module.exports = {
         test: /\.ts$/,
         loader: 'string-replace-loader',
         options: {
-          search: '__AUTH_API_ENDPOINT__',
-          replace: auth_api_endpoint,
+          search: '__AUTH_ENDPOINT__',
+          replace: auth_endpoint,
+          flags: 'g'
+        }
+      },
+      {
+        test: /\.ts$/,
+        loader: 'string-replace-loader',
+        options: {
+          search: '__API_ENDPOINT__',
+          replace: api_endpoint,
           flags: 'g'
         }
       },

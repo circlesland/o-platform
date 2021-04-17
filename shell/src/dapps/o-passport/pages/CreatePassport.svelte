@@ -15,13 +15,41 @@
   import { upsertIdentity } from "../processes/upsertIdentity";
   import { onMount } from "svelte";
   import { push } from "svelte-spa-router";
+  import gql from "graphql-tag";
 
   let devHome = true;
   let devDash = false;
   let runningProcess: Process;
 
-  onMount(() => {
+  export let params:{
+    jwt?:string
+  } = {};
+
+  onMount(async () => {
     // <!-- TODO: Check if the passport creation was successful -->
+
+    if (params.jwt) {
+      // TODO: Find a better way to pass the url parameter as Authorization header
+      // Get a session at the api
+      window.o.authorization = params.jwt;
+
+      const client = await window.o.apiClient.client.subscribeToResult();
+      await client.mutate({
+        mutation: gql`
+                mutation exchangeToken {
+                  exchangeToken {
+                    success
+                    errorMessage
+                  }
+                }
+              `,
+        variables: {
+        }
+      });
+
+      window.o.authorization = undefined;
+    }
+
     createPassport();
   });
 
@@ -68,7 +96,6 @@
     window.o.publishEvent(requestEvent);
   }
 </script>
-
 <div class="grid grid-cols-1 p-2">
   <div class="flex h-screen flex-wrap content-end">
     <div class="m-auto h-auto grid">

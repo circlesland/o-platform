@@ -188,10 +188,14 @@ const shell: IShell = {
 };
 
 async function connectToApi() {
-  const apiConnection = new ApiConnection("__AUTH_API_ENDPOINT__/");
-  shell.authClient = await apiConnection.client.subscribeToResult();
+  console.log(`Connecting to __AUTH_ENDPOINT__ ..`);
+  shell.authClient = new ApiConnection("__AUTH_ENDPOINT__/");
+
+  console.log(`Connecting to __API_ENDPOINT__ ..`);
+  shell.apiClient = new ApiConnection("__API_ENDPOINT__/", "include");
 }
 connectToApi().then(() => {
+  console.log(`Connected to __AUTH_ENDPOINT__ and __API_ENDPOINT__`)
 });
 
 const theGraphConnection = new ApiConnection("https://api.thegraph.com/subgraphs/name/circlesubi/circles");

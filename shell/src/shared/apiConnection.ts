@@ -6,6 +6,7 @@ import {AsyncBroadcast} from "@o-platform/o-utils/dist/asyncBroadcast";
 export class ApiConnection
 {
     private readonly _apiEndpointUrl: string;
+    private readonly _credentialsPolicy: string|undefined;
     private _client:ApolloClient<NormalizedCacheObject>|undefined;
 
     readonly client = new AsyncBroadcast<void, ApolloClient<NormalizedCacheObject>>(async () =>
@@ -23,9 +24,10 @@ export class ApiConnection
         return this._client;
     });
 
-    constructor(apiEndpointUrl: string)
+    constructor(apiEndpointUrl: string, credentialsPolicy?:string)
     {
         this._apiEndpointUrl = apiEndpointUrl;
+        this._credentialsPolicy = credentialsPolicy;
     }
 
     destroy()
@@ -51,9 +53,15 @@ export class ApiConnection
     public connect() : ApolloClient<NormalizedCacheObject> {
         console.log("apollo client is connecting to: ", this._apiEndpointUrl);
 
+        const headers = {
+          authorization: window.o?.authorization
+        }
+
         const httpLink = new HttpLink({
             fetch: fetch,
-            uri: this._apiEndpointUrl
+            uri: this._apiEndpointUrl,
+            credentials: this._credentialsPolicy,
+            headers
         });
 
         const client = new ApolloClient({

@@ -5,6 +5,7 @@ import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processMa
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import ApolloClient from "apollo-client";
 import {NormalizedCacheObject} from "apollo-cache-inmemory";
+import {ApiConnection} from "./shared/apiConnection";
 
 export interface GlobalState {
   isLoggedOn?: boolean,
@@ -17,7 +18,9 @@ export interface GlobalState {
 
 export interface IShell {
   contactUsername?: string;
-  authClient?: ApolloClient<NormalizedCacheObject>,
+  authorization?:string;
+  authClient?: ApiConnection,
+  apiClient?: ApiConnection,
   theGraphClient?: ApolloClient<NormalizedCacheObject>,
   lastError?: any;
   events?: Subject<PlatformEvent>,
