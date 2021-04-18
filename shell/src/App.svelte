@@ -34,6 +34,7 @@
   import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import {authenticateWithCircles} from "./shared/authenticateWithCircles";
 
   let isOpen: boolean = false;
   let modalProcess: Process;
@@ -144,7 +145,7 @@
     }
   }
 
-  function authenticateWithCircles(appId: string, code?: string) {
+  async function doAuth(appId: string, code?: string) {
     if (isOpen) {
       isOpen = false;
       lastPrompt = null;
@@ -154,29 +155,8 @@
       return;
     }
 
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = authenticate;
-        ctx.childContext = {
-          data: {
-            appId: appId,
-            code: code,
-          },
-          dirtyFlags: {},
-          environment: {
-            errorView: Error,
-            progressView: LoadingIndicator,
-            successView: Success,
-          },
-        };
-        return ctx;
-      }
-    );
-
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
+    const event = await authenticateWithCircles(appId, code);
+    window.o.publishEvent(event);
   }
 
   let globalState = window.o.globalState;
@@ -213,7 +193,7 @@
         <div class="flex justify-around ">
           <button
             class="mb-4 btn btn-outline bg-base-100"
-            on:click={() => authenticateWithCircles("__APP_ID__")}
+            on:click={() => doAuth("__APP_ID__")}
           >
             {#if !isOpen}
               <img

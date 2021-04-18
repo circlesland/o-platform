@@ -22,7 +22,8 @@
     }
   }
 
-  function authenticateWithCircles(appId: string, code?: string) {
+  async function authenticateWithCircles(appId: string, code?: string) {
+
     const requestEvent = new RunProcess<ShellProcessContext>(
       shellProcess,
       true,

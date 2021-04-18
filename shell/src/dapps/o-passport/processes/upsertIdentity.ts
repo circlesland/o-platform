@@ -13,7 +13,6 @@ export type UpsertIdentityContextData = {
   loginEmail: string;
   firstName?: string;
   lastName?: string;
-  dream: string;
   country?: string;
   statement?: string;
   avatar?: {
@@ -435,7 +434,8 @@ const processDefinition = (processId: string) =>
                       lastName:$lastName 
                       dream:$dream
                       country:$country
-                      avatarCid :$avatarCid 
+                      avatarCid :$avatarCid
+                      avatarMimeType :$avatarMimeType
                     })
                     {
                       id
@@ -450,7 +450,7 @@ const processDefinition = (processId: string) =>
               variables: {
                 firstName:context.data.firstName,
                 lastName:context.data.lastName,
-                dream:context.data.dream,
+                dream:context.data.statement,
                 country:context.data.country,
                 avatarCid:undefined,
                 avatarMimeType:undefined

@@ -13,6 +13,7 @@
   import { Subscription } from "rxjs";
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
+  import {authenticateWithCircles} from "../../../shared/authenticateWithCircles";
 
   let devHome = true;
   let devDash = false;
@@ -24,39 +25,16 @@
 
   $: {
     if (params && params.code) {
-      authenticateWithCircles("__APP_ID__", params.code);
+      doAuth("__APP_ID__", params.code);
     } else {
-      authenticateWithCircles("__APP_ID__");
+      doAuth("__APP_ID__");
     }
   }
 
-  function authenticateWithCircles(appId: string, code?: string) {
+  async function doAuth(appId: string, code?: string) {
     // TODO: Refactor to request/response pattern with timeout
     let answerSubscription: Subscription;
-    let requestId: string;
-
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      false,
-      async (ctx) => {
-        ctx.childProcessDefinition = authenticate;
-        ctx.childContext = {
-          data: {
-            appId: appId,
-            code: code,
-          },
-          dirtyFlags: {},
-          environment: {
-            errorView: Error,
-            progressView: LoadingIndicator,
-            successView: Success,
-          },
-        };
-        return ctx;
-      }
-    );
-
-    requestEvent.id = Generate.randomHexString(8);
+    const requestEvent = await authenticateWithCircles(appId, code);
 
     answerSubscription = window.o.events.subscribe((event) => {
       console.log("Home.svelte: received event: ", event);
