@@ -27,29 +27,6 @@
 
   onMount(async () => {
     // <!-- TODO: Check if the passport creation was successful -->
-
-    if (params.jwt) {
-      // TODO: Find a better way to pass the url parameter as Authorization header
-      // Get a session at the api
-      window.o.authorization = params.jwt;
-
-      const client = await window.o.apiClient.client.subscribeToResult();
-      await client.mutate({
-        mutation: gql`
-                mutation exchangeToken {
-                  exchangeToken {
-                    success
-                    errorMessage
-                  }
-                }
-              `,
-        variables: {
-        }
-      });
-
-      window.o.authorization = undefined;
-    }
-
     createPassport();
   });
 

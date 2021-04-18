@@ -4,18 +4,13 @@ import Account from "./o-passport/pages/Account.svelte";
 import Keys from "./o-passport/pages/Keys.svelte";
 import Settings from "./o-passport/pages/Settings.svelte";
 import CreatePassport from "./o-passport/pages/CreatePassport.svelte";
+import ExchangeToken from "./o-passport/pages/ExchangeToken.svelte";
 import CreateOrImportKey from "./o-passport/pages/CreateOrImportKey.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-import {
-  shellProcess,
-  ShellProcessContext,
-} from "../shared/processes/shellProcess";
-import Error from "../shared/atoms/Error.svelte";
-import LoadingIndicator from "../shared/atoms/LoadingIndicator.svelte";
-import Success from "../shared/atoms/Success.svelte";
 import { logout } from "./o-passport/processes/logout";
+import gql from "graphql-tag";
+import {push} from "svelte-spa-router";
 
 const index: PageManifest = {
   isDefault: true,
@@ -113,7 +108,7 @@ const exchangeToken: PageManifest = {
   isFullWidth: true,
   hideFooter: true,
   routeParts: ["exchangeToken", ":jwt"],
-  component: CreatePassport,
+  component: ExchangeToken,
   title: "Login",
   available: [
     (detail) => {
@@ -142,6 +137,27 @@ export const passport: DappManifest<DappState> = {
       key: "logout",
       label: "Logout",
       event: () => {
+        window.o.apiClient.client.subscribeToResult()
+        .then(client => {
+          client.mutate({
+            mutation: gql`
+              mutation logout {
+                logout {
+                  success
+                }
+              }
+            `,
+            variables: {
+            }
+          });
+        });
+
+        push("/");
+        return {
+          type: "process.nop",
+          id: ""
+        };
+/*
         return new RunProcess<ShellProcessContext>(
           shellProcess,
           true,
@@ -159,6 +175,7 @@ export const passport: DappManifest<DappState> = {
             return ctx;
           }
         );
+ */
       },
     },
   ],

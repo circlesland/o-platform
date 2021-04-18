@@ -3,13 +3,40 @@
   import { getLastLoadedDapp, getLastLoadedPage } from "../../../loader";
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import gql from "graphql-tag";
 
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
 
+  let profile;
+
+  async function loadMyProfile() {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const result = await apiClient.query({
+      query : gql`
+      query profiles {
+        profiles(query:{}) {
+          firstName
+          lastName
+          dream
+          country
+          avatarCid
+          avatarMimeType
+        }
+      }`,
+      variables: {
+      },
+    });
+
+    if (result.data && result.data.profiles && result.data.profiles.length > 0) {
+      profile = result.data.profiles[0];
+    }
+  }
+
   onMount(() => {
     lastLoadedPage = getLastLoadedPage();
     lastLoadedDapp = getLastLoadedDapp();
+    loadMyProfile();
   });
 </script>
 
@@ -33,7 +60,7 @@
       </div>
     </div>
     <div class="">
-      <strong>Hi Martin,</strong> Welcome to CirclesLAND
+      <strong>Hi {(profile ? profile.firstName : "Martin")},</strong> Welcome to CirclesLAND
     </div>
     <div class="">
       <small>This is your dashboard and door into our universe.</small>

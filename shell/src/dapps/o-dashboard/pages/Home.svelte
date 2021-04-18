@@ -1,8 +1,6 @@
 <script lang="ts">
   import { dashboard } from "../../o-dashboard.manifest";
-  import { onMount } from "svelte";
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
-
 
   function buyXats() {
     window.o.publishEvent(
