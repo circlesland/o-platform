@@ -6,15 +6,14 @@ import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
-import { CloseModal } from "@o-platform/o-events/dist/shell/closeModal";
 import { AuthenticateContext } from "../../o-auth/processes/authenticate";
-import { Cancel } from "@o-platform/o-process/dist/events/cancel";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import gql from "graphql-tag";
 
 export type UpsertIdentityContextData = {
   loginEmail: string;
   firstName?: string;
   lastName?: string;
+  dream: string;
   country?: string;
   statement?: string;
   avatar?: {
@@ -420,8 +419,45 @@ const processDefinition = (processId: string) =>
         id: "upsertIdentity",
         invoke: {
           src: async (context) => {
-            localStorage.setItem("hasPassport", "true");
-            console.log("upsertIdentity():", context.data);
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.mutate({
+              mutation: gql`
+                  mutation upsertProfile(
+                    $firstName:String!
+                    $lastName:String
+                    $dream:String!
+                    $country:String
+                    $avatarCid:String
+                    $avatarMimeType:String
+                  ) {
+                    upsertProfile(data:{
+                      firstName:$firstName 
+                      lastName:$lastName 
+                      dream:$dream
+                      country:$country
+                      avatarCid :$avatarCid 
+                    })
+                    {
+                      id
+                      firstName
+                      lastName
+                      dream
+                      country
+                      avatarCid
+                      avatarMimeType
+                    }
+                }`,
+              variables: {
+                firstName:context.data.firstName,
+                lastName:context.data.lastName,
+                dream:context.data.dream,
+                country:context.data.country,
+                avatarCid:undefined,
+                avatarMimeType:undefined
+              },
+            });
+
+            return result.data.logout.success;
           },
           onDone: "#success",
           onError: "#error",
@@ -430,8 +466,8 @@ const processDefinition = (processId: string) =>
       success: {
         type: "final",
         id: "success",
-        data: (context, event: PlatformEvent) => {
-          return "yeah!";
+        data: (context, event: any) => {
+          return event.data; // TODO: fix any
         },
       },
     },

@@ -4,11 +4,7 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
-import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
-import {CloseModal} from "@o-platform/o-events/dist/shell/closeModal";
-import {AuthenticateContext} from "../../o-auth/processes/authenticate";
-import {Cancel} from "@o-platform/o-process/dist/events/cancel";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import gql from "graphql-tag";
 
 export type LogoutContextData = {
   loginEmail: string;
@@ -58,6 +54,19 @@ const processDefinition = (processId: string) =>
         id: "logout",
         invoke: {
           src: async (context) => {
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.mutate({
+              mutation: gql`
+                mutation verify($oneTimeToken: String!) {
+                  logout {
+                    success
+                  }
+                }`,
+              variables: {
+              },
+            });
+
+            return result.data.logout.success;
           },
           onDone: "#success",
           onError: "#error"
@@ -66,8 +75,8 @@ const processDefinition = (processId: string) =>
       success: {
         type: 'final',
         id: "success",
-        data: (context, event: PlatformEvent) => {
-          return "yeah!";
+        data: (context, event: any) => {
+          return event.data; // TODO: fix any
         }
       }
     },
