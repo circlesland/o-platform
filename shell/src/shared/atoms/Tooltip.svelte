@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { fade } from "svelte/transition";
   export let position = "top"; // top, left, bottom, right
   export let pointer = "middle"; //start, middle , end
