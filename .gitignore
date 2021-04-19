@@ -1,0 +1,8 @@
+node_modules
+packages/o-events/dist/
+packages/o-interfaces/dist/
+packages/o-process/dist/
+packages/o-utils/dist/
+shell/public/bundle.css
+shell/public/bundle.js
+shell/public/bundle.js.LICENSE.txt
