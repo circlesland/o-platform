@@ -33,7 +33,8 @@
     "svelte-spa-router": "^3.0.5",
     "xstate": "^4.7.0-rc6",
     "@xstate/fsm": "^1.5.2",
-    "xstate-svelte": "^1.0.1"
+    "xstate-svelte": "^1.0.1",
+    "daisyui": "^0.15.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.17.10",
@@ -52,7 +53,6 @@
     "mini-css-extract-plugin": "^0.9.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "@tailwindcss/typography": "^0.4.0",
-    "daisyui": "^0.15.2",
     "postcss": "^8.1.10",
     "postcss-cli": "^8.3.0",
     "postcss-loader": "^4.0.3",
