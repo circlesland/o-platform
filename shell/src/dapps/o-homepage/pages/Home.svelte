@@ -6,9 +6,13 @@
   } from "../../../shared/processes/shellProcess";
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import {identify, IdentifyContextData} from "../../o-passport/processes/identify";
+  import {me} from "../../../shared/stores/me";
 
   $: {
+    console.log($me); // TODO: This is just to init the store. There could be a better solution to do this :)
   }
+
+  $:me;
 
   async function login() {
     const requestEvent = new RunProcess<ShellProcessContext>(

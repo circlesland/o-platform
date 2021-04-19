@@ -1,6 +1,9 @@
 <script lang="ts">
   import { dashboard } from "../../o-dashboard.manifest";
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
+  import {me} from "../../../shared/stores/me";
+
+  $:me;
 
   function buyXats() {
     window.o.publishEvent(

@@ -76,6 +76,7 @@ const processDefinition = (processId: string) =>
         type: 'final',
         id: "success",
         data: (context, event: any) => {
+          localStorage.removeItem("me");
           return event.data; // TODO: fix any
         }
       }

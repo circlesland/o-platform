@@ -18,8 +18,8 @@
 >
   {#if lastLoadedDapp && lastLoadedPage}
     <div class=" pl-2 self-start">
-            <span class="text-lg font-circles "
-            >{#if lastLoadedDapp.title != lastLoadedPage.title}
+            <span class="text-lg font-circles ">
+              {#if lastLoadedDapp.title != lastLoadedPage.title}
                 {lastLoadedDapp.title} /
               {/if}{lastLoadedPage.title}</span
             >

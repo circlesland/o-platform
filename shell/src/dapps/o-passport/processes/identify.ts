@@ -7,6 +7,8 @@ import {authenticate} from "../../o-auth/processes/authenticate";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 import {upsertIdentity} from "./upsertIdentity";
 import {push} from "svelte-spa-router";
+import {ShellEvent} from "@o-platform/o-process/dist/events/shellEvent";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type IdentifyContextData = {
   oneTimeCode?:string
@@ -181,7 +183,11 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
       type: 'final',
       id: "success",
       entry: (context) => {
-        console.log(`enter: identify.createProfile`, context.data);
+        console.log(`enter: identify.success`, context.data);
+        window.o.publishEvent(<PlatformEvent>{
+          type: "shell.authenticated",
+          profile: context.data.profile
+        });
         if (context.data.redirectTo) {
           push(context.data.redirectTo);
         }
