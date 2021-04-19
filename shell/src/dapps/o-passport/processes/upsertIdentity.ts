@@ -9,10 +9,10 @@ import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
 import { AuthenticateContext } from "../../o-auth/processes/authenticate";
 import { countries } from "../../../shared/countries";
 import gql from "graphql-tag";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 
 export type UpsertIdentityContextData = {
-  id?:number;
+  id?: number;
   loginEmail: string;
   firstName?: string;
   lastName?: string;
@@ -27,11 +27,19 @@ export type UpsertIdentityContextData = {
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
 
 const strings = {
-  labelFirstName: "firstName",
-  labelLastName: "lastName",
-  labelAvatar: "avatar",
-  labelCountry: "country",
-  labeldream: "dream",
+  labelFirstName:
+    "Awesome, you are finally a citizen of CirclesLAND, glad to have you here. What is your name?",
+  labelLastName:
+    "Do you want to let the world know your last name, so they know in the search who’s dream they are connecting with?",
+  labelAvatar: "Add a profile image to become more recognizable ",
+  labelCountry:
+    "Vote for your country in the global universal basic income economy ranking leaderboard.",
+  labeldream:
+    "What is your life dream? Fill in the blanks. When I receive a universal basic income, I will follow my passion of _______________ and will accept Circles as payment. ",
+  placeholderFirstName: "First Name",
+  placeholderLastName: "Last Name",
+  placeholderCountry: "Select a Country",
+  placeholderDream: "Enter your dream.",
 };
 
 const processDefinition = (processId: string) =>
@@ -60,6 +68,7 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           label: strings.labelFirstName,
+          placeholder: strings.placeholderFirstName,
         },
         navigation: {
           next: "#checkLastName",
@@ -82,6 +91,7 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           label: strings.labelLastName,
+          placeholder: strings.placeholderLastName,
         },
         navigation: {
           next: "#checkCountry",
@@ -106,6 +116,7 @@ const processDefinition = (processId: string) =>
         component: DropdownSelectEditor,
         params: {
           label: strings.labelCountry,
+          placeholder: strings.placeholderCountry,
           choices: countries,
         },
         navigation: {
@@ -131,6 +142,7 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           label: strings.labeldream,
+          placeholder: strings.placeholderFirstDream,
         },
         navigation: {
           next: "#checkAvatar",
@@ -224,7 +236,7 @@ const processDefinition = (processId: string) =>
           console.log(`enter: upsertIdentity.success`, context.data);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.authenticated",
-            profile: context.data
+            profile: context.data,
           });
           return event.data;
         },

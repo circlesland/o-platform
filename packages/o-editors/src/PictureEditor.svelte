@@ -123,6 +123,7 @@
       imageStore.isValid = true;
       setTimeout(() => {
         // dispatch("validated", imageStore.isValid);
+        console.log("CROPPUS ", imageStore);
       });
     }
   }
@@ -140,8 +141,9 @@
   }
 </script>
 
-<br />
-Picture Editor<br />
+<label class="label" for={context.fieldName}>
+  <span class="label-text">{context.params.label}</span>
+</label>
 <div class="w-full h-full">
   <canvas
     style="visibility: hidden; position:absolute; left:-8096px; top:-8096px;"
