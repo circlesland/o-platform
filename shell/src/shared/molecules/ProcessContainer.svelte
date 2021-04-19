@@ -67,7 +67,7 @@
       inEventSubscription = process.inEvents.subscribe((next) => {
         if (!next.event) return;
 
-        console.log("ProcessContainer: In/Out -> to Process: ", next.event);
+        console.log("ProcessContainer: In/Out -> to Process: ", JSON.stringify(next.event, null, 2));
 
         if (
           waitForNextOutgoingEvent &&
@@ -100,7 +100,7 @@
           event = next.event;
         }
 
-        console.log("ProcessContainer: In/Out <- from Process: ", next.event);
+        console.log("ProcessContainer: In/Out <- from Process: ", JSON.stringify(next.event, null, 2));
 
         // If the event is an error event, then set the error property else clear it
         if (event.type === "xstate.error") {

@@ -4,9 +4,13 @@ import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
 import {createMachine} from "xstate";
 import gql from "graphql-tag";
 import {authenticate} from "../../o-auth/processes/authenticate";
+import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
+import {upsertIdentity} from "./upsertIdentity";
 import {push} from "svelte-spa-router";
 
 export type IdentifyContextData = {
+  oneTimeCode?:string
+  redirectTo?:string
   sessionInfo: {
     isLoggedOn: boolean
     hasProfile: boolean
@@ -25,7 +29,7 @@ export type IdentifyContextData = {
 export type IdentifyContext = ProcessContext<IdentifyContextData>;
 
 const processDefinition = (processId: string) => createMachine<IdentifyContext, any>({
-  id: `${processId}:identify`,
+  id: `${processId}`,
   initial: "getSessionInfo",
   states: {
     // Include a default 'error' state that propagates the error by re-throwing it in an action.
@@ -101,30 +105,86 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
             ? result.data.profiles[0]
             : undefined;
         },
-        onDone: [{
-          cond: (context, event) => event.data == true,
-          target: "#success"
-        }, {
-          target: "#createProfile"
-        }],
+        onDone: "#success",
         onError: "#error"
       }
     },
     authenticate: {
       id: "authenticate",
-      entry: () => {
-        push("/login");
+      on: {
+        ...<any>ipc(`authenticate`)
+      },
+      invoke: {
+        id: "authenticate",
+        src: authenticate.stateMachine(`authenticate`),
+        data: {
+          data: (context, event) => {
+            return {
+              appId: "__APP_ID__",
+              code: context.data.oneTimeCode
+            }
+          },
+          dirtyFlags: {}
+        },
+        onDone: "#exchangeTokenForSession",
+        onError: "#error"
+      }
+    },
+    exchangeTokenForSession: {
+      id: "exchangeTokenForSession",
+      on: {
+        ...<any>ipc(`exchangeTokenForSession`)
+      },
+      invoke: {
+        id: "exchangeTokenForSession",
+        src: async (context, event) => {
+          const client = await window.o.apiClient.client.subscribeToResult();
+          await client.mutate({
+            mutation: gql`
+              mutation exchangeToken {
+                exchangeToken {
+                  success
+                  errorMessage
+                }
+              }`,
+            context: {
+              headers: {
+                "Authorization": event.data
+              }
+            }
+          });
+        },
+        onDone: "#getSessionInfo",
+        onError: "#error"
       }
     },
     createProfile: {
       id: "createProfile",
-      entry: () => {
-        push("/passport/new-passport");
+      on: {
+        ...<any>ipc(`createProfile`)
+      },
+      invoke: {
+        id: "createProfile",
+        src: upsertIdentity.stateMachine(`createProfile`),
+        data: {
+          data: (context, event) => {
+            return {
+            }
+          },
+          dirtyFlags: {}
+        },
+        onDone: "#success",
+        onError: "#error"
       }
     },
     success: {
       type: 'final',
       id: "success",
+      entry: (context) => {
+        if (context.data.redirectTo) {
+          push(context.data.redirectTo);
+        }
+      },
       data: (context) => {
         return context.data;
       }

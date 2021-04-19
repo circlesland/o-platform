@@ -34,7 +34,7 @@ const strings = {
 
 const processDefinition = (processId: string) =>
   createMachine<AuthenticateContext, any>({
-    id: `${processId}:authenticate`,
+    id: `${processId}`,
     initial: "findEntryPoint",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
@@ -86,7 +86,7 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#requestAuthCode"
-        },
+        }
       }),
       // Request an auth code to the given e-mail address
       // and then go to the 'code' input step.
@@ -167,22 +167,18 @@ const processDefinition = (processId: string) =>
               throw new Error(result.data.verify.errorMessage);
             }
 
-            return result.data.verify.exchangeTokenUrl + result.data.verify.jwt;
+            return result.data.verify.jwt;
           },
-          onDone: "#redirectToApplication",
+          onDone: "#success",
           onError: "#error",
         },
       },
-      redirectToApplication: {
-        id: "redirectToApplication",
-        entry: (context, event) => {
-          const origin = `${document.location.protocol}//${document.location.host}`;
-          const appRoute = event.data.replace(`${origin}/#`, "");
-          if (appRoute == event.data) {
-            throw new Error(`The server sent an exchangedToken-link that points to a different origin. This is: '${origin}'. The server sent: '${event.data}'`);
-          }
-          push(appRoute);
-        },
+      success: {
+        id: "success",
+        type: "final",
+        data: (context, event) => {
+          return event.data;
+        }
       },
     },
   });

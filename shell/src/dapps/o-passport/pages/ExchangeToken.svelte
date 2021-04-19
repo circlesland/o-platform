@@ -19,11 +19,7 @@
                     errorMessage
                   }
                 }`,
-        context: {
-          headers: {
-            "Authorization": params.jwt
-          }
-        }
+        
       });
 
       push("/dashboard");

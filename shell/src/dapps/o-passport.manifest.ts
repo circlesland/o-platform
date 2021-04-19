@@ -104,23 +104,6 @@ const settings: PageManifest = {
   ],
 };
 
-const exchangeToken: PageManifest = {
-  isDefault: false,
-  isSystem: true,
-  isFullWidth: true,
-  hideFooter: true,
-  routeParts: ["exchangeToken", ":jwt"],
-  component: ExchangeToken,
-  title: "Login",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
-};
-
 export interface DappState {
   // put state here
 }
@@ -163,5 +146,5 @@ export const passport: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  pages: [index, account, keys, settings, exchangeToken, createPassport, createOrImportKey],
+  pages: [index, account, keys, settings, createPassport, createOrImportKey],
 };
