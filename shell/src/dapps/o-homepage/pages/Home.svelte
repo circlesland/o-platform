@@ -8,38 +8,22 @@
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import Success from "../../../shared/atoms/Success.svelte";
   import { Generate } from "@o-platform/o-utils/dist/generate";
-  import {authenticate} from "../../o-auth/processes/authenticate";
-  import {push} from "svelte-spa-router";
+  import {identify} from "../../o-passport/processes/identify";
 
   $: {
   }
 
-  function login() {
-    if (window.o.globalState.isLoggedOn) {
-      push("/dashboard")
-    } else {
-      push("/login")
-    }
-  }
-
-  async function authenticateWithCircles(appId: string, code?: string) {
-
+  async function login(appId: string, code?: string) {
     const requestEvent = new RunProcess<ShellProcessContext>(
       shellProcess,
       true,
       async (ctx) => {
-        ctx.childProcessDefinition = authenticate;
+        ctx.childProcessDefinition = identify;
         ctx.childContext = {
           data: {
-            appId: appId,
-            code: code,
           },
           dirtyFlags: {},
-          environment: {
-            errorView: Error,
-            progressView: LoadingIndicator,
-            successView: Success,
-          },
+          environment: {}
         };
         return ctx;
       }

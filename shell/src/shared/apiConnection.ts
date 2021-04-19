@@ -53,15 +53,10 @@ export class ApiConnection
     public connect() : ApolloClient<NormalizedCacheObject> {
         console.log("apollo client is connecting to: ", this._apiEndpointUrl);
 
-        const headers = {
-          authorization: window.o?.authorization
-        }
-
         const httpLink = new HttpLink({
             fetch: fetch,
             uri: this._apiEndpointUrl,
-            credentials: this._credentialsPolicy,
-            headers
+            credentials: this._credentialsPolicy
         });
 
         const client = new ApolloClient({

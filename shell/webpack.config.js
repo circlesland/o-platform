@@ -22,6 +22,10 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   auth_endpoint = "https://dev.auth.circles.name";
   api_endpoint = "https://local.api.circles.land";
   auth_app_id = "local.circles.land";
+} else if (process.env.DEPLOY_ENVIRONMENT === "ultralocal") {
+  auth_endpoint = "https://dev.auth.circles.name";
+  api_endpoint = "http://localhost:8989";
+  auth_app_id = "ultralocal.circles.land";
 }
 
 console.log(`Auth Endpoint Url: ${auth_endpoint}`);

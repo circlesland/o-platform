@@ -6,6 +6,7 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import gql from "graphql-tag";
+import {push} from "svelte-spa-router";
 
 export type AuthenticateContextData = {
   appId?: string;
@@ -175,7 +176,12 @@ const processDefinition = (processId: string) =>
       redirectToApplication: {
         id: "redirectToApplication",
         entry: (context, event) => {
-          window.location = event.data;
+          const origin = `${document.location.protocol}//${document.location.host}`;
+          const appRoute = event.data.replace(`${origin}/#`, "");
+          if (appRoute == event.data) {
+            throw new Error(`The server sent an exchangedToken-link that points to a different origin. This is: '${origin}'. The server sent: '${event.data}'`);
+          }
+          push(appRoute);
         },
       },
     },

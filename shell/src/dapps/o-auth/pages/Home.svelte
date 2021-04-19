@@ -1,19 +1,16 @@
 <script lang="ts">
-  import { authenticate } from "../processes/authenticate";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
-  import Error from "../../../shared/atoms/Error.svelte";
-  import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-  import Success from "../../../shared/atoms/Success.svelte";
   import ProcessContainer from "../../../shared/molecules/ProcessContainer.svelte";
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { Subscription } from "rxjs";
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
-  import {authenticateWithCircles} from "../../../shared/authenticateWithCircles";
+  import {authenticate} from "../processes/authenticate";
+
 
   let devHome = true;
   let devDash = false;
@@ -34,7 +31,22 @@
   async function doAuth(appId: string, code?: string) {
     // TODO: Refactor to request/response pattern with timeout
     let answerSubscription: Subscription;
-    const requestEvent = await authenticateWithCircles(appId, code);
+    const requestEvent = new RunProcess<ShellProcessContext>(
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = authenticate;
+        ctx.childContext = {
+          data: {
+            appId: "local.circles.land"
+          },
+          dirtyFlags: {},
+          environment: {}
+        };
+        return ctx;
+      }
+    );
+    requestEvent.id = Generate.randomHexString(16);
 
     answerSubscription = window.o.events.subscribe((event) => {
       console.log("Home.svelte: received event: ", event);

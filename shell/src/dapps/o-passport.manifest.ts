@@ -11,6 +11,8 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { logout } from "./o-passport/processes/logout";
 import gql from "graphql-tag";
 import {push} from "svelte-spa-router";
+import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
 
 const index: PageManifest = {
   isDefault: true,
@@ -137,27 +139,6 @@ export const passport: DappManifest<DappState> = {
       key: "logout",
       label: "Logout",
       event: () => {
-        window.o.apiClient.client.subscribeToResult()
-        .then(client => {
-          client.mutate({
-            mutation: gql`
-              mutation logout {
-                logout {
-                  success
-                }
-              }
-            `,
-            variables: {
-            }
-          });
-        });
-
-        push("/");
-        return {
-          type: "process.nop",
-          id: ""
-        };
-/*
         return new RunProcess<ShellProcessContext>(
           shellProcess,
           true,
@@ -166,16 +147,11 @@ export const passport: DappManifest<DappState> = {
             ctx.childContext = {
               data: {},
               dirtyFlags: {},
-              environment: {
-                errorView: Error,
-                progressView: LoadingIndicator,
-                successView: Success,
-              },
+              environment: {}
             };
             return ctx;
           }
         );
- */
       },
     },
   ],

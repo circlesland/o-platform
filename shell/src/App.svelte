@@ -34,7 +34,7 @@
   import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-  import {authenticateWithCircles} from "./shared/authenticateWithCircles";
+
 
   let isOpen: boolean = false;
   let modalProcess: Process;

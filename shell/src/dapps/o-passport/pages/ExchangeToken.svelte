@@ -1,42 +1,16 @@
 <script lang="ts">
-  import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { onMount } from "svelte";
   import { push } from "svelte-spa-router";
   import gql from "graphql-tag";
-
-  let devHome = true;
-  let devDash = false;
-  let runningProcess: Process;
 
   export let params:{
     jwt?:string
   } = {};
 
   onMount(async () => {
-    // <!-- TODO: Check if the passport creation was successful -->
-
-    console.log("Hello from ExchangeToken")
     if (params.jwt)
     {
       const client = await window.o.apiClient.client.subscribeToResult();
-      const hasSessionResult = await client.query({
-        query: gql`
-                query hasValidSession {
-                  hasValidSession {success}
-                }
-              `,
-        variables: {
-        }
-      });
-
-      if (hasSessionResult.data && hasSessionResult.data.success) {
-        push("/dashboard");
-        return;
-      }
-
-      // TODO: Find a better way to pass the url parameter as Authorization header
-      window.o.authorization = params.jwt;
-
       await client.mutate({
         mutation: gql`
                 mutation exchangeToken {
@@ -44,17 +18,19 @@
                     success
                     errorMessage
                   }
-                }
-              `,
-        variables: {
+                }`,
+        context: {
+          headers: {
+            "Authorization": params.jwt
+          }
         }
       });
 
-      push("/passport/new-passport");
-      return;
+      push("/dashboard");
+    } else {
+     console.error("Cannot navigate to ExchangeToken.svelte without 'params.jwt' set. Going back to previous page.");
+     history.back();
     }
-
-    push("/");
   });
 
 </script>
