@@ -12,16 +12,52 @@
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { onMount } from "svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
+  import { getCountryName } from "../../../shared/countries";
+
+  import gql from "graphql-tag";
 
   export let params: {
     jwt: string;
   };
+
+  let profile;
+
+  onMount(() => {
+    loadMyProfile();
+  });
 
   $: {
     if (params && params.jwt) {
       // TODO: Verify the token and extract the e-mail address
       connectOrCreateKey(params.jwt);
       params.jwt = null;
+    }
+  }
+
+  async function loadMyProfile() {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const result = await apiClient.query({
+      query: gql`
+        query profiles {
+          profiles(query: {}) {
+            firstName
+            lastName
+            dream
+            country
+            avatarCid
+            avatarMimeType
+          }
+        }
+      `,
+      variables: {},
+    });
+
+    if (
+      result.data &&
+      result.data.profiles &&
+      result.data.profiles.length > 0
+    ) {
+      profile = result.data.profiles[0];
     }
   }
 
@@ -86,11 +122,17 @@
       />
     </div>
   </div>
-  <h2 class="card-title">Ernst Stavro Blofeld</h2>
+  <h2 class="card-title">
+    {profile ? profile.firstName : "Martin"}
+    {profile ? profile.lastName : "Mustermann"}
+  </h2>
   <small class="break-all">
     0x87asdgt9adsofz98ad6fs8as7odft9aszf98pasdzfasdg
   </small>
-  <small class="break-all"> Country </small>
-  <small class="break-all">Statement</small>
+  <small class="break-all">
+    {profile ? getCountryName(profile.country) : ""}
+  </small>
+  <small class="break-all">{profile ? profile.dream : "Dream"}</small>
+
   <button class="btn btn-primary w-1/2 mt-4 self-center">Edit Profile</button>
 </div>

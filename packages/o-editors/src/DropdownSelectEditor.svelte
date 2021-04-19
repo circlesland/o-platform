@@ -24,7 +24,7 @@
   });
 
   function handleSelect(event) {
-    selected = event.detail;
+    selected = event.detail.value;
   }
 
   function submit() {
@@ -67,6 +67,7 @@
         {optionIdentifier}
         {getSelectionLabel}
         {getOptionLabel}
+        on:select={handleSelect}
       />
     {:else}
       <Select
@@ -75,6 +76,7 @@
         listAutoWidth={false}
         listPlacement="top"
         containerClasses="w-80 min-w-full"
+        on:select={handleSelect}
       />
     {/if}
   </div>
