@@ -55,6 +55,29 @@
 
     window.o.publishEvent(requestEvent);
   }
+
+  function editProfile() {
+    const requestEvent = new RunProcess<ShellProcessContext>(
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = upsertIdentity;
+        ctx.childContext = {
+          data: {
+            firstName:$me.firstName,
+            lastName:$me.lastName,
+            country:$me.country,
+            statement:$me.dream
+          },
+          dirtyFlags: {},
+          environment: {},
+        };
+        return ctx;
+      }
+    );
+
+    window.o.publishEvent(requestEvent);
+  }
 </script>
 
 <PassportHeader />
@@ -79,5 +102,5 @@
   </small>
   <small class="break-all">{$me ? $me.dream : "Dream"}</small>
 
-  <button class="btn btn-primary w-1/2 mt-4 self-center">Edit Profile</button>
+  <button class="btn btn-primary w-1/2 mt-4 self-center" on:click={editProfile}>Edit Profile</button>
 </div>
