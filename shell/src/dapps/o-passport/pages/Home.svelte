@@ -64,6 +64,7 @@
         ctx.childProcessDefinition = upsertIdentity;
         ctx.childContext = {
           data: {
+            id: $me.id,
             firstName:$me.firstName,
             lastName:$me.lastName,
             country:$me.country,

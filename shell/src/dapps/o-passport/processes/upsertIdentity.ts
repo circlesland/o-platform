@@ -9,8 +9,10 @@ import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
 import { AuthenticateContext } from "../../o-auth/processes/authenticate";
 import { countries } from "../../../shared/countries";
 import gql from "graphql-tag";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type UpsertIdentityContextData = {
+  id?:number;
   loginEmail: string;
   firstName?: string;
   lastName?: string;
@@ -169,6 +171,7 @@ const processDefinition = (processId: string) =>
             const result = await apiClient.mutate({
               mutation: gql`
                 mutation upsertProfile(
+                  $id: Int
                   $firstName: String!
                   $lastName: String
                   $dream: String!
@@ -178,6 +181,7 @@ const processDefinition = (processId: string) =>
                 ) {
                   upsertProfile(
                     data: {
+                      id: $id
                       firstName: $firstName
                       lastName: $lastName
                       dream: $dream
@@ -197,6 +201,7 @@ const processDefinition = (processId: string) =>
                 }
               `,
               variables: {
+                id: context.data.id,
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 dream: context.data.statement,
@@ -216,6 +221,11 @@ const processDefinition = (processId: string) =>
         type: "final",
         id: "success",
         data: (context, event: any) => {
+          console.log(`enter: upsertIdentity.success`, context.data);
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.authenticated",
+            profile: context.data
+          });
           return event.data;
         },
       },
