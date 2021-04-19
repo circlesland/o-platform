@@ -57,7 +57,7 @@ const processDefinition = (processId: string) =>
             const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: gql`
-                mutation verify($oneTimeToken: String!) {
+                mutation logout {
                   logout {
                     success
                   }
