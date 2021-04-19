@@ -38,6 +38,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
 
     getSessionInfo: {
       id: "getSessionInfo",
+      entry: (ctx) => console.log(`enter: identify.getSessionInfo`, ctx.data),
       invoke: {
         src: async (context) => {
           const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -79,15 +80,14 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
     },
     loadProfile: {
       id: "loadProfile",
+      entry: (ctx) => console.log(`enter: identify.loadProfile`, ctx.data),
       invoke: {
         src: async (context) => {
           const apiClient = await window.o.apiClient.client.subscribeToResult();
           const result = await apiClient.query({
             query: gql`
-              query profiles($id:Int!) {
-                profiles(query:{
-                  id: $id
-                }) {
+              query profiles {
+                profiles(query:{}) {
                   firstName
                   lastName
                   dream
@@ -95,10 +95,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
                   avatarCid
                   avatarMimeType
                 }
-              }`,
-            variables: {
-              id: context.data.sessionInfo.profileId
-            }
+              }`
           });
 
           context.data.profile = result.data.profiles && result.data.profiles.length > 0
@@ -111,6 +108,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
     },
     authenticate: {
       id: "authenticate",
+      entry: (ctx) => console.log(`enter: identify.authenticate`, ctx.data),
       on: {
         ...<any>ipc(`authenticate`)
       },
@@ -132,6 +130,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
     },
     exchangeTokenForSession: {
       id: "exchangeTokenForSession",
+      entry: (ctx) => console.log(`enter: identify.exchangeTokenForSession`, ctx.data),
       on: {
         ...<any>ipc(`exchangeTokenForSession`)
       },
@@ -159,6 +158,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
       }
     },
     createProfile: {
+      entry: (ctx) => console.log(`enter: identify.createProfile`, ctx.data),
       id: "createProfile",
       on: {
         ...<any>ipc(`createProfile`)
@@ -173,7 +173,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
           },
           dirtyFlags: {}
         },
-        onDone: "#success",
+        onDone: "#loadProfile",
         onError: "#error"
       }
     },
@@ -181,6 +181,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
       type: 'final',
       id: "success",
       entry: (context) => {
+        console.log(`enter: identify.createProfile`, context.data);
         if (context.data.redirectTo) {
           push(context.data.redirectTo);
         }
