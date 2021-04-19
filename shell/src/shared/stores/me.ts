@@ -31,6 +31,7 @@ export const me = readable<Profile|null>(null, function start(set) {
       const profile = JSON.parse(cachedProfile);
       set(profile);
     } catch (e) {
+      console.warn(`Parsing of the cached profile from localStorage(me) failed:`, e);
       localStorage.removeItem("me");
     }
   }

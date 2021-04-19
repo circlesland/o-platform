@@ -89,6 +89,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
             query: gql`
               query profiles {
                 profiles(query:{}) {
+                  id
                   firstName
                   lastName
                   dream
