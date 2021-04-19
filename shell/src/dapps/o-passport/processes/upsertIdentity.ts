@@ -142,7 +142,7 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           label: strings.labeldream,
-          placeholder: strings.placeholderFirstDream,
+          placeholder: strings.placeholderDream,
         },
         navigation: {
           next: "#checkAvatar",
