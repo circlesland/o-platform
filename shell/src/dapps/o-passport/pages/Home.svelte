@@ -68,7 +68,7 @@
             firstName:$me.firstName,
             lastName:$me.lastName,
             country:$me.country,
-            statement:$me.dream
+            dream:$me.dream
           },
           dirtyFlags: {},
           environment: {},

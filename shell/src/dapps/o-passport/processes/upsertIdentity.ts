@@ -17,7 +17,7 @@ export type UpsertIdentityContextData = {
   firstName?: string;
   lastName?: string;
   country?: string;
-  statement?: string;
+  dream?: string;
   avatar?: {
     bytes: Buffer;
     mimeType: string;
@@ -31,7 +31,7 @@ const strings = {
   labelLastName: "lastName",
   labelAvatar: "avatar",
   labelCountry: "country",
-  labelStatement: "statement",
+  labeldream: "dream",
 };
 
 const processDefinition = (processId: string) =>
@@ -94,7 +94,7 @@ const processDefinition = (processId: string) =>
         always: [
           {
             cond: (context) => false,
-            target: "#checkStatement",
+            target: "#checkdream",
           },
           {
             target: "#country",
@@ -109,28 +109,28 @@ const processDefinition = (processId: string) =>
           choices: countries,
         },
         navigation: {
-          next: "#checkStatement",
+          next: "#checkdream",
           previous: "#checkLastName",
           canSkip: () => true,
         },
       }),
-      checkStatement: {
-        id: "checkStatement",
+      checkdream: {
+        id: "checkdream",
         always: [
           {
             cond: (context) => false,
             target: "#checkAvatar",
           },
           {
-            target: "#statement",
+            target: "#dream",
           },
         ],
       },
-      statement: prompt<AuthenticateContext, any>({
-        fieldName: "statement",
+      dream: prompt<AuthenticateContext, any>({
+        fieldName: "dream",
         component: TextEditor,
         params: {
-          label: strings.labelStatement,
+          label: strings.labeldream,
         },
         navigation: {
           next: "#checkAvatar",
@@ -204,7 +204,7 @@ const processDefinition = (processId: string) =>
                 id: context.data.id,
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
-                dream: context.data.statement,
+                dream: context.data.dream,
                 country: context.data.country,
                 avatarCid: undefined,
                 avatarMimeType: undefined,
