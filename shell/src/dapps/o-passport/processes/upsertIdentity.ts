@@ -457,7 +457,7 @@ const processDefinition = (processId: string) =>
               },
             });
 
-            return result.data.logout.success;
+            return result.data.upsertProfile;
           },
           onDone: "#success",
           onError: "#error",
@@ -467,7 +467,7 @@ const processDefinition = (processId: string) =>
         type: "final",
         id: "success",
         data: (context, event: any) => {
-          return event.data; // TODO: fix any
+          return event.data;
         },
       },
     },
