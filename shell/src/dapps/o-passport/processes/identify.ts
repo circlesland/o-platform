@@ -7,7 +7,6 @@ import {authenticate} from "../../o-auth/processes/authenticate";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 import {upsertIdentity} from "./upsertIdentity";
 import {push} from "svelte-spa-router";
-import {ShellEvent} from "@o-platform/o-process/dist/events/shellEvent";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type IdentifyContextData = {
@@ -110,7 +109,10 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
     },
     authenticate: {
       id: "authenticate",
-      entry: (ctx) => console.log(`enter: identify.authenticate`, ctx.data),
+      entry: (ctx) => {
+        console.log(`enter: identify.authenticate`, ctx.data);
+        localStorage.removeItem("me");
+      },
       on: {
         ...<any>ipc(`authenticate`)
       },

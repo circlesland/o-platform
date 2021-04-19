@@ -4,10 +4,11 @@
   import "./shared/css/utilities.css";
 
   import routes from "./loader";
+  import {me} from "./shared/stores/me";
   import { getLastLoadedDapp } from "./loader";
   import { getLastLoadedPage } from "./loader";
 
-  import Router, { push } from "svelte-spa-router";
+  import Router, { push, location } from "svelte-spa-router";
   import Modal from "./shared/molecules/Modal.svelte";
   import ProcessContainer from "./shared/molecules/ProcessContainer.svelte";
 
@@ -34,6 +35,7 @@
   import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import {identify, IdentifyContextData} from "./dapps/o-passport/processes/identify";
 
 
   let isOpen: boolean = false;
@@ -145,7 +147,7 @@
     }
   }
 
-  async function doAuth(appId: string, code?: string) {
+  async function login(appId: string, code?: string) {
     if (isOpen) {
       isOpen = false;
       lastPrompt = null;
@@ -154,12 +156,25 @@
       }
       return;
     }
+    const requestEvent = new RunProcess<ShellProcessContext>(
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = identify;
+        ctx.childContext = {
+          data: <IdentifyContextData>{
+            redirectTo: $location
+          },
+          dirtyFlags: {},
+          environment: {}
+        };
+        return ctx;
+      }
+    );
 
-    const event = await authenticateWithCircles(appId, code);
-    window.o.publishEvent(event);
+    requestEvent.id = Generate.randomHexString(8);
+    window.o.publishEvent(requestEvent);
   }
-
-  let globalState = window.o.globalState;
 
   let layoutClasses = "";
   $: {
@@ -188,12 +203,13 @@
   </main>
 
   {#if lastLoadedDapp && !lastLoadedDapp.hideFooter && lastLoadedPage && !lastLoadedPage.hideFooter}
-    {#if !globalState.hasKey}
+
+    {#if !$me}
       <footer class="z-50  w-full sticky bottom-0 ">
         <div class="flex justify-around ">
           <button
             class="mb-4 btn btn-outline bg-base-100"
-            on:click={() => doAuth("__APP_ID__")}
+            on:click={() => login("__APP_ID__")}
           >
             {#if !isOpen}
               <img

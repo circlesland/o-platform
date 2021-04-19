@@ -14,11 +14,15 @@ export const me = readable<Profile|null>(null, function start(set) {
   const subscription = window.o.events.subscribe((event: PlatformEvent & {
     profile: Profile
   }) => {
-    if (event.type != "shell.authenticated" || !event.profile) {
+    if (event.type == "shell.loggedOut") {
+      localStorage.removeItem("me");
+      set(null);
       return;
     }
-    set(event.profile);
-    localStorage.setItem("me", JSON.stringify(event.profile));
+    if (event.type == "shell.authenticated" && event.profile) {
+      set(event.profile);
+      localStorage.setItem("me", JSON.stringify(event.profile));
+    }
   });
 
   const cachedProfile = localStorage.getItem("me");

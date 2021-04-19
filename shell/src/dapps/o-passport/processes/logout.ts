@@ -5,6 +5,7 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import gql from "graphql-tag";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type LogoutContextData = {
   loginEmail: string;
@@ -77,6 +78,9 @@ const processDefinition = (processId: string) =>
         id: "success",
         data: (context, event: any) => {
           localStorage.removeItem("me");
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.loggedOut"
+          });
           return event.data; // TODO: fix any
         }
       }

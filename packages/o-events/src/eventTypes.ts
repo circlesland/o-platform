@@ -8,6 +8,7 @@ export type PlatformEventTypes =
     | "shell.done"
     | "shell.navigateTo"
     | "shell.authenticated"
+    | "shell.loggedOut"
     | "shell.gotProfile"
     | "shell.showNotification"
     | "shell.closeModal"

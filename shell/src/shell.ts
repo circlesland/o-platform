@@ -7,15 +7,6 @@ import ApolloClient from "apollo-client";
 import {NormalizedCacheObject} from "apollo-cache-inmemory";
 import {ApiConnection} from "./shared/apiConnection";
 
-export interface GlobalState {
-  isLoggedOn?: boolean,
-  hasPassport?: boolean,
-  isFunded?: boolean,
-  hasSafe?: boolean,
-  hasKey?: boolean,
-  isSignedUpAtCircles?: boolean
-}
-
 export interface IShell {
   contactUsername?: string;
   authorization?:string;
@@ -25,7 +16,6 @@ export interface IShell {
   lastError?: any;
   events?: Subject<PlatformEvent>,
   publishEvent?: (event: PlatformEvent) => void,
-  globalState?: GlobalState,
   stateMachines: {
     findById(processId:string): Process;
     run<TContext>(definition: ProcessDefinition<any,any>, contextModifier?: (processContext: ProcessContext<any>) => Promise<TContext>) : Promise<Process>

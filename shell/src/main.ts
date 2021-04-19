@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import {GlobalState, IShell} from "./shell";
+import {IShell} from "./shell";
 import {shellEvents} from "./shared/shellEvents";
 import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
@@ -42,36 +42,7 @@ const runningProcesses : {
 } = {
 }
 
-let globalState:GlobalState = null;
-
-if (localStorage.getItem("isLoggedOn") === null)  {
-  globalState = {
-    isLoggedOn: false,
-    hasPassport: false,
-    hasKey: false,
-    isFunded: false,
-    hasSafe: false,
-    isSignedUpAtCircles: false
-  };
-  localStorage.setItem("isLoggedOn", JSON.stringify(globalState.isLoggedOn));
-  localStorage.setItem("hasPassport", JSON.stringify(globalState.hasPassport));
-  localStorage.setItem("isFunded", JSON.stringify(globalState.isFunded));
-  localStorage.setItem("hasSafe", JSON.stringify(globalState.hasSafe));
-  localStorage.setItem("hasKey", JSON.stringify(globalState.hasKey));
-  localStorage.setItem("isSignedUpAtCircles", JSON.stringify(globalState.isSignedUpAtCircles));
-} else {
-  globalState = {
-    isLoggedOn: JSON.parse(localStorage.getItem("isLoggedOn") ?? "false"),
-    hasPassport: JSON.parse(localStorage.getItem("hasPassport") ?? "false"),
-    isFunded: JSON.parse(localStorage.getItem("isFunded") ?? "false"),
-    hasSafe: JSON.parse(localStorage.getItem("hasSafe") ?? "false"),
-    hasKey: JSON.parse(localStorage.getItem("hasKey") ?? "false"),
-    isSignedUpAtCircles: JSON.parse(localStorage.getItem("isSignedUpAtCircles") ?? "false"),
-  }
-}
-
 const shell: IShell = {
-  globalState: globalState,
   stateMachines: {
     findById(processId:string) {
       return runningProcesses[processId];
