@@ -10,27 +10,18 @@
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
   import {authenticate} from "../processes/authenticate";
+  import {onMount} from "svelte";
 
-
-  let devHome = true;
-  let devDash = false;
   let runningProcess: Process;
 
   export let params: {
     code: string;
   };
 
-  $: {
-    if (params && params.code) {
-      doAuth("__APP_ID__", params.code);
-    } else {
-      doAuth("__APP_ID__");
-    }
-  }
-
-  async function doAuth(appId: string, code?: string) {
+  onMount(() => {
     // TODO: Refactor to request/response pattern with timeout
     let answerSubscription: Subscription;
+    const code = params ? params.code : undefined;
     const requestEvent = new RunProcess<ShellProcessContext>(
       shellProcess,
       true,
@@ -38,7 +29,8 @@
         ctx.childProcessDefinition = authenticate;
         ctx.childContext = {
           data: {
-            appId: "local.circles.land"
+            appId: "__APP_ID__",
+            code: code
           },
           dirtyFlags: {},
           environment: {}
@@ -64,7 +56,7 @@
     });
 
     window.o.publishEvent(requestEvent);
-  }
+  })
 </script>
 
 <div class="grid grid-cols-1 p-2">
