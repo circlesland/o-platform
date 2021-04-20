@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import {Tabs, Tab, TabList, TabPanel} from "svelte-tabs";
+  import { onMount } from "svelte";
+  import { Tabs, Tab, TabList, TabPanel } from "svelte-tabs";
   import PassportHeader from "../atoms/PassportHeader.svelte";
-
 </script>
+
 <PassportHeader />
 <div style="margin-top: -2.2rem;">
   <div class="mx-4 mt-4">
@@ -14,7 +14,7 @@
         <div class="mr-2 py-2 pt-4 text-center">
           <div class="avatar">
             <div class="rounded-full w-14 h-14 m-auto">
-              <img src="https://i.pravatar.cc/500?img=12" />
+              <img src="https://i.pravatar.cc/500?img=12" alt="username" />
             </div>
           </div>
         </div>

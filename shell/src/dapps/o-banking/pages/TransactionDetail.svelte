@@ -19,7 +19,7 @@
         <div class="text-center">
           <div class="avatar">
             <div class="rounded-full w-10 h-10 sm:w-10 sm:h-10">
-              <img src="/images/common/circles.png" />
+              <img src="/images/common/circles.png" alt="username" />
             </div>
           </div>
         </div>

@@ -17,7 +17,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="/images/common/circles.png" />
+            <img src="/images/common/circles.png" alt="username" />
           </div>
         </div>
       </div>
@@ -47,6 +47,7 @@
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
             <img
               src="https://gblobscdn.gitbook.com/spaces%2F-Lpi9AHj62wscNlQjI-l%2Favatar.png?alt=media"
+              alt="username"
             />
           </div>
         </div>

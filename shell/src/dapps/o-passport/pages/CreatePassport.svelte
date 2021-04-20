@@ -21,8 +21,8 @@
   let devDash = false;
   let runningProcess: Process;
 
-  export let params:{
-    jwt?:string
+  export const params: {
+    jwt?: string;
   } = {};
 
   onMount(async () => {
@@ -73,6 +73,7 @@
     window.o.publishEvent(requestEvent);
   }
 </script>
+
 <div class="grid grid-cols-1 p-2">
   <div class="flex h-screen flex-wrap content-end">
     <div class="m-auto h-auto grid">

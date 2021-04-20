@@ -31,7 +31,8 @@
       <div class="self-start">
         <button
           class=" text-base-300"
-          on:click={() => (window.location = "/#/dashboard")}
+          href="#"
+          on:click|once={() => (window.location = "/#/dashboard")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

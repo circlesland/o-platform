@@ -82,7 +82,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="/images/common/circles.png" />
+            <img src="/images/common/circles.png" alt="username" />
           </div>
         </div>
       </div>
@@ -115,7 +115,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="https://i.pravatar.cc/500?img=42" />
+            <img src="https://i.pravatar.cc/500?img=42" alt="username" />
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="https://i.pravatar.cc/500?img=12" />
+            <img src="https://i.pravatar.cc/500?img=12" alt="username" />
           </div>
         </div>
       </div>

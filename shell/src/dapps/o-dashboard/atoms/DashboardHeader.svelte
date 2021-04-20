@@ -4,12 +4,12 @@
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import gql from "graphql-tag";
-  import {me} from "../../../shared/stores/me";
+  import { me } from "../../../shared/stores/me";
 
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
 
-  $:me;
+  $: me;
 
   onMount(() => {
     lastLoadedPage = getLastLoadedPage();
@@ -33,11 +33,11 @@
   <div class="self-center text-center mt-6 block">
     <div class="avatar">
       <div class="w-36 h-36 rounded-full ring ring-gradient1 mb-4">
-        <img src="https://i.pravatar.cc/500?img=32" />
+        <img src="https://i.pravatar.cc/500?img=32" alt="username" />
       </div>
     </div>
     <div class="">
-      <strong>Hi {($me ? $me.firstName : "Martin")},</strong> Welcome to CirclesLAND
+      <strong>Hi {$me ? $me.firstName : "Martin"},</strong> Welcome to CirclesLAND
     </div>
     <div class="">
       <small>This is your dashboard and door into our universe.</small>

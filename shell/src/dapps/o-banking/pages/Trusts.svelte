@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import {query} from "svelte-apollo";
-  import {setClient} from "svelte-apollo";
+  import { query } from "svelte-apollo";
+  import { setClient } from "svelte-apollo";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
@@ -10,11 +10,11 @@
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import {sendInviteGas} from "../processes/sendInviteGas";
+  import { sendInviteGas } from "../processes/sendInviteGas";
   import gql from "graphql-tag";
 
   export let params: {
-    inviteAccountAddress?: string
+    inviteAccountAddress?: string;
   };
 
   onMount(() => {
@@ -25,27 +25,29 @@
 
   setClient(<any>window.o.theGraphClient);
 
-  $:trusts = query(gql`
-    query safe($id:String!) {
-      safe(id: $id) {
-        incoming {
-          userAddress
-          canSendToAddress
-          limit
-        }
-        outgoing {
-          userAddress
-          canSendToAddress
-          limit
+  $: trusts = query(
+    gql`
+      query safe($id: String!) {
+        safe(id: $id) {
+          incoming {
+            userAddress
+            canSendToAddress
+            limit
+          }
+          outgoing {
+            userAddress
+            canSendToAddress
+            limit
+          }
         }
       }
-    }`,
+    `,
     {
       variables: {
-        id: "0x9a0bbbbd3789f184ca88f2f6a40f42406cb842ac"
-      }
-    });
-
+        id: "0x9a0bbbbd3789f184ca88f2f6a40f42406cb842ac",
+      },
+    }
+  );
 
   function execTransfer(recipientAddress?: string) {
     window.o.publishEvent(
@@ -98,22 +100,21 @@
   }
 
   function execSendInviteGas(recipientAddress?: string) {
-    window.o.publishEvent(new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
+    window.o.publishEvent(
+      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
         ctx.childProcessDefinition = sendInviteGas;
         ctx.childContext = {
           data: {
             safeAddress: "TODO: my safe address",
             recipientAddress: recipientAddress,
-            amount: 0.1
+            amount: 0.1,
           },
           dirtyFlags: {},
           environment: {},
         };
         return ctx;
-      }));
+      })
+    );
   }
 </script>
 
@@ -123,24 +124,24 @@
   {#if $trusts.loading}
     Loading offers...
   {:else if $trusts.error}
-    <b>An error occurred while loading the recent activities:</b> <br/>{$trusts.error.message}
-  {:else if $trusts.data && $trusts.data.safe && ($trusts.data.safe.incoming.length > 0  || $trusts.data.safe.outgoing.length > 0)}
+    <b>An error occurred while loading the recent activities:</b> <br />{$trusts
+      .error.message}
+  {:else if $trusts.data && $trusts.data.safe && ($trusts.data.safe.incoming.length > 0 || $trusts.data.safe.outgoing.length > 0)}
     {#each $trusts.data.safe.incoming as incoming}
       <div>
-        userAddress: {incoming.userAddress}<br/>
+        userAddress: {incoming.userAddress}<br />
       </div>
     {/each}
 
     {#each $trusts.data.safe.outgoing as outgoing}
       <div>
-        userAddress: {outgoing.userAddress}<br/>
+        userAddress: {outgoing.userAddress}<br />
       </div>
     {/each}
   {:else}
     <span>No recent activities</span>
   {/if}
 </div>
-
 
 <div class="mx-4 -mt-6">
   <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
@@ -150,7 +151,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="/images/common/circles.png" />
+            <img src="/images/common/circles.png" alt="username" />
           </div>
         </div>
       </div>
@@ -236,6 +237,7 @@
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
             <img
               src="http://t1.gstatic.com/licensed-image?q=tbn:ANd9GcQawphcbrPm24PJq9tv4BwQY3YQvK8ACK-7jGtVn52OjEfezo8Od_kleroqTbEv"
+              alt="username"
             />
           </div>
         </div>
@@ -288,7 +290,7 @@
             </svg>
           </button>
           <button
-            on:click={() => execUnTrust("this-guys-address")}
+            on:click={() => execUntrust("this-guys-address")}
             class="btn btn-square btn-sm btn-primary"
           >
             <svg
@@ -323,6 +325,7 @@
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
             <img
               src="https://image.stern.de/8885220/t/q7/v3/w1440/r1/-/justin-bieber.jpg"
+              alt="username"
             />
           </div>
         </div>

@@ -24,7 +24,7 @@
       class="h-24 flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
     >
       <div class=" pl-2 self-start">
-        <a on:click={() => history.back()}>
+        <a href="/#" on:click|once={() => history.back()}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6 inline-block -mt-1 mr-1"

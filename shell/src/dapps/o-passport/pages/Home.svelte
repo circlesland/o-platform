@@ -99,6 +99,7 @@
   <div class="avatar self-center">
     <div class="w-24 h-24 rounded-full  mb-4">
       <img
+        alt={$me ? $me.firstName : "Martin"}
         src="https://upload.wikimedia.org/wikipedia/en/c/c3/Blofeldpleasance67.jpg"
       />
     </div>

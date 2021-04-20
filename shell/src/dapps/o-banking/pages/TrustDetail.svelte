@@ -9,7 +9,6 @@
   import { setTrust } from "../processes/setTrust";
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
 
-
   export let params: {
     trustPartner: string;
   };
@@ -73,7 +72,7 @@
     >
       <div class="avatar self-center -mt-16">
         <div class="w-32 h-32 rounded-full  mb-4">
-          <img src="https://i.pravatar.cc/500?img=32" />
+          <img src="https://i.pravatar.cc/500?img=32" alt="username" />
         </div>
       </div>
       <!-- <h2 class="card-title">Ernst Stavro Blofeld</h2> -->

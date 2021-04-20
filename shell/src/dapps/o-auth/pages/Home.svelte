@@ -9,8 +9,8 @@
   import { Subscription } from "rxjs";
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
-  import {authenticate} from "../processes/authenticate";
-  import {onMount} from "svelte";
+  import { authenticate } from "../processes/authenticate";
+  import { onMount } from "svelte";
 
   let runningProcess: Process;
 
@@ -30,10 +30,10 @@
         ctx.childContext = {
           data: {
             appId: "__APP_ID__",
-            code: code
+            code: code,
           },
           dirtyFlags: {},
-          environment: {}
+          environment: {},
         };
         return ctx;
       }
@@ -56,7 +56,7 @@
     });
 
     window.o.publishEvent(requestEvent);
-  })
+  });
 </script>
 
 <div class="grid grid-cols-1 p-2">
@@ -73,7 +73,7 @@
             <ProcessContainer
               process={runningProcess}
               on:stopped={() => {
-                isOpen = false;
+                // isOpen = false;
                 runningProcess = null;
               }}
             />{/if}
