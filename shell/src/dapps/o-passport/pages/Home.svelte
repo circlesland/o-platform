@@ -105,7 +105,6 @@
     </div>
   </div>
   <h2 class="card-title">
-    {console.log("ME: ", $me)}
     {$me ? $me.firstName : "Martin"}
     {$me ? $me.lastName : "Mustermann"}
   </h2>
