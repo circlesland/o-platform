@@ -11,9 +11,9 @@
   import { upsertIdentity } from "../processes/upsertIdentity";
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { onMount } from "svelte";
+  import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte"
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import { getCountryName } from "../../../shared/countries";
-  import CopyClipBoard from "../../../shared/atoms/CopyClipBoard.svelte";
   import gql from "graphql-tag";
   import { me } from "../../../shared/stores/me";
   import Tooltip from "../../../shared/atoms/Tooltip.svelte";

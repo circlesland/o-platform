@@ -11,4 +11,4 @@
   });
 </script>
 
-<textarea bind:value={name} bind:this={textarea} />
+<textarea bind:value={name} bind:this={textarea}></textarea>
