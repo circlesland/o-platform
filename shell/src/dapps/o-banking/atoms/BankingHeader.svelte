@@ -18,9 +18,7 @@
   class="h-80 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
 >
   {#if lastLoadedDapp && lastLoadedPage}
-    <div
-      class="h-28 flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
-    >
+    <div class="flex flex-row  justify-between">
       <div class=" pl-2 self-start">
         <span class="text-lg font-circles "
           >{#if lastLoadedDapp.title != lastLoadedPage.title}
@@ -28,7 +26,7 @@
           {/if}{lastLoadedPage.title}</span
         >
       </div>
-      <div class="self-start">
+      <div class="self-end">
         <button
           class=" text-base-300"
           href="#"
