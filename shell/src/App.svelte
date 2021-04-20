@@ -4,7 +4,7 @@
   import "./shared/css/utilities.css";
 
   import routes from "./loader";
-  import {me} from "./shared/stores/me";
+  import { me } from "./shared/stores/me";
   import { getLastLoadedDapp } from "./loader";
   import { getLastLoadedPage } from "./loader";
 
@@ -35,8 +35,10 @@
   import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-  import {identify, IdentifyContextData} from "./dapps/o-passport/processes/identify";
-
+  import {
+    identify,
+    IdentifyContextData,
+  } from "./dapps/o-passport/processes/identify";
 
   let isOpen: boolean = false;
   let modalProcess: Process;
@@ -163,10 +165,10 @@
         ctx.childProcessDefinition = identify;
         ctx.childContext = {
           data: <IdentifyContextData>{
-            redirectTo: $location
+            redirectTo: $location,
           },
           dirtyFlags: {},
-          environment: {}
+          environment: {},
         };
         return ctx;
       }
@@ -203,7 +205,6 @@
   </main>
 
   {#if lastLoadedDapp && !lastLoadedDapp.hideFooter && lastLoadedPage && !lastLoadedPage.hideFooter}
-
     {#if !$me}
       <footer class="z-50  w-full sticky bottom-0 ">
         <div class="flex justify-around ">
@@ -276,32 +277,33 @@
               {#if lastLoadedDapp}
                 {#each lastLoadedDapp.pages
 
-                .filter((o) => !o.isSystem)
-                .splice(2) as page}
-                <a
-                  href="#/{lastLoadedDapp.routeParts.join('/') +
-                    '/' +
-                    page.routeParts.join('/')}"
-                  class="justify-self-center inline-block w-full text-center focus:text-teal-500 hover:text-teal-500"
+                  .filter((o) => !o.isSystem)
+                  .splice(2) as page}
+                  <a
+                    href="#/{lastLoadedDapp.routeParts.join('/') +
+                      '/' +
+                      page.routeParts.join('/')}"
+                    class="justify-self-center inline-block w-full text-center focus:text-teal-500 hover:text-teal-500"
+                  >
+                    <div
+                      class="justify-self-center h-full m-auto mt-1  bottom-nav-icon icon-{page.title.toLowerCase()}"
+                    />
+                    <span class="block text-xs tab p-0">{page.title}</span>
+                  </a>
+                {/each}
+              {/if}
+              <!-- NOT MODAL END -->
+            </div>
+          {:else}
+            <!-- MODAL START -->
+            <div class="grid grid-cols-1">
+              {#if lastPrompt && lastPrompt.navigation.canGoBack}
+                <button
+                  class="bg-white btn btn-outline"
+                  on:click={() => modalProcess.sendAnswer(new Back())}
+                  >back</button
                 >
-                  <div
-                    class="justify-self-center h-full m-auto mt-1  bottom-nav-icon icon-{page.title.toLowerCase()}"
-                  />
-                  <span class="block text-xs tab p-0">{page.title}</span>
-                </a>
-              {/each}
-            {/if}
-            <!-- NOT MODAL END -->
-          </div>
-        {:else}
-          <!-- MODAL START -->
-          <div class="grid grid-cols-1">
-            {#if lastPrompt && lastPrompt.navigation.canGoBack}
-              <button
-                class="bg-white btn btn-outline"
-                on:click={() => modalProcess.sendAnswer(new Back())}>back</button
-              >
-            {/if}
+              {/if}
 
               <button
                 class="justify-self-center bg-white btn-circle -m-4 min-w-min w-14 h-14 mx-2 shadow-lg circles-button "
@@ -322,15 +324,16 @@
                 />
               </button>
 
-            {#if lastPrompt && lastPrompt.navigation.canSkip}
-              <button
-                class="bg-white btn btn-outline"
-                on:click={() => modalProcess.sendAnswer(new Skip())}>skip</button
-              >
-            {/if}
-          </div>
-          <!--  MODAL END -->
-        {/if}
+              {#if lastPrompt && lastPrompt.navigation.canSkip}
+                <button
+                  class="bg-white btn btn-outline"
+                  on:click={() => modalProcess.sendAnswer(new Skip())}
+                  >skip</button
+                >
+              {/if}
+            </div>
+            <!--  MODAL END -->
+          {/if}
         </div>
       </footer>
     {/if}

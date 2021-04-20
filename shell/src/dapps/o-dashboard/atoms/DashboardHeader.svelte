@@ -32,7 +32,7 @@
   {/if}
   <div class="self-center text-center mt-6 block">
     <div class="avatar">
-      <div class="w-36 h-36 rounded-full ring ring-gradient1 mb-4">
+      <div class="w-36 h-36 rounded-full mb-4">
         <img src="https://i.pravatar.cc/500?img=32" alt="username" />
       </div>
     </div>
