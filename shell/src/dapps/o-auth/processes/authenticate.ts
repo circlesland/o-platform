@@ -6,7 +6,6 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import gql from "graphql-tag";
-import {push} from "svelte-spa-router";
 
 export type AuthenticateContextData = {
   appId?: string;
