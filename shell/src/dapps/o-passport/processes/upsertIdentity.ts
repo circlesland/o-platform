@@ -155,7 +155,6 @@ const processDefinition = (processId: string) =>
         navigation: {
           next: "#checkAvatar",
           previous: "#checkCountry",
-          canSkip: () => true,
         },
       }),
       checkAvatar: {

@@ -1,14 +1,26 @@
 <script lang="ts">
-  import {onMount} from "svelte";
+  import { onMount } from "svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
+  import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
+  import { showToast } from "../../../shared/toast";
 
   let showPhrase = false;
+  let name =
+    "witch collapse practice feed shame open despair creek road again iceleast";
+
+  const copy = () => {
+    const app = new CopyClipBoard({
+      target: document.getElementById("clipboard"),
+      props: { name },
+    });
+    app.$destroy();
+  };
 
   function show() {
     showPhrase = !showPhrase;
   }
-
 </script>
+
 <PassportHeader />
 
 <div class="mx-4 mt-4">
@@ -56,10 +68,30 @@
   <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
     <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
       <div class:blur={!showPhrase} class="flex flex-col items-start">
-        <p>
-          witch collapse practice feed shame open despair creek road again ice
-          least
-        </p>
+        <div id="clipboard">
+          <input type="text" class="hidden" bind:value={name} />
+          {name}
+          <div
+            class="inline-block text-light cursor-pointertext-center text-xs relative -bottom-1"
+            on:click={copy}
+            alt="Copy to Clipboard"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
   </section>

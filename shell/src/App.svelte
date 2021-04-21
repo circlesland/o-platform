@@ -289,12 +289,17 @@
             </div>
           {:else}
             <!-- MODAL START -->
-            <div class="grid grid-cols-1">
+            <div
+              class="grid  {lastPrompt &&
+              (lastPrompt.navigation.canGoBack || lastPrompt.navigation.canSkip)
+                ? 'grid-cols-3'
+                : 'grid-cols-1'}"
+            >
               {#if lastPrompt && lastPrompt.navigation.canGoBack}
                 <button
-                  class="bg-white btn btn-outline"
+                  class=" text-primary bg-white border-0 h-12 place-self-start ml-4"
                   on:click={() => modalProcess.sendAnswer(new Back())}
-                  >back</button
+                  >BACK</button
                 >
               {/if}
 
@@ -319,9 +324,9 @@
 
               {#if lastPrompt && lastPrompt.navigation.canSkip}
                 <button
-                  class="bg-white btn btn-outline"
+                  class="text-primary bg-white h-12 place-self-end mr-4"
                   on:click={() => modalProcess.sendAnswer(new Skip())}
-                  >skip</button
+                  >SKIP</button
                 >
               {/if}
             </div>
