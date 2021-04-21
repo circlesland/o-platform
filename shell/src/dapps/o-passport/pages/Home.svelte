@@ -17,6 +17,7 @@
   import gql from "graphql-tag";
   import { me } from "../../../shared/stores/me";
   import Tooltip from "../../../shared/atoms/Tooltip.svelte";
+  import { toast } from "@zerodevx/svelte-toast";
 
   let show_elm = false;
   export let params: {
@@ -41,6 +42,13 @@
       props: { name },
     });
     app.$destroy();
+    // toast.push("Copied to Clipboard!");
+    toast.push("Success!", {
+      theme: {
+        "--toastBackground": "#48BB78",
+        "--toastProgressBackground": "#2F855A",
+      },
+    });
   };
 
   function connectOrCreateKey(jwt?: string) {

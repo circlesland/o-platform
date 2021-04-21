@@ -39,6 +39,7 @@
     identify,
     IdentifyContextData,
   } from "./dapps/o-passport/processes/identify";
+  import { SvelteToast } from '@zerodevx/svelte-toast'
 
   let isOpen: boolean = false;
   let modalProcess: Process;
@@ -184,6 +185,7 @@
   <header class="w-full mx-auto md:w-2/3 xl:w-1/2 z-10">
   </header> -->
 
+  <SvelteToast />
   <main class="flex-1 overflow-y-visible z-30">
     <div class="w-full mx-auto {layoutClasses}">
       <Router

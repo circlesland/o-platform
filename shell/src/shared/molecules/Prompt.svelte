@@ -5,7 +5,6 @@
 
   export let process: Process;
   export let prompt: Prompt;
-
   let componentContext: {
     fieldName: string;
     data: { [x: string]: any };
