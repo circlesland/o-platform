@@ -48,7 +48,7 @@
 <div
   class="flex flex-col h-screen  bg-gradient-to-r from-gradient1 to-gradient2 text-white"
 >
-  <main class="flex-1 overflow-y-visible z-30">Hi! I'm the homepage</main>
+  <main class="flex-1 overflow-y-visible z-30" />
   <footer class="z-50  w-full sticky bottom-0 ">
     <div class="flex justify-around ">
       <a href="/#" on:click|once={login} class="mb-4 btn btn-white">
