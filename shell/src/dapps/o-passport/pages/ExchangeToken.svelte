@@ -22,7 +22,7 @@
         
       });
 
-      push("/dashboard");
+      push("/#/dashboard");
     } else {
      console.error("Cannot navigate to ExchangeToken.svelte without 'params.jwt' set. Going back to previous page.");
      history.back();

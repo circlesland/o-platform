@@ -142,9 +142,9 @@
     if (isOpen) {
       isOpen = false;
       lastPrompt = null;
-      if (modalProcess) {
+      /*if (modalProcess) {
         modalProcess.sendEvent(new Cancel());
-      }
+      }*/
       return;
     }
   }

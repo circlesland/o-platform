@@ -10,6 +10,7 @@ const prod = mode === "production";
 let auth_endpoint = "https://auth.circles.name";
 let api_endpoint = "https://api.circles.land";
 let auth_app_id = "circles.land";
+let files_app_id = "files.circles.land";
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   auth_endpoint = "https://auth.circles.name";
   api_endpoint = "https://api.circles.land";
@@ -31,6 +32,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
 console.log(`Auth Endpoint Url: ${auth_endpoint}`);
 console.log(`Api Endpoint Url: ${api_endpoint}`);
 console.log(`Auth AppId: ${auth_app_id}`);
+console.log(`Files AppId: ${files_app_id}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
@@ -61,7 +63,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.ts|\.svelte$/,
         loader: 'string-replace-loader',
         options: {
           search: '__AUTH_ENDPOINT__',
@@ -70,7 +72,7 @@ module.exports = {
         }
       },
       {
-        test: /\.ts$/,
+        test: /\.ts|\.svelte$/,
         loader: 'string-replace-loader',
         options: {
           search: '__API_ENDPOINT__',
@@ -79,7 +81,7 @@ module.exports = {
         }
       },
       {
-        test: /\.ts$/,
+        test: /\.ts|\.svelte$/,
         loader: 'string-replace-loader',
         options: {
           search: '__APP_ID__',
@@ -88,11 +90,11 @@ module.exports = {
         }
       },
       {
-        test: /\.svelte$/,
+        test: /\.ts|\.svelte$/,
         loader: 'string-replace-loader',
         options: {
-          search: '__APP_ID__',
-          replace: auth_app_id,
+          search: '__FILES_APP_ID__',
+          replace: files_app_id,
           flags: 'g'
         }
       },

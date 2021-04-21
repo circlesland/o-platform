@@ -10,6 +10,8 @@ import { AuthenticateContext } from "../../o-auth/processes/authenticate";
 import { countries } from "../../../shared/countries";
 import gql from "graphql-tag";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import {uploadFile} from "../../../shared/api/uploadFile";
+import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -104,7 +106,7 @@ const processDefinition = (processId: string) =>
         always: [
           {
             cond: (context) => false,
-            target: "#checkdream",
+            target: "#checkDream",
           },
           {
             target: "#country",
@@ -120,13 +122,13 @@ const processDefinition = (processId: string) =>
           choices: countries,
         },
         navigation: {
-          next: "#checkdream",
+          next: "#checkDream",
           previous: "#checkLastName",
           canSkip: () => true,
         },
       }),
-      checkdream: {
-        id: "checkdream",
+      checkDream: {
+        id: "checkDream",
         always: [
           {
             cond: (context) => false,
@@ -150,7 +152,6 @@ const processDefinition = (processId: string) =>
           canSkip: () => true,
         },
       }),
-
       checkAvatar: {
         id: "checkAvatar",
         always: [
@@ -170,11 +171,41 @@ const processDefinition = (processId: string) =>
           label: strings.labelAvatar,
         },
         navigation: {
-          next: "#upsertIdentity",
+          next: "#checkUploadAvatar",
           previous: "#checkLastName",
           canSkip: () => true,
         },
       }),
+      checkUploadAvatar: {
+        id: "checkUploadAvatar",
+        always: [{
+            cond: (context) => context.dirtyFlags["avatar"],
+            target: "#uploadAvatar",
+          },
+          {
+            target: "#upsertIdentity",
+          }
+        ]
+      },
+      uploadAvatar: {
+        id: "uploadAvatar",
+        on: {
+          ...<any>ipc(`uploadAvatar`)
+        },
+        invoke: {
+          src: uploadFile.stateMachine("uploadAvatar"),
+          data: {
+            data: (context, event) => {
+              return {
+                appId: "__FILES_APP_ID__"
+              }
+            },
+            dirtyFlags: {}
+          },
+          onDone: "#upsertIdentity",
+          onError: "#error"
+        }
+      },
       upsertIdentity: {
         id: "upsertIdentity",
         invoke: {

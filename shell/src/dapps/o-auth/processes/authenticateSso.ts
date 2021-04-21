@@ -28,6 +28,7 @@ const processDefinition = (processId: string) =>
 
       requestDelegateAuthCode: {
         id: "requestDelegateAuthCode",
+        entry: () => console.log(`Enter: requestDelegateAuthCode`),
         invoke: {
           src: async (context) => {
             const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -62,6 +63,7 @@ const processDefinition = (processId: string) =>
       },
       requestChallenge: {
         id: "requestChallenge",
+        entry: () => console.log(`Enter: requestChallenge`),
         invoke: {
           src: async (context) => {
             const authClient = await window.o.authClient.client.subscribeToResult();
@@ -94,6 +96,7 @@ const processDefinition = (processId: string) =>
       },
       consumeChallenge: {
         id: "consumeChallenge",
+        entry: () => console.log(`Enter: consumeChallenge`),
         invoke: {
           src: async (context) => {
             if(new Date(context.data.delegateAuthCodeValidTo) < new Date()){
@@ -129,6 +132,7 @@ const processDefinition = (processId: string) =>
       // Exchange it for the actual token and redirect the user to the application.
       exchangeCodeForToken: {
         id: "exchangeCodeForToken",
+        entry: () => console.log(`Enter: exchangeCodeForToken`),
         invoke: {
           src: async (context) => {
             const authClient = await window.o.authClient.client.subscribeToResult();
@@ -156,7 +160,7 @@ const processDefinition = (processId: string) =>
               throw new Error(result.data.verify.errorMessage);
             }
 
-            return result.data.verify.jwt;
+            context.data.jwt = result.data.verify.jwt;
           },
           onDone: "#success",
           onError: "#error",
@@ -164,19 +168,16 @@ const processDefinition = (processId: string) =>
       },
       success: {
         id: "success",
+        entry: () => console.log(`Enter: success`),
         type: "final",
-        data: (context, event) => {
-          return event.data;
+        data: (context) => {
+          return context.data;
         }
       },
     },
   });
 
-// A ProcessDefinition always has a input and an output value (the generic parameters).
-// Depending on how 'void' is placed, it can mimic either a function or procedure.
-// Here it simply returns all the data that was collected in the process (AuthenticateContextData)
-// if no error occurs in the promise.
-export const authenticate: ProcessDefinition<void, AuthenticateSsoContext> = {
-  name: "authenticate",
+export const authenticateSso: ProcessDefinition<void, AuthenticateSsoContextData> = {
+  name: "authenticateSso",
   stateMachine: <any>processDefinition,
 };

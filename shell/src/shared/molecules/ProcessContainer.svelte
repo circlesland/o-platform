@@ -166,12 +166,11 @@
   };
 </script>
 
-{#if waiting}
-  <LoadingIndicator />
-{:else if error}
+{#if error}
   <Error data={{ error }} />
 {:else if process && prompt}
   <Prompt {process} {prompt} bubble={lastBubble} />
 {:else}
-  Undefined state
+  <!-- TODO: This could be both: Undefined state or loading .. -->
+  <LoadingIndicator />
 {/if}
