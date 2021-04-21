@@ -55,5 +55,6 @@ button:focus {
 
 /* Toast overrides */
 ._toastItem {
-  width: var(--toastWidth, 20rem)!important;
+  width: 100% !important;
+  
 }

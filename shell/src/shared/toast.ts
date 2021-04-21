@@ -38,7 +38,7 @@ export function showToast(
     toast.push(
       `<div class="flex flex-row"><div class="justify-center text-success"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-2 stroke-current self-center " fill="none" viewBox="0 0 24 24" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-</svg> </div><div class='inline-block mt-1'>` +
+</svg> </div><div class='pr-1'>` +
         message +
         `</div></div>`,
       {
@@ -55,7 +55,7 @@ export function showToast(
     toast.push(
       `<div class="flex flex-row"><div class="justify-center text-error"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current self-center "> 
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
-    </svg>   </div><div class='inline-block mt-1'>` +
+    </svg>   </div><div class='pr-1'>` +
         message +
         `</div></div>`,
       {
@@ -72,7 +72,7 @@ export function showToast(
     toast.push(
       `<div class="flex flex-row"><div class="justify-center text-warning"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current self-center ">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path> 
-    </svg>  </div><div class='inline-block mt-1'>` +
+    </svg>  </div><div class='pr-1'>` +
         message +
         `</div></div>`,
       {
