@@ -166,7 +166,9 @@
   };
 </script>
 
-{#if error}
+{#if waiting}
+  <LoadingIndicator />
+{:else if error}
   <Error data={{ error }} />
 {:else if process && prompt}
   <Prompt {process} {prompt} bubble={lastBubble} />
