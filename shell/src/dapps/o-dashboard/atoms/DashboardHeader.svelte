@@ -33,7 +33,7 @@
   <div class="self-center text-center mt-6 block">
     <div class="avatar">
       <div class="w-36 h-36 rounded-full mb-4">
-        <img src="{($me.avatarCid ? ('https://ipfs.io/ipfs/' + $me.avatarCid) : 'https://i.pravatar.cc/500?img=32')}" alt="username" />
+        <img src="{($me && $me.avatarCid ? ('https://ipfs.io/ipfs/' + $me.avatarCid) : 'https://i.pravatar.cc/500?img=32')}" alt="username" />
       </div>
     </div>
     <div class="">
