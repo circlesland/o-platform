@@ -24,6 +24,11 @@ cd .. || exit
 echo "Building 'o-interfaces' .."
 cd o-interfaces || exit
 npx --no-install tsc || exit
+cd .. || exit
+
+echo "Building 'o-circles' .."
+cd o-circles || exit
+npx --no-install tsc || exit
 cd ../.. || exit
 
 echo "Building 'shell' with dapps .."

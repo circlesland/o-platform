@@ -89,7 +89,7 @@ const processDefinition = () => {
       },
       showError: {
         entry: [
-          //(context, event) => console.log("ShellProcess encountered an error:", event),
+          (context, event) => console.log("ShellProcess encountered an error:", event),
           <any>show({ // TODO: fix <any> cast
             component: Error,
             params: {}
