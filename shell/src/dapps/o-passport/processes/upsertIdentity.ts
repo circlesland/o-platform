@@ -24,6 +24,8 @@ export type UpsertIdentityContextData = {
     bytes: Buffer;
     mimeType: string;
   };
+  avatarCid?:string;
+  avatarMimeType?:string;
 };
 
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
@@ -256,6 +258,9 @@ const processDefinition = (processId: string) =>
                 avatarMimeType: event.data.mimeType,
               },
             });
+
+            context.data.avatarCid = event?.data?.hash;
+            context.data.avatarMimeType = event?.data?.mimeType;
 
             return result.data.upsertProfile;
           },
