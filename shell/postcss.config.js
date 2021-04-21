@@ -8,6 +8,6 @@ module.exports = {
   plugins: production
     ? [tailwind, autoprefixer, postcssPresetEnv]
     : [tailwind, autoprefixer, postcssPresetEnv],
-  minimize: production,
+  minimize: false,
   sourceMap: true,
 };
