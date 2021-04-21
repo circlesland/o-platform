@@ -10,7 +10,7 @@ import gql from "graphql-tag";
 export type AuthenticateContextData = {
   appId?: string;
   loginEmail?: string;
-  acceptTos?:boolean;
+  acceptTos?: boolean;
   code?: string;
 };
 
@@ -57,35 +57,42 @@ const processDefinition = (processId: string) =>
       loginEmail: prompt<AuthenticateContext, any>({
         fieldName: "loginEmail",
         component: TextEditor,
+
         params: {
           label: strings.labelLoginEmail,
           placeholder: strings.placeholder,
+          submitButtonText: "Let me in",
         },
         navigation: {
-          next: "#checkAcceptTos"
+          next: "#checkAcceptTos",
         },
       }),
       checkAcceptTos: {
         id: "checkAcceptTos",
-        always: [{
-          cond: () => true,
-          target: "#acceptTos"
-        }, {
-          target: "#requestAuthCode"
-        }]
+        always: [
+          {
+            cond: () => true,
+            target: "#acceptTos",
+          },
+          {
+            target: "#requestAuthCode",
+          },
+        ],
       },
       // Ask the user for the e-mail address
       acceptTos: prompt<AuthenticateContext, any>({
         fieldName: "acceptTos",
+
         component: BooleanEditor,
         params: {
           label: "Do you accept our ",
           link: "https://circles.name/tos",
-          linkLabel: "terms of service"
+          linkLabel: "terms of service",
+          submitButtonText: "Got it",
         },
         navigation: {
-          next: "#requestAuthCode"
-        }
+          next: "#requestAuthCode",
+        },
       }),
       // Request an auth code to the given e-mail address
       // and then go to the 'code' input step.
@@ -130,6 +137,7 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           label: strings.labelVerificationCode,
+          submitButtonText: "Login",
         },
         navigation: {
           next: "#exchangeCodeForToken",
@@ -177,7 +185,7 @@ const processDefinition = (processId: string) =>
         type: "final",
         data: (context, event) => {
           return event.data;
-        }
+        },
       },
     },
   });

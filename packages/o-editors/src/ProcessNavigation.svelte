@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Continue } from "@o-platform/o-process/dist/events/continue";
   import { EditorContext } from "./editorContext";
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
 
@@ -19,13 +19,15 @@
       type="submit"
       on:click={() => {
         dispatch("buttonClick");
-       /* const answer = new Continue();
+        /* const answer = new Continue();
         answer.data = context.data;
         context.process.submit(answer);
         */
       }}
       class="btn btn-primary btn-block"
-      >Submit
+      >{context.params.submitButtonText
+        ? context.params.submitButtonText
+        : "Submit"}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

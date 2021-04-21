@@ -41,9 +41,10 @@
     }
   }
 
-  async function getGraphQlData() {
+  async function getGraphQlData(filterText) {
+    filterText = filterText ? filterText.replace(" ", "_") : "";
     const result = await window.o.theGraphClient.query(
-      context.params.graphqlQuery
+      context.params.graphqlQuery(filterText)
     );
     return result.data.safe.incoming;
   }

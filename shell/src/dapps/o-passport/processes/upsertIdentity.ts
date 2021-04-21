@@ -10,8 +10,8 @@ import { AuthenticateContext } from "../../o-auth/processes/authenticate";
 import { countries } from "../../../shared/countries";
 import gql from "graphql-tag";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {uploadFile} from "../../../shared/api/uploadFile";
-import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
+import { uploadFile } from "../../../shared/api/uploadFile";
+import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -24,8 +24,8 @@ export type UpsertIdentityContextData = {
     bytes: Buffer;
     mimeType: string;
   };
-  avatarCid?:string;
-  avatarMimeType?:string;
+  avatarCid?: string;
+  avatarMimeType?: string;
 };
 
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
@@ -73,6 +73,7 @@ const processDefinition = (processId: string) =>
         params: {
           label: strings.labelFirstName,
           placeholder: strings.placeholderFirstName,
+          submitButtonText: "Save first name",
         },
         navigation: {
           next: "#checkLastName",
@@ -96,6 +97,7 @@ const processDefinition = (processId: string) =>
         params: {
           label: strings.labelLastName,
           placeholder: strings.placeholderLastName,
+          submitButtonText: "Save last name",
         },
         navigation: {
           next: "#checkCountry",
@@ -121,6 +123,7 @@ const processDefinition = (processId: string) =>
         params: {
           label: strings.labelCountry,
           placeholder: strings.placeholderCountry,
+          submitButtonText: "Submit vote",
           choices: countries,
         },
         navigation: {
@@ -147,6 +150,7 @@ const processDefinition = (processId: string) =>
         params: {
           label: strings.labeldream,
           placeholder: strings.placeholderDream,
+          submitButtonText: "Start dreaming",
         },
         navigation: {
           next: "#checkAvatar",
@@ -171,6 +175,7 @@ const processDefinition = (processId: string) =>
         component: PictureEditor,
         params: {
           label: strings.labelAvatar,
+          submitButtonText: "Save Image",
         },
         navigation: {
           next: "#checkUploadAvatar",
@@ -180,19 +185,20 @@ const processDefinition = (processId: string) =>
       }),
       checkUploadAvatar: {
         id: "checkUploadAvatar",
-        always: [{
+        always: [
+          {
             cond: (context) => context.dirtyFlags["avatar"],
             target: "#uploadAvatar",
           },
           {
             target: "#upsertIdentity",
-          }
-        ]
+          },
+        ],
       },
       uploadAvatar: {
         id: "uploadAvatar",
         on: {
-          ...<any>ipc(`uploadAvatar`)
+          ...(<any>ipc(`uploadAvatar`)),
         },
         invoke: {
           src: uploadFile.stateMachine("uploadAvatar"),
@@ -203,13 +209,13 @@ const processDefinition = (processId: string) =>
                 fileName: "avatar",
                 mimeType: context.data.avatar.mimeType,
                 bytes: context.data.avatar.bytes,
-              }
+              };
             },
-            dirtyFlags: {}
+            dirtyFlags: {},
           },
           onDone: "#upsertIdentity",
-          onError: "#error"
-        }
+          onError: "#error",
+        },
       },
       upsertIdentity: {
         id: "upsertIdentity",

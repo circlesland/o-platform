@@ -24,23 +24,20 @@ export type TransferContextData = {
 
 const trustUsersQuery = {
   query: gql`
-    query safe($id: String!) {
-      safe(id: $id) {
-        incoming {
-          userAddress
-          canSendToAddress
-          limit
-        }
-        outgoing {
-          userAddress
-          canSendToAddress
-          limit
-        }
+    query search($searchString: String!) {
+      search(query: { searchString: $searchString }) {
+        id
+        firstName
+        lastName
+        dream
+        country
+        avatarCid
+        avatarMimeType
       }
     }
   `,
   variables: {
-    id: "0xd460db4cfa021c42edeb7e555d904400dab65ecc",
+    searchString: "0xd460db4cfa021c42edeb7e555d904400dab65ecc",
   },
 };
 
@@ -91,9 +88,9 @@ const processDefinition = (processId: string) =>
           label: strings.labelRecipientAddress,
           graphql: true,
           graphqlQuery: trustUsersQuery,
-          optionIdentifier: "canSendToAddress",
-          getOptionLabel: (option) => option.canSendToAddress,
-          getSelectionLabel: (option) => option.canSendToAddress,
+          optionIdentifier: "firstName",
+          getOptionLabel: (option) => option.firstName,
+          getSelectionLabel: (option) => option.firstName,
         },
         navigation: {
           next: "#tokens",

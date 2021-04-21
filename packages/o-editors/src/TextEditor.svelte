@@ -1,7 +1,7 @@
 <script lang="ts">
   import { EditorContext } from "./editorContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
-  import {Continue} from "@o-platform/o-process/dist/events/continue";
+  import { Continue } from "@o-platform/o-process/dist/events/continue";
 
   export let context: EditorContext;
 
@@ -11,7 +11,7 @@
     context.process.sendAnswer(answer);
   }
 
-  function onkeydown(e:KeyboardEvent) {
+  function onkeydown(e: KeyboardEvent) {
     if (e.key == "Enter") {
       submit();
     }

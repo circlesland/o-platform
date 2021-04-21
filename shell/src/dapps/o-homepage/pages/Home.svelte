@@ -10,6 +10,7 @@
     IdentifyContextData,
   } from "../../o-passport/processes/identify";
   import { me } from "../../../shared/stores/me";
+  import { showToast } from "../../../shared/toast";
 
   $: {
     console.log($me); // TODO: This is just to init the store. There could be a better solution to do this :)
@@ -39,15 +40,18 @@
   }
 </script>
 
-<div class="flex flex-col h-screen ">
+<div
+  class="flex flex-col h-screen  bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+>
   <main class="flex-1 overflow-y-visible z-30">Hi! I'm the homepage</main>
+  {showToast(
+    "warning",
+    "You got us! We're currently actively working on this.<br/>All Data will be re-set when we launch.",
+    false
+  )}
   <footer class="z-50  w-full sticky bottom-0 ">
     <div class="flex justify-around ">
-      <a
-        href="/#"
-        on:click|once={login}
-        class="mb-4 btn btn-outline bg-base-100"
-      >
+      <a href="/#" on:click|once={login} class="mb-4 btn btn-white">
         <img
           width="15px"
           class="mr-3"

@@ -7,29 +7,29 @@ import { PlatformEventTypes } from "@o-platform/o-events/dist/eventTypes";
 export class Prompt implements PlatformEvent {
   type: PlatformEventTypes = "process.prompt";
 
-  fieldName?:string;
+  fieldName?: string;
 
   /**
    * The component that should be displayed during a state.
    */
-  component:any;
+  component: any;
 
   /**
    * The data that should be edited (if any).
    */
-  data:{[x:string]:any} = {};
+  data: { [x: string]: any } = {};
   /**
    * The component specific params.
    */
-  params:{[x:string]:any} = {};
+  params: { [x: string]: any } = {};
 
   navigation: {
-    canSkip: boolean,
-    canGoBack: boolean,
-    canSubmit: boolean
+    canSkip: boolean;
+    canGoBack: boolean;
+    canSubmit: boolean;
   } = {
     canSkip: false,
     canGoBack: false,
-    canSubmit: true
+    canSubmit: true,
   };
 }
