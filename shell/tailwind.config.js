@@ -35,6 +35,10 @@ module.exports = {
         secondary: "#88EA66",
         light: "#8DA3D0",
         dark: "#0D285F",
+        warning: "#FF9900",
+        info: "#2094F3",
+        error: "#F56565",
+        success: "#48BB78",
       },
       fontFamily: {
         circles: ["Ostrich Sans Heavy", "sans"],

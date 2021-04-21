@@ -11,13 +11,13 @@
   import { upsertIdentity } from "../processes/upsertIdentity";
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { onMount } from "svelte";
-  import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte"
+  import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import { getCountryName } from "../../../shared/countries";
   import gql from "graphql-tag";
   import { me } from "../../../shared/stores/me";
   import Tooltip from "../../../shared/atoms/Tooltip.svelte";
-  import { toast } from "@zerodevx/svelte-toast";
+  import { showToast } from "../../../shared/toast";
 
   let show_elm = false;
   export let params: {
@@ -42,13 +42,7 @@
       props: { name },
     });
     app.$destroy();
-    // toast.push("Copied to Clipboard!");
-    toast.push("Success!", {
-      theme: {
-        "--toastBackground": "#48BB78",
-        "--toastProgressBackground": "#2F855A",
-      },
-    });
+    showToast("success", "Copied to Clipboard!");
   };
 
   function connectOrCreateKey(jwt?: string) {
@@ -112,7 +106,7 @@
 
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
-          <small class="inline-block" id="clipboard">
+          <small class="inline-block break-all" id="clipboard">
             <input type="text" class="hidden" bind:value={name} />
             0x87asdgt9adsofz98ad6fs8as7odft9aszf98pasdzfasdg
           </small>

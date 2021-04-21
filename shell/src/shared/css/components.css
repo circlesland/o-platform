@@ -52,3 +52,8 @@ button:focus {
   height: 0.1rem;
   margin-top: 0.1rem !important;
 }
+
+/* Toast overrides */
+._toastItem {
+  width: var(--toastWidth, 20rem)!important;
+}

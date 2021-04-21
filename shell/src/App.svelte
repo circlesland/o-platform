@@ -39,7 +39,7 @@
     identify,
     IdentifyContextData,
   } from "./dapps/o-passport/processes/identify";
-  import { SvelteToast } from '@zerodevx/svelte-toast'
+  import { SvelteToast } from "@zerodevx/svelte-toast";
 
   let isOpen: boolean = false;
   let modalProcess: Process;
