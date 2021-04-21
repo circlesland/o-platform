@@ -197,7 +197,10 @@ const processDefinition = (processId: string) =>
           data: {
             data: (context, event) => {
               return {
-                appId: "__FILES_APP_ID__"
+                appId: "__FILES_APP_ID__",
+                fileName: "avatar",
+                mimeType: context.data.avatar.mimeType,
+                bytes: context.data.avatar.bytes,
               }
             },
             dirtyFlags: {}
@@ -209,7 +212,7 @@ const processDefinition = (processId: string) =>
       upsertIdentity: {
         id: "upsertIdentity",
         invoke: {
-          src: async (context) => {
+          src: async (context, event) => {
             const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: gql`
@@ -249,8 +252,8 @@ const processDefinition = (processId: string) =>
                 lastName: context.data.lastName,
                 dream: context.data.dream,
                 country: context.data.country,
-                avatarCid: undefined,
-                avatarMimeType: undefined,
+                avatarCid: event.data.hash,
+                avatarMimeType: event.data.mimeType,
               },
             });
 

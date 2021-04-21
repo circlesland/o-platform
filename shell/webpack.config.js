@@ -9,30 +9,40 @@ const prod = mode === "production";
 
 let auth_endpoint = "https://auth.circles.name";
 let api_endpoint = "https://api.circles.land";
-let auth_app_id = "circles.land";
-let files_app_id = "files.circles.land";
+let files_endpoint = "https://files.circles.land";
+let appId = "circles.land";
+let filesAppId = "files.circles.land";
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   auth_endpoint = "https://auth.circles.name";
   api_endpoint = "https://api.circles.land";
-  auth_app_id = "circles.land";
+  files_endpoint = "https://files.circles.land";
+  appId = "circles.land";
+  filesAppId = "files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "dev") {
   auth_endpoint = "https://dev.auth.circles.name";
   api_endpoint = "https://dev.api.circles.land";
-  auth_app_id = "dev.circles.land";
+  files_endpoint = "https://dev.files.circles.land";
+  appId = "dev.circles.land";
+  filesAppId = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "local") {
   auth_endpoint = "https://dev.auth.circles.name";
   api_endpoint = "https://local.api.circles.land";
-  auth_app_id = "local.circles.land";
+  files_endpoint = "https://dev.files.circles.land";
+  appId = "local.circles.land";
+  filesAppId = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "ultralocal") {
   auth_endpoint = "https://dev.auth.circles.name";
   api_endpoint = "http://localhost:8989";
-  auth_app_id = "ultralocal.circles.land";
+  files_endpoint = "https://dev.files.circles.land";
+  appId = "ultralocal.circles.land";
+  filesAppId = "dev.files.circles.land";
 }
 
 console.log(`Auth Endpoint Url: ${auth_endpoint}`);
 console.log(`Api Endpoint Url: ${api_endpoint}`);
-console.log(`Auth AppId: ${auth_app_id}`);
-console.log(`Files AppId: ${files_app_id}`);
+console.log(`Files Endpoint Url: ${files_endpoint}`);
+console.log(`AppId: ${appId}`);
+console.log(`Files AppId: ${filesAppId}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
@@ -84,8 +94,17 @@ module.exports = {
         test: /\.ts|\.svelte$/,
         loader: 'string-replace-loader',
         options: {
+          search: '__FILES_ENDPOINT__',
+          replace: files_endpoint,
+          flags: 'g'
+        }
+      },
+      {
+        test: /\.ts|\.svelte$/,
+        loader: 'string-replace-loader',
+        options: {
           search: '__APP_ID__',
-          replace: auth_app_id,
+          replace: appId,
           flags: 'g'
         }
       },
@@ -94,7 +113,7 @@ module.exports = {
         loader: 'string-replace-loader',
         options: {
           search: '__FILES_APP_ID__',
-          replace: files_app_id,
+          replace: filesAppId,
           flags: 'g'
         }
       },
