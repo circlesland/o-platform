@@ -138,15 +138,6 @@
     lastLoadedDapp = getLastLoadedDapp();
 
     console.log("LAST PAGE: ", lastLoadedPage);
-
-    if (isOpen) {
-      isOpen = false;
-      lastPrompt = null;
-      /*if (modalProcess) {
-        modalProcess.sendEvent(new Cancel());
-      }*/
-      return;
-    }
   }
 
   async function login(appId: string, code?: string) {
