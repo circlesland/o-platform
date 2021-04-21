@@ -4,13 +4,11 @@ import Account from "./o-passport/pages/Account.svelte";
 import Keys from "./o-passport/pages/Keys.svelte";
 import Settings from "./o-passport/pages/Settings.svelte";
 import CreatePassport from "./o-passport/pages/CreatePassport.svelte";
-import ExchangeToken from "./o-passport/pages/ExchangeToken.svelte";
 import CreateOrImportKey from "./o-passport/pages/CreateOrImportKey.svelte";
+import Login from "./o-passport/pages/Login.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { logout } from "./o-passport/processes/logout";
-import gql from "graphql-tag";
-import {push} from "svelte-spa-router";
 import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
 import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
 
@@ -104,6 +102,22 @@ const settings: PageManifest = {
   ],
 };
 
+// Same as 'index' but accepts a ':code' parameter that will be passed to 'Home'
+const login : PageManifest = {
+  isDefault: false,
+  isSystem: true,
+  routeParts: ["login", ":code"],
+  component: Login,
+  title: "Login with Circles",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    }
+  ]
+};
+
 export interface DappState {
   // put state here
 }
@@ -146,5 +160,5 @@ export const passport: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  pages: [index, account, keys, settings, createPassport, createOrImportKey],
+  pages: [index, account, keys, settings, createPassport, createOrImportKey, login],
 };

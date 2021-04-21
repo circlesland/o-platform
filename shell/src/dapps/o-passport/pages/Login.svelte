@@ -9,16 +9,22 @@
   import { Subscription } from "rxjs";
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
-  import { authenticate } from "../processes/authenticate";
   import { onMount } from "svelte";
+  const {push} = require("svelte-spa-router");
+  import {identify} from "../processes/identify";
 
   let runningProcess: Process;
 
   export let params: {
     code: string;
+    redirectTo: string;
   };
 
   onMount(() => {
+    if (!params.code) {
+      throw new Error(`Can't login: No one time code supplied.`)
+    }
+
     // TODO: Refactor to request/response pattern with timeout
     let answerSubscription: Subscription;
     const code = params ? params.code : undefined;
@@ -26,11 +32,11 @@
       shellProcess,
       true,
       async (ctx) => {
-        ctx.childProcessDefinition = authenticate;
+        ctx.childProcessDefinition = identify;
         ctx.childContext = {
           data: {
-            appId: "__APP_ID__",
-            code: code,
+            oneTimeCode: code,
+            redirectTo: "/dashboard"
           },
           dirtyFlags: {},
           environment: {},

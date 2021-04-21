@@ -6,7 +6,6 @@ import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
-import { AuthenticateContext } from "../../o-auth/processes/authenticate";
 import { countries } from "../../../shared/countries";
 import gql from "graphql-tag";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -67,7 +66,7 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      editFirstName: prompt<AuthenticateContext, any>({
+      editFirstName: prompt<UpsertIdentityContext, any>({
         fieldName: "firstName",
         component: TextEditor,
         params: {
@@ -91,7 +90,7 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      editLastName: prompt<AuthenticateContext, any>({
+      editLastName: prompt<UpsertIdentityContext, any>({
         fieldName: "lastName",
         component: TextEditor,
         params: {
@@ -117,7 +116,7 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      country: prompt<AuthenticateContext, any>({
+      country: prompt<UpsertIdentityContext, any>({
         fieldName: "country",
         component: DropdownSelectEditor,
         params: {
@@ -144,7 +143,7 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      dream: prompt<AuthenticateContext, any>({
+      dream: prompt<UpsertIdentityContext, any>({
         fieldName: "dream",
         component: TextEditor,
         params: {
@@ -169,7 +168,7 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      editAvatar: prompt<AuthenticateContext, any>({
+      editAvatar: prompt<UpsertIdentityContext, any>({
         fieldName: "avatar",
         component: PictureEditor,
         params: {

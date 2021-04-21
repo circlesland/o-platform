@@ -3,11 +3,11 @@ import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processConte
 import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
 import {createMachine} from "xstate";
 import gql from "graphql-tag";
-import {authenticate} from "../../o-auth/processes/authenticate";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 import {upsertIdentity} from "./upsertIdentity";
 import {push} from "svelte-spa-router";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {authenticate} from "./authenticate";
 
 export type IdentifyContextData = {
   oneTimeCode?:string
@@ -31,11 +31,20 @@ export type IdentifyContext = ProcessContext<IdentifyContextData>;
 
 const processDefinition = (processId: string) => createMachine<IdentifyContext, any>({
   id: `${processId}`,
-  initial: "getSessionInfo",
+  initial: "checkOneTimeCode",
   states: {
     // Include a default 'error' state that propagates the error by re-throwing it in an action.
     // TODO: Check if this works as intended
     ...fatalError<IdentifyContext, any>("error"),
+
+    checkOneTimeCode: {
+      always:[{
+        cond: (context) => !!context.data.oneTimeCode,
+        target: "#authenticate"
+      }, {
+        target: "#getSessionInfo"
+      }]
+    },
 
     getSessionInfo: {
       id: "getSessionInfo",
@@ -143,7 +152,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
         id: "exchangeTokenForSession",
         src: async (context, event) => {
           const client = await window.o.apiClient.client.subscribeToResult();
-          await client.mutate({
+          const exchangeResult = await client.mutate({
             mutation: gql`
               mutation exchangeToken {
                 exchangeToken {
@@ -157,6 +166,12 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
               }
             }
           });
+          if (exchangeResult.errors && exchangeResult.errors.length > 0) {
+            exchangeResult.errors.forEach(o => console.error(o));
+          }
+          if (!exchangeResult.data?.exchangeToken?.success) {
+            throw new Error(`Couldn't exchange the jwt for a session.`);
+          }
         },
         onDone: "#getSessionInfo",
         onError: "#error"

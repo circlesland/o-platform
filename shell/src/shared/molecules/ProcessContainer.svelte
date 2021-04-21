@@ -82,6 +82,7 @@
         if (next.stopped) {
           prompt = null;
           process = null;
+          console.log("ProcessContainer.svelte: process stopped")
           dispatch("stopped");
         }
 

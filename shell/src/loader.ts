@@ -10,7 +10,6 @@ import LoadingIndicator from 'src/shared/atoms/LoadingIndicator.svelte'
 import NotFound from 'src/shared/pages/NotFound.svelte'
 import wrap from "svelte-spa-router/wrap";
 
-import {auth} from "./dapps/o-auth.manifest";
 import {passport} from "./dapps/o-passport.manifest";
 import {banking} from "./dapps/o-banking.manifest";
 import {dashboard} from "./dapps/o-dashboard.manifest";
@@ -20,7 +19,6 @@ const errorIndicator = Error;
 
 export const dapps: DappManifest<any>[] = [
   homepage,
-  auth,
   passport,
   banking,
   dashboard

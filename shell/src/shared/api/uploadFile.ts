@@ -3,7 +3,7 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
-import {authenticateSso} from "../../dapps/o-auth/processes/authenticateSso";
+import {authenticateSso} from "../../dapps/o-passport/processes/authenticateSso";
 
 export type UploadFileContextData = {
   appId:string,

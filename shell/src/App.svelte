@@ -22,7 +22,6 @@
     shellProcess,
     ShellProcessContext,
   } from "./shared/processes/shellProcess";
-  import { authenticate } from "./dapps/o-auth/processes/authenticate";
   import Error from "./shared/atoms/Error.svelte";
   import LoadingIndicator from "./shared/atoms/LoadingIndicator.svelte";
   import Success from "./shared/atoms/Success.svelte";
