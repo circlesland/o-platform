@@ -51,14 +51,14 @@
   <main class="flex-1 overflow-y-visible z-30" />
   <footer class="z-50  w-full sticky bottom-0 ">
     <div class="flex justify-around ">
-      <a href="/#" on:click|once={login} class="mb-4 btn btn-white">
+      <button on:click={login} class="mb-4 btn btn-white">
         <img
           width="15px"
           class="mr-3"
           src="/images/common/circles.png"
           alt="circles.land"
         /> Login
-      </a>
+      </button>
     </div>
   </footer>
 </div>
