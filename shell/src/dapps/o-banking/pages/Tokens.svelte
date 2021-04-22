@@ -1,10 +1,50 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import TokensHeader from "../atoms/TokensHeader.svelte";
-  import { push } from "svelte-spa-router";
+  import {push} from "svelte-spa-router";
+  import {query, setClient} from "svelte-apollo";
+  import gql from "graphql-tag";
+  import {me} from "../../../shared/stores/me";
+
+  setClient(<any>window.o.theGraphClient);
+  $:tokens = query(
+    gql`
+      query safe($safe: String!) {
+          safe(id: $safe) {
+          balances {
+            token {
+              id
+            }
+            amount
+          }
+        }
+      }
+    `,
+    {
+      variables: {
+        safe: $me.circlesAddress ? $me.circlesAddress.toLowerCase() : ""
+      },
+    }
+  );
 </script>
 
-<TokensHeader />
+<TokensHeader/>
+
+<div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+  {#if $tokens.loading}
+    Loading offers...
+  {:else if $tokens.error}
+    <b>An error occurred while loading the recent activities:</b>
+    <br/>{$tokens.error.message}
+  {:else if $tokens.data && $tokens.data.safe && $tokens.data.safe.length > 0}
+    {#each $tokens.data.safe as safe}
+      <div>
+        from: {JSON.stringify(safe, null, 2)}<br/>
+      </div>
+    {/each}
+  {:else}
+    <span>No recent activities</span>
+  {/if}
+</div>
 
 <div class="mx-4 -mt-6">
   <section
@@ -17,7 +57,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="/images/common/circles.png" alt="username" />
+            <img src="/images/common/circles.png" alt="username"/>
           </div>
         </div>
       </div>

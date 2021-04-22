@@ -12,6 +12,7 @@
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { sendInviteGas } from "../processes/sendInviteGas";
   import gql from "graphql-tag";
+  import {me} from "../../../shared/stores/me";
 
   export let params: {
     inviteAccountAddress?: string;
@@ -44,7 +45,7 @@
     `,
     {
       variables: {
-        id: "0x9a0bbbbd3789f184ca88f2f6a40f42406cb842ac",
+        id: $me.circlesAddress ? $me.circlesAddress.toLowerCase() : ""
       },
     }
   );

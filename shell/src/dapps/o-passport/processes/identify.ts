@@ -115,6 +115,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
               query profiles {
                 profiles(query:{}) {
                   id
+                  circlesAddress
                   firstName
                   lastName
                   dream

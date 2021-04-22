@@ -21,6 +21,8 @@
     getSelectionLabel = context.params.getSelectionLabel
       ? context.params.getSelectionLabel
       : getSelectionLabel;
+
+    selected = context.data[context.fieldName];
   });
 
   function handleSelect(event) {
@@ -60,6 +62,7 @@
 
     {#if graphql}
       <Select
+        selectedValue={selected}
         loadOptions={getGraphQlData}
         placeholder="Search..."
         listAutoWidth={false}
@@ -72,6 +75,7 @@
       />
     {:else}
       <Select
+        selectedValue={selected}
         items={context.params.choices}
         showChevron={true}
         listAutoWidth={false}

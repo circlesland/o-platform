@@ -1,16 +1,18 @@
 <script lang="ts">
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import { push } from "svelte-spa-router";
+  import {push} from "svelte-spa-router";
   import gql from "graphql-tag";
   import Time from "svelte-time";
 
-  import { query } from "svelte-apollo";
-  import { setClient } from "svelte-apollo";
+  import {query} from "svelte-apollo";
+  import {setClient} from "svelte-apollo";
+  import {me} from "../../../shared/stores/me";
+
   setClient(<any>window.o.theGraphClient);
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
 
-  $: transactions = query(
+  $:transactions = query(
     gql`
       query notifications($safe: String!) {
         notifications(where: { type: "HUB_TRANSFER", safe: $safe }) {
@@ -26,10 +28,15 @@
     `,
     {
       variables: {
-        safe: "0x9a0bbbbd3789f184ca88f2f6a40f42406cb842ac",
+        safe: $me.circlesAddress ? $me.circlesAddress.toLowerCase() : ""
       },
     }
   );
+
+  $: {
+    if ($me.circlesAddress) {
+    }
+  }
 
   function loadDetailPage(path) {
     push("#/banking/transactions/" + path);
@@ -40,29 +47,30 @@
   }
 </script>
 
-<BankingHeader />
+<BankingHeader/>
 
 <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
   {#if $transactions.loading}
     Loading offers...
   {:else if $transactions.error}
     <b>An error occurred while loading the recent activities:</b>
-    <br />{$transactions.error.message}
+    <br/>{$transactions.error.message}
   {:else if $transactions.data && $transactions.data.notifications && $transactions.data.notifications.length > 0}
     {#each $transactions.data.notifications as notification}
       {console.log(notification)}
       <div>
-        when: {notification.time}<br />
+        when: {notification.time}<br/>
         {#if dateOlderThanSevenDays(notification.time)}
           <Time
             timestamp={new Date(notification.time * 1000)}
             format="D. MMMM YYYY"
           />
         {:else}
-          <Time relative timestamp={new Date(notification.time * 1000)} /><br />
+          <Time relative timestamp={new Date(notification.time * 1000)}/>
+          <br/>
         {/if}
-        from: {notification.hubTransfer.from}<br />
-        to: {notification.hubTransfer.to}<br />
+        from: {notification.hubTransfer.from}<br/>
+        to: {notification.hubTransfer.to}<br/>
         amount: {notification.hubTransfer.amount}
       </div>
     {/each}
@@ -82,7 +90,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="/images/common/circles.png" alt="username" />
+            <img src="/images/common/circles.png" alt="username"/>
           </div>
         </div>
       </div>
@@ -115,7 +123,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="https://i.pravatar.cc/500?img=42" alt="username" />
+            <img src="https://i.pravatar.cc/500?img=42" alt="username"/>
           </div>
         </div>
       </div>
@@ -148,7 +156,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="https://i.pravatar.cc/500?img=12" alt="username" />
+            <img src="https://i.pravatar.cc/500?img=12" alt="username"/>
           </div>
         </div>
       </div>
