@@ -98,7 +98,7 @@ const processDefinition = (processId: string) =>
                 })
               : [];
           },
-          optionIdentifier: "label",
+          optionIdentifier: "value",
           getOptionLabel: (option) => option.label,
           getSelectionLabel: (option) => option.label,
         },

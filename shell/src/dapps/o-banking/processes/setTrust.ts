@@ -111,7 +111,7 @@ const processDefinition = (processId: string) =>
 
             return items;
           },
-          optionIdentifier: "label",
+          optionIdentifier: "value",
           getOptionLabel: (option) => option.label,
           getSelectionLabel: (option) => option.label,
         },
