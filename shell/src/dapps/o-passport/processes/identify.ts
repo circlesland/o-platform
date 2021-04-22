@@ -292,7 +292,9 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
           profile: context.data.profile
         });
         if (context.data.redirectTo) {
-          push(context.data.redirectTo);
+          setTimeout(() => {
+            push(context.data.redirectTo);
+          }, 5); // TODO: Check if this is really necessary
         }
       },
       data: (context) => {
