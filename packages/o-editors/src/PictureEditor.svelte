@@ -5,6 +5,7 @@
   import Dropzone from "svelte-file-dropzone";
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
+  import getCroppedImg from "./cropImage";
 
   export let context: EditorContext;
 
@@ -12,7 +13,6 @@
   let zoom = 1;
   let aspect = 1 / 1;
   let cropShape = "round";
-
   let canvas;
   let ctx;
   let image;
@@ -78,6 +78,19 @@
     };
   }
 
+  const showCroppedImage = async (cropData) => {
+    try {
+      console.log("IMAGEDATA: ", cropData);
+      image = new Image();
+      image.src = `data:image/*;base64,${uploadFile.toString("base64")}`;
+      const croppedImage = await getCroppedImg(image, cropData.details.pixels);
+      console.log("donee", { croppedImage });
+      // setCroppedImage(croppedImage);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   function cropImage(cropData) {
     const sourceX = cropData.detail.pixels.x;
     const sourceY = cropData.detail.pixels.y;
@@ -134,9 +147,9 @@
       ...context.data,
       avatar: {
         mimeType: "image/*",
-        bytes: imageStore.value
-      }
-    }
+        bytes: imageStore.value,
+      },
+    };
     context.process.sendAnswer(answer);
   }
 
@@ -152,7 +165,7 @@
 </label>
 <div class="w-full h-full">
   <canvas
-    style="visibility: hidden; position:absolute; left:-8096px; top:-8096px;"
+    style="visibility: visible; position:absolute; left:0; top:0;"
     id="cropCanvas"
     width="300"
     height="300"
@@ -170,7 +183,7 @@
         bind:zoom
         bind:aspect
         bind:cropShape
-        on:cropcomplete={(cropData) => cropImage(cropData)}
+        on:cropcomplete={(cropData) => showCroppedImage(cropData)}
       />
     </div>
   {:else}

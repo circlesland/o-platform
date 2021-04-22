@@ -21,16 +21,27 @@
 <label class="label" for={context.fieldName}>
   <span class="label-text">{context.params.label}</span>
 </label>
-<div class="w-full h-full">
-  <a on:click={() => {
-    context.dirtyFlags[context.fieldName] = true;
-    submit();
-  }}>Clear</a>
-  <img
-    id="cropCanvas"
-    src="{context.data[context.fieldName]}"
-    height="300"
-  />
+<div class="flex flex-col w-full h-full">
+  <button
+    class="self-end text-primary"
+    on:click={() => {
+      context.dirtyFlags[context.fieldName] = true;
+      submit();
+    }}>Clear</button
+  >
+  <div class="text-center">
+    <div class="avatar">
+      <div class="rounded-full w-92 h-92 ">
+        <img
+          class="m-auto"
+          id="cropCanvas"
+          src={context.data[context.fieldName]}
+          height="300"
+          alt="avatar"
+        />
+      </div>
+    </div>
+  </div>
 </div>
 <br />
 <ProcessNavigation on:buttonClick={submit} {context} />

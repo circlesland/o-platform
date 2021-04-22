@@ -2,7 +2,7 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
-import {assign, createMachine} from "xstate";
+import { assign, createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
@@ -127,6 +127,9 @@ const processDefinition = (processId: string) =>
           placeholder: strings.placeholderCountry,
           submitButtonText: "Submit vote",
           choices: countries,
+          optionIdentifier: "value",
+          getOptionLabel: (option) => option.label,
+          getSelectionLabel: (option) => option.label,
         },
         navigation: {
           next: "#checkDream",
@@ -171,7 +174,7 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      avatarUrl:  prompt<UpsertIdentityContext, any>({
+      avatarUrl: prompt<UpsertIdentityContext, any>({
         fieldName: "avatarUrl",
         component: PicturePreview,
         params: {
@@ -188,7 +191,8 @@ const processDefinition = (processId: string) =>
         id: "checkEditAvatar",
         always: [
           {
-            cond: (context) => context.dirtyFlags["avatarUrl"] || !context.data.avatarUrl,
+            cond: (context) =>
+              context.dirtyFlags["avatarUrl"] || !context.data.avatarUrl,
             actions: (context) => delete context.dirtyFlags["avatarUrl"],
             target: "#avatar",
           },
@@ -214,7 +218,10 @@ const processDefinition = (processId: string) =>
         id: "checkUploadAvatar",
         always: [
           {
-            cond: (context) => context.dirtyFlags["avatar"] && !!context.data.avatar && !!context.data.avatar.bytes,
+            cond: (context) =>
+              context.dirtyFlags["avatar"] &&
+              !!context.data.avatar &&
+              !!context.data.avatar.bytes,
             target: "#uploadAvatar",
           },
           {
@@ -297,7 +304,8 @@ const processDefinition = (processId: string) =>
                 country: context.data.country,
                 avatarUrl: event.data.url ?? context.data.avatarUrl,
                 avatarCid: event.data.hash ?? context.data.avatarCid,
-                avatarMimeType: event.data.mimeType ?? context.data.avatarMimeType
+                avatarMimeType:
+                  event.data.mimeType ?? context.data.avatarMimeType,
               },
             });
 
