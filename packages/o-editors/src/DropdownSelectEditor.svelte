@@ -42,14 +42,6 @@
       submit();
     }
   }
-
-  async function getGraphQlData(filterText) {
-    filterText = filterText ? filterText.replace(" ", "_") : "";
-    const result = await window.o.theGraphClient.query(
-      context.params.graphqlQuery(filterText)
-    );
-    return result.data.safe.incoming;
-  }
 </script>
 
 <div class="form-control justify-self-center">
@@ -60,10 +52,10 @@
       </label>
     </div>
 
-    {#if graphql}
+    {#if !!context.params.asyncChoices}
       <Select
         selectedValue={selected}
-        loadOptions={getGraphQlData}
+        loadOptions={context.params.asyncChoices}
         placeholder="Search..."
         listAutoWidth={false}
         listPlacement="top"

@@ -7,6 +7,7 @@ import TextEditor from "../../../../../packages/o-editors/src/TextEditor.svelte"
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import gql from "graphql-tag";
+import {Choice} from "../../../../../packages/o-editors/src/choiceSelectorContext";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -78,7 +79,31 @@ const processDefinition = (processId: string) =>
         params: {
           label: strings.labelTrustReceiver,
           graphql: true,
-          graphqlQuery: trustUsersQuery,
+          asyncChoices: async (searchText?:string) => {
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.query({
+              query: gql`
+                query search($searchString:String!) {
+                  search(query: { searchString: $searchString }) {
+                    id
+                    firstName
+                    lastName
+                    dream
+                    country
+                    avatarUrl
+                  }
+                }`,
+              variables: {
+                searchString: searchText ?? ""
+              }
+            });
+
+            const items = result.data.search && result.data.search.length > 0
+              ? result.data.search.map(o  => {return <Choice>{value: o.id, label: `${o.firstName} ${o.lastName}`}})
+              : [];
+
+            return items;
+          },
           optionIdentifier: "canSendToAddress",
           getOptionLabel: (option) => option.canSendToAddress,
           getSelectionLabel: (option) => option.canSendToAddress,

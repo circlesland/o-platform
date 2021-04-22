@@ -11,6 +11,7 @@ import { transferXdai } from "./transferXdai";
 import { transferCircles } from "./transferCircles";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import gql from "graphql-tag";
+import {Choice} from "../../../../../packages/o-editors/src/choiceSelectorContext";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -20,25 +21,6 @@ export type TransferContextData = {
     amount: string;
   };
   acceptSummary?: boolean;
-};
-
-const trustUsersQuery = {
-  query: gql`
-    query search($searchString: String!) {
-      search(query: { searchString: $searchString }) {
-        id
-        firstName
-        lastName
-        dream
-        country
-        avatarCid
-        avatarMimeType
-      }
-    }
-  `,
-  variables: {
-    searchString: "0xd460db4cfa021c42edeb7e555d904400dab65ecc",
-  },
 };
 
 /**
@@ -87,7 +69,29 @@ const processDefinition = (processId: string) =>
         params: {
           label: strings.labelRecipientAddress,
           graphql: true,
-          graphqlQuery: trustUsersQuery,
+          asyncChoices: async (searchText?:string) => {
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.query({
+              query: gql`
+                query search($searchString:String!) {
+                  search(query: { searchString: $searchString }) {
+                    id
+                    firstName
+                    lastName
+                    dream
+                    country
+                    avatarUrl
+                  }
+                }`,
+              variables: {
+                searchString: searchText ?? ""
+              }
+            });
+
+            return result.data.search && result.data.search.length > 0
+              ? result.data.search.map(o  => {return <Choice>{value: o.id, label: `${o.firstName} ${o.lastName}`}})
+              : [];
+          },
           optionIdentifier: "firstName",
           getOptionLabel: (option) => option.firstName,
           getSelectionLabel: (option) => option.firstName,
