@@ -1,3 +1,6 @@
+import { GraphQLClient } from 'graphql-request';
+import { print } from 'graphql';
+import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
@@ -291,3 +294,203 @@ export type UpsertProfileInput = {
   lastName?: Maybe<Scalars['String']>;
 };
 
+
+export type ExchangeTokenMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ExchangeTokenMutation = (
+  { __typename?: 'Mutation' }
+  & { exchangeToken: (
+    { __typename?: 'ExchangeTokenResponse' }
+    & Pick<ExchangeTokenResponse, 'success' | 'errorMessage'>
+  ) }
+);
+
+export type AuthenticateAtMutationVariables = Exact<{
+  appId: Scalars['String'];
+}>;
+
+
+export type AuthenticateAtMutation = (
+  { __typename?: 'Mutation' }
+  & { authenticateAt: (
+    { __typename?: 'DelegateAuthInit' }
+    & Pick<DelegateAuthInit, 'appId' | 'success' | 'errorMessage' | 'challengeType' | 'delegateAuthCode' | 'validTo'>
+  ) }
+);
+
+export type ConsumeDepositedChallengeMutationVariables = Exact<{
+  delegateAuthCode: Scalars['String'];
+}>;
+
+
+export type ConsumeDepositedChallengeMutation = (
+  { __typename?: 'Mutation' }
+  & { consumeDepositedChallenge: (
+    { __typename?: 'ConsumeDepositedChallengeResponse' }
+    & Pick<ConsumeDepositedChallengeResponse, 'success' | 'challenge'>
+  ) }
+);
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = (
+  { __typename?: 'Mutation' }
+  & { logout: (
+    { __typename?: 'LogoutResponse' }
+    & Pick<LogoutResponse, 'success'>
+  ) }
+);
+
+export type UpsertProfileMutationVariables = Exact<{
+  id?: Maybe<Scalars['Int']>;
+  firstName: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  dream: Scalars['String'];
+  country?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  avatarCid?: Maybe<Scalars['String']>;
+  avatarMimeType?: Maybe<Scalars['String']>;
+  circlesAddress?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpsertProfileMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertProfile: (
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'circlesAddress'>
+  ) }
+);
+
+export type SessionInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SessionInfoQuery = (
+  { __typename?: 'Query' }
+  & { sessionInfo: (
+    { __typename?: 'SessionInfo' }
+    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId'>
+  ) }
+);
+
+export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyProfileQuery = (
+  { __typename?: 'Query' }
+  & { profiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType'>
+  )> }
+);
+
+
+export const ExchangeTokenDocument = gql`
+    mutation exchangeToken {
+  exchangeToken {
+    success
+    errorMessage
+  }
+}
+    `;
+export const AuthenticateAtDocument = gql`
+    mutation authenticateAt($appId: String!) {
+  authenticateAt(appId: $appId) {
+    appId
+    success
+    errorMessage
+    challengeType
+    delegateAuthCode
+    validTo
+  }
+}
+    `;
+export const ConsumeDepositedChallengeDocument = gql`
+    mutation consumeDepositedChallenge($delegateAuthCode: String!) {
+  consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
+    success
+    challenge
+  }
+}
+    `;
+export const LogoutDocument = gql`
+    mutation logout {
+  logout {
+    success
+  }
+}
+    `;
+export const UpsertProfileDocument = gql`
+    mutation upsertProfile($id: Int, $firstName: String!, $lastName: String, $dream: String!, $country: String, $avatarUrl: String, $avatarCid: String, $avatarMimeType: String, $circlesAddress: String) {
+  upsertProfile(
+    data: {id: $id, firstName: $firstName, lastName: $lastName, dream: $dream, country: $country, avatarUrl: $avatarUrl, avatarCid: $avatarCid, avatarMimeType: $avatarMimeType, circlesAddress: $circlesAddress}
+  ) {
+    id
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    circlesAddress
+  }
+}
+    `;
+export const SessionInfoDocument = gql`
+    query sessionInfo {
+  sessionInfo {
+    isLoggedOn
+    hasProfile
+    profileId
+  }
+}
+    `;
+export const MyProfileDocument = gql`
+    query myProfile {
+  profiles(query: {}) {
+    id
+    circlesAddress
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+  }
+}
+    `;
+
+export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
+
+
+const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
+export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+  return {
+    exchangeToken(variables?: ExchangeTokenMutationVariables): Promise<ExchangeTokenMutation> {
+      return withWrapper(() => client.request<ExchangeTokenMutation>(print(ExchangeTokenDocument), variables));
+    },
+    authenticateAt(variables: AuthenticateAtMutationVariables): Promise<AuthenticateAtMutation> {
+      return withWrapper(() => client.request<AuthenticateAtMutation>(print(AuthenticateAtDocument), variables));
+    },
+    consumeDepositedChallenge(variables: ConsumeDepositedChallengeMutationVariables): Promise<ConsumeDepositedChallengeMutation> {
+      return withWrapper(() => client.request<ConsumeDepositedChallengeMutation>(print(ConsumeDepositedChallengeDocument), variables));
+    },
+    logout(variables?: LogoutMutationVariables): Promise<LogoutMutation> {
+      return withWrapper(() => client.request<LogoutMutation>(print(LogoutDocument), variables));
+    },
+    upsertProfile(variables: UpsertProfileMutationVariables): Promise<UpsertProfileMutation> {
+      return withWrapper(() => client.request<UpsertProfileMutation>(print(UpsertProfileDocument), variables));
+    },
+    sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
+      return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));
+    },
+    myProfile(variables?: MyProfileQueryVariables): Promise<MyProfileQuery> {
+      return withWrapper(() => client.request<MyProfileQuery>(print(MyProfileDocument), variables));
+    }
+  };
+}
+export type Sdk = ReturnType<typeof getSdk>;

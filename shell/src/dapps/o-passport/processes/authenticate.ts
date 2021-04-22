@@ -5,7 +5,7 @@ import BooleanEditor from "@o-platform/o-editors/src/BooleanEditor.svelte";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import gql from "graphql-tag";
+import {LoginWithEmailDocument, VerifyDocument} from "../data/auth/types";
 
 export type AuthenticateContextData = {
   appId?: string;
@@ -102,17 +102,7 @@ const processDefinition = (processId: string) =>
           src: async (context) => {
             const authClient = await window.o.authClient.client.subscribeToResult();
             const result = await authClient.mutate({
-              mutation: gql`
-                mutation loginWithEmail(
-                  $appId: String!
-                  $emailAddress: String!
-                ) {
-                  loginWithEmail(appId: $appId, emailAddress: $emailAddress) {
-                    success
-                    errorMessage
-                  }
-                }
-              `,
+              mutation: LoginWithEmailDocument,
               variables: {
                 appId: context.data.appId,
                 emailAddress: context.data.loginEmail,
@@ -151,16 +141,7 @@ const processDefinition = (processId: string) =>
           src: async (context) => {
             const authClient = await window.o.authClient.client.subscribeToResult();
             const result = await authClient.mutate({
-              mutation: gql`
-                mutation verify($oneTimeToken: String!) {
-                  verify(oneTimeToken: $oneTimeToken) {
-                    success
-                    errorMessage
-                    jwt
-                    exchangeTokenUrl
-                  }
-                }
-              `,
+              mutation: VerifyDocument,
               variables: {
                 oneTimeToken: context.data.code.trim(),
               },

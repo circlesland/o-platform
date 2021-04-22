@@ -1,3 +1,6 @@
+import { GraphQLClient } from 'graphql-request';
+import { print } from 'graphql';
+import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
@@ -107,3 +110,97 @@ export enum CacheControlScope {
 }
 
 
+
+export type LoginWithEmailMutationVariables = Exact<{
+  appId: Scalars['String'];
+  emailAddress: Scalars['String'];
+}>;
+
+
+export type LoginWithEmailMutation = (
+  { __typename?: 'Mutation' }
+  & { loginWithEmail: (
+    { __typename?: 'LoginResponse' }
+    & Pick<LoginResponse, 'success' | 'errorMessage'>
+  ) }
+);
+
+export type VerifyMutationVariables = Exact<{
+  oneTimeToken: Scalars['String'];
+}>;
+
+
+export type VerifyMutation = (
+  { __typename?: 'Mutation' }
+  & { verify: (
+    { __typename?: 'VerifyResponse' }
+    & Pick<VerifyResponse, 'success' | 'errorMessage' | 'jwt' | 'exchangeTokenUrl'>
+  ) }
+);
+
+export type ChallengeMutationVariables = Exact<{
+  byAppId: Scalars['String'];
+  forAppId: Scalars['String'];
+  subject: Scalars['String'];
+}>;
+
+
+export type ChallengeMutation = (
+  { __typename?: 'Mutation' }
+  & { challenge: (
+    { __typename?: 'ChallengeResponse' }
+    & Pick<ChallengeResponse, 'success' | 'errorMessage'>
+  ) }
+);
+
+
+export const LoginWithEmailDocument = gql`
+    mutation loginWithEmail($appId: String!, $emailAddress: String!) {
+  loginWithEmail(appId: $appId, emailAddress: $emailAddress) {
+    success
+    errorMessage
+  }
+}
+    `;
+export const VerifyDocument = gql`
+    mutation verify($oneTimeToken: String!) {
+  verify(oneTimeToken: $oneTimeToken) {
+    success
+    errorMessage
+    jwt
+    exchangeTokenUrl
+  }
+}
+    `;
+export const ChallengeDocument = gql`
+    mutation challenge($byAppId: String!, $forAppId: String!, $subject: String!) {
+  challenge(
+    byAppId: $byAppId
+    forAppId: $forAppId
+    challengeType: "delegated"
+    subject: $subject
+  ) {
+    success
+    errorMessage
+  }
+}
+    `;
+
+export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
+
+
+const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
+export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+  return {
+    loginWithEmail(variables: LoginWithEmailMutationVariables): Promise<LoginWithEmailMutation> {
+      return withWrapper(() => client.request<LoginWithEmailMutation>(print(LoginWithEmailDocument), variables));
+    },
+    verify(variables: VerifyMutationVariables): Promise<VerifyMutation> {
+      return withWrapper(() => client.request<VerifyMutation>(print(VerifyDocument), variables));
+    },
+    challenge(variables: ChallengeMutationVariables): Promise<ChallengeMutation> {
+      return withWrapper(() => client.request<ChallengeMutation>(print(ChallengeDocument), variables));
+    }
+  };
+}
+export type Sdk = ReturnType<typeof getSdk>;

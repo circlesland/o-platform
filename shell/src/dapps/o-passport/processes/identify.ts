@@ -12,6 +12,7 @@ import {prompt} from "@o-platform/o-process/dist/states/prompt";
 import ChoiceSelector from "../../../../../packages/o-editors/src/ChoiceSelector.svelte";
 import {CreateOrRestoreKeyContext} from "./createOrRestoreKey";
 import {importCirclesProfile} from "./importCirclesProfile";
+import {ExchangeTokenDocument, MyProfileDocument, SessionInfoDocument} from "../data/api/types";
 
 export type IdentifyContextData = {
   oneTimeCode?:string
@@ -70,14 +71,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
         src: async (context) => {
           const apiClient = await window.o.apiClient.client.subscribeToResult();
           const result = await apiClient.query({
-            query: gql`
-              query sessionInfo {
-                sessionInfo {
-                  isLoggedOn
-                  hasProfile
-                  profileId
-                }
-              }`
+            query: SessionInfoDocument
           });
 
           if (result.errors && result.errors.length > 0) {
@@ -112,20 +106,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
         src: async (context) => {
           const apiClient = await window.o.apiClient.client.subscribeToResult();
           const result = await apiClient.query({
-            query: gql`
-              query myProfile {
-                profiles(query:{}) {
-                  id
-                  circlesAddress
-                  firstName
-                  lastName
-                  dream
-                  country
-                  avatarUrl
-                  avatarCid
-                  avatarMimeType
-                }
-              }`
+            query: MyProfileDocument
           });
 
           context.data.profile = result.data.profiles && result.data.profiles.length > 0
@@ -172,13 +153,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
         src: async (context, event) => {
           const client = await window.o.apiClient.client.subscribeToResult();
           const exchangeResult = await client.mutate({
-            mutation: gql`
-              mutation exchangeToken {
-                exchangeToken {
-                  success
-                  errorMessage
-                }
-              }`,
+            mutation: ExchangeTokenDocument,
             context: {
               headers: {
                 "Authorization": event.data

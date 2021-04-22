@@ -12,6 +12,7 @@ import gql from "graphql-tag";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { uploadFile } from "../../../shared/api/uploadFile";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
+import {UpsertProfileDocument} from "../data/api/types";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -258,43 +259,7 @@ const processDefinition = (processId: string) =>
             delete context.data.avatar;
             const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
-              mutation: gql`
-                mutation upsertProfile(
-                  $id: Int
-                  $firstName: String!
-                  $lastName: String
-                  $dream: String!
-                  $country: String
-                  $avatarUrl: String
-                  $avatarCid: String
-                  $avatarMimeType: String
-                  $circlesAddress: String
-                ) {
-                  upsertProfile(
-                    data: {
-                      id: $id
-                      firstName: $firstName
-                      lastName: $lastName
-                      dream: $dream
-                      country: $country
-                      avatarUrl: $avatarUrl
-                      avatarCid: $avatarCid
-                      avatarMimeType: $avatarMimeType
-                      circlesAddress: $circlesAddress
-                    }
-                  ) {
-                    id
-                    firstName
-                    lastName
-                    dream
-                    country
-                    avatarUrl
-                    avatarCid
-                    avatarMimeType
-                    circlesAddress
-                  }
-                }
-              `,
+              mutation: UpsertProfileDocument,
               variables: {
                 id: context.data.id,
                 circlesAddress: context.data.circlesAddress,

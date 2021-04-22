@@ -1,3 +1,6 @@
+import { GraphQLClient } from 'graphql-request';
+import { print } from 'graphql';
+import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
@@ -291,3 +294,46 @@ export type UpsertProfileInput = {
   lastName?: Maybe<Scalars['String']>;
 };
 
+
+export type ProfilesByCirclesAddressQueryVariables = Exact<{
+  circlesAddresses: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type ProfilesByCirclesAddressQuery = (
+  { __typename?: 'Query' }
+  & { profiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType'>
+  )> }
+);
+
+
+export const ProfilesByCirclesAddressDocument = gql`
+    query profilesByCirclesAddress($circlesAddresses: [String!]!) {
+  profiles(query: {circlesAddress: $circlesAddresses}) {
+    id
+    circlesAddress
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+  }
+}
+    `;
+
+export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
+
+
+const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
+export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+  return {
+    profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
+      return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));
+    }
+  };
+}
+export type Sdk = ReturnType<typeof getSdk>;

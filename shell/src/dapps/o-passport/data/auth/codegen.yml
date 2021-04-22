@@ -1,8 +1,10 @@
 schema: ./schema.graphql
+documents: './*.graphql'
 generates:
   ./types.ts:
     plugins:
       - typescript
       - typescript-operations
+      - typescript-graphql-request
     config:
       useIndexSignature: true
