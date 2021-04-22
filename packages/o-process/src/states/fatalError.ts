@@ -1,5 +1,6 @@
 import {actions, AnyEventObject} from "xstate";
 import {IProcessContext} from "../interfaces/processContext";
+import {escalate} from "xstate/es/actions";
 //const {escalate} = actions;
 
 /**

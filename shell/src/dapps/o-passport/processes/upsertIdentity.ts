@@ -14,6 +14,7 @@ import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 
 export type UpsertIdentityContextData = {
   id?: number;
+  circlesAddress?: string;
   loginEmail: string;
   firstName?: string;
   lastName?: string;
@@ -230,6 +231,7 @@ const processDefinition = (processId: string) =>
                   $country: String
                   $avatarCid: String
                   $avatarMimeType: String
+                  $circlesAddress: String
                 ) {
                   upsertProfile(
                     data: {
@@ -240,6 +242,7 @@ const processDefinition = (processId: string) =>
                       country: $country
                       avatarCid: $avatarCid
                       avatarMimeType: $avatarMimeType
+                      circlesAddress: $circlesAddress
                     }
                   ) {
                     id
@@ -249,17 +252,19 @@ const processDefinition = (processId: string) =>
                     country
                     avatarCid
                     avatarMimeType
+                    circlesAddress
                   }
                 }
               `,
               variables: {
                 id: context.data.id,
+                circlesAddress: context.data.circlesAddress,
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 dream: context.data.dream,
                 country: context.data.country,
                 avatarCid: event.data.hash,
-                avatarMimeType: event.data.mimeType,
+                avatarMimeType: event.data.mimeType
               },
             });
 

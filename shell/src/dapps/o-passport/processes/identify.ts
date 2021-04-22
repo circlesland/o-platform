@@ -8,24 +8,40 @@ import {upsertIdentity} from "./upsertIdentity";
 import {push} from "svelte-spa-router";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {authenticate} from "./authenticate";
+import {prompt} from "@o-platform/o-process/dist/states/prompt";
+import ChoiceSelector from "../../../../../packages/o-editors/src/ChoiceSelector.svelte";
+import {CreateOrRestoreKeyContext} from "./createOrRestoreKey";
+import {importCirclesProfile} from "./importCirclesProfile";
 
 export type IdentifyContextData = {
   oneTimeCode?:string
   redirectTo?:string
+  connectOrCreate?:{
+    key:string,
+    label:string
+  }
   sessionInfo: {
     isLoggedOn: boolean
     hasProfile: boolean
     profileId: number
   },
   profile: {
+    circlesAddress?: string
     firstName: string
     lastName?: string
     dream: string
     country?: string
+    avatarUrl?: string
     avatarCid?: string
     avatarMimeType?: string
   }
 };
+
+const strings = {
+  choiceLabel: "Do you already have a circles account?",
+  choiceYesLabel: "Yes",
+  choiceNoLabel: "No",
+}
 
 export type IdentifyContext = ProcessContext<IdentifyContextData>;
 
@@ -81,7 +97,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
           target: "#loadProfile"
         }, {
           cond: (context) => context.data.sessionInfo.isLoggedOn,
-          target: "#createProfile"
+          target: "#connectOrCreate"
         }, {
           target: "#authenticate"
         }],
@@ -103,6 +119,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
                   lastName
                   dream
                   country
+                  avatarUrl
                   avatarCid
                   avatarMimeType
                 }
@@ -177,6 +194,64 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
         onError: "#error"
       }
     },
+    connectOrCreate: prompt<CreateOrRestoreKeyContext, any>({
+      fieldName: "connectOrCreate",
+      component: ChoiceSelector,
+      params: {
+        label: strings.choiceLabel,
+        choices: [{
+          key: "createProfile",
+          label: strings.choiceNoLabel
+        }, {
+          key: "connectProfile",
+          label: strings.choiceYesLabel
+        }]
+      },
+      navigation: {
+        next: "#checkChoice",
+      },
+    }),
+    checkChoice: {
+      id: "checkChoice",
+      always: [
+        {
+          cond: (context) => {
+            return context.data.connectOrCreate.key == "createProfile"
+          },
+          target: "#createProfile",
+        },
+        {
+          cond: (context) => {
+            return context.data.connectOrCreate.key == "connectProfile"
+          },
+          target: "#importProfile",
+        },
+      ],
+    },
+    importProfile: {
+      id: "importProfile",
+      entry: (ctx) => {
+        console.log(`enter: identify.importProfile`, ctx.data);
+        localStorage.removeItem("me");
+      },
+      on: {
+        ...<any>ipc(`importProfile`)
+      },
+      invoke: {
+        id: "importProfile",
+        src: importCirclesProfile.stateMachine(`importProfile`),
+        data: {
+          data: (context, event) => {
+            return {
+
+            }
+          },
+          dirtyFlags: {}
+        },
+        onDone: "#createProfile",
+        onError: "#error"
+      }
+    },
     createProfile: {
       entry: (ctx) => console.log(`enter: identify.createProfile`, ctx.data),
       id: "createProfile",
@@ -189,6 +264,14 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
         data: {
           data: (context, event) => {
             return {
+              circlesAddress: event.data?.circlesAddress,
+              firstName: event.data?.firstName,
+              lastName: event.data?.lastName,
+              dream: event.data?.dream,
+              country: event.data?.country,
+              avatarUrl: event.data?.avatarUrl,
+              avatarCid: event.data?.avatarCid,
+              avatarMimeType: event.data?.avatarMimeType,
             }
           },
           dirtyFlags: {}
