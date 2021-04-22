@@ -11,6 +11,7 @@ export type UploadFileContextData = {
   mimeType:string,
   bytes: Uint8Array,
   hash?: string
+  url?: string
 };
 
 export type UploadFileContext = ProcessContext<UploadFileContextData>;
@@ -57,16 +58,12 @@ createMachine<UploadFileContext, any>({
       invoke: {
         id: "upload",
         src: async (context, event) => {
-
           const response = await fetch("__FILES_ENDPOINT__/upload", {
             "headers": {
-              "accept": "*/*",
               "content-type": "application/json",
               "authorization": event.data.jwt
             },
             "method": "POST",
-            "mode": "cors",
-            "credentials": "omit",
             "body": JSON.stringify({
               fileName: "",
               mimeType: "image/*",
@@ -78,7 +75,9 @@ createMachine<UploadFileContext, any>({
           if (jsonResponse.status != "ok") {
             throw new Error(`Got a not-ok status from the file server: ${JSON.stringify(jsonResponse, null, 2)}`);
           }
+          delete context.data.bytes;
           context.data.hash = jsonResponse.hash;
+          context.data.url = jsonResponse.url;
         },
         onDone: "#success",
         onError: "#error"

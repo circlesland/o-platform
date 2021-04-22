@@ -2,10 +2,11 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
-import { createMachine } from "xstate";
+import {assign, createMachine} from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
+import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import { countries } from "../../../shared/countries";
 import gql from "graphql-tag";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -24,6 +25,7 @@ export type UpsertIdentityContextData = {
     bytes: Buffer;
     mimeType: string;
   };
+  avatarUrl?: string;
   avatarCid?: string;
   avatarMimeType?: string;
 };
@@ -137,7 +139,7 @@ const processDefinition = (processId: string) =>
         always: [
           {
             cond: (context) => false,
-            target: "#checkAvatar",
+            target: "#checkPreviewAvatar",
           },
           {
             target: "#dream",
@@ -153,23 +155,49 @@ const processDefinition = (processId: string) =>
           submitButtonText: "Start dreaming",
         },
         navigation: {
-          next: "#checkAvatar",
+          next: "#checkPreviewAvatar",
           previous: "#checkCountry",
         },
       }),
-      checkAvatar: {
-        id: "checkAvatar",
+      checkPreviewAvatar: {
+        id: "checkPreviewAvatar",
         always: [
           {
-            cond: (context) => false,
-            target: "#upsertIdentity",
+            cond: (context) => !!context.data.avatarUrl,
+            target: "#avatarUrl",
           },
           {
-            target: "#avatar",
+            target: "#checkEditAvatar",
           },
         ],
       },
-      editAvatar: prompt<UpsertIdentityContext, any>({
+      avatarUrl:  prompt<UpsertIdentityContext, any>({
+        fieldName: "avatarUrl",
+        component: PicturePreview,
+        params: {
+          label: strings.labelAvatar,
+          submitButtonText: "Save Image",
+        },
+        navigation: {
+          next: "#checkEditAvatar",
+          previous: "#checkDream",
+          canSkip: () => true,
+        },
+      }),
+      checkEditAvatar: {
+        id: "checkEditAvatar",
+        always: [
+          {
+            cond: (context) => context.dirtyFlags["avatarUrl"] || !context.data.avatarUrl,
+            actions: (context) => delete context.dirtyFlags["avatarUrl"],
+            target: "#avatar",
+          },
+          {
+            target: "#upsertIdentity",
+          },
+        ],
+      },
+      avatar: prompt<UpsertIdentityContext, any>({
         fieldName: "avatar",
         component: PictureEditor,
         params: {
@@ -178,7 +206,7 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#checkUploadAvatar",
-          previous: "#checkLastName",
+          previous: "#checkDream",
           canSkip: () => true,
         },
       }),
@@ -220,6 +248,7 @@ const processDefinition = (processId: string) =>
         id: "upsertIdentity",
         invoke: {
           src: async (context, event) => {
+            delete context.data.avatar;
             const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: gql`
@@ -229,6 +258,7 @@ const processDefinition = (processId: string) =>
                   $lastName: String
                   $dream: String!
                   $country: String
+                  $avatarUrl: String
                   $avatarCid: String
                   $avatarMimeType: String
                   $circlesAddress: String
@@ -240,6 +270,7 @@ const processDefinition = (processId: string) =>
                       lastName: $lastName
                       dream: $dream
                       country: $country
+                      avatarUrl: $avatarUrl
                       avatarCid: $avatarCid
                       avatarMimeType: $avatarMimeType
                       circlesAddress: $circlesAddress
@@ -250,6 +281,7 @@ const processDefinition = (processId: string) =>
                     lastName
                     dream
                     country
+                    avatarUrl
                     avatarCid
                     avatarMimeType
                     circlesAddress
@@ -263,13 +295,17 @@ const processDefinition = (processId: string) =>
                 lastName: context.data.lastName,
                 dream: context.data.dream,
                 country: context.data.country,
-                avatarCid: event.data.hash,
-                avatarMimeType: event.data.mimeType
+                avatarUrl: event.data.url ?? context.data.avatarUrl,
+                avatarCid: event.data.hash ?? context.data.avatarCid,
+                avatarMimeType: event.data.mimeType ?? context.data.avatarMimeType
               },
             });
 
-            context.data.avatarCid = event?.data?.hash;
-            context.data.avatarMimeType = event?.data?.mimeType;
+            if (event?.data?.url) {
+              context.data.avatarCid = event?.data?.hash;
+              context.data.avatarUrl = event?.data?.url;
+              context.data.avatarMimeType = event?.data?.mimeType;
+            }
 
             return result.data.upsertProfile;
           },

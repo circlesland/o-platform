@@ -18,6 +18,7 @@ export class Prompt implements PlatformEvent {
    * The data that should be edited (if any).
    */
   data: { [x: string]: any } = {};
+  dirtyFlags: { [x: string]: boolean } = {};
   /**
    * The component specific params.
    */

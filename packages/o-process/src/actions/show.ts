@@ -27,6 +27,7 @@ export function show(spec: {
       fieldName: spec.fieldName,
       component: spec.component,
       data: spec.passDataByReference ? context.data : JSON.parse(JSON.stringify(context.data)),
+      dirtyFlags: context.dirtyFlags,
       params: spec.params,
       navigation: {
         canGoBack,

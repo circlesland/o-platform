@@ -54,6 +54,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
     ...fatalError<IdentifyContext, any>("error"),
 
     checkOneTimeCode: {
+      entry: () => localStorage.removeItem("me"),
       always:[{
         cond: (context) => !!context.data.oneTimeCode,
         target: "#authenticate"

@@ -8,6 +8,7 @@
   let componentContext: {
     fieldName: string;
     data: { [x: string]: any };
+    dirtyFlags: { [x: string]: any };
     params: { [x: string]: any };
     process: Process;
     canGoBack: boolean;
@@ -22,6 +23,7 @@
         process: process,
         fieldName: prompt.fieldName,
         data: prompt.data,
+        dirtyFlags: prompt.dirtyFlags,
         params: prompt.params,
         canGoBack: prompt.navigation.canGoBack,
         canSkip: prompt.navigation.canSkip,
