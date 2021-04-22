@@ -36,7 +36,7 @@
     <div class="text-left">
       <div>
         <h2 class="text-2xl sm:text-3xl font-bold">
-          {displayName.substring(0, 3)}
+          {displayName.length > 22 ? displayName.substring(0, 22) + ".." : displayName}
         </h2>
       </div>
       <p class="text-sm mt-2">{message}</p>

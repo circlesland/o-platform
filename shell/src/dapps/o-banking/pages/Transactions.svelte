@@ -2,15 +2,9 @@
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { push } from "svelte-spa-router";
   import gql from "graphql-tag";
-  import Time from "svelte-time";
   import TransactionCard from "../atoms/TransactionCard.svelte";
-
-  import { query } from "svelte-apollo";
-  import { setClient } from "svelte-apollo";
   import { me } from "../../../shared/stores/me";
   import {onMount} from "svelte";
-
-  setClient(<any>window.o.theGraphClient);
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
   let transactions:any = [];
@@ -124,7 +118,7 @@
     </section>
   {:else if transactions.length > 0}
     {#each transactions as notification}
-      {#if $me.circlesAddress.toLowerCase() == notification.hubTransfer.from}
+      {#if $me.circlesAddress == notification.hubTransfer.from}
         <TransactionCard
           displayName={notification.hubTransfer.to}
           direction="transactionnegative"
