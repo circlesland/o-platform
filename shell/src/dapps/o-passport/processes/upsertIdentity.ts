@@ -214,7 +214,7 @@ const processDefinition = (processId: string) =>
         id: "checkUploadAvatar",
         always: [
           {
-            cond: (context) => context.dirtyFlags["avatar"],
+            cond: (context) => context.dirtyFlags["avatar"] && !!context.data.avatar && !!context.data.avatar.bytes,
             target: "#uploadAvatar",
           },
           {
