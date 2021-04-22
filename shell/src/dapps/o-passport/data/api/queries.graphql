@@ -1,0 +1,21 @@
+query sessionInfo {
+    sessionInfo {
+        isLoggedOn
+        hasProfile
+        profileId
+    }
+}
+
+query myProfile {
+    profiles(query:{}) {
+        id
+        circlesAddress
+        firstName
+        lastName
+        dream
+        country
+        avatarUrl
+        avatarCid
+        avatarMimeType
+    }
+}

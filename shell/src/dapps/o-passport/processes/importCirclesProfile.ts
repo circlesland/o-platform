@@ -6,6 +6,7 @@ import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
 import {createMachine} from "xstate";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {config} from "@o-platform/o-circles/dist/config";
+import Web3 from "web3";
 
 export type ImportedCirclesProfileData = {
   seedPhrase?: string
@@ -85,7 +86,8 @@ const processDefinition = (processId: string) =>
         id: "checkCirclesGarden",
         invoke: {
           src: async (context) => {
-            const queryUrl = `https://api.circles.garden/api/users/?address[]=${context.data.safeAddress}`;
+            const checksumAddress = Web3.utils.toChecksumAddress(context.data.safeAddress);
+            const queryUrl = `https://api.circles.garden/api/users/?address[]=${checksumAddress}`;
             const result = await fetch(queryUrl);
 
             if (result.status != 200) {

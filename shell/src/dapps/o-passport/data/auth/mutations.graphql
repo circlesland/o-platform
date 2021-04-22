@@ -1,0 +1,29 @@
+mutation loginWithEmail(
+    $appId: String!
+    $emailAddress: String!
+) {
+    loginWithEmail(appId: $appId, emailAddress: $emailAddress) {
+        success
+        errorMessage
+    }
+}
+
+mutation verify($oneTimeToken: String!) {
+    verify(oneTimeToken: $oneTimeToken) {
+        success
+        errorMessage
+        jwt
+        exchangeTokenUrl
+    }
+}
+
+mutation challenge(
+    $byAppId: String!
+    $forAppId: String!
+    $subject: String!
+) {
+    challenge(byAppId: $byAppId, forAppId: $forAppId challengeType: "delegated" subject:$subject) {
+        success
+        errorMessage
+    }
+}

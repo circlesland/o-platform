@@ -5,10 +5,10 @@
   import TransactionCard from "../atoms/TransactionCard.svelte";
   import { me } from "../../../shared/stores/me";
   import {onMount} from "svelte";
+  import Web3 from "web3";
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
   let transactions:any = [];
-
 
   onMount(async () => {
     load();
@@ -16,12 +16,20 @@
 
   async function load() {
     transactions = await loadTransactions($me.circlesAddress);
+
+    // Get all involved addresses
     const circlesAddresses = transactions.reduce((p,c) => {
-      p[c.hubTransfer.from] = c.hubTransfer.from;
-      p[c.hubTransfer.to] = c.hubTransfer.to;
+      const from = Web3.utils.toChecksumAddress(c.hubTransfer.from);
+      p[from] = true;
+      const to = Web3.utils.toChecksumAddress(c.hubTransfer.to);
+      p[to] = true;
       return p;
     } , {});
-    const profiles = await loadProfileDataForTransactions(Object.keys(circlesAddresses));
+
+    const circlesAddressesArr = Object.keys(circlesAddresses);
+
+    // Load all circles.land profiles
+    const profiles = await loadProfilesBySafeAddress(circlesAddressesArr);
     const profilesLookup = profiles.reduce((p,c) => {
       p[c.circlesAddress] = c;
       return p;
@@ -33,6 +41,26 @@
       transaction.hubTransfer.to = profilesLookup[transaction.hubTransfer.to]
         ? profilesLookup[transaction.hubTransfer.to].firstName
         : transaction.hubTransfer.to;
+    });
+    transactions = transactions;
+
+    // Load all circles.garden profiles
+    const circlesGardenProfiles = await loadCirclesGardenProfilesBySafeAddress(circlesAddressesArr);
+    const circlesGardenProfilesLookup = circlesGardenProfiles.reduce((p,c) => {
+      p[c.safeAddress.toLowerCase()] = c;
+      return p;
+    }, {});
+    transactions.forEach(transaction => {
+      if (Web3.utils.isAddress(transaction.hubTransfer.from)) {
+        transaction.hubTransfer.from = circlesGardenProfilesLookup[transaction.hubTransfer.from]
+          ? circlesGardenProfilesLookup[transaction.hubTransfer.from].username
+          : transaction.hubTransfer.from;
+      }
+      if (Web3.utils.isAddress(transaction.hubTransfer.to)) {
+        transaction.hubTransfer.to = circlesGardenProfilesLookup[transaction.hubTransfer.to]
+          ? circlesGardenProfilesLookup[transaction.hubTransfer.to].username
+          : transaction.hubTransfer.to;
+      }
     });
     transactions = transactions;
   }
@@ -59,7 +87,7 @@
     return result.data.notifications;
   }
 
-  async function loadProfileDataForTransactions(circlesAddresses:string[]) {
+  async function loadProfilesBySafeAddress(circlesAddresses:string[]) {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
       query: gql`
@@ -83,6 +111,19 @@
 
     console.log("All profiles in transactions list:", result.data.profiles)
     return result.data.profiles;
+  }
+
+  async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses:string[]) {
+    const baseUrl = `https://api.circles.garden/api/users/`;
+    let query = circlesAddresses.reduce((p,c) => p + `address[]=${c}&`, "");
+    query = query.substr(0, query.length - 1);
+    console.log("Querying the following profiles from the circles garden api:", query);
+
+    const result = await fetch(`${baseUrl}?${query}`);
+    const resultJson = await result.json();
+    console.log(resultJson);
+
+    return resultJson.data;
   }
 
   function loadDetailPage(path) {
@@ -120,7 +161,7 @@
     {#each transactions as notification}
       {#if $me.circlesAddress == notification.hubTransfer.from}
         <TransactionCard
-          displayName={notification.hubTransfer.to}
+          displayName={notification.hubTransfer.from}
           direction="transactionnegative"
           amount={notification.hubTransfer.amount}
           message="WURST"
@@ -128,7 +169,7 @@
         />
       {:else}
         <TransactionCard
-          displayName={notification.hubTransfer.from}
+          displayName={notification.hubTransfer.to}
           direction="transactionpositive"
           amount={notification.hubTransfer.amount}
           message="WURST"

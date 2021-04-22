@@ -113,7 +113,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
           const apiClient = await window.o.apiClient.client.subscribeToResult();
           const result = await apiClient.query({
             query: gql`
-              query profiles {
+              query myProfile {
                 profiles(query:{}) {
                   id
                   circlesAddress

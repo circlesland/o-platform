@@ -1,0 +1,70 @@
+mutation exchangeToken {
+    exchangeToken {
+        success
+        errorMessage
+    }
+}
+
+mutation authenticateAt(
+    $appId: String!
+) {
+    authenticateAt(appId: $appId) {
+        appId
+        success
+        errorMessage
+        challengeType
+        delegateAuthCode
+        validTo
+    }
+}
+
+mutation consumeDepositedChallenge(
+    $delegateAuthCode: String!
+) {
+    consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
+        success
+        challenge
+    }
+}
+
+mutation logout {
+    logout {
+        success
+    }
+}
+
+mutation upsertProfile(
+    $id: Int
+    $firstName: String!
+    $lastName: String
+    $dream: String!
+    $country: String
+    $avatarUrl: String
+    $avatarCid: String
+    $avatarMimeType: String
+    $circlesAddress: String
+) {
+    upsertProfile(
+        data: {
+            id: $id
+            firstName: $firstName
+            lastName: $lastName
+            dream: $dream
+            country: $country
+            avatarUrl: $avatarUrl
+            avatarCid: $avatarCid
+            avatarMimeType: $avatarMimeType
+            circlesAddress: $circlesAddress
+        }
+    ) {
+        id
+        firstName
+        lastName
+        dream
+        country
+        avatarUrl
+        avatarCid
+        avatarMimeType
+        circlesAddress
+    }
+}

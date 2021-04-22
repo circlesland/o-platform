@@ -31,6 +31,22 @@ cd o-circles || exit
 npx --no-install tsc || exit
 cd ../.. || exit
 
+echo "Generating graphql types for dapps/o-passport"
+echo "* api"
+cd shell/src/dapps/o-passport/data/api
+npx graphql-codegen
+echo "* auth"
+cd ../auth
+npx graphql-codegen
+
+cd ../../../../../..
+echo "Generating graphql types for dapps/o-banking"
+echo "* api"
+cd shell/src/dapps/o-banking/data/api
+npx graphql-codegen
+
+cd ../../../../../..
+
 echo "Building 'shell' with dapps .."
 cd shell || exit
 npm run build
