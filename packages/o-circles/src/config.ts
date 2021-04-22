@@ -60,8 +60,8 @@ export const config = {
                 return web3Instance;
 
             const wsProvider = new Web3.providers.WebsocketProvider(
-                //"wss://xdai.poanetwork.dev/wss",
-                "wss://rpc.xdaichain.com/wss",
+                "wss://xdai.poanetwork.dev/wss",
+                // "wss://rpc.xdaichain.com/wss",
                 // "ws://localhost:8545",
                 {
                     timeout: 30000,

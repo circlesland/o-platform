@@ -4,16 +4,60 @@
   import gql from "graphql-tag";
   import Time from "svelte-time";
 
-  import {query} from "svelte-apollo";
   import {setClient} from "svelte-apollo";
   import {me} from "../../../shared/stores/me";
+  import {onMount} from "svelte";
 
   setClient(<any>window.o.theGraphClient);
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
 
-  $:transactions = query(
-    gql`
+  let transactions:any = [];
+
+  $: {
+    if ($me.circlesAddress) {
+    }
+  }
+
+  onMount(async () => {
+    load();
+  });
+
+  function loadDetailPage(path) {
+    push("#/banking/transactions/" + path);
+  }
+
+  function dateOlderThanSevenDays(unixTime: number) {
+    return timestampSevenDays > unixTime;
+  }
+
+  async function load() {
+    transactions = await loadTransactions($me.circlesAddress);
+    const circlesAddresses = transactions.reduce((p,c) => {
+      p[c.hubTransfer.from] = c.hubTransfer.from;
+      p[c.hubTransfer.to] = c.hubTransfer.to;
+      return p;
+    } , {});
+    const profiles = await loadProfileDataForTransactions(Object.keys(circlesAddresses));
+    const profilesLookup = profiles.reduce((p,c) => {
+      p[c.circlesAddress] = c;
+      return p;
+    }, {});
+    transactions.forEach(transaction => {
+      transaction.hubTransfer.from = profilesLookup[transaction.hubTransfer.from]
+        ? profilesLookup[transaction.hubTransfer.from].firstName
+        : transaction.hubTransfer.from;
+      transaction.hubTransfer.to = profilesLookup[transaction.hubTransfer.to]
+        ? profilesLookup[transaction.hubTransfer.to].firstName
+        : transaction.hubTransfer.to;
+    });
+    transactions = transactions;
+  }
+
+  async function loadTransactions(circlesAddress: string) {
+    const apiClient = await window.o.theGraphClient;
+    const result = await apiClient.query({
+      query: gql`
       query notifications($safe: String!) {
         notifications(where: { type: "HUB_TRANSFER", safe: $safe }) {
           time
@@ -24,59 +68,61 @@
             amount
           }
         }
-      }
-    `,
-    {
+      }`,
       variables: {
-        safe: $me.circlesAddress ? $me.circlesAddress.toLowerCase() : ""
-      },
-    }
-  );
-
-  $: {
-    if ($me.circlesAddress) {
-    }
+        safe: circlesAddress.toLowerCase()
+      }
+    });
+    return result.data.notifications;
   }
 
-  function loadDetailPage(path) {
-    push("#/banking/transactions/" + path);
-  }
+  async function loadProfileDataForTransactions(circlesAddresses:string[]) {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const result = await apiClient.query({
+      query: gql`
+              query profiles($circlesAddresses:[String!]!) {
+                profiles(query:{circlesAddress:$circlesAddresses}) {
+                  id
+                  circlesAddress
+                  firstName
+                  lastName
+                  dream
+                  country
+                  avatarUrl
+                  avatarCid
+                  avatarMimeType
+                }
+              }`,
+      variables: {
+        circlesAddresses: circlesAddresses
+      }
+    });
 
-  function dateOlderThanSevenDays(unixTime: number) {
-    return timestampSevenDays > unixTime;
+    console.log("All profiles in transactions list:", result.data.profiles)
+    return result.data.profiles;
   }
 </script>
 
 <BankingHeader/>
 
 <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
-  {#if $transactions.loading}
-    Loading offers...
-  {:else if $transactions.error}
-    <b>An error occurred while loading the recent activities:</b>
-    <br/>{$transactions.error.message}
-  {:else if $transactions.data && $transactions.data.notifications && $transactions.data.notifications.length > 0}
-    {#each $transactions.data.notifications as notification}
-      {console.log(notification)}
-      <div>
-        when: {notification.time}<br/>
-        {#if dateOlderThanSevenDays(notification.time)}
-          <Time
-            timestamp={new Date(notification.time * 1000)}
-            format="D. MMMM YYYY"
-          />
-        {:else}
-          <Time relative timestamp={new Date(notification.time * 1000)}/>
-          <br/>
-        {/if}
-        from: {notification.hubTransfer.from}<br/>
-        to: {notification.hubTransfer.to}<br/>
-        amount: {notification.hubTransfer.amount}
-      </div>
-    {/each}
-  {:else}
-    <span>No recent activities</span>
-  {/if}
+  {#each transactions as notification}
+    <div>
+      when: {notification.time}<br/>
+      {#if dateOlderThanSevenDays(notification.time)}
+        <Time
+          timestamp={new Date(notification.time * 1000)}
+          format="D. MMMM YYYY"
+        />
+      {:else}
+        <Time relative timestamp={new Date(notification.time * 1000)}/>
+        <br/>
+      {/if}
+      from: {notification.hubTransfer.from}<br/>
+      to: {notification.hubTransfer.to}<br/>
+      amount: {notification.hubTransfer.amount}
+    </div>
+  {/each}
 </div>
 
 <div class="mx-4 -mt-6">
