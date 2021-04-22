@@ -73,6 +73,8 @@
         listAutoWidth={false}
         listPlacement="top"
         containerClasses="w-80 min-w-full"
+        {getSelectionLabel}
+        {getOptionLabel}
         on:select={handleSelect}
       />
     {/if}

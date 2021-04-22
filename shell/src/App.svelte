@@ -198,7 +198,7 @@
 
   {#if lastLoadedDapp && !lastLoadedDapp.hideFooter && lastLoadedPage && !lastLoadedPage.hideFooter}
     {#if !$me}
-      <footer class="z-50  w-full sticky bottom-0 ">
+      <footer class="z-50  w-full sticky bottom-0 mb-2">
         <div class="flex justify-around ">
           <button
             class="mb-4 btn btn-outline bg-base-100"
@@ -224,7 +224,7 @@
       </footer>
     {:else}
       <footer
-        class="z-50  w-full sticky bottom-0 bg-white h-12 border-t border-base-300"
+        class="z-50  w-full sticky bottom-0 bg-white h-12 border-t border-base-300 pb-16"
       >
         <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
           {#if !modalProcess}
@@ -241,14 +241,14 @@
                     class="justify-self-center inline-block w-full text-center focus:text-teal-500 hover:text-teal-500"
                   >
                     <div
-                      class="justify-self-center h-full m-auto mt-1 bottom-nav-icon icon-{page.title.toLowerCase()} "
+                      class="justify-self-center h-full m-auto mt-2 bottom-nav-icon icon-{page.title.toLowerCase()} "
                     />
-                    <span class="block text-xs tab p-0">{page.title}</span>
+                    <span class="block text-sm tab p-0">{page.title}</span>
                   </a>
                 {/each}
               {/if}
               <button
-                class="justify-self-center col-start-3 col-end-3 bg-white btn-circle -m-4 min-w-min w-14 h-14 mx-2 shadow-lg circles-button "
+                class="justify-self-center col-start-3 col-end-3 bg-white btn-circle -m-4 min-w-min w-16 h-16 mx-2 shadow-lg circles-button "
                 on:click={() => {
                   isOpen = !isOpen;
                   if (!isOpen) {
@@ -278,9 +278,9 @@
                     class="justify-self-center inline-block w-full text-center focus:text-teal-500 hover:text-teal-500"
                   >
                     <div
-                      class="justify-self-center h-full m-auto mt-1  bottom-nav-icon icon-{page.title.toLowerCase()}"
+                      class="justify-self-center h-full m-auto mt-2  bottom-nav-icon icon-{page.title.toLowerCase()}"
                     />
-                    <span class="block text-xs tab p-0">{page.title}</span>
+                    <span class="block text-sm tab p-0">{page.title}</span>
                   </a>
                 {/each}
               {/if}
