@@ -6,6 +6,7 @@ export type PlatformEventTypes =
     | "shell.begin"
     | "shell.progress"
     | "shell.done"
+    | "shell.refresh"
     | "shell.navigateTo"
     | "shell.authenticated"
     | "shell.loggedOut"

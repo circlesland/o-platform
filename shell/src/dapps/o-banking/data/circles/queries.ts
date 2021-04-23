@@ -31,11 +31,14 @@ export type TrustObject = {
 }
 
 export type Safe = {
+  loading?:boolean
+  error?:Error
   safeAddress: string
   ownerAddress?: string
   firstBlock?: number
   lastBlock?: number
   token?: Token
+  balance?: string,
   trustRelations?: {
     firstBlock: number
     lastBlock: number
