@@ -35,7 +35,7 @@
   function handleSelect(event) {
     console.log("SELECTED:", event);
     console.log("CHOICES:", context.params.choices);
-    selected = event.detail.value;
+    selected = event.detail;
     selectedLabel = event.detail.label;
   }
 
@@ -79,9 +79,6 @@
       <Select
         selectedValue={selected}
         items={context.params.choices}
-        {optionIdentifier}
-        {getSelectionLabel}
-        {getOptionLabel}
         showChevron={true}
         listAutoWidth={false}
         listPlacement="top"
