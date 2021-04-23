@@ -1,7 +1,6 @@
 import type { Contract, PastEventOptions } from "web3-eth-contract";
 import Web3 from "web3";
 import type Common from "ethereumjs-common";
-import { config } from "./config";
 import { Transaction, TxData } from "ethereumjs-tx";
 import { EventQuery } from "./eventQuery";
 import type { TransactionReceipt } from "web3-core";
@@ -9,6 +8,7 @@ import {Subject} from "rxjs";
 import {filter, map} from "rxjs/operators";
 import {BlockchainEvent} from "@o-platform/o-events/dist/blockchainEvent";
 import {BN} from "ethereumjs-util";
+import {RpcGateway} from "./rpcGateway";
 
 export abstract class Web3Contract {
   readonly web3: Web3;
@@ -106,13 +106,12 @@ export abstract class Web3Contract {
 
   static async signRawTransaction(ownerAddress: string, privateKey: string, to: string, data: string, gasLimit: BN, value: BN)
     : Promise<string> {
-    const cfg = config.getCurrent();
-    const web3 = cfg.web3();
-    const ethJsCommon: Common = await config.getCurrent().ethjs.getCommon(web3);
+    const web3 = RpcGateway.get();
+    const ethJsCommon: Common = await RpcGateway.getEthJsCommon();
     const nonce = "0x" + Web3.utils.toBN(await web3.eth.getTransactionCount(ownerAddress)).toString("hex");
 
     const rawTx: TxData = {
-      gasPrice: "0x" + new BN(config.getCurrent().getGasPrice(web3)).toString("hex"),
+      gasPrice: "0x" + new BN(RpcGateway.getGasPrice()).toString("hex"),
       gasLimit: "0x" + gasLimit.toString("hex"),
       to: to,
       value: "0x" + value.toString("hex"),
@@ -131,7 +130,7 @@ export abstract class Web3Contract {
   }
 
   static async sendSignedRawTransaction(serializedTx: string) {
-    const web3 = config.getCurrent().web3();
+    const web3 = RpcGateway.get();
     return new Promise<TransactionReceipt>((resolve, reject) => {
       web3.eth.sendSignedTransaction(serializedTx)
         .once('transactionHash', (hash) => {

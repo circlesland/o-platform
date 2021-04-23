@@ -2,12 +2,12 @@ import type {AbiItem} from "web3-utils";
 import Web3 from "web3";
 import {EMPTY_DATA, GNOSIS_SAFE_ABI, ZERO_ADDRESS} from "../consts";
 import {BN} from "ethereumjs-util";
-import {config} from "../config";
 const EthLibAccount = require('eth-lib/lib/account');
 import {Web3Contract} from "../web3Contract";
 import type {TransactionReceipt} from "web3-core";
 import {SafeTransaction} from "../model/safeTransaction";
 import {SafeOps} from "../model/safeOps";
+import {RpcGateway} from "../rpcGateway";
 
 export class GnosisSafeProxy extends Web3Contract
 {
@@ -61,7 +61,7 @@ export class GnosisSafeProxy extends Web3Contract
       data: "0x",
       gasToken: ZERO_ADDRESS,
       refundReceiver: ZERO_ADDRESS,
-      gasPrice: config.getCurrent().getGasPrice(this.web3)
+      gasPrice: RpcGateway.getGasPrice()
     };
     return await this.execTransaction(privateKey, safeTransaction);
   }
@@ -104,7 +104,7 @@ export class GnosisSafeProxy extends Web3Contract
       executableTransaction.operation,
       executableTransaction.safeTxGas,
       executableTransaction.baseGas,
-      config.getCurrent().getGasPrice(this.web3),
+      RpcGateway.getGasPrice(),
       executableTransaction.gasToken,
       executableTransaction.refundReceiver,
       signatures.signature).estimateGas();
@@ -167,7 +167,7 @@ export class GnosisSafeProxy extends Web3Contract
       safeTransaction.operation,
       safeTransaction.safeTxGas,
       safeTransaction.baseGas,
-      config.getCurrent().getGasPrice(this.web3),
+      RpcGateway.getGasPrice(),
       safeTransaction.gasToken,
       safeTransaction.refundReceiver,
       safeTransaction.nonce
@@ -255,7 +255,7 @@ export class GnosisSafeProxy extends Web3Contract
       safeTransaction.operation,
       safeTransaction.safeTxGas ?? new BN("0"),
       safeTransaction.baseGas ?? new BN("0"),
-      config.getCurrent().getGasPrice(this.web3),
+      RpcGateway.getGasPrice(),
       safeTransaction.gasToken,
       safeTransaction.refundReceiver,
       signatures ?? "0x")

@@ -1,11 +1,11 @@
 import Web3 from "web3";
 import type { AbiItem } from "web3-utils";
-import { CIRCLES_HUB_ABI, ZERO_ADDRESS } from "../consts";
+import {CIRCLES_HUB_ABI, HUB_BLOCK, ZERO_ADDRESS} from "../consts";
 import type { GnosisSafeProxy } from "../safe/gnosisSafeProxy";
 import {BN} from "ethereumjs-util";
 import { Web3Contract } from "../web3Contract";
-import { config } from "../config";
 import {SafeOps} from "../model/safeOps";
+import {config} from "rxjs";
 
 export class CirclesHub extends Web3Contract {
   constructor(web3: Web3, hubAddress: string) {
@@ -18,7 +18,7 @@ export class CirclesHub extends Web3Contract {
       filter: {
         user: user
       },
-      fromBlock: fromBlock ?? config.getCurrent().HUB_BLOCK,
+      fromBlock: fromBlock ?? HUB_BLOCK,
       toBlock: "latest"
     };
   }
@@ -29,7 +29,7 @@ export class CirclesHub extends Web3Contract {
       filter: {
         user: ofUsers
       },
-      fromBlock: fromBlock ?? config.getCurrent().HUB_BLOCK,
+      fromBlock: fromBlock ?? HUB_BLOCK,
       toBlock: "latest"
     };
   }
@@ -47,7 +47,7 @@ export class CirclesHub extends Web3Contract {
     return {
       event: CirclesHub.HubTransferEvent,
       filter: f,
-      fromBlock: fromBlock ?? config.getCurrent().HUB_BLOCK,
+      fromBlock: fromBlock ?? HUB_BLOCK,
       toBlock: "latest"
     };
   }
@@ -65,7 +65,7 @@ export class CirclesHub extends Web3Contract {
     return {
       event: CirclesHub.TrustEvent,
       filter: f,
-      fromBlock: fromBlock ?? config.getCurrent().HUB_BLOCK,
+      fromBlock: fromBlock ?? HUB_BLOCK,
       toBlock: toBlock ?? "latest"
     };
   }

@@ -1,10 +1,9 @@
 import Web3 from "web3";
 import type {AbiItem} from "web3-utils";
-import {ERC20_ABI, ZERO_ADDRESS} from "../consts";
+import {ERC20_ABI, HUB_BLOCK, ZERO_ADDRESS} from "../consts";
 import type {GnosisSafeProxy} from "../safe/gnosisSafeProxy";
 import {BN} from "ethereumjs-util";
 import {Web3Contract} from "../web3Contract";
-import {config} from "../config";
 import {SafeOps} from "../model/safeOps";
 
 export class Erc20Token extends Web3Contract
@@ -31,7 +30,7 @@ export class Erc20Token extends Web3Contract
     return {
       event: "Transfer",
       filter: f,
-      fromBlock: fromBlock ?? config.getCurrent().HUB_BLOCK,
+      fromBlock: fromBlock ?? HUB_BLOCK,
       toBlock: toBlock ?? "latest"
     };
   }

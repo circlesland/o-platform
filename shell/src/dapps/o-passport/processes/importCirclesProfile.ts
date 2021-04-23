@@ -5,8 +5,8 @@ import {prompt} from "@o-platform/o-process/dist/states/prompt";
 import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
 import {createMachine} from "xstate";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
-import {config} from "@o-platform/o-circles/dist/config";
 import Web3 from "web3";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export type ImportedCirclesProfileData = {
   seedPhrase?: string
@@ -69,7 +69,8 @@ const processDefinition = (processId: string) =>
             context.data.safeAddress = context.data.safeAddress?.trim();
             try {
               console.log(`Checking if safe ${context.data.safeAddress} exists ..`);
-              const safeProxy = new GnosisSafeProxy(config.getCurrent().web3(), "", context.data.safeAddress);
+              const web3 = await RpcGateway.get();
+              const safeProxy = new GnosisSafeProxy(web3, "", context.data.safeAddress);
               context.data.safeNonce = await safeProxy.getNonce();
               console.log(`Checking if safe ${context.data.safeAddress} exists .. Safe exists.`);
               return true;

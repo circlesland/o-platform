@@ -6,6 +6,8 @@
   import { me } from "../../../shared/stores/me";
   import {onMount} from "svelte";
   import Web3 from "web3";
+  import {ProfilesByCirclesAddressDocument} from "../data/api/types";
+  import {Queries} from "../data/xdai/queries";
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
   let transactions:any = [];
@@ -66,6 +68,10 @@
   }
 
   async function loadTransactions(circlesAddress: string) {
+
+    const token = await Queries.findCirclesTokenOfSafeAddress(circlesAddress);
+    console.log("Token via web3:", token);
+
     const apiClient = await window.o.theGraphClient;
     const result = await apiClient.query({
       query: gql`
@@ -90,20 +96,7 @@
   async function loadProfilesBySafeAddress(circlesAddresses:string[]) {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
-      query: gql`
-              query profiles($circlesAddresses:[String!]!) {
-                profiles(query:{circlesAddress:$circlesAddresses}) {
-                  id
-                  circlesAddress
-                  firstName
-                  lastName
-                  dream
-                  country
-                  avatarUrl
-                  avatarCid
-                  avatarMimeType
-                }
-              }`,
+      query: ProfilesByCirclesAddressDocument,
       variables: {
         circlesAddresses: circlesAddresses
       }
