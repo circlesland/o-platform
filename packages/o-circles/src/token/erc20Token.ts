@@ -5,6 +5,8 @@ import type {GnosisSafeProxy} from "../safe/gnosisSafeProxy";
 import {BN} from "ethereumjs-util";
 import {Web3Contract} from "../web3Contract";
 import {SafeOps} from "../model/safeOps";
+import {Observable, Subject} from "rxjs";
+import {BlockchainEvent} from "@o-platform/o-events/dist/blockchainEvent";
 
 export class Erc20Token extends Web3Contract
 {
@@ -33,6 +35,33 @@ export class Erc20Token extends Web3Contract
       fromBlock: fromBlock ?? HUB_BLOCK,
       toBlock: toBlock ?? "latest"
     };
+  }
+
+  findTransfers(safeAddress:string, startBlock?:number) : Observable<BlockchainEvent & {token: Erc20Token}>
+  {
+    const subject = new Subject<BlockchainEvent & {token: Erc20Token}>();
+
+    const outgoingTokenTransfers = this.queryEvents(Erc20Token.queryPastTransfers(safeAddress, undefined, startBlock));
+    outgoingTokenTransfers.events.subscribe(transfer =>
+    {
+      subject.next({...transfer, token: this});
+    });
+    const incomingTokenTransfers = this.queryEvents(Erc20Token.queryPastTransfers(undefined, safeAddress, startBlock));
+    incomingTokenTransfers.events.subscribe(transfer =>
+    {
+      subject.next({...transfer, token: this});
+    });
+
+    Promise.all([
+      outgoingTokenTransfers.execute(),
+      incomingTokenTransfers.execute()
+    ]).then(() => {
+      subject.complete();
+    }).catch(e => {
+      subject.error(e);
+    });
+
+    return subject;
   }
 
   async transfer(privateKey: string, safeProxy: GnosisSafeProxy, to: string, amount: BN)

@@ -1,16 +1,19 @@
 <script lang="ts">
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { push } from "svelte-spa-router";
-  import gql from "graphql-tag";
   import TransactionCard from "../atoms/TransactionCard.svelte";
   import { me } from "../../../shared/stores/me";
   import {onMount} from "svelte";
   import Web3 from "web3";
   import {ProfilesByCirclesAddressDocument} from "../data/api/types";
-  import {Queries} from "../data/xdai/queries";
+  import {Queries, Safe} from "../data/circles/queries";
+  import {BN} from "ethereumjs-util";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  import {Erc20Token} from "@o-platform/o-circles/dist/token/erc20Token";
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
   let transactions:any = [];
+  let balance:string = "0";
 
   onMount(async () => {
     load();
@@ -21,9 +24,9 @@
 
     // Get all involved addresses
     const circlesAddresses = transactions.reduce((p,c) => {
-      const from = Web3.utils.toChecksumAddress(c.hubTransfer.from);
+      const from = Web3.utils.toChecksumAddress(c.from);
       p[from] = true;
-      const to = Web3.utils.toChecksumAddress(c.hubTransfer.to);
+      const to = Web3.utils.toChecksumAddress(c.to);
       p[to] = true;
       return p;
     } , {});
@@ -33,35 +36,35 @@
     // Load all circles.land profiles
     const profiles = await loadProfilesBySafeAddress(circlesAddressesArr);
     const profilesLookup = profiles.reduce((p,c) => {
-      p[c.circlesAddress] = c;
+      p[Web3.utils.toChecksumAddress(c.circlesAddress)] = c;
       return p;
     }, {});
     transactions.forEach(transaction => {
-      transaction.hubTransfer.from = profilesLookup[transaction.hubTransfer.from]
-        ? profilesLookup[transaction.hubTransfer.from].firstName
-        : transaction.hubTransfer.from;
-      transaction.hubTransfer.to = profilesLookup[transaction.hubTransfer.to]
-        ? profilesLookup[transaction.hubTransfer.to].firstName
-        : transaction.hubTransfer.to;
+      transaction.from = profilesLookup[transaction.from]
+        ? profilesLookup[transaction.from].firstName
+        : transaction.from;
+      transaction.to = profilesLookup[transaction.to]
+        ? profilesLookup[transaction.to].firstName
+        : transaction.to;
     });
     transactions = transactions;
 
     // Load all circles.garden profiles
     const circlesGardenProfiles = await loadCirclesGardenProfilesBySafeAddress(circlesAddressesArr);
     const circlesGardenProfilesLookup = circlesGardenProfiles.reduce((p,c) => {
-      p[c.safeAddress.toLowerCase()] = c;
+      p[c.safeAddress] = c;
       return p;
     }, {});
     transactions.forEach(transaction => {
-      if (Web3.utils.isAddress(transaction.hubTransfer.from)) {
-        transaction.hubTransfer.from = circlesGardenProfilesLookup[transaction.hubTransfer.from]
-          ? circlesGardenProfilesLookup[transaction.hubTransfer.from].username
-          : transaction.hubTransfer.from;
+      if (Web3.utils.isAddress(transaction.from)) {
+        transaction.from = circlesGardenProfilesLookup[transaction.from]
+          ? circlesGardenProfilesLookup[transaction.from].username
+          : transaction.from;
       }
-      if (Web3.utils.isAddress(transaction.hubTransfer.to)) {
-        transaction.hubTransfer.to = circlesGardenProfilesLookup[transaction.hubTransfer.to]
-          ? circlesGardenProfilesLookup[transaction.hubTransfer.to].username
-          : transaction.hubTransfer.to;
+      if (Web3.utils.isAddress(transaction.to)) {
+        transaction.to = circlesGardenProfilesLookup[transaction.to]
+          ? circlesGardenProfilesLookup[transaction.to].username
+          : transaction.to;
       }
     });
     transactions = transactions;
@@ -69,28 +72,37 @@
 
   async function loadTransactions(circlesAddress: string) {
 
-    const token = await Queries.findCirclesTokenOfSafeAddress(circlesAddress);
-    console.log("Token via web3:", token);
+    let safe:Safe = {
+      safeAddress: circlesAddress
+    };
 
-    const apiClient = await window.o.theGraphClient;
-    const result = await apiClient.query({
-      query: gql`
-      query notifications($safe: String!) {
-        notifications(where: { type: "HUB_TRANSFER", safe: $safe }) {
-          time
-          transactionHash
-          hubTransfer {
-            from
-            to
-            amount
-          }
-        }
-      }`,
-      variables: {
-        safe: circlesAddress.toLowerCase()
-      }
-    });
-    return result.data.notifications;
+    safe = await Queries.addOwnToken(safe);
+    console.log("Token via web3:", JSON.stringify(safe, null, 2));
+
+    safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
+    const hubTransferCount = safe.transfers.rows.length;
+    console.log(`Added ${hubTransferCount} hub transfers.`)
+
+    safe = await Queries.addContacts(safe);
+    console.log(`Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
+
+    safe = await Queries.addAcceptedTokens(safe);
+    console.log(`Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
+
+    safe = await Queries.addTokenBalances(safe);
+    safe.token.balance = (await new Erc20Token(RpcGateway.get(), safe.token.tokenAddress).getBalanceOf(safe.safeAddress)).toString();
+    console.log(`Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)
+
+    const totalBalance = Object.keys(safe.acceptedTokens.tokens).reduce((p:BN, c:string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
+    const totalBalanceStr = totalBalance.toString();
+    balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
+
+    safe = await Queries.addDirectTransfers(safe);
+    console.log(`Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`)
+
+    console.log(safe);
+
+    return safe.transfers.rows;
   }
 
   async function loadProfilesBySafeAddress(circlesAddresses:string[]) {
@@ -128,7 +140,7 @@
   }
 </script>
 
-<BankingHeader />
+<BankingHeader balance={balance} />
 
 <div class="mx-4 -mt-6">
   {#if transactions.loading}
@@ -152,19 +164,19 @@
     </section>
   {:else if transactions.length > 0}
     {#each transactions as notification}
-      {#if $me.circlesAddress == notification.hubTransfer.from}
+      {#if $me.circlesAddress == notification.from}
         <TransactionCard
-          displayName={notification.hubTransfer.from}
+          displayName={notification.from}
           direction="transactionnegative"
-          amount={notification.hubTransfer.amount}
+          amount={notification.amount}
           message="WURST"
           time={notification.time}
         />
       {:else}
         <TransactionCard
-          displayName={notification.hubTransfer.to}
+          displayName={notification.to}
           direction="transactionpositive"
-          amount={notification.hubTransfer.amount}
+          amount={notification.amount}
           message="WURST"
           time={notification.time}
         />

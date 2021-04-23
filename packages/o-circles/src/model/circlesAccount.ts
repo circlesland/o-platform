@@ -50,26 +50,24 @@ export class CirclesAccount implements CirclesAccountModel
       });
   }
 
-  async tryGetMyToken(): Promise<CirclesToken|null>
+  async tryGetMyToken(startBlock?:number): Promise<CirclesToken|null>
   {
     if (!this.safeAddress) {
       throw new Error(`The safe address is not known. Your token cannot be loaded.`)
     }
-    const result = await this.hub.queryEvents(CirclesHub.queryPastSignup(this.safeAddress)).toArray();
+    const result = await this.hub.queryEvents(CirclesHub.queryPastSignup(this.safeAddress, startBlock)).toArray();
     if (result.length == 0)
     {
       return null;
     }
 
     const signupEvent = result[0];
-
-    return new CirclesToken(
-        this.safeAddress,
+    const token = new CirclesToken(
         signupEvent.returnValues.token,
         signupEvent.returnValues.user,
-        signupEvent.blockNumber,
         signupEvent.blockNumber
     );
+    return token;
   }
 
   async tryGetTokensBySafeAddress(safeAddresses: string[]): Promise<CirclesToken[]>
@@ -81,16 +79,11 @@ export class CirclesAccount implements CirclesAccountModel
       CirclesHub.queryPastSignups(safeAddresses)
     ).toArray();
 
-    return tokensBySafeAddress.map(signupEvent =>
-    {
-      return new CirclesToken(
-          this.safeAddress,
+    return tokensBySafeAddress.map(signupEvent => new CirclesToken(
           signupEvent.returnValues.token,
           signupEvent.returnValues.user,
-          signupEvent.blockNumber,
           signupEvent.blockNumber
-      );
-    });
+      ));
   }
 
   async tryGetXDaiBalance(safeOwner?: string): Promise<{
@@ -116,28 +109,66 @@ export class CirclesAccount implements CirclesAccountModel
     return balances;
   }
 
-  subscribeToMyContacts(): Observable<BlockchainEvent>
+  findHubTransfers(startBlock?:number) : Observable<BlockchainEvent>
+  {
+    const subject = new Subject<BlockchainEvent>();
+
+    if (!this.safeAddress) {
+      throw new Error(`The safe address is not known. Your transactions cannot be loaded.`)
+    }
+
+    const outgoingHubTransfers = this.hub.queryEvents(CirclesHub.queryPastTransfers(this.safeAddress, undefined, startBlock));
+    outgoingHubTransfers.events.subscribe(hubTransfer =>
+    {
+      subject.next(hubTransfer);
+    });
+    const incomingHubTransfers = this.hub.queryEvents(CirclesHub.queryPastTransfers(undefined, this.safeAddress, startBlock));
+    incomingHubTransfers.events.subscribe(hubTransfer =>
+    {
+      subject.next(hubTransfer);
+    });
+
+    Promise.all([
+      outgoingHubTransfers.execute(),
+      incomingHubTransfers.execute()
+    ]).then(() => {
+      subject.complete();
+    }).catch(e => {
+      subject.error(e);
+    });
+
+    return subject;
+  }
+
+  findTrustEvents(startBlock?:number): Observable<BlockchainEvent>
   {
     const subject = new Subject<BlockchainEvent>();
 
     if (!this.safeAddress) {
       throw new Error(`The safe address is not known. Your contacts cannot be loaded.`)
     }
-    const myIncomingTrusts = this.hub.queryEvents(CirclesHub.queryPastTrusts(undefined, this.safeAddress));
+
+    const myIncomingTrusts = this.hub.queryEvents(CirclesHub.queryPastTrusts(undefined, this.safeAddress, startBlock));
     myIncomingTrusts.events.subscribe(trustEvent =>
     {
       subject.next(trustEvent);
     });
 
-    myIncomingTrusts.execute();
 
-    const myOutgoingTrusts = this.hub.queryEvents(CirclesHub.queryPastTrusts(this.safeAddress, undefined));
+    const myOutgoingTrusts = this.hub.queryEvents(CirclesHub.queryPastTrusts(this.safeAddress, undefined, startBlock));
     myOutgoingTrusts.events.subscribe(trustEvent =>
     {
       subject.next(trustEvent);
     });
 
-    myOutgoingTrusts.execute();
+    Promise.all([
+      myIncomingTrusts.execute(),
+      myOutgoingTrusts.execute()
+    ]).then(() => {
+      subject.complete();
+    }).catch(e => {
+      subject.error(e);
+    });
 
     return subject;
   }

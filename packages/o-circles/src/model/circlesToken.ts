@@ -12,37 +12,25 @@ import {RpcGateway} from "../rpcGateway";
 
 export interface CirclesTokenModel
 {
-  balance?: BN;
-  noTransactionsUntilBlockNo: number;
-  readonly createdInBlockNo: number;
+  readonly firstBlock: number;
   readonly tokenAddress: string;
   readonly tokenOwner: string;
 }
 
 export class CirclesToken implements CirclesTokenModel
 {
-  private readonly web3 = RpcGateway.get();
-  private readonly safeAddress: string;
-
-  readonly createdInBlockNo: number;
+  readonly firstBlock: number;
   readonly tokenAddress: string;
   readonly tokenOwner: string;
 
-  noTransactionsUntilBlockNo: number;
-  balance?: BN;
-
   constructor(
-      safeAddress: string,
       tokenAddress: string,
       tokenOwner: string,
-      createdInBlockNo: number,
-      noTransactionsUntilBlockNo: number)
+      firstBlock: number)
   {
-    this.safeAddress = safeAddress;
     this.tokenAddress = tokenAddress;
     this.tokenOwner = tokenOwner;
-    this.createdInBlockNo = createdInBlockNo;
-    this.noTransactionsUntilBlockNo = noTransactionsUntilBlockNo;
+    this.firstBlock = firstBlock;
   }
 
   wait(milliseconds: number)
@@ -77,8 +65,8 @@ export class CirclesToken implements CirclesTokenModel
     const timeBetweenPartitions = 500;
     const maxTries = 2;
 
-    const topics = [this.web3.utils.sha3('Transfer(address,address,uint256)')];
-    const currentBlock = await this.web3.eth.getBlockNumber();
+    const topics = [RpcGateway.get().utils.sha3('Transfer(address,address,uint256)')];
+    const currentBlock = await RpcGateway.get().eth.getBlockNumber();
     const partitionCount = Math.ceil((currentBlock - fromBlock) / partitionSize);
 
     const getFromBlock = (index:number) => fromBlock + index * partitionSize;
@@ -105,7 +93,7 @@ export class CirclesToken implements CirclesTokenModel
 
           const f = getFromBlock(partitionIdx);
           const t = getToBlock(partitionIdx);
-          const pastLogs = await this.web3.eth.getPastLogs({
+          const pastLogs = await RpcGateway.get().eth.getPastLogs({
             address: tokenAddresses,
             fromBlock: f,
             toBlock: t,
@@ -123,10 +111,10 @@ export class CirclesToken implements CirclesTokenModel
               address: event.address,
               event: "Transfer",
               returnValues: {
-                from: this.web3.eth.abi.decodeParameter("address", event.topics[1]),
-                to: this.web3.eth.abi.decodeParameter("address", event.topics[2]),
+                from: RpcGateway.get().eth.abi.decodeParameter("address", event.topics[1]),
+                to: RpcGateway.get().eth.abi.decodeParameter("address", event.topics[2]),
                 // TODO: Seems to be o.k. according to the docs at https://web3js.readthedocs.io/en/v1.2.7/web3-eth-abi.html#encodeparameter
-                value: new BN(<string><any>this.web3.eth.abi.decodeParameter("uint256", event.data)).toString()
+                value: new BN(<string><any>RpcGateway.get().eth.abi.decodeParameter("uint256", event.data)).toString()
               }
             };
 
@@ -189,8 +177,8 @@ export class CirclesToken implements CirclesTokenModel
       tokenAddresses:string[])
       : Subscription<any>
   {
-    const topics = [this.web3.utils.sha3('Transfer(address,address,uint256)')];
-    const subscription = this.web3.eth.subscribe("logs", {
+    const topics = [RpcGateway.get().utils.sha3('Transfer(address,address,uint256)')];
+    const subscription = RpcGateway.get().eth.subscribe("logs", {
       address: tokenAddresses,
       topics: topics
     });
@@ -204,10 +192,10 @@ export class CirclesToken implements CirclesTokenModel
         address: event.address,
         event: "Transfer",
         returnValues: {
-          from: this.web3.eth.abi.decodeParameter("address", event.topics[1]),
-          to: this.web3.eth.abi.decodeParameter("address", event.topics[2]),
+          from: RpcGateway.get().eth.abi.decodeParameter("address", event.topics[1]),
+          to: RpcGateway.get().eth.abi.decodeParameter("address", event.topics[2]),
           // TODO: Seems to be o.k. according to the docs at https://web3js.readthedocs.io/en/v1.2.7/web3-eth-abi.html#encodeparameter
-          value: new BN(<string><any>this.web3.eth.abi.decodeParameter("uint256", event.data)).toString()
+          value: new BN(<string><any>RpcGateway.get().eth.abi.decodeParameter("uint256", event.data)).toString()
         }
       };
 

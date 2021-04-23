@@ -23,25 +23,15 @@ async function getCirclesTokenOfSafeAddress() {
 ```
 #### Get all contacts (incoming or outgoing trusts) of a safe
 ```typescript
-import {CirclesAccount} from "o-circles/dist/model/circlesAccount";
+import {CirclesAccount} from "@o-platform/o-circles/dist/model/circlesAccount";
+import {BlockchainEvent} from "@o-platform/o-events/dist/blockchainEvent";
 
-function getContacts() {
-    const safeAddress = "0x";
-    
-    // This will give you all historic and live trust-events for the safe:
-    const contactsObservable = new CirclesAccount(safeAddress).subscribeToMyContacts();
-    contactsObservable.subscribe(event => {        
-        const {user, canSendTo, limit} = event.returnValues;
-        
-        if (user == safeAddress)
-        {
-            console.log(`${canSendTo} trusts me (${limit})%`) 
-        } 
-        else 
-        {
-            console.log(`I trust ${user} (${limit})%`)
-        }
+async findContacts(safeAddress: string) : Promise<BlockchainEvent[]> {
+    const contacts: BlockchainEvent[] = [];
+    await new CirclesAccount(safeAddress).findTrustEvents().forEach(contact => {
+        contacts.push(contact);
     });
+    return contacts;
 }
 ```
 ### CirclesToken

@@ -4,6 +4,8 @@
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
+  export let balance:string = "0";
+
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
 
@@ -53,7 +55,7 @@
   <div class="self-center text-center mb-8 block">
     <span class="block text-base-300">Your Balance</span>
     <span class="inline-block text-8xl font-circles ml-10 "
-      >4500
+      >{balance}
       <svg
         class="w-16 h-16 inline -ml-6"
         viewBox="0 0 209 215"
