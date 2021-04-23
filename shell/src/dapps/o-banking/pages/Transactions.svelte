@@ -38,11 +38,11 @@
       </div>
     </section>
   {:else if $mySafe.transfers && $mySafe.transfers.rows && $mySafe.transfers.rows.length > 0}
-    {#each $mySafe.transfers.rows as transfer}
+    {#each $mySafe.transfers.rows as transfer(transfer.time + transfer.from + transfer.too)}
       {#if transfer.direction === "in"}
         <TransactionCard
           displayName={transfer.fromProfile ? transfer.fromProfile.displayName : transfer.from}
-          direction="transactionnegative"
+          direction="transactionpositive"
           amount={transfer.amount}
           pictureUrl={transfer.fromProfile ? transfer.fromProfile.avatarUrl : undefined}
           message="WURST"
@@ -51,10 +51,10 @@
       {:else}
         <TransactionCard
           displayName={transfer.toProfile ? transfer.toProfile.displayName : transfer.to}
-          direction="transactionpositive"
+          direction="transactionnegative"
           amount={transfer.amount}
           pictureUrl={transfer.toProfile ? transfer.toProfile.avatarUrl : undefined}
-          message="WURST"
+          message="Käse"
           time={transfer.time}
         />
       {/if}
