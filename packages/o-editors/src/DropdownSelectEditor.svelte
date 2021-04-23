@@ -55,7 +55,7 @@
 </script>
 
 <div class="form-control justify-self-center">
-  <div class="dropdown-select-editor flex flex-wrap content-end w-full h-60">
+  <div class="dropdown-select-editor flex flex-wrap content-end w-full">
     <div class="w-full">
       <label class="label" for={context.fieldName}>
         <span class="label-text">{context.params.label}</span>
