@@ -72,6 +72,39 @@ const emptySafe:Safe = {
 };
 
 let loading = false;
+let profile:Profile|undefined;
+
+async function tryUpdateCached(set: (value: (Safe | null)) => void, augmentProfiles: (safe: Safe) => Promise<void>, load: (event: (PlatformEvent & { profile: Profile }), cachedSafe?: Safe) => Promise<void>) {
+  if (!profile) {
+    return;
+  }
+  const cachedSafeJson = localStorage.getItem("safe");
+  if (cachedSafeJson) {
+    try {
+      const safe = JSON.parse(cachedSafeJson);
+      set(safe);
+      augmentProfiles(safe).then(() => {
+        set(safe);
+      });
+
+      // Check how many blocks have passed since the last update
+      // and make a plan on how to get up to date
+      await load({
+        type: "shell.authenticated",
+        profile: profile
+      }, safe);
+    } catch (e) {
+      console.error("An error occurred while restoring or updating the cached safe:", e);
+      localStorage.removeItem("safe");
+      set(emptySafe);
+    }
+  } else {
+    await load({
+      type: "shell.authenticated",
+      profile: profile
+    });
+  }
+}
 
 export const mySafe = readable<Safe|null>(null, (set) => {
   set(emptySafe);
@@ -137,7 +170,7 @@ export const mySafe = readable<Safe|null>(null, (set) => {
     console.log(safe);
   }
 
-  async function load(event: PlatformEvent & { profile: Profile }) {
+  async function load(event: PlatformEvent & { profile: Profile }, cachedSafe?:Safe) {
     loading = true;
     try {
       if (!RpcGateway.get().utils.isAddress(event.profile.circlesAddress ?? "")) {
@@ -146,15 +179,28 @@ export const mySafe = readable<Safe|null>(null, (set) => {
         return;
       }
 
-      let safe: Safe = {
-        safeAddress: event.profile.circlesAddress
+      let safe: Safe = cachedSafe ?? {
+        safeAddress: event.profile.circlesAddress,
+        loadingPercent: 0
       };
+
+      let _watchLoadingPercent = safe.loadingPercent;
+      const timeoutHandle = setInterval(() => {
+        if (safe?.loadingPercent === null || safe?.loadingPercent === undefined) {
+          return;
+        }
+        if (safe.loadingPercent && safe.loadingPercent == _watchLoadingPercent) {
+          RpcGateway.rotateProvider();
+        } else {
+          _watchLoadingPercent = safe.loadingPercent;
+        }
+      }, 5000);
 
       safe = await Queries.addOwnToken(safe);
       console.log(new Date().getTime() +": "+ "Token via web3:", JSON.stringify(safe, null, 2));
+
       safe.loadingText = "Loading hub transfers ..";
       set(safe);
-
 
       safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
       const hubTransferCount = safe.transfers.rows.length;
@@ -199,6 +245,7 @@ export const mySafe = readable<Safe|null>(null, (set) => {
 
       safe.loadingPercent = undefined;
       safe.loadingText = undefined;
+      clearInterval(timeoutHandle);
       localStorage.setItem("safe", JSON.stringify(safe));
       await augmentProfiles(safe);
       set(safe);
@@ -211,28 +258,28 @@ export const mySafe = readable<Safe|null>(null, (set) => {
     }
   }
 
-  const cachedSafeJson = localStorage.getItem("safe");
-  if (cachedSafeJson) {
-    try {
-      const safe = JSON.parse(cachedSafeJson);
-      set(safe);
-      augmentProfiles(safe).then(() => {
-        set(safe);
-      });
-      return;
-    } catch (e) {
-      console.error("An error occurred while parsing the cached safe:", e);
-      localStorage.removeItem("safe");
-      set(emptySafe);
-    }
-  }
+  tryUpdateCached(set, augmentProfiles, load);
 
   const unsubscribe = me.subscribe(async profileOrNull => {
       if (profileOrNull && RpcGateway.get().utils.isAddress(profileOrNull.circlesAddress ?? "")) {
-        await load({
-          type: "shell.authenticated",
-          profile: profileOrNull
-        });
+        profile = profileOrNull;
+        for(let i = 0; i < RpcGateway.gateways.length; i++) {
+          try {
+            await tryUpdateCached(set, augmentProfiles, load);/*
+            await load({
+              type: "shell.authenticated",
+              profile: profileOrNull
+            });*/
+            return;
+          } catch (e) {
+            if (e.message === "slow_provider") {
+              RpcGateway.rotateProvider();
+              continue;
+            }
+            throw e;
+          }
+          throw new Error(`Failed to load your safe in a timely fashion. Tried ${RpcGateway.gateways.length} providers.`)
+        }
       } else {
         localStorage.removeItem("safe");
         set(emptySafe);

@@ -67,6 +67,10 @@ export type Safe = {
 
 export class Queries {
   static async addOwnToken(safe: Safe): Promise<Safe> {
+    if (RpcGateway.get().utils.isAddress(safe.token?.tokenAddress ?? "")) {
+      console.log("skipping addOwnToken()")
+      return safe;
+    }
     const checksumSafeAddress = RpcGateway.get().utils.toChecksumAddress(safe.safeAddress);
     const foundTokenOrNull = await new CirclesAccount(checksumSafeAddress).tryGetMyToken(!!safe.firstBlock ? safe.firstBlock : undefined);
     if (!foundTokenOrNull) {
@@ -160,7 +164,9 @@ export class Queries {
       firstBlock: 0
     }));
 
-    await new CirclesAccount(checksumSafeAddress).findHubTransfers(startBlock).forEach(hubTransfer => {
+    const startAt = !transfers.lastBlock ? startBlock : transfers.lastBlock + 1;
+    console.log("addHubTransfers() is starting at" + startAt)
+    await new CirclesAccount(checksumSafeAddress).findHubTransfers(startAt).forEach(hubTransfer => {
       transfers.rows.push({
         type: "hub",
         symbol: "crc",
@@ -201,8 +207,12 @@ export class Queries {
       current++;
       const token = safe.acceptedTokens.tokens[tokenAddress];
       console.log(`Direct transfers of token (${tokenAddress}) via web3 ..`);
+
+      const lastDirectTransferBlock = safe.transfers?.rows.filter(o => o.type === "direct").reduce<number>((p,c) => c.firstBlock > (p ?? 0) ? c.firstBlock : (p ?? 0), undefined)
+      const startAt = !lastDirectTransferBlock ? (startBlock ?? token.firstBlock) : lastDirectTransferBlock + 1;
+      console.log("addDirectTransfers() is starting at" + startAt)
       await new Erc20Token(RpcGateway.get(), tokenAddress)
-        .findTransfers(checksumSafeAddress, startBlock ?? token.firstBlock)
+        .findTransfers(checksumSafeAddress, startAt)
         .forEach(directTransfer => {
           transfers.rows.push(<Transfer>{
             type: "direct",
@@ -251,7 +261,9 @@ export class Queries {
 
   static async addContacts(safe: Safe, startBlock?: number): Promise<Safe> {
     const checksumSafeAddress = RpcGateway.get().utils.toChecksumAddress(safe.safeAddress);
-    const trustEvents = await this.readTrustEvents(checksumSafeAddress, startBlock);
+    const startAt = !safe.trustRelations?.lastBlock ? startBlock : safe.trustRelations.lastBlock + 1;
+    console.log("addContacts() is starting at" + startAt)
+    const trustEvents = await this.readTrustEvents(checksumSafeAddress, startAt);
     const sortedAsc = trustEvents.sort((a, b) =>
       a.blockNumber > b.blockNumber ? 1 : a.blockNumber < b.blockNumber ? -1 : 0);
 

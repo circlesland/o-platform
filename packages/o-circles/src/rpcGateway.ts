@@ -40,7 +40,7 @@ export class RpcGateway {
         return new BN(this.get().utils.toWei("1", "gwei"))
     }
 
-    private static rotateProvider() {
+    static rotateProvider() {
         if (!this._web3) {
             this._web3 = new Web3();
         }
