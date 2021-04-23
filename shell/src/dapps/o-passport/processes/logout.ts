@@ -6,6 +6,7 @@ import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import gql from "graphql-tag";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {LogoutDocument} from "../data/api/types";
 
 export type LogoutContextData = {
   loginEmail: string;
@@ -57,14 +58,7 @@ const processDefinition = (processId: string) =>
           src: async (context) => {
             const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
-              mutation: gql`
-                mutation logout {
-                  logout {
-                    success
-                  }
-                }`,
-              variables: {
-              },
+              mutation: LogoutDocument
             });
 
             return result.data.logout.success;
@@ -78,6 +72,7 @@ const processDefinition = (processId: string) =>
         id: "success",
         data: (context, event: any) => {
           localStorage.removeItem("me");
+          localStorage.removeItem("safe");
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut"
           });

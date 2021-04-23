@@ -97,6 +97,11 @@ export const mySafe = readable<Safe|null>(null, (set) => {
       transaction.to = profilesLookup[transaction.to]
         ? profilesLookup[transaction.to].firstName
         : transaction.to;
+      if (transaction.direction === "in" && profilesLookup[transaction.from]) {
+        transaction.objectAvatarUrl = profilesLookup[transaction.from].avatarUrl;
+      } else if (profilesLookup[transaction.to]) {
+        transaction.objectAvatarUrl = profilesLookup[transaction.to].avatarUrl;
+      }
     });
     set(safe);
 
@@ -111,13 +116,21 @@ export const mySafe = readable<Safe|null>(null, (set) => {
         transaction.from = circlesGardenProfilesLookup[transaction.from]
           ? circlesGardenProfilesLookup[transaction.from].username
           : transaction.from;
+        if (transaction.direction === "in" && profilesLookup[transaction.from]) {
+          transaction.objectAvatarUrl = profilesLookup[transaction.from].avatarUrl;
+        }
       }
       if (Web3.utils.isAddress(transaction.to)) {
         transaction.to = circlesGardenProfilesLookup[transaction.to]
           ? circlesGardenProfilesLookup[transaction.to].username
           : transaction.to;
+        if (profilesLookup[transaction.to]) {
+          transaction.objectAvatarUrl = profilesLookup[transaction.to].avatarUrl;
+        }
       }
     });
+
+    console.log(safe);
   }
 
   async function load(event: PlatformEvent & { profile: Profile }) {

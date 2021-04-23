@@ -17,6 +17,7 @@ export type Transfer = {
   token?: string
   firstBlock: number
   lastBlock?: number
+  objectAvatarUrl?: string
   from: string
   to: string
   amount: string,
