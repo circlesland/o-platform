@@ -11,7 +11,7 @@
   import Router, { push, location } from "svelte-spa-router";
   import Modal from "./shared/molecules/Modal.svelte";
   import ProcessContainer from "./shared/molecules/ProcessContainer.svelte";
-
+  import NavItem from "./shared/atoms/NavItem.svelte";
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
@@ -229,7 +229,7 @@
         <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
           {#if !modalProcess}
             <!-- NOT MODAL START -->
-            <div class="grid grid-cols-5">
+            <div class="grid grid-cols-5 tabs px-2">
               {#if lastLoadedDapp}
                 {#each lastLoadedDapp.pages
                   .filter((o) => !o.isSystem)
@@ -238,12 +238,9 @@
                     href="#/{lastLoadedDapp.routeParts.join('/') +
                       '/' +
                       page.routeParts.join('/')}"
-                    class="justify-self-center inline-block w-full text-center focus:text-teal-500 hover:text-teal-500"
+                    class="justify-self-center tab w-full text-center focus:text-teal-500 hover:text-teal-500"
                   >
-                    <div
-                      class="justify-self-center h-full m-auto mt-2 bottom-nav-icon icon-{page.title.toLowerCase()} "
-                    />
-                    <span class="block text-sm tab p-0">{page.title}</span>
+                    <NavItem label={page.title} />
                   </a>
                 {/each}
               {/if}
@@ -275,12 +272,9 @@
                     href="#/{lastLoadedDapp.routeParts.join('/') +
                       '/' +
                       page.routeParts.join('/')}"
-                    class="justify-self-center inline-block w-full text-center focus:text-teal-500 hover:text-teal-500"
+                    class="justify-self-center tab text-center focus:text-teal-500 hover:text-teal-500"
                   >
-                    <div
-                      class="justify-self-center h-full m-auto mt-2  bottom-nav-icon icon-{page.title.toLowerCase()}"
-                    />
-                    <span class="block text-sm tab p-0">{page.title}</span>
+                    <NavItem label={page.title} />
                   </a>
                 {/each}
               {/if}
