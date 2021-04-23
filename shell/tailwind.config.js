@@ -18,7 +18,7 @@ module.exports = {
     extend: {
       // colors: require("daisyui/colors"),
       colors: {
-        base: "#000000",
+        base: "#2c2c2c",
         "base-300": "#D1D5DB",
         red: "#DC143C",
         green: "#32CD32",
@@ -31,8 +31,8 @@ module.exports = {
         linkgrey: "#97acbc",
         transactionpositive: "#32CD32",
         transactionnegative: "#DC143C",
-        primary: "#60C8F5",
-        secondary: "#88EA66",
+        primary: "#0ad99c",
+        secondary: "#003399",
         light: "#8DA3D0",
         dark: "#0D285F",
         warning: "#FF9900",

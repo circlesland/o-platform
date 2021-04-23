@@ -100,7 +100,7 @@
       </div>
       <div class="self-end">
         <button
-          class=" text-base-300"
+          class=" text-white font-light font-circles"
           on:click={() => (window.location = "/#/dashboard")}
         >
           <svg
@@ -125,11 +125,23 @@
   <div class="self-center text-center mt-6 block">
     <div class="avatar">
       <div class="w-36 h-36 rounded-full mb-4">
-        <img src="{($me && $me.avatarUrl ? $me.avatarUrl : 'https://i.pravatar.cc/500?img=32')}" alt="{($me ? ($me.lastName ? `${$me.firstName} ${$me.lastName}` : $me.firstName) : 'avatar')}" />
+        <img
+          src={$me && $me.avatarUrl
+            ? $me.avatarUrl
+            : "https://i.pravatar.cc/500?img=32"}
+          alt={$me
+            ? $me.lastName
+              ? `${$me.firstName} ${$me.lastName}`
+              : $me.firstName
+            : "avatar"}
+        />
       </div>
     </div>
     <div class="">
-      <h2>{$me ? $me.firstName : "Martin"} {$me && $me.lastName ? $me.lastName : ""}</h2>
+      <h2>
+        {$me ? $me.firstName : "Martin"}
+        {$me && $me.lastName ? $me.lastName : ""}
+      </h2>
     </div>
     <button class="link link-primary text-primary" on:click={editProfile}
       >Edit Profile</button
