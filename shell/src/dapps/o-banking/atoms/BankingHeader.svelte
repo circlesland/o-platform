@@ -72,7 +72,7 @@
     <div class="mt-8 p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
       <small class="block">Transactions Update: 33% complete.</small>
       <progress
-        class="progress progress-secondary transaction-update-progress"
+        class="progress progress-accent transaction-update-progress"
         value="33"
         max="100"
       />

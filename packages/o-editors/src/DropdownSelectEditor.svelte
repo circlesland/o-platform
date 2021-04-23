@@ -6,8 +6,9 @@
   import { onMount } from "svelte";
   export let context: ChoiceSelectorContext;
 
-  let selected: String;
+  $: selected = {};
   let selectedLabel: String;
+  $: items = [];
 
   let graphql = false;
   let optionIdentifier = "value";
@@ -23,7 +24,12 @@
       ? context.params.getSelectionLabel
       : getSelectionLabel;
 
-    selected = context.data[context.fieldName];
+    selected = context.params.choices.find(
+      (o) => o.value === context.data[context.fieldName]
+    );
+    // selected = context.data[context.fieldName];
+    console.log("SELECTED: ", selected);
+    items = context.params.choices;
   });
 
   function handleSelect(event) {
@@ -73,6 +79,9 @@
       <Select
         selectedValue={selected}
         items={context.params.choices}
+        {optionIdentifier}
+        {getSelectionLabel}
+        {getOptionLabel}
         showChevron={true}
         listAutoWidth={false}
         listPlacement="top"
