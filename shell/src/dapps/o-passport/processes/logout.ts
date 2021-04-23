@@ -4,7 +4,6 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
-import gql from "graphql-tag";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {LogoutDocument} from "../data/api/types";
 
@@ -60,7 +59,6 @@ const processDefinition = (processId: string) =>
             const result = await apiClient.mutate({
               mutation: LogoutDocument
             });
-
             return result.data.logout.success;
           },
           onDone: "#success",
@@ -71,8 +69,6 @@ const processDefinition = (processId: string) =>
         type: 'final',
         id: "success",
         data: (context, event: any) => {
-          localStorage.removeItem("me");
-          localStorage.removeItem("safe");
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut"
           });

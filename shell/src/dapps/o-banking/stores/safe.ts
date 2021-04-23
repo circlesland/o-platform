@@ -40,8 +40,8 @@ async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses:string[])
 const emptySafe:Safe = {
   safeAddress: "0x00",
   balance: "0",
-  loadingPercent: 1,
-  loadingText: "Initializing",
+  loadingPercent: -1,
+  loadingText: "No safe connected",
   transfers: {
     firstBlock:0,
     lastBlock:0,
@@ -74,40 +74,21 @@ const emptySafe:Safe = {
 let loading = false;
 let profile:Profile|undefined;
 
-async function tryUpdateCached(set: (value: (Safe | null)) => void, augmentProfiles: (safe: Safe) => Promise<void>, load: (event: (PlatformEvent & { profile: Profile }), cachedSafe?: Safe) => Promise<void>) {
-  if (!profile) {
-    return;
-  }
-  const cachedSafeJson = localStorage.getItem("safe");
-  if (cachedSafeJson) {
-    try {
-      const safe = JSON.parse(cachedSafeJson);
-      set(safe);
-      augmentProfiles(safe).then(() => {
-        set(safe);
-      });
-
-      // Check how many blocks have passed since the last update
-      // and make a plan on how to get up to date
-      await load({
-        type: "shell.authenticated",
-        profile: profile
-      }, safe);
-    } catch (e) {
-      console.error("An error occurred while restoring or updating the cached safe:", e);
-      localStorage.removeItem("safe");
-      set(emptySafe);
-    }
-  } else {
-    await load({
-      type: "shell.authenticated",
-      profile: profile
-    });
-  }
-}
 
 export const mySafe = readable<Safe|null>(null, (set) => {
   set(emptySafe);
+
+  const subscription = window.o.events.subscribe((event: PlatformEvent & {
+    profile: Profile
+  }) => {
+    if (event.type == "shell.loggedOut") {
+      localStorage.removeItem("me");
+      localStorage.removeItem("safe");
+      profile = null;
+      set(null);
+      return;
+    }
+  });
 
   async function augmentProfiles(safe: Safe) {
     // Get all involved addresses
@@ -170,17 +151,17 @@ export const mySafe = readable<Safe|null>(null, (set) => {
     console.log(safe);
   }
 
-  async function load(event: PlatformEvent & { profile: Profile }, cachedSafe?:Safe) {
+  async function load(profile: Profile, cachedSafe?:Safe, cancel?:(e) => void) : Promise<Safe> {
     loading = true;
     try {
-      if (!RpcGateway.get().utils.isAddress(event.profile.circlesAddress ?? "")) {
+      if (!RpcGateway.get().utils.isAddress(profile.circlesAddress ?? "")) {
         localStorage.removeItem("safe");
         set(emptySafe);
         return;
       }
 
       let safe: Safe = cachedSafe ?? {
-        safeAddress: event.profile.circlesAddress,
+        safeAddress: profile.circlesAddress,
         loadingPercent: 0
       };
 
@@ -190,7 +171,10 @@ export const mySafe = readable<Safe|null>(null, (set) => {
           return;
         }
         if (safe.loadingPercent && safe.loadingPercent == _watchLoadingPercent) {
-          RpcGateway.rotateProvider();
+          clearInterval(timeoutHandle);
+          if (cancel) {
+            cancel(new Error("slow_provider"));
+          }
         } else {
           _watchLoadingPercent = safe.loadingPercent;
         }
@@ -213,7 +197,8 @@ export const mySafe = readable<Safe|null>(null, (set) => {
       safe = await Queries.addContacts(safe);
       console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
       safe.loadingPercent = 18;
-      safe.loadingText = "Loading trust accepted tokens ..";
+      safe.loadingText = "" +
+        "Loading accepted tokens ..";
       set(safe);
 
       safe = await Queries.addAcceptedTokens(safe);
@@ -243,12 +228,15 @@ export const mySafe = readable<Safe|null>(null, (set) => {
       console.log(new Date().getTime() +": "+ `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`)
       set(safe);
 
+      subscription?.unsubscribe();
       safe.loadingPercent = undefined;
       safe.loadingText = undefined;
       clearInterval(timeoutHandle);
       localStorage.setItem("safe", JSON.stringify(safe));
       await augmentProfiles(safe);
       set(safe);
+
+      return safe;
     } catch (e) {
       localStorage.removeItem("safe");
       set(emptySafe);
@@ -256,29 +244,57 @@ export const mySafe = readable<Safe|null>(null, (set) => {
     } finally {
       loading = false;
     }
+    return undefined;
   }
 
-  tryUpdateCached(set, augmentProfiles, load);
+  async function tryRestoreCache() {
+    const cachedSafeJson = localStorage.getItem("safe");
+    if (!cachedSafeJson) {
+      return;
+    } else {
+      try {
+        const safe = JSON.parse(cachedSafeJson);
+        set(safe);
+        await augmentProfiles(safe);
+        set(safe);
+        return safe;
+      } catch (e) {
+        console.error("An error occurred while restoring or updating the cached safe:", e);
+        localStorage.removeItem("safe");
+        set(emptySafe);
+        return undefined;
+      }
+    }
+  }
+
+  async function update(cancel:(e:Error) => void) {
+    if (!profile) {
+      return;
+    }
+     let safe = await tryRestoreCache();
+     if (safe) {
+       // Update the cached safe
+       safe = await load(profile, safe, cancel);
+     } else {
+       // Load a completely new safe
+       safe = await load(profile, undefined, cancel);
+     }
+    augmentProfiles(safe).then(() => {
+      set(safe);
+    });
+  }
 
   const unsubscribe = me.subscribe(async profileOrNull => {
+      profile = profileOrNull;
+      let cancel:Error|undefined;
       if (profileOrNull && RpcGateway.get().utils.isAddress(profileOrNull.circlesAddress ?? "")) {
-        profile = profileOrNull;
         for(let i = 0; i < RpcGateway.gateways.length; i++) {
-          try {
-            await tryUpdateCached(set, augmentProfiles, load);/*
-            await load({
-              type: "shell.authenticated",
-              profile: profileOrNull
-            });*/
+          await update(e => cancel = e);
+          if (cancel && cancel.message == "slow_provider") {
+            continue;
+          } else {
             return;
-          } catch (e) {
-            if (e.message === "slow_provider") {
-              RpcGateway.rotateProvider();
-              continue;
-            }
-            throw e;
           }
-          throw new Error(`Failed to load your safe in a timely fashion. Tried ${RpcGateway.gateways.length} providers.`)
         }
       } else {
         localStorage.removeItem("safe");
@@ -287,7 +303,11 @@ export const mySafe = readable<Safe|null>(null, (set) => {
       }
     });
 
+  update(() => {});
+
   return function stop() {
-    unsubscribe();
+    if (unsubscribe) {
+      unsubscribe();
+    }
   };
 });

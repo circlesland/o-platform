@@ -19,6 +19,7 @@ export const me = readable<Profile|null>(null, function start(set) {
   }) => {
     if (event.type == "shell.loggedOut") {
       localStorage.removeItem("me");
+      localStorage.removeItem("safe");
       set(null);
       return;
     }
@@ -36,6 +37,7 @@ export const me = readable<Profile|null>(null, function start(set) {
     } catch (e) {
       console.warn(`Parsing of the cached profile from localStorage(me) failed:`, e);
       localStorage.removeItem("me");
+      localStorage.removeItem("safe");
     }
   }
 
