@@ -8,7 +8,6 @@
 
   $: selected = {};
   let selectedLabel: String;
-  $: items = [];
 
   let graphql = false;
   let optionIdentifier = "value";
@@ -24,12 +23,13 @@
       ? context.params.getSelectionLabel
       : getSelectionLabel;
 
-    selected = context.params.choices.find(
-      (o) => o.value === context.data[context.fieldName]
-    );
-    // selected = context.data[context.fieldName];
-    console.log("SELECTED: ", selected);
-    items = context.params.choices;
+    if (graphql) {
+      selected = context.data[context.fieldName];
+    } else {
+      selected = context.params.choices.find(
+        (o) => o.value === context.data[context.fieldName]
+      );
+    }
   });
 
   function handleSelect(event) {
@@ -42,8 +42,8 @@
   function submit() {
     const event = new Continue();
     event.data = {};
-    event.data[context.fieldName] = selected;
-    context.data[context.fieldName] = selected;
+    event.data[context.fieldName] = selected.value;
+    context.data[context.fieldName] = selected.value;
     context.process.sendAnswer(event);
   }
 
