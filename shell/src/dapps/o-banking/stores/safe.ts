@@ -91,17 +91,17 @@ export const mySafe = readable<Safe|null>(null, (set) => {
       return p;
     }, {});
     safe.transfers.rows.forEach(transaction => {
+      if (transaction.direction === "in" && profilesLookup[transaction.from]) {
+        transaction.objectAvatarUrl = profilesLookup[transaction.from].avatarUrl;
+      } else if (profilesLookup[transaction.to]) {
+        transaction.objectAvatarUrl = profilesLookup[transaction.to].avatarUrl;
+      }
       transaction.from = profilesLookup[transaction.from]
         ? profilesLookup[transaction.from].firstName
         : transaction.from;
       transaction.to = profilesLookup[transaction.to]
         ? profilesLookup[transaction.to].firstName
         : transaction.to;
-      if (transaction.direction === "in" && profilesLookup[transaction.from]) {
-        transaction.objectAvatarUrl = profilesLookup[transaction.from].avatarUrl;
-      } else if (profilesLookup[transaction.to]) {
-        transaction.objectAvatarUrl = profilesLookup[transaction.to].avatarUrl;
-      }
     });
     set(safe);
 
@@ -113,20 +113,20 @@ export const mySafe = readable<Safe|null>(null, (set) => {
     }, {});
     safe.transfers.rows.forEach(transaction => {
       if (Web3.utils.isAddress(transaction.from)) {
-        transaction.from = circlesGardenProfilesLookup[transaction.from]
-          ? circlesGardenProfilesLookup[transaction.from].username
-          : transaction.from;
         if (transaction.direction === "in" && profilesLookup[transaction.from]) {
           transaction.objectAvatarUrl = profilesLookup[transaction.from].avatarUrl;
         }
+        transaction.from = circlesGardenProfilesLookup[transaction.from]
+          ? circlesGardenProfilesLookup[transaction.from].username
+          : transaction.from;
       }
       if (Web3.utils.isAddress(transaction.to)) {
-        transaction.to = circlesGardenProfilesLookup[transaction.to]
-          ? circlesGardenProfilesLookup[transaction.to].username
-          : transaction.to;
         if (profilesLookup[transaction.to]) {
           transaction.objectAvatarUrl = profilesLookup[transaction.to].avatarUrl;
         }
+        transaction.to = circlesGardenProfilesLookup[transaction.to]
+          ? circlesGardenProfilesLookup[transaction.to].username
+          : transaction.to;
       }
     });
 
