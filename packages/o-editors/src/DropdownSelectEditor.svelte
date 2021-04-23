@@ -6,7 +6,8 @@
   import { onMount } from "svelte";
   export let context: ChoiceSelectorContext;
 
-  let selected = undefined;
+  let selected: String;
+  let selectedLabel: String;
 
   let graphql = false;
   let optionIdentifier = "value";
@@ -26,7 +27,10 @@
   });
 
   function handleSelect(event) {
+    console.log("SELECTED:", event);
+    console.log("CHOICES:", context.params.choices);
     selected = event.detail.value;
+    selectedLabel = event.detail.label;
   }
 
   function submit() {
@@ -73,8 +77,6 @@
         listAutoWidth={false}
         listPlacement="top"
         containerClasses="w-80 min-w-full"
-        {getSelectionLabel}
-        {getOptionLabel}
         on:select={handleSelect}
       />
     {/if}

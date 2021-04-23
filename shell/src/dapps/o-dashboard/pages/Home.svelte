@@ -1,9 +1,9 @@
 <script lang="ts">
   import { dashboard } from "../../o-dashboard.manifest";
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
-  import {me} from "../../../shared/stores/me";
+  import { me } from "../../../shared/stores/me";
 
-  $:me;
+  $: me;
 
   function buyXats() {
     window.o.publishEvent(
@@ -11,13 +11,14 @@
     );
   }
 </script>
+
 <DashboardHeader />
 <div class="mx-4">
   <!-- PASSPORT  -->
   <a href="/#/passport/profile">
     <section class="flex items-center justify-center mb-8">
       <div class="flex items-center bg-white shadow px-2 -mt-6 w-full">
-        <div class="mr-4  px-4 py-2  text-center -ml-3 text-primary">
+        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-14 w-14 m-auto"
@@ -34,9 +35,11 @@
           </svg>
         </div>
         <div class="flex items-center">
-          <h2 class="text-4xl font-circles mr-2 text-dark">Passport</h2>
+          <h2 class="text-4xl font-circles mr-2 text-secondary font-medium">
+            Passport
+          </h2>
         </div>
-        <div class="flex justify-end flex-1 mr-1 text-base-300">
+        <div class="flex justify-end flex-1 mr-1 text-primary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -58,7 +61,7 @@
   <a href="/#/banking/transactions">
     <section class="flex items-center justify-center mb-8">
       <div class="flex items-center bg-white shadow px-2 w-full">
-        <div class="mr-4  px-4 py-2  text-center -ml-3 text-primary">
+        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-14 w-14 m-auto"
@@ -75,9 +78,11 @@
           </svg>
         </div>
         <div class="flex items-center">
-          <h2 class="text-4xl font-circles mr-2 text-dark">Banking</h2>
+          <h2 class="text-4xl font-circles mr-2 text-secondary font-medium">
+            Banking
+          </h2>
         </div>
-        <div class="flex justify-end flex-1 mr-1 text-base-300">
+        <div class="flex justify-end flex-1 mr-1 text-primary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
