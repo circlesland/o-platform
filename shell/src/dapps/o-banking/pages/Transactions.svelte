@@ -41,17 +41,19 @@
     {#each $mySafe.transfers.rows as transfer}
       {#if transfer.direction === "in"}
         <TransactionCard
-          displayName={transfer.from}
+          displayName={transfer.fromProfile ? transfer.fromProfile.displayName : transfer.from}
           direction="transactionnegative"
           amount={transfer.amount}
+          pictureUrl={transfer.fromProfile ? transfer.fromProfile.avatarUrl : undefined}
           message="WURST"
           time={transfer.time}
         />
       {:else}
         <TransactionCard
-          displayName={transfer.to}
+          displayName={transfer.toProfile ? transfer.toProfile.displayName : transfer.to}
           direction="transactionpositive"
           amount={transfer.amount}
+          pictureUrl={transfer.toProfile ? transfer.toProfile.avatarUrl : undefined}
           message="WURST"
           time={transfer.time}
         />

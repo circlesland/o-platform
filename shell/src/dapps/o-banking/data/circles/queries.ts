@@ -20,9 +20,16 @@ export type Transfer = {
   token?: string
   firstBlock: number
   lastBlock?: number
-  objectAvatarUrl?: string
   from: string
+  fromProfile: {
+    displayName: string
+    avatarUrl: string
+  }
   to: string
+  toProfile: {
+    displayName: string
+    avatarUrl: string
+  }
   amount: string,
   children?: Transfer[]
 }

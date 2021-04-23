@@ -9,6 +9,7 @@ import {ProfilesByCirclesAddressDocument} from "../data/api/types";
 import Web3 from "web3";
 import {Subscription} from "rxjs";
 import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
+import {throttleTime} from "rxjs/operators";
 
 async function loadProfilesBySafeAddress(circlesAddresses:string[]) {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -111,17 +112,18 @@ export const mySafe = readable<Safe|null>(null, (set) => {
       return p;
     }, {});
     safe.transfers.rows.forEach(transaction => {
-      if (transaction.direction === "in" && profilesLookup[transaction.from]) {
-        transaction.objectAvatarUrl = profilesLookup[transaction.from].avatarUrl;
-      } else if (profilesLookup[transaction.to]) {
-        transaction.objectAvatarUrl = profilesLookup[transaction.to].avatarUrl;
-      }
-      transaction.from = profilesLookup[transaction.from]
-        ? profilesLookup[transaction.from].firstName
-        : transaction.from;
-      transaction.to = profilesLookup[transaction.to]
-        ? profilesLookup[transaction.to].firstName
-        : transaction.to;
+      transaction.fromProfile = profilesLookup[transaction.from]
+        ? {
+          displayName: `${profilesLookup[transaction.from].firstName ?? ""} ${profilesLookup[transaction.from].lastName ?? ""}`,
+          avatarUrl: profilesLookup[transaction.from].avatarUrl
+        }
+        : undefined;
+      transaction.toProfile = profilesLookup[transaction.to]
+        ? {
+          displayName: `${profilesLookup[transaction.to].firstName ?? ""} ${profilesLookup[transaction.to].lastName ?? ""}`,
+          avatarUrl: profilesLookup[transaction.to].avatarUrl
+        }
+        : undefined;
     });
     set(safe);
 
@@ -132,21 +134,27 @@ export const mySafe = readable<Safe|null>(null, (set) => {
       return p;
     }, {});
     safe.transfers.rows.forEach(transaction => {
-      if (Web3.utils.isAddress(transaction.from)) {
-        if (transaction.direction === "in" && profilesLookup[transaction.from]) {
-          transaction.objectAvatarUrl = profilesLookup[transaction.from].avatarUrl;
-        }
-        transaction.from = circlesGardenProfilesLookup[transaction.from]
-          ? circlesGardenProfilesLookup[transaction.from].username
-          : transaction.from;
+      if (!transaction.fromProfile) {
+        transaction.fromProfile = circlesGardenProfilesLookup[transaction.from]
+          ? {
+            displayName: circlesGardenProfilesLookup[transaction.from].username,
+            avatarUrl: circlesGardenProfilesLookup[transaction.from].avatarUrl
+          }
+          : {
+            displayName: transaction.from,
+            avatarUrl: ""
+          };
       }
-      if (Web3.utils.isAddress(transaction.to)) {
-        if (profilesLookup[transaction.to]) {
-          transaction.objectAvatarUrl = profilesLookup[transaction.to].avatarUrl;
-        }
-        transaction.to = circlesGardenProfilesLookup[transaction.to]
-          ? circlesGardenProfilesLookup[transaction.to].username
-          : transaction.to;
+      if (!transaction.toProfile) {
+        transaction.toProfile = circlesGardenProfilesLookup[transaction.to]
+          ? {
+            displayName: circlesGardenProfilesLookup[transaction.to].username,
+            avatarUrl: circlesGardenProfilesLookup[transaction.to].avatarUrl
+          }
+          : {
+            displayName: transaction.to,
+            avatarUrl: ""
+          };
       }
     });
 
@@ -289,9 +297,6 @@ export const mySafe = readable<Safe|null>(null, (set) => {
        // Load a completely new safe
        safe = await load(profile, undefined, cancel, tokenList);
      }
-    augmentProfiles(safe).then(() => {
-      set(safe);
-    });
   }
 
   const unsubscribe = me.subscribe(async profileOrNull => {
