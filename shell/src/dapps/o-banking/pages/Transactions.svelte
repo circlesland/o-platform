@@ -18,7 +18,7 @@
 <BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 
 <div class="mx-4 -mt-6">
-  {#if $mySafe.loading}
+  {#if $mySafe.loadingPercent === 0}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">

@@ -3,6 +3,7 @@
   import { getLastLoadedDapp, getLastLoadedPage } from "../../../loader";
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import {mySafe} from "../stores/safe";
 
   export let balance: string = "0";
 
@@ -70,10 +71,12 @@
       </svg>
     </span>
     <div class="mt-8 p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
-      <small class="block">Transactions Update: 33% complete.</small>
+      <small class="block">
+          {$mySafe.loadingPercent ? $mySafe.loadingText : ""}
+      </small>
       <progress
         class="progress progress-accent transaction-update-progress"
-        value="33"
+        value={$mySafe.loadingPercent ? $mySafe.loadingPercent : 0}
         max="100"
       />
     </div>

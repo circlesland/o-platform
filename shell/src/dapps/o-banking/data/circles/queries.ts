@@ -32,7 +32,8 @@ export type TrustObject = {
 }
 
 export type Safe = {
-  loading?:boolean
+  loadingPercent?:number
+  loadingText?:string
   error?:Error
   safeAddress: string
   ownerAddress?: string
@@ -182,7 +183,7 @@ export class Queries {
     }
   }
 
-  static async addDirectTransfers(safe: Safe, startBlock?: number): Promise<Safe> {
+  static async addDirectTransfers(safe: Safe, startBlock?: number, progressCallback?:(progress:{count:number, current:number}) => void): Promise<Safe> {
     if (!safe.acceptedTokens) {
       throw new Error(`The 'acceptedTokens' property must be set.`)
     }
@@ -194,7 +195,10 @@ export class Queries {
       firstBlock: 0
     }));
 
-    for (let tokenAddress in safe.acceptedTokens.tokens) {
+    const tokenAddresses = Object.keys(safe.acceptedTokens.tokens);
+    let current = 0;
+    for (let tokenAddress of tokenAddresses) {
+      current++;
       const token = safe.acceptedTokens.tokens[tokenAddress];
       console.log(`Direct transfers of token (${tokenAddress}) via web3 ..`);
       await new Erc20Token(RpcGateway.get(), tokenAddress)
@@ -219,6 +223,12 @@ export class Queries {
             t.lastBlock = this.max(t.lastBlock, directTransfer.blockNumber);
           }
         });
+      if (progressCallback) {
+        progressCallback({
+          count:tokenAddresses.length,
+          current:current
+        });
+      }
       console.log(`Direct transfers of token (${tokenAddress}) via web3 .. Done`,);
     }
 

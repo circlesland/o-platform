@@ -40,7 +40,8 @@ async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses:string[])
 const emptySafe:Safe = {
   safeAddress: "0x00",
   balance: "0",
-  loading: true,
+  loadingPercent: 1,
+  loadingText: "Initializing",
   transfers: {
     firstBlock:0,
     lastBlock:0,
@@ -150,39 +151,56 @@ export const mySafe = readable<Safe|null>(null, (set) => {
       };
 
       safe = await Queries.addOwnToken(safe);
-      console.log("Token via web3:", JSON.stringify(safe, null, 2));
+      console.log(new Date().getTime() +": "+ "Token via web3:", JSON.stringify(safe, null, 2));
+      safe.loadingText = "Loading hub transfers ..";
       set(safe);
+
 
       safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
       const hubTransferCount = safe.transfers.rows.length;
-      console.log(`Added ${hubTransferCount} hub transfers.`)
+      console.log(new Date().getTime() +": "+ `Added ${hubTransferCount} hub transfers.`)
+      safe.loadingPercent = 5;
+      safe.loadingText = "Loading trust connections ..";
       set(safe);
       augmentProfiles(safe);
 
       safe = await Queries.addContacts(safe);
-      console.log(`Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
+      console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
+      safe.loadingPercent = 18;
+      safe.loadingText = "Loading trust accepted tokens ..";
       set(safe);
 
       safe = await Queries.addAcceptedTokens(safe);
-      console.log(`Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
+      console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
+      safe.loadingPercent = 22;
+      safe.loadingText = "Loading balances ..";
       set(safe);
 
       safe = await Queries.addTokenBalances(safe);
       safe.token.balance = (await new Erc20Token(RpcGateway.get(), safe.token.tokenAddress).getBalanceOf(safe.safeAddress)).toString();
-      console.log(`Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)
+      console.log(new Date().getTime() +": "+ `Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)
       set(safe);
 
       const totalBalance = Object.keys(safe.acceptedTokens.tokens).reduce((p: BN, c: string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
       const totalBalanceStr = totalBalance.toString();
       safe.balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
+      safe.loadingPercent = 26;
+      safe.loadingText = "Loading direct transfers ..";
       set(safe);
 
-      safe = await Queries.addDirectTransfers(safe);
-      console.log(`Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`)
+      const lastProgress = safe.loadingPercent;
+      const remainingPercents = 100 - lastProgress;
+      safe = await Queries.addDirectTransfers(safe, undefined, progress => {
+        safe.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
+        set(safe);
+      });
+      console.log(new Date().getTime() +": "+ `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`)
       set(safe);
+
+      safe.loadingPercent = undefined;
+      safe.loadingText = undefined;
       localStorage.setItem("safe", JSON.stringify(safe));
       await augmentProfiles(safe);
-      safe.loading = false;
       set(safe);
     } catch (e) {
       localStorage.removeItem("safe");
