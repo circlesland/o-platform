@@ -174,7 +174,7 @@ export class Queries {
     });
 
     transfers.rows = transfers.rows.sort((a, b) =>
-      a.blockNumber > b.blockNumber ? 1 : a.blockNumber < b.blockNumber ? -1 : 0);
+      a.firstBlock > b.firstBlock ? -1 : a.firstBlock < b.firstBlock ? 1 : 0);
 
     return {
       ...safe,
@@ -223,7 +223,7 @@ export class Queries {
     }
 
     transfers.rows = transfers.rows.sort((a, b) =>
-      a.blockNumber < b.blockNumber ? 1 : a.blockNumber > b.blockNumber ? -1 : 0);
+      a.firstBlock > b.firstBlock ? -1 : a.firstBlock < b.firstBlock ? 1 : 0);
 
     return {
       ...safe,
