@@ -2,11 +2,14 @@ import {CirclesAccount} from "@o-platform/o-circles/dist/model/circlesAccount";
 import {BlockchainEvent} from "@o-platform/o-events/dist/blockchainEvent";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {Erc20Token} from "@o-platform/o-circles/dist/token/erc20Token";
+import {Observable, Subject} from "rxjs";
+import {CirclesToken} from "@o-platform/o-circles/dist/model/circlesToken";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type Token = {
   tokenAddress: string
   tokenOwner: string
-  firstBlock?: number
+  firstBlock: number
   balance?: string
 }
 
@@ -189,7 +192,18 @@ export class Queries {
     }
   }
 
-  static async addDirectTransfers(safe: Safe, startBlock?: number, progressCallback?:(progress:{count:number, current:number}) => void): Promise<Safe> {
+  static tokenEvents(safe:Safe) : Observable<PlatformEvent> {
+    if (!safe.token?.tokenAddress) {
+      throw new Error(`The safe.token.tokenAddress must be set.`)
+    }
+    const token = new CirclesToken(safe.token.tokenAddress, safe.safeAddress, safe.token.firstBlock);
+    const sub = new Subject<PlatformEvent>();
+    token.subscribeToTransactions(<any>sub, safe.safeAddress, safe.acceptedTokens.tokens, Object.keys(safe.acceptedTokens.tokens))
+
+    return sub;
+  }
+
+  static async addDirectTransfers(safe: Safe, startBlock?: number, progressCallback?:(progress:{count:number, current:number}) => void, tokenList?:string[]): Promise<Safe> {
     if (!safe.acceptedTokens) {
       throw new Error(`The 'acceptedTokens' property must be set.`)
     }
@@ -201,7 +215,7 @@ export class Queries {
       firstBlock: 0
     }));
 
-    const tokenAddresses = Object.keys(safe.acceptedTokens.tokens);
+    let tokenAddresses = tokenList ?? Object.keys(safe.acceptedTokens.tokens);
     let current = 0;
     for (let tokenAddress of tokenAddresses) {
       current++;

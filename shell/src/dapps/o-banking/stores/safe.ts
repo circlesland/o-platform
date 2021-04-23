@@ -7,6 +7,8 @@ import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {me, Profile} from "../../../shared/stores/me";
 import {ProfilesByCirclesAddressDocument} from "../data/api/types";
 import Web3 from "web3";
+import {Subscription} from "rxjs";
+import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
 
 async function loadProfilesBySafeAddress(circlesAddresses:string[]) {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -73,7 +75,7 @@ const emptySafe:Safe = {
 
 let loading = false;
 let profile:Profile|undefined;
-
+let blockChainEventsSubscription:Subscription|null;
 
 export const mySafe = readable<Safe|null>(null, (set) => {
   set(emptySafe);
@@ -151,7 +153,7 @@ export const mySafe = readable<Safe|null>(null, (set) => {
     console.log(safe);
   }
 
-  async function load(profile: Profile, cachedSafe?:Safe, cancel?:(e) => void) : Promise<Safe> {
+  async function load(profile: Profile, cachedSafe?:Safe, cancel?:(e) => void, tokenList?:string[]) : Promise<Safe> {
     loading = true;
     try {
       if (!RpcGateway.get().utils.isAddress(profile.circlesAddress ?? "")) {
@@ -224,7 +226,7 @@ export const mySafe = readable<Safe|null>(null, (set) => {
       safe = await Queries.addDirectTransfers(safe, undefined, progress => {
         safe.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
         set(safe);
-      });
+      }, tokenList);
       console.log(new Date().getTime() +": "+ `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`)
       set(safe);
 
@@ -235,6 +237,14 @@ export const mySafe = readable<Safe|null>(null, (set) => {
       localStorage.setItem("safe", JSON.stringify(safe));
       await augmentProfiles(safe);
       set(safe);
+
+      let onEventUpdateTrigger = new DelayedTrigger(500, async (token:string) => {
+        await update(() => {}, [token]);
+      });
+      blockChainEventsSubscription = Queries.tokenEvents(safe).subscribe((event:any) => {
+        console.log("NEW EVENT:", event);
+        onEventUpdateTrigger.trigger(event.token);
+      });
 
       return safe;
     } catch (e) {
@@ -267,17 +277,17 @@ export const mySafe = readable<Safe|null>(null, (set) => {
     }
   }
 
-  async function update(cancel:(e:Error) => void) {
+  async function update(cancel:(e:Error) => void, tokenList?:string[]) {
     if (!profile) {
       return;
     }
      let safe = await tryRestoreCache();
      if (safe) {
        // Update the cached safe
-       safe = await load(profile, safe, cancel);
+       safe = await load(profile, safe, cancel, tokenList);
      } else {
        // Load a completely new safe
-       safe = await load(profile, undefined, cancel);
+       safe = await load(profile, undefined, cancel, tokenList);
      }
     augmentProfiles(safe).then(() => {
       set(safe);
@@ -308,6 +318,9 @@ export const mySafe = readable<Safe|null>(null, (set) => {
   return function stop() {
     if (unsubscribe) {
       unsubscribe();
+    }
+    if (blockChainEventsSubscription) {
+      blockChainEventsSubscription.unsubscribe();
     }
   };
 });

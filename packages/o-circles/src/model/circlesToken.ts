@@ -151,7 +151,7 @@ export class CirclesToken implements CirclesTokenModel
     return `${transaction.blockNo}_${transaction.token}_${transaction.from}_${transaction.to}_${transaction.amount.toString()}`;
   }
 
-  static blockchainEventToCirclesTransaction(mySafeAddress:string, tokensByAddress:{[tokenAddress:string]:CirclesToken}, blockChainEvent:BlockchainEvent)
+  static blockchainEventToCirclesTransaction(mySafeAddress:string, tokensByAddress:{[tokenAddress:string]:CirclesTokenModel}, blockChainEvent:BlockchainEvent)
   {
     const direction = blockChainEvent.returnValues.to == mySafeAddress ? "in" : "out";
     const circlesTransaction = <CirclesTransaction>{
@@ -173,7 +173,7 @@ export class CirclesToken implements CirclesTokenModel
   subscribeToTransactions(
       subject:Subject<PlatformEvent>,
       mySafeAddress:string,
-      tokensByAddress:{[tokenAddress:string]:CirclesToken},
+      tokensByAddress:{[tokenAddress:string]:CirclesTokenModel},
       tokenAddresses:string[])
       : Subscription<any>
   {
