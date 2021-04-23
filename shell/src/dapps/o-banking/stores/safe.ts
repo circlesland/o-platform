@@ -23,6 +23,9 @@ async function loadProfilesBySafeAddress(circlesAddresses:string[]) {
 
 async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses:string[]) {
   const baseUrl = `https://api.circles.garden/api/users/`;
+  if (circlesAddresses.length == 0) {
+    return [];
+  }
   let query = circlesAddresses.reduce((p,c) => p + `address[]=${c}&`, "");
   query = query.substr(0, query.length - 1);
   console.log("Querying the following profiles from the circles garden api:", query);
