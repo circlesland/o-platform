@@ -20,7 +20,7 @@
 
 <div class="mt-4 bordered">
   <div class="form-control">
-    <label class="cursor-pointer label" for={context.params.linkLabel}>
+    <label class="cursor-pointer label" for={context.fieldName}>
       <span class="label-text">
         {context.params.label}
         {#if context.params.link}
@@ -36,6 +36,7 @@
       </span>
       <div>
         <input
+          id={context.fieldName}
           type="checkbox"
           class="checkbox"
           bind:value={context.data[context.fieldName]}

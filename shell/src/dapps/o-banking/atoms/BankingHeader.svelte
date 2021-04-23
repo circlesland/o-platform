@@ -4,7 +4,7 @@
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-  export let balance:string = "0";
+  export let balance: string = "0";
 
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
@@ -52,13 +52,13 @@
       </div>
     </div>
   {/if}
-  <div class="self-center text-center mb-8 block">
+  <div class="self-center text-center mt-12 mb-8 block">
     <span class="block text-base-300">Your Balance</span>
-    <span class="inline-block text-8xl font-circles ml-10 "
+    <span class="inline-block text-6xl font-circles ml-10 "
       >{balance}
       <svg
-        class="w-16 h-16 inline -ml-6"
-        viewBox="0 0 209 215"
+        class="w-12 h-12 inline -ml-4"
+        viewBox="0 0 229 255"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -69,10 +69,10 @@
         <circle cx="119.5" cy="111.5" r="18.5" fill="white" />
       </svg>
     </span>
-    <div class="p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
+    <div class="mt-8 p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
       <small class="block">Transactions Update: 33% complete.</small>
       <progress
-        class="progress progress-secondary transaction-update-progress"
+        class="progress progress-accent transaction-update-progress"
         value="33"
         max="100"
       />

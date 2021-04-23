@@ -10,17 +10,11 @@
     IdentifyContextData,
   } from "../../o-passport/processes/identify";
   import { me } from "../../../shared/stores/me";
-  import { showToast } from "../../../shared/toast";
 
   $: {
     console.log($me); // TODO: This is just to init the store. There could be a better solution to do this :)
   }
 
-  showToast(
-    "warning",
-    "You got us!<br/>We're currently actively working on this.<br/>All Data will be re-set when we launch.",
-    false
-  );
   $: me;
 
   async function login() {
@@ -48,7 +42,15 @@
 <div
   class="flex flex-col h-screen  bg-gradient-to-r from-gradient1 to-gradient2 text-white"
 >
-  <main class="flex-1 overflow-y-visible z-30" />
+  <main class="flex-1 overflow-y-visible z-30">
+    <div class="flex flex-col text-center justify-items-center pt-11">
+      <h1 class="font-circles font-bold">You got us!</h1>
+      <h2 class="font-circles font-thin pt-11">
+        We're currently actively working on this.<br />All Data will be re-set
+        when we launch.
+      </h2>
+    </div>
+  </main>
   <footer class="z-50  w-full sticky bottom-0 ">
     <div class="flex justify-around ">
       <button on:click={login} class="mb-4 btn btn-white">

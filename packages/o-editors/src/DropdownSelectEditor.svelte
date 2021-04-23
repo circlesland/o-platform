@@ -6,7 +6,8 @@
   import { onMount } from "svelte";
   export let context: ChoiceSelectorContext;
 
-  let selected = undefined;
+  $: selected = {};
+  let selectedLabel: String;
 
   let graphql = false;
   let optionIdentifier = "value";
@@ -22,18 +23,27 @@
       ? context.params.getSelectionLabel
       : getSelectionLabel;
 
-    selected = context.data[context.fieldName];
+    if (graphql) {
+      selected = context.data[context.fieldName];
+    } else {
+      selected = context.params.choices.find(
+        (o) => o.value === context.data[context.fieldName]
+      );
+    }
   });
 
   function handleSelect(event) {
-    selected = event.detail.value;
+    console.log("SELECTED:", event);
+    console.log("CHOICES:", context.params.choices);
+    selected = event.detail;
+    selectedLabel = event.detail.label;
   }
 
   function submit() {
     const event = new Continue();
     event.data = {};
-    event.data[context.fieldName] = selected;
-    context.data[context.fieldName] = selected;
+    event.data[context.fieldName] = selected.value;
+    context.data[context.fieldName] = selected.value;
     context.process.sendAnswer(event);
   }
 
@@ -45,7 +55,7 @@
 </script>
 
 <div class="form-control justify-self-center">
-  <div class="dropdown-select-editor flex flex-wrap content-end w-full h-60">
+  <div class="dropdown-select-editor flex flex-wrap content-end w-full">
     <div class="w-full">
       <label class="label" for={context.fieldName}>
         <span class="label-text">{context.params.label}</span>
@@ -73,8 +83,6 @@
         listAutoWidth={false}
         listPlacement="top"
         containerClasses="w-80 min-w-full"
-        {getSelectionLabel}
-        {getOptionLabel}
         on:select={handleSelect}
       />
     {/if}

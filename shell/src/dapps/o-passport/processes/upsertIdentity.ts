@@ -8,11 +8,11 @@ import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
 import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import { countries } from "../../../shared/countries";
-import gql from "graphql-tag";
+
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { uploadFile } from "../../../shared/api/uploadFile";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
-import {UpsertProfileDocument} from "../data/api/types";
+import { UpsertProfileDocument } from "../data/api/types";
 
 export type UpsertIdentityContextData = {
   id?: number;
