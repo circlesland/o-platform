@@ -10,6 +10,7 @@
   export let context: EditorContext;
 
   let crop = { x: 0, y: 0 };
+  let cropSize = { width: 300, height: 300 };
   let zoom = 1;
   let aspect = 1 / 1;
   let cropShape = "round";
@@ -17,6 +18,8 @@
   let ctx;
   let image;
   let uploadFile;
+
+  let promise = Promise.resolve([]);
 
   let files = {
     accepted: [],
@@ -34,10 +37,8 @@
   }
 
   onMount(async () => {
-    canvas = HTMLCanvasElement = <HTMLCanvasElement>(
-      document.getElementById("cropCanvas")
-    );
-
+    // canvas = <HTMLCanvasElement>document.getElementById("cropCanvas");
+    // canvas = document.createElement("canvas");
     ctx = canvas.getContext("2d");
   });
 
@@ -46,7 +47,7 @@
 
     reader.addEventListener("loadend", (e) => {
       uploadFile = Buffer.from(<ArrayBuffer>reader.result);
-      loadImageIntoCanvas();
+      cropImage();
     });
 
     reader.readAsArrayBuffer(file);
@@ -59,83 +60,76 @@
     image = null;
   }
 
-  function loadImageIntoCanvas() {
-    image = new Image();
-    image.src = `data:image/*;base64,${uploadFile.toString("base64")}`;
+  let croppedAreaPixels = null;
+  let croppedImage = null;
 
-    image.onload = function () {
-      ctx.drawImage(
-        image,
-        70,
-        20, // Start at 70/20 pixels from the left and the top of the image (crop),
-        50,
-        50, // "Get" a `50 * 50` (w * h) area from the source image (crop),
-        0,
-        0, // Place the result at 0, 0 in the canvas,
-        100,
-        100
-      ); // With as width / height: 100 * 100 (scale)
-    };
+  function onCropComplete(croppedArea, croppedAreaPixelsData) {
+    croppedAreaPixels = croppedAreaPixelsData;
+    console.log("CROPPEDAREAPIXELS: ", crop);
   }
 
-  const showCroppedImage = async (cropData) => {
+  function cropImage() {
     try {
-      console.log("IMAGEDATA: ", cropData);
       image = new Image();
       image.src = `data:image/*;base64,${uploadFile.toString("base64")}`;
-      const croppedImage = await getCroppedImg(image, cropData.details.pixels);
-      console.log("donee", { croppedImage });
-      // setCroppedImage(croppedImage);
+      const maxSize = Math.max(image.width, image.height);
+      const safeArea = 2 * ((maxSize / 2) * Math.sqrt(2));
+
+      // set each dimensions to double largest dimension to allow for a safe area for the
+      // image to rotate in without being clipped by canvas context
+      // canvas.width = safeArea;
+      // canvas.height = safeArea;
+      canvas.width = image.width;
+      canvas.height = image.height;
+      // translate canvas context to a central location on image to allow rotating around the center.
+      // ctx.translate(safeArea / 2, safeArea / 2);
+      // ctx.translate(-safeArea / 2, -safeArea / 2);
+
+      // draw rotated image and store data.
+      ctx.drawImage(
+        image,
+        safeArea / 2 - image.width * 0.5,
+        safeArea / 2 - image.height * 0.5
+      );
+      const data = ctx.getImageData(0, 0, safeArea, safeArea);
+
+      // set canvas width to final desired crop size - this will clear existing context
+      canvas.width = cropSize.width;
+      canvas.height = cropSize.height;
+
+      // paste generated rotate image with correct offsets for x,y crop values.
+      ctx.putImageData(
+        data,
+        Math.round(0 - safeArea / 2 + image.width * 0.5 - crop.x),
+        Math.round(0 - safeArea / 2 + image.height * 0.5 - crop.y)
+      );
+
+      // As Base64 string
+      // return canvas.toDataURL('image/jpeg');
+
+      // As a blob
+      canvas.toBlob((blob) => {
+        const reader = new FileReader();
+
+        reader.addEventListener("loadend", () => {
+          const arrayBuffer = reader.result;
+          imageStore.value = Buffer.from(<ArrayBuffer>reader.result);
+          imageStore.isValid = true;
+        });
+
+        reader.readAsArrayBuffer(blob);
+      }, "image/jpg");
+
+      return true;
     } catch (e) {
-      console.error(e);
+      console.error("ERROR ", e);
     }
-  };
-
-  function cropImage(cropData) {
-    const sourceX = cropData.detail.pixels.x;
-    const sourceY = cropData.detail.pixels.y;
-    const sourceWidth = cropData.detail.pixels.width;
-    const sourceHeight = cropData.detail.pixels.height;
-    const destWidth = sourceWidth;
-    const destHeight = sourceHeight;
-    const destX = canvas.width / 2 - destWidth / 2;
-    const destY = canvas.height / 2 - destHeight / 2;
-    const mimeType = "image/png";
-
-    ctx.drawImage(
-      image,
-      sourceX,
-      sourceY,
-      sourceWidth,
-      sourceHeight,
-      destX,
-      destY,
-      destWidth,
-      destHeight
-    );
-
-    // convert to blob which i'm not sure if actually necessary :D
-    canvas.toBlob((blob) => {
-      const reader = new FileReader();
-
-      reader.addEventListener("loadend", () => {
-        const arrayBuffer = reader.result;
-        imageStore.value = Buffer.from(<ArrayBuffer>reader.result);
-        imageStore.isValid = true;
-      });
-
-      reader.readAsArrayBuffer(blob);
-    }, mimeType);
-
-    // This kind of happens every time the user 'moves' the cropping tool, maybe this isn't necessary?
-    // dispatch("validated", imageStore.isValid);
   }
 
   $: {
     if (imageStore && imageStore.value) {
       imageStore.isValid = true;
       setTimeout(() => {
-        // dispatch("validated", imageStore.isValid);
         console.log("CROPPUS ", imageStore);
       });
     }
@@ -146,7 +140,7 @@
     answer.data = {
       ...context.data,
       avatar: {
-        mimeType: "image/*",
+        mimeType: "image/jpeg",
         bytes: imageStore.value,
       },
     };
@@ -166,6 +160,7 @@
 <div class="w-full h-full">
   <canvas
     style="visibility: visible; position:absolute; left:0; top:0;"
+    bind:this={canvas}
     id="cropCanvas"
     width="300"
     height="300"
@@ -177,13 +172,24 @@
       </span>
     </div>
     <div class="w-full h-96 relative">
+      {console.log(
+        "Zoom: ",
+        zoom,
+        "Crop: ",
+        crop,
+        "aspect: ",
+        aspect,
+        "cropSize: ",
+        cropSize
+      )}
       <Cropper
         image={`data:image/png;base64,${uploadFile.toString("base64")}`}
         bind:crop
+        bind:cropSize
         bind:zoom
         bind:aspect
         bind:cropShape
-        on:cropcomplete={(cropData) => showCroppedImage(cropData)}
+        on:cropcomplete={cropImage}
       />
     </div>
   {:else}

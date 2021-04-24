@@ -12,7 +12,8 @@
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { sendInviteGas } from "../processes/sendInviteGas";
   import gql from "graphql-tag";
-  import {me} from "../../../shared/stores/me";
+  import { me } from "../../../shared/stores/me";
+  import { mySafe } from "../stores/safe";
 
   export let params: {
     inviteAccountAddress?: string;
@@ -45,7 +46,7 @@
     `,
     {
       variables: {
-        id: $me.circlesAddress ? $me.circlesAddress.toLowerCase() : ""
+        id: $me.circlesAddress ? $me.circlesAddress.toLowerCase() : "",
       },
     }
   );
@@ -121,6 +122,35 @@
 
 <BankingHeader />
 
+<div class="mx-4 -mt-6">
+  {#if $mySafe.loading}
+    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+        <div class="flex flex-col items-start">
+          <div>Loading Trusts...</div>
+        </div>
+      </div>
+    </section>
+  {:else if $mySafe.error}
+    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+        <div class="flex flex-col items-start">
+          <div>
+            <b>An error occurred while loading the recent activities:</b>
+            <br />{$mySafe.error.message}
+          </div>
+        </div>
+      </div>
+    </section>
+  {:else if $mySafe.trustRelations && $mySafe.trustRelations.trustedBy && $mySafe.trustRelations.trustedBy.length > 0}
+    {#each $mySafe.trustRelations.trustedBy as trustIncoming}
+      something
+    {/each}
+  {:else}
+    {console.log("RELA: ", $mySafe.trustRelations.trustedBy)}
+    <span>No recent trusts</span>
+  {/if}
+</div>
 <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
   {#if $trusts.loading}
     Loading offers...
