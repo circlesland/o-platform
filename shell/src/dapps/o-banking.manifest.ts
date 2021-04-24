@@ -210,17 +210,21 @@ async function augmentProfiles(safe: Safe) {
   }
   for (let trustingKey in safe.trustRelations?.trusting ?? {}) {
     const trust = safe.trustRelations.trusting[trustingKey];
-    trust.profile = circlesGardenProfilesLookup[trust.safeAddress] ? {
-      displayName: circlesGardenProfilesLookup[trust.safeAddress].username,
-      avatarUrl: circlesGardenProfilesLookup[trust.safeAddress].avatarUrl
-    } : undefined;
+    if (!trust.profile) {
+      trust.profile = circlesGardenProfilesLookup[trust.safeAddress] ? {
+        displayName: circlesGardenProfilesLookup[trust.safeAddress].username,
+        avatarUrl: circlesGardenProfilesLookup[trust.safeAddress].avatarUrl
+      } : undefined;
+    }
   }
   for (let trustedByKey in safe.trustRelations?.trustedBy ?? {}) {
     const trust = safe.trustRelations.trustedBy[trustedByKey];
-    trust.profile = circlesGardenProfilesLookup[trust.safeAddress] ? {
-      displayName: circlesGardenProfilesLookup[trust.safeAddress].username,
-      avatarUrl: circlesGardenProfilesLookup[trust.safeAddress].avatarUrl
-    } : undefined;
+    if (!trust.profile) {
+      trust.profile = circlesGardenProfilesLookup[trust.safeAddress] ? {
+        displayName: circlesGardenProfilesLookup[trust.safeAddress].username,
+        avatarUrl: circlesGardenProfilesLookup[trust.safeAddress].avatarUrl
+      } : undefined;
+    }
   }
 
   window.o.publishEvent(<any>{
@@ -298,7 +302,6 @@ async function load(profile: Profile, cachedSafe:Safe|undefined, error:(e) => vo
       data: safe
     });
     _currentSafe = safe;
-    augmentProfiles(safe);
 
     safe = await Queries.addContacts(safe);
     console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
@@ -311,6 +314,7 @@ async function load(profile: Profile, cachedSafe:Safe|undefined, error:(e) => vo
       data: safe
     });
     _currentSafe = safe;
+    augmentProfiles(safe);
 
     safe = await Queries.addAcceptedTokens(safe);
     console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)

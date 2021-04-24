@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Time from "svelte-time";
   import { push } from "svelte-spa-router";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
@@ -8,8 +7,10 @@
   } from "../../../shared/processes/shellProcess";
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
-  import { me } from "../../../shared/stores/me";
-  import Web3 from "web3";
+  import {TrustObject} from "../data/circles/queries";
+
+  export let trust:TrustObject;
+
   export let userId: String;
   export let displayName: String;
   export let direction: String;

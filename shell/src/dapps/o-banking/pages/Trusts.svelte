@@ -51,7 +51,7 @@
 <BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 
 <div class="mx-4 -mt-6">
-  {#if $mySafe.ui.loadingPercent}
+  {#if !$mySafe.trustRelations || !$mySafe.trustRelations.trustedBy|| !$mySafe.trustRelations.trusting}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">
@@ -91,7 +91,7 @@
     <span>No recent trusts</span>
   {/if}
 </div>
-
+<!--
 <div class="mx-4 -mt-6">
   <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
     <div
@@ -170,9 +170,6 @@
             </svg>
           </button>
         </div>
-        <!-- <div class="self-end mt-2 text-xs text-circleslightblue">
-          9 days ago
-        </div> -->
       </div>
     </div>
   </section>
@@ -258,9 +255,6 @@
             </svg>
           </button>
         </div>
-        <!-- <div class="self-end mt-2 text-xs text-circleslightblue">
-          9 days ago
-        </div> -->
       </div>
     </div>
   </section>
@@ -346,10 +340,8 @@
             </svg>
           </button>
         </div>
-        <!-- <div class="self-end mt-2 text-xs text-circleslightblue">
-          9 days ago
-        </div> -->
       </div>
     </div>
   </section>
 </div>
+-->
