@@ -54,6 +54,7 @@
             loginEmail: sub,
           },
           dirtyFlags: {},
+          messages: {},
           environment: {
             errorView: Error,
             progressView: LoadingIndicator,
@@ -82,6 +83,7 @@
             dream: $me.dream,
           },
           dirtyFlags: {},
+          messages:{},
           environment: {},
         };
         return ctx;

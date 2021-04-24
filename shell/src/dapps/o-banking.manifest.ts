@@ -8,17 +8,17 @@ import TokenDetail from "./o-banking/pages/TokenDetail.svelte";
 import Trusts from "./o-banking/pages/Trusts.svelte";
 import TrustDetail from "./o-banking/pages/TrustDetail.svelte";
 import Graph from "./o-banking/pages/Graph.svelte";
-import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-import { shellProcess, ShellProcessContext } from "../shared/processes/shellProcess";
+import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
+import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
 import LoadingIndicator from "../shared/atoms/LoadingIndicator.svelte";
 import Success from "../shared/atoms/Success.svelte";
-import { getUbi } from "./o-banking/processes/getUbi";
-import { hubSignup } from "./o-banking/processes/hubSignup";
-import { setTrust } from "./o-banking/processes/setTrust";
-import { transfer } from "./o-banking/processes/transfer";
+import {getUbi} from "./o-banking/processes/getUbi";
+import {hubSignup} from "./o-banking/processes/hubSignup";
+import {setTrust} from "./o-banking/processes/setTrust";
+import {transfer} from "./o-banking/processes/transfer";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {me, Profile} from "../shared/stores/me";
 import {Queries, Safe} from "./o-banking/data/circles/queries";
@@ -29,12 +29,13 @@ import {BN} from "ethereumjs-util";
 import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
 import {Subscription} from "rxjs";
 import {ProfilesByCirclesAddressDocument} from "./o-banking/data/api/types";
+import {showToast} from "../shared/toast";
 
 let loading = false;
-let profile:Profile|undefined;
-let blockChainEventsSubscription:Subscription|null;
+let profile: Profile | undefined;
+let blockChainEventsSubscription: Subscription | null;
 
-export const emptySafe:Safe = {
+export const emptySafe: Safe = {
   safeAddress: "0x00",
   balance: "0",
   ui: {
@@ -43,9 +44,9 @@ export const emptySafe:Safe = {
     error: undefined
   },
   transfers: {
-    firstBlock:0,
-    lastBlock:0,
-    rows:[]
+    firstBlock: 0,
+    lastBlock: 0,
+    rows: []
   },
   token: {
     _id: "",
@@ -55,30 +56,30 @@ export const emptySafe:Safe = {
     firstBlock: 0
   },
   acceptedTokens: {
-    tokens: {
-    },
-    lastBlock:0,
-    firstBlock:0
+    tokens: {},
+    lastBlock: 0,
+    firstBlock: 0
   },
-  lastBlock:0,
-  firstBlock:0,
+  lastBlock: 0,
+  firstBlock: 0,
   trustRelations: {
-    trustedBy:{},
-    trusting:{},
-    mutualTrusts:{},
+    trustedBy: {},
+    trusting: {},
+    mutualTrusts: {},
     untrusted: {},
-    lastBlock:0,
-    firstBlock:0
+    lastBlock: 0,
+    firstBlock: 0
   },
-  ownerAddress:"0x00"
+  ownerAddress: "0x00"
 };
 
-let _currentSafe:Safe|null = emptySafe;
+let _currentSafe: Safe | null = emptySafe;
+
 export function tryGetCurrentSafe() {
   return _currentSafe;
 }
 
-async function loadProfilesBySafeAddress(circlesAddresses:string[]) {
+async function loadProfilesBySafeAddress(circlesAddresses: string[]) {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.query({
     query: ProfilesByCirclesAddressDocument,
@@ -91,12 +92,12 @@ async function loadProfilesBySafeAddress(circlesAddresses:string[]) {
   return result.data.profiles;
 }
 
-async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses:string[]) {
+async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses: string[]) {
   const baseUrl = `https://api.circles.garden/api/users/`;
   if (circlesAddresses.length == 0) {
     return [];
   }
-  let query = circlesAddresses.reduce((p,c) => p + `address[]=${c}&`, "");
+  let query = circlesAddresses.reduce((p, c) => p + `address[]=${c}&`, "");
   query = query.substr(0, query.length - 1);
   console.log("Querying the following profiles from the circles garden api:", query);
 
@@ -107,27 +108,42 @@ async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses:string[])
   return resultJson.data;
 }
 
+async function createProfileMap(safeAddresses:string[]) {
+  const profiles = await Promise.all([
+    loadProfilesBySafeAddress(safeAddresses),
+    loadCirclesGardenProfilesBySafeAddress(safeAddresses)
+  ]);
+  const map:{
+    [safeAddress:string]:{
+      safeAddress: string
+      displayName: string
+      avatarUrl: string
+    }
+  } = {};
+  const land = profiles[0];
+  const garden = profiles[1];
+}
 
 
 async function augmentProfiles(safe: Safe) {
   // Get all involved addresses
   const transferAddresses = safe.transfers.rows.filter(o => Web3.utils.isAddress(o.to) && Web3.utils.isAddress(o.from))
     .reduce((p, c) => {
-    const from = Web3.utils.toChecksumAddress(c.from);
-    p[from] = true;
-    const to = Web3.utils.toChecksumAddress(c.to);
-    p[to] = true;
-    return p;
-  }, {});
+      const from = Web3.utils.toChecksumAddress(c.from);
+      p[from] = true;
+      const to = Web3.utils.toChecksumAddress(c.to);
+      p[to] = true;
+      return p;
+    }, {});
 
   const lookupAddresses = Object.keys(
     Object.keys(transferAddresses)
-    .concat(Object.keys(safe.trustRelations.trusting))
-    .concat(Object.keys(safe.trustRelations.trustedBy))
-    .reduce((p,c) => {
-      p[c] = true;
-      return p;
-    }, {})
+      .concat(Object.keys(safe.trustRelations.trusting))
+      .concat(Object.keys(safe.trustRelations.trustedBy))
+      .reduce((p, c) => {
+        p[c] = true;
+        return p;
+      }, {})
   );
 
   // Load all circles.land profiles
@@ -150,9 +166,13 @@ async function augmentProfiles(safe: Safe) {
       }
       : undefined;
   });
+  safe.token.ownerProfile = {
+    displayName: `${profilesLookup[safe.token.tokenOwner].firstName ?? ""} ${profilesLookup[safe.token.tokenOwner].lastName ?? ""}`,
+    avatarUrl: profilesLookup[safe.token.tokenOwner]?.avatarUrl
+  }
   for (let tokenAddress in safe.acceptedTokens?.tokens ?? {}) {
     const token = safe.acceptedTokens.tokens[tokenAddress];
-    token.ownerProfile = profilesLookup[token.tokenOwner] ?  {
+    token.ownerProfile = profilesLookup[token.tokenOwner] ? {
       displayName: `${profilesLookup[token.tokenOwner].firstName ?? ""} ${profilesLookup[token.tokenOwner].lastName ?? ""}`,
       avatarUrl: profilesLookup[token.tokenOwner]?.avatarUrl
     } : undefined;
@@ -246,174 +266,176 @@ async function augmentProfiles(safe: Safe) {
   _currentSafe = safe;
 }
 
-async function load(profile: Profile, cachedSafe:Safe|undefined, error:(e) => void, tokenList?:string[]) : Promise<Safe> {
+async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: string[]): Promise<Safe> {
   if (loading) {
     return;
   }
+
   loading = true;
-/*
-  return new Promise<Safe>((resolve, reject) => {
 
-  });
-*/
-
-  try {
-    if (!RpcGateway.get().utils.isAddress(profile.circlesAddress ?? "")) {
-      localStorage.removeItem("safe");
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: emptySafe
-      });
-      _currentSafe = emptySafe;
-      return;
-    }
-
-    let safe: Safe = cachedSafe ?? {
-      safeAddress: profile.circlesAddress,
-      ui: {
-        loadingPercent: 0
-      }
-    };
-
-    let _watchLoadingPercent = safe.ui?.loadingPercent;
-    const timeoutHandle = setInterval(() => {
-      if (safe?.ui?.loadingPercent === null || safe?.ui?.loadingPercent === undefined) {
+  return new Promise<Safe>(async (resolve, reject) => {
+    try {
+      if (!RpcGateway.get().utils.isAddress(profile.circlesAddress ?? "")) {
+        localStorage.removeItem("safe");
+        window.o.publishEvent(<any>{
+          type: "shell.refresh",
+          dapp: "banking:1",
+          data: emptySafe
+        });
+        _currentSafe = emptySafe;
         return;
       }
-      if (safe.ui?.loadingPercent && safe.ui?.loadingPercent == _watchLoadingPercent) {
-        clearInterval(timeoutHandle);
-        if (error) {
-          error(new Error("slow_provider"));
+
+      let safe: Safe = cachedSafe ?? {
+        safeAddress: profile.circlesAddress,
+        ui: {
+          loadingPercent: 0
         }
-      } else {
-        _watchLoadingPercent = safe.ui?.loadingPercent;
-      }
-    }, 5000);
+      };
 
-    safe = await Queries.addOwnToken(safe);
-    console.log(new Date().getTime() +": "+ "Token via web3:", JSON.stringify(safe, null, 2));
+      let _watchLoadingPercent = safe.ui?.loadingPercent;
+      const timeoutHandle = setInterval(() => {
+        console.log("RPC watchdog: checking for progress ..")
+        if (safe?.ui?.loadingPercent === 0 || safe?.ui?.loadingPercent === null || safe?.ui?.loadingPercent === undefined) {
+          console.log("RPC watchdog: checking for progress .. Process got stuck. Sending error ..")
+          clearInterval(timeoutHandle);
+          reject(new Error("slow_provider"));
+          return;
+        }
+        if (safe.ui?.loadingPercent && safe.ui?.loadingPercent == _watchLoadingPercent) {
+          console.log("RPC watchdog: checking for progress .. Process got stuck. Sending error ..")
+          clearInterval(timeoutHandle);
+          reject(new Error("slow_provider"));
+          return;
+        } else {
+          console.log("RPC watchdog: checking for progress .. Process is moving. Leaving.")
+          _watchLoadingPercent = safe.ui?.loadingPercent;
+        }
+      }, 5000);
 
-    safe.ui.loadingText = "Loading hub transfers ..";
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
+      safe = await Queries.addOwnToken(safe);
+      console.log(new Date().getTime() + ": " + "Token via web3:", JSON.stringify(safe, null, 2));
 
-    safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
-    const hubTransferCount = safe.transfers.rows.length;
-    console.log(new Date().getTime() +": "+ `Added ${hubTransferCount} hub transfers.`)
-    safe.ui.loadingPercent = 5;
-    safe.ui.loadingText = "Loading trust connections ..";
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
-
-    safe = await Queries.addContacts(safe);
-    console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
-    safe.ui.loadingPercent = 18;
-    safe.ui.loadingText = "" +
-      "Loading accepted tokens ..";
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
-    augmentProfiles(safe);
-
-    safe = await Queries.addAcceptedTokens(safe);
-    console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
-    safe.ui.loadingPercent = 22;
-    safe.ui.loadingText = "Loading balances ..";
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
-
-    safe = await Queries.addTokenBalances(safe);
-    safe.token.balance = (await new Erc20Token(RpcGateway.get(), safe.token.tokenAddress).getBalanceOf(safe.safeAddress)).toString();
-    console.log(new Date().getTime() +": "+ `Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
-
-    const totalBalance = Object.keys(safe.acceptedTokens.tokens).reduce((p: BN, c: string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
-    const totalBalanceStr = totalBalance.toString();
-    safe.balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
-    safe.ui.loadingPercent = 26;
-    safe.ui.loadingText = "Loading direct transfers ..";
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
-
-    const lastProgress = safe.ui.loadingPercent;
-    const remainingPercents = 100 - lastProgress;
-    safe = await Queries.addDirectTransfers(safe, undefined, progress => {
-      safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
+      safe.ui.loadingText = "Loading hub transfers ..";
       window.o.publishEvent(<any>{
         type: "shell.refresh",
         dapp: "banking:1",
         data: safe
       });
       _currentSafe = safe;
-    }, tokenList);
-    console.log(new Date().getTime() +": "+ `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`)
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
 
-    safe.ui.loadingPercent = undefined;
-    safe.ui.loadingText = undefined;
+      safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
+      const hubTransferCount = safe.transfers.rows.length;
+      console.log(new Date().getTime() + ": " + `Added ${hubTransferCount} hub transfers.`)
+      safe.ui.loadingPercent = 5;
+      safe.ui.loadingText = "Loading trust connections ..";
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: safe
+      });
+      _currentSafe = safe;
 
-    clearInterval(timeoutHandle);
+      safe = await Queries.addContacts(safe);
+      console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
+      safe.ui.loadingPercent = 18;
+      safe.ui.loadingText = "" +
+        "Loading accepted tokens ..";
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: safe
+      });
+      _currentSafe = safe;
+      augmentProfiles(safe);
 
-    localStorage.setItem("safe", JSON.stringify(safe));
+      safe = await Queries.addAcceptedTokens(safe);
+      console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
+      safe.ui.loadingPercent = 22;
+      safe.ui.loadingText = "Loading balances ..";
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: safe
+      });
+      _currentSafe = safe;
 
-    await augmentProfiles(safe);
+      safe = await Queries.addTokenBalances(safe);
+      safe.token.balance = (await new Erc20Token(RpcGateway.get(), safe.token.tokenAddress).getBalanceOf(safe.safeAddress)).toString();
+      console.log(new Date().getTime() + ": " + `Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: safe
+      });
+      _currentSafe = safe;
 
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
+      const totalBalance = Object.keys(safe.acceptedTokens.tokens).reduce((p: BN, c: string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
+      const totalBalanceStr = totalBalance.toString();
+      safe.balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
+      safe.ui.loadingPercent = 26;
+      safe.ui.loadingText = "Loading direct transfers ..";
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: safe
+      });
+      _currentSafe = safe;
 
-    subscribeChainEvents(safe);
+      const lastProgress = safe.ui.loadingPercent;
+      const remainingPercents = 100 - lastProgress;
+      safe = await Queries.addDirectTransfers(safe, undefined, progress => {
+        safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
+        window.o.publishEvent(<any>{
+          type: "shell.refresh",
+          dapp: "banking:1",
+          data: safe
+        });
+        _currentSafe = safe;
+      }, tokenList);
+      console.log(new Date().getTime() + ": " + `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`)
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: safe
+      });
+      _currentSafe = safe;
 
-    return safe;
-  } catch (e) {
-    localStorage.removeItem("safe");
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: emptySafe
-    });
-    error(e);
-  } finally {
-    loading = false;
-  }
-  return undefined;
+      safe.ui.loadingPercent = undefined;
+      safe.ui.loadingText = undefined;
+
+      clearInterval(timeoutHandle);
+
+      localStorage.setItem("safe", JSON.stringify(safe));
+
+      await augmentProfiles(safe);
+
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: safe
+      });
+      _currentSafe = safe;
+
+      subscribeChainEvents(safe);
+
+      return resolve(safe);
+    } catch (e) {
+      localStorage.removeItem("safe");
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: _currentSafe
+      });
+      reject(e);
+    } finally {
+      loading = false;
+    }
+  });
 }
 
-let shellEventSubscription:Subscription|undefined;
-let unsubscribeMe:() => void;
+let shellEventSubscription: Subscription | undefined;
+let unsubscribeMe: () => void;
 
 function subscribeToShellEvents() {
   if (shellEventSubscription) {
@@ -422,28 +444,34 @@ function subscribeToShellEvents() {
 
   unsubscribeMe = me.subscribe(async profileOrNull => {
     profile = profileOrNull;
-    let cancel:Error|undefined;
     if (profileOrNull && RpcGateway.get().utils.isAddress(profileOrNull.circlesAddress ?? "")) {
-      for(let i = 0; i < RpcGateway.gateways.length; i++) {
-        await update(e => cancel = e);
-        if (cancel) {
-          RpcGateway.rotateProvider();
-          console.warn("Error occurred. Retrying with a different provider ...", cancel);
-          cancel = undefined;
-        } else {
+      for (let i = 0; i < RpcGateway.gateways.length; i++) {
+        try {
+          await update();
           return;
+        } catch (e) {
+          if (e.message === "slow_provider") {
+            loading = false;
+            RpcGateway.rotateProvider();
+            console.warn("The provider took too long to answer. Retrying with a different provider ...");
+          } else {
+            throw e;
+          }
         }
       }
     }
 
     // TODO: When we reach this point all requests failed. Show an error to the user.
+    showToast("error", "The connection to the RPC gateway was lost and we weren't " +
+      "able to restore it in time. Please refresh the page to give it another try.");
+
     localStorage.removeItem("safe");
-    window.o.publishEvent(<any>{
+    /*window.o.publishEvent(<any>{
       type: "shell.refresh",
       dapp: "banking:1",
       data: emptySafe
-    });
-    _currentSafe = emptySafe;
+    });*/
+    //_currentSafe = emptySafe;
   });
 
   shellEventSubscription = window.o.events.subscribe((event: PlatformEvent & {
@@ -460,7 +488,7 @@ function subscribeToShellEvents() {
       });
       _currentSafe = null;
       return;
-    } else if(event.type === "circles.web3providerChanged") {
+    } else if (event.type === "circles.web3providerChanged") {
       if (!loading) {
         subscribeChainEvents(_currentSafe);
       }
@@ -473,19 +501,27 @@ function subscribeChainEvents(safe: Safe) {
     blockChainEventsSubscription.unsubscribe();
   }
   let onEventUpdateTrigger = new DelayedTrigger(500, async (token: string) => {
-
-    let cancel:Error|undefined;
-    for(let i = 0; i < RpcGateway.gateways.length; i++) {
-      _currentSafe = await update(e => cancel = e, [token]);
-      if (cancel) {
-        console.warn("Error occurred. Retrying with a different provider ...", cancel);
-        RpcGateway.rotateProvider();
-        cancel = undefined;
-      } else {
+    for (let i = 0; i < RpcGateway.gateways.length; i++) {
+      try {
+        _currentSafe = await update([token]);
         return;
+      } catch (e) {
+        if (e.message === "slow_provider") {
+          loading = false;
+          RpcGateway.rotateProvider();
+          console.warn("The provider took too long to answer. Retrying with a different provider ...");
+        } else {
+          throw e;
+        }
       }
     }
+
+    // TODO: When we reach this point all requests failed. Show an error to the user.
+    showToast("error", "The connection to the RPC gateway was lost and we weren't " +
+      "able to restore it in time. Please refresh the page to give it another try.");
+
   });
+
   if (_currentSafe) {
     blockChainEventsSubscription = Queries.tokenEvents(_currentSafe).subscribe((event: any) => {
       console.log("NEW EVENT:", event);
@@ -496,7 +532,7 @@ function subscribeChainEvents(safe: Safe) {
   }
 }
 
-async function update(onError:(e:Error) => void, tokenList?:string[]) : Promise<Safe> {
+async function update(tokenList?: string[]): Promise<Safe> {
   if (!profile) {
     return;
   }
@@ -505,10 +541,10 @@ async function update(onError:(e:Error) => void, tokenList?:string[]) : Promise<
   }
   if (_currentSafe && _currentSafe.safeAddress !== emptySafe.safeAddress) {
     // Update the cached safe
-    _currentSafe = await load(profile, _currentSafe, onError, tokenList);
+    _currentSafe = await load(profile, _currentSafe, tokenList);
   } else {
     // Load a completely new safe
-    _currentSafe = await load(profile, undefined, onError, tokenList);
+    _currentSafe = await load(profile, undefined, tokenList);
   }
   return _currentSafe;
 }
@@ -618,7 +654,7 @@ const trusts: PageManifest = {
   ]
 };
 
-const sendInvite:PageManifest = {
+const sendInvite: PageManifest = {
   isDefault: false,
   routeParts: ["trusts", "invite", ":inviteAccountAddress"],
   isSystem: true,
@@ -687,9 +723,9 @@ export const banking: DappManifest<DappState> = {
         async (ctx) => {
           ctx.childProcessDefinition = getUbi;
           ctx.childContext = {
-            data: {
-            },
+            data: {},
             dirtyFlags: {},
+            messages: {},
             environment: {
               errorView: Error,
               progressView: LoadingIndicator,
@@ -709,9 +745,9 @@ export const banking: DappManifest<DappState> = {
         async (ctx) => {
           ctx.childProcessDefinition = hubSignup;
           ctx.childContext = {
-            data: {
-            },
+            data: {},
             dirtyFlags: {},
+            messages: {},
             environment: {
               errorView: Error,
               progressView: LoadingIndicator,
@@ -731,9 +767,9 @@ export const banking: DappManifest<DappState> = {
         async (ctx) => {
           ctx.childProcessDefinition = setTrust;
           ctx.childContext = {
-            data: {
-            },
+            data: {},
             dirtyFlags: {},
+            messages: {},
             environment: {
               errorView: Error,
               progressView: LoadingIndicator,
@@ -753,9 +789,9 @@ export const banking: DappManifest<DappState> = {
         async (ctx) => {
           ctx.childProcessDefinition = transfer;
           ctx.childContext = {
-            data: {
-            },
+            data: {},
             dirtyFlags: {},
+            messages: {},
             environment: {
               errorView: Error,
               progressView: LoadingIndicator,

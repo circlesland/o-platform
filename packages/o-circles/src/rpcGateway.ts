@@ -69,7 +69,7 @@ export class RpcGateway {
             }
         );
         providerInstance.on("close", <any>((e: any) => {
-            console.error(`The RPC gateway (${nextProvider}) closed the connection. Error code: "${e.code}". Reason: "${e.reason}".`);
+            console.error(`The RPC gateway (${nextProvider}) closed the connection:`, e);
             this.rotateProvider();
         }));
         providerInstance.on("error", <any>((e: any) => {

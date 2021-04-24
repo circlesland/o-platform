@@ -38,6 +38,7 @@
             oneTimeCode: code,
             redirectTo: "/dashboard"
           },
+          messages:{},
           dirtyFlags: {},
           environment: {},
         };

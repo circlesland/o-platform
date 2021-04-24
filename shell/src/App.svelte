@@ -158,6 +158,7 @@
           data: <IdentifyContextData>{
             redirectTo: $location,
           },
+          messages:{},
           dirtyFlags: {},
           environment: {},
         };

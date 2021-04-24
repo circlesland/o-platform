@@ -56,7 +56,7 @@ const processDefinition = (processId: string) =>
         params: {
           label: strings.labelSafeAddress,
           placeholder: strings.placeholderSafeAddress,
-          submitButtonText: "Connect",
+          submitButtonText: "Connect"
         },
         navigation: {
           next: "#checkSafeAddress",
@@ -75,12 +75,13 @@ const processDefinition = (processId: string) =>
               console.log(`Checking if safe ${context.data.safeAddress} exists .. Safe exists.`);
               return true;
             } catch (e) {
+              context.messages["safeAddress"] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Does it exist?`;
               console.log(`Checking if safe ${context.data.safeAddress} exists .. Safe doesn't exist.`);
               throw e;
             }
           },
           onDone: "#checkCirclesGarden",
-          onError: "#error"
+          onError: "#safeAddress"
         }
       },
       checkCirclesGarden: {

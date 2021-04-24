@@ -144,6 +144,7 @@ export const passport: DappManifest<DappState> = {
             ctx.childContext = {
               data: {},
               dirtyFlags: {},
+              messages: {},
               environment: {}
             };
             return ctx;

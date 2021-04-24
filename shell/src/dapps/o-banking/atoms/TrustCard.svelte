@@ -67,6 +67,7 @@
           data: {
             recipientAddress,
           },
+          messages:{},
           dirtyFlags: {},
           environment: {},
         };
@@ -84,6 +85,7 @@
             trustLimit: 100,
             trustReceiver: recipientAddress,
           },
+          messages:{},
           dirtyFlags: {},
           environment: {},
         };
@@ -101,6 +103,7 @@
             trustLimit: 0,
             trustReceiver: recipientAddress,
           },
+          messages:{},
           dirtyFlags: {},
           environment: {},
         };

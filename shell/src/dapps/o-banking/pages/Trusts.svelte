@@ -38,6 +38,7 @@
             recipientAddress: recipientAddress,
             amount: 0.1,
           },
+          messages:{},
           dirtyFlags: {},
           environment: {},
         };
@@ -70,7 +71,7 @@
     </section>
   {:else}
     <h1>Mutual trust</h1>
-    {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust}
+    {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust(mutualTrust._id)}
       <TrustCard
         trusting={mutualTrust.trusting}
         trustedBy={mutualTrust.trustedBy}
@@ -82,12 +83,12 @@
       "WE SAW: ",
       Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide)
     )}
-    {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting}
+    {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting(trusting._id)}
       <TrustCard {trusting} direction="trusting" />
     {/each}
 
     <h1>Trusted by</h1>
-    {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide) as trustedBy}
+    {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide) as trustedBy(trustedBy.id)}
       <TrustCard {trustedBy} direction="trusted" />
     {/each}
   {/if}

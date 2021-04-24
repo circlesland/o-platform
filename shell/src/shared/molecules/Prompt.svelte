@@ -10,6 +10,7 @@
     data: { [x: string]: any };
     dirtyFlags: { [x: string]: any };
     params: { [x: string]: any };
+    messages: { [x: string]: any };
     process: Process;
     canGoBack: boolean;
     canSkip: boolean;
@@ -24,6 +25,7 @@
         fieldName: prompt.fieldName,
         data: prompt.data,
         dirtyFlags: prompt.dirtyFlags,
+        messages: prompt.messages,
         params: prompt.params,
         canGoBack: prompt.navigation.canGoBack,
         canSkip: prompt.navigation.canSkip,
@@ -42,7 +44,8 @@
 </script>
 
 {#if componentContext}
-  <svelte:component this={prompt.component} context={componentContext} />
+  <svelte:component this={prompt.component}
+                    context={componentContext} />
 {:else}
   Hmm... Nothing to display here. Seems like the 'prompt' attribute of the
   Prompt.svelte component is not set.<br />

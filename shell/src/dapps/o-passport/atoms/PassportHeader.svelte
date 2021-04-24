@@ -40,6 +40,7 @@
           },
           dirtyFlags: {},
           environment: {},
+          messages:{},
         };
         return ctx;
       }

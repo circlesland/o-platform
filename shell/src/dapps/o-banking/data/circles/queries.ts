@@ -67,7 +67,8 @@ export type Safe = {
     lastBlock: number
     mutualTrusts: {
       [safeAddress:string]: {
-        trusting: TrustObject,
+        id:string
+        trusting: TrustObject
         trustedBy: TrustObject
       }
     }
@@ -369,29 +370,34 @@ export class Queries {
     });
 
     const pairs: {[safeAddress:string]: {
-        trusting: TrustObject|null,
-        trustedBy: TrustObject|null
-      }} = {};
+      _id:string,
+      trusting: TrustObject|null,
+      trustedBy: TrustObject|null
+    }} = {};
 
     Object.values(trustRelations.trustedBy).forEach(o => {
       if (!pairs[o.safeAddress]) {
         pairs[o.safeAddress] = {
+          _id:"",
           trusting: null,
           trustedBy: null
         };
       }
       if (o.limit > 0) {
+        pairs[o.safeAddress]._id += o._id;
         pairs[o.safeAddress].trustedBy = o;
       }
     })
     Object.values(trustRelations.trusting).forEach(o => {
       if (!pairs[o.safeAddress]) {
         pairs[o.safeAddress] = {
+          _id:"",
           trusting: null,
           trustedBy: null
         };
       }
       if (o.limit > 0) {
+        pairs[o.safeAddress]._id += o._id;
         pairs[o.safeAddress].trusting = o;
       }
     })

@@ -27,6 +27,7 @@
           data: <IdentifyContextData>{
             redirectTo: "/dashboard",
           },
+          messages:{},
           dirtyFlags: {},
           environment: {},
         };

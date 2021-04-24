@@ -44,6 +44,7 @@
             progressView: LoadingIndicator,
             successView: Success,
           },
+          messages:{},
         };
         return ctx;
       });

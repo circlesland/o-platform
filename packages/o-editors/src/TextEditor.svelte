@@ -22,6 +22,11 @@
   <label class="label" for={context.fieldName}>
     <span class="label-text">{context.params.label}</span>
   </label>
+  {#if context && context.messages && context.messages[context.fieldName]}
+    <small style="color:#f00">
+      {context.messages[context.fieldName]}
+    </small>
+  {/if}
   <input
     on:keydown={onkeydown}
     id={context.fieldName}

@@ -33,7 +33,7 @@
       </div>
     </section>
   {:else}
-    {#each tokens as token}
+    {#each [$mySafe.token].concat(tokens) as token(token._id)}
       <TokenCard {token} />
     {/each}
   {/if}

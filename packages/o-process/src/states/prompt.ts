@@ -12,10 +12,8 @@ const { assign } = actions;
  *
  * @param spec
  */
-export function prompt<
-  TContext extends ProcessContext<any>,
-  TEvent extends PlatformEvent
->(spec: {
+
+export type PromptSpec = {
   fieldName: string;
   component: any;
   id?: string;
@@ -23,17 +21,22 @@ export function prompt<
     // If you want to allow the user to go one step back then specify here where he came from
     previous?: string;
     canGoBack?: (
-      context: ProcessContext<any>,
-      event: { type: string; [x: string]: any }
+        context: ProcessContext<any>,
+        event: { type: string; [x: string]: any }
     ) => boolean;
     next: string;
     canSkip?: (
-      context: ProcessContext<any>,
-      event: { type: string; [x: string]: any }
+        context: ProcessContext<any>,
+        event: { type: string; [x: string]: any }
     ) => boolean;
   };
   params: { [x: string]: any };
-}) {
+};
+
+export function prompt<
+  TContext extends ProcessContext<any>,
+  TEvent extends PlatformEvent
+>(spec: PromptSpec) {
   let canGoBack = (context:ProcessContext<any>, event:any) => !!spec.navigation?.previous;
   if (canGoBack && spec.navigation?.canGoBack) {
     canGoBack = spec.navigation.canGoBack

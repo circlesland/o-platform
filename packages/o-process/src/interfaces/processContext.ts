@@ -10,6 +10,7 @@ export interface IProcessContext {
    * This is mainly used to to ask the user if he wants to discard entered data 'on cancel'.
    */
   dirtyFlags: { [propertyName: string]: boolean };
+  messages: { [propertyName: string]: string };
   /**
    * Environment data which might be injected by the shell.
    * This should not be used to parameterize processes because
@@ -29,6 +30,7 @@ export interface TProcessContext<Data extends {[key:string]:any}> extends IProce
 export class ProcessContext<T extends {[key:string]:any}> implements TProcessContext<T> {
   data: T = <any>{};
   dirtyFlags: { [p: string]: boolean } = <any>{};
+  messages: { [p: string]: string } = <any>{};
   environment: {
     // Generic views for a infinity progressbar, a green checkmark for success or a generic error view that shows the exception
     progressView?: any,

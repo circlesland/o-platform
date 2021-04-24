@@ -63,6 +63,7 @@ export const dashboard : DappManifest<DappState> = {
               }
             },
             dirtyFlags: {},
+            messages: {},
             environment: {
               errorView: Error,
               progressView: LoadingIndicator,

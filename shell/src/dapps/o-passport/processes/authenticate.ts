@@ -57,7 +57,6 @@ const processDefinition = (processId: string) =>
       loginEmail: prompt<AuthenticateContext, any>({
         fieldName: "loginEmail",
         component: TextEditor,
-
         params: {
           label: strings.labelLoginEmail,
           placeholder: strings.placeholder,
