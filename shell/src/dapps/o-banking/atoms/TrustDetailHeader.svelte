@@ -69,7 +69,18 @@
       </div>
     </div>
   {/if}
-  <div class="self-center text-center mb-2 block">
-    <span class="inline-block text-6xl sm:text-8xl font-circles">{user}</span>
+  <div class="self-center text-center mb-2 block ">
+    <span
+      class="inline-block text-6xl sm:text-8xl font-circles trustCardName truncate"
+      >{user}</span
+    >
   </div>
 </div>
+
+<style>
+  @media (max-width: 496px) {
+    .trustCardName {
+      max-width: 200px;
+    }
+  }
+</style>

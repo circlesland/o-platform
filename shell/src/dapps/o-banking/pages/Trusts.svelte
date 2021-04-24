@@ -7,11 +7,9 @@
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
-  import { transfer } from "../processes/transfer";
-  import { setTrust } from "../processes/setTrust";
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { sendInviteGas } from "../processes/sendInviteGas";
-  import gql from "graphql-tag";
+  import TrustCard from "../atoms/TrustCard.svelte";
   import { me } from "../../../shared/stores/me";
   import { mySafe } from "../stores/safe";
 
@@ -26,80 +24,6 @@
   });
 
   setClient(<any>window.o.theGraphClient);
-
-  $: trusts = query(
-    gql`
-      query safe($id: String!) {
-        safe(id: $id) {
-          incoming {
-            userAddress
-            canSendToAddress
-            limit
-          }
-          outgoing {
-            userAddress
-            canSendToAddress
-            limit
-          }
-        }
-      }
-    `,
-    {
-      variables: {
-        id: $me.circlesAddress ? $me.circlesAddress.toLowerCase() : "",
-      },
-    }
-  );
-
-  function execTransfer(recipientAddress?: string) {
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = transfer;
-        ctx.childContext = {
-          data: {
-            recipientAddress,
-          },
-          dirtyFlags: {},
-          environment: {},
-        };
-        return ctx;
-      })
-    );
-  }
-
-  function execTrust(recipientAddress?: string) {
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = setTrust;
-        ctx.childContext = {
-          data: {
-            trustLimit: 100,
-            trustReceiver: recipientAddress,
-          },
-          dirtyFlags: {},
-          environment: {},
-        };
-        return ctx;
-      })
-    );
-  }
-
-  function execUntrust(recipientAddress?: string) {
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = setTrust;
-        ctx.childContext = {
-          data: {
-            trustLimit: 0,
-            trustReceiver: recipientAddress,
-          },
-          dirtyFlags: {},
-          environment: {},
-        };
-        return ctx;
-      })
-    );
-  }
 
   function execSendInviteGas(recipientAddress?: string) {
     window.o.publishEvent(
@@ -118,9 +42,14 @@
       })
     );
   }
+
+  function setObjectData(obj) {
+    let arr = Object.keys(obj).map((k) => obj[k]);
+    return arr;
+  }
 </script>
 
-<BankingHeader />
+<BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 
 <div class="mx-4 -mt-6">
   {#if $mySafe.loading}
@@ -142,35 +71,26 @@
         </div>
       </div>
     </section>
-  {:else if $mySafe.trustRelations && $mySafe.trustRelations.trustedBy && $mySafe.trustRelations.trustedBy.length > 0}
-    {#each $mySafe.trustRelations.trustedBy as trustIncoming}
-      something
+  {:else if $mySafe.trustRelations && $mySafe.trustRelations.trustedBy}
+    {console.log("RELA: ", setObjectData($mySafe.trustRelations.trustedBy))}
+    {#each setObjectData($mySafe.trustRelations.trustedBy) as trustIncoming}
+      <TrustCard
+        userId={trustIncoming._id ? trustIncoming._id : ""}
+        displayName={trustIncoming.fromProfile
+          ? trustIncoming.fromProfile.displayName
+          : trustIncoming._id}
+        direction={trustIncoming.direction
+          ? trustIncoming.fromProfile.direction
+          : ""}
+        limit={trustIncoming.limit ? trustIncoming.limit : ""}
+        pictureUrl={trustIncoming.fromProfile
+          ? trustIncoming.fromProfile.avatarUrl
+          : undefined}
+      />
     {/each}
   {:else}
-    {console.log("RELA: ", $mySafe.trustRelations.trustedBy)}
+    {console.log("RELA: ", $mySafe)}
     <span>No recent trusts</span>
-  {/if}
-</div>
-<div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
-  {#if $trusts.loading}
-    Loading offers...
-  {:else if $trusts.error}
-    <b>An error occurred while loading the recent activities:</b> <br />{$trusts
-      .error.message}
-  {:else if $trusts.data && $trusts.data.safe && ($trusts.data.safe.incoming.length > 0 || $trusts.data.safe.outgoing.length > 0)}
-    {#each $trusts.data.safe.incoming as incoming}
-      <div>
-        userAddress: {incoming.userAddress}<br />
-      </div>
-    {/each}
-
-    {#each $trusts.data.safe.outgoing as outgoing}
-      <div>
-        userAddress: {outgoing.userAddress}<br />
-      </div>
-    {/each}
-  {:else}
-    <span>No recent activities</span>
   {/if}
 </div>
 

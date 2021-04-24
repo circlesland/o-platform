@@ -1,6 +1,6 @@
 <script lang="ts">
-  import {Continue} from "@o-platform/o-process/dist/events/continue";
-  import {CurrencyTransferContext} from "./currencyTransferContext";
+  import { Continue } from "@o-platform/o-process/dist/events/continue";
+  import { CurrencyTransferContext } from "./currencyTransferContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
 
   export let context: CurrencyTransferContext;
@@ -8,8 +8,8 @@
   let selectedCurrency: any = "CRC";
 
   function sendAnswer(
-          amount: string,
-          selected: { key: string; label: string }
+    amount: string,
+    selected: { key: string; label: string }
   ) {
     const event = new Continue();
     event.data = {};
@@ -25,7 +25,7 @@
 <p>
   {context.params.label}
 </p>
-<div class="flex space-x-2 w-full">
+<div class="flex flex-col space-x-2 w-full">
   <div class="mt-1 relative rounded-md w-full shadow-sm">
     <div
       class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
@@ -63,11 +63,16 @@
         bind:value={selectedCurrency}
       >
         {#each context.params.currencies as currency}
-          <option label={currency.label} value={currency.key}>{currency.label}</option>
+          <option label={currency.label} value={currency.key}
+            >{currency.label}</option
+          >
         {/each}
       </select>
     </div>
   </div>
 
-  <ProcessNavigation on:buttonClick={() => sendAnswer(amount, selectedCurrency)} {context} />
+  <ProcessNavigation
+    on:buttonClick={() => sendAnswer(amount, selectedCurrency)}
+    {context}
+  />
 </div>
