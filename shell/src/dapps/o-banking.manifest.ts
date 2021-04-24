@@ -106,9 +106,6 @@ async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses:string[])
 }
 
 async function init() {
-
-  console.log("Calling banking:1 init()")
-
   const subscription = window.o.events.subscribe((event: PlatformEvent & {
     profile: Profile
   }) => {
@@ -206,6 +203,9 @@ async function init() {
   }
 
   async function load(profile: Profile, cachedSafe?:Safe, cancel?:(e) => void, tokenList?:string[]) : Promise<Safe> {
+    if (loading) {
+      return;
+    }
     loading = true;
     try {
       if (!RpcGateway.get().utils.isAddress(profile.circlesAddress ?? "")) {
@@ -411,15 +411,17 @@ async function init() {
     if (!profile) {
       return;
     }
-    let safe = await tryRestoreCache();
-    if (safe) {
+    if (!_currentSafe || _currentSafe.safeAddress === emptySafe.safeAddress) {
+      _currentSafe = await tryRestoreCache();
+    }
+    if (_currentSafe && _currentSafe.safeAddress !== emptySafe.safeAddress) {
       // Update the cached safe
-      safe = await load(profile, safe, cancel, tokenList);
+      _currentSafe = await load(profile, _currentSafe, cancel, tokenList);
     } else {
       // Load a completely new safe
-      safe = await load(profile, undefined, cancel, tokenList);
+      _currentSafe = await load(profile, undefined, cancel, tokenList);
     }
-    return safe;
+    return _currentSafe;
   }
 
   const unsubscribe = me.subscribe(async profileOrNull => {

@@ -18,7 +18,7 @@
 <BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 
 <div class="mx-4 -mt-6">
-  {#if $mySafe.loadingPercent === 0}
+  {#if $mySafe.ui.loadingPercent === 0}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">
@@ -26,19 +26,19 @@
         </div>
       </div>
     </section>
-  {:else if $mySafe.error}
+  {:else if $mySafe.ui.error}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">
           <div>
             <b>An error occurred while loading the recent activities:</b>
-            <br />{$mySafe.error.message}
+            <br />{$mySafe.ui.error.message}
           </div>
         </div>
       </div>
     </section>
   {:else if $mySafe.transfers && $mySafe.transfers.rows}
-    {#each $mySafe.transfers.rows as transfer(transfer.from+transfer.to+transfer.firstBlock)}
+    {#each $mySafe.transfers.rows as transfer(transfer._id)}
       {#if transfer.direction === "in"}
         <TransactionCard
           displayName={transfer.fromProfile ? transfer.fromProfile.displayName : transfer.from}
