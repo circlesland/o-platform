@@ -8,6 +8,9 @@
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
+  import { TrustObject } from "../data/circles/queries";
+
+  let trust: TrustObject;
 
   export let params: {
     trustPartner: string;

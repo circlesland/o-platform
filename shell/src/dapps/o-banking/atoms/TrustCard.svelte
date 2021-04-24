@@ -7,15 +7,42 @@
   } from "../../../shared/processes/shellProcess";
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
-  import {TrustObject} from "../data/circles/queries";
+  import { TrustObject } from "../data/circles/queries";
 
-  export let trust:TrustObject;
-
-  export let userId: String;
-  export let displayName: String;
+  export let trusting: TrustObject;
+  export let trustedBy: TrustObject;
   export let direction: String;
-  export let limit: string;
-  export let pictureUrl: string;
+
+  let pictureUrl: string;
+  let displayName: String;
+  let limit: String = "0";
+  let id: String;
+
+  $: {
+    switch (direction) {
+      case "trusted":
+      case "mutual":
+        displayName = trustedBy.profile
+          ? trustedBy.profile.displayName
+          : trustedBy.safeAddress;
+        pictureUrl = trustedBy.profile
+          ? trustedBy.profile.avatarUrl
+          : undefined;
+        limit = trusting.limit
+          ? trusting.limit.toString()
+          : "0" + "/" + trustedBy.limit
+          ? trustedBy.limit.toString()
+          : "0";
+        id = trustedBy._id;
+      case "trusting":
+        displayName = trusting.profile
+          ? trusting.profile.displayName
+          : trusting.safeAddress;
+        pictureUrl = trusting.profile ? trusting.profile.avatarUrl : undefined;
+        limit = trusting.limit ? trusting.limit.toString() : "0";
+        id = trusting._id;
+    }
+  }
 
   function loadDetailPage(path) {
     push("#/banking/trusts/" + path);
@@ -73,7 +100,7 @@
 </script>
 
 <section
-  on:click|once={() => loadDetailPage(userId)}
+  on:click|once={() => loadDetailPage(id)}
   class="flex items-center justify-center mb-2 text-circlesdarkblue"
 >
   <div

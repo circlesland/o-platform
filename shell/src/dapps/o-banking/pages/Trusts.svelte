@@ -49,7 +49,7 @@
 
 <BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 <div class="mx-4 -mt-6">
-  {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts}
+  {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts || !$mySafe.trustRelations.trusting || !$mySafe.trustRelations.trustedBy}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">
@@ -72,42 +72,27 @@
     <h1>Mutual trust</h1>
     {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust}
       <TrustCard
-        userId={mutualTrust.trusting.safeAddress
-          ? mutualTrust.trusting.safeAddress
-          : ""}
-        displayName={mutualTrust.trusting.profile
-          ? mutualTrust.trusting.profile.displayName
-          : mutualTrust.trusting.safeAddress}
+        trusting={mutualTrust.trusting}
+        trustedBy={mutualTrust.trustedBy}
         direction="mutual"
-        limit={mutualTrust.trusting.limit + "/" + mutualTrust.trustedBy.limit}
-        pictureUrl={mutualTrust.trusting.profile
-          ? mutualTrust.trusting.profile.avatarUrl
-          : undefined}
       />
     {/each}
     <h1>Trusting</h1>
-    {#each Object.values($mySafe.trustRelations.trusting).filter(o => !o.hide) as trusting}
-      <TrustCard
-        userId={trusting.safeAddress ? trusting.safeAddress : ""}
-        displayName={trusting.profile
-          ? trusting.profile.displayName
-          : trusting.safeAddress}
-        direction="trusting"
-        limit={trusting.limit}
-        pictureUrl={trusting.profile ? trusting.profile.avatarUrl : undefined}
-      />
+    {console.log(
+      "WE SAW: ",
+      Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide)
+    )}
+    {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting}
+      <TrustCard {trusting} direction="trusting" />
     {/each}
+
     <h1>Trusted by</h1>
-    {#each Object.values($mySafe.trustRelations.trustedBy).filter(o => !o.hide) as trustedBy}
-      <TrustCard
-        userId={trustedBy.safeAddress ? trustedBy.safeAddress : ""}
-        displayName={trustedBy.profile
-          ? trustedBy.profile.displayName
-          : trustedBy.safeAddress}
-        direction="trusted"
-        limit={trustedBy.limit}
-        pictureUrl={trustedBy.profile ? trustedBy.profile.avatarUrl : undefined}
-      />
+    {console.log(
+      "LETS SEE: ",
+      Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide)
+    )}
+    {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide) as trustedBy}
+      <TrustCard {trustedBy} direction="trusted" />
     {/each}
   {/if}
 </div>
