@@ -1,15 +1,20 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { setClient } from "svelte-apollo";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import {onMount} from "svelte";
+  import {setClient} from "svelte-apollo";
+  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import { sendInviteGas } from "../processes/sendInviteGas";
+  import {sendInviteGas} from "../processes/sendInviteGas";
   import TrustCard from "../atoms/TrustCard.svelte";
-  import { mySafe } from "../stores/safe";
+  import {mySafe} from "../stores/safe";
+  import {TrustObject} from "../data/circles/queries";
+
+  let mutualTrusts: TrustObject[];
+  let trusting: TrustObject[];
+  let trusted: TrustObject[];
 
   export let params: {
     inviteAccountAddress?: string;
@@ -41,16 +46,11 @@
     );
   }
 
-  function setObjectData(obj) {
-    let arr = Object.keys(obj).map((k) => obj[k]);
-    return arr;
-  }
 </script>
 
-<BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
-
+<BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"}/>
 <div class="mx-4 -mt-6">
-  {#if !$mySafe.trustRelations || !$mySafe.trustRelations.trustedBy|| !$mySafe.trustRelations.trusting}
+  {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">
@@ -64,30 +64,54 @@
         <div class="flex flex-col items-start">
           <div>
             <b>An error occurred while loading the recent activities:</b>
-            <br />{$mySafe.ui.error.message}
+            <br/>{$mySafe.ui.error.message}
           </div>
         </div>
       </div>
     </section>
-  {:else if $mySafe.trustRelations && $mySafe.trustRelations.trustedBy}
-    {#each setObjectData($mySafe.trustRelations.trustedBy) as trustIncoming}
+  {:else}
+    <h1>Mutual trust</h1>
+    {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust}
       <TrustCard
-        userId={trustIncoming._id ? trustIncoming._id : ""}
-        displayName={trustIncoming.profile
-          ? trustIncoming.profile.displayName
-          : trustIncoming._id}
-        direction={trustIncoming.direction
-          ? trustIncoming.profile.direction
-          : ""}
-        limit={trustIncoming.limit ? trustIncoming.limit : ""}
-        pictureUrl={trustIncoming.profile
-          ? trustIncoming.profile.avatarUrl
-          : undefined}
+        userId={mutualTrust.trusting.safeAddress ? mutualTrust.trusting.safeAddress : ""}
+        displayName={mutualTrust.trusting.profile
+        ? mutualTrust.trusting.profile.displayName
+        : mutualTrust.trusting.safeAddress}
+        direction="mutual"
+        limit={mutualTrust.trusting.limit  + "/" + mutualTrust.trustedBy.limit}
+        pictureUrl={mutualTrust.trusting.profile
+        ? mutualTrust.trusting.profile.avatarUrl
+        : undefined}
       />
     {/each}
-  {:else}
-    {console.log("RELA: ", $mySafe)}
-    <span>No recent trusts</span>
+    <h1>Trusting</h1>
+    {#each Object.values($mySafe.trustRelations.trusting) as trusting}
+      <TrustCard
+        userId={trusting.safeAddress ? trusting.safeAddress : ""}
+        displayName={trusting.profile
+        ? trusting.profile.displayName
+        : trusting.safeAddress}
+        direction="mutual"
+        limit={trusting.limit}
+        pictureUrl={trusting.profile
+        ? trusting.profile.avatarUrl
+        : undefined}
+      />
+    {/each}
+    <h1>Trusted by</h1>
+    {#each Object.values($mySafe.trustRelations.trustedBy) as trustedBy}
+      <TrustCard
+        userId={trustedBy.safeAddress ? trustedBy.safeAddress : ""}
+        displayName={trustedBy.profile
+        ? trustedBy.profile.displayName
+        : trustedBy.safeAddress}
+        direction="mutual"
+        limit={trustedBy.limit}
+        pictureUrl={trustedBy.profile
+        ? trustedBy.profile.avatarUrl
+        : undefined}
+      />
+    {/each}
   {/if}
 </div>
 <!--

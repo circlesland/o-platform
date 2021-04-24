@@ -65,6 +65,8 @@ export const emptySafe:Safe = {
   trustRelations: {
     trustedBy:{},
     trusting:{},
+    mutualTrusts:{},
+    untrusted: {},
     lastBlock:0,
     firstBlock:0
   },
@@ -109,7 +111,8 @@ async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses:string[])
 
 async function augmentProfiles(safe: Safe) {
   // Get all involved addresses
-  const circlesAddresses = safe.transfers.rows.filter(o => Web3.utils.isAddress(o.to) && Web3.utils.isAddress(o.from)).reduce((p, c) => {
+  const transferAddresses = safe.transfers.rows.filter(o => Web3.utils.isAddress(o.to) && Web3.utils.isAddress(o.from))
+    .reduce((p, c) => {
     const from = Web3.utils.toChecksumAddress(c.from);
     p[from] = true;
     const to = Web3.utils.toChecksumAddress(c.to);
@@ -117,10 +120,18 @@ async function augmentProfiles(safe: Safe) {
     return p;
   }, {});
 
-  const circlesAddressesArr = Object.keys(circlesAddresses);
+  const lookupAddresses = Object.keys(
+    Object.keys(transferAddresses)
+    .concat(Object.keys(safe.trustRelations.trusting))
+    .concat(Object.keys(safe.trustRelations.trustedBy))
+    .reduce((p,c) => {
+      p[c] = true;
+      return p;
+    }, {})
+  );
 
   // Load all circles.land profiles
-  const profiles = await loadProfilesBySafeAddress(circlesAddressesArr);
+  const profiles = await loadProfilesBySafeAddress(lookupAddresses);
   const profilesLookup = profiles.reduce((p, c) => {
     p[Web3.utils.toChecksumAddress(c.circlesAddress)] = c;
     return p;
@@ -169,7 +180,7 @@ async function augmentProfiles(safe: Safe) {
   _currentSafe = safe;
 
   // Load all circles.garden profiles
-  const circlesGardenProfiles = await loadCirclesGardenProfilesBySafeAddress(circlesAddressesArr);
+  const circlesGardenProfiles = await loadCirclesGardenProfilesBySafeAddress(lookupAddresses);
   const circlesGardenProfilesLookup = circlesGardenProfiles.reduce((p, c) => {
     p[c.safeAddress] = c;
     return p;

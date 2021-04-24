@@ -5,6 +5,7 @@ import {Erc20Token} from "@o-platform/o-circles/dist/token/erc20Token";
 import {Observable, Subject} from "rxjs";
 import {CirclesToken} from "@o-platform/o-circles/dist/model/circlesToken";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {mySafe} from "../../stores/safe";
 
 export type Token = {
   _id:string
@@ -63,11 +64,20 @@ export type Safe = {
   trustRelations?: {
     firstBlock: number
     lastBlock: number
+    mutualTrusts: {
+      [safeAddress:string]: {
+        trusting: TrustObject,
+        trustedBy: TrustObject
+      }
+    }
     trustedBy: {
       [trustGiver: string]: TrustObject
     }
     trusting: {
       [trustReceiver: string]: TrustObject
+    },
+    untrusted: {
+      [address: string]: TrustObject
     }
   }
   acceptedTokens?: {
@@ -340,13 +350,63 @@ export class Queries {
       safeAddress: safe.safeAddress,
       firstBlock: safe?.firstBlock ?? 0,
       lastBlock: safe?.lastBlock ?? 0,
+      mutualTrusts: safe.trustRelations?.mutualTrusts ?? {},
       trusting: safe.trustRelations?.trusting ?? {},
-      trustedBy: safe.trustRelations?.trustedBy ?? {}
+      trustedBy: safe.trustRelations?.trustedBy ?? {},
+      untrusted: safe.trustRelations?.untrusted ?? {}
     });
+
+    Object.keys(trustRelations.trusting).forEach(trustingKey => {
+      if (trustRelations.trusting[trustingKey]?.limit == 0) {
+        trustRelations.untrusted[trustingKey] = trustRelations.trusting[trustingKey];
+        delete trustRelations.trusting[trustingKey];
+      }
+    });
+    Object.keys(trustRelations.trustedBy).forEach(trustingKey => {
+      if (trustRelations.trustedBy[trustingKey]?.limit == 0)
+        delete trustRelations.trustedBy[trustingKey];
+    });
+
+    const pairs: {[safeAddress:string]: {
+        trusting: TrustObject|null,
+        trustedBy: TrustObject|null
+      }} = {};
+
+    Object.values(trustRelations.trustedBy).forEach(o => {
+      if (!pairs[o.safeAddress]) {
+        pairs[o.safeAddress] = {
+          trusting: null,
+          trustedBy: null
+        };
+      }
+      if (o.limit > 0) {
+        pairs[o.safeAddress].trustedBy = o;
+      }
+    })
+    Object.values(trustRelations.trusting).forEach(o => {
+      if (!pairs[o.safeAddress]) {
+        pairs[o.safeAddress] = {
+          trusting: null,
+          trustedBy: null
+        };
+      }
+      if (o.limit > 0) {
+        pairs[o.safeAddress].trusting = o;
+      }
+    })
+
+    trustRelations.mutualTrusts = Object.values(pairs).filter(o => o.trusting && o.trustedBy).reduce((p,c) => {
+      p[c.trusting.safeAddress] = c;
+      delete trustRelations.trustedBy[c.trusting.safeAddress];
+      delete trustRelations.trusting[c.trusting.safeAddress];
+      return p;
+    },{});
 
     return {
       ...safe,
       trustRelations: {
+        untrusted: trustRelations.untrusted,
+        mutualTrusts: trustRelations.mutualTrusts,
         firstBlock: trustRelations.firstBlock,
         lastBlock: trustRelations.lastBlock,
         trusting: trustRelations.trusting,
