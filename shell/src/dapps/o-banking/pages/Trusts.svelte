@@ -79,11 +79,8 @@
       />
     {/each}
     <h1>Trusting</h1>
-    {console.log(
-      "WE SAW: ",
-      Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide)
-    )}
-    {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting(trusting._id)}
+
+    {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting(trusting.id)}
       <TrustCard {trusting} direction="trusting" />
     {/each}
 
