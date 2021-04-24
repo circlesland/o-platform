@@ -184,7 +184,7 @@ export class Queries {
     console.log("addHubTransfers() is starting at" + startAt)
     await new CirclesAccount(checksumSafeAddress).findHubTransfers(startAt).forEach(hubTransfer => {
       transfers.rows.push({
-        _id: hubTransfer.blockNumber + "/" + hubTransfer.returnValues.from + "/" + hubTransfer.returnValues.to,
+        _id: `${hubTransfer.blockNumber}${hubTransfer.returnValues.from}${hubTransfer.returnValues.to}`,
         type: "hub",
         symbol: "crc",
         direction: hubTransfer.returnValues.from == checksumSafeAddress ? "out" : "in",
@@ -243,7 +243,7 @@ export class Queries {
         .findTransfers(checksumSafeAddress, startAt)
         .forEach(directTransfer => {
           transfers.rows.push(<Transfer>{
-            _id: directTransfer.blockNumber + "/" + directTransfer.returnValues.from + "/" + directTransfer.returnValues.to,
+            _id: `${directTransfer.blockNumber}${directTransfer.returnValues.from}${directTransfer.returnValues.to}`,
             type: "direct",
             symbol: "crc",
             direction: directTransfer.returnValues.from == checksumSafeAddress ? "out" : "in",

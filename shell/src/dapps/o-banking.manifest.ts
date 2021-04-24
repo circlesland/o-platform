@@ -362,6 +362,8 @@ function subscribeToShellEvents() {
       for(let i = 0; i < RpcGateway.gateways.length; i++) {
         await update(e => cancel = e);
         if (cancel && cancel.message == "slow_provider") {
+          console.warn("Error occurred. Retrying with a different provider ...", cancel);
+          cancel = undefined;
           continue;
         } else {
           return;
@@ -471,8 +473,6 @@ async function tryRestoreCache() {
       return undefined;
     }
   }
-
-  update(() => {});
 }
 
 const transactions: PageManifest = {
@@ -696,7 +696,6 @@ export const banking: DappManifest<DappState> = {
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     subscribeToShellEvents();
-    update((e) => console.error(e));
     return {
       initialPage: transactions,
       cancelDependencyLoading: false
