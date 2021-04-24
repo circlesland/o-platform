@@ -37,14 +37,18 @@ let blockChainEventsSubscription:Subscription|null;
 export const emptySafe:Safe = {
   safeAddress: "0x00",
   balance: "0",
-  loadingPercent: -1,
-  loadingText: "No safe connected",
+  ui: {
+    loadingPercent: -1,
+    loadingText: "No safe connected",
+    error: undefined
+  },
   transfers: {
     firstBlock:0,
     lastBlock:0,
     rows:[]
   },
   token: {
+    _id: "",
     tokenAddress: "0x00",
     balance: "0",
     tokenOwner: "0x00",
@@ -56,7 +60,6 @@ export const emptySafe:Safe = {
     lastBlock:0,
     firstBlock:0
   },
-  error: undefined,
   lastBlock:0,
   firstBlock:0,
   trustRelations: {
@@ -215,28 +218,30 @@ async function init() {
 
       let safe: Safe = cachedSafe ?? {
         safeAddress: profile.circlesAddress,
-        loadingPercent: 0
+        ui: {
+          loadingPercent: 0
+        }
       };
 
-      let _watchLoadingPercent = safe.loadingPercent;
+      let _watchLoadingPercent = safe.ui?.loadingPercent;
       const timeoutHandle = setInterval(() => {
-        if (safe?.loadingPercent === null || safe?.loadingPercent === undefined) {
+        if (safe?.ui?.loadingPercent === null || safe?.ui?.loadingPercent === undefined) {
           return;
         }
-        if (safe.loadingPercent && safe.loadingPercent == _watchLoadingPercent) {
+        if (safe.ui?.loadingPercent && safe.ui?.loadingPercent == _watchLoadingPercent) {
           clearInterval(timeoutHandle);
           if (cancel) {
             cancel(new Error("slow_provider"));
           }
         } else {
-          _watchLoadingPercent = safe.loadingPercent;
+          _watchLoadingPercent = safe.ui?.loadingPercent;
         }
       }, 5000);
 
       safe = await Queries.addOwnToken(safe);
       console.log(new Date().getTime() +": "+ "Token via web3:", JSON.stringify(safe, null, 2));
 
-      safe.loadingText = "Loading hub transfers ..";
+      safe.ui.loadingText = "Loading hub transfers ..";
       window.o.publishEvent(<any>{
         type: "shell.refresh",
         dapp: "banking:1",
@@ -247,8 +252,8 @@ async function init() {
       safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
       const hubTransferCount = safe.transfers.rows.length;
       console.log(new Date().getTime() +": "+ `Added ${hubTransferCount} hub transfers.`)
-      safe.loadingPercent = 5;
-      safe.loadingText = "Loading trust connections ..";
+      safe.ui.loadingPercent = 5;
+      safe.ui.loadingText = "Loading trust connections ..";
       window.o.publishEvent(<any>{
         type: "shell.refresh",
         dapp: "banking:1",
@@ -259,8 +264,8 @@ async function init() {
 
       safe = await Queries.addContacts(safe);
       console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
-      safe.loadingPercent = 18;
-      safe.loadingText = "" +
+      safe.ui.loadingPercent = 18;
+      safe.ui.loadingText = "" +
         "Loading accepted tokens ..";
       window.o.publishEvent(<any>{
         type: "shell.refresh",
@@ -271,8 +276,8 @@ async function init() {
 
       safe = await Queries.addAcceptedTokens(safe);
       console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
-      safe.loadingPercent = 22;
-      safe.loadingText = "Loading balances ..";
+      safe.ui.loadingPercent = 22;
+      safe.ui.loadingText = "Loading balances ..";
       window.o.publishEvent(<any>{
         type: "shell.refresh",
         dapp: "banking:1",
@@ -293,8 +298,8 @@ async function init() {
       const totalBalance = Object.keys(safe.acceptedTokens.tokens).reduce((p: BN, c: string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
       const totalBalanceStr = totalBalance.toString();
       safe.balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
-      safe.loadingPercent = 26;
-      safe.loadingText = "Loading direct transfers ..";
+      safe.ui.loadingPercent = 26;
+      safe.ui.loadingText = "Loading direct transfers ..";
       window.o.publishEvent(<any>{
         type: "shell.refresh",
         dapp: "banking:1",
@@ -302,10 +307,10 @@ async function init() {
       });
       _currentSafe = safe;
 
-      const lastProgress = safe.loadingPercent;
+      const lastProgress = safe.ui.loadingPercent;
       const remainingPercents = 100 - lastProgress;
       safe = await Queries.addDirectTransfers(safe, undefined, progress => {
-        safe.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
+        safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
         window.o.publishEvent(<any>{
           type: "shell.refresh",
           dapp: "banking:1",
@@ -322,8 +327,8 @@ async function init() {
       _currentSafe = safe;
 
       subscription?.unsubscribe();
-      safe.loadingPercent = undefined;
-      safe.loadingText = undefined;
+      safe.ui.loadingPercent = undefined;
+      safe.ui.loadingText = undefined;
       clearInterval(timeoutHandle);
       localStorage.setItem("safe", JSON.stringify(safe));
       await augmentProfiles(safe);

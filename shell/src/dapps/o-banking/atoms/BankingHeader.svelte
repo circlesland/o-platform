@@ -72,11 +72,11 @@
     </span>
     <div class="mt-8 p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
       <small class="block">
-          {$mySafe.loadingPercent ? $mySafe.loadingText : ""}
+          {$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ""}
       </small>
       <progress
         class="progress progress-accent transaction-update-progress"
-        value={$mySafe.loadingPercent ? $mySafe.loadingPercent : 0}
+        value={$mySafe.ui.loadingPercent ? $mySafe.ui.loadingPercent : 0}
         max="100"
       />
     </div>

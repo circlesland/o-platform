@@ -301,21 +301,26 @@ export class Queries {
       let trustLimit: number = parseInt(c.returnValues.limit);
       if (c.returnValues.user == checksumSafeAddress) {
         // "safeAddress" is the trust-receiver
-        trustGiver = c.returnValues.canSendTo
+        trustGiver = c.returnValues.canSendTo;
+        const firstBlock = this.min(p.trustedBy[trustGiver]?.firstBlock, c.blockNumber);
+        const lastBlock = this.max(p.trustedBy[trustGiver]?.lastBlock, c.blockNumber);
         p.trustedBy[trustGiver] = {
-          _id: c.returnValues
+          _id: `${lastBlock}${trustReceiver}${safe.safeAddress}`,
           safeAddress: trustGiver,
-          firstBlock: this.min(p.trustedBy[trustGiver]?.firstBlock, c.blockNumber),
-          lastBlock: this.max(p.trustedBy[trustGiver]?.lastBlock, c.blockNumber),
+          firstBlock: firstBlock,
+          lastBlock: lastBlock,
           limit: p.trustedBy[trustGiver]?.lastBlock > c.blockNumber ? p.trustedBy[trustGiver]?.limit : trustLimit
         };
       } else {
         // "safeAddress" is the trust-giver
         trustReceiver = c.returnValues.user;
+        const firstBlock = this.min(p.trusting[trustReceiver]?.firstBlock, c.blockNumber);
+        const lastBlock = this.max(p.trusting[trustReceiver]?.lastBlock, c.blockNumber);
         p.trusting[trustReceiver] = {
+          _id: `${lastBlock}${safe.safeAddress}${trustReceiver}`,
           safeAddress: trustReceiver,
-          firstBlock: this.min(p.trusting[trustReceiver]?.firstBlock, c.blockNumber),
-          lastBlock: this.max(p.trusting[trustReceiver]?.lastBlock, c.blockNumber),
+          firstBlock: firstBlock,
+          lastBlock: lastBlock,
           limit: p.trusting[trustReceiver]?.lastBlock > c.blockNumber ? p.trusting[trustReceiver]?.limit : trustLimit
         };
       }
