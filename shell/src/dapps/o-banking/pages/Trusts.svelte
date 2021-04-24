@@ -85,7 +85,7 @@
       />
     {/each}
     <h1>Trusting</h1>
-    {#each Object.values($mySafe.trustRelations.trusting) as trusting}
+    {#each Object.values($mySafe.trustRelations.trusting).filter(o => !o.hide) as trusting}
       <TrustCard
         userId={trusting.safeAddress ? trusting.safeAddress : ""}
         displayName={trusting.profile
@@ -99,7 +99,7 @@
       />
     {/each}
     <h1>Trusted by</h1>
-    {#each Object.values($mySafe.trustRelations.trustedBy) as trustedBy}
+    {#each Object.values($mySafe.trustRelations.trustedBy).filter(o => !o.hide) as trustedBy}
       <TrustCard
         userId={trustedBy.safeAddress ? trustedBy.safeAddress : ""}
         displayName={trustedBy.profile

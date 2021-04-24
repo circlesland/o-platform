@@ -44,6 +44,7 @@ export type Transfer = {
 
 export type TrustObject = {
   _id:string
+  hide?:boolean;
   safeAddress: string
   firstBlock: number
   lastBlock: number
@@ -357,14 +358,14 @@ export class Queries {
     });
 
     Object.keys(trustRelations.trusting).forEach(trustingKey => {
-      if (trustRelations.trusting[trustingKey]?.limit == 0) {
+      if (trustRelations.trusting[trustingKey]?.limit === 0) {
         trustRelations.untrusted[trustingKey] = trustRelations.trusting[trustingKey];
-        delete trustRelations.trusting[trustingKey];
+        trustRelations.trusting[trustingKey].hide = true;
       }
     });
     Object.keys(trustRelations.trustedBy).forEach(trustingKey => {
-      if (trustRelations.trustedBy[trustingKey]?.limit == 0)
-        delete trustRelations.trustedBy[trustingKey];
+      if (trustRelations.trustedBy[trustingKey]?.limit === 0)
+        trustRelations.trustedBy[trustingKey].hide = true;
     });
 
     const pairs: {[safeAddress:string]: {
@@ -397,8 +398,13 @@ export class Queries {
 
     trustRelations.mutualTrusts = Object.values(pairs).filter(o => o.trusting && o.trustedBy).reduce((p,c) => {
       p[c.trusting.safeAddress] = c;
-      delete trustRelations.trustedBy[c.trusting.safeAddress];
-      delete trustRelations.trusting[c.trusting.safeAddress];
+
+      if (trustRelations.trustedBy[c.trusting.safeAddress]) {
+        trustRelations.trustedBy[c.trusting.safeAddress].hide = true;
+      }
+      if (trustRelations.trusting[c.trusting.safeAddress]) {
+        trustRelations.trusting[c.trusting.safeAddress].hide = true;
+      }
       return p;
     },{});
 
