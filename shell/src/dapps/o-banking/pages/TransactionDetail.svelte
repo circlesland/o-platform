@@ -1,15 +1,22 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import TokensHeader from "../atoms/TokensHeader.svelte";
+  import {Transfer} from "../data/circles/queries";
+  import {mySafe} from "../stores/safe";
 
   export let params: {
+    blockNo?: string;
     from: string;
     to: string;
-    blockNo?: string;
   };
+
+  let transfer:Transfer;
+  $: {
+    transfer = $mySafe.transfers.rows.find(o => o.firstBlock == params.blockNo && o.from == params.from && o.to == params.to)
+  }
 </script>
 
 <TokensHeader amount={params.blockNo} type={"positive"} />
+{#if transfer}
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-1 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
@@ -82,3 +89,4 @@
     </div>
   </section>
 </div>
+{/if}

@@ -7,6 +7,7 @@ import {CirclesToken} from "@o-platform/o-circles/dist/model/circlesToken";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type Token = {
+  _id:string
   tokenAddress: string
   tokenOwner: string
   firstBlock: number
@@ -14,10 +15,12 @@ export type Token = {
 }
 
 export type Transfer = {
+  _id:string
   direction: "in" | "out"
   symbol: "crc" | "xdai"
   type: "hub" | "direct"
   token?: string
+  time?:Date
   firstBlock: number
   lastBlock?: number
   from: string
@@ -35,6 +38,7 @@ export type Transfer = {
 }
 
 export type TrustObject = {
+  _id:string
   safeAddress: string
   firstBlock: number
   lastBlock: number
@@ -42,9 +46,6 @@ export type TrustObject = {
 }
 
 export type Safe = {
-  loadingPercent?:number
-  loadingText?:string
-  error?:Error
   safeAddress: string
   ownerAddress?: string
   firstBlock?: number
@@ -72,6 +73,11 @@ export type Safe = {
     firstBlock: number
     lastBlock: number
     rows: Transfer[]
+  },
+  ui?: {
+    loadingPercent?:number
+    loadingText?:string
+    error?:Error
   }
 };
 
@@ -178,6 +184,7 @@ export class Queries {
     console.log("addHubTransfers() is starting at" + startAt)
     await new CirclesAccount(checksumSafeAddress).findHubTransfers(startAt).forEach(hubTransfer => {
       transfers.rows.push({
+        _id: hubTransfer.blockNumber + "/" + hubTransfer.returnValues.from + "/" + hubTransfer.returnValues.to,
         type: "hub",
         symbol: "crc",
         direction: hubTransfer.returnValues.from == checksumSafeAddress ? "out" : "in",
@@ -236,6 +243,7 @@ export class Queries {
         .findTransfers(checksumSafeAddress, startAt)
         .forEach(directTransfer => {
           transfers.rows.push(<Transfer>{
+            _id: directTransfer.blockNumber + "/" + directTransfer.returnValues.from + "/" + directTransfer.returnValues.to,
             type: "direct",
             symbol: "crc",
             direction: directTransfer.returnValues.from == checksumSafeAddress ? "out" : "in",
@@ -295,6 +303,7 @@ export class Queries {
         // "safeAddress" is the trust-receiver
         trustGiver = c.returnValues.canSendTo
         p.trustedBy[trustGiver] = {
+          _id: c.returnValues
           safeAddress: trustGiver,
           firstBlock: this.min(p.trustedBy[trustGiver]?.firstBlock, c.blockNumber),
           lastBlock: this.max(p.trustedBy[trustGiver]?.lastBlock, c.blockNumber),

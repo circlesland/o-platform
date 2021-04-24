@@ -20,7 +20,7 @@
 </script>
 
 <section
-  on:click|once={() => loadDetailPage("daniel/samuel/200")}
+  on:click|once={() => loadDetailPage(`daniel/samuel/200`)}
   class="flex items-center justify-center mb-2 text-circlesdarkblue"
 >
   <div

@@ -12,6 +12,7 @@ import {RpcGateway} from "../rpcGateway";
 
 export interface CirclesTokenModel
 {
+  readonly _id: string;
   readonly firstBlock: number;
   readonly tokenAddress: string;
   readonly tokenOwner: string;
@@ -19,6 +20,7 @@ export interface CirclesTokenModel
 
 export class CirclesToken implements CirclesTokenModel
 {
+  readonly _id: string;
   readonly firstBlock: number;
   readonly tokenAddress: string;
   readonly tokenOwner: string;
@@ -31,6 +33,7 @@ export class CirclesToken implements CirclesTokenModel
     this.tokenAddress = tokenAddress;
     this.tokenOwner = tokenOwner;
     this.firstBlock = firstBlock;
+    this._id = this.tokenAddress;
   }
 
   wait(milliseconds: number)

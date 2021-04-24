@@ -37,8 +37,8 @@
         </div>
       </div>
     </section>
-  {:else if $mySafe.transfers && $mySafe.transfers.rows && $mySafe.transfers.rows.length > 0}
-    {#each $mySafe.transfers.rows as transfer(transfer.time + transfer.from + transfer.too)}
+  {:else if $mySafe.transfers && $mySafe.transfers.rows}
+    {#each $mySafe.transfers.rows as transfer(transfer.from+transfer.to+transfer.firstBlock)}
       {#if transfer.direction === "in"}
         <TransactionCard
           displayName={transfer.fromProfile ? transfer.fromProfile.displayName : transfer.from}
