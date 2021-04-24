@@ -5,10 +5,10 @@
   import Dropzone from "svelte-file-dropzone";
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
-  import getCroppedImg from "./cropImage";
 
   export let context: EditorContext;
 
+  let maxSize: number = 10000000;
   let crop = { x: 0, y: 0 };
   let cropData = {
     detail: { pixels: { x: 0, y: 0, width: 300, height: 300 } },
@@ -21,6 +21,8 @@
   let image;
   let uploadFile;
 
+  $: uploadMessage = "";
+
   let files = {
     accepted: [],
     rejected: [],
@@ -32,8 +34,16 @@
     const { acceptedFiles, fileRejections } = e.detail;
     files.accepted = [...files.accepted, ...acceptedFiles];
     files.rejected = [...files.rejected, ...fileRejections];
-    console.log("ACCEPTED: ", files.accepted);
-    addedfile(files.accepted[0]);
+
+    if (files.rejected.length > 0) {
+      uploadMessage = files.rejected[0].errors[0].message;
+      files = {
+        accepted: [],
+        rejected: [],
+      };
+    } else {
+      addedfile(files.accepted[0]);
+    }
   }
 
   onMount(async () => {
@@ -62,8 +72,6 @@
   function cropImage(detail) {
     try {
       cropData = detail;
-      console.log("THIS CROP: ", crop);
-      console.log("THIS IS THE ACTUAL DETAIL: ", detail);
       image = new Image();
       image.src = `data:image/*;base64,${uploadFile.toString("base64")}`;
 
@@ -109,9 +117,7 @@
   $: {
     if (imageStore && imageStore.value) {
       imageStore.isValid = true;
-      setTimeout(() => {
-        console.log("CROPPUS ", imageStore);
-      });
+      setTimeout(() => {});
     }
   }
 
@@ -159,6 +165,7 @@
     <Dropzone
       on:drop={handleFilesSelect}
       multiple={false}
+      {maxSize}
       accept="image/png,image/jpeg,image/jpg"
     >
       <div class="mt-1 flex justify-center px-6 pt-5 pb-6 ">
@@ -193,6 +200,7 @@
             <p class="pl-1">or drag and drop</p>
           </div>
           <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+          <p class="text-error">{uploadMessage}</p>
         </div>
       </div>
     </Dropzone>
