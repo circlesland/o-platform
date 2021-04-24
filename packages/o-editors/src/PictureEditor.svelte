@@ -10,7 +10,9 @@
   export let context: EditorContext;
 
   let crop = { x: 0, y: 0 };
-  let cropSize = { width: 300, height: 300 };
+  let cropData = {
+    detail: { pixels: { x: 0, y: 0, width: 300, height: 300 } },
+  };
   let zoom = 1;
   let aspect = 1 / 1;
   let cropShape = "round";
@@ -18,8 +20,6 @@
   let ctx;
   let image;
   let uploadFile;
-
-  let promise = Promise.resolve([]);
 
   let files = {
     accepted: [],
@@ -37,9 +37,9 @@
   }
 
   onMount(async () => {
-    // canvas = <HTMLCanvasElement>document.getElementById("cropCanvas");
-    // canvas = document.createElement("canvas");
+    canvas = <HTMLCanvasElement>document.getElementById("cropCanvas");
     ctx = canvas.getContext("2d");
+    // canvas = document.createElement("canvas");
   });
 
   const addedfile = (file) => {
@@ -47,7 +47,6 @@
 
     reader.addEventListener("loadend", (e) => {
       uploadFile = Buffer.from(<ArrayBuffer>reader.result);
-      cropImage();
     });
 
     reader.readAsArrayBuffer(file);
@@ -60,67 +59,48 @@
     image = null;
   }
 
-  let croppedAreaPixels = null;
-  let croppedImage = null;
-
-  function onCropComplete(croppedArea, croppedAreaPixelsData) {
-    croppedAreaPixels = croppedAreaPixelsData;
-    console.log("CROPPEDAREAPIXELS: ", crop);
-  }
-
-  function cropImage() {
+  function cropImage(detail) {
     try {
+      cropData = detail;
+      console.log("THIS CROP: ", crop);
+      console.log("THIS IS THE ACTUAL DETAIL: ", detail);
       image = new Image();
       image.src = `data:image/*;base64,${uploadFile.toString("base64")}`;
-      const maxSize = Math.max(image.width, image.height);
-      const safeArea = 2 * ((maxSize / 2) * Math.sqrt(2));
 
-      // set each dimensions to double largest dimension to allow for a safe area for the
-      // image to rotate in without being clipped by canvas context
-      // canvas.width = safeArea;
-      // canvas.height = safeArea;
-      canvas.width = image.width;
-      canvas.height = image.height;
-      // translate canvas context to a central location on image to allow rotating around the center.
-      // ctx.translate(safeArea / 2, safeArea / 2);
-      // ctx.translate(-safeArea / 2, -safeArea / 2);
+      image.onload = function () {
+        const scaleX = image.naturalWidth / image.width;
+        const scaleY = image.naturalHeight / image.height;
 
-      // draw rotated image and store data.
-      ctx.drawImage(
-        image,
-        safeArea / 2 - image.width * 0.5,
-        safeArea / 2 - image.height * 0.5
-      );
-      const data = ctx.getImageData(0, 0, safeArea, safeArea);
+        canvas.width = detail.detail.pixels.width;
+        canvas.height = detail.detail.pixels.height;
+        // const ctx = canvas.getContext("2d");
 
-      // set canvas width to final desired crop size - this will clear existing context
-      canvas.width = cropSize.width;
-      canvas.height = cropSize.height;
+        ctx.drawImage(
+          image,
+          detail.detail.pixels.x * scaleX,
+          detail.detail.pixels.y * scaleY,
+          detail.detail.pixels.width * scaleX,
+          detail.detail.pixels.height * scaleY,
+          0,
+          0,
+          detail.detail.pixels.width,
+          detail.detail.pixels.height
+        );
 
-      // paste generated rotate image with correct offsets for x,y crop values.
-      ctx.putImageData(
-        data,
-        Math.round(0 - safeArea / 2 + image.width * 0.5 - crop.x),
-        Math.round(0 - safeArea / 2 + image.height * 0.5 - crop.y)
-      );
+        canvas.toBlob((blob) => {
+          const reader = new FileReader();
 
-      // As Base64 string
-      // return canvas.toDataURL('image/jpeg');
+          reader.addEventListener("loadend", () => {
+            const arrayBuffer = reader.result;
+            imageStore.value = Buffer.from(<ArrayBuffer>reader.result);
+            imageStore.isValid = true;
+          });
 
-      // As a blob
-      canvas.toBlob((blob) => {
-        const reader = new FileReader();
+          reader.readAsArrayBuffer(blob);
+        }, "image/jpg");
 
-        reader.addEventListener("loadend", () => {
-          const arrayBuffer = reader.result;
-          imageStore.value = Buffer.from(<ArrayBuffer>reader.result);
-          imageStore.isValid = true;
-        });
-
-        reader.readAsArrayBuffer(blob);
-      }, "image/jpg");
-
-      return true;
+        return true;
+      };
     } catch (e) {
       console.error("ERROR ", e);
     }
@@ -146,12 +126,6 @@
     };
     context.process.sendAnswer(answer);
   }
-
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Enter") {
-      submit();
-    }
-  }
 </script>
 
 <label class="label" for={context.fieldName}>
@@ -159,7 +133,7 @@
 </label>
 <div class="w-full h-full">
   <canvas
-    style="visibility: visible; position:absolute; left:0; top:0;"
+    style="display:none"
     bind:this={canvas}
     id="cropCanvas"
     width="300"
@@ -172,20 +146,9 @@
       </span>
     </div>
     <div class="w-full h-96 relative">
-      {console.log(
-        "Zoom: ",
-        zoom,
-        "Crop: ",
-        crop,
-        "aspect: ",
-        aspect,
-        "cropSize: ",
-        cropSize
-      )}
       <Cropper
         image={`data:image/png;base64,${uploadFile.toString("base64")}`}
         bind:crop
-        bind:cropSize
         bind:zoom
         bind:aspect
         bind:cropShape
