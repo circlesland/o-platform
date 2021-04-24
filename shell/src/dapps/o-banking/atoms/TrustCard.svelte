@@ -20,7 +20,6 @@
 
   $: {
     switch (direction) {
-      case "trusted":
       case "mutual":
         displayName = trustedBy.profile
           ? trustedBy.profile.displayName
@@ -34,6 +33,7 @@
           ? trustedBy.limit.toString()
           : "0";
         id = trustedBy._id;
+        break;
       case "trusting":
         displayName = trusting.profile
           ? trusting.profile.displayName
@@ -41,6 +41,17 @@
         pictureUrl = trusting.profile ? trusting.profile.avatarUrl : undefined;
         limit = trusting.limit ? trusting.limit.toString() : "0";
         id = trusting._id;
+        break;
+      case "trusted":
+        displayName = trustedBy.profile
+          ? trustedBy.profile.displayName
+          : trustedBy.safeAddress;
+        pictureUrl = trustedBy.profile
+          ? trustedBy.profile.avatarUrl
+          : undefined;
+        limit = trustedBy.limit ? trustedBy.limit.toString() : "0";
+        id = trustedBy._id;
+        break;
     }
   }
 
