@@ -2,25 +2,35 @@
   import TokensHeader from "../atoms/TokensHeader.svelte";
   import {push} from "svelte-spa-router";
   import {mySafe} from "../stores/safe";
+  import { BN } from "ethereumjs-util";
+  import {Token} from "../data/circles/queries";
+
+  let tokens:Token[] = [];
+
+  function getTokens() {
+    const allTokens:Token[] = Object.entries($mySafe.acceptedTokens.tokens);
+    tokens = allTokens.filter(token => !(new BN(token[1].balance).eq(new BN("0"))));
+  }
+
+  $: {
+    if ($mySafe.acceptedTokens) {
+      getTokens();
+    }
+  }
 
 </script>
 
 <TokensHeader/>
 
 <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
-  {#if $mySafe.ui && $mySafe.ui.loadingPercent === 0}
+  {#if tokens.length === 0}
     Loading tokens...
-  {:else if $mySafe.ui &&  $mySafe.ui.error}
-    <b>An error occurred while loading the recent activities:</b>
-    <br/>{$mySafe.ui.error.message}
-  {:else if $mySafe.acceptedTokens && $mySafe.acceptedTokens.tokens && Object.keys($mySafe.acceptedTokens.tokens).length > 0}
-    {#each Object.entries($mySafe.acceptedTokens.tokens) as token}
+  {:else}
+    {#each tokens as token}
       <pre>
         {JSON.stringify(token, null, 2)}
       </pre>
     {/each}
-  {:else}
-    <span>No tokens</span>
   {/if}
 </div>
 

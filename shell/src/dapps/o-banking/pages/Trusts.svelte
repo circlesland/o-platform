@@ -10,7 +10,6 @@
   import { sendInviteGas } from "../processes/sendInviteGas";
   import TrustCard from "../atoms/TrustCard.svelte";
   import { mySafe } from "../stores/safe";
-  import { BN } from "ethereumjs-util";
 
   export let params: {
     inviteAccountAddress?: string;
