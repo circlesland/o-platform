@@ -1,16 +1,16 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import {setClient} from "svelte-apollo";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+  import { onMount } from "svelte";
+  import { setClient } from "svelte-apollo";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import {sendInviteGas} from "../processes/sendInviteGas";
+  import { sendInviteGas } from "../processes/sendInviteGas";
   import TrustCard from "../atoms/TrustCard.svelte";
-  import {mySafe} from "../stores/safe";
-  import {TrustObject} from "../data/circles/queries";
+  import { mySafe } from "../stores/safe";
+  import { TrustObject } from "../data/circles/queries";
 
   let mutualTrusts: TrustObject[];
   let trusting: TrustObject[];
@@ -45,10 +45,9 @@
       })
     );
   }
-
 </script>
 
-<BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"}/>
+<BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 <div class="mx-4 -mt-6">
   {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
@@ -64,7 +63,7 @@
         <div class="flex flex-col items-start">
           <div>
             <b>An error occurred while loading the recent activities:</b>
-            <br/>{$mySafe.ui.error.message}
+            <br />{$mySafe.ui.error.message}
           </div>
         </div>
       </div>
@@ -73,15 +72,17 @@
     <h1>Mutual trust</h1>
     {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust}
       <TrustCard
-        userId={mutualTrust.trusting.safeAddress ? mutualTrust.trusting.safeAddress : ""}
+        userId={mutualTrust.trusting.safeAddress
+          ? mutualTrust.trusting.safeAddress
+          : ""}
         displayName={mutualTrust.trusting.profile
-        ? mutualTrust.trusting.profile.displayName
-        : mutualTrust.trusting.safeAddress}
+          ? mutualTrust.trusting.profile.displayName
+          : mutualTrust.trusting.safeAddress}
         direction="mutual"
-        limit={mutualTrust.trusting.limit  + "/" + mutualTrust.trustedBy.limit}
+        limit={mutualTrust.trusting.limit + "/" + mutualTrust.trustedBy.limit}
         pictureUrl={mutualTrust.trusting.profile
-        ? mutualTrust.trusting.profile.avatarUrl
-        : undefined}
+          ? mutualTrust.trusting.profile.avatarUrl
+          : undefined}
       />
     {/each}
     <h1>Trusting</h1>
@@ -89,13 +90,11 @@
       <TrustCard
         userId={trusting.safeAddress ? trusting.safeAddress : ""}
         displayName={trusting.profile
-        ? trusting.profile.displayName
-        : trusting.safeAddress}
-        direction="mutual"
+          ? trusting.profile.displayName
+          : trusting.safeAddress}
+        direction="trusting"
         limit={trusting.limit}
-        pictureUrl={trusting.profile
-        ? trusting.profile.avatarUrl
-        : undefined}
+        pictureUrl={trusting.profile ? trusting.profile.avatarUrl : undefined}
       />
     {/each}
     <h1>Trusted by</h1>
@@ -103,13 +102,11 @@
       <TrustCard
         userId={trustedBy.safeAddress ? trustedBy.safeAddress : ""}
         displayName={trustedBy.profile
-        ? trustedBy.profile.displayName
-        : trustedBy.safeAddress}
-        direction="mutual"
+          ? trustedBy.profile.displayName
+          : trustedBy.safeAddress}
+        direction="trusted"
         limit={trustedBy.limit}
-        pictureUrl={trustedBy.profile
-        ? trustedBy.profile.avatarUrl
-        : undefined}
+        pictureUrl={trustedBy.profile ? trustedBy.profile.avatarUrl : undefined}
       />
     {/each}
   {/if}
