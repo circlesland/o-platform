@@ -15,6 +15,7 @@
 
 <TokensHeader amount={params._id} type={"positive"} />
 {#if transfer}
+<pre>{JSON.stringify(transfer, null, 2)}</pre>
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-1 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">

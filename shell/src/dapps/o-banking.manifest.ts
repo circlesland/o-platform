@@ -139,6 +139,13 @@ async function augmentProfiles(safe: Safe) {
       }
       : undefined;
   });
+  for (let tokenAddress in safe.acceptedTokens.tokens) {
+    const token = safe.acceptedTokens.tokens[tokenAddress];
+    token.ownerProfile = {
+      displayName: `${profilesLookup[token.tokenOwner].firstName ?? ""} ${profilesLookup[token.tokenOwner].lastName ?? ""}`,
+      avatarUrl: profilesLookup[token.tokenOwner]?.avatarUrl
+    };
+  }
   window.o.publishEvent(<any>{
     type: "shell.refresh",
     dapp: "banking:1",
@@ -186,11 +193,17 @@ async function augmentProfiles(safe: Safe) {
   _currentSafe = safe;
 }
 
-async function load(profile: Profile, cachedSafe?:Safe, cancel?:(e) => void, tokenList?:string[]) : Promise<Safe> {
+async function load(profile: Profile, cachedSafe:Safe|undefined, error:(e) => void, tokenList?:string[]) : Promise<Safe> {
   if (loading) {
     return;
   }
   loading = true;
+/*
+  return new Promise<Safe>((resolve, reject) => {
+
+  });
+*/
+
   try {
     if (!RpcGateway.get().utils.isAddress(profile.circlesAddress ?? "")) {
       localStorage.removeItem("safe");
@@ -217,8 +230,8 @@ async function load(profile: Profile, cachedSafe?:Safe, cancel?:(e) => void, tok
       }
       if (safe.ui?.loadingPercent && safe.ui?.loadingPercent == _watchLoadingPercent) {
         clearInterval(timeoutHandle);
-        if (cancel) {
-          cancel(new Error("slow_provider"));
+        if (error) {
+          error(new Error("slow_provider"));
         }
       } else {
         _watchLoadingPercent = safe.ui?.loadingPercent;
@@ -339,8 +352,7 @@ async function load(profile: Profile, cachedSafe?:Safe, cancel?:(e) => void, tok
       dapp: "banking:1",
       data: emptySafe
     });
-    _currentSafe = emptySafe;
-    throw e;
+    error(e);
   } finally {
     loading = false;
   }
@@ -361,24 +373,23 @@ function subscribeToShellEvents() {
     if (profileOrNull && RpcGateway.get().utils.isAddress(profileOrNull.circlesAddress ?? "")) {
       for(let i = 0; i < RpcGateway.gateways.length; i++) {
         await update(e => cancel = e);
-        if (cancel && cancel.message == "slow_provider") {
+        if (cancel) {
           console.warn("Error occurred. Retrying with a different provider ...", cancel);
           cancel = undefined;
-          continue;
         } else {
           return;
         }
       }
-    } else {
-      localStorage.removeItem("safe");
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: emptySafe
-      });
-      _currentSafe = emptySafe;
-      return;
     }
+
+    // TODO: When we reach this point all requests failed. Show an error to the user.
+    localStorage.removeItem("safe");
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: emptySafe
+    });
+    _currentSafe = emptySafe;
   });
 
   shellEventSubscription = window.o.events.subscribe((event: PlatformEvent & {
@@ -408,14 +419,17 @@ function subscribeChainEvents(safe: Safe) {
     blockChainEventsSubscription.unsubscribe();
   }
   let onEventUpdateTrigger = new DelayedTrigger(500, async (token: string) => {
-    const safe = await update(() => {
-    }, [token]);
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
+
+    let cancel:Error|undefined;
+    for(let i = 0; i < RpcGateway.gateways.length; i++) {
+      _currentSafe = await update(e => cancel = e, [token]);
+      if (cancel) {
+        console.warn("Error occurred. Retrying with a different provider ...", cancel);
+        cancel = undefined;
+      } else {
+        return;
+      }
+    }
   });
   blockChainEventsSubscription = Queries.tokenEvents(safe).subscribe((event: any) => {
     console.log("NEW EVENT:", event);
@@ -423,7 +437,7 @@ function subscribeChainEvents(safe: Safe) {
   });
 }
 
-async function update(cancel:(e:Error) => void, tokenList?:string[]) : Promise<Safe> {
+async function update(onError:(e:Error) => void, tokenList?:string[]) : Promise<Safe> {
   if (!profile) {
     return;
   }
@@ -432,10 +446,10 @@ async function update(cancel:(e:Error) => void, tokenList?:string[]) : Promise<S
   }
   if (_currentSafe && _currentSafe.safeAddress !== emptySafe.safeAddress) {
     // Update the cached safe
-    _currentSafe = await load(profile, _currentSafe, cancel, tokenList);
+    _currentSafe = await load(profile, _currentSafe, onError, tokenList);
   } else {
     // Load a completely new safe
-    _currentSafe = await load(profile, undefined, cancel, tokenList);
+    _currentSafe = await load(profile, undefined, onError, tokenList);
   }
   return _currentSafe;
 }

@@ -24,7 +24,7 @@
     <div class="flex flex-row  justify-between">
       <div class=" pl-2 self-start">
         <span class="text-lg font-circles "
-          >{#if lastLoadedDapp.title != lastLoadedPage.title}
+          >{#if lastLoadedDapp.title !== lastLoadedPage.title}
             {lastLoadedDapp.title} /
           {/if}{lastLoadedPage.title}</span
         >
@@ -71,9 +71,11 @@
       </svg>
     </span>
     <div class="mt-8 p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
+      {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ""}
       <small class="block">
         {$mySafe.transfers && $mySafe.transfers.rows ? $mySafe.transfers.rows.length : ""} transactions
       </small>
+      {/if}
       <small class="block">
           {$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ""}
       </small>

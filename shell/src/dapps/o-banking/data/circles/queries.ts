@@ -12,6 +12,10 @@ export type Token = {
   tokenOwner: string
   firstBlock: number
   balance?: string
+  ownerProfile?: {
+    displayName: string
+    avatarUrl: string
+  }
 }
 
 export type Transfer = {

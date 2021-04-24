@@ -1,48 +1,26 @@
 <script lang="ts">
   import TokensHeader from "../atoms/TokensHeader.svelte";
   import {push} from "svelte-spa-router";
-  import {query, setClient} from "svelte-apollo";
-  import gql from "graphql-tag";
-  import {me} from "../../../shared/stores/me";
+  import {mySafe} from "../stores/safe";
 
-  setClient(<any>window.o.theGraphClient);
-  $:tokens = query(
-    gql`
-      query safe($safe: String!) {
-          safe(id: $safe) {
-          balances {
-            token {
-              id
-            }
-            amount
-          }
-        }
-      }
-    `,
-    {
-      variables: {
-        safe: $me.circlesAddress ? $me.circlesAddress.toLowerCase() : ""
-      },
-    }
-  );
 </script>
 
 <TokensHeader/>
 
 <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
-  {#if $tokens.loading}
-    Loading offers...
-  {:else if $tokens.error}
+  {#if $mySafe.ui && $mySafe.ui.loadingPercent === 0}
+    Loading tokens...
+  {:else if $mySafe.ui &&  $mySafe.ui.error}
     <b>An error occurred while loading the recent activities:</b>
-    <br/>{$tokens.error.message}
-  {:else if $tokens.data && $tokens.data.safe && $tokens.data.safe.length > 0}
-    {#each $tokens.data.safe as safe}
-      <div>
-        from: {JSON.stringify(safe, null, 2)}<br/>
-      </div>
+    <br/>{$mySafe.ui.error.message}
+  {:else if $mySafe.acceptedTokens && $mySafe.acceptedTokens.tokens && Object.keys($mySafe.acceptedTokens.tokens).length > 0}
+    {#each Object.entries($mySafe.acceptedTokens.tokens) as token}
+      <pre>
+        {JSON.stringify(token, null, 2)}
+      </pre>
     {/each}
   {:else}
-    <span>No recent activities</span>
+    <span>No tokens</span>
   {/if}
 </div>
 
