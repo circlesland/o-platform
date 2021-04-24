@@ -208,14 +208,14 @@ async function augmentProfiles(safe: Safe) {
       } : undefined;
     }
   }
-  for (let trustingKey in safe.trustRelations.trusting ?? {}) {
+  for (let trustingKey in safe.trustRelations?.trusting ?? {}) {
     const trust = safe.trustRelations.trusting[trustingKey];
     trust.profile = circlesGardenProfilesLookup[trust.safeAddress] ? {
       displayName: circlesGardenProfilesLookup[trust.safeAddress].username,
       avatarUrl: circlesGardenProfilesLookup[trust.safeAddress].avatarUrl
     } : undefined;
   }
-  for (let trustedByKey in safe.trustRelations.trustedBy ?? {}) {
+  for (let trustedByKey in safe.trustRelations?.trustedBy ?? {}) {
     const trust = safe.trustRelations.trustedBy[trustedByKey];
     trust.profile = circlesGardenProfilesLookup[trust.safeAddress] ? {
       displayName: circlesGardenProfilesLookup[trust.safeAddress].username,
@@ -412,6 +412,7 @@ function subscribeToShellEvents() {
       for(let i = 0; i < RpcGateway.gateways.length; i++) {
         await update(e => cancel = e);
         if (cancel) {
+          RpcGateway.rotateProvider();
           console.warn("Error occurred. Retrying with a different provider ...", cancel);
           cancel = undefined;
         } else {
@@ -463,16 +464,21 @@ function subscribeChainEvents(safe: Safe) {
       _currentSafe = await update(e => cancel = e, [token]);
       if (cancel) {
         console.warn("Error occurred. Retrying with a different provider ...", cancel);
+        RpcGateway.rotateProvider();
         cancel = undefined;
       } else {
         return;
       }
     }
   });
-  blockChainEventsSubscription = Queries.tokenEvents(safe).subscribe((event: any) => {
-    console.log("NEW EVENT:", event);
-    onEventUpdateTrigger.trigger(event.token);
-  });
+  if (_currentSafe) {
+    blockChainEventsSubscription = Queries.tokenEvents(_currentSafe).subscribe((event: any) => {
+      console.log("NEW EVENT:", event);
+      onEventUpdateTrigger.trigger(event.token);
+    });
+  } else {
+    console.warn("_current safe is not set.")
+  }
 }
 
 async function update(onError:(e:Error) => void, tokenList?:string[]) : Promise<Safe> {

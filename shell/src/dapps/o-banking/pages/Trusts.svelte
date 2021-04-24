@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { query } from "svelte-apollo";
   import { setClient } from "svelte-apollo";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
@@ -10,8 +9,8 @@
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { sendInviteGas } from "../processes/sendInviteGas";
   import TrustCard from "../atoms/TrustCard.svelte";
-  import { me } from "../../../shared/stores/me";
   import { mySafe } from "../stores/safe";
+  import { BN } from "ethereumjs-util";
 
   export let params: {
     inviteAccountAddress?: string;
@@ -52,7 +51,7 @@
 <BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 
 <div class="mx-4 -mt-6">
-  {#if $mySafe.loading}
+  {#if $mySafe.ui.loadingPercent}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">
@@ -60,19 +59,18 @@
         </div>
       </div>
     </section>
-  {:else if $mySafe.error}
+  {:else if $mySafe.ui.error}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">
           <div>
             <b>An error occurred while loading the recent activities:</b>
-            <br />{$mySafe.error.message}
+            <br />{$mySafe.ui.error.message}
           </div>
         </div>
       </div>
     </section>
   {:else if $mySafe.trustRelations && $mySafe.trustRelations.trustedBy}
-    {console.log("RELA: ", setObjectData($mySafe.trustRelations.trustedBy))}
     {#each setObjectData($mySafe.trustRelations.trustedBy) as trustIncoming}
       <TrustCard
         userId={trustIncoming._id ? trustIncoming._id : ""}
