@@ -6,8 +6,16 @@ module.exports = {
     enabled: false,
     content: [
       "./shell/src/**/*.svelte",
+      "./shell/src/**/*.ts",
+      "./shell/src/**/*.js",
+      "./shell/src/**/*.jsx",
       "./shell/public/*.html",
       "./packages/**/*.svelte",
+      "./src/**/*.html",
+      "./src/**/*.js",
+      "./src/**/*.ts",
+      "./src/**/*.jsx",
+      "./public/**/*.html",
     ],
     options: {
       safelist: [/data-theme$/],
