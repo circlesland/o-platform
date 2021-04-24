@@ -139,12 +139,12 @@ async function augmentProfiles(safe: Safe) {
       }
       : undefined;
   });
-  for (let tokenAddress in safe.acceptedTokens.tokens) {
+  for (let tokenAddress in safe.acceptedTokens?.tokens ?? {}) {
     const token = safe.acceptedTokens.tokens[tokenAddress];
-    token.ownerProfile = {
+    token.ownerProfile = profilesLookup[token.tokenOwner] ?  {
       displayName: `${profilesLookup[token.tokenOwner].firstName ?? ""} ${profilesLookup[token.tokenOwner].lastName ?? ""}`,
       avatarUrl: profilesLookup[token.tokenOwner]?.avatarUrl
-    };
+    } : undefined;
   }
   window.o.publishEvent(<any>{
     type: "shell.refresh",
@@ -184,6 +184,15 @@ async function augmentProfiles(safe: Safe) {
         };
     }
   });
+  for (let tokenAddress in safe.acceptedTokens?.tokens ?? {}) {
+    const token = safe.acceptedTokens.tokens[tokenAddress];
+    if (!token.ownerProfile) {
+      token.ownerProfile = circlesGardenProfilesLookup[token.tokenOwner] ? {
+        displayName: circlesGardenProfilesLookup[token.tokenOwner].username,
+        avatarUrl: circlesGardenProfilesLookup[token.tokenOwner].avatarUrl
+      } : undefined;
+    }
+  }
 
   window.o.publishEvent(<any>{
     type: "shell.refresh",
