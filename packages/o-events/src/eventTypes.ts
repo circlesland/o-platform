@@ -14,6 +14,7 @@ export type PlatformEventTypes =
     | "shell.showNotification"
     | "shell.closeModal"
     | "shell.processStarted"
+    | "circles.web3providerChanged"
     | "process.ready"
     | "process.nop"
     | "process.back"

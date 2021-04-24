@@ -4,18 +4,16 @@
   import {mySafe} from "../stores/safe";
 
   export let params: {
-    blockNo?: string;
-    from: string;
-    to: string;
+    _id:string
   };
 
   let transfer:Transfer;
   $: {
-    transfer = $mySafe.transfers.rows.find(o => o.firstBlock == params.blockNo && o.from == params.from && o.to == params.to)
+    transfer = $mySafe.transfers.rows.find(o => o._id == params._id)
   }
 </script>
 
-<TokensHeader amount={params.blockNo} type={"positive"} />
+<TokensHeader amount={params._id} type={"positive"} />
 {#if transfer}
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-1 text-circlesdarkblue">

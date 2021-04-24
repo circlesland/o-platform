@@ -72,6 +72,9 @@
     </span>
     <div class="mt-8 p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
       <small class="block">
+        {$mySafe.transfers && $mySafe.transfers.rows ? $mySafe.transfers.rows.length : ""} transactions
+      </small>
+      <small class="block">
           {$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ""}
       </small>
       <progress

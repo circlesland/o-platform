@@ -105,259 +105,94 @@ async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses:string[])
   return resultJson.data;
 }
 
-async function init() {
-  const subscription = window.o.events.subscribe((event: PlatformEvent & {
-    profile: Profile
-  }) => {
-    if (event.type == "shell.loggedOut") {
-      localStorage.removeItem("me");
-      localStorage.removeItem("safe");
-      profile = null;
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: null
-      });
-      _currentSafe = null;
-      return;
+
+
+async function augmentProfiles(safe: Safe) {
+  // Get all involved addresses
+  const circlesAddresses = safe.transfers.rows.filter(o => Web3.utils.isAddress(o.to) && Web3.utils.isAddress(o.from)).reduce((p, c) => {
+    const from = Web3.utils.toChecksumAddress(c.from);
+    p[from] = true;
+    const to = Web3.utils.toChecksumAddress(c.to);
+    p[to] = true;
+    return p;
+  }, {});
+
+  const circlesAddressesArr = Object.keys(circlesAddresses);
+
+  // Load all circles.land profiles
+  const profiles = await loadProfilesBySafeAddress(circlesAddressesArr);
+  const profilesLookup = profiles.reduce((p, c) => {
+    p[Web3.utils.toChecksumAddress(c.circlesAddress)] = c;
+    return p;
+  }, {});
+  safe.transfers.rows.forEach(transaction => {
+    transaction.fromProfile = profilesLookup[transaction.from]
+      ? {
+        displayName: `${profilesLookup[transaction.from].firstName ?? ""} ${profilesLookup[transaction.from].lastName ?? ""}`,
+        avatarUrl: profilesLookup[transaction.from].avatarUrl
+      }
+      : undefined;
+    transaction.toProfile = profilesLookup[transaction.to]
+      ? {
+        displayName: `${profilesLookup[transaction.to].firstName ?? ""} ${profilesLookup[transaction.to].lastName ?? ""}`,
+        avatarUrl: profilesLookup[transaction.to].avatarUrl
+      }
+      : undefined;
+  });
+  window.o.publishEvent(<any>{
+    type: "shell.refresh",
+    dapp: "banking:1",
+    data: safe
+  });
+  _currentSafe = safe;
+
+  // Load all circles.garden profiles
+  const circlesGardenProfiles = await loadCirclesGardenProfilesBySafeAddress(circlesAddressesArr);
+  const circlesGardenProfilesLookup = circlesGardenProfiles.reduce((p, c) => {
+    p[c.safeAddress] = c;
+    return p;
+  }, {});
+
+  safe.transfers.rows.forEach(transaction => {
+    if (!transaction.fromProfile) {
+      transaction.fromProfile = circlesGardenProfilesLookup[transaction.from]
+        ? {
+          displayName: circlesGardenProfilesLookup[transaction.from].username,
+          avatarUrl: circlesGardenProfilesLookup[transaction.from].avatarUrl
+        }
+        : {
+          displayName: transaction.from,
+          avatarUrl: ""
+        };
+    }
+    if (!transaction.toProfile) {
+      transaction.toProfile = circlesGardenProfilesLookup[transaction.to]
+        ? {
+          displayName: circlesGardenProfilesLookup[transaction.to].username,
+          avatarUrl: circlesGardenProfilesLookup[transaction.to].avatarUrl
+        }
+        : {
+          displayName: transaction.to,
+          avatarUrl: ""
+        };
     }
   });
 
-  async function augmentProfiles(safe: Safe) {
-    // Get all involved addresses
-    const circlesAddresses = safe.transfers.rows.filter(o => Web3.utils.isAddress(o.to) && Web3.utils.isAddress(o.from)).reduce((p, c) => {
-      const from = Web3.utils.toChecksumAddress(c.from);
-      p[from] = true;
-      const to = Web3.utils.toChecksumAddress(c.to);
-      p[to] = true;
-      return p;
-    }, {});
+  window.o.publishEvent(<any>{
+    type: "shell.refresh",
+    dapp: "banking:1",
+    data: safe
+  });
+  _currentSafe = safe;
+}
 
-    const circlesAddressesArr = Object.keys(circlesAddresses);
-
-    // Load all circles.land profiles
-    const profiles = await loadProfilesBySafeAddress(circlesAddressesArr);
-    const profilesLookup = profiles.reduce((p, c) => {
-      p[Web3.utils.toChecksumAddress(c.circlesAddress)] = c;
-      return p;
-    }, {});
-    safe.transfers.rows.forEach(transaction => {
-      transaction.fromProfile = profilesLookup[transaction.from]
-        ? {
-          displayName: `${profilesLookup[transaction.from].firstName ?? ""} ${profilesLookup[transaction.from].lastName ?? ""}`,
-          avatarUrl: profilesLookup[transaction.from].avatarUrl
-        }
-        : undefined;
-      transaction.toProfile = profilesLookup[transaction.to]
-        ? {
-          displayName: `${profilesLookup[transaction.to].firstName ?? ""} ${profilesLookup[transaction.to].lastName ?? ""}`,
-          avatarUrl: profilesLookup[transaction.to].avatarUrl
-        }
-        : undefined;
-    });
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
-
-    // Load all circles.garden profiles
-    const circlesGardenProfiles = await loadCirclesGardenProfilesBySafeAddress(circlesAddressesArr);
-    const circlesGardenProfilesLookup = circlesGardenProfiles.reduce((p, c) => {
-      p[c.safeAddress] = c;
-      return p;
-    }, {});
-
-    safe.transfers.rows.forEach(transaction => {
-      if (!transaction.fromProfile) {
-        transaction.fromProfile = circlesGardenProfilesLookup[transaction.from]
-          ? {
-            displayName: circlesGardenProfilesLookup[transaction.from].username,
-            avatarUrl: circlesGardenProfilesLookup[transaction.from].avatarUrl
-          }
-          : {
-            displayName: transaction.from,
-            avatarUrl: ""
-          };
-      }
-      if (!transaction.toProfile) {
-        transaction.toProfile = circlesGardenProfilesLookup[transaction.to]
-          ? {
-            displayName: circlesGardenProfilesLookup[transaction.to].username,
-            avatarUrl: circlesGardenProfilesLookup[transaction.to].avatarUrl
-          }
-          : {
-            displayName: transaction.to,
-            avatarUrl: ""
-          };
-      }
-    });
-
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "banking:1",
-      data: safe
-    });
-    _currentSafe = safe;
+async function load(profile: Profile, cachedSafe?:Safe, cancel?:(e) => void, tokenList?:string[]) : Promise<Safe> {
+  if (loading) {
+    return;
   }
-
-  async function load(profile: Profile, cachedSafe?:Safe, cancel?:(e) => void, tokenList?:string[]) : Promise<Safe> {
-    if (loading) {
-      return;
-    }
-    loading = true;
-    try {
-      if (!RpcGateway.get().utils.isAddress(profile.circlesAddress ?? "")) {
-        localStorage.removeItem("safe");
-        window.o.publishEvent(<any>{
-          type: "shell.refresh",
-          dapp: "banking:1",
-          data: emptySafe
-        });
-        _currentSafe = emptySafe;
-        return;
-      }
-
-      let safe: Safe = cachedSafe ?? {
-        safeAddress: profile.circlesAddress,
-        ui: {
-          loadingPercent: 0
-        }
-      };
-
-      let _watchLoadingPercent = safe.ui?.loadingPercent;
-      const timeoutHandle = setInterval(() => {
-        if (safe?.ui?.loadingPercent === null || safe?.ui?.loadingPercent === undefined) {
-          return;
-        }
-        if (safe.ui?.loadingPercent && safe.ui?.loadingPercent == _watchLoadingPercent) {
-          clearInterval(timeoutHandle);
-          if (cancel) {
-            cancel(new Error("slow_provider"));
-          }
-        } else {
-          _watchLoadingPercent = safe.ui?.loadingPercent;
-        }
-      }, 5000);
-
-      safe = await Queries.addOwnToken(safe);
-      console.log(new Date().getTime() +": "+ "Token via web3:", JSON.stringify(safe, null, 2));
-
-      safe.ui.loadingText = "Loading hub transfers ..";
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: safe
-      });
-      _currentSafe = safe;
-
-      safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
-      const hubTransferCount = safe.transfers.rows.length;
-      console.log(new Date().getTime() +": "+ `Added ${hubTransferCount} hub transfers.`)
-      safe.ui.loadingPercent = 5;
-      safe.ui.loadingText = "Loading trust connections ..";
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: safe
-      });
-      _currentSafe = safe;
-      augmentProfiles(safe);
-
-      safe = await Queries.addContacts(safe);
-      console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
-      safe.ui.loadingPercent = 18;
-      safe.ui.loadingText = "" +
-        "Loading accepted tokens ..";
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: safe
-      });
-      _currentSafe = safe;
-
-      safe = await Queries.addAcceptedTokens(safe);
-      console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
-      safe.ui.loadingPercent = 22;
-      safe.ui.loadingText = "Loading balances ..";
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: safe
-      });
-      _currentSafe = safe;
-
-      safe = await Queries.addTokenBalances(safe);
-      safe.token.balance = (await new Erc20Token(RpcGateway.get(), safe.token.tokenAddress).getBalanceOf(safe.safeAddress)).toString();
-      console.log(new Date().getTime() +": "+ `Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: safe
-      });
-      _currentSafe = safe;
-
-      const totalBalance = Object.keys(safe.acceptedTokens.tokens).reduce((p: BN, c: string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
-      const totalBalanceStr = totalBalance.toString();
-      safe.balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
-      safe.ui.loadingPercent = 26;
-      safe.ui.loadingText = "Loading direct transfers ..";
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: safe
-      });
-      _currentSafe = safe;
-
-      const lastProgress = safe.ui.loadingPercent;
-      const remainingPercents = 100 - lastProgress;
-      safe = await Queries.addDirectTransfers(safe, undefined, progress => {
-        safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
-        window.o.publishEvent(<any>{
-          type: "shell.refresh",
-          dapp: "banking:1",
-          data: safe
-        });
-        _currentSafe = safe;
-      }, tokenList);
-      console.log(new Date().getTime() +": "+ `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`)
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: safe
-      });
-      _currentSafe = safe;
-
-      subscription?.unsubscribe();
-      safe.ui.loadingPercent = undefined;
-      safe.ui.loadingText = undefined;
-      clearInterval(timeoutHandle);
-      localStorage.setItem("safe", JSON.stringify(safe));
-      await augmentProfiles(safe);
-      window.o.publishEvent(<any>{
-        type: "shell.refresh",
-        dapp: "banking:1",
-        data: safe
-      });
-      _currentSafe = safe;
-
-      let onEventUpdateTrigger = new DelayedTrigger(500, async (token:string) => {
-        const safe = await update(() => {}, [token]);
-        window.o.publishEvent(<any>{
-          type: "shell.refresh",
-          dapp: "banking:1",
-          data: safe
-        });
-        _currentSafe = safe;
-      });
-      blockChainEventsSubscription = Queries.tokenEvents(safe).subscribe((event:any) => {
-        console.log("NEW EVENT:", event);
-        onEventUpdateTrigger.trigger(event.token);
-      });
-
-      return safe;
-    } catch (e) {
+  loading = true;
+  try {
+    if (!RpcGateway.get().utils.isAddress(profile.circlesAddress ?? "")) {
       localStorage.removeItem("safe");
       window.o.publishEvent(<any>{
         type: "shell.refresh",
@@ -365,66 +200,162 @@ async function init() {
         data: emptySafe
       });
       _currentSafe = emptySafe;
-      throw e;
-    } finally {
-      loading = false;
-    }
-    return undefined;
-  }
-
-  async function tryRestoreCache() {
-    const cachedSafeJson = localStorage.getItem("safe");
-    if (!cachedSafeJson) {
       return;
-    } else {
-      try {
-        const safe = JSON.parse(cachedSafeJson);
-        window.o.publishEvent(<any>{
-          type: "shell.refresh",
-          dapp: "banking:1",
-          data: safe
-        });
-        _currentSafe = safe;
-        await augmentProfiles(safe);
-        window.o.publishEvent(<any>{
-          type: "shell.refresh",
-          dapp: "banking:1",
-          data: safe
-        });
-        _currentSafe = safe;
-        return safe;
-      } catch (e) {
-        console.error("An error occurred while restoring or updating the cached safe:", e);
-        localStorage.removeItem("safe");
-        window.o.publishEvent(<any>{
-          type: "shell.refresh",
-          dapp: "banking:1",
-          data: emptySafe
-        });
-        _currentSafe = emptySafe;
-        return undefined;
+    }
+
+    let safe: Safe = cachedSafe ?? {
+      safeAddress: profile.circlesAddress,
+      ui: {
+        loadingPercent: 0
       }
-    }
+    };
+
+    let _watchLoadingPercent = safe.ui?.loadingPercent;
+    const timeoutHandle = setInterval(() => {
+      if (safe?.ui?.loadingPercent === null || safe?.ui?.loadingPercent === undefined) {
+        return;
+      }
+      if (safe.ui?.loadingPercent && safe.ui?.loadingPercent == _watchLoadingPercent) {
+        clearInterval(timeoutHandle);
+        if (cancel) {
+          cancel(new Error("slow_provider"));
+        }
+      } else {
+        _watchLoadingPercent = safe.ui?.loadingPercent;
+      }
+    }, 5000);
+
+    safe = await Queries.addOwnToken(safe);
+    console.log(new Date().getTime() +": "+ "Token via web3:", JSON.stringify(safe, null, 2));
+
+    safe.ui.loadingText = "Loading hub transfers ..";
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: safe
+    });
+    _currentSafe = safe;
+
+    safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
+    const hubTransferCount = safe.transfers.rows.length;
+    console.log(new Date().getTime() +": "+ `Added ${hubTransferCount} hub transfers.`)
+    safe.ui.loadingPercent = 5;
+    safe.ui.loadingText = "Loading trust connections ..";
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: safe
+    });
+    _currentSafe = safe;
+    augmentProfiles(safe);
+
+    safe = await Queries.addContacts(safe);
+    console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
+    safe.ui.loadingPercent = 18;
+    safe.ui.loadingText = "" +
+      "Loading accepted tokens ..";
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: safe
+    });
+    _currentSafe = safe;
+
+    safe = await Queries.addAcceptedTokens(safe);
+    console.log(new Date().getTime() +": "+ `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
+    safe.ui.loadingPercent = 22;
+    safe.ui.loadingText = "Loading balances ..";
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: safe
+    });
+    _currentSafe = safe;
+
+    safe = await Queries.addTokenBalances(safe);
+    safe.token.balance = (await new Erc20Token(RpcGateway.get(), safe.token.tokenAddress).getBalanceOf(safe.safeAddress)).toString();
+    console.log(new Date().getTime() +": "+ `Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: safe
+    });
+    _currentSafe = safe;
+
+    const totalBalance = Object.keys(safe.acceptedTokens.tokens).reduce((p: BN, c: string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
+    const totalBalanceStr = totalBalance.toString();
+    safe.balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
+    safe.ui.loadingPercent = 26;
+    safe.ui.loadingText = "Loading direct transfers ..";
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: safe
+    });
+    _currentSafe = safe;
+
+    const lastProgress = safe.ui.loadingPercent;
+    const remainingPercents = 100 - lastProgress;
+    safe = await Queries.addDirectTransfers(safe, undefined, progress => {
+      safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: safe
+      });
+      _currentSafe = safe;
+    }, tokenList);
+    console.log(new Date().getTime() +": "+ `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`)
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: safe
+    });
+    _currentSafe = safe;
+
+    safe.ui.loadingPercent = undefined;
+    safe.ui.loadingText = undefined;
+
+    clearInterval(timeoutHandle);
+
+    localStorage.setItem("safe", JSON.stringify(safe));
+
+    await augmentProfiles(safe);
+
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: safe
+    });
+    _currentSafe = safe;
+
+    subscribeChainEvents(safe);
+
+    return safe;
+  } catch (e) {
+    localStorage.removeItem("safe");
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: emptySafe
+    });
+    _currentSafe = emptySafe;
+    throw e;
+  } finally {
+    loading = false;
+  }
+  return undefined;
+}
+
+let shellEventSubscription:Subscription|undefined;
+let unsubscribeMe:() => void;
+
+function subscribeToShellEvents() {
+  if (shellEventSubscription) {
+    shellEventSubscription.unsubscribe();
   }
 
-  async function update(cancel:(e:Error) => void, tokenList?:string[]) : Promise<Safe> {
-    if (!profile) {
-      return;
-    }
-    if (!_currentSafe || _currentSafe.safeAddress === emptySafe.safeAddress) {
-      _currentSafe = await tryRestoreCache();
-    }
-    if (_currentSafe && _currentSafe.safeAddress !== emptySafe.safeAddress) {
-      // Update the cached safe
-      _currentSafe = await load(profile, _currentSafe, cancel, tokenList);
-    } else {
-      // Load a completely new safe
-      _currentSafe = await load(profile, undefined, cancel, tokenList);
-    }
-    return _currentSafe;
-  }
-
-  const unsubscribe = me.subscribe(async profileOrNull => {
+  unsubscribeMe = me.subscribe(async profileOrNull => {
     profile = profileOrNull;
     let cancel:Error|undefined;
     if (profileOrNull && RpcGateway.get().utils.isAddress(profileOrNull.circlesAddress ?? "")) {
@@ -448,16 +379,100 @@ async function init() {
     }
   });
 
-  update(() => {});
+  shellEventSubscription = window.o.events.subscribe((event: PlatformEvent & {
+    profile: Profile
+  }) => {
+    if (event.type == "shell.loggedOut") {
+      localStorage.removeItem("me");
+      localStorage.removeItem("safe");
+      profile = null;
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: null
+      });
+      _currentSafe = null;
+      return;
+    } else if(event.type === "circles.web3providerChanged") {
+      if (!loading) {
+        subscribeChainEvents(_currentSafe);
+      }
+    }
+  });
+}
 
-  return function stop() {
-    if (unsubscribe) {
-      unsubscribe();
+function subscribeChainEvents(safe: Safe) {
+  if (blockChainEventsSubscription) {
+    blockChainEventsSubscription.unsubscribe();
+  }
+  let onEventUpdateTrigger = new DelayedTrigger(500, async (token: string) => {
+    const safe = await update(() => {
+    }, [token]);
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "banking:1",
+      data: safe
+    });
+    _currentSafe = safe;
+  });
+  blockChainEventsSubscription = Queries.tokenEvents(safe).subscribe((event: any) => {
+    console.log("NEW EVENT:", event);
+    onEventUpdateTrigger.trigger(event.token);
+  });
+}
+
+async function update(cancel:(e:Error) => void, tokenList?:string[]) : Promise<Safe> {
+  if (!profile) {
+    return;
+  }
+  if (!_currentSafe || _currentSafe.safeAddress === emptySafe.safeAddress) {
+    _currentSafe = await tryRestoreCache();
+  }
+  if (_currentSafe && _currentSafe.safeAddress !== emptySafe.safeAddress) {
+    // Update the cached safe
+    _currentSafe = await load(profile, _currentSafe, cancel, tokenList);
+  } else {
+    // Load a completely new safe
+    _currentSafe = await load(profile, undefined, cancel, tokenList);
+  }
+  return _currentSafe;
+}
+
+async function tryRestoreCache() {
+  const cachedSafeJson = localStorage.getItem("safe");
+  if (!cachedSafeJson) {
+    return;
+  } else {
+    try {
+      const safe = JSON.parse(cachedSafeJson);
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: safe
+      });
+      _currentSafe = safe;
+      await augmentProfiles(safe);
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: safe
+      });
+      _currentSafe = safe;
+      return safe;
+    } catch (e) {
+      console.error("An error occurred while restoring or updating the cached safe:", e);
+      localStorage.removeItem("safe");
+      window.o.publishEvent(<any>{
+        type: "shell.refresh",
+        dapp: "banking:1",
+        data: emptySafe
+      });
+      _currentSafe = emptySafe;
+      return undefined;
     }
-    if (blockChainEventsSubscription) {
-      blockChainEventsSubscription.unsubscribe();
-    }
-  };
+  }
+
+  update(() => {});
 }
 
 const transactions: PageManifest = {
@@ -476,7 +491,7 @@ const transactions: PageManifest = {
 const transactionDetail: PageManifest = {
   isDefault: false,
   isSystem: true,
-  routeParts: ["transactions", ":from", ":to", ":blockNo"],
+  routeParts: ["transactions", ":_id"],
   component: TransactionDetail,
   title: "TransactionDetail",
   available: [
@@ -680,7 +695,8 @@ export const banking: DappManifest<DappState> = {
   }],
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
-    await init()
+    subscribeToShellEvents();
+    update((e) => console.error(e));
     return {
       initialPage: transactions,
       cancelDependencyLoading: false

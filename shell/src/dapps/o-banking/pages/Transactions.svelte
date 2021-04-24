@@ -18,7 +18,7 @@
 <BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 
 <div class="mx-4 -mt-6">
-  {#if $mySafe.ui.loadingPercent === 0}
+  {#if $mySafe.ui && $mySafe.ui.loadingPercent === 0}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">
@@ -26,7 +26,7 @@
         </div>
       </div>
     </section>
-  {:else if $mySafe.ui.error}
+  {:else if $mySafe.ui &&  $mySafe.ui.error}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">
@@ -41,21 +41,13 @@
     {#each $mySafe.transfers.rows as transfer(transfer._id)}
       {#if transfer.direction === "in"}
         <TransactionCard
-          displayName={transfer.fromProfile ? transfer.fromProfile.displayName : transfer.from}
-          direction="transactionpositive"
-          amount={transfer.amount}
-          pictureUrl={transfer.fromProfile ? transfer.fromProfile.avatarUrl : undefined}
+          transfer={transfer}
           message="WURST"
-          time={transfer.time}
         />
       {:else}
         <TransactionCard
-          displayName={transfer.toProfile ? transfer.toProfile.displayName : transfer.to}
-          direction="transactionnegative"
-          amount={transfer.amount}
-          pictureUrl={transfer.toProfile ? transfer.toProfile.avatarUrl : undefined}
+          transfer={transfer}
           message="Käse"
-          time={transfer.time}
         />
       {/if}
     {/each}

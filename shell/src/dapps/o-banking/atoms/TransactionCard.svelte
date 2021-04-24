@@ -2,16 +2,41 @@
   import Time from "svelte-time";
   import { push } from "svelte-spa-router";
   import Web3 from "web3";
-  export let displayName: String;
-  export let direction: String;
-  export let amount: string;
+  import {Transfer} from "../data/circles/queries";
+
+  export let transfer:Transfer;
   export let message: String;
-  export let time: Number;
-  export let pictureUrl: string;
+
+  let pictureUrl: string;
+  let displayName: String;
+  let classes:String;
+
+  $:{
+    displayName = transfer.direction === "in"
+      ? transfer.fromProfile
+        ? transfer.fromProfile.displayName
+        : transfer.from
+      : transfer.toProfile
+        ? transfer.toProfile.displayName
+        : transfer.to;
+
+    pictureUrl = transfer.direction === "in"
+      ? transfer.fromProfile
+        ? transfer.fromProfile.avatarUrl
+        : undefined
+      : transfer.toProfile
+        ? transfer.toProfile.avatarUrl
+        : undefined;
+
+      classes = transfer.direction === "in"
+        ? "transactionpositive"
+        : "transactionnegative";
+  }
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
 
   function loadDetailPage(path) {
+    console.log(path)
     push("#/banking/transactions/" + path);
   }
   function dateOlderThanSevenDays(unixTime: Number) {
@@ -20,7 +45,7 @@
 </script>
 
 <section
-  on:click|once={() => loadDetailPage(`daniel/samuel/200`)}
+  on:click|once={() => loadDetailPage(transfer._id)}
   class="flex items-center justify-center mb-2 text-circlesdarkblue"
 >
   <div
@@ -49,18 +74,16 @@
     </div>
 
     <div class="flex flex-1 flex-col justify-items-end">
-      <div class="self-end text-{direction} text-2xl sm:text-3xl">
-        <span
-          >{Number.parseFloat(Web3.utils.fromWei(amount, "ether")).toFixed(
-            2
-          )}</span
-        >
+      <div class="self-end text-{classes} text-2xl sm:text-3xl">
+        <span>
+          {Number.parseFloat(Web3.utils.fromWei(transfer.amount, "ether")).toFixed(2)}
+        </span>
       </div>
       <div class="self-end mt-2 text-xs text-circleslightblue">
-        {#if dateOlderThanSevenDays(time)}
-          <Time timestamp={new Date(time * 1000)} format="D. MMMM YYYY" />
+        {#if dateOlderThanSevenDays(transfer.time)}
+          <Time timestamp={new Date(transfer.time * 1000)} format="D. MMMM YYYY" />
         {:else}
-          <Time relative timestamp={new Date(time * 1000)} />
+          <Time relative timestamp={new Date(transfer.time * 1000)} />
         {/if}
       </div>
     </div>

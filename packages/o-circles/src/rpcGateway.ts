@@ -2,6 +2,7 @@ import {WebsocketProvider} from "web3-core";
 import {BN} from "ethereumjs-util";
 import Web3 from "web3";
 import Common from "ethereumjs-common";
+import {Web3providerChanged} from "./events/web3providerChanged";
 
 export class RpcGateway {
     static readonly gateways = [
@@ -86,5 +87,10 @@ export class RpcGateway {
         this._web3.setProvider(this._provider);
 
         console.log(`Set the RPC gateway to ${nextProvider}`)
+
+        const o:any = (<any>window).o;
+        if (o) {
+            o.publishEvent(new Web3providerChanged());
+        }
     }
 }
