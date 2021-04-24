@@ -7,7 +7,7 @@
   export let amount: string;
   export let message: String;
   export let time: Number;
-  export let pictureUrl:string;
+  export let pictureUrl: string;
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
 
@@ -29,15 +29,20 @@
     <div class="mr-2 text-center">
       <div class="avatar">
         <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-          <img src={pictureUrl ? pictureUrl : "/images/common/circles.png"} alt="username" />
+          <img
+            src={pictureUrl ? pictureUrl : "/images/common/circles.png"}
+            alt="username"
+          />
         </div>
       </div>
     </div>
 
     <div class="text-left">
-      <div>
-        <h2 class="text-2xl sm:text-3xl font-bold">
-          {displayName.length > 22 ? displayName.substring(0, 22) + ".." : displayName}
+      <div class="max-w-full transactionCardName">
+        <h2 class="text-2xl sm:text-3xl font-bold truncate ">
+          {displayName.length > 22
+            ? displayName.substring(0, 22) + ".."
+            : displayName}
         </h2>
       </div>
       <p class="text-sm mt-2">{message}</p>
@@ -61,3 +66,11 @@
     </div>
   </div>
 </section>
+
+<style>
+  @media (max-width: 496px) {
+    .transactionCardName {
+      max-width: 200px;
+    }
+  }
+</style>
