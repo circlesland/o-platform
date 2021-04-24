@@ -106,6 +106,9 @@ async function loadCirclesGardenProfilesBySafeAddress(circlesAddresses:string[])
 }
 
 async function init() {
+
+  console.log("Calling banking:1 init()")
+
   const subscription = window.o.events.subscribe((event: PlatformEvent & {
     profile: Profile
   }) => {

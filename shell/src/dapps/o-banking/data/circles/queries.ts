@@ -305,7 +305,7 @@ export class Queries {
         const firstBlock = this.min(p.trustedBy[trustGiver]?.firstBlock, c.blockNumber);
         const lastBlock = this.max(p.trustedBy[trustGiver]?.lastBlock, c.blockNumber);
         p.trustedBy[trustGiver] = {
-          _id: `${lastBlock}${trustReceiver}${safe.safeAddress}`,
+          _id: `${lastBlock}${trustGiver}${safe.safeAddress}`,
           safeAddress: trustGiver,
           firstBlock: firstBlock,
           lastBlock: lastBlock,
