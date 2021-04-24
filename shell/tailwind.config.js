@@ -3,15 +3,20 @@ const colors = require("tailwindcss/colors");
 module.exports = {
   darkMode: false,
   purge: {
-    content: ["./src/**/*.svelte", "./src/**/*.css", "./public/*.html"],
+    enabled: false,
+    content: [
+      "./shell/src/**/*.svelte",
+      "./shell/public/*.html",
+      "./packages/**/*.svelte",
+    ],
     options: {
       safelist: [/data-theme$/],
     },
   },
   daisyui: {
     styled: true,
-    themes: true,
-    rtl: false,
+    themes: false,
+    logs: false,
   },
 
   theme: {
