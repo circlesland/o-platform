@@ -76,15 +76,15 @@
     {#each setObjectData($mySafe.trustRelations.trustedBy) as trustIncoming}
       <TrustCard
         userId={trustIncoming._id ? trustIncoming._id : ""}
-        displayName={trustIncoming.fromProfile
-          ? trustIncoming.fromProfile.displayName
+        displayName={trustIncoming.profile
+          ? trustIncoming.profile.displayName
           : trustIncoming._id}
         direction={trustIncoming.direction
-          ? trustIncoming.fromProfile.direction
+          ? trustIncoming.profile.direction
           : ""}
         limit={trustIncoming.limit ? trustIncoming.limit : ""}
-        pictureUrl={trustIncoming.fromProfile
-          ? trustIncoming.fromProfile.avatarUrl
+        pictureUrl={trustIncoming.profile
+          ? trustIncoming.profile.avatarUrl
           : undefined}
       />
     {/each}

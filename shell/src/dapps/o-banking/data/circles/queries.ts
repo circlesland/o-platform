@@ -47,6 +47,10 @@ export type TrustObject = {
   firstBlock: number
   lastBlock: number
   limit: number
+  profile?: {
+    displayName: string
+    avatarUrl: string
+  }
 }
 
 export type Safe = {

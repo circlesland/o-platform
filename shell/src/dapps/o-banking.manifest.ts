@@ -146,6 +146,21 @@ async function augmentProfiles(safe: Safe) {
       avatarUrl: profilesLookup[token.tokenOwner]?.avatarUrl
     } : undefined;
   }
+  for (let trustingKey in safe.trustRelations?.trusting ?? {}) {
+    const trust = safe.trustRelations.trusting[trustingKey];
+    trust.profile = profilesLookup[trust.safeAddress] ? {
+      displayName: `${profilesLookup[trust.safeAddress].firstName ?? ""} ${profilesLookup[trust.safeAddress].lastName ?? ""}`,
+      avatarUrl: profilesLookup[trust.safeAddress]?.avatarUrl
+    } : undefined;
+  }
+  for (let trustedByKey in safe.trustRelations?.trustedBy ?? {}) {
+    const trust = safe.trustRelations.trustedBy[trustedByKey];
+    trust.profile = profilesLookup[trust.safeAddress] ? {
+      displayName: `${profilesLookup[trust.safeAddress].firstName ?? ""} ${profilesLookup[trust.safeAddress].lastName ?? ""}`,
+      avatarUrl: profilesLookup[trust.safeAddress]?.avatarUrl
+    } : undefined;
+  }
+
   window.o.publishEvent(<any>{
     type: "shell.refresh",
     dapp: "banking:1",
@@ -192,6 +207,20 @@ async function augmentProfiles(safe: Safe) {
         avatarUrl: circlesGardenProfilesLookup[token.tokenOwner].avatarUrl
       } : undefined;
     }
+  }
+  for (let trustingKey in safe.trustRelations.trusting ?? {}) {
+    const trust = safe.trustRelations.trusting[trustingKey];
+    trust.profile = circlesGardenProfilesLookup[trust.safeAddress] ? {
+      displayName: circlesGardenProfilesLookup[trust.safeAddress].username,
+      avatarUrl: circlesGardenProfilesLookup[trust.safeAddress].avatarUrl
+    } : undefined;
+  }
+  for (let trustedByKey in safe.trustRelations.trustedBy ?? {}) {
+    const trust = safe.trustRelations.trustedBy[trustedByKey];
+    trust.profile = circlesGardenProfilesLookup[trust.safeAddress] ? {
+      displayName: circlesGardenProfilesLookup[trust.safeAddress].username,
+      avatarUrl: circlesGardenProfilesLookup[trust.safeAddress].avatarUrl
+    } : undefined;
   }
 
   window.o.publishEvent(<any>{
