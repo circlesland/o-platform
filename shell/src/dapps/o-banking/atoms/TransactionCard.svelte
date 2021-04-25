@@ -39,7 +39,6 @@
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
 
   function loadDetailPage(path) {
-    console.log(path);
     push("#/banking/transactions/" + path);
   }
   function dateOlderThanSevenDays(unixTime: Number) {
