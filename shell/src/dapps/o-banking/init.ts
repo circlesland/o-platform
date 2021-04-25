@@ -243,10 +243,10 @@ function subscribeChainEvents(safe: Safe) {
   if (blockChainEventsSubscription) {
     blockChainEventsSubscription.unsubscribe();
   }
-  let onEventUpdateTrigger = new DelayedTrigger(500, async (token: string) => {
+  let onEventUpdateTrigger = new DelayedTrigger(500, async (tokenList: string[]) => {
     for (let i = 0; i < RpcGateway.gateways.length; i++) {
       try {
-        _currentSafe = await update([token]);
+        _currentSafe = await update(tokenList);
         return;
       } catch (e) {
         if (e.message === "slow_provider") {
@@ -268,7 +268,7 @@ function subscribeChainEvents(safe: Safe) {
   if (_currentSafe) {
     blockChainEventsSubscription = Queries.tokenEvents(_currentSafe).subscribe((event: any) => {
       console.log("NEW EVENT:", event);
-      onEventUpdateTrigger.trigger(event.token);
+      onEventUpdateTrigger.trigger(event.token === safe.token.tokenAddress ? [] : [event.token]);
     });
   } else {
     console.warn("_current safe is not set.")
