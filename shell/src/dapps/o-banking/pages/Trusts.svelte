@@ -65,32 +65,27 @@
       </div>
     </section>
   {:else}
-    <h1>Mutual trust</h1>
     <!-- TODO: Possible actions: untrust, transfer money -->
     {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust (mutualTrust._id)}
       <TrustCard
         trusting={mutualTrust.trusting}
         trustedBy={mutualTrust.trustedBy}
-        direction="mutual"
       />
     {/each}
 
-    <h1>Trusting</h1>
     {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting (trusting.id)}
       <!-- TODO: Possible actions: untrust -->
-      <TrustCard {trusting} direction="trusting" />
+      <TrustCard {trusting} />
     {/each}
 
-    <h1>Trusted by</h1>
     <!-- TODO: Possible actions: trust, transfer money -->
     {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress.toLowerCase() !== $mySafe.safeAddress.toLowerCase()) as trustedBy (trustedBy.id)}
-      <TrustCard {trustedBy} direction="trusted" />
+      <TrustCard {trustedBy} />
     {/each}
 
-    <h1>You untrusted</h1>
     <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
     {#each Object.values($mySafe.trustRelations.untrusted) as untrusted (untrusted.id)}
-      <TrustCard {untrusted} direction="untrusted" />
+      <TrustCard {untrusted} />
     {/each}
   {/if}
 </div>

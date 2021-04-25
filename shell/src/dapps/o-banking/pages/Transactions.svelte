@@ -2,7 +2,7 @@
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { push } from "svelte-spa-router";
   import TransactionCard from "../atoms/TransactionCard.svelte";
-  import {mySafe} from "../stores/safe";
+  import { mySafe } from "../stores/safe";
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
 
@@ -26,7 +26,7 @@
         </div>
       </div>
     </section>
-  {:else if $mySafe.ui &&  $mySafe.ui.error}
+  {:else if $mySafe.ui && $mySafe.ui.error}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
         <div class="flex flex-col items-start">
@@ -38,17 +38,12 @@
       </div>
     </section>
   {:else if $mySafe.transfers && $mySafe.transfers.rows}
-    {#each $mySafe.transfers.rows as transfer(transfer._id)}
+    {#each $mySafe.transfers.rows as transfer (transfer._id)}
+      {console.log("TRANSFER: ", transfer)}
       {#if transfer.direction === "in"}
-        <TransactionCard
-          transfer={transfer}
-          message="WURST"
-        />
+        <TransactionCard {transfer} message="WURST" />
       {:else}
-        <TransactionCard
-          transfer={transfer}
-          message="Käse"
-        />
+        <TransactionCard {transfer} message="Käse" />
       {/if}
     {/each}
   {:else}

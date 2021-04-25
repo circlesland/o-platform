@@ -6,10 +6,12 @@
 
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
-  export let user : {
-    displayName: string,
-    avatarUrl: string
+
+  export let user: {
+    displayName: String;
+    avatarUrl: String;
   };
+  export let safeAddress: String;
 
   onMount(() => {
     lastLoadedPage = getLastLoadedPage();
@@ -17,41 +19,21 @@
   });
 </script>
 
-<!-- BANKING HEADER START -->
 <div
   class="h-80 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
 >
   {#if lastLoadedDapp && lastLoadedPage}
-    <div
-      class="h-24 flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
-    >
-      <div class=" pl-2 self-start">
-        <a href="/#" on:click|once={() => history.back()}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6 inline-block -mt-1 mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            />
-          </svg>
-          <span class="text-lg font-circles">
-            {#if lastLoadedDapp.title != lastLoadedPage.title}
-              {lastLoadedDapp.title} /
-            {/if}
-            {lastLoadedPage.title}
-          </span>
-        </a>
+    <div class="flex flex-row  justify-between">
+      <div class=" pl-2 self-start ">
+        <span class="text-lg font-circles ">
+          {#if lastLoadedDapp.title != lastLoadedPage.title}
+            {lastLoadedDapp.title} /
+          {/if}{lastLoadedPage.title}</span
+        >
       </div>
-      <div class="self-start">
+      <div class="self-end">
         <button
-          class=" text-base-300"
+          class=" text-white font-light font-circles"
           on:click={() => (window.location = "/#/dashboard")}
         >
           <svg
@@ -72,18 +54,27 @@
       </div>
     </div>
   {/if}
-  <div class="self-center text-center mb-2 block ">
-    <span
-      class="inline-block text-6xl sm:text-8xl font-circles trustCardName truncate"
-      >{user.displayName}</span
-    >
+
+  <div class="self-center text-center mt-6 block">
+    <div class="avatar">
+      <div class="w-36 h-36 rounded-full mb-4">
+        <img
+          src={user.avatarUrl
+            ? user.avatarUrl
+            : "https://i.pravatar.cc/500?img=32"}
+          alt={user.displayName ? user.displayName : ""}
+        />
+      </div>
+    </div>
+    <div class="">
+      <h2>
+        {user.displayName}
+      </h2>
+    </div>
+    <div class="">
+      <small>
+        {safeAddress}
+      </small>
+    </div>
   </div>
 </div>
-
-<style>
-  @media (max-width: 496px) {
-    .trustCardName {
-      max-width: 200px;
-    }
-  }
-</style>

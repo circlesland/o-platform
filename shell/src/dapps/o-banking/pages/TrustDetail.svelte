@@ -7,20 +7,24 @@
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
-  import {TrustObject} from "../data/circles/types";
-  import {mySafe} from "../stores/safe";
+  import { TrustObject } from "../data/circles/types";
+  import { mySafe } from "../stores/safe";
 
   let trust: TrustObject;
 
   export let params: {
-    trustPartner: string;
+    trustPartner: String;
   };
 
-  $:{
+  $: {
     if ($mySafe.trustRelations && params.trustPartner) {
-      trust = Object.values($mySafe.trustRelations.trusting).find(o => o.safeAddress == params.trustPartner);
+      trust = Object.values($mySafe.trustRelations.trusting).find(
+        (o) => o.safeAddress == params.trustPartner
+      );
       if (!trust) {
-        trust = Object.values($mySafe.trustRelations.trustedBy).find(o => o.safeAddress == params.trustPartner);
+        trust = Object.values($mySafe.trustRelations.trustedBy).find(
+          (o) => o.safeAddress == params.trustPartner
+        );
       }
       if (!trust) {
         trust = <TrustObject>{
@@ -28,12 +32,12 @@
           safeAddress: params.trustPartner,
           profile: {
             displayName: "",
-            avatarUrl: ""
+            avatarUrl: "",
           },
-          lastBlock:0,
+          lastBlock: 0,
           hide: true,
-          firstBlock: 0
-        }
+          firstBlock: 0,
+        };
       }
     }
   }
@@ -46,7 +50,7 @@
           data: {
             recipientAddress,
           },
-          messages:{},
+          messages: {},
           dirtyFlags: {},
           environment: {},
         };
@@ -64,7 +68,7 @@
             trustLimit: 100,
             trustReceiver: recipientAddress,
           },
-          messages:{},
+          messages: {},
           dirtyFlags: {},
           environment: {},
         };
@@ -82,7 +86,7 @@
             trustLimit: 0,
             trustReceiver: recipientAddress,
           },
-          messages:{},
+          messages: {},
           dirtyFlags: {},
           environment: {},
         };
@@ -92,25 +96,11 @@
   }
 </script>
 
-<TrustDetailHeader user={trust.profile ? trust.profile : { displayName: trust.safeAddress}} />
+<TrustDetailHeader
+  user={trust.profile ? trust.profile : { displayName: trust.safeAddress }}
+  safeAddress={trust.safeAddress}
+/>
 <div class="mx-4 -mt-6">
-  <section class="justify-center mb-1 text-circlesdarkblue">
-    <div
-      class="flex flex-col bg-white shadow px-4 pb-6 w-full space-y-2 text-center"
-    >
-      <div class="avatar self-center -mt-16">
-        <div class="w-32 h-32 rounded-full  mb-4">
-          <img
-            src="{trust.profile ? trust.profile.avatarUrl : 'https://i.pravatar.cc/500?img=32'}" alt="{trust.profile ? trust.profile.displayName : ''}" />
-        </div>
-      </div>
-      <!-- <h2 class="card-title">Ernst Stavro Blofeld</h2> -->
-      <small class="break-all">
-        {trust.profile ? trust.profile.displayName : trust.safeAddress}
-      </small>
-    </div>
-  </section>
-
   <section class="justify-center mb-2 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
       <div class="text-circleslightblue text-sm font-bold">TRUST</div>
@@ -138,7 +128,11 @@
             <div class="text-sm breadcrumbs">
               <ul>
                 <li>
-                  <a href="/#/banking/trusts/Name%201">{trust.profile ? trust.profile.displayName : trust.safeAddress}</a>
+                  <a href="/#/banking/trusts/Name%201"
+                    >{trust.profile
+                      ? trust.profile.displayName
+                      : trust.safeAddress}</a
+                  >
                 </li>
                 <!--
                 <li>

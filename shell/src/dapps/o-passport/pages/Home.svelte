@@ -15,6 +15,7 @@
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import { getCountryName } from "../../../shared/countries";
   import { me } from "../../../shared/stores/me";
+  import Router, { push, location } from "svelte-spa-router";
 
   export let params: {
     jwt: string;
@@ -30,6 +31,9 @@
     }
   }
 
+  if (!$me) {
+    push("/#/");
+  }
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),
@@ -79,7 +83,7 @@
             dream: $me.dream,
           },
           dirtyFlags: {},
-          messages:{},
+          messages: {},
           environment: {},
         };
         return ctx;
