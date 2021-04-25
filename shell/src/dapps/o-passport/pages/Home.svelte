@@ -14,9 +14,7 @@
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import { getCountryName } from "../../../shared/countries";
-  import gql from "graphql-tag";
   import { me } from "../../../shared/stores/me";
-  import Tooltip from "../../../shared/atoms/Tooltip.svelte";
 
   export let params: {
     jwt: string;
@@ -31,8 +29,6 @@
       params.jwt = null;
     }
   }
-
-  let name = "0x87asdgt9adsofz98ad6fs8as7odft9aszf98pasdzfasdg";
 
   const copy = () => {
     const app = new CopyClipBoard({
@@ -95,7 +91,9 @@
 </script>
 
 <PassportHeader />
-
+{#if $me}
+  {console.log("ME: ", $me)}
+{/if}
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-2 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
@@ -108,8 +106,8 @@
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
           <small class="inline-block break-all" id="clipboard">
-            <input type="text" class="hidden" bind:value={name} />
-            0x87asdgt9adsofz98ad6fs8as7odft9aszf98pasdzfasdg
+            <input type="text" class="hidden" bind:value={$me.circlesAddress} />
+            {$me.circlesAddress}
             <div
               class="inline-block text-light cursor-pointertext-center text-xs relative -bottom-1"
               on:click={copy}

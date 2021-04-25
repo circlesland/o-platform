@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { Tabs, Tab, TabList, TabPanel } from "svelte-tabs";
+  import { me } from "../../../shared/stores/me";
   import PassportHeader from "../atoms/PassportHeader.svelte";
+
+  $: me;
 </script>
 
 <PassportHeader />
