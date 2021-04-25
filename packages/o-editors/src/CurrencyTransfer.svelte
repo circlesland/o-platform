@@ -53,6 +53,7 @@
       id="price"
       class="input input-bordered block w-full pl-12 pr-12 sm:text-sm "
       placeholder="0.00"
+      bind:value={amount}
     />
     <div class="absolute inset-y-0 right-0 flex items-center">
       <label for="currency" class="sr-only">Currency</label>

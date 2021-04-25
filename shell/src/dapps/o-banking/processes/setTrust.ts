@@ -113,7 +113,7 @@ const processDefinition = (processId: string) =>
                       value: o.circlesAddress,
                       label: `${o.firstName} ${o.lastName}`,
                     };
-                  })
+                  }).filter(o => o.value)
                 : [];
 
             return items;

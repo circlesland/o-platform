@@ -76,6 +76,7 @@ const processDefinition = (processId: string) =>
                 query search($searchString: String!) {
                   search(query: { searchString: $searchString }) {
                     id
+                    circlesAddress
                     firstName
                     lastName
                     dream
@@ -92,10 +93,10 @@ const processDefinition = (processId: string) =>
             return result.data.search && result.data.search.length > 0
               ? result.data.search.map((o) => {
                   return <Choice>{
-                    value: o.id,
+                    value: o.circlesAddress,
                     label: `${o.firstName} ${o.lastName}`,
                   };
-                })
+                }).filter(o => o.value)
               : [];
           },
           optionIdentifier: "value",
@@ -153,13 +154,13 @@ const processDefinition = (processId: string) =>
         always: [
           {
             cond: (context) => {
-              return context.data.tokens.currency == "crc";
+              return context.data.tokens.currency.toLowerCase() == "crc";
             },
             target: "callCirclesTransfer",
           },
           {
             cond: (context) => {
-              return context.data.tokens.currency == "xdai";
+              return context.data.tokens.currency.toLowerCase() == "xdai";
             },
             target: "callXdaiTransfer",
           },
@@ -174,6 +175,16 @@ const processDefinition = (processId: string) =>
           src: transferCircles.stateMachine(
             `${processId}:transfer:transferCircles`
           ),
+          data: {
+            data: (context, event) => {
+              return {
+                safeAddress: context.data.safeAddress,
+                recipientAddress: context.data.recipientAddress,
+                amount: context.data.tokens.amount,
+                privateKey: localStorage.getItem("circlesKey")
+              }
+            }
+          },
           onDone: "#success",
           onError: "#error",
         },
@@ -185,6 +196,16 @@ const processDefinition = (processId: string) =>
         },
         invoke: {
           src: transferXdai.stateMachine(`${processId}:transfer:transferXdai`),
+          data: {
+            data: (context, event) => {
+              return {
+                safeAddress: context.data.safeAddress,
+                recipientAddress: context.data.recipientAddress,
+                amount: context.data.tokens.amount,
+                privateKey: localStorage.getItem("circlesKey")
+              }
+            }
+          },
           onDone: "#success",
           onError: "#error",
         },
