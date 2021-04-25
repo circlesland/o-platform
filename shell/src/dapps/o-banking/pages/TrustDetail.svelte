@@ -18,10 +18,7 @@
 
   $:{
     if ($mySafe.trustRelations && params.trustPartner) {
-      trust = Object.values($mySafe.trustRelations.mutualTrusts).find(o => o.safeAddress == params.trustPartner);
-      if (!trust) {
-        trust = Object.values($mySafe.trustRelations.trusting).find(o => o.safeAddress == params.trustPartner);
-      }
+      trust = Object.values($mySafe.trustRelations.trusting).find(o => o.safeAddress == params.trustPartner);
       if (!trust) {
         trust = Object.values($mySafe.trustRelations.trustedBy).find(o => o.safeAddress == params.trustPartner);
       }
@@ -103,7 +100,8 @@
     >
       <div class="avatar self-center -mt-16">
         <div class="w-32 h-32 rounded-full  mb-4">
-          <img src="{trust.profile.avatarUrl}" alt="{trust.profile.displayName}" />
+          <img
+            src="{trust.profile ? trust.profile.avatarUrl : 'https://i.pravatar.cc/500?img=32'}" alt="{trust.profile ? trust.profile.displayName : ''}" />
         </div>
       </div>
       <!-- <h2 class="card-title">Ernst Stavro Blofeld</h2> -->
