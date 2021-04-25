@@ -3,11 +3,12 @@
   import { getLastLoadedDapp, getLastLoadedPage } from "../../../loader";
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import Web3 from "web3";
 
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
   export let amount;
-  export let type;
+  export let classes: String;
 
   onMount(() => {
     lastLoadedPage = getLastLoadedPage();
@@ -21,9 +22,9 @@
 >
   {#if lastLoadedDapp && lastLoadedPage}
     <div
-      class="h-24 flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+      class="h-24 pt-0  flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
     >
-      <div class=" pl-2 self-start">
+      <div class="self-start">
         <a href="/#" on:click|once={() => history.back()}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -71,13 +72,15 @@
     </div>
   {/if}
   <div class="self-center text-center mb-8 block">
-    {#if type == "positive"}
+    {#if classes == "transactionpositive"}
       <span class="block text-transactionpositive">Received</span>
-    {:else}
+    {:else if classes == "transactionnegative"}
       <span class="block text-transactionnegative">Sent</span>
+    {:else}
+      <span class="block text-base">Transfer</span>
     {/if}
-    <span class="inline-block text-8xl font-circles ml-10 "
-      >{amount}
+    <span class="inline-block text-8xl font-circles ml-10 ">
+      {Number.parseFloat(Web3.utils.fromWei(amount, "ether")).toFixed(2)}
       <svg
         class="w-16 h-16 inline -ml-6"
         viewBox="0 0 209 215"
