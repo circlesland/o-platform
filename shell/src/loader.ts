@@ -14,6 +14,7 @@ import {passport} from "./dapps/o-passport.manifest";
 import {banking} from "./dapps/o-banking.manifest";
 import {dashboard} from "./dapps/o-dashboard.manifest";
 import {homepage} from "./dapps/o-homepage.manifest";
+import {SvelteComponent} from "svelte";
 
 const errorIndicator = Error;
 
@@ -69,7 +70,7 @@ async function getDappEntryPoint(dappManifest:DappManifest<any>, pageManifest:Pa
         }
 
         lastLoadedPage = freshRuntimeDapp.initialPage;
-        return freshRuntimeDapp.initialPage.component;
+        return  freshRuntimeDapp.initialPage.component;
       }
       else {
         if (freshRuntimeDapp.runtimeDapp) {

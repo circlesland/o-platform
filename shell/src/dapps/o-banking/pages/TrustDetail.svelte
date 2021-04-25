@@ -9,12 +9,46 @@
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
   import { TrustObject } from "../data/circles/types";
   import { mySafe } from "../stores/safe";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {tryGetCurrentSafe} from "../init";
+  import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
+  import Success from "../../../shared/atoms/Success.svelte";
+  import {ContextAction} from "@o-platform/o-events/dist/shell/contextAction";
 
   let trust: TrustObject;
 
   export let params: {
     trustPartner: String;
   };
+
+  const contextActions = [{
+    key: "setTrust",
+    label: "Set Trust 123",
+    event: (runtimeDapp: RuntimeDapp<any>) => {
+      return new RunProcess<ShellProcessContext>(
+        shellProcess,
+        true,
+        async (ctx) => {
+          ctx.childProcessDefinition = setTrust;
+          ctx.childContext = {
+            data: {
+              safeAddress: tryGetCurrentSafe().safeAddress,
+              privateKey: localStorage.getItem("circlesKey"),
+              trustReceiver: params.trustPartner
+            },
+            dirtyFlags: {},
+            messages: {},
+            environment: {
+              errorView: Error,
+              progressView: LoadingIndicator,
+              successView: Success,
+            },
+          };
+          return ctx;
+        });
+    }
+  }];
+  contextActions.forEach(o => window.o.publishEvent(new ContextAction(o)));
 
   $: {
     if ($mySafe.trustRelations && params.trustPartner) {

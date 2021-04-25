@@ -1,4 +1,6 @@
 import {IconDefinition} from "@fortawesome/fontawesome-common-types";
+import {RuntimeDapp} from "./runtimeDapp";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export interface PageManifest {
   component: any,
@@ -12,4 +14,10 @@ export interface PageManifest {
   routeParts: string[],
   userData?: {
   }
+  actions?: {
+    key: string;
+    icon?: string;
+    label: string;
+    event: (runtimeDapp:RuntimeDapp<any>, lastLoadedComponent:any) => PlatformEvent
+  }[];
 }

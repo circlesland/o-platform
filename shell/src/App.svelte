@@ -39,6 +39,8 @@
     IdentifyContextData,
   } from "./dapps/o-passport/processes/identify";
   import { SvelteToast } from "@zerodevx/svelte-toast";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {ContextAction} from "@o-platform/o-events/dist/shell/contextAction";
 
   let isOpen: boolean = false;
   let modalProcess: Process;
@@ -48,6 +50,13 @@
     message: string;
     percent: number;
   };
+
+  let contextActions: {
+    key: string;
+    icon?: string;
+    label: string;
+    event: (runtimeDapp:RuntimeDapp<any>) => PlatformEvent
+  }[];
 
   window.o.events.subscribe(async (event: PlatformEvent) => {
     if (event.type === "shell.closeModal") {
@@ -105,6 +114,9 @@
         percent: progressEvent.percent,
       };
     }
+    if (event.type === "shell.contextAction") {
+      contextActions.push((<ContextAction>event).action);
+    }
   });
 
   function modalWantsToClose() {
@@ -138,6 +150,8 @@
     lastLoadedDapp = getLastLoadedDapp();
 
     console.log("LAST PAGE: ", lastLoadedPage);
+    // Clear the context actions after every route change
+    contextActions = [];
   }
 
   async function login(appId: string, code?: string) {
@@ -347,7 +361,7 @@
       <!-- No process -->
       {#if getLastLoadedDapp()}
         <div class="mb-8 space-y-4">
-          {#each getLastLoadedDapp().actions as action}
+          {#each (getLastLoadedDapp().actions).concat(contextActions) as action}
             <button
               on:click={() =>
                 window.o.publishEvent(action.event(getLastLoadedDapp()))}
