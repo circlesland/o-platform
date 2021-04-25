@@ -69,7 +69,7 @@
       <TokenCard
         {token}
         label="ACCEPTING TOKENS FROM"
-        colorClass="text-accent"
+        colorClass="text-secondary"
       />
     {/each}
   {/if}
