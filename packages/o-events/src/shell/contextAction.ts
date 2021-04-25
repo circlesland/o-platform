@@ -6,7 +6,7 @@ export type CAction = {
   key: string;
   icon?: string;
   label: string;
-  event: (runtimeDapp:RuntimeDapp<any>) => PlatformEvent
+  event: (runtimeDapp:any) => PlatformEvent
 };
 export class ContextAction implements PlatformEvent {
   readonly type: PlatformEventTypes = "shell.contextAction";
