@@ -35,6 +35,12 @@
   --er: 0 87% 67%;
 }
 
+.text-gradient {
+    background: linear-gradient(to right, #003399, #0ad99c 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 .btn-primary {
   font-family: Poppins;
   font-weight: 700;

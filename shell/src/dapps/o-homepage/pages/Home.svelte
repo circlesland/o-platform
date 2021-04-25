@@ -40,12 +40,12 @@
   }
 </script>
 
-<div
-  class="flex flex-col h-screen text-white bg-gradient-to-r from-gradient1 to-gradient2"
->
+<div class="flex flex-col h-screen text-base bg-gradient-to-r bg-white">
   <main class="z-30 flex-1 overflow-y-visible">
     <div class="flex flex-col text-center justify-items-center pt-11">
-      <h1 class="font-bold font-circles">You got us!</h1>
+      <h1 class="font-bold font-circles text-gradient w-42 m-auto">
+        You got us!
+      </h1>
       <h2 class="font-thin font-circles pt-11">
         We're currently actively working on this.<br />All Data will be re-set
         when we launch.
@@ -55,7 +55,7 @@
   </main>
   <footer class="sticky bottom-0 z-50 w-full ">
     <div class="flex justify-around ">
-      <button on:click={login} class="mb-4 btn btn-white">
+      <button on:click={login} class="mb-4 btn btn-primary">
         <img
           width="15px"
           class="mr-3"
