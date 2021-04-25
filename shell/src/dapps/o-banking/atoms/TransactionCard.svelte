@@ -66,7 +66,7 @@
 
     <div class="text-left flex-grow truncate relative">
       <div class="truncateThis">
-        <h2 class="text-2xl sm:text-3xl font-bold  ">
+        <h2 class="text-2xl sm:text-3xl font-bold">
           {displayName}
         </h2>
       </div>
@@ -81,7 +81,9 @@
           ).toFixed(2)}
         </span>
       </div>
-      <div class="self-end mt-2 text-xs text-circleslightblue">
+      <div
+        class="self-end mt-2 text-xs text-circleslightblue whitespace-nowrap"
+      >
         {#if dateOlderThanSevenDays(transfer.time)}
           <Time
             timestamp={new Date(transfer.time * 1000)}

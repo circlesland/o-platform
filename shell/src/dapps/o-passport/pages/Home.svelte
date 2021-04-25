@@ -31,9 +31,6 @@
     }
   }
 
-  if (!$me) {
-    push("/#/");
-  }
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),

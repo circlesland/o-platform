@@ -3,6 +3,7 @@
   import { Transfer } from "../data/circles/queries";
   import { mySafe } from "../stores/safe";
   import TransactionCard from "../atoms/TransactionCard.svelte";
+  import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
 
   export let params: {
     _id: string;
@@ -43,9 +44,9 @@
   }
 </script>
 
-<TokensHeader amount={params._id} type={"positive"} />
+<BankingDetailHeader amount={transfer ? transfer.amount : 0} {classes} />
 {#if transfer}
-  <pre>{JSON.stringify(transfer, null, 2)}</pre>
+  <!-- <pre>{JSON.stringify(transfer, null, 2)}</pre> -->
   <div class="mx-4 -mt-6">
     {#if transfer.direction === "in"}
       <TransactionCard {transfer} message="WURST" />

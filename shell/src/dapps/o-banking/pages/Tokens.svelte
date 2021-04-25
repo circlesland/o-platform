@@ -1,21 +1,21 @@
 <script lang="ts">
-  import TokensHeader from "../atoms/TokensHeader.svelte";
+  import BankingHeader from "../atoms/BankingHeader.svelte";
   import { mySafe } from "../stores/safe";
   import { BN } from "ethereumjs-util";
   import TokenCard from "../atoms/TokenCard.svelte";
-  import {Token} from "../data/circles/types";
+  import { Token } from "../data/circles/types";
 
-  let accountxDai:Token = {
+  let accountxDai: Token = {
     _id: "",
     firstBlock: 0,
     tokenAddress: "",
-    tokenOwner: ""
+    tokenOwner: "",
   };
-  let safexDai:Token = {
+  let safexDai: Token = {
     _id: "",
     firstBlock: 0,
     tokenAddress: "",
-    tokenOwner: ""
+    tokenOwner: "",
   };
   $: {
     if ($mySafe.xDaiBalance) {
@@ -24,8 +24,8 @@
         tokenOwner: $mySafe.safeAddress,
         balance: $mySafe.xDaiBalance,
         firstBlock: 0,
-        tokenAddress: ""
-      }
+        tokenAddress: "",
+      };
     }
     if ($mySafe.accountxDai) {
       accountxDai = {
@@ -33,25 +33,15 @@
         tokenOwner: localStorage.getItem("circlesAccount") ?? "",
         balance: $mySafe.accountxDai,
         firstBlock: 0,
-        tokenAddress: ""
-      }
+        tokenAddress: "",
+      };
     }
   }
 </script>
 
-<TokensHeader />
+<BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 
 <div class="mx-4 -mt-6">
-  <h1>Your account's xDai balance (used to pay for transactions)</h1>
-  {#each [accountxDai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token(token._id)}
-    <TokenCard {token} />
-  {/each}
-
-  <h1>Your safes's xDai balance (used to invite new people)</h1>
-  {#each [safexDai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token(token._id)}
-    <TokenCard {token} />
-  {/each}
-
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
@@ -61,16 +51,42 @@
       </div>
     </section>
   {:else}
-    <h1>You hold Circles from</h1>
-    {#each [$mySafe.token].concat(Object.values($mySafe.acceptedTokens.tokens)).filter((token) => !new BN(token.balance).eq(new BN("0"))) as token(token._id)}
-      <TokenCard {token} />
+    {#each [$mySafe.token]
+      .concat(Object.values($mySafe.acceptedTokens.tokens))
+      .filter(
+        (token) => !new BN(token.balance).eq(new BN("0"))
+      ) as token (token._id)}
+      <TokenCard
+        {token}
+        label="HOLDING TOKENS FROM"
+        colorClass="text-primary"
+      />
     {/each}
   {/if}
 
-  <h1>You accept Circles from</h1>
   {#if $mySafe && $mySafe.acceptedTokens && $mySafe.acceptedTokens.tokens}
-    {#each [$mySafe.token].concat(Object.values($mySafe.acceptedTokens.tokens).filter(o => o.limit > 0)) as token(token._id)}
-      <TokenCard {token} />
+    {#each [$mySafe.token].concat(Object.values($mySafe.acceptedTokens.tokens).filter((o) => o.limit > 0)) as token (token._id)}
+      <TokenCard
+        {token}
+        label="ACCEPTING TOKENS FROM"
+        colorClass="text-accent"
+      />
     {/each}
   {/if}
+
+  {#each [accountxDai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token (token._id)}
+    <TokenCard
+      {token}
+      label="ACCOUNT XDAI BALANCE (used to pay for transactions)"
+      colorClass="text-light"
+    />
+  {/each}
+
+  {#each [safexDai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token (token._id)}
+    <TokenCard
+      {token}
+      label="SAFE XDAI BALANCE (used to invite new people)"
+      colorClass="text-light"
+    />
+  {/each}
 </div>
