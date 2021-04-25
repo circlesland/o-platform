@@ -2,10 +2,10 @@
 ## Quickstart
 ```shell
 # Checkout
-git clone https://github.com/circlesland/shell-dapp-starter.git
+git clone https://github.com/circlesland/o-platform.git
 
 # Build
-cd shell-auth-starter
+cd o-platform
 ./build.sh
 
 # Run
