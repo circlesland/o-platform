@@ -94,23 +94,3 @@
     </div>
   </div>
 </section>
-
-<style>
-  @media (max-width: 496px) {
-    .transactionCardName {
-      max-width: 200px;
-    }
-  }
-  .truncateThis:before {
-    content: "";
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    /* background: linear-gradient(transparent 150px, #ffcc33); */
-    background: linear-gradient(to right, transparent 80%, #fff 100%);
-
-    /* background: #ffcc33; */
-  }
-</style>

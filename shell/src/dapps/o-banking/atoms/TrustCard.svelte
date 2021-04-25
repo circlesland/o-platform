@@ -143,15 +143,13 @@
         </div>
       </div>
 
-      <div class="text-left">
+      <div class="text-left flex-grow truncate relative">
         <div
-          class="max-w-full trustCardName cursor-pointer"
+          class="max-w-full truncateThis cursor-pointer"
           on:click|once={() => loadDetailPage(safeAddress)}
         >
-          <h2 class="text-2xl sm:text-3xl font-bold truncate ">
-            {displayName && displayName.length > 22
-              ? displayName.substring(0, 22) + ".."
-              : displayName}
+          <h2 class="text-2xl sm:text-3xl font-bold">
+            {displayName}
           </h2>
         </div>
         <div class="text-left text-sm text-green mb-4">
@@ -221,11 +219,3 @@
     </div>
   </div>
 </section>
-
-<style>
-  @media (max-width: 496px) {
-    .trustCardName {
-      max-width: 200px;
-    }
-  }
-</style>
