@@ -360,6 +360,7 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
       });
       _currentSafe = safe;
 
+      safe = await Queries.addxDaiBalances(safe);
       safe = await Queries.addTokenBalances(safe);
       safe.token.balance = (await new Erc20Token(RpcGateway.get(), safe.token.tokenAddress).getBalanceOf(safe.safeAddress)).toString();
       console.log(new Date().getTime() + ": " + `Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)

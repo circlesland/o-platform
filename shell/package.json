@@ -37,7 +37,8 @@
     "xstate-svelte": "^1.0.1",
     "daisyui": "^0.15.2",
     "postcss-flexbugs-fixes": "^5.0.2",
-    "ethereumjs-util": "^7.0.10"
+    "ethereumjs-util": "^7.0.10",
+    "bip39": "^3.0.3"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.17.10",

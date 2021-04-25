@@ -5,7 +5,6 @@ import {Erc20Token} from "@o-platform/o-circles/dist/token/erc20Token";
 import {Observable, Subject} from "rxjs";
 import {CirclesToken} from "@o-platform/o-circles/dist/model/circlesToken";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {mySafe} from "../../stores/safe";
 
 export type Token = {
   _id:string
@@ -13,6 +12,7 @@ export type Token = {
   tokenOwner: string
   firstBlock: number
   balance?: string
+  limit?: number
   ownerProfile?: {
     displayName: string
     avatarUrl: string
@@ -61,7 +61,9 @@ export type Safe = {
   firstBlock?: number
   lastBlock?: number
   token?: Token
-  balance?: string,
+  balance?: string
+  xDaiBalance?: string
+  accountxDai?: string
   trustRelations?: {
     firstBlock: number
     lastBlock: number
@@ -111,11 +113,21 @@ export class Queries {
     const foundTokenOrNull = await new CirclesAccount(checksumSafeAddress).tryGetMyToken(!!safe.firstBlock ? safe.firstBlock : undefined);
     if (!foundTokenOrNull) {
       console.log("The safe isn't yet signed-up at the circles hub")
+    } else {
+      (<any>foundTokenOrNull).limit = 100;
     }
 
     return {
       ...safe,
       token: foundTokenOrNull
+    }
+  }
+
+  static async addxDaiBalances(safe: Safe) : Promise<Safe> {
+    return {
+      ...safe,
+      xDaiBalance: await RpcGateway.get().eth.getBalance(safe.safeAddress),
+      accountxDai: localStorage.getItem("circlesAccount") ? await RpcGateway.get().eth.getBalance(localStorage.getItem("circlesAccount")) : "0",
     }
   }
 

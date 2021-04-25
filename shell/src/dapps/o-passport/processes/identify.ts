@@ -1,8 +1,7 @@
 import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
-import {createMachine} from "xstate";
-import gql from "graphql-tag";
+import {assign, createMachine} from "xstate";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 import {upsertIdentity} from "./upsertIdentity";
 import {push} from "svelte-spa-router";
@@ -36,6 +35,7 @@ export type IdentifyContextData = {
     avatarCid?: string
     avatarMimeType?: string
   }
+  privateKey?:string;
 };
 
 const strings = {
@@ -219,13 +219,17 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
         src: importCirclesProfile.stateMachine(`importProfile`),
         data: {
           data: (context, event) => {
-            return {
-
-            }
+            return {}
           },
-          dirtyFlags: {}
+          dirtyFlags: {},
+          messages: {}
         },
-        onDone: "#createProfile",
+        onDone: {
+          actions: (context, event) => {
+            context.data.privateKey = event.data?.privateKey;
+          },
+          target:"#createProfile"
+        },
         onError: "#error"
       }
     },
@@ -253,7 +257,14 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
           },
           dirtyFlags: {}
         },
-        onDone: "#loadProfile",
+        onDone: {
+          actions: (ctx, event) => {
+            if (ctx.data.privateKey) {
+              localStorage.setItem("circlesKey", event.data.privateKey);
+            }
+          },
+          target: "#loadProfile"
+        },
         onError: "#error"
       }
     },

@@ -7,18 +7,20 @@ import {createMachine} from "xstate";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import Web3 from "web3";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import * as bip39 from "bip39"
 
 export type ImportedCirclesProfileData = {
-  seedPhrase?: string
   circlesAddress?: string
   firstName?: string
   avatarUrl?: string
+  privateKey?: string
+  accountAddress?: string
 }
 
 export type ImportCirclesProfileContextData = {
   safeAddress?: string;
-  seedPhrase?:string;
-  safeNonce?: any;
+  seedPhrase?: string
+  safeOwners?: string[];
   circlesGardenProfile?: any;
   profileData?: ImportedCirclesProfileData
 };
@@ -38,7 +40,6 @@ const strings = {
   placeholderSafeAddress: "you@example.com",
   labelSeedPhrase: "Please enter your seed phrase",
   placeholderSeedPhrase: "Seedphrase"
-
 };
 
 const processDefinition = (processId: string) =>
@@ -66,17 +67,18 @@ const processDefinition = (processId: string) =>
         id: "checkSafeAddress",
         invoke: {
           src: async (context) => {
+            context.messages["safeAddress"] = ``;
             context.data.safeAddress = context.data.safeAddress?.trim();
             try {
               console.log(`Checking if safe ${context.data.safeAddress} exists ..`);
               const web3 = await RpcGateway.get();
               const safeProxy = new GnosisSafeProxy(web3, "", context.data.safeAddress);
-              context.data.safeNonce = await safeProxy.getNonce();
+              context.data.safeOwners = await safeProxy.getOwners();
               console.log(`Checking if safe ${context.data.safeAddress} exists .. Safe exists.`);
               return true;
             } catch (e) {
-              context.messages["safeAddress"] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Does it exist?`;
-              console.log(`Checking if safe ${context.data.safeAddress} exists .. Safe doesn't exist.`);
+              context.messages["safeAddress"] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Is the address right?`;
+              console.log(`Checking if safe ${context.data.safeAddress} exists .. Safe doesn't exist.`, e);
               throw e;
             }
           },
@@ -126,15 +128,41 @@ const processDefinition = (processId: string) =>
         id: "prepareProfile",
         invoke: {
           src: async (context) => {
+            context.messages["seedPhrase"] = "";
+
+            let keyFromMnemonic: string;
+            try {
+              keyFromMnemonic = bip39.mnemonicToEntropy(context.data.seedPhrase);
+            } catch (e) {
+              context.messages["seedPhrase"] = `The seedphrase cannot be converted to a private key. Please double check it.`;
+              throw e;
+            }
+
+            let account: any;
+            try {
+              account = RpcGateway.get().eth.accounts.privateKeyToAccount(keyFromMnemonic);
+            } catch (e) {
+              context.messages["seedPhrase"] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
+              throw e;
+            }
+
+            if (!context.data.safeOwners.find(o => o === account.address)) {
+              context.messages["seedPhrase"] = `The given key doesn't belong to a owner of safe ${context.data.safeAddress}`;
+              throw new Error(`The given key doesn't belong to a owner of safe ${context.data.safeAddress}`)
+            }
+
+            localStorage.setItem("circlesAccount", account.address);
+
             context.data.profileData = {
-              seedPhrase: context.data.seedPhrase,
+              privateKey: keyFromMnemonic,
+              accountAddress: account.address,
               circlesAddress: context.data.safeAddress,
               firstName: context.data.circlesGardenProfile?.username,
               avatarUrl: context.data.circlesGardenProfile?.avatarUrl
             };
           },
           onDone: "#success",
-          onError: "#error",
+          onError: "#seedPhrase",
         },
       },
       success: {

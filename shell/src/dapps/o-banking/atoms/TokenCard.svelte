@@ -56,7 +56,7 @@
       <div class="self-end text-{classes} text-2xl sm:text-3xl">
         <span>
           {Number.parseFloat(
-            Web3.utils.fromWei(token.balance, "ether")
+            Web3.utils.fromWei(token.balance ? token.balance : "0", "ether")
           ).toFixed(2)}
         </span>
       </div>
