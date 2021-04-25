@@ -4,7 +4,7 @@ export DEPLOY_ENVIRONMENT=$1
 
 echo "Installing build dependencies .."
 npm i
-npx lerna bootstrap || exit
+npx --no-install lerna bootstrap || exit
 
 echo "Building 'o-utils' .."
 cd packages/o-utils || exit
