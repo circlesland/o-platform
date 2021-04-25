@@ -7,7 +7,7 @@ export type Token = {
   limit?: number
   ownerProfile?: {
     displayName: string
-    avatarUrl: string
+    avatarUrl?: string
   }
 }
 
@@ -17,7 +17,7 @@ export type Transfer = {
   symbol: "crc" | "xdai"
   type: "hub" | "direct"
   token?: string
-  time?:Date
+  time?:number
   firstBlock: number
   lastBlock?: number
   from: string

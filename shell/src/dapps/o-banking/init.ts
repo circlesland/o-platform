@@ -10,6 +10,7 @@ import {BN} from "ethereumjs-util";
 import {showToast} from "../../shared/toast";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
+import {augmentSafeWithTime} from "./data/augmentSafeWithTime";
 
 let _currentSafe: Safe | null = emptySafe;
 let loading = false;
@@ -32,6 +33,22 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
   if (loading) {
     return;
   }
+
+  /*
+  Test max. size of localStorage value:
+  if (localStorage && !localStorage.getItem('size')) {
+    var i = 0;
+    try {
+      // Test up to 10 MB
+      for (i = 250; i <= 10000; i += 250) {
+        localStorage.setItem('test', new Array((i * 1024) + 1).join('a'));
+      }
+    } catch (e) {
+      localStorage.removeItem('test');
+      localStorage.setItem('size', (i - 250).toString());
+    }
+  }
+   */
 
   loading = true;
 
@@ -100,6 +117,7 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
 
       safe = await Queries.addAcceptedTokens(safe);
       augmentSafeWithProfiles(safe);
+      augmentSafeWithTime(safe);
       console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
       safe.ui.loadingPercent = 22;
       safe.ui.loadingText = "Loading balances ..";
@@ -137,10 +155,10 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
 
       clearInterval(timeoutHandle);
 
+      await augmentSafeWithTime(safe);
       localStorage.setItem("safe", JSON.stringify(safe));
 
       await augmentSafeWithProfiles(safe);
-
       publishRefreshEvent(safe);
       _currentSafe = safe;
 

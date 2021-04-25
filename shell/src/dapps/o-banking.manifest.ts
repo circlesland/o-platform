@@ -19,7 +19,7 @@ import {getUbi} from "./o-banking/processes/getUbi";
 import {hubSignup} from "./o-banking/processes/hubSignup";
 import {setTrust} from "./o-banking/processes/setTrust";
 import {transfer} from "./o-banking/processes/transfer";
-import {init} from "./o-banking/init";
+import {init, tryGetCurrentSafe} from "./o-banking/init";
 
 const transactions: PageManifest = {
   isDefault: true,
@@ -160,7 +160,10 @@ export const banking: DappManifest<DappState> = {
         async (ctx) => {
           ctx.childProcessDefinition = getUbi;
           ctx.childContext = {
-            data: {},
+            data: {
+              safeAddress:tryGetCurrentSafe()?.safeAddress,
+              privateKey:localStorage.getItem("circlesKey")
+            },
             dirtyFlags: {},
             messages: {},
             environment: {

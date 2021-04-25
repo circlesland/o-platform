@@ -105,7 +105,9 @@ export async function augmentSafeWithProfiles(safe:Safe) {
 
   // First: Add the own address
   if (safe.safeAddress && safe.token) {
-    safe.token.ownerProfile = tryGetSimplifiedProfile(profiles, safe.safeAddress);
+    safe.token.ownerProfile = {
+      displayName: "You"
+    }
   }
 
   // Then add all transfer participants

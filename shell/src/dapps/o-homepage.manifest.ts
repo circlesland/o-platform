@@ -2,6 +2,13 @@ import {
   faPeopleArrows,
 } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-homepage/pages/Home.svelte";
+import Citizens from "./o-homepage/pages/Citizens.svelte";
+import Countries from "./o-homepage/pages/Countries.svelte";
+import Imprint from "./o-homepage/pages/Imprint.svelte";
+import Milestones from "./o-homepage/pages/Milestones.svelte";
+import Privacy from "./o-homepage/pages/Privacy.svelte";
+import Tos from "./o-homepage/pages/Tos.svelte";
+import Learn from "./o-homepage/pages/Learn.svelte";
 import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
 import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 
@@ -10,6 +17,104 @@ const index : PageManifest = {
   isSystem: true,
   routeParts: [],
   component: Home,
+  title: "Circles Land",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    }
+  ]
+};
+const citizens : PageManifest = {
+  isDefault: true,
+  isSystem: true,
+  routeParts: ["citizens"],
+  component: Citizens,
+  title: "Circles Land",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    }
+  ]
+};
+const countries : PageManifest = {
+  isDefault: true,
+  isSystem: true,
+  routeParts: ["countries"],
+  component: Countries,
+  title: "Circles Land",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    }
+  ]
+};
+const imprint : PageManifest = {
+  isDefault: true,
+  isSystem: true,
+  routeParts: ["imprint"],
+  component: Imprint,
+  title: "Circles Land",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    }
+  ]
+};
+const milestones : PageManifest = {
+  isDefault: true,
+  isSystem: true,
+  routeParts: ["milestones"],
+  component: Milestones,
+  title: "Circles Land",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    }
+  ]
+};
+const privacy : PageManifest = {
+  isDefault: true,
+  isSystem: true,
+  routeParts: ["privacy"],
+  component: Privacy,
+  title: "Circles Land",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    }
+  ]
+};
+const tos : PageManifest = {
+  isDefault: true,
+  isSystem: true,
+  routeParts: ["tos"],
+  component: Tos,
+  title: "Circles Land",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    }
+  ]
+};
+const learn : PageManifest = {
+  isDefault: true,
+  isSystem: true,
+  routeParts: ["learn"],
+  component: Learn,
   title: "Circles Land",
   available: [
     (detail) => {
@@ -45,5 +150,5 @@ export const homepage : DappManifest<DappState> = {
       cancelDependencyLoading: false
     };
   },
-  pages: [index]
+  pages: [index, citizens, countries, imprint, milestones, privacy, tos, learn]
 };

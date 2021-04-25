@@ -2,12 +2,16 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import {CloseModal} from "@o-platform/o-events/dist/shell/closeModal";
-import {Cancel} from "@o-platform/o-process/dist/events/cancel";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import {CirclesAccount} from "@o-platform/o-circles/dist/model/circlesAccount";
+import {emptySafe} from "../data/emptySafe";
+import {mySafe} from "../stores/safe";
 
 export type GetUbiContextData = {
   safeAddress:string;
+  privateKey:string;
 };
 
 /**
@@ -38,9 +42,17 @@ createMachine<GetUbiContext, any>({
       id: "getUbi",
       invoke: {
         src: async (context) => {
-          return {
-            data: "yeah!"
-          }
+          const ownerAddress = RpcGateway.get()
+            .eth
+            .accounts
+            .privateKeyToAccount(context.data.privateKey)
+            .address;
+
+          const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), ownerAddress, context.data.safeAddress);
+          const circlesAccount = new CirclesAccount(context.data.safeAddress);
+          const result = await circlesAccount.getUBI(context.data.privateKey, gnosisSafeProxy);
+
+          return result;
         },
         onDone: "#success",
         onError: "#error",
@@ -49,8 +61,9 @@ createMachine<GetUbiContext, any>({
     success: {
       id: 'success',
       type: 'final',
-      data: (context, event: PlatformEvent) => {
-        return "yeah!";
+      data: (context, event: PlatformEvent & {data:any}) => {
+
+        return event.data;
       }
     }
   },

@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import { showToast } from "../../../shared/toast";
+  import * as bip39 from "bip39";
 
-  let showPhrase = false;
-  let name =
-    "witch collapse practice feed shame open despair creek road again iceleast";
+  let showPhrase = !localStorage.getItem("circlesKey");
+  // TODO: 0x123 is for testing without private key. Needs to be removed later.
+  let name = localStorage.getItem("circlesKey") && localStorage.getItem("circlesKey") != "0x123" ? bip39.entropyToMnemonic(localStorage.getItem("circlesKey")) : "<no private key>";
 
   const copy = () => {
     const app = new CopyClipBoard({

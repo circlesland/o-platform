@@ -83,11 +83,11 @@
 
     <h1>Trusted by</h1>
     <!-- TODO: Possible actions: trust, transfer money -->
-    {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide) as trustedBy(trustedBy.id)}
+    {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress.toLowerCase() !== $mySafe.safeAddress.toLowerCase()) as trustedBy(trustedBy.id)}
       <TrustCard {trustedBy} direction="trusted" />
     {/each}
 
-    <h1>Untrusted</h1>
+    <h1>You untrusted</h1>
     <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
     {#each Object.values($mySafe.trustRelations.untrusted) as untrusted(untrusted.id)}
       <TrustCard {untrusted} direction="untrusted" />

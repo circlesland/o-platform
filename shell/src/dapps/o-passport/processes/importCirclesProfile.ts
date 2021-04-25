@@ -131,28 +131,36 @@ const processDefinition = (processId: string) =>
             context.messages["seedPhrase"] = "";
 
             let keyFromMnemonic: string;
-            try {
-              keyFromMnemonic = bip39.mnemonicToEntropy(context.data.seedPhrase);
-            } catch (e) {
-              context.messages["seedPhrase"] = `The seedphrase cannot be converted to a private key. Please double check it.`;
-              throw e;
-            }
-
             let account: any;
-            try {
-              account = RpcGateway.get().eth.accounts.privateKeyToAccount(keyFromMnemonic);
-            } catch (e) {
-              context.messages["seedPhrase"] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
-              throw e;
+
+            if ((context.data.seedPhrase ?? "") === "") {
+              // TODO: 0x123 is for testing without private key. Needs to be removed later.
+              keyFromMnemonic = "0x123";
+              account = {
+                address: "0x123"
+              };
+            } else {
+              try {
+                keyFromMnemonic = "0x" + bip39.mnemonicToEntropy(context.data.seedPhrase);
+              } catch (e) {
+                context.messages["seedPhrase"] = `The seedphrase cannot be converted to a private key. Please double check it.`;
+                throw e;
+              }
+
+              try {
+                account = RpcGateway.get().eth.accounts.privateKeyToAccount(keyFromMnemonic);
+              } catch (e) {
+                context.messages["seedPhrase"] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
+                throw e;
+              }
+
+              if (!context.data.safeOwners.find(o => o === account.address)) {
+                context.messages["seedPhrase"] = `The given key doesn't belong to a owner of safe ${context.data.safeAddress}`;
+                throw new Error(`The given key doesn't belong to a owner of safe ${context.data.safeAddress}`)
+              }
+
+              localStorage.setItem("circlesAccount", account.address);
             }
-
-            if (!context.data.safeOwners.find(o => o === account.address)) {
-              context.messages["seedPhrase"] = `The given key doesn't belong to a owner of safe ${context.data.safeAddress}`;
-              throw new Error(`The given key doesn't belong to a owner of safe ${context.data.safeAddress}`)
-            }
-
-            localStorage.setItem("circlesAccount", account.address);
-
             context.data.profileData = {
               privateKey: keyFromMnemonic,
               accountAddress: account.address,
