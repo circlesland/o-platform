@@ -1,6 +1,5 @@
 import { PlatformEvent } from "../platformEvent";
 import { PlatformEventTypes } from "../eventTypes";
-import {RuntimeDapp} from "../../../o-interfaces/dist/runtimeDapp";
 
 export type CAction = {
   key: string;
