@@ -8,6 +8,7 @@
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
   import { TrustObject } from "../data/circles/types";
+  import {tryGetCurrentSafe} from "../init";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -79,6 +80,8 @@
         ctx.childContext = {
           data: {
             recipientAddress,
+            safeAddress: tryGetCurrentSafe()?.safeAddress,
+            privateKey: localStorage.getItem("circlesKey")
           },
           messages: {},
           dirtyFlags: {},
@@ -95,8 +98,10 @@
         ctx.childProcessDefinition = setTrust;
         ctx.childContext = {
           data: {
-            trustLimit: 100,
+            trustLimit: parseInt(limit) > 0 ? 0 : 100,
             trustReceiver: recipientAddress,
+            safeAddress: tryGetCurrentSafe()?.safeAddress,
+            privateKey: localStorage.getItem("circlesKey")
           },
           messages: {},
           dirtyFlags: {},
@@ -115,6 +120,8 @@
           data: {
             trustLimit: 0,
             trustReceiver: recipientAddress,
+            safeAddress: tryGetCurrentSafe()?.safeAddress,
+            privateKey: localStorage.getItem("circlesKey")
           },
           messages: {},
           dirtyFlags: {},
@@ -174,7 +181,7 @@
       <div class="flex flex-1 flex-col justify-items-end">
         <div class="self-end flex flex-col space-y-2 text-2xl sm:text-3xl">
           <button
-            on:click={() => execTransfer(id)}
+            on:click={() => execTransfer(safeAddress)}
             class="btn btn-square self-end btn-sm btn-primary"
           >
             <svg
@@ -193,7 +200,7 @@
             </svg>
           </button>
           <button
-            on:click={() => execTrust(id)}
+            on:click={() => execTrust(safeAddress)}
             class="btn btn-square self-end btn-sm btn-primary"
           >
             <svg
