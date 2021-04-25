@@ -148,7 +148,13 @@ export class Queries {
     }
     const token = new CirclesToken(safe.token.tokenAddress, safe.safeAddress, safe.token.firstBlock);
     const sub = new Subject<PlatformEvent>();
-    token.subscribeToTransactions(<any>sub, safe.safeAddress, safe.acceptedTokens.tokens, Object.keys(safe.acceptedTokens.tokens))
+    const tokensByAddress = {
+      ...safe.acceptedTokens.tokens,
+      ...{
+        [safe.token.tokenAddress]: safe.token
+      }
+    };
+    token.subscribeToTransactions(<any>sub, safe.safeAddress, tokensByAddress, Object.keys(safe.acceptedTokens.tokens))
 
     return sub;
   }

@@ -5,7 +5,7 @@
 
   let showPhrase = !localStorage.getItem("circlesKey");
   // TODO: 0x123 is for testing without private key. Needs to be removed later.
-  let name = localStorage.getItem("circlesKey") && localStorage.getItem("circlesKey") != "0x123" ? bip39.entropyToMnemonic(localStorage.getItem("circlesKey")) : "<no private key>";
+  let name = localStorage.getItem("circlesKey") && localStorage.getItem("circlesKey") != "0x123" ? bip39.entropyToMnemonic(localStorage.getItem("circlesKey").substr(2, localStorage.getItem("circlesKey").length - 2)) : "<no private key>";
 
   const copy = () => {
     const app = new CopyClipBoard({

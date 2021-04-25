@@ -8,9 +8,15 @@ import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import gql from "graphql-tag";
 import { Choice } from "../../../../../packages/o-editors/src/choiceSelectorContext";
+import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
+import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
+import {BN} from "ethereumjs-util"
 
 export type SetTrustContextData = {
   safeAddress: string;
+  privateKey:string;
   trustReceiver?: string;
   trustLimit?: number;
 };
@@ -86,6 +92,7 @@ const processDefinition = (processId: string) =>
                 query search($searchString: String!) {
                   search(query: { searchString: $searchString }) {
                     id
+                    circlesAddress
                     firstName
                     lastName
                     dream
@@ -103,7 +110,7 @@ const processDefinition = (processId: string) =>
               result.data.search && result.data.search.length > 0
                 ? result.data.search.map((o) => {
                     return <Choice>{
-                      value: o.id,
+                      value: o.circlesAddress,
                       label: `${o.firstName} ${o.lastName}`,
                     };
                   })
@@ -150,9 +157,20 @@ const processDefinition = (processId: string) =>
         id: "setTrust",
         invoke: {
           src: async (context) => {
-            return {
-              data: "yeah!",
-            };
+            const ownerAddress = RpcGateway.get()
+              .eth
+              .accounts
+              .privateKeyToAccount(context.data.privateKey)
+              .address;
+
+            const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), ownerAddress, context.data.safeAddress);
+
+            return await new CirclesHub(RpcGateway.get(), HUB_ADDRESS).setTrust(
+              context.data.privateKey,
+              gnosisSafeProxy,
+              context.data.trustReceiver,
+              new BN(context.data.trustLimit.toString())
+            );
           },
           onDone: "#success",
           onError: "#error",

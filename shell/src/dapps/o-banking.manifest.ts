@@ -207,7 +207,10 @@ export const banking: DappManifest<DappState> = {
         async (ctx) => {
           ctx.childProcessDefinition = setTrust;
           ctx.childContext = {
-            data: {},
+            data: {
+              safeAddress: tryGetCurrentSafe().safeAddress,
+              privateKey: localStorage.getItem("circlesKey")
+            },
             dirtyFlags: {},
             messages: {},
             environment: {
