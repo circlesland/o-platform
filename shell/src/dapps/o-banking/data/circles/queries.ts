@@ -154,7 +154,7 @@ export class Queries {
         [safe.token.tokenAddress]: safe.token
       }
     };
-    token.subscribeToTransactions(<any>sub, safe.safeAddress, tokensByAddress, Object.keys(safe.acceptedTokens.tokens).concat(safe.token.tokenAddress))
+    token.subscribeToTransactions(<any>sub, safe.safeAddress, tokensByAddress, Object.keys(safe.acceptedTokens.tokens).concat(safe.token.tokenAddress && safe.token.tokenAddress !== "0x00" ? [safe.token.tokenAddress] : []))
 
     return sub;
   }

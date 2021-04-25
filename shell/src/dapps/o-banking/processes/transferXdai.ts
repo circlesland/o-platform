@@ -2,17 +2,16 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import {prompt} from "@o-platform/o-process/dist/states/prompt";
-import TextEditor from "../../../../../packages/o-editors/src/TextEditor.svelte";
-import {SetTrustContext} from "./setTrust";
-import {CloseModal} from "@o-platform/o-events/dist/shell/closeModal";
-import {Cancel} from "@o-platform/o-process/dist/events/cancel";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import {BN} from "ethereumjs-util";
 
 export type TransferXdaiContextData = {
   safeAddress:string;
   recipientAddress:string;
   amount:string;
+  privateKey:string;
 };
 
 /**
@@ -43,9 +42,18 @@ createMachine<TransferXdaiContext, any>({
       id: "transferXdai",
       invoke: {
         src: async (context) => {
-          return {
-            data: "yeah!"
-          }
+          const ownerAddress = RpcGateway.get()
+            .eth
+            .accounts
+            .privateKeyToAccount(context.data.privateKey)
+            .address;
+
+          const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), ownerAddress, context.data.safeAddress);
+          const ethAmount = new BN(RpcGateway.get().utils.toWei((context.data.amount).toString(), "ether"));
+          return await gnosisSafeProxy.transferEth(
+            context.data.privateKey,
+            ethAmount,
+            context.data.recipientAddress);
         },
         onDone: "#success",
         onError: "#error",
