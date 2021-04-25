@@ -5,6 +5,8 @@
   import { Token } from "../data/circles/queries";
 
   export let token: Token;
+  export let label: String;
+  export let colorClass: String;
 
   let pictureUrl: string;
   let displayName: String;
@@ -24,41 +26,42 @@
   }
 </script>
 
-<section
-  on:click|once={() => loadDetailPage(token._id)}
-  class="flex items-center justify-center mb-2 text-circlesdarkblue"
->
-  <div
-    class="flex items-center bg-white shadow p-4 w-full space-x-2 sm:space-x-6"
-  >
-    <div class="mr-2 text-center">
-      <div class="avatar">
-        <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-          <img
-            src={pictureUrl ? pictureUrl : "/images/common/circles.png"}
-            alt="username"
-          />
+<section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+  <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+    <div class="{colorClass? colorClass : "text-light"} text-xs font-circles font-bold text-left">
+      {label ? label : ""}
+    </div>
+    <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
+      <div class="mr-2 text-center">
+        <div class="avatar">
+          <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
+            <img
+              src={pictureUrl ? pictureUrl : "/images/common/circles.png"}
+              alt="username"
+            />
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="text-left">
-      <div class="max-w-full transactionCardName">
-        <h2 class="text-2xl sm:text-3xl font-bold truncate ">
-          {displayName.length > 22
-            ? displayName.substring(0, 22) + ".."
-            : displayName}
-        </h2>
+      <div class="text-left flex-grow truncate relative">
+        <div
+          class="max-w-full truncateThis cursor-pointer"
+          on:click|once={() => loadDetailPage(token._id)}
+        >
+          <h2 class="text-2xl sm:text-3xl font-bold truncate ">
+            {displayName}
+          </h2>
+        </div>
       </div>
-    </div>
 
-    <div class="flex flex-1 flex-col justify-items-end">
-      <div class="self-end text-{classes} text-2xl sm:text-3xl">
-        <span>
-          {Number.parseFloat(
-            Web3.utils.fromWei(token.balance ? token.balance : "0", "ether")
-          ).toFixed(2)}
-        </span>
+      <div class="flex flex-1 flex-col justify-items-end">
+        <div class="self-end text-{classes} text-2xl sm:text-3xl">
+          <span>
+            {Number.parseFloat(
+              Web3.utils.fromWei(token.balance ? token.balance : "0", "ether")
+            ).toFixed(2)}
+          </span>
+        </div>
       </div>
     </div>
   </div>
