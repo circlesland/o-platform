@@ -42,13 +42,9 @@
   function submit() {
     const event = new Continue();
     event.data = {};
-    if (selected) {
       event.data[context.fieldName] = selected.value;
       context.data[context.fieldName] = selected.value;
-    } else {
-      event.data[context.fieldName] = undefined;
       context.process.sendAnswer(event);
-    }
   }
 
   function onkeydown(e: KeyboardEvent) {

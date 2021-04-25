@@ -6,7 +6,10 @@
 
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
-  export let user;
+  export let user : {
+    displayName: string,
+    avatarUrl: string
+  };
 
   onMount(() => {
     lastLoadedPage = getLastLoadedPage();
@@ -72,7 +75,7 @@
   <div class="self-center text-center mb-2 block ">
     <span
       class="inline-block text-6xl sm:text-8xl font-circles trustCardName truncate"
-      >{user}</span
+      >{user.displayName}</span
     >
   </div>
 </div>

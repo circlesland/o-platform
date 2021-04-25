@@ -24,6 +24,7 @@ export type IdentifyContextData = {
     isLoggedOn: boolean
     hasProfile: boolean
     profileId: number
+    hasCirclesKey: boolean
   },
   profile: {
     circlesAddress?: string
@@ -82,7 +83,8 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
           context.data.sessionInfo = {
             hasProfile: result.data.sessionInfo.hasProfile,
             isLoggedOn: result.data.sessionInfo.isLoggedOn,
-            profileId: result.data.sessionInfo.profileId
+            profileId: result.data.sessionInfo.profileId,
+            hasCirclesKey: !!localStorage.getItem("circlesKey")
           };
 
           return result.data.sessionInfo;
@@ -113,7 +115,12 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
             ? result.data.profiles[0]
             : undefined;
         },
-        onDone: "#success",
+        onDone: [{
+          cond: (context) => context.data.sessionInfo.isLoggedOn && context.data.profile.circlesAddress && !context.data.sessionInfo.hasCirclesKey,
+          target: "#importProfile"
+        }, {
+          target: "#success"
+        }],
         onError: "#error"
       }
     },
@@ -245,6 +252,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
         data: {
           data: (context, event) => {
             return {
+              id: context.data.sessionInfo.profileId,
               circlesAddress: event.data?.circlesAddress,
               firstName: event.data?.firstName,
               lastName: event.data?.lastName,
@@ -257,14 +265,14 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
           },
           dirtyFlags: {}
         },
-        onDone: {
+        onDone: [{
           actions: (ctx, event) => {
             if (ctx.data.privateKey) {
-              localStorage.setItem("circlesKey", event.data.privateKey);
+              localStorage.setItem("circlesKey", ctx.data.privateKey);
             }
           },
-          target: "#loadProfile"
-        },
+          target: "#getSessionInfo"
+        }],
         onError: "#error"
       }
     },

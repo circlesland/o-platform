@@ -20,7 +20,7 @@
 
   function loadDetailPage(path) {
     console.log(path);
-    push("#/banking/trusts/" + path);
+    push("#/banking/tokens/" + path);
   }
 </script>
 

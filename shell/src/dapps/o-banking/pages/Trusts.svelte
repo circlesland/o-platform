@@ -10,11 +10,6 @@
   import { sendInviteGas } from "../processes/sendInviteGas";
   import TrustCard from "../atoms/TrustCard.svelte";
   import { mySafe } from "../stores/safe";
-  import { TrustObject } from "../data/circles/queries";
-
-  let mutualTrusts: TrustObject[];
-  let trusting: TrustObject[];
-  let trusted: TrustObject[];
 
   export let params: {
     inviteAccountAddress?: string;
@@ -71,6 +66,7 @@
     </section>
   {:else}
     <h1>Mutual trust</h1>
+    <!-- TODO: Possible actions: untrust, transfer money -->
     {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust(mutualTrust._id)}
       <TrustCard
         trusting={mutualTrust.trusting}
@@ -78,15 +74,23 @@
         direction="mutual"
       />
     {/each}
-    <h1>Trusting</h1>
 
+    <h1>Trusting</h1>
     {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting(trusting.id)}
+      <!-- TODO: Possible actions: untrust -->
       <TrustCard {trusting} direction="trusting" />
     {/each}
 
     <h1>Trusted by</h1>
+    <!-- TODO: Possible actions: trust, transfer money -->
     {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide) as trustedBy(trustedBy.id)}
       <TrustCard {trustedBy} direction="trusted" />
+    {/each}
+
+    <h1>Untrusted</h1>
+    <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
+    {#each Object.values($mySafe.trustRelations.untrusted) as untrusted(untrusted.id)}
+      <TrustCard {untrusted} direction="untrusted" />
     {/each}
   {/if}
 </div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
@@ -8,13 +7,39 @@
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
-  import { TrustObject } from "../data/circles/queries";
+  import {TrustObject} from "../data/circles/types";
+  import {mySafe} from "../stores/safe";
 
   let trust: TrustObject;
 
   export let params: {
     trustPartner: string;
   };
+
+  $:{
+    if ($mySafe.trustRelations && params.trustPartner) {
+      trust = Object.values($mySafe.trustRelations.mutualTrusts).find(o => o.safeAddress == params.trustPartner);
+      if (!trust) {
+        trust = Object.values($mySafe.trustRelations.trusting).find(o => o.safeAddress == params.trustPartner);
+      }
+      if (!trust) {
+        trust = Object.values($mySafe.trustRelations.trustedBy).find(o => o.safeAddress == params.trustPartner);
+      }
+      if (!trust) {
+        trust = <TrustObject>{
+          limit: 0,
+          safeAddress: params.trustPartner,
+          profile: {
+            displayName: "",
+            avatarUrl: ""
+          },
+          lastBlock:0,
+          hide: true,
+          firstBlock: 0
+        }
+      }
+    }
+  }
 
   function execTransfer(recipientAddress?: string) {
     window.o.publishEvent(
@@ -70,7 +95,7 @@
   }
 </script>
 
-<TrustDetailHeader user={params.trustPartner} />
+<TrustDetailHeader user={trust.profile ? trust.profile : { displayName: trust.safeAddress}} />
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-1 text-circlesdarkblue">
     <div
@@ -78,12 +103,12 @@
     >
       <div class="avatar self-center -mt-16">
         <div class="w-32 h-32 rounded-full  mb-4">
-          <img src="https://i.pravatar.cc/500?img=32" alt="username" />
+          <img src="{trust.profile.avatarUrl}" alt="{trust.profile.displayName}" />
         </div>
       </div>
       <!-- <h2 class="card-title">Ernst Stavro Blofeld</h2> -->
       <small class="break-all">
-        0x87asdgt9adsofz98ad6fs8as7odft9aszf98pasdzfasdg
+        {trust.profile ? trust.profile.displayName : trust.safeAddress}
       </small>
     </div>
   </section>
@@ -108,22 +133,23 @@
               d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
             />
           </svg>
-          <span class="inline text-dark"> 100% mutual trust. </span>
+          <span class="inline text-dark"> {trust.limit} % mutual trust. </span>
         </div>
         <div class="text-left">
           <div>
             <div class="text-sm breadcrumbs">
               <ul>
                 <li>
-                  <a href="/#/banking/trusts/Name%201">Martin</a>
+                  <a href="/#/banking/trusts/Name%201">{trust.profile ? trust.profile.displayName : trust.safeAddress}</a>
                 </li>
+                <!--
                 <li>
                   <a href="/#/banking/trusts/Name%201">Haral233</a>
                 </li>
                 <li><a href="/#/banking/trusts/Name%201">Djingis</a></li>
                 <li>
                   <a href="/#/banking/trusts/Name%201">{params.trustPartner}</a>
-                </li>
+                </li>-->
               </ul>
             </div>
           </div>

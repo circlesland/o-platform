@@ -69,6 +69,10 @@ const processDefinition = (processId: string) =>
         type: 'final',
         id: "success",
         data: (context, event: any) => {
+          localStorage.removeItem("safe");
+          localStorage.removeItem("circlesAccount");
+          localStorage.removeItem("circlesKey");
+          localStorage.removeItem("me");
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut"
           });

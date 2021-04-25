@@ -1,6 +1,7 @@
 import {readable} from "svelte/store";
-import {Safe} from "../data/circles/queries";
-import {emptySafe, tryGetCurrentSafe} from "../../o-banking.manifest";
+import {Safe} from "../data/circles/types";
+import {emptySafe} from "../data/emptySafe";
+import {tryGetCurrentSafe} from "../init";
 
 export const mySafe = readable<Safe|null>(null, (set) => {
   set(tryGetCurrentSafe() ?? emptySafe);

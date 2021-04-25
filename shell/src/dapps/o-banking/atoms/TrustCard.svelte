@@ -7,51 +7,66 @@
   } from "../../../shared/processes/shellProcess";
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
-  import { TrustObject } from "../data/circles/queries";
+  import {TrustObject} from "../data/circles/types";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
+  export let untrusted: TrustObject;
   export let direction: String;
 
   let pictureUrl: string;
   let displayName: String;
+  let safeAddress: string;
   let limit: String = "0";
   let id: String;
 
   $: {
-    switch (direction) {
-      case "mutual":
-        displayName = trustedBy.profile
-          ? trustedBy.profile.displayName
-          : trustedBy.safeAddress;
-        pictureUrl = trustedBy.profile
-          ? trustedBy.profile.avatarUrl
-          : undefined;
-        limit = trusting.limit
-          ? trusting.limit.toString()
-          : "0" + "/" + trustedBy.limit
+    if (untrusted) {
+      // <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
+      displayName = untrusted.profile
+        ? untrusted.profile.displayName
+        : untrusted.safeAddress;
+      pictureUrl = untrusted.profile
+        ? untrusted.profile.avatarUrl
+        : undefined;
+      limit = untrusted.limit ? untrusted.limit.toString() : "0";
+      safeAddress = untrusted.safeAddress;
+      id = untrusted._id;
+    } else if (trustedBy && trusting) {
+      // <!-- TODO: Possible actions: untrust, transfer money -->
+      displayName = trustedBy.profile
+        ? trustedBy.profile.displayName
+        : trustedBy.safeAddress;
+      pictureUrl = trustedBy.profile
+        ? trustedBy.profile.avatarUrl
+        : undefined;
+      limit = trusting.limit
+        ? trusting.limit.toString()
+        : "0" + "/" + trustedBy.limit
           ? trustedBy.limit.toString()
           : "0";
-        id = trustedBy._id;
-        break;
-      case "trusting":
-        displayName = trusting.profile
-          ? trusting.profile.displayName
-          : trusting.safeAddress;
-        pictureUrl = trusting.profile ? trusting.profile.avatarUrl : undefined;
-        limit = trusting.limit ? trusting.limit.toString() : "0";
-        id = trusting._id;
-        break;
-      case "trusted":
-        displayName = trustedBy.profile
-          ? trustedBy.profile.displayName
-          : trustedBy.safeAddress;
-        pictureUrl = trustedBy.profile
-          ? trustedBy.profile.avatarUrl
-          : undefined;
-        limit = trustedBy.limit ? trustedBy.limit.toString() : "0";
-        id = trustedBy._id;
-        break;
+      safeAddress = trusting.safeAddress;
+      id = trustedBy._id;
+    } else if (trustedBy) {
+      // <!-- TODO: Possible actions: trust, transfer money -->
+      displayName = trustedBy.profile
+        ? trustedBy.profile.displayName
+        : trustedBy.safeAddress;
+      pictureUrl = trustedBy.profile
+        ? trustedBy.profile.avatarUrl
+        : undefined;
+      limit = trustedBy.limit ? trustedBy.limit.toString() : "0";
+      safeAddress = trustedBy.safeAddress;
+      id = trustedBy._id;
+    } else if (trusting) {
+      // <!-- TODO: Possible actions: untrust -->
+      displayName = trusting.profile
+        ? trusting.profile.displayName
+        : trusting.safeAddress;
+      pictureUrl = trusting.profile ? trusting.profile.avatarUrl : undefined;
+      limit = trusting.limit ? trusting.limit.toString() : "0";
+      safeAddress = trusting.safeAddress;
+      id = trusting._id;
     }
   }
 
@@ -114,7 +129,7 @@
 </script>
 
 <section
-  on:click|once={() => loadDetailPage(id)}
+  on:click|once={() => loadDetailPage(safeAddress)}
   class="flex items-center justify-center mb-2 text-circlesdarkblue"
 >
   <div

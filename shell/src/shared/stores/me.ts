@@ -19,7 +19,6 @@ export const me = readable<Profile|null>(null, function start(set) {
   }) => {
     if (event.type == "shell.loggedOut") {
       localStorage.removeItem("me");
-      localStorage.removeItem("safe");
       set(null);
       return;
     }

@@ -3,7 +3,7 @@
   import { mySafe } from "../stores/safe";
   import { BN } from "ethereumjs-util";
   import TokenCard from "../atoms/TokenCard.svelte";
-  import {Token} from "../data/circles/queries";
+  import {Token} from "../data/circles/types";
 
   let accountxDai:Token = {
     _id: "",
