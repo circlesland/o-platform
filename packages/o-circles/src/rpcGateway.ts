@@ -25,14 +25,14 @@ export class RpcGateway {
         }
         return this._web3;
     }
-
+/*
     static async execute(f:(web3:Web3) => Observable<any>, timeoutAndRotateAfterMs:number) {
         const web3 = this.get();
         try {
             for (let i = 0; i < RpcGateway.gateways.length; i++) {
                 try {
                     const subscription = f(web3).subscribe(event => {
-                        
+
                     });
 
                 } catch (e) {
@@ -50,7 +50,7 @@ export class RpcGateway {
 
         }
     }
-
+*/
     static async getEthJsCommon() : Promise<Common> {
         return Common.forCustomChain(
             'mainnet',
