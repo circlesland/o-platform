@@ -91,12 +91,14 @@ const processDefinition = (processId: string) =>
             });
 
             return result.data.search && result.data.search.length > 0
-              ? result.data.search.map((o) => {
-                  return <Choice>{
-                    value: o.circlesAddress,
-                    label: `${o.firstName} ${o.lastName}`,
-                  };
-                }).filter(o => o.value)
+              ? result.data.search
+                  .map((o) => {
+                    return <Choice>{
+                      value: o.circlesAddress,
+                      label: `${o.firstName} ${o.lastName}`,
+                    };
+                  })
+                  .filter((o) => o.value)
               : [];
           },
           optionIdentifier: "value",
@@ -125,6 +127,7 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#acceptSummary",
+          previous: "#recipientAddress",
         },
       }),
       acceptSummary: prompt<TransferContext, any>({
@@ -136,11 +139,11 @@ const processDefinition = (processId: string) =>
             if (!context.data.tokens) {
               throw new Error(`No currency or amount selected`);
             } else {
-              return `You are about to transfer <b>${
+              return `You are about to transfer <strong>${
                 context.data.tokens.amount
-              } ${context.data.tokens.currency.toUpperCase()}</b> to <b>${
+              } ${context.data.tokens.currency.toUpperCase()}</strong> to <strong>${
                 context.data.recipientAddress
-              }</b>.<br/>Do you want to continue?`;
+              }</strong>.<br/>Do you want to continue?`;
             }
           },
         },
@@ -181,9 +184,9 @@ const processDefinition = (processId: string) =>
                 safeAddress: context.data.safeAddress,
                 recipientAddress: context.data.recipientAddress,
                 amount: context.data.tokens.amount,
-                privateKey: localStorage.getItem("circlesKey")
-              }
-            }
+                privateKey: localStorage.getItem("circlesKey"),
+              };
+            },
           },
           onDone: "#success",
           onError: "#error",
@@ -202,9 +205,9 @@ const processDefinition = (processId: string) =>
                 safeAddress: context.data.safeAddress,
                 recipientAddress: context.data.recipientAddress,
                 amount: context.data.tokens.amount,
-                privateKey: localStorage.getItem("circlesKey")
-              }
-            }
+                privateKey: localStorage.getItem("circlesKey"),
+              };
+            },
           },
           onDone: "#success",
           onError: "#error",

@@ -22,7 +22,7 @@
   }
 </script>
 
-<p>
+<p class="label-text">
   {context.params.label}
 </p>
 <div class="flex flex-col space-x-2 w-full">

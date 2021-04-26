@@ -50,7 +50,7 @@
       </div>
       <div class="self-start">
         <button
-          class=" text-base-300"
+          class=" text-white"
           on:click={() => (window.location = "/#/dashboard")}
         >
           <svg

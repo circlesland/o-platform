@@ -13,7 +13,7 @@
   }
 </script>
 
-<p class="py-4">
+<p class="py-4 label-text">
   {context.params.label}
 </p>
 <div class="flex w-full space-x-2">

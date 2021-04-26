@@ -42,9 +42,9 @@
   function submit() {
     const event = new Continue();
     event.data = {};
-      event.data[context.fieldName] = selected.value;
-      context.data[context.fieldName] = selected.value;
-      context.process.sendAnswer(event);
+    event.data[context.fieldName] = selected.value;
+    context.data[context.fieldName] = selected.value;
+    context.process.sendAnswer(event);
   }
 
   function onkeydown(e: KeyboardEvent) {

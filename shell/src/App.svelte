@@ -39,8 +39,8 @@
     IdentifyContextData,
   } from "./dapps/o-passport/processes/identify";
   import { SvelteToast } from "@zerodevx/svelte-toast";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {ContextAction} from "@o-platform/o-events/dist/shell/contextAction";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";
 
   let isOpen: boolean = false;
   let modalProcess: Process;
@@ -55,7 +55,7 @@
     key: string;
     icon?: string;
     label: string;
-    event: (runtimeDapp:RuntimeDapp<any>) => PlatformEvent
+    event: (runtimeDapp: RuntimeDapp<any>) => PlatformEvent;
   }[];
 
   window.o.events.subscribe(async (event: PlatformEvent) => {
@@ -172,7 +172,7 @@
           data: <IdentifyContextData>{
             redirectTo: $location,
           },
-          messages:{},
+          messages: {},
           dirtyFlags: {},
           environment: {},
         };
@@ -361,11 +361,12 @@
       <!-- No process -->
       {#if getLastLoadedDapp()}
         <div class="mb-8 space-y-4">
-          {#each (getLastLoadedDapp().actions).concat(contextActions) as action}
+          {#each getLastLoadedDapp().actions.concat(contextActions) as action}
             <button
               on:click={() =>
                 window.o.publishEvent(action.event(getLastLoadedDapp()))}
-              class="w-full btn btn-primary btn-outline">{action.label}</button
+              class="w-full btn btn-primary bg-white btn-outline"
+              >{action.label}</button
             >
           {/each}
         </div>

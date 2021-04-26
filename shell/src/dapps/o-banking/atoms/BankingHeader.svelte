@@ -3,7 +3,7 @@
   import { getLastLoadedDapp, getLastLoadedPage } from "../../../loader";
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-  import {mySafe} from "../stores/safe";
+  import { mySafe } from "../stores/safe";
 
   export let balance: string = "0";
 
@@ -31,7 +31,7 @@
       </div>
       <div class="self-end">
         <button
-          class=" text-base-300"
+          class=" text-white"
           href="#"
           on:click|once={() => (window.location = "/#/dashboard")}
         >
@@ -72,12 +72,14 @@
     </span>
     <div class="mt-8 p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
       {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ""}
-      <small class="block">
-        {$mySafe.transfers && $mySafe.transfers.rows ? $mySafe.transfers.rows.length : ""} transactions
-      </small>
+        <small class="block">
+          {$mySafe.transfers && $mySafe.transfers.rows
+            ? $mySafe.transfers.rows.length
+            : ""} transactions
+        </small>
       {/if}
       <small class="block">
-          {$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ""}
+        {$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ""}
       </small>
       <progress
         class="progress progress-accent transaction-update-progress"
