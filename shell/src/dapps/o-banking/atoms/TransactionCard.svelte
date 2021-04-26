@@ -70,7 +70,7 @@
           {displayName}
         </h2>
       </div>
-      <p class="text-sm mt-2">{message}</p>
+      <p class="text-sm mt-2 text-light">{message}</p>
     </div>
 
     <div class="flex flex-1 flex-col justify-items-end">
