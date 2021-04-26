@@ -3,7 +3,7 @@ import {BN} from "ethereumjs-util";
 import Web3 from "web3";
 import Common from "ethereumjs-common";
 import {Web3providerChanged} from "./events/web3providerChanged";
-import {Observable} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 
 export class RpcGateway {
     static readonly gateways = [
@@ -25,32 +25,73 @@ export class RpcGateway {
         }
         return this._web3;
     }
-/*
-    static async execute(f:(web3:Web3) => Observable<any>, timeoutAndRotateAfterMs:number) {
-        const web3 = this.get();
+
+    static async execute(f:(web3:Web3) => Observable<any>, timeoutAndRotateAfterMs:number) : Promise<void> {
         try {
             for (let i = 0; i < RpcGateway.gateways.length; i++) {
-                try {
-                    const subscription = f(web3).subscribe(event => {
-
-                    });
-
-                } catch (e) {
-                    if (e.message === "slow_provider") {
-                        loading = false;
-                        RpcGateway.rotateProvider();
-                        console.warn("The provider took too long to answer. Retrying with a different provider ...");
-                    } else {
-                        throw e;
-                    }
-                }
+                await this._execute(f, timeoutAndRotateAfterMs);
             }
         } catch (e) {
-
-
+            if (e.message === "slow_provider") {
+                RpcGateway.rotateProvider();
+                console.warn("The provider took too long to answer. Retrying with a different provider ...");
+            } else {
+                throw e;
+            }
         }
     }
-*/
+
+    private static async _execute(f:(web3:Web3) => Observable<any>, timeoutAndRotateAfterMs:number) : Promise<void> {
+        return new Promise((resolve, reject) => {
+            const now = new Date();
+
+            let done:boolean = false;
+            let lastProgress = now;
+            let lastError:Error|undefined = undefined;
+
+            let intervalHandle:any = setInterval(() => {
+                if (done) {
+                    clearInterval(intervalHandle);
+                    intervalHandle = undefined;
+                    return;
+                }
+
+                const timeSinceLastProgress = Date.now() - lastProgress.getTime();
+                if (timeSinceLastProgress >= timeoutAndRotateAfterMs) {
+                    reject("slow_provider");
+                    clearInterval(intervalHandle);
+                    intervalHandle = undefined;
+                    return;
+                }
+            }, timeoutAndRotateAfterMs);
+
+            let subscription:Subscription|undefined = undefined;
+            try {
+                const web3 = this.get();
+                subscription = f(web3).subscribe({
+                    next:(_:any) => lastProgress = new Date(),
+                    error:(err:Error) => reject(err),
+                    complete:() => {
+                        resolve();
+                        done = true;
+                    }
+                });
+                if (lastError) {
+                    throw lastError;
+                }
+            } catch (e) {
+                reject(e);
+            } finally {
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+                if (intervalHandle) {
+                    clearInterval(intervalHandle);
+                }
+            }
+        });
+    }
+
     static async getEthJsCommon() : Promise<Common> {
         return Common.forCustomChain(
             'mainnet',
