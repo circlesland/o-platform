@@ -70,6 +70,7 @@
           listAutoWidth={false}
           listPlacement="top"
           containerClasses="w-80 min-w-full asyncList"
+          isCreatable={true}
           {optionIdentifier}
           {getSelectionLabel}
           {getOptionLabel}
