@@ -155,7 +155,7 @@
           class="max-w-full truncateThis cursor-pointer"
           on:click|once={() => loadDetailPage(safeAddress)}
         >
-          <h2 class="text-2xl sm:text-3xl font-bold">
+          <h2 class="text-2xl sm:text-3xl">
             {displayName}
           </h2>
         </div>

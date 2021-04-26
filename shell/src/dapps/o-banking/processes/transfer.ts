@@ -96,6 +96,7 @@ const processDefinition = (processId: string) =>
                     return <Choice>{
                       value: o.circlesAddress,
                       label: `${o.firstName} ${o.lastName}`,
+                      avatarUrl: o.avatarUrl,
                     };
                   })
                   .filter((o) => o.value)

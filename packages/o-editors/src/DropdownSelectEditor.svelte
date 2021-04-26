@@ -4,6 +4,7 @@
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
   import { onMount } from "svelte";
+  import Item from "./DropdownSelectItem.svelte";
   export let context: ChoiceSelectorContext;
 
   $: selected = {};
@@ -33,8 +34,6 @@
   });
 
   function handleSelect(event) {
-    console.log("SELECTED:", event);
-    console.log("CHOICES:", context.params.choices);
     selected = event.detail;
     selectedLabel = event.detail.label;
   }
@@ -63,18 +62,21 @@
     </div>
 
     {#if !!context.params.asyncChoices}
-      <Select
-        selectedValue={selected}
-        loadOptions={context.params.asyncChoices}
-        placeholder="Search..."
-        listAutoWidth={false}
-        listPlacement="top"
-        containerClasses="w-80 min-w-full"
-        {optionIdentifier}
-        {getSelectionLabel}
-        {getOptionLabel}
-        on:select={handleSelect}
-      />
+      <div class="themed">
+        <Select
+          selectedValue={selected}
+          loadOptions={context.params.asyncChoices}
+          placeholder="Search..."
+          listAutoWidth={false}
+          listPlacement="top"
+          containerClasses="w-80 min-w-full asyncList"
+          {optionIdentifier}
+          {getSelectionLabel}
+          {getOptionLabel}
+          {Item}
+          on:select={handleSelect}
+        />
+      </div>
     {:else}
       <Select
         selectedValue={selected}
@@ -92,7 +94,12 @@
 
 <style>
   .dropdown-select-editor {
-    --listMaxHeight: 200px;
+    --listMaxHeight: 400px;
     --listMaxWidth: 10rem;
+  }
+  .themed {
+    width: 100%;
+    --listBackground: transparent;
+    --listShadow: none;
   }
 </style>

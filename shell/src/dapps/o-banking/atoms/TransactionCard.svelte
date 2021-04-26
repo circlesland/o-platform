@@ -66,7 +66,7 @@
 
     <div class="text-left flex-grow truncate relative">
       <div class="truncateThis">
-        <h2 class="text-2xl sm:text-3xl font-bold">
+        <h2 class="text-2xl sm:text-3xl">
           {displayName}
         </h2>
       </div>

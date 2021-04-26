@@ -28,7 +28,11 @@
 
 <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
   <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-    <div class="{colorClass? colorClass : "text-light"} text-xs font-circles font-bold text-left">
+    <div
+      class="{colorClass
+        ? colorClass
+        : 'text-light'} text-xs font-circles font-bold text-left"
+    >
       {label ? label : ""}
     </div>
     <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
@@ -48,7 +52,7 @@
           class="max-w-full truncateThis cursor-pointer"
           on:click|once={() => loadDetailPage(token._id)}
         >
-          <h2 class="text-2xl sm:text-3xl font-bold truncate ">
+          <h2 class="text-2xl sm:text-3xl truncate ">
             {displayName}
           </h2>
         </div>
