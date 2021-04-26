@@ -3,20 +3,25 @@ const colors = require("tailwindcss/colors");
 module.exports = {
   darkMode: false,
   purge: {
-    enabled: false,
+    enabled: true,
     content: [
-      "./shell/src/**/*.svelte",
-      "./shell/src/**/*.ts",
-      "./shell/src/**/*.js",
-      "./shell/src/**/*.jsx",
-      "./shell/public/*.html",
-      "./packages/**/*.svelte",
+      "./../packages/**/*.svelte",
+      "./../packages/**/*.ts",
+      "./../packages/**/*.html",
       "./src/**/*.html",
       "./src/**/*.js",
       "./src/**/*.ts",
       "./src/**/*.jsx",
       "./public/**/*.html",
     ],
+    defaultExtractor: (content) => {
+      const broadMatches = content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [];
+      const broadMatchesWithoutTrailingSlash = broadMatches.map((match) =>
+        _.trimEnd(match, "\\")
+      );
+      const matches = broadMatches.concat(broadMatchesWithoutTrailingSlash);
+      return matches;
+    },
     options: {
       safelist: [/data-theme$/],
     },
