@@ -74,48 +74,48 @@ module.exports = {
     rules: [
       {
         test: /\.ts|\.svelte$/,
-        loader: 'string-replace-loader',
+        loader: "string-replace-loader",
         options: {
-          search: '__AUTH_ENDPOINT__',
+          search: "__AUTH_ENDPOINT__",
           replace: auth_endpoint,
-          flags: 'g'
-        }
+          flags: "g",
+        },
       },
       {
         test: /\.ts|\.svelte$/,
-        loader: 'string-replace-loader',
+        loader: "string-replace-loader",
         options: {
-          search: '__API_ENDPOINT__',
+          search: "__API_ENDPOINT__",
           replace: api_endpoint,
-          flags: 'g'
-        }
+          flags: "g",
+        },
       },
       {
         test: /\.ts|\.svelte$/,
-        loader: 'string-replace-loader',
+        loader: "string-replace-loader",
         options: {
-          search: '__FILES_ENDPOINT__',
+          search: "__FILES_ENDPOINT__",
           replace: files_endpoint,
-          flags: 'g'
-        }
+          flags: "g",
+        },
       },
       {
         test: /\.ts|\.svelte$/,
-        loader: 'string-replace-loader',
+        loader: "string-replace-loader",
         options: {
-          search: '__APP_ID__',
+          search: "__APP_ID__",
           replace: appId,
-          flags: 'g'
-        }
+          flags: "g",
+        },
       },
       {
         test: /\.ts|\.svelte$/,
-        loader: 'string-replace-loader',
+        loader: "string-replace-loader",
         options: {
-          search: '__FILES_APP_ID__',
+          search: "__FILES_APP_ID__",
           replace: filesAppId,
-          flags: 'g'
-        }
+          flags: "g",
+        },
       },
       {
         test: /\.tsx?$/,
@@ -142,7 +142,17 @@ module.exports = {
           options: {
             emitCss: true,
             hotReload: true,
-            preprocess: sveltePreprocess({}),
+            preprocess: sveltePreprocess({
+              // https://github.com/kaisermann/svelte-preprocess/#user-content-options
+              // sourceMap: true,
+              postcss: {
+                plugins: [
+                  require("tailwindcss"),
+                  require("autoprefixer"),
+                  require("postcss-nesting"),
+                ],
+              },
+            }),
           },
         },
       },

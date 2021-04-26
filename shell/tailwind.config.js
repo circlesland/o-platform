@@ -1,4 +1,5 @@
 const colors = require("tailwindcss/colors");
+const production = !process.env.NODE_ENV;
 
 module.exports = {
   darkMode: false,
@@ -6,13 +7,13 @@ module.exports = {
     enabled: true,
     content: [
       "./../packages/**/*.svelte",
-      "./../packages/**/*.ts",
-      "./../packages/**/*.html",
-      "./src/**/*.html",
-      "./src/**/*.js",
-      "./src/**/*.ts",
-      "./src/**/*.jsx",
-      "./public/**/*.html",
+      // "./../packages/**/*.ts",
+      // "./../packages/**/*.html",
+      "./src/**/*.svelte",
+      // "./src/**/*.js",
+      // "./src/**/*.ts",
+      // "./src/**/*.jsx",
+      // "./public/**/*.html",
     ],
     defaultExtractor: (content) => {
       const broadMatches = content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [];
