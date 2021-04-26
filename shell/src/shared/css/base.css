@@ -36,9 +36,9 @@
 }
 
 .text-gradient {
-    background: linear-gradient(to right, #003399, #0ad99c 80%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: linear-gradient(to right, #003399, #0ad99c 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .btn-primary {
@@ -72,15 +72,19 @@
   outline: none;
 }
 
-  .truncateThis:before {
-    content: "";
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    /* background: linear-gradient(transparent 150px, #ffcc33); */
-    background: linear-gradient(to right, transparent 80%, #fff 100%);
+.truncateThis:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  /* background: linear-gradient(transparent 150px, #ffcc33); */
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.001) 80%,
+    #fff 100%
+  );
 
-    /* background: #ffcc33; */
-  }
+  /* background: #ffcc33; */
+}
