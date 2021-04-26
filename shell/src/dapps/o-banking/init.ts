@@ -145,6 +145,7 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
         safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
         publishRefreshEvent(safe);
         _currentSafe = safe;
+        // publishRefreshEvent(safe);
       }, tokenList);
       console.log(new Date().getTime() + ": " + `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`);
       publishRefreshEvent(safe);

@@ -38,7 +38,7 @@
       </div>
     </section>
   {:else if $mySafe.transfers && $mySafe.transfers.rows}
-    {#each $mySafe.transfers.rows as transfer (transfer._id)}
+    {#each $mySafe.transfers.rows as transfer}
       {#if transfer.direction === "in"}
         <TransactionCard {transfer} message="WURST" />
       {:else}

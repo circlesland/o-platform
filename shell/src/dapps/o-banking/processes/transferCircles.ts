@@ -134,7 +134,7 @@ createMachine<TransferCirclesContext, any>({
             const destinations = [];
             const values = [];
 
-            const path = <TransitivePath>event.data.pathToRecipient.value;
+            const path = <TransitivePath>event.data;
             path.transfers.forEach(transfer => {
               tokenOwners.push(transfer.tokenOwner);
               sources.push(transfer.from);

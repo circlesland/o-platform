@@ -3,6 +3,7 @@ import {BN} from "ethereumjs-util";
 import Web3 from "web3";
 import Common from "ethereumjs-common";
 import {Web3providerChanged} from "./events/web3providerChanged";
+import {Observable} from "rxjs";
 
 export class RpcGateway {
     static readonly gateways = [
@@ -23,6 +24,31 @@ export class RpcGateway {
             throw new Error(`Couldn't create a web3 instance.`)
         }
         return this._web3;
+    }
+
+    static async execute(f:(web3:Web3) => Observable<any>, timeoutAndRotateAfterMs:number) {
+        const web3 = this.get();
+        try {
+            for (let i = 0; i < RpcGateway.gateways.length; i++) {
+                try {
+                    const subscription = f(web3).subscribe(event => {
+                        
+                    });
+
+                } catch (e) {
+                    if (e.message === "slow_provider") {
+                        loading = false;
+                        RpcGateway.rotateProvider();
+                        console.warn("The provider took too long to answer. Retrying with a different provider ...");
+                    } else {
+                        throw e;
+                    }
+                }
+            }
+        } catch (e) {
+
+
+        }
     }
 
     static async getEthJsCommon() : Promise<Common> {
