@@ -5,7 +5,15 @@
 
   let showPhrase = !localStorage.getItem("circlesKey");
   // TODO: 0x123 is for testing without private key. Needs to be removed later.
-  let name = localStorage.getItem("circlesKey") && localStorage.getItem("circlesKey") != "0x123" ? bip39.entropyToMnemonic(localStorage.getItem("circlesKey").substr(2, localStorage.getItem("circlesKey").length - 2)) : "<no private key>";
+  let name =
+    localStorage.getItem("circlesKey") &&
+    localStorage.getItem("circlesKey") != "0x123"
+      ? bip39.entropyToMnemonic(
+          localStorage
+            .getItem("circlesKey")
+            .substr(2, localStorage.getItem("circlesKey").length - 2)
+        )
+      : "<no private key>";
 
   const copy = () => {
     const app = new CopyClipBoard({
@@ -26,7 +34,7 @@
   <section
     class="flex items-center justify-center mb-1 text-circlesdarkblue -mt-10"
   >
-    <div class="flex items-center bg-white shadow p-4 w-full">
+    <div class="flex items-center bg-white shadow p-4 w-full rounded-sm">
       <div class="flex flex-col items-start">
         <h3 class="font-bold mr-2">My Seedphrase</h3>
       </div>
@@ -65,7 +73,9 @@
   </section>
   <!-- {#if showPhrase} -->
   <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-    <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+    <div
+      class="flex items-center bg-white shadow p-4 w-full space-x-2 rounded-sm rounded-sm"
+    >
       <div class:blur={!showPhrase} class="flex flex-col items-start">
         <div id="clipboard">
           <input type="text" class="hidden" bind:value={name} />

@@ -11,7 +11,9 @@
     <section
       class="flex items-center justify-center mb-2 text-circlesdarkblue -mt-10"
     >
-      <div class="flex items-center bg-white shadow px-4 w-full space-x-2">
+      <div
+        class="flex items-center bg-white shadow px-4 w-full space-x-2 rounded-sm"
+      >
         <div class="mr-2 py-2 pt-4 text-center">
           <div class="avatar">
             <div class="rounded-full w-14 h-14 m-auto">

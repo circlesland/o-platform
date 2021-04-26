@@ -92,12 +92,10 @@
 </script>
 
 <PassportHeader />
-{#if $me}
-  {console.log("ME: ", $me)}
-{/if}
+
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-2 text-circlesdarkblue">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
       <div
         class="text-circleslightblue text-xs font-circles font-bold text-left"
       >
@@ -136,7 +134,7 @@
   </section>
 
   <section class="justify-center mb-2 text-circlesdarkblue">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
       <div
         class="text-circleslightblue text-xs font-circles font-bold text-left"
       >
@@ -165,7 +163,7 @@
   </section>
 
   <section class="justify-center mb-2 text-circlesdarkblue">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
       <div
         class="text-circleslightblue text-xs font-circles font-bold text-left"
       >

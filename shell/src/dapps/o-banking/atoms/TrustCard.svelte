@@ -8,7 +8,7 @@
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
   import { TrustObject } from "../data/circles/types";
-  import {tryGetCurrentSafe} from "../init";
+  import { tryGetCurrentSafe } from "../init";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -81,7 +81,7 @@
           data: {
             recipientAddress,
             safeAddress: tryGetCurrentSafe()?.safeAddress,
-            privateKey: localStorage.getItem("circlesKey")
+            privateKey: localStorage.getItem("circlesKey"),
           },
           messages: {},
           dirtyFlags: {},
@@ -101,7 +101,7 @@
             trustLimit: parseInt(limit) > 0 ? 0 : 100,
             trustReceiver: recipientAddress,
             safeAddress: tryGetCurrentSafe()?.safeAddress,
-            privateKey: localStorage.getItem("circlesKey")
+            privateKey: localStorage.getItem("circlesKey"),
           },
           messages: {},
           dirtyFlags: {},
@@ -121,7 +121,7 @@
             trustLimit: 0,
             trustReceiver: recipientAddress,
             safeAddress: tryGetCurrentSafe()?.safeAddress,
-            privateKey: localStorage.getItem("circlesKey")
+            privateKey: localStorage.getItem("circlesKey"),
           },
           messages: {},
           dirtyFlags: {},
@@ -134,7 +134,7 @@
 </script>
 
 <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-  <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+  <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
     <div class="text-secondary text-xs font-circles font-bold text-left">
       {directionString}
     </div>

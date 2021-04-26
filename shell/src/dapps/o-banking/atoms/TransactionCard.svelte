@@ -51,7 +51,7 @@
   class="flex items-center justify-center mb-2 text-circlesdarkblue"
 >
   <div
-    class="flex items-center bg-white shadow p-4 w-full space-x-2 sm:space-x-6"
+    class="flex items-center bg-white shadow p-4 w-full space-x-2 sm:space-x-6 rounded-sm"
   >
     <div class="mr-2 text-center">
       <div class="avatar">

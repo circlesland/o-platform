@@ -26,8 +26,8 @@
   }
 </script>
 
-<section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-  <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+<section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
+  <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
     <div class="{colorClass? colorClass : "text-light"} text-xs font-circles font-bold text-left">
       {label ? label : ""}
     </div>
