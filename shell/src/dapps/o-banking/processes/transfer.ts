@@ -106,6 +106,7 @@ const processDefinition = (processId: string) =>
           getOptionLabel: (option) => option.label,
           getSelectionLabel: (option) => option.label,
         },
+        validate: true,
         navigation: {
           next: "#tokens",
         },
