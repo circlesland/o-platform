@@ -29,7 +29,7 @@
       connectOrCreateKey(params.jwt);
       params.jwt = null;
     }
-    name = $me.circlesAddress;
+    name = $me ? $me.circlesAddress : "";
   }
 
   const copy = () => {

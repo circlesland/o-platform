@@ -64,7 +64,9 @@ const processDefinition = (processId: string) =>
           placeholder: strings.placeholder,
           submitButtonText: "Let me in",
         },
-        dataSchema: yup.string().required("Please enter a valid email address"),
+        dataSchema: yup.string()
+                       .required("Please provide your email address")
+                       .email("That doesn't seem like a valid email address"),
         navigation: {
           next: "#checkAcceptTos",
         },
