@@ -75,6 +75,11 @@ const processDefinition = (processId: string) =>
         },
         invoke: {
           src: transferXdai.stateMachine(`${processId}:transfer:transferXdai`),
+          data: {
+            data: {},
+            messages: {},
+            dirtyFlags: {}
+          },
           onDone: "#success",
           onError: "#error",
         },

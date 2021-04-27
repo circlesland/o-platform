@@ -82,10 +82,7 @@
             recipientAddress,
             safeAddress: tryGetCurrentSafe()?.safeAddress,
             privateKey: localStorage.getItem("circlesKey"),
-          },
-          messages: {},
-          dirtyFlags: {},
-          environment: {},
+          }
         };
         return ctx;
       })

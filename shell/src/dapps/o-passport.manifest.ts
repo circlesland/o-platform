@@ -141,12 +141,6 @@ export const passport: DappManifest<DappState> = {
           true,
           async (ctx) => {
             ctx.childProcessDefinition = logout;
-            ctx.childContext = {
-              data: {},
-              dirtyFlags: {},
-              messages: {},
-              environment: {}
-            };
             return ctx;
           }
         );

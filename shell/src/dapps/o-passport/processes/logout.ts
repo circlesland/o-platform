@@ -6,6 +6,7 @@ import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {LogoutDocument} from "../data/api/types";
+import {push} from "svelte-spa-router";
 
 export type LogoutContextData = {
   loginEmail: string;
@@ -76,6 +77,7 @@ const processDefinition = (processId: string) =>
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut"
           });
+          push("/");
           return event.data; // TODO: fix any
         }
       }

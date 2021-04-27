@@ -143,7 +143,8 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
               code: context.data.oneTimeCode
             }
           },
-          dirtyFlags: {}
+          dirtyFlags:{},
+          messages:{},
         },
         onDone: "#exchangeTokenForSession",
         onError: "#error"
@@ -228,8 +229,8 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
           data: (context, event) => {
             return {}
           },
-          dirtyFlags: {},
-          messages: {}
+          messages: {},
+          dirtyFlags: {}
         },
         onDone: {
           actions: (context, event) => {
@@ -263,6 +264,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
               avatarMimeType: event.data?.avatarMimeType,
             }
           },
+          messages: {},
           dirtyFlags: {}
         },
         onDone: [{

@@ -50,14 +50,7 @@
         ctx.childContext = {
           data: {
             loginEmail: sub,
-          },
-          dirtyFlags: {},
-          messages: {},
-          environment: {
-            errorView: Error,
-            progressView: LoadingIndicator,
-            successView: Success,
-          },
+          }
         };
         return ctx;
       }
@@ -79,10 +72,7 @@
             lastName: $me.lastName,
             country: $me.country,
             dream: $me.dream,
-          },
-          dirtyFlags: {},
-          messages: {},
-          environment: {},
+          }
         };
         return ctx;
       }

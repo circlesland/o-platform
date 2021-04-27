@@ -32,10 +32,7 @@
             safeAddress: "TODO: my safe address",
             recipientAddress: recipientAddress,
             amount: 0.1,
-          },
-          messages: {},
-          dirtyFlags: {},
-          environment: {},
+          }
         };
         return ctx;
       })

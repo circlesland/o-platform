@@ -41,14 +41,6 @@
       async (ctx) => {
         ctx.childProcessDefinition = upsertIdentity;
         ctx.childContext = {
-          data: {},
-          dirtyFlags: {},
-          environment: {
-            errorView: Error,
-            progressView: LoadingIndicator,
-            successView: Success,
-          },
-          messages:{},
         };
         return ctx;
       }

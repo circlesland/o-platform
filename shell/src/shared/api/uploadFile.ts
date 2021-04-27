@@ -43,6 +43,7 @@ createMachine<UploadFileContext, any>({
               appId: context.data.appId
             }
           },
+          messages: {},
           dirtyFlags: {}
         },
         onDone: "#upload",

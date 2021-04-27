@@ -29,12 +29,7 @@ export interface TProcessContext<Data extends {[key:string]:any}> extends IProce
 
 export class ProcessContext<T extends {[key:string]:any}> implements TProcessContext<T> {
   data: T = <any>{};
-  dirtyFlags: { [p: string]: boolean } = <any>{};
-  messages: { [p: string]: string } = <any>{};
-  environment: {
-    // Generic views for a infinity progressbar, a green checkmark for success or a generic error view that shows the exception
-    progressView?: any,
-    successView?: any,
-    errorView?: any
-  } = <any>{};
+  dirtyFlags: { [p: string]: boolean } = {};
+  environment: { progressView?: any; successView?: any; errorView?: any } = {};
+  messages: { [p: string]: string } = {};
 }

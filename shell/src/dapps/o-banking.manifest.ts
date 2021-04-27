@@ -163,14 +163,7 @@ export const banking: DappManifest<DappState> = {
             data: {
               safeAddress:tryGetCurrentSafe()?.safeAddress,
               privateKey:localStorage.getItem("circlesKey")
-            },
-            dirtyFlags: {},
-            messages: {},
-            environment: {
-              errorView: Error,
-              progressView: LoadingIndicator,
-              successView: Success,
-            },
+            }
           };
           return ctx;
         });
@@ -184,16 +177,6 @@ export const banking: DappManifest<DappState> = {
         true,
         async (ctx) => {
           ctx.childProcessDefinition = hubSignup;
-          ctx.childContext = {
-            data: {},
-            dirtyFlags: {},
-            messages: {},
-            environment: {
-              errorView: Error,
-              progressView: LoadingIndicator,
-              successView: Success,
-            },
-          };
           return ctx;
         });
     }
@@ -210,14 +193,7 @@ export const banking: DappManifest<DappState> = {
             data: {
               safeAddress: tryGetCurrentSafe().safeAddress,
               privateKey: localStorage.getItem("circlesKey")
-            },
-            dirtyFlags: {},
-            messages: {},
-            environment: {
-              errorView: Error,
-              progressView: LoadingIndicator,
-              successView: Success,
-            },
+            }
           };
           return ctx;
         });
@@ -235,14 +211,7 @@ export const banking: DappManifest<DappState> = {
             data: {
               safeAddress: tryGetCurrentSafe().safeAddress,
               privateKey: localStorage.getItem("circlesKey")
-            },
-            dirtyFlags: {},
-            messages: {},
-            environment: {
-              errorView: Error,
-              progressView: LoadingIndicator,
-              successView: Success,
-            },
+            }
           };
           return ctx;
         });

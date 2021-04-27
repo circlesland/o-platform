@@ -37,10 +37,7 @@
             lastName: $me.lastName,
             country: $me.country,
             dream: $me.dream,
-          },
-          dirtyFlags: {},
-          environment: {},
-          messages: {},
+          }
         };
         return ctx;
       }

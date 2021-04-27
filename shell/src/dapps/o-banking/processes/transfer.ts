@@ -190,6 +190,8 @@ const processDefinition = (processId: string) =>
                 privateKey: localStorage.getItem("circlesKey"),
               };
             },
+            messages: {},
+            dirtyFlags: {}
           },
           onDone: "#success",
           onError: "#error",
@@ -211,6 +213,8 @@ const processDefinition = (processId: string) =>
                 privateKey: localStorage.getItem("circlesKey"),
               };
             },
+            messages: {},
+            dirtyFlags: {}
           },
           onDone: "#success",
           onError: "#error",

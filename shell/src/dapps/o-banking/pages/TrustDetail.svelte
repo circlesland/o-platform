@@ -35,14 +35,7 @@
               safeAddress: tryGetCurrentSafe().safeAddress,
               privateKey: localStorage.getItem("circlesKey"),
               trustReceiver: params.trustPartner
-            },
-            dirtyFlags: {},
-            messages: {},
-            environment: {
-              errorView: Error,
-              progressView: LoadingIndicator,
-              successView: Success,
-            },
+            }
           };
           return ctx;
         });
@@ -83,10 +76,7 @@
         ctx.childContext = {
           data: {
             recipientAddress,
-          },
-          messages: {},
-          dirtyFlags: {},
-          environment: {},
+          }
         };
         return ctx;
       })
@@ -101,10 +91,7 @@
           data: {
             trustLimit: 100,
             trustReceiver: recipientAddress,
-          },
-          messages: {},
-          dirtyFlags: {},
-          environment: {},
+          }
         };
         return ctx;
       })
@@ -119,10 +106,7 @@
           data: {
             trustLimit: 0,
             trustReceiver: recipientAddress,
-          },
-          messages: {},
-          dirtyFlags: {},
-          environment: {},
+          }
         };
         return ctx;
       })

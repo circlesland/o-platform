@@ -26,10 +26,7 @@
         ctx.childContext = {
           data: <IdentifyContextData>{
             redirectTo: "/dashboard",
-          },
-          messages: {},
-          dirtyFlags: {},
-          environment: {},
+          }
         };
         return ctx;
       }

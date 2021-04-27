@@ -247,7 +247,8 @@ const processDefinition = (processId: string) =>
                 bytes: context.data.avatar.bytes,
               };
             },
-            dirtyFlags: {},
+            messages: {},
+            dirtyFlags: {}
           },
           onDone: "#upsertIdentity",
           onError: "#error",

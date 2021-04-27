@@ -61,14 +61,7 @@ export const dashboard : DappManifest<DappState> = {
                 },
                 amount: "0"
               }
-            },
-            dirtyFlags: {},
-            messages: {},
-            environment: {
-              errorView: Error,
-              progressView: LoadingIndicator,
-              successView: Success,
-            },
+            }
           };
           return ctx;
         })

@@ -36,15 +36,6 @@
       async (ctx) => {
         ctx.childProcessDefinition = createOrRestoreKey;
         ctx.childContext = {
-          data: {
-          },
-          dirtyFlags: {},
-          environment: {
-            errorView: Error,
-            progressView: LoadingIndicator,
-            successView: Success,
-          },
-          messages:{},
         };
         return ctx;
       });

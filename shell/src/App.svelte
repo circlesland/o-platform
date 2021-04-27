@@ -171,10 +171,7 @@
         ctx.childContext = {
           data: <IdentifyContextData>{
             redirectTo: $location,
-          },
-          messages: {},
-          dirtyFlags: {},
-          environment: {},
+          }
         };
         return ctx;
       }

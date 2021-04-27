@@ -37,10 +37,7 @@
           data: {
             oneTimeCode: code,
             redirectTo: "/dashboard"
-          },
-          messages:{},
-          dirtyFlags: {},
-          environment: {},
+          }
         };
         return ctx;
       }

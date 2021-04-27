@@ -10,7 +10,7 @@ const {send} = actions;
 export class ShellProcessContext extends ProcessContext<any> {
   childProcessId: string;
   childProcessDefinition:ProcessDefinition<any,any>
-  childContext? :ProcessContext<any>;
+  childContext? :{[x:string]:any};
 }
 
 /**
@@ -39,7 +39,12 @@ const processDefinition = () => {
             return <any>sm; // TODO: Fix 'any'
           },
           data: (context) => {
-            const newChildContext = {};
+            const newChildContext:ProcessContext<any> = {
+              data:{},
+              messages:{},
+              dirtyFlags:{},
+              environment:{}
+            };
             if (context.childContext) {
               Object.keys(context.childContext).forEach(key => {
                 newChildContext[key] = context.childContext[key];
