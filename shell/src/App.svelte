@@ -208,92 +208,90 @@
     </div>
   </main>
 
-  {#if lastLoadedDapp && !lastLoadedDapp.hideFooter && lastLoadedPage && !lastLoadedPage.hideFooter}
-    <footer
-      class="z-50  w-full sticky bottom-0 bg-white h-12 border-t border-base-300 pb-16"
-      class:isOpen
-    >
-      <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
-        <!-- NOT MODAL START -->
-        <div
-          class="grid  {lastPrompt &&
-          (lastPrompt.navigation.canGoBack || lastPrompt.navigation.canSkip)
-            ? 'grid-cols-3'
-            : 'grid-cols-5'}"
-          class:px-8={!isOpen}
-        >
-          {#if lastLoadedDapp}
-            {#each lastLoadedDapp.pages
-              .filter((o) => !o.isSystem)
-              .slice(0, 2) as page}
-              <a
-                href="#/{lastLoadedDapp.routeParts.join('/') +
-                  '/' +
-                  page.routeParts.join('/')}"
-                class="justify-self-center tab w-full text-center focus:text-teal-500 hover:text-teal-500"
-                class:hidden={isOpen}
-              >
-                <NavItem label={page.title} />
-              </a>
-            {/each}
-          {/if}
-          {#if lastPrompt && lastPrompt.navigation.canGoBack}
-            <button
-              class="btn btn-outline btn-base ml-9"
-              on:click={() => modalProcess.sendAnswer(new Back())}>BACK</button
+  <footer
+    class="z-50  w-full sticky bottom-0 bg-white h-12 border-t border-base-300 pb-16"
+    class:isOpen
+  >
+    <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
+      <!-- NOT MODAL START -->
+      <div
+        class="grid  {lastPrompt &&
+        (lastPrompt.navigation.canGoBack || lastPrompt.navigation.canSkip)
+          ? 'grid-cols-3'
+          : 'grid-cols-5'}"
+        class:px-8={!isOpen}
+      >
+        {#if lastLoadedDapp}
+          {#each lastLoadedDapp.pages
+            .filter((o) => !o.isSystem)
+            .slice(0, 2) as page}
+            <a
+              href="#/{lastLoadedDapp.routeParts.join('/') +
+                '/' +
+                page.routeParts.join('/')}"
+              class="justify-self-center tab w-full text-center focus:text-teal-500 hover:text-teal-500"
+              class:hidden={isOpen}
             >
-          {/if}
+              <NavItem label={page.title} />
+            </a>
+          {/each}
+        {/if}
+        {#if lastPrompt && lastPrompt.navigation.canGoBack}
           <button
-            class="justify-self-center btn-circle -m-4 min-w-min w-16 h-16 mx-2 circles-button "
-            class:bg-white={!isOpen}
-            class:shadow-lg={!isOpen}
-            class:col-start-3={!lastPrompt ||
-              (lastPrompt && !lastPrompt.navigation.canGoBack)}
-            class:col-end-3={!lastPrompt ||
-              (lastPrompt && !lastPrompt.navigation.canGoBack)}
-            on:click={() => {
-              isOpen = !isOpen;
-              if (!isOpen) {
-                lastPrompt = null;
-                if (modalProcess) {
-                  modalProcess.sendEvent(new Cancel());
-                }
-              }
-            }}
+            class="btn btn-outline btn-base ml-9"
+            on:click={() => modalProcess.sendAnswer(new Back())}>BACK</button
           >
-            <img
-              class="w-full"
-              src="/images/common/circles.png"
-              alt="circles.land"
-            />
-          </button>
-          {#if lastPrompt && lastPrompt.navigation.canSkip}
-            <button
-              class="btn btn-outline btn-secondary mr-9"
-              on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
-            >
-          {/if}
-          {#if lastLoadedDapp}
-            {#each lastLoadedDapp.pages
+        {/if}
+        <button
+          class="justify-self-center btn-circle -m-4 min-w-min w-16 h-16 mx-2 circles-button "
+          class:bg-white={!isOpen}
+          class:shadow-lg={!isOpen}
+          class:col-start-3={!lastPrompt ||
+            (lastPrompt && !lastPrompt.navigation.canGoBack)}
+          class:col-end-3={!lastPrompt ||
+            (lastPrompt && !lastPrompt.navigation.canGoBack)}
+          on:click={() => {
+            isOpen = !isOpen;
+            if (!isOpen) {
+              lastPrompt = null;
+              if (modalProcess) {
+                modalProcess.sendEvent(new Cancel());
+              }
+            }
+          }}
+        >
+          <img
+            class="w-full"
+            src="/images/common/circles.png"
+            alt="circles.land"
+          />
+        </button>
+        {#if lastPrompt && lastPrompt.navigation.canSkip}
+          <button
+            class="btn btn-outline btn-secondary mr-9"
+            on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
+          >
+        {/if}
+        {#if lastLoadedDapp}
+          {#each lastLoadedDapp.pages
 
-              .filter((o) => !o.isSystem)
-              .splice(2) as page}
-              <a
-                href="#/{lastLoadedDapp.routeParts.join('/') +
-                  '/' +
-                  page.routeParts.join('/')}"
-                class="justify-self-center tab text-center focus:text-teal-500 hover:text-teal-500"
-                class:hidden={isOpen}
-              >
-                <NavItem label={page.title} />
-              </a>
-            {/each}
-          {/if}
-          <!-- NOT MODAL END -->
-        </div>
+            .filter((o) => !o.isSystem)
+            .splice(2) as page}
+            <a
+              href="#/{lastLoadedDapp.routeParts.join('/') +
+                '/' +
+                page.routeParts.join('/')}"
+              class="justify-self-center tab text-center focus:text-teal-500 hover:text-teal-500"
+              class:hidden={isOpen}
+            >
+              <NavItem label={page.title} />
+            </a>
+          {/each}
+        {/if}
+        <!-- NOT MODAL END -->
       </div>
-    </footer>
-  {/if}
+    </div>
+  </footer>
 </div>
 
 <Modal bind:isOpen on:closeRequest={modalWantsToClose}>
