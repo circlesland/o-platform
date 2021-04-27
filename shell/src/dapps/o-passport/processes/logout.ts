@@ -46,7 +46,7 @@ const processDefinition = (processId: string) =>
       compareSeedPhrase: {
         id: "compareSeedPhrase",
         always: [{
-          cond: (context) => !!context.data.checkSeedPhrase,
+          cond: (context) => context.data.checkSeedPhrase === localStorage.getItem("circlesKey"),
           target: "#logout"
         }, {
           target: "#checkSeedPhrase"
