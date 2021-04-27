@@ -269,7 +269,7 @@ function subscribeChainEvents(safe: Safe) {
   if (_currentSafe) {
     blockChainEventsSubscription = Queries.tokenEvents(_currentSafe).subscribe((event: any) => {
       console.log("NEW EVENT:", event);
-      onEventUpdateTrigger.trigger(event.token === safe.token.tokenAddress ? [] : [event.token]);
+      onEventUpdateTrigger.trigger([event.token]);
     });
   } else {
     console.warn("_current safe is not set.")

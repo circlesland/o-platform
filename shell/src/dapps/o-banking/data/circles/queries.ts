@@ -171,11 +171,14 @@ export class Queries {
       firstBlock: 0
     }));
 
-    let tokenAddresses = tokenList ?? Object.keys(safe.acceptedTokens.tokens);
+    let tokenAddresses = tokenList ?? Object.keys(safe.acceptedTokens.tokens).concat([safe.token.tokenAddress]);
     let current = 0;
     for (let tokenAddress of tokenAddresses) {
       current++;
-      const token = safe.acceptedTokens.tokens[tokenAddress];
+      let token = safe.acceptedTokens.tokens[tokenAddress];
+      if (!token && tokenAddress === safe.token.tokenAddress) {
+        token = {...safe.token, limit: 100, lastBlock: safe.token.firstBlock};
+      }
       console.log(`Direct transfers of token (${tokenAddress}) via web3 ..`);
 
       const lastDirectTransferBlock = safe.transfers?.rows.filter(o => o.type === "direct").reduce<number>((p,c) => c.firstBlock > (p ?? 0) ? c.firstBlock : (p ?? 0), undefined)
