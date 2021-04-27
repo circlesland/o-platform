@@ -63,6 +63,7 @@ const processDefinition = (processId: string) =>
           placeholder: strings.placeholder,
           submitButtonText: "Let me in",
         },
+        validate: true,
         navigation: {
           next: "#checkAcceptTos",
         },
@@ -90,6 +91,7 @@ const processDefinition = (processId: string) =>
           linkLabel: "terms of service",
           submitButtonText: "Got it",
         },
+        validate: true,
         navigation: {
           next: "#requestAuthCode",
         },
@@ -129,7 +131,7 @@ const processDefinition = (processId: string) =>
           label: strings.labelVerificationCode,
           submitButtonText: "Login",
         },
-        required: true,
+        validate: true,
         navigation: {
           next: "#exchangeCodeForToken",
         },

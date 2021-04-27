@@ -20,7 +20,7 @@
   };
 
   const submitHandler = () => {
-    if (context.required) {
+    if (context.validate) {
       regSchema
         .validate(values, { abortEarly: false })
         .then(() => {

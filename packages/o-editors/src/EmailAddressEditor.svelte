@@ -23,20 +23,28 @@
   };
 
   const submitHandler = () => {
-    regSchema
-      .validate(values, { abortEarly: false })
-      .then(() => {
-        context.data[context.fieldName] = values.email;
-        const answer = new Continue();
-        answer.data = context.data;
-        context.process.sendAnswer(answer);
-        errors = {};
-      })
-      .catch(
-        (err) => (
-          (errors = extractErrors(err)), console.log(extractErrors(err))
-        )
-      );
+    if (context.validate) {
+      regSchema
+        .validate(values, { abortEarly: false })
+        .then(() => {
+          context.data[context.fieldName] = values.email;
+          const answer = new Continue();
+          answer.data = context.data;
+          context.process.sendAnswer(answer);
+          errors = {};
+        })
+        .catch(
+          (err) => (
+            (errors = extractErrors(err)), console.log(extractErrors(err))
+          )
+        );
+    } else {
+      context.data[context.fieldName] = values.email;
+      const answer = new Continue();
+      answer.data = context.data;
+      context.process.sendAnswer(answer);
+      errors = {};
+    }
   };
 
   function onkeydown(e: KeyboardEvent) {

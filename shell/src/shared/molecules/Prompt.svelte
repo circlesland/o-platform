@@ -11,7 +11,7 @@
     dirtyFlags: { [x: string]: any };
     params: { [x: string]: any };
     messages: { [x: string]: any };
-    required: boolean;
+    validate: boolean;
     process: Process;
     canGoBack: boolean;
     canSkip: boolean;
@@ -30,7 +30,7 @@
         params: prompt.params,
         canGoBack: prompt.navigation.canGoBack,
         canSkip: prompt.navigation.canSkip,
-        required: prompt.required,
+        validate: prompt.validate,
       };
     } else {
       componentContext = null;

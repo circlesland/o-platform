@@ -31,7 +31,7 @@ export type PromptSpec = {
     ) => boolean;
   };
   params: { [x: string]: any };
-  required?: boolean;
+  validate?: boolean;
 };
 
 export function prompt<
@@ -59,7 +59,7 @@ export function prompt<
               canGoBack: canGoBack,
               canSkip: spec.navigation?.canSkip,
             },
-            required: spec.required,
+            validate: spec.validate,
           }),
         ],
         on: {

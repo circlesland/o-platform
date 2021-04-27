@@ -21,7 +21,7 @@ export function show(spec: {
     ) => boolean;
     canSkip?: (context: ProcessContext<any>, event: AnyEventObject) => boolean;
   };
-  required?: boolean;
+  validate?: boolean;
 }) {
   return bubble((context, event: AnyEventObject) => {
     const canGoBack = !spec.navigation?.canGoBack
@@ -44,7 +44,7 @@ export function show(spec: {
         canGoBack,
         canSkip,
       },
-      required: spec.required,
+      validate: spec.validate,
     };
   });
 }

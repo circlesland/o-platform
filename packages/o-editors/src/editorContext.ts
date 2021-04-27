@@ -9,5 +9,5 @@ export type EditorContext = {
   process: Process;
   canGoBack: boolean;
   canSkip: boolean;
-  required?: boolean;
+  validate?: boolean;
 };
