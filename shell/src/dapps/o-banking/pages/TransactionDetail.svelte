@@ -98,7 +98,7 @@
       </div>
     </section>
 
-    <section class="justify-center mb-2 text-circlesdarkblue">
+    <!-- <section class="justify-center mb-2 text-circlesdarkblue">
       <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
         <div class="text-circleslightblue text-sm font-bold">PATH</div>
 
@@ -121,6 +121,6 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
   </div>
 {/if}
