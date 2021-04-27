@@ -129,6 +129,7 @@ const processDefinition = (processId: string) =>
           label: strings.labelVerificationCode,
           submitButtonText: "Login",
         },
+        required: true,
         navigation: {
           next: "#exchangeCodeForToken",
         },

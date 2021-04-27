@@ -21,25 +21,27 @@ export type PromptSpec = {
     // If you want to allow the user to go one step back then specify here where he came from
     previous?: string;
     canGoBack?: (
-        context: ProcessContext<any>,
-        event: { type: string; [x: string]: any }
+      context: ProcessContext<any>,
+      event: { type: string; [x: string]: any }
     ) => boolean;
     next: string;
     canSkip?: (
-        context: ProcessContext<any>,
-        event: { type: string; [x: string]: any }
+      context: ProcessContext<any>,
+      event: { type: string; [x: string]: any }
     ) => boolean;
   };
   params: { [x: string]: any };
+  required?: boolean;
 };
 
 export function prompt<
   TContext extends ProcessContext<any>,
   TEvent extends PlatformEvent
 >(spec: PromptSpec) {
-  let canGoBack = (context:ProcessContext<any>, event:any) => !!spec.navigation?.previous;
+  let canGoBack = (context: ProcessContext<any>, event: any) =>
+    !!spec.navigation?.previous;
   if (canGoBack && spec.navigation?.canGoBack) {
-    canGoBack = spec.navigation.canGoBack
+    canGoBack = spec.navigation.canGoBack;
   }
   const editDataFieldConfig: any = {
     // TODO: Fix need for 'any'
@@ -57,6 +59,7 @@ export function prompt<
               canGoBack: canGoBack,
               canSkip: spec.navigation?.canSkip,
             },
+            required: spec.required,
           }),
         ],
         on: {

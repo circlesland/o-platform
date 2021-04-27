@@ -25,6 +25,8 @@ export class Prompt implements PlatformEvent {
    */
   params: { [x: string]: any } = {};
 
+  required?: boolean;
+
   navigation: {
     canSkip: boolean;
     canGoBack: boolean;
