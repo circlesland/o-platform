@@ -1,4 +1,5 @@
 import { Process } from "@o-platform/o-process/dist/interfaces/process";
+import {PlatformEvent} from "../../o-events/dist/platformEvent";
 
 export type EditorContext = {
   fieldName?: string;
@@ -10,4 +11,5 @@ export type EditorContext = {
   canGoBack: boolean;
   canSkip: boolean;
   validate?: boolean;
+  sendAnswer(answer:PlatformEvent) : void;
 };

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
-  import { Continue } from "@o-platform/o-process/dist/events/continue";
+  import {Schema} from "yup";
 
   export let process: Process;
   export let prompt: Prompt;
@@ -11,7 +11,7 @@
     dirtyFlags: { [x: string]: any };
     params: { [x: string]: any };
     messages: { [x: string]: any };
-    validate: boolean;
+    dataSchema: Schema<any, any>;
     process: Process;
     canGoBack: boolean;
     canSkip: boolean;
@@ -30,18 +30,11 @@
         params: prompt.params,
         canGoBack: prompt.navigation.canGoBack,
         canSkip: prompt.navigation.canSkip,
-        validate: prompt.validate,
+        dataSchema: prompt.dataSchema
       };
     } else {
       componentContext = null;
     }
-  }
-
-  function sendAnswer() {
-    process.sendAnswer(<Continue>{
-      type: "process.continue",
-      data: prompt.data,
-    });
   }
 </script>
 

@@ -12,6 +12,7 @@ import { transferCircles } from "./transferCircles";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import gql from "graphql-tag";
 import { Choice } from "../../../../../packages/o-editors/src/choiceSelectorContext";
+import * as yup from "yup";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -106,7 +107,7 @@ const processDefinition = (processId: string) =>
           getOptionLabel: (option) => option.label,
           getSelectionLabel: (option) => option.label,
         },
-        validate: true,
+        dataSchema: yup.string().required("Please enter a valid eth-address."),
         navigation: {
           next: "#tokens",
         },

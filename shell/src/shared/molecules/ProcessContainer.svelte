@@ -1,5 +1,4 @@
 <script lang="ts">
-  import NavItem from "../atoms/NavItem.svelte";
   import { faTimes } from "@fortawesome/free-solid-svg-icons";
   import Prompt from "./Prompt.svelte";
   import { createEventDispatcher } from "svelte";

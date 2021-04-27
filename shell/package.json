@@ -38,9 +38,11 @@
     "daisyui": "^0.15.2",
     "postcss-flexbugs-fixes": "^5.0.2",
     "ethereumjs-util": "^7.0.10",
-    "bip39": "^3.0.3"
+    "bip39": "^3.0.3",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@types/yup": "^0.29.11",
     "@graphql-codegen/cli": "^1.17.10",
     "@graphql-codegen/typescript": "^1.17.10",
     "@graphql-codegen/typescript-graphql-request": "^2.0.1",

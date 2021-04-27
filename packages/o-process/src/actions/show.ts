@@ -2,6 +2,7 @@ import { bubble } from "./bubble";
 import { Prompt } from "../events/prompt";
 import { ProcessContext } from "../interfaces/processContext";
 import { AnyEventObject } from "xstate";
+import {Schema} from "yup";
 
 /**
  * Bubbles a 'process.prompt' event in order to show the specified component to the user.
@@ -21,7 +22,7 @@ export function show(spec: {
     ) => boolean;
     canSkip?: (context: ProcessContext<any>, event: AnyEventObject) => boolean;
   };
-  validate?: boolean;
+  dataSchema?: Schema<any,any>;
 }) {
   return bubble((context, event: AnyEventObject) => {
     const canGoBack = !spec.navigation?.canGoBack
@@ -44,7 +45,7 @@ export function show(spec: {
         canGoBack,
         canSkip,
       },
-      validate: spec.validate,
+      dataSchema: spec.dataSchema,
     };
   });
 }

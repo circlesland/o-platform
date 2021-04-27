@@ -7,6 +7,7 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { LoginWithEmailDocument, VerifyDocument } from "../data/auth/types";
+import * as yup from "yup";
 
 export type AuthenticateContextData = {
   appId?: string;
@@ -63,7 +64,7 @@ const processDefinition = (processId: string) =>
           placeholder: strings.placeholder,
           submitButtonText: "Let me in",
         },
-        validate: true,
+        dataSchema: yup.string().required("Please enter a valid email address"),
         navigation: {
           next: "#checkAcceptTos",
         },
@@ -91,7 +92,7 @@ const processDefinition = (processId: string) =>
           linkLabel: "terms of service",
           submitButtonText: "Got it",
         },
-        validate: true,
+        dataSchema: yup.boolean().required("Please accept the terms to proceed."),
         navigation: {
           next: "#requestAuthCode",
         },
@@ -131,7 +132,7 @@ const processDefinition = (processId: string) =>
           label: strings.labelVerificationCode,
           submitButtonText: "Login",
         },
-        validate: true,
+        dataSchema: yup.string().required("Please enter your one time token."),
         navigation: {
           next: "#exchangeCodeForToken",
         },

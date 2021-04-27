@@ -1,5 +1,6 @@
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { PlatformEventTypes } from "@o-platform/o-events/dist/eventTypes";
+import {Schema} from "yup";
 
 /**
  * Can be used to ask for user input or to display status information.
@@ -25,7 +26,11 @@ export class Prompt implements PlatformEvent {
    */
   params: { [x: string]: any } = {};
 
-  validate?: boolean;
+  /**
+   * Can contain a "yup" schema. If set, the response to this propmpt should
+   * be validated against this schema.
+   */
+  dataSchema?: Schema<any,any>;
 
   navigation: {
     canSkip: boolean;

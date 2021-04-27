@@ -3,6 +3,7 @@ import { ProcessContext } from "../interfaces/processContext";
 import { show } from "../actions/show";
 import { Continue } from "../events/continue";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import {Schema} from "yup";
 const { assign } = actions;
 
 /**
@@ -31,7 +32,7 @@ export type PromptSpec = {
     ) => boolean;
   };
   params: { [x: string]: any };
-  validate?: boolean;
+  dataSchema?: any;
 };
 
 export function prompt<
@@ -59,12 +60,17 @@ export function prompt<
               canGoBack: canGoBack,
               canSkip: spec.navigation?.canSkip,
             },
-            validate: spec.validate,
+            dataSchema: spec.dataSchema,
           }),
         ],
         on: {
           "process.back": "back",
-          "process.continue": "submit",
+          "process.continue": [{
+            cond: () => !spec.dataSchema,
+            target: "submit"
+          }, {
+            target: "validate"
+          }],
           "process.skip": "skip",
         },
       },
@@ -103,12 +109,47 @@ export function prompt<
           },
         ],
       },
+      validate: {
+        invoke: {
+          src: async (context: TContext, event: Continue) => {
+            const data = event.data;
+            if (!data) {
+              throw new Error(
+                  `Couldn't read the 'data' property of the received Continue event: ${JSON.stringify(
+                      event
+                  )}`
+              );
+            }
+            if (spec.dataSchema) {
+              delete context.messages[spec.fieldName];
+              const valueToValidate = data[spec.fieldName];
+              try {
+                await spec.dataSchema.validate(valueToValidate, {abortEarly: false})
+              } catch (e) {
+                if (e.errors) {
+                  context.messages[spec.fieldName] = e.errors;
+                } else {
+                  throw e;
+                }
+              }
+            }
+
+            return event.data;
+          },
+          onDone: [{
+            cond: (context:TContext) => !context.messages[spec.fieldName],
+            target: "submit"
+          }, {
+            target: "show"
+          }],
+          onError: "#error"
+        }
+      },
       submit: {
         entry: [
           () => console.log(`submit: ${spec.fieldName}`),
           assign((context: TContext, event: Continue) => {
             // TODO: Try to use a nicer equivalence check for change tracking and setting the dirty flag
-            // TODO: How to handle validation?
             const data = event.data;
             if (!data) {
               throw new Error(
