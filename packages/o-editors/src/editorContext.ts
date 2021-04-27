@@ -10,6 +10,6 @@ export type EditorContext = {
   process: Process;
   canGoBack: boolean;
   canSkip: boolean;
-  validate?: boolean;
+  dataSchema?: any;
   sendAnswer(answer:PlatformEvent) : void;
 };

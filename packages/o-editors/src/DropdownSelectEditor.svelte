@@ -52,7 +52,7 @@
   }
 
   const submitHandler = () => {
-    if (context.validate) {
+    if (context.dataSchema) {
       console.log("SELE: ", selected);
       regSchema
         .validate(selected, { abortEarly: false })
