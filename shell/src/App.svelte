@@ -191,13 +191,13 @@
   }
 </script>
 
-<div class="flex flex-col h-screen " class:blur={isOpen}>
+<div class="flex flex-col h-screen ">
   <!-- TODO: Note: All headers are now part of their dapps
   <header class="w-full mx-auto md:w-2/3 xl:w-1/2 z-10">
   </header> -->
 
   <SvelteToast />
-  <main class="flex-1 overflow-y-visible z-30">
+  <main class="flex-1 overflow-y-visible z-30" class:blur={isOpen}>
     <div class="w-full mx-auto {layoutClasses}">
       <Router
         {routes}
