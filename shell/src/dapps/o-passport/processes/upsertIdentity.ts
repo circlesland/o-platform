@@ -4,6 +4,7 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
+import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
 import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
@@ -152,7 +153,7 @@ const processDefinition = (processId: string) =>
       },
       dream: prompt<UpsertIdentityContext, any>({
         fieldName: "dream",
-        component: TextEditor,
+        component: TextareaEditor,
         params: {
           label: strings.labeldream,
           placeholder: strings.placeholderDream,

@@ -66,7 +66,7 @@
     id={context.fieldName}
     type="text"
     placeholder={context.params.placeholder}
-    class="input input-lg input-bordered"
+    class="textarea h-24 textarea textarea-bordered"
     class:input-error={errors.input}
     bind:value={values.input}
   />
