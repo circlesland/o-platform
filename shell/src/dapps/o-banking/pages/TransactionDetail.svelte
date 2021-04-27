@@ -97,30 +97,5 @@
         </div>
       </div>
     </section>
-
-    <!-- <section class="justify-center mb-2 text-circlesdarkblue">
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-        <div class="text-circleslightblue text-sm font-bold">PATH</div>
-
-        <div class="flex items-center w-full space-x-2 sm:space-x-4">
-          <div class="text-left">
-            <div>
-              <div class="text-sm breadcrumbs">
-                <ul>
-                  <li>
-                    <a href="/#/banking/trusts/Martin">Martin</a>
-                  </li>
-                  <li>
-                    <a href="/#/banking/trusts/Harald233">Harald233</a>
-                  </li>
-                  <li><a href="/#/banking/trusts/Djingis">Djingis</a></li>
-                  <li><a href="/#/banking/trusts/Samuel">Samuel</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section> -->
   </div>
 {/if}
