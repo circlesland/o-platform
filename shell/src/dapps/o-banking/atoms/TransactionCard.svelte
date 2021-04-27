@@ -21,6 +21,8 @@
         ? transfer.toProfile.displayName
         : transfer.to;
 
+    displayName = displayName === "0x0000000000000000000000000000000000000000" ? "UBI" : displayName;
+
     pictureUrl =
       transfer.direction === "in"
         ? transfer.fromProfile
