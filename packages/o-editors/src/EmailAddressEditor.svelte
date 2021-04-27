@@ -2,8 +2,12 @@
   import { EditorContext } from "./editorContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
-
   import * as yup from "yup";
+
+  export let context: EditorContext;
+
+  let values = {};
+  let errors = {};
 
   const regSchema = yup.object().shape({
     email: yup
@@ -11,11 +15,6 @@
       .required("Please provide your email address")
       .email("That doesn't seem like a valid email address"),
   });
-
-  export let context: EditorContext;
-
-  let values = {};
-  let errors = {};
 
   const extractErrors = (err) => {
     return err.inner.reduce((acc, err) => {
