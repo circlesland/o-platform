@@ -9,17 +9,17 @@
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import Success from "../../../shared/atoms/Success.svelte";
   import { upsertIdentity } from "../processes/upsertIdentity";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
-  import { onMount } from "svelte";
+
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import { getCountryName } from "../../../shared/countries";
   import { me } from "../../../shared/stores/me";
-  import Router, { push, location } from "svelte-spa-router";
 
   export let params: {
     jwt: string;
   };
+
+  let name;
 
   $: me;
 
@@ -29,6 +29,7 @@
       connectOrCreateKey(params.jwt);
       params.jwt = null;
     }
+    name = $me.circlesAddress;
   }
 
   const copy = () => {
@@ -104,9 +105,10 @@
 
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
-          <small class="inline-block break-all" id="clipboard">
-            <input type="text" class="hidden" bind:value={$me.circlesAddress} />
-            {$me.circlesAddress}
+          <div class="inline-block break-all text-xs" id="clipboard">
+            <input type="text" class="hidden" bind:value={name} />
+            {name}
+
             <div
               class="inline-block text-light cursor-pointertext-center text-xs relative -bottom-1"
               on:click={copy}
@@ -127,7 +129,7 @@
                 />
               </svg>
             </div>
-          </small>
+          </div>
         </div>
       </div>
     </div>

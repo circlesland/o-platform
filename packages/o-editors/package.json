@@ -15,7 +15,8 @@
   },
   "devDependencies": {
     "typescript": "^4.1.3",
-    "svelte-select": "^3.17.0"
+    "svelte-select": "^3.17.0",
+    "yup": "^0.32.9"
   },
   "author": "Daniel Janz & Samuel Andert (Basic Income Lab GmbH)",
   "license": "LGPL-3.0-or-later"

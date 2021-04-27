@@ -1,45 +1,79 @@
 <script lang="ts">
-  import { Process } from "omo-process/dist/interfaces/process";
-  import { Back } from "omo-process/dist/events/back";
-  import { Skip } from "omo-process/dist/events/skip";
-  import { Continue } from "omo-process/dist/events/continue";
+  import { EditorContext } from "./editorContext";
+  import ProcessNavigation from "./ProcessNavigation.svelte";
+  import { Continue } from "@o-platform/o-process/dist/events/continue";
 
-  export let context: {
-    process: Process;
-    fieldName: string;
-    data: {
-      [x: string]: any;
-    };
-    params: {
-      label: string;
-    };
+  import * as yup from "yup";
+
+  const regSchema = yup.object().shape({
+    email: yup
+      .string()
+      .required("Please provide your email address")
+      .email("That doesn't seem like a valid email address"),
+  });
+
+  export let context: EditorContext;
+
+  let values = {};
+  let errors = {};
+
+  const extractErrors = (err) => {
+    return err.inner.reduce((acc, err) => {
+      return { ...acc, [err.path]: err.message };
+    }, {});
   };
+
+  const submitHandler = () => {
+    regSchema
+      .validate(values, { abortEarly: false })
+      .then(() => {
+        context.data[context.fieldName] = values.email;
+        const answer = new Continue();
+        answer.data = context.data;
+        context.process.sendAnswer(answer);
+        errors = {};
+      })
+      .catch(
+        (err) => (
+          (errors = extractErrors(err)), console.log(extractErrors(err))
+        )
+      );
+  };
+
+  function onkeydown(e: KeyboardEvent) {
+    if (e.key == "Enter") {
+      submitHandler();
+    }
+  }
 </script>
 
-&gt; <button on:click={() => context.process.sendAnswer(new Back())}
-  >Go back</button
-><br />
-&gt;
-<button
-  on:click={() => {
-    const answer = new Continue();
-    answer.data = context.data;
-    context.process.sendAnswer(answer);
-  }}>Submit</button
-><br />
-&gt;
+<div class="form-control justify-self-center">
+  <label class="label" for={context.fieldName}>
+    <span class="label-text">{context.params.label}</span>
+  </label>
+  {#if context && context.messages && context.messages[context.fieldName]}
+    <small style="color:#f00">
+      {context.messages[context.fieldName]}
+    </small>
+  {/if}
 
-<button on:click={() => context.process.sendAnswer(new Skip())}>Skip</button><br
-/>
-<br />
-
-{#if context.fieldName}
-  <h2>{context.params.label}</h2>
   <input
-    style="border:solid 1px gray;"
+    on:keydown={onkeydown}
+    name="email"
+    id={context.fieldName}
     type="email"
-    bind:value={context.data[context.fieldName]}
-  /><br />
-{:else}
-  - not available -
-{/if}
+    placeholder={context.params.placeholder}
+    class="input input-lg input-bordered"
+    class:input-error={errors.email}
+    bind:value={values.email}
+  />
+  {#if errors.email}
+    <label class="label text-right" for="form-error">
+      <span id="form-error" class="label-text-alt text-error "
+        >{errors.email}</span
+      >
+    </label>
+  {/if}
+</div>
+
+<ProcessNavigation on:buttonClick={submitHandler} {context} />

@@ -3,6 +3,8 @@
   import PassportHeader from "../atoms/PassportHeader.svelte";
 
   $: me;
+
+  console.log("ME: ", $me);
 </script>
 
 <PassportHeader />
@@ -17,15 +19,27 @@
         <div class="mr-2 py-2 pt-4 text-center">
           <div class="avatar">
             <div class="rounded-full w-14 h-14 m-auto">
-              <img src="https://i.pravatar.cc/500?img=12" alt="username" />
+              <img
+                src={$me && $me.avatarUrl
+                  ? $me.avatarUrl
+                  : "https://i.pravatar.cc/500?img=32"}
+                alt={$me
+                  ? $me.lastName
+                    ? `${$me.firstName} ${$me.lastName}`
+                    : $me.firstName
+                  : "avatar"}
+              />
             </div>
           </div>
         </div>
         <div class="flex flex-col items-start">
-          <h2 class="font-bold mr-2">Samuel Andert</h2>
+          <h2 class="font-bold mr-2">
+            {$me ? $me.firstName : "Martin"}
+            {$me && $me.lastName ? $me.lastName : ""}
+          </h2>
         </div>
         <div class="flex justify-end flex-1  text-base-300">
-          <svg
+          <!-- <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
             fill="none"
@@ -38,8 +52,8 @@
               stroke-width="2"
               d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
             />
-          </svg>
-          <h3 class="font-bold mr-2 ml-2">me</h3>
+          </svg> -->
+          <h3 class="font-bold mr-2 ml-2">UBI</h3>
         </div>
       </div>
     </section>

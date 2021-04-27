@@ -4,17 +4,8 @@ const production = !process.env.NODE_ENV;
 module.exports = {
   darkMode: false,
   purge: {
-    enabled: true,
-    content: [
-      "./../packages/**/*.svelte",
-      // "./../packages/**/*.ts",
-      // "./../packages/**/*.html",
-      "./src/**/*.svelte",
-      // "./src/**/*.js",
-      // "./src/**/*.ts",
-      // "./src/**/*.jsx",
-      // "./public/**/*.html",
-    ],
+    enabled: production,
+    content: ["./../packages/**/*.svelte", "./src/**/*.svelte"],
     defaultExtractor: (content) => {
       const broadMatches = content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [];
       const broadMatchesWithoutTrailingSlash = broadMatches.map((match) =>
@@ -57,7 +48,7 @@ module.exports = {
         warning: "#FF9900",
         info: "#2094F3",
         infobg: "#E8F4FE",
-        error: "#F56565",
+        error: "#b02d23",
         success: "#48BB78",
         white: "#ffffff",
       },

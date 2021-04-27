@@ -1,11 +1,12 @@
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
+import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.svelte";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import BooleanEditor from "@o-platform/o-editors/src/BooleanEditor.svelte";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import {LoginWithEmailDocument, VerifyDocument} from "../data/auth/types";
+import { LoginWithEmailDocument, VerifyDocument } from "../data/auth/types";
 
 export type AuthenticateContextData = {
   appId?: string;
@@ -56,7 +57,7 @@ const processDefinition = (processId: string) =>
       },
       loginEmail: prompt<AuthenticateContext, any>({
         fieldName: "loginEmail",
-        component: TextEditor,
+        component: EmailAddressEditor,
         params: {
           label: strings.labelLoginEmail,
           placeholder: strings.placeholder,
@@ -78,7 +79,7 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      // Ask the user for the e-mail address
+      // Ask the user to accept TOS
       acceptTos: prompt<AuthenticateContext, any>({
         fieldName: "acceptTos",
 
