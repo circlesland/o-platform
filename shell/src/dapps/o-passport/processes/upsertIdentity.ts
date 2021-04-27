@@ -14,6 +14,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { uploadFile } from "../../../shared/api/uploadFile";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { UpsertProfileDocument } from "../data/api/types";
+import * as yup from "yup";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -79,6 +80,7 @@ const processDefinition = (processId: string) =>
           placeholder: strings.placeholderFirstName,
           submitButtonText: "Save first name",
         },
+        dataSchema: yup.string().required("Please enter your first name."),
         navigation: {
           next: "#checkLastName",
         },
@@ -248,7 +250,7 @@ const processDefinition = (processId: string) =>
               };
             },
             messages: {},
-            dirtyFlags: {}
+            dirtyFlags: {},
           },
           onDone: "#upsertIdentity",
           onError: "#error",

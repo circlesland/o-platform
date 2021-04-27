@@ -64,9 +64,10 @@ const processDefinition = (processId: string) =>
           placeholder: strings.placeholder,
           submitButtonText: "Let me in",
         },
-        dataSchema: yup.string()
-                       .required("Please provide your email address")
-                       .email("That doesn't seem like a valid email address"),
+        dataSchema: yup
+          .string()
+          .required("Please provide your email address")
+          .email("That doesn't seem like a valid email address"),
         navigation: {
           next: "#checkAcceptTos",
         },
@@ -94,7 +95,11 @@ const processDefinition = (processId: string) =>
           linkLabel: "terms of service",
           submitButtonText: "Got it",
         },
-        dataSchema: yup.boolean().required("Please accept the terms to proceed."),
+
+        dataSchema: yup
+          .boolean()
+          .oneOf([true], "Please accept the terms to proceed"),
+
         navigation: {
           next: "#requestAuthCode",
         },

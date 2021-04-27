@@ -5,28 +5,16 @@
   import { Continue } from "@o-platform/o-process/dist/events/continue";
   import { onMount } from "svelte";
   import Item from "./DropdownSelectItem.svelte";
-  import * as yup from "yup";
 
   export let context: ChoiceSelectorContext;
 
   $: selected = {};
   let selectedLabel: String;
-  let values = {};
-  let errors = {};
+
   let graphql = false;
   let optionIdentifier = "value";
   let getOptionLabel = (option) => option.label;
   let getSelectionLabel = (option) => option.label;
-
-  const regSchema = yup.object().shape({
-    value: yup.string().required("Please make a selection or enter value"),
-  });
-
-  const extractErrors = (err) => {
-    return err.inner.reduce((acc, err) => {
-      return { ...acc, [err.path]: err.message };
-    }, {});
-  };
 
   onMount(() => {
     graphql = context.params.graphql;
@@ -51,38 +39,11 @@
     selectedLabel = event.detail.label;
   }
 
-  const submitHandler = () => {
-    if (context.dataSchema) {
-      console.log("SELE: ", selected);
-      regSchema
-        .validate(selected, { abortEarly: false })
-        .then(() => {
-          const event = new Continue();
-          event.data = {};
-          event.data[context.fieldName] = selected.value;
-          context.data[context.fieldName] = selected.value;
-          context.process.sendAnswer(event);
-          errors = {};
-        })
-        .catch(
-          (err) => (
-            (errors = extractErrors(err)), console.log(extractErrors(err))
-          )
-        );
-    } else {
-      const event = new Continue();
-      event.data = {};
-      event.data[context.fieldName] = selected.value;
-      context.data[context.fieldName] = selected.value;
-      context.process.sendAnswer(event);
-    }
-  };
-
   export function handleClear() {
     selected = undefined;
   }
 
-  function submit() {
+  function submitHandler() {
     const event = new Continue();
     event.data = {};
     event.data[context.fieldName] = selected.value;
@@ -92,7 +53,7 @@
 
   function onkeydown(e: KeyboardEvent) {
     if (e.key == "Enter") {
-      submit();
+      submitHandler();
     }
   }
 </script>
@@ -136,10 +97,10 @@
         on:select={handleSelect}
       />
     {/if}
-    {#if errors.value}
+    {#if context.messages[context.fieldName]}
       <label class="label text-right" for="form-error">
         <span id="form-error" class="label-text-alt text-error "
-          >{errors.value}</span
+          >{context.messages[context.fieldName]}</span
         >
       </label>
     {/if}

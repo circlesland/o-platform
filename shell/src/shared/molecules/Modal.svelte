@@ -17,6 +17,7 @@
 
 {#if isOpen}
   <aside
+    id="modalAside"
     on:keydown={handleEsc}
     aria-labelledby="modal-heading"
     aria-modal="true"
@@ -53,7 +54,6 @@
   aside {
     /* z-index: 1000; */
     background-color: rgba(42, 46, 55, 0.4);
-    backdrop-filter: blur(10px);
     position: fixed;
     top: 0;
     left: 0;
@@ -63,5 +63,13 @@
     align-items: flex-end;
     justify-content: center;
     overflow-y: hidden;
+  }
+  /* Background Blurring for firefox and other non supportive browsers lies in App.svelte through the .blur class */
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+    aside {
+      opacity: 1;
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+    }
   }
 </style>

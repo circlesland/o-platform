@@ -171,7 +171,7 @@
         ctx.childContext = {
           data: <IdentifyContextData>{
             redirectTo: $location,
-          }
+          },
         };
         return ctx;
       }
@@ -191,7 +191,7 @@
   }
 </script>
 
-<div class="flex flex-col h-screen ">
+<div class="flex flex-col h-screen " class:blur={isOpen}>
   <!-- TODO: Note: All headers are now part of their dapps
   <header class="w-full mx-auto md:w-2/3 xl:w-1/2 z-10">
   </header> -->
@@ -371,3 +371,17 @@
     {/if}
   </div>
 </Modal>
+
+<style>
+  /* Background Blurring for firefox and other non supportive browsers */
+  @supports not (
+    (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
+  ) {
+    .blur {
+      filter: blur(4px);
+      -webkit-transition: all 0.35s ease-in-out;
+      -moz-transition: all 0.35s ease-in-out;
+      transition: all 0.35s ease-in-out;
+    }
+  }
+</style>
