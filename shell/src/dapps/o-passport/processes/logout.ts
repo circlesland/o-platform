@@ -7,6 +7,7 @@ import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {LogoutDocument} from "../data/api/types";
 import {push} from "svelte-spa-router";
+import * as bip39 from "bip39";
 
 export type LogoutContextData = {
   loginEmail: string;
@@ -46,7 +47,22 @@ const processDefinition = (processId: string) =>
       compareSeedPhrase: {
         id: "compareSeedPhrase",
         always: [{
-          cond: (context) => context.data.checkSeedPhrase === localStorage.getItem("circlesKey"),
+          cond: (context) => {
+            let seedPhrase =
+              localStorage.getItem("circlesKey") &&
+              localStorage.getItem("circlesKey") != "0x123"
+                ? bip39.entropyToMnemonic(
+                localStorage
+                  .getItem("circlesKey")
+                  .substr(2, localStorage.getItem("circlesKey").length - 2)
+                )
+                : "<no private key>";
+            const match = context.data.checkSeedPhrase.trim() == seedPhrase;
+            if (!match) {
+              context.messages["checkSeedPhrase"] = "The seedphrases don't match";
+            }
+            return match;
+          },
           target: "#logout"
         }, {
           target: "#checkSeedPhrase"
