@@ -84,7 +84,7 @@ const processDefinition = (processId: string) =>
                 console.log(
                   `Checking if safe ${context.data.safeAddress} exists .. Safe exists.`
                 );
-              }, 1000);
+              }, 2500);
               return true;
             } catch (e) {
               if (e.message == "slow_provider") {

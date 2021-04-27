@@ -26,6 +26,9 @@ export class RpcGateway {
         return this._web3;
     }
 
+    /**
+     * Monitors a short running process and restarts it if it gets stuck.
+     */
     static async trigger(f: (web3:Web3) => Promise<any>, timeoutAndRotateAfterMs: number) {
         for (let i = 0; i < RpcGateway.gateways.length; i++) {
             try {
@@ -48,6 +51,9 @@ export class RpcGateway {
         throw new Error(`The request could not be completed in time. Tried ${RpcGateway.gateways.length} providers.`);
     }
 
+    /**
+     * Monitors a long running process and restarts it if it gets stuck.
+     */
     static async run(f: (web3:Web3) => Observable<any>, timeoutAndRotateAfterMs: number) {
         for (let i = 0; i < RpcGateway.gateways.length; i++) {
             try {
