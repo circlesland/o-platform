@@ -25,7 +25,7 @@
 <p class="label-text">
   {context.params.label}
 </p>
-<div class="flex flex-col space-x-2 w-full">
+<div class="flex flex-col w-full">
   <div class="mt-1 relative rounded-md w-full shadow-sm">
     <div
       class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
