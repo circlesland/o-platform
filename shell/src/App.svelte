@@ -268,7 +268,7 @@
         </button>
         {#if lastPrompt && lastPrompt.navigation.canSkip}
           <button
-            class="btn btn-outline btn-secondary mr-9"
+            class="btn btn-outline btn-light mr-9"
             on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
           >
         {/if}

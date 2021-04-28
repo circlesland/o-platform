@@ -90,6 +90,8 @@
 }
 .label-text {
   color: white;
+  font-size: 1rem;
+  text-align: center;
 }
 
 .input-error {
