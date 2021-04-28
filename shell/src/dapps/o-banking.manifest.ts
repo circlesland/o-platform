@@ -3,8 +3,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Transactions from "./o-banking/pages/Transactions.svelte";
 import TransactionDetail from "./o-banking/pages/TransactionDetail.svelte";
-import Tokens from "./o-banking/pages/Tokens.svelte";
-import TokenDetail from "./o-banking/pages/TokenDetail.svelte";
+import Assets from "./o-banking/pages/Assets.svelte";
+import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
 import Trusts from "./o-banking/pages/Trusts.svelte";
 import TrustDetail from "./o-banking/pages/TrustDetail.svelte";
 import Graph from "./o-banking/pages/Graph.svelte";
@@ -13,8 +13,6 @@ import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
 import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
-import LoadingIndicator from "../shared/atoms/LoadingIndicator.svelte";
-import Success from "../shared/atoms/Success.svelte";
 import {getUbi} from "./o-banking/processes/getUbi";
 import {hubSignup} from "./o-banking/processes/hubSignup";
 import {setTrust} from "./o-banking/processes/setTrust";
@@ -51,9 +49,9 @@ const transactionDetail: PageManifest = {
 
 const tokens: PageManifest = {
   isDefault: false,
-  routeParts: ["tokens"],
-  component: Tokens,
-  title: "Tokens",
+  routeParts: ["assets"],
+  component: Assets,
+  title: "Assets",
   available: [
     (detail) => {
       // Can navigate to?
@@ -62,11 +60,12 @@ const tokens: PageManifest = {
     }
   ]
 };
+
 const tokenDetail: PageManifest = {
   isDefault: false,
   isSystem: true,
-  routeParts: ["tokens", ":symbol"],
-  component: TokenDetail,
+  routeParts: ["assets", ":symbol"],
+  component: AssetDetail,
   title: "TokenDetail",
   available: [
     (detail) => {

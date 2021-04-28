@@ -2,40 +2,46 @@
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { mySafe } from "../stores/safe";
   import { BN } from "ethereumjs-util";
-  import TokenCard from "../atoms/TokenCard.svelte";
-  import { Token } from "../data/circles/types";
+  import AssetCard from "../atoms/AssetCard.svelte";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
-  let accountxDai: Token = {
-    _id: "",
-    firstBlock: 0,
-    tokenAddress: "",
-    tokenOwner: "",
+  let accountxDai = {
+    symbol: "xdai",
+    icon: "",
+    balance: "0",
+    variety: 1
   };
-  let safexDai: Token = {
-    _id: "",
-    firstBlock: 0,
-    tokenAddress: "",
-    tokenOwner: "",
+  let safexDai = {
+    symbol: "xdai",
+    icon: "",
+    balance: "0",
+    variety: 1
+  };
+  let circles = {
+    symbol: "crc",
+    icon: "",
+    balance: "0",
+    variety: 1
   };
   $: {
-    if ($mySafe.xDaiBalance) {
-      safexDai = {
-        _id: "1",
-        tokenOwner: $mySafe.safeAddress,
-        balance: $mySafe.xDaiBalance,
-        firstBlock: 0,
-        tokenAddress: "",
-      };
-    }
-    if ($mySafe.accountxDai) {
-      accountxDai = {
-        _id: "1",
-        tokenOwner: localStorage.getItem("circlesAccount") ?? "",
-        balance: $mySafe.accountxDai,
-        firstBlock: 0,
-        tokenAddress: "",
-      };
-    }
+    accountxDai = {
+      symbol: "xdai",
+      icon: "",
+      balance: parseFloat(RpcGateway.get().utils.fromWei($mySafe.accountxDai, "ether").toString()).toFixed(2),
+      variety: 1
+    };
+    safexDai = {
+      symbol: "xdai",
+      icon: "",
+      balance: parseFloat(RpcGateway.get().utils.fromWei($mySafe.xDaiBalance, "ether").toString()).toFixed(2),
+      variety: 1
+    };
+    circles = {
+      symbol: "crc",
+      icon: "",
+      balance: $mySafe.balance,
+      variety: Object.values($mySafe.acceptedTokens.tokens).filter(o => new BN(o.balance).gt(new BN("0"))).length
+    };
   }
 </script>
 
@@ -51,19 +57,16 @@
       </div>
     </section>
   {:else}
-    {#each [$mySafe.token]
-      .concat(Object.values($mySafe.acceptedTokens.tokens))
-      .filter(
-        (token) => !new BN(token.balance).eq(new BN("0"))
-      ) as token (token._id)}
-      <TokenCard
-        {token}
-        label="HOLDING TOKENS FROM"
+    {#each [accountxDai, safexDai, circles] as token}
+      <AssetCard
+        symbol={token.symbol}
+        balance={token.balance}
+        variety={token.variety}
         colorClass="text-primary"
       />
     {/each}
   {/if}
-
+<!--
   {#if $mySafe && $mySafe.acceptedTokens && $mySafe.acceptedTokens.tokens}
     {#each [$mySafe.token].concat(Object.values($mySafe.acceptedTokens.tokens).filter((o) => o.limit > 0)) as token (token._id)}
       <TokenCard
@@ -73,7 +76,8 @@
       />
     {/each}
   {/if}
-
+-->
+  <!--
   {#each [accountxDai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token (token._id)}
     <TokenCard
       {token}
@@ -89,4 +93,5 @@
       colorClass="text-light"
     />
   {/each}
+-->
 </div>

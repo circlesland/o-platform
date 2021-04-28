@@ -81,7 +81,7 @@
       <span class="block text-base">Transfer</span>
     {/if}
     <span class="inline-block text-8xl font-circles ml-10 ">
-      {Number.parseFloat(Web3.utils.fromWei(amount, "ether")).toFixed(2)}
+      {Number.parseFloat(Web3.utils.fromWei(amount ? amount : "0", "ether")).toFixed(2)}
       <svg
         class="w-16 h-16 inline -ml-6"
         viewBox="0 0 209 215"

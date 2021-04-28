@@ -1,0 +1,73 @@
+<script lang="ts">
+  import { push } from "svelte-spa-router";
+
+  export let symbol: string;
+  export let balance: string;
+  export let variety: number;
+  export let colorClass: String;
+
+  let pictureUrl: string;
+  let classes: String;
+
+  $: {
+    pictureUrl = symbol;
+  }
+
+  function loadDetailPage() {
+    console.log(symbol);
+    if (variety > 1) {
+      push("#/banking/assets/" + symbol);
+    }
+  }
+</script>
+
+<section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
+  <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+    <div
+      class="{colorClass
+        ? colorClass
+        : 'text-light'} text-xs font-circles font-bold text-left"
+    >
+      {symbol ? symbol : ""}
+    </div>
+    <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
+      <div class="mr-2 text-center">
+        <div class="avatar">
+          <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
+            <img
+              src="/images/common/circles.png"
+              alt="username"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="text-left flex-grow truncate relative">
+        <div
+          class="max-w-full truncateThis cursor-pointer"
+          on:click|once={() => loadDetailPage()}
+        >
+          <h2 class="text-2xl sm:text-3xl truncate ">
+            {symbol} {variety > 1 ? ' (' + variety + ')' : ''}
+          </h2>
+        </div>
+      </div>
+
+      <div class="flex flex-1 flex-col justify-items-end">
+        <div class="self-end text-{classes} text-2xl sm:text-3xl">
+          <span>
+            {Number.parseFloat(balance).toFixed(2)}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (max-width: 496px) {
+    .transactionCardName {
+      max-width: 200px;
+    }
+  }
+</style>
