@@ -8,6 +8,7 @@ export type EditorContext = {
   messages: { [x: string]: string };
   params: { [x: string]: any };
   process: Process;
+  isSensitive?: boolean;
   canGoBack: boolean;
   canSkip: boolean;
   dataSchema?: any;

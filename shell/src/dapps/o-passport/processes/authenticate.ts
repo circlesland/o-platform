@@ -135,6 +135,7 @@ const processDefinition = (processId: string) =>
       code: prompt<AuthenticateContext, any>({
         fieldName: "code",
         component: TextEditor,
+        isSensitive: true,
         params: {
           label: strings.labelVerificationCode,
           submitButtonText: "Login",

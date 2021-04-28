@@ -4,6 +4,7 @@
   import { Continue } from "@o-platform/o-process/dist/events/continue";
 
   export let context: EditorContext;
+  let fieldId = context.isSensitive ?  Math.random().toString().replace('.','') : context.fieldName;
 
   const submitHandler = () => {
     const answer = new Continue();
@@ -19,14 +20,15 @@
 </script>
 
 <div class="form-control justify-self-center">
-  <label class="label" for={context.fieldName}>
+  <label class="label" for={fieldId}>
     <span class="label-text">{context.params.label}</span>
   </label>
 
   <input
-    name="input"
     on:keydown={onkeydown}
-    id={context.fieldName}
+    id={fieldId}
+    name={fieldId}
+    autocomplete={fieldId}
     type="text"
     placeholder={context.params.placeholder}
     class="input input-lg input-bordered"

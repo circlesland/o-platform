@@ -15,6 +15,10 @@ export function show(spec: {
   params?: {
     [x: string]: any;
   };
+  /**
+   * If set to 'true' tries to avoid to be saved in the browser's form auto-fill.
+   */
+  isSensitive?: boolean;
   navigation?: {
     canGoBack?: (
       context: ProcessContext<any>,
@@ -41,6 +45,7 @@ export function show(spec: {
       dirtyFlags: context.dirtyFlags,
       messages: context.messages,
       params: spec.params,
+      isSensitive: spec.isSensitive,
       navigation: {
         canGoBack,
         canSkip,

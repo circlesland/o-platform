@@ -27,10 +27,15 @@ export class Prompt implements PlatformEvent {
   params: { [x: string]: any } = {};
 
   /**
-   * Can contain a "yup" schema. If set, the response to this propmpt should
+   * Can contain a "yup" schema. If set, the response to this prompt should
    * be validated against this schema.
    */
   dataSchema?: Schema<any,any>;
+
+  /**
+   * If set to 'true' tries to avoid to be saved in the browser's form auto-fill.
+   */
+  isSensitive?: boolean;
 
   navigation: {
     canSkip: boolean;

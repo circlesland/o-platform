@@ -17,6 +17,7 @@ export type PromptSpec = {
   fieldName: string;
   component: any;
   id?: string;
+  isSensitive?: boolean;
   navigation?: {
     // If you want to allow the user to go one step back then specify here where he came from
     previous?: string;
@@ -55,6 +56,7 @@ export function prompt<
             fieldName: spec.fieldName,
             component: spec.component,
             params: spec.params,
+            isSensitive: spec.isSensitive,
             navigation: {
               canGoBack: canGoBack,
               canSkip: spec.navigation?.canSkip,

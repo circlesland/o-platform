@@ -12,6 +12,7 @@
     params: { [x: string]: any };
     messages: { [x: string]: any };
     dataSchema: Schema<any, any>;
+    isSensitive?:boolean;
     process: Process;
     canGoBack: boolean;
     canSkip: boolean;
@@ -30,7 +31,8 @@
         params: prompt.params,
         canGoBack: prompt.navigation.canGoBack,
         canSkip: prompt.navigation.canSkip,
-        dataSchema: prompt.dataSchema
+        dataSchema: prompt.dataSchema,
+        isSensitive: prompt.isSensitive
       };
     } else {
       componentContext = null;

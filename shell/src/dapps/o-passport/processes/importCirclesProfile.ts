@@ -141,6 +141,7 @@ const processDefinition = (processId: string) =>
       seedPhrase: prompt<ImportCirclesProfileContext, any>({
         fieldName: "seedPhrase",
         component: TextareaEditor,
+        isSensitive: true,
         params: {
           label: strings.labelSeedPhrase,
           placeholder: strings.placeholderSeedPhrase,
