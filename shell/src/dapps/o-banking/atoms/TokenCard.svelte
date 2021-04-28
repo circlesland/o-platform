@@ -22,7 +22,7 @@
 
   function loadDetailPage(path) {
     console.log(path);
-    push("#/banking/tokens/" + path);
+    push("#/banking/trusts/" + path);
   }
 </script>
 
@@ -50,7 +50,7 @@
       <div class="text-left flex-grow truncate relative">
         <div
           class="max-w-full truncateThis cursor-pointer"
-          on:click|once={() => loadDetailPage(token._id)}
+          on:click|once={() => loadDetailPage(token.ownerProfile.safeAddress)}
         >
           <h2 class="text-2xl sm:text-3xl truncate ">
             {displayName}

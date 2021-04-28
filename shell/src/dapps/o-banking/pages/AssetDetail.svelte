@@ -1,20 +1,22 @@
 <script lang="ts">
-  import {Token} from "../data/circles/types";
+  import { Token } from "../data/circles/types";
   import TokenCard from "../atoms/TokenCard.svelte";
-  import {mySafe} from "../stores/safe";
-  import {BN} from "ethereumjs-util";
-  import BankingHeader from "../atoms/BankingHeader.svelte";
+  import { mySafe } from "../stores/safe";
+  import { BN } from "ethereumjs-util";
+  import AssetsHeader from "../atoms/AssetsHeader.svelte";
 
   export let params: {
-    symbol: string
+    symbol: string;
   };
   let tokens: Token[];
   $: {
-    tokens = Object.values($mySafe.acceptedTokens.tokens).filter(o => new BN(o.balance).gt(new BN("0")))
+    tokens = Object.values($mySafe.acceptedTokens.tokens).filter((o) =>
+      new BN(o.balance).gt(new BN("0"))
+    );
   }
 </script>
 
-<BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
+<AssetsHeader />
 
 <div class="mx-4 -mt-6">
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
@@ -27,21 +29,13 @@
     </section>
   {:else}
     {#each tokens as token}
-      <TokenCard
-        {token}
-        label="HOLDING TOKENS FROM"
-        colorClass="text-primary"
-      />
-    {/each}
-  {/if}
-
-  {#if $mySafe && $mySafe.acceptedTokens && $mySafe.acceptedTokens.tokens}
-    {#each [$mySafe.token].concat(Object.values($mySafe.acceptedTokens.tokens).filter((o) => o.limit > 0)) as token (token._id)}
-      <TokenCard
-        {token}
-        label="ACCEPTING TOKENS FROM"
-        colorClass="text-secondary"
-      />
+      {#if token && token.balance > 0}
+        <TokenCard
+          {token}
+          label="HOLDING TOKENS FROM"
+          colorClass="text-primary"
+        />
+      {/if}
     {/each}
   {/if}
 </div>
