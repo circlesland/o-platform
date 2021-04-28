@@ -36,7 +36,7 @@ export class ExecResult {
                     completed = true;
                 }
                 if (o.type == "receipt") {
-                    reject(o.data);
+                    resolve(<TransactionReceipt>o.data);
                     completed = true;
                 }
             });
