@@ -219,7 +219,7 @@
         (lastPrompt.navigation.canGoBack || lastPrompt.navigation.canSkip)
           ? 'grid-cols-3'
           : 'grid-cols-5'}"
-        class:px-8={!isOpen}
+        class:px-4={!isOpen}
       >
         {#if lastLoadedDapp}
           {#each lastLoadedDapp.pages

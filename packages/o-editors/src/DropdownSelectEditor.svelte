@@ -59,64 +59,58 @@
 </script>
 
 <div class="form-control justify-self-center">
-  <div class="dropdown-select-editor flex flex-wrap content-end w-full">
-    <div class="w-full">
-      <label class="label" for={context.fieldName}>
-        <span class="label-text">{context.params.label}</span>
-      </label>
-    </div>
+  <label class="label" for={context.fieldName}>
+    <span class="label-text">{context.params.label}</span>
+  </label>
 
-    {#if !!context.params.asyncChoices}
-      <div class="themed">
-        <Select
-          name="value"
-          selectedValue={selected}
-          loadOptions={context.params.asyncChoices}
-          placeholder="Search..."
-          listAutoWidth={false}
-          listPlacement="top"
-          containerClasses="w-80 min-w-full asyncList"
-          isCreatable={true}
-          on:clear={handleClear}
-          {optionIdentifier}
-          {getSelectionLabel}
-          {getOptionLabel}
-          {Item}
-          on:select={handleSelect}
-        />
-      </div>
-    {:else}
-      <div class="themed-select">
-        <Select
-          name="value"
-          selectedValue={selected}
-          items={context.params.choices}
-          showChevron={true}
-          listAutoWidth={false}
-          listPlacement="top"
-          containerClasses="w-80 min-w-full"
-          on:select={handleSelect}
-        />
-      </div>
-    {/if}
-    {#if context.messages[context.fieldName]}
-      <label class="label text-right" for="form-error">
-        <span id="form-error" class="label-text-alt text-error "
-          >{context.messages[context.fieldName]}</span
-        >
-      </label>
-    {/if}
-  </div>
+  {#if !!context.params.asyncChoices}
+    <div class="themed">
+      <Select
+        name="value"
+        selectedValue={selected}
+        loadOptions={context.params.asyncChoices}
+        placeholder="Search..."
+        listAutoWidth={false}
+        listPlacement="top"
+        containerClasses="min-w-full asyncList"
+        isCreatable={true}
+        on:clear={handleClear}
+        {optionIdentifier}
+        {getSelectionLabel}
+        {getOptionLabel}
+        {Item}
+        on:select={handleSelect}
+      />
+    </div>
+  {:else}
+    <div class="themed-select">
+      <Select
+        name="value"
+        selectedValue={selected}
+        items={context.params.choices}
+        showChevron={true}
+        listAutoWidth={false}
+        listPlacement="top"
+        containerClasses="min-w-full"
+        on:select={handleSelect}
+      />
+    </div>
+  {/if}
+  {#if context.messages[context.fieldName]}
+    <label class="label text-right" for="form-error">
+      <span id="form-error" class="label-text-alt text-error "
+        >{context.messages[context.fieldName]}</span
+      >
+    </label>
+  {/if}
 </div>
 <ProcessNavigation on:buttonClick={submitHandler} {context} />
 
 <style>
-  .dropdown-select-editor {
-    --listMaxHeight: 400px;
-    --listMaxWidth: 10rem;
-  }
   .themed {
     width: 100%;
+    --listMaxHeight: 400px;
+    --listMaxWidth: 10rem;
     --listBackground: transparent;
     --listShadow: none;
     --borderRadius: 0;
@@ -129,6 +123,8 @@
     @apply input input-lg input-bordered;
   }
   .themed-select {
+    --listMaxHeight: 400px;
+    --listMaxWidth: 10rem;
     width: 100%;
     --borderRadius: 0;
     --border: none;
