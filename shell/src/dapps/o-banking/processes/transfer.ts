@@ -4,14 +4,15 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
-import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import CurrencyTransfer from "../../../../../packages/o-editors/src/CurrencyTransfer.svelte";
+import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
+import CurrencyTransfer from "@o-platform/o-editors/src/CurrencyTransfer.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transferXdai } from "./transferXdai";
 import { transferCircles } from "./transferCircles";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import gql from "graphql-tag";
-import { Choice } from "../../../../../packages/o-editors/src/choiceSelectorContext";
+import { Choice } from "@o-platform/o-editors/src/choiceSelectorContext";
+import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
@@ -19,6 +20,7 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 export type TransferContextData = {
   safeAddress: string;
   recipientAddress?: string;
+  message?: string;
   tokens?: {
     currency: string;
     amount: string;
@@ -45,6 +47,7 @@ const strings = {
   currencyCircles: "CRC",
   currencyXdai: "xDai",
   summaryLabel: "Summary",
+  messageLabel: "Please write a short description for the recipient"
 };
 
 const processDefinition = (processId: string) =>
@@ -164,8 +167,19 @@ const processDefinition = (processId: string) =>
           ],
         },
         navigation: {
-          next: "#acceptSummary",
+          next: "#message",
           previous: "#recipientAddress",
+        },
+      }),
+      message: prompt<TransferContext, any>({
+        fieldName: "message",
+        component: TextareaEditor,
+        params: {
+          label: strings.messageLabel,
+        },
+        navigation: {
+          previous: "#tokens",
+          next: "#acceptSummary",
         },
       }),
       acceptSummary: prompt<TransferContext, any>({
@@ -177,11 +191,17 @@ const processDefinition = (processId: string) =>
             if (!context.data.tokens) {
               throw new Error(`No currency or amount selected`);
             } else {
-              return `You are about to transfer <strong>${
-                context.data.tokens.amount
-              } ${context.data.tokens.currency.toUpperCase()}</strong> to <strong>${
-                context.data.recipientAddress
-              }</strong>.<br/>Do you want to continue?`;
+              return `You are about to transfer 
+                <strong>${context.data.tokens.amount} ${context.data.tokens.currency.toUpperCase()}</strong>
+                to 
+                <strong>${context.data.recipientAddress}</strong>.
+                <br/>
+                <strong>Message:</strong>.
+                <br/>
+                ${context.data.message}
+                <br/>
+                <br/>
+                Do you want to continue?`;
             }
           },
         },
