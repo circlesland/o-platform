@@ -15,9 +15,9 @@
 
   function loadDetailPage() {
     console.log(symbol);
-    if (variety > 1) {
-      push("#/banking/assets/" + symbol);
-    }
+    // if (variety > 1) {
+    push("#/banking/assets/" + symbol);
+    // }
   }
 </script>
 
@@ -34,10 +34,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img
-              src="/images/common/circles.png"
-              alt="username"
-            />
+            <img src="/logos/{symbol}.svg" alt="xdai" class="w-12 h-12" />
           </div>
         </div>
       </div>
@@ -45,10 +42,11 @@
       <div class="text-left flex-grow truncate relative">
         <div
           class="max-w-full truncateThis cursor-pointer"
-          on:click|once={() => loadDetailPage()}
+          on:click={() => loadDetailPage()}
         >
           <h2 class="text-2xl sm:text-3xl truncate ">
-            {symbol} {variety > 1 ? ' (' + variety + ')' : ''}
+            {symbol}
+            {variety > 1 ? " (" + variety + ")" : ""}
           </h2>
         </div>
       </div>
