@@ -26,7 +26,7 @@
         ctx.childContext = {
           data: <IdentifyContextData>{
             redirectTo: "/dashboard",
-          }
+          },
         };
         return ctx;
       }
@@ -52,7 +52,7 @@
   </main>
   <footer class="sticky bottom-0 z-50 w-full ">
     <div class="flex justify-around ">
-      <button on:click={login} class="mb-4 btn btn-primary">
+      <button on:click={login} class="mb-24 btn btn-primary">
         <img
           width="15px"
           class="mr-3"

@@ -1,14 +1,15 @@
-import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
-import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
+import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
+import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
-import {prompt} from "@o-platform/o-process/dist/states/prompt";
-import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
-import {createMachine} from "xstate";
-import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
+import { prompt } from "@o-platform/o-process/dist/states/prompt";
+import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
+import { createMachine } from "xstate";
+import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import Web3 from "web3";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import * as bip39 from "bip39";
-import {Observable} from "rxjs";
+import { Observable } from "rxjs";
 
 export type ImportedCirclesProfileData = {
   circlesAddress?: string;
@@ -37,9 +38,11 @@ export type ImportCirclesProfileContext = ProcessContext<ImportCirclesProfileCon
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelSafeAddress: "Please enter your circles safe address",
+  labelSafeAddress:
+    "Please copy and paste in your Safeaddress, which you will find in your circles.garden Wallet",
   placeholderSafeAddress: "your safe address",
-  labelSeedPhrase: "Please enter your seed phrase",
+  labelSeedPhrase:
+    "Your Seedphrase is always only kept on your device. To connect this device, please enter your seedphrase here again. ",
   placeholderSeedPhrase: "Seedphrase",
 };
 
@@ -74,7 +77,7 @@ const processDefinition = (processId: string) =>
               console.log(
                 `Checking if safe ${context.data.safeAddress} exists ..`
               );
-              await RpcGateway.trigger(async web3 => {
+              await RpcGateway.trigger(async (web3) => {
                 const safeProxy = new GnosisSafeProxy(
                   web3,
                   "",
@@ -92,7 +95,7 @@ const processDefinition = (processId: string) =>
               }
               context.messages[
                 "safeAddress"
-                ] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Is the address right?`;
+              ] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Is the address right?`;
               console.log(
                 `Checking if safe ${context.data.safeAddress} exists .. Safe doesn't exist.`,
                 e
@@ -137,7 +140,7 @@ const processDefinition = (processId: string) =>
       },
       seedPhrase: prompt<ImportCirclesProfileContext, any>({
         fieldName: "seedPhrase",
-        component: TextEditor,
+        component: TextareaEditor,
         params: {
           label: strings.labelSeedPhrase,
           placeholder: strings.placeholderSeedPhrase,
@@ -169,7 +172,7 @@ const processDefinition = (processId: string) =>
               } catch (e) {
                 context.messages[
                   "seedPhrase"
-                  ] = `The seedphrase cannot be converted to a private key. Please double check it.`;
+                ] = `The seedphrase cannot be converted to a private key. Please double check it.`;
                 throw e;
               }
 
@@ -180,14 +183,14 @@ const processDefinition = (processId: string) =>
               } catch (e) {
                 context.messages[
                   "seedPhrase"
-                  ] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
+                ] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
                 throw e;
               }
 
               if (!context.data.safeOwners.find((o) => o === account.address)) {
                 context.messages[
                   "seedPhrase"
-                  ] = `The given key doesn't belong to a owner of safe ${context.data.safeAddress}`;
+                ] = `The given key doesn't belong to a owner of safe ${context.data.safeAddress}`;
                 throw new Error(
                   `The given key doesn't belong to a owner of safe ${context.data.safeAddress}`
                 );
@@ -217,8 +220,10 @@ const processDefinition = (processId: string) =>
     },
   });
 
-export const importCirclesProfile: ProcessDefinition<void,
-  ImportedCirclesProfileData> = {
+export const importCirclesProfile: ProcessDefinition<
+  void,
+  ImportedCirclesProfileData
+> = {
   name: "importCirclesProfile",
   stateMachine: <any>processDefinition,
 };

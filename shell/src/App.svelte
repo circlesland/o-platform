@@ -208,139 +208,90 @@
     </div>
   </main>
 
-  {#if lastLoadedDapp && !lastLoadedDapp.hideFooter && lastLoadedPage && !lastLoadedPage.hideFooter}
-    {#if !$me}
-      <footer class="z-50  w-full sticky bottom-0 mb-2">
-        <div class="flex justify-around ">
-          <button
-            class="mb-4 btn btn-outline bg-base-100"
-            on:click={() => login("__APP_ID__")}
-          >
-            {#if !isOpen}
-              <img
-                width="15px"
-                class="mr-3"
-                src="/images/common/circles.png"
-                alt="circles.land"
-              /> login with circles
-            {:else}
-              <img
-                width="15px"
-                class="mr-3"
-                src="/images/common/circles.png"
-                alt="circles.land"
-              /> Close
-            {/if}
-          </button>
-        </div>
-      </footer>
-    {:else}
-      <footer
-        class="z-50  w-full sticky bottom-0 bg-white h-12 border-t border-base-300 pb-16"
+  <footer
+    class="z-50  w-full sticky bottom-0 bg-white h-12 border-t border-base-300 pb-16"
+    class:isOpen
+  >
+    <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
+      <!-- NOT MODAL START -->
+      <div
+        class="grid  {lastPrompt &&
+        (lastPrompt.navigation.canGoBack || lastPrompt.navigation.canSkip)
+          ? 'grid-cols-3'
+          : 'grid-cols-5'}"
+        class:px-8={!isOpen}
       >
-        <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
-          {#if !modalProcess}
-            <!-- NOT MODAL START -->
-            <div class="grid grid-cols-5 tabs px-2">
-              {#if lastLoadedDapp}
-                {#each lastLoadedDapp.pages
-                  .filter((o) => !o.isSystem)
-                  .slice(0, 2) as page}
-                  <a
-                    href="#/{lastLoadedDapp.routeParts.join('/') +
-                      '/' +
-                      page.routeParts.join('/')}"
-                    class="justify-self-center tab w-full text-center focus:text-teal-500 hover:text-teal-500"
-                  >
-                    <NavItem label={page.title} />
-                  </a>
-                {/each}
-              {/if}
-              <button
-                class="justify-self-center col-start-3 col-end-3 bg-white btn-circle -m-4 min-w-min w-16 h-16 mx-2 shadow-lg circles-button "
-                on:click={() => {
-                  isOpen = !isOpen;
-                  if (!isOpen) {
-                    lastPrompt = null;
-                    if (modalProcess) {
-                      modalProcess.sendEvent(new Cancel());
-                    }
-                  }
-                }}
-              >
-                <img
-                  class="w-full"
-                  src="/images/common/circles.png"
-                  alt="circles.land"
-                />
-              </button>
-
-              {#if lastLoadedDapp}
-                {#each lastLoadedDapp.pages
-
-                  .filter((o) => !o.isSystem)
-                  .splice(2) as page}
-                  <a
-                    href="#/{lastLoadedDapp.routeParts.join('/') +
-                      '/' +
-                      page.routeParts.join('/')}"
-                    class="justify-self-center tab text-center focus:text-teal-500 hover:text-teal-500"
-                  >
-                    <NavItem label={page.title} />
-                  </a>
-                {/each}
-              {/if}
-              <!-- NOT MODAL END -->
-            </div>
-          {:else}
-            <!-- MODAL START -->
-            <div
-              class="grid  {lastPrompt &&
-              (lastPrompt.navigation.canGoBack || lastPrompt.navigation.canSkip)
-                ? 'grid-cols-3'
-                : 'grid-cols-1'}"
+        {#if lastLoadedDapp}
+          {#each lastLoadedDapp.pages
+            .filter((o) => !o.isSystem)
+            .slice(0, 2) as page}
+            <a
+              href="#/{lastLoadedDapp.routeParts.join('/') +
+                '/' +
+                page.routeParts.join('/')}"
+              class="justify-self-center tab w-full text-center focus:text-teal-500 hover:text-teal-500"
+              class:hidden={isOpen}
             >
-              {#if lastPrompt && lastPrompt.navigation.canGoBack}
-                <button
-                  class=" text-primary bg-white border-0 h-12 place-self-start ml-4"
-                  on:click={() => modalProcess.sendAnswer(new Back())}
-                  >BACK</button
-                >
-              {/if}
+              <NavItem label={page.title} />
+            </a>
+          {/each}
+        {/if}
+        {#if lastPrompt && lastPrompt.navigation.canGoBack}
+          <button
+            class="btn btn-outline btn-base ml-9"
+            on:click={() => modalProcess.sendAnswer(new Back())}>BACK</button
+          >
+        {/if}
+        <button
+          class="justify-self-center btn-circle -m-4 min-w-min w-16 h-16 mx-2 circles-button "
+          class:bg-white={!isOpen}
+          class:shadow-lg={!isOpen}
+          class:col-start-3={!lastPrompt ||
+            (lastPrompt && !lastPrompt.navigation.canGoBack)}
+          class:col-end-3={!lastPrompt ||
+            (lastPrompt && !lastPrompt.navigation.canGoBack)}
+          on:click={() => {
+            isOpen = !isOpen;
+            if (!isOpen) {
+              lastPrompt = null;
+              if (modalProcess) {
+                modalProcess.sendEvent(new Cancel());
+              }
+            }
+          }}
+        >
+          <img
+            class="w-full"
+            src="/images/common/circles.png"
+            alt="circles.land"
+          />
+        </button>
+        {#if lastPrompt && lastPrompt.navigation.canSkip}
+          <button
+            class="btn btn-outline btn-secondary mr-9"
+            on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
+          >
+        {/if}
+        {#if lastLoadedDapp}
+          {#each lastLoadedDapp.pages
 
-              <button
-                class="justify-self-center bg-white btn-circle -m-4 min-w-min w-14 h-14 mx-2 shadow-lg circles-button "
-                on:click={() => {
-                  isOpen = !isOpen;
-                  if (!isOpen) {
-                    lastPrompt = null;
-                    if (modalProcess) {
-                      modalProcess.sendEvent(new Cancel());
-                    }
-                  }
-                }}
-              >
-                <img
-                  class="w-full"
-                  src="/images/common/circles.png"
-                  alt="circles.land"
-                />
-              </button>
-
-              {#if lastPrompt && lastPrompt.navigation.canSkip}
-                <button
-                  class="text-primary bg-white h-12 place-self-end mr-4"
-                  on:click={() => modalProcess.sendAnswer(new Skip())}
-                  >SKIP</button
-                >
-              {/if}
-            </div>
-            <!--  MODAL END -->
-          {/if}
-        </div>
-      </footer>
-    {/if}
-  {/if}
+            .filter((o) => !o.isSystem)
+            .splice(2) as page}
+            <a
+              href="#/{lastLoadedDapp.routeParts.join('/') +
+                '/' +
+                page.routeParts.join('/')}"
+              class="justify-self-center tab text-center focus:text-teal-500 hover:text-teal-500"
+              class:hidden={isOpen}
+            >
+              <NavItem label={page.title} />
+            </a>
+          {/each}
+        {/if}
+        <!-- NOT MODAL END -->
+      </div>
+    </div>
+  </footer>
 </div>
 
 <Modal bind:isOpen on:closeRequest={modalWantsToClose}>
@@ -357,7 +308,7 @@
     {:else}
       <!-- No process -->
       {#if getLastLoadedDapp()}
-        <div class="mb-8 space-y-4">
+        <div class="space-y-4">
           {#each getLastLoadedDapp().actions.concat(contextActions) as action}
             <button
               on:click={() =>
@@ -373,6 +324,10 @@
 </Modal>
 
 <style>
+  .isOpen {
+    background: transparent;
+    border: none;
+  }
   /* Background Blurring for firefox and other non supportive browsers */
   @supports not (
     (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
