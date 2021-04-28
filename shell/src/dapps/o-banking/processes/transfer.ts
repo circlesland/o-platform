@@ -25,8 +25,9 @@ export type TransferContextData = {
     currency: string;
     amount: string;
   };
-  maxCrcFlow?: string;
-  maxXdaiFlow?: string;
+  maxFlows?: {
+    [currency: string]: string;
+  };
   acceptSummary?: boolean;
 };
 
@@ -127,6 +128,7 @@ const processDefinition = (processId: string) =>
             if (!context.data.recipientAddress) {
               throw new Error(`No recipient address on context`);
             }
+            context.data.maxFlows = {};
             const p1 = new Promise<void>(async (resolve, reject) => {
               const flow = await requestPathToRecipient({
                 data: {
@@ -135,11 +137,11 @@ const processDefinition = (processId: string) =>
                   safeAddress: context.data.safeAddress,
                 },
               });
-              context.data.maxCrcFlow = flow.flow;
+              context.data.maxFlows["crc"] = flow.flow;
               resolve();
             });
             const p2 = await RpcGateway.trigger(async (web3) => {
-              context.data.maxXdaiFlow = await web3.eth.getBalance(
+              context.data.maxFlows["xdai"] = await web3.eth.getBalance(
                 web3.utils.toChecksumAddress(context.data.safeAddress)
               );
             }, 1000);

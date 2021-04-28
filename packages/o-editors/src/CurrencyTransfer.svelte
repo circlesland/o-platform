@@ -4,14 +4,24 @@
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import Select from "svelte-select";
   import Item from "./DropdownCurrencyItem.svelte";
+  import {RpcGateway} from "../../o-circles/dist/rpcGateway";
 
   export let context: CurrencyTransferContext;
 
   let amount: string = "0";
+  let maxAmount: string = "0";
   $: selectedCurrency = context.params.currencies.find(
     (o) => o.value === "crc"
   );
   $: selected = "CRC";
+  $:{
+    if (selected && context.data.maxFlows) {
+      const key = selected.toLowerCase();
+      if (context.data.maxFlows[key]) {
+        maxAmount = parseFloat(RpcGateway.get().utils.fromWei(context.data.maxFlows[key], "ether")).toFixed(2).toString();
+      }
+    }
+  }
 
   function sendAnswer(amount: string) {
     const event = new Continue();
@@ -34,6 +44,7 @@
 <p class="label-text">
   {context.params.label}
 </p>
+<p>Max: {maxAmount}</p>
 <div class="flex flex-col w-full">
   <div class="mt-1 relative rounded-md w-full shadow-sm">
     <div
