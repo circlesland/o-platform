@@ -47,7 +47,7 @@ export class ExecResult {
                 reject(`The request timed out after ${timeout} ms. Entry point to request was: ` + stack);
                 completed = true;
                 subscription.unsubscribe();
-            })
+            }, timeout)
         });
     }
 }
