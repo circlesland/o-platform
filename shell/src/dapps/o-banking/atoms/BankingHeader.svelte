@@ -32,7 +32,6 @@
       <div class="self-end">
         <button
           class=" text-white"
-          href="#"
           on:click|once={() => (window.location = "/#/dashboard")}
         >
           <svg

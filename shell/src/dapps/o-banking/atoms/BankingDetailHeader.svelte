@@ -24,10 +24,13 @@
     <div
       class="h-24 pt-0  flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
     >
-      <div class="self-start" on:click={() => history.back()}>
+      <div
+        class="self-start cursor-pointer"
+        on:click|once={() => history.back()}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 inline-block -mt-1 mr-1"
+          class="h-6 w-6 inline-block mr-1"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
