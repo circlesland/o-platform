@@ -2,23 +2,32 @@
   import { Continue } from "@o-platform/o-process/dist/events/continue";
   import { CurrencyTransferContext } from "./currencyTransferContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
+  import Select from "svelte-select";
+  import Item from "./DropdownCurrencyItem.svelte";
 
   export let context: CurrencyTransferContext;
-  let amount: string = "0";
-  let selectedCurrency: any = "CRC";
 
-  function sendAnswer(
-    amount: string,
-    selected: { key: string; label: string }
-  ) {
+  let amount: string = "0";
+  $: selectedCurrency = context.params.currencies.find(
+    (o) => o.value === "crc"
+  );
+  $: selected = "CRC";
+
+  function sendAnswer(amount: string) {
     const event = new Continue();
     event.data = {};
     event.data[context.fieldName] = {
       amount: amount,
       currency: selected,
     };
-    context.data[context.fieldName] = selectedCurrency;
+
+    context.data[context.fieldName] = selectedCurrency.label;
+
     context.process.sendAnswer(event);
+  }
+
+  function handleSelect(event) {
+    selected = event.detail.value;
   }
 </script>
 
@@ -55,9 +64,21 @@
       placeholder="0.00"
       bind:value={amount}
     />
-    <div class="absolute inset-y-0 right-0 flex items-center">
+    <div class="absolute inset-y-0 right-1 flex items-center themed">
       <label for="currency" class="sr-only">Currency</label>
-      <select
+      <Select
+        name="currency"
+        selectedValue={selectedCurrency}
+        items={context.params.currencies}
+        showIndicator={true}
+        listAutoWidth={false}
+        listPlacement="top"
+        isClearable={false}
+        containerClasses="w-34 min-w-full rounded-md"
+        {Item}
+        on:select={handleSelect}
+      />
+      <!-- <select
         id="currency"
         name="currency"
         class=" h-full py-0 pl-2 mr-1 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
@@ -68,7 +89,7 @@
             >{currency.label}</option
           >
         {/each}
-      </select>
+      </select> -->
     </div>
   </div>
 
@@ -77,3 +98,10 @@
     {context}
   />
 </div>
+
+<style>
+  .themed {
+    --borderRadius: 5px;
+    --indicatorTop: 7px;
+  }
+</style>

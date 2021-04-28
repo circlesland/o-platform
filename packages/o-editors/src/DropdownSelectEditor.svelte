@@ -86,16 +86,18 @@
         />
       </div>
     {:else}
-      <Select
-        name="value"
-        selectedValue={selected}
-        items={context.params.choices}
-        showChevron={true}
-        listAutoWidth={false}
-        listPlacement="top"
-        containerClasses="w-80 min-w-full"
-        on:select={handleSelect}
-      />
+      <div class="themed-select">
+        <Select
+          name="value"
+          selectedValue={selected}
+          items={context.params.choices}
+          showChevron={true}
+          listAutoWidth={false}
+          listPlacement="top"
+          containerClasses="w-80 min-w-full"
+          on:select={handleSelect}
+        />
+      </div>
     {/if}
     {#if context.messages[context.fieldName]}
       <label class="label text-right" for="form-error">
@@ -117,5 +119,24 @@
     width: 100%;
     --listBackground: transparent;
     --listShadow: none;
+    --borderRadius: 0;
+    --border: none;
+    --height: 3.5rem;
+    --inputTop: 3px;
+    --inputFontSize: 18px;
+    --inputPadding: 0.75rem 0.5rem 0.5rem 0.25rem;
+
+    @apply input input-lg input-bordered;
+  }
+  .themed-select {
+    width: 100%;
+    --borderRadius: 0;
+    --border: none;
+    --height: 3.5rem;
+    --inputTop: 3px;
+    --inputFontSize: 18px;
+    --inputPadding: 0.75rem 0.5rem 0.5rem 0.25rem;
+
+    @apply input input-lg input-bordered;
   }
 </style>

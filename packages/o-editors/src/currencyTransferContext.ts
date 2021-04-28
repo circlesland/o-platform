@@ -1,12 +1,12 @@
-import {EditorContext} from "./editorContext";
+import { EditorContext } from "./editorContext";
 
 export type CurrencyTransferContext = EditorContext & {
-    params: {
-        label: string;
-        currencies:{
-            key:string,
-            label:string
-        }[],
-        [x: string]: any
-    }
-}
+  params: {
+    label: string;
+    currencies: {
+      value: string;
+      label: string;
+    }[];
+    [x: string]: any;
+  };
+};
