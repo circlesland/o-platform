@@ -53,7 +53,7 @@
   }
   aside {
     /* z-index: 1000; */
-    background-color: rgba(42, 46, 55, 0.4);
+    background-color: rgba(42, 46, 55, 0.8);
     position: fixed;
     top: 0;
     left: 0;
