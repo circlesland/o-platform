@@ -170,12 +170,14 @@ const processDefinition = (processId: string) =>
               context.data.safeAddress
             );
 
-            return await new CirclesHub(RpcGateway.get(), HUB_ADDRESS).setTrust(
+            const execResult = await new CirclesHub(RpcGateway.get(), HUB_ADDRESS).setTrust(
               context.data.privateKey,
               gnosisSafeProxy,
               context.data.trustReceiver,
               new BN(context.data.trustLimit.toString())
             );
+
+            return execResult.toPromise();
           },
           onDone: "#success",
           onError: "#error",

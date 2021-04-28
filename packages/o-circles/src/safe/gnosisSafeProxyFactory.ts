@@ -59,10 +59,11 @@ export class GnosisSafeProxyFactory extends Web3Contract
       estimatedGas,
       new BN("0"));
 
-    const minedReceipt = await Web3Contract.sendSignedRawTransaction(signedRawTransaction);
+    const execResult = await Web3Contract.sendSignedRawTransaction(signedRawTransaction);
+    const receipt = await execResult.toPromise();
 
     let proxyAddress = undefined;
-    for (let logEntry of minedReceipt.logs)
+    for (let logEntry of receipt.logs)
     {
       if (logEntry.address != this.address)
       {

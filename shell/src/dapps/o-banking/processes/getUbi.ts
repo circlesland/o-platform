@@ -52,7 +52,7 @@ createMachine<GetUbiContext, any>({
           const circlesAccount = new CirclesAccount(context.data.safeAddress);
           const result = await circlesAccount.getUBI(context.data.privateKey, gnosisSafeProxy);
 
-          return result;
+          return result.toPromise();
         },
         onDone: "#success",
         onError: "#error",

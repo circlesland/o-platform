@@ -3,11 +3,13 @@ import Web3 from "web3";
 import {EMPTY_DATA, GNOSIS_SAFE_ABI, ZERO_ADDRESS} from "../consts";
 import {BN} from "ethereumjs-util";
 const EthLibAccount = require('eth-lib/lib/account');
-import {Web3Contract} from "../web3Contract";
+import {ExecResult, Web3Contract} from "../web3Contract";
 import type {TransactionReceipt} from "web3-core";
 import {SafeTransaction} from "../model/safeTransaction";
 import {SafeOps} from "../model/safeOps";
 import {RpcGateway} from "../rpcGateway";
+import {PromiEvent} from "web3-core";
+import {Observable} from "rxjs";
 
 export class GnosisSafeProxy extends Web3Contract
 {
@@ -52,7 +54,7 @@ export class GnosisSafeProxy extends Web3Contract
     return parseInt(await this.contract.methods.nonce().call());
   }
 
-  async transferEth(privateKey: string, value: BN, to: string)
+  async transferEth(privateKey: string, value: BN, to: string) : Promise<ExecResult>
   {
     const safeTransaction = <SafeTransaction>{
       value: value,
@@ -66,7 +68,7 @@ export class GnosisSafeProxy extends Web3Contract
     return await this.execTransaction(privateKey, safeTransaction);
   }
 
-  async execTransaction(privateKey: string, safeTransaction: SafeTransaction, dontEstimate?: boolean): Promise<TransactionReceipt>
+  async execTransaction(privateKey: string, safeTransaction: SafeTransaction, dontEstimate?: boolean): Promise<ExecResult>
   {
     this.validateSafeTransaction(safeTransaction);
 
@@ -125,10 +127,7 @@ export class GnosisSafeProxy extends Web3Contract
 
     console.log("signedRawTransaction:", signedTransactionData);
 
-    const receipt = await Web3Contract.sendSignedRawTransaction(signedTransactionData);
-    console.log("Web3Contract.sendSignedRawTransaction() result:", receipt);
-
-    return receipt;
+    return Web3Contract.sendSignedRawTransaction(signedTransactionData);
   }
 
   private validateSafeTransaction(safeTransaction: SafeTransaction)

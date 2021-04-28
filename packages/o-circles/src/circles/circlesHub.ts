@@ -3,9 +3,10 @@ import type { AbiItem } from "web3-utils";
 import {CIRCLES_HUB_ABI, HUB_BLOCK, ZERO_ADDRESS} from "../consts";
 import type { GnosisSafeProxy } from "../safe/gnosisSafeProxy";
 import {BN} from "ethereumjs-util";
-import { Web3Contract } from "../web3Contract";
+import {ExecResult, Web3Contract} from "../web3Contract";
 import {SafeOps} from "../model/safeOps";
 import {config} from "rxjs";
+import {PromiEvent, TransactionReceipt} from "web3-core";
 
 export class CirclesHub extends Web3Contract {
   constructor(web3: Web3, hubAddress: string) {
@@ -75,7 +76,7 @@ export class CirclesHub extends Web3Contract {
   static readonly OrganizationSignupEvent = "OrganizationSignup";
   static readonly TrustEvent = "Trust";
 
-  async signup(privateKey: string, safeProxy: GnosisSafeProxy) {
+  async signup(privateKey: string, safeProxy: GnosisSafeProxy) : Promise<ExecResult> {
     const txData = this.contract.methods.signup().encodeABI();
 
     return await safeProxy.execTransaction(
@@ -90,7 +91,7 @@ export class CirclesHub extends Web3Contract {
       });
   }
 
-  async setTrust(privateKey: string, safeProxy: GnosisSafeProxy, to: string, trustPercentage: BN) {
+  async setTrust(privateKey: string, safeProxy: GnosisSafeProxy, to: string, trustPercentage: BN) : Promise<ExecResult> {
     const txData = this.contract.methods.trust(to, trustPercentage).encodeABI();
 
     return await safeProxy.execTransaction(
@@ -111,7 +112,7 @@ export class CirclesHub extends Web3Contract {
     tokenOwners: string[],
     sources: string[],
     destinations: string[],
-    values: BN[]) {
+    values: BN[]) : Promise<ExecResult> {
     const transfer = {
       tokenOwners: tokenOwners,
       sources: sources,

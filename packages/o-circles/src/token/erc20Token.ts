@@ -3,10 +3,11 @@ import type {AbiItem} from "web3-utils";
 import {ERC20_ABI, HUB_BLOCK, ZERO_ADDRESS} from "../consts";
 import type {GnosisSafeProxy} from "../safe/gnosisSafeProxy";
 import {BN} from "ethereumjs-util";
-import {Web3Contract} from "../web3Contract";
+import {ExecResult, Web3Contract} from "../web3Contract";
 import {SafeOps} from "../model/safeOps";
 import {Observable, Subject} from "rxjs";
 import {BlockchainEvent} from "@o-platform/o-events/dist/blockchainEvent";
+import {PromiEvent, TransactionReceipt} from "web3-core";
 
 export class Erc20Token extends Web3Contract
 {
@@ -64,7 +65,7 @@ export class Erc20Token extends Web3Contract
     return subject;
   }
 
-  async transfer(privateKey: string, safeProxy: GnosisSafeProxy, to: string, amount: BN)
+  async transfer(privateKey: string, safeProxy: GnosisSafeProxy, to: string, amount: BN) : Promise<ExecResult>
   {
     const txData = this.contract.methods.transfer(to, amount).encodeABI();
 

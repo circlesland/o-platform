@@ -8,6 +8,8 @@ import {SafeOps} from "./safeOps";
 import {Observable, Subject} from "rxjs";
 import {BlockchainEvent} from "@o-platform/o-events/dist/blockchainEvent";
 import {RpcGateway} from "../rpcGateway";
+import {PromiEvent, TransactionReceipt} from "web3-core";
+import {ExecResult} from "../web3Contract";
 
 export interface CirclesAccountModel
 {
@@ -27,7 +29,7 @@ export class CirclesAccount implements CirclesAccountModel
     this.hub = new CirclesHub(this.web3, HUB_ADDRESS);
   }
 
-  async getUBI(privateKey: string, safe: GnosisSafeProxy): Promise<any>
+  async getUBI(privateKey: string, safe: GnosisSafeProxy) : Promise<ExecResult>
   {
     const ownToken = await this.tryGetMyToken();
     if (!ownToken)

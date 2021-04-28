@@ -120,8 +120,9 @@ createMachine<TransferCirclesContext, any>({
               destinations,
               values
             );
+            const receipt = transferTroughResult.toPromise();
 
-            console.log(transferTroughResult);
+            console.log(receipt);
           } catch (e) {
             console.error(e);
             throw e;
