@@ -39,6 +39,12 @@
   --toastWidth: 100%;
 }
 
+/* For some weird reason btn-white doesn't work with btn-outline... */
+.btn-outline.btn-white {
+  color: #fff;
+  border-color: #fff;
+}
+
 .text-gradient {
   background: linear-gradient(to right, #003399, #0ad99c 80%);
   -webkit-background-clip: text;
