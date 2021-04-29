@@ -2,8 +2,7 @@
   import { EditorContext } from "./editorContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
-  import { autoresize } from "./autoResize";
-
+  import { onMount } from "svelte";
   export let context: EditorContext;
 
   const submitHandler = () => {
@@ -11,6 +10,35 @@
     answer.data = context.data;
     context.process.sendAnswer(answer);
   };
+
+  var autoExpand = function (field) {
+    // Reset field height
+    field.style.height = "inherit";
+
+    // Get the computed styles for the element
+    var computed = window.getComputedStyle(field);
+
+    // Calculate the height
+    var height =
+      parseInt(computed.getPropertyValue("border-top-width"), 10) +
+      parseInt(computed.getPropertyValue("padding-top"), 10) +
+      field.scrollHeight +
+      parseInt(computed.getPropertyValue("padding-bottom"), 10) +
+      parseInt(computed.getPropertyValue("border-bottom-width"), 10);
+
+    field.style.height = height + "px";
+  };
+
+  onMount(() => {
+    document.addEventListener(
+      "input",
+      function (event) {
+        if (event.target.tagName.toLowerCase() !== "textarea") return;
+        autoExpand(event.target);
+      },
+      false
+    );
+  });
 </script>
 
 <div class="form-control justify-self-center">
@@ -19,16 +47,14 @@
   </label>
 
   <textarea
-    rows="4"
     name="input"
     on:keydown={onkeydown}
     id={context.fieldName}
     type="text"
     placeholder={context.params.placeholder}
-    class="textarea h-24 textarea textarea-bordered"
+    class="textarea  textarea textarea-bordered"
     class:input-error={context.messages[context.fieldName]}
     bind:value={context.data[context.fieldName]}
-    use:autoresize
   />
   {#if context.messages[context.fieldName]}
     <label class="label text-right" for="form-error">
