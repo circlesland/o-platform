@@ -10,7 +10,6 @@
       dashboard.actions.find((o) => o.key == "xats").event(undefined)
     );
   }
-  showToast("success", "Copied to Clipboard!");
 </script>
 
 <DashboardHeader />
