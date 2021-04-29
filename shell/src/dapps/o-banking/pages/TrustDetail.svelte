@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
-  import { transfer } from "../processes/transfer";
-  import { setTrust } from "../processes/setTrust";
+  import {transfer} from "../processes/transfer";
+  import {setTrust} from "../processes/setTrust";
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
-  import { TrustObject } from "../data/circles/types";
-  import { mySafe } from "../stores/safe";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { tryGetCurrentSafe } from "../init";
+  import {TrustObject} from "../data/circles/types";
+  import {mySafe} from "../stores/safe";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {tryGetCurrentSafe} from "../init";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import Success from "../../../shared/atoms/Success.svelte";
-  import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";
+  import {ContextAction} from "@o-platform/o-events/dist/shell/contextAction";
 
   let trust: TrustObject;
 
@@ -24,7 +24,7 @@
   let mutualTrustPartner: TrustObject;
 
   const contextActions = [
-    {
+    /*{
       key: "setTrust",
       label: "Set Trust 123",
       event: (runtimeDapp: RuntimeDapp<any>) => {
@@ -44,9 +44,9 @@
           }
         );
       },
-    },
+    },*/
   ];
-  contextActions.forEach((o) => window.o.publishEvent(new ContextAction(o)));
+  //contextActions.forEach((o) => window.o.publishEvent(new ContextAction(o)));
 
   $: {
     if ($mySafe.trustRelations && params.trustPartner) {
@@ -92,13 +92,14 @@
     }
   }
 
-  function execTransfer(recipientAddress?: string) {
+  function execTransfer() {
     window.o.publishEvent(
       new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
         ctx.childProcessDefinition = transfer;
         ctx.childContext = {
           data: {
-            recipientAddress,
+            safeAddress: $mySafe.safeAddress,
+            recipientAddress: params.trustPartner
           },
         };
         return ctx;
@@ -106,14 +107,16 @@
     );
   }
 
-  function execTrust(recipientAddress?: string) {
+  function execTrust() {
     window.o.publishEvent(
       new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
         ctx.childProcessDefinition = setTrust;
         ctx.childContext = {
           data: {
+            safeAddress: $mySafe.safeAddress,
             trustLimit: 100,
-            trustReceiver: recipientAddress,
+            trustReceiver: params.trustPartner,
+            privateKey: localStorage.getItem("circlesKey")
           },
         };
         return ctx;
@@ -121,14 +124,16 @@
     );
   }
 
-  function execUntrust(recipientAddress?: string) {
+  function execUntrust() {
     window.o.publishEvent(
       new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
         ctx.childProcessDefinition = setTrust;
         ctx.childContext = {
           data: {
+            safeAddress: $mySafe.safeAddress,
             trustLimit: 0,
-            trustReceiver: recipientAddress,
+            trustReceiver: params.trustPartner,
+            privateKey: localStorage.getItem("circlesKey")
           },
         };
         return ctx;
@@ -164,9 +169,9 @@
               />
             </svg>
             <span class="inline text-dark"
-              >You are trusting {trust.profile
-                ? trust.profile.displayName
-                : trust.safeAddress} to {trust.limit}%
+            >You are trusting {trust.profile
+              ? trust.profile.displayName
+              : trust.safeAddress} to {trust.limit}%
             </span>
           </div>
         {/if}
@@ -187,7 +192,7 @@
               />
             </svg>
             <span class="inline text-dark"
-              >{trust.profile ? trust.profile.displayName : trust.safeAddress} is
+            >{trust.profile ? trust.profile.displayName : trust.safeAddress} is
               trusting you to {trust.type == "mutual"
                 ? mutualTrustPartner.limit
                 : trust.limit}%
@@ -200,28 +205,52 @@
   <section class="justify-center mb-2 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
       <div class="text-circleslightblue text-sm font-bold">CHANGE TRUST</div>
+      {#if (trust.type === "mutual" || trust.type === "trusting") && trust.limit > 0}
 
-      <div class="flex items-center w-full space-x-2 sm:space-x-4">
-        <button
-          class="btn btn-block btn-error"
-          on:click={() => execTrust(trust)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            class="inline-block w-4 h-4 mr-2 stroke-current"
+        <div class="flex items-center w-full space-x-2 sm:space-x-4">
+          <button
+            class="btn btn-block btn-error"
+            on:click={() => execUntrust()}
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-            />
-          </svg>
-          Remove trust
-        </button>
-      </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              class="inline-block w-4 h-4 mr-2 stroke-current"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+              />
+            </svg>
+            Remove trust
+          </button>
+        </div>
+      {:else}
+        <div className="flex items-center w-full space-x-2 sm:space-x-4">
+          <button
+            className="btn btn-block btn-error"
+            on:click={() => execTrust()}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              className="inline-block w-4 h-4 mr-2 stroke-current"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+              />
+            </svg>
+            Trust
+          </button>
+        </div>
+      {/if}
     </div>
   </section>
   <section class="justify-center mb-2 text-circlesdarkblue">
@@ -229,7 +258,7 @@
       <div class="text-circleslightblue text-sm font-bold">TRANSFER</div>
 
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
-        <button class="btn btn-block btn-primary">Send Money</button>
+        <button class="btn btn-block btn-primary" on:click={() => execTransfer()}>Send Money</button>
       </div>
     </div>
   </section>
