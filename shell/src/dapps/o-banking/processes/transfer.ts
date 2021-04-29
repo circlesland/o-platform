@@ -16,7 +16,7 @@ import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import {BN} from "ethereumjs-util";
+import { BN } from "ethereumjs-util";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -49,7 +49,7 @@ const strings = {
   currencyCircles: "CRC",
   currencyXdai: "xDai",
   summaryLabel: "Summary",
-  messageLabel: "Please write a short description for the recipient"
+  messageLabel: "Please write a short description for the recipient",
 };
 
 const processDefinition = (processId: string) =>
@@ -169,6 +169,14 @@ const processDefinition = (processId: string) =>
             },
           ],
         },
+        dataSchema: yup.object().shape({
+          amount: yup
+            .number()
+            .typeError("Please enter a valid Number.")
+            .required("Please enter a valid amount.")
+            .positive("Please enter a valid amount."),
+          currency: yup.string().required("Please select a valid currency."),
+        }),
         navigation: {
           next: "#checkAmount",
           previous: "#recipientAddress",
@@ -176,16 +184,28 @@ const processDefinition = (processId: string) =>
       }),
       checkAmount: {
         id: "checkAmount",
-        always:[{
-          cond: (context, event) => {
-            const maxFlowInWei = new BN(context.data.maxFlows[context.data.tokens.currency.toLowerCase()]);
-            const amountInWei = new BN(RpcGateway.get().utils.toWei(context.data.tokens.amount, "ether"));
-            return maxFlowInWei.gte(amountInWei);
+        always: [
+          {
+            cond: (context, event) => {
+              const maxFlowInWei = new BN(
+                context.data.maxFlows[
+                  context.data.tokens.currency.toLowerCase()
+                ]
+              );
+              const amountInWei = new BN(
+                RpcGateway.get().utils.toWei(
+                  context.data.tokens.amount,
+                  "ether"
+                )
+              );
+              return maxFlowInWei.gte(amountInWei);
+            },
+            target: "#message",
           },
-          target: "#message"
-        },{
-          target: "#tokens"
-        }]
+          {
+            target: "#tokens",
+          },
+        ],
       },
       message: prompt<TransferContext, any>({
         fieldName: "message",
@@ -208,7 +228,9 @@ const processDefinition = (processId: string) =>
               throw new Error(`No currency or amount selected`);
             } else {
               return `You are about to transfer 
-                <strong>${context.data.tokens.amount} ${context.data.tokens.currency.toUpperCase()}</strong>
+                <strong>${
+                  context.data.tokens.amount
+                } ${context.data.tokens.currency.toUpperCase()}</strong>
                 to 
                 <strong>${context.data.recipientAddress}</strong>.
                 <br/>

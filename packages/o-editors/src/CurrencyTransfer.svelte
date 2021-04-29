@@ -92,20 +92,15 @@
         {Item}
         on:select={handleSelect}
       />
-      <!-- <select
-        id="currency"
-        name="currency"
-        class=" h-full py-0 pl-2 mr-1 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
-        bind:value={selectedCurrency}
-      >
-        {#each context.params.currencies as currency}
-          <option label={currency.label} value={currency.key}
-            >{currency.label}</option
-          >
-        {/each}
-      </select> -->
     </div>
   </div>
+  {#if context.messages[context.fieldName]}
+    <label class="label text-right" for="form-error">
+      <span id="form-error" class="label-text-alt text-error "
+        >{context.messages[context.fieldName]}</span
+      >
+    </label>
+  {/if}
 
   <ProcessNavigation
     on:buttonClick={() => sendAnswer(amount, selectedCurrency)}
