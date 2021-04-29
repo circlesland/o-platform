@@ -100,7 +100,9 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
         safe.ui.loadingPercent = 18;
         safe.ui.loadingText = "" +
           "Loading accepted tokens ..";
+        await augmentSafeWithProfiles(safe);
         publishRefreshEvent(safe);
+        localStorage.setItem("safe", JSON.stringify(safe));
         _currentSafe = safe;
       } else {
 
