@@ -2,6 +2,7 @@
   import { EditorContext } from "./editorContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
+  import { autoresize } from "./autoresize";
 
   export let context: EditorContext;
 
@@ -10,12 +11,6 @@
     answer.data = context.data;
     context.process.sendAnswer(answer);
   };
-
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Enter") {
-      submitHandler();
-    }
-  }
 </script>
 
 <div class="form-control justify-self-center">
@@ -33,6 +28,7 @@
     class="textarea h-24 textarea textarea-bordered"
     class:input-error={context.messages[context.fieldName]}
     bind:value={context.data[context.fieldName]}
+    use:autoresize
   />
   {#if context.messages[context.fieldName]}
     <label class="label text-right" for="form-error">
