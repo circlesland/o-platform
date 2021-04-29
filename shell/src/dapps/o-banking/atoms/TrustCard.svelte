@@ -88,35 +88,57 @@
 </script>
 
 <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-  <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-    <div class="text-secondary text-xs font-circles font-bold text-left">
-      {directionString}
-    </div>
-    <div class="flex items-center  w-full space-x-2 sm:space-x-6">
-      <div class="mr-2 text-center">
-        <div class="avatar">
-          <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img
-              src={pictureUrl ? pictureUrl : "/images/common/circles.png"}
-              alt="username"
-            />
-          </div>
+  <div
+    class="flex items-center bg-white shadow w-full space-x-2 px-2 sm:space-x-6 space-y-2 rounded-sm"
+  >
+    <div class="mr-2 text-center">
+      <div class="avatar">
+        <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
+          <img
+            src={pictureUrl ? pictureUrl : "/images/common/circles.png"}
+            alt="username"
+          />
         </div>
       </div>
+    </div>
 
-      <div class="text-left flex-grow truncate relative">
-        <div
-          class="max-w-full truncateThis cursor-pointer"
-          on:click|once={() => loadDetailPage(safeAddress)}
+    <div class="text-left flex-grow truncate relative">
+      <div
+        class="max-w-full truncateThis cursor-pointer"
+        on:click|once={() => loadDetailPage(safeAddress)}
+      >
+        <h2 class="text-2xl sm:text-3xl">
+          {displayName}
+        </h2>
+      </div>
+      <div class="text-left text-sm text-green mb-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 inline -mt-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <h2 class="text-2xl sm:text-3xl">
-            {displayName}
-          </h2>
-        </div>
-        <div class="text-left text-sm text-green mb-4">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+          />
+        </svg>
+        <span class="inline text-dark"> {limit} % trust </span>
+      </div>
+    </div>
+
+    <div class="flex flex-1 flex-col justify-items-end self-start">
+      <div class="self-end flex flex-col space-y-2 text-2xl sm:text-3xl ">
+        <button
+          on:click={() => execTransfer(safeAddress)}
+          class="btn btn-square self-end btn-md btn-primary"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 inline -mt-1"
+            class="h-10 w-10"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -125,39 +147,14 @@
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <span class="inline text-dark"> {limit} % trust </span>
-        </div>
+        </button>
       </div>
-
-      <div class="flex flex-1 flex-col justify-items-end self-start">
-        <div class="self-end flex flex-col space-y-2 text-2xl sm:text-3xl ">
-          <button
-            on:click={() => execTransfer(safeAddress)}
-            class="btn btn-square self-end btn-md btn-primary"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-          </button>
-        </div>
-        <!-- <div class="self-end mt-2 text-xs text-circleslightblue">
+      <!-- <div class="self-end mt-2 text-xs text-circleslightblue">
           9 days ago
         </div> -->
-      </div>
     </div>
   </div>
 </section>
