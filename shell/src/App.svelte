@@ -196,7 +196,7 @@
   <header class="w-full mx-auto md:w-2/3 xl:w-1/2 z-10">
   </header> -->
 
-  <div class="w-full toastContainer"><SvelteToast class="toasty" /></div>
+  <SvelteToast />
   <main class="flex-1 overflow-y-visible z-30" class:blur={isOpen}>
     <div class="w-full mx-auto {layoutClasses}">
       <Router
@@ -324,9 +324,6 @@
 </Modal>
 
 <style>
-  .toastContainer ul {
-    width: 100% !important;
-  }
   .isOpen {
     background: transparent;
     border: none;

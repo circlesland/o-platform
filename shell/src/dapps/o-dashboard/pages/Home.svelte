@@ -3,6 +3,7 @@
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import { me } from "../../../shared/stores/me";
   import { showToast } from "../../../shared/toast";
+
   $: me;
 
   function buyXats() {

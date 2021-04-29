@@ -141,6 +141,7 @@
   user={trust.profile ? trust.profile : { displayName: trust.safeAddress }}
   safeAddress={trust.safeAddress}
 />
+
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-2 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">

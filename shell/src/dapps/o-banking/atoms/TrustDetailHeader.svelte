@@ -10,12 +10,13 @@
   export let user: {
     displayName: String;
     avatarUrl: String;
+    safeAddress: String;
   };
-  export let safeAddress: String;
 
   onMount(() => {
     lastLoadedPage = getLastLoadedPage();
     lastLoadedDapp = getLastLoadedDapp();
+    console.log("USER: ", user);
   });
 </script>
 
@@ -24,7 +25,7 @@
 >
   {#if lastLoadedDapp && lastLoadedPage}
     <div
-      class="h-24 pt-0 flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+      class="h-14 pt-0 flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
     >
       <div class="self-start cursor-pointer" on:click={() => history.back()}>
         <svg
@@ -72,7 +73,7 @@
     </div>
   {/if}
 
-  <div class="self-center text-center mt-6 block">
+  <div class="self-center text-center block">
     <div class="avatar">
       <div class="w-36 h-36 rounded-full mb-4">
         <img
@@ -90,7 +91,7 @@
     </div>
     <div class="">
       <small>
-        {safeAddress}
+        {user.safeAddress ? user.safeAddress : ""}
       </small>
     </div>
   </div>
