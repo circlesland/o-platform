@@ -66,7 +66,7 @@ const processDefinition = (processId: string) =>
         always: [
           {
             cond: (context) => !!context.data.recipientAddress,
-            target: "#tokens",
+            target: "#findMaxFlow",
           },
           {
             target: "#recipientAddress",
