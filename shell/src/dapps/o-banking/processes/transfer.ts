@@ -216,6 +216,7 @@ const processDefinition = (processId: string) =>
         navigation: {
           previous: "#tokens",
           next: "#acceptSummary",
+          canSkip: () => true,
         },
       }),
       acceptSummary: prompt<TransferContext, any>({
