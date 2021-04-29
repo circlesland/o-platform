@@ -174,4 +174,30 @@ export class CirclesAccount implements CirclesAccountModel
 
     return subject;
   }
+
+  subscribeToTrustEvents(startBlock:number): Observable<BlockchainEvent>
+  {
+    const subject = new Subject<BlockchainEvent>();
+
+    if (!this.safeAddress) {
+      throw new Error(`The safe address is not known. Your contacts cannot be loaded.`)
+    }
+    const myIncomingTrusts = this.hub.queryEvents(CirclesHub.queryPastTrusts(undefined, this.safeAddress, startBlock));
+    myIncomingTrusts.events.subscribe(trustEvent =>
+    {
+      subject.next(trustEvent);
+    });
+
+    myIncomingTrusts.execute();
+
+    const myOutgoingTrusts = this.hub.queryEvents(CirclesHub.queryPastTrusts(this.safeAddress, undefined, startBlock));
+    myOutgoingTrusts.events.subscribe(trustEvent =>
+    {
+      subject.next(trustEvent);
+    });
+
+    myOutgoingTrusts.execute();
+
+    return subject;
+  }
 }

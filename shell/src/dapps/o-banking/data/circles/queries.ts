@@ -159,6 +159,14 @@ export class Queries {
     return sub;
   }
 
+  static async trustEvents(safe:Safe) : Promise<Observable<PlatformEvent>> {
+    if (!safe.safeAddress) {
+      throw new Error(`The safe.safeAddress must be set.`)
+    }
+    const account = new CirclesAccount(safe.safeAddress);
+    return <any>account.subscribeToTrustEvents(await RpcGateway.get().eth.getBlockNumber());
+  }
+
   static async addDirectTransfers(safe: Safe, startBlock?: number, progressCallback?:(progress:{count:number, current:number}) => void, tokenList?:string[]): Promise<Safe> {
     if (!safe.acceptedTokens) {
       throw new Error(`The 'acceptedTokens' property must be set.`)

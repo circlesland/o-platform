@@ -92,78 +92,91 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
         }
       }, 5000);
 
-      safe = await Queries.addOwnToken(safe);
-      console.log(new Date().getTime() + ": " + "Token via web3:", JSON.stringify(safe, null, 2));
-
-      safe.ui.loadingText = "Loading hub transfers ..";
-      publishRefreshEvent(safe);
-      _currentSafe = safe;
-
-      safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
-      const hubTransferCount = safe.transfers.rows.length;
-      console.log(new Date().getTime() + ": " + `Added ${hubTransferCount} hub transfers.`)
-      safe.ui.loadingPercent = 5;
-      safe.ui.loadingText = "Loading trust connections ..";
-      publishRefreshEvent(safe);
-      _currentSafe = safe;
-
-      safe = await Queries.addContacts(safe);
-      console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
-      safe.ui.loadingPercent = 18;
-      safe.ui.loadingText = "" +
-        "Loading accepted tokens ..";
-      publishRefreshEvent(safe);
-      _currentSafe = safe;
-
-      safe = await Queries.addAcceptedTokens(safe);
-      augmentSafeWithProfiles(safe);
-      augmentSafeWithTime(safe);
-      console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
-      safe.ui.loadingPercent = 22;
-      safe.ui.loadingText = "Loading balances ..";
-      publishRefreshEvent(safe);
-      _currentSafe = safe;
-
-      safe = await Queries.addxDaiBalances(safe);
-      safe = await Queries.addTokenBalances(safe);
-      safe.token.balance = (await new Erc20Token(RpcGateway.get(), safe.token.tokenAddress).getBalanceOf(safe.safeAddress)).toString();
-      console.log(new Date().getTime() + ": " + `Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)
-      publishRefreshEvent(safe);
-      _currentSafe = safe;
-
-      const totalBalance = Object.keys(safe.acceptedTokens.tokens).reduce((p: BN, c: string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
-      const totalBalanceStr = totalBalance.toString();
-      safe.balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
-      safe.ui.loadingPercent = 26;
-      safe.ui.loadingText = "Loading direct transfers ..";
-      publishRefreshEvent(safe);
-      _currentSafe = safe;
-
-      const lastProgress = safe.ui.loadingPercent;
-      const remainingPercents = 100 - lastProgress;
-      safe = await Queries.addDirectTransfers(safe, undefined, progress => {
-        safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
+      if (tokenList && tokenList.length == 0) {
+        // Update only the trusts
+        // TODO: Make this nicer
+        safe = await Queries.addContacts(safe);
+        console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
+        safe.ui.loadingPercent = 18;
+        safe.ui.loadingText = "" +
+          "Loading accepted tokens ..";
         publishRefreshEvent(safe);
         _currentSafe = safe;
-        // publishRefreshEvent(safe);
-      }, tokenList);
-      console.log(new Date().getTime() + ": " + `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`);
-      publishRefreshEvent(safe);
-      _currentSafe = safe;
+      } else {
 
-      safe.ui.loadingPercent = undefined;
-      safe.ui.loadingText = undefined;
+        safe = await Queries.addOwnToken(safe);
+        console.log(new Date().getTime() + ": " + "Token via web3:", JSON.stringify(safe, null, 2));
 
-      clearInterval(timeoutHandle);
+        safe.ui.loadingText = "Loading hub transfers ..";
+        publishRefreshEvent(safe);
+        _currentSafe = safe;
 
-      await augmentSafeWithTime(safe);
-      localStorage.setItem("safe", JSON.stringify(safe));
+        safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
+        const hubTransferCount = safe.transfers.rows.length;
+        console.log(new Date().getTime() + ": " + `Added ${hubTransferCount} hub transfers.`)
+        safe.ui.loadingPercent = 5;
+        safe.ui.loadingText = "Loading trust connections ..";
+        publishRefreshEvent(safe);
+        _currentSafe = safe;
 
-      await augmentSafeWithProfiles(safe);
-      publishRefreshEvent(safe);
-      _currentSafe = safe;
+        safe = await Queries.addContacts(safe);
+        console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
+        safe.ui.loadingPercent = 18;
+        safe.ui.loadingText = "" +
+          "Loading accepted tokens ..";
+        publishRefreshEvent(safe);
+        _currentSafe = safe;
 
-      subscribeChainEvents(safe);
+        safe = await Queries.addAcceptedTokens(safe);
+        augmentSafeWithProfiles(safe);
+        augmentSafeWithTime(safe);
+        console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
+        safe.ui.loadingPercent = 22;
+        safe.ui.loadingText = "Loading balances ..";
+        publishRefreshEvent(safe);
+        _currentSafe = safe;
+
+        safe = await Queries.addxDaiBalances(safe);
+        safe = await Queries.addTokenBalances(safe);
+        safe.token.balance = (await new Erc20Token(RpcGateway.get(), safe.token.tokenAddress).getBalanceOf(safe.safeAddress)).toString();
+        console.log(new Date().getTime() + ": " + `Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)
+        publishRefreshEvent(safe);
+        _currentSafe = safe;
+
+        const totalBalance = Object.keys(safe.acceptedTokens.tokens).reduce((p: BN, c: string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
+        const totalBalanceStr = totalBalance.toString();
+        safe.balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
+        safe.ui.loadingPercent = 26;
+        safe.ui.loadingText = "Loading direct transfers ..";
+        publishRefreshEvent(safe);
+        _currentSafe = safe;
+
+        const lastProgress = safe.ui.loadingPercent;
+        const remainingPercents = 100 - lastProgress;
+        safe = await Queries.addDirectTransfers(safe, undefined, progress => {
+          safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
+          publishRefreshEvent(safe);
+          _currentSafe = safe;
+          // publishRefreshEvent(safe);
+        }, tokenList);
+        console.log(new Date().getTime() + ": " + `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`);
+        publishRefreshEvent(safe);
+        _currentSafe = safe;
+
+        safe.ui.loadingPercent = undefined;
+        safe.ui.loadingText = undefined;
+
+        clearInterval(timeoutHandle);
+
+        await augmentSafeWithTime(safe);
+        localStorage.setItem("safe", JSON.stringify(safe));
+
+        await augmentSafeWithProfiles(safe);
+        publishRefreshEvent(safe);
+        _currentSafe = safe;
+
+        await subscribeChainEvents(safe);
+      }
 
       return resolve(safe);
     } catch (e) {
@@ -209,7 +222,7 @@ export function init() {
     localStorage.removeItem("safe");
   });
 
-  shellEventSubscription = window.o.events.subscribe((event: PlatformEvent & {
+  shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent & {
     profile: Profile
   }) => {
     if (event.type == "shell.loggedOut") {
@@ -226,7 +239,7 @@ export function init() {
       return;
     } else if (event.type === "circles.web3providerChanged") {
       if (!loading) {
-        subscribeChainEvents(_currentSafe);
+        await subscribeChainEvents(_currentSafe);
       }
     }
   });
@@ -240,7 +253,7 @@ export function init() {
   }
 }
 
-function subscribeChainEvents(safe: Safe) {
+async function subscribeChainEvents(safe: Safe) {
   if (blockChainEventsSubscription) {
     blockChainEventsSubscription.unsubscribe();
   }
@@ -270,6 +283,10 @@ function subscribeChainEvents(safe: Safe) {
     blockChainEventsSubscription = Queries.tokenEvents(_currentSafe).subscribe((event: any) => {
       console.log("NEW EVENT:", event);
       onEventUpdateTrigger.trigger([event.token]);
+    });
+    (await Queries.trustEvents(_currentSafe)).subscribe((event:any) => {
+      console.log("NEW EVENT:", event);
+      onEventUpdateTrigger.trigger([]);
     });
   } else {
     console.warn("_current safe is not set.")
