@@ -97,9 +97,6 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
         // TODO: Make this nicer
         safe = await Queries.addContacts(safe);
         console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
-        safe.ui.loadingPercent = 18;
-        safe.ui.loadingText = "" +
-          "Loading accepted tokens ..";
         await augmentSafeWithProfiles(safe);
         publishRefreshEvent(safe);
         localStorage.setItem("safe", JSON.stringify(safe));
