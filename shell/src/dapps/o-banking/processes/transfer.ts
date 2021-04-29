@@ -16,6 +16,7 @@ import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import {BN} from "ethereumjs-util";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -169,10 +170,23 @@ const processDefinition = (processId: string) =>
           ],
         },
         navigation: {
-          next: "#message",
+          next: "#checkAmount",
           previous: "#recipientAddress",
         },
       }),
+      checkAmount: {
+        id: "checkAmount",
+        always:[{
+          cond: (context, event) => {
+            const maxFlowInWei = new BN(context.data.maxFlows[context.data.tokens.currency.toLowerCase()]);
+            const amountInWei = new BN(RpcGateway.get().utils.toWei(context.data.tokens.amount, "ether"));
+            return maxFlowInWei.gte(amountInWei);
+          },
+          target: "#message"
+        },{
+          target: "#tokens"
+        }]
+      },
       message: prompt<TransferContext, any>({
         fieldName: "message",
         component: TextareaEditor,
