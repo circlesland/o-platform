@@ -227,7 +227,9 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
         src: importCirclesProfile.stateMachine(`importProfile`),
         data: {
           data: (context, event) => {
-            return {}
+            return {
+              safeAddress: context.data.profile.circlesAddress
+            }
           },
           messages: {},
           dirtyFlags: {}

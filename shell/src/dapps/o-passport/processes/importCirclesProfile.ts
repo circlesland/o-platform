@@ -49,12 +49,22 @@ const strings = {
 const processDefinition = (processId: string) =>
   createMachine<ImportCirclesProfileContext, any>({
     id: `${processId}`,
-    initial: "safeAddress",
+    initial: "checkSkipSafeAddress",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<ImportCirclesProfileContext, any>("error"),
 
+      checkSkipSafeAddress: {
+        always:[{
+          cond:(context) => {
+            return !!context.data.safeAddress
+          },
+          target: "#checkSafeAddress"
+        }, {
+          target: "#safeAddress"
+        }]
+      },
       safeAddress: prompt<ImportCirclesProfileContext, any>({
         fieldName: "safeAddress",
         component: TextEditor,
