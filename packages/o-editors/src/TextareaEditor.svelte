@@ -2,7 +2,7 @@
   import { EditorContext } from "./editorContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
-  import { autoresize } from "./autoresize";
+  import { autoresize } from "./autoResize";
 
   export let context: EditorContext;
 
