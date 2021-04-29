@@ -45,6 +45,7 @@ export type TrustObject = {
     displayName: string;
     avatarUrl: string;
   };
+  type?: String;
 };
 
 export type Safe = {

@@ -38,11 +38,8 @@
         ? trustedBy.profile.displayName
         : trustedBy.safeAddress;
       pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
-      limit = trusting.limit
-        ? trusting.limit.toString()
-        : "0" + "/" + trustedBy.limit
-        ? trustedBy.limit.toString()
-        : "0";
+      limit = trusting.limit ? trusting.limit.toString() : "0";
+      limit = trustedBy.limit ? limit + " / " + trustedBy.limit : limit;
       safeAddress = trusting.safeAddress;
       id = trustedBy._id;
       directionString = "MUTUAL TRUST";
@@ -82,7 +79,7 @@
             recipientAddress,
             safeAddress: tryGetCurrentSafe()?.safeAddress,
             privateKey: localStorage.getItem("circlesKey"),
-          }
+          },
         };
         return ctx;
       })
@@ -131,7 +128,7 @@
               d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
             />
           </svg>
-          <span class="inline text-dark"> {limit}% trust. </span>
+          <span class="inline text-dark"> {limit} % trust </span>
         </div>
       </div>
 

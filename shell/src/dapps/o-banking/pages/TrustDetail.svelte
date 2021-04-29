@@ -9,11 +9,11 @@
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
   import { TrustObject } from "../data/circles/types";
   import { mySafe } from "../stores/safe";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {tryGetCurrentSafe} from "../init";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { tryGetCurrentSafe } from "../init";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import Success from "../../../shared/atoms/Success.svelte";
-  import {ContextAction} from "@o-platform/o-events/dist/shell/contextAction";
+  import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";
 
   let trust: TrustObject;
 
@@ -21,37 +21,59 @@
     trustPartner: String;
   };
 
-  const contextActions = [{
-    key: "setTrust",
-    label: "Set Trust 123",
-    event: (runtimeDapp: RuntimeDapp<any>) => {
-      return new RunProcess<ShellProcessContext>(
-        shellProcess,
-        true,
-        async (ctx) => {
-          ctx.childProcessDefinition = setTrust;
-          ctx.childContext = {
-            data: {
-              safeAddress: tryGetCurrentSafe().safeAddress,
-              privateKey: localStorage.getItem("circlesKey"),
-              trustReceiver: params.trustPartner
-            }
-          };
-          return ctx;
-        });
-    }
-  }];
-  contextActions.forEach(o => window.o.publishEvent(new ContextAction(o)));
+  let mutualTrustPartner: TrustObject;
+
+  const contextActions = [
+    {
+      key: "setTrust",
+      label: "Set Trust 123",
+      event: (runtimeDapp: RuntimeDapp<any>) => {
+        return new RunProcess<ShellProcessContext>(
+          shellProcess,
+          true,
+          async (ctx) => {
+            ctx.childProcessDefinition = setTrust;
+            ctx.childContext = {
+              data: {
+                safeAddress: tryGetCurrentSafe().safeAddress,
+                privateKey: localStorage.getItem("circlesKey"),
+                trustReceiver: params.trustPartner,
+              },
+            };
+            return ctx;
+          }
+        );
+      },
+    },
+  ];
+  contextActions.forEach((o) => window.o.publishEvent(new ContextAction(o)));
 
   $: {
     if ($mySafe.trustRelations && params.trustPartner) {
-      trust = Object.values($mySafe.trustRelations.trusting).find(
-        (o) => o.safeAddress == params.trustPartner
+      trust = Object.values($mySafe.trustRelations.mutualTrusts).find(
+        (o) => o.trusting.safeAddress == params.trustPartner
       );
+      if (trust) {
+        mutualTrustPartner = trust.trustedBy;
+        trust = trust.trusting;
+        trust.type = "mutual";
+      }
+      if (!trust) {
+        trust = Object.values($mySafe.trustRelations.trusting).find(
+          (o) => o.safeAddress == params.trustPartner
+        );
+        if (trust) {
+          trust.type = "trusting";
+        }
+      }
       if (!trust) {
         trust = Object.values($mySafe.trustRelations.trustedBy).find(
           (o) => o.safeAddress == params.trustPartner
         );
+
+        if (trust) {
+          trust.type = "trusted";
+        }
       }
       if (!trust) {
         trust = <TrustObject>{
@@ -64,6 +86,7 @@
           lastBlock: 0,
           hide: true,
           firstBlock: 0,
+          type: "",
         };
       }
     }
@@ -76,7 +99,7 @@
         ctx.childContext = {
           data: {
             recipientAddress,
-          }
+          },
         };
         return ctx;
       })
@@ -91,7 +114,7 @@
           data: {
             trustLimit: 100,
             trustReceiver: recipientAddress,
-          }
+          },
         };
         return ctx;
       })
@@ -106,7 +129,7 @@
           data: {
             trustLimit: 0,
             trustReceiver: recipientAddress,
-          }
+          },
         };
         return ctx;
       })
@@ -122,66 +145,81 @@
   <section class="justify-center mb-2 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
       <div class="text-circleslightblue text-sm font-bold">TRUST</div>
-
       <div class="flex flex-col">
-        <div class="text-left text-sm text-light mb-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 inline -mt-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-            />
-          </svg>
-          <span class="inline text-dark"> {trust.limit} % mutual trust. </span>
-        </div>
-        <div class="text-left">
-          <div>
-            <div class="text-sm breadcrumbs">
-              <ul>
-                <li>
-                  <a href="/#/banking/trusts/Name%201"
-                    >{trust.profile
-                      ? trust.profile.displayName
-                      : trust.safeAddress}</a
-                  >
-                </li>
-                <!--
-                <li>
-                  <a href="/#/banking/trusts/Name%201">Haral233</a>
-                </li>
-                <li><a href="/#/banking/trusts/Name%201">Djingis</a></li>
-                <li>
-                  <a href="/#/banking/trusts/Name%201">{params.trustPartner}</a>
-                </li>-->
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div>
-          <button class="btn btn-sm btn-error">
+        {#if trust.type == "trusting" || trust.type == "mutual"}
+          <div class="text-left text-sm text-light mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 inline "
               fill="none"
               viewBox="0 0 24 24"
-              class="inline-block w-4 h-4 mr-2 stroke-current"
+              stroke="currentColor"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                d="M11 17l-5-5m0 0l5-5m-5 5h12"
               />
             </svg>
-            Remove trust
-          </button>
-        </div>
+            <span class="inline text-dark"
+              >You are trusting {trust.profile
+                ? trust.profile.displayName
+                : trust.safeAddress} to {trust.limit}%
+            </span>
+          </div>
+        {/if}
+        {#if trust.type == "trusted" || trust.type == "mutual"}
+          <div class="text-left text-sm text-light mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 inline "
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+            <span class="inline text-dark"
+              >{trust.profile ? trust.profile.displayName : trust.safeAddress} is
+              trusting you to {trust.type == "mutual"
+                ? mutualTrustPartner.limit
+                : trust.limit}%
+            </span>
+          </div>
+        {/if}
+      </div>
+    </div>
+  </section>
+  <section class="justify-center mb-2 text-circlesdarkblue">
+    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+      <div class="text-circleslightblue text-sm font-bold">CHANGE TRUST</div>
+
+      <div class="flex items-center w-full space-x-2 sm:space-x-4">
+        <button
+          class="btn btn-block btn-error"
+          on:click={() => execTrust(trust)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="inline-block w-4 h-4 mr-2 stroke-current"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+            />
+          </svg>
+          Remove trust
+        </button>
       </div>
     </div>
   </section>
