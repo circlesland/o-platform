@@ -38,7 +38,7 @@
     identify,
     IdentifyContextData,
   } from "./dapps/o-passport/processes/identify";
-  import { SvelteToast } from "@zerodevx/svelte-toast";
+  import { SvelteToast } from "./shared/molecules/Toast";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";
 
@@ -196,7 +196,7 @@
   <header class="w-full mx-auto md:w-2/3 xl:w-1/2 z-10">
   </header> -->
 
-  <SvelteToast />
+  <div class="w-full toastContainer"><SvelteToast class="toasty" /></div>
   <main class="flex-1 overflow-y-visible z-30" class:blur={isOpen}>
     <div class="w-full mx-auto {layoutClasses}">
       <Router
@@ -324,6 +324,9 @@
 </Modal>
 
 <style>
+  .toastContainer ul {
+    width: 100% !important;
+  }
   .isOpen {
     background: transparent;
     border: none;

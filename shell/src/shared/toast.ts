@@ -1,4 +1,4 @@
-import { SvelteToast, toast } from "@zerodevx/svelte-toast";
+import { SvelteToast, toast } from "./molecules/Toast";
 import { onMount } from "svelte";
 
 /**

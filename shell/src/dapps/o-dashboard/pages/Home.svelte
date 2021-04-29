@@ -2,7 +2,7 @@
   import { dashboard } from "../../o-dashboard.manifest";
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import { me } from "../../../shared/stores/me";
-
+  import { showToast } from "../../../shared/toast";
   $: me;
 
   function buyXats() {
@@ -10,6 +10,7 @@
       dashboard.actions.find((o) => o.key == "xats").event(undefined)
     );
   }
+  showToast("success", "Copied to Clipboard!");
 </script>
 
 <DashboardHeader />

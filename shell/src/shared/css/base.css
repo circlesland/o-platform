@@ -33,6 +33,10 @@
   --su: 145 45% 50%;
   --wa: 36 100% 50%;
   --er: 0 87% 67%;
+
+  --toastContainerTop: 0;
+  --toastContainerRight: 0;
+  --toastWidth: 100%;
 }
 
 .text-gradient {
