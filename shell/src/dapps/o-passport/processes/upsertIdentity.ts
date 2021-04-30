@@ -54,25 +54,13 @@ const strings = {
 const processDefinition = (processId: string) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
-    initial: "checkFirstName",
+    initial: "firstName",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<UpsertIdentityContext, any>("error"),
 
-      checkFirstName: {
-        id: "checkFirstName",
-        always: [
-          {
-            cond: (context) => false,
-            target: "#checkLastName",
-          },
-          {
-            target: "#firstName",
-          },
-        ],
-      },
-      editFirstName: prompt<UpsertIdentityContext, any>({
+      firstName: prompt<UpsertIdentityContext, any>({
         fieldName: "firstName",
         component: TextEditor,
         params: {
@@ -82,22 +70,10 @@ const processDefinition = (processId: string) =>
         },
         dataSchema: yup.string().required("Please enter your first name."),
         navigation: {
-          next: "#checkLastName",
+          next: "#lastName",
         },
       }),
-      checkLastName: {
-        id: "checkLastName",
-        always: [
-          {
-            cond: (context) => false,
-            target: "#checkCountry",
-          },
-          {
-            target: "#lastName",
-          },
-        ],
-      },
-      editLastName: prompt<UpsertIdentityContext, any>({
+      lastName: prompt<UpsertIdentityContext, any>({
         fieldName: "lastName",
         component: TextEditor,
         params: {
@@ -106,23 +82,11 @@ const processDefinition = (processId: string) =>
           submitButtonText: "Save last name",
         },
         navigation: {
-          next: "#checkCountry",
-          previous: "#checkFirstName",
+          next: "#country",
+          previous: "#firstName",
           canSkip: () => true,
         },
       }),
-      checkCountry: {
-        id: "checkCountry",
-        always: [
-          {
-            cond: (context) => false,
-            target: "#checkDream",
-          },
-          {
-            target: "#country",
-          },
-        ],
-      },
       country: prompt<UpsertIdentityContext, any>({
         fieldName: "country",
         component: DropdownSelectEditor,
@@ -136,23 +100,11 @@ const processDefinition = (processId: string) =>
           getSelectionLabel: (option) => option.label,
         },
         navigation: {
-          next: "#checkDream",
-          previous: "#checkLastName",
+          next: "#dream",
+          previous: "#lastName",
           canSkip: () => true,
         },
       }),
-      checkDream: {
-        id: "checkDream",
-        always: [
-          {
-            cond: (context) => false,
-            target: "#checkPreviewAvatar",
-          },
-          {
-            target: "#dream",
-          },
-        ],
-      },
       dream: prompt<UpsertIdentityContext, any>({
         fieldName: "dream",
         component: TextareaEditor,
@@ -163,7 +115,7 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#checkPreviewAvatar",
-          previous: "#checkCountry",
+          previous: "#country",
         },
       }),
       checkPreviewAvatar: {
@@ -178,7 +130,7 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      avatarUrl: prompt<UpsertIdentityContext, any>({
+      previewAvatar: prompt<UpsertIdentityContext, any>({
         fieldName: "avatarUrl",
         component: PicturePreview,
         params: {
@@ -187,7 +139,8 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#checkEditAvatar",
-          previous: "#checkDream",
+          skip: "#upsertIdentity",
+          previous: "#dream",
           canSkip: () => true,
         },
       }),
@@ -205,7 +158,7 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      avatar: prompt<UpsertIdentityContext, any>({
+      editAvatar: prompt<UpsertIdentityContext, any>({
         fieldName: "avatar",
         component: PictureEditor,
         params: {
@@ -214,7 +167,8 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#checkUploadAvatar",
-          previous: "#checkDream",
+          skip: "#upsertIdentity",
+          previous: "#dream",
           canSkip: () => true,
         },
       }),

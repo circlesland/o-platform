@@ -37,7 +37,7 @@
   import {
     identify,
     IdentifyContextData,
-  } from "./dapps/o-passport/processes/identify";
+  } from "./dapps/o-passport/processes/identify/identify";
   import { SvelteToast } from "./shared/molecules/Toast";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";

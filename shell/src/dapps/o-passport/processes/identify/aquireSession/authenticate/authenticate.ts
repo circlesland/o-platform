@@ -6,8 +6,8 @@ import BooleanEditor from "@o-platform/o-editors/src/BooleanEditor.svelte";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import { LoginWithEmailDocument, VerifyDocument } from "../data/auth/types";
 import * as yup from "yup";
+import {LoginWithEmailDocument, VerifyDocument} from "../../../../data/auth/types";
 
 export type AuthenticateContextData = {
   appId?: string;
@@ -76,11 +76,11 @@ const processDefinition = (processId: string) =>
         id: "checkAcceptTos",
         always: [
           {
-            cond: () => true,
-            target: "#acceptTos",
+            cond: () => localStorage.getItem("acceptTos") === "__TOS_VERSION__",
+            target: "#requestAuthCode",
           },
           {
-            target: "#requestAuthCode",
+            target: "#acceptTos",
           },
         ],
       },
@@ -101,9 +101,16 @@ const processDefinition = (processId: string) =>
           .oneOf([true], "Please accept the terms to proceed"),
 
         navigation: {
-          next: "#requestAuthCode",
+          next: "#storeAcceptTos",
         },
       }),
+      storeAcceptTos: {
+        id: "storeAcceptTos",
+        entry: context => {
+          localStorage.setItem("acceptTos", "__TOS_VERSION__");
+        },
+        always: "#requestAuthCode"
+      },
       // Request an auth code to the given e-mail address
       // and then go to the 'code' input step.
       requestAuthCode: {

@@ -19,6 +19,7 @@
   </label>
 
   <textarea
+    readonly={context.isReadonly ? 'readonly' : ''}
     rows="4"
     name="input"
     on:keydown={onkeydown}

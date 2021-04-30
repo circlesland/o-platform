@@ -3,12 +3,9 @@ import { Prompt } from "../events/prompt";
 import { ProcessContext } from "../interfaces/processContext";
 import { AnyEventObject } from "xstate";
 import {Schema} from "yup";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
-/**
- * Bubbles a 'process.prompt' event in order to show the specified component to the user.
- * @param spec
- */
-export function show(spec: {
+export type PromptSpec = {
   passDataByReference?: boolean; // If the value of 'context.data' should be passed by reference (default: no)
   fieldName?: string;
   component: any;
@@ -21,36 +18,46 @@ export function show(spec: {
   isSensitive?: boolean;
   navigation?: {
     canGoBack?: (
-      context: ProcessContext<any>,
-      event: AnyEventObject
+        context: ProcessContext<any>,
+        event: AnyEventObject
     ) => boolean;
     canSkip?: (context: ProcessContext<any>, event: AnyEventObject) => boolean;
   };
   dataSchema?: Schema<any,any>;
-}) {
-  return bubble((context, event: AnyEventObject) => {
-    const canGoBack = !spec.navigation?.canGoBack
+};
+
+export type PromptSpecOrFactory<TContext extends ProcessContext<any>, TEvent extends PlatformEvent>
+    = PromptSpec | ((context:TContext, event:TEvent) => PromptSpec)
+
+/**
+ * Bubbles a 'process.prompt' event in order to show the specified component to the user.
+ * @param spec
+ */
+export function show<TContext extends ProcessContext<any>, TEvent extends PlatformEvent>(spec: PromptSpecOrFactory<TContext, TEvent>) {
+  return bubble((context: TContext, event: any) => {
+    const concreteSpec = typeof spec === "function" ? spec(context, event) : <PromptSpec>spec;
+    const canGoBack = !concreteSpec.navigation?.canGoBack
       ? false
-      : spec.navigation.canGoBack(context, event);
-    const canSkip = !spec.navigation?.canSkip
+      : concreteSpec.navigation.canGoBack(context, event);
+    const canSkip = !concreteSpec.navigation?.canSkip
       ? false
-      : spec.navigation.canSkip(context, event);
+      : concreteSpec.navigation.canSkip(context, event);
     return <Prompt>{
       type: "process.prompt",
-      fieldName: spec.fieldName,
-      component: spec.component,
-      data: spec.passDataByReference
+      fieldName: concreteSpec.fieldName,
+      component: concreteSpec.component,
+      data: concreteSpec.passDataByReference
         ? context.data
         : JSON.parse(JSON.stringify(context.data)),
       dirtyFlags: context.dirtyFlags,
       messages: context.messages,
-      params: spec.params,
-      isSensitive: spec.isSensitive,
+      params: concreteSpec.params,
+      isSensitive: concreteSpec.isSensitive,
       navigation: {
         canGoBack,
         canSkip,
       },
-      dataSchema: spec.dataSchema,
+      dataSchema: concreteSpec.dataSchema,
     };
   });
 }

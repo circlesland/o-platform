@@ -11,7 +11,7 @@
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
   import { onMount } from "svelte";
   const {push} = require("svelte-spa-router");
-  import {identify} from "../processes/identify";
+  import {identify} from "../processes/identify/identify";
 
   let runningProcess: Process;
 

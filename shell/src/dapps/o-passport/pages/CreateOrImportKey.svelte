@@ -1,20 +1,9 @@
 <script lang="ts">
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
-  import Error from "../../../shared/atoms/Error.svelte";
-  import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-  import Success from "../../../shared/atoms/Success.svelte";
   import ProcessContainer from "../../../shared/molecules/ProcessContainer.svelte";
   import {Process} from "@o-platform/o-process/dist/interfaces/process";
   import {Subscription} from "rxjs";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
-  import {ProcessStarted} from "@o-platform/o-process/dist/events/processStarted";
   import {onMount} from "svelte";
   import {push} from "svelte-spa-router";
-  import {createOrRestoreKey} from "../processes/createOrRestoreKey";
 
   let devHome = true;
   let devDash = false;
@@ -26,6 +15,7 @@
   })
 
   function createOrImportKey() {
+    /*
     // TODO: Refactor to request/response pattern with timeout
     let answerSubscription: Subscription;
     let requestId: string;
@@ -51,8 +41,9 @@
         console.log("Home.svelte: displaying process:", runningProcess)
       }
     });
+     */
 
-    window.o.publishEvent(requestEvent);
+    // window.o.publishEvent(requestEvent);
   }
 </script>
 

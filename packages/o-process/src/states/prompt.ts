@@ -26,6 +26,7 @@ export type PromptSpec = {
       event: { type: string; [x: string]: any }
     ) => boolean;
     next: string;
+    skip?: string;
     canSkip?: (
       context: ProcessContext<any>,
       event: { type: string; [x: string]: any }
@@ -39,8 +40,7 @@ export function prompt<
   TContext extends ProcessContext<any>,
   TEvent extends PlatformEvent
 >(spec: PromptSpec) {
-  let canGoBack = (context: ProcessContext<any>, event: any) =>
-    !!spec.navigation?.previous;
+  let canGoBack = (context: ProcessContext<any>, event: any) => !!spec.navigation?.previous;
   if (canGoBack && spec.navigation?.canGoBack) {
     canGoBack = spec.navigation.canGoBack;
   }
@@ -103,7 +103,7 @@ export function prompt<
                 spec.navigation.canSkip(context, event)
               );
             },
-            target: spec.navigation?.next ?? "show",
+            target: spec.navigation?.skip ?? spec.navigation?.next ?? "show",
           },
           {
             target: "show",

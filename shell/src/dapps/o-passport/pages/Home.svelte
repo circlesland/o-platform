@@ -1,13 +1,9 @@
 <script lang="ts">
-  import { createOrRestoreKey } from "../processes/createOrRestoreKey";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
-  import Error from "../../../shared/atoms/Error.svelte";
-  import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-  import Success from "../../../shared/atoms/Success.svelte";
   import { upsertIdentity } from "../processes/upsertIdentity";
 
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
@@ -24,11 +20,6 @@
   $: me;
 
   $: {
-    if (params && params.jwt) {
-      // TODO: Verify the token and extract the e-mail address
-      connectOrCreateKey(params.jwt);
-      params.jwt = null;
-    }
     name = $me ? $me.circlesAddress : "";
   }
 
@@ -39,25 +30,6 @@
     });
     app.$destroy();
   };
-
-  function connectOrCreateKey(jwt?: string) {
-    const sub = jwt; //.sub; //TODO: Get email from jwt
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = createOrRestoreKey;
-        ctx.childContext = {
-          data: {
-            loginEmail: sub,
-          }
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
-  }
 
   function editProfile() {
     const requestEvent = new RunProcess<ShellProcessContext>(

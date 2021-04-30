@@ -12,6 +12,8 @@ let api_endpoint = "https://api.circles.land";
 let files_endpoint = "https://files.circles.land";
 let appId = "circles.land";
 let filesAppId = "files.circles.land";
+let tosVersion = "0.0.0";
+
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   auth_endpoint = "https://auth.circles.name";
   api_endpoint = "https://api.circles.land";
@@ -43,6 +45,7 @@ console.log(`Api Endpoint Url: ${api_endpoint}`);
 console.log(`Files Endpoint Url: ${files_endpoint}`);
 console.log(`AppId: ${appId}`);
 console.log(`Files AppId: ${filesAppId}`);
+console.log(`tosVersion (terms of service): ${tosVersion}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
@@ -78,6 +81,15 @@ module.exports = {
         options: {
           search: "__AUTH_ENDPOINT__",
           replace: auth_endpoint,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__TOS_VERSION__",
+          replace: tosVersion,
           flags: "g",
         },
       },

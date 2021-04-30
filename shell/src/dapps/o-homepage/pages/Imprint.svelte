@@ -8,7 +8,7 @@
   import {
     identify,
     IdentifyContextData,
-  } from "../../o-passport/processes/identify";
+  } from "../../o-passport/processes/identify/identify";
   import { me } from "../../../shared/stores/me";
 
   $: {
