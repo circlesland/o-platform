@@ -10,6 +10,7 @@ import {loadProfile} from "../identify/services/loadProfile";
 export type InviteContextData = {
   safeAddress?:string;
   inviteProfileId?: number;
+  circlesSafeOwner?: string;
 };
 
 export const INVITE_VALUE = 0.25;
@@ -28,7 +29,16 @@ const processDefinition = (processId: string) =>
 
       loadProfile: {
         invoke: {
-          src: context => loadProfile(context.data.inviteProfileId)
+          src: context => {
+            return loadProfile(context.data.inviteProfileId);
+          },
+          onDone: {
+            actions: (context, event) => {
+              context.data.circlesSafeOwner = event.data.circlesSafeOwner;
+            },
+            target: "#amount"
+          },
+          onError: "#error"
         }
       },
 
@@ -62,10 +72,10 @@ const processDefinition = (processId: string) =>
             data: (context, event) => {
               return {
                 safeAddress: context.data.safeAddress,
-                recipientAddress: context.data.recipientAddress,
+                recipientAddress: context.data.circlesSafeOwner,
                 tokens: {
                   currency: "xdai",
-                  amount: parseFloat(context.data.tokens.amount) * INVITE_VALUE
+                  amount: parseFloat(context.data.amount.key) * INVITE_VALUE
                 }
               };
             },

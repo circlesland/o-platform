@@ -3,7 +3,8 @@ import Home from "./o-passport/pages/Home.svelte";
 import Account from "./o-passport/pages/Account.svelte";
 import Keys from "./o-passport/pages/Keys.svelte";
 import Settings from "./o-passport/pages/Settings.svelte";
-import CreatePassport from "./o-passport/pages/CreatePassport.svelte";
+import
+  CreatePassport from "./o-passport/pages/CreatePassport.svelte";
 import CreateOrImportKey from "./o-passport/pages/CreateOrImportKey.svelte";
 import Login from "./o-passport/pages/Login.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
@@ -38,40 +39,6 @@ const profile: PageManifest = {
       return true;
     },
   ],
-};
-
-const createPassport : PageManifest = {
-  isDefault: false,
-  isSystem: true,
-  isFullWidth: true,
-  hideFooter: true,
-  routeParts: ["new-passport"],
-  component: CreatePassport,
-  title: "Create your new passport",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    }
-  ]
-};
-
-const createOrImportKey : PageManifest = {
-  isDefault: false,
-  isSystem: true,
-  isFullWidth: true,
-  hideFooter: true,
-  routeParts: ["create-or-import-key"],
-  component: CreateOrImportKey,
-  title: "Create a new key or import an existing",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    }
-  ]
 };
 
 const account: PageManifest = {
@@ -169,5 +136,5 @@ export const passport: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  pages: [index, profile, account, keys, settings, createPassport, createOrImportKey, login],
+  pages: [index, profile, account, keys, settings, login],
 };

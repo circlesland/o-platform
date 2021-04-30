@@ -32,6 +32,7 @@
           data: {
             id: profile.id,
             circlesAddress: profile.circlesAddress,
+            circlesSafeOwner: profile.circlesSafeOwner,
             avatarCid: profile.avatarCid,
             avatarUrl: profile.avatarUrl,
             avatarMimeType: profile.avatarMimeType,

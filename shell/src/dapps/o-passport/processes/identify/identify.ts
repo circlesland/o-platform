@@ -13,6 +13,7 @@ import {acquireSession} from "./aquireSession/acquireSession";
 import {connectSafe} from "./connectSafe/connectSafe";
 import {createSafe} from "./createSafe/createSafe";
 import {UpsertProfileDocument} from "../../data/api/types";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export type IdentifyContextData = {
   oneTimeCode?:string
@@ -179,7 +180,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
             context.data.profile.circlesAddress = event.data.safeAddress;
             context.data.privateKey = event.data.privateKey;
           },
-          target: "#upsertSafeAddress"
+          target: "#upsertSafeAddressAndOwner"
         }],
         onError: "#error"
       }
@@ -205,24 +206,27 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
           dirtyFlags:{},
           messages:{},
         },
-        onDone:  "#success",
+        onDone:  "#upsertSafeAddressAndOwner",
         onError: "#error"
       }
     },
 
-    upsertSafeAddress: {
-      entry: (ctx) => console.log(`enter: identify.upsertSafeAddress`, ctx.data),
-      id: "upsertSafeAddress",
+    upsertSafeAddressAndOwner: {
+      entry: (ctx) => console.log(`enter: identify.upsertSafeAddressAndOwner`, ctx.data),
+      id: "upsertSafeAddressAndOwner",
       on: {
-        ...<any>ipc(`upsertSafeAddress`)
+        ...<any>ipc(`upsertSafeAddressAndOwner`)
       },
       invoke: {
-        src: async (context, event) => {
+        src: async (context) => {
           const apiClient = await window.o.apiClient.client.subscribeToResult();
           const result = await apiClient.mutate({
             mutation: UpsertProfileDocument,
             variables: {
-              ...context.data.profile
+              ...context.data.profile,
+              circlesSafeOwner: localStorage.getItem("circlesKey")
+                ? RpcGateway.get().eth.accounts.privateKeyToAccount(localStorage.getItem("circlesKey")).address
+                : undefined
             },
           });
 

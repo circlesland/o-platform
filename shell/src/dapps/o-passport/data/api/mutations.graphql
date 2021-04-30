@@ -37,12 +37,13 @@ mutation upsertProfile(
     $id: Int
     $firstName: String!
     $lastName: String
-    $dream: String!
+    $dream: String
     $country: String
     $avatarUrl: String
     $avatarCid: String
     $avatarMimeType: String
     $circlesAddress: String
+    $circlesSafeOwner: String
 ) {
     upsertProfile(
         data: {
@@ -55,6 +56,7 @@ mutation upsertProfile(
             avatarCid: $avatarCid
             avatarMimeType: $avatarMimeType
             circlesAddress: $circlesAddress
+            circlesSafeOwner: $circlesSafeOwner
         }
     ) {
         id
@@ -66,5 +68,6 @@ mutation upsertProfile(
         avatarCid
         avatarMimeType
         circlesAddress
+        circlesSafeOwner
     }
 }

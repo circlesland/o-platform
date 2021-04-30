@@ -10,6 +10,7 @@ query myProfile {
     profiles(query:{}) {
         id
         circlesAddress
+        circlesSafeOwner
         firstName
         lastName
         dream
@@ -24,6 +25,7 @@ query profiles($id:Int!) {
     profiles(query:{id: $id}) {
         id
         circlesAddress
+        circlesSafeOwner
         firstName
         lastName
         dream

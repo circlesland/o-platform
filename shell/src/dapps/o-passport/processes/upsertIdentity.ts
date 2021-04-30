@@ -19,6 +19,7 @@ import * as yup from "yup";
 export type UpsertIdentityContextData = {
   id?: number;
   circlesAddress?: string;
+  circlesSafeOwner?: string;
   loginEmail: string;
   firstName?: string;
   lastName?: string;
@@ -221,14 +222,14 @@ const processDefinition = (processId: string) =>
               variables: {
                 id: context.data.id,
                 circlesAddress: context.data.circlesAddress,
+                circlesSafeOwner: context.data.circlesSafeOwner,
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 dream: context.data.dream,
                 country: context.data.country,
                 avatarUrl: event.data.url ?? context.data.avatarUrl,
                 avatarCid: event.data.hash ?? context.data.avatarCid,
-                avatarMimeType:
-                  event.data.mimeType ?? context.data.avatarMimeType,
+                avatarMimeType: event.data.mimeType ?? context.data.avatarMimeType,
               },
             });
 

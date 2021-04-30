@@ -15,7 +15,6 @@
   import {loadProfile} from "../processes/identify/services/loadProfile";
   import {mySafe} from "../../o-banking/stores/safe";
 
-
   let name;
   let profile: Profile;
 
@@ -55,6 +54,11 @@
         ctx.childContext = {
           data: {
             id: profile.id,
+            circlesAddress: profile.circlesAddress,
+            circlesSafeOwner: profile.circlesSafeOwner,
+            avatarCid: profile.avatarCid,
+            avatarUrl: profile.avatarUrl,
+            avatarMimeType: profile.avatarMimeType,
             firstName: profile.firstName,
             lastName: profile.lastName,
             country: profile.country,
@@ -192,7 +196,7 @@
     </div>
   </section>
 
-  {#if profile && !profile.circlesAddress && $me && $me.id !== profile.id}
+  {#if profile && !profile.circlesAddress}
     <section class="justify-center mb-2 text-circlesdarkblue">
       <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
         <div
@@ -200,7 +204,7 @@
         >
           This citizen is waiting to be empowered by you.
         </div>
-
+        {#if $me && $me.id !== profile.id && $mySafe && $mySafe.accountxDai}
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
             <div class="inline-block break-all text-xs">
@@ -210,6 +214,17 @@
             </div>
           </div>
         </div>
+        {:else}
+          <div className="flex items-center w-full space-x-2 sm:space-x-4">
+            <div className="text-left">
+              <div className="inline-block break-all text-xs">
+                <div className="flex items-center w-full space-x-2 sm:space-x-4">
+                  <!-- TODO: Safe wasn't opened before so we don't know our balance (at least not on $mySafe)  -->
+                </div>
+              </div>
+            </div>
+          </div>
+        {/if}
       </div>
     </section>
   {/if}
