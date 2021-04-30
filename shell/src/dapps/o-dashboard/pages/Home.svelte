@@ -79,13 +79,13 @@
         </svg>
       </div>
       <div class="flex items-center">
+        Copy the invite link and send it to someone who's already a citizen of circles.land:
         <div class="text-xl font-circles mr-2 text-secondary font-medium">
-          Copy the invite link and send it to someone who's already a citizen of circles.land:
           <div class="flex items-center w-full space-x-2 sm:space-x-4">
             <div class="text-left">
               <div class="inline-block break-all text-xs" id="clipboard">
                 <input type="text" class="hidden" bind:value={inviteLink}/>
-                {inviteLink}
+                <p class="text-3xl">{inviteLink}</p>
                 <div
                   class="inline-block text-light cursor-pointertext-center text-xs relative -bottom-1"
                   on:click={copy}
@@ -109,7 +109,7 @@
               </div>
             </div>
             <div>
-              <br/>
+              or
               <a href="#/dashboard/create-hub">Create a hub</a>
             </div>
           </div>

@@ -2,11 +2,11 @@
   import { dashboard } from "../../o-dashboard.manifest";
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import { me } from "../../../shared/stores/me";
-  import { showToast } from "../../../shared/toast";
   import {onMount} from "svelte";
   import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
   import {BN} from "ethereumjs-util";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
+  import {INVITE_VALUE} from "src/dapps/o-passport/processes/invite/invite";
 
   $: me;
 
@@ -30,13 +30,7 @@
     }
 
     accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
-
-    if (localStorage.getItem("isCreatingSafe")) {
-      showFundHint = true;
-      return;
-    }
-    accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
-    showFundHint = localStorage.getItem("isCreatingSafe") == "true" || new BN(accountBalance).lt(new BN(safeDeployThreshold));
+    accountBalance = parseFloat(RpcGateway.get().utils.fromWei(await RpcGateway.get().eth.getBalance(accountAddress), "ether")).toFixed(2);
   })
 
   const copy = () => {
@@ -92,6 +86,29 @@
       <p class="text-xl">Get xDai</p>
       <div class="flex justify-end flex-1 mr-1 text-primary">
       </div>
+    </div>
+  </div>
+</section>
+<section class="flex items-center justify-center mb-8">
+  <div class="flex items-center">
+  </div>
+  <div class="flex items-center">
+    <div class="text-center">
+      You can currently invite
+    </div>
+    <div class="flex justify-end flex-1 mr-1 text-primary">
+    </div>
+  </div>
+</section>
+<section class="flex items-center justify-center mb-8">
+  <div class="flex items-center">
+  </div>
+  <div class="flex items-center">
+    <div class="text-center">
+      <p class="text-3xl">{parseFloat(parseFloat(accountBalance ? accountBalance : 0) / INVITE_VALUE)} People</p>
+      <p class="text-l">({accountBalance} xDai)</p>
+    </div>
+    <div class="flex justify-end flex-1 mr-1 text-primary">
     </div>
   </div>
 </section>
