@@ -4,21 +4,25 @@
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import Select from "svelte-select";
   import Item from "./DropdownCurrencyItem.svelte";
-  import {RpcGateway} from "../../o-circles/dist/rpcGateway";
+  import { RpcGateway } from "../../o-circles/dist/rpcGateway";
 
   export let context: CurrencyTransferContext;
 
-  let amount: string = "0";
+  let amount: string = "";
   let maxAmount: string = "0";
   $: selectedCurrency = context.params.currencies.find(
     (o) => o.value === "crc"
   );
   $: selected = "CRC";
-  $:{
+  $: {
     if (selected && context.data.maxFlows) {
       const key = selected.toLowerCase();
       if (context.data.maxFlows[key]) {
-        maxAmount = parseFloat(RpcGateway.get().utils.fromWei(context.data.maxFlows[key], "ether")).toFixed(2).toString();
+        maxAmount = parseFloat(
+          RpcGateway.get().utils.fromWei(context.data.maxFlows[key], "ether")
+        )
+          .toFixed(2)
+          .toString();
       }
     }
   }
@@ -44,7 +48,6 @@
 <p class="label-text">
   {context.params.label}
 </p>
-<p>Max: {maxAmount}</p>
 <div class="flex flex-col w-full">
   <div class="mt-1 relative rounded-md w-full shadow-sm">
     <div
@@ -72,7 +75,7 @@
       name="price"
       id="price"
       class="input input-bordered block w-full pl-12 pr-12 sm:text-sm "
-      placeholder="0.00"
+      placeholder="0.00 (Max: {maxAmount})"
       bind:value={amount}
     />
     <div class="absolute inset-y-0 right-1 flex items-center themed">
@@ -89,20 +92,15 @@
         {Item}
         on:select={handleSelect}
       />
-      <!-- <select
-        id="currency"
-        name="currency"
-        class=" h-full py-0 pl-2 mr-1 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
-        bind:value={selectedCurrency}
-      >
-        {#each context.params.currencies as currency}
-          <option label={currency.label} value={currency.key}
-            >{currency.label}</option
-          >
-        {/each}
-      </select> -->
     </div>
   </div>
+  {#if context.messages[context.fieldName]}
+    <label class="label text-right" for="form-error">
+      <span id="form-error" class="label-text-alt text-error "
+        >{context.messages[context.fieldName]}</span
+      >
+    </label>
+  {/if}
 
   <ProcessNavigation
     on:buttonClick={() => sendAnswer(amount, selectedCurrency)}
