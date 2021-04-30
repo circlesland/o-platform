@@ -8,7 +8,7 @@ import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {upsertIdentity} from "../upsertIdentity";
 import {loadProfile} from "./services/loadProfile";
 import {getSessionInfo} from "./services/getSessionInfo";
-import {connectOrCreate} from "./prompts/connectOrCreate";
+import {promptChoice} from "./prompts/promptChoice";
 import {acquireSession} from "./aquireSession/acquireSession";
 import {connectSafe} from "./connectSafe/connectSafe";
 import {createSafe} from "./createSafe/createSafe";
@@ -139,13 +139,18 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
       }
     },
 
-    connectOrCreate: connectOrCreate({
+    connectOrCreate: promptChoice({
       id: "connectOrCreate",
       promptLabel: strings.choiceLabel,
-      createLabel: strings.choiceNoLabel,
-      connectLabel: strings.choiceYesLabel,
-      onCreate: "#createSafe",
-      onConnect: "#connectSafe"
+      options: [{
+        key: "connect",
+        label: strings.choiceYesLabel,
+        target: "#connectSafe"
+      }, {
+        key: "create",
+        label: strings.choiceNoLabel,
+        target: "#createSafe"
+      }]
     }),
 
     connectSafe: {

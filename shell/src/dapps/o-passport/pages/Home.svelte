@@ -10,7 +10,10 @@
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import {getCountryName} from "../../../shared/countries";
   import {me} from "../../../shared/stores/me";
-  import {Profile, ProfilesDocument} from "../data/api/types";
+  import {Profile} from "../data/api/types";
+  import {invite} from "../processes/invite/invite";
+  import {loadProfile} from "../processes/identify/services/loadProfile";
+  import {mySafe} from "../../o-banking/stores/safe";
 
 
   let name;
@@ -20,21 +23,10 @@
     profileId?: string
   }
 
-  async function loadProfile(profileId?: string) {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
+  async function execLoadProfile(profileId?: string) {
     if (profileId && parseInt(profileId)) {
-      const profiles = await apiClient.query({
-        query: ProfilesDocument,
-        variables: {
-          id: parseInt(profileId)
-        }
-      });
-      if (profiles.data && profiles.data.profiles.length == 1) {
-        profile = profiles.data.profiles[0];
-        console.log("Other Profile: ", profile);
-      } else {
-        throw new Error(`Couldn't find the profile with the id ${profileId}`);
-      }
+      profile = await loadProfile(parseInt(profileId));
+      console.log("Other Profile: ", profile);
     } else if ($me) {
       profile = $me;
     }
@@ -42,7 +34,7 @@
 
   $: {
     if ($me || (params && params.profileId)) {
-      loadProfile(params ? params.profileId : undefined);
+      execLoadProfile(params ? params.profileId : $me.id.toString());
     }
   }
 
@@ -67,6 +59,25 @@
             lastName: profile.lastName,
             country: profile.country,
             dream: profile.dream,
+          }
+        };
+        return ctx;
+      }
+    );
+
+    window.o.publishEvent(requestEvent);
+  }
+
+  function execInvite() {
+    const requestEvent = new RunProcess<ShellProcessContext>(
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = invite;
+        ctx.childContext = {
+          data: {
+            safeAddress: $mySafe.safeAddress,
+            inviteProfileId: parseInt(params.profileId)
           }
         };
         return ctx;
@@ -194,7 +205,7 @@
           <div class="text-left">
             <div class="inline-block break-all text-xs">
               <div class="flex items-center w-full space-x-2 sm:space-x-4">
-                <button class="btn btn-block btn-primary w-full" on:click={() => {}}>Invite {profile.firstName} now</button>
+                <button class="btn btn-block btn-primary w-full" on:click={execInvite}>Invite {profile.firstName} now</button>
               </div>
             </div>
           </div>

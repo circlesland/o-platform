@@ -55,11 +55,29 @@ const strings = {
 const processDefinition = (processId: string) =>
   createMachine<TransferContext, any>({
     id: `${processId}:transfer`,
-    initial: "checkRecipientAddress",
+    initial: "checkIsPreFilled",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<TransferContext, any>("error"),
+
+      checkIsPreFilled: {
+        id: "checkIsPreFilled",
+        always: [
+          {
+            cond: (context) => {
+              return RpcGateway.get().utils.isAddress(context.data.safeAddress)
+              && RpcGateway.get().utils.isAddress(context.data.recipientAddress)
+              && RpcGateway.get().utils.isBN(context.data.tokens?.amount)
+              && context.data.tokens?.currency == "xdai";
+            },
+            target: "#acceptSummary",
+          },
+          {
+            target: "#checkRecipientAddress",
+          },
+        ],
+      },
 
       checkRecipientAddress: {
         id: "checkRecipientAddress",

@@ -2,14 +2,12 @@ import {
   faPeopleArrows,
 } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-dashboard/pages/Home.svelte";
+import CreateHub from "./o-dashboard/pages/CreateHub.svelte";
 import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
 import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
 import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
 import {transfer} from "./o-banking/processes/transfer";
-import Error from "../shared/atoms/Error.svelte";
-import LoadingIndicator from "../shared/atoms/LoadingIndicator.svelte";
-import Success from "../shared/atoms/Success.svelte";
 
 const index : PageManifest = {
   isDefault: true,
@@ -17,6 +15,20 @@ const index : PageManifest = {
   routeParts: [],
   component: Home,
   title: "Dashboard",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    }
+  ]
+};
+const createHub : PageManifest = {
+  isDefault: true,
+  isSystem: true,
+  routeParts: ["create-hub"],
+  component: CreateHub,
+  title: "Create a hub",
   available: [
     (detail) => {
       // Can navigate to?
@@ -74,5 +86,5 @@ export const dashboard : DappManifest<DappState> = {
       cancelDependencyLoading: false
     };
   },
-  pages: [index]
+  pages: [index, createHub]
 };
