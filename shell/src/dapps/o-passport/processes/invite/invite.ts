@@ -67,6 +67,7 @@ const processDefinition = (processId: string) =>
           ...ipc("transfer"),
         },
         invoke: {
+          id: "transfer",
           src: transfer.stateMachine(`transfer`),
           data: {
             data: (context, event) => {

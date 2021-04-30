@@ -66,10 +66,15 @@ const processDefinition = (processId: string) =>
         always: [
           {
             cond: (context) => {
-              return RpcGateway.get().utils.isAddress(context.data.safeAddress)
-              && RpcGateway.get().utils.isAddress(context.data.recipientAddress)
-              && RpcGateway.get().utils.isBN(context.data.tokens?.amount)
-              && context.data.tokens?.currency == "xdai";
+              const web3 = RpcGateway.get();
+
+              const hasSender = web3.utils.isAddress(context.data.safeAddress);
+              const hasRecipient = web3.utils.isAddress(context.data.recipientAddress);
+              const amount = new BN(!context.data.tokens?.amount ? "0" : web3.utils.toWei(context.data.tokens?.amount?.toString(), "ether"));
+              const hasAmount = amount.gt(new BN("0"));
+              const isXdai = context.data.tokens?.currency == "xdai";
+
+              return hasSender && hasRecipient && hasAmount && isXdai;
             },
             target: "#acceptSummary",
           },
