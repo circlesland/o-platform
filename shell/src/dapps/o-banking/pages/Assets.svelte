@@ -24,29 +24,35 @@
     variety: 1,
   };
   $: {
-    accountxDai = {
-      symbol: "xdai",
-      icon: "",
-      balance: parseFloat(
-        RpcGateway.get().utils.fromWei($mySafe.accountxDai, "ether").toString()
-      ).toFixed(2),
-      variety: 1,
-    };
-    safexDai = {
-      symbol: "xdai",
-      icon: "",
-      balance: parseFloat(
-        RpcGateway.get().utils.fromWei($mySafe.xDaiBalance, "ether").toString()
-      ).toFixed(2),
-      variety: 1,
-    };
-    circles = {
-      symbol: "crc",
-      icon: "",
-      balance: $mySafe.balance,
-      variety: Object.values($mySafe.acceptedTokens.tokens).filter((o) =>
-        new BN(o.balance).gt(new BN("0"))
-      ).length,
+    if ($mySafe && $mySafe.accountxDai) {
+      accountxDai = {
+        symbol: "xdai",
+        icon: "",
+        balance: parseFloat(
+          RpcGateway.get().utils.fromWei($mySafe.accountxDai, "ether").toString()
+        ).toFixed(2),
+        variety: 1,
+      };
+    }
+    if ($mySafe && $mySafe.xDaiBalance) {
+      safexDai = {
+        symbol: "xdai",
+        icon: "",
+        balance: parseFloat(
+          RpcGateway.get().utils.fromWei($mySafe.xDaiBalance, "ether").toString()
+        ).toFixed(2),
+        variety: 1,
+      };
+    }
+    if ($mySafe && $mySafe.acceptedTokens) {
+      circles = {
+        symbol: "crc",
+        icon: "",
+        balance: $mySafe.balance,
+        variety: Object.values($mySafe.acceptedTokens.tokens).filter((o) =>
+          new BN(o.balance).gt(new BN("0"))
+        ).length,
+      }
     };
   }
 </script>

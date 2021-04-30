@@ -3,6 +3,9 @@
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import { me } from "../../../shared/stores/me";
   import { showToast } from "../../../shared/toast";
+  import {onMount} from "svelte";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  import {BN} from "ethereumjs-util";
 
   $: me;
 
@@ -11,10 +14,79 @@
       dashboard.actions.find((o) => o.key == "xats").event(undefined)
     );
   }
+
+  let accountAddress:string = "";
+  let accountBalance:string = "";
+  let safeDeployThreshold:string = "200000000000000000";
+  let inviteThreshold:string = "";
+  let showFundHint:boolean = false;
+
+  onMount(async () => {
+    if (localStorage.getItem("isCreatingSafe")) {
+      showFundHint = true;
+      return;
+    }
+
+    const pk = localStorage.getItem("circlesKey");
+    if (!pk) {
+      return;
+    }
+    accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
+    accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
+
+    showFundHint = localStorage.getItem("isCreatingSafe") == "true" || new BN(accountBalance).lt(new BN(safeDeployThreshold));
+  })
 </script>
 
 <DashboardHeader />
 <div class="mx-4">
+  {#if showFundHint}
+  <!-- Create safe  -->
+  <a href="/#/passport/profile">
+    <section class="flex items-center justify-center mb-8">
+      <div
+        class="flex items-center bg-white shadow px-2 -mt-6 w-full rounded-sm"
+      >
+        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-14 w-14 m-auto"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1"
+              d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
+            />
+          </svg>
+        </div>
+        <div class="flex items-center">
+          <p class="text-xl font-circles mr-2 text-secondary font-medium">
+            Fund your account ({accountAddress}) to deploy your new safe.
+          </p>
+        </div>
+        <div class="flex justify-end flex-1 mr-1 text-primary">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </div>
+    </section>
+  </a>
+  {/if}
+
   <!-- PASSPORT  -->
   <a href="/#/passport/profile">
     <section class="flex items-center justify-center mb-8">

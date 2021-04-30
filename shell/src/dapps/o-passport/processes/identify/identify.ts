@@ -198,13 +198,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
           dirtyFlags:{},
           messages:{},
         },
-        onDone: [{
-          actions:(context, event) => {
-            context.data.profile.circlesAddress = event.data.safeAddress;
-            context.data.privateKey = event.data.privateKey;
-          },
-          target: "#success"
-        }],
+        onDone:  "#success",
         onError: "#error"
       }
     },

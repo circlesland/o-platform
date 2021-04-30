@@ -66,6 +66,7 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#askForBackup",
+          previous: "#generateSeedPhrase",
           canGoBack: () => true
         },
       }),
@@ -78,6 +79,7 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#verifyCheckSeedPhrase",
+          previous: "#backupSeedphrase",
           canGoBack: () => true
         }
       }),
@@ -85,8 +87,8 @@ const processDefinition = (processId: string) =>
         id: "verifyCheckSeedPhrase",
         always: [{
           cond: (context) => {
-            const checkWord = context.data.seedPhrase.split(" ")[context.data.checkWordIndex];
-            return context.data.checkSeedPhrase.trim() === checkWord;
+            //const checkWord = context.data.seedPhrase.split(" ")[context.data.checkWordIndex];
+            return context.data.checkSeedPhrase.trim() === context.data.seedPhrase;
           },
           target: "#storeSeedPhrase"
         }, {

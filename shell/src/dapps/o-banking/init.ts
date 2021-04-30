@@ -278,17 +278,17 @@ async function subscribeChainEvents(safe: Safe) {
 
   });
 
-  if (_currentSafe) {
-    blockChainEventsSubscription = Queries.tokenEvents(_currentSafe).subscribe((event: any) => {
+  if (safe && RpcGateway.get().utils.isAddress(safe.safeAddress)) {
+    blockChainEventsSubscription = Queries.tokenEvents(safe).subscribe((event: any) => {
       console.log("NEW EVENT:", event);
       onEventUpdateTrigger.trigger([event.token]);
     });
-    (await Queries.trustEvents(_currentSafe)).subscribe((event:any) => {
+    (await Queries.trustEvents(safe)).subscribe((event:any) => {
       console.log("NEW EVENT:", event);
       onEventUpdateTrigger.trigger([]);
     });
   } else {
-    console.warn("_current safe is not set.")
+    console.warn("safe is not set supplied.")
   }
 }
 
