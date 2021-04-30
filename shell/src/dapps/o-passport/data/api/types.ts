@@ -386,6 +386,19 @@ export type MyProfileQuery = (
   )> }
 );
 
+export type ProfilesQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type ProfilesQuery = (
+  { __typename?: 'Query' }
+  & { profiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType'>
+  )> }
+);
+
 
 export const ExchangeTokenDocument = gql`
     mutation exchangeToken {
@@ -463,6 +476,21 @@ export const MyProfileDocument = gql`
   }
 }
     `;
+export const ProfilesDocument = gql`
+    query profiles($id: Int!) {
+  profiles(query: {id: $id}) {
+    id
+    circlesAddress
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -490,6 +518,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     myProfile(variables?: MyProfileQueryVariables): Promise<MyProfileQuery> {
       return withWrapper(() => client.request<MyProfileQuery>(print(MyProfileDocument), variables));
+    },
+    profiles(variables: ProfilesQueryVariables): Promise<ProfilesQuery> {
+      return withWrapper(() => client.request<ProfilesQuery>(print(ProfilesDocument), variables));
     }
   };
 }

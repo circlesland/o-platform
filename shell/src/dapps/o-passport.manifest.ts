@@ -25,6 +25,20 @@ const index: PageManifest = {
     },
   ],
 };
+const profile: PageManifest = {
+  isDefault: false,
+  isSystem: true,
+  routeParts: ["profile", ":profileId"],
+  component: Home,
+  title: "Profile",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    },
+  ],
+};
 
 const createPassport : PageManifest = {
   isDefault: false,
@@ -155,5 +169,5 @@ export const passport: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  pages: [index, account, keys, settings, createPassport, createOrImportKey, login],
+  pages: [index, profile, account, keys, settings, createPassport, createOrImportKey, login],
 };

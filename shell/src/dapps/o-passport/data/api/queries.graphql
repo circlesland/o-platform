@@ -19,3 +19,17 @@ query myProfile {
         avatarMimeType
     }
 }
+
+query profiles($id:Int!) {
+    profiles(query:{id: $id}) {
+        id
+        circlesAddress
+        firstName
+        lastName
+        dream
+        country
+        avatarUrl
+        avatarCid
+        avatarMimeType
+    }
+}

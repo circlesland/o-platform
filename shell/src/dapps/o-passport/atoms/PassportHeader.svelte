@@ -10,8 +10,10 @@
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { me } from "../../../shared/stores/me";
+  import {Profile} from "../data/api/types";
 
-  $: me;
+  export let profile:Profile;
+
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
 
@@ -28,15 +30,15 @@
         ctx.childProcessDefinition = upsertIdentity;
         ctx.childContext = {
           data: {
-            id: $me.id,
-            circlesAddress: $me.circlesAddress,
-            avatarCid: $me.avatarCid,
-            avatarUrl: $me.avatarUrl,
-            avatarMimeType: $me.avatarMimeType,
-            firstName: $me.firstName,
-            lastName: $me.lastName,
-            country: $me.country,
-            dream: $me.dream,
+            id: profile.id,
+            circlesAddress: profile.circlesAddress,
+            avatarCid: profile.avatarCid,
+            avatarUrl: profile.avatarUrl,
+            avatarMimeType: profile.avatarMimeType,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            country: profile.country,
+            dream: profile.dream,
           }
         };
         return ctx;
@@ -87,25 +89,27 @@
     <div class="avatar">
       <div class="w-36 h-36 rounded-full mb-4">
         <img
-          src={$me && $me.avatarUrl
-            ? $me.avatarUrl
+          src={profile && profile.avatarUrl
+            ? profile.avatarUrl
             : "https://i.pravatar.cc/500?img=32"}
-          alt={$me
-            ? $me.lastName
-              ? `${$me.firstName} ${$me.lastName}`
-              : $me.firstName
+          alt={profile
+            ? profile.lastName
+              ? `${profile.firstName} ${profile.lastName}`
+              : profile.firstName
             : "avatar"}
         />
       </div>
     </div>
     <div class="">
       <h2>
-        {$me ? $me.firstName : "Martin"}
-        {$me && $me.lastName ? $me.lastName : ""}
+        {profile ? profile.firstName : "Martin"}
+        {profile && profile.lastName ? profile.lastName : ""}
       </h2>
     </div>
-    <button class="link link-primary text-primary" on:click={editProfile}
-      >Edit Profile</button
-    >
+    {#if $me && profile && $me.id == profile.id}
+      <button class="link link-primary text-primary" on:click={editProfile}
+        >Edit Profile</button
+      >
+    {/if}
   </div>
 </div>

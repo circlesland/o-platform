@@ -1,32 +1,55 @@
 <script lang="ts">
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
-  import { upsertIdentity } from "../processes/upsertIdentity";
+  import {upsertIdentity} from "../processes/upsertIdentity";
 
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
-  import { getCountryName } from "../../../shared/countries";
-  import { me } from "../../../shared/stores/me";
+  import {getCountryName} from "../../../shared/countries";
+  import {me} from "../../../shared/stores/me";
+  import {Profile, ProfilesDocument} from "../data/api/types";
 
-  export let params: {
-    jwt: string;
-  };
 
   let name;
+  let profile: Profile;
 
-  $: me;
+  export let params: {
+    profileId?: string
+  }
+
+  async function loadProfile(profileId?: string) {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    if (profileId && parseInt(profileId)) {
+      const profiles = await apiClient.query({
+        query: ProfilesDocument,
+        variables: {
+          id: parseInt(profileId)
+        }
+      });
+      if (profiles.data && profiles.data.profiles.length == 1) {
+        profile = profiles.data.profiles[0];
+        console.log("Other Profile: ", profile);
+      } else {
+        throw new Error(`Couldn't find the profile with the id ${profileId}`);
+      }
+    } else if ($me) {
+      profile = $me;
+    }
+  }
 
   $: {
-    name = $me ? $me.circlesAddress : "";
+    if ($me || (params && params.profileId)) {
+      loadProfile(params ? params.profileId : undefined);
+    }
   }
 
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),
-      props: { name },
+      props: {name},
     });
     app.$destroy();
   };
@@ -39,11 +62,11 @@
         ctx.childProcessDefinition = upsertIdentity;
         ctx.childContext = {
           data: {
-            id: $me.id,
-            firstName: $me.firstName,
-            lastName: $me.lastName,
-            country: $me.country,
-            dream: $me.dream,
+            id: profile.id,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            country: profile.country,
+            dream: profile.dream,
           }
         };
         return ctx;
@@ -54,9 +77,12 @@
   }
 </script>
 
-<PassportHeader />
+<PassportHeader profile={profile}/>
 
 <div class="mx-4 -mt-6">
+
+
+  {#if profile && profile.circlesAddress}
   <section class="justify-center mb-2 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
       <div
@@ -68,9 +94,10 @@
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
           <div class="inline-block break-all text-xs" id="clipboard">
-            <input type="text" class="hidden" bind:value={name} />
-            {name}
-
+            {#if profile}
+              <input type="text" class="hidden" bind:value={profile.circlesAddress}/>
+              {profile.circlesAddress ? profile.circlesAddress : ''}
+            {/if}
             <div
               class="inline-block text-light cursor-pointertext-center text-xs relative -bottom-1"
               on:click={copy}
@@ -96,7 +123,7 @@
       </div>
     </div>
   </section>
-
+  {/if}
   <section class="justify-center mb-2 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
       <div
@@ -108,16 +135,17 @@
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
           <small class="break-all">
-            {#if $me && $me.dream}
-              {$me.dream}
+            {#if profile && profile.dream}
+              {profile.dream}
             {:else}
-              No Dream set.<br />
+              No Dream set.<br/>
               What is your life dream? Fill in the blanks. When I receive a universal
               basic income, I will follow my passion of _______________ and will
               accept Circles as payment.
               <button
                 class="link link-primary text-primary text-2xs"
-                on:click={editProfile}>Set Dream now</button
+                on:click={editProfile}>Set Dream now
+              </button
               >
             {/if}
           </small>
@@ -137,13 +165,14 @@
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
           <small class="break-all">
-            {#if $me && $me.country}
-              {getCountryName($me.country)}
+            {#if profile && profile.country}
+              {getCountryName(profile.country)}
             {:else}
               No Country set.
               <button
                 class="link link-primary text-primary text-2xs"
-                on:click={editProfile}>Set Country</button
+                on:click={editProfile}>Set Country
+              </button
               >
             {/if}
           </small>
@@ -151,4 +180,27 @@
       </div>
     </div>
   </section>
+
+  {#if profile && !profile.circlesAddress && $me && $me.id !== profile.id}
+    <section class="justify-center mb-2 text-circlesdarkblue">
+      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+        <div
+          class="text-circleslightblue text-xs font-circles font-bold text-left"
+        >
+          This citizen is waiting to be empowered by you.
+        </div>
+
+        <div class="flex items-center w-full space-x-2 sm:space-x-4">
+          <div class="text-left">
+            <div class="inline-block break-all text-xs">
+              <div class="flex items-center w-full space-x-2 sm:space-x-4">
+                <button class="btn btn-block btn-primary w-full" on:click={() => {}}>Invite {profile.firstName} now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  {/if}
+
 </div>

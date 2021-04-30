@@ -22,18 +22,18 @@
   let showFundHint:boolean = false;
 
   onMount(async () => {
-    if (localStorage.getItem("isCreatingSafe")) {
-      showFundHint = true;
-      return;
-    }
-
     const pk = localStorage.getItem("circlesKey");
     if (!pk) {
       return;
     }
-    accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
-    accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
 
+    accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
+
+    if (localStorage.getItem("isCreatingSafe")) {
+      showFundHint = true;
+      return;
+    }
+    accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
     showFundHint = localStorage.getItem("isCreatingSafe") == "true" || new BN(accountBalance).lt(new BN(safeDeployThreshold));
   })
 </script>
@@ -64,9 +64,15 @@
           </svg>
         </div>
         <div class="flex items-center">
-          <p class="text-xl font-circles mr-2 text-secondary font-medium">
+          <div class="text-xl font-circles mr-2 text-secondary font-medium">
             Fund your account ({accountAddress}) to deploy your new safe.
-          </p>
+            <div class="flex items-center w-full space-x-2 sm:space-x-4">
+              <button class="btn btn-block btn-primary" on:click={() => {}}>Get invited</button>
+            </div>
+            <div class="flex items-center w-full space-x-2 sm:space-x-4">
+              <button class="btn btn-block btn-primary" on:click={() => {}}>Buy xDai</button>
+            </div>
+          </div>
         </div>
         <div class="flex justify-end flex-1 mr-1 text-primary">
           <svg
@@ -133,7 +139,7 @@
   </a>
 
   <!-- BANKING -->
-  <a href="/#/banking/transactions">
+  <a href="{showFundHint ? '/#/dashboard' : '/#/banking/transactions'}">
     <section class="flex items-center justify-center mb-8">
       <div class="flex items-center bg-white shadow px-2 w-full rounded-sm">
         <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
