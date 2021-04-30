@@ -4,7 +4,6 @@
   import { me } from "../../../shared/stores/me";
   import {onMount} from "svelte";
   import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-  import {BN} from "ethereumjs-util";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import {INVITE_VALUE} from "src/dapps/o-passport/processes/invite/invite";
 
@@ -68,9 +67,9 @@
     </div>
     <div class="text-center">
       <div>
-        <p>On blockchains, each transaction costs a small fee to keep the network running. Circles builds on the xDai chain and we recommended to have at least XX xDai to fuel your daily transactions.</p>
+        <p>On blockchains, each transaction costs a small fee to keep the network running. Circles builds on the xDai chain and we recommended to have at least {INVITE_VALUE} xDai to fuel your daily transactions.</p>
         <br/>
-        <p>If you have more than XX xDai, you can use it to <i>invite others you know and who might not be familiar enough with the technology</i> to get xDai by themselves.</p>
+        <p>If you have more than {INVITE_VALUE} xDai, you can use it to <i>invite others you know and who might not be familiar enough with the technology</i> to get xDai by themselves.</p>
       </div>
     </div>
     <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
@@ -176,7 +175,7 @@
   </div>
   <div class="flex items-center">
     <div class="text-center">
-      You can transfer xDai from any other wallet or exchange. Just send your preferred amount (at least XX xDai) to the address below to get you started:
+      You can transfer xDai from any other wallet or exchange. Just send your preferred amount (at least {INVITE_VALUE} xDai) to the address below to get you started:
     </div>
     <div class="flex justify-end flex-1 mr-1 text-primary">
     </div>
