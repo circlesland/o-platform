@@ -12,6 +12,7 @@ import {connectOrCreate} from "./prompts/connectOrCreate";
 import {acquireSession} from "./aquireSession/acquireSession";
 import {connectSafe} from "./connectSafe/connectSafe";
 import {createSafe} from "./createSafe/createSafe";
+import {UpsertProfileDocument} from "../../data/api/types";
 
 export type IdentifyContextData = {
   oneTimeCode?:string
@@ -27,6 +28,7 @@ export type IdentifyContextData = {
     hasCirclesKey: boolean
   },
   profile: {
+    id?: number
     circlesAddress?: string
     firstName: string
     lastName?: string
@@ -172,7 +174,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
             context.data.profile.circlesAddress = event.data.safeAddress;
             context.data.privateKey = event.data.privateKey;
           },
-          target: "#success"
+          target: "#upsertSafeAddress"
         }],
         onError: "#error"
       }
@@ -201,6 +203,29 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
         onDone:  "#success",
         onError: "#error"
       }
+    },
+
+    upsertSafeAddress: {
+      entry: (ctx) => console.log(`enter: identify.upsertSafeAddress`, ctx.data),
+      id: "upsertSafeAddress",
+      on: {
+        ...<any>ipc(`upsertSafeAddress`)
+      },
+      invoke: {
+        src: async (context, event) => {
+          const apiClient = await window.o.apiClient.client.subscribeToResult();
+          const result = await apiClient.mutate({
+            mutation: UpsertProfileDocument,
+            variables: {
+              ...context.data.profile
+            },
+          });
+
+          return result.data.upsertProfile;
+        },
+        onDone: "#success",
+        onError: "#error",
+      },
     },
 
     upsertIdentity: {
