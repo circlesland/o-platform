@@ -8,7 +8,9 @@
 
   export let context: CurrencyTransferContext;
 
-  let amount: string = "";
+  console.log("CONTEXT", context);
+  let amount: string =
+    context.data && context.data.tokens ? context.data.tokens.amount : "";
   let maxAmount: string = "0";
   $: selectedCurrency = context.params.currencies.find(
     (o) => o.value === "crc"

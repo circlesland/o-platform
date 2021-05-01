@@ -1,18 +1,57 @@
 <script lang="ts">
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import { push } from "svelte-spa-router";
+  import { onMount } from "svelte";
+  import {
+    shellProcess,
+    ShellProcessContext,
+  } from "../../../shared/processes/shellProcess";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import { tryGetCurrentSafe } from "../init";
+  import { transfer } from "../processes/transfer";
   import TransactionCard from "../atoms/TransactionCard.svelte";
   import { mySafe } from "../stores/safe";
+  import { me } from "../../../shared/stores/me";
+
+  export let params: {
+    to: string;
+    amount: string;
+    message: string;
+  };
+
+  $: me;
+  let safeAddress: string;
+
+  onMount(() => {
+    if (params.to && params.amount && params.to != "" && params.amount != "") {
+      if ((safeAddress = tryGetCurrentSafe()?.safeAddress) && $me) {
+        window.o.publishEvent(
+          new RunProcess<ShellProcessContext>(
+            shellProcess,
+            true,
+            async (ctx) => {
+              ctx.childProcessDefinition = transfer;
+              ctx.childContext = {
+                data: {
+                  recipientAddress: params.to,
+                  message: params.message,
+                  tokens: {
+                    currency: "crc",
+                    amount: params.amount,
+                  },
+                  acceptSummary: true,
+                  safeAddress: safeAddress,
+                  privateKey: localStorage.getItem("circlesKey"),
+                },
+              };
+              return ctx;
+            }
+          )
+        );
+      }
+    }
+  });
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
-
-  function loadDetailPage(path) {
-    push("#/banking/transactions/" + path);
-  }
-
-  function dateOlderThanSevenDays(unixTime: number) {
-    return timestampSevenDays > unixTime;
-  }
 </script>
 
 <BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
