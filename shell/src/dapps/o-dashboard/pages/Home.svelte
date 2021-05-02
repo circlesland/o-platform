@@ -52,7 +52,7 @@
 
   $: {
     if ($me) {
-      inviteLink = `${window.location.protocol}://${window.location.host}/#/passport/profile/${$me.id}`
+      inviteLink = `${window.location.protocol}//${window.location.host}/#/passport/profile/${$me.id}`
     }
   }
 </script>

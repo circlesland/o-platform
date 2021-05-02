@@ -48,10 +48,14 @@
       invitePersonCount = Math.floor((parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE);
       if (invitePersonCount == 1) {
         invitePersonCountString = `1 Person`
+      } else if (invitePersonCount == 0 || invitePersonCount == -1) {
+        invitePersonCountString = `0 People`
       } else {
         invitePersonCountString = `${invitePersonCount} People`
       }
-      showRampUp = invitePersonCount < 5;
+      if (!showRampUp) {
+        showRampUp = invitePersonCount < 1;
+      }
     }
 
     await updateBalance();
@@ -132,8 +136,15 @@
       </div>
     </div>
   </section>
+  <section class="flex items-center justify-center mb-8">
+    <div class="flex items-center">
+      <div class="text-center">
+        <p class="text-xs"><a style="cursor: pointer" on:click={() => showRampUp = true}>Get more xDai</a></p>
+      </div>
+    </div>
+  </section>
 {/if}
-{#if showRampUp}
+{#if invitePersonCount == 0 || showRampUp}
   <section class="flex items-center justify-center mb-8">
     <div class="flex items-center">
       <div class="text-center">
