@@ -6,6 +6,9 @@
   import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import {INVITE_VALUE} from "src/dapps/o-passport/processes/invite/invite";
+  import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
+  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+  import {getLastLoadedDapp, getLastLoadedPage} from "../../../loader";
 
   $: me;
 
@@ -24,7 +27,13 @@
   let showFundHint:boolean = false;
   let inviteLink:string = "";
 
+  let lastLoadedPage: PageManifest;
+  let lastLoadedDapp: DappManifest<any>;
+
   onMount(async () => {
+    lastLoadedPage = getLastLoadedPage();
+    lastLoadedDapp = getLastLoadedDapp();
+
     const pk = localStorage.getItem("circlesKey");
     if (!pk) {
       return;
@@ -85,7 +94,7 @@
       <div>
         <p>On blockchains, each transaction costs a small fee to keep the network running. Circles builds on the xDai chain and we recommended to have at least {INVITE_VALUE} xDai to fuel your daily transactions.</p>
         <br/>
-        <p>If you have more than {INVITE_VALUE} xDai, you can use it to <i>invite others you know and who might not be familiar enough with the technology</i> to get xDai by themselves.</p>
+        <p>If you have more than {INVITE_VALUE} xDai, you can use it to <i>invite others you know and who might not be familiar enough with the process</i> of buying xDai for themselves.</p>
       </div>
     </div>
     <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
@@ -213,7 +222,30 @@
     <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
     </div>
     <div class="flex items-center">
-      <p class="text-xl">{accountAddress} --copy--</p>
+      <div class="break-all text-xs" id="clipboard">
+        <input type="text" class="hidden" bind:value={accountAddress}/>
+        <p class="text-2xl">{accountAddress}</p>
+        <div
+          class="inline-block text-light cursor-pointertext-center text-xs relative -bottom-1"
+          on:click={copy}
+          alt="Copy to Clipboard"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 stroke-current transform group-hover:rotate-[-4deg] transition"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            />
+          </svg>
+        </div>
+      </div>
       <div class="flex justify-end flex-1 mr-1 text-primary">
       </div>
     </div>
