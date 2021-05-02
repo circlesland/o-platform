@@ -89,6 +89,7 @@ const processDefinition = (processId: string) =>
           localStorage.removeItem("safe");
           localStorage.removeItem("circlesAccount");
           localStorage.removeItem("circlesKey");
+          localStorage.removeItem("isCreatingSafe");
           localStorage.removeItem("me");
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut"

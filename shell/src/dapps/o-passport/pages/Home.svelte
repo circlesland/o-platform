@@ -204,7 +204,7 @@
         >
           This citizen is waiting to be empowered by you.
         </div>
-        {#if $me && $me.id !== profile.id && $mySafe && $mySafe.accountxDai}
+        {#if $me && $me.id !== profile.id && localStorage.getItem("safe")}
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
             <div class="inline-block break-all text-xs">

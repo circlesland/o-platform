@@ -39,7 +39,7 @@ const processDefinition = (processId: string) =>
             data: (context, event) => {
               return {
                 appId: "__APP_ID__",
-                code: context.data.oneTimeCode
+                code: context.data.code
               }
             },
             dirtyFlags:{},

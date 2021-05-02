@@ -15,6 +15,7 @@ import { uploadFile } from "../../../shared/api/uploadFile";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { UpsertProfileDocument } from "../data/api/types";
 import * as yup from "yup";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -223,7 +224,10 @@ const processDefinition = (processId: string) =>
               variables: {
                 id: context.data.id,
                 circlesAddress: context.data.circlesAddress,
-                circlesSafeOwner: context.data.circlesSafeOwner,
+                circlesSafeOwner: context.data.circlesSafeOwner ??
+                                    (localStorage.getItem("circlesKey")
+                                    ? RpcGateway.get().eth.accounts.privateKeyToAccount(localStorage.getItem("circlesKey")).address
+                                    : undefined),
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 dream: context.data.dream,
