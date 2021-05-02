@@ -19,6 +19,8 @@
   let accountBalance:string = "";
   let safeDeployThreshold:string = "200000000000000000";
   let inviteThreshold:string = "";
+  let invitePersonCount:number = 0;
+  let invitePersonCountString:string = "0 People";
   let showFundHint:boolean = false;
   let inviteLink:string = "";
 
@@ -28,8 +30,22 @@
       return;
     }
 
-    accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
-    accountBalance = parseFloat(RpcGateway.get().utils.fromWei(await RpcGateway.get().eth.getBalance(accountAddress), "ether")).toFixed(2);
+    async function updateBalance() {
+      accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
+      accountBalance = parseFloat(RpcGateway.get().utils.fromWei(await RpcGateway.get().eth.getBalance(accountAddress), "ether")).toFixed(2);
+      invitePersonCount = Math.floor(parseFloat(accountBalance) / INVITE_VALUE);
+      if (invitePersonCount == 1) {
+        invitePersonCountString = `1 Person`
+      } else {
+        invitePersonCountString = `${invitePersonCount} People`
+      }
+    }
+
+    await updateBalance();
+
+    RpcGateway.get().eth.subscribe("newBlockHeaders", async (error, log) => {
+      updateBalance();
+    });
   })
 
   const copy = () => {
@@ -104,7 +120,7 @@
   </div>
   <div class="flex items-center">
     <div class="text-center">
-      <p class="text-3xl">{parseFloat(parseFloat(accountBalance ? accountBalance : 0) / INVITE_VALUE)} People</p>
+      <p class="text-3xl">{invitePersonCountString}</p>
       <p class="text-l">({accountBalance} xDai)</p>
     </div>
     <div class="flex justify-end flex-1 mr-1 text-primary">
@@ -154,6 +170,17 @@
         <p class="text-l">(50 xDai)</p>
       </div>
     </a>
+    <div class="flex justify-end flex-1 mr-1 text-primary">
+    </div>
+  </div>
+</section>
+<section class="flex items-center justify-center mb-8">
+  <div class="flex items-center">
+  </div>
+  <div class="flex items-center">
+    <div class="text-center">
+      Once the transaction on ramp is completed, come back and refresh this page.
+    </div>
     <div class="flex justify-end flex-1 mr-1 text-primary">
     </div>
   </div>
