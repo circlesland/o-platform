@@ -50,10 +50,12 @@ createMachine<TransferXdaiContext, any>({
 
           const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), ownerAddress, context.data.safeAddress);
           const ethAmount = new BN(RpcGateway.get().utils.toWei((context.data.amount).toString(), "ether"));
-          return await gnosisSafeProxy.transferEth(
+          const resultObservable = await gnosisSafeProxy.transferEth(
             context.data.privateKey,
             ethAmount,
             context.data.recipientAddress);
+
+          return resultObservable.toPromise();
         },
         onDone: "#success",
         onError: "#error",

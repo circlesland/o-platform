@@ -4,7 +4,6 @@
   import "./shared/css/utilities.css";
 
   import routes from "./loader";
-  import { me } from "./shared/stores/me";
   import { getLastLoadedDapp } from "./loader";
   import { getLastLoadedPage } from "./loader";
 
@@ -22,9 +21,6 @@
     shellProcess,
     ShellProcessContext,
   } from "./shared/processes/shellProcess";
-  import Error from "./shared/atoms/Error.svelte";
-  import LoadingIndicator from "./shared/atoms/LoadingIndicator.svelte";
-  import Success from "./shared/atoms/Success.svelte";
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { Subscription } from "rxjs";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
@@ -41,6 +37,9 @@
   import { SvelteToast } from "./shared/molecules/Toast";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";
+  import {XDaiThresholdTrigger} from "./xDaiThresholdTrigger";
+  import {me} from "./shared/stores/me";
+  import {INVITE_VALUE} from "./dapps/o-passport/processes/invite/invite";
 
   let isOpen: boolean = false;
   let modalProcess: Process;
@@ -182,7 +181,16 @@
   }
 
   let layoutClasses = "";
+
+  let balanceThresholdTrigger:XDaiThresholdTrigger;
+
   $: {
+    if ($me && localStorage.getItem("isCreatingSafe") === "true" && !balanceThresholdTrigger) {
+      balanceThresholdTrigger = new XDaiThresholdTrigger($me.circlesSafeOwner, INVITE_VALUE, async (address, threshold) => {
+
+      });
+    }
+
     layoutClasses =
       (lastLoadedDapp && lastLoadedDapp.isFullWidth) ||
       (lastLoadedPage && lastLoadedPage.isFullWidth)

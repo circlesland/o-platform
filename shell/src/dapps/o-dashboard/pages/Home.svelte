@@ -10,6 +10,7 @@
 
   const {mySafe} = require("src/dapps/o-banking/stores/safe");
   import {INVITE_VALUE} from "src/dapps/o-passport/processes/invite/invite";
+  import Web3 from "web3";
 
   $: me;
 
@@ -28,7 +29,7 @@
 
   onMount(async () => {
     const pk = localStorage.getItem("circlesKey");
-    if (!pk) {
+    if (!pk || localStorage.getItem("isCreatingSafe") !== "true") {
       return;
     }
 
@@ -39,7 +40,7 @@
       return;
     }
     accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
-    showFundHint = localStorage.getItem("isCreatingSafe") == "true" || new BN(accountBalance).lt(new BN(safeDeployThreshold));
+    showFundHint = new BN(accountBalance).lt(new BN(safeDeployThreshold));
   })
 
   const copy = () => {
@@ -93,12 +94,12 @@
             </div>
           </div>
           <p class="text">
-            If you don't know anyone who has Circles yet, ask nicely in our <a href="" class="btn-link">Discord</a> if
-            somebody can send you
+            If you don't know anybody who has Circles yet, ask nicely in our <a href="" class="btn-link">Discord</a> if
+            someone can send you
             the required invite.
           </p>
           <p class="text-xs mt-4 pb-4">
-            alternatively, <a href="#/dashboard/create-hub">create a hub</a>
+            alternatively, <a href="#/dashboard/become-a-hub">become a hub</a>
           </p>
           <div class="mr-1 text-primary">
           </div>
@@ -116,7 +117,7 @@
           <p class="text-2xl mt-2">Grow the global UBI economy!</p>
           <p class="text mt-4">xxxxxxx/1.000.000.000 Progress bar</p>
           <p class="text mt-4">Help others to get aboard in our <a href="" class="btn-link">Discord</a> or <a
-            href="/#/dashboard/create-hub" class="btn-link">become a hub</a> and invite your family and friends</p>
+            href="/#/dashboard/become-a-hub" class="btn-link">become a hub</a> and invite your family and friends</p>
           <div class="mr-1 text-primary">
           </div>
         </div>

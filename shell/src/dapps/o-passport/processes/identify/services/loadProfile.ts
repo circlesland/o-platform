@@ -1,7 +1,8 @@
-import {MyProfileDocument, ProfilesDocument} from "../../../data/api/types";
+import {MyProfileDocument, Profile, ProfilesDocument} from "../../../data/api/types";
 
 export const loadProfile = async (profileId?:number) => {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
+  let profile:Profile|undefined;
   if (profileId) {
     const profiles = await apiClient.query({
       query: ProfilesDocument,
@@ -10,7 +11,7 @@ export const loadProfile = async (profileId?:number) => {
       }
     });
 
-    return profiles.data.profiles && profiles.data.profiles.length > 0
+    profile = profiles.data.profiles && profiles.data.profiles.length > 0
       ? profiles.data.profiles[0]
       : undefined;
   } else {
@@ -18,8 +19,12 @@ export const loadProfile = async (profileId?:number) => {
       query: MyProfileDocument
     });
 
-    return result.data.profiles && result.data.profiles.length > 0
+    profile = result.data.profiles && result.data.profiles.length > 0
       ? result.data.profiles[0]
       : undefined;
   }
+
+  return profile ? {
+    ...profile,
+  } : undefined;
 }

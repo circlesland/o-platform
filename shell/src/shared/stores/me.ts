@@ -4,6 +4,7 @@ import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 export type Profile = {
   id: number
   circlesAddress?: string
+  circlesSafeOwner?: string
   firstName: string
   lastName?: string
   dream: string

@@ -2,13 +2,14 @@
   import { dashboard } from "../../o-dashboard.manifest";
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import { me } from "../../../shared/stores/me";
-  import {onMount} from "svelte";
+  import {onDestroy, onMount} from "svelte";
   import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import {INVITE_VALUE} from "src/dapps/o-passport/processes/invite/invite";
   import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
   import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
   import {getLastLoadedDapp, getLastLoadedPage} from "../../../loader";
+  import {Subscription} from "web3-core-subscriptions"
 
   $: me;
 
@@ -32,6 +33,7 @@
   let lastLoadedDapp: DappManifest<any>;
 
   let presets = [10, 20, 50]
+  let subscription:Subscription<any>;
 
   onMount(async () => {
     lastLoadedPage = getLastLoadedPage();
@@ -60,10 +62,16 @@
 
     await updateBalance();
 
-    RpcGateway.get().eth.subscribe("newBlockHeaders", async (error, log) => {
+    subscription = RpcGateway.get().eth.subscribe("newBlockHeaders", async (error, log) => {
       updateBalance();
     });
-  })
+  });
+
+  onDestroy(() => {
+    if (subscription){
+      subscription.unsubscribe();
+    }
+  });
 
   const copy = () => {
     const app = new CopyClipBoard({
@@ -86,7 +94,7 @@
 <section class="flex items-center justify-center mb-8">
   <div class="flex items-center bg-white shadow px-2  w-full rounded-sm">
     <div class="flex items-center">
-      <p class="text-xl">Create a hub </p>
+      <p class="text-xl">Become a hub </p>
       <div class="flex justify-end flex-1 mr-1 text-primary">
       </div>
     </div>
@@ -133,6 +141,7 @@
     <div class="flex items-center">
       <div class="text-center">
         <p class="text-2xl">Great! You have enough xDai to invite new people.</p>
+        <p>To invite people, just follow their invite links and click the "invite" button on their profile page.</p>
       </div>
     </div>
   </section>
@@ -149,7 +158,7 @@
     <div class="flex items-center">
       <div class="text-center">
         Use one of the presets below to buy xDai on <a href="https://ramp.network/">ramp.network</a>.<br/>
-        Once the transaction on ramp is completed, come back and refresh this page.
+        Once the transaction on ramp is complete, come back and refresh this page.
       </div>
     </div>
   </section>

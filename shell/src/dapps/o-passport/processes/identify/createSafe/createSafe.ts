@@ -98,8 +98,8 @@ const processDefinition = (processId: string) =>
       storeSeedPhrase: {
         id: "storeSeedPhrase",
         entry: (context) => {
-          localStorage.setItem("circlesKey", context.data.privateKey);
           localStorage.setItem("isCreatingSafe", "true");
+          localStorage.setItem("circlesKey", context.data.privateKey);
         },
         always: "#success"
       },

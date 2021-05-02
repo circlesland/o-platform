@@ -33,7 +33,7 @@ export type IdentifyContextData = {
     circlesAddress?: string
     firstName: string
     lastName?: string
-    dream: string
+    dream?: string
     country?: string
     avatarUrl?: string
     avatarCid?: string
@@ -219,7 +219,6 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
                 : undefined
             },
           });
-
           return result.data.upsertProfile;
         },
         onDone: "#success",

@@ -26,9 +26,9 @@ const index : PageManifest = {
 const createHub : PageManifest = {
   isDefault: true,
   isSystem: true,
-  routeParts: ["create-hub"],
+  routeParts: ["become-a-hub"],
   component: CreateHub,
-  title: "Create a hub",
+  title: "Become a hub",
   available: [
     (detail) => {
       // Can navigate to?
