@@ -52,21 +52,11 @@ export type IdentifyContext = ProcessContext<IdentifyContextData>;
 
 const processDefinition = (processId: string) => createMachine<IdentifyContext, any>({
   id: `${processId}`,
-  initial: "checkOneTimeCode",
+  initial: "getSessionInfo",
   states: {
     // Include a default 'error' state that propagates the error by re-throwing it in an action.
     // TODO: Check if this works as intended
     ...fatalError<IdentifyContext, any>("error"),
-
-    checkOneTimeCode: {
-      entry: () => localStorage.removeItem("me"),
-      always:[{
-        cond: (context) => !!context.data.oneTimeCode,
-        target: "#acquireSession"
-      }, {
-        target: "#getSessionInfo"
-      }]
-    },
 
     getSessionInfo: {
       id: "getSessionInfo",
