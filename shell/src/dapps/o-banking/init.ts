@@ -11,6 +11,7 @@ import {showToast} from "../../shared/toast";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
 import {augmentSafeWithTime} from "./data/augmentSafeWithTime";
+import {mySafe} from "./stores/safe";
 
 let _currentSafe: Safe | null = emptySafe;
 let loading = false;
@@ -29,27 +30,25 @@ function publishRefreshEvent(safe:Safe) {
   });
 }
 
-async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: string[]): Promise<Safe> {
+type LoadParamsFlags = {
+  addOwnToken?: boolean,
+  addHubTransfers?: boolean,
+  addContacts?: boolean,
+  addAcceptedTokens?: boolean,
+  addBalances?: boolean,
+  addDirectTransfers?: boolean
+}
+type LoadParams = {
+  profile: Profile,
+  safe: Safe,
+  tokenList: string[],
+  flags: LoadParamsFlags
+}
+
+async function load(args: LoadParams): Promise<Safe> {
   if (loading) {
     return;
   }
-
-  /*
-  Test max. size of localStorage value:
-  if (localStorage && !localStorage.getItem('size')) {
-    var i = 0;
-    try {
-      // Test up to 10 MB
-      for (i = 250; i <= 10000; i += 250) {
-        localStorage.setItem('test', new Array((i * 1024) + 1).join('a'));
-      }
-    } catch (e) {
-      localStorage.removeItem('test');
-      localStorage.setItem('size', (i - 250).toString());
-    }
-  }
-   */
-
   loading = true;
 
   return new Promise<Safe>(async (resolve, reject) => {
@@ -65,7 +64,7 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
         return;
       }
 
-      let safe: Safe = cachedSafe ?? {
+      let safe: Safe = args.safe ?? {
         safeAddress: profile.circlesAddress,
         ui: {
           loadingPercent: 0
@@ -92,20 +91,13 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
         }
       }, 5000);
 
-      if (tokenList && tokenList.length == 0) {
-        // Update only the trusts
-        // TODO: Make this nicer
-        safe = await Queries.addContacts(safe);
-        console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
-        await augmentSafeWithProfiles(safe);
-        publishRefreshEvent(safe);
-        localStorage.setItem("safe", JSON.stringify(safe));
-        _currentSafe = safe;
-      } else {
-
+      if (args.flags.addOwnToken || args.flags.addOwnToken === undefined) {
         safe = await Queries.addOwnToken(safe);
         console.log(new Date().getTime() + ": " + "Token via web3:", JSON.stringify(safe, null, 2));
+      }
 
+
+      if (args.flags.addHubTransfers || args.flags.addHubTransfers === undefined) {
         safe.ui.loadingText = "Loading hub transfers ..";
         publishRefreshEvent(safe);
         _currentSafe = safe;
@@ -113,6 +105,9 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
         safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
         const hubTransferCount = safe.transfers.rows.length;
         console.log(new Date().getTime() + ": " + `Added ${hubTransferCount} hub transfers.`)
+      }
+
+      if (args.flags.addContacts || args.flags.addContacts === undefined) {
         safe.ui.loadingPercent = 5;
         safe.ui.loadingText = "Loading trust connections ..";
         publishRefreshEvent(safe);
@@ -120,7 +115,10 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
 
         safe = await Queries.addContacts(safe);
         console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
-        safe.ui.loadingPercent = 18;
+      }
+      safe.ui.loadingPercent = 18;
+
+      if (args.flags.addAcceptedTokens || args.flags.addAcceptedTokens === undefined) {
         safe.ui.loadingText = "" +
           "Loading accepted tokens ..";
         publishRefreshEvent(safe);
@@ -130,7 +128,11 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
         augmentSafeWithProfiles(safe);
         augmentSafeWithTime(safe);
         console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.acceptedTokens.tokens).length} accepted tokens.`)
-        safe.ui.loadingPercent = 22;
+      }
+
+      safe.ui.loadingPercent = 22;
+
+      if (args.flags.addBalances || args.flags.addBalances === undefined) {
         safe.ui.loadingText = "Loading balances ..";
         publishRefreshEvent(safe);
         _currentSafe = safe;
@@ -141,10 +143,13 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
         console.log(new Date().getTime() + ": " + `Added balances to ${Object.keys(safe.acceptedTokens.tokens).length} tokens.`)
         publishRefreshEvent(safe);
         _currentSafe = safe;
+      }
 
-        const totalBalance = Object.keys(safe.acceptedTokens.tokens).reduce((p: BN, c: string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
-        const totalBalanceStr = totalBalance.toString();
-        safe.balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
+      const totalBalance = Object.keys(safe.acceptedTokens?.tokens ?? {}).reduce((p: BN, c: string) => p.add(new BN(safe.acceptedTokens.tokens[c].balance)), new BN("0")).add(new BN(safe.token.balance));
+      const totalBalanceStr = totalBalance.toString();
+      safe.balance = parseFloat(RpcGateway.get().utils.fromWei(totalBalanceStr, "ether")).toFixed(2);
+
+      if (args.flags.addDirectTransfers || args.flags.addDirectTransfers === undefined) {
         safe.ui.loadingPercent = 26;
         safe.ui.loadingText = "Loading direct transfers ..";
         publishRefreshEvent(safe);
@@ -156,26 +161,26 @@ async function load(profile: Profile, cachedSafe: Safe | undefined, tokenList?: 
           safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
           publishRefreshEvent(safe);
           _currentSafe = safe;
-          // publishRefreshEvent(safe);
-        }, tokenList);
-        console.log(new Date().getTime() + ": " + `Added ${safe.transfers.rows.length - hubTransferCount} direct transfers.`);
+        }, args.tokenList);
+        safe.ui.loadingPercent = 100;
+        console.log(new Date().getTime() + ": " + `Added ${safe.transfers.rows.length - safe.transfers?.rows?.length ?? 0} direct transfers.`);
         publishRefreshEvent(safe);
         _currentSafe = safe;
-
-        safe.ui.loadingPercent = undefined;
-        safe.ui.loadingText = undefined;
-
-        clearInterval(timeoutHandle);
-
-        await augmentSafeWithTime(safe);
-        localStorage.setItem("safe", JSON.stringify(safe));
-
-        await augmentSafeWithProfiles(safe);
-        publishRefreshEvent(safe);
-        _currentSafe = safe;
-
-        await subscribeChainEvents(safe);
       }
+
+      safe.ui.loadingPercent = undefined;
+      safe.ui.loadingText = undefined;
+
+      clearInterval(timeoutHandle);
+
+      await augmentSafeWithTime(safe);
+      localStorage.setItem("safe", JSON.stringify(safe));
+
+      await augmentSafeWithProfiles(safe);
+      publishRefreshEvent(safe);
+      _currentSafe = safe;
+
+      await subscribeChainEvents(safe);
 
       return resolve(safe);
     } catch (e) {
@@ -200,7 +205,7 @@ export function init() {
     if (profileOrNull && RpcGateway.get().utils.isAddress(profileOrNull.circlesAddress ?? "")) {
       for (let i = 0; i < RpcGateway.gateways.length; i++) {
         try {
-          await update();
+          await update(undefined, {});
           return;
         } catch (e) {
           if (e.message === "slow_provider") {
@@ -259,7 +264,14 @@ async function subscribeChainEvents(safe: Safe) {
   let onEventUpdateTrigger = new DelayedTrigger(500, async (tokenList: string[]) => {
     for (let i = 0; i < RpcGateway.gateways.length; i++) {
       try {
-        _currentSafe = await update(tokenList);
+        _currentSafe = await update(tokenList, {
+          addAcceptedTokens: false,
+          addContacts: true,
+          addDirectTransfers: true,
+          addHubTransfers: true,
+          addOwnToken: false,
+          addBalances: true
+        });
         return;
       } catch (e) {
         if (e.message === "slow_provider") {
@@ -281,31 +293,32 @@ async function subscribeChainEvents(safe: Safe) {
   if (safe && RpcGateway.get().utils.isAddress(safe.safeAddress)) {
     blockChainEventsSubscription = Queries.tokenEvents(safe).subscribe((event: any) => {
       console.log("NEW EVENT:", event);
-      onEventUpdateTrigger.trigger([event.token]);
+      onEventUpdateTrigger.trigger(/*[event.token]*/);
     });
     (await Queries.trustEvents(safe)).subscribe((event:any) => {
       console.log("NEW EVENT:", event);
-      onEventUpdateTrigger.trigger([]);
+      onEventUpdateTrigger.trigger(/*[event.token]*/);
     });
   } else {
     console.warn("safe is not set supplied.")
   }
 }
 
-async function update(tokenList?: string[]): Promise<Safe> {
+async function update(tokenList: string[]|undefined, flags:LoadParamsFlags): Promise<Safe> {
   if (!profile) {
     return;
   }
   if (!_currentSafe || _currentSafe.safeAddress === emptySafe.safeAddress) {
     _currentSafe = await tryRestoreCache();
   }
-  if (_currentSafe && _currentSafe.safeAddress !== emptySafe.safeAddress) {
-    // Update the cached safe
-    _currentSafe = await load(profile, _currentSafe, tokenList);
-  } else {
-    // Load a completely new safe
-    _currentSafe = await load(profile, undefined, tokenList);
-  }
+
+  _currentSafe = await load({
+    safe: _currentSafe,
+    tokenList: tokenList,
+    profile: profile,
+    flags: flags
+  });
+
   return _currentSafe;
 }
 

@@ -179,7 +179,7 @@ export class Queries {
       firstBlock: 0
     }));
 
-    let tokenAddresses = tokenList ?? Object.keys(safe.acceptedTokens.tokens).concat([safe.token.tokenAddress]);
+    let tokenAddresses = tokenList ?? [safe.token.tokenAddress];
     let current = 0;
     for (let tokenAddress of tokenAddresses) {
       current++;
