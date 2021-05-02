@@ -8,6 +8,9 @@
   import {BN} from "ethereumjs-util";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
 
+  const {mySafe} = require("src/dapps/o-banking/stores/safe");
+  import {INVITE_VALUE} from "src/dapps/o-passport/processes/invite/invite";
+
   $: me;
 
   function buyXats() {
@@ -90,12 +93,30 @@
             </div>
           </div>
           <p class="text">
-            If you don't know anyone who has Circles yet, ask nicely in our <a href="" class="btn-link">Discord</a> if somebody can send you
+            If you don't know anyone who has Circles yet, ask nicely in our <a href="" class="btn-link">Discord</a> if
+            somebody can send you
             the required invite.
           </p>
           <p class="text-xs mt-4 pb-4">
             alternatively, <a href="#/dashboard/create-hub">create a hub</a>
           </p>
+          <div class="mr-1 text-primary">
+          </div>
+        </div>
+      </div>
+    </section>
+
+  {:else if $mySafe}
+    <!-- Create safe  -->
+    <section class="mb-8">
+      <div class="bg-white shadow px-2  w-full rounded-sm">
+        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
+        </div>
+        <div style="text-align: center">
+          <p class="text-2xl mt-2">Grow the global UBI economy!</p>
+          <p class="text mt-4">xxxxxxx/1.000.000.000 Progress bar</p>
+          <p class="text mt-4">Help others to get aboard in our <a href="" class="btn-link">Discord</a> or <a
+            href="/#/dashboard/create-hub" class="btn-link">become a hub</a> and invite your family and friends</p>
           <div class="mr-1 text-primary">
           </div>
         </div>
@@ -149,10 +170,10 @@
   </a>
 
   <!-- BANKING -->
-  <a href="{showFundHint ? '/#/dashboard' : '/#/banking/transactions'}">
+  {#if showFundHint}
     <section class="flex items-center justify-center mb-8">
       <div class="flex items-center bg-white shadow px-2 w-full rounded-sm">
-        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
+        <div class="mr-4  px-4 py-2  text-center -ml-3 text-base-300">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-14 w-14 m-auto"
@@ -168,12 +189,10 @@
             />
           </svg>
         </div>
-        <div class="flex items-center">
-          <h2 class="text-4xl font-circles mr-2 text-secondary font-medium">
-            Banking
-          </h2>
+        <div class="flex flex-col items-left">
+          <h2 class="text-4xl font-circles mr-2 text-base-300">Banking</h2>
         </div>
-        <div class="flex justify-end flex-1 mr-1 text-primary">
+        <div class="flex justify-end flex-1 mr-1 text-base-300">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -189,8 +208,49 @@
         </div>
       </div>
     </section>
-  </a>
-
+  {:else}
+    <a href="{showFundHint ? '/#/dashboard' : '/#/banking/transactions'}">
+      <section class="flex items-center justify-center mb-8">
+        <div class="flex items-center bg-white shadow px-2 w-full rounded-sm">
+          <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-14 w-14 m-auto"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1"
+                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          </div>
+          <div class="flex items-center">
+            <h2 class="text-4xl font-circles mr-2 text-secondary font-medium">
+              Banking
+            </h2>
+          </div>
+          <div class="flex justify-end flex-1 mr-1 text-primary">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
+      </section>
+    </a>
+  {/if}
   <!-- Market -->
 
   <section class="flex items-center justify-center mb-8">

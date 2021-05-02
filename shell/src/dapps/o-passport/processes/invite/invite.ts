@@ -13,7 +13,7 @@ export type InviteContextData = {
   circlesSafeOwner?: string;
 };
 
-export const INVITE_VALUE = 0.25;
+export const INVITE_VALUE = 0.10;
 
 export type InviteContext = ProcessContext<InviteContextData>;
 

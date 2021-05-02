@@ -26,9 +26,12 @@
   let invitePersonCountString:string = "0 People";
   let showFundHint:boolean = false;
   let inviteLink:string = "";
+  let showRampUp:boolean = false;
 
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
+
+  let presets = [10, 20, 50]
 
   onMount(async () => {
     lastLoadedPage = getLastLoadedPage();
@@ -42,12 +45,13 @@
     async function updateBalance() {
       accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
       accountBalance = parseFloat(RpcGateway.get().utils.fromWei(await RpcGateway.get().eth.getBalance(accountAddress), "ether")).toFixed(2);
-      invitePersonCount = Math.floor(parseFloat(accountBalance) / INVITE_VALUE);
+      invitePersonCount = Math.floor((parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE);
       if (invitePersonCount == 1) {
         invitePersonCountString = `1 Person`
       } else {
         invitePersonCountString = `${invitePersonCount} People`
       }
+      showRampUp = invitePersonCount < 5;
     }
 
     await updateBalance();
@@ -77,8 +81,6 @@
 
 <section class="flex items-center justify-center mb-8">
   <div class="flex items-center bg-white shadow px-2  w-full rounded-sm">
-    <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
-    </div>
     <div class="flex items-center">
       <p class="text-xl">Create a hub </p>
       <div class="flex justify-end flex-1 mr-1 text-primary">
@@ -88,8 +90,6 @@
 </section>
 <section class="flex items-center justify-center mb-8">
   <div class="flex items-center">
-    <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
-    </div>
     <div class="text-center">
       <div>
         <p>On blockchains, each transaction costs a small fee to keep the network running. Circles builds on the xDai chain and we recommended to have at least {INVITE_VALUE} xDai to fuel your daily transactions.</p>
@@ -104,123 +104,76 @@
 
 <section class="flex items-center justify-center mb-8">
   <div class="flex items-center bg-white shadow px-2  w-full rounded-sm">
-    <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
-    </div>
     <div class="flex items-center">
       <p class="text-xl">Get xDai</p>
-      <div class="flex justify-end flex-1 mr-1 text-primary">
-      </div>
     </div>
   </div>
 </section>
 <section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-  </div>
   <div class="flex items-center">
     <div class="text-center">
       You can currently invite
     </div>
-    <div class="flex justify-end flex-1 mr-1 text-primary">
-    </div>
   </div>
 </section>
 <section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-  </div>
   <div class="flex items-center">
     <div class="text-center">
       <p class="text-3xl">{invitePersonCountString}</p>
       <p class="text-l">({accountBalance} xDai)</p>
     </div>
-    <div class="flex justify-end flex-1 mr-1 text-primary">
-    </div>
   </div>
 </section>
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-  </div>
-  <div class="flex items-center">
-    <div class="text-center">
-      Use one of the presets below to buy xDai on <a href="https://ramp.network/">ramp.network</a>.<br/>
-      The presets point to your current account so this is an easy way to get started.
-    </div>
-    <div class="flex justify-end flex-1 mr-1 text-primary">
-    </div>
-  </div>
-</section>
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-  </div>
-  <div class="flex items-center">
-    <a
-      href="https://buy.ramp.network/?userAddress={accountAddress}&swapAsset=XDAI&swapAmount=12000000000000000000"
-      target="_blank"
-    >
+{#if invitePersonCount > 0}
+  <section class="flex items-center justify-center mb-8">
+    <div class="flex items-center">
       <div class="text-center">
-        <p class="text-3xl">75 People</p>
-        <p class="text-l">(12 xDai)</p>
+        <p class="text-2xl">Great! You have enough xDai to invite new people.</p>
       </div>
-    </a>
-    <a
-      href="https://buy.ramp.network/?userAddress={accountAddress}&swapAsset=XDAI&swapAmount=25000000000000000000"
-      target="_blank"
-    >
-      <div>
-        <p class="text-3xl">150 People</p>
-        <p class="text-l">(20 xDai)</p>
+    </div>
+  </section>
+{/if}
+{#if showRampUp}
+  <section class="flex items-center justify-center mb-8">
+    <div class="flex items-center">
+      <div class="text-center">
+        Use one of the presets below to buy xDai on <a href="https://ramp.network/">ramp.network</a>.<br/>
+        Once the transaction on ramp is completed, come back and refresh this page.
       </div>
-    </a>
-    <a
-      href="https://buy.ramp.network/?userAddress={accountAddress}&swapAsset=XDAI&swapAmount=50000000000000000000"
-      target="_blank"
-    >
-      <div>
-        <p class="text-3xl">375 People</p>
-        <p class="text-l">(50 xDai)</p>
-      </div>
-    </a>
-    <div class="flex justify-end flex-1 mr-1 text-primary">
     </div>
-  </div>
-</section>
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-  </div>
-  <div class="flex items-center">
-    <div class="text-center">
-      Once the transaction on ramp is completed, come back and refresh this page.
+  </section>
+  <section class="flex items-center justify-center mb-8">
+    <div class="flex items-center">
+      {#each presets as preset}
+        <a
+          href="https://buy.ramp.network/?userAddress={accountAddress}&swapAsset=XDAI&swapAmount={preset}000000000000000000"
+          target="_blank"
+        >
+          <div class="text-center">
+            <p class="text-3xl">{Math.floor(preset / INVITE_VALUE).toFixed(0)} People</p>
+            <p class="text-l">({preset} xDai)</p>
+          </div>
+        </a>
+      {/each}
     </div>
-    <div class="flex justify-end flex-1 mr-1 text-primary">
-    </div>
-  </div>
-</section>
-
+  </section>
+{/if}
 <section class="flex items-center justify-center mb-8">
   <div class="flex items-center bg-white shadow px-2  w-full rounded-sm">
-    <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
-    </div>
     <div class="flex items-center">
       <p class="text-xl">Alternatives</p>
-      <div class="flex justify-end flex-1 mr-1 text-primary">
-      </div>
     </div>
   </div>
 </section>
 <section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-  </div>
   <div class="flex items-center">
     <div class="text-center">
       You can transfer xDai from any other wallet or exchange. Just send your preferred amount (at least {INVITE_VALUE} xDai) to the address below to get you started:
     </div>
-    <div class="flex justify-end flex-1 mr-1 text-primary">
-    </div>
   </div>
 </section>
 <section class="flex items-center justify-center mb-8">
   <div class="flex items-center">
-    <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
-    </div>
     <div class="flex items-center">
       <div class="break-all text-xs" id="clipboard">
         <input type="text" class="hidden" bind:value={accountAddress}/>
@@ -245,8 +198,6 @@
             />
           </svg>
         </div>
-      </div>
-      <div class="flex justify-end flex-1 mr-1 text-primary">
       </div>
     </div>
   </div>
