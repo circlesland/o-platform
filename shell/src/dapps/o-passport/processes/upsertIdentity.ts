@@ -116,6 +116,7 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#checkPreviewAvatar",
+          canSkip: () => true,
           previous: "#country",
         },
       }),
