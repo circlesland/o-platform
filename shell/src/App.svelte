@@ -26,7 +26,7 @@
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
   import { Back } from "@o-platform/o-process/dist/events/back";
   import { Skip } from "@o-platform/o-process/dist/events/skip";
-  import { Cancel } from "@o-platform/o-process/dist/events/cancel";
+  import {Cancel, CancelRequest} from "@o-platform/o-process/dist/events/cancel";
   import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
@@ -120,13 +120,11 @@
 
   function modalWantsToClose() {
     // Use this to cancel the close request etc.
-    if (isOpen) {
+    if (modalProcess && isOpen) {
+      modalProcess.sendEvent(new CancelRequest());
+    }
+    if (!modalProcess && isOpen) {
       isOpen = false;
-      lastPrompt = null;
-      if (modalProcess) {
-        modalProcess.sendEvent(new Cancel());
-      }
-      return;
     }
   }
 

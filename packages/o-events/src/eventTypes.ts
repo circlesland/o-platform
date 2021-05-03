@@ -25,6 +25,7 @@ export type PlatformEventTypes =
     | "process.continue"
     | "process.triggerSelf"
     | "process.cancel"
+    | "process.cancelRequest"
     | "process.prompt"
     | "process.error"
     | "process.success"

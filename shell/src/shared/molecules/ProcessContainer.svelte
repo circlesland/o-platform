@@ -12,11 +12,13 @@
   import { Sinker } from "@o-platform/o-process/dist/events/sinker";
   import Error from "../atoms/Error.svelte";
   import LoadingIndicator from "../atoms/LoadingIndicator.svelte";
+  import ChoiceSelector from "../../../../packages/o-editors/src/ChoiceSelector.svelte";
 
   /**
    * A channel to an already running process.
    */
   export let process: Process;
+  let interceptedProcess: Process;
 
   let inEventSubscription: Subscription;
   let outEventSubscription: Subscription;
@@ -30,9 +32,31 @@
   // When 'waitForNextOutgoingEvent' == true and any event is sent to the process then 'waiting' will be set to 'true'
   let waiting: boolean;
 
+  let beforeCancelPrompt: PromptEvent;
+  let cancelDialogVisible: boolean;
+
   const dispatch = createEventDispatcher();
 
   $: {
+    if (process) {
+      interceptedProcess = {
+        ...process,
+        sendAnswer(answer: PlatformEvent) {
+          if (cancelDialogVisible && answer.type == "process.continue" && (<any>answer).data.___cancelRequest) {
+            console.log("Cancel dialog answer:", answer);
+            if ((<any>answer).data.___cancelRequest.key === "no") {
+              prompt = beforeCancelPrompt;
+              cancelDialogVisible = false;
+              return;
+            } else {
+              prompt = beforeCancelPrompt;
+              cancelDialogVisible = false;
+              process.sendEvent(new Cancel());
+            }
+          }
+        }
+      };
+    }
     if (outEventSubscription) {
       outEventSubscription.unsubscribe();
       outEventSubscription = null;
@@ -64,9 +88,51 @@
   function subscribeToProcess() {
     ensureProcess((process) => {
       inEventSubscription = process.inEvents.subscribe((next) => {
+
         if (!next.event) return;
 
         console.log("ProcessContainer: In/Out -> to Process: ", JSON.stringify(next.event, null, 2));
+
+        if (next.event.type === "process.cancelRequest") {
+          // modalWantsToClose:
+          // Check the context's dirty flags and ask the user if at least one dirty-flag is set
+          console.log("Received cancel request:", next.event);
+          beforeCancelPrompt = prompt;
+          cancelDialogVisible = true;
+          const p = <Prompt>{
+            type: "process.prompt",
+            fieldName: "___cancelRequest",
+            component: ChoiceSelector,
+            data: {
+              ___cancelRequest: undefined
+            },
+            dirtyFlags: {},
+            messages: {},
+            params: {
+              label: "Do you really want to cancel?",
+              choices: [{
+                key: "yes",
+                label: "Yes",
+                target: "#yes"
+              },{
+                key: "no",
+                label: "No",
+                target: "#no"
+              }]
+            },
+            isSensitive: false,
+            navigation: {
+              canGoBack: () => false,
+              canSkip: () => false,
+            },
+          };
+
+          prompt = <PromptEvent> {
+            id: "123",
+            responseToId: "123",
+            ...p
+          };
+        }
 
         if (
           waitForNextOutgoingEvent &&
@@ -78,6 +144,7 @@
       });
 
       outEventSubscription = process.events.subscribe((next) => {
+
         if (next.stopped) {
           prompt = null;
           process = null;
@@ -161,17 +228,15 @@
       icon: faTimes,
     },
   };
-  const cancelPressed = () => {
-    process.sendEvent(new Cancel());
-  };
+
 </script>
 
 {#if waiting}
   <LoadingIndicator />
 {:else if error}
   <Error data={{ error }} />
-{:else if process && prompt}
-  <Prompt {process} {prompt} bubble={lastBubble} />
+{:else if interceptedProcess && prompt}
+  <Prompt process={interceptedProcess} {prompt} bubble={lastBubble} />
 {:else}
   <!-- TODO: This could be both: Undefined state or loading .. -->
   <LoadingIndicator />
