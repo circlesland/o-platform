@@ -1,5 +1,4 @@
 <script lang="ts">
-  import AdjacencyGraph from "../../../shared/pathfinder/CirclesAdjacencyGraph.svelte";
   import TransferGraph from '../../../shared/pathfinder/CirclesTransferGraph.svelte';
   import TransfersFinder from '../../../shared/pathfinder/CirclesTransfersFinder.svelte';
 

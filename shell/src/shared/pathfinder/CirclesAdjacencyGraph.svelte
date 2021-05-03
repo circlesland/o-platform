@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import {Network} from 'vis-network';
 import {DataSet} from 'vis-data';
 import { onMount } from 'svelte';
@@ -7,7 +7,9 @@ import { fillUsernames, userDB } from './userdb.js';
 import { toAddress, getAdjacencies } from './utility.js';
 import { createNodeContents } from './visUtils.js';
 
-let usernameToExplore = '';
+export let address:string = "";
+
+// let usernameToExplore = '';
 let graph;
 
 let nodes = new DataSet();
@@ -20,12 +22,13 @@ onMount(() => {
         if (!params.nodes || params.nodes.length == 0) return;
         exploreNode(params.nodes[0])
     });
+    exploreNode(address)
 });
 
 let small = function(node) { node['size'] = 10; return node; }
 
 let exploreNode = async function(username) {
-    let adjacencies = await getAdjacencies(await toAddress(username));
+    let adjacencies = await getAdjacencies(username.startsWith("0x") ? await toAddress(username) : username);
     let addressesToQuery = {};
     for (let edge of adjacencies) {
         addressesToQuery[edge.user] = true;
@@ -57,10 +60,6 @@ let resetGraph = function() {
 </script>
 
 <main>
-    <h1>Adjacency Graph</h1>
-    <input bind:value={usernameToExplore} placeholder="username / address">
-    <button on:click={exploreNode(usernameToExplore)}>explore</button>
-    <button on:click={resetGraph}>reset</button>
     <div bind:this={graph} style="width: 100%; height: 600px;"></div>
 </main>
 
