@@ -59,9 +59,5 @@ let resetGraph = function() {
 
 </script>
 
-<main>
-    <div bind:this={graph} style="width: 100%; height: 600px;"></div>
-</main>
-
-<style>
-</style>
+<!-- TODO: Find a better fix for the graph-height. Problem is that this value must be known upon initialization. Also resize scenarios must be handled. -->
+<div bind:this={graph} class="w-full -mt-56 pt-40" style="height:100vh;"></div>
