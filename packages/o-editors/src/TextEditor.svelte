@@ -2,8 +2,10 @@
   import { EditorContext } from "./editorContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
+  import { onMount } from "svelte";
 
   export let context: EditorContext;
+  let inputField: any;
   let fieldId = context.isSensitive
     ? Math.random().toString().replace(".", "")
     : context.fieldName;
@@ -19,6 +21,7 @@
       submitHandler();
     }
   }
+  onMount(() => inputField.focus());
 </script>
 
 <div class="form-control justify-self-center">
@@ -57,6 +60,7 @@
     class="input input-lg input-bordered"
     class:input-error={context.messages[context.fieldName]}
     bind:value={context.data[context.fieldName]}
+    bind:this={inputField}
   />
 </div>
 

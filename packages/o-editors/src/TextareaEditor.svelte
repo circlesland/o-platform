@@ -5,6 +5,8 @@
   import { onMount } from "svelte";
   export let context: EditorContext;
 
+  let inputField: any;
+
   const submitHandler = () => {
     const answer = new Continue();
     answer.data = context.data;
@@ -22,6 +24,7 @@
   onMount(() => {
     let textarea = document.querySelector("textarea");
     textarea.addEventListener("input", autoExpand);
+    inputField.focus();
   });
 </script>
 
@@ -61,6 +64,7 @@
     class="textarea textarea textarea-bordered overflow-hidden"
     class:input-error={context.messages[context.fieldName]}
     bind:value={context.data[context.fieldName]}
+    bind:this={inputField}
   />
 </div>
 

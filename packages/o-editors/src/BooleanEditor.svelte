@@ -2,7 +2,9 @@
   import { EditorContext } from "./editorContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
+  import { onMount } from "svelte";
 
+  let inputField: any;
   export let context: EditorContext;
 
   context.data[context.fieldName] =
@@ -15,6 +17,8 @@
     answer.data = context.data;
     context.process.sendAnswer(answer);
   };
+
+  onMount(() => inputField.focus());
 </script>
 
 <div class="mt-4 bordered">
@@ -60,6 +64,7 @@
           type="checkbox"
           class="checkbox checkbox-primary"
           bind:checked={context.data[context.fieldName]}
+          bind:this={inputField}
         />
         <span
           class="checkbox-mark bg-white"
