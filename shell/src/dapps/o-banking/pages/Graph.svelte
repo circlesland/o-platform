@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import BankingHeader from "../atoms/BankingHeader.svelte";
-
+  import { onMount } from "svelte";
+  import TokensHeader from "../atoms/TokensHeader.svelte";
 </script>
-<BankingHeader />
-<br/>
-Graph<br/>
-<br/>
+
+<TokensHeader />
+<br />
+Graph<br />
+<br />
