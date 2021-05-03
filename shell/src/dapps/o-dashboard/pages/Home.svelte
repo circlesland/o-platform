@@ -110,7 +110,7 @@
         <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary" />
         <div class="text-center">
           <p
-            class="text-2xl mt-2 font-bold font-circles text-gradient w-96 m-auto"
+            class="text-2xl mt-2 font-bold font-circles text-gradient w-full sm:w-96 m-auto"
           >
             Grow the global UBI economy!
           </p>
