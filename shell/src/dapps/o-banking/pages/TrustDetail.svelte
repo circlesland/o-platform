@@ -9,72 +9,26 @@
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
   import { TrustObject } from "../data/circles/types";
   import { mySafe } from "../stores/safe";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { tryGetCurrentSafe } from "../init";
-  import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-  import Success from "../../../shared/atoms/Success.svelte";
-  import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";
-
-  let trust: TrustObject;
 
   export let params: {
     trustPartner: String;
   };
 
-  let mutualTrustPartner: TrustObject;
-
-  const contextActions = [
-    /*{
-      key: "setTrust",
-      label: "Set Trust 123",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = setTrust;
-            ctx.childContext = {
-              data: {
-                safeAddress: tryGetCurrentSafe().safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-                trustReceiver: params.trustPartner,
-              },
-            };
-            return ctx;
-          }
-        );
-      },
-    },*/
-  ];
-  //contextActions.forEach((o) => window.o.publishEvent(new ContextAction(o)));
+  let trust: TrustObject;
+  let trusting: TrustObject;
+  let trustedby: TrustObject;
 
   $: {
     if ($mySafe.trustRelations && params.trustPartner) {
-      trust = Object.values($mySafe.trustRelations.mutualTrusts).find(
-        (o) => o.trusting.safeAddress == params.trustPartner
+      trusting = Object.values($mySafe.trustRelations.trusting).find(
+        (o) => o.safeAddress == params.trustPartner
       );
-      if (trust) {
-        mutualTrustPartner = trust.trustedBy;
-        trust = trust.trusting;
-        trust.type = "mutual";
-      }
-      if (!trust) {
-        trust = Object.values($mySafe.trustRelations.trusting).find(
-          (o) => o.safeAddress == params.trustPartner
-        );
-        if (trust) {
-          trust.type = "trusting";
-        }
-      }
-      if (!trust) {
-        trust = Object.values($mySafe.trustRelations.trustedBy).find(
-          (o) => o.safeAddress == params.trustPartner
-        );
+      trustedby = Object.values($mySafe.trustRelations.trustedBy).find(
+        (o) => o.safeAddress == params.trustPartner
+      );
 
-        if (trust) {
-          trust.type = "trusted";
-        }
-      }
+      trust = trusting ? trusting : trustedby;
+
       if (!trust) {
         trust = <TrustObject>{
           limit: 0,
@@ -152,7 +106,7 @@
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
       <div class="text-circleslightblue text-sm font-bold">TRUST</div>
       <div class="flex flex-col">
-        {#if trust.type == "trusting" || trust.type == "mutual"}
+        {#if trusting && trustedby}
           <div class="text-left text-sm text-light mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -169,13 +123,12 @@
               />
             </svg>
             <span class="inline text-dark"
-              >You are trusting {trust.profile
-                ? trust.profile.displayName
-                : trust.safeAddress} to {trust.limit}%
+              >You are trusting {trusting.profile
+                ? trusting.profile.displayName
+                : trusting.safeAddress} to {trusting.limit}%
             </span>
           </div>
-        {/if}
-        {#if trust.type == "trusted" || trust.type == "mutual"}
+
           <div class="text-left text-sm text-light mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -192,10 +145,9 @@
               />
             </svg>
             <span class="inline text-dark"
-              >{trust.profile ? trust.profile.displayName : trust.safeAddress} is
-              trusting you to {trust.type == "mutual"
-                ? mutualTrustPartner.limit
-                : trust.limit}%
+              >{trustedby.profile
+                ? trustedby.profile.displayName
+                : trustedby.safeAddress} is trusting you to {trustedby.limit}%
             </span>
           </div>
         {/if}
@@ -205,7 +157,7 @@
   <section class="justify-center mb-2 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
       <div class="text-circleslightblue text-sm font-bold">CHANGE TRUST</div>
-      {#if (trust.type === "mutual" || trust.type === "trusting") && trust.limit > 0}
+      {#if trusting && trusting.limit > 0}
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <button
             class="btn btn-block btn-error"
@@ -228,7 +180,7 @@
           </button>
         </div>
       {:else}
-        <div class="flex items-center w-full space-x-2 sm:space-x-4">
+        <div className="flex items-center w-full space-x-2 sm:space-x-4">
           <button
             class="btn btn-block btn-primary"
             on:click={() => execTrust()}

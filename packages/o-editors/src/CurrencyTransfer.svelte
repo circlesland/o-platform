@@ -5,13 +5,16 @@
   import Select from "svelte-select";
   import Item from "./DropdownCurrencyItem.svelte";
   import { RpcGateway } from "../../o-circles/dist/rpcGateway";
-
+  import { onMount } from "svelte";
   export let context: CurrencyTransferContext;
 
-  console.log("CONTEXT", context);
+  let inputField: any;
   let amount: string =
     context.data && context.data.tokens ? context.data.tokens.amount : "";
   let maxAmount: string = "0";
+
+  onMount(() => inputField.focus());
+
   $: selectedCurrency = context.params.currencies.find(
     (o) => o.value === "crc"
   );
@@ -99,6 +102,7 @@
       class="input input-bordered block w-full pl-12 pr-12 sm:text-sm "
       placeholder="0.00 (Max: {maxAmount})"
       bind:value={amount}
+      bind:this={inputField}
     />
     <div class="absolute inset-y-0 right-1 flex items-center themed">
       <label for="currency" class="sr-only">Currency</label>

@@ -202,7 +202,7 @@ export const banking: DappManifest<DappState> = {
     },*/
     {
       key: "setTrust",
-      label: "Set Trust",
+      label: "Trust someone",
       event: (runtimeDapp: RuntimeDapp<any>) => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,
