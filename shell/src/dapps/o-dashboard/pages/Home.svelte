@@ -1,15 +1,15 @@
 <script lang="ts">
-  import {dashboard} from "../../o-dashboard.manifest";
+  import { dashboard } from "../../o-dashboard.manifest";
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
-  import {me} from "../../../shared/stores/me";
-  import {showToast} from "../../../shared/toast";
-  import {onMount} from "svelte";
-  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-  import {BN} from "ethereumjs-util";
+  import { me } from "../../../shared/stores/me";
+  import { showToast } from "../../../shared/toast";
+  import { onMount } from "svelte";
+  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+  import { BN } from "ethereumjs-util";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
 
-  const {mySafe} = require("src/dapps/o-banking/stores/safe");
-  import {INVITE_VALUE} from "src/dapps/o-passport/processes/invite/invite";
+  const { mySafe } = require("src/dapps/o-banking/stores/safe");
+  import { INVITE_VALUE } from "src/dapps/o-passport/processes/invite/invite";
   import Web3 from "web3";
 
   $: me;
@@ -33,7 +33,8 @@
       return;
     }
 
-    accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
+    accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk)
+      .address;
 
     if (localStorage.getItem("isCreatingSafe")) {
       showFundHint = true;
@@ -41,85 +42,98 @@
     }
     accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
     showFundHint = new BN(accountBalance).lt(new BN(safeDeployThreshold));
-  })
+  });
 
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),
-      props: {name: inviteLink},
+      props: { name: inviteLink },
     });
     app.$destroy();
   };
 
   $: {
     if ($me) {
-      inviteLink = `${window.location.protocol}//${window.location.host}/#/passport/profile/${$me.id}`
+      inviteLink = `${window.location.protocol}//${window.location.host}/#/passport/profile/${$me.id}`;
     }
   }
 </script>
 
-<DashboardHeader/>
+<DashboardHeader />
 <div class="mx-4">
   {#if showFundHint}
     <!-- Create safe  -->
     <section class="mb-8">
-      <div class="bg-white shadow px-2  w-full rounded-sm">
-        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
-        </div>
+      <div class="bg-white shadow px-2 -mt-6 pb-4 w-full rounded-sm">
+        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary" />
         <div style="text-align: center">
-          <p class="text-2xl mt-2">Welcome! You're almost there.</p>
-          <p class="text mt-4">Copy the invite link and send it to someone who's already a citizen of circles.land:</p>
-          <div class="break-all mt-4 text-xs" id="clipboard">
-            <input type="text" class="hidden" bind:value={inviteLink}/>
-            <p class="text-2xl">{inviteLink}</p>
-            <div
-              class="inline-block text-light cursor-pointertext-center text-xs relative -bottom-1"
-              on:click={copy}
-              alt="Copy to Clipboard"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 stroke-current transform group-hover:rotate-[-4deg] transition"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+          <p
+            class="text-2xl mt-2 font-bold font-circles text-gradient w-64 m-auto"
+          >
+            You're almost there.
+          </p>
+          <p class="text mt-4">
+            Copy the invite link and send it to someone who's already a citizen
+            of circles.land:
+          </p>
+          <div class="break-all mt-4  mb-4 text-xs" id="clipboard">
+            <input type="text" class="hidden" bind:value={inviteLink} />
+            <div class="text-2xl inline-block">
+              <button class="btn btn-primary" on:click={copy}
+                >Copy Invite Link</button
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                />
-              </svg>
+            </div>
+
+            <div class="block text-light text-sm mt-2 ">
+              {inviteLink}
             </div>
           </div>
           <p class="text">
-            If you don't know anybody who has Circles yet, ask nicely in our <a href="" class="btn-link">Discord</a> if
-            someone can send you
-            the required invite.
+            If you don't know anybody who has Circles yet, ask nicely in our <a
+              href="https://discord.gg/DfMa3U6V"
+              class="btn-link">Discord</a
+            > if someone can send you the required invite.
           </p>
           <p class="text-xs mt-4 pb-4">
-            alternatively, <a href="#/dashboard/become-a-hub">become a hub</a>
+            alternatively, <a href="#/dashboard/become-a-hub" class="btn-link"
+              >become a hub</a
+            >
           </p>
-          <div class="mr-1 text-primary">
-          </div>
+          <div class="mr-1 text-primary" />
         </div>
       </div>
     </section>
-
   {:else if $mySafe}
     <!-- Create safe  -->
     <section class="mb-8">
-      <div class="bg-white shadow px-2  w-full rounded-sm">
-        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
-        </div>
-        <div style="text-align: center">
-          <p class="text-2xl mt-2">Grow the global UBI economy!</p>
-          <p class="text mt-4">xxxxxxx/1.000.000.000 Progress bar</p>
-          <p class="text mt-4">Help others to get aboard in our <a href="" class="btn-link">Discord</a> or <a
-            href="/#/dashboard/become-a-hub" class="btn-link">become a hub</a> and invite your family and friends</p>
-          <div class="mr-1 text-primary">
+      <div class="bg-white shadow px-2 pb-8 -mt-6  w-full rounded-sm">
+        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary" />
+        <div class="text-center">
+          <p
+            class="text-2xl mt-2 font-bold font-circles text-gradient w-96 m-auto"
+          >
+            Grow the global UBI economy!
+          </p>
+          <p class="text-lg font-circles mt-4">
+            xxxxxxx/1.000.000.000 Progress
+          </p>
+          <div class="w-96 m-auto">
+            <progress
+              class="progress progress-accent h-1 "
+              value={12}
+              max="100"
+            />
           </div>
+          <p class="text mt-4">
+            Help others to get aboard in our <a
+              href="https://discord.gg/DfMa3U6V"
+              class="btn-link">Discord</a
+            >
+            or
+            <a href="/#/dashboard/become-a-hub" class="btn-link">become a hub</a
+            > and invite your family and friends
+          </p>
+          <div class="mr-1 text-primary" />
         </div>
       </div>
     </section>
@@ -128,9 +142,7 @@
   <!-- PASSPORT  -->
   <a href="/#/passport/profile">
     <section class="flex items-center justify-center mb-8">
-      <div
-        class="flex items-center bg-white shadow px-2 -mt-6 w-full rounded-sm"
-      >
+      <div class="flex items-center bg-white shadow px-2  w-full rounded-sm">
         <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -210,7 +222,7 @@
       </div>
     </section>
   {:else}
-    <a href="{showFundHint ? '/#/dashboard' : '/#/banking/transactions'}">
+    <a href={showFundHint ? "/#/dashboard" : "/#/banking/transactions"}>
       <section class="flex items-center justify-center mb-8">
         <div class="flex items-center bg-white shadow px-2 w-full rounded-sm">
           <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
