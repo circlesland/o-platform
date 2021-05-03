@@ -61,6 +61,7 @@
     class:input-error={context.messages[context.fieldName]}
     bind:value={context.data[context.fieldName]}
     bind:this={inputField}
+    on:change={() => context.editorDirtyFlags[context.fieldName] = true}
   />
 </div>
 

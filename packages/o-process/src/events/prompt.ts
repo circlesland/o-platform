@@ -20,6 +20,7 @@ export class Prompt implements PlatformEvent {
    */
   data: { [x: string]: any } = {};
   dirtyFlags: { [x: string]: boolean } = {};
+  editorDirtyFlags: { [x: string]: boolean } = {};
   messages: { [x: string]: string } = {};
   /**
    * The component specific params.

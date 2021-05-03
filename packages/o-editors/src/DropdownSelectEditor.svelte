@@ -75,6 +75,7 @@
         listPlacement="top"
         containerClasses="min-w-full asyncList"
         isCreatable={true}
+        on:change={() => context.editorDirtyFlags[context.fieldName] = true}
         on:clear={handleClear}
         {optionIdentifier}
         {getSelectionLabel}

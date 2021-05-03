@@ -39,6 +39,9 @@
 
   $: {
     if (process) {
+      // Give a modified version of the process to the <Prompt>.
+      // This will catch the answer to the cancel-question
+      // before it reaches the process.
       interceptedProcess = {
         ...process,
         sendAnswer(answer: PlatformEvent) {
@@ -95,9 +98,16 @@
 
         if (next.event.type === "process.cancelRequest") {
           // modalWantsToClose:
-          // Check the context's dirty flags and ask the user if at least one dirty-flag is set
+          // TODO: Check the context's dirty flags and ask the user only if at least one dirty-flag is set
           console.log("Received cancel request:", next.event);
           beforeCancelPrompt = prompt;
+
+          if (Object.values(beforeCancelPrompt.editorDirtyFlags).filter(o => o === true).length == 0) {
+            // No changes yet, just cancel
+            process.sendEvent(new Cancel());
+            return;
+          }
+
           cancelDialogVisible = true;
           const p = <Prompt>{
             type: "process.prompt",
@@ -191,7 +201,10 @@
             "ProcessContainer received 'process.prompt' event: ",
             next
           );
-          prompt = <PromptEvent>event;
+          prompt = <PromptEvent>{
+            ...event,
+            editorDirtyFlags: {}
+          };
           waiting = false;
           waitForNextOutgoingEvent = true;
         }

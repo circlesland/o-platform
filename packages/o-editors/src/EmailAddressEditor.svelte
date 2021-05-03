@@ -51,6 +51,7 @@
     class="input input-lg input-bordered"
     class:input-error={context.messages[context.fieldName]}
     bind:value={context.data[context.fieldName]}
+    on:change={() => context.editorDirtyFlags[context.fieldName] = true}
   />
 </div>
 

@@ -9,6 +9,7 @@
     fieldName: string;
     data: { [x: string]: any };
     dirtyFlags: { [x: string]: any };
+    editorDirtyFlags: { [x: string]: any };
     params: { [x: string]: any };
     messages: { [x: string]: any };
     dataSchema: Schema<any, any>;
@@ -32,6 +33,7 @@
         canGoBack: prompt.navigation.canGoBack,
         canSkip: prompt.navigation.canSkip,
         dataSchema: prompt.dataSchema,
+        editorDirtyFlags: prompt.editorDirtyFlags,
         isSensitive: prompt.isSensitive
       };
     } else {

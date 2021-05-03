@@ -65,6 +65,7 @@
           class="checkbox checkbox-primary"
           bind:checked={context.data[context.fieldName]}
           bind:this={inputField}
+          on:change={() => context.editorDirtyFlags[context.fieldName] = true}
         />
         <span
           class="checkbox-mark bg-white"
