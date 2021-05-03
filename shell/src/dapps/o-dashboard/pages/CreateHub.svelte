@@ -2,14 +2,14 @@
   import { dashboard } from "../../o-dashboard.manifest";
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import { me } from "../../../shared/stores/me";
-  import {onDestroy, onMount} from "svelte";
-  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  import { onDestroy, onMount } from "svelte";
+  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import {INVITE_VALUE} from "src/dapps/o-passport/processes/invite/invite";
-  import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
-  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-  import {getLastLoadedDapp, getLastLoadedPage} from "../../../loader";
-  import {Subscription} from "web3-core-subscriptions"
+  import { INVITE_VALUE } from "src/dapps/o-passport/processes/invite/invite";
+  import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
+  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import { getLastLoadedDapp, getLastLoadedPage } from "../../../loader";
+  import { Subscription } from "web3-core-subscriptions";
 
   $: me;
 
@@ -19,21 +19,21 @@
     );
   }
 
-  let accountAddress:string = "";
-  let accountBalance:string = "";
-  let safeDeployThreshold:string = "200000000000000000";
-  let inviteThreshold:string = "";
-  let invitePersonCount:number = 0;
-  let invitePersonCountString:string = "0 People";
-  let showFundHint:boolean = false;
-  let inviteLink:string = "";
-  let showRampUp:boolean = false;
+  let accountAddress: string = "";
+  let accountBalance: string = "";
+  let safeDeployThreshold: string = "200000000000000000";
+  let inviteThreshold: string = "";
+  let invitePersonCount: number = 0;
+  let invitePersonCountString: string = "0 People";
+  let showFundHint: boolean = false;
+  let inviteLink: string = "";
+  let showRampUp: boolean = false;
 
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
 
-  let presets = [10, 20, 50]
-  let subscription:Subscription<any>;
+  let presets = [10, 20, 50];
+  let subscription: Subscription<any>;
 
   onMount(async () => {
     lastLoadedPage = getLastLoadedPage();
@@ -45,15 +45,23 @@
     }
 
     async function updateBalance() {
-      accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
-      accountBalance = parseFloat(RpcGateway.get().utils.fromWei(await RpcGateway.get().eth.getBalance(accountAddress), "ether")).toFixed(2);
-      invitePersonCount = Math.floor((parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE);
+      accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk)
+        .address;
+      accountBalance = parseFloat(
+        RpcGateway.get().utils.fromWei(
+          await RpcGateway.get().eth.getBalance(accountAddress),
+          "ether"
+        )
+      ).toFixed(2);
+      invitePersonCount = Math.floor(
+        (parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE
+      );
       if (invitePersonCount == 1) {
-        invitePersonCountString = `1 Person`
+        invitePersonCountString = `1 Person`;
       } else if (invitePersonCount == 0 || invitePersonCount == -1) {
-        invitePersonCountString = `0 People`
+        invitePersonCountString = `0 People`;
       } else {
-        invitePersonCountString = `${invitePersonCount} People`
+        invitePersonCountString = `${invitePersonCount} People`;
       }
       if (!showRampUp) {
         showRampUp = invitePersonCount < 1;
@@ -62,13 +70,16 @@
 
     await updateBalance();
 
-    subscription = RpcGateway.get().eth.subscribe("newBlockHeaders", async (error, log) => {
-      updateBalance();
-    });
+    subscription = RpcGateway.get().eth.subscribe(
+      "newBlockHeaders",
+      async (error, log) => {
+        updateBalance();
+      }
+    );
   });
 
   onDestroy(() => {
-    if (subscription){
+    if (subscription) {
       subscription.unsubscribe();
     }
   });
@@ -76,149 +87,168 @@
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),
-      props: {name: inviteLink},
+      props: { name: accountAddress },
     });
     app.$destroy();
   };
-
-  $: {
-    if ($me) {
-      inviteLink = `${window.location.protocol}://${window.location.host}/#/passport/profile/${$me.id}`
-    }
-  }
 </script>
 
 <DashboardHeader />
 
-
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center bg-white shadow px-2  w-full rounded-sm">
-    <div class="flex items-center">
-      <p class="text-xl">Become a hub </p>
-      <div class="flex justify-end flex-1 mr-1 text-primary">
+<div class="mx-4 -mt-6">
+  <section class="flex items-center justify-center mb-2">
+    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+      <div class="text-primary text-xs font-circles font-bold text-left">
+        BECOME A HUB
       </div>
-    </div>
-  </div>
-</section>
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-    <div class="text-center">
-      <div>
-        <p>On blockchains, each transaction costs a small fee to keep the network running. Circles builds on the xDai chain and we recommended to have at least {INVITE_VALUE} xDai to fuel your daily transactions.</p>
-        <br/>
-        <p>If you have more than {INVITE_VALUE} xDai, you can use it to <i>invite others you know and who might not be familiar enough with the process</i> of buying xDai for themselves.</p>
-      </div>
-    </div>
-    <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
-    </div>
-  </div>
-</section>
-
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center bg-white shadow px-2  w-full rounded-sm">
-    <div class="flex items-center">
-      <p class="text-xl">Get xDai</p>
-    </div>
-  </div>
-</section>
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-    <div class="text-center">
-      You can currently invite
-    </div>
-  </div>
-</section>
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-    <div class="text-center">
-      <p class="text-3xl">{invitePersonCountString}</p>
-      <p class="text-l">({accountBalance} xDai)</p>
-    </div>
-  </div>
-</section>
-{#if invitePersonCount > 0}
-  <section class="flex items-center justify-center mb-8">
-    <div class="flex items-center">
-      <div class="text-center">
-        <p class="text-2xl">Great! You have enough xDai to invite new people.</p>
-        <p>To invite people, just follow their invite links and click the "invite" button on their profile page.</p>
-      </div>
-    </div>
-  </section>
-  <section class="flex items-center justify-center mb-8">
-    <div class="flex items-center">
-      <div class="text-center">
-        <p class="text-xs"><a style="cursor: pointer" on:click={() => showRampUp = true}>Get more xDai</a></p>
-      </div>
-    </div>
-  </section>
-{/if}
-{#if invitePersonCount == 0 || showRampUp}
-  <section class="flex items-center justify-center mb-8">
-    <div class="flex items-center">
-      <div class="text-center">
-        Use one of the presets below to buy xDai on <a href="https://ramp.network/">ramp.network</a>.<br/>
-        Once the transaction on ramp is complete, come back and refresh this page.
-      </div>
-    </div>
-  </section>
-  <section class="flex items-center justify-center mb-8">
-    <div class="flex items-center">
-      {#each presets as preset}
-        <a
-          href="https://buy.ramp.network/?userAddress={accountAddress}&swapAsset=XDAI&swapAmount={preset}000000000000000000"
-          target="_blank"
-        >
-          <div class="text-center">
-            <p class="text-3xl">{Math.floor(preset / INVITE_VALUE).toFixed(0)} People</p>
-            <p class="text-l">({preset} xDai)</p>
+      <div class="flex items-center  w-full space-x-2 sm:space-x-6">
+        <div class="text-left flex-grow ">
+          <div class="max-w-full">
+            <p>
+              On blockchains, each transaction costs a small fee to keep the
+              network running. Circles builds on the xDai chain and we
+              recommended to have at least <strong>{INVITE_VALUE} xDai</strong> to
+              fuel your daily transactions.
+            </p>
+            <p class="mt-4">
+              If you have more than {INVITE_VALUE} xDai, you can use it to
+              <i
+                >invite others you know and who might not be familiar enough
+                with the process</i
+              > of buying xDai for themselves.
+            </p>
           </div>
-        </a>
-      {/each}
-    </div>
-  </section>
-{/if}
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center bg-white shadow px-2  w-full rounded-sm">
-    <div class="flex items-center">
-      <p class="text-xl">Alternatives</p>
-    </div>
-  </div>
-</section>
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-    <div class="text-center">
-      You can transfer xDai from any other wallet or exchange. Just send your preferred amount (at least {INVITE_VALUE} xDai) to the address below to get you started:
-    </div>
-  </div>
-</section>
-<section class="flex items-center justify-center mb-8">
-  <div class="flex items-center">
-    <div class="flex items-center">
-      <div class="break-all text-xs" id="clipboard">
-        <input type="text" class="hidden" bind:value={accountAddress}/>
-        <p class="text-2xl">{accountAddress}</p>
-        <div
-          class="inline-block text-light cursor-pointertext-center text-xs relative -bottom-1"
-          on:click={copy}
-          alt="Copy to Clipboard"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 stroke-current transform group-hover:rotate-[-4deg] transition"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-            />
-          </svg>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <section class="flex items-center justify-center mb-2 ">
+    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+      <div class="text-primary text-xs font-circles font-bold text-left">
+        GET XDAI
+      </div>
+      <div class="flex items-center w-full space-x-2 sm:space-x-6">
+        <div class="text-left flex-grow ">
+          <div class="max-w-full">
+            <div class="flex flex-col items-center text-center">
+              <div class="">You can currently invite</div>
+              <div class="">
+                <p class="text-3xl">{invitePersonCountString}</p>
+                <p class="text-l text-light">
+                  ({accountBalance} xDai )
+                </p>
+              </div>
+              {#if invitePersonCount > 0}
+                <div class="mt-4">
+                  <p class="text-2xl">
+                    Great! You have enough xDai to invite new people.
+                  </p>
+                  <p class="mt-2">
+                    To invite people, just follow their invite links and click
+                    the "invite" button on their profile page.
+                  </p>
+                </div>
+              {/if}
+              {#if invitePersonCount == 0 || showRampUp}
+                <div class="mt-4">
+                  Use one of the presets below to buy xDai on <a
+                    href="https://ramp.network/"
+                    class="btn-link">ramp.network</a
+                  >.<br />
+                  Once the transaction on ramp is complete, come back and refresh
+                  this page.
+                </div>
+                <div class="text-center">
+                  <p class="mt-4">
+                    <button
+                      class="btn btn-primary"
+                      on:click={() => (showRampUp = true)}
+                    >
+                      <img
+                        src={"/logos/xdai.svg"}
+                        alt="xDai"
+                        class="w-6 h-6 inline mr-2"
+                      />
+                      Get more xDai</button
+                    >
+                  </p>
+                </div>
+
+                <div class="flex flex-row space-x-6 mt-4">
+                  {#each presets as preset}
+                    <a
+                      href="https://buy.ramp.network/?userAddress={accountAddress}&swapAsset=XDAI&swapAmount={preset}000000000000000000"
+                      target="_blank"
+                      class="cursor-pointer"
+                    >
+                      <div
+                        class="card compact side bg-primary text-white font-circles cursor-pointer"
+                      >
+                        <div
+                          class="flex-row items-center space-x-4 card-body cursor-pointer"
+                        >
+                          <label for="input" class="flex-0"
+                            ><div
+                              class="font-bold text-sm sm:text-lg tracking-wider"
+                            >
+                              {Math.floor(preset / INVITE_VALUE).toFixed(0)} INVITES
+                            </div>
+                            <p class="text-xs sm:text-l">({preset} xDai)</p>
+                          </label>
+                        </div>
+                      </div>
+                    </a>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
+    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+      <div class="text-primary text-xs font-circles font-bold text-left">
+        ALTERNATIVES
+      </div>
+      <div class="flex items-center  w-full space-x-2 sm:space-x-6">
+        <div class="flex-grow ">
+          <div class="text-left">
+            You can transfer xDai from any other wallet or exchange. <br />
+            Just send your preferred amount (at least {INVITE_VALUE} xDai) to the
+            address below to get you started:
+          </div>
+          <div class="mt-4">
+            <div class="break-all text-xs text-center" id="clipboard">
+              <input type="text" class="hidden" bind:value={accountAddress} />
+              <p class="text-2xl">{accountAddress}</p>
+              <div
+                class="inline-block text-lighttext-center text-xs relative -bottom-1"
+                on:click={copy}
+                alt="Copy to Clipboard"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 stroke-current transform group-hover:rotate-[-4deg] transition"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
