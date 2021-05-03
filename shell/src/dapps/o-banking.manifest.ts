@@ -166,7 +166,7 @@ export const banking: DappManifest<DappState> = {
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   actions: [
-    {
+    /*{
       key: "getUbi",
       label: "Get UBI",
       event: (runtimeDapp: RuntimeDapp<any>) => {
@@ -199,7 +199,7 @@ export const banking: DappManifest<DappState> = {
           }
         );
       },
-    },
+    },*/
     {
       key: "setTrust",
       label: "Set Trust",
