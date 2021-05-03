@@ -11,33 +11,17 @@
     context.process.sendAnswer(answer);
   };
 
-  var autoExpand = function (field) {
-    // Reset field height
-    field.style.height = "inherit";
-
-    // Get the computed styles for the element
-    var computed = window.getComputedStyle(field);
-
-    // Calculate the height
-    var height =
-      parseInt(computed.getPropertyValue("border-top-width"), 10) +
-      parseInt(computed.getPropertyValue("padding-top"), 10) +
-      field.scrollHeight +
-      parseInt(computed.getPropertyValue("padding-bottom"), 10) +
-      parseInt(computed.getPropertyValue("border-bottom-width"), 10);
-
-    field.style.height = height + "px";
+  var autoExpand = function () {
+    var el = this;
+    setTimeout(function () {
+      el.style.cssText = "height:auto; padding:0 padding-top: 2px;";
+      el.style.cssText = "height:" + el.scrollHeight + "px";
+    }, 0);
   };
 
   onMount(() => {
-    document.addEventListener(
-      "input",
-      function (event) {
-        if (event.target.tagName.toLowerCase() !== "textarea") return;
-        autoExpand(event.target);
-      },
-      false
-    );
+    let textarea = document.querySelector("textarea");
+    textarea.addEventListener("input", autoExpand);
   });
 </script>
 
@@ -69,11 +53,12 @@
   <textarea
     readonly={context.isReadonly ? "readonly" : ""}
     name="input"
+    rows="1"
     on:keydown={onkeydown}
     id={context.fieldName}
     type="text"
     placeholder={context.params.placeholder}
-    class="textarea textarea textarea-bordered"
+    class="textarea textarea textarea-bordered overflow-hidden"
     class:input-error={context.messages[context.fieldName]}
     bind:value={context.data[context.fieldName]}
   />
