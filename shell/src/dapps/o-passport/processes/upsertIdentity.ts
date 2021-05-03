@@ -232,9 +232,9 @@ const processDefinition = (processId: string) =>
                 lastName: context.data.lastName,
                 dream: context.data.dream,
                 country: context.data.country,
-                avatarUrl: event.data.url ?? context.data.avatarUrl,
-                avatarCid: event.data.hash ?? context.data.avatarCid,
-                avatarMimeType: event.data.mimeType ?? context.data.avatarMimeType,
+                avatarUrl: event.data?.url ?? context.data.avatarUrl,
+                avatarCid: event.data?.hash ?? context.data.avatarCid,
+                avatarMimeType: event.data?.mimeType ?? context.data.avatarMimeType,
               },
             });
 
