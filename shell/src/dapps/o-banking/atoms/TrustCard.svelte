@@ -17,7 +17,7 @@
   let pictureUrl: string;
   let displayName: String;
   let safeAddress: string;
-  let limit: String = "0";
+
   let id: String;
 
   $: {
@@ -27,7 +27,6 @@
         ? untrusted.profile.displayName
         : untrusted.safeAddress;
       pictureUrl = untrusted.profile ? untrusted.profile.avatarUrl : undefined;
-      limit = untrusted.limit ? untrusted.limit.toString() : "0";
       safeAddress = untrusted.safeAddress;
       id = untrusted._id;
     } else if (trustedBy && trusting) {
@@ -36,8 +35,6 @@
         ? trustedBy.profile.displayName
         : trustedBy.safeAddress;
       pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
-      limit = trusting.limit ? trusting.limit.toString() : "0";
-      limit = trustedBy.limit ? limit + " / " + trustedBy.limit : limit;
       safeAddress = trusting.safeAddress;
       id = trustedBy._id;
     } else if (trustedBy) {
@@ -46,7 +43,6 @@
         ? trustedBy.profile.displayName
         : trustedBy.safeAddress;
       pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
-      limit = trustedBy.limit ? trustedBy.limit.toString() : "0";
       safeAddress = trustedBy.safeAddress;
       id = trustedBy._id;
     } else if (trusting) {
@@ -55,7 +51,6 @@
         ? trusting.profile.displayName
         : trusting.safeAddress;
       pictureUrl = trusting.profile ? trusting.profile.avatarUrl : undefined;
-      limit = trusting.limit ? trusting.limit.toString() : "0";
       safeAddress = trusting.safeAddress;
       id = trusting._id;
     }
