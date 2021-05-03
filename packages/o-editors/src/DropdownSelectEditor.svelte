@@ -67,6 +67,7 @@
     <div class="themed">
       <Select
         name="value"
+        isFocused={true}
         selectedValue={selected}
         loadOptions={context.params.asyncChoices}
         placeholder="Search..."
@@ -86,6 +87,7 @@
     <div class="themed-select">
       <Select
         name="value"
+        isFocused={true}
         selectedValue={selected}
         items={context.params.choices}
         showChevron={true}

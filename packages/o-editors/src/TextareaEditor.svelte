@@ -69,3 +69,10 @@
 </div>
 
 <ProcessNavigation on:buttonClick={submitHandler} {context} />
+
+<style>
+  textarea {
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+  }
+</style>
