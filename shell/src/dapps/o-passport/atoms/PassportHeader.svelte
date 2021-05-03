@@ -28,11 +28,7 @@
       shellProcess,
       true,
       async (ctx) => {
-        ctx.childProcessDefinition = {
-          id: upsertIdentity.id,
-          name: upsertIdentity.name,
-          stateMachine: (processId?:string) => (<any>upsertIdentity).stateMachine(processId, true)
-        };
+        ctx.childProcessDefinition = upsertIdentity;
         ctx.childContext = {
           data: {
             id: profile.id,
