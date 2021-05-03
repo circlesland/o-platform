@@ -22,7 +22,13 @@
   let safeAddress: string;
 
   onMount(() => {
-    if (params.to && params.amount && params.to != "" && params.amount != "") {
+    if (
+      params &&
+      params.to &&
+      params.amount &&
+      params.to != "" &&
+      params.amount != ""
+    ) {
       if ((safeAddress = tryGetCurrentSafe()?.safeAddress) && $me) {
         window.o.publishEvent(
           new RunProcess<ShellProcessContext>(
