@@ -97,7 +97,7 @@
   }
 </script>
 
-<PassportHeader profile={profile}/>
+<PassportHeader params={params}/>
 
 <div class="mx-4 -mt-6">
 

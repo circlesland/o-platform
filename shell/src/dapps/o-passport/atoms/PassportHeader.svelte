@@ -11,8 +11,29 @@
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { me } from "../../../shared/stores/me";
   import {Profile} from "../data/api/types";
+  import {loadProfile} from "../processes/identify/services/loadProfile";
 
-  export let profile:Profile;
+  let profile: Profile;
+
+  export let params: {
+    profileId?: string
+  }
+
+  async function execLoadProfile(profileId?: string) {
+    if (profileId && parseInt(profileId)) {
+      profile = await loadProfile(parseInt(profileId));
+    } else if ($me) {
+      profile = $me;
+    }
+  }
+
+  $: {
+    if (params && params.profileId) {
+      execLoadProfile(params ? params.profileId : $me.id.toString());
+    } else if ($me) {
+      execLoadProfile($me.id.toString());
+    }
+  }
 
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
