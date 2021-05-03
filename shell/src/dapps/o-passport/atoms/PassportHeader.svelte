@@ -22,12 +22,17 @@
     lastLoadedDapp = getLastLoadedDapp();
   });
 
+  /*
   function editProfile() {
     const requestEvent = new RunProcess<ShellProcessContext>(
       shellProcess,
       true,
       async (ctx) => {
-        ctx.childProcessDefinition = upsertIdentity;
+        ctx.childProcessDefinition = {
+          id: upsertIdentity.id,
+          name: upsertIdentity.name,
+          stateMachine: (processId?:string) => (<any>upsertIdentity).stateMachine(processId, true)
+        };
         ctx.childContext = {
           data: {
             id: profile.id,
@@ -40,6 +45,9 @@
             lastName: profile.lastName,
             country: profile.country,
             dream: profile.dream,
+          },
+          dirtyFlags: {
+            "lastName": true
           }
         };
         return ctx;
@@ -47,7 +55,7 @@
     );
 
     window.o.publishEvent(requestEvent);
-  }
+  }*/
 </script>
 
 <div
@@ -107,10 +115,10 @@
         {profile && profile.lastName ? profile.lastName : ""}
       </h2>
     </div>
-    {#if $me && profile && $me.id == profile.id}
+    <!--{#if $me && profile && $me.id == profile.id}
       <button class="link link-primary text-primary" on:click={editProfile}
         >Edit Profile</button
       >
-    {/if}
+    {/if}-->
   </div>
 </div>

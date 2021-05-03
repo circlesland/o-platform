@@ -53,7 +53,7 @@ const strings = {
   placeholderDream: "Enter your dream.",
 };
 
-const processDefinition = (processId: string) =>
+const processDefinition = (processId: string, skipIfNotDirty?:boolean) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
     initial: "firstName",
@@ -64,6 +64,7 @@ const processDefinition = (processId: string) =>
 
       firstName: prompt<UpsertIdentityContext, any>({
         fieldName: "firstName",
+        onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
           label: strings.labelFirstName,
@@ -77,6 +78,7 @@ const processDefinition = (processId: string) =>
       }),
       lastName: prompt<UpsertIdentityContext, any>({
         fieldName: "lastName",
+        onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
           label: strings.labelLastName,
@@ -91,6 +93,7 @@ const processDefinition = (processId: string) =>
       }),
       country: prompt<UpsertIdentityContext, any>({
         fieldName: "country",
+        onlyWhenDirty: skipIfNotDirty,
         component: DropdownSelectEditor,
         params: {
           label: strings.labelCountry,
@@ -109,6 +112,7 @@ const processDefinition = (processId: string) =>
       }),
       dream: prompt<UpsertIdentityContext, any>({
         fieldName: "dream",
+        onlyWhenDirty: skipIfNotDirty,
         component: TextareaEditor,
         params: {
           label: strings.labeldream,
@@ -135,6 +139,7 @@ const processDefinition = (processId: string) =>
       },
       previewAvatar: prompt<UpsertIdentityContext, any>({
         fieldName: "avatarUrl",
+        onlyWhenDirty: skipIfNotDirty,
         component: PicturePreview,
         params: {
           label: strings.labelAvatar,
@@ -163,6 +168,7 @@ const processDefinition = (processId: string) =>
       },
       editAvatar: prompt<UpsertIdentityContext, any>({
         fieldName: "avatar",
+        onlyWhenDirty: skipIfNotDirty,
         component: PictureEditor,
         params: {
           label: strings.labelAvatar,

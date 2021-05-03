@@ -1,4 +1,4 @@
-import { actions } from "xstate";
+import {actions, send} from "xstate";
 import { ProcessContext } from "../interfaces/processContext";
 import { show } from "../actions/show";
 import { Continue } from "../events/continue";
@@ -18,6 +18,11 @@ export type PromptSpec = {
   component: any;
   id?: string;
   isSensitive?: boolean;
+  /**
+   * If set to 'true' every prompt will automatically submit its present data
+   * and go to the next step if it's dirty flag is not set.
+   */
+  onlyWhenDirty?:boolean;
   navigation?: {
     // If you want to allow the user to go one step back then specify here where he came from
     previous?: string;
@@ -45,10 +50,27 @@ export function prompt<
     canGoBack = spec.navigation.canGoBack;
   }
   const editDataFieldConfig: any = {
-    // TODO: Fix need for 'any'
+    // TODO: Fix 'any'
     id: spec.id ?? spec.fieldName,
-    initial: "show",
+    initial: "checkSkip",
     states: {
+      checkSkip: {
+        invoke: {
+          src: async (context:TContext) => {
+            return context.data;
+          },
+          onDone:[{
+            cond: (context:TContext) => spec.onlyWhenDirty && !context.dirtyFlags[spec.fieldName],
+            actions: [
+              () => console.log(`checkSkip: skipping because '${spec.fieldName}' is not dirty and 'onlyWhenDirty' == true.`)
+            ],
+            target: "validate",
+          }, {
+            target: "show"
+          }],
+          onError: "#error"
+        }
+      },
       show: {
         entry: [
           () => console.log(`show: ${spec.id} ${spec.fieldName}`),

@@ -104,7 +104,7 @@
           console.log("Received cancel request:", next.event);
           beforeCancelPrompt = prompt;
 
-          if (Object.values(beforeCancelPrompt.editorDirtyFlags).filter(o => o === true).length == 0) {
+          if (beforeCancelPrompt && Object.values(beforeCancelPrompt.editorDirtyFlags).filter(o => o === true).length == 0) {
             // No changes yet, just cancel
             process.sendEvent(new Cancel());
             return;

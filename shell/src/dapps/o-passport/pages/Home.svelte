@@ -45,12 +45,16 @@
     app.$destroy();
   };
 
-  function editProfile() {
+  function editProfile(dirtyFlags:{[x:string]:boolean}) {
     const requestEvent = new RunProcess<ShellProcessContext>(
       shellProcess,
       true,
       async (ctx) => {
-        ctx.childProcessDefinition = upsertIdentity;
+        ctx.childProcessDefinition = {
+          id: upsertIdentity.id,
+          name: upsertIdentity.name,
+          stateMachine: (processId?:string) => (<any>upsertIdentity).stateMachine(processId, true)
+        };
         ctx.childContext = {
           data: {
             id: profile.id,
@@ -63,7 +67,8 @@
             lastName: profile.lastName,
             country: profile.country,
             dream: profile.dream,
-          }
+          },
+          dirtyFlags: dirtyFlags
         };
         return ctx;
       }
@@ -157,12 +162,11 @@
               What is your life dream? Fill in the blanks. When I receive a universal
               basic income, I will follow my passion of _______________ and will
               accept Circles as payment.
-              <button
-                class="link link-primary text-primary text-2xs"
-                on:click={editProfile}>Set Dream now
-              </button
-              >
             {/if}
+            <button
+              className="link link-primary text-primary text-2xs"
+              on:click={() => editProfile({"dream":true })}>Edit
+            </button>
           </small>
         </div>
       </div>
@@ -184,12 +188,11 @@
               {getCountryName(profile.country)}
             {:else}
               No Country set.
-              <button
-                class="link link-primary text-primary text-2xs"
-                on:click={editProfile}>Set Country
-              </button
-              >
             {/if}
+            <button
+              class="link link-primary text-primary text-2xs"
+              on:click={() => editProfile({"country":true })}>Edit
+            </button>
           </small>
         </div>
       </div>
@@ -215,10 +218,10 @@
           </div>
         </div>
         {:else}
-          <div className="flex items-center w-full space-x-2 sm:space-x-4">
-            <div className="text-left">
-              <div className="inline-block break-all text-xs">
-                <div className="flex items-center w-full space-x-2 sm:space-x-4">
+          <div class="flex items-center w-full space-x-2 sm:space-x-4">
+            <div class="text-left">
+              <div class="inline-block break-all text-xs">
+                <div class="flex items-center w-full space-x-2 sm:space-x-4">
                   <!-- TODO: Safe wasn't opened before so we don't know our balance (at least not on $mySafe)  -->
                 </div>
               </div>
