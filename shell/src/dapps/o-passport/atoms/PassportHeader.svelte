@@ -22,7 +22,7 @@
     lastLoadedDapp = getLastLoadedDapp();
   });
 
-  /*
+
   function editProfile() {
     const requestEvent = new RunProcess<ShellProcessContext>(
       shellProcess,
@@ -45,9 +45,6 @@
             lastName: profile.lastName,
             country: profile.country,
             dream: profile.dream,
-          },
-          dirtyFlags: {
-            "lastName": true
           }
         };
         return ctx;
@@ -55,7 +52,7 @@
     );
 
     window.o.publishEvent(requestEvent);
-  }*/
+  }
 </script>
 
 <div
@@ -115,10 +112,10 @@
         {profile && profile.lastName ? profile.lastName : ""}
       </h2>
     </div>
-    <!--{#if $me && profile && $me.id == profile.id}
+    {#if $me && profile && $me.id == profile.id}
       <button class="link link-primary text-primary" on:click={editProfile}
         >Edit Profile</button
       >
-    {/if}-->
+    {/if}
   </div>
 </div>
