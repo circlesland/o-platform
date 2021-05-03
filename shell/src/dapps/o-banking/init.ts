@@ -11,7 +11,6 @@ import {showToast} from "../../shared/toast";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
 import {augmentSafeWithTime} from "./data/augmentSafeWithTime";
-import {mySafe} from "./stores/safe";
 
 let _currentSafe: Safe | null = emptySafe;
 let loading = false;
@@ -157,11 +156,17 @@ async function load(args: LoadParams): Promise<Safe> {
 
         const lastProgress = safe.ui.loadingPercent;
         const remainingPercents = 100 - lastProgress;
-        safe = await Queries.addDirectTransfers(safe, undefined, progress => {
-          safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
-          publishRefreshEvent(safe);
-          _currentSafe = safe;
-        }, args.tokenList);
+        safe = await Queries.addDirectTransfers(
+          safe,
+          undefined,
+            progress => {
+            safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
+            publishRefreshEvent(safe);
+            _currentSafe = safe;
+          },
+          args.tokenList,
+          transfer => transfer.from == "0x0000000000000000000000000000000000000000"
+        );
         safe.ui.loadingPercent = 100;
         console.log(new Date().getTime() + ": " + `Added ${safe.transfers.rows.length - safe.transfers?.rows?.length ?? 0} direct transfers.`);
         publishRefreshEvent(safe);

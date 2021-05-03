@@ -167,7 +167,12 @@ export class Queries {
     return <any>account.subscribeToTrustEvents(await RpcGateway.get().eth.getBlockNumber());
   }
 
-  static async addDirectTransfers(safe: Safe, startBlock?: number, progressCallback?:(progress:{count:number, current:number}) => void, tokenList?:string[]): Promise<Safe> {
+  static async addDirectTransfers(
+    safe: Safe,
+    startBlock?: number,
+    progressCallback?:(progress:{count:number, current:number}) => void,
+    tokenList?:string[],
+    filterPredicate?:(transfer:Transfer) => boolean): Promise<Safe> {
     if (!safe.acceptedTokens) {
       throw new Error(`The 'acceptedTokens' property must be set.`)
     }
@@ -195,7 +200,7 @@ export class Queries {
       await new Erc20Token(RpcGateway.get(), tokenAddress)
         .findTransfers(checksumSafeAddress, startAt)
         .forEach(directTransfer => {
-          transfers.rows.push(<Transfer>{
+          const newTransfer = <Transfer>{
             _id: `${directTransfer.blockNumber}${directTransfer.returnValues.from}${directTransfer.returnValues.to}`,
             type: "direct",
             symbol: "crc",
@@ -205,7 +210,12 @@ export class Queries {
             to: directTransfer.returnValues.to,
             amount: directTransfer.returnValues.value,
             token: directTransfer.token.address
-          });
+          }
+
+          if (!filterPredicate || filterPredicate(newTransfer)) {
+            transfers.rows.push(newTransfer);
+          }
+
           transfers.firstBlock = this.min(transfers.firstBlock, directTransfer.blockNumber);
           transfers.lastBlock = this.max(transfers.lastBlock, directTransfer.blockNumber);
           // Update the 'first/lastBlock' of the transferred 'acceptedToken'
