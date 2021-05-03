@@ -56,6 +56,8 @@
               cancelDialogVisible = false;
               process.sendEvent(new Cancel());
             }
+          } else {
+            process.sendAnswer(answer);
           }
         }
       };
