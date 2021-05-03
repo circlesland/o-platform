@@ -86,13 +86,15 @@
       <div
         class="self-end mt-2 text-xs text-circleslightblue whitespace-nowrap"
       >
-        {#if dateOlderThanSevenDays(transfer.time)}
-          <Time
-            timestamp={new Date(transfer.time * 1000)}
-            format="D. MMMM YYYY"
-          />
-        {:else}
-          <Time relative timestamp={new Date(transfer.time * 1000)} />
+        {#if transfer.time}
+          {#if dateOlderThanSevenDays(transfer.time)}
+            <Time
+              timestamp={new Date(transfer.time * 1000)}
+              format="D. MMMM YYYY"
+            />
+          {:else}
+            <Time relative timestamp={new Date(transfer.time * 1000)} />
+          {/if}
         {/if}
       </div>
     </div>
