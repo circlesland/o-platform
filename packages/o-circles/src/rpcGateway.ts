@@ -7,9 +7,9 @@ import {Observable} from "rxjs";
 
 export class RpcGateway {
     static readonly gateways = [
-        "wss://xdai.poanetwork.dev/wss",
         "wss://rpc.circles.land/",
-        "wss://rpc.xdaichain.com/wss",
+        "wss://xdai.poanetwork.dev/wss"
+        //"wss://rpc.xdaichain.com/wss"
     ];
 
     private static _lastProviderUrl?: string;
@@ -150,7 +150,9 @@ export class RpcGateway {
             {
                 timeout: 30000,
                 reconnect: {
-                    auto: false
+                    auto: true,
+                    maxAttempts: 3,
+                    delay: 1000
                 },
                 clientConfig: {
                     keepalive: true,
