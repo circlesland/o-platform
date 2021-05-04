@@ -8,7 +8,8 @@ import {Observable} from "rxjs";
 export class RpcGateway {
     static readonly gateways = [
         "wss://xdai.poanetwork.dev/wss",
-        "wss://rpc.xdaichain.com/wss"
+        "wss://rpc.circles.land/",
+        "wss://rpc.xdaichain.com/wss",
     ];
 
     private static _lastProviderUrl?: string;

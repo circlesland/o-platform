@@ -167,12 +167,12 @@ async function load(args: LoadParams): Promise<Safe> {
           args.tokenList,
           transfer => transfer.from == "0x0000000000000000000000000000000000000000"
         );
-        safe.ui.loadingPercent = 100;
         console.log(new Date().getTime() + ": " + `Added ${safe.transfers.rows.length - safe.transfers?.rows?.length ?? 0} direct transfers.`);
-        publishRefreshEvent(safe);
-        _currentSafe = safe;
       }
 
+      safe.ui.loadingPercent = 100;
+      publishRefreshEvent(safe);
+      _currentSafe = safe;
       safe.ui.loadingPercent = undefined;
       safe.ui.loadingText = undefined;
 
