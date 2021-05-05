@@ -38,7 +38,10 @@
 {/if}
 <div class="flex w-full space-x-2">
   {#each context.params.choices as choice}
-    <button on:click={() => submit(choice)} class="w-1/2 btn btn-outline">
+    <button
+      on:click={() => submit(choice)}
+      class="w-1/2 btn btn-outline btn-white"
+    >
       {choice.label}
     </button>
   {/each}

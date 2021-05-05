@@ -32,7 +32,7 @@
   >
   <div class="text-center">
     <div class="avatar">
-      <div class="rounded-full w-92 h-92 ">
+      <div class="rounded-full w-92 h-92 w-48">
         <img
           class="m-auto"
           id="cropCanvas"
