@@ -5,6 +5,11 @@
 
   export let context: EditorContext;
 
+  let _context: EditorContext;
+  $: {
+    _context = context;
+  }
+
   const submitHandler = () => {
     const answer = new Continue();
     answer.data = context.data;
@@ -50,7 +55,7 @@
     placeholder={context.params.placeholder}
     class="input input-lg input-bordered"
     class:input-error={context.messages[context.fieldName]}
-    bind:value={context.data[context.fieldName]}
+    bind:value={_context.data[context.fieldName]}
     on:change={() => context.editorDirtyFlags[context.fieldName] = true}
   />
 </div>
