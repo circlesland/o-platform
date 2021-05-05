@@ -8,8 +8,7 @@ import {Observable} from "rxjs";
 export class RpcGateway {
     static readonly gateways = [
         "wss://rpc.circles.land/",
-        "wss://xdai.poanetwork.dev/wss"
-        //"wss://rpc.xdaichain.com/wss"
+        "wss://circles-xdai-rpc.lab10.io/wss"
     ];
 
     private static _lastProviderUrl?: string;
@@ -140,7 +139,7 @@ export class RpcGateway {
         if (this._lastProviderUrl) {
             // We had a previously connected provider and don't want it again
             // for the next session
-            availableGateways = this.gateways.filter(o => o != this._lastProviderUrl);
+            availableGateways = this.gateways.filter(o => this.gateways.length == 1 || o != this._lastProviderUrl);
         }
 
         // Choose a provider at random

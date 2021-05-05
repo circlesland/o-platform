@@ -154,48 +154,21 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
         navigation: {
           next: "#checkEditAvatar",
-          skip: "#generateAvataaar",
           previous: "#dream",
           canSkip: () => true,
         },
       }),
-      generateAvataaar: {
-        id: "generateAvataaar",
-        on: {
-          ...(<any>ipc(`uploadAvatar`)),
-        },
-        invoke: {
-          src: uploadFile.stateMachine("uploadAvatar"),
-          data: {
-            data: (context, event) => {
-              const svg = createAvatar(style, {
-                seed: "ASLKDJASDASDASLDKJASLkd",
-                dataUri: true,
-              });
-              console.log("CODEHO SVG: ", svg);
-
-              return {
-                appId: "__FILES_APP_ID__",
-                fileName: "avatar",
-                mimeType: "image/svg+xml",
-                bytes: Buffer.from(svg, "utf-8"),
-              };
-            },
-            messages: {},
-            dirtyFlags: {},
-          },
-          onDone: "#checkUploadAvatar",
-          onError: "#error",
-        },
-      },
       checkEditAvatar: {
         id: "checkEditAvatar",
         always: [
           {
-            cond: (context) =>
-              context.dirtyFlags["avatarUrl"] || !context.data.avatarUrl,
-            actions: (context) => delete context.dirtyFlags["avatarUrl"],
-            target: "#avatar",
+            cond: (context) => context.dirtyFlags["avatarUrl"] || !context.data.avatarUrl,
+            actions: (context) => {
+              delete context.dirtyFlags["avatarUrl"];
+              context.dirtyFlags["avatar"] = true;
+              context.data.avatar = undefined;
+            },
+            target: "#avatar"
           },
           {
             target: "#upsertIdentity",
@@ -211,14 +184,14 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           submitButtonText: "Save Image",
         },
         navigation: {
-          next: "#checkUploadAvatar",
+          next: "#uploadGenerateOrSkip",
           skip: "#upsertIdentity",
           previous: "#dream",
           canSkip: () => true,
         },
       }),
-      checkUploadAvatar: {
-        id: "checkUploadAvatar",
+      uploadGenerateOrSkip: {
+        id: "uploadGenerateOrSkip",
         always: [
           {
             cond: (context) =>
@@ -228,9 +201,33 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             target: "#uploadAvatar",
           },
           {
+            cond: (context) =>
+              context.dirtyFlags["avatar"] &&
+              (!context.data.avatar ||
+              !context.data.avatar.bytes),
+            target: "#generateAvataar",
+          },
+          {
             target: "#upsertIdentity",
           },
         ],
+      },
+      generateAvataar: {
+        id: "generateAvataar",
+        invoke: {
+          src: async (context) => {
+            const svg = createAvatar(style, {
+              seed: context.data.circlesSafeOwner,
+              dataUri: false,
+            });
+            context.data.avatar = {
+              bytes: Buffer.from(svg, "utf-8"),
+              mimeType: "image/svg+xml"
+            }
+          },
+          onDone: "#uploadAvatar",
+          onError: "#error"
+        }
       },
       uploadAvatar: {
         id: "uploadAvatar",

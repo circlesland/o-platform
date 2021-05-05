@@ -24,12 +24,12 @@ export class CirclesHub extends Web3Contract {
     };
   }
 
-  static queryPastSignups(ofUsers: string[], fromBlock?:number) {
+  static queryPastSignups(ofUsers?: string[], fromBlock?:number) {
     return {
       event: CirclesHub.SignupEvent,
-      filter: {
+      filter: ofUsers ? {
         user: ofUsers
-      },
+      } : undefined,
       fromBlock: fromBlock ?? HUB_BLOCK,
       toBlock: "latest"
     };
