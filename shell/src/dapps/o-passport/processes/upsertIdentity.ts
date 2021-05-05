@@ -15,7 +15,14 @@ import { uploadFile } from "../../../shared/api/uploadFile";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { UpsertProfileDocument } from "../data/api/types";
 import * as yup from "yup";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { createAvatar } from "@dicebear/avatars";
+import * as style from "@dicebear/avatars-avataaars-sprites";
+
+let svg = createAvatar(style, {
+  seed: "ASLKDJASLDKJASLkd",
+  dataUri: true,
+});
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -53,7 +60,7 @@ const strings = {
   placeholderDream: "Enter your dream.",
 };
 
-const processDefinition = (processId: string, skipIfNotDirty?:boolean) =>
+const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
     initial: "firstName",
@@ -147,11 +154,40 @@ const processDefinition = (processId: string, skipIfNotDirty?:boolean) =>
         },
         navigation: {
           next: "#checkEditAvatar",
-          skip: "#upsertIdentity",
+          skip: "#generateAvataaar",
           previous: "#dream",
           canSkip: () => true,
         },
       }),
+      generateAvataaar: {
+        id: "generateAvataaar",
+        on: {
+          ...(<any>ipc(`uploadAvatar`)),
+        },
+        invoke: {
+          src: uploadFile.stateMachine("uploadAvatar"),
+          data: {
+            data: (context, event) => {
+              const svg = createAvatar(style, {
+                seed: "ASLKDJASDASDASLDKJASLkd",
+                dataUri: true,
+              });
+              console.log("CODEHO SVG: ", svg);
+
+              return {
+                appId: "__FILES_APP_ID__",
+                fileName: "avatar",
+                mimeType: "image/svg+xml",
+                bytes: Buffer.from(svg, "utf-8"),
+              };
+            },
+            messages: {},
+            dirtyFlags: {},
+          },
+          onDone: "#checkUploadAvatar",
+          onError: "#error",
+        },
+      },
       checkEditAvatar: {
         id: "checkEditAvatar",
         always: [
@@ -230,17 +266,21 @@ const processDefinition = (processId: string, skipIfNotDirty?:boolean) =>
               variables: {
                 id: context.data.id,
                 circlesAddress: context.data.circlesAddress,
-                circlesSafeOwner: context.data.circlesSafeOwner ??
-                                    (localStorage.getItem("circlesKey")
-                                    ? RpcGateway.get().eth.accounts.privateKeyToAccount(localStorage.getItem("circlesKey")).address
-                                    : undefined),
+                circlesSafeOwner:
+                  context.data.circlesSafeOwner ??
+                  (localStorage.getItem("circlesKey")
+                    ? RpcGateway.get().eth.accounts.privateKeyToAccount(
+                        localStorage.getItem("circlesKey")
+                      ).address
+                    : undefined),
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 dream: context.data.dream,
                 country: context.data.country,
                 avatarUrl: event.data?.url ?? context.data.avatarUrl,
                 avatarCid: event.data?.hash ?? context.data.avatarCid,
-                avatarMimeType: event.data?.mimeType ?? context.data.avatarMimeType,
+                avatarMimeType:
+                  event.data?.mimeType ?? context.data.avatarMimeType,
               },
             });
 
