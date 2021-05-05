@@ -1,6 +1,9 @@
 {
   "name": "root",
   "private": true,
+  "engines" : {
+    "node" : "16.1.0"
+  },
   "devDependencies": {
     "daisyui": "^0.15.2",
     "lerna": "^3.22.1",
