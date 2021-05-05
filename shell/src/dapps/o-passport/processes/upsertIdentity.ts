@@ -19,11 +19,6 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { createAvatar } from "@dicebear/avatars";
 import * as style from "@dicebear/avatars-avataaars-sprites";
 
-let svg = createAvatar(style, {
-  seed: "ASLKDJASLDKJASLkd",
-  dataUri: true,
-});
-
 export type UpsertIdentityContextData = {
   id?: number;
   circlesAddress?: string;
@@ -218,14 +213,15 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           src: async (context) => {
             const svg = createAvatar(style, {
               seed: context.data.circlesSafeOwner,
-              dataUri: false,
+              dataUri: true,
             });
-            context.data.avatar = {
+            context.data.avatarUrl = svg;
+            /*context.data.avatar = {
               bytes: Buffer.from(svg, "utf-8"),
               mimeType: "image/svg+xml"
-            }
+            }*/
           },
-          onDone: "#uploadAvatar",
+          onDone: "#upsertIdentity",
           onError: "#error"
         }
       },
