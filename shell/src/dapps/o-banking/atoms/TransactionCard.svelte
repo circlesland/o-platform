@@ -35,6 +35,9 @@
         ? transfer.toProfile.avatarUrl
         : undefined;
 
+    pictureUrl =
+      displayName === "UBI" ? "/images/common/circles.png" : pictureUrl;
+
     classes =
       transfer.direction === "in"
         ? "transactionpositive"
