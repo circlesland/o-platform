@@ -57,7 +57,6 @@
     readonly={context.isReadonly ? "readonly" : ""}
     name="input"
     rows="1"
-    on:keydown={onkeydown}
     id={context.fieldName}
     type="text"
     placeholder={context.params.placeholder}
@@ -65,7 +64,7 @@
     class:input-error={context.messages[context.fieldName]}
     bind:value={context.data[context.fieldName]}
     bind:this={inputField}
-    on:change={() => context.editorDirtyFlags[context.fieldName] = true}
+    on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
   />
 </div>
 

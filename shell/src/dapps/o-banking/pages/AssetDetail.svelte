@@ -5,9 +5,9 @@
   import { BN } from "ethereumjs-util";
   import AssetsHeader from "../atoms/AssetsHeader.svelte";
 
-  export let params: {
-    symbol: string;
-  };
+  // export let params: {
+  //   symbol: string;
+  // };
   let tokens: Token[];
   $: {
     tokens = Object.values($mySafe.acceptedTokens.tokens).filter((o) =>
