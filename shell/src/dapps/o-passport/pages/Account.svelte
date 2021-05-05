@@ -22,7 +22,7 @@
               <img
                 src={$me && $me.avatarUrl
                   ? $me.avatarUrl
-                  : "https://i.pravatar.cc/500?img=32"}
+                  : "/images/users/fallback-avataaar.svg"}
                 alt={$me
                   ? $me.lastName
                     ? `${$me.firstName} ${$me.lastName}`

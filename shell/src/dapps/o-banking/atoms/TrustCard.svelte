@@ -15,7 +15,7 @@
   export let untrusted: TrustObject;
 
   let pictureUrl: string;
-  let displayName: String;
+  let displayName: string;
   let safeAddress: string;
 
   let id: String;
@@ -84,10 +84,7 @@
     <div class="mr-2 -mt-3 text-center">
       <div class="avatar">
         <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-          <img
-            src={pictureUrl ? pictureUrl : "/images/common/circles.png"}
-            alt="username"
-          />
+          <img src={pictureUrl} alt={displayName} />
         </div>
       </div>
     </div>

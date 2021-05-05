@@ -146,7 +146,7 @@
         <img
           src={profile && profile.avatarUrl
             ? profile.avatarUrl
-            : "https://i.pravatar.cc/500?img=32"}
+            : "/images/users/fallback-avataaar.svg"}
           alt={profile
             ? profile.lastName
               ? `${profile.firstName} ${profile.lastName}`

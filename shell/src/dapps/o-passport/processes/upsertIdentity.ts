@@ -157,13 +157,14 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "checkEditAvatar",
         always: [
           {
-            cond: (context) => context.dirtyFlags["avatarUrl"] || !context.data.avatarUrl,
+            cond: (context) =>
+              context.dirtyFlags["avatarUrl"] || !context.data.avatarUrl,
             actions: (context) => {
               delete context.dirtyFlags["avatarUrl"];
               context.dirtyFlags["avatar"] = true;
               context.data.avatar = undefined;
             },
-            target: "#avatar"
+            target: "#avatar",
           },
           {
             target: "#upsertIdentity",
@@ -198,8 +199,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           {
             cond: (context) =>
               context.dirtyFlags["avatar"] &&
-              (!context.data.avatar ||
-              !context.data.avatar.bytes),
+              (!context.data.avatar || !context.data.avatar.bytes),
             target: "#generateAvataar",
           },
           {
@@ -216,14 +216,10 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
               dataUri: true,
             });
             context.data.avatarUrl = svg;
-            /*context.data.avatar = {
-              bytes: Buffer.from(svg, "utf-8"),
-              mimeType: "image/svg+xml"
-            }*/
           },
           onDone: "#upsertIdentity",
-          onError: "#error"
-        }
+          onError: "#error",
+        },
       },
       uploadAvatar: {
         id: "uploadAvatar",
