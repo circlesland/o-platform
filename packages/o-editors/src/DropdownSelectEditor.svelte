@@ -75,7 +75,7 @@
         listPlacement="top"
         containerClasses="min-w-full asyncList"
         isCreatable={true}
-        on:change={() => context.editorDirtyFlags[context.fieldName] = true}
+        on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
         on:clear={handleClear}
         {optionIdentifier}
         {getSelectionLabel}
@@ -112,16 +112,17 @@
 <style>
   .themed {
     width: 100%;
+    padding: 0 !important;
     --listMaxHeight: 400px;
-    --listMaxWidth: 10rem;
+    /* --listMaxWidth: 10rem; */
     --listBackground: transparent;
     --listShadow: none;
-    --borderRadius: 0;
+    --borderRadius: 0.5rem;
     --border: none;
     --height: 3.5rem;
     --inputTop: 3px;
     --inputFontSize: 18px;
-    --inputPadding: 0.75rem 0.5rem 0.5rem 0.25rem;
+    --inputPadding: 0.75rem 0.5rem 0.5rem 1rem;
 
     @apply input input-lg input-bordered;
   }
