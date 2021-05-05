@@ -213,7 +213,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           src: async (context) => {
             const svg = createAvatar(style, {
               seed: context.data.circlesSafeOwner,
-              backgroundColor: "#fff",
+              backgroundColor: "#65C9FF",
               topChance: 100,
               style: "circle",
               dataUri: true,
