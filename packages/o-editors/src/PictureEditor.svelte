@@ -57,6 +57,7 @@
 
     reader.addEventListener("loadend", (e) => {
       uploadFile = Buffer.from(<ArrayBuffer>reader.result);
+      context.editorDirtyFlags[context.fieldName] = true;
     });
 
     reader.readAsArrayBuffer(file);
@@ -64,6 +65,7 @@
   };
 
   function clearImage() {
+    context.editorDirtyFlags[context.fieldName] = true;
     imageStore.value = null;
     uploadFile = null;
     image = null;

@@ -26,6 +26,7 @@
     class="self-end text-primary"
     on:click={() => {
       context.dirtyFlags[context.fieldName] = true;
+      context.editorDirtyFlags[context.fieldName] = true;
       submit();
     }}>Clear</button
   >
