@@ -16,11 +16,6 @@ export type Scalars = {
   Upload: any;
 };
 
-export enum CacheControlScope {
-  Private = 'PRIVATE',
-  Public = 'PUBLIC'
-}
-
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
@@ -37,10 +32,6 @@ export type DelegateAuthInit = {
   validTo?: Maybe<Scalars['String']>;
 };
 
-export type DepositChallenge = {
-  jwt: Scalars['String'];
-};
-
 export type DepositChallengeResponse = {
   __typename?: 'DepositChallengeResponse';
   errorMessage?: Maybe<Scalars['String']>;
@@ -51,14 +42,6 @@ export type ExchangeTokenResponse = {
   __typename?: 'ExchangeTokenResponse';
   errorMessage?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
-};
-
-export type IndexTransferInput = {
-  amount: Scalars['String'];
-  blockNo: Scalars['Int'];
-  from: Scalars['String'];
-  message: Scalars['String'];
-  to: Scalars['String'];
 };
 
 export type IndexTransferResponse = {
@@ -141,6 +124,42 @@ export type QuerySearchArgs = {
   query: SearchInput;
 };
 
+export type Server = {
+  __typename?: 'Server';
+  version: Scalars['String'];
+};
+
+export type SessionInfo = {
+  __typename?: 'SessionInfo';
+  hasProfile?: Maybe<Scalars['Boolean']>;
+  isLoggedOn: Scalars['Boolean'];
+  profileId?: Maybe<Scalars['Int']>;
+};
+
+export type Version = {
+  __typename?: 'Version';
+  major: Scalars['Int'];
+  minor: Scalars['Int'];
+  revision: Scalars['Int'];
+};
+
+export enum CacheControlScope {
+  Private = 'PRIVATE',
+  Public = 'PUBLIC'
+}
+
+export type DepositChallenge = {
+  jwt: Scalars['String'];
+};
+
+export type IndexTransferInput = {
+  amount: Scalars['String'];
+  blockNo: Scalars['Int'];
+  from: Scalars['String'];
+  message: Scalars['String'];
+  to: Scalars['String'];
+};
+
 export type QueryProfileInput = {
   circlesAddress?: Maybe<Array<Scalars['String']>>;
   country?: Maybe<Scalars['String']>;
@@ -157,19 +176,6 @@ export type SearchInput = {
   searchString: Scalars['String'];
 };
 
-export type Server = {
-  __typename?: 'Server';
-  version: Scalars['String'];
-};
-
-export type SessionInfo = {
-  __typename?: 'SessionInfo';
-  hasProfile?: Maybe<Scalars['Boolean']>;
-  isLoggedOn: Scalars['Boolean'];
-  profileId?: Maybe<Scalars['Int']>;
-};
-
-
 export type UpsertProfileInput = {
   avatarCid?: Maybe<Scalars['String']>;
   avatarMimeType?: Maybe<Scalars['String']>;
@@ -184,12 +190,6 @@ export type UpsertProfileInput = {
   lastName?: Maybe<Scalars['String']>;
 };
 
-export type Version = {
-  __typename?: 'Version';
-  major: Scalars['Int'];
-  minor: Scalars['Int'];
-  revision: Scalars['Int'];
-};
 
 export type ExchangeTokenMutationVariables = Exact<{ [key: string]: never; }>;
 

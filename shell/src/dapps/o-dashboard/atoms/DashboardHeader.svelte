@@ -85,9 +85,7 @@
     <div class="avatar">
       <div class="w-36 h-36 rounded-full mb-4">
         <img
-          src={$me && $me.avatarUrl
-            ? $me.avatarUrl
-            : "/images/users/fallback-avataaar.svg"}
+          src={$me && $me.avatarUrl ? $me.avatarUrl : ""}
           alt={$me
             ? $me.lastName
               ? `${$me.firstName} ${$me.lastName}`

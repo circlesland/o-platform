@@ -144,9 +144,7 @@
     <div class="avatar">
       <div class="w-36 h-36 rounded-full mb-4">
         <img
-          src={profile && profile.avatarUrl
-            ? profile.avatarUrl
-            : "/images/users/fallback-avataaar.svg"}
+          src={profile && profile.avatarUrl ? profile.avatarUrl : ""}
           alt={profile
             ? profile.lastName
               ? `${profile.firstName} ${profile.lastName}`

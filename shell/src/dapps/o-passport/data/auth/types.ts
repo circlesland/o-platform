@@ -22,17 +22,11 @@ export type ActionResponse = {
   success: Scalars['Boolean'];
 };
 
-export enum CacheControlScope {
-  Private = 'PRIVATE',
-  Public = 'PUBLIC'
-}
-
 export type ChallengeResponse = ActionResponse & {
   __typename?: 'ChallengeResponse';
   errorMessage?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
-
 
 export type LoginResponse = ActionResponse & {
   __typename?: 'LoginResponse';
@@ -93,7 +87,6 @@ export type QueryKeysArgs = {
   kid: Scalars['String'];
 };
 
-
 export type VerifyResponse = ActionResponse & {
   __typename?: 'VerifyResponse';
   errorMessage?: Maybe<Scalars['String']>;
@@ -110,6 +103,13 @@ export type Version = {
   minor: Scalars['Int'];
   revision: Scalars['Int'];
 };
+
+export enum CacheControlScope {
+  Private = 'PRIVATE',
+  Public = 'PUBLIC'
+}
+
+
 
 export type LoginWithEmailMutationVariables = Exact<{
   appId: Scalars['String'];
