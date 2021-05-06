@@ -60,7 +60,7 @@
 
 <div class="form-control justify-self-center">
   <label class="label" for={context.fieldName}>
-    <span class="label-text">{context.params.label}</span>
+    <span class="label-text">{@html context.params.label}</span>
   </label>
 
   {#if !!context.params.asyncChoices}

@@ -24,8 +24,11 @@
 </script>
 
 <div class="form-control justify-self-center">
-  <label class="label" for={context.fieldName}>
-    <span class="label-text">{context.params.label}</span>
+  <label
+    class="label text-center self-center justify-center"
+    for={context.fieldName}
+  >
+    <span class="label-text">{@html context.params.label}</span>
   </label>
   {#if context.messages[context.fieldName]}
     <div class="alert alert-error mb-2 mt-2">
@@ -56,7 +59,7 @@
     class="input input-lg input-bordered"
     class:input-error={context.messages[context.fieldName]}
     bind:value={_context.data[context.fieldName]}
-    on:change={() => context.editorDirtyFlags[context.fieldName] = true}
+    on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
   />
 </div>
 
