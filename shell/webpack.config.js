@@ -26,6 +26,12 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   files_endpoint = "https://dev.files.circles.land";
   appId = "dev.circles.land";
   filesAppId = "dev.files.circles.land";
+} else if (process.env.DEPLOY_ENVIRONMENT === "thorsten") {
+  auth_endpoint = "https://dev.auth.circles.name";
+  api_endpoint = "https://dev.api.circles.land";
+  files_endpoint = "https://dev.files.circles.land";
+  appId = "thorsten.circles.land";
+  filesAppId = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "local") {
   auth_endpoint = "https://dev.auth.circles.name";
   api_endpoint = "https://local.api.circles.land";
