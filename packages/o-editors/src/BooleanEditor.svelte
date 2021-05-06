@@ -59,7 +59,7 @@
             class="text-primary underline"
           >
             {context.params.linkLabel}
-          </a>.
+          </a>
         {/if}
       </span>
       <div>
@@ -80,4 +80,5 @@
     </label>
   </div>
 </div>
+
 <ProcessNavigation on:buttonClick={submitHandler} {context} />
