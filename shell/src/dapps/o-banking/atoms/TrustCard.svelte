@@ -79,7 +79,7 @@
 
 <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
   <div
-    class="flex items-center bg-white shadow w-full space-x-2 px-2 sm:space-x-6 pt-5 rounded-sm"
+    class="flex items-center bg-white shadow w-full space-x-2 px-4 sm:space-x-6 pt-5 rounded-sm"
   >
     <div class="mr-2 -mt-3 text-center">
       <div class="avatar">
