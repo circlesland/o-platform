@@ -59,7 +59,7 @@
     </div>
   {/if}
   <textarea
-    readonly={context.isReadonly ? "readonly" : false}
+    readonly={context.isReadonly ? "readonly" : ""}
     name="input"
     rows="1"
     id={context.fieldName}
