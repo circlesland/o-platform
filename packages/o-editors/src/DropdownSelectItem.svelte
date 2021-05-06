@@ -9,7 +9,10 @@
     <div class="mr-2 text-center">
       <div class="avatar">
         <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-          <img src={item.avatarUrl} alt="username" />
+          <img
+            src={item.avatarUrl ? item.avatarUrl : "/images/common/circles.png"}
+            alt="user-icon"
+          />
         </div>
       </div>
     </div>

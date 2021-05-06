@@ -253,7 +253,7 @@
         {/if}
         {#if lastPrompt && lastPrompt.navigation.canGoBack}
           <button
-            class="btn btn-outline btn-white ml-9"
+            class="btn btn-outline btn-white ml-7 sm:ml-9"
             on:click={() => modalProcess.sendAnswer(new Back())}>BACK</button
           >
         {/if}
@@ -283,7 +283,7 @@
         </button>
         {#if lastPrompt && lastPrompt.navigation.canSkip}
           <button
-            class="btn btn-outline btn-white mr-9"
+            class="btn btn-outline btn-white mr-7 sm:mr-9"
             on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
           >
         {/if}

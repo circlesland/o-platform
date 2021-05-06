@@ -39,10 +39,24 @@
   --toastWidth: 100%;
 }
 
-/* For some weird reason btn-white doesn't work with btn-outline... */
+.btn {
+  font-family: Poppins;
+  @apply font-bold;
+  letter-spacing: 3px;
+}
+
 .btn-outline.btn-white {
-  color: #fff;
-  border-color: #fff;
+  @apply text-white;
+  @apply border-white;
+
+}
+
+.circles-button {
+  padding-left: 3px;
+  padding-right: 5px;
+  padding-bottom: 4px;
+  padding-top: 3px;
+  min-width: 3.5rem;
 }
 
 .text-gradient {
@@ -51,44 +65,13 @@
   -webkit-text-fill-color: transparent;
 }
 
-.btn {
-  font-family: Poppins;
-  font-weight: 700;
-  letter-spacing: 3px;
-}
-
-.svelte-tabs ul.svelte-tabs__tab-list {
-  border-bottom: none;
-  flex-direction: row;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  align-content: flex-start;
-}
-
-.svelte-tabs li.svelte-tabs__tab {
-  flex-grow: 1;
-  padding-bottom: 0;
-  padding-right: 0;
-  color: #fff;
-  text-align: center;
-  border-bottom: 4px solid rgb(243, 244, 246);
-}
-.svelte-tabs li.svelte-tabs__tab.svelte-tabs__selected {
-  border-bottom: none;
-}
-
-.svelte-tabs li.svelte-tabs__tab:focus {
-  outline: none;
-}
-
 .truncateThis:before {
   content: "";
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
+  @apply w-full;
+  @apply h-full;
+  @apply absolute;
+  @apply left-0;
+  @apply top-0;
   /* background: linear-gradient(transparent 150px, #ffcc33); */
   background: linear-gradient(
     to right,
@@ -98,12 +81,13 @@
 
   /* background: #ffcc33; */
 }
+
 .label-text {
-  color: white;
-  font-family: Poppins;
-  font-size: 1.5rem;
-  line-height: 2rem;
-  text-align: center;
+  @apply text-white;
+  @apply font-circles;
+  @apply text-2xl;
+  @apply leading-8;
+  @apply text-center;
 }
 
 .input-error {
