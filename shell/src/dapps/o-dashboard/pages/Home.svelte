@@ -117,7 +117,7 @@
           <p class="text-lg font-circles mt-4">
             xxxxxxx/1.000.000.000 Progress
           </p>
-          <div class="w-96 m-auto">
+          <div class="w-full px-2 m-auto">
             <progress
               class="progress progress-accent h-1 "
               value={12}
