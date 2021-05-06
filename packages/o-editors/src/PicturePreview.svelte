@@ -26,12 +26,13 @@
     class="self-end text-primary"
     on:click={() => {
       context.dirtyFlags[context.fieldName] = true;
+      context.editorDirtyFlags[context.fieldName] = true;
       submit();
     }}>Clear</button
   >
   <div class="text-center">
     <div class="avatar">
-      <div class="rounded-full w-92 h-92 ">
+      <div class="rounded-full w-92 h-92 w-48">
         <img
           class="m-auto"
           id="cropCanvas"

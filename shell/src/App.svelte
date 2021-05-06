@@ -26,7 +26,10 @@
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
   import { Back } from "@o-platform/o-process/dist/events/back";
   import { Skip } from "@o-platform/o-process/dist/events/skip";
-  import {Cancel, CancelRequest} from "@o-platform/o-process/dist/events/cancel";
+  import {
+    Cancel,
+    CancelRequest,
+  } from "@o-platform/o-process/dist/events/cancel";
   import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
   import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
@@ -37,9 +40,9 @@
   import { SvelteToast } from "./shared/molecules/Toast";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";
-  import {XDaiThresholdTrigger} from "./xDaiThresholdTrigger";
-  import {me} from "./shared/stores/me";
-  import {INVITE_VALUE} from "./dapps/o-passport/processes/invite/invite";
+  import { XDaiThresholdTrigger } from "./xDaiThresholdTrigger";
+  import { me } from "./shared/stores/me";
+  import { INVITE_VALUE } from "./dapps/o-passport/processes/invite/invite";
 
   let isOpen: boolean = false;
   let modalProcess: Process;
@@ -180,13 +183,19 @@
 
   let layoutClasses = "";
 
-  let balanceThresholdTrigger:XDaiThresholdTrigger;
+  let balanceThresholdTrigger: XDaiThresholdTrigger;
 
   $: {
-    if ($me && localStorage.getItem("isCreatingSafe") === "true" && !balanceThresholdTrigger) {
-      balanceThresholdTrigger = new XDaiThresholdTrigger($me.circlesSafeOwner, INVITE_VALUE, async (address, threshold) => {
-
-      });
+    if (
+      $me &&
+      localStorage.getItem("isCreatingSafe") === "true" &&
+      !balanceThresholdTrigger
+    ) {
+      balanceThresholdTrigger = new XDaiThresholdTrigger(
+        $me.circlesSafeOwner,
+        INVITE_VALUE,
+        async (address, threshold) => {}
+      );
     }
 
     layoutClasses =
@@ -196,6 +205,7 @@
         : "md:w-2/3 xl:w-1/2";
   }
 </script>
+
 <div class="flex flex-col h-screen ">
   <!-- TODO: Note: All headers are now part of their dapps
   <header class="w-full mx-auto md:w-2/3 xl:w-1/2 z-10">
@@ -243,7 +253,7 @@
         {/if}
         {#if lastPrompt && lastPrompt.navigation.canGoBack}
           <button
-            class="btn btn-outline btn-white ml-9"
+            class="btn btn-outline btn-white ml-7 sm:ml-9"
             on:click={() => modalProcess.sendAnswer(new Back())}>BACK</button
           >
         {/if}
@@ -273,7 +283,7 @@
         </button>
         {#if lastPrompt && lastPrompt.navigation.canSkip}
           <button
-            class="btn btn-outline btn-white mr-9"
+            class="btn btn-outline btn-white mr-7 sm:mr-9"
             on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
           >
         {/if}
@@ -318,8 +328,9 @@
             <button
               on:click={() =>
                 window.o.publishEvent(action.event(getLastLoadedDapp()))}
-              class="w-full btn btn-primary bg-white btn-outline"
-              >{action.label}</button
+              class="w-full btn {action.key == 'logout'
+                ? 'btn-error'
+                : 'btn-primary btn-outline bg-white'}  ">{action.label}</button
             >
           {/each}
         </div>

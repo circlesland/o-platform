@@ -15,7 +15,9 @@ import { uploadFile } from "../../../shared/api/uploadFile";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { UpsertProfileDocument } from "../data/api/types";
 import * as yup from "yup";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { createAvatar } from "@dicebear/avatars";
+import * as style from "@dicebear/avatars-avataaars-sprites";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -53,7 +55,7 @@ const strings = {
   placeholderDream: "Enter your dream.",
 };
 
-const processDefinition = (processId: string, skipIfNotDirty?:boolean) =>
+const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
     initial: "firstName",
@@ -147,7 +149,6 @@ const processDefinition = (processId: string, skipIfNotDirty?:boolean) =>
         },
         navigation: {
           next: "#checkEditAvatar",
-          skip: "#upsertIdentity",
           previous: "#dream",
           canSkip: () => true,
         },
@@ -158,7 +159,11 @@ const processDefinition = (processId: string, skipIfNotDirty?:boolean) =>
           {
             cond: (context) =>
               context.dirtyFlags["avatarUrl"] || !context.data.avatarUrl,
-            actions: (context) => delete context.dirtyFlags["avatarUrl"],
+            actions: (context) => {
+              delete context.dirtyFlags["avatarUrl"];
+              context.dirtyFlags["avatar"] = true;
+              context.data.avatar = undefined;
+            },
             target: "#avatar",
           },
           {
@@ -175,14 +180,14 @@ const processDefinition = (processId: string, skipIfNotDirty?:boolean) =>
           submitButtonText: "Save Image",
         },
         navigation: {
-          next: "#checkUploadAvatar",
+          next: "#uploadGenerateOrSkip",
           skip: "#upsertIdentity",
           previous: "#dream",
           canSkip: () => true,
         },
       }),
-      checkUploadAvatar: {
-        id: "checkUploadAvatar",
+      uploadGenerateOrSkip: {
+        id: "uploadGenerateOrSkip",
         always: [
           {
             cond: (context) =>
@@ -192,9 +197,32 @@ const processDefinition = (processId: string, skipIfNotDirty?:boolean) =>
             target: "#uploadAvatar",
           },
           {
+            cond: (context) =>
+              context.dirtyFlags["avatar"] &&
+              (!context.data.avatar || !context.data.avatar.bytes),
+            target: "#generateAvataar",
+          },
+          {
             target: "#upsertIdentity",
           },
         ],
+      },
+      generateAvataar: {
+        id: "generateAvataar",
+        invoke: {
+          src: async (context) => {
+            const svg = createAvatar(style, {
+              seed: context.data.circlesSafeOwner,
+              backgroundColor: "#65C9FF",
+              topChance: 100,
+              style: "circle",
+              dataUri: true,
+            });
+            context.data.avatarUrl = svg;
+          },
+          onDone: "#upsertIdentity",
+          onError: "#error",
+        },
       },
       uploadAvatar: {
         id: "uploadAvatar",
@@ -230,17 +258,21 @@ const processDefinition = (processId: string, skipIfNotDirty?:boolean) =>
               variables: {
                 id: context.data.id,
                 circlesAddress: context.data.circlesAddress,
-                circlesSafeOwner: context.data.circlesSafeOwner ??
-                                    (localStorage.getItem("circlesKey")
-                                    ? RpcGateway.get().eth.accounts.privateKeyToAccount(localStorage.getItem("circlesKey")).address
-                                    : undefined),
+                circlesSafeOwner:
+                  context.data.circlesSafeOwner ??
+                  (localStorage.getItem("circlesKey")
+                    ? RpcGateway.get().eth.accounts.privateKeyToAccount(
+                        localStorage.getItem("circlesKey")
+                      ).address
+                    : undefined),
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 dream: context.data.dream,
                 country: context.data.country,
                 avatarUrl: event.data?.url ?? context.data.avatarUrl,
                 avatarCid: event.data?.hash ?? context.data.avatarCid,
-                avatarMimeType: event.data?.mimeType ?? context.data.avatarMimeType,
+                avatarMimeType:
+                  event.data?.mimeType ?? context.data.avatarMimeType,
               },
             });
 

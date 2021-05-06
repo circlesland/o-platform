@@ -20,9 +20,7 @@
           <div class="avatar">
             <div class="rounded-full w-14 h-14 m-auto">
               <img
-                src={$me && $me.avatarUrl
-                  ? $me.avatarUrl
-                  : "https://i.pravatar.cc/500?img=32"}
+                src={$me && $me.avatarUrl ? $me.avatarUrl : ""}
                 alt={$me
                   ? $me.lastName
                     ? `${$me.firstName} ${$me.lastName}`

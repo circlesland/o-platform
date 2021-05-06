@@ -8,9 +8,9 @@
   let lastLoadedDapp: DappManifest<any>;
 
   export let user: {
-    displayName: String;
-    avatarUrl: String;
-    safeAddress: String;
+    displayName: string;
+    avatarUrl: string;
+    safeAddress: string;
   };
 
   onMount(() => {
@@ -77,9 +77,7 @@
     <div class="avatar">
       <div class="w-36 h-36 rounded-full mb-4">
         <img
-          src={user.avatarUrl
-            ? user.avatarUrl
-            : "https://i.pravatar.cc/500?img=32"}
+          src={user.avatarUrl}
           alt={user.displayName ? user.displayName : ""}
         />
       </div>

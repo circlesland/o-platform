@@ -5,6 +5,11 @@
   import { onMount } from "svelte";
   export let context: EditorContext;
 
+  let _context: EditorContext;
+  $: {
+    _context = context;
+  }
+
   let inputField: any;
 
   const submitHandler = () => {
@@ -57,15 +62,14 @@
     readonly={context.isReadonly ? "readonly" : ""}
     name="input"
     rows="1"
-    on:keydown={onkeydown}
     id={context.fieldName}
     type="text"
     placeholder={context.params.placeholder}
     class="textarea textarea textarea-bordered overflow-hidden"
     class:input-error={context.messages[context.fieldName]}
-    bind:value={context.data[context.fieldName]}
+    bind:value={_context.data[context.fieldName]}
     bind:this={inputField}
-    on:change={() => context.editorDirtyFlags[context.fieldName] = true}
+    on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
   />
 </div>
 

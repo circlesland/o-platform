@@ -44,11 +44,11 @@
           />
         </svg>
         <span class="text-lg font-circles">
-        {#if lastLoadedDapp.title != lastLoadedPage.title}
-          {lastLoadedDapp.title} /
-        {/if}
+          {#if lastLoadedDapp.title != lastLoadedPage.title}
+            {lastLoadedDapp.title} /
+          {/if}
           {lastLoadedPage.title}
-      </span>
+        </span>
       </div>
       <div class="self-start">
         <button
@@ -75,7 +75,7 @@
   {:else if lastLoadedDapp && lastLoadedPage}
     <div className=" pl-2 ">
       <span className="text-lg font-circles"
-      >{#if lastLoadedDapp.title != lastLoadedPage.title}
+        >{#if lastLoadedDapp.title != lastLoadedPage.title}
           {lastLoadedDapp.title} /
         {/if}{lastLoadedPage.title}</span
       >
@@ -84,7 +84,14 @@
   <div class="self-center text-center mt-6 block">
     <div class="avatar">
       <div class="w-36 h-36 rounded-full mb-4">
-        <img src="{($me && $me.avatarUrl ? $me.avatarUrl : 'https://i.pravatar.cc/500?img=32')}" alt="{($me ? ($me.lastName ? `${$me.firstName} ${$me.lastName}` : $me.firstName) : 'avatar')}" />
+        <img
+          src={$me && $me.avatarUrl ? $me.avatarUrl : ""}
+          alt={$me
+            ? $me.lastName
+              ? `${$me.firstName} ${$me.lastName}`
+              : $me.firstName
+            : "avatar"}
+        />
       </div>
     </div>
     <div class="">

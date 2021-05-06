@@ -10,7 +10,7 @@
 
   let pictureUrl: string;
   let displayName: string;
-  let classes: String;
+  let classes: string;
 
   $: {
     displayName = token.ownerProfile

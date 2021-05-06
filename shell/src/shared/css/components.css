@@ -1,13 +1,5 @@
 @import "./fonts.css";
 
-.circles-button {
-  padding-left: 3px;
-  padding-right: 5px;
-  padding-bottom: 4px;
-  padding-top: 3px;
-  min-width: 3.5rem;
-}
-
 input:focus,
 select:focus,
 button:focus {

@@ -8,7 +8,7 @@
   export let message: String;
 
   let pictureUrl: string;
-  let displayName: String;
+  let displayName: string;
   let classes: String;
 
   $: {
@@ -21,7 +21,10 @@
         ? transfer.toProfile.displayName
         : transfer.to;
 
-    displayName = displayName === "0x0000000000000000000000000000000000000000" ? "UBI" : displayName;
+    displayName =
+      displayName === "0x0000000000000000000000000000000000000000"
+        ? "UBI"
+        : displayName;
 
     pictureUrl =
       transfer.direction === "in"
@@ -31,6 +34,9 @@
         : transfer.toProfile
         ? transfer.toProfile.avatarUrl
         : undefined;
+
+    pictureUrl =
+      displayName === "UBI" ? "/images/common/circles.png" : pictureUrl;
 
     classes =
       transfer.direction === "in"
@@ -57,11 +63,8 @@
   >
     <div class="mr-2 text-center">
       <div class="avatar">
-        <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-          <img
-            src={pictureUrl ? pictureUrl : "/images/common/circles.png"}
-            alt="username"
-          />
+        <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto mt-1">
+          <img src={pictureUrl} alt={displayName} />
         </div>
       </div>
     </div>

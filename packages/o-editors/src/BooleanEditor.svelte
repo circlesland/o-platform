@@ -7,6 +7,11 @@
   let inputField: any;
   export let context: EditorContext;
 
+  let _context: EditorContext;
+  $: {
+    _context = context;
+  }
+
   context.data[context.fieldName] =
     context.data[context.fieldName] === undefined
       ? false
@@ -63,7 +68,7 @@
           id={context.fieldName}
           type="checkbox"
           class="checkbox checkbox-primary"
-          bind:checked={context.data[context.fieldName]}
+          bind:checked={_context.data[context.fieldName]}
           bind:this={inputField}
           on:change={() => context.editorDirtyFlags[context.fieldName] = true}
         />

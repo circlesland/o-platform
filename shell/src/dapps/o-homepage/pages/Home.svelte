@@ -1,4 +1,9 @@
 <script lang="ts">
+  import Navigation from "../components/Navigation.svelte";
+  import VideoHeader from "../components/VideoHeader.svelte";
+  import Mission from "../components/Mission.svelte";
+  import Steps from "../components/Steps.svelte";
+  import IntroAnimation from "../components/IntroAnimation.svelte";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
@@ -37,29 +42,45 @@
   }
 </script>
 
-<div class="flex flex-col h-screen text-base bg-gradient-to-r bg-white">
+<!--
+<div class="flex flex-col h-screen text-base bg-white bg-gradient-to-r">
   <main class="z-30 flex-1 overflow-y-visible">
+    <Navigation />
     <div class="flex flex-col text-center justify-items-center pt-11">
-      <h1 class="font-bold font-circles text-gradient w-42 m-auto">
+      <h1 class="m-auto font-bold font-circles text-gradient w-42">
         You got us!
       </h1>
-      <h2 class="font-thin font-circles pt-11">
-        We're currently actively working on this.<br />All Data will be re-set
-        when we launch.
-      </h2>
     </div>
-    <!-- <a href="/#/imprint">Imprint</a> -->
   </main>
-  <footer class="sticky bottom-0 z-50 w-full ">
-    <div class="flex justify-around ">
-      <button on:click={login} class="mb-24 btn btn-primary">
-        <img
-          width="15px"
-          class="mr-3"
-          src="/images/common/circles.png"
-          alt="circles.land"
-        /> Login
+  <footer class="sticky bottom-0 z-50 w-full h-30 bg-secondary">
+    <div class="container flex justify-around w-full">
+      <div class="">left</div>
+      <button on:click={login} class="px-8 m-2 btn btn-primary">
+        Join us now
       </button>
+      <div class="">right</div>
     </div>
   </footer>
+</div> -->
+<footer class="sticky bottom-0 z-50 w-full ">
+  <div class="flex justify-around ">
+    <button on:click={login} class="mb-24 btn btn-primary">
+      <img
+              width="15px"
+              class="mr-3"
+              src="/images/common/circles.png"
+              alt="circles.land"
+      /> Login
+    </button>
+  </div>
+</footer>
+<div class="flex flex-col h-screen">
+  <Navigation />
+  <main class="flex-1 overflow-y-auto">
+    <VideoHeader />
+    <IntroAnimation />
+    <Steps />
+    <Mission />
+  </main>
+  <footer>footer</footer>
 </div>

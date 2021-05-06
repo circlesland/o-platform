@@ -95,7 +95,6 @@ async function load(args: LoadParams): Promise<Safe> {
         console.log(new Date().getTime() + ": " + "Token via web3:", JSON.stringify(safe, null, 2));
       }
 
-
       if (args.flags.addHubTransfers || args.flags.addHubTransfers === undefined) {
         safe.ui.loadingText = "Loading hub transfers ..";
         publishRefreshEvent(safe);
