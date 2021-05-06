@@ -56,7 +56,7 @@
             href={context.params.link}
             id={context.params.linkLabel}
             target="_blank"
-            class="underline"
+            class="text-primary underline"
           >
             {context.params.linkLabel}
           </a>.
@@ -70,7 +70,7 @@
           class="checkbox checkbox-primary"
           bind:checked={_context.data[context.fieldName]}
           bind:this={inputField}
-          on:change={() => context.editorDirtyFlags[context.fieldName] = true}
+          on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
         />
         <span
           class="checkbox-mark bg-white"

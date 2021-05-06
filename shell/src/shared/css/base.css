@@ -85,7 +85,7 @@
 .label-text {
   @apply text-white;
   @apply font-circles;
-  @apply text-2xl;
+  @apply text-xl;
   @apply leading-8;
   @apply text-center;
 }
