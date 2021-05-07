@@ -49,7 +49,7 @@ const strings = {
   labelCountry:
     "<span>Vote for your country in the global universal basic income economy ranking leaderboard.</span><strong class='text-primary block mt-3'>Select country</strong>",
   labeldream:
-    "<span class='text-l'>What is your life dream?<br/>Fill in the blanks.</span> <span class='block text-sm'><i>When I receive a universal basic income, I will follow my passion of _______________<br/>and will accept Circles as payment.</i></span><strong class='text-primary  block mt-3'>Enter your dream</strong>",
+    "<span class='text-l'>Fill in the blanks:</span> <span class='block text-sm'><i>When I receive a universal basic income, I will follow my passion of <br>  ___________________________ <br/>and will accept Circles as payment.</i></span><strong class='text-primary  block mt-3'>Share your passion</strong>",
   placeholderFirstName: "First Name",
   placeholderLastName: "Last Name",
   placeholderCountry: "Select a Country",

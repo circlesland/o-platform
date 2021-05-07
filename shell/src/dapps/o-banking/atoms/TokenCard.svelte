@@ -56,7 +56,7 @@
       </div>
 
       <div class="flex flex-1 flex-col justify-items-end">
-        <div class="self-end text-{classes} text-2xl sm:text-3xl">
+        <div class="self-end text-transactionpositive text-2xl sm:text-3xl">
           <span>
             {Number.parseFloat(
               Web3.utils.fromWei(token.balance ? token.balance : "0", "ether")

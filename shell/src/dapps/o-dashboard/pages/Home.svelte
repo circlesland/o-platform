@@ -74,7 +74,7 @@
           </p>
           <p class="text mt-4">
             Copy the invite link and send it to someone who's already a citizen
-            of circles.land:
+            of CirclesLand:
           </p>
           <div class="break-all mt-4  mb-4 text-xs" id="clipboard">
             <input type="text" class="hidden" bind:value={inviteLink} />
@@ -90,9 +90,10 @@
           </div>
           <p class="text">
             If you don't know anybody who has Circles yet, ask nicely in our <a
-              href="https://discord.gg/DfMa3U6V"
+              href="https://discord.gg/33bPcyF5JN"
+              target="_blank"
               class="btn-link">Discord</a
-            > if someone can send you the required invite.
+            > if someone can invite you.
           </p>
           <p class="text-xs mt-4 pb-4">
             alternatively, <a href="#/dashboard/become-a-hub" class="btn-link"
@@ -126,7 +127,8 @@
           </div>
           <p class="text mt-4">
             Help others to get aboard in our <a
-              href="https://discord.gg/DfMa3U6V"
+              href="https://discord.gg/33bPcyF5JN"
+              target="_blank"
               class="btn-link">Discord</a
             >
             or
