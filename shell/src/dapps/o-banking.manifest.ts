@@ -15,7 +15,7 @@ import {
   ShellProcessContext,
 } from "../shared/processes/shellProcess";
 import { getUbi } from "./o-banking/processes/getUbi";
-import { hubSignup } from "./o-banking/processes/hubSignup";
+// import { hubSignup } from "./o-banking/processes/hubSignup";
 import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";

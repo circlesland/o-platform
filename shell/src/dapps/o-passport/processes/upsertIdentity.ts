@@ -41,7 +41,7 @@ export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
 
 const strings = {
   labelFirstName:
-    "<span>Awesome!<br/>You are finally a citizen of CirclesLAND.<br/>Glad to have you here.</span><strong class='text-primary block mt-3'>What is your name?</strong>",
+    "<span>Awesome!<br/>You are finally a citizen of <br/>CirclesLAND.<br/>Glad to have you here.</span><strong class='text-primary block mt-3'>What is your name?</strong>",
   labelLastName:
     "<span>Do you want to let the world know your last name, so they know in the search who’s dream they are connecting with?</span><strong class='text-primary  block mt-3'>Enter your last name</strong>",
   labelAvatar: "Add a profile image to become more recognizable ",
@@ -194,16 +194,20 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         always: [
           {
             cond: (context) => {
-              return context.dirtyFlags["avatar"] &&
-              !!context.data.avatar &&
-              !!context.data.avatar.bytes
+              return (
+                context.dirtyFlags["avatar"] &&
+                !!context.data.avatar &&
+                !!context.data.avatar.bytes
+              );
             },
             target: "#uploadAvatar",
           },
           {
             cond: (context) => {
-              return context.dirtyFlags["avatar"] &&
-              (!context.data.avatar || !context.data.avatar.bytes)
+              return (
+                context.dirtyFlags["avatar"] &&
+                (!context.data.avatar || !context.data.avatar.bytes)
+              );
             },
             target: "#generateAvataar",
           },
