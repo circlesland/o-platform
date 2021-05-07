@@ -19,7 +19,7 @@
 </script>
 
 <label class="label" for={context.fieldName}>
-  <span class="label-text">{context.params.label}</span>
+  <span class="label-text">{@html context.params.label}</span>
 </label>
 <div class="flex flex-col w-full h-full">
   <button

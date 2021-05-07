@@ -42,7 +42,9 @@
     let textarea = document.querySelector("textarea");
     textarea.addEventListener("input", autoExpand);
     let detectedDevice = uaParser.getDevice();
-    console.log(detectedDevice);
+    if (length > 17) {
+      textarea.dispatchEvent(new Event("input"));
+    }
     if (detectedDevice && detectedDevice.type) {
       if (detectedDevice.type != "mobile") {
         inputField.focus();
