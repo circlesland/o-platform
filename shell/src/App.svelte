@@ -189,6 +189,7 @@
     if (
       $me &&
       localStorage.getItem("isCreatingSafe") === "true" &&
+      $me.circlesSafeOwner &&
       !balanceThresholdTrigger
     ) {
       balanceThresholdTrigger = new XDaiThresholdTrigger(
