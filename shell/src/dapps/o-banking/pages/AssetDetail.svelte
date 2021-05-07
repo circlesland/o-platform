@@ -7,22 +7,27 @@
   import { BN } from "ethereumjs-util";
   import AssetsHeader from "../atoms/AssetsHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+  import {me} from "../../../shared/stores/me";
 
   export let params: {
     symbol: string;
   };
-  console.log(params);
+
   let accountxDai = {
     symbol: "xdai",
     icon: "",
     balance: "0",
+    address: "0",
     variety: 1,
+    title: "",
   };
   let safexDai = {
     symbol: "xdai",
     icon: "",
     balance: "0",
+    address: "0",
     variety: 1,
+    title: "",
   };
 
   let tokens: Token[];
@@ -32,6 +37,8 @@
       accountxDai = {
         symbol: "xdai",
         icon: "",
+        address: $me.circlesSafeOwner,
+        title: "Safe owner",
         balance: parseFloat(
           RpcGateway.get()
             .utils.fromWei($mySafe.accountxDai, "ether")
@@ -44,6 +51,8 @@
       safexDai = {
         symbol: "xdai",
         icon: "",
+        title: "Safe",
+        address: $me.circlesAddress,
         balance: parseFloat(
           RpcGateway.get()
             .utils.fromWei($mySafe.xDaiBalance, "ether")
@@ -73,6 +82,8 @@
   {:else if params && params.symbol == "xdai"}
     {#each [accountxDai, safexDai] as token}
       <XdaiAssetCard
+        address={token.address}
+        title={token.title}
         symbol={token.symbol}
         balance={token.balance}
         variety={token.variety}

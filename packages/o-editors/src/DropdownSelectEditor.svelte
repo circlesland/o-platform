@@ -37,10 +37,12 @@
   function handleSelect(event) {
     selected = event.detail;
     selectedLabel = event.detail.label;
+    context.editorDirtyFlags[context.fieldName] = true;
   }
 
   export function handleClear() {
     selected = undefined;
+    context.editorDirtyFlags[context.fieldName] = true;
   }
 
   function submitHandler() {
@@ -76,7 +78,6 @@
         listPlacement="top"
         containerClasses="min-w-full asyncList  max-w-xs"
         isCreatable={true}
-        on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
         on:clear={handleClear}
         {optionIdentifier}
         {getSelectionLabel}

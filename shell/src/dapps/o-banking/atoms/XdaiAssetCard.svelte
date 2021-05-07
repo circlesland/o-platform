@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { push } from "svelte-spa-router";
-
   export let symbol: string;
   export let balance: string;
+  export let title: string;
+  export let subTitle: string;
   export let variety: number;
   export let colorClass: String;
+  export let address: String;
 
   let pictureUrl: string;
   let classes: String;
@@ -17,13 +18,14 @@
 
 <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
   <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+    <!--
     <div
       class="{colorClass
         ? colorClass
         : 'text-light'} text-xs font-circles font-bold text-left"
     >
       {symbol ? symbol : ""}
-    </div>
+    </div>-->
     <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
       <div class="mr-2 text-center">
         <div class="avatar">
@@ -32,20 +34,17 @@
           </div>
         </div>
       </div>
-
       <div class="text-left flex-grow truncate relative">
-        <div
-          class="max-w-full truncateThis cursor-pointer"
-        >
-          <h2 class="text-2xl sm:text-3xl truncate ">
-            {symbol}
-            {variety > 1 ? " (" + variety + ")" : ""}
+        <div class="truncateThis">
+          <h2 class="text-2xl sm:text-3xl">
+            {title}
           </h2>
         </div>
+        <p class="text-sm mt-2 text-light">{address}</p>
       </div>
 
       <div class="flex flex-1 flex-col justify-items-end">
-        <div class="self-end text-{classes} text-2xl sm:text-3xl">
+        <div class="self-end text-transactionpositive text-2xl sm:text-3xl">
           <span>
             {Number.parseFloat(balance).toFixed(2)}
           </span>

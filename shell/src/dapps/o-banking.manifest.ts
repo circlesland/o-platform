@@ -211,6 +211,7 @@ export const banking: DappManifest<DappState> = {
             ctx.childProcessDefinition = setTrust;
             ctx.childContext = {
               data: {
+                trustLimit: 100,
                 safeAddress: tryGetCurrentSafe().safeAddress,
                 privateKey: localStorage.getItem("circlesKey"),
               },
