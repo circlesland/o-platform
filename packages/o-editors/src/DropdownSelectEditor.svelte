@@ -95,7 +95,7 @@
         showChevron={true}
         listAutoWidth={false}
         listPlacement="top"
-        containerClasses="min-w-full"
+        containerClasses="min-w-full max-w-xs"
         on:select={handleSelect}
       />
     </div>
