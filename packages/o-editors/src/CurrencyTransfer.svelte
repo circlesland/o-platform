@@ -103,6 +103,7 @@
       placeholder="0.00 (Max: {maxAmount})"
       autocomplete="off"
       bind:value={amount}
+      on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
       bind:this={inputField}
     />
     <div class="absolute inset-y-0 right-1 flex items-center themed">
@@ -118,6 +119,7 @@
         containerClasses="w-34 min-w-full rounded-md"
         {Item}
         on:select={handleSelect}
+        on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
       />
     </div>
   </div>

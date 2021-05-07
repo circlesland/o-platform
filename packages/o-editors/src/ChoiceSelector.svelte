@@ -1,8 +1,16 @@
 <script lang="ts">
   import { ChoiceSelectorContext } from "./choiceSelectorContext";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
+  import {onMount} from "svelte";
 
   export let context: ChoiceSelectorContext;
+
+  onMount(() => {
+    if (!context.editorDirtyFlags) {
+      context.editorDirtyFlags = {};
+    }
+    context.editorDirtyFlags[context.fieldName] = true
+  })
 
   function submit(selected: { key: string; label: string }) {
     const event = new Continue();

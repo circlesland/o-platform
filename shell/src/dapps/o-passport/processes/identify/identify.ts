@@ -34,7 +34,7 @@ export type IdentifyContextData = {
 };
 
 const strings = {
-  choiceLabel: "Do you already have a circles account?",
+  choiceLabel: "Do you already have a circles.garden account?",
   choiceYesLabel: "Yes",
   choiceNoLabel: "No",
 }

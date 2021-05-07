@@ -25,9 +25,11 @@ const strings = {
   choiceConnect: "Connect",
   choiceCreate: "Create",
   labelEditSeedphrase: "Please enter your seedphrase below:",
-  labelExportSeedphrase: "Please make a backup of your seedphrase:",
+  labelExportSeedphrase: "This is your seedphrase. It is like an unchangeable password, which gives only you access to your circles banking account. It is your full responsibility to backup and protect your seedphrase. If you loose it, all your funds are lost forever.<br/><strong class='text-primary  block mt-3'>Make a backup now</strong>",
+  buttonExportSeedphrase: "I made a backup",
   // labelCheckSeedphrase: (context: CreateSafeContext) => `Please enter the ${context.data.checkWordIndex == 0 ? (context.data.checkWordIndex + 1).toString() + "st" : (context.data.checkWordIndex + 1).toString() + "nd"} word of your seedphrase:`,
-  labelCheckSeedphrase: (context: CreateSafeContext) => `Please enter the ${context.data.checkWordIndex == 0 ? (context.data.checkWordIndex + 1).toString() + "st" : (context.data.checkWordIndex + 1).toString() + "nd"} word of your seedphrase:`,
+  labelCheckSeedphrase: `Keep in mind, everyone who knows your seedphrase can access all your funds! Did you store your seedphrase in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary  block mt-3'>Repeat your seedphrase</strong>`,
+  buttonCheckSeedphrase: "It is stored safely",
 };
 
 function randomIntFromInterval(min, max) { // min and max included
@@ -62,20 +64,25 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         params: {
           label: strings.labelExportSeedphrase,
-          isReadonly: true
+          isReadonly: true,
+          submitButtonText: strings.buttonExportSeedphrase,
+          hideCharacterCount: true,
+          canCopy: true
         },
         navigation: {
           next: "#askForBackup",
           previous: "#generateSeedPhrase",
-          canGoBack: () => true
+          canGoBack: () => false
         },
       }),
       askForBackup: prompt<CreateSafeContext, any>({
         id: "askForBackup",
         fieldName: "checkSeedPhrase",
-        component: TextEditor,
+        component: TextareaEditor,
         params: {
           label: strings.labelCheckSeedphrase,
+          hideCharacterCount: true,
+          submitButtonText: strings.buttonCheckSeedphrase,
         },
         navigation: {
           next: "#verifyCheckSeedPhrase",

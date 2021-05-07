@@ -1,15 +1,17 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { setClient } from "svelte-apollo";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import {onMount} from "svelte";
+  import {setClient} from "svelte-apollo";
+  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import { sendInviteGas } from "../processes/sendInviteGas";
+  import {sendInviteGas} from "../processes/sendInviteGas";
   import TrustCard from "../atoms/TrustCard.svelte";
-  import { mySafe } from "../stores/safe";
+  import {mySafe} from "../stores/safe";
+  import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
+  import TokensHeader from "../atoms/TokensHeader.svelte";
 
   export let params: {
     inviteAccountAddress?: string;
@@ -25,22 +27,22 @@
 
   function execSendInviteGas(recipientAddress?: string) {
     window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = sendInviteGas;
-        ctx.childContext = {
-          data: {
-            safeAddress: "TODO: my safe address",
-            recipientAddress: recipientAddress,
-            amount: 0.1,
-          },
-        };
-        return ctx;
-      })
+            new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
+              ctx.childProcessDefinition = sendInviteGas;
+              ctx.childContext = {
+                data: {
+                  safeAddress: "TODO: my safe address",
+                  recipientAddress: recipientAddress,
+                  amount: 0.1,
+                },
+              };
+              return ctx;
+            })
     );
   }
 </script>
 
-<BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
+<TokensHeader />
 <div class="mx-4 -mt-6">
   {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts || !$mySafe.trustRelations.trusting || !$mySafe.trustRelations.trustedBy}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">

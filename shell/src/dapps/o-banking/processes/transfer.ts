@@ -44,12 +44,12 @@ export type TransferContext = ProcessContext<TransferContextData>;
  */
 const strings = {
   labelRecipientAddress:
-    "Select the recipient you want to send money to (autocomplete up)",
-  tokensLabel: "Please enter the amount and the token you want to transfer",
+    "Select the recipient you want to send money to",
+  tokensLabel: "Please enter the amount",
   currencyCircles: "CRC",
   currencyXdai: "xDai",
   summaryLabel: "Summary",
-  messageLabel: "Please write a short description for the recipient",
+  messageLabel: "Purpose of transfer",
 };
 
 const processDefinition = (processId: string) =>

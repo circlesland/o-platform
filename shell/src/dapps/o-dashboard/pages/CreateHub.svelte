@@ -25,9 +25,6 @@
   let inviteThreshold: string = "";
   let invitePersonCount: number = 0;
   let invitePersonCountString: string = "0 People";
-  let showFundHint: boolean = false;
-  let inviteLink: string = "";
-  let showRampUp: boolean = false;
 
   let lastLoadedPage: PageManifest;
   let lastLoadedDapp: DappManifest<any>;
@@ -46,25 +43,43 @@
 
     async function updateBalance() {
       accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk)
-        .address;
-      accountBalance = parseFloat(
-        RpcGateway.get().utils.fromWei(
-          await RpcGateway.get().eth.getBalance(accountAddress),
-          "ether"
-        )
-      ).toFixed(2);
-      invitePersonCount = Math.floor(
-        (parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE
-      );
-      if (invitePersonCount == 1) {
-        invitePersonCountString = `1 Person`;
-      } else if (invitePersonCount == 0 || invitePersonCount == -1) {
-        invitePersonCountString = `0 People`;
-      } else {
-        invitePersonCountString = `${invitePersonCount} People`;
+              .address;
+      if ($me && $me.circlesAddress) {
+        accountBalance = parseFloat(
+                RpcGateway.get().utils.fromWei(
+                        await RpcGateway.get().eth.getBalance($me.circlesAddress),
+                        "ether"
+                )
+        ).toFixed(2);
+        invitePersonCount = Math.floor(
+                (parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE
+        );
+        if (invitePersonCount == 1) {
+          invitePersonCountString = `1 Person`;
+        } else if (invitePersonCount == 0 || invitePersonCount == -1) {
+          invitePersonCountString = `0 People`;
+        } else {
+          invitePersonCountString = `${invitePersonCount} People`;
+        }
       }
-      if (!showRampUp) {
-        showRampUp = invitePersonCount < 1;
+      else
+      {
+        accountBalance = parseFloat(
+                RpcGateway.get().utils.fromWei(
+                        await RpcGateway.get().eth.getBalance(accountAddress),
+                        "ether"
+                )
+        ).toFixed(2);
+        invitePersonCount = Math.floor(
+                (parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE
+        );
+        if (invitePersonCount == 1) {
+          invitePersonCountString = `1 Person`;
+        } else if (invitePersonCount == 0 || invitePersonCount == -1) {
+          invitePersonCountString = `0 People`;
+        } else {
+          invitePersonCountString = `${invitePersonCount} People`;
+        }
       }
     }
 
@@ -105,17 +120,12 @@
         <div class="text-left flex-grow ">
           <div class="max-w-full">
             <p>
-              On blockchains, each transaction costs a small fee to keep the
-              network running. Circles builds on the xDai chain and we
-              recommended to have at least <strong>{INVITE_VALUE} xDai</strong> to
-              fuel your daily transactions.
-            </p>
-            <p class="mt-4">
-              If you have more than {INVITE_VALUE} xDai, you can use it to
-              <i
-                >invite others you know and who might not be familiar enough
-                with the process</i
-              > of buying xDai for themselves.
+              CirclesLand is build on a energy efficient blockchain (xDai) with very small transaction fees. 0.01$ will give you 300-500 transactions.
+              We recommended to have at least <strong>{INVITE_VALUE.toFixed(2)} xDai </strong> (={INVITE_VALUE.toFixed(2)} $) to
+              fuel your daily transactions.<br>
+              If you have more than {INVITE_VALUE.toFixed(2)} xDai, you can use it to
+              invite others you know and who might not be familiar enough
+              with getting xDai for themselves.
             </p>
           </div>
         </div>
@@ -149,32 +159,7 @@
                     the "invite" button on their profile page.
                   </p>
                 </div>
-              {/if}
-              {#if invitePersonCount == 0 || showRampUp}
-                <div class="mt-4">
-                  Use one of the presets below to buy xDai on <a
-                    href="https://ramp.network/"
-                    class="btn-link">ramp.network</a
-                  >.<br />
-                  Once the transaction on ramp is complete, come back and refresh
-                  this page.
-                </div>
-                <div class="text-center">
-                  <p class="mt-4">
-                    <button
-                      class="btn btn-primary"
-                      on:click={() => (showRampUp = true)}
-                    >
-                      <img
-                        src={"/logos/xdai.svg"}
-                        alt="xDai"
-                        class="w-6 h-6 inline mr-2"
-                      />
-                      Get more xDai</button
-                    >
-                  </p>
-                </div>
-
+              {:else}
                 <div class="flex flex-row space-x-6 mt-4">
                   {#each presets as preset}
                     <a
@@ -192,7 +177,7 @@
                             ><div
                               class="font-bold text-sm sm:text-lg tracking-wider"
                             >
-                              {Math.floor(preset / INVITE_VALUE).toFixed(0)} INVITES
+                              {Math.floor(preset / INVITE_VALUE)} INVITES
                             </div>
                             <p class="text-xs sm:text-l">({preset} xDai)</p>
                           </label>

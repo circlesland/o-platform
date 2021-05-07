@@ -94,11 +94,8 @@
         />
       </div>
     </div>
-    <div class="">
-      <strong>Hi {$me ? $me.firstName : "Martin"},</strong> Welcome to CirclesLAND
-    </div>
-    <div class="">
-      <small>This is your dashboard and door into our universe.</small>
+    <div class="text-xl">
+      <strong>Welcome {$me ? $me.firstName : ""}</strong>
     </div>
   </div>
 </div>

@@ -125,7 +125,7 @@
             <span class="inline text-dark"
               >You are trusting {trusting.profile
                 ? trusting.profile.displayName
-                : trusting.safeAddress} to {trusting.limit}%
+                : trusting.safeAddress} {trusting.limit}%
             </span>
           </div>
 
@@ -147,7 +147,7 @@
             <span class="inline text-dark"
               >{trustedby.profile
                 ? trustedby.profile.displayName
-                : trustedby.safeAddress} is trusting you to {trustedby.limit}%
+                : trustedby.safeAddress} is trusting you {trustedby.limit}%
             </span>
           </div>
         {/if}

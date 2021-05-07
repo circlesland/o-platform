@@ -5,6 +5,8 @@
   import { mySafe } from "../stores/safe";
   import TransactionCard from "../atoms/TransactionCard.svelte";
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
+  import {BN} from "ethereumjs-util";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
   export let params: {
     _id: string;
@@ -14,6 +16,8 @@
   let pictureUrl: string;
   let displayName: string;
   let classes: string;
+
+  let amountInWei:string;
 
   $: {
     transfer = $mySafe.transfers.rows.find((o) => o._id == params._id);
@@ -52,32 +56,27 @@
 
 <BankingDetailHeader amount={transfer ? transfer.amount : 0} {classes} />
 {#if transfer}
-  <!-- <pre>{JSON.stringify(transfer, null, 2)}</pre> -->
   <div class="mx-4 -mt-6">
     <section
       class="flex flex-col items-center justify-center mb-2 text-circlesdarkblue"
     >
       <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-        <div class="text-circleslightblue text-sm font-bold">
-          {#if dateOlderThanSevenDays(transfer.time)}
-            <Time
-              timestamp={new Date(transfer.time * 1000)}
-              format="D. MMMM YYYY"
-            />
-          {:else}
-            <Time relative timestamp={new Date(transfer.time * 1000)} />
-          {/if}
-        </div>
+
         <div class="flex items-center space-x-2 sm:space-x-6 rounded-sm">
-          <div class="mr-2 text-center">
+
             <div class="avatar">
-              <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-                <img src={pictureUrl} alt={displayName} />
+              <div class="rounded-full w-24 h-24  m-auto">
+                <img src={transfer.fromProfile ? transfer.fromProfile.avatarUrl : "none"} />
               </div>
+            </div>
+          ---&gt;
+          <div class="avatar">
+            <div class="rounded-full w-24 h-24  m-auto">
+              <img src={transfer.toProfile ? transfer.toProfile.avatarUrl : "none"}  />
             </div>
           </div>
 
-          <div class="text-left flex-grow truncate relative">
+          <!--<div class="text-left flex-grow truncate relative">
             <div class="truncateThis">
               <h2 class="text-2xl sm:text-3xl">
                 {displayName}
@@ -90,9 +89,27 @@
                 </span>
               </div>
             </div>
-          </div>
+          </div>-->
         </div>
       </div>
+
+      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+        <b>Date</b>
+        {#if dateOlderThanSevenDays(transfer.time)}
+          <Time
+                  timestamp={new Date(transfer.time * 1000)}
+                  format="DD MMMM YYYY - HH:mm"
+          />
+        {:else}
+          <Time relative timestamp={new Date(transfer.time * 1000)} />
+        {/if}
+        <b>From</b>{transfer.fromProfile ? transfer.fromProfile.displayName : transfer.from} {transfer.fromProfile ? `${transfer.from}` : ""}<br/>
+        <b>To</b>{transfer.toProfile ? transfer.toProfile.displayName : transfer.to} {transfer.toProfile ? `${transfer.to}` : ""}<br/>
+        <b>Amount</b> {RpcGateway.get().utils.fromWei(transfer.amount)} <br/>
+        <b>Block</b> {transfer.firstBlock}
+      </div>
+
+
     </section>
   </div>
 {/if}

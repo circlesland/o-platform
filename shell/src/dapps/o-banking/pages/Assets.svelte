@@ -5,49 +5,45 @@
   import AssetCard from "../atoms/AssetCard.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 
-  let accountxDai = {
+  let xdai :{[x:string]:any} = {
     symbol: "xdai",
     icon: "",
+    title: "xDAI",
     balance: "0",
     variety: 1,
   };
+  /*
   let safexDai = {
     symbol: "xdai",
     icon: "",
     balance: "0",
     variety: 1,
   };
+   */
   let circles = {
     symbol: "crc",
     icon: "",
+    title: "Circles",
     balance: "0",
     variety: 1,
   };
   $: {
     if ($mySafe && $mySafe.accountxDai) {
-      accountxDai = {
+      xdai = {
         symbol: "xdai",
         icon: "",
-        balance: parseFloat(
-          RpcGateway.get().utils.fromWei($mySafe.accountxDai, "ether").toString()
-        ).toFixed(2),
+        title: "xDAI",
+        balance: "ß",
         variety: 1,
       };
-    }
-    if ($mySafe && $mySafe.xDaiBalance) {
-      safexDai = {
-        symbol: "xdai",
-        icon: "",
-        balance: parseFloat(
-          RpcGateway.get().utils.fromWei($mySafe.xDaiBalance, "ether").toString()
-        ).toFixed(2),
-        variety: 1,
-      };
+      xdai.balance = parseFloat(RpcGateway.get().utils.fromWei($mySafe.accountxDai, "ether").toString())
+              + parseFloat(RpcGateway.get().utils.fromWei($mySafe.xDaiBalance, "ether").toString())
     }
     if ($mySafe && $mySafe.acceptedTokens) {
       circles = {
         symbol: "crc",
         icon: "",
+        title: "Circles",
         balance: $mySafe.balance,
         variety: Object.values($mySafe.acceptedTokens.tokens).filter((o) =>
           new BN(o.balance).gt(new BN("0"))
@@ -69,9 +65,10 @@
       </div>
     </section>
   {:else}
-    {#each [accountxDai, safexDai, circles] as token}
+    {#each [circles, xdai] as token}
       <AssetCard
         symbol={token.symbol}
+        title={token.title}
         balance={token.balance}
         variety={token.variety}
         colorClass="text-primary"
@@ -90,7 +87,7 @@
   {/if}
 -->
   <!--
-  {#each [accountxDai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token (token._id)}
+  {#each [xdai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token (token._id)}
     <TokenCard
       {token}
       label="ACCOUNT XDAI BALANCE (used to pay for transactions)"
