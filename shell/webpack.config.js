@@ -29,7 +29,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   filesAppId = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "thorsten") {
   auth_endpoint = "https://dev.auth.circles.name";
-  api_endpoint = "https://dev.api.circles.land";
+  api_endpoint = "https://thorsten.api.circles.land";
   files_endpoint = "https://dev.files.circles.land";
   appId = "thorsten.circles.land";
   filesAppId = "dev.files.circles.land";

@@ -100,7 +100,7 @@ async function load(args: LoadParams): Promise<Safe> {
         publishRefreshEvent(safe);
         _currentSafe = safe;
 
-        safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
+        safe = await Queries.addHubTransfers(safe, safe.token?.firstBlock);
         const hubTransferCount = safe.transfers.rows.length;
         console.log(new Date().getTime() + ": " + `Added ${hubTransferCount} hub transfers.`)
       }
