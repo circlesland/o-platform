@@ -10,11 +10,19 @@
   export let context: EditorContext;
 
   let _context: EditorContext;
+  let length;
+
   $: {
     _context = context;
+    length = _context.data[context.fieldName]
+      ? _context.data[context.fieldName].length
+      : 0;
   }
 
   let inputField: any;
+  let maxlength: string = context.params.maxLength
+    ? context.params.maxLength
+    : "500";
 
   const submitHandler = () => {
     const answer = new Continue();
@@ -72,6 +80,7 @@
   {/if}
   <textarea
     readonly={context.isReadonly ? "readonly" : ""}
+    {maxlength}
     name="input"
     rows="1"
     id={context.fieldName}
@@ -83,6 +92,11 @@
     bind:this={inputField}
     on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
   />
+  <p class="text-xs text-white relative right-0 top-2 text-right">
+    {length}/{maxlength} Characters. {length > maxlength
+      ? "Oops, please enter a maximum of " + maxlength + " characters."
+      : ""}
+  </p>
 </div>
 
 <ProcessNavigation on:buttonClick={submitHandler} {context} />
