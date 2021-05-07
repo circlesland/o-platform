@@ -268,7 +268,9 @@ const processDefinition = (processId: string) =>
                 <span class='block'>
                 to 
                 </span>
-                <strong class='block'>${context.data.recipientAddress}</strong>
+                <strong class='block break-all'>${
+                  context.data.recipientAddress
+                }</strong>
                 <span class='block mt-4'>Message:</span>
                 <span class='block'>
                 ${context.data.message}
