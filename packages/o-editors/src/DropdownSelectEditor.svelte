@@ -74,7 +74,7 @@
         placeholder="Search..."
         listAutoWidth={false}
         listPlacement="top"
-        containerClasses="min-w-full asyncList"
+        containerClasses="min-w-full asyncList  max-w-xs"
         isCreatable={true}
         on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
         on:clear={handleClear}
