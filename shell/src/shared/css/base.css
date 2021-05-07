@@ -81,12 +81,15 @@
 
   /* background: #ffcc33; */
 }
-
+.label {
+    @apply text-center;
+    @apply block;
+}
 .label-text {
   @apply text-white;
   @apply font-circles;
-  @apply text-xl;
-  @apply leading-8;
+  font-size: 1.12rem;
+  line-height: 1.7rem;
   @apply text-center;
   @apply break-all;
 }

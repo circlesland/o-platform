@@ -136,8 +136,8 @@
   }
 </script>
 
-<label class="label" for={context.fieldName}>
-  <span class="label-text">{context.params.label}</span>
+<label class="label block text-center" for={context.fieldName}>
+  <span class="label-text">{@html context.params.label}</span>
 </label>
 <div class="w-full h-full">
   <canvas
