@@ -23,7 +23,7 @@ export class ExecResult {
         this.observable = observable;
     }
 
-    toPromise(timeout:number = 30000): Promise<TransactionReceipt> {
+    toPromise(timeout:number = 60000): Promise<TransactionReceipt> {
         const stack = new Error().stack;
         return new Promise((resolve, reject) => {
             let completed = false;
