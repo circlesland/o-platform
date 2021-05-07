@@ -3,6 +3,10 @@
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
   import { onMount } from "svelte";
+  import UAParser from "ua-parser-js";
+
+  const uaParser = new UAParser();
+
   export let context: EditorContext;
 
   let _context: EditorContext;
@@ -29,7 +33,15 @@
   onMount(() => {
     let textarea = document.querySelector("textarea");
     textarea.addEventListener("input", autoExpand);
-    inputField.focus();
+    let detectedDevice = uaParser.getDevice();
+    console.log(detectedDevice);
+    if (detectedDevice && detectedDevice.type) {
+      if (detectedDevice.type != "mobile") {
+        inputField.focus();
+      }
+    } else {
+      inputField.focus();
+    }
   });
 </script>
 
