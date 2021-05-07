@@ -22,6 +22,8 @@
     profileId?: string;
   };
 
+  $: name = profile ? profile.circlesAddress : "";
+
   async function execLoadProfile(profileId?: string) {
     if (profileId && parseInt(profileId)) {
       profile = await loadProfile(parseInt(profileId));
@@ -117,9 +119,10 @@
             <div class="inline-block break-all text-xs" id="clipboard">
               {#if profile}
                 <input
+                  name="name"
                   type="text"
                   class="hidden"
-                  bind:value={profile.circlesAddress}
+                  bind:value={name}
                 />
                 {profile.circlesAddress ? profile.circlesAddress : ""}
               {/if}
