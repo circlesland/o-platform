@@ -33,7 +33,7 @@ const strings = {
   labelLoginEmail:
     "<strong class='text-primary block mt-3'>Enter your email address</strong>",
   labelVerificationCode:
-    "Enter your authentication code below or click the link in the e-mail to sign-in",
+    "<strong class='text-primary block mt-3'>Enter authentication code</strong> <small class='block'>or click the link in the e-mail to sign-in</small>",
   placeholder: "you@example.com",
 };
 
