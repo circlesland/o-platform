@@ -7,7 +7,10 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import * as yup from "yup";
-import {LoginWithEmailDocument, VerifyDocument} from "../../../../data/auth/types";
+import {
+  LoginWithEmailDocument,
+  VerifyDocument,
+} from "../../../../data/auth/types";
 
 export type AuthenticateContextData = {
   appId?: string;
@@ -27,7 +30,8 @@ export type AuthenticateContext = ProcessContext<AuthenticateContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelLoginEmail: "Please enter your e-mail address",
+  labelLoginEmail:
+    "<strong class='text-primary block mt-3'>Enter your email address</strong>",
   labelVerificationCode:
     "Enter your authentication code below or click the link in the e-mail to sign-in",
   placeholder: "you@example.com",
@@ -106,10 +110,10 @@ const processDefinition = (processId: string) =>
       }),
       storeAcceptTos: {
         id: "storeAcceptTos",
-        entry: context => {
+        entry: (context) => {
           localStorage.setItem("acceptTos", "__TOS_VERSION__");
         },
-        always: "#requestAuthCode"
+        always: "#requestAuthCode",
       },
       // Request an auth code to the given e-mail address
       // and then go to the 'code' input step.
