@@ -68,7 +68,7 @@
 .truncateThis:before {
   content: "";
   @apply w-full;
-  @apply h-full;
+@apply h-full;
   @apply absolute;
   @apply left-0;
   @apply top-0;
@@ -91,7 +91,7 @@
   font-size: 1.12rem;
   line-height: 1.7rem;
   @apply text-center;
-  @apply break-all;
+  @apply break-words;
 }
 
 .input-error {

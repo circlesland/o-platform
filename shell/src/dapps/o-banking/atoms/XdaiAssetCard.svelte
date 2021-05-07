@@ -1,29 +1,18 @@
 <script lang="ts">
-  import Time from "svelte-time";
   import { push } from "svelte-spa-router";
-  import Web3 from "web3";
-  import { Token } from "../data/circles/queries";
 
-  export let token: Token;
-  export let label: String;
+  export let symbol: string;
+  export let balance: string;
+  export let variety: number;
   export let colorClass: String;
 
   let pictureUrl: string;
-  let displayName: string;
-  let classes: string;
+  let classes: String;
 
   $: {
-    displayName = token.ownerProfile
-      ? token.ownerProfile.displayName
-      : token.tokenOwner;
-
-    pictureUrl = token.ownerProfile ? token.ownerProfile.avatarUrl : undefined;
+    pictureUrl = symbol;
   }
 
-  function loadDetailPage(path) {
-    console.log(path);
-    push("#/banking/trusts/" + path);
-  }
 </script>
 
 <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
@@ -33,13 +22,13 @@
         ? colorClass
         : 'text-light'} text-xs font-circles font-bold text-left"
     >
-      {label ? label : ""}
+      {symbol ? symbol : ""}
     </div>
     <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src={pictureUrl} alt={displayName} />
+            <img src="/logos/{symbol}.svg" alt="xdai" class="w-12 h-12" />
           </div>
         </div>
       </div>
@@ -47,10 +36,10 @@
       <div class="text-left flex-grow truncate relative">
         <div
           class="max-w-full truncateThis cursor-pointer"
-          on:click={() => loadDetailPage(token.ownerProfile.safeAddress)}
         >
           <h2 class="text-2xl sm:text-3xl truncate ">
-            {displayName}
+            {symbol}
+            {variety > 1 ? " (" + variety + ")" : ""}
           </h2>
         </div>
       </div>
@@ -58,9 +47,7 @@
       <div class="flex flex-1 flex-col justify-items-end">
         <div class="self-end text-{classes} text-2xl sm:text-3xl">
           <span>
-            {Number.parseFloat(
-              Web3.utils.fromWei(token.balance ? token.balance : "0", "ether")
-            ).toFixed(2)}
+            {Number.parseFloat(balance).toFixed(2)}
           </span>
         </div>
       </div>
