@@ -101,6 +101,7 @@
       id="price"
       class="input input-bordered block w-full pl-12 pr-12 sm:text-sm "
       placeholder="0.00 (Max: {maxAmount})"
+      autocomplete="off"
       bind:value={amount}
       bind:this={inputField}
     />

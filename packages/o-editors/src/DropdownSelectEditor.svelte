@@ -70,6 +70,7 @@
         isFocused={true}
         selectedValue={selected}
         loadOptions={context.params.asyncChoices}
+        noOptionsMessage=""
         placeholder="Search..."
         listAutoWidth={false}
         listPlacement="top"
