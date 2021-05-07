@@ -60,7 +60,6 @@ const processDefinition = (processId: string) =>
         }]
       }),
 
-
       transfer: {
         id: "transfer",
         on: <any>{
