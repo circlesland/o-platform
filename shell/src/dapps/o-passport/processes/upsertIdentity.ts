@@ -181,7 +181,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
         navigation: {
           next: "#uploadGenerateOrSkip",
-          skip: "#upsertIdentity",
           previous: "#dream",
           canSkip: () => true,
         },
@@ -190,16 +189,18 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "uploadGenerateOrSkip",
         always: [
           {
-            cond: (context) =>
-              context.dirtyFlags["avatar"] &&
+            cond: (context) => {
+              return context.dirtyFlags["avatar"] &&
               !!context.data.avatar &&
-              !!context.data.avatar.bytes,
+              !!context.data.avatar.bytes
+            },
             target: "#uploadAvatar",
           },
           {
-            cond: (context) =>
-              context.dirtyFlags["avatar"] &&
-              (!context.data.avatar || !context.data.avatar.bytes),
+            cond: (context) => {
+              return context.dirtyFlags["avatar"] &&
+              (!context.data.avatar || !context.data.avatar.bytes)
+            },
             target: "#generateAvataar",
           },
           {
@@ -244,7 +245,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             dirtyFlags: {},
           },
           onDone: [{
-            cond: context => !!context.data.avatar && !!context.data.avatar.bytes,
+            cond: context => {
+              return !!context.data.avatarUrl
+            },
             target: "#upsertIdentity"
           },{
             target: "#generateAvataar"
