@@ -12,11 +12,15 @@ import {Web3Contract} from "@o-platform/o-circles/dist/web3Contract";
 import {BN} from "ethereumjs-util";
 import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
+import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
+import {Profile} from "../data/api/types";
+import {UpsertProfileDocument} from "../../o-passport/data/api/types";
+import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
 
 export type HubSignupContextData = {
   privateKey:string;
   deployedProxy?:GnosisSafeProxy;
-  safeAddress?:string;
+  profile?: Profile
 };
 
 /**
@@ -32,12 +36,40 @@ export type HubSignupContext = ProcessContext<HubSignupContextData>;
 const strings = {
 };
 
+export const INITIAL_ACCOUNT_XDAI = new BN(RpcGateway.get().utils.toWei("0.025", "ether"));
+
 const processDefinition = (processId: string) =>
 createMachine<HubSignupContext, any>({
   id: `${processId}:deploySafe`,
-  initial: "deploySafe",
+  initial: "loadProfile",
   states: {
     ...fatalError<HubSignupContext, any>("error"),
+
+    loadProfile: {
+      id: "loadProfile",
+      entry: (ctx) => console.log(`enter: identify.loadProfile`, ctx.data),
+      invoke: {
+        src: async (context) => {
+          context.data.profile = await loadProfile();
+        },
+        onDone: "#checkEntryPoint",
+        onError: "#error"
+      }
+    },
+
+    checkEntryPoint: {
+      id: "checkEntryPoint",
+      always:[{
+        cond: () => !!localStorage.getItem("isCreatingSafe"),
+        target: "deploySafe"
+      },{
+        cond: () => !!localStorage.getItem("fundsSafe"),
+        target: "fundSafe"
+      },{
+        cond: () => !!localStorage.getItem("signsUpAtCircles"),
+        target: "hubSignup"
+      }]
+    },
 
     deploySafe: {
       id: "deploySafe",
@@ -45,9 +77,35 @@ createMachine<HubSignupContext, any>({
         src: async (context) => {
           const proxyFactory = new GnosisSafeProxyFactory(RpcGateway.get(), PROXY_FACTORY_ADDRESS, GNOSIS_SAFE_ADDRESS);
           context.data.deployedProxy = await proxyFactory.deployNewSafeProxy(context.data.privateKey);
-          context.data.safeAddress = context.data.deployedProxy.address;
+          context.data.profile.circlesAddress = context.data.deployedProxy.address;
         },
-        onDone: "#success",
+        onDone: "#upsertIdentity",
+        onError: "#error",
+      },
+    },
+    upsertIdentity: {
+      id: "upsertIdentity",
+      invoke: {
+        src: async (context) => {
+          const apiClient = await window.o.apiClient.client.subscribeToResult();
+          const result = await apiClient.mutate({
+            mutation: UpsertProfileDocument,
+            variables: {
+              ...context.data.profile
+            },
+          });
+
+          localStorage.removeItem("isCreatingSafe");
+          localStorage.setItem("fundsSafe", "true");
+
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.authenticated",
+            profile: result.data.upsertProfile,
+          });
+
+          return result.data.upsertProfile;
+        },
+        onDone: "#fundSafe",
         onError: "#error",
       },
     },
@@ -55,20 +113,23 @@ createMachine<HubSignupContext, any>({
       id: "fundSafe",
       invoke: {
         src: async (context) => {
-          // Transfer 0,075 xdai to the safe
-          // Keep 0.025 xdai on the account
+          // Transfer all xdai to the safe except INITIAL_ACCOUNT_XDAI
           const ownerAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(context.data.privateKey).address;
+          const totalAccountBalance = new BN(await RpcGateway.get().eth.getBalance(ownerAddress));
+          const transferAmount = totalAccountBalance.sub(INITIAL_ACCOUNT_XDAI);
 
           const signedRawTransaction = await Web3Contract.signRawTransaction(
               ownerAddress,
               context.data.privateKey,
-              context.data.safeAddress,
-              "0x",
-              new BN(RpcGateway.get().utils.toWei("0.001", "ether")),
-              new BN("0.075"));
+              context.data.profile.circlesAddress,
+              "0x00",
+              new BN(RpcGateway.get().utils.toWei("28000", "wei")),
+              transferAmount);
 
           const execResult = await Web3Contract.sendSignedRawTransaction(signedRawTransaction);
           const receipt = await execResult.toPromise();
+          localStorage.removeItem("fundsSafe");
+          localStorage.setItem("signsUpAtCircles", "true");
         },
         onDone: "#hubSignup",
         onError: "#error"
@@ -81,29 +142,14 @@ createMachine<HubSignupContext, any>({
           const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);
           const hubSignupResult = await hub.signup(
               context.data.privateKey,
-              context.data.deployedProxy
+              new GnosisSafeProxy(RpcGateway.get(), context.data.profile.circlesSafeOwner, context.data.profile.circlesAddress)
           );
-        }
-      }
-    },
-    upsertIdentity: {
-      entry: (ctx) => console.log(`enter: deploySafe.upsertIdentity`, ctx.data),
-      id: "upsertIdentity",
-      on: {
-        ...<any>ipc(`upsertIdentity`)
-      },
-      invoke: {
-        id: "upsertIdentity",
-        src: upsertIdentity.stateMachine(`upsertIdentity`),
-        data: {
-          data: () => {
-            return {
-            }
-          },
-          messages: {},
-          dirtyFlags: {}
+          const receipt = await hubSignupResult.toPromise();
+          localStorage.removeItem("signsUpAtCircles");
+
+          console.log("Signed up at hub:", receipt);
         },
-        onDone: "#success",
+        onDone: "#loadProfile",
         onError: "#error"
       }
     },
