@@ -88,6 +88,7 @@
   @apply text-xl;
   @apply leading-8;
   @apply text-center;
+  @apply break-all;
 }
 
 .input-error {

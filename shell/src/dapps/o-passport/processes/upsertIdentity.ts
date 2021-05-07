@@ -120,7 +120,11 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           label: strings.labeldream,
           placeholder: strings.placeholderDream,
           submitButtonText: "Start dreaming",
+          maxLength: "150",
         },
+        dataSchema: yup
+          .string()
+          .max(150, "The maximum amount of characters allowed is 150."),
         navigation: {
           next: "#checkPreviewAvatar",
           canSkip: () => true,
@@ -244,14 +248,16 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             messages: {},
             dirtyFlags: {},
           },
-          onDone: [{
-            cond: context => {
-              return !!context.data.avatarUrl
+          onDone: [
+            {
+              cond: (context) =>
+                !!context.data.avatar && !!context.data.avatar.bytes,
+              target: "#upsertIdentity",
             },
-            target: "#upsertIdentity"
-          },{
-            target: "#generateAvataar"
-          }],
+            {
+              target: "#generateAvataar",
+            },
+          ],
           onError: "#error",
         },
       },

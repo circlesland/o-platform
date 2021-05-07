@@ -69,8 +69,17 @@ const processDefinition = (processId: string) =>
               const web3 = RpcGateway.get();
 
               const hasSender = web3.utils.isAddress(context.data.safeAddress);
-              const hasRecipient = web3.utils.isAddress(context.data.recipientAddress);
-              const amount = new BN(!context.data.tokens?.amount ? "0" : web3.utils.toWei(context.data.tokens?.amount?.toString(), "ether"));
+              const hasRecipient = web3.utils.isAddress(
+                context.data.recipientAddress
+              );
+              const amount = new BN(
+                !context.data.tokens?.amount
+                  ? "0"
+                  : web3.utils.toWei(
+                      context.data.tokens?.amount?.toString(),
+                      "ether"
+                    )
+              );
               const hasAmount = amount.gt(new BN("0"));
               const isXdai = context.data.tokens?.currency == "xdai";
 
@@ -235,6 +244,7 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         params: {
           label: strings.messageLabel,
+          maxLength: "100",
         },
         navigation: {
           previous: "#tokens",
@@ -251,19 +261,21 @@ const processDefinition = (processId: string) =>
             if (!context.data.tokens) {
               throw new Error(`No currency or amount selected`);
             } else {
-              return `You are about to transfer 
-                <strong>${
+              return `<span>You are about to transfer</span>
+                <strong class='text-primary block'>${
                   context.data.tokens.amount
                 } ${context.data.tokens.currency.toUpperCase()}</strong>
+                <span class='block'>
                 to 
-                <strong>${context.data.recipientAddress}</strong>.
-                <br/>
-                <strong>Message:</strong>.
-                <br/>
+                </span>
+                <strong class='block'>${context.data.recipientAddress}</strong>
+                <span class='block mt-4'>Message:</span>
+                <span class='block'>
                 ${context.data.message}
-                <br/>
-                <br/>
-                Do you want to continue?`;
+                </span>
+                <strong class='text-primary block mt-4'>
+                Do you want to continue?
+                </strong>`;
             }
           },
         },
