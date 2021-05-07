@@ -243,7 +243,12 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             messages: {},
             dirtyFlags: {},
           },
-          onDone: "#upsertIdentity",
+          onDone: [{
+            cond: context => !!context.data.avatar && !!context.data.avatar.bytes,
+            target: "#upsertIdentity"
+          },{
+            target: "#generateAvataar"
+          }],
           onError: "#error",
         },
       },
