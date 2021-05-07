@@ -43,6 +43,8 @@
   import { XDaiThresholdTrigger } from "./xDaiThresholdTrigger";
   import { me } from "./shared/stores/me";
   import { INVITE_VALUE } from "./dapps/o-passport/processes/invite/invite";
+  import {hubSignup, HubSignupContextData} from "./dapps/o-banking/processes/hubSignup";
+  import {deploySafe} from "./dapps/o-banking/processes/deploySafe";
 
   let isOpen: boolean = false;
   let modalProcess: Process;
@@ -195,7 +197,25 @@
       balanceThresholdTrigger = new XDaiThresholdTrigger(
         $me.circlesSafeOwner,
         INVITE_VALUE,
-        async (address, threshold) => {}
+        async (address, threshold) => {
+          console.log("The safe creation balance threshold was reached!");
+          const requestEvent = new RunProcess<ShellProcessContext>(
+                  shellProcess,
+                  true,
+                  async (ctx) => {
+                    ctx.childProcessDefinition = deploySafe;
+                    ctx.childContext = {
+                      data: <HubSignupContextData>{
+                        privateKey: localStorage.getItem("circlesKey")
+                      },
+                    };
+                    return ctx;
+                  }
+          );
+
+          requestEvent.id = Generate.randomHexString(8);
+          window.o.publishEvent(requestEvent);
+        }
       );
     }
 
