@@ -14,6 +14,7 @@ import {connectSafe} from "./connectSafe/connectSafe";
 import {createSafe} from "./createSafe/createSafe";
 import {UpsertProfileDocument} from "../../data/api/types";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {Profile} from "../../../o-banking/data/api/types";
 
 export type IdentifyContextData = {
   oneTimeCode?:string
@@ -28,17 +29,7 @@ export type IdentifyContextData = {
     profileId: number
     hasCirclesKey: boolean
   },
-  profile: {
-    id?: number
-    circlesAddress?: string
-    firstName: string
-    lastName?: string
-    dream?: string
-    country?: string
-    avatarUrl?: string
-    avatarCid?: string
-    avatarMimeType?: string
-  }
+  profile: Profile,
   privateKey?:string;
 };
 
@@ -219,7 +210,7 @@ const processDefinition = (processId: string) => createMachine<IdentifyContext, 
                 : undefined
             },
           });
-          return result.data.upsertProfile;
+          context.data.profile = result.data.upsertProfile;
         },
         onDone: "#success",
         onError: "#error",
