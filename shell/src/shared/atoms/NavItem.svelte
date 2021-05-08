@@ -1,5 +1,6 @@
 <script lang="ts">
   export let label: string;
+  export let isSelected: boolean;
 
   /* svg path value from https://heroicons.com/ */
 
@@ -22,7 +23,7 @@
   };
 </script>
 
-{#if label}
+{#if label && !isSelected}
   <div class="justify-self-center m-auto mt-2 ">
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -36,6 +37,25 @@
         stroke-linejoin="round"
         stroke-width="2"
         d={icons[label.toLowerCase()]}
+      />
+    </svg>
+    <div class="block text-sm p-0 self-center text-center">{label}</div>
+  </div>
+{/if}
+{#if label && isSelected}
+  <div class="justify-self-center m-auto mt-2" style="color:#000">
+    <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 m-auto"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+    >
+      <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d={icons[label.toLowerCase()]}
       />
     </svg>
     <div class="block text-sm p-0 self-center text-center">{label}</div>
