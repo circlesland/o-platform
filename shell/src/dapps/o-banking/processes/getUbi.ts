@@ -8,6 +8,7 @@ import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {CirclesAccount} from "@o-platform/o-circles/dist/model/circlesAccount";
 import {emptySafe} from "../data/emptySafe";
 import {mySafe} from "../stores/safe";
+import {getUBIService} from "./getUBIService";
 
 export type GetUbiContextData = {
   safeAddress:string;
@@ -41,19 +42,7 @@ createMachine<GetUbiContext, any>({
     getUbi: {
       id: "getUbi",
       invoke: {
-        src: async (context) => {
-          const ownerAddress = RpcGateway.get()
-            .eth
-            .accounts
-            .privateKeyToAccount(context.data.privateKey)
-            .address;
-
-          const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), ownerAddress, context.data.safeAddress);
-          const circlesAccount = new CirclesAccount(context.data.safeAddress);
-          const result = await circlesAccount.getUBI(context.data.privateKey, gnosisSafeProxy);
-
-          return result.toPromise();
-        },
+        src: getUBIService,
         onDone: "#success",
         onError: "#error",
       },
@@ -62,8 +51,7 @@ createMachine<GetUbiContext, any>({
       id: 'success',
       type: 'final',
       data: (context, event: PlatformEvent & {data:any}) => {
-
-        return event.data;
+        return true;
       }
     }
   },
