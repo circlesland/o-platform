@@ -13,6 +13,7 @@
   import Error from "../atoms/Error.svelte";
   import LoadingIndicator from "../atoms/LoadingIndicator.svelte";
   import ChoiceSelector from "../../../../packages/o-editors/src/ChoiceSelector.svelte";
+  import {network} from "vis-network";
 
   /**
    * A channel to an already running process.
@@ -106,7 +107,8 @@
           console.log("Received cancel request:", next.event);
           beforeCancelPrompt = prompt;
 
-          if (beforeCancelPrompt && Object.values(beforeCancelPrompt.editorDirtyFlags).filter(o => o === true).length == 0) {
+          if (beforeCancelPrompt && (Object.values(beforeCancelPrompt.editorDirtyFlags).filter(o => o === true).length == 0
+                  && Object.values(beforeCancelPrompt.dirtyFlags).filter(o => o === true).length == 0)) {
             // No changes yet, just cancel
             process.sendEvent(new Cancel());
             return;
