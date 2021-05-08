@@ -264,6 +264,7 @@
     </div>
   </main>
 
+  {#if lastLoadedDapp && lastLoadedPage && !lastLoadedDapp.hideFooter && !lastLoadedPage.hideFooter}
   <footer
     class="z-50  w-full sticky bottom-0 bg-white h-12 border-t border-base-300 pb-16"
     class:isOpen
@@ -348,6 +349,7 @@
       </div>
     </div>
   </footer>
+  {/if}
 </div>
 
 <Modal bind:isOpen on:closeRequest={modalWantsToClose}>

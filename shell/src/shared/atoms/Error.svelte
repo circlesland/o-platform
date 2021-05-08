@@ -20,22 +20,8 @@
 
 <div class="bg-danger p-5 overflow-y-scroll max-w-full" style="max-height: 24em">
   <span class="text-primary text-2xl">The process encountered an error:</span><br/>
-  <a href="mailto:team@omo.earth?subject=⦿ Error report&body={encodeURIComponent(`Note: This is a template. You can send it as is or add further information to it. Especially helpful are the steps you took until you got this error message (Steps to reproduce).
-
-Hi!
-
-I experienced some trouble using your app.
-Below are some information that might help you to debug the problem:
-
-Steps to reproduce:
--
-
-Error message:
-${!error.message ? '-' : error.message}
-
-Stack trace:
-${error.stack}`)}">
-    Please try to reload the page or contact us at <u>team@omo.earth</u> if the problem persists.
+  <a href="https://discord.gg/33bPcyF5JN">
+    Please try to reload the page or contact us on Discord <u>https://discord.gg/33bPcyF5JN</u> if the problem persists.
   </a><br/><br/>
   Details:
   {#if error && error.message}
