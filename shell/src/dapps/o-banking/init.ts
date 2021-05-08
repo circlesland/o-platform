@@ -11,6 +11,9 @@ import {showToast} from "../../shared/toast";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
 import {augmentSafeWithTime} from "./data/augmentSafeWithTime";
+import {GetUbiContext, GetUbiContextData} from "./processes/getUbi";
+import {getUBIService} from "./processes/getUBIService";
+import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 
 let _currentSafe: Safe | null = emptySafe;
 let loading = false;
@@ -42,6 +45,32 @@ type LoadParams = {
   safe: Safe,
   tokenList: string[],
   flags: LoadParamsFlags
+}
+
+async function getUBI(safeAddress:string) : Promise<void> {
+  try {
+    await getUBIService(<ProcessContext<GetUbiContextData>> {
+      data: {
+        safeAddress,
+        privateKey: localStorage.getItem("circlesKey")
+      }
+    })
+    localStorage.setItem("lastUBI", new Date().toJSON());
+  } catch (e) {
+    console.error("Couldn't retrieve your UBI.")
+  }
+}
+
+async function checkUBI(safeAddress:string) : Promise<void> {
+  const lastUBIDateString = localStorage.getItem("lastUBI");
+  if (!lastUBIDateString) {
+    return await getUBI(safeAddress);
+  } else {
+    const date = Date.parse(lastUBIDateString);
+    if (date < Date.now() - 24*60*60*1000) {
+      return await getUBI(safeAddress);
+    }
+  }
 }
 
 async function load(args: LoadParams): Promise<Safe> {
@@ -100,7 +129,7 @@ async function load(args: LoadParams): Promise<Safe> {
         publishRefreshEvent(safe);
         _currentSafe = safe;
 
-        safe = await Queries.addHubTransfers(safe, safe.token?.firstBlock);
+        safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
         const hubTransferCount = safe.transfers.rows.length;
         console.log(new Date().getTime() + ": " + `Added ${hubTransferCount} hub transfers.`)
       }
@@ -118,7 +147,7 @@ async function load(args: LoadParams): Promise<Safe> {
 
       if (args.flags.addAcceptedTokens || args.flags.addAcceptedTokens === undefined) {
         safe.ui.loadingText = "" +
-          "Loading accepted tokens ..";
+            "Loading accepted tokens ..";
         publishRefreshEvent(safe);
         _currentSafe = safe;
 
@@ -156,15 +185,15 @@ async function load(args: LoadParams): Promise<Safe> {
         const lastProgress = safe.ui.loadingPercent;
         const remainingPercents = 100 - lastProgress;
         safe = await Queries.addDirectTransfers(
-          safe,
-          undefined,
+            safe,
+            undefined,
             progress => {
-            safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
-            publishRefreshEvent(safe);
-            _currentSafe = safe;
-          },
-          args.tokenList,
-          transfer => transfer.from == "0x0000000000000000000000000000000000000000"
+              safe.ui.loadingPercent = lastProgress + (remainingPercents / progress.count) * progress.current;
+              publishRefreshEvent(safe);
+              _currentSafe = safe;
+            },
+            args.tokenList,
+            transfer => transfer.from == "0x0000000000000000000000000000000000000000"
         );
         console.log(new Date().getTime() + ": " + `Added ${safe.transfers.rows.length - safe.transfers?.rows?.length ?? 0} direct transfers.`);
       }
@@ -225,7 +254,7 @@ export function init() {
 
     // TODO: When we reach this point all requests failed. Show an error to the user.
     showToast("error", "The connection to the RPC gateway was lost and we weren't " +
-      "able to restore it in time. Please refresh the page to give it another try.");
+        "able to restore it in time. Please refresh the page to give it another try.");
 
     localStorage.removeItem("safe");
   });
@@ -237,6 +266,7 @@ export function init() {
       localStorage.removeItem("safe");
       localStorage.removeItem("circlesAddress");
       localStorage.removeItem("circlesKey");
+      localStorage.removeItem("lastUBI");
       profile = null;
       window.o.publishEvent(<any>{
         type: "shell.refresh",
@@ -251,6 +281,10 @@ export function init() {
       }
     }
   });
+
+  if (_currentSafe) {
+    checkUBI(_currentSafe.safeAddress);
+  }
 
   return function stop() {
     shellEventSubscription.unsubscribe();
@@ -290,7 +324,7 @@ async function subscribeChainEvents(safe: Safe) {
 
     // TODO: When we reach this point all requests failed. Show an error to the user.
     showToast("error", "The connection to the RPC gateway was lost and we weren't " +
-      "able to restore it in time. Please refresh the page to give it another try.");
+        "able to restore it in time. Please refresh the page to give it another try.");
 
   });
 
