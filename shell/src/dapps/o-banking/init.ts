@@ -140,8 +140,13 @@ async function load(args: LoadParams): Promise<Safe> {
         publishRefreshEvent(safe);
         _currentSafe = safe;
 
-        safe = await Queries.addContacts(safe);
-        console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
+        try {
+          // TODO: Fix properly instead of just catching the error
+          safe = await Queries.addContacts(safe);
+          console.log(new Date().getTime() + ": " + `Added ${Object.keys(safe.trustRelations.trusting).length + Object.keys(safe.trustRelations.trustedBy).length} trust relations.`)
+        } catch (e) {
+          console.error(e);
+        }
       }
       safe.ui.loadingPercent = 18;
 
