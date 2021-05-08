@@ -32,7 +32,7 @@
   // When 'waitForNextOutgoingEvent' == true and any event is sent to the process then 'waiting' will be set to 'true'
   let waiting: boolean;
 
-  let beforeCancelPrompt: PromptEvent;
+  export let beforeCancelPrompt: PromptEvent;
   let cancelDialogVisible: boolean;
 
   const dispatch = createEventDispatcher();
@@ -49,10 +49,12 @@
             console.log("Cancel dialog answer:", answer);
             if ((<any>answer).data.___cancelRequest.key === "no") {
               prompt = beforeCancelPrompt;
+              beforeCancelPrompt = null;
               cancelDialogVisible = false;
               return;
             } else {
               prompt = beforeCancelPrompt;
+              beforeCancelPrompt = null;
               cancelDialogVisible = false;
               process.sendEvent(new Cancel());
             }

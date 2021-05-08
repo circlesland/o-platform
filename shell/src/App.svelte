@@ -47,6 +47,7 @@
   import {deploySafe, HubSignupContextData} from "./dapps/o-banking/processes/deploySafe";
 
   let isOpen: boolean = false;
+  let beforeCancelPrompt: Prompt; // Is set when the "do you want to cancel?" prompt is shown
   let modalProcess: Process;
   let modalProcessEventSubscription: Subscription;
 
@@ -291,7 +292,7 @@
             <NavItem isSelected={lastLoadedPage.title == page.title} label={page.title} />
           </a>
         {/each}
-        {#if lastPrompt && lastPrompt.navigation.canGoBack}
+        {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
           <button
             class="btn btn-outline btn-white ml-7 sm:ml-9"
             on:click={() => modalProcess.sendAnswer(new Back())}>BACK</button
@@ -303,7 +304,7 @@
           class:shadow-lg={!isOpen}
           class:col-start-3={!lastPrompt ||
             (lastPrompt && !lastPrompt.navigation.canGoBack)}
-          class:col-end-3={!lastPrompt ||
+          class:col-end-3={beforeCancelPrompt || !lastPrompt ||
             (lastPrompt && !lastPrompt.navigation.canGoBack)}
           on:click={() => {
             isOpen = !isOpen;
@@ -321,7 +322,7 @@
             alt="circles.land"
           />
         </button>
-        {#if lastPrompt && lastPrompt.navigation.canSkip}
+        {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
           <button
             class="btn btn-outline btn-white mr-7 sm:mr-9"
             on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
@@ -353,6 +354,7 @@
   <div class="font-primary">
     {#if modalProcess}
       <ProcessContainer
+        bind:beforeCancelPrompt={beforeCancelPrompt}
         process={modalProcess}
         on:stopped={() => {
           isOpen = false;
