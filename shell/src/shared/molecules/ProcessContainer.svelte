@@ -13,7 +13,6 @@
   import Error from "../atoms/Error.svelte";
   import LoadingIndicator from "../atoms/LoadingIndicator.svelte";
   import ChoiceSelector from "../../../../packages/o-editors/src/ChoiceSelector.svelte";
-  import {network} from "vis-network";
 
   /**
    * A channel to an already running process.
