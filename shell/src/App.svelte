@@ -278,21 +278,19 @@
           : 'grid-cols-5'}"
         class:px-4={!isOpen}
       >
-        {#if lastLoadedDapp}
-          {#each lastLoadedDapp.pages
-            .filter((o) => !o.isSystem)
-            .slice(0, 2) as page}
-            <a
-              href="#/{lastLoadedDapp.routeParts.join('/') +
-                '/' +
-                page.routeParts.join('/')}"
-              class="justify-self-center tab w-full text-center focus:text-teal-500 hover:text-teal-500"
-              class:hidden={isOpen}
-            >
-              <NavItem label={page.title} />
-            </a>
-          {/each}
-        {/if}
+        {#each lastLoadedDapp.pages
+          .filter((o) => !o.isSystem)
+          .slice(0, 2) as page}
+          <a
+            href="#/{lastLoadedDapp.routeParts.join('/') +
+              '/' +
+              page.routeParts.join('/')}"
+            class="justify-self-center tab w-full text-center focus:text-teal-500 hover:text-teal-500"
+            class:hidden={isOpen}
+          >
+            <NavItem isSelected={lastLoadedPage.title == page.title} label={page.title} />
+          </a>
+        {/each}
         {#if lastPrompt && lastPrompt.navigation.canGoBack}
           <button
             class="btn btn-outline btn-white ml-7 sm:ml-9"
@@ -331,7 +329,6 @@
         {/if}
         {#if lastLoadedDapp}
           {#each lastLoadedDapp.pages
-
             .filter((o) => !o.isSystem)
             .splice(2) as page}
             <a
@@ -341,7 +338,7 @@
               class="justify-self-center tab text-center focus:text-teal-500 hover:text-teal-500"
               class:hidden={isOpen}
             >
-              <NavItem label={page.title} />
+              <NavItem isSelected={lastLoadedPage.title == page.title} label={page.title} />
             </a>
           {/each}
         {/if}
