@@ -5,8 +5,8 @@
   import { mySafe } from "../stores/safe";
   import TransactionCard from "../atoms/TransactionCard.svelte";
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
-  import {BN} from "ethereumjs-util";
-  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  import { BN } from "ethereumjs-util";
+  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 
   export let params: {
     _id: string;
@@ -15,12 +15,22 @@
   let transfer: Transfer;
   let pictureUrl: string;
   let displayName: string;
+  let displayableFromName: string;
   let classes: string;
 
-  let amountInWei:string;
+  let amountInWei: number;
 
   $: {
     transfer = $mySafe.transfers.rows.find((o) => o._id == params._id);
+
+    displayableFromName = transfer.fromProfile
+      ? transfer.fromProfile.displayName
+      : transfer.from;
+
+    displayableFromName =
+      displayableFromName === "0x0000000000000000000000000000000000000000"
+        ? "UBI"
+        : displayableFromName;
   }
 
   $: {
@@ -46,6 +56,8 @@
       transfer.direction === "in"
         ? "transactionpositive"
         : "transactionnegative";
+
+    amountInWei = parseFloat(RpcGateway.get().utils.fromWei(transfer.amount));
   }
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
@@ -58,58 +70,165 @@
 {#if transfer}
   <div class="mx-4 -mt-6">
     <section
-      class="flex flex-col items-center justify-center mb-2 text-circlesdarkblue"
+      on:click|once={() => loadDetailPage(transfer._id)}
+      class="flex items-center justify-center mb-2 text-circlesdarkblue"
     >
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-
-        <div class="flex items-center space-x-2 sm:space-x-6 rounded-sm">
-
+      <div
+        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+      >
+        <div class="text-primary text-xs font-circles font-bold text-left">
+          {#if transfer.time}
+            {#if dateOlderThanSevenDays(transfer.time)}
+              <Time
+                timestamp={new Date(transfer.time * 1000)}
+                format="D. MMMM YYYY"
+              />
+            {:else}
+              <Time relative timestamp={new Date(transfer.time * 1000)} />
+            {/if}
+          {/if}
+        </div>
+        <div
+          class="flex flex-row justify-center bg-white w-full space-x-2 sm:space-x-6"
+        >
+          <div class="flex flex-col">
             <div class="avatar">
               <div class="rounded-full w-24 h-24  m-auto">
-                <img src={transfer.fromProfile ? transfer.fromProfile.avatarUrl : "none"} />
+                <img
+                  src={transfer.fromProfile
+                    ? transfer.fromProfile.avatarUrl
+                    : "/images/common/circles.png"}
+                />
               </div>
             </div>
-          ---&gt;
-          <div class="avatar">
-            <div class="rounded-full w-24 h-24  m-auto">
-              <img src={transfer.toProfile ? transfer.toProfile.avatarUrl : "none"}  />
+            <div class="block">
+              {displayableFromName}
             </div>
           </div>
 
-          <!--<div class="text-left flex-grow truncate relative">
-            <div class="truncateThis">
-              <h2 class="text-2xl sm:text-3xl">
-                {displayName}
-              </h2>
-            </div>
-            <div class="flex flex-1 flex-row justify-items-start">
-              <div class="self-start text-{classes}  text-m sm:text-xl">
-                <span>
-                  {transfer.amount}
-                </span>
+          <div class="text-xl text-light self-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-12 w-12"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <div class="avatar">
+              <div class="rounded-full w-24 h-24  m-auto">
+                <img
+                  src={transfer.toProfile
+                    ? transfer.toProfile.avatarUrl
+                    : "none"}
+                />
               </div>
             </div>
-          </div>-->
+            <div class="block">
+              {transfer.toProfile
+                ? transfer.toProfile.displayName
+                : transfer.to}
+            </div>
+          </div>
+        </div>
+        <div>
+          {transfer.message ? transfer.message : ""}
         </div>
       </div>
+    </section>
 
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-        <b>Date</b>
-        {#if dateOlderThanSevenDays(transfer.time)}
-          <Time
-                  timestamp={new Date(transfer.time * 1000)}
-                  format="DD MMMM YYYY - HH:mm"
-          />
-        {:else}
-          <Time relative timestamp={new Date(transfer.time * 1000)} />
-        {/if}
-        <b>From</b>{transfer.fromProfile ? transfer.fromProfile.displayName : transfer.from} {transfer.fromProfile ? `${transfer.from}` : ""}<br/>
-        <b>To</b>{transfer.toProfile ? transfer.toProfile.displayName : transfer.to} {transfer.toProfile ? `${transfer.to}` : ""}<br/>
-        <b>Amount</b> {RpcGateway.get().utils.fromWei(transfer.amount)} <br/>
-        <b>Block</b> {transfer.firstBlock}
+    <section
+      class="flex flex-col items-center justify-center mb-2 text-circlesdarkblue"
+    >
+      <div
+        class="flex flex-col bg-white shadow  p-4 w-full space-y-2 rounded-sm"
+      >
+        <div class="text-primary text-xs font-circles font-bold text-left">
+          TRANSACTION DETAILS
+        </div>
+        <div class="flex flex-col w-full space-y-2">
+          <div class="w-full flex flex-col">
+            <div
+              class="w-full h-full overflow-auto bg-white"
+              id="journal-scroll"
+            >
+              <table class="w-full">
+                <tbody class="">
+                  <tr
+                    class="relative transform scale-100 text-xs py-1  border-b border-gray-300 cursor-default"
+                  >
+                    <td class="pl-5 pr-3 whitespace-no-wrap">
+                      <div class="text-gray-400">From</div>
+                    </td>
+
+                    <td class="px-2 py-2 whitespace-no-wrap">
+                      <div class="leading-5 text-gray-500 font-medium">
+                        {displayableFromName}
+                      </div>
+                      <div class="leading-5 text-gray-900">
+                        {transfer.fromProfile ? `${transfer.from}` : ""}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="relative transform scale-100 text-xs py-1 border-b border-gray-300 cursor-default"
+                  >
+                    <td class="pl-5 pr-3 whitespace-no-wrap">
+                      <div class="text-gray-400">To</div>
+                    </td>
+
+                    <td class="px-2 py-2 whitespace-no-wrap">
+                      <div class="leading-5 text-gray-500 font-medium">
+                        {transfer.toProfile
+                          ? transfer.toProfile.displayName
+                          : transfer.to}
+                      </div>
+                      <div class="leading-5 text-gray-900">
+                        {transfer.toProfile ? `${transfer.to}` : ""}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="relative transform scale-100 text-xs py-1 border-b border-gray-300 cursor-default"
+                  >
+                    <td class="pl-5 pr-3 whitespace-no-wrap">
+                      <div class="text-gray-400">Amount</div>
+                    </td>
+
+                    <td class="px-2 py-2 whitespace-no-wrap">
+                      <div class="leading-5 text-gray-500 font-medium">
+                        {amountInWei}
+                        {amountInWei > 1 ? " Cirlces" : " Circle"}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="relative transform scale-100 text-xs py-1 border-b border-gray-300 cursor-default"
+                  >
+                    <td class="pl-5 pr-3 whitespace-no-wrap">
+                      <div class="text-gray-400">Block</div>
+                    </td>
+
+                    <td class="px-2 py-2 whitespace-no-wrap">
+                      <div class="leading-5 text-gray-500 font-medium">
+                        {transfer.firstBlock}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-
-
     </section>
   </div>
 {/if}
