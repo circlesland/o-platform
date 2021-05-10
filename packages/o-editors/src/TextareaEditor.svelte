@@ -55,7 +55,6 @@
     }
   });
 
-
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),
@@ -69,34 +68,34 @@
   <label class="label" for={context.fieldName}>
     <div class="label-text">{@html context.params.label}</div>
     {#if context.params.canCopy}
-        <div class="inline-block break-all text-xs" id="clipboard">
-            <input
-                    name="name"
-                    type="text"
-                    class="hidden"
-                    bind:value={_context.data[context.fieldName]}
+      <div class="inline-block break-all text-xs" id="clipboard">
+        <input
+          name="name"
+          type="text"
+          class="hidden"
+          bind:value={_context.data[context.fieldName]}
+        />
+        <div
+          class="flex text-gray-300 cursor-pointertext-center text-xs relative -bottom-1"
+          on:click={copy}
+          alt="Copy to Clipboard"
+        >
+          Copy to Clipboard
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="ml-2 h-5 w-5 stroke-current transform group-hover:rotate-[-4deg] transition"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
             />
-          <div
-                  class="flex text-gray-300 cursor-pointertext-center text-xs relative -bottom-1"
-                  on:click={copy}
-                  alt="Copy to Clipboard"
-          >Copy to Clipboard
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="ml-2 h-5 w-5 stroke-current transform group-hover:rotate-[-4deg] transition"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-            >
-              <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
-          </div>
-
+          </svg>
+        </div>
       </div>
     {/if}
   </label>
@@ -136,11 +135,11 @@
     on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
   />
   {#if !context.params.hideCharacterCount}
-  <p class="text-xs text-white relative right-0 top-2 text-right">
-    {length}/{maxlength} Characters. {length > maxlength
-      ? "Oops, please enter a maximum of " + maxlength + " characters."
-      : ""}
-  </p>
+    <p class="text-xs text-white relative right-0 top-2 text-right">
+      {length}/{maxlength} Characters. {length > maxlength
+        ? "Oops, please enter a maximum of " + maxlength + " characters."
+        : ""}
+    </p>
   {/if}
 </div>
 
@@ -149,6 +148,6 @@
 <style>
   textarea {
     font-size: 1.125rem;
-    line-height: 1.5rem;
+    line-height: 2rem;
   }
 </style>

@@ -49,7 +49,7 @@
       </div>
     {/if}
     <label class="cursor-pointer label" for={context.fieldName}>
-      <span class="label-text">
+      <span class="label-text inline">
         {context.params.label}
         {#if context.params.link}
           <a
@@ -62,7 +62,7 @@
           </a>
         {/if}
       </span>
-      <div>
+      <div class="inline-block">
         <input
           name="checkbox"
           id={context.fieldName}
