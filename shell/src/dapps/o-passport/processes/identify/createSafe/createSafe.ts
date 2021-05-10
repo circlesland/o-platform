@@ -1,15 +1,16 @@
-import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
-import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
-import {prompt, PromptSpec} from "@o-platform/o-process/dist/states/prompt";
-import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
-import {createMachine} from "xstate";
+import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
+import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
+import { prompt, PromptSpec } from "@o-platform/o-process/dist/states/prompt";
+import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
+import { createMachine } from "xstate";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import TextViewer from "@o-platform/o-editors/src/TextViewer.svelte";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import * as bip39 from "bip39";
 
 export type CreateSafeContextData = {
-  privateKey?: string
+  privateKey?: string;
   seedPhrase?: string;
   checkSeedPhrase?: string;
   checkWordIndex?: number;
@@ -21,18 +22,21 @@ export type CreateSafeContext = ProcessContext<CreateSafeContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  choiceLabel: "Do you want to create a new private key or connect an existing Circles Seedphrase?",
+  choiceLabel:
+    "Do you want to create a new private key or connect an existing Circles Seedphrase?",
   choiceConnect: "Connect",
   choiceCreate: "Create",
   labelEditSeedphrase: "Please enter your seedphrase below:",
-  labelExportSeedphrase: "This is your seedphrase. It is like an unchangeable password, which gives only you access to your circles banking account. It is your full responsibility to backup and protect your seedphrase. If you loose it, all your funds are lost forever.<br/><strong class='text-primary  block mt-3'>Make a backup now</strong>",
+  labelExportSeedphrase:
+    "This is your seedphrase. It is like an unchangeable password, which gives only you access to your circles banking account. It is your full responsibility to backup and protect your seedphrase. If you loose it, all your funds are lost forever.<br/><strong class='text-primary  block mt-3'>Make a backup now</strong>",
   buttonExportSeedphrase: "I made a backup",
   // labelCheckSeedphrase: (context: CreateSafeContext) => `Please enter the ${context.data.checkWordIndex == 0 ? (context.data.checkWordIndex + 1).toString() + "st" : (context.data.checkWordIndex + 1).toString() + "nd"} word of your seedphrase:`,
   labelCheckSeedphrase: `Keep in mind, everyone who knows your seedphrase can access all your funds! Did you store your seedphrase in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary  block mt-3'>Repeat your seedphrase</strong>`,
   buttonCheckSeedphrase: "It is stored safely",
 };
 
-function randomIntFromInterval(min, max) { // min and max included
+function randomIntFromInterval(min, max) {
+  // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
@@ -50,29 +54,34 @@ const processDefinition = (processId: string) =>
         invoke: {
           src: async (context) => {
             context.data.privateKey = RpcGateway.get().eth.accounts.create().privateKey;
-            context.data.seedPhrase = bip39.entropyToMnemonic(context.data.privateKey.replace("0x", ""));
+            context.data.seedPhrase = bip39.entropyToMnemonic(
+              context.data.privateKey.replace("0x", "")
+            );
             const wordCount = context.data.seedPhrase.split(" ").length;
-            context.data.checkWordIndex = randomIntFromInterval(0, wordCount - 1);
+            context.data.checkWordIndex = randomIntFromInterval(
+              0,
+              wordCount - 1
+            );
           },
           onDone: "backupSeedphrase",
-          onError: "#error"
-        }
+          onError: "#error",
+        },
       },
       backupSeedphrase: prompt<CreateSafeContext, any>({
         id: "backupSeedphrase",
         fieldName: "seedPhrase",
-        component: TextareaEditor,
+        component: TextViewer,
         params: {
           label: strings.labelExportSeedphrase,
           isReadonly: true,
           submitButtonText: strings.buttonExportSeedphrase,
           hideCharacterCount: true,
-          canCopy: true
+          canCopy: true,
         },
         navigation: {
           next: "#askForBackup",
           previous: "#generateSeedPhrase",
-          canGoBack: () => false
+          canGoBack: () => false,
         },
       }),
       askForBackup: prompt<CreateSafeContext, any>({
@@ -87,20 +96,25 @@ const processDefinition = (processId: string) =>
         navigation: {
           next: "#verifyCheckSeedPhrase",
           previous: "#backupSeedphrase",
-          canGoBack: () => true
-        }
+          canGoBack: () => true,
+        },
       }),
       verifyCheckSeedPhrase: {
         id: "verifyCheckSeedPhrase",
-        always: [{
-          cond: (context) => {
-            //const checkWord = context.data.seedPhrase.split(" ")[context.data.checkWordIndex];
-            return context.data.checkSeedPhrase.trim() === context.data.seedPhrase;
+        always: [
+          {
+            cond: (context) => {
+              //const checkWord = context.data.seedPhrase.split(" ")[context.data.checkWordIndex];
+              return (
+                context.data.checkSeedPhrase.trim() === context.data.seedPhrase
+              );
+            },
+            target: "#storeSeedPhrase",
           },
-          target: "#storeSeedPhrase"
-        }, {
-          target: "#askForBackup"
-        }]
+          {
+            target: "#askForBackup",
+          },
+        ],
       },
       storeSeedPhrase: {
         id: "storeSeedPhrase",
@@ -108,12 +122,12 @@ const processDefinition = (processId: string) =>
           localStorage.setItem("isCreatingSafe", "true");
           localStorage.setItem("circlesKey", context.data.privateKey);
         },
-        always: "#success"
+        always: "#success",
       },
       success: {
         id: "success",
-        type: 'final'
-      }
+        type: "final",
+      },
     },
   });
 
