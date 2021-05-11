@@ -99,4 +99,8 @@
     width: 100%;
     max-width: 960px;
   }
+  .video-overlay {
+    --tw-bg-opacity: 0.5;
+    background-color: rgba(30, 58, 138, var(--tw-bg-opacity));
+  }
 </style>
