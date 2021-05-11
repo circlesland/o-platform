@@ -157,7 +157,7 @@
       <div
         class="text-circleslightblue text-xs font-circles font-bold text-left"
       >
-        DREAM
+        PASSION
       </div>
 
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
@@ -166,10 +166,9 @@
             {#if profile && profile.dream}
               {profile.dream}
             {:else}
-              No Dream set.<br />
-              What is your life dream? Fill in the blanks. When I receive a universal
-              basic income, I will follow my passion of _______________ and will
-              accept Circles as payment.
+              No passion set.<br />
+              Fill in the blanks. When I receive a universal basic income, I will
+              follow my passion of _______________ and will accept Circles as payment.
             {/if}
 
             <button

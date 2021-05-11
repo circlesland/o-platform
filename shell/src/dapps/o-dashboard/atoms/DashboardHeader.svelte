@@ -73,8 +73,8 @@
       </div>
     </div>
   {:else if lastLoadedDapp && lastLoadedPage}
-    <div className=" pl-2 ">
-      <span className="text-lg font-circles"
+    <div class="pl-2 ">
+      <span class="text-lg font-circles"
         >{#if lastLoadedDapp.title != lastLoadedPage.title}
           {lastLoadedDapp.title} /
         {/if}{lastLoadedPage.title}</span
