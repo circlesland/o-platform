@@ -20,8 +20,8 @@
 
 <div class="bg-danger p-5 overflow-y-scroll max-w-full" style="max-height: 24em">
   <span class="text-primary text-2xl">The process encountered an error:</span><br/>
-  <a href="https://discord.gg/33bPcyF5JN">
-    Please try to reload the page or contact us on Discord <u>https://discord.gg/33bPcyF5JN</u> if the problem persists.
+  <a href="https://discord.gg/SACzRXa35v">
+    Please try to reload the page or contact us on Discord <u>https://discord.gg/SACzRXa35v</u> if the problem persists.
   </a><br/><br/>
   Details:
   {#if error && error.message}
