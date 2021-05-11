@@ -38,11 +38,11 @@
 </script>
 
 <div
-  class="relative pt-1 w-full sticky bottom-0 bg-white border-t border-base-300 z-50"
+  class="progressnav relative pt-1 w-full sticky bottom-0 bg-white border-t border-base-300 z-50"
 >
   <button
     on:click={login}
-    class="joinnowbutton btn btn-primary absolute bottom-2 shadow-md"
+    class="joinnowbutton btn btn-primary absolute bottom-2 shadow-md left-1/2 transition-none"
   >
     <svg
       class="w-6 h-6 inline mr-3"
@@ -88,8 +88,16 @@
 </div>
 
 <style>
+  .progressnav {
+    -webkit-backface-visibility: hidden;
+  }
   .joinnowbutton {
-    left: 50%;
+    transform: translate(-50%, 0) !important;
+    animation: none !important;
+  }
+  .joinnowbutton:active:focus,
+  .joinnowbutton:active:hover {
     transform: translate(-50%, 0);
+    animation: none !important;
   }
 </style>
