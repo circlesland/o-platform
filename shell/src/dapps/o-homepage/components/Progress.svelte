@@ -42,7 +42,7 @@
 >
   <button
     on:click={login}
-    class="btn btn-primary absolute bottom-2 left-2/4 shadow-md"
+    class="joinnowbutton btn btn-primary absolute bottom-2 shadow-md"
   >
     <svg
       class="w-6 h-6 inline mr-3"
@@ -86,3 +86,10 @@
     />
   </div>
 </div>
+
+<style>
+  .joinnowbutton {
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+</style>
