@@ -8,13 +8,17 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import * as yup from "yup";
 import {
-  LoginWithEmailDocument,
+  LoginWithEmailDocument, TosDocument,
   VerifyDocument,
 } from "../../../../data/auth/types";
+import {SessionInfoDocument} from "../../../../data/api/types";
 
 export type AuthenticateContextData = {
   appId?: string;
+  tosUrl?: string;
+  tosVersion?: string;
   loginEmail?: string;
+  hashedEmail?: string;
   acceptTos?: boolean;
   code?: string;
 };
@@ -35,6 +39,16 @@ const strings = {
   labelVerificationCode:
     "<strong class='text-primary block mt-3'>Enter authentication code</strong> <small class='block'>or click the link in the e-mail to sign-in</small>",
   placeholder: "you@example.com",
+};
+async function sha256(str) {
+  const strBuffer = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', strBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+}
+
+export type ToSConsents = {
+  [emailHash:string]:string
 };
 
 const processDefinition = (processId: string) =>
@@ -73,14 +87,61 @@ const processDefinition = (processId: string) =>
           .required("Please provide your email address")
           .email("That doesn't seem like a valid email address"),
         navigation: {
-          next: "#checkAcceptTos",
+          next: "#getTosVersion",
         },
       }),
-      checkAcceptTos: {
-        id: "checkAcceptTos",
+      getTosVersion: {
+        id: "getTosVersion",
+        invoke: {
+          src: async (context) => {
+            // TODO: E-Mail hashing doesn't belong in the 'getTosVersion' step
+            context.data.hashedEmail = await sha256(context.data.loginEmail);
+
+            const authClient = await window.o.authClient.client.subscribeToResult();
+            const result = await authClient.query({
+              query: TosDocument,
+              variables: {
+                appId: context.data.appId
+              }
+            });
+            if (result.errors && result.errors.length > 0 || !result.data.tos.found) {
+              result.errors?.forEach(o => console.error(o));
+              throw new Error(`Couldn't query the terms of service for appId '${context.data.appId}'.`);
+            }
+            context.data.tosUrl = result.data.tos.url;
+            context.data.tosVersion = result.data.tos.version;
+          },
+          onDone: "#checkSkipAcceptTos",
+          onError: "#error"
+        }
+      },
+      checkSkipAcceptTos: {
+        id: "checkSkipAcceptTos",
         always: [
           {
-            cond: () => localStorage.getItem("acceptTos") === "__TOS_VERSION__",
+            cond: (context) => {
+              const storedConsentsJson = localStorage.getItem("tosConsents");
+              if (!storedConsentsJson) {
+                return false;
+              }
+              try {
+                const storedConsents:ToSConsents = JSON.parse(storedConsentsJson);
+                if (!storedConsents || !storedConsents[context.data.hashedEmail]) {
+                  return false;
+                }
+
+                if (storedConsents[context.data.hashedEmail] !== context.data.tosVersion) {
+                  delete storedConsents[context.data.hashedEmail];
+                  localStorage.setItem("tosConsents", JSON.stringify(storedConsents));
+                  return false;
+                }
+              } catch (e) {
+                localStorage.removeItem("tosConsents");
+                return false;
+              }
+
+              return true;
+            },
             target: "#requestAuthCode",
           },
           {
@@ -111,7 +172,25 @@ const processDefinition = (processId: string) =>
       storeAcceptTos: {
         id: "storeAcceptTos",
         entry: (context) => {
-          localStorage.setItem("acceptTos", "__TOS_VERSION__");
+          const storedConsentsJson = localStorage.getItem("tosConsents");
+
+          try {
+            let storedConsents: ToSConsents = storedConsentsJson
+                ? JSON.parse(storedConsentsJson)
+                : undefined;
+
+            if (!storedConsents) {
+              storedConsents = {};
+            }
+
+            if (!storedConsents[context.data.hashedEmail]) {
+              storedConsents[context.data.hashedEmail] = context.data.tosVersion;
+            }
+
+            localStorage.setItem("tosConsents", JSON.stringify(storedConsents));
+          } catch (e) {
+            localStorage.removeItem("tosConsents");
+          }
         },
         always: "#requestAuthCode",
       },
@@ -127,6 +206,7 @@ const processDefinition = (processId: string) =>
               variables: {
                 appId: context.data.appId,
                 emailAddress: context.data.loginEmail,
+                acceptTosVersion: context.data.tosVersion
               },
             });
 
