@@ -5,11 +5,11 @@
   let parser = new UAParser();
   let player;
   let mobile = parser.getResult().device["type"] == "mobile";
-  $: player = document.querySelector("vm-player");
+  $: player = document.querySelector("#animationvideo");
 
   onMount(() => {
-    window.player = document.querySelector("vm-player");
-    player = document.querySelector("vm-player");
+    window.player = document.querySelector("#animationvideo");
+    player = document.querySelector("#animationvideo");
 
     // Listening to an event.
     if (mobile) {
@@ -21,10 +21,10 @@
       });
     }
   });
-  function playVideo() {
-    player.play();
-    document.getElementById("video-overlay").style.display = "none";
-  }
+  // function playVideo() {
+  //   player.play();
+  //   document.getElementById("video-overlay").style.display = "none";
+  // }
 </script>
 
 <div class="w-full bg-white">
@@ -70,7 +70,7 @@
         </div>
       </div>
       <div class="relative lg:w-1/2">
-        <img
+        <!-- <img
           class="object-cover w-full h-56 rounded shadow-lg sm:h-96"
           src="/images/homepage/animation.png"
           alt=""
@@ -93,20 +93,23 @@
               />
             </svg>
           </div>
-        </a>
-      </div>
-      <div id="container" class=" z-10 w-full min-w-full min-h-full max-w-full">
-        <vm-player playsinline>
-          <vm-youtube
-            video-id="kxQ-accFWyY"
-            cross-origin="true"
-            poster="/images/homepage/befree.jpg"
-          />
-          <!-- <vm-dailymotion video-id="x7t80de" /> -->
+        </a> -->
+        <div
+          id="inlinecontainer"
+          class=" z-10 w-full min-w-full min-h-full max-w-full"
+        >
+          <vm-player playsinline id="animationvideo">
+            <vm-youtube
+              video-id="8wJbf8yLmRI"
+              cross-origin="true"
+              poster="/images/homepage/animation.png"
+            />
+            <!-- <vm-dailymotion video-id="x7t80de" /> -->
 
-          <vm-default-ui />
-          <vm-click-to-play />
-        </vm-player>
+            <vm-default-ui />
+            <vm-click-to-play />
+          </vm-player>
+        </div>
       </div>
     </div>
   </div>
