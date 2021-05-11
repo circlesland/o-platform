@@ -2,9 +2,6 @@
   export let symbol: string;
   export let balance: string;
   export let title: string;
-  export let subTitle: string;
-  export let variety: number;
-  export let colorClass: String;
   export let address: String;
 
   let pictureUrl: string;
@@ -13,19 +10,10 @@
   $: {
     pictureUrl = symbol;
   }
-
 </script>
 
 <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
   <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-    <!--
-    <div
-      class="{colorClass
-        ? colorClass
-        : 'text-light'} text-xs font-circles font-bold text-left"
-    >
-      {symbol ? symbol : ""}
-    </div>-->
     <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
       <div class="mr-2 text-center">
         <div class="avatar">
@@ -53,11 +41,3 @@
     </div>
   </div>
 </section>
-
-<style>
-  @media (max-width: 496px) {
-    .transactionCardName {
-      max-width: 200px;
-    }
-  }
-</style>
