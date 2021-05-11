@@ -3,6 +3,12 @@
   import VideoHeader from "../components/VideoHeader.svelte";
   import Mission from "../components/Mission.svelte";
   import Steps from "../components/Steps.svelte";
+  import Milestones from "../components/Milestones.svelte";
+  import Countries from "../components/Countries.svelte";
+  import Citizens from "../components/Citizens.svelte";
+  import Progress from "../components/Progress.svelte";
+  import Aside from "../components/Aside.svelte";
+  import Footer from "../components/Footer.svelte";
   import IntroAnimation from "../components/IntroAnimation.svelte";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
@@ -42,7 +48,12 @@
   }
 </script>
 
-<!--
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@vime/core@^5/themes/default.css"
+/>
+
+<!-- 
 <div class="flex flex-col h-screen text-base bg-white bg-gradient-to-r">
   <main class="z-30 flex-1 overflow-y-visible">
     <Navigation />
@@ -62,25 +73,26 @@
     </div>
   </footer>
 </div> -->
-<footer class="sticky bottom-0 z-50 w-full ">
-  <div class="flex justify-around ">
-    <button on:click={login} class="mb-24 btn btn-primary">
-      <img
-              width="15px"
-              class="mr-3"
-              src="/images/common/circles.png"
-              alt="circles.land"
-      /> Login
-    </button>
-  </div>
-</footer>
+
 <div class="flex flex-col h-screen">
   <Navigation />
   <main class="flex-1 overflow-y-auto">
     <VideoHeader />
-    <IntroAnimation />
-    <Steps />
-    <Mission />
+    <div class="flex flex-wrap md:flex-nowrap">
+      <div class="md:w-3/4">
+        <IntroAnimation />
+        <Steps />
+        <Mission />
+        <!-- <Dreams /> -->
+        <Citizens />
+        <Countries />
+        <Milestones />
+      </div>
+      <div class="md:w-1/4">
+        <Aside />
+      </div>
+    </div>
+    <Progress />
+    <Footer />
   </main>
-  <footer>footer</footer>
 </div>
