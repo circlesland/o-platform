@@ -1,55 +1,99 @@
 <div class="bg-white">
-  <div class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-48">
+  <div
+    class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-48"
+  >
     <div class="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
       <div>
-        <p class="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider uppercase rounded-full text-primary">
+        <p
+          class="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider uppercase rounded-full text-primary"
+        >
           HOW DOES IT WORK?
         </p>
       </div>
-      <h2 class="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-secondary font-circles sm:text-4xl md:mx-auto">
+      <h2
+        class="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-secondary font-circles sm:text-4xl md:mx-auto"
+      >
         <span class="relative inline-block">
-          <svg viewBox="0 0 52 24" fill="currentColor" class="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block">
+          <svg
+            viewBox="0 0 52 24"
+            fill="currentColor"
+            class="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block"
+          >
             <defs>
-              <pattern id="bfcc89c7-3b4a-491a-bc7e-53e26502ff69" x="0" y="0" width=".135" height=".30">
-                <circle cx="1" cy="1" r=".7"></circle>
+              <pattern
+                id="bfcc89c7-3b4a-491a-bc7e-53e26502ff69"
+                x="0"
+                y="0"
+                width=".135"
+                height=".30"
+              >
+                <circle cx="1" cy="1" r=".7" />
               </pattern>
             </defs>
-            <rect fill="url(#bfcc89c7-3b4a-491a-bc7e-53e26502ff69)" width="52" height="24"></rect>
+            <rect
+              fill="url(#bfcc89c7-3b4a-491a-bc7e-53e26502ff69)"
+              width="52"
+              height="24"
+            />
           </svg>
-          
         </span>
         Become a citizen of CirclesLand
       </h2>
       <p class="text-base text-gray-600 md:text-lg">
-        CirclesLand is being step by step rolled out on a decentralized and resilient infrastructure, with the goal to bring back more and more control around all your data, collaborative decision making and money creation policies into your hands.
+        CirclesLand is being step by step rolled out on a decentralized and
+        resilient infrastructure, with the goal to bring back more and more
+        control around all your data, collaborative decision making and money
+        creation policies into your hands.
       </p>
     </div>
-    <div class="grid gap-8 row-gap-8 lg:grid-cols-3">
-      <div class="sm:text-center">
-        <div class="flex items-center justify-center w-24 h-24 mb-4 text-5xl font-extrabold bg-green-100 rounded-full text-primary sm:mx-auto">
+    <div class="grid gap-8 row-gap-8 grid-cols-1 lg:grid-cols-3">
+      <div
+        class="bg-white border shadow-2xl p-4 rounded-lg sm:text-center max-h-72"
+      >
+        <div
+          class="flex items-center justify-center w-24 h-24 mb-4 text-5xl font-extrabold bg-green-100 rounded-full text-primary sm:mx-auto"
+        >
           1
         </div>
-        <h6 class="mb-2 font-semibold leading-5 uppercase text-secondary">Create Passport</h6>
+        <h6 class="mb-2 font-semibold leading-5 uppercase text-secondary">
+          Create Passport
+        </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          While signing up you create a self-sovereign und portable identity passport, which will be solely under you control. 
+          While signing up you create a self-sovereign und portable identity
+          passport, which will be solely under you control.
         </p>
       </div>
-      <div class="sm:text-center">
-        <div class="flex items-center justify-center w-24 h-24 mb-4 text-5xl font-extrabold bg-green-100 rounded-full text-primary sm:mx-auto">
+      <div
+        class="mt-0 lg:mt-24 bg-white border shadow-2xl p-4 rounded-lg sm:text-center max-h-72"
+      >
+        <div
+          class="flex items-center justify-center w-24 h-24 mb-4 text-5xl font-extrabold bg-green-100 rounded-full text-primary sm:mx-auto"
+        >
           2
         </div>
-        <h6 class="mb-2 font-semibold leading-5 uppercase text-secondary">Get invited</h6>
+        <h6 class="mb-2 font-semibold leading-5 uppercase text-secondary">
+          Get invited
+        </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          For each interaction with the underlying xDAI blockchain, you need tiny fees. With an invite you receive 0.10 xDai$, enough for 3000+ transactions.
+          For each interaction with the underlying xDAI blockchain, you need
+          tiny fees. With an invite you receive 0.10 xDai$, enough for 3000+
+          transactions.
         </p>
       </div>
-      <div class="sm:text-center">
-        <div class="flex items-center justify-center w-24 h-24 mb-4 text-5xl font-extrabold bg-green-100 rounded-full text-primary sm:mx-auto">
+      <div
+        class="mt-0 lg:mt-48 bg-white border shadow-2xl p-4 rounded-lg sm:text-center max-h-72"
+      >
+        <div
+          class="flex items-center justify-center w-24 h-24 mb-4 text-5xl font-extrabold bg-green-100 rounded-full text-primary sm:mx-auto"
+        >
           3
         </div>
-        <h6 class="mb-2 font-semibold leading-5 uppercase text-secondary">Unlock your UBI</h6>
+        <h6 class="mb-2 font-semibold leading-5 uppercase text-secondary">
+          Unlock your UBI
+        </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          Once your banking safe got successfully funded with xDai$, you receive your first universal basic income in Circles. 
+          Once your banking safe got successfully funded with xDai$, you receive
+          your first universal basic income in Circles.
         </p>
       </div>
     </div>

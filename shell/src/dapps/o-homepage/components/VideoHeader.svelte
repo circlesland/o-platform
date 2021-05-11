@@ -36,12 +36,12 @@
     on:click={() => playVideo()}
   >
     <h1
-      class="relative px-5 mt-4 text-md sm:text-6xl font-bold text-white top-2/4 sm:top-1/3"
+      class="relative px-5 mt-4 text-md sm:text-6xl font-bold text-white top-1/4 sm:top-1/3"
     >
       Be free to live the life you deserve
     </h1>
     <h2
-      class="relative px-5 pt-4 text-sm sm:text-3xl font-thin text-gray-200 top-2/4 sm:top-1/3"
+      class="relative px-5 pt-4 text-sm sm:text-3xl font-thin text-gray-200 top-1/4 sm:top-1/3"
     >
       together we build today the universal basic income economy of tomorrow.
     </h2>
