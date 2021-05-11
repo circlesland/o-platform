@@ -14,21 +14,21 @@
 </script>
 
 <!-- SMALL HEADER START -->
-<div
-  class="h-28 flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
->
-  {#if lastLoadedDapp && lastLoadedPage}
+{#if lastLoadedDapp && lastLoadedPage}
+  <div
+    class="flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white sticky -top-0.5 z-10"
+  >
     <div class=" pl-2 self-start">
       <span class="text-lg font-circles "
-        >{#if lastLoadedDapp.title != lastLoadedPage.title}
+        >{#if lastLoadedDapp.title !== lastLoadedPage.title}
           {lastLoadedDapp.title} /
         {/if}{lastLoadedPage.title}</span
       >
     </div>
-    <div class="self-start">
+    <div class="self-end">
       <button
         class=" text-white"
-        on:click={() => (window.location = "/#/dashboard")}
+        on:click|once={() => (window.location = "/#/dashboard")}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -46,6 +46,9 @@
         </svg>
       </button>
     </div>
-  {/if}
-</div>
+  </div>
+{/if}
+<div
+  class="h-20 flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+/>
 <!-- SMALL HEADER STOP -->
