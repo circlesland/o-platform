@@ -23,7 +23,6 @@ export type UpsertIdentityContextData = {
   id?: number;
   circlesAddress?: string;
   circlesSafeOwner?: string;
-  loginEmail: string;
   firstName?: string;
   lastName?: string;
   country?: string;
