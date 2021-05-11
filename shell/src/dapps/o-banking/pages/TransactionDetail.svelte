@@ -76,7 +76,7 @@
             {#if dateOlderThanSevenDays(transfer.time)}
               <Time
                 timestamp={new Date(transfer.time * 1000)}
-                format="D. MMMM YYYY"
+                format="D. MMMM YYYY hh:mm"
               />
             {:else}
               <Time relative timestamp={new Date(transfer.time * 1000)} />
@@ -148,7 +148,7 @@
       class="flex flex-col items-center justify-center mb-2 text-circlesdarkblue"
     >
       <div
-        class="flex flex-col bg-white shadow  p-4 w-full space-y-2 rounded-sm"
+        class="flex flex-col bg-white shadow  pt-4 pr-4 pl-4 pb-1 w-full space-y-2 rounded-sm"
       >
         <div class="text-primary text-xs font-circles font-bold text-left">
           TRANSACTION DETAILS
@@ -210,7 +210,7 @@
                     </td>
                   </tr>
                   <tr
-                    class="relative transform scale-100 text-xs py-1 border-b border-gray-300 cursor-default"
+                    class="relative transform scale-100 text-xs py-1 cursor-default"
                   >
                     <td class="pl-5 pr-3 whitespace-no-wrap">
                       <div class="text-gray-400">Block</div>
