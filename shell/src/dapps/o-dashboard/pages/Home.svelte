@@ -14,11 +14,7 @@
 
   $: me;
 
-  function buyXats() {
-    window.o.publishEvent(
-      dashboard.actions.find((o) => o.key == "xats").event(undefined)
-    );
-  }
+  let disableBanking:boolean = false;
 
   let accountAddress: string = "";
   let accountBalance: string = "";
@@ -30,6 +26,7 @@
   onMount(async () => {
     const pk = localStorage.getItem("circlesKey");
     if (!pk || localStorage.getItem("isCreatingSafe") !== "true") {
+      disableBanking = !pk;
       return;
     }
 
@@ -185,7 +182,7 @@
   </a>
 
   <!-- BANKING -->
-  {#if showFundHint}
+  {#if showFundHint || disableBanking}
     <section class="flex items-center justify-center mb-8">
       <div class="flex items-center bg-white shadow px-2 w-full rounded-sm">
         <div class="mr-4  px-4 py-2  text-center -ml-3 text-base-300">
