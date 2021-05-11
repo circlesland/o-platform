@@ -97,7 +97,7 @@
                 />
               </div>
             </div>
-            <div class="block">
+            <div class="block text-center mt-2">
               {displayableFromName}
             </div>
           </div>
@@ -131,7 +131,7 @@
                 />
               </div>
             </div>
-            <div class="block">
+            <div class="block text-center mt-2">
               {transfer.toProfile
                 ? transfer.toProfile.displayName
                 : transfer.to}
