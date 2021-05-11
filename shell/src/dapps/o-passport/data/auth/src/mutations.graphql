@@ -1,8 +1,9 @@
 mutation loginWithEmail(
     $appId: String!
     $emailAddress: String!
+    $acceptTosVersion: String!
 ) {
-    loginWithEmail(appId: $appId, emailAddress: $emailAddress) {
+    loginWithEmail(appId: $appId, emailAddress: $emailAddress acceptTosVersion: $acceptTosVersion) {
         success
         errorMessage
     }

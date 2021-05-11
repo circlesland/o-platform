@@ -59,6 +59,7 @@ export type MutationChallengeArgs = {
 
 
 export type MutationLoginWithEmailArgs = {
+  acceptTosVersion?: Maybe<Scalars['String']>;
   appId: Scalars['String'];
   emailAddress: Scalars['String'];
 };
@@ -85,12 +86,25 @@ export type PublicKey = {
 export type Query = {
   __typename?: 'Query';
   keys?: Maybe<PublicKey>;
+  tos: ToS;
   version?: Maybe<Version>;
 };
 
 
 export type QueryKeysArgs = {
   kid: Scalars['String'];
+};
+
+
+export type QueryTosArgs = {
+  appId: Scalars['String'];
+};
+
+export type ToS = {
+  __typename?: 'ToS';
+  found: Scalars['Boolean'];
+  url?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['String']>;
 };
 
 
@@ -114,6 +128,7 @@ export type Version = {
 export type LoginWithEmailMutationVariables = Exact<{
   appId: Scalars['String'];
   emailAddress: Scalars['String'];
+  acceptTosVersion: Scalars['String'];
 }>;
 
 
@@ -153,10 +168,27 @@ export type ChallengeMutation = (
   ) }
 );
 
+export type TosQueryVariables = Exact<{
+  appId: Scalars['String'];
+}>;
+
+
+export type TosQuery = (
+  { __typename?: 'Query' }
+  & { tos: (
+    { __typename?: 'ToS' }
+    & Pick<ToS, 'found' | 'version' | 'url'>
+  ) }
+);
+
 
 export const LoginWithEmailDocument = gql`
-    mutation loginWithEmail($appId: String!, $emailAddress: String!) {
-  loginWithEmail(appId: $appId, emailAddress: $emailAddress) {
+    mutation loginWithEmail($appId: String!, $emailAddress: String!, $acceptTosVersion: String!) {
+  loginWithEmail(
+    appId: $appId
+    emailAddress: $emailAddress
+    acceptTosVersion: $acceptTosVersion
+  ) {
     success
     errorMessage
   }
@@ -185,6 +217,15 @@ export const ChallengeDocument = gql`
   }
 }
     `;
+export const TosDocument = gql`
+    query tos($appId: String!) {
+  tos(appId: $appId) {
+    found
+    version
+    url
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -200,6 +241,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     challenge(variables: ChallengeMutationVariables): Promise<ChallengeMutation> {
       return withWrapper(() => client.request<ChallengeMutation>(print(ChallengeDocument), variables));
+    },
+    tos(variables: TosQueryVariables): Promise<TosQuery> {
+      return withWrapper(() => client.request<TosQuery>(print(TosDocument), variables));
     }
   };
 }

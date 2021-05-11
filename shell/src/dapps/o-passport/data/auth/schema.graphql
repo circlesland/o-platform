@@ -23,7 +23,7 @@ type LoginResponse implements ActionResponse {
 
 type Mutation {
     challenge(byAppId: String, challengeType: String!, forAppId: String!, subject: String!): ChallengeResponse!
-    loginWithEmail(appId: String!, emailAddress: String!): LoginResponse!
+    loginWithEmail(acceptTosVersion: String, appId: String!, emailAddress: String!): LoginResponse!
     loginWithPublicKey(appId: String!, publicKey: String!): LoginResponse!
     verify(oneTimeToken: String!): VerifyResponse!
 }
@@ -37,7 +37,14 @@ type PublicKey {
 
 type Query {
     keys(kid: String!): PublicKey
+    tos(appId: String!): ToS!
     version: Version
+}
+
+type ToS {
+    found: Boolean!
+    url: String
+    version: String
 }
 
 type VerifyResponse implements ActionResponse {
