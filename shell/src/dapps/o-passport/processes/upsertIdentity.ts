@@ -43,17 +43,17 @@ const strings = {
   labelFirstName:
     "<span>Awesome!<br/>You are finally a citizen of <br/>CirclesLAND.<br/>Glad to have you here.</span><strong class='text-primary block mt-3'>What is your name?</strong>",
   labelLastName:
-    "<span>Do you want to let the world know your last name, so they know in the search who’s dream they are connecting with?</span><strong class='text-primary  block mt-3'>Enter your last name</strong>",
+    "<span>Do you want to let the world know your last name, so they know in the search who’s passion they are connecting with?</span><strong class='text-primary  block mt-3'>Enter your last name</strong>",
   labelAvatar:
     "<span>Add a profile image to become<br/> more recognizable</span>",
   labelCountry:
     "<span>Vote for your country in the global universal basic income economy ranking leaderboard.</span><strong class='text-primary block mt-3'>Select country</strong>",
   labeldream:
-    "<span class='text-l'>Fill in the blanks:</span> <span class='block text-sm'><i>When I receive a universal basic income, I will follow my passion of <br>  ___________________________ <br/>and will accept Circles as payment.</i></span><strong class='text-primary  block mt-3'>Share your passion</strong>",
+    "<span class='text-l'>Fill in the blanks:</span> <span class='block text-sm'><i>When I receive a universal basic income, I will follow my passion of <br>  ___________________________ <br/>and I will accept a minimum of 240 Circles every month as payment for it.</i></span><strong class='text-primary  block mt-3'>Share your passion</strong>",
   placeholderFirstName: "First Name",
   placeholderLastName: "Last Name",
   placeholderCountry: "Select a Country",
-  placeholderDream: "Your dream.",
+  placeholderDream: "Your passion.",
 };
 
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
@@ -271,7 +271,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         invoke: {
           src: async (context, event) => {
             delete context.data.avatar;
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: UpsertProfileDocument,
               variables: {
