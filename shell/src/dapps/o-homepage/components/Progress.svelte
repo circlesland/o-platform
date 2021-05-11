@@ -40,9 +40,48 @@
 <div
   class="progressnav relative pt-1 w-full sticky bottom-0 bg-white border-t border-base-300 z-50"
 >
+  <div class="w-full flex flex-row items-stretch bg-white">
+    <div class="text-secondary tracking-wider m-auto">
+      <span class="relative top-2">2489 CITIZENS</span>
+    </div>
+  </div>
+  <div class="w-full flex flex-row items-stretch bg-white h-10 mb-6">
+    <div
+      class="relative flex-grow w-42 border-secondary border-b-2 border-r-2 h-2 mt-8"
+    >
+      <span class="absolute -right-4 bottom-2 text-secondary tracking-wider"
+        >GOAL 12</span
+      >
+    </div>
+    <div class="flex-grow w-42 border-secondary border-b-2 h-2 mt-8" />
+    <div class="flex-grow w-42 border-light border-b-2 h-2 mt-8">
+      <span class="dot relative right-1 w-2 h-2" />
+    </div>
+    <div
+      class="relative flex-grow w-42 border-light border-b-2 border-l-2  h-2 mt-8"
+    >
+      <span class="absolute text-light bottom-2 -left-4 tracking-wider">
+        GOAL 13</span
+      >
+    </div>
+  </div>
+  <!-- <div class="flex items-center justify-between mb-2">
+    <div>
+      <span
+        class="inline-block px-2 py-1 text-lg font-semibold text-gray-500 uppercase "
+      >
+        Goal 6
+      </span>
+    </div>
+    <div class="text-right">
+      <span class="inline-block px-2 py-1 text-lg font-semibold text-gray-500">
+        300 of 453 citizens
+      </span>
+    </div>
+  </div> -->
   <button
     on:click={login}
-    class="joinnowbutton btn btn-primary absolute bottom-2 shadow-md left-1/2 transition-none"
+    class="joinnowbutton btn btn-primary absolute bottom-3 shadow-md left-1/2 transition-none"
   >
     <svg
       class="w-6 h-6 inline mr-3"
@@ -65,34 +104,7 @@
       />
     </svg> Join Now
   </button>
-  <div class="w-full flex flex-row items-stretch bg-white mb-2">
-    <div class="text-secondary ">2489 Citizens</div>
-  </div>
-  <div class="w-full flex flex-row items-stretch bg-white h-12 mb-6">
-    <div
-      class="flex-grow w-42 border-secondary border-b-2 border-r-2 h-2 mt-8"
-    />
-    <div class="flex-grow w-42 border-secondary border-b-2 h-2 mt-8" />
-    <div class="flex-grow w-42 border-light border-b-2 h-2 mt-8">
-      <span class="dot relative right-1 w-2 h-2" />
-    </div>
-    <div class="flex-grow w-42 border-light border-b-2 border-l-2  h-2 mt-8" />
-  </div>
-  <!-- <div class="flex items-center justify-between mb-2">
-    <div>
-      <span
-        class="inline-block px-2 py-1 text-lg font-semibold text-gray-500 uppercase "
-      >
-        Goal 6
-      </span>
-    </div>
-    <div class="text-right">
-      <span class="inline-block px-2 py-1 text-lg font-semibold text-gray-500">
-        300 of 453 citizens
-      </span>
-    </div>
-  </div> -->
-  <div class="flex h-16 overflow-hidden text-xs bg-gray-300">
+  <div class="flex h-11 overflow-hidden text-xs bg-gray-300">
     <div
       style="width:70%"
       class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-gradient-to-r from-gradient1 to-gradient2"
