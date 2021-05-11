@@ -85,9 +85,9 @@
   {:else if $mySafe.transfers && $mySafe.transfers.rows}
     {#each $mySafe.transfers.rows as transfer}
       {#if transfer.direction === "in"}
-        <TransactionCard {transfer} message="WURST" />
+        <TransactionCard {transfer} message="" />
       {:else}
-        <TransactionCard {transfer} message="Käse" />
+        <TransactionCard {transfer} message="" />
       {/if}
     {/each}
   {:else}
