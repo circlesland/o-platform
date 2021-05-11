@@ -54,7 +54,7 @@
 
   $: {
     if ($me) {
-      inviteLink = `${window.location.protocol}//${window.location.host}/#/passport/profile/${$me.id}`;
+      inviteLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${$me.id}`;
     }
   }
 </script>

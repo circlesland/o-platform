@@ -15,16 +15,32 @@ import {
   ShellProcessContext,
 } from "../shared/processes/shellProcess";
 import { getUbi } from "./o-banking/processes/getUbi";
-// import { hubSignup } from "./o-banking/processes/hubSignup";
 import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
+import Profile from "./o-banking/pages/Profile.svelte";
 
 const transactions: PageManifest = {
   isDefault: true,
   routeParts: ["transactions"],
   component: Transactions,
   title: "Transactions",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    },
+  ],
+};
+
+const profile: PageManifest = {
+  isDefault: false,
+  isSystem: true,
+  routeParts: ["profile", ":profileId"],
+  component: Profile,
+  hideFooter: true,
+  title: "Profile",
   available: [
     (detail) => {
       // Can navigate to?
@@ -260,5 +276,6 @@ export const banking: DappManifest<DappState> = {
     trustDetail,
     graph,
     sendInvite,
+    profile
   ],
 };

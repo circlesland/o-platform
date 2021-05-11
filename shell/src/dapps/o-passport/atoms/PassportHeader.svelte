@@ -22,8 +22,6 @@
   async function execLoadProfile(profileId?: string) {
     if (profileId && parseInt(profileId)) {
       profile = await loadProfile(parseInt(profileId));
-    } else if ($me) {
-      profile = $me;
     }
   }
 
@@ -31,7 +29,7 @@
     if (params && params.profileId) {
       execLoadProfile(params ? params.profileId : $me.id.toString());
     } else if ($me) {
-      execLoadProfile($me.id.toString());
+      profile = $me;
     }
   }
 

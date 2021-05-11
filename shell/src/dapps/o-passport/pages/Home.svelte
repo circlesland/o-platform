@@ -18,24 +18,13 @@
   let name;
   let profile: Profile;
 
-  export let params: {
-    profileId?: string;
-  };
-
   $: name = profile ? profile.circlesAddress : "";
 
-  async function execLoadProfile(profileId?: string) {
-    if (profileId && parseInt(profileId)) {
-      profile = await loadProfile(parseInt(profileId));
-      console.log("Other Profile: ", profile);
-    } else if ($me) {
-      profile = $me;
-    }
-  }
-
   $: {
-    if ($me || (params && params.profileId)) {
-      execLoadProfile(params ? params.profileId : $me.id.toString());
+    if ($me) {
+      profile = $me;
+    } else {
+      profile = undefined;
     }
   }
 
@@ -79,28 +68,9 @@
 
     window.o.publishEvent(requestEvent);
   }
-
-  function execInvite() {
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = invite;
-        ctx.childContext = {
-          data: {
-            safeAddress: $mySafe.safeAddress,
-            inviteProfileId: parseInt(params.profileId),
-          },
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
-  }
 </script>
 
-<PassportHeader {params} />
+<PassportHeader />
 
 <div class="mx-4 -mt-6">
   {#if profile && profile.circlesAddress}
@@ -229,42 +199,4 @@
       </div>
     </div>
   </section>
-
-  {#if profile && !profile.circlesAddress}
-    <section class="justify-center mb-2 text-circlesdarkblue">
-      <div
-        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
-      >
-        <div
-          class="text-circleslightblue text-xs font-circles font-bold text-left"
-        >
-          This citizen is waiting to be empowered by you.
-        </div>
-        {#if $me && $me.id !== profile.id && localStorage.getItem("safe")}
-          <div class="flex items-center w-full space-x-2 sm:space-x-4">
-            <div class="text-left">
-              <div class="inline-block break-all text-xs">
-                <div class="flex items-center w-full space-x-2 sm:space-x-4">
-                  <button
-                    class="btn btn-block btn-primary w-full"
-                    on:click={execInvite}>Invite {profile.firstName} now</button
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        {:else}
-          <div class="flex items-center w-full space-x-2 sm:space-x-4">
-            <div class="text-left">
-              <div class="inline-block break-all text-xs">
-                <div class="flex items-center w-full space-x-2 sm:space-x-4">
-                  <!-- TODO: Safe wasn't opened before so we don't know our balance (at least not on $mySafe)  -->
-                </div>
-              </div>
-            </div>
-          </div>
-        {/if}
-      </div>
-    </section>
-  {/if}
 </div>
