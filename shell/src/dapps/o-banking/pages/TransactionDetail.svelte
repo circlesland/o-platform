@@ -1,11 +1,9 @@
 <script lang="ts">
-  import TokensHeader from "../atoms/TokensHeader.svelte";
   import { Transfer } from "../data/circles/queries";
   import Time from "svelte-time";
   import { mySafe } from "../stores/safe";
-  import TransactionCard from "../atoms/TransactionCard.svelte";
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
-  import { BN } from "ethereumjs-util";
+
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 
   export let params: {
@@ -69,10 +67,7 @@
 <BankingDetailHeader amount={transfer ? transfer.amount : 0} {classes} />
 {#if transfer}
   <div class="mx-4 -mt-6">
-    <section
-      on:click|once={() => loadDetailPage(transfer._id)}
-      class="flex items-center justify-center mb-2 text-circlesdarkblue"
-    >
+    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div
         class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
       >
@@ -95,6 +90,7 @@
             <div class="avatar">
               <div class="rounded-full w-24 h-24  m-auto">
                 <img
+                  alt={displayableFromName}
                   src={transfer.fromProfile
                     ? transfer.fromProfile.avatarUrl
                     : "/images/common/circles.png"}
@@ -126,6 +122,9 @@
             <div class="avatar">
               <div class="rounded-full w-24 h-24  m-auto">
                 <img
+                  alt={transfer.toProfile
+                    ? transfer.toProfile.displayName
+                    : transfer.to}
                   src={transfer.toProfile
                     ? transfer.toProfile.avatarUrl
                     : "none"}
