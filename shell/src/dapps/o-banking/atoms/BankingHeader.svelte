@@ -59,7 +59,7 @@
     <span class="inline-block text-6xl font-circles ml-10 "
       >{balance}
       <svg
-        class="w-12 h-12 inline -ml-4"
+        class="w-6 h-6 inline -ml-4 -mt-1"
         viewBox="0 0 229 255"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
