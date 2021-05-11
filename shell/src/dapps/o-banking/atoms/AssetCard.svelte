@@ -26,7 +26,7 @@
       <div class="mr-2 text-center">
         <div class="avatar">
           <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="/logos/{symbol}.svg" alt={symbol} class="w-12 h-12" />
+            <img src="/logos/{symbol}.png" alt={symbol} class="w-12 h-12" />
           </div>
         </div>
       </div>
