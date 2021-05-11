@@ -19,6 +19,7 @@ import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
 import Profile from "./o-banking/pages/Profile.svelte";
+import {push} from "svelte-spa-router";
 
 const transactions: PageManifest = {
   isDefault: true,
@@ -260,7 +261,12 @@ export const banking: DappManifest<DappState> = {
   ],
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
-    init();
+
+    if (!localStorage.getItem("circlesKey")) {
+      await push("#/dashboard");
+    } else {
+      init();
+    }
     return {
       initialPage: transactions,
       cancelDependencyLoading: false,
