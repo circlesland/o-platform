@@ -62,7 +62,7 @@
       };
     }
 
-    tokens = Object.values($mySafe.acceptedTokens.tokens).filter((o) =>
+    tokens = Object.values($mySafe.acceptedTokens.tokens).concat($mySafe.token ? [$mySafe.token] : []).filter((o) =>
       new BN(o.balance).gt(new BN("0"))
     );
   }
