@@ -65,7 +65,20 @@
       />
     </svg> Join Now
   </button>
-  <div class="flex items-center justify-between mb-2">
+  <div class="w-full flex flex-row items-stretch bg-white mb-2">
+    <div class="text-secondary ">2489 Citizens</div>
+  </div>
+  <div class="w-full flex flex-row items-stretch bg-white h-12 mb-6">
+    <div
+      class="flex-grow w-42 border-secondary border-b-2 border-r-2 h-2 mt-8"
+    />
+    <div class="flex-grow w-42 border-secondary border-b-2 h-2 mt-8" />
+    <div class="flex-grow w-42 border-light border-b-2 h-2 mt-8">
+      <span class="dot relative right-1 w-2 h-2" />
+    </div>
+    <div class="flex-grow w-42 border-light border-b-2 border-l-2  h-2 mt-8" />
+  </div>
+  <!-- <div class="flex items-center justify-between mb-2">
     <div>
       <span
         class="inline-block px-2 py-1 text-lg font-semibold text-gray-500 uppercase "
@@ -78,7 +91,7 @@
         300 of 453 citizens
       </span>
     </div>
-  </div>
+  </div> -->
   <div class="flex h-16 overflow-hidden text-xs bg-gray-300">
     <div
       style="width:70%"
@@ -100,4 +113,36 @@
     transform: translate(-50%, 0);
     animation: none !important;
   }
+
+  .dot {
+    @apply bg-secondary;
+    bottom: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    /* box-shadow: 0 0 15px #003399; */
+    /* border: 5px solid hsl(220 100% 29%); */
+
+    /* #2 */
+    /* padding: 5px; */
+    /* background: hsl(0, 0%, 20%); */
+
+    /* #3 */
+    /* outline: 5px solid hsl(220 100% 29%); */
+
+    /* #4 AND INFINITY!!! (CSS3 only) */
+    /* box-shadow: 0 0 0 10px hsl(229, 61%, 53%), 0 0 0 15px hsl(241, 93%, 27%); */
+  }
+  /* .dot:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-shadow: inset 10px 24px 40px 0px #003399,
+      inset -10px -24px 40px 0px #003399, inset 20px -10px 40px 0px #003399,
+      inset -20px 10px 40px 0px #003399;
+  } */
 </style>
