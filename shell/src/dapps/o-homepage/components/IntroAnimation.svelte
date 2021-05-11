@@ -69,7 +69,7 @@
           </a>
         </div>
       </div>
-      <div class="relative lg:w-1/2">
+      <div class="w-full sm:w-1/2">
         <!-- <img
           class="object-cover w-full h-56 rounded shadow-lg sm:h-96"
           src="/images/homepage/animation.png"
