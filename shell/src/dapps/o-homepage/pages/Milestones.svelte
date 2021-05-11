@@ -10,6 +10,7 @@
     IdentifyContextData,
   } from "../../o-passport/processes/identify/identify";
   import { me } from "../../../shared/stores/me";
+  import Milestones from "../components/Milestones.svelte";
 
   $: {
     console.log($me); // TODO: This is just to init the store. There could be a better solution to do this :)
@@ -38,27 +39,9 @@
 </script>
 
 <div
-  class="flex flex-col h-screen  bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+  class="flex flex-col h-full"
 >
-  <main class="flex-1 overflow-y-visible z-30">
-    <div class="flex flex-col text-center justify-items-center pt-11">
-      <h1 class="font-circles font-bold">You got us!</h1>
-      <h2 class="font-circles font-thin pt-11">
-        We're currently actively working on this.<br />All Data will be re-set
-        when we launch.
-      </h2>
-    </div>
+  <main class="z-30 flex-1 overflow-y-visible">
+    <Milestones />
   </main>
-  <footer class="z-50  w-full sticky bottom-0 ">
-    <div class="flex justify-around ">
-      <button on:click={login} class="mb-4 btn btn-white">
-        <img
-          width="15px"
-          class="mr-3"
-          src="/images/common/circles.png"
-          alt="circles.land"
-        /> Login
-      </button>
-    </div>
-  </footer>
 </div>
