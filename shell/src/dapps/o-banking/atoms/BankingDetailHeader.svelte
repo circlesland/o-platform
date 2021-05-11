@@ -85,7 +85,7 @@
         Web3.utils.fromWei(amount ? amount : "0", "ether")
       ).toFixed(2)}
       <svg
-        class="w-16 h-16 inline -ml-4"
+        class="w-8 h-8 inline -ml-4 -mt-1"
         viewBox="0 0 229 255"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
