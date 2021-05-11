@@ -125,7 +125,8 @@
             <span class="inline text-dark"
               >You are trusting {trusting.profile
                 ? trusting.profile.displayName
-                : trusting.safeAddress} {trusting.limit}%
+                : trusting.safeAddress}
+              {trusting.limit}%
             </span>
           </div>
 
@@ -180,7 +181,7 @@
           </button>
         </div>
       {:else}
-        <div className="flex items-center w-full space-x-2 sm:space-x-4">
+        <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <button
             class="btn btn-block btn-primary"
             on:click={() => execTrust()}
