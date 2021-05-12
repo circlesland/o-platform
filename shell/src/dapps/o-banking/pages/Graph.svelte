@@ -1,10 +1,11 @@
 <script lang="ts">
-  import TokensHeader from "../atoms/TokensHeader.svelte";
+  import SimpleHeader from "../atoms/SimpleHeader.svelte";
   import AdjacencyGraph from "../../../shared/pathfinder/CirclesAdjacencyGraph.svelte";
-  import {mySafe} from "src/dapps/o-banking/stores/safe";
+  import { mySafe } from "src/dapps/o-banking/stores/safe";
 </script>
 
-<TokensHeader />
+<SimpleHeader />
+
 {#if $mySafe}
-  <AdjacencyGraph address={$mySafe.safeAddress}></AdjacencyGraph>
+  <AdjacencyGraph address={$mySafe.safeAddress} />
 {/if}
