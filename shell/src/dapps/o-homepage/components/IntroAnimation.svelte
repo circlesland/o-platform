@@ -99,8 +99,8 @@
           class=" z-10 w-full min-w-full min-h-full max-w-full"
         >
           <vm-player playsinline id="animationvideo">
-            <vm-youtube
-              video-id="8wJbf8yLmRI"
+            <vm-vimeo
+              video-id="548283844"
               cross-origin="true"
               poster="/images/homepage/animation.png"
             />
