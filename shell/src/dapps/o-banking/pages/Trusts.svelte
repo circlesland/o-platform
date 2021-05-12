@@ -109,18 +109,51 @@
       <TrustCard {trustedBy} />
     {/each}
 
-    <section class="flex items-center justify-center mb-1 ">
-      <div
-        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
-      >
-        <div class="text-error text-xs font-circles font-bold text-left">
-          TRUST REMOVED
+    {#if $mySafe.trustRelations.untrusted}
+      <section class="flex items-center justify-center mb-1 ">
+        <div
+          class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+        >
+          <div class="text-error text-xs font-circles font-bold text-left">
+            TRUST REMOVED
+          </div>
         </div>
-      </div>
-    </section>
-    <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
-    {#each Object.values($mySafe.trustRelations.untrusted) as untrusted}
-      <TrustCard {untrusted} />
-    {/each}
+      </section>
+      <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
+      {#each Object.values($mySafe.trustRelations.untrusted) as untrusted}
+        <TrustCard {untrusted} />
+      {/each}
+    {/if}
   {/if}
+  <section class="justify-center mb-2 text-circlesdarkblue">
+    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+      <div class="text-circleslightblue text-sm font-bold">WHAT IS TRUST?</div>
+    </div>
+    <div class="w-full shadow ">
+      <img
+        class="w-full"
+        src="/images/common/explaintrust.png"
+        alt="Trust Explained"
+      />
+    </div>
+    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+      <div class="text-sm">
+        In CirclesLand everyone has their own personalized Circles money.
+        <br /><br />
+        To be able to transfer Circles to someone you first need to get trusted by
+        others. When you want to receive money you have to trust them back.
+        <br /><br />
+        Keep in mind to always only connect yourself with people you trust and know
+        in person. <br /><br />To transact with a stranger the network will
+        calculate the flow of money for you, based on your direct trust
+        connections.
+        <a
+          href="https://blog.circles.land/whitepaper/"
+          alt="CirclesLand Whitepaper"
+          class="btn-link">Learn more</a
+        >
+      </div>
+      <button class="btn btn-primary mt-6 mx-auto">copy my trust link</button>
+    </div>
+  </section>
 </div>
