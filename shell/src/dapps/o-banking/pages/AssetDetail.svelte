@@ -81,13 +81,13 @@
     </section>
   {:else if params && params.symbol == "xdai"}
     <section class="justify-center mb-2">
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-        <div class="text-primary text-sm font-bold">
-          WHAT ARE MY XDAI ACCOUNTS?
+      <div
+        class="flex flex-col infocard shadow p-4 w-full space-y-2 rounded-sm"
+      >
+        <div class="text-info text-xs font-circles font-bold text-left">
+          WHAT IS THIS?
         </div>
-      </div>
 
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
         <div class="text-sm md:text-base">
           Your xDAI is distributed between two accounts. <br /><br />
           On the safeowner account you have xDai to pay your transaction fees.
@@ -99,6 +99,7 @@
         </div>
       </div>
     </section>
+
     <section class="mb-8">
       <div class="bg-white shadow px-2 pb-8 w-full rounded-sm">
         <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary" />
