@@ -127,7 +127,7 @@
   {/if}
   <section class="justify-center mb-2 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-      <div class="text-circleslightblue text-sm font-bold">WHAT IS TRUST?</div>
+      <div class="text-primary text-sm font-bold">WHAT IS TRUST?</div>
     </div>
     <div class="w-full shadow ">
       <img
@@ -150,6 +150,7 @@
         <a
           href="https://blog.circles.land/whitepaper/"
           alt="CirclesLand Whitepaper"
+          target="_blank"
           class="btn-link">Learn more</a
         >
       </div>
