@@ -74,16 +74,23 @@
   {/if}
   <div class="self-center text-center mb-8 block">
     {#if classes == "transactionpositive"}
-      <span class="block text-transactionpositive">Received</span>
+      <span class="block ">Received</span>
     {:else if classes == "transactionnegative"}
-      <span class="block text-transactionnegative">Sent</span>
+      <span class="block ">Sent</span>
     {:else}
       <span class="block text-base">Transfer</span>
     {/if}
     <span class="inline-block text-8xl font-circles ml-10 ">
-      {Number.parseFloat(
-        Web3.utils.fromWei(amount ? amount : "0", "ether")
-      ).toFixed(2)}
+      {#if classes == "transactionpositive"}
+        {Number.parseFloat(
+          Web3.utils.fromWei(amount ? amount : "0", "ether")
+        ).toFixed(2)}
+      {:else if classes == "transactionnegative"}
+        -{Number.parseFloat(
+          Web3.utils.fromWei(amount ? amount : "0", "ether")
+        ).toFixed(2)}
+      {/if}
+
       <svg
         class="w-8 h-8 inline -ml-4 -mt-1"
         viewBox="0 0 229 255"

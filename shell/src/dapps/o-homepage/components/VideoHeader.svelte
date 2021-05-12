@@ -70,8 +70,8 @@
 
   <div id="container" class="z-10 w-full max-w-full min-w-full min-h-full ">
     <vm-player playsinline>
-      <vm-youtube
-        video-id="kxQ-accFWyY"
+      <vm-vimeo
+        video-id="548284463"
         cross-origin="true"
         poster="/images/homepage/befree.jpg"
       />
