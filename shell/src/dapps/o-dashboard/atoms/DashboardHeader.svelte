@@ -22,16 +22,14 @@
   class="h-80 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
 >
   {#if lastLoadedDapp && lastLoadedPage && lastLoadedPage.routeParts.length > 0}
-    <div
-      class="flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white sticky -top-0.5 z-10"
-    >
+    <div class="pt-0 pl-2 flex flex-row  justify-between">
       <div
-        class="pl-2 self-start cursor-pointer"
+        class="self-start cursor-pointer"
         on:click|once={() => history.back()}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 inline-block mr-1"
+          class="h-6 w-6 inline-block mr-1 -mt-1"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -73,14 +71,22 @@
       </div>
     </div>
   {:else if lastLoadedDapp && lastLoadedPage}
-    <div class="pl-2 ">
-      <span class="text-lg font-circles"
+    <div class="flex flex-row items-stretch pl-2">
+      <span class="flex-grow text-lg font-circles"
         >{#if lastLoadedDapp.title != lastLoadedPage.title}
           {lastLoadedDapp.title} /
         {/if}{lastLoadedPage.title}</span
       >
+      <div class="self-end">
+        <button
+          class=" text-white"
+          on:click|once={() => (window.location = "/")}
+          >Website
+        </button>
+      </div>
     </div>
   {/if}
+
   <div class="self-center text-center mt-6 block">
     <div class="avatar">
       <div class="w-36 h-36 rounded-full mb-4">
