@@ -5,6 +5,8 @@
   import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
   import {shellProcess, ShellProcessContext} from "../../../shared/processes/shellProcess";
   import {upsertIdentity} from "../processes/upsertIdentity";
+  import {onMount} from "svelte";
+  import {UpsertProfileDocument, WhoamiDocument} from "../data/api/types";
 
   function editProfile() {
     const requestEvent = new RunProcess<ShellProcessContext>(
@@ -40,6 +42,19 @@
     window.o.publishEvent(requestEvent);
   }
 
+  let email:string = "unknown";
+
+  onMount(async () => {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const result = await apiClient.query({
+      query: WhoamiDocument
+    });
+    if (result.errors) {
+      return;
+    }
+    email = result.data.whoami;
+  })
+
   let receiveNewsletter:boolean = $me.newsletter;
   const delayedTrigger = new DelayedTrigger(500, async () => {
     // TODO: Make call to upsertProfile shorter
@@ -53,7 +68,7 @@
   SETTINGS<br />
 </div>
 
-<div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">email address</div>
+<div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">email address<br/>{email}</div>
 
 <div class="p-4 mt-4 bg-white rounded-t-xl md:rounded-xl">
   <span class="inline">

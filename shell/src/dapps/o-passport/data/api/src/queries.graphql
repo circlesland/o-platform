@@ -6,6 +6,10 @@ query sessionInfo {
     }
 }
 
+query whoami {
+    whoami
+}
+
 query myProfile {
     profiles(query:{}) {
         id
