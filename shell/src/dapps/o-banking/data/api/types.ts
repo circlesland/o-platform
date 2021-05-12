@@ -81,6 +81,8 @@ export type Mutation = {
   exchangeToken: ExchangeTokenResponse;
   indexTransfer: IndexTransferResponse;
   logout: LogoutResponse;
+  requestUpdateSafe: RequestUpdateSafeResponse;
+  updateSafe: UpdateSafeResponse;
   upsertProfile: Profile;
 };
 
@@ -102,6 +104,16 @@ export type MutationDepositChallengeArgs = {
 
 export type MutationIndexTransferArgs = {
   data: IndexTransferInput;
+};
+
+
+export type MutationRequestUpdateSafeArgs = {
+  data: RequestUpdateSafeInput;
+};
+
+
+export type MutationUpdateSafeArgs = {
+  data: UpdateSafeInput;
 };
 
 
@@ -131,6 +143,7 @@ export type Query = {
   search: Array<Profile>;
   sessionInfo: SessionInfo;
   version: Version;
+  whoami?: Maybe<Scalars['String']>;
 };
 
 
@@ -155,6 +168,17 @@ export type QueryUniqueProfileInput = {
   id: Scalars['Int'];
 };
 
+export type RequestUpdateSafeInput = {
+  newSafeAddress: Scalars['String'];
+};
+
+export type RequestUpdateSafeResponse = {
+  __typename?: 'RequestUpdateSafeResponse';
+  challenge?: Maybe<Scalars['String']>;
+  errorMessage?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
 export type SearchInput = {
   searchString: Scalars['String'];
 };
@@ -169,6 +193,17 @@ export type SessionInfo = {
   hasProfile?: Maybe<Scalars['Boolean']>;
   isLoggedOn: Scalars['Boolean'];
   profileId?: Maybe<Scalars['Int']>;
+};
+
+export type UpdateSafeInput = {
+  signature: Scalars['String'];
+};
+
+export type UpdateSafeResponse = {
+  __typename?: 'UpdateSafeResponse';
+  errorMessage?: Maybe<Scalars['String']>;
+  newSafeAddress?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
 };
 
 
