@@ -1,15 +1,15 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import {setClient} from "svelte-apollo";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+  import { onMount } from "svelte";
+  import { setClient } from "svelte-apollo";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import {sendInviteGas} from "../processes/sendInviteGas";
+  import { sendInviteGas } from "../processes/sendInviteGas";
   import TrustCard from "../atoms/TrustCard.svelte";
-  import {mySafe} from "../stores/safe";
+  import { mySafe } from "../stores/safe";
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
   import TokensHeader from "../atoms/TokensHeader.svelte";
 
@@ -27,17 +27,17 @@
 
   function execSendInviteGas(recipientAddress?: string) {
     window.o.publishEvent(
-            new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-              ctx.childProcessDefinition = sendInviteGas;
-              ctx.childContext = {
-                data: {
-                  safeAddress: "TODO: my safe address",
-                  recipientAddress: recipientAddress,
-                  amount: 0.1,
-                },
-              };
-              return ctx;
-            })
+      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
+        ctx.childProcessDefinition = sendInviteGas;
+        ctx.childContext = {
+          data: {
+            safeAddress: "TODO: my safe address",
+            recipientAddress: recipientAddress,
+            amount: 0.1,
+          },
+        };
+        return ctx;
+      })
     );
   }
 </script>
@@ -114,7 +114,7 @@
         class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
       >
         <div class="text-error text-xs font-circles font-bold text-left">
-          UNTRUSTED
+          TRUST REMOVED
         </div>
       </div>
     </section>

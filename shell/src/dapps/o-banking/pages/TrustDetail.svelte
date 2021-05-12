@@ -151,6 +151,29 @@
                 : trustedby.safeAddress} is trusting you {trustedby.limit}%
             </span>
           </div>
+        {:else if trusting && !trustedby}
+          <div class="text-left text-sm text-light mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 inline "
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 17l-5-5m0 0l5-5m-5 5h12"
+              />
+            </svg>
+            <span class="inline text-dark"
+              >You are trusting {trusting.profile
+                ? trusting.profile.displayName
+                : trusting.safeAddress}
+              {trusting.limit}%
+            </span>
+          </div>
         {/if}
       </div>
     </div>
