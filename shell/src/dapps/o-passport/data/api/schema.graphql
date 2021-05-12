@@ -46,6 +46,8 @@ type Mutation {
     exchangeToken: ExchangeTokenResponse!
     indexTransfer(data: IndexTransferInput!): IndexTransferResponse!
     logout: LogoutResponse!
+    requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
+    updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
     upsertProfile(data: UpsertProfileInput!): Profile!
 }
 
@@ -55,6 +57,7 @@ type Profile {
     avatarUrl: String
     circlesAddress: String
     circlesSafeOwner: String
+    circlesTokenAddress: String
     country: String
     dream: String
     firstName: String!
@@ -68,6 +71,13 @@ type Query {
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
     version: Version!
+    whoami: String
+}
+
+type RequestUpdateSafeResponse {
+    challenge: String
+    errorMessage: String
+    success: Boolean!
 }
 
 type Server {
@@ -78,6 +88,12 @@ type SessionInfo {
     hasProfile: Boolean
     isLoggedOn: Boolean!
     profileId: Int
+}
+
+type UpdateSafeResponse {
+    errorMessage: String
+    newSafeAddress: String
+    success: Boolean!
 }
 
 type Version {
@@ -115,8 +131,16 @@ input QueryUniqueProfileInput {
     id: Int!
 }
 
+input RequestUpdateSafeInput {
+    newSafeAddress: String!
+}
+
 input SearchInput {
     searchString: String!
+}
+
+input UpdateSafeInput {
+    signature: String!
 }
 
 input UpsertProfileInput {
@@ -125,6 +149,7 @@ input UpsertProfileInput {
     avatarUrl: String
     circlesAddress: String
     circlesSafeOwner: String
+    circlesTokenAddress: String
     country: String
     dream: String
     emailAddress: String

@@ -81,6 +81,8 @@ export type Mutation = {
   exchangeToken: ExchangeTokenResponse;
   indexTransfer: IndexTransferResponse;
   logout: LogoutResponse;
+  requestUpdateSafe: RequestUpdateSafeResponse;
+  updateSafe: UpdateSafeResponse;
   upsertProfile: Profile;
 };
 
@@ -105,6 +107,16 @@ export type MutationIndexTransferArgs = {
 };
 
 
+export type MutationRequestUpdateSafeArgs = {
+  data: RequestUpdateSafeInput;
+};
+
+
+export type MutationUpdateSafeArgs = {
+  data: UpdateSafeInput;
+};
+
+
 export type MutationUpsertProfileArgs = {
   data: UpsertProfileInput;
 };
@@ -116,6 +128,7 @@ export type Profile = {
   avatarUrl?: Maybe<Scalars['String']>;
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
+  circlesTokenAddress?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
@@ -130,6 +143,7 @@ export type Query = {
   search: Array<Profile>;
   sessionInfo: SessionInfo;
   version: Version;
+  whoami?: Maybe<Scalars['String']>;
 };
 
 
@@ -154,6 +168,17 @@ export type QueryUniqueProfileInput = {
   id: Scalars['Int'];
 };
 
+export type RequestUpdateSafeInput = {
+  newSafeAddress: Scalars['String'];
+};
+
+export type RequestUpdateSafeResponse = {
+  __typename?: 'RequestUpdateSafeResponse';
+  challenge?: Maybe<Scalars['String']>;
+  errorMessage?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
 export type SearchInput = {
   searchString: Scalars['String'];
 };
@@ -170,6 +195,17 @@ export type SessionInfo = {
   profileId?: Maybe<Scalars['Int']>;
 };
 
+export type UpdateSafeInput = {
+  signature: Scalars['String'];
+};
+
+export type UpdateSafeResponse = {
+  __typename?: 'UpdateSafeResponse';
+  errorMessage?: Maybe<Scalars['String']>;
+  newSafeAddress?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
 
 export type UpsertProfileInput = {
   avatarCid?: Maybe<Scalars['String']>;
@@ -177,6 +213,7 @@ export type UpsertProfileInput = {
   avatarUrl?: Maybe<Scalars['String']>;
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
+  circlesTokenAddress?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   dream?: Maybe<Scalars['String']>;
   emailAddress?: Maybe<Scalars['String']>;
@@ -275,6 +312,14 @@ export type SessionInfoQuery = (
   ) }
 );
 
+export type WhoamiQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type WhoamiQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'whoami'>
+);
+
 export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -363,6 +408,11 @@ export const SessionInfoDocument = gql`
   }
 }
     `;
+export const WhoamiDocument = gql`
+    query whoami {
+  whoami
+}
+    `;
 export const MyProfileDocument = gql`
     query myProfile {
   profiles(query: {}) {
@@ -420,6 +470,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
       return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));
+    },
+    whoami(variables?: WhoamiQueryVariables): Promise<WhoamiQuery> {
+      return withWrapper(() => client.request<WhoamiQuery>(print(WhoamiDocument), variables));
     },
     myProfile(variables?: MyProfileQueryVariables): Promise<MyProfileQuery> {
       return withWrapper(() => client.request<MyProfileQuery>(print(MyProfileDocument), variables));
