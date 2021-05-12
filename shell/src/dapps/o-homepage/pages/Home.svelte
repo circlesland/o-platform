@@ -18,7 +18,7 @@
     <VideoHeader />
     <div class="flex flex-wrap md:flex-nowrap">
       <div class="md:w-3/4">
-        <IntroAnimation />
+        <!-- <IntroAnimation /> -->
         <Steps />
         <Mission />
         <!-- <Dreams /> -->
