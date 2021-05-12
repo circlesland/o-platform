@@ -18,6 +18,7 @@ query myProfile {
         avatarUrl
         avatarCid
         avatarMimeType
+        newsletter
     }
 }
 
