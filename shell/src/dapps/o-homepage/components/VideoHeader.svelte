@@ -32,7 +32,7 @@
 >
   <div
     id="video-overlay"
-    class="z-50 absolute mx-2 text-center video-overlay h-full w-full"
+    class="z-50 absolute text-center video-overlay h-full w-full"
     on:click={() => playVideo()}
   >
     <h1
