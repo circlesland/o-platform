@@ -12,14 +12,14 @@
     player = document.querySelector("vm-player");
 
     // Listening to an event.
-    if (mobile) {
-      player.addEventListener("vmPlay", (event) => {
-        player.enterFullscreen();
-      });
-      player.addEventListener("vmPlaybackEnded", (event) => {
-        player.exitFullscreen();
-      });
-    }
+    // if (mobile) {
+    player.addEventListener("vmPlay", (event) => {
+      player.enterFullscreen();
+    });
+    player.addEventListener("vmPlaybackEnded", (event) => {
+      player.exitFullscreen();
+    });
+    // }
   });
   function playVideo() {
     player.play();
@@ -71,7 +71,7 @@
   <div id="container" class="z-10 w-full max-w-full min-w-full min-h-full ">
     <vm-player playsinline>
       <vm-vimeo
-        video-id="548284463"
+        video-id="548283844"
         cross-origin="true"
         poster="/images/homepage/befree.jpg"
       />
