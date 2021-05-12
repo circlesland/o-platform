@@ -1,4 +1,4 @@
-<div class="w-full bg-secondary">
+<div class="w-full bg-darkblue">
   <div
     class="px-4 py-12 mx-auto bg-cover sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-36"
     style="background-image: url('/images/homepage/totalcitizens.png');"
