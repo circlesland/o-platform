@@ -14,12 +14,14 @@ import {
   shellProcess,
   ShellProcessContext,
 } from "../shared/processes/shellProcess";
-import { getUbi } from "./o-banking/processes/getUbi";
 import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
-import Profile from "./o-banking/pages/Profile.svelte";
+import ProfileComponent from "./o-banking/pages/Profile.svelte";
 import {push} from "svelte-spa-router";
+import {me, Profile} from "../shared/stores/me";
+import {mySafe} from "./o-banking/stores/safe";
+import {getLastLoadedPage} from "../loader";
 
 const transactions: PageManifest = {
   isDefault: true,
@@ -39,7 +41,7 @@ const profile: PageManifest = {
   isDefault: false,
   isSystem: true,
   routeParts: ["profile", ":profileId"],
-  component: Profile,
+  component: ProfileComponent,
   hideFooter: true,
   title: "Profile",
   available: [
@@ -261,12 +263,18 @@ export const banking: DappManifest<DappState> = {
   ],
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
+    const myProfileResult = await new Promise<Profile>((resolve) => {
+      me.subscribe(myProfile => {
+        resolve(myProfile);
+      });
+    });
 
-    if (!localStorage.getItem("circlesKey")) {
-      await push("#/dashboard");
-    } else {
+    if(myProfileResult && myProfileResult.circlesAddress){
       init();
+    } else if ((getLastLoadedPage()?.routeParts[0] ?? "") !== "profile") {
+      await push("#/dashboard");
     }
+
     return {
       initialPage: transactions,
       cancelDependencyLoading: false,
