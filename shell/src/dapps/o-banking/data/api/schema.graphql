@@ -55,11 +55,13 @@ type Profile {
     avatarUrl: String
     circlesAddress: String
     circlesSafeOwner: String
+    circlesTokenAddress: String
     country: String
     dream: String
     firstName: String!
     id: Int!
     lastName: String
+    newsletter: Boolean
 }
 
 type Query {
@@ -124,12 +126,14 @@ input UpsertProfileInput {
     avatarUrl: String
     circlesAddress: String
     circlesSafeOwner: String
+    circlesTokenAddress: String
     country: String
     dream: String
     emailAddress: String
     firstName: String!
     id: Int
     lastName: String
+    newsletter: Boolean
 }
 
 

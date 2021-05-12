@@ -116,11 +116,13 @@ export type Profile = {
   avatarUrl?: Maybe<Scalars['String']>;
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
+  circlesTokenAddress?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['Int'];
   lastName?: Maybe<Scalars['String']>;
+  newsletter?: Maybe<Scalars['Boolean']>;
 };
 
 export type Query = {
@@ -176,12 +178,14 @@ export type UpsertProfileInput = {
   avatarUrl?: Maybe<Scalars['String']>;
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
+  circlesTokenAddress?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   dream?: Maybe<Scalars['String']>;
   emailAddress?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id?: Maybe<Scalars['Int']>;
   lastName?: Maybe<Scalars['String']>;
+  newsletter?: Maybe<Scalars['Boolean']>;
 };
 
 export type Version = {

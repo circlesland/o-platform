@@ -4,6 +4,7 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
+import BooleanEditor from "@o-platform/o-editors/src/BooleanEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
@@ -21,6 +22,7 @@ import * as style from "@dicebear/avatars-avataaars-sprites";
 
 export type UpsertIdentityContextData = {
   id?: number;
+  newsletter?: boolean;
   circlesAddress?: string;
   circlesSafeOwner?: string;
   firstName?: string;
@@ -53,17 +55,30 @@ const strings = {
   placeholderLastName: "Last Name",
   placeholderCountry: "Select a Country",
   placeholderDream: "Your passion.",
+  labelNewsletter: "We will notify you, when you receive new transactions or get marketplace requests. And to always keep up to date with our progress and new developments around CirclesLAND you can subscribe to our monthly newsletter."
 };
 
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
-    initial: "firstName",
+    initial: "newsletter",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<UpsertIdentityContext, any>("error"),
 
+      newsletter: prompt<UpsertIdentityContext, any>({
+        fieldName: "newsletter",
+        onlyWhenDirty: skipIfNotDirty,
+        component: BooleanEditor,
+        params: {
+          label: strings.labelNewsletter,
+          submitButtonText: "Next",
+        },
+        navigation: {
+          next: "#firstName",
+        },
+      }),
       firstName: prompt<UpsertIdentityContext, any>({
         fieldName: "firstName",
         onlyWhenDirty: skipIfNotDirty,
@@ -287,6 +302,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 dream: context.data.dream,
+                newsletter: context.data.newsletter,
                 country: context.data.country,
                 avatarUrl: event.data?.url ?? context.data.avatarUrl,
                 avatarCid: event.data?.hash ?? context.data.avatarCid,
