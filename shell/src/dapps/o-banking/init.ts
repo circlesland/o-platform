@@ -11,7 +11,7 @@ import {showToast} from "../../shared/toast";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
 import {augmentSafeWithTime} from "./data/augmentSafeWithTime";
-import {GetUbiContext, GetUbiContextData} from "./processes/getUbi";
+import {GetUbiContextData} from "./processes/getUbi";
 import {getUBIService} from "./processes/getUBIService";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 
@@ -220,6 +220,10 @@ async function load(args: LoadParams): Promise<Safe> {
 
       await subscribeChainEvents(safe);
 
+      if (_currentSafe && _currentSafe.safeAddress !== emptySafe.safeAddress) {
+        checkUBI(_currentSafe.safeAddress);
+      }
+
       return resolve(safe);
     } catch (e) {
       localStorage.removeItem("safe");
@@ -286,10 +290,6 @@ export function init() {
       }
     }
   });
-
-  if (_currentSafe) {
-    checkUBI(_currentSafe.safeAddress);
-  }
 
   return function stop() {
     shellEventSubscription.unsubscribe();
