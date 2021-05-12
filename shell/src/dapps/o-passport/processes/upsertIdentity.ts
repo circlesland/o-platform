@@ -55,7 +55,8 @@ const strings = {
   placeholderLastName: "Last Name",
   placeholderCountry: "Select a Country",
   placeholderDream: "Your passion.",
-  labelNewsletter: "We will notify you, when you receive new transactions or get marketplace requests. And to always keep up to date with our progress and new developments around CirclesLAND you can subscribe to our monthly newsletter."
+  labelNewsletter:
+    "We will notify you, when you receive new transactions or get marketplace requests. And to always keep up to date with our progress and new developments around CirclesLAND you can subscribe to our monthly newsletter.",
 };
 
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
@@ -237,9 +238,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           src: async (context) => {
             const svg = createAvatar(style, {
               seed: context.data.circlesSafeOwner,
-              backgroundColor: "#65C9FF",
+              // backgroundColor: "#65C9FF",
               topChance: 100,
-              style: "circle",
+              style: "transparent",
               dataUri: true,
             });
             context.data.avatarUrl = svg;

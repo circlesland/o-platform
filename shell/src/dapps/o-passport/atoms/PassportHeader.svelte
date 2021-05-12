@@ -41,33 +41,6 @@
     lastLoadedDapp = getLastLoadedDapp();
   });
 
-  function editProfile() {
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = upsertIdentity;
-        ctx.childContext = {
-          data: {
-            id: profile.id,
-            circlesAddress: profile.circlesAddress,
-            circlesSafeOwner: profile.circlesSafeOwner,
-            avatarCid: profile.avatarCid,
-            avatarUrl: profile.avatarUrl,
-            avatarMimeType: profile.avatarMimeType,
-            firstName: profile.firstName,
-            lastName: profile.lastName,
-            country: profile.country,
-            dream: profile.dream,
-          },
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
-  }
-
   function editProfileField(dirtyFlags: { [x: string]: boolean }) {
     const requestEvent = new RunProcess<ShellProcessContext>(
       shellProcess,
@@ -103,7 +76,7 @@
 </script>
 
 <div
-  class="h-80 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+  class="h-72 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
 >
   {#if lastLoadedDapp && lastLoadedPage}
     <div class="flex flex-row  justify-between">
@@ -168,7 +141,7 @@
     </div>
     <div class="">
       <h2>
-        {profile ? profile.firstName : "Martin"}
+        {profile ? profile.firstName : ""}
         {profile && profile.lastName ? profile.lastName : ""}
         <button
           class="link link-primary text-primary text-2xs self-start -mt-2 -mr-3"
@@ -187,10 +160,5 @@
         </button>
       </h2>
     </div>
-    {#if $me && profile && $me.id == profile.id}
-      <button class="link link-primary text-primary" on:click={editProfile}
-        >Edit Profile</button
-      >
-    {/if}
   </div>
 </div>
