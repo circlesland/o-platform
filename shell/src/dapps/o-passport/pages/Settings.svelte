@@ -2,13 +2,11 @@
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import {me} from "../../../shared/stores/me";
   import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-  import {shellProcess, ShellProcessContext} from "../../../shared/processes/shellProcess";
-  import {upsertIdentity} from "../processes/upsertIdentity";
   import {onMount} from "svelte";
   import {UpsertProfileDocument, WhoamiDocument} from "../data/api/types";
 
-  function editProfile() {
+  async function editProfile() {
+    /*
     const requestEvent = new RunProcess<ShellProcessContext>(
             shellProcess,
             true,
@@ -40,6 +38,28 @@
     );
 
     window.o.publishEvent(requestEvent);
+     */
+    // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const result = await apiClient.mutate({
+      mutation: UpsertProfileDocument,
+      variables: {
+        id: $me.id,
+        circlesAddress: $me.circlesAddress,
+        circlesSafeOwner: $me.circlesSafeOwner,
+        avatarCid: $me.avatarCid,
+        avatarUrl: $me.avatarUrl,
+        avatarMimeType: $me.avatarMimeType,
+        firstName: $me.firstName,
+        lastName: $me.lastName,
+        country: $me.country,
+        dream: $me.dream,
+        newsletter: receiveNewsletter
+      }
+    });
+    if (result.errors) {
+      return;
+    }
   }
 
   let email:string = "unknown";
