@@ -43,8 +43,7 @@ export type TransferContext = ProcessContext<TransferContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelRecipientAddress:
-    "Select the recipient you want to send money to",
+  labelRecipientAddress: "Select the recipient you want to send money to",
   tokensLabel: "Please enter the amount",
   currencyCircles: "CRC",
   currencyXdai: "xDai",
@@ -112,7 +111,8 @@ const processDefinition = (processId: string) =>
           label: strings.labelRecipientAddress,
           graphql: true,
           asyncChoices: async (searchText?: string) => {
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.query({
               query: gql`
                 query search($searchString: String!) {
@@ -257,6 +257,7 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           label: strings.summaryLabel,
+          submitButtonText: "Send Money",
           html: (context) => {
             if (!context.data.tokens) {
               throw new Error(`No currency or amount selected`);

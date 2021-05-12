@@ -15,7 +15,7 @@
   let displayName: string;
   let displayableFromName: string;
   let classes: string;
-
+  let message: String;
   let amountInWei: number;
 
   $: {
@@ -27,8 +27,13 @@
 
     displayableFromName =
       displayableFromName === "0x0000000000000000000000000000000000000000"
-        ? "UBI"
+        ? "CirclesLand"
         : displayableFromName;
+
+    message =
+      displayableFromName === "CirclesLand"
+        ? "Universal basic income"
+        : message;
   }
 
   $: {
@@ -209,6 +214,21 @@
                       </div>
                     </td>
                   </tr>
+                  {#if message}
+                    <tr
+                      class="relative transform scale-100 text-xs py-1 border-b border-gray-300 cursor-default"
+                    >
+                      <td class="pl-5 pr-3 whitespace-no-wrap">
+                        <div class="text-gray-400">Message</div>
+                      </td>
+
+                      <td class="px-2 py-2 whitespace-no-wrap">
+                        <div class="leading-5 text-gray-500 font-medium">
+                          {message}
+                        </div>
+                      </td>
+                    </tr>
+                  {/if}
                   <tr
                     class="relative transform scale-100 text-xs py-1 cursor-default"
                   >
