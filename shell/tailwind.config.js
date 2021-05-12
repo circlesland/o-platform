@@ -40,6 +40,7 @@ module.exports = {
         circleslightblue: "#7c96a3",
         linkgrey: "#97acbc",
         darkgrey: "#484b52",
+        darkblue: "#061549",
         transactionpositive: "#32CD32",
         transactionnegative: "#DC143C",
         primary: "#0ad99c",
