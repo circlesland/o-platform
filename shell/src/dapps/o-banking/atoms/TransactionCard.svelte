@@ -23,7 +23,7 @@
 
     displayName =
       displayName === "0x0000000000000000000000000000000000000000"
-        ? "UBI"
+        ? "CirclesLand"
         : displayName;
 
     pictureUrl =
@@ -36,7 +36,10 @@
         : undefined;
 
     pictureUrl =
-      displayName === "UBI" ? "/images/common/circles.png" : pictureUrl;
+      displayName === "CirclesLand" ? "/images/common/circles.png" : pictureUrl;
+
+    message =
+      displayName === "CirclesLand" ? "Universal basic income" : message;
 
     classes =
       transfer.direction === "in"
