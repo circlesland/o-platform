@@ -16,7 +16,7 @@
           <p class="text-base text-gray-600 md:text-lg">
             By starting to follow your passion and accepting Circles as payment
             for it, you create your own joyful space towards an eventful,
-            manifold and fulfilled life for everyone in your community.
+            manifold and fulfilled life for everyone.
           </p>
         </div>
       </div>
