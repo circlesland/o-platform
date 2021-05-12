@@ -126,8 +126,8 @@
     {/if}
   {/if}
   <section class="justify-center mb-2 text-circlesdarkblue">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-      <div class="text-primary text-sm font-bold">WHAT IS TRUST?</div>
+    <div class="flex flex-col infocard shadow p-4 w-full space-y-2">
+      <div class="text-info text-sm font-bold">WHAT IS THIS?</div>
     </div>
     <div class="w-full shadow ">
       <img
@@ -136,7 +136,7 @@
         alt="Trust Explained"
       />
     </div>
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
+    <div class="flex flex-col infocard shadow p-4 w-full space-y-2">
       <div class="text-sm">
         In CirclesLand everyone has their own personalized Circles money.
         <br /><br />

@@ -99,3 +99,14 @@
   --tw-border-opacity: 1!important;
   border-color: hsla(var(--er, 14 100% 57%)/var(--tw-border-opacity));
 }
+
+.infocard {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border-color: #bee5eb;
+  border: 1px solid #bee5eb;
+}
+
+.infocard-body {
+  color: #0c5460; 
+}

@@ -5,7 +5,7 @@
   import AssetCard from "../atoms/AssetCard.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 
-  let xdai :{[x:string]:any} = {
+  let xdai: { [x: string]: any } = {
     symbol: "xdai",
     icon: "",
     title: "xDAI",
@@ -36,8 +36,17 @@
         balance: "ß",
         variety: 1,
       };
-      xdai.balance = parseFloat(RpcGateway.get().utils.fromWei($mySafe.accountxDai, "ether").toString())
-              + parseFloat(RpcGateway.get().utils.fromWei($mySafe.xDaiBalance, "ether").toString())
+      xdai.balance =
+        parseFloat(
+          RpcGateway.get()
+            .utils.fromWei($mySafe.accountxDai, "ether")
+            .toString()
+        ) +
+        parseFloat(
+          RpcGateway.get()
+            .utils.fromWei($mySafe.xDaiBalance, "ether")
+            .toString()
+        );
     }
     if ($mySafe && $mySafe.acceptedTokens) {
       circles = {
@@ -48,14 +57,31 @@
         variety: Object.values($mySafe.acceptedTokens.tokens).filter((o) =>
           new BN(o.balance).gt(new BN("0"))
         ).length,
-      }
-    };
+      };
+    }
   }
 </script>
 
 <AssetsHeader />
 
 <div class="mx-4 -mt-6">
+  <section class="justify-center mb-2">
+    <div class="flex flex-col infocard shadow p-4 w-full space-y-2 rounded-sm">
+      <div class="text-info text-xs font-circles font-bold text-left">
+        WHAT IS THIS?
+      </div>
+
+      <div class="text-sm md:text-base">
+        Since everyone has their own personalized Circles money, you will always
+        only be able to receive and hold Circles of those you directly trust.
+        <br /><br />To see which personalize Circles you are currently holding,
+        click onto the Circles Card.
+        <br /><br />xDai is the currency that is used to invite others and pay
+        transaction fees.
+      </div>
+    </div>
+  </section>
+
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
       <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
