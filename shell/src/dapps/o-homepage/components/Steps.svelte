@@ -40,15 +40,14 @@
         Become a citizen of CirclesLand
       </h2>
       <p class="text-base text-gray-600 md:text-lg">
-        CirclesLand is being step by step rolled out on a decentralized and
-        resilient infrastructure, with the goal to bring back more and more
-        control around all your data, collaborative decision making and money
-        creation policies into your hands.
+        Introducing the next generation of a fully opensource, digital and
+        borderless country-as-a-service platform, starting with Circles a
+        new universal basic income currency to secure our most basic needs.
       </p>
     </div>
-    <div class="grid gap-8 row-gap-8 grid-cols-1 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-8 row-gap-8 lg:grid-cols-3">
       <div
-        class="bg-white border shadow-2xl p-4 rounded-lg sm:text-center max-h-72"
+        class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center max-h-72"
       >
         <div
           class="flex items-center justify-center w-24 h-24 mb-4 text-5xl font-extrabold bg-green-100 rounded-full text-primary sm:mx-auto"
@@ -64,7 +63,7 @@
         </p>
       </div>
       <div
-        class="mt-0 lg:mt-24 bg-white border shadow-2xl p-4 rounded-lg sm:text-center max-h-72"
+        class="p-4 mt-0 bg-white border rounded-lg shadow-2xl lg:mt-24 sm:text-center max-h-72"
       >
         <div
           class="flex items-center justify-center w-24 h-24 mb-4 text-5xl font-extrabold bg-green-100 rounded-full text-primary sm:mx-auto"
@@ -75,13 +74,11 @@
           Get invited
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          For each interaction with the underlying xDAI blockchain, you need
-          tiny fees. With an invite you receive 0.10 xDai$, enough for 3000+
-          transactions.
+          To receive your very first personalized Circles you need to get invited by another citizen.
         </p>
       </div>
       <div
-        class="mt-0 lg:mt-48 bg-white border shadow-2xl p-4 rounded-lg sm:text-center max-h-72"
+        class="p-4 mt-0 bg-white border rounded-lg shadow-2xl lg:mt-48 sm:text-center max-h-72"
       >
         <div
           class="flex items-center justify-center w-24 h-24 mb-4 text-5xl font-extrabold bg-green-100 rounded-full text-primary sm:mx-auto"
@@ -92,8 +89,7 @@
           Unlock your UBI
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          Once your banking safe got successfully funded with xDai$, you receive
-          your first universal basic income in Circles.
+          Once you got successfully invited, you receive every month universal basic income in Circles.
         </p>
       </div>
     </div>
