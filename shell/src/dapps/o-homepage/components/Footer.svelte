@@ -2,8 +2,8 @@
   <div
     class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8"
   >
-    <div class="grid gap-10 row-gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
-      <div class="sm:col-span-2">
+    <div class="grid gap-10 row-gap-6 mb-8 xs:grid-cols-1 sm:grid-cols-4">
+      <div>
         <img src="/circles.png" alt="CirclesLand" class="w-16" />
         <div class="mt-6 lg:max-w-sm">
           <p class="text-sm text-white">
@@ -13,32 +13,71 @@
         </div>
       </div>
       <div>
-        <p class="font-semibold tracking-wide text-gray-300 uppercase">Links</p>
+        <p class="font-semibold tracking-wide text-gray-300 uppercase">
+          Navigation
+        </p>
         <ul class="mt-2 space-y-2">
           <li>
             <a
               href="/"
+              class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="/#/citizens"
+              class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
+              >Citizens</a
+            >
+          </li>
+          <li>
+            <a
+              href="/#/countries"
+              class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
+              >Countries</a
+            >
+          </li>
+          <li>
+            <a
+              href="/#/milestones"
+              class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
+              >Milestones</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-semibold tracking-wide text-gray-300 uppercase">Links</p>
+        <ul class="mt-2 space-y-2">
+          <li>
+            <a
+              href="https://circlesland.ghost.io/"
+              target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Blog</a
             >
           </li>
           <li>
             <a
-              href="/"
+              href="https://aboutcircles.com/"
+              target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Forum</a
             >
           </li>
           <li>
             <a
-              href="/"
+              href="https://discord.com/invite/CS6xq7jECR"
+              target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Chat</a
             >
           </li>
           <li>
             <a
-              href="/"
+              href="https://circlesland.ghost.io/whitepaper/"
+              target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Whitepaper</a
             >
@@ -75,21 +114,24 @@
         <ul class="mt-2 space-y-2">
           <li>
             <a
-              href="/"
+              href="https://blog.circles.land/terms-of-service/"
+              target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Terms Of Service</a
             >
           </li>
           <li>
             <a
-              href="/"
+              href="https://blog.circles.land/privacy/"
+              target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Data Privacy</a
             >
           </li>
           <li>
             <a
-              href="/"
+              href="https://blog.circles.land/imprint/"
+              target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Imprint</a
             >
