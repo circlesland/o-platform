@@ -44,6 +44,7 @@ mutation upsertProfile(
     $avatarMimeType: String
     $circlesAddress: String
     $circlesSafeOwner: String
+    $newsletter: Boolean
 ) {
     upsertProfile(
         data: {
@@ -57,6 +58,7 @@ mutation upsertProfile(
             avatarMimeType: $avatarMimeType
             circlesAddress: $circlesAddress
             circlesSafeOwner: $circlesSafeOwner
+            newsletter: $newsletter
         }
     ) {
         id
@@ -69,5 +71,6 @@ mutation upsertProfile(
         avatarMimeType
         circlesAddress
         circlesSafeOwner
+        newsletter
     }
 }

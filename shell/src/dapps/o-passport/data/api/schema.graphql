@@ -60,6 +60,7 @@ type Profile {
     firstName: String!
     id: Int!
     lastName: String
+    newsletter: Boolean
 }
 
 type Query {
@@ -130,6 +131,7 @@ input UpsertProfileInput {
     firstName: String!
     id: Int
     lastName: String
+    newsletter: Boolean
 }
 
 

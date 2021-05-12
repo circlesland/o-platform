@@ -121,6 +121,7 @@ export type Profile = {
   firstName: Scalars['String'];
   id: Scalars['Int'];
   lastName?: Maybe<Scalars['String']>;
+  newsletter?: Maybe<Scalars['Boolean']>;
 };
 
 export type Query = {
@@ -182,6 +183,7 @@ export type UpsertProfileInput = {
   firstName: Scalars['String'];
   id?: Maybe<Scalars['Int']>;
   lastName?: Maybe<Scalars['String']>;
+  newsletter?: Maybe<Scalars['Boolean']>;
 };
 
 export type Version = {
@@ -250,6 +252,7 @@ export type UpsertProfileMutationVariables = Exact<{
   avatarMimeType?: Maybe<Scalars['String']>;
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
+  newsletter?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -257,7 +260,7 @@ export type UpsertProfileMutation = (
   { __typename?: 'Mutation' }
   & { upsertProfile: (
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'circlesAddress' | 'circlesSafeOwner'>
+    & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'circlesAddress' | 'circlesSafeOwner' | 'newsletter'>
   ) }
 );
 
@@ -279,7 +282,7 @@ export type MyProfileQuery = (
   { __typename?: 'Query' }
   & { profiles: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter'>
   )> }
 );
 
@@ -333,9 +336,9 @@ export const LogoutDocument = gql`
 }
     `;
 export const UpsertProfileDocument = gql`
-    mutation upsertProfile($id: Int, $firstName: String!, $lastName: String, $dream: String, $country: String, $avatarUrl: String, $avatarCid: String, $avatarMimeType: String, $circlesAddress: String, $circlesSafeOwner: String) {
+    mutation upsertProfile($id: Int, $firstName: String!, $lastName: String, $dream: String, $country: String, $avatarUrl: String, $avatarCid: String, $avatarMimeType: String, $circlesAddress: String, $circlesSafeOwner: String, $newsletter: Boolean) {
   upsertProfile(
-    data: {id: $id, firstName: $firstName, lastName: $lastName, dream: $dream, country: $country, avatarUrl: $avatarUrl, avatarCid: $avatarCid, avatarMimeType: $avatarMimeType, circlesAddress: $circlesAddress, circlesSafeOwner: $circlesSafeOwner}
+    data: {id: $id, firstName: $firstName, lastName: $lastName, dream: $dream, country: $country, avatarUrl: $avatarUrl, avatarCid: $avatarCid, avatarMimeType: $avatarMimeType, circlesAddress: $circlesAddress, circlesSafeOwner: $circlesSafeOwner, newsletter: $newsletter}
   ) {
     id
     firstName
@@ -347,6 +350,7 @@ export const UpsertProfileDocument = gql`
     avatarMimeType
     circlesAddress
     circlesSafeOwner
+    newsletter
   }
 }
     `;
@@ -372,6 +376,7 @@ export const MyProfileDocument = gql`
     avatarUrl
     avatarCid
     avatarMimeType
+    newsletter
   }
 }
     `;
