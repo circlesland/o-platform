@@ -12,6 +12,7 @@ export type Profile = {
   avatarUrl?: string
   avatarCid?: string
   avatarMimeType?: string
+  newsletter?:boolean
 }
 
 export const me = readable<Profile|null>(null, function start(set) {
