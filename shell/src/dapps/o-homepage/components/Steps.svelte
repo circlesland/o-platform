@@ -40,9 +40,9 @@
         Become a citizen of CirclesLand
       </h2>
       <p class="text-base text-gray-600 md:text-lg">
-        Introducing the next generation of a fully opensource, digital and
-        borderless country-as-a-service platform, starting with Circles a
-        new universal basic income currency to secure our most basic needs.
+        Introducing the next generation of your 100% opensource, digital and
+        borderless country-as-a-service platform, empowering you with Circles our
+        new universal basic income currency to secure the most basic needs for all of us.
       </p>
     </div>
     <div class="grid grid-cols-1 gap-8 row-gap-8 lg:grid-cols-3">
