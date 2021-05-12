@@ -18,6 +18,8 @@
       : token.tokenOwner;
 
     pictureUrl = token.ownerProfile ? token.ownerProfile.avatarUrl : undefined;
+
+    console.log("TOKEN: ", token);
   }
 
   function loadDetailPage(path) {
@@ -46,8 +48,12 @@
 
       <div class="text-left flex-grow truncate relative">
         <div
-          class="max-w-full truncateThis cursor-pointer"
-          on:click={() => loadDetailPage(token.ownerProfile.safeAddress)}
+          class="max-w-full truncateThis "
+          class:cursor-pointer={displayName != "You"}
+          on:click={() =>
+            displayName == "You"
+              ? false
+              : loadDetailPage(token.ownerProfile.safeAddress)}
         >
           <h2 class="text-2xl sm:text-3xl truncate ">
             {displayName}
