@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Navigation from "../components/Navigation.svelte";
+  import Header from "../components/Header.svelte";
   import VideoHeader from "../components/VideoHeader.svelte";
   import Mission from "../components/Mission.svelte";
   import Steps from "../components/Steps.svelte";
@@ -13,8 +13,8 @@
 </script>
 
 <div class="flex flex-col h-screen">
-  <Navigation />
-  <main class="flex-1 overflow-y-auto">
+  <Header />
+  <main class="flex-1 overflow-y-auto overflow-x-hidden">
     <VideoHeader />
     <div class="flex flex-wrap md:flex-nowrap">
       <div class="md:w-3/4">

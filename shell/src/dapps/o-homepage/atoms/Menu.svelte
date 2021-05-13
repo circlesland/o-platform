@@ -1,0 +1,92 @@
+<script lang="ts">
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import {
+    shellProcess,
+    ShellProcessContext,
+  } from "../../../shared/processes/shellProcess";
+  import { Generate } from "@o-platform/o-utils/dist/generate";
+  import {
+    identify,
+    IdentifyContextData,
+  } from "../../o-passport/processes/identify/identify";
+
+  async function login() {
+    const requestEvent = new RunProcess<ShellProcessContext>(
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = identify;
+        ctx.childContext = {
+          data: <IdentifyContextData>{
+            redirectTo: "/dashboard",
+          },
+        };
+        return ctx;
+      }
+    );
+
+    requestEvent.id = Generate.randomHexString(8);
+    window.o.publishEvent(requestEvent);
+  }
+</script>
+
+<nav
+  class="relative flex w-full items-center justify-between lg:justify-center lg:space-x-16"
+>
+  <ul class="flex items-center hidden space-x-8 lg:flex">
+    <li>
+      <a
+        href="https://discord.gg/CS6xq7jECR"
+        target="_blank"
+        aria-label="Our product"
+        title="Our product"
+        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+        >Chat</a
+      >
+    </li>
+    <li>
+      <a
+        href="https://aboutcircles.com"
+        target="_blank"
+        aria-label="Our product"
+        title="Our product"
+        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+        >Forum</a
+      >
+    </li>
+  </ul>
+  <a
+    href="/"
+    aria-label="Company"
+    title="Company"
+    class="inline-flex items-center h-12"
+  >
+    <img src="/circles.png" alt="CirclesLAND" class="h-12" />
+  </a>
+  <ul class="flex items-center hidden space-x-8 lg:flex">
+    <li>
+      <a
+        href="https://circlesland.ghost.io/"
+        target="_blank"
+        aria-label="About us"
+        title="About us"
+        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+        >Blog</a
+      >
+    </li>
+    <li>
+      <a
+        href="https://circlesland.ghost.io/whitepaper/"
+        target="_blank"
+        aria-label="Sign in"
+        title="Sign in"
+        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+        >Whitepaper</a
+      >
+    </li>
+  </ul>
+  <div class="absolute w-12 self-center justify-self-end right-0">
+    <button class="btn-link" on:click={login}>Log in</button>
+  </div>
+  <!-- Mobile menu -->
+</nav>
