@@ -120,7 +120,7 @@ createMachine<TransferCirclesContext, any>({
               destinations,
               values
             );
-            const receipt = transferTroughResult.toPromise();
+            const receipt = await transferTroughResult.toPromise();
 
             console.log(receipt);
           } catch (e) {
