@@ -76,8 +76,5 @@ $: { drawGraph(transfers) }
 </script>
 
 <main>
-    <div bind:this={graph} style="width: 100%; height: 600px;"></div>
+    <div bind:this={graph} style="width: 100%; height: 400px;" class="bg-white"></div>
 </main>
-
-<style>
-</style>
