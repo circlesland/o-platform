@@ -1,14 +1,12 @@
-import {
-  faPeopleArrows,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-miva/pages/Home.svelte";
-import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-const index : PageManifest = {
+const index: PageManifest = {
   isDefault: true,
   isSystem: true,
-  routeParts: [],
+  routeParts: [""],
   component: Home,
   title: "miva",
   available: [
@@ -16,16 +14,15 @@ const index : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-
 
 export interface DappState {
   // put state here
 }
 
-export const miva : DappManifest<DappState> = {
+export const miva: DappManifest<DappState> = {
   dappId: "miva:1",
   isSingleton: true,
   dependencies: [],
@@ -42,8 +39,8 @@ export const miva : DappManifest<DappState> = {
     // Do init stuff here
     return {
       initialPage: index,
-      cancelDependencyLoading: false
+      cancelDependencyLoading: false,
     };
   },
-  pages: [index]
+  pages: [index],
 };
