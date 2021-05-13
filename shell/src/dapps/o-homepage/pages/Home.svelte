@@ -14,7 +14,7 @@
 
 <div class="flex flex-col h-screen">
   <Header />
-  <main class="flex-1 overflow-y-auto overflow-x-hidden">
+  <main class="flex-1 overflow-y-auto">
     <VideoHeader />
     <div class="flex flex-wrap md:flex-nowrap">
       <div class="md:w-3/4">
@@ -30,7 +30,7 @@
         <Aside />
       </div>
     </div>
-    <Progress />
     <Footer />
   </main>
+  <Progress />
 </div>

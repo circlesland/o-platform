@@ -38,7 +38,7 @@
 </script>
 
 <div
-  class="progressnav relative pt-1 w-full sticky bottom-0 bg-white border-t border-base-300 z-50"
+  class="progressnav pt-1 w-full sticky bottom-0 bg-white border-t border-base-300 z-50"
 >
   <div class="w-full flex flex-row items-stretch bg-white">
     <div class="text-secondary tracking-wider m-auto">
@@ -115,6 +115,7 @@
 <style>
   .progressnav {
     -webkit-backface-visibility: hidden;
+    position: -webkit-sticky;
   }
   .joinnowbutton {
     transform: translate(-50%, 0) !important;
