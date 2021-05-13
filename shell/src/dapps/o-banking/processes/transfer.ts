@@ -17,6 +17,7 @@ import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { BN } from "ethereumjs-util";
+import {ProfilesDocument} from "../../o-passport/data/api/types";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -29,6 +30,7 @@ export type TransferContextData = {
   maxFlows?: {
     [currency: string]: string;
   };
+  summaryHtml?: string;
   acceptSummary?: boolean;
 };
 
@@ -84,7 +86,7 @@ const processDefinition = (processId: string) =>
 
               return hasSender && hasRecipient && hasAmount && isXdai;
             },
-            target: "#acceptSummary",
+            target: "#prepareSummary",
           },
           {
             target: "#checkRecipientAddress",
@@ -248,30 +250,55 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           previous: "#tokens",
-          next: "#acceptSummary",
+          next: "#prepareSummary",
           canSkip: () => true,
         },
       }),
-      acceptSummary: prompt<TransferContext, any>({
-        fieldName: "acceptSummary",
-        component: HtmlViewer,
-        params: {
-          label: strings.summaryLabel,
-          submitButtonText: "Send Money",
-          html: (context) => {
+      prepareSummary: {
+        id: "prepareSummary",
+        invoke: {
+          src: async (context) => {
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.query({
+              query: gql`
+                query profiles($circlesAddress:[String!]) {
+                  profiles(query:{circlesAddress: $circlesAddress}) {
+                    id
+                    circlesAddress
+                    circlesSafeOwner
+                    firstName
+                    lastName
+                    avatarUrl
+                    avatarCid
+                    avatarMimeType
+                  }
+                }
+              `,
+              variables: {
+                circlesAddress: [context.data.recipientAddress]
+              },
+            });
+
+            if (result.errors && result.errors.length) {
+              throw new Error(`Couldn't query the api for recipient ${context.data.recipientAddress}. Reason: \n${JSON.stringify(result.errors, null, 2)}`)
+            }
+
+            const foundProfile = result.data.profiles && result.data.profiles.length ? result.data.profiles[0] : undefined;
+
+            const to = foundProfile ? (foundProfile.firstName + foundProfile.lastName ?? "") : context.data.recipientAddress;
+            const toAvatarUrl = ""; // TODO: Generate avatar from safe address if no profile was found
+
             if (!context.data.tokens) {
               throw new Error(`No currency or amount selected`);
             } else {
-              return `<span>You are about to transfer</span>
+              context.data.summaryHtml = `<span>You are about to transfer</span>
                 <strong class='text-primary block'>${
                   context.data.tokens.amount
-                } ${context.data.tokens.currency.toUpperCase()}</strong>
+              } ${context.data.tokens.currency.toUpperCase()}</strong>
                 <span class='block'>
                 to 
                 </span>
-                <strong class='block break-all'>${
-                  context.data.recipientAddress
-                }</strong>
+                <strong class='block break-all'>${to}</strong>
                 <span class='block mt-4'>Message:</span>
                 <span class='block'>
                 ${context.data.message}
@@ -281,6 +308,17 @@ const processDefinition = (processId: string) =>
                 </strong>`;
             }
           },
+          onDone: "#acceptSummary",
+          onError: "#error"
+        }
+      },
+      acceptSummary: prompt<TransferContext, any>({
+        fieldName: "acceptSummary",
+        component: HtmlViewer,
+        params: {
+          label: strings.summaryLabel,
+          submitButtonText: "Send Money",
+          html: (context) => context.data.summaryHtml,
         },
         navigation: {
           previous: "#tokens",
