@@ -90,7 +90,7 @@
         </p>
         <div class="flex items-center mt-1 space-x-3">
           <a
-            href="/"
+            href="https://twitter.com/circlesland"
             class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
           >
             <svg viewBox="0 0 24 24" fill="currentColor" class="h-5">
@@ -99,7 +99,7 @@
               />
             </svg>
           </a>
-          <a
+          <!-- <a
             href="/"
             class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
           >
@@ -109,12 +109,12 @@
                 d="M19.999,3h-10C6.14,3,3,6.141,3,10.001v10C3,23.86,6.141,27,10.001,27h10C23.86,27,27,23.859,27,19.999v-10   C27,6.14,23.859,3,19.999,3z M15,21c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S18.309,21,15,21z M22,9c-0.552,0-1-0.448-1-1   c0-0.552,0.448-1,1-1s1,0.448,1,1C23,8.552,22.552,9,22,9z"
               />
             </svg>
-          </a>
+          </a> -->
         </div>
         <ul class="mt-2 space-y-2">
           <li>
             <a
-              href="https://blog.circles.land/terms-of-service/"
+              href="https://circlesland.ghost.io/terms-of-service/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Terms Of Service</a
@@ -122,7 +122,7 @@
           </li>
           <li>
             <a
-              href="https://blog.circles.land/privacy/"
+              href="https://circlesland.ghost.io/privacy/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Data Privacy</a
@@ -130,7 +130,7 @@
           </li>
           <li>
             <a
-              href="https://blog.circles.land/imprint/"
+              href="https://circlesland.ghost.io/imprint/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Imprint</a
