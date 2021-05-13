@@ -14,6 +14,7 @@ import {augmentSafeWithTime} from "./data/augmentSafeWithTime";
 import {GetUbiContextData} from "./processes/getUbi";
 import {getUBIService} from "./processes/getUBIService";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
+import {HUB_BLOCK} from "@o-platform/o-circles/dist/consts";
 
 let _currentSafe: Safe | null = emptySafe;
 let loading = false;
@@ -129,7 +130,7 @@ async function load(args: LoadParams): Promise<Safe> {
         publishRefreshEvent(safe);
         _currentSafe = safe;
 
-        safe = await Queries.addHubTransfers(safe, safe.token.firstBlock);
+        safe = await Queries.addHubTransfers(safe, safe.token?.firstBlock ?? HUB_BLOCK.toNumber());
         const hubTransferCount = safe.transfers.rows.length;
         console.log(new Date().getTime() + ": " + `Added ${hubTransferCount} hub transfers.`)
       }

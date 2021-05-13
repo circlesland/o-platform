@@ -62,24 +62,12 @@ const strings = {
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
-    initial: "newsletter",
+    initial: "firstName",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<UpsertIdentityContext, any>("error"),
 
-      newsletter: prompt<UpsertIdentityContext, any>({
-        fieldName: "newsletter",
-        onlyWhenDirty: skipIfNotDirty,
-        component: BooleanEditor,
-        params: {
-          label: strings.labelNewsletter,
-          submitButtonText: "Next",
-        },
-        navigation: {
-          next: "#firstName",
-        },
-      }),
       firstName: prompt<UpsertIdentityContext, any>({
         fieldName: "firstName",
         onlyWhenDirty: skipIfNotDirty,
@@ -187,7 +175,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             target: "#avatar",
           },
           {
-            target: "#upsertIdentity",
+            target: "#newsletter",
           },
         ],
       },
@@ -228,7 +216,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             target: "#generateAvataar",
           },
           {
-            target: "#upsertIdentity",
+            target: "#newsletter",
           },
         ],
       },
@@ -245,7 +233,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             });
             context.data.avatarUrl = svg;
           },
-          onDone: "#upsertIdentity",
+          onDone: "#newsletter",
           onError: "#error",
         },
       },
@@ -272,7 +260,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             {
               cond: (context) =>
                 !!context.data.avatar && !!context.data.avatar.bytes,
-              target: "#upsertIdentity",
+              target: "#newsletter",
             },
             {
               target: "#generateAvataar",
@@ -281,6 +269,18 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           onError: "#error",
         },
       },
+      newsletter: prompt<UpsertIdentityContext, any>({
+        fieldName: "newsletter",
+        onlyWhenDirty: skipIfNotDirty,
+        component: BooleanEditor,
+        params: {
+          label: strings.labelNewsletter,
+          submitButtonText: "Next",
+        },
+        navigation: {
+          next: "#upsertIdentity",
+        },
+      }),
       upsertIdentity: {
         id: "upsertIdentity",
         invoke: {
