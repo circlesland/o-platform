@@ -21,10 +21,16 @@ let compute = async function() {
 
 </script>
 
-<main>
-    <h1>Computer Transfers</h1>
-    <input bind:value={transferFrom} placeholder="from">
-    <button on:click={compute}>compute</button>
+<main class="w-full">
+    <input bind:value={transferFrom} placeholder="enter here you circles safe address" class="w-full px-4 py-2 mb-6 text-2xl border border-gray-200 rounded-lg shadow-xl"><br>
+    <button
+        class="btn btn-block btn-primary"
+        on:click={compute}
+    >
+ 
+        Calculate amount
+    </button>                                                     
+
 </main>
 
 <style>
