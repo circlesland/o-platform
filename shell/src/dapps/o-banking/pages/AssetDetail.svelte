@@ -62,9 +62,9 @@
       };
     }
 
-    tokens = Object.values($mySafe.acceptedTokens.tokens)
-      .concat($mySafe.token ? [$mySafe.token] : [])
-      .filter((o) => new BN(o.balance).gt(new BN("0")));
+    tokens = ($mySafe.token ? [$mySafe.token] : [])
+            .concat(Object.values($mySafe.acceptedTokens.tokens))
+            .filter((o) => new BN(o.balance).gt(new BN("0")));
   }
 </script>
 
