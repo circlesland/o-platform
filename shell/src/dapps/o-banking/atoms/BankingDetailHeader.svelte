@@ -18,7 +18,7 @@
 
 <!-- BANKING HEADER START -->
 <div
-  class="h-80 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+  class="h-72 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
 >
   {#if lastLoadedDapp && lastLoadedPage}
     <div class="h-24 pt-0 pl-2 flex flex-row  justify-between ">
@@ -78,7 +78,7 @@
     {:else}
       <span class="block text-base">Transfer</span>
     {/if}
-    <span class="inline-block text-8xl font-circles ml-10 ">
+    <span class="inline-block text-6xl font-circles ml-10 ">
       {#if classes == "transactionpositive"}
         {Number.parseFloat(
           Web3.utils.fromWei(amount ? amount : "0", "ether")

@@ -1,6 +1,4 @@
-import {
-  faPeopleArrows,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-homepage/pages/Home.svelte";
 import Citizens from "./o-homepage/pages/Citizens.svelte";
 import Countries from "./o-homepage/pages/Countries.svelte";
@@ -9,10 +7,10 @@ import Milestones from "./o-homepage/pages/Milestones.svelte";
 import Privacy from "./o-homepage/pages/Privacy.svelte";
 import Tos from "./o-homepage/pages/Tos.svelte";
 import Learn from "./o-homepage/pages/Learn.svelte";
-import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-const index : PageManifest = {
+const index: PageManifest = {
   isDefault: true,
   isSystem: true,
   routeParts: [],
@@ -23,10 +21,10 @@ const index : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-const citizens : PageManifest = {
+const citizens: PageManifest = {
   isDefault: true,
   isSystem: true,
   routeParts: ["citizens"],
@@ -37,10 +35,10 @@ const citizens : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-const countries : PageManifest = {
+const countries: PageManifest = {
   isDefault: true,
   isSystem: true,
   routeParts: ["countries"],
@@ -51,10 +49,10 @@ const countries : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-const imprint : PageManifest = {
+const imprint: PageManifest = {
   isDefault: true,
   isSystem: true,
   routeParts: ["imprint"],
@@ -65,10 +63,10 @@ const imprint : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-const milestones : PageManifest = {
+const milestones: PageManifest = {
   isDefault: true,
   isSystem: true,
   routeParts: ["milestones"],
@@ -79,10 +77,10 @@ const milestones : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-const privacy : PageManifest = {
+const privacy: PageManifest = {
   isDefault: true,
   isSystem: true,
   routeParts: ["privacy"],
@@ -93,10 +91,10 @@ const privacy : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-const tos : PageManifest = {
+const tos: PageManifest = {
   isDefault: true,
   isSystem: true,
   routeParts: ["tos"],
@@ -107,10 +105,10 @@ const tos : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-const learn : PageManifest = {
+const learn: PageManifest = {
   isDefault: true,
   isSystem: true,
   routeParts: ["learn"],
@@ -121,16 +119,15 @@ const learn : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-
 
 export interface DappState {
   // put state here
 }
 
-export const homepage : DappManifest<DappState> = {
+export const homepage: DappManifest<DappState> = {
   dappId: "homepage:1",
   isSingleton: true,
   dependencies: [],
@@ -147,8 +144,8 @@ export const homepage : DappManifest<DappState> = {
     // Do init stuff here
     return {
       initialPage: index,
-      cancelDependencyLoading: false
+      cancelDependencyLoading: false,
     };
   },
-  pages: [index, citizens, countries, imprint, milestones, privacy, tos, learn]
+  pages: [index, citizens, countries, imprint, milestones, privacy, tos, learn],
 };
