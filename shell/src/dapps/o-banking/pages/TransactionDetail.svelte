@@ -111,9 +111,9 @@
               <div class="rounded-full w-24 h-24  m-auto">
                 <img
                   alt={displayableFromName}
-                  src={transfer.fromProfile
+                  src={transfer.fromProfile && transfer.fromProfile.avatarUrl
                     ? transfer.fromProfile.avatarUrl
-                    : "/images/common/circles.png"}
+                    : (transfer.from.startsWith("0x000") ? "/images/common/circles.png" : pictureUrl)}
                 />
               </div>
             </div>
@@ -145,7 +145,7 @@
                   alt={transfer.toProfile
                     ? transfer.toProfile.displayName
                     : transfer.to}
-                  src={transfer.toProfile
+                  src={transfer.toProfile && transfer.toProfile.avatarUrl
                     ? transfer.toProfile.avatarUrl
                     : pictureUrl}
                 />
