@@ -41,7 +41,7 @@
       </h2>
       <p class="text-base text-gray-600 md:text-lg">
         Introducing the next generation of your 100% opensource, digital and
-        borderless country-as-a-service platform, unlocking the your new Circles universal basic income to secure the most basic needs for all of us.
+        borderless country-as-a-service platform, unlocking your new Circles universal basic income to secure the most basic needs for all of us.
       </p>
     </div>
     <div class="grid grid-cols-1 gap-8 row-gap-8 lg:grid-cols-3">
