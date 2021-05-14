@@ -12,7 +12,6 @@ export interface IShell {
   authorization?:string;
   authClient?: ApiConnection,
   apiClient?: ApiConnection,
-  theGraphClient?: ApolloClient<NormalizedCacheObject>,
   lastError?: any;
   events?: Subject<PlatformEvent>,
   publishEvent?: (event: PlatformEvent) => void,

@@ -4,7 +4,7 @@ import TransactionDetail from "./o-banking/pages/TransactionDetail.svelte";
 import Assets from "./o-banking/pages/Assets.svelte";
 import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
 import Trusts from "./o-banking/pages/Trusts.svelte";
-import TrustDetail from "./o-banking/pages/TrustDetail.svelte";
+import ProfilePage from "./o-banking/pages/Profile.svelte";
 import Graph from "./o-banking/pages/Graph.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
@@ -17,7 +17,6 @@ import {
 import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
-import ProfileComponent from "./o-banking/pages/Profile.svelte";
 import {push} from "svelte-spa-router";
 import {me, Profile} from "../shared/stores/me";
 import {mySafe} from "./o-banking/stores/safe";
@@ -40,8 +39,8 @@ const transactions: PageManifest = {
 const profile: PageManifest = {
   isDefault: false,
   isSystem: true,
-  routeParts: ["profile", ":profileId"],
-  component: ProfileComponent,
+  routeParts: ["profile", ":id"],
+  component: ProfilePage,
   hideFooter: true,
   title: "Profile",
   available: [
@@ -144,8 +143,8 @@ const sendInvite: PageManifest = {
 const trustDetail: PageManifest = {
   isDefault: false,
   isSystem: true,
-  routeParts: ["trusts", ":trustPartner"],
-  component: TrustDetail,
+  routeParts: ["trusts", ":id"],
+  component: ProfilePage,
   title: "TrustDetail",
   available: [
     (detail) => {

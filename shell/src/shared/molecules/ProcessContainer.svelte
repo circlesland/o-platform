@@ -182,7 +182,9 @@
           event = next.event;
         }
 
-        console.log("ProcessContainer: In/Out <- from Process: ", JSON.stringify(next.event, null, 2));
+        try {
+          console.log("ProcessContainer: In/Out <- from Process: ", JSON.stringify(next.event, null, 2));
+        } catch {}
 
         // If the event is an error event, then set the error property else clear it
         if (event.type === "xstate.error") {

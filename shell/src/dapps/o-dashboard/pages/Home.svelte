@@ -23,7 +23,7 @@
   let showFundHint: boolean = false;
   let inviteLink: string = "";
 
-  onMount(async () => {
+  const init = async () => {
     const pk = localStorage.getItem("circlesKey");
     if (!pk || localStorage.getItem("isCreatingSafe") !== "true") {
       disableBanking = !pk;
@@ -31,7 +31,7 @@
     }
 
     accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk)
-      .address;
+            .address;
 
     if (localStorage.getItem("isCreatingSafe")) {
       showFundHint = true;
@@ -39,7 +39,9 @@
     }
     accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
     showFundHint = new BN(accountBalance).lt(new BN(safeDeployThreshold));
-  });
+  };
+
+  onMount(init);
 
   const copy = () => {
     const app = new CopyClipBoard({
@@ -48,6 +50,13 @@
     });
     app.$destroy();
   };
+
+  const sub = window.o.events.subscribe(event => {
+    if (event.type !== "shell.refresh") {
+      return;
+    }
+    init();
+  })
 
   $: {
     if ($me) {
