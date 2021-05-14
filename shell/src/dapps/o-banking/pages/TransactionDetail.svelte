@@ -5,6 +5,8 @@
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
 
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+  import {createAvatar} from "@dicebear/avatars";
+  import * as style from "@dicebear/avatars-avataaars-sprites";
 
   export let params: {
     _id: string;
@@ -17,6 +19,7 @@
   let classes: string;
   let message: String;
   let amountInWei: number;
+  let otherSafeAddress: string;
 
   $: {
     transfer = $mySafe.transfers.rows.find((o) => o._id == params._id);
@@ -34,9 +37,7 @@
       displayableFromName === "CirclesLand"
         ? "Universal basic income"
         : message;
-  }
 
-  $: {
     displayName =
       transfer.direction === "in"
         ? transfer.fromProfile
@@ -61,6 +62,20 @@
         : "transactionnegative";
 
     amountInWei = parseFloat(RpcGateway.get().utils.fromWei(transfer.amount));
+
+    otherSafeAddress =
+            transfer.direction === "in"
+                    ? transfer.from
+                    : transfer.to;
+
+    if (!pictureUrl) {
+      pictureUrl = createAvatar(style, {
+        seed: otherSafeAddress,
+        topChance: 100,
+        style: "transparent",
+        dataUri: true,
+      });
+    }
   }
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
@@ -132,7 +147,7 @@
                     : transfer.to}
                   src={transfer.toProfile
                     ? transfer.toProfile.avatarUrl
-                    : "none"}
+                    : pictureUrl}
                 />
               </div>
             </div>
