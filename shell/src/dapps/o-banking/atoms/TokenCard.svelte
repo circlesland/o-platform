@@ -63,7 +63,7 @@
           on:click={() =>
             displayName == "You"
               ? false
-              : loadDetailPage(token.ownerProfile.safeAddress)}
+              : loadDetailPage(token.tokenOwner)}
         >
           <h2 class="text-2xl sm:text-3xl truncate ">
             {displayName}
