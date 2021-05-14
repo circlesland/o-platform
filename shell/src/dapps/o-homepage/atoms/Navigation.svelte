@@ -6,9 +6,9 @@
 </script>
 
 <header
-  class="flex justify-between bg-gray-200 p-2 items-center text-gray-600 border-b-2"
+  class="flex items-center justify-between p-2 text-gray-600 bg-gray-100 border-b-2"
 >
-  <nav class="mt-2 z-50 lg:hidden">
+  <nav class="z-50 mt-2 lg:hidden">
     <Hamburger bind:open={sidebar} />
   </nav>
 
