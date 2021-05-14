@@ -3,6 +3,8 @@
   import { push } from "svelte-spa-router";
   import Web3 from "web3";
   import { Token } from "../data/circles/queries";
+  import {createAvatar} from "@dicebear/avatars";
+  import * as style from "@dicebear/avatars-avataaars-sprites";
 
   export let token: Token;
   export let label: String;
@@ -18,6 +20,14 @@
       : token.tokenOwner;
 
     pictureUrl = token.ownerProfile ? token.ownerProfile.avatarUrl : undefined;
+    if (!pictureUrl) {
+      pictureUrl = createAvatar(style, {
+        seed: token.tokenOwner,
+        topChance: 100,
+        style: "transparent",
+        dataUri: true,
+      });
+    }
 
     console.log("TOKEN: ", token);
   }

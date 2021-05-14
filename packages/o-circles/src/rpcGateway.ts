@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
 export class RpcGateway {
     static readonly gateways = [
         "wss://rpc.circles.land/",
-        "wss://circles-xdai-rpc.lab10.io/wss"
+        //"wss://circles-xdai-rpc.lab10.io/wss"
     ];
 
     private static _lastProviderUrl?: string;
