@@ -101,7 +101,8 @@
       </div>
     </section>
 
-    {#each [accountxDai, safexDai] as token}
+    {#each [accountxDai, safexDai]
+            .sort((a,b) => parseFloat(a.balance) > parseFloat(b.balance) ? -1 : parseFloat(a.balance) < parseFloat(b.balance) ? 1 :0) as token}
       <XdaiAssetCard
         address={token.address}
         title={token.title}
