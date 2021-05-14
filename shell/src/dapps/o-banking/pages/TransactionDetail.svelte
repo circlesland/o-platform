@@ -3,9 +3,9 @@
   import Time from "svelte-time";
   import { mySafe } from "../stores/safe";
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
-
+  import { push } from "svelte-spa-router";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import {createAvatar} from "@dicebear/avatars";
+  import { createAvatar } from "@dicebear/avatars";
   import * as style from "@dicebear/avatars-avataaars-sprites";
 
   export let params: {
@@ -64,9 +64,7 @@
     amountInWei = parseFloat(RpcGateway.get().utils.fromWei(transfer.amount));
 
     otherSafeAddress =
-            transfer.direction === "in"
-                    ? transfer.from
-                    : transfer.to;
+      transfer.direction === "in" ? transfer.from : transfer.to;
 
     if (!pictureUrl) {
       pictureUrl = createAvatar(style, {
@@ -106,14 +104,23 @@
         <div
           class="flex flex-row justify-center bg-white w-full space-x-2 sm:space-x-6"
         >
-          <div class="flex flex-col">
+          <div
+            class="flex flex-col cursor-pointer"
+            on:click={() => {
+              if (!transfer.from.startsWith("0x000")) {
+                push("#/banking/trusts/" + transfer.from);
+              }
+            }}
+          >
             <div class="avatar">
               <div class="rounded-full w-24 h-24  m-auto">
                 <img
                   alt={displayableFromName}
                   src={transfer.fromProfile && transfer.fromProfile.avatarUrl
                     ? transfer.fromProfile.avatarUrl
-                    : (transfer.from.startsWith("0x000") ? "/images/common/circles.png" : pictureUrl)}
+                    : transfer.from.startsWith("0x000")
+                    ? "/images/common/circles.png"
+                    : pictureUrl}
                 />
               </div>
             </div>
@@ -138,7 +145,14 @@
               />
             </svg>
           </div>
-          <div class="flex flex-col">
+          <div
+            class="flex flex-col cursor-pointer"
+            on:click={() => {
+              if (!transfer.to.startsWith("0x000")) {
+                push("#/banking/trusts/" + transfer.to);
+              }
+            }}
+          >
             <div class="avatar">
               <div class="rounded-full w-24 h-24  m-auto">
                 <img
