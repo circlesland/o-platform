@@ -9,6 +9,8 @@
   import { setTrust } from "../processes/setTrust";
   import { TrustObject } from "../data/circles/types";
   import { tryGetCurrentSafe } from "../init";
+  import {createAvatar} from "@dicebear/avatars";
+  import * as style from "@dicebear/avatars-avataaars-sprites";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -53,6 +55,15 @@
       pictureUrl = trusting.profile ? trusting.profile.avatarUrl : undefined;
       safeAddress = trusting.safeAddress;
       id = trusting._id;
+    }
+
+    if (!pictureUrl) {
+      pictureUrl = createAvatar(style, {
+        seed: safeAddress,
+        topChance: 100,
+        style: "transparent",
+        dataUri: true,
+      });
     }
   }
 

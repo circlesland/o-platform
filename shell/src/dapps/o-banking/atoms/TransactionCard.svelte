@@ -3,11 +3,14 @@
   import { push } from "svelte-spa-router";
   import Web3 from "web3";
   import { Transfer } from "../data/circles/queries";
+  import {createAvatar} from "@dicebear/avatars";
+  import * as style from "@dicebear/avatars-avataaars-sprites";
 
   export let transfer: Transfer;
   export let message: String;
 
   let pictureUrl: string;
+  let otherSafeAddress: string;
   let displayName: string;
   let classes: String;
 
@@ -20,6 +23,11 @@
         : transfer.toProfile
         ? transfer.toProfile.displayName
         : transfer.to;
+
+    otherSafeAddress =
+            transfer.direction === "in"
+                    ? transfer.from
+                    : transfer.to;
 
     displayName =
       displayName === "0x0000000000000000000000000000000000000000"
@@ -45,6 +53,16 @@
       transfer.direction === "in"
         ? "transactionpositive"
         : "transactionnegative";
+
+
+    if (!pictureUrl) {
+      pictureUrl = createAvatar(style, {
+        seed: otherSafeAddress,
+        topChance: 100,
+        style: "transparent",
+        dataUri: true,
+      });
+    }
   }
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
