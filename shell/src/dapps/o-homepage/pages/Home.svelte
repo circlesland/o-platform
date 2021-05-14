@@ -19,8 +19,8 @@
     <div class="flex flex-wrap md:flex-nowrap">
       <div class="w-full">
         <!-- <IntroAnimation /> -->
-        <Steps />
         <Mission />
+        <Steps />
         <!-- <Dreams /> -->
         <!-- <Citizens />
         <Countries />

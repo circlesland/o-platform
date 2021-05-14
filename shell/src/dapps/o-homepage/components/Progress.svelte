@@ -111,7 +111,7 @@
   </button>
   <div class="flex overflow-hidden text-xs bg-gray-300 h-11">
     <div
-      style="width:70%"
+      style="width:100%"
       class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-gradient-to-r from-gradient1 to-gradient2"
     />
   </div>
