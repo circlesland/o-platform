@@ -63,8 +63,8 @@
     }
 
     tokens = ($mySafe.token ? [$mySafe.token] : [])
-            .concat(Object.values($mySafe.acceptedTokens.tokens))
-            .filter((o) => new BN(o.balance).gt(new BN("0")));
+      .concat(Object.values($mySafe.acceptedTokens.tokens))
+      .filter((o) => new BN(o.balance).gt(new BN("0")));
   }
 </script>
 
@@ -80,7 +80,7 @@
       </div>
     </section>
   {:else if params && params.symbol == "xdai"}
-    <section class="justify-center mb-2">
+    <section class="justify-center mb-4">
       <div
         class="flex flex-col infocard shadow p-4 w-full space-y-2 rounded-sm"
       >
@@ -100,7 +100,17 @@
       </div>
     </section>
 
-    <section class="mb-8">
+    {#each [accountxDai, safexDai] as token}
+      <XdaiAssetCard
+        address={token.address}
+        title={token.title}
+        symbol={token.symbol}
+        balance={token.balance}
+        variety={token.variety}
+        colorClass="text-primary"
+      />
+    {/each}
+    <section class="mt-4">
       <div class="bg-white shadow px-2 pb-8 w-full rounded-sm">
         <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary" />
         <div class="text-center">
@@ -133,16 +143,6 @@
         </div>
       </div>
     </section>
-    {#each [accountxDai, safexDai] as token}
-      <XdaiAssetCard
-        address={token.address}
-        title={token.title}
-        symbol={token.symbol}
-        balance={token.balance}
-        variety={token.variety}
-        colorClass="text-primary"
-      />
-    {/each}
   {:else}
     {#each tokens as token}
       {#if token && token.balance > 0}
