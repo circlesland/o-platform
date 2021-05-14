@@ -17,18 +17,18 @@
   <main class="flex-1 overflow-y-auto">
     <VideoHeader />
     <div class="flex flex-wrap md:flex-nowrap">
-      <div class="md:w-3/4">
+      <div class="w-full">
         <!-- <IntroAnimation /> -->
         <Steps />
         <Mission />
         <!-- <Dreams /> -->
-        <Citizens />
+        <!-- <Citizens />
         <Countries />
-        <Milestones />
+        <Milestones /> -->
       </div>
-      <div class="md:w-1/4">
+      <!-- <div class="md:w-1/4">
         <Aside />
-      </div>
+      </div> -->
     </div>
     <Footer />
   </main>
