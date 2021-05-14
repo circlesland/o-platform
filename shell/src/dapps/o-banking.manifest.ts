@@ -19,7 +19,6 @@ import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
 import {push} from "svelte-spa-router";
 import {me, Profile} from "../shared/stores/me";
-import {mySafe} from "./o-banking/stores/safe";
 import {getLastLoadedPage} from "../loader";
 
 const transactions: PageManifest = {
