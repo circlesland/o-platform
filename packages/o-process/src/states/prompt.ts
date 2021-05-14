@@ -13,7 +13,8 @@ const { assign } = actions;
  * @param spec
  */
 
-export type PromptSpec = {
+export type PromptSpec<TContext, TEvent> = {
+  entry?: (context:TContext, event:TEvent) => void;
   fieldName: string;
   component: any;
   id?: string;
@@ -44,7 +45,7 @@ export type PromptSpec = {
 export function prompt<
   TContext extends ProcessContext<any>,
   TEvent extends PlatformEvent
->(spec: PromptSpec) {
+>(spec: PromptSpec<TContext, TEvent>) {
   let canGoBack = (context: ProcessContext<any>, event: any) => !!spec.navigation?.previous;
   if (canGoBack && spec.navigation?.canGoBack) {
     canGoBack = spec.navigation.canGoBack;
@@ -55,6 +56,12 @@ export function prompt<
     initial: "checkSkip",
     states: {
       checkSkip: {
+        entry: (context:TContext, event:TEvent) => {
+          console.log(`show: ${spec.id} ${spec.fieldName}`)
+          if (spec.entry) {
+            spec.entry(context, event);
+          }
+        },
         invoke: {
           src: async (context:TContext) => {
             return context.data;
@@ -73,7 +80,9 @@ export function prompt<
       },
       show: {
         entry: [
-          () => console.log(`show: ${spec.id} ${spec.fieldName}`),
+          () => {
+            console.log(`show: ${spec.id} ${spec.fieldName}`);
+          },
           show({
             fieldName: spec.fieldName,
             component: spec.component,

@@ -2,8 +2,14 @@
   import { EditorContext } from "./editorContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
+  import {onMount} from "svelte";
 
   export let context: EditorContext;
+
+  let initialData:any;
+  onMount(() => {
+    initialData = context.data[context.fieldName];
+  });
 
   function submit() {
     const answer = new Continue();
