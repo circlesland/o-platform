@@ -46,7 +46,7 @@
 <div class="mx-4 -mt-6">
   {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts || !$mySafe.trustRelations.trusting || !$mySafe.trustRelations.trustedBy}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>Loading Trusts...</div>
         </div>
@@ -54,7 +54,7 @@
     </section>
   {:else if $mySafe.ui.error}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
             <b>An error occurred while loading the recent activities:</b>
@@ -66,9 +66,9 @@
   {:else}
     <section class="flex items-center justify-center mb-1 ">
       <div
-        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-secondary text-xs font-circles font-bold text-left">
+        <div class="text-xs font-bold text-left text-secondary font-circles">
           MUTUAL TRUST
         </div>
       </div>
@@ -83,9 +83,9 @@
 
     <section class="flex items-center justify-center mb-1 ">
       <div
-        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-secondary text-xs font-circles font-bold text-left">
+        <div class="text-xs font-bold text-left text-secondary font-circles">
           TRUSTING
         </div>
       </div>
@@ -97,9 +97,9 @@
 
     <section class="flex items-center justify-center mb-1 ">
       <div
-        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-primary text-xs font-circles font-bold text-left">
+        <div class="text-xs font-bold text-left text-primary font-circles">
           TRUSTED BY
         </div>
       </div>
@@ -112,9 +112,9 @@
     {#if $mySafe.trustRelations.untrusted}
       <section class="flex items-center justify-center mb-1 ">
         <div
-          class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
         >
-          <div class="text-error text-xs font-circles font-bold text-left">
+          <div class="text-xs font-bold text-left text-error font-circles">
             TRUST REMOVED
           </div>
         </div>
@@ -126,8 +126,8 @@
     {/if}
   {/if}
   <section class="justify-center mb-2 text-circlesdarkblue">
-    <div class="flex flex-col infocard shadow p-4 w-full space-y-2">
-      <div class="text-info text-sm font-bold">WHAT IS THIS?</div>
+    <div class="flex flex-col w-full p-4 space-y-2 shadow infocard">
+      <div class="text-sm font-bold text-info">WHAT IS THIS?</div>
     </div>
     <div class="w-full shadow ">
       <img
@@ -136,9 +136,9 @@
         alt="Trust Explained"
       />
     </div>
-    <div class="flex flex-col infocard shadow p-4 w-full space-y-2">
+    <div class="flex flex-col w-full p-4 space-y-2 shadow infocard">
       <div class="text-sm">
-        In CirclesLand everyone has their own personalized Circles money.
+        In CirclesLand everyone has their own personalized Circles money. You have "YOU" Circles and your friend Bob has "BOB" Circles.
         <br /><br />
         To be able to transfer Circles to someone you first need to get trusted by
         others. When you want to receive money you have to trust them back.
@@ -154,7 +154,7 @@
           class="btn-link">Learn more</a
         >
       </div>
-      <button class="btn btn-primary mt-6 mx-auto">copy my trust link</button>
+      <button class="mx-auto mt-6 btn btn-primary">copy my trust link</button>
     </div>
   </section>
 </div>
