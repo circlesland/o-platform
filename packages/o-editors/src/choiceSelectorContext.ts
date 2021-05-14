@@ -1,7 +1,7 @@
 import {EditorContext} from "./editorContext";
 
 export type Choice = {
-    value:string,
+    value:any,
     label:string
 };
 export type ChoiceSelectorContext = EditorContext & {
