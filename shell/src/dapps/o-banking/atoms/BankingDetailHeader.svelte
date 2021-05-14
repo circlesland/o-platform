@@ -17,11 +17,12 @@
 </script>
 
 <!-- BANKING HEADER START -->
-<div
-  class="h-72 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
->
-  {#if lastLoadedDapp && lastLoadedPage}
-    <div class="h-24 pt-0 pl-2 flex flex-row  justify-between ">
+
+{#if lastLoadedDapp && lastLoadedPage}
+  <div
+    class="flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white sticky -top-0.5 z-10"
+  >
+    <div class="pt-0 pl-2 flex flex-row w-full justify-between ">
       <div
         class="self-start cursor-pointer"
         on:click|once={() => history.back()}
@@ -69,7 +70,11 @@
         </button>
       </div>
     </div>
-  {/if}
+  </div>
+{/if}
+<div
+  class="h-60 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+>
   <div class="self-center text-center mb-8 block">
     {#if classes == "transactionpositive"}
       <span class="block ">Received</span>
