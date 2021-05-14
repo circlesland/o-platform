@@ -155,10 +155,10 @@ const processDefinition = (processId: string) =>
 
         component: BooleanEditor,
         params: {
-          label: "Do you accept our ",
-          link: "https://circles.name/tos",
-          linkLabel: "terms of service",
-          submitButtonText: "Got it",
+          label: "Have you read and accept our ",
+          link: "https://circlesland.ghost.io/terms-of-service",
+          linkLabel: "terms of service & privacy policy",
+          submitButtonText: "I read and accept them",
         },
 
         dataSchema: yup
