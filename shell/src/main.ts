@@ -169,9 +169,6 @@ connectToApi().then(() => {
   console.log(`Connected to __AUTH_ENDPOINT__ and __API_ENDPOINT__`)
 });
 
-const theGraphConnection = new ApiConnection("https://api.thegraph.com/subgraphs/name/circlesubi/circles");
-shell.theGraphClient = theGraphConnection.connect();
-
 window.o = shell;
 
 console.log("Starting ..", {

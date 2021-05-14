@@ -11,11 +11,11 @@ import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {Web3Contract} from "@o-platform/o-circles/dist/web3Contract";
 import {BN} from "ethereumjs-util";
 import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
-import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
 import {Profile} from "../data/api/types";
 import {UpsertProfileDocument} from "../../o-passport/data/api/types";
-import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+import {emptySafe} from "../data/emptySafe";
+import {push} from "svelte-spa-router";
 
 export type HubSignupContextData = {
   privateKey:string;
@@ -149,13 +149,16 @@ createMachine<HubSignupContext, any>({
 
           console.log("Signed up at hub:", receipt);
         },
-        onDone: "#loadProfile",
+        onDone: "#success",
         onError: "#error"
       }
     },
     success: {
       id: 'success',
       type: 'final',
+      entry: () => {
+        push("#/banking/transactions");
+      },
       data: (context, event: PlatformEvent) => {
         return context.data;
       }
