@@ -344,7 +344,7 @@
                 href="#/{lastLoadedDapp.routeParts.join('/') +
                   '/' +
                   page.routeParts.join('/')}"
-                class="justify-self-center tab text-center focus:text-teal-500 hover:text-teal-500"
+                class="justify-self-center tab text-center"
                 class:hidden={isOpen}
               >
                 <NavItem
