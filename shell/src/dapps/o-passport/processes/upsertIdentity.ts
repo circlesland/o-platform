@@ -270,6 +270,13 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
       },
       newsletter: prompt<UpsertIdentityContext, any>({
+        entry: (context, event) => {
+          console.log("Newsletter entry()", event)
+          if (event.data?.url) {
+            context.data.avatarUrl = event.data?.url;
+            context.data.avatarMimeType = event.data?.mimeType;
+          }
+        },
         fieldName: "newsletter",
         onlyWhenDirty: skipIfNotDirty,
         component: BooleanEditor,
@@ -305,18 +312,11 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 dream: context.data.dream,
                 newsletter: context.data.newsletter,
                 country: context.data.country,
-                avatarUrl: event.data?.url ?? context.data.avatarUrl,
-                avatarCid: event.data?.hash ?? context.data.avatarCid,
-                avatarMimeType:
-                  event.data?.mimeType ?? context.data.avatarMimeType,
+                avatarUrl: context.data.avatarUrl,
+                avatarCid: context.data.avatarCid,
+                avatarMimeType: context.data.avatarMimeType,
               },
             });
-
-            if (event?.data?.url) {
-              context.data.avatarCid = event?.data?.hash;
-              context.data.avatarUrl = event?.data?.url;
-              context.data.avatarMimeType = event?.data?.mimeType;
-            }
 
             return result.data.upsertProfile;
           },
