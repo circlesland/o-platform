@@ -228,6 +228,28 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
               seed: context.data.circlesSafeOwner,
               // backgroundColor: "#65C9FF",
               topChance: 100,
+              mouth: [
+                "default",
+                "eating",
+                "serious",
+                "smile",
+                "tongue",
+                "twinkle",
+              ],
+              eyes: [
+                "close",
+                "closed",
+                "default",
+                "roll",
+                "eyeRoll",
+                "happy",
+                "hearts",
+                "side",
+                "squint",
+                "surprised",
+                "wink",
+                "winkWacky",
+              ],
               style: "transparent",
               dataUri: true,
             });
@@ -271,7 +293,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       },
       newsletter: prompt<UpsertIdentityContext, any>({
         entry: (context, event) => {
-          console.log("Newsletter entry()", event)
+          console.log("Newsletter entry()", event);
           if (event.data?.url) {
             context.data.avatarUrl = event.data?.url;
             context.data.avatarMimeType = event.data?.mimeType;
