@@ -91,6 +91,28 @@
       {/if}
     {/each}
   {:else}
-    <span>No recent activities</span>
+    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+        <div class="flex flex-col items-start">
+          <div>
+            <span>No recent activities</span>
+          </div>
+        </div>
+      </div>
+    </section>
   {/if}
+  <section class="justify-center mb-4">
+    <div class="flex flex-col infocard shadow p-4 w-full space-y-2 rounded-sm">
+      <div class="text-info text-xs font-circles font-bold text-left">
+        WHAT IS THIS?
+      </div>
+
+      <div class="text-sm md:text-base">
+        This is your Circles banking account and you just got your first 50
+        Circles as a welcome gift.
+        <br /><br />From today on you will unconditionally receive 8 more
+        Circles every day in the form of your personal universal basic income.
+      </div>
+    </div>
+  </section>
 </div>
