@@ -148,7 +148,7 @@
       {#if token && token.balance > 0}
         <TokenCard
           {token}
-          label="HOLDING TOKENS FROM"
+          label="HOLDING CIRCLES FROM"
           colorClass="text-primary"
         />
       {/if}
