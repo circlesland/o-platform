@@ -9,7 +9,7 @@
     <h2
       class="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-secondary font-circles sm:text-4xl md:mx-auto"
     >
-      How to get your hands in Miva?
+      How to get your hands on Miva?
     </h2>
     <p class="text-base text-gray-600 md:text-lg">
         Minerva Wallet is a great crypto and identity wallet
