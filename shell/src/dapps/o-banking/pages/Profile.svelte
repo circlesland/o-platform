@@ -1,31 +1,31 @@
 <script lang="ts">
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
-  import {transfer} from "../processes/transfer";
-  import {setTrust} from "../processes/setTrust";
+  import { transfer } from "../processes/transfer";
+  import { setTrust } from "../processes/setTrust";
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
-  import {mySafe} from "../stores/safe";
-  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-  import {ProfilesDocument} from "../../o-passport/data/api/types";
-  import {Profile} from "../data/api/types";
+  import { mySafe } from "../stores/safe";
+  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+  import { ProfilesDocument } from "../../o-passport/data/api/types";
+  import { Profile } from "../data/api/types";
   import gql from "graphql-tag";
-  import {createAvatar} from "@dicebear/avatars";
+  import { createAvatar } from "@dicebear/avatars";
   import * as style from "@dicebear/avatars-avataaars-sprites";
-  import {invite} from "../../o-passport/processes/invite/invite";
-  import {getCountryName} from "src/shared/countries";
+  import { invite } from "../../o-passport/processes/invite/invite";
+  import { getCountryName } from "src/shared/countries";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
-  import {me} from "../../../shared/stores/me";
+  import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
+  import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
 
   export let params: {
     id?: String;
   };
 
-  $:{
+  $: {
     if (params) {
       isLoading = true;
       loadProfile();
@@ -38,6 +38,7 @@
   let isEditable: boolean = false;
   let isLoading: boolean = true;
   let isMe: boolean = false;
+  let name: string;
 
   let profile: {
     id?: number;
@@ -47,9 +48,9 @@
     displayName: string;
     avatarUrl?: string;
     avatarCid?: string;
-    avatarMimeType?:string;
-    firstName?:string;
-    lastName?:string;
+    avatarMimeType?: string;
+    firstName?: string;
+    lastName?: string;
     circlesAddress?: string;
     circlesSafeOwner?: string;
 
@@ -61,35 +62,38 @@
 
   async function loadProfile() {
     if (!params || !params.id) {
-      console.warn(`No profile specified ('id' must contain safeAddress or profileId)`)
+      console.warn(
+        `No profile specified ('id' must contain safeAddress or profileId)`
+      );
       return;
     }
     if (Number.parseInt(params.id) && !params.id.startsWith("0x")) {
-      await loadProfileByProfileId(Number.parseInt(params.id))
+      await loadProfileByProfileId(Number.parseInt(params.id));
     } else if (RpcGateway.get().utils.isAddress(params.id)) {
-      await loadProfileBySafeAddress(params.id)
+      await loadProfileBySafeAddress(params.id);
     } else {
-      throw new Error(`params.id isn't an integer nor an eth address.`)
+      throw new Error(`params.id isn't an integer nor an eth address.`);
     }
     isMe = profile.id == ($me ? $me.id : 0);
     isLoading = false;
+    name = profile.safeAddress;
   }
 
   function loadTrustRelation(safeAddress: string): {
-    trusting?: number
-    trustedBy?: number
+    trusting?: number;
+    trustedBy?: number;
   } {
     safeAddress = RpcGateway.get().utils.toChecksumAddress(safeAddress);
     if (!$mySafe.trustRelations) {
       return {
         trusting: undefined,
-        trustedBy: undefined
+        trustedBy: undefined,
       };
     }
 
     const trust: {
-      trusting?: number
-      trustedBy?: number
+      trusting?: number;
+      trustedBy?: number;
     } = {};
 
     const trusting = $mySafe.trustRelations.trusting[safeAddress];
@@ -110,30 +114,37 @@
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
       query: gql`
-                query profiles($circlesAddress:[String!]) {
-                  profiles(query:{circlesAddress: $circlesAddress}) {
-                    id
-                    circlesAddress
-                    circlesSafeOwner
-                    firstName
-                    lastName
-                    avatarUrl
-                    avatarCid
-                    avatarMimeType
-                    dream
-                    country
-                  }
-                }
-              `,
+        query profiles($circlesAddress: [String!]) {
+          profiles(query: { circlesAddress: $circlesAddress }) {
+            id
+            circlesAddress
+            circlesSafeOwner
+            firstName
+            lastName
+            avatarUrl
+            avatarCid
+            avatarMimeType
+            dream
+            country
+          }
+        }
+      `,
       variables: {
-        circlesAddress: [safeAddress]
+        circlesAddress: [safeAddress],
       },
     });
     if (result.errors) {
-      throw new Error(`Couldn't load a profile with safeAddress '${safeAddress}': ${JSON.stringify(result.errors)}`);
+      throw new Error(
+        `Couldn't load a profile with safeAddress '${safeAddress}': ${JSON.stringify(
+          result.errors
+        )}`
+      );
     }
 
-    const profile = result.data.profiles && result.data.profiles.length ? result.data.profiles[0] : undefined;
+    const profile =
+      result.data.profiles && result.data.profiles.length
+        ? result.data.profiles[0]
+        : undefined;
     if (profile) {
       setProfile(profile);
       return;
@@ -144,11 +155,14 @@
     const gardenResult = await fetch(requestUrl);
     if (gardenResult && gardenResult.status == 200) {
       const resultJson = await gardenResult.json();
-      const profile = resultJson.data && resultJson.data.length ? resultJson.data[0] : undefined;
+      const profile =
+        resultJson.data && resultJson.data.length
+          ? resultJson.data[0]
+          : undefined;
       setProfile({
         circlesAddress: safeAddress,
         firstName: profile ? profile.username : "",
-        avatarUrl: profile ? profile.avatarUrl : undefined
+        avatarUrl: profile ? profile.avatarUrl : undefined,
       });
       return;
     }
@@ -156,7 +170,7 @@
     // 3. No profile found
     setProfile({
       circlesAddress: safeAddress,
-      firstName: ""
+      firstName: "",
     });
   }
 
@@ -165,14 +179,21 @@
     const result = await apiClient.query({
       query: ProfilesDocument,
       variables: {
-        id: profileId
-      }
+        id: profileId,
+      },
     });
     if (result.errors) {
-      throw new Error(`Couldn't load a profile with id '${profileId}': ${JSON.stringify(result.errors)}`);
+      throw new Error(
+        `Couldn't load a profile with id '${profileId}': ${JSON.stringify(
+          result.errors
+        )}`
+      );
     }
 
-    const apiProfile: Profile = result.data.profiles && result.data.profiles.length ? result.data.profiles[0] : undefined;
+    const apiProfile: Profile =
+      result.data.profiles && result.data.profiles.length
+        ? result.data.profiles[0]
+        : undefined;
     if (!apiProfile) {
       throw new Error(`Couldn't find a profile with id '${profileId}'.`);
     }
@@ -190,7 +211,9 @@
     firstName: string;
     lastName?: string;
   }) {
-    const trust = apiProfile.circlesAddress ? loadTrustRelation(apiProfile.circlesAddress) : undefined;
+    const trust = apiProfile.circlesAddress
+      ? loadTrustRelation(apiProfile.circlesAddress)
+      : undefined;
     isEditable = $me && $me.id === apiProfile.id;
 
     if (!apiProfile.avatarUrl && apiProfile.circlesAddress) {
@@ -212,87 +235,85 @@
       lastName: apiProfile.lastName,
       circlesAddress: apiProfile.circlesAddress,
       circlesSafeOwner: apiProfile.circlesSafeOwner,
-      displayName: `${apiProfile.firstName} ${apiProfile.lastName ? apiProfile.lastName : ""}`,
+      displayName: `${apiProfile.firstName} ${
+        apiProfile.lastName ? apiProfile.lastName : ""
+      }`,
       trusting: trust ? trust.trusting : undefined,
-      trustedBy: trust ? trust.trustedBy : undefined
+      trustedBy: trust ? trust.trustedBy : undefined,
     };
   }
 
   function execTransfer() {
-    if (!profile || !$mySafe.safeAddress || isMe)
-      return;
+    if (!profile || !$mySafe.safeAddress || isMe) return;
 
     window.o.publishEvent(
-            new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-              ctx.childProcessDefinition = transfer;
-              ctx.childContext = {
-                data: {
-                  safeAddress: $mySafe.safeAddress,
-                  recipientAddress: profile.safeAddress
-                },
-              };
-              return ctx;
-            })
+      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
+        ctx.childProcessDefinition = transfer;
+        ctx.childContext = {
+          data: {
+            safeAddress: $mySafe.safeAddress,
+            recipientAddress: profile.safeAddress,
+          },
+        };
+        return ctx;
+      })
     );
   }
 
   function execTrust() {
-    if (!profile || !$mySafe.safeAddress || isMe)
-      return;
+    if (!profile || !$mySafe.safeAddress || isMe) return;
 
     window.o.publishEvent(
-            new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-              ctx.childProcessDefinition = setTrust;
-              ctx.childContext = {
-                data: {
-                  safeAddress: $mySafe.safeAddress,
-                  trustLimit: 100,
-                  trustReceiver: profile.safeAddress,
-                  privateKey: localStorage.getItem("circlesKey")
-                },
-              };
-              return ctx;
-            })
+      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
+        ctx.childProcessDefinition = setTrust;
+        ctx.childContext = {
+          data: {
+            safeAddress: $mySafe.safeAddress,
+            trustLimit: 100,
+            trustReceiver: profile.safeAddress,
+            privateKey: localStorage.getItem("circlesKey"),
+          },
+        };
+        return ctx;
+      })
     );
   }
 
   function execUntrust() {
-    if (!profile || !$mySafe.safeAddress || isMe)
-      return;
+    if (!profile || !$mySafe.safeAddress || isMe) return;
 
     window.o.publishEvent(
-            new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-              ctx.childProcessDefinition = setTrust;
-              ctx.childContext = {
-                data: {
-                  safeAddress: $mySafe.safeAddress,
-                  trustLimit: 0,
-                  trustReceiver: profile.safeAddress,
-                  privateKey: localStorage.getItem("circlesKey")
-                },
-              };
-              return ctx;
-            })
+      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
+        ctx.childProcessDefinition = setTrust;
+        ctx.childContext = {
+          data: {
+            safeAddress: $mySafe.safeAddress,
+            trustLimit: 0,
+            trustReceiver: profile.safeAddress,
+            privateKey: localStorage.getItem("circlesKey"),
+          },
+        };
+        return ctx;
+      })
     );
   }
 
   function execInvite() {
-    if (!profile || !$mySafe.safeAddress || !profile.id || isMe)
-      return;
+    if (!profile || !$mySafe.safeAddress || !profile.id || isMe) return;
 
     const requestEvent = new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = invite;
-              ctx.childContext = {
-                data: {
-                  safeAddress: $mySafe.safeAddress,
-                  inviteProfileId: profile.id
-                },
-              };
-              return ctx;
-            }
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = invite;
+        ctx.childContext = {
+          data: {
+            safeAddress: $mySafe.safeAddress,
+            inviteProfileId: profile.id,
+          },
+        };
+        return ctx;
+      }
     );
 
     window.o.publishEvent(requestEvent);
@@ -301,42 +322,41 @@
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),
-      props: {name},
+      props: { name },
     });
     app.$destroy();
   };
 
   function editProfile(dirtyFlags: { [x: string]: boolean }) {
-    if (!profile || !profile.id || !isEditable)
-      return;
+    if (!profile || !profile.id || !isEditable) return;
 
     const requestEvent = new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = {
-                id: upsertIdentity.id,
-                name: upsertIdentity.name,
-                stateMachine: (processId?: string) =>
-                        (<any>upsertIdentity).stateMachine(processId, true),
-              };
-              ctx.childContext = {
-                data: {
-                  id: profile.id,
-                  circlesAddress: profile.safeAddress,
-                  circlesSafeOwner: profile.circlesSafeOwner,
-                  avatarCid: profile.avatarCid,
-                  avatarUrl: profile.avatarUrl,
-                  avatarMimeType: profile.avatarMimeType,
-                  firstName: profile.firstName,
-                  lastName: profile.lastName,
-                  country: profile.country,
-                  dream: profile.dream,
-                },
-                dirtyFlags: dirtyFlags,
-              };
-              return ctx;
-            }
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = {
+          id: upsertIdentity.id,
+          name: upsertIdentity.name,
+          stateMachine: (processId?: string) =>
+            (<any>upsertIdentity).stateMachine(processId, true),
+        };
+        ctx.childContext = {
+          data: {
+            id: profile.id,
+            circlesAddress: profile.safeAddress,
+            circlesSafeOwner: profile.circlesSafeOwner,
+            avatarCid: profile.avatarCid,
+            avatarUrl: profile.avatarUrl,
+            avatarMimeType: profile.avatarMimeType,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            country: profile.country,
+            dream: profile.dream,
+          },
+          dirtyFlags: dirtyFlags,
+        };
+        return ctx;
+      }
     );
 
     window.o.publishEvent(requestEvent);
@@ -350,22 +370,20 @@
     });
     app.$destroy();
   };
-
 </script>
 
-<TrustDetailHeader profile={profile} />
+<TrustDetailHeader {profile} />
 {#if isLoading}
-  <LoadingIndicator/>
+  <LoadingIndicator />
 {:else}
   <div class="mx-4 -mt-6">
-
     {#if !profile.safeAddress && !isMe}
       <section class="justify-center mb-2 text-circlesdarkblue">
         <div
-                class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+          class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
         >
           <div
-                  class="text-circleslightblue text-xs font-circles font-bold text-left"
+            class="text-circleslightblue text-xs font-circles font-bold text-left"
           >
             This citizen is waiting to be empowered by you.
           </div>
@@ -375,8 +393,9 @@
                 <div class="inline-block break-all text-xs">
                   <div class="flex items-center w-full space-x-2 sm:space-x-4">
                     <button
-                            class="btn btn-block btn-primary w-full"
-                            on:click={execInvite}>Invite {profile.displayName} now</button
+                      class="btn btn-block btn-primary w-full"
+                      on:click={execInvite}
+                      >Invite {profile.displayName} now</button
                     >
                   </div>
                 </div>
@@ -403,19 +422,19 @@
           <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary" />
           <div style="text-align: center">
             <p
-                    class="text-2xl mt-2 font-bold font-circles text-gradient w-64 m-auto"
+              class="text-2xl mt-2 font-bold font-circles text-gradient w-64 m-auto"
             >
               You're almost there.
             </p>
             <p class="text mt-4">
-              Copy the invite link and send it to someone who's already a citizen
-              of CirclesLand:
+              Copy the invite link and send it to someone who's already a
+              citizen of CirclesLand:
             </p>
             <div class="break-all mt-4  mb-4 text-xs" id="clipboardInviteLink">
               <input type="text" class="hidden" bind:value={inviteLink} />
               <div class="text-2xl inline-block">
                 <button class="btn btn-primary" on:click={copyInviteLink}
-                >Copy Invite Link</button
+                  >Copy Invite Link</button
                 >
               </div>
 
@@ -425,15 +444,15 @@
             </div>
             <p class="text">
               If you don't know anybody who has Circles yet, ask nicely in our <a
-                    href="https://discord.gg/33bPcyF5JN"
-                    target="_blank"
-                    class="btn-link">Discord</a
-            > if someone can invite you.
+                href="https://discord.gg/33bPcyF5JN"
+                target="_blank"
+                class="btn-link">Discord</a
+              > if someone can invite you.
             </p>
             <p class="text-xs mt-4 pb-4">
               alternatively, <a href="#/dashboard/become-a-hub" class="btn-link"
-            >become a hub</a
-            >
+                >become a hub</a
+              >
             </p>
             <div class="mr-1 text-primary" />
           </div>
@@ -444,10 +463,10 @@
     {#if profile && profile.safeAddress}
       <section class="justify-center mb-2 text-circlesdarkblue">
         <div
-                class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+          class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
         >
           <div
-                  class="text-circleslightblue text-xs font-circles font-bold text-left"
+            class="text-circleslightblue text-xs font-circles font-bold text-left"
           >
             ADDRESS
           </div>
@@ -457,30 +476,30 @@
               <div class="inline-block break-all text-xs" id="clipboard">
                 {#if profile}
                   <input
-                          name="name"
-                          type="text"
-                          class="hidden"
-                          bind:value={profile.safeAddress}
+                    name="name"
+                    type="text"
+                    class="hidden"
+                    bind:value={name}
                   />
                   {profile.safeAddress ? profile.safeAddress : ""}
                 {/if}
                 <div
-                        class="inline-block text-primary cursor-pointertext-center text-xs relative -bottom-1"
-                        on:click={copy}
-                        alt="Copy to Clipboard"
+                  class="inline-block text-primary cursor-pointertext-center text-xs relative -bottom-1"
+                  on:click={copy}
+                  alt="Copy to Clipboard"
                 >
                   <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-4 w-4 stroke-current transform group-hover:rotate-[-4deg] transition"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 stroke-current transform group-hover:rotate-[-4deg] transition"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
                     <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                     />
                   </svg>
                 </div>
@@ -491,9 +510,11 @@
       </section>
     {/if}
     <section class="justify-center mb-2 text-circlesdarkblue">
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+      <div
+        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+      >
         <div
-                class="text-circleslightblue text-xs font-circles font-bold text-left"
+          class="text-circleslightblue text-xs font-circles font-bold text-left"
         >
           PASSION
         </div>
@@ -508,17 +529,17 @@
               {/if}
               {#if isEditable}
                 <button
-                        class="link link-primary text-primary text-2xs"
-                        on:click={() => editProfile({ dream: true })}
+                  class="link link-primary text-primary text-2xs"
+                  on:click={() => editProfile({ dream: true })}
                 >
                   <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-3 w-3"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-3 w-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
                   >
                     <path
-                            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
                     />
                   </svg>
                 </button>
@@ -530,9 +551,11 @@
     </section>
 
     <section class="justify-center mb-2 text-circlesdarkblue">
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+      <div
+        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+      >
         <div
-                class="text-circleslightblue text-xs font-circles font-bold text-left"
+          class="text-circleslightblue text-xs font-circles font-bold text-left"
         >
           COUNTRY
         </div>
@@ -547,17 +570,17 @@
               {/if}
               {#if isEditable}
                 <button
-                        class="link link-primary text-primary text-2xs"
-                        on:click={() => editProfile({ country: true })}
+                  class="link link-primary text-primary text-2xs"
+                  on:click={() => editProfile({ country: true })}
                 >
                   <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-3 w-3"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-3 w-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
                   >
                     <path
-                            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
                     />
                   </svg>
                 </button>
@@ -638,21 +661,21 @@
             {:else if !profile.trusting && profile.trustedBy}
               <div class="text-left text-sm text-light mb-4">
                 <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 inline "
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 inline "
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
                   <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M11 17l-5-5m0 0l5-5m-5 5h12"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 17l-5-5m0 0l5-5m-5 5h12"
                   />
                 </svg>
                 <span class="inline text-dark"
-                >{profile.displayName} is trusting you
+                  >{profile.displayName} is trusting you
                   {profile.trustedBy}%
                 </span>
               </div>
@@ -664,7 +687,9 @@
     {#if !isMe && profile.safeAddress}
       <section class="justify-center mb-2 text-circlesdarkblue">
         <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-          <div class="text-circleslightblue text-sm font-bold">CHANGE TRUST</div>
+          <div class="text-circleslightblue text-sm font-bold">
+            CHANGE TRUST
+          </div>
           {#if profile.trusting && profile.trusting > 0}
             <div class="flex items-center w-full space-x-2 sm:space-x-4">
               <button
