@@ -23,7 +23,7 @@
   });
   function playVideo() {
     player.play();
-    document.getElementById("video-overlay").style.display = "none";
+    document.getElementById("video-overlay").style.visibility = "hidden";
   }
 </script>
 
@@ -32,29 +32,22 @@
 >
   <div
     id="video-overlay"
-    class="absolute z-30 w-full h-full text-center video-overlay"
+    class="grid absolute grid-row z-30 items-stretch content-center text-center video-overlay h-full min-h-full w-full"
     on:click={() => playVideo()}
   >
-    <h1
-      class="relative px-5 mt-4 font-bold text-white text-md sm:text-6xl top-1/4 sm:top-1/3"
-    >
+    <h1 class=" px-5 text-md md:text-6xl font-bold text-white ">
       Be free to live the life you deserve
     </h1>
-    <h2
-      class="relative px-5 pt-4 text-sm font-thin text-gray-200 sm:text-3xl top-1/4 sm:top-1/3"
-    >
+    <h2 class="px-5 pt-4 text-sm sm:text-3xl font-thin text-gray-200 ">
       together we build today the universal basic income economy of tomorrow.
     </h2>
-    <button
-      class="relative inline-block top-2/4 sm:top-1/3"
-      on:click={() => playVideo()}
-    >
+    <button class="inline-block " on:click={() => playVideo()}>
       <div class="inline-flex mt-2">
         <div
-          class="flex items-center justify-center w-16 h-16 pl-1 transition duration-300 transform bg-gray-100 bg-opacity-50 rounded-full shadow-2xl group-hover:scale-110"
+          class="flex items-center pl-1 justify-center w-10 h-10 sm:w-16 sm:h-16 transition duration-300 transform bg-gray-100 bg-opacity-50 rounded-full shadow-2xl group-hover:scale-110"
         >
           <svg
-            class="w-10 h-10 ml-1 text-white"
+            class="w-8 h-8 sm:w-10 sm:h-10 text-white"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
@@ -64,34 +57,21 @@
           </svg>
         </div>
       </div>
-      <div class="pt-2 text-center text-gray-200 text-opacity-50">play</div>
+      <div class="pt-0 sm:pt-2 text-center text-gray-200 text-opacity-50">
+        play
+      </div>
     </button>
   </div>
 
   <div id="container" class="z-10 w-full max-w-full min-w-full min-h-full ">
     <vm-player>
-      <vm-vimeo
-        video-id="548283844"
-        cross-origin="true"
-      />
+      <vm-vimeo video-id="548283844" cross-origin="true" />
       <!-- poster="/images/homepage/befree.jpg" -->
-      <!-- <vm-dailymotion video-id="x7t80de" /> -->
 
       <vm-default-ui />
       <vm-click-to-play />
     </vm-player>
   </div>
-  <!-- <video
-    autoplay
-    loop
-    muted
-    class="absolute z-10 w-auto min-w-full min-h-full max-w-none"
-  >
-    <source
-      src="https://assets.mixkit.co/videos/preview/mixkit-set-of-plateaus-seen-from-the-heights-in-a-sunset-26070-large.mp4"
-      type="video/mp4"
-    />Your browser does not support the video tag.
-  </video> -->
 </div>
 
 <style>
