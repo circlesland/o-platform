@@ -32,26 +32,26 @@
 >
   <div
     id="video-overlay"
-    class="z-30 absolute text-center video-overlay h-full w-full"
+    class="absolute z-30 w-full h-full text-center video-overlay"
     on:click={() => playVideo()}
   >
     <h1
-      class="relative px-5 mt-4 text-md sm:text-6xl font-bold text-white top-1/4 sm:top-1/3"
+      class="relative px-5 mt-4 font-bold text-white text-md sm:text-6xl top-1/4 sm:top-1/3"
     >
       Be free to live the life you deserve
     </h1>
     <h2
-      class="relative px-5 pt-4 text-sm sm:text-3xl font-thin text-gray-200 top-1/4 sm:top-1/3"
+      class="relative px-5 pt-4 text-sm font-thin text-gray-200 sm:text-3xl top-1/4 sm:top-1/3"
     >
       together we build today the universal basic income economy of tomorrow.
     </h2>
     <button
-      class="inline-block relative top-2/4 sm:top-1/3"
+      class="relative inline-block top-2/4 sm:top-1/3"
       on:click={() => playVideo()}
     >
       <div class="inline-flex mt-2">
         <div
-          class="flex items-center pl-1 justify-center w-16 h-16 transition duration-300 transform bg-gray-100 bg-opacity-50 rounded-full shadow-2xl group-hover:scale-110"
+          class="flex items-center justify-center w-16 h-16 pl-1 transition duration-300 transform bg-gray-100 bg-opacity-50 rounded-full shadow-2xl group-hover:scale-110"
         >
           <svg
             class="w-10 h-10 ml-1 text-white"
@@ -69,12 +69,12 @@
   </div>
 
   <div id="container" class="z-10 w-full max-w-full min-w-full min-h-full ">
-    <vm-player playsinline>
+    <vm-player>
       <vm-vimeo
         video-id="548283844"
         cross-origin="true"
-        poster="/images/homepage/befree.jpg"
       />
+      <!-- poster="/images/homepage/befree.jpg" -->
       <!-- <vm-dailymotion video-id="x7t80de" /> -->
 
       <vm-default-ui />

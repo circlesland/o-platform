@@ -7,8 +7,7 @@
         <img src="/circles.png" alt="CirclesLand" class="w-16" />
         <div class="mt-6 lg:max-w-sm">
           <p class="text-sm text-white">
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-            accusantium doloremque laudantium, totam rem aperiam.
+            Be free to live the life you deserve
           </p>
         </div>
       </div>
@@ -130,10 +129,10 @@
           </li>
           <li>
             <a
-              href="https://circlesland.ghost.io/imprint/"
+              href="https://circlesland.ghost.io//legal-notice/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Imprint</a
+              >Impressum - Legal</a
             >
           </li>
         </ul>
