@@ -52,14 +52,14 @@
   </div>
 {/if}
 <div
-  class="h-80 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+  class="h-60 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
 >
   <div class="self-center text-center mt-12 mb-8 block">
     <span class="block text-base-300">Your Balance</span>
     <span class="inline-block text-6xl font-circles ml-10 "
       >{balance}
       <svg
-        class="w-6 h-6 inline -ml-4 -mt-1"
+        class="w-8 h-8 inline -ml-4 -mt-1"
         viewBox="0 0 229 255"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +79,7 @@
         />
       </svg>
     </span>
-    <div class="mt-8 p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
+    <div class="mt-2 p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
       {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ""}
         <small class="block">
           {$mySafe.transfers && $mySafe.transfers.rows

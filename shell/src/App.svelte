@@ -393,6 +393,14 @@
 </Modal>
 
 <style>
+  .tab:hover,
+  .tab:focus,
+  .tab:active {
+    @apply text-light;
+  }
+  .tab:hover {
+    @apply text-secondary;
+  }
   .isOpen {
     background: transparent;
     border: none;
