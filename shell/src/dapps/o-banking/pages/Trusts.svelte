@@ -148,7 +148,7 @@
         calculate the flow of money for you, based on your direct trust
         connections.
         <a
-          href="https://blog.circles.land/whitepaper/"
+          href="https://circlesland.ghost.io/whitepaper/"
           alt="CirclesLand Whitepaper"
           target="_blank"
           class="btn-link">Learn more</a
