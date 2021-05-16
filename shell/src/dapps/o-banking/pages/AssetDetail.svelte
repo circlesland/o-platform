@@ -62,8 +62,7 @@
       };
     }
 
-    tokens = ($mySafe.token ? [$mySafe.token] : [])
-      .concat(Object.values($mySafe.acceptedTokens.tokens))
+    tokens = Object.values($mySafe.acceptedTokens.tokens)
       .filter((o) => new BN(o.balance).gt(new BN("0")))
       .sort((a,b) => new BN(a.balance).gt(new BN(b.balance)) ? -1 : new BN(a.balance).lt(new BN(b.balance)) ? 1 :0);
   }
@@ -146,7 +145,7 @@
       </div>
     </section>
   {:else}
-    {#each tokens as token}
+    {#each ($mySafe.token ? [$mySafe.token] : []).concat(tokens) as token}
       {#if token && token.balance > 0}
         <TokenCard
           {token}

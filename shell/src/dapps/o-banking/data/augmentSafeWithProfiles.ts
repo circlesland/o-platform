@@ -70,6 +70,8 @@ async function createProfileMap(safeAddresses:string[]) {
 function findAllSafeAddresses(safe:Safe) {
   const addresses: {[safeAddress:string]: null} = {};
 
+  addresses[safe.safeAddress.toLowerCase()] = null;
+
   // First: Add the own address
   if (safe.safeAddress) {
     addresses[safe.safeAddress] = null;
@@ -105,9 +107,7 @@ export async function augmentSafeWithProfiles(safe:Safe) {
 
   // First: Add the own address
   if (safe.safeAddress && safe.token) {
-    safe.token.ownerProfile = {
-      displayName: "You"
-    }
+    safe.token.ownerProfile = tryGetSimplifiedProfile(profiles, RpcGateway.get().utils.toChecksumAddress(safe.safeAddress))
   }
 
   // Then add all transfer participants

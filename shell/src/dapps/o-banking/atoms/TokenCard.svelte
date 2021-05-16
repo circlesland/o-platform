@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Time from "svelte-time";
   import { push } from "svelte-spa-router";
   import Web3 from "web3";
   import { Token } from "../data/circles/queries";
