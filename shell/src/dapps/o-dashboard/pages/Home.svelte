@@ -70,35 +70,35 @@
   {#if showFundHint}
     <!-- Create safe  -->
     <section class="mb-8">
-      <div class="bg-white shadow px-2 -mt-6 pb-4 w-full rounded-sm">
-        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary" />
+      <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm shadow">
+        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary" />
         <div style="text-align: center">
           <p
-            class="text-2xl mt-2 font-bold font-circles text-gradient w-64 m-auto"
+            class="w-64 m-auto mt-2 text-2xl font-bold font-circles text-gradient"
           >
             You're almost there.
           </p>
-          <p class="text mt-4">
+          <p class="mt-4 text">
             To unlock your Circles basic income, you need to get invited by a CirclesLand citizen.
           </p>
-          <div class="break-all mt-4  mb-4 text-xs" id="clipboard">
+          <div class="mt-4 mb-4 text-xs break-all" id="clipboard">
             <input type="text" class="hidden" bind:value={inviteLink} />
-            <div class="text-2xl inline-block">
+            <div class="inline-block text-2xl">
               <button class="btn btn-primary" on:click={copy}>Copy Invite Link</button>
             </div>
 
-            <div class="block text-light text-sm mt-2 ">
+            <div class="block mt-2 text-sm text-light ">
               {inviteLink}
             </div>
           </div>
           <p class="text">
             If you don't know anybody who has Circles yet, ask nicely in our <a
-              href="https://discord.gg/33bPcyF5JN"
+              href="https://discord.gg/4DBbRCMnFZ"
               target="_blank"
               class="btn-link">Discord</a
             > if someone can invite you.
           </p>
-          <p class="text-xs mt-4 pb-4">
+          <p class="pb-4 mt-4 text-xs">
             alternatively, <a href="#/dashboard/become-a-hub" class="btn-link"
               >become a hub</a
             >
@@ -110,25 +110,25 @@
   {:else if $mySafe}
     <!-- Create safe  -->
     <section class="mb-8">
-      <div class="bg-white shadow px-2 pb-8 -mt-6  w-full rounded-sm">
-        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary" />
+      <div class="w-full px-2 pb-8 -mt-6 bg-white rounded-sm shadow">
+        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary" />
         <div class="text-center">
           <p
-            class="text-2xl mt-2 font-bold font-circles text-gradient w-full sm:w-96 m-auto"
+            class="w-full m-auto mt-2 text-2xl font-bold font-circles text-gradient sm:w-96"
           >
             Grow the global UBI economy!
           </p>
-          <p class="text-lg font-circles mt-4">
+          <p class="mt-4 text-lg font-circles">
             xxxxxxx/1.000.000.000 Progress
           </p>
           <div class="w-full px-2 m-auto">
             <progress
-              class="progress progress-accent h-1 "
+              class="h-1 progress progress-accent "
               value={12}
               max="100"
             />
           </div>
-          <p class="text mt-4">
+          <p class="mt-4 text">
             Help others to get aboard in our <a
               href="https://discord.gg/33bPcyF5JN"
               target="_blank"
@@ -147,11 +147,11 @@
   <!-- PASSPORT  -->
   <a href="/#/passport/profile">
     <section class="flex items-center justify-center mb-8">
-      <div class="flex items-center bg-white shadow px-2  w-full rounded-sm">
-        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
+      <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
+        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-14 w-14 m-auto"
+            class="m-auto h-14 w-14"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -165,14 +165,14 @@
           </svg>
         </div>
         <div class="flex items-center">
-          <h2 class="text-4xl font-circles mr-2 text-secondary font-medium">
+          <h2 class="mr-2 text-4xl font-medium font-circles text-secondary">
             Passport
           </h2>
         </div>
         <div class="flex justify-end flex-1 mr-1 text-primary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
+            class="w-5 h-5"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -190,11 +190,11 @@
   <!-- BANKING -->
   {#if showFundHint || disableBanking}
     <section class="flex items-center justify-center mb-8">
-      <div class="flex items-center bg-white shadow px-2 w-full rounded-sm">
-        <div class="mr-4  px-4 py-2  text-center -ml-3 text-base-300">
+      <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
+        <div class="px-4 py-2 mr-4 -ml-3 text-center text-base-300">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-14 w-14 m-auto"
+            class="m-auto h-14 w-14"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -208,12 +208,12 @@
           </svg>
         </div>
         <div class="flex flex-col items-left">
-          <h2 class="text-4xl font-circles mr-2 text-base-300">Banking</h2>
+          <h2 class="mr-2 text-4xl font-circles text-base-300">Banking</h2>
         </div>
         <div class="flex justify-end flex-1 mr-1 text-base-300">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
+            class="w-5 h-5"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -229,11 +229,11 @@
   {:else}
     <a href={showFundHint ? "/#/dashboard" : "/#/banking/transactions"}>
       <section class="flex items-center justify-center mb-8">
-        <div class="flex items-center bg-white shadow px-2 w-full rounded-sm">
-          <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary">
+        <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
+          <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-14 w-14 m-auto"
+              class="m-auto h-14 w-14"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -247,14 +247,14 @@
             </svg>
           </div>
           <div class="flex items-center">
-            <h2 class="text-4xl font-circles mr-2 text-secondary font-medium">
+            <h2 class="mr-2 text-4xl font-medium font-circles text-secondary">
               Banking
             </h2>
           </div>
           <div class="flex justify-end flex-1 mr-1 text-primary">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
+              class="w-5 h-5"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -272,11 +272,11 @@
   <!-- Market -->
 
   <section class="flex items-center justify-center mb-8">
-    <div class="flex items-center bg-white shadow px-2 w-full rounded-sm">
-      <div class="mr-4  px-4 py-2  text-center -ml-3 text-base-300">
+    <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
+      <div class="px-4 py-2 mr-4 -ml-3 text-center text-base-300">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-14 w-14 m-auto"
+          class="m-auto h-14 w-14"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -290,13 +290,13 @@
         </svg>
       </div>
       <div class="flex flex-col items-left">
-        <h2 class="text-4xl font-circles mr-2 text-base-300">Market</h2>
+        <h2 class="mr-2 text-4xl font-circles text-base-300">Market</h2>
         <p class="text-sm text-base-300">coming soon</p>
       </div>
       <div class="flex justify-end flex-1 mr-1 text-base-300">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
+          class="w-5 h-5"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -313,11 +313,11 @@
   <!-- Chat -->
 
   <section class="flex items-center justify-center mb-8">
-    <div class="flex items-center bg-white shadow px-2 w-full rounded-sm">
-      <div class="mr-4  px-4 py-2  text-center -ml-3 text-base-300">
+    <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
+      <div class="px-4 py-2 mr-4 -ml-3 text-center text-base-300">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-14 w-14 m-auto"
+          class="m-auto h-14 w-14"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -331,13 +331,13 @@
         </svg>
       </div>
       <div class="flex flex-col items-left">
-        <h2 class="text-4xl font-circles mr-2 text-base-300">Chat</h2>
+        <h2 class="mr-2 text-4xl font-circles text-base-300">Chat</h2>
         <p class="text-sm text-base-300">coming soon</p>
       </div>
       <div class="flex justify-end flex-1 mr-1 text-base-300">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
+          class="w-5 h-5"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -353,15 +353,15 @@
 </div>
 <!-- 
   <div
-  class="w-full  h-72 bg-center bg-no-repeat bg-cover"
+  class="w-full bg-center bg-no-repeat bg-cover h-72"
   style="background-image: url('https://images.unsplash.com/photo-1609343007774-dad98a8f8c33?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1225&q=80');"
 >
   <div
-    class="w-full h-72 bg-opacity-50 bg-black flex justify-center items-center relative"
+    class="relative flex items-center justify-center w-full bg-black bg-opacity-50 h-72"
   >
     <div class="mx-4 text-center text-white">
-      <h1 class="font-bold text-6xl mb-4">Xats is what you need!</h1>
-      <h2 class="font-bold text-3xl mb-12">Xats is what you want!</h2>
+      <h1 class="mb-4 text-6xl font-bold">Xats is what you need!</h1>
+      <h2 class="mb-12 text-3xl font-bold">Xats is what you want!</h2>
     </div>
     <div class="absolute bottom-4">
       <button class="btn btn-primary" on:click={() => buyXats()}
