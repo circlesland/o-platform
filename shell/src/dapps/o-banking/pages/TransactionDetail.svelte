@@ -18,7 +18,7 @@
   let displayableFromName: string;
   let classes: string;
   let message: String;
-  let amountInWei: number;
+  let amountInWei: string;
   let otherSafeAddress: string;
 
   $: {
@@ -61,7 +61,7 @@
         ? "transactionpositive"
         : "transactionnegative";
 
-    amountInWei = parseFloat(RpcGateway.get().utils.fromWei(transfer.amount));
+    amountInWei = RpcGateway.get().utils.fromWei(transfer.amount, "ether");
 
     otherSafeAddress =
       transfer.direction === "in" ? transfer.from : transfer.to;
