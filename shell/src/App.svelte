@@ -152,10 +152,7 @@
   let lastPrompt: Prompt | undefined = undefined;
 
   function routeLoading(args) {
-    // Pretty self explanatory. For more lookup the svelte-spa-router docs,
-    console.log("Route loading:", args);
-    console.log("Route loading:", publicUrls);
-
+    processWaiting = false;
     if (!publicUrls[args.detail.location] && !$me) {
       setTimeout(() => {
         window.location.href = "/#/login";
@@ -186,17 +183,17 @@
       return;
     }
     const requestEvent = new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = identify;
-              ctx.childContext = {
-                data: <IdentifyContextData>{
-                  redirectTo: $location,
-                },
-              };
-              return ctx;
-            }
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = identify;
+        ctx.childContext = {
+          data: <IdentifyContextData>{
+            redirectTo: "/dashboard",
+          },
+        };
+        return ctx;
+      }
     );
 
     requestEvent.id = Generate.randomHexString(8);
@@ -282,6 +279,7 @@
       />
     </div>
   </main>
+
 
 
   {#if lastLoadedDapp && lastLoadedPage && !lastLoadedDapp.hideFooter && !lastLoadedPage.hideFooter}
@@ -437,6 +435,7 @@
               />
             </a>
           {/each}
+
           {#if !processWaiting}
             {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
               <button

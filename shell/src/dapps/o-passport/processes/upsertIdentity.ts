@@ -19,6 +19,7 @@ import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { createAvatar } from "@dicebear/avatars";
 import * as style from "@dicebear/avatars-avataaars-sprites";
+import {promptChoice} from "./identify/prompts/promptChoice";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -42,21 +43,21 @@ export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
 
 const strings = {
   labelFirstName:
-    "<span>Awesome!<br/>You are finally a citizen of <br/>CirclesLAND.<br/>Glad to have you here.</span><strong class='text-primary block mt-3'>What is your name?</strong>",
+    "<span>Awesome!<br/>You are finally a citizen of CirclesLand.<br/>Glad to have you here.</span><strong class='text-primary block mt-3'>What is your first name?</strong>",
   labelLastName:
-    "<span>Do you want to let the world know your last name, so they know in the search who’s passion they are connecting with?</span><strong class='text-primary  block mt-3'>Enter your last name</strong>",
+    "<strong class='text-primary  block mt-3'>What is your last name?</strong>",
   labelAvatar:
     "<span>Add a profile image to become<br/> more recognizable</span>",
   labelCountry:
     "<span>Vote for your country in the global universal basic income economy ranking leaderboard.</span><strong class='text-primary block mt-3'>Select country</strong>",
   labeldream:
-    "<span class='text-l'>Fill in the blanks:</span> <span class='block text-sm'><i>When I receive a universal basic income, I will follow my passion of <br>  ___________________________ <br/>and I will accept a minimum of 240 Circles every month as payment for it.</i></span><strong class='text-primary  block mt-3'>Share your passion</strong>",
-  placeholderFirstName: "First Name",
-  placeholderLastName: "Last Name",
-  placeholderCountry: "Select a Country",
+    "<span class='block'>What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?</span><strong class='text-primary  block mt-3'>Share your passion</strong>",
+  placeholderFirstName: "First name",
+  placeholderLastName: "Last name",
+  placeholderCountry: "Select a country",
   placeholderDream: "Your passion.",
   labelNewsletter:
-    "We will notify you, when you receive new transactions or get marketplace requests. And to always keep up to date with our progress and new developments around CirclesLAND you can subscribe to our monthly newsletter.",
+    "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
 };
 
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
@@ -123,7 +124,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         params: {
           label: strings.labeldream,
           placeholder: strings.placeholderDream,
-          submitButtonText: "Start dreaming",
+          submitButtonText: "Start growing",
           maxLength: "150",
         },
         dataSchema: yup
@@ -291,25 +292,36 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           onError: "#error",
         },
       },
-      newsletter: prompt<UpsertIdentityContext, any>({
+      newsletter: promptChoice({
+        id: "newsletter",
+        promptLabel: strings.labelNewsletter,
+        options: [{
+          key: "create",
+          label: "No thanks",
+          target: "#upsertIdentity"
+        }, {
+          key: "connect",
+          label: "Yes please",
+          target: "#subscribeToNewsletter"
+        }],
+        navigation: {
+          canGoBack: () => true,
+          canSkip: () => false,
+          previous: "#avatarUrl"
+        }
+      }),
+      subscribeToNewsletter: {
+        id: "subscribeToNewsletter",
         entry: (context, event) => {
           console.log("Newsletter entry()", event);
           if (event.data?.url) {
             context.data.avatarUrl = event.data?.url;
             context.data.avatarMimeType = event.data?.mimeType;
           }
+          context.data.newsletter = true;
         },
-        fieldName: "newsletter",
-        onlyWhenDirty: skipIfNotDirty,
-        component: BooleanEditor,
-        params: {
-          label: strings.labelNewsletter,
-          submitButtonText: "Next",
-        },
-        navigation: {
-          next: "#upsertIdentity",
-        },
-      }),
+        always: "#upsertIdentity"
+      },
       upsertIdentity: {
         id: "upsertIdentity",
         invoke: {

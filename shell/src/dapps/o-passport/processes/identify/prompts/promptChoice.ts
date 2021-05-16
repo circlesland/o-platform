@@ -7,6 +7,19 @@ export type PromptChoiceSpec = {
   id: string
   promptLabel: string
   options:{key:string, label:string, target:string}[]
+  navigation?: {
+    // If you want to allow the user to go one step back then specify here where he came from
+    previous?: string;
+    canGoBack?: (
+        context: ProcessContext<any>,
+        event: { type: string; [x: string]: any }
+    ) => boolean;
+    skip?: string;
+    canSkip?: (
+        context: ProcessContext<any>,
+        event: { type: string; [x: string]: any }
+    ) => boolean;
+  }
 };
 
 export function promptChoice<
@@ -27,6 +40,10 @@ export function promptChoice<
         },
         navigation: {
           next: "#checkChoiceAndContinue",
+          previous: spec.navigation?.previous,
+          canGoBack: spec.navigation?.canGoBack,
+          canSkip : spec.navigation?.canSkip,
+          skip: spec.navigation?.skip
         },
       }),
       checkChoiceAndContinue: {

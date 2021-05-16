@@ -21,10 +21,10 @@ export type ConnectSafeContext = ProcessContext<ConnectSafeContextData>;
 
 const strings = {
   labelSafeAddress:
-    `Please copy and paste in your "Profile Address", which you can find on the <a class="text-green" href="https://circles.garden/settings" target="_blank">settings page of your circles.garden Wallet</a>`,
+    `Please copy and paste in your "Profile Address", which you can find on the <a class="text-primary" href="https://circles.garden/settings" target="_blank">settings page</a> of your circles.garden Wallet`,
   placeholderSafeAddress: "your safe address",
   labelSeedPhrase:
-    "Your Seedphrase is always only kept on your device. To connect this device, please enter your seedphrase here again. ",
+    "Your seedphrase is always only kept on your device. To connect this device, please enter your seedphrase.",
   placeholderSeedPhrase: "Seedphrase",
 };
 
@@ -106,7 +106,7 @@ const processDefinition = (processId: string) =>
         params: {
           label: strings.labelSeedPhrase,
           placeholder: strings.placeholderSeedPhrase,
-          submitButtonText: "Save",
+          submitButtonText: "Store on this device",
         },
         navigation: {
           next: "#prepareOutput",

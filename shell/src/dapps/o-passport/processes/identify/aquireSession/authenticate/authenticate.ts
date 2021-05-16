@@ -2,6 +2,7 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.svelte";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
+import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import BooleanEditor from "@o-platform/o-editors/src/BooleanEditor.svelte";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
@@ -35,9 +36,9 @@ export type AuthenticateContext = ProcessContext<AuthenticateContextData>;
  */
 const strings = {
   labelLoginEmail:
-    "<strong class='text-primary block mt-3'>Enter your email address</strong>",
+    "Welcome, a pleasure you found your way to CirclesLand. <br/><strong class='text-primary block mt-3'>Please provide your email address</strong>",
   labelVerificationCode:
-    "<strong class='text-primary block mt-3'>Enter authentication code</strong> <small class='block'>or click the link in the e-mail to sign-in</small>",
+    `An email has been send to you, please check your inbox. To login please click the link in the email or enter the code you received by mail. <br/><span class="text-xs">It may take a moment. Also check your spam folder.</span>`,
   placeholder: "you@example.com",
 };
 async function sha256(str) {
@@ -153,18 +154,21 @@ const processDefinition = (processId: string) =>
       acceptTos: prompt<AuthenticateContext, any>({
         fieldName: "acceptTos",
 
-        component: BooleanEditor,
+        component: HtmlViewer,
         params: {
-          label: "Have you read and accept our ",
-          link: "https://circlesland.ghost.io/terms-of-service",
-          linkLabel: "terms of service & privacy policy",
+        //  link: "",
+        //  linkLabel: "terms of service & privacy policy",
+        //submitButtonText: "",
           submitButtonText: "I read and accept them",
+          html: (context) => `CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. 
+          With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/>
+          For details read our <a class="text-primary" href="https://circlesland.ghost.io/terms-of-service">privacy policy & terms of service</a>`,
         },
-
+/*
         dataSchema: yup
           .boolean()
           .oneOf([true], "Please accept the terms to proceed"),
-
+*/
         navigation: {
           next: "#storeAcceptTos",
           canGoBack: () => true,
