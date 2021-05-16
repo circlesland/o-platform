@@ -12,6 +12,8 @@
   import { mySafe } from "../stores/safe";
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
   import TokensHeader from "../atoms/TokensHeader.svelte";
+  import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
+  import {me} from "../../../shared/stores/me";
 
   export let params: {
     inviteAccountAddress?: string;
@@ -22,6 +24,14 @@
       execSendInviteGas(params.inviteAccountAddress);
     }
   });
+
+  let inviteLink: string = "";
+
+  $: {
+    if ($me) {
+      inviteLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${$me.id}`;
+    }
+  }
 
   setClient(<any>window.o.theGraphClient);
 
@@ -40,6 +50,13 @@
       })
     );
   }
+  const copy = () => {
+    const app = new CopyClipBoard({
+      target: document.getElementById("clipboard"),
+      props: { name: inviteLink },
+    });
+    app.$destroy();
+  };
 </script>
 
 <TokensHeader />
@@ -154,7 +171,12 @@
           class="btn-link">Learn more</a
         >
       </div>
-      <button class="mx-auto mt-6 btn btn-primary">copy my trust link</button>
-    </div>
+      <div class="mx-auto mt-6 btn btn-primary" id="clipboard" on:click={copy}>
+        <input type="text" class="hidden" bind:value={inviteLink} />
+        <span>
+          Copy Invite Link
+        </span>
+        </div>
+      </div>
   </section>
 </div>

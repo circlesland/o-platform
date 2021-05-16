@@ -40,7 +40,7 @@ const profile: PageManifest = {
   isSystem: true,
   routeParts: ["profile", ":id"],
   component: ProfilePage,
-  hideFooter: true,
+  hideFooter: false,
   title: "Profile",
   available: [
     (detail) => {

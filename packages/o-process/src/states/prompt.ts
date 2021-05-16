@@ -39,8 +39,12 @@ export type PromptSpec<TContext, TEvent> = {
     ) => boolean;
   };
   params: { [x: string]: any };
-  dataSchema?: any;
+  dataSchema?: any // ((context:TContext, event:TEvent) => any)|any;
 };
+
+function isFunction(functionToCheck:any) {
+  return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+}
 
 export function prompt<
   TContext extends ProcessContext<any>,
