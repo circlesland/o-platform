@@ -44,7 +44,8 @@ const processDefinition = (processId: string) =>
 
       amount: promptChoice({
         id: "amount",
-        promptLabel: "How many invites do you want to send to XXX?",
+        promptLabel: "" +
+            "How many invites do you want to send to XXX?",
         options: [{
           key: "1",
           label: "1 invite",

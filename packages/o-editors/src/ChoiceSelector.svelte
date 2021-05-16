@@ -48,7 +48,7 @@
   {#each context.params.choices as choice}
     <button
       on:click={() => submit(choice)}
-      class="w-1/2 btn btn-outline btn-white"
+      class="w-1/{context.params.choices.length} btn btn-outline btn-white"
     >
       {choice.label}
     </button>

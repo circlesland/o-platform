@@ -20,6 +20,7 @@
   import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
+  import {emptySafe} from "src/dapps/o-banking/data/emptySafe";
 
   export let params: {
     id?: String;
@@ -387,7 +388,8 @@
           >
             This citizen is waiting to be empowered by you.
           </div>
-          {#if $me && $me.id !== profile.id && localStorage.getItem("safe")}
+
+          {#if $me && $me.id !== profile.id && $me.circlesAddress}
             <div class="flex items-center w-full space-x-2 sm:space-x-4">
               <div class="text-left">
                 <div class="inline-block break-all text-xs">
