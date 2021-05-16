@@ -32,5 +32,5 @@
     </div>
     <Footer />
   </main>
-  <Progress />
+  <!--<Progress />-->
 </div>

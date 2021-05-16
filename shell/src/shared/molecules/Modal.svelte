@@ -29,7 +29,8 @@
     class="z-40 overlay p-2"
   >
     <div
-      class="w-full min-w-min grid justify-items-stretch pt-2 mb-14 rounded-t-lg  md:w-2/3 xl:w-1/2 "
+      class="w-full min-w-min grid
+      justify-items-stretch pt-2 mb-14 rounded-t-lg  md:w-2/3 xl:w-1/2 "
     >
       <!-- <img
         class="inline justify-self-center -mt-8 w-12 h-12 -mb-6 z-30 "

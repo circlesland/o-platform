@@ -152,7 +152,7 @@ export const homepage: DappManifest<DappState> = {
   routeParts: [],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
-  hideFooter: true,
+  hideFooter: false,
   isFullWidth: true,
   actions: [],
   initialize: async (stack, runtimeDapp) => {
