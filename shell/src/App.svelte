@@ -338,11 +338,19 @@
               }
             }}
           >
-            <img
-              class="w-full"
-              src="/images/common/circles.png"
-              alt="circles.land"
-            />
+            {#if !isOpen}
+              <img
+                      class="w-full"
+                      src="/images/common/circles.png"
+                      alt="open"
+              />
+            {:else}
+              <img
+                      class="w-full"
+                      src="/images/common/close.png"
+                      alt="close"
+              />
+            {/if}
           </button>
           {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
             <button
