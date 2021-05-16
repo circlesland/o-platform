@@ -79,15 +79,12 @@
             You're almost there.
           </p>
           <p class="text mt-4">
-            Copy the invite link and send it to someone who's already a citizen
-            of CirclesLand:
+            To unlock your Circles basic income, you need to get invited by a CirclesLand citizen.
           </p>
           <div class="break-all mt-4  mb-4 text-xs" id="clipboard">
             <input type="text" class="hidden" bind:value={inviteLink} />
             <div class="text-2xl inline-block">
-              <button class="btn btn-primary" on:click={copy}
-                >Copy Invite Link</button
-              >
+              <button class="btn btn-primary" on:click={copy}>Copy Invite Link</button>
             </div>
 
             <div class="block text-light text-sm mt-2 ">

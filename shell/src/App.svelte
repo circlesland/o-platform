@@ -43,7 +43,6 @@
   import { XDaiThresholdTrigger } from "./xDaiThresholdTrigger";
   import { me } from "./shared/stores/me";
   import { INVITE_VALUE } from "./dapps/o-passport/processes/invite/invite";
-  // import {hubSignup, HubSignupContextData} from "./dapps/o-banking/processes/hubSignup";
   import {
     deploySafe,
     HubSignupContextData,
@@ -53,6 +52,13 @@
   let beforeCancelPrompt: Prompt; // Is set when the "do you want to cancel?" prompt is shown
   let modalProcess: Process;
   let modalProcessEventSubscription: Subscription;
+  let publicUrls = {
+    "/": true,
+    "/miva": true,
+    "/citizens": true,
+    "/countries": true,
+    "/milestones": true
+  }
 
   let progressIndicator: {
     message: string;
@@ -143,8 +149,16 @@
 
   let lastPrompt: Prompt | undefined = undefined;
 
-  function routeLoading() {
+  function routeLoading(args) {
     // Pretty self explanatory. For more lookup the svelte-spa-router docs,
+    console.log("Route loading:", args);
+    console.log("Route loading:", publicUrls);
+
+    if (!publicUrls[args.detail.location] && !$me) {
+      setTimeout(() => {
+        window.location.href = "/#/login";
+      }, 0);
+    }
   }
 
   let lastLoadedPage: PageManifest;

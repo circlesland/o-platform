@@ -18,7 +18,7 @@
       </p>
 
       <a
-        href="#/omoli/dapps"
+        href="#/dashboard"
         class="inline px-4 py-2 text-sm font-medium leading-5 text-white uppercase transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg shadow focus:outline-none focus:shadow-outline-blue active:bg-blue-600 hover:bg-blue-700">
         Back to Home
       </a>

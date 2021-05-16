@@ -269,8 +269,6 @@ export const banking: DappManifest<DappState> = {
 
     if(myProfileResult && myProfileResult.circlesAddress){
       init();
-    } else if ((getLastLoadedPage()?.routeParts[0] ?? "") !== "profile") {
-      await push("#/dashboard");
     }
 
     return {

@@ -10,10 +10,25 @@ import Learn from "./o-homepage/pages/Learn.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
+const login: PageManifest = {
+  isDefault: false,
+  isSystem: true,
+  routeParts: ["login"],
+  component: Home,
+  title: "Circles Land",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    },
+  ],
+};
+
 const index: PageManifest = {
   isDefault: true,
   isSystem: true,
-  routeParts: [],
+  routeParts: [""],
   component: Home,
   title: "Circles Land",
   available: [
@@ -147,5 +162,5 @@ export const homepage: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  pages: [index, citizens, countries, imprint, milestones, privacy, tos, learn],
+  pages: [index, citizens, countries, imprint, milestones, privacy, tos, learn, login],
 };

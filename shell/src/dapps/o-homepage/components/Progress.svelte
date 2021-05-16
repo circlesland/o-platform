@@ -10,12 +10,20 @@
     IdentifyContextData,
   } from "../../o-passport/processes/identify/identify";
   import { me } from "../../../shared/stores/me";
+  import {onMount} from "svelte";
+  import {location} from 'svelte-spa-router'
 
   $: {
     console.log($me); // TODO: This is just to init the store. There could be a better solution to do this :)
   }
 
   $: me;
+
+  onMount(() => {
+    if ($location === "/login")  {
+      login();
+    }
+  })
 
   async function login() {
     const requestEvent = new RunProcess<ShellProcessContext>(

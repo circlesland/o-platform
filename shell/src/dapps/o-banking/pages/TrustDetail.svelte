@@ -183,8 +183,7 @@
       <div class="text-circleslightblue text-sm font-bold">INVITE</div>
 
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
-        <button
-                class="btn btn-block btn-primary"
+        <button class="flex-1 btn btn-block btn-primary"
                 on:click={() => execTransfer()}>Invite {trusting.profile
                 ? trusting.profile.displayName
                 : trusting.safeAddress}</button
