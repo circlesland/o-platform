@@ -167,6 +167,8 @@ const processDefinition = (processId: string) =>
 
         navigation: {
           next: "#storeAcceptTos",
+          canGoBack: () => true,
+          previous: "#loginEmail"
         },
       }),
       storeAcceptTos: {

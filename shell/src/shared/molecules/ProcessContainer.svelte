@@ -30,7 +30,7 @@
   // Every incoming prompt sets this flag to 'true'
   let waitForNextOutgoingEvent: boolean;
   // When 'waitForNextOutgoingEvent' == true and any event is sent to the process then 'waiting' will be set to 'true'
-  let waiting: boolean;
+  export let waiting: boolean;
 
   export let beforeCancelPrompt: PromptEvent;
   let cancelDialogVisible: boolean;
