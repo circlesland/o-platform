@@ -20,23 +20,8 @@
   >
     <div class="pt-0 pl-2 flex flex-row w-full justify-between ">
       <div
-        class="self-start cursor-pointer"
-        on:click|once={() => history.back()}
+        class="self-start"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 inline-block mr-1 -mt-1"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-          />
-        </svg>
         <span class="text-lg font-circles">
           {#if lastLoadedDapp.title != lastLoadedPage.title}
             {lastLoadedDapp.title} /
