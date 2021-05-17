@@ -10,7 +10,7 @@
         const checksumAddress = RpcGateway.get().utils.toChecksumAddress(address);
 
         const addr = [
-            "0xde374ece6fa50e781e81aac78e811b33d16912c7",
+            "0xDE374ece6fA50e781E81Aac78e811b33D16912c7",
             "0xC4f05F63A9498568435c1D43ab75c8Fbd7e4a392",
             "0x7D61cFB0C21Dabd7B664502aa63Aa98487d67F5B",
             "0xf18AB992e0f96f3bC3e8B951Fc27Fd6318F5C8F7",
@@ -26,7 +26,7 @@
 
         const owners = await Promise.all(addr.map(async add => {
             try {
-                const owners = await new GnosisSafeProxy(RpcGateway.get(), "", add).getOwners();
+                const owners = await new GnosisSafeProxy(RpcGateway.get(), add).getOwners();
                 const ownerAddresses = owners.map(o => RpcGateway.get().utils.toChecksumAddress(o));
                 return {
                     address: add,
