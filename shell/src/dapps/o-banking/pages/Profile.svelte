@@ -392,13 +392,10 @@
           {#if $me && $me.id !== profile.id && $me.circlesAddress}
             <div class="flex items-center w-full space-x-2 sm:space-x-4">
               <div class="w-full">
-              
-                    <button
-                      class="h-auto btn btn-block btn-primary w-full"
-                      on:click={execInvite}
-                      >Invite {profile.displayName} now</button
-                    >
-  
+                <button
+                  class="h-auto btn btn-block btn-primary w-full"
+                  on:click={execInvite}>Invite {profile.displayName} now</button
+                >
               </div>
             </div>
           {:else}
@@ -521,7 +518,7 @@
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
-            <small class="break-all">
+            <small>
               {#if profile && profile.dream}
                 {profile.dream}
               {:else}
@@ -562,7 +559,7 @@
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
-            <small class="break-all">
+            <small>
               {#if profile && profile.country}
                 {getCountryName(profile.country)}
               {:else}
