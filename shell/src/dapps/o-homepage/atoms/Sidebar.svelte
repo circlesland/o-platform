@@ -9,15 +9,6 @@
   <nav class="pl-4 pt-16 text-xl">
     <a
       href="/"
-      aria-label="Company"
-      title="Company"
-      class="block inline-flex items-center h-12 mb-10"
-    >
-      <img src="/circles.png" alt="CirclesLAND" class="h-12" />
-    </a>
-
-    <a
-      href="/"
       class="block font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary mb-10"
       >Home</a
     >
