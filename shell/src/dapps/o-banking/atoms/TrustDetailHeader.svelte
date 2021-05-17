@@ -145,7 +145,7 @@
         </div>
       </div>
     {/if}
-    <div class="self-center text-center block">
+    <div class="h-60 self-center text-center block">
       <div class="avatar">
         <div class="w-36 h-36 rounded-full mb-4">
           <img

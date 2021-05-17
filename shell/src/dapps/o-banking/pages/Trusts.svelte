@@ -11,9 +11,9 @@
   import TrustCard from "../atoms/TrustCard.svelte";
   import { mySafe } from "../stores/safe";
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
-  import TokensHeader from "../atoms/TokensHeader.svelte";
+  import AssetsHeader from "../atoms/AssetsHeader.svelte";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import {me} from "../../../shared/stores/me";
+  import { me } from "../../../shared/stores/me";
 
   export let params: {
     inviteAccountAddress?: string;
@@ -59,7 +59,8 @@
   };
 </script>
 
-<TokensHeader />
+<AssetsHeader />
+
 <div class="mx-4 -mt-6">
   {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts || !$mySafe.trustRelations.trusting || !$mySafe.trustRelations.trustedBy}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
@@ -155,7 +156,8 @@
     </div>
     <div class="flex flex-col w-full p-4 space-y-2 shadow infocard">
       <div class="text-sm">
-        In CirclesLand everyone has their own personalized Circles money. You have "YOU" Circles and your friend Bob has "BOB" Circles.
+        In CirclesLand everyone has their own personalized Circles money. You
+        have "YOU" Circles and your friend Bob has "BOB" Circles.
         <br /><br />
         To be able to transfer Circles to someone you first need to get trusted by
         others. When you want to receive money you have to trust them back.
@@ -173,10 +175,8 @@
       </div>
       <div class="mx-auto mt-6 btn btn-primary" id="clipboard" on:click={copy}>
         <input type="text" class="hidden" bind:value={inviteLink} />
-        <span>
-          Copy Invite Link
-        </span>
-        </div>
+        <span> Copy Invite Link </span>
       </div>
+    </div>
   </section>
 </div>
