@@ -1,10 +1,10 @@
 <script lang="ts">
 
-  /*
   import "./shared/css/base.css";
   import "./shared/css/components.css";
   import "./shared/css/utilities.css";
-*/
+
+
   import routes from "./loader";
   import {getLastLoadedDapp} from "./loader";
   import {getLastLoadedPage} from "./loader";
