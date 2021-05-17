@@ -30,9 +30,7 @@
   }
 </script>
 
-<nav
-  class="relative flex w-full items-center justify-between lg:justify-center lg:space-x-16"
->
+<nav class="relative flex w-full items-center justify-center lg:space-x-16">
   <ul class="flex items-center hidden space-x-8 lg:flex">
     <li>
       <a
@@ -59,9 +57,9 @@
     href="/"
     aria-label="Company"
     title="Company"
-    class="inline-flex items-center h-12"
+    class="inline-flex items-center h-10 md:h-12 -ml-14 lg:-ml-0"
   >
-    <img src="/circles.png" alt="CirclesLAND" class="h-12" />
+    <img src="/circles.png" alt="CirclesLAND" class="h-10 md:h-12" />
   </a>
   <ul class="flex items-center hidden space-x-8 lg:flex">
     <li>

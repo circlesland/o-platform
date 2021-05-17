@@ -7,10 +7,19 @@
   class:open
   on:click={() => (open = !open)}
 >
-  <svg width="32" height="24">
-    <line id="top" x1="0" y1="2" x2="32" y2="2" />
-    <line id="middle" x1="0" y1="12" x2="24" y2="12" />
-    <line id="bottom" x1="0" y1="22" x2="32" y2="22" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M4 6h16M4 12h16M4 18h16"
+    />
   </svg>
 </button>
 
