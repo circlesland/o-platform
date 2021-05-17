@@ -14,7 +14,7 @@
 
   $: me;
 
-  let disableBanking:boolean = false;
+  let disableBanking: boolean = false;
 
   let accountAddress: string = "";
   let accountBalance: string = "";
@@ -30,8 +30,8 @@
       return;
     }
 
-    accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk)
-            .address;
+    accountAddress =
+      RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
 
     if (localStorage.getItem("isCreatingSafe")) {
       showFundHint = true;
@@ -51,12 +51,12 @@
     app.$destroy();
   };
 
-  const sub = window.o.events.subscribe(event => {
+  const sub = window.o.events.subscribe((event) => {
     if (event.type !== "shell.refresh") {
       return;
     }
     init();
-  })
+  });
 
   $: {
     if ($me) {
@@ -79,12 +79,15 @@
             You're almost there.
           </p>
           <p class="mt-4 text">
-            To unlock your Circles basic income, you need to get invited by a CirclesLand citizen.
+            To unlock your Circles basic income, you need to get invited by a
+            CirclesLand citizen.
           </p>
           <div class="mt-4 mb-4 text-xs break-all" id="clipboard">
             <input type="text" class="hidden" bind:value={inviteLink} />
             <div class="inline-block text-2xl">
-              <button class="btn btn-primary" on:click={copy}>Copy Invite Link</button>
+              <button class="btn btn-primary" on:click={copy}
+                >Copy Invite Link</button
+              >
             </div>
 
             <div class="block mt-2 text-sm text-light ">
@@ -118,7 +121,7 @@
           >
             Grow the global UBI economy!
           </p>
-          <p class="mt-4 text-lg font-circles">
+          <!-- <p class="mt-4 text-lg font-circles">
             xxxxxxx/1.000.000.000 Progress
           </p>
           <div class="w-full px-2 m-auto">
@@ -127,7 +130,7 @@
               value={12}
               max="100"
             />
-          </div>
+          </div> -->
           <p class="mt-4 text">
             Help others to get aboard in our <a
               href="https://discord.gg/33bPcyF5JN"
