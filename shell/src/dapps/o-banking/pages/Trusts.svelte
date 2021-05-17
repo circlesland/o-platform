@@ -6,11 +6,9 @@
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
-  import BankingHeader from "../atoms/BankingHeader.svelte";
   import { sendInviteGas } from "../processes/sendInviteGas";
   import TrustCard from "../atoms/TrustCard.svelte";
   import { mySafe } from "../stores/safe";
-  import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
   import AssetsHeader from "../atoms/AssetsHeader.svelte";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { me } from "../../../shared/stores/me";
@@ -82,52 +80,57 @@
       </div>
     </section>
   {:else}
-    <section class="flex items-center justify-center mb-1 ">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div class="text-xs font-bold text-left text-secondary font-circles">
-          MUTUAL TRUST
+    {#if Object.values($mySafe.trustRelations.mutualTrusts).length >= 1}
+      <section class="flex items-center justify-center mb-1 ">
+        <div
+          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
+        >
+          <div class="text-xs font-bold text-left text-secondary font-circles">
+            MUTUAL TRUST
+          </div>
         </div>
-      </div>
-    </section>
-    <!-- TODO: Possible actions: untrust, transfer money -->
-    {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust}
-      <TrustCard
-        trusting={mutualTrust.trusting}
-        trustedBy={mutualTrust.trustedBy}
-      />
-    {/each}
-
-    <section class="flex items-center justify-center mb-1 ">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div class="text-xs font-bold text-left text-secondary font-circles">
-          TRUSTING
+      </section>
+      <!-- TODO: Possible actions: untrust, transfer money -->
+      {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust}
+        <TrustCard
+          trusting={mutualTrust.trusting}
+          trustedBy={mutualTrust.trustedBy}
+        />
+      {/each}
+    {/if}
+    {#if Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide).length >= 1}
+      <section class="flex items-center justify-center mb-1 ">
+        <div
+          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
+        >
+          <div class="text-xs font-bold text-left text-secondary font-circles">
+            TRUSTING
+          </div>
         </div>
-      </div>
-    </section>
-    {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting}
-      <!-- TODO: Possible actions: untrust -->
-      <TrustCard {trusting} />
-    {/each}
+      </section>
+      {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting}
+        <!-- TODO: Possible actions: untrust -->
+        <TrustCard {trusting} />
+      {/each}
+    {/if}
 
-    <section class="flex items-center justify-center mb-1 ">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div class="text-xs font-bold text-left text-primary font-circles">
-          TRUSTED BY
+    {#if Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress.toLowerCase() !== $mySafe.safeAddress.toLowerCase()).length >= 1}
+      <section class="flex items-center justify-center mb-1 ">
+        <div
+          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
+        >
+          <div class="text-xs font-bold text-left text-primary font-circles">
+            TRUSTED BY
+          </div>
         </div>
-      </div>
-    </section>
-    <!-- TODO: Possible actions: trust, transfer money -->
-    {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress.toLowerCase() !== $mySafe.safeAddress.toLowerCase()) as trustedBy}
-      <TrustCard {trustedBy} />
-    {/each}
+      </section>
+      <!-- TODO: Possible actions: trust, transfer money -->
+      {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress.toLowerCase() !== $mySafe.safeAddress.toLowerCase()) as trustedBy}
+        <TrustCard {trustedBy} />
+      {/each}
+    {/if}
 
-    {#if $mySafe.trustRelations.untrusted}
+    {#if Object.values($mySafe.trustRelations.untrusted).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
         <div
           class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
