@@ -3,7 +3,7 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import TextAreaEditor from "@o-platform/o-editors/src/TextAreaEditor.svelte";
+import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { LogoutDocument } from "../data/api/types";
 import { push } from "svelte-spa-router";
@@ -37,7 +37,7 @@ const processDefinition = (processId: string) =>
 
       checkSeedPhrase: prompt<LogoutContext, any>({
         fieldName: "checkSeedPhrase",
-        component: TextAreaEditor,
+        component: TextareaEditor,
         params: {
           label: strings.labelCheckSeedPhrase,
         },
