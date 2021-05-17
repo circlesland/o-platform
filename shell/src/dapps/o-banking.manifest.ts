@@ -20,6 +20,7 @@ import { init, tryGetCurrentSafe } from "./o-banking/init";
 import {push} from "svelte-spa-router";
 import {me, Profile} from "../shared/stores/me";
 import {getLastLoadedPage} from "../loader";
+import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
 
 const transactions: PageManifest = {
   isDefault: true,
@@ -145,6 +146,22 @@ const trustDetail: PageManifest = {
   routeParts: ["trusts", ":id"],
   component: ProfilePage,
   title: "TrustDetail",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    },
+  ],
+};
+
+const findMySafe: PageManifest = {
+  isDefault: false,
+  isSystem: true,
+  routeParts: ["find-my-safe"],
+  component: FindMySafe,
+  hideFooter: true,
+  title: "FindMySafe",
   available: [
     (detail) => {
       // Can navigate to?
@@ -286,6 +303,7 @@ export const banking: DappManifest<DappState> = {
     trustDetail,
     graph,
     sendInvite,
-    profile
+    profile,
+    findMySafe
   ],
 };

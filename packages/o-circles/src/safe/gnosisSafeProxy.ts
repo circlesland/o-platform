@@ -13,12 +13,9 @@ import {Observable} from "rxjs";
 
 export class GnosisSafeProxy extends Web3Contract
 {
-  readonly creatorAddress: string;
-
-  constructor(web3: Web3, creatorAddress: string, safeProxyAddress: string)
+  constructor(web3: Web3, safeProxyAddress: string)
   {
     super(web3, safeProxyAddress, new web3.eth.Contract(<AbiItem[]>GNOSIS_SAFE_ABI, safeProxyAddress));
-    this.creatorAddress = creatorAddress;
   }
 
   static queryPastSuccessfulExecutions(address: string)

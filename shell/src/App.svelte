@@ -59,6 +59,7 @@
     "/miva": true,
     "/citizens": true,
     "/countries": true,
+    "/banking/find-my-safe": true,
     "/milestones": true
   }
 

@@ -82,6 +82,6 @@ export class GnosisSafeProxyFactory extends Web3Contract
     if (!proxyAddress)
       throw new Error("The deployment of the safe failed. Couldn't determine the proxy address from the receipt's log.")
 
-    return new GnosisSafeProxy(this.web3, ownerAddress, proxyAddress);
+    return new GnosisSafeProxy(this.web3, proxyAddress);
   }
 }
