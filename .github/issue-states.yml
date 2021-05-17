@@ -3,6 +3,7 @@
 # Open issues that are moved to these project columns. Set to `[]` to disable
 openIssueColumns: 
   - Open
+  - Testing
   - Today
   - Week 1
   - Week 2
