@@ -3,10 +3,10 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {LogoutDocument} from "../data/api/types";
-import {push} from "svelte-spa-router";
+import TextAreaEditor from "@o-platform/o-editors/src/TextAreaEditor.svelte";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { LogoutDocument } from "../data/api/types";
+import { push } from "svelte-spa-router";
 import * as bip39 from "bip39";
 
 export type LogoutContextData = {
@@ -14,15 +14,16 @@ export type LogoutContextData = {
   checkSeedPhrase?: string;
   lastName?: string;
   avatar?: {
-    bytes: Buffer,
-    mimeType: string
-  }
+    bytes: Buffer;
+    mimeType: string;
+  };
 };
 
 export type LogoutContext = ProcessContext<LogoutContextData>;
 
 const strings = {
-  labelCheckSeedPhrase: "Please enter your seedphrase to logout. If you haven't stored your seedphrase at a safe place yet, do it now and come back again later to log-out."
+  labelCheckSeedPhrase:
+    "Please enter your seedphrase to logout. If you haven't stored your seedphrase at a safe place yet, do it now and come back again later to log-out.",
 };
 
 const processDefinition = (processId: string) =>
@@ -36,7 +37,7 @@ const processDefinition = (processId: string) =>
 
       checkSeedPhrase: prompt<LogoutContext, any>({
         fieldName: "checkSeedPhrase",
-        component: TextEditor,
+        component: TextAreaEditor,
         params: {
           label: strings.labelCheckSeedPhrase,
         },
@@ -46,44 +47,52 @@ const processDefinition = (processId: string) =>
       }),
       compareSeedPhrase: {
         id: "compareSeedPhrase",
-        always: [{
-          cond: (context) => {
-            let seedPhrase =
-              localStorage.getItem("circlesKey") &&
-              localStorage.getItem("circlesKey") != "0x123"
-                ? bip39.entropyToMnemonic(
-                localStorage
-                  .getItem("circlesKey")
-                  .substr(2, localStorage.getItem("circlesKey").length - 2)
-                )
-                : "<no private key>";
-            const match = context.data.checkSeedPhrase.trim() == seedPhrase;
-            if (!match) {
-              context.messages["checkSeedPhrase"] = "The seedphrases don't match";
-            }
-            return match;
+        always: [
+          {
+            cond: (context) => {
+              let seedPhrase =
+                localStorage.getItem("circlesKey") &&
+                localStorage.getItem("circlesKey") != "0x123"
+                  ? bip39.entropyToMnemonic(
+                      localStorage
+                        .getItem("circlesKey")
+                        .substr(
+                          2,
+                          localStorage.getItem("circlesKey").length - 2
+                        )
+                    )
+                  : "<no private key>";
+              const match = context.data.checkSeedPhrase.trim() == seedPhrase;
+              if (!match) {
+                context.messages["checkSeedPhrase"] =
+                  "The seedphrases don't match";
+              }
+              return match;
+            },
+            target: "#logout",
           },
-          target: "#logout"
-        }, {
-          target: "#checkSeedPhrase"
-        }]
+          {
+            target: "#checkSeedPhrase",
+          },
+        ],
       },
       logout: {
         id: "logout",
         invoke: {
           src: async (context) => {
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
-              mutation: LogoutDocument
+              mutation: LogoutDocument,
             });
             return result.data.logout.success;
           },
           onDone: "#success",
-          onError: "#error"
-        }
+          onError: "#error",
+        },
       },
       success: {
-        type: 'final',
+        type: "final",
         id: "success",
         data: (context, event: any) => {
           localStorage.removeItem("safe");
@@ -92,12 +101,12 @@ const processDefinition = (processId: string) =>
           localStorage.removeItem("isCreatingSafe");
           localStorage.removeItem("me");
           window.o.publishEvent(<PlatformEvent>{
-            type: "shell.loggedOut"
+            type: "shell.loggedOut",
           });
           push("/");
           return event.data; // TODO: fix any
-        }
-      }
+        },
+      },
     },
   });
 

@@ -20,7 +20,7 @@
   import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-  import {emptySafe} from "src/dapps/o-banking/data/emptySafe";
+  import { emptySafe } from "src/dapps/o-banking/data/emptySafe";
 
   export let params: {
     id?: String;
@@ -391,16 +391,11 @@
 
           {#if $me && $me.id !== profile.id && $me.circlesAddress}
             <div class="flex items-center w-full space-x-2 sm:space-x-4">
-              <div class="text-left">
-                <div class="inline-block break-all text-xs">
-                  <div class="flex items-center w-full space-x-2 sm:space-x-4">
-                    <button
-                      class="btn btn-block btn-primary w-full"
-                      on:click={execInvite}
-                      >Invite {profile.displayName} now</button
-                    >
-                  </div>
-                </div>
+              <div class="w-full">
+                <button
+                  class="h-auto btn btn-block btn-primary w-full"
+                  on:click={execInvite}>Invite {profile.displayName} now</button
+                >
               </div>
             </div>
           {:else}
@@ -523,7 +518,7 @@
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
-            <small class="break-all">
+            <small>
               {#if profile && profile.dream}
                 {profile.dream}
               {:else}
@@ -564,7 +559,7 @@
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
-            <small class="break-all">
+            <small>
               {#if profile && profile.country}
                 {getCountryName(profile.country)}
               {:else}

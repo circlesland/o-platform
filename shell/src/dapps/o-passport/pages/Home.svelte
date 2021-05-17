@@ -123,7 +123,9 @@
     </section>
   {/if}
   <section class="justify-center mb-2 text-circlesdarkblue">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+    <div
+      class="card flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+    >
       <div
         class="text-circleslightblue text-xs font-circles font-bold text-left"
       >
@@ -132,7 +134,7 @@
 
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
-          <small class="break-all">
+          <small>
             {#if profile && profile.dream}
               {profile.dream}
             {:else}
@@ -173,7 +175,7 @@
 
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
-          <small class="break-all">
+          <small>
             {#if profile && profile.country}
               {getCountryName(profile.country)}
             {:else}

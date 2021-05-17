@@ -73,9 +73,9 @@
   </div>
 {/if}
 <div
-  class="h-60 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+  class="h-60 flex flex-row w-full items-stretch justify-items-stretch  bg-gradient-to-r from-gradient1 to-gradient2 text-white"
 >
-  <div class="self-center text-center mb-8 block">
+  <div class="h-24 -mt-6 self-center flex-grow justify-self-center text-center">
     {#if classes == "transactionpositive"}
       <span class="block ">Received</span>
     {:else if classes == "transactionnegative"}

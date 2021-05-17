@@ -102,24 +102,27 @@
       <div class="text-primary text-xs font-circles font-bold text-left">
         NEWSLETTER
       </div>
-      <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
-        <div class="form-control">
-          <label
-            class="label flex items-center flex-row cursor-pointer space-x-10"
-            for="newsletter"
-          >
-            <span class="inline-block self-center">Receive Newsletter</span>
-            <div class="inline-block self-center relative top-1">
-              <input
-                name="checkbox"
-                id="newsletter"
-                type="checkbox"
-                class="inline-block toggle toggle-primary"
-                bind:checked={receiveNewsletter}
-                on:change={() => delayedTrigger.trigger()}
-              />
+      <div class="bg-white w-full space-x-2 sm:space-x-6">
+        <div class="form-control w-full">
+          <label class="label" for="newsletter">
+            <div
+              class="w-full flex items-stretch justify-items-stretch flex-row cursor-pointer space-x-10"
+            >
+              <div class="self-center flex-grow justify-self-start text-left">
+                Receive Newsletter
+              </div>
+              <div class="self-center justify-self-end">
+                <input
+                  name="checkbox"
+                  id="newsletter"
+                  type="checkbox"
+                  class="inline-block toggle toggle-primary"
+                  bind:checked={receiveNewsletter}
+                  on:change={() => delayedTrigger.trigger()}
+                />
 
-              <span class="toggle-mark" />
+                <span class="toggle-mark" />
+              </div>
             </div>
           </label>
         </div>

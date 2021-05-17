@@ -17,7 +17,9 @@ import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { BN } from "ethereumjs-util";
-import {ProfilesDocument} from "../../o-passport/data/api/types";
+import { ProfilesDocument } from "../../o-passport/data/api/types";
+import { createAvatar } from "@dicebear/avatars";
+import * as style from "@dicebear/avatars-avataaars-sprites";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -51,6 +53,11 @@ const strings = {
   currencyXdai: "xDai",
   summaryLabel: "Summary",
   messageLabel: "Purpose of transfer",
+};
+
+const currencyLookup = {
+  CRC: "Circle",
+  XDAI: "Xdai",
 };
 
 const processDefinition = (processId: string) =>
@@ -234,7 +241,7 @@ const processDefinition = (processId: string) =>
               );
               return maxFlowInWei.gte(amountInWei);
             },
-            target: "#message",
+            target: "#prepareSummary",
           },
           {
             target: "#tokens",
@@ -258,11 +265,12 @@ const processDefinition = (processId: string) =>
         id: "prepareSummary",
         invoke: {
           src: async (context) => {
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.query({
               query: gql`
-                query profiles($circlesAddress:[String!]) {
-                  profiles(query:{circlesAddress: $circlesAddress}) {
+                query profiles($circlesAddress: [String!]) {
+                  profiles(query: { circlesAddress: $circlesAddress }) {
                     id
                     circlesAddress
                     circlesSafeOwner
@@ -275,42 +283,71 @@ const processDefinition = (processId: string) =>
                 }
               `,
               variables: {
-                circlesAddress: [context.data.recipientAddress]
+                circlesAddress: [context.data.recipientAddress],
               },
             });
 
             if (result.errors && result.errors.length) {
-              throw new Error(`Couldn't query the api for recipient ${context.data.recipientAddress}. Reason: \n${JSON.stringify(result.errors, null, 2)}`)
+              throw new Error(
+                `Couldn't query the api for recipient ${
+                  context.data.recipientAddress
+                }. Reason: \n${JSON.stringify(result.errors, null, 2)}`
+              );
             }
 
-            const foundProfile = result.data.profiles && result.data.profiles.length ? result.data.profiles[0] : undefined;
+            const foundProfile =
+              result.data.profiles && result.data.profiles.length
+                ? result.data.profiles[0]
+                : undefined;
 
-            const to = foundProfile ? (foundProfile.firstName + foundProfile.lastName ?? "") : context.data.recipientAddress;
-            const toAvatarUrl = ""; // TODO: Generate avatar from safe address if no profile was found
+            const to = foundProfile
+              ? foundProfile.firstName + foundProfile.lastName ?? ""
+              : context.data.recipientAddress;
+
+            let toAvatarUrl = foundProfile ? foundProfile.avatarUrl : null;
+
+            toAvatarUrl = toAvatarUrl
+              ? toAvatarUrl
+              : createAvatar(style, {
+                  seed: foundProfile.address,
+                  topChance: 100,
+                  style: "transparent",
+                  dataUri: true,
+                });
 
             if (!context.data.tokens) {
               throw new Error(`No currency or amount selected`);
             } else {
               context.data.summaryHtml = `<span>You are about to transfer</span>
-                <strong class='text-primary block'>${
+                <strong class='text-primary text-5xl block mt-2'>${
                   context.data.tokens.amount
-              } ${context.data.tokens.currency.toUpperCase()}</strong>
-                <span class='block'>
+                } ${currencyLookup[context.data.tokens.currency]}${
+                parseInt(context.data.tokens.amount) > 1 ? "s" : ""
+              }</strong>
+                <span class='block mt-2'>
                 to 
                 </span>
-                <strong class='block break-all'>${to}</strong>
-                <span class='block mt-4'>Message:</span>
-                <span class='block'>
-                ${context.data.message}
-                </span>
+                <div class="avatar self-center justify-self-center text-center mt-4">
+                  <div class="w-36 h-36 rounded-full mb-4">
+                    <img
+                      src=${toAvatarUrl}
+                      alt=${to}
+                    />
+                  </div>
+                </div>
+                <div class="self-center flex-grow justify-self-start text-center">
+                  <h2>
+                    ${to}
+                  </h2>
+                </div>
                 <strong class='text-primary block mt-4'>
                 Do you want to continue?
                 </strong>`;
             }
           },
           onDone: "#acceptSummary",
-          onError: "#error"
-        }
+          onError: "#error",
+        },
       },
       acceptSummary: prompt<TransferContext, any>({
         fieldName: "acceptSummary",
