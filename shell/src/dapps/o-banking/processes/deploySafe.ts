@@ -142,7 +142,7 @@ createMachine<HubSignupContext, any>({
           const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);
           const hubSignupResult = await hub.signup(
               context.data.privateKey,
-              new GnosisSafeProxy(RpcGateway.get(), context.data.profile.circlesSafeOwner, context.data.profile.circlesAddress)
+              new GnosisSafeProxy(RpcGateway.get(), context.data.profile.circlesAddress)
           );
           const receipt = await hubSignupResult.toPromise();
           localStorage.removeItem("signsUpAtCircles");

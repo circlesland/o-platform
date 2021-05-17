@@ -72,7 +72,6 @@ const processDefinition = (processId: string) =>
               await RpcGateway.trigger(async (web3) => {
                 const safeProxy = new GnosisSafeProxy(
                   web3,
-                  "",
                   context.data.safeAddress
                 );
                 context.data.safeOwners = await safeProxy.getOwners();

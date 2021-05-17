@@ -48,7 +48,7 @@ createMachine<TransferXdaiContext, any>({
             .privateKeyToAccount(context.data.privateKey)
             .address;
 
-          const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), ownerAddress, context.data.safeAddress);
+          const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
           const ethAmount = new BN(RpcGateway.get().utils.toWei((context.data.amount).toString(), "ether"));
           const resultObservable = await gnosisSafeProxy.transferEth(
             context.data.privateKey,

@@ -166,7 +166,6 @@ const processDefinition = (processId: string) =>
 
             const gnosisSafeProxy = new GnosisSafeProxy(
               RpcGateway.get(),
-              ownerAddress,
               context.data.safeAddress
             );
 

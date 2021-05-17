@@ -10,7 +10,7 @@ export const getUBIService = async (context:GetUbiContext) => {
         .privateKeyToAccount(context.data.privateKey)
         .address;
 
-    const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), ownerAddress, context.data.safeAddress);
+    const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
     const circlesAccount = new CirclesAccount(context.data.safeAddress);
     const result = await circlesAccount.getUBI(context.data.privateKey, gnosisSafeProxy);
 

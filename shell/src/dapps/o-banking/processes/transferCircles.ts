@@ -76,7 +76,7 @@ createMachine<TransferCirclesContext, any>({
             .privateKeyToAccount(context.data.privateKey)
             .address;
 
-          const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), ownerAddress, context.data.safeAddress);
+          const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
 
           try {
             const circlesValueInWei = RpcGateway.get().utils
