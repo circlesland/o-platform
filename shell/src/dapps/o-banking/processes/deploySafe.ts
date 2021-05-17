@@ -146,7 +146,7 @@ createMachine<HubSignupContext, any>({
           );
           const receipt = await hubSignupResult.toPromise();
           localStorage.removeItem("signsUpAtCircles");
-
+          localStorage.setItem("lastUBI", new Date().toJSON());
           console.log("Signed up at hub:", receipt);
         },
         onDone: "#success",
