@@ -119,7 +119,7 @@
           <p
             class="w-full m-auto mt-2 text-2xl font-bold font-circles text-gradient sm:w-96"
           >
-            Grow the global UBI economy!
+            Grow the global basic income economy!
           </p>
           <!-- <p class="mt-4 text-lg font-circles">
             xxxxxxx/1.000.000.000 Progress
@@ -132,14 +132,9 @@
             />
           </div> -->
           <p class="mt-4 text">
-            Help others to get aboard in our <a
-              href="https://discord.gg/33bPcyF5JN"
-              target="_blank"
-              class="btn-link">Discord</a
-            >
-            or
-            <a href="/#/dashboard/become-a-hub" class="btn-link">become a hub</a
-            > and invite your family and friends
+            Help your family and friends to get onboard by
+            <a href="/#/dashboard/become-a-hub" class="btn-link">becoming an invite hub</a> 
+            and together you grow the basic income economy locally and globally.
           </p>
           <div class="mr-1 text-primary" />
         </div>
