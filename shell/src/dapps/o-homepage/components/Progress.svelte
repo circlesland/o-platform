@@ -10,8 +10,8 @@
     IdentifyContextData,
   } from "../../o-passport/processes/identify/identify";
   import { me } from "../../../shared/stores/me";
-  import {onMount} from "svelte";
-  import {location} from 'svelte-spa-router'
+  import { onMount } from "svelte";
+  import { location } from "svelte-spa-router";
 
   $: {
     console.log($me); // TODO: This is just to init the store. There could be a better solution to do this :)
@@ -20,10 +20,10 @@
   $: me;
 
   onMount(() => {
-    if ($location === "/login")  {
+    if ($location === "/login") {
       login();
     }
-  })
+  });
 
   async function login() {
     const requestEvent = new RunProcess<ShellProcessContext>(
@@ -48,8 +48,6 @@
 <div
   class="sticky bottom-0 z-50 w-full pt-1 bg-white border-t progressnav border-base-300"
 >
-
-
   <!-- <div class="flex flex-row items-stretch w-full bg-white">
     <div class="m-auto tracking-wider text-secondary">
       <span class="relative top-2">2489 CITIZENS</span>
@@ -75,8 +73,6 @@
       >
     </div>
   </div> -->
-
-
 
   <!-- <div class="flex items-center justify-between mb-2">
     <div>
@@ -140,24 +136,24 @@
     animation: none !important;
   }
 
-  .dot {
+  /* .dot {
     @apply bg-secondary;
     bottom: 7px;
     border-radius: 50%;
-    display: inline-block;
-    /* box-shadow: 0 0 15px #003399; */
-    /* border: 5px solid hsl(220 100% 29%); */
+    display: inline-block; */
+  /* box-shadow: 0 0 15px #003399; */
+  /* border: 5px solid hsl(220 100% 29%); */
 
-    /* #2 */
-    /* padding: 5px; */
-    /* background: hsl(0, 0%, 20%); */
+  /* #2 */
+  /* padding: 5px; */
+  /* background: hsl(0, 0%, 20%); */
 
-    /* #3 */
-    /* outline: 5px solid hsl(220 100% 29%); */
+  /* #3 */
+  /* outline: 5px solid hsl(220 100% 29%); */
 
-    /* #4 AND INFINITY!!! (CSS3 only) */
-    /* box-shadow: 0 0 0 10px hsl(229, 61%, 53%), 0 0 0 15px hsl(241, 93%, 27%); */
-  }
+  /* #4 AND INFINITY!!! (CSS3 only) */
+  /* box-shadow: 0 0 0 10px hsl(229, 61%, 53%), 0 0 0 15px hsl(241, 93%, 27%); */
+  /* } */
   /* .dot:after {
     content: "";
     display: block;

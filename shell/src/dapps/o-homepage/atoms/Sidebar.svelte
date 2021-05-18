@@ -3,7 +3,7 @@
 </script>
 
 <aside
-  class="absolute w-72 h-full bg-gray-200 border-l-2 shadow-lg z-40"
+  class="absolute w-72 h-full bg-gray-200 border-l-2 shadow-lg z-40 lg:hidden"
   class:open
 >
   <nav class="pl-4 pt-16 text-xl">

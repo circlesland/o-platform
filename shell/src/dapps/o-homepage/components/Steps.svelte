@@ -11,7 +11,7 @@
         </p>
       </div>
       <h2
-        class="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-secondary font-circles sm:text-4xl md:mx-auto"
+        class="max-w-lg mb-6 text-3xl font-bold leading-none tracking-tight text-secondary font-circles sm:text-4xl md:mx-auto"
       >
         <span class="relative inline-block">
           <svg
@@ -41,53 +41,55 @@
       </h2>
       <p class="text-base text-gray-600 md:text-lg">
         Introducing the next generation of your 100% opensource, digital and
-        borderless country-as-a-service platform, unlocking your new Circles universal basic income to secure the most basic needs for all of us.
+        borderless country-as-a-service platform, unlocking your new Circles
+        universal basic income to secure the most basic needs for all of us.
       </p>
     </div>
     <div class="grid grid-cols-1 gap-8 row-gap-8 lg:grid-cols-3">
-      <div
-        class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center"
-      >
+      <div class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center">
         <div
           class="flex items-center justify-center w-full px-8 py-12 sm:mx-auto"
         >
-         <img src="/illustrations/passport.svg">
+          <img src="/illustrations/passport.svg" alt="Passport" />
         </div>
-        <h6 class="mt-8 mb-2 text-lg font-semibold leading-5 uppercase text-secondary">
+        <h6
+          class="mt-8 mb-2 text-lg font-semibold leading-5 uppercase text-secondary"
+        >
           1. Create Passport
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          While signing up you create a self-sovereign und portable identity passport.
+          While signing up you create a self-sovereign und portable identity
+          passport.
         </p>
       </div>
-      <div
-        class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center "
-      >
-      <div
-        class="flex items-center justify-center w-full px-16 py-4 mt-6 sm:mx-auto"
+      <div class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center ">
+        <div
+          class="flex items-center justify-center w-full px-16 py-4 mt-6 sm:mx-auto"
         >
-        <img src="/illustrations/invite.svg">
+          <img src="/illustrations/invite.svg" alt="Invite" />
         </div>
-        <h6 class="mb-2 text-lg font-semibold leading-5 uppercase text-secondary">
+        <h6
+          class="mb-2 text-lg font-semibold leading-5 uppercase text-secondary"
+        >
           2. Get invited
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          To receive your very first personalized Circles you need to get invited by another citizen.
+          To receive your very first personalized Circles you need to get
+          invited by another citizen.
         </p>
       </div>
-      <div
-        class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center "
-      >
-      <div
-        class="flex items-center justify-center w-full p-8 sm:mx-auto"
-      >
-      <img src="/illustrations/ubi.svg">
-      </div>
-        <h6 class="mb-2 text-lg font-semibold leading-5 uppercase text-secondary">
+      <div class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center ">
+        <div class="flex items-center justify-center w-full p-8 sm:mx-auto">
+          <img src="/illustrations/ubi.svg" alt="Invite" />
+        </div>
+        <h6
+          class="mb-2 text-lg font-semibold leading-5 uppercase text-secondary"
+        >
           3. Unlock UBI
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          Once you got successfully invited, you receive every month universal basic income in Circles.
+          Once you got successfully invited, you receive every month universal
+          basic income in Circles.
         </p>
       </div>
     </div>
