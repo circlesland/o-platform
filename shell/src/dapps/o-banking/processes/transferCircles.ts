@@ -68,6 +68,12 @@ createMachine<TransferCirclesContext, any>({
     },
     transferCircles: {
       id: "transferCircles",
+      entry: () => {
+        window.o.publishEvent(<PlatformEvent>{
+          type: "shell.progress",
+          message: `Processing Circles transfer ..`
+        });
+      },
       invoke: {
         src: async (context, event) => {
           const ownerAddress = RpcGateway.get()

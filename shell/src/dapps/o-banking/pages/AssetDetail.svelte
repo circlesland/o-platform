@@ -111,39 +111,6 @@
         colorClass="text-primary"
       />
     {/each}
-    <section class="mt-4">
-      <div class="bg-white shadow px-2 pb-8 w-full rounded-sm">
-        <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary" />
-        <div class="text-center">
-          <p
-            class="text-2xl mt-2 font-bold font-circles text-gradient w-full sm:w-96 m-auto"
-          >
-            Grow the global UBI economy!
-          </p>
-          <p class="text-lg font-circles mt-4">
-            xxxxxxx/1.000.000.000 Progress
-          </p>
-          <div class="w-full px-2 m-auto">
-            <progress
-              class="progress progress-accent h-1 "
-              value={12}
-              max="100"
-            />
-          </div>
-          <p class="text mt-4">
-            Help others to get aboard in our <a
-              href="https://discord.gg/33bPcyF5JN"
-              target="_blank"
-              class="btn-link">Discord</a
-            >
-            or
-            <a href="/#/dashboard/become-a-hub" class="btn-link">become a hub</a
-            > and invite your family and friends
-          </p>
-          <div class="mr-1 text-primary" />
-        </div>
-      </div>
-    </section>
   {:else}
     {#each ($mySafe.token ? [$mySafe.token] : []).concat(tokens) as token}
       {#if token && token.balance > 0}

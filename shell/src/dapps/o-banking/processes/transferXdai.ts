@@ -40,6 +40,12 @@ createMachine<TransferXdaiContext, any>({
 
     transferXdai: {
       id: "transferXdai",
+      entry: () => {
+        window.o.publishEvent(<PlatformEvent>{
+          type: "shell.progress",
+          message: `Processing xDai transfer ..`
+        });
+      },
       invoke: {
         src: async (context) => {
           const ownerAddress = RpcGateway.get()

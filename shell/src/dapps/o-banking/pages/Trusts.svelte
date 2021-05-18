@@ -1,12 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { setClient } from "svelte-apollo";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
-  import { sendInviteGas } from "../processes/sendInviteGas";
   import TrustCard from "../atoms/TrustCard.svelte";
   import { mySafe } from "../stores/safe";
   import AssetsHeader from "../atoms/AssetsHeader.svelte";
@@ -17,11 +10,6 @@
     inviteAccountAddress?: string;
   };
 
-  onMount(() => {
-    if (params && params.inviteAccountAddress) {
-      execSendInviteGas(params.inviteAccountAddress);
-    }
-  });
 
   let inviteLink: string = "";
 
@@ -33,21 +21,6 @@
 
   setClient(<any>window.o.theGraphClient);
 
-  function execSendInviteGas(recipientAddress?: string) {
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = sendInviteGas;
-        ctx.childContext = {
-          data: {
-            safeAddress: "TODO: my safe address",
-            recipientAddress: recipientAddress,
-            amount: 0.1,
-          },
-        };
-        return ctx;
-      })
-    );
-  }
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),

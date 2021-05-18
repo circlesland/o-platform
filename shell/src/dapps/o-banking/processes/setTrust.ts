@@ -158,6 +158,12 @@ const processDefinition = (processId: string) =>
       // Exchange it for the actual token and redirect the user to the application.
       setTrust: {
         id: "setTrust",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Updating trust ..`
+          });
+        },
         invoke: {
           src: async (context) => {
             const ownerAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(
