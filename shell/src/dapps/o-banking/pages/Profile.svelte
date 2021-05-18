@@ -21,6 +21,9 @@
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import { emptySafe } from "src/dapps/o-banking/data/emptySafe";
+  import {loadProfileBySafeAddress} from "../data/loadProfileBySafeAddress";
+  import {loadProfileByProfileId} from "../data/loadProfileByProfileId";
+  import {ApiProfile} from "../data/apiProfile";
 
   export let params: {
     id?: String;
@@ -68,10 +71,13 @@
       );
       return;
     }
+
     if (Number.parseInt(params.id) && !params.id.startsWith("0x")) {
-      await loadProfileByProfileId(Number.parseInt(params.id));
+      const profile = await loadProfileByProfileId(Number.parseInt(params.id));
+      setProfile(profile);
     } else if (RpcGateway.get().utils.isAddress(params.id)) {
-      await loadProfileBySafeAddress(params.id);
+      const profile = await loadProfileBySafeAddress(params.id);
+      setProfile(profile);
     } else {
       throw new Error(`params.id isn't an integer nor an eth address.`);
     }
@@ -108,98 +114,6 @@
     }
 
     return trust;
-  }
-
-  async function loadProfileBySafeAddress(safeAddress: string) {
-    // 1. Try to find a profile via the api
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.query({
-      query: gql`
-        query profiles($circlesAddress: [String!]) {
-          profiles(query: { circlesAddress: $circlesAddress }) {
-            id
-            circlesAddress
-            circlesSafeOwner
-            firstName
-            lastName
-            avatarUrl
-            avatarCid
-            avatarMimeType
-            dream
-            country
-          }
-        }
-      `,
-      variables: {
-        circlesAddress: [safeAddress],
-      },
-    });
-    if (result.errors) {
-      throw new Error(
-        `Couldn't load a profile with safeAddress '${safeAddress}': ${JSON.stringify(
-          result.errors
-        )}`
-      );
-    }
-
-    const profile =
-      result.data.profiles && result.data.profiles.length
-        ? result.data.profiles[0]
-        : undefined;
-    if (profile) {
-      setProfile(profile);
-      return;
-    }
-
-    // 2. Try to find a profile via circles garden
-    const requestUrl = `https://api.circles.garden/api/users/?address[]=${safeAddress}`;
-    const gardenResult = await fetch(requestUrl);
-    if (gardenResult && gardenResult.status == 200) {
-      const resultJson = await gardenResult.json();
-      const profile =
-        resultJson.data && resultJson.data.length
-          ? resultJson.data[0]
-          : undefined;
-      setProfile({
-        circlesAddress: safeAddress,
-        firstName: profile ? profile.username : "",
-        avatarUrl: profile ? profile.avatarUrl : undefined,
-      });
-      return;
-    }
-
-    // 3. No profile found
-    setProfile({
-      circlesAddress: safeAddress,
-      firstName: "",
-    });
-  }
-
-  async function loadProfileByProfileId(profileId: number) {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.query({
-      query: ProfilesDocument,
-      variables: {
-        id: profileId,
-      },
-    });
-    if (result.errors) {
-      throw new Error(
-        `Couldn't load a profile with id '${profileId}': ${JSON.stringify(
-          result.errors
-        )}`
-      );
-    }
-
-    const apiProfile: Profile =
-      result.data.profiles && result.data.profiles.length
-        ? result.data.profiles[0]
-        : undefined;
-    if (!apiProfile) {
-      throw new Error(`Couldn't find a profile with id '${profileId}'.`);
-    }
-
-    setProfile(apiProfile);
   }
 
   function setProfile(apiProfile: {
@@ -254,6 +168,7 @@
           data: {
             safeAddress: $mySafe.safeAddress,
             recipientAddress: profile.safeAddress,
+            recipientProfileId: profile.id
           },
         };
         return ctx;
@@ -310,7 +225,7 @@
         ctx.childContext = {
           data: {
             safeAddress: $mySafe.safeAddress,
-            inviteProfileId: profile.id,
+            inviteProfileId: profile.id
           },
         };
         return ctx;

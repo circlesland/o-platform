@@ -54,31 +54,7 @@ export const dashboard : DappManifest<DappState> = {
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
-  actions: [{
-    key: "xats",
-    label: "Featured xATS TokenSale Campaign",
-    event: () => {
-      return new RunProcess<ShellProcessContext>(
-        shellProcess,
-        true,
-        async (ctx) => {
-          ctx.childProcessDefinition = transfer;
-          ctx.childContext = {
-            data: {
-              recipientAddress: "the-address-where-i-can-buy-stuff",
-              tokens: {
-                currency: {
-                  key: "crc",
-                  title: "Circles"
-                },
-                amount: "0"
-              }
-            }
-          };
-          return ctx;
-        })
-    }
-  }],
+  actions: [],
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {

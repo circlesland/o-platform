@@ -114,7 +114,8 @@
         From today on you will unconditionally receive 8 more
         Circles every day in the form of your personal universal basic income.
         <br /><br />
-        Have a look around and explore the navigation buttons below, to learn more about how Circles works in detail.
+
+        <b>Have a look around and explore the navigation buttons below, to learn more about how Circles works in detail.</b>
       </div>
     </div>
   </section>

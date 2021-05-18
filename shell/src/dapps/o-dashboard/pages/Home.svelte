@@ -102,9 +102,7 @@
             > if someone can invite you.
           </p>
           <p class="pb-4 mt-4 text-xs">
-            alternatively, <a href="#/dashboard/become-a-hub" class="btn-link"
-              >become a hub</a
-            >
+            alternatively, <a href="#/dashboard/become-a-hub" class="btn-link">become an invite hub</a>
           </p>
           <div class="mr-1 text-primary" />
         </div>

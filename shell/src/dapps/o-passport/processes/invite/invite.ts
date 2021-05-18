@@ -74,6 +74,7 @@ const processDefinition = (processId: string) =>
               return {
                 safeAddress: context.data.safeAddress,
                 recipientAddress: context.data.circlesSafeOwner,
+                recipientProfileId: context.data.inviteProfileId,
                 tokens: {
                   currency: "xdai",
                   amount: parseFloat(context.data.amount.key) * INVITE_VALUE

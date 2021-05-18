@@ -74,7 +74,7 @@
       <div class="text-sm md:text-base">
         Since everyone has their own personalized Circles money, you will always
         only be able to receive and hold Circles of those you directly trust.
-        <br /><br />To see which personalize Circles you are currently holding,
+        <br /><br />To see which personalized Circles you are currently holding,
         click onto the Circles Card.
         <br /><br />xDai is the currency that is used to invite others and pay
         transaction fees.
