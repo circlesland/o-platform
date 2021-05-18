@@ -165,10 +165,12 @@
         To be able to transfer Circles to someone you first need to get trusted by
         others. When you want to receive money you have to trust them back.
         <br /><br />
-        Keep in mind to always only connect yourself with people you trust and know
-        in person. <br /><br />To transact with a stranger the network will
+        To transact with a stranger the network will
         calculate the flow of money for you, based on your direct trust
         connections.
+        <br /><br />
+        The better you are connected the more useable your Circles become. Keep in mind to always only connect yourself with people you trust and know
+        in person. To connect yourself, send your "trust link" to other citizens you know in person.
         <a
           href="https://circlesland.ghost.io/whitepaper/"
           alt="CirclesLand Whitepaper"
@@ -178,7 +180,7 @@
       </div>
       <div class="mx-auto mt-6 btn btn-primary" id="clipboard" on:click={copy}>
         <input type="text" class="hidden" bind:value={inviteLink} />
-        <span> Copy Invite Link </span>
+        <span>Copy trust link</span>
       </div>
     </div>
   </section>

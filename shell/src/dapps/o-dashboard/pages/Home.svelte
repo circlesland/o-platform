@@ -117,9 +117,9 @@
         <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary" />
         <div class="text-center">
           <p
-            class="w-full m-auto mt-2 text-2xl font-bold font-circles text-gradient sm:w-96"
+            class="w-full m-auto mt-2 text-2xl font-bold font-circles text-gradient"
           >
-            Grow the global basic income economy!
+            Grow the basic income economy!
           </p>
           <!-- <p class="mt-4 text-lg font-circles">
             xxxxxxx/1.000.000.000 Progress
@@ -132,9 +132,7 @@
             />
           </div> -->
           <p class="mt-4 text">
-            Help your family and friends to get onboard by
-            <a href="/#/dashboard/become-a-hub" class="btn-link">becoming an invite hub</a> 
-            and together you grow the basic income economy locally and globally.
+            Help your family, friends and others to get onboard by <a href="/#/dashboard/become-a-hub" class="btn-link">becoming an invite hub</a> 
           </p>
           <div class="mr-1 text-primary" />
         </div>

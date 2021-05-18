@@ -65,7 +65,7 @@
 <div class="mx-4 -mt-6">
   {#if $mySafe.ui && $mySafe.ui.loadingPercent === 0}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>Loading Transactions...</div>
         </div>
@@ -73,7 +73,7 @@
     </section>
   {:else if $mySafe.ui && $mySafe.ui.error}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
             <b>An error occurred while loading the recent activities:</b>
@@ -92,7 +92,7 @@
     {/each}
   {:else}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
             <span>No recent activities</span>
@@ -102,16 +102,19 @@
     </section>
   {/if}
   <section class="justify-center mb-4">
-    <div class="flex flex-col infocard shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-info text-xs font-circles font-bold text-left">
+    <div class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard">
+      <div class="text-xs font-bold text-left text-info font-circles">
         WHAT IS THIS?
       </div>
 
       <div class="text-sm md:text-base">
         This is your Circles banking account and you just got your first 50
         Circles as a welcome gift.
-        <br /><br />From today on you will unconditionally receive 8 more
+        <br /><br />
+        From today on you will unconditionally receive 8 more
         Circles every day in the form of your personal universal basic income.
+        <br /><br />
+        Have a look around and explore the navigation buttons below, to learn more about how Circles works in detail.
       </div>
     </div>
   </section>
