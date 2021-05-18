@@ -11,7 +11,7 @@
           </p>
         </div>
       </div>
-      <div>
+      <!-- <div>
         <p class="font-semibold tracking-wide text-gray-300 uppercase">
           Navigation
         </p>
@@ -45,7 +45,7 @@
             >
           </li>
         </ul>
-      </div>
+      </div> -->
       <div>
         <p class="font-semibold tracking-wide text-gray-300 uppercase">Links</p>
         <ul class="mt-2 space-y-2">

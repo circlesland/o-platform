@@ -30,7 +30,7 @@
   }
 </script>
 
-<nav class="relative flex w-full items-center justify-center lg:space-x-16">
+<nav class="relative flex items-center justify-center w-full lg:space-x-16">
   <ul class="flex items-center hidden space-x-8 lg:flex">
     <li>
       <a
@@ -59,7 +59,7 @@
     title="Company"
     class="inline-flex items-center h-10 md:h-12 -ml-14 lg:-ml-0"
   >
-    <img src="/circles.png" alt="CirclesLAND" class="h-10 md:h-12" />
+    <img src="/circles.png" alt="CirclesLAND" class="h-8 md:h-12" />
   </a>
   <ul class="flex items-center hidden space-x-8 lg:flex">
     <li>
@@ -83,7 +83,7 @@
       >
     </li>
   </ul>
-  <div class="absolute w-12 self-center justify-self-end right-0">
+  <div class="absolute right-0 self-center w-12 justify-self-end">
     <button class="btn-link" on:click={login}>Log in</button>
   </div>
   <!-- Mobile menu -->

@@ -3,13 +3,13 @@
 </script>
 
 <aside
-  class="absolute w-72 h-full bg-gray-200 border-l-2 shadow-lg z-40 lg:hidden"
+  class="absolute z-40 h-full bg-gray-200 border-l-2 shadow-lg w-72 lg:hidden"
   class:open
 >
-  <nav class="pl-4 pt-16 text-xl">
+  <nav class="pt-16 pl-4 text-xl">
     <a
       href="/"
-      class="block font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary mb-10"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
       >Home</a
     >
 
@@ -18,7 +18,7 @@
       target="_blank"
       aria-label="Our product"
       title="Our product"
-      class="block font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary mb-10"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
       >Chat</a
     >
 
@@ -27,7 +27,7 @@
       target="_blank"
       aria-label="Our product"
       title="Our product"
-      class="block font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary mb-10"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
       >Forum</a
     >
 
@@ -36,7 +36,7 @@
       target="_blank"
       aria-label="About us"
       title="About us"
-      class="block font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary mb-10"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
       >Blog</a
     >
 
@@ -45,27 +45,27 @@
       target="_blank"
       aria-label="Sign in"
       title="Sign in"
-      class="block font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary mb-10"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
       >Whitepaper</a
     >
 
-    <a
+    <!-- <a
       href="/#/citizens"
-      class="block font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary mb-10"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
       >Citizens</a
     >
 
     <a
       href="/#/countries"
-      class="block font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary mb-10"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
       >Countries</a
     >
 
     <a
       href="/#/milestones"
-      class="block font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary mb-10"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
       >Milestones</a
-    >
+    > -->
   </nav>
 </aside>
 
