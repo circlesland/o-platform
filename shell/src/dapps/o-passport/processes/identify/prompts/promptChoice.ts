@@ -3,9 +3,10 @@ import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processConte
 import {prompt} from "@o-platform/o-process/dist/states/prompt";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 
-export type PromptChoiceSpec = {
+export type PromptChoiceSpec<TContext extends ProcessContext<any>, TEvent extends PlatformEvent> = {
   id: string
   promptLabel: string
+  entry?: (context:TContext, event:TEvent) => void
   options:{key:string, label:string, target:string}[]
   onlyWhenDirty?:boolean
   navigation?: {
@@ -26,13 +27,14 @@ export type PromptChoiceSpec = {
 export function promptChoice<
   TContext extends ProcessContext<any>,
   TEvent extends PlatformEvent
-  >(spec: PromptChoiceSpec) {
+  >(spec: PromptChoiceSpec<TContext, TEvent>) {
   const connectOrCreateConfig: any = {
     // TODO: Fix need for 'any'
     id: spec.id,
     initial: "promptChoice",
     states: {
       promptChoice: prompt<ProcessContext<any>, any>({
+        entry: spec.entry,
         fieldName: spec.id,
         component: ChoiceSelector,
         onlyWhenDirty: spec.onlyWhenDirty,
@@ -53,10 +55,13 @@ export function promptChoice<
         always: spec.options.map(c => {
           return {
             cond: (context) => {
-              return context.data[spec.id].key == c.key
+              return context.data[spec.id]?.key == c.key
             },
             target: c.target,
           }
+        }).concat({
+          cond: (context) => !context.data[spec.id]?.key,
+          target:spec.navigation.skip ?? ""
         })
       },
     }

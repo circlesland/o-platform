@@ -159,10 +159,10 @@
       });
 
       outEventSubscription = process.events.subscribe((next) => {
-
         if (next.stopped) {
           prompt = null;
           process = null;
+          waiting = false;
           console.log("ProcessContainer.svelte: process stopped")
           dispatch("stopped");
         }

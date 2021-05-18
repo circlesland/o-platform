@@ -274,6 +274,12 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       },
       newsletter: promptChoice({
         id: "newsletter",
+        entry: (context, event:any) => {
+          if (event.data?.url) {
+            context.data.avatarUrl = event.data?.url;
+            context.data.avatarMimeType = event.data?.mimeType;
+          }
+        },
         promptLabel: strings.labelNewsletter,
         onlyWhenDirty: skipIfNotDirty,
         options: [{
@@ -288,16 +294,13 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         navigation: {
           canGoBack: () => true,
           canSkip: () => false,
-          previous: "#avatarUrl"
+          previous: "#avatarUrl",
+          skip: "#upsertIdentity"
         }
       }),
       subscribeToNewsletter: {
         id: "subscribeToNewsletter",
         entry: (context, event) => {
-          if (event.data?.url) {
-            context.data.avatarUrl = event.data?.url;
-            context.data.avatarMimeType = event.data?.mimeType;
-          }
           context.data.newsletter = true;
         },
         always: "#upsertIdentity"
@@ -305,10 +308,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       dontSubscribeToNewsletter: {
         id: "dontSubscribeToNewsletter",
         entry: (context, event) => {
-          if (event.data?.url) {
-            context.data.avatarUrl = event.data?.url;
-            context.data.avatarMimeType = event.data?.mimeType;
-          }
           context.data.newsletter = false;
         },
         always: "#upsertIdentity"
@@ -335,7 +334,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 dream: context.data.dream,
-                newsletter: context.data.newsletter,
+                newsletter: context.data.newsletter ?? false,
                 country: context.data.country,
                 avatarUrl: context.data.avatarUrl,
                 avatarCid: context.data.avatarCid,
