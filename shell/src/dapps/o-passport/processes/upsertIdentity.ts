@@ -20,6 +20,8 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { createAvatar } from "@dicebear/avatars";
 import * as style from "@dicebear/avatars-avataaars-sprites";
 import {promptChoice} from "./identify/prompts/promptChoice";
+import {AvataarGenerator} from "../../../shared/avataarGenerator";
+import {ShellEvent} from "@o-platform/o-process/dist/events/shellEvent";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -225,35 +227,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "generateAvataar",
         invoke: {
           src: async (context) => {
-            const svg = createAvatar(style, {
-              seed: context.data.circlesSafeOwner,
-              // backgroundColor: "#65C9FF",
-              topChance: 100,
-              mouth: [
-                "default",
-                "eating",
-                "serious",
-                "smile",
-                "tongue",
-                "twinkle",
-              ],
-              eyes: [
-                "close",
-                "closed",
-                "default",
-                "roll",
-                "eyeRoll",
-                "happy",
-                "hearts",
-                "side",
-                "squint",
-                "surprised",
-                "wink",
-                "winkWacky",
-              ],
-              style: "transparent",
-              dataUri: true,
-            });
+            const svg = AvataarGenerator.generate(context.data.circlesAddress ?? context.data.circlesSafeOwner);
             context.data.avatarUrl = svg;
           },
           onDone: "#newsletter",
@@ -264,6 +238,12 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "uploadAvatar",
         on: {
           ...(<any>ipc(`uploadAvatar`)),
+        },
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Uploading your avatar ..`
+          });
         },
         invoke: {
           src: uploadFile.stateMachine("uploadAvatar"),
@@ -295,10 +275,11 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       newsletter: promptChoice({
         id: "newsletter",
         promptLabel: strings.labelNewsletter,
+        onlyWhenDirty: skipIfNotDirty,
         options: [{
           key: "create",
           label: "No thanks",
-          target: "#upsertIdentity"
+          target: "#dontSubscribeToNewsletter"
         }, {
           key: "connect",
           label: "Yes please",
@@ -313,12 +294,22 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       subscribeToNewsletter: {
         id: "subscribeToNewsletter",
         entry: (context, event) => {
-          console.log("Newsletter entry()", event);
           if (event.data?.url) {
             context.data.avatarUrl = event.data?.url;
             context.data.avatarMimeType = event.data?.mimeType;
           }
           context.data.newsletter = true;
+        },
+        always: "#upsertIdentity"
+      },
+      dontSubscribeToNewsletter: {
+        id: "dontSubscribeToNewsletter",
+        entry: (context, event) => {
+          if (event.data?.url) {
+            context.data.avatarUrl = event.data?.url;
+            context.data.avatarMimeType = event.data?.mimeType;
+          }
+          context.data.newsletter = false;
         },
         always: "#upsertIdentity"
       },

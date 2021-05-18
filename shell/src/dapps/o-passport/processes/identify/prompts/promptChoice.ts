@@ -7,6 +7,7 @@ export type PromptChoiceSpec = {
   id: string
   promptLabel: string
   options:{key:string, label:string, target:string}[]
+  onlyWhenDirty?:boolean
   navigation?: {
     // If you want to allow the user to go one step back then specify here where he came from
     previous?: string;
@@ -34,6 +35,7 @@ export function promptChoice<
       promptChoice: prompt<ProcessContext<any>, any>({
         fieldName: spec.id,
         component: ChoiceSelector,
+        onlyWhenDirty: spec.onlyWhenDirty,
         params: {
           label: spec.promptLabel,
           choices: spec.options

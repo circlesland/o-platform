@@ -15,6 +15,8 @@ import {GetUbiContextData} from "./processes/getUbi";
 import {getUBIService} from "./processes/getUBIService";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {HUB_BLOCK} from "@o-platform/o-circles/dist/consts";
+import {ProgressSignal} from "@o-platform/o-events/dist/signals/progressSignal";
+import {ShellEvent} from "@o-platform/o-process/dist/events/shellEvent";
 
 let _currentSafe: Safe | null = emptySafe;
 let loading = false;
@@ -28,6 +30,8 @@ export function tryGetCurrentSafe() {
 function publishRefreshEvent(safe:Safe) {
   window.o.publishEvent(<any>{
     type: "shell.refresh",
+
+
     dapp: "banking:1",
     data: safe
   });

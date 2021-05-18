@@ -47,7 +47,15 @@ createMachine<HubSignupContext, any>({
 
     loadProfile: {
       id: "loadProfile",
-      entry: (ctx) => console.log(`enter: identify.loadProfile`, ctx.data),
+      entry: [
+        (ctx) => console.log(`enter: identify.loadProfile`, ctx.data),
+        () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Loading your profile ..`
+          });
+        }
+      ],
       invoke: {
         src: async (context) => {
           context.data.profile = await loadProfile();
@@ -73,6 +81,12 @@ createMachine<HubSignupContext, any>({
 
     deploySafe: {
       id: "deploySafe",
+      entry: () => {
+        window.o.publishEvent(<PlatformEvent>{
+          type: "shell.progress",
+          message: `Finishing your setup (deploying safe) ..`
+        });
+      },
       invoke: {
         src: async (context) => {
           const proxyFactory = new GnosisSafeProxyFactory(RpcGateway.get(), PROXY_FACTORY_ADDRESS, GNOSIS_SAFE_ADDRESS);
@@ -85,6 +99,12 @@ createMachine<HubSignupContext, any>({
     },
     upsertIdentity: {
       id: "upsertIdentity",
+      entry: () => {
+        window.o.publishEvent(<PlatformEvent>{
+          type: "shell.progress",
+          message: `Finishing your setup (connecting the safe to your profile) ..`
+        });
+      },
       invoke: {
         src: async (context) => {
           const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -111,6 +131,12 @@ createMachine<HubSignupContext, any>({
     },
     fundSafe: {
       id: "fundSafe",
+      entry: () => {
+        window.o.publishEvent(<PlatformEvent>{
+          type: "shell.progress",
+          message: `Finishing your setup (transferring xDai to your new safe) ..`
+        });
+      },
       invoke: {
         src: async (context) => {
           // Transfer all xdai to the safe except INITIAL_ACCOUNT_XDAI
@@ -137,6 +163,12 @@ createMachine<HubSignupContext, any>({
     },
     hubSignup: {
       id: "hubSignup",
+      entry: () => {
+        window.o.publishEvent(<PlatformEvent>{
+          type: "shell.progress",
+          message: `Finishing your setup (signing you up for UBI) ..`
+        });
+      },
       invoke: {
         src: async (context) => {
           const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);
