@@ -167,7 +167,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: ``
+            message: `Calculating the maximum transfer amount ..`
           });
         },
         invoke: {
@@ -324,11 +324,8 @@ const processDefinition = (processId: string) =>
               throw new Error(`No currency or amount selected`);
             } else {
               context.data.summaryHtml = `<span>You are about to transfer</span>
-                <strong class='text-primary text-5xl block mt-2'>${
-                  context.data.tokens.amount
-                } ${currencyLookup[context.data.tokens.currency]}${
-                parseInt(context.data.tokens.amount) > 1 ? "s" : ""
-              }</strong>
+                <strong class='text-primary text-5xl block mt-2'>
+${context.data.tokens.amount} ${currencyLookup[context.data.tokens.currency]}${parseInt(context.data.tokens.amount) > 1 ? "s" : ""}</strong>
                 <span class='block mt-2'>
                 to 
                 </span>
