@@ -8,7 +8,6 @@ import {SafeOps} from "./safeOps";
 import {Observable, Subject} from "rxjs";
 import {BlockchainEvent} from "@o-platform/o-events/dist/blockchainEvent";
 import {RpcGateway} from "../rpcGateway";
-import {PromiEvent, TransactionReceipt} from "web3-core";
 import {ExecResult} from "../web3Contract";
 
 export interface CirclesAccountModel
