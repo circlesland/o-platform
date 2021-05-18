@@ -138,10 +138,7 @@
             {#if profile && profile.dream}
               {profile.dream}
             {:else}
-              No passion set.<br />
-              Fill in the blanks. When I receive a universal basic income, I will
-              follow my passion of _______________ and I will accept a minimum of
-              240 Circles every month as payment for it.
+              No passion set.
             {/if}
 
             <button
