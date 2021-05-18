@@ -1,4 +1,5 @@
 @tailwind base;
+@tailwind components;
 
 @layer base {
   h1 {
@@ -60,10 +61,27 @@
 }
 
 .text-gradient {
-  background: linear-gradient(to right, #003399, #0ad99c 80%);
+  --tw-text-opacity: 1;
+  background-image: linear-gradient(270deg, #0ad99c, #003399);
+  /* background-image: linear-gradient(270deg, #4398ee, #4f45d6); Also Cool Color gradient */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+/* 
+.gradient-text {
+  --tw-text-opacity: 1;
+  color: rgba(67, 152, 238, var(--tw-text-opacity));
+  @apply text-base;
+  text-decoration: none;
+}
+
+.gradient-text:not(.text-gradient-none) {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(270deg, #4398ee, #4f45d6);
+  background-image: linear-gradient(270deg, #003399, #0ad99c);
+}
+*/
 
 .truncateThis:before {
   content: "";

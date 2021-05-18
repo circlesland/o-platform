@@ -69,7 +69,7 @@
   {/if}
 </label>
 
-<div class="form-control justify-self-center text-white border p-4">
+<div class="form-control justify-self-center bg-white border p-4">
   {_context.data[context.fieldName]}
 </div>
 
