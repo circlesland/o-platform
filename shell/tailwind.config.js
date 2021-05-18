@@ -3,6 +3,10 @@ const production = !process.env.NODE_ENV;
 
 module.exports = {
   darkMode: false,
+  future: {
+    purgeLayersByDefault: true,
+    removeDeprecatedGapUtilities: true,
+  },
   purge: {
     enabled: production,
     content: ["./../packages/**/*.svelte", "./src/**/*.svelte"],
