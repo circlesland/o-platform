@@ -61,7 +61,7 @@ export function promptChoice<
           }
         }).concat({
           cond: (context) => !context.data[spec.id]?.key,
-          target:spec.navigation.skip ?? ""
+          target:spec.navigation?.skip ?? ""
         })
       },
     }
