@@ -164,6 +164,12 @@ const processDefinition = (processId: string) =>
       }),
       findMaxFlow: {
         id: "findMaxFlow",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: ``
+          });
+        },
         invoke: {
           id: "findMaxFlow",
           src: async (context) => {
@@ -265,8 +271,7 @@ const processDefinition = (processId: string) =>
         id: "prepareSummary",
         invoke: {
           src: async (context) => {
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.query({
               query: gql`
                 query profiles($circlesAddress: [String!]) {
