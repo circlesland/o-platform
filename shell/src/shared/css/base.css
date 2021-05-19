@@ -41,6 +41,10 @@
 
 }
 
+body {
+    height: 100vh;
+}
+
 .btn {
   font-family: Poppins;
   @apply font-bold;
