@@ -1,11 +1,11 @@
 <script lang="ts">
-  import {onDestroy, onMount} from "svelte";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {ProgressSignal} from "@o-platform/o-events/dist/signals/progressSignal";
-  import {Subscription} from "rxjs";
+  import { onDestroy, onMount } from "svelte";
+  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+  import { ProgressSignal } from "@o-platform/o-events/dist/signals/progressSignal";
+  import { Subscription } from "rxjs";
   import LoadingSpinner from "./LoadingSpinner.svelte";
 
-  let progressIndicator: { message: string, percent: number };
+  let progressIndicator: { message: string; percent: number };
   let subscription: Subscription;
 
   onMount(() => {
@@ -19,26 +19,22 @@
         const progressEvent: ProgressSignal = <ProgressSignal>event;
         progressIndicator = {
           message: progressEvent.message,
-          percent: progressEvent.percent
-        }
+          percent: progressEvent.percent,
+        };
       }
     });
   });
 
   onDestroy(() => {
-    if (subscription)
-      subscription.unsubscribe();
+    if (subscription) subscription.unsubscribe();
   });
 </script>
 
-<div class="flex items-center justify-center">
-  <div>
-    <LoadingSpinner />
-    {#if progressIndicator}
-      <div class="text-sm text-center text-primary foont-primary">
-        {progressIndicator.message}
-      </div>
-    {/if}
-  </div>
+<div class="flex flex-col items-center justify-center">
+  <LoadingSpinner />
+  {#if progressIndicator}
+    <div class="text-sm text-center text-primary foont-primary">
+      {progressIndicator.message}
+    </div>
+  {/if}
 </div>
-

@@ -6,10 +6,9 @@
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
   import { transfer } from "../processes/transfer";
-  import { setTrust } from "../processes/setTrust";
   import { TrustObject } from "../data/circles/types";
   import { tryGetCurrentSafe } from "../init";
-  import {createAvatar} from "@dicebear/avatars";
+  import { createAvatar } from "@dicebear/avatars";
   import * as style from "@dicebear/avatars-avataaars-sprites";
 
   export let trusting: TrustObject;
