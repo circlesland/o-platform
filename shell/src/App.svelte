@@ -208,11 +208,13 @@
 
   $: {
     /* Avoid scrolling background on open modal */
+    /*
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "visible";
     }
+     */
 
     if ($me && $me.circlesSafeOwner && !balanceThresholdTrigger) {
       if (!!localStorage.getItem("isCreatingSafe")) {
