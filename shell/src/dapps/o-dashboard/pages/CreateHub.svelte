@@ -120,7 +120,7 @@
         <div class="text-left flex-grow ">
           <div class="max-w-full">
             <p>
-              CirclesLand is build on a energy efficient blockchain (xDai) with very small transaction fees. 0.01$ will give you 300-500 transactions.
+              CirclesLand is built on a energy efficient blockchain (xDai) with very small transaction fees. 0.01$ will give you 300-500 transactions.
               We recommended to have at least <strong>{INVITE_VALUE.toFixed(2)} xDai </strong> (={INVITE_VALUE.toFixed(2)} $) to
               fuel your daily transactions.<br>
               If you have more than {INVITE_VALUE.toFixed(2)} xDai, you can use it to
