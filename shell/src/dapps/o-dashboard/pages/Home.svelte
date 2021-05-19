@@ -140,7 +140,7 @@
 
   <!-- PASSPORT  -->
   <a href="/#/passport/profile">
-    <section class="flex items-center justify-center mb-8">
+    <section class="flex items-center justify-center mb-4">
       <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
         <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary">
           <svg
@@ -183,7 +183,7 @@
 
   <!-- BANKING -->
   {#if showFundHint || disableBanking}
-    <section class="flex items-center justify-center mb-8">
+    <section class="flex items-center justify-center mb-4">
       <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
         <div class="px-4 py-2 mr-4 -ml-3 text-center text-base-300">
           <svg
@@ -222,7 +222,7 @@
     </section>
   {:else}
     <a href={showFundHint ? "/#/dashboard" : "/#/banking/transactions"}>
-      <section class="flex items-center justify-center mb-8">
+      <section class="flex items-center justify-center mb-4">
         <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
           <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary">
             <svg
@@ -267,7 +267,7 @@
   <!-- Chat -->
 
   <a href="https://discord.gg/4DBbRCMnFZ" target="_blank">
-    <section class="flex items-center justify-center mb-8">
+    <section class="flex items-center justify-center mb-4">
       <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
         <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary">
           <svg
@@ -308,7 +308,7 @@
 
   <!-- Market -->
 
-  <section class="flex items-center justify-center mb-8">
+  <section class="flex items-center justify-center mb-4">
     <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
       <div class="px-4 py-2 mr-4 -ml-3 text-center text-base-300">
         <svg

@@ -2,7 +2,7 @@
   import { setClient } from "svelte-apollo";
   import TrustCard from "../atoms/TrustCard.svelte";
   import { mySafe } from "../stores/safe";
-  import AssetsHeader from "../atoms/AssetsHeader.svelte";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { me } from "../../../shared/stores/me";
 
@@ -30,7 +30,7 @@
   };
 </script>
 
-<AssetsHeader />
+<SimpleHeader />
 
 <div class="mx-4 -mt-6">
   {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts || !$mySafe.trustRelations.trusting || !$mySafe.trustRelations.trustedBy}

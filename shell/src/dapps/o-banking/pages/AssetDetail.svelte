@@ -5,7 +5,7 @@
 
   import { mySafe } from "../stores/safe";
   import { BN } from "ethereumjs-util";
-  import AssetsHeader from "../atoms/AssetsHeader.svelte";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { me } from "../../../shared/stores/me";
 
@@ -64,11 +64,17 @@
 
     tokens = Object.values($mySafe.acceptedTokens.tokens)
       .filter((o) => new BN(o.balance).gt(new BN("0")))
-      .sort((a,b) => new BN(a.balance).gt(new BN(b.balance)) ? -1 : new BN(a.balance).lt(new BN(b.balance)) ? 1 :0);
+      .sort((a, b) =>
+        new BN(a.balance).gt(new BN(b.balance))
+          ? -1
+          : new BN(a.balance).lt(new BN(b.balance))
+          ? 1
+          : 0
+      );
   }
 </script>
 
-<AssetsHeader />
+<SimpleHeader showBackArrow={true} />
 
 <div class="mx-4 -mt-6">
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
@@ -100,8 +106,7 @@
       </div>
     </section>
 
-    {#each [accountxDai, safexDai]
-            .sort((a,b) => parseFloat(a.balance) > parseFloat(b.balance) ? -1 : parseFloat(a.balance) < parseFloat(b.balance) ? 1 :0) as token}
+    {#each [accountxDai, safexDai].sort( (a, b) => (parseFloat(a.balance) > parseFloat(b.balance) ? -1 : parseFloat(a.balance) < parseFloat(b.balance) ? 1 : 0) ) as token}
       <XdaiAssetCard
         address={token.address}
         title={token.title}
