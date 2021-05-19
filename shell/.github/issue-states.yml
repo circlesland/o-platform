@@ -1,0 +1,74 @@
+# Configuration for Issue States - https://github.com/dessant/issue-states
+
+# Open issues that are moved to these project columns. Set to `[]` to disable
+openIssueColumns: 
+  - OPEN
+  - TODAY
+  - TESTING 
+  - WEEK 1
+  - WEEK 2
+  - WEEK 3
+  - WEEK 4  
+  - WEEK 5
+  - WEEK 6
+  - WEEK 7
+  - WEEK 8
+  - WEEK 9
+  - WEEK 10
+  - WEEK 11
+  - WEEK 12
+  - WEEK 13
+  - WEEK 14  
+  - WEEK 15
+  - WEEK 16
+  - WEEK 17
+  - WEEK 18
+  - WEEK 19
+  - WEEK 20
+  - WEEK 21
+  - WEEK 21
+  - WEEK 22
+  - WEEK 23
+  - WEEK 24  
+  - WEEK 25
+  - WEEK 26
+  - WEEK 27
+  - WEEK 28
+  - WEEK 29
+  - WEEK 30
+  - WEEK 31
+  - WEEK 31
+  - WEEK 32
+  - WEEK 33
+  - WEEK 34  
+  - WEEK 35
+  - WEEK 36
+  - WEEK 37
+  - WEEK 38
+  - WEEK 39
+  - WEEK 40
+  - WEEK 41
+  - WEEK 41
+  - WEEK 42
+  - WEEK 43
+  - WEEK 44  
+  - WEEK 45
+  - WEEK 46
+  - WEEK 47
+  - WEEK 48
+  - WEEK 49
+  - WEEK 50
+  - WEEK 51
+  - WEEK 52
+  - QUARTER 1
+  - QUARTER 2
+  - QUARTER 3
+  - QUARTER 4
+
+# Close issues that are moved to these project columns. Set to `[]` to disable
+closedIssueColumns:
+  - DONE
+  - CLOSED
+
+# Repository to extend settings from
+# _extends: repo
