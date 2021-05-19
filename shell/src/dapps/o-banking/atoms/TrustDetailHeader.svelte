@@ -1,5 +1,5 @@
 <script lang="ts">
-    import TopNav from "src/shared/atoms/TopNav.svelte";
+  import TopNav from "src/shared/atoms/TopNav.svelte";
 
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
@@ -32,14 +32,12 @@
     trusting?: number;
   } = {};
 
-
   $: {
     if (profile.displayName) {
       isLoading = false;
     }
   }
 </script>
-
 
 <TopNav showBackArrow={true} />
 
