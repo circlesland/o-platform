@@ -38,7 +38,7 @@ export type PromptSpec<TContext, TEvent> = {
       event: { type: string; [x: string]: any }
     ) => boolean;
   };
-  params: { [x: string]: any };
+  params: { [x: string]: any }|((context:TContext)=>{[x: string]: any});
   dataSchema?: any // ((context:TContext, event:TEvent) => any)|any;
 };
 

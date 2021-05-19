@@ -22,6 +22,8 @@ import * as style from "@dicebear/avatars-avataaars-sprites";
 import {promptChoice} from "./identify/prompts/promptChoice";
 import {AvataarGenerator} from "../../../shared/avataarGenerator";
 import {ShellEvent} from "@o-platform/o-process/dist/events/shellEvent";
+import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
+import {AuthenticateContext} from "./identify/aquireSession/authenticate/authenticate";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -39,6 +41,7 @@ export type UpsertIdentityContextData = {
   avatarUrl?: string;
   avatarCid?: string;
   avatarMimeType?: string;
+  errorUploadingAvatar?:string;
 };
 
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
@@ -261,17 +264,43 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           },
           onDone: [
             {
+              cond: (context, event) => event.data instanceof Error,
+              target: "#errorUploadingAvatar",
+            },
+            {
               cond: (context) =>
-                !!context.data.avatar && !!context.data.avatar.bytes,
+                  !!context.data.avatar && !!context.data.avatar.bytes,
               target: "#newsletter",
             },
             {
               target: "#generateAvataar",
             },
           ],
-          onError: "#error",
+          onError: "#errorUploadingAvatar",
         },
       },
+      errorUploadingAvatar: prompt<UpsertIdentityContext, any>({
+        fieldName: "errorUploadingAvatar",
+        entry: (context) => {
+          context.data.errorUploadingAvatar = `
+            <b>Oops.</b><br/>
+            We couldn't upload your avatar.<br/>
+            <br/>
+            Please make sure that your avatar doesn't exceed the maximum allowed file size of 4 MB.<br/>
+            Either choose a different file or skip it for now.
+          `;
+          context.dirtyFlags["avatarUrl"] = true;
+        },
+        component: HtmlViewer,
+        isSensitive: true,
+        params: {
+          submitButtonText: "Try again",
+          html: (context) => context.data.errorUploadingAvatar
+        },
+        navigation: {
+          next: "#checkPreviewAvatar"
+        },
+      }),
       newsletter: promptChoice({
         id: "newsletter",
         entry: (context, event:any) => {

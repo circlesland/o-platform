@@ -292,7 +292,7 @@ const processDefinition = (processId: string) =>
         invoke: {
           src: async (context) => {
             const to = context.data.recipientProfile
-              ? context.data.recipientProfile.firstName + context.data.recipientProfile.lastName ?? ""
+              ? context.data.recipientProfile.firstName + " " + context.data.recipientProfile.lastName ?? ""
               : context.data.recipientAddress;
 
             let toAvatarUrl = context.data.recipientProfile ? context.data.recipientProfile.avatarUrl : null;

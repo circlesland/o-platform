@@ -13,6 +13,7 @@ import {
   VerifyDocument,
 } from "../../../../data/auth/types";
 import {SessionInfoDocument} from "../../../../data/api/types";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type AuthenticateContextData = {
   appId?: string;
@@ -22,6 +23,8 @@ export type AuthenticateContextData = {
   hashedEmail?: string;
   acceptTos?: boolean;
   code?: string;
+  errorSendingAuthMail?: string;
+  errorExchangingCode?: string;
 };
 
 /**
@@ -37,8 +40,8 @@ export type AuthenticateContext = ProcessContext<AuthenticateContextData>;
 const strings = {
   labelLoginEmail:
     "Welcome, a pleasure you found your way to CirclesLand. <br/><strong class='text-primary block mt-3'>Please provide your email address</strong>",
-  labelVerificationCode:
-    `An email has been send to you, please check your inbox. To login please click the link in the email or enter the code you received by mail. <br/><span class="text-xs">It may take a moment. Also check your spam folder.</span>`,
+  labelVerificationCode: (email:string) =>
+    `An email has been sent to you (<b>${email}</b>), please check your inbox. To login please click the link in the email or enter the code you received by mail. <br/><span class="text-xs">It may take a moment. Also check your spam folder.</span>`,
   placeholder: "you@example.com",
 };
 async function sha256(str) {
@@ -204,6 +207,12 @@ const processDefinition = (processId: string) =>
       // and then go to the 'code' input step.
       requestAuthCode: {
         id: "requestAuthCode",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Sending the email ..`
+          });
+        },
         invoke: {
           src: async (context) => {
             const authClient = await window.o.authClient.client.subscribeToResult();
@@ -225,17 +234,48 @@ const processDefinition = (processId: string) =>
             }
           },
           onDone: "#code",
-          onError: "#error",
+          onError: "#errorSendingAuthMail",
         },
       },
+      // Wait for the user to enter the code he received in the login-email
+      errorSendingAuthMail: prompt<AuthenticateContext, any>({
+        fieldName: "errorSendingAuthMail",
+        entry: (context) => {
+          context.data.errorSendingAuthMail = `
+            <b>Oops.</b><br/>
+            We couldn't deliver your login mail.<br/>
+            <br/>
+            This can have multiple reasons:<br/>
+            <ul>
+                <li><b>You already requested a login mail but it didn't arrive yet.</b><br/>
+                Please wait up to two minutes until the e-mail arrives. If it doesn't arrive within two minutes, please try again. Also make sure to check your spam folder.</li>
+                <li><b>You have a typo in your email address</b><br/>
+                Please check if the email address is correct. You entered "${context.data.loginEmail}".</li>
+                <li><b>Something went wrong at our or your provider.</b><br/>
+                If the problem persists, please contact us in our <a href="https://discord.gg/SACzRXa35v" target="_blank">Discord channel</a> or at <a href="mailto:lab@circles.land">lab@circles.land</a>.</li>
+            </ul>
+          `;
+        },
+        component: HtmlViewer,
+        isSensitive: true,
+        params: {
+          submitButtonText: "Try again",
+          html: (context) => context.data.errorSendingAuthMail
+        },
+        navigation: {
+          next: "#loginEmail"
+        },
+      }),
       // Wait for the user to enter the code he received in the login-email
       code: prompt<AuthenticateContext, any>({
         fieldName: "code",
         component: TextEditor,
         isSensitive: true,
-        params: {
-          label: strings.labelVerificationCode,
-          submitButtonText: "Login",
+        params: (context) => {
+          return {
+            label: strings.labelVerificationCode(context.data.loginEmail),
+            submitButtonText: "Login"
+          }
         },
         dataSchema: yup.string().required("Please enter your one time token."),
         navigation: {
@@ -246,6 +286,12 @@ const processDefinition = (processId: string) =>
       // Exchange it for the actual token and redirect the user to the application.
       exchangeCodeForToken: {
         id: "exchangeCodeForToken",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `We're logging you in ..`
+          });
+        },
         invoke: {
           src: async (context) => {
             const authClient = await window.o.authClient.client.subscribeToResult();
@@ -267,9 +313,30 @@ const processDefinition = (processId: string) =>
             return result.data.verify.jwt;
           },
           onDone: "#success",
-          onError: "#error",
+          onError: "#errorExchangingCode",
         },
       },
+      // Wait for the user to enter the code he received in the login-email
+      errorExchangingCode: prompt<AuthenticateContext, any>({
+        fieldName: "errorExchangingCode",
+        entry: (context) => {
+          context.data.errorExchangingCode = `
+            <b>Oops.</b><br/>
+            We couldn't log you in.<br/>
+            <br/>
+            Please double check your entered auth code (${context.data.code}) and make sure that it is from the most recent login email we sent to you.
+          `;
+        },
+        component: HtmlViewer,
+        isSensitive: true,
+        params: {
+          submitButtonText: "Try again",
+          html: (context) => context.data.errorExchangingCode
+        },
+        navigation: {
+          next: "#code"
+        },
+      }),
       success: {
         id: "success",
         type: "final",

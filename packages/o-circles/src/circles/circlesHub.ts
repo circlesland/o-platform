@@ -5,8 +5,6 @@ import type { GnosisSafeProxy } from "../safe/gnosisSafeProxy";
 import {BN} from "ethereumjs-util";
 import {ExecResult, Web3Contract} from "../web3Contract";
 import {SafeOps} from "../model/safeOps";
-import {config} from "rxjs";
-import {PromiEvent, TransactionReceipt} from "web3-core";
 
 export class CirclesHub extends Web3Contract {
   constructor(web3: Web3, hubAddress: string) {
@@ -135,10 +133,8 @@ export class CirclesHub extends Web3Contract {
       transfer.sources,
       transfer.destinations,
       transfer.values,
-    )
-      .encodeABI();
+    ).encodeABI();
 
-    // window.o.logger.log("transferTroughAbi:", txData);
 
     return await safeProxy.execTransaction(
       privateKey,

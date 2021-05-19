@@ -4,6 +4,7 @@
   import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
   import { onMount } from "svelte";
   import { UpsertProfileDocument, WhoamiDocument } from "../data/api/types";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
   async function editProfile() {
     /*
@@ -60,6 +61,10 @@
     if (result.errors) {
       return;
     }
+    window.o.publishEvent(<PlatformEvent>{
+      type: "shell.authenticated",
+      profile: result.data.upsertProfile,
+    });
   }
 
   let email: string = "unknown";
