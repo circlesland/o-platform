@@ -1,62 +1,11 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { getLastLoadedDapp, getLastLoadedPage } from "../../../loader";
-  import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
-  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import TopNav from "src/shared/atoms/TopNav.svelte";
   import { mySafe } from "../stores/safe";
 
   export let balance: string = "0";
-
-  let lastLoadedPage: PageManifest;
-  let lastLoadedDapp: DappManifest<any>;
-
-  onMount(() => {
-    lastLoadedPage = getLastLoadedPage();
-    lastLoadedDapp = getLastLoadedDapp();
-  });
 </script>
 
-<!-- BANKING HEADER START -->
-{#if lastLoadedDapp && lastLoadedPage}
-  <div
-    class="flex flex-row  justify-between navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white sticky -top-0.5 z-10"
-  >
-    <div class="pt-0 pl-2 flex flex-row w-full justify-between ">
-      <div
-        class="self-start cursor-pointer"
-        on:click|once={() => history.back()}
-      >
-        <span class="text-lg font-circles">
-          {#if lastLoadedDapp.title != lastLoadedPage.title}
-            {lastLoadedDapp.title} /
-          {/if}
-          {lastLoadedPage.title}
-        </span>
-      </div>
-      <div class="self-start">
-        <button
-          class=" text-white"
-          on:click={() => (window.location = "/#/dashboard")}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
-{/if}
+<TopNav />
 
 <div
   class="h-60 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
@@ -104,31 +53,4 @@
       />
     </div>
   </div>
-
-  <!-- <div class="self-center text-center mt-8 block">
-    <span class="block text-base-300">Your Balance</span>
-    <span class="inline-block text-8xl font-circles ml-10 ">4500 </span>
-    <span class="inline-block align-middle max-h-full -mt-18 text-left">
-      <svg
-        class="w-16 h-16 inline"
-        viewBox="0 0 209 215"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M180.428 181.056C172.29 188.054 163.175 193.425 153.084 197.169C142.993 200.912 132.535 202.784 121.712 202.784C113.411 202.784 105.395 201.686 97.6641 199.488C90.0143 197.372 82.8122 194.361 76.0576 190.455C69.3844 186.467 63.2809 181.707 57.7471 176.173C52.2132 170.639 47.4525 164.535 43.4648 157.862C39.5586 151.108 36.5068 143.906 34.3096 136.256C32.1937 128.525 31.1357 120.509 31.1357 112.208C31.1357 103.907 32.1937 95.8913 34.3096 88.1602C36.5068 80.429 39.5586 73.2269 43.4648 66.5537C47.4525 59.7992 52.2132 53.6549 57.7471 48.1211C63.2809 42.5872 69.3844 37.8672 76.0576 33.9609C82.8122 29.9733 90.0143 26.9215 97.6641 24.8057C105.395 22.6084 113.411 21.5098 121.712 21.5098C132.535 21.5098 142.993 23.3815 153.084 27.125C163.175 30.7871 172.29 36.1582 180.428 43.2383L161.873 73.7559C156.746 68.222 150.683 63.9902 143.685 61.0605C136.686 58.0495 129.362 56.5439 121.712 56.5439C113.981 56.5439 106.738 58.0088 99.9834 60.9385C93.2288 63.8682 87.3288 67.8558 82.2832 72.9014C77.2376 77.8656 73.25 83.7656 70.3203 90.6016C67.3906 97.3561 65.9258 104.558 65.9258 112.208C65.9258 119.858 67.3906 127.06 70.3203 133.814C73.25 140.488 77.2376 146.347 82.2832 151.393C87.3288 156.438 93.2288 160.426 99.9834 163.355C106.738 166.285 113.981 167.75 121.712 167.75C129.362 167.75 136.686 166.285 143.685 163.355C150.683 160.344 156.746 156.072 161.873 150.538L180.428 181.056Z"
-          fill="white"
-        />
-        <circle cx="119.5" cy="111.5" r="18.5" fill="white" />
-      </svg>
-    </span>
-    <div class="p-6 space-y-2 self-end text-base-300 max-w-max m-auto">
-      <small class="block">Transactions Update: 33% complete.</small>
-      <progress
-        class="progress progress-secondary transaction-update-progress"
-        value="33"
-        max="100"
-      />
-    </div>
-  </div> -->
 </div>

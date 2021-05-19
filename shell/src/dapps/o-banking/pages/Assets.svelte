@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AssetsHeader from "../atoms/AssetsHeader.svelte";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import { mySafe } from "../stores/safe";
   import { BN } from "ethereumjs-util";
   import AssetCard from "../atoms/AssetCard.svelte";
@@ -62,7 +62,7 @@
   }
 </script>
 
-<AssetsHeader />
+<SimpleHeader />
 
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-2">
