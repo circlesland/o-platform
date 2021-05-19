@@ -28,10 +28,10 @@ const strings = {
   choiceCreate: "Create",
   labelEditSeedphrase: "Please enter your seedphrase below:",
   labelExportSeedphrase:
-    "This is your seedphrase. It is like an unchangeable password, which gives only you access to your circles banking account. It is your full responsibility to backup and protect your seedphrase. If you loose it, all your funds are lost forever.<br/><strong class='text-primary  block mt-3'>Make a backup now</strong>",
+    "The following 24 word sentence is your seedphrase, which is like a non-changeable password. It is your full responsibility to save and protect your seedphrase. If you loose or forget it, all your funds are lost forever.<br/><strong class='text-primary block mt-3'>Make a backup now</strong>",
   buttonExportSeedphrase: "I made a backup",
   // labelCheckSeedphrase: (context: CreateSafeContext) => `Please enter the ${context.data.checkWordIndex == 0 ? (context.data.checkWordIndex + 1).toString() + "st" : (context.data.checkWordIndex + 1).toString() + "nd"} word of your seedphrase:`,
-  labelCheckSeedphrase: `Keep in mind, everyone who knows your seedphrase can access all your funds! Did you store your seedphrase in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary  block mt-3'>Repeat your seedphrase password</strong>`,
+  labelCheckSeedphrase: `Keep in mind, everyone who knows your seedphrase can access all your funds! Did you store your seedphrase in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your seedphrase password</strong>`,
   buttonCheckSeedphrase: "It is stored safely",
 };
 
@@ -53,7 +53,8 @@ const processDefinition = (processId: string) =>
         id: "generateSeedPhrase",
         invoke: {
           src: async (context) => {
-            context.data.privateKey = RpcGateway.get().eth.accounts.create().privateKey;
+            context.data.privateKey =
+              RpcGateway.get().eth.accounts.create().privateKey;
             context.data.seedPhrase = bip39.entropyToMnemonic(
               context.data.privateKey.replace("0x", "")
             );
