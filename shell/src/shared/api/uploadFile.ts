@@ -81,7 +81,15 @@ createMachine<UploadFileContext, any>({
           context.data.url = jsonResponse.url;
         },
         onDone: "#success",
-        onError: "#error"
+        onError: "#uploadError"
+      }
+    },
+    uploadError: {
+      id: "uploadError",
+      entry: () => console.log(`Enter: uploadFile.error`),
+      type: "final",
+      data: (context) => {
+        return new Error("Couldn't upload the file");
       }
     },
     success: {
