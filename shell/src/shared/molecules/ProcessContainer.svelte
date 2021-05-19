@@ -45,7 +45,11 @@
       interceptedProcess = {
         ...process,
         sendAnswer(answer: PlatformEvent) {
-          if (cancelDialogVisible && answer.type == "process.continue" && (<any>answer).data.___cancelRequest) {
+          if (
+            cancelDialogVisible &&
+            answer.type == "process.continue" &&
+            (<any>answer).data.___cancelRequest
+          ) {
             console.log("Cancel dialog answer:", answer);
             if ((<any>answer).data.___cancelRequest.key === "no") {
               prompt = beforeCancelPrompt;
@@ -61,7 +65,7 @@
           } else {
             process.sendAnswer(answer);
           }
-        }
+        },
       };
     }
     if (outEventSubscription) {
@@ -95,10 +99,12 @@
   function subscribeToProcess() {
     ensureProcess((process) => {
       inEventSubscription = process.inEvents.subscribe((next) => {
-
         if (!next.event) return;
 
-        console.log("ProcessContainer: In/Out -> to Process: ", JSON.stringify(next.event, null, 2));
+        console.log(
+          "ProcessContainer: In/Out -> to Process: ",
+          JSON.stringify(next.event, null, 2)
+        );
 
         if (next.event.type === "process.cancelRequest") {
           // modalWantsToClose:
@@ -106,8 +112,15 @@
           console.log("Received cancel request:", next.event);
           beforeCancelPrompt = prompt;
 
-          if (beforeCancelPrompt && (Object.values(beforeCancelPrompt.editorDirtyFlags).filter(o => o === true).length == 0
-                  && Object.values(beforeCancelPrompt.dirtyFlags).filter(o => o === true).length == 0)) {
+          if (
+            beforeCancelPrompt &&
+            Object.values(beforeCancelPrompt.editorDirtyFlags).filter(
+              (o) => o === true
+            ).length == 0 &&
+            Object.values(beforeCancelPrompt.dirtyFlags).filter(
+              (o) => o === true
+            ).length == 0
+          ) {
             // No changes yet, just cancel
             process.sendEvent(new Cancel());
             return;
@@ -119,21 +132,24 @@
             fieldName: "___cancelRequest",
             component: ChoiceSelector,
             data: {
-              ___cancelRequest: undefined
+              ___cancelRequest: undefined,
             },
             dirtyFlags: {},
             messages: {},
             params: {
               label: "Do you really want to cancel?",
-              choices: [{
-                key: "yes",
-                label: "Yes",
-                target: "#yes"
-              },{
-                key: "no",
-                label: "No",
-                target: "#no"
-              }]
+              choices: [
+                {
+                  key: "yes",
+                  label: "Yes",
+                  target: "#yes",
+                },
+                {
+                  key: "no",
+                  label: "No",
+                  target: "#no",
+                },
+              ],
             },
             isSensitive: false,
             navigation: {
@@ -142,10 +158,10 @@
             },
           };
 
-          prompt = <PromptEvent> {
+          prompt = <PromptEvent>{
             id: "123",
             responseToId: "123",
-            ...p
+            ...p,
           };
         }
 
@@ -163,7 +179,7 @@
           prompt = null;
           process = null;
           waiting = false;
-          console.log("ProcessContainer.svelte: process stopped")
+          console.log("ProcessContainer.svelte: process stopped");
           dispatch("stopped");
         }
 
@@ -183,7 +199,10 @@
         }
 
         try {
-          console.log("ProcessContainer: In/Out <- from Process: ", JSON.stringify(next.event, null, 2));
+          console.log(
+            "ProcessContainer: In/Out <- from Process: ",
+            JSON.stringify(next.event, null, 2)
+          );
         } catch {}
 
         // If the event is an error event, then set the error property else clear it
@@ -210,7 +229,7 @@
           );
           prompt = <PromptEvent>{
             ...event,
-            editorDirtyFlags: {}
+            editorDirtyFlags: {},
           };
           waiting = false;
           waitForNextOutgoingEvent = true;
@@ -248,7 +267,6 @@
       icon: faTimes,
     },
   };
-
 </script>
 
 {#if waiting}

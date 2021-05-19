@@ -1,50 +1,48 @@
 <script lang="ts">
-
   import "./shared/css/base.css";
   import "./shared/css/components.css";
   import "./shared/css/utilities.css";
 
-
   import routes from "./loader";
-  import {getLastLoadedDapp} from "./loader";
-  import {getLastLoadedPage} from "./loader";
+  import { getLastLoadedDapp } from "./loader";
+  import { getLastLoadedPage } from "./loader";
 
-  import Router, {push, location} from "svelte-spa-router";
+  import Router, { push, location } from "svelte-spa-router";
   import Modal from "./shared/molecules/Modal.svelte";
   import ProcessContainer from "./shared/molecules/ProcessContainer.svelte";
   import NavItem from "./shared/atoms/NavItem.svelte";
-  import {Process} from "@o-platform/o-process/dist/interfaces/process";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-  import {NavigateTo} from "@o-platform/o-events/dist/shell/navigateTo";
-  import {ProgressSignal} from "@o-platform/o-events/dist/signals/progressSignal";
-  import {ProcessStarted} from "@o-platform/o-process/dist/events/processStarted";
+  import { Process } from "@o-platform/o-process/dist/interfaces/process";
+  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import { NavigateTo } from "@o-platform/o-events/dist/shell/navigateTo";
+  import { ProgressSignal } from "@o-platform/o-events/dist/signals/progressSignal";
+  import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
   import {
     shellProcess,
     ShellProcessContext,
   } from "./shared/processes/shellProcess";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
-  import {Subscription} from "rxjs";
-  import {Prompt} from "@o-platform/o-process/dist/events/prompt";
-  import {Back} from "@o-platform/o-process/dist/events/back";
-  import {Skip} from "@o-platform/o-process/dist/events/skip";
+  import { Generate } from "@o-platform/o-utils/dist/generate";
+  import { Subscription } from "rxjs";
+  import { Prompt } from "@o-platform/o-process/dist/events/prompt";
+  import { Back } from "@o-platform/o-process/dist/events/back";
+  import { Skip } from "@o-platform/o-process/dist/events/skip";
   import {
     Cancel,
     CancelRequest,
   } from "@o-platform/o-process/dist/events/cancel";
-  import {ProcessEvent} from "@o-platform/o-process/dist/interfaces/processEvent";
-  import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
-  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+  import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
+  import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
+  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import {
     identify,
     IdentifyContextData,
   } from "./dapps/o-passport/processes/identify/identify";
-  import {SvelteToast} from "./shared/molecules/Toast";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {ContextAction} from "@o-platform/o-events/dist/shell/contextAction";
-  import {XDaiThresholdTrigger} from "./xDaiThresholdTrigger";
-  import {me} from "./shared/stores/me";
-  import {INVITE_VALUE} from "./dapps/o-passport/processes/invite/invite";
+  import { SvelteToast } from "./shared/molecules/Toast";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";
+  import { XDaiThresholdTrigger } from "./xDaiThresholdTrigger";
+  import { me } from "./shared/stores/me";
+  import { INVITE_VALUE } from "./dapps/o-passport/processes/invite/invite";
   import {
     deploySafe,
     HubSignupContextData,
@@ -62,8 +60,8 @@
     "/citizens": true,
     "/countries": true,
     "/banking/find-my-safe": true,
-    "/milestones": true
-  }
+    "/milestones": true,
+  };
 
   let progressIndicator: {
     message: string;
@@ -209,6 +207,13 @@
   let triggered = false;
 
   $: {
+    /* Avoid scrolling background on open modal */
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "visible";
+    }
+
     if ($me && $me.circlesSafeOwner && !balanceThresholdTrigger) {
       if (!!localStorage.getItem("isCreatingSafe")) {
         balanceThresholdTrigger = new XDaiThresholdTrigger(

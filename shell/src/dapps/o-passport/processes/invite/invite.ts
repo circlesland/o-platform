@@ -2,21 +2,20 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import {promptChoice} from "../identify/prompts/promptChoice";
-import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
-import {transfer} from "../../../o-banking/processes/transfer";
-import {loadProfile} from "../identify/services/loadProfile";
+import { promptChoice } from "../identify/prompts/promptChoice";
+import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
+import { transfer } from "../../../o-banking/processes/transfer";
+import { loadProfile } from "../identify/services/loadProfile";
 
 export type InviteContextData = {
-  safeAddress?:string;
+  safeAddress?: string;
   inviteProfileId?: number;
   circlesSafeOwner?: string;
 };
 
-export const INVITE_VALUE = 0.10;
+export const INVITE_VALUE = 0.1;
 
 export type InviteContext = ProcessContext<InviteContextData>;
-
 
 const processDefinition = (processId: string) =>
   createMachine<InviteContext, any>({
@@ -29,36 +28,39 @@ const processDefinition = (processId: string) =>
 
       loadProfile: {
         invoke: {
-          src: context => {
+          src: (context) => {
             return loadProfile(context.data.inviteProfileId);
           },
           onDone: {
             actions: (context, event) => {
               context.data.circlesSafeOwner = event.data.circlesSafeOwner;
             },
-            target: "#amount"
+            target: "#amount",
           },
-          onError: "#error"
-        }
+          onError: "#error",
+        },
       },
 
       amount: promptChoice({
         id: "amount",
-        promptLabel: "" +
-            "How many invites do you want to send to XXX?",
-        options: [{
-          key: "1",
-          label: "1 invite",
-          target: "#transfer"
-        }, {
-          key: "5",
-          label: "5 invites",
-          target: "#transfer"
-        }, {
-          key: "25",
-          label: "25 invites",
-          target: "#transfer"
-        }]
+        promptLabel: "" + "How many invites do you want to send to XXX?",
+        options: [
+          {
+            key: "1",
+            label: "1 invite",
+            target: "#transfer",
+          },
+          {
+            key: "5",
+            label: "5 invites",
+            target: "#transfer",
+          },
+          {
+            key: "25",
+            label: "25 invites",
+            target: "#transfer",
+          },
+        ],
       }),
 
       transfer: {
@@ -77,8 +79,8 @@ const processDefinition = (processId: string) =>
                 recipientProfileId: context.data.inviteProfileId,
                 tokens: {
                   currency: "xdai",
-                  amount: parseFloat(context.data.amount.key) * INVITE_VALUE
-                }
+                  amount: parseFloat(context.data.amount.key) * INVITE_VALUE,
+                },
               };
             },
             messages: {},
@@ -96,13 +98,10 @@ const processDefinition = (processId: string) =>
           return context.data;
         },
       },
-    }
+    },
   });
 
-export const invite: ProcessDefinition<
-  void,
-  InviteContextData
-  > = {
+export const invite: ProcessDefinition<void, InviteContextData> = {
   name: "invite",
   stateMachine: <any>processDefinition,
 };

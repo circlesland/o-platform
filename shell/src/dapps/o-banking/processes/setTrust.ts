@@ -86,7 +86,8 @@ const processDefinition = (processId: string) =>
           label: strings.labelTrustReceiver,
           graphql: true,
           asyncChoices: async (searchText?: string) => {
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.query({
               query: gql`
                 query search($searchString: String!) {
@@ -112,7 +113,7 @@ const processDefinition = (processId: string) =>
                     .map((o) => {
                       return <Choice>{
                         value: o.circlesAddress,
-                        label: `${o.firstName} ${o.lastName}`,
+                        label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
                         avatarUrl: o.avatarUrl,
                       };
                     })
@@ -161,21 +162,25 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Updating trust ..`
+            message: `Updating trust ..`,
           });
         },
         invoke: {
           src: async (context) => {
-            const ownerAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(
-              context.data.privateKey
-            ).address;
+            const ownerAddress =
+              RpcGateway.get().eth.accounts.privateKeyToAccount(
+                context.data.privateKey
+              ).address;
 
             const gnosisSafeProxy = new GnosisSafeProxy(
               RpcGateway.get(),
               context.data.safeAddress
             );
 
-            const execResult = await new CirclesHub(RpcGateway.get(), HUB_ADDRESS).setTrust(
+            const execResult = await new CirclesHub(
+              RpcGateway.get(),
+              HUB_ADDRESS
+            ).setTrust(
               context.data.privateKey,
               gnosisSafeProxy,
               context.data.trustReceiver,

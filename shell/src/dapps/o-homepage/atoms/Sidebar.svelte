@@ -1,10 +1,17 @@
 <script>
+  import { clickOutside } from "src/shared/functions/clickOutside.ts";
   export let open = false;
+
+  function handleClickOutside(event) {
+    open = false;
+  }
 </script>
 
 <aside
   class="absolute z-40 h-full bg-gray-200 border-l-2 shadow-lg w-72 lg:hidden"
   class:open
+  use:clickOutside
+  on:click_outside={handleClickOutside}
 >
   <nav class="pt-16 pl-4 text-xl">
     <a

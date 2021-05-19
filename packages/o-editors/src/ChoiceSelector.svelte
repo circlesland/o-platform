@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ChoiceSelectorContext } from "./choiceSelectorContext";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
-  import {onMount} from "svelte";
+  import { onMount } from "svelte";
 
   export let context: ChoiceSelectorContext;
 
@@ -9,8 +9,8 @@
     if (!context.editorDirtyFlags) {
       context.editorDirtyFlags = {};
     }
-    context.editorDirtyFlags[context.fieldName] = true
-  })
+    context.editorDirtyFlags[context.fieldName] = true;
+  });
 
   function submit(selected: { key: string; label: string }) {
     const event = new Continue();
@@ -22,7 +22,7 @@
 </script>
 
 <p class="py-4 label-text">
-  {context.params.label}
+  {@html context.params.label}
 </p>
 {#if context.messages[context.fieldName]}
   <div class="alert alert-error mb-2 mt-2">

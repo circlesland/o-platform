@@ -17,10 +17,10 @@ import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { BN } from "ethereumjs-util";
-import {loadProfileByProfileId} from "../data/loadProfileByProfileId";
-import {ApiProfile} from "../data/apiProfile";
-import {loadProfileBySafeAddress} from "../data/loadProfileBySafeAddress";
-import {AvataarGenerator} from "../../../shared/avataarGenerator";
+import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
+import { ApiProfile } from "../data/apiProfile";
+import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
+import { AvataarGenerator } from "../../../shared/avataarGenerator";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -149,7 +149,7 @@ const processDefinition = (processId: string) =>
                   .map((o) => {
                     return <Choice>{
                       value: o.circlesAddress,
-                      label: `${o.firstName} ${o.lastName}`,
+                      label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
                       avatarUrl: o.avatarUrl,
                     };
                   })
@@ -170,7 +170,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Calculating the maximum transfer amount ..`
+            message: `Calculating the maximum transfer amount ..`,
           });
         },
         invoke: {
@@ -273,29 +273,38 @@ const processDefinition = (processId: string) =>
       loadRecipientProfile: {
         id: "loadRecipientProfile",
         invoke: {
-          src: async context => {
+          src: async (context) => {
             if (context.data.recipientProfileId) {
               // Use the profile id to get the profile but send to the context.data.recipientAddress
-              context.data.recipientProfile = await loadProfileByProfileId(context.data.recipientProfileId);
+              context.data.recipientProfile = await loadProfileByProfileId(
+                context.data.recipientProfileId
+              );
             } else if (context.data.recipientAddress) {
-              context.data.recipientProfile = await loadProfileBySafeAddress(context.data.recipientAddress);
+              context.data.recipientProfile = await loadProfileBySafeAddress(
+                context.data.recipientAddress
+              );
             } else {
               // No profile found
             }
           },
           onDone: "#prepareSummary",
-          onError: "#error"
-        }
+          onError: "#error",
+        },
       },
       prepareSummary: {
         id: "prepareSummary",
         invoke: {
           src: async (context) => {
+            const lastName = context.data.recipientProfile.lastName
+              ? context.data.recipientProfile.lastName
+              : "";
             const to = context.data.recipientProfile
-              ? context.data.recipientProfile.firstName + " " + context.data.recipientProfile.lastName ?? ""
+              ? context.data.recipientProfile.firstName + " " + lastName
               : context.data.recipientAddress;
 
-            let toAvatarUrl = context.data.recipientProfile ? context.data.recipientProfile.avatarUrl : null;
+            let toAvatarUrl = context.data.recipientProfile
+              ? context.data.recipientProfile.avatarUrl
+              : null;
 
             toAvatarUrl = toAvatarUrl
               ? toAvatarUrl
@@ -307,7 +316,9 @@ const processDefinition = (processId: string) =>
               context.data.summaryHtml = `<span>You are about to transfer</span>
                 <strong class='text-primary text-5xl block mt-2'>
                     ${context.data.tokens.amount}
-                    ${currencyLookup[context.data.tokens.currency.toUpperCase()]}</strong>
+                    ${
+                      currencyLookup[context.data.tokens.currency.toUpperCase()]
+                    }</strong>
                 <span class='block mt-2'>
                 to 
                 </span>
