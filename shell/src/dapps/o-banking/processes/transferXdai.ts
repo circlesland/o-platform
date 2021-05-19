@@ -2,16 +2,16 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
-import {BN} from "ethereumjs-util";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import { BN } from "ethereumjs-util";
 
 export type TransferXdaiContextData = {
-  safeAddress:string;
-  recipientAddress:string;
-  amount:string;
-  privateKey:string;
+  safeAddress: string;
+  recipientAddress: string;
+  amount: string;
+  privateKey: string;
 };
 
 /**
@@ -26,56 +26,64 @@ export type TransferXdaiContext = ProcessContext<TransferXdaiContextData>;
  */
 const strings = {
   labelRecipientAddress: "",
-  labelAmount: ""
+  labelAmount: "",
 };
 
 const processDefinition = (processId: string) =>
-createMachine<TransferXdaiContext, any>({
-  id: `${processId}:transferXdai`,
-  initial: "transferXdai",
-  states: {
-    // Include a default 'error' state that propagates the error by re-throwing it in an action.
-    // TODO: Check if this works as intended
-    ...fatalError<TransferXdaiContext, any>("error"),
+  createMachine<TransferXdaiContext, any>({
+    id: `${processId}:transferXdai`,
+    initial: "transferXdai",
+    states: {
+      // Include a default 'error' state that propagates the error by re-throwing it in an action.
+      // TODO: Check if this works as intended
+      ...fatalError<TransferXdaiContext, any>("error"),
 
-    transferXdai: {
-      id: "transferXdai",
-      entry: () => {
-        window.o.publishEvent(<PlatformEvent>{
-          type: "shell.progress",
-          message: `Processing xDai transfer ..`
-        });
-      },
-      invoke: {
-        src: async (context) => {
-          const ownerAddress = RpcGateway.get()
-            .eth
-            .accounts
-            .privateKeyToAccount(context.data.privateKey)
-            .address;
-
-          const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
-          const ethAmount = new BN(RpcGateway.get().utils.toWei((context.data.amount).toString(), "ether"));
-          const resultObservable = await gnosisSafeProxy.transferEth(
-            context.data.privateKey,
-            ethAmount,
-            context.data.recipientAddress);
-
-          return resultObservable.toPromise();
+      transferXdai: {
+        id: "transferXdai",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Processing xDai transfer ..`,
+          });
         },
-        onDone: "#success",
-        onError: "#error",
+        invoke: {
+          src: async (context) => {
+            const ownerAddress =
+              RpcGateway.get().eth.accounts.privateKeyToAccount(
+                context.data.privateKey
+              ).address;
+
+            const gnosisSafeProxy = new GnosisSafeProxy(
+              RpcGateway.get(),
+              context.data.safeAddress
+            );
+            const ethAmount = new BN(
+              RpcGateway.get().utils.toWei(
+                context.data.amount.toString(),
+                "ether"
+              )
+            );
+            const resultObservable = await gnosisSafeProxy.transferEth(
+              context.data.privateKey,
+              ethAmount,
+              context.data.recipientAddress
+            );
+
+            return resultObservable.toPromise();
+          },
+          onDone: "#success",
+          onError: "#error",
+        },
+      },
+      success: {
+        id: "success",
+        type: "final",
+        data: (context, event: PlatformEvent) => {
+          return "yeah!";
+        },
       },
     },
-    success: {
-      id: 'success',
-      type: 'final',
-      data: (context, event: PlatformEvent) => {
-        return "yeah!";
-      }
-    }
-  },
-});
+  });
 
 export const transferXdai: ProcessDefinition<void, TransferXdaiContextData> = {
   name: "transferXdai",

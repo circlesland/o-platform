@@ -113,7 +113,7 @@ const processDefinition = (processId: string) =>
                     .map((o) => {
                       return <Choice>{
                         value: o.circlesAddress,
-                        label: `${o.firstName} ${o.lastName}`,
+                        label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
                         avatarUrl: o.avatarUrl,
                       };
                     })
