@@ -41,7 +41,7 @@ const strings = {
   labelLoginEmail:
     "Welcome, a pleasure you found your way to CirclesLand. <br/><strong class='text-primary block mt-3'>Please provide your email address</strong>",
   labelVerificationCode: (email:string) =>
-    `An email has been send to you (<b>${email}</b>), please check your inbox. To login please click the link in the email or enter the code you received by mail. <br/><span class="text-xs">It may take a moment. Also check your spam folder.</span>`,
+    `An email has been sent to you (<b>${email}</b>), please check your inbox. To login please click the link in the email or enter the code you received by mail. <br/><span class="text-xs">It may take a moment. Also check your spam folder.</span>`,
   placeholder: "you@example.com",
 };
 async function sha256(str) {
