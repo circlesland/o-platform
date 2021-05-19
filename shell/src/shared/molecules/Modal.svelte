@@ -64,7 +64,6 @@
     align-items: flex-end;
     justify-content: center;
     overflow-y: hidden;
-    height: 100vh;
   }
   /* Background Blurring for firefox and other non supportive browsers lies in App.svelte through the .blur class */
   @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
