@@ -9,9 +9,6 @@
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
   import { mySafe } from "../stores/safe";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import { ProfilesDocument } from "../../o-passport/data/api/types";
-  import { Profile } from "../data/api/types";
-  import gql from "graphql-tag";
   import { createAvatar } from "@dicebear/avatars";
   import * as style from "@dicebear/avatars-avataaars-sprites";
   import { invite } from "../../o-passport/processes/invite/invite";
@@ -20,10 +17,8 @@
   import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-  import { emptySafe } from "src/dapps/o-banking/data/emptySafe";
-  import {loadProfileBySafeAddress} from "../data/loadProfileBySafeAddress";
-  import {loadProfileByProfileId} from "../data/loadProfileByProfileId";
-  import {ApiProfile} from "../data/apiProfile";
+  import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
+  import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
 
   export let params: {
     id?: String;
@@ -168,7 +163,7 @@
           data: {
             safeAddress: $mySafe.safeAddress,
             recipientAddress: profile.safeAddress,
-            recipientProfileId: profile.id
+            recipientProfileId: profile.id,
           },
         };
         return ctx;
@@ -225,7 +220,7 @@
         ctx.childContext = {
           data: {
             safeAddress: $mySafe.safeAddress,
-            inviteProfileId: profile.id
+            inviteProfileId: profile.id,
           },
         };
         return ctx;
@@ -296,10 +291,10 @@
     {#if !profile.safeAddress && !isMe}
       <section class="justify-center mb-2 text-circlesdarkblue">
         <div
-          class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
         >
           <div
-            class="text-circleslightblue text-xs font-circles font-bold text-left"
+            class="text-xs font-bold text-left text-circleslightblue font-circles"
           >
             This citizen is waiting to be empowered by you.
           </div>
@@ -308,7 +303,7 @@
             <div class="flex items-center w-full space-x-2 sm:space-x-4">
               <div class="w-full">
                 <button
-                  class="h-auto btn btn-block btn-primary w-full"
+                  class="w-full h-auto btn btn-block btn-primary"
                   on:click={execInvite}>Invite {profile.displayName} now</button
                 >
               </div>
@@ -316,7 +311,7 @@
           {:else}
             <div class="flex items-center w-full space-x-2 sm:space-x-4">
               <div class="text-left">
-                <div class="inline-block break-all text-xs">
+                <div class="inline-block text-xs break-all">
                   <div class="flex items-center w-full space-x-2 sm:space-x-4">
                     <!-- TODO: Safe wasn't opened before so we don't know our balance (at least not on $mySafe)  -->
                   </div>
@@ -330,27 +325,27 @@
     {#if !profile.safeAddress && isMe}
       <!-- Create safe  -->
       <section class="mb-8">
-        <div class="bg-white shadow px-2 -mt-6 pb-4 w-full rounded-sm">
-          <div class="mr-4  px-4 py-2  text-center -ml-3 text-secondary" />
+        <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm shadow">
+          <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary" />
           <div style="text-align: center">
             <p
-              class="text-2xl mt-2 font-bold font-circles text-gradient w-64 m-auto"
+              class="w-64 m-auto mt-2 text-2xl font-bold font-circles text-gradient"
             >
               You're almost there.
             </p>
-            <p class="text mt-4">
+            <p class="mt-4 text">
               Copy the invite link and send it to someone who's already a
               citizen of CirclesLand:
             </p>
-            <div class="break-all mt-4  mb-4 text-xs" id="clipboardInviteLink">
+            <div class="mt-4 mb-4 text-xs break-all" id="clipboardInviteLink">
               <input type="text" class="hidden" bind:value={inviteLink} />
-              <div class="text-2xl inline-block">
+              <div class="inline-block text-2xl">
                 <button class="btn btn-primary" on:click={copyInviteLink}
                   >Copy Invite Link</button
                 >
               </div>
 
-              <div class="block text-light text-sm mt-2 ">
+              <div class="block mt-2 text-sm text-light ">
                 {inviteLink}
               </div>
             </div>
@@ -361,7 +356,7 @@
                 class="btn-link">Discord</a
               > if someone can invite you.
             </p>
-            <p class="text-xs mt-4 pb-4">
+            <p class="pb-4 mt-4 text-xs">
               alternatively, <a href="#/dashboard/become-a-hub" class="btn-link"
                 >become a hub</a
               >
@@ -375,17 +370,17 @@
     {#if profile && profile.safeAddress}
       <section class="justify-center mb-2 text-circlesdarkblue">
         <div
-          class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
         >
           <div
-            class="text-circleslightblue text-xs font-circles font-bold text-left"
+            class="text-xs font-bold text-left text-circleslightblue font-circles"
           >
             ADDRESS
           </div>
 
           <div class="flex items-center w-full space-x-2 sm:space-x-4">
             <div class="text-left">
-              <div class="inline-block break-all text-xs" id="clipboard">
+              <div class="inline-block text-xs break-all" id="clipboard">
                 {#if profile}
                   <input
                     name="name"
@@ -396,7 +391,7 @@
                   {profile.safeAddress ? profile.safeAddress : ""}
                 {/if}
                 <div
-                  class="inline-block text-primary cursor-pointertext-center text-xs relative -bottom-1"
+                  class="relative inline-block text-xs text-primary cursor-pointertext-center -bottom-1"
                   on:click={copy}
                   alt="Copy to Clipboard"
                 >
@@ -423,10 +418,10 @@
     {/if}
     <section class="justify-center mb-2 text-circlesdarkblue">
       <div
-        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
         <div
-          class="text-circleslightblue text-xs font-circles font-bold text-left"
+          class="text-xs font-bold text-left text-circleslightblue font-circles"
         >
           PASSION
         </div>
@@ -446,7 +441,7 @@
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-3 w-3"
+                    class="w-3 h-3"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -464,10 +459,10 @@
 
     <section class="justify-center mb-2 text-circlesdarkblue">
       <div
-        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
         <div
-          class="text-circleslightblue text-xs font-circles font-bold text-left"
+          class="text-xs font-bold text-left text-circleslightblue font-circles"
         >
           COUNTRY
         </div>
@@ -487,7 +482,7 @@
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-3 w-3"
+                    class="w-3 h-3"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -505,14 +500,14 @@
 
     {#if !isMe && (profile.trusting || profile.trustedBy)}
       <section class="justify-center mb-2 text-circlesdarkblue">
-        <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-          <div class="text-circleslightblue text-sm font-bold">TRUST</div>
+        <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
+          <div class="text-sm font-bold text-circleslightblue">TRUST</div>
           <div class="flex flex-col">
             {#if profile.trusting && profile.trustedBy}
-              <div class="text-left text-sm text-light mb-4">
+              <div class="mb-4 text-sm text-left text-light">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 inline "
+                  class="inline w-4 h-4 "
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -530,10 +525,10 @@
                 </span>
               </div>
 
-              <div class="text-left text-sm text-light mb-4">
+              <div class="mb-4 text-sm text-left text-light">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 inline "
+                  class="inline w-4 h-4 "
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -550,10 +545,10 @@
                 </span>
               </div>
             {:else if profile.trusting && !profile.trustedBy}
-              <div class="text-left text-sm text-light mb-4">
+              <div class="mb-4 text-sm text-left text-light">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 inline "
+                  class="inline w-4 h-4 "
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -571,10 +566,10 @@
                 </span>
               </div>
             {:else if !profile.trusting && profile.trustedBy}
-              <div class="text-left text-sm text-light mb-4">
+              <div class="mb-4 text-sm text-left text-light">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 inline "
+                  class="inline w-4 h-4 "
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -598,21 +593,21 @@
     {/if}
     {#if !isMe && profile.safeAddress}
       <section class="justify-center mb-2 text-circlesdarkblue">
-        <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-          <div class="text-circleslightblue text-sm font-bold">TRANSFER</div>
+        <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
+          <div class="text-sm font-bold text-circleslightblue">TRANSFER</div>
 
           <div class="flex items-center w-full space-x-2 sm:space-x-4">
             <button
-                    class="btn btn-block btn-primary"
-                    on:click={() => execTransfer()}>Send Money
-            </button
-            >
+              class="btn btn-block btn-primary"
+              on:click={() => execTransfer()}
+              >Send Money
+            </button>
           </div>
         </div>
       </section>
       <section class="justify-center mb-2 text-circlesdarkblue">
-        <div class="flex flex-col bg-white shadow p-4 w-full space-y-2">
-          <div class="text-circleslightblue text-sm font-bold">
+        <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
+          <div class="text-sm font-bold text-circleslightblue">
             CHANGE TRUST
           </div>
           {#if profile.trusting && profile.trusting > 0}
