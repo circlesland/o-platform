@@ -6,11 +6,6 @@
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { me } from "../../../shared/stores/me";
 
-  export let params: {
-    inviteAccountAddress?: string;
-  };
-
-
   let inviteLink: string = "";
 
   $: {
@@ -138,12 +133,13 @@
         To be able to transfer Circles to someone you first need to get trusted by
         others. When you want to receive money you have to trust them back.
         <br /><br />
-        To transact with a stranger the network will
-        calculate the flow of money for you, based on your direct trust
-        connections.
+        To transact with a stranger the network will calculate the flow of money
+        for you, based on your direct trust connections.
         <br /><br />
-        The better you are connected the more useable your Circles become. Keep in mind to always only connect yourself with people you trust and know
-        in person. To connect yourself, send your "trust link" to other citizens you know in person.
+        The better you are connected the more useable your Circles become. Keep in
+        mind to always only connect yourself with people you trust and know in person.
+        To connect yourself, send your "trust link" to other citizens you know in
+        person.
         <a
           href="https://circlesland.ghost.io/whitepaper/"
           alt="CirclesLand Whitepaper"
