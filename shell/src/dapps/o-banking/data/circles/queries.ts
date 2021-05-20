@@ -28,10 +28,14 @@ export class Queries {
   }
 
   static async addxDaiBalances(safe: Safe) : Promise<Safe> {
+    const accountAddress = localStorage.getItem("circlesKey")
+      ? RpcGateway.get().eth.accounts.privateKeyToAccount(localStorage.getItem("circlesKey")).address
+      : undefined;
+
     return {
       ...safe,
       xDaiBalance: await RpcGateway.get().eth.getBalance(safe.safeAddress),
-      accountxDai: localStorage.getItem("circlesAccount") ? await RpcGateway.get().eth.getBalance(localStorage.getItem("circlesAccount")) : "0",
+      accountxDai: accountAddress ? await RpcGateway.get().eth.getBalance(accountAddress) : "0",
     }
   }
 
