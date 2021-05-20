@@ -42,17 +42,17 @@
     }
 
     async function updateBalance() {
-      accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk)
-              .address;
+      accountAddress =
+        RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
       if ($me && $me.circlesAddress) {
         accountBalance = parseFloat(
-                RpcGateway.get().utils.fromWei(
-                        await RpcGateway.get().eth.getBalance($me.circlesAddress),
-                        "ether"
-                )
+          RpcGateway.get().utils.fromWei(
+            await RpcGateway.get().eth.getBalance($me.circlesAddress),
+            "ether"
+          )
         ).toFixed(2);
         invitePersonCount = Math.floor(
-                (parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE
+          (parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE
         );
         if (invitePersonCount == 1) {
           invitePersonCountString = `1 Person`;
@@ -61,17 +61,15 @@
         } else {
           invitePersonCountString = `${invitePersonCount} People`;
         }
-      }
-      else
-      {
+      } else {
         accountBalance = parseFloat(
-                RpcGateway.get().utils.fromWei(
-                        await RpcGateway.get().eth.getBalance(accountAddress),
-                        "ether"
-                )
+          RpcGateway.get().utils.fromWei(
+            await RpcGateway.get().eth.getBalance(accountAddress),
+            "ether"
+          )
         ).toFixed(2);
         invitePersonCount = Math.floor(
-                (parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE
+          (parseFloat(accountBalance) - INVITE_VALUE) / INVITE_VALUE
         );
         if (invitePersonCount == 1) {
           invitePersonCountString = `1 Person`;
@@ -108,24 +106,28 @@
   };
 </script>
 
-<DashboardHeader />
+<DashboardHeader showBackArrow={true} />
 
 <div class="mx-4 -mt-6">
   <section class="flex items-center justify-center mb-2">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-primary text-xs font-circles font-bold text-left">
+    <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
+      <div class="text-xs font-bold text-left text-primary font-circles">
         BECOME A HUB
       </div>
-      <div class="flex items-center  w-full space-x-2 sm:space-x-6">
-        <div class="text-left flex-grow ">
+      <div class="flex items-center w-full space-x-2 sm:space-x-6">
+        <div class="flex-grow text-left ">
           <div class="max-w-full">
             <p>
-              CirclesLand is built on a energy efficient blockchain (xDai) with very small transaction fees. 0.01$ will give you 300-500 transactions.
-              We recommended to have at least <strong>{INVITE_VALUE.toFixed(2)} xDai </strong> (={INVITE_VALUE.toFixed(2)} $) to
-              fuel your daily transactions.<br>
-              If you have more than {INVITE_VALUE.toFixed(2)} xDai, you can use it to
-              invite others you know and who might not be familiar enough
-              with getting xDai for themselves.
+              CirclesLand is built on a energy efficient blockchain (xDai) with
+              very small transaction fees. 0.01$ will give you 300-500
+              transactions. We recommended to have at least <strong
+                >{INVITE_VALUE.toFixed(2)} xDai
+              </strong>
+              (={INVITE_VALUE.toFixed(2)} $) to fuel your daily transactions.<br
+              />
+              If you have more than {INVITE_VALUE.toFixed(2)} xDai, you can use it
+              to invite others you know and who might not be familiar enough with
+              getting xDai for themselves.
             </p>
           </div>
         </div>
@@ -134,12 +136,12 @@
   </section>
 
   <section class="flex items-center justify-center mb-2 ">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-primary text-xs font-circles font-bold text-left">
+    <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
+      <div class="text-xs font-bold text-left text-primary font-circles">
         GET XDAI
       </div>
       <div class="flex items-center w-full space-x-2 sm:space-x-6">
-        <div class="text-left flex-grow ">
+        <div class="flex-grow text-left ">
           <div class="max-w-full">
             <div class="flex flex-col items-center text-center">
               <div class="">You can currently invite</div>
@@ -160,7 +162,7 @@
                   </p>
                 </div>
               {:else}
-                <div class="flex flex-row space-x-6 mt-4">
+                <div class="flex flex-row mt-4 space-x-6">
                   {#each presets as preset}
                     <a
                       href="https://buy.ramp.network/?userAddress={accountAddress}&swapAsset=XDAI&swapAmount={preset}000000000000000000"
@@ -168,14 +170,14 @@
                       class="cursor-pointer"
                     >
                       <div
-                        class="card compact side bg-primary text-white font-circles cursor-pointer"
+                        class="text-white cursor-pointer card compact side bg-primary font-circles"
                       >
                         <div
-                          class="flex-row items-center space-x-4 card-body cursor-pointer"
+                          class="flex-row items-center space-x-4 cursor-pointer card-body"
                         >
                           <label for="input" class="flex-0"
                             ><div
-                              class="font-bold text-sm sm:text-lg tracking-wider"
+                              class="text-sm font-bold tracking-wider sm:text-lg"
                             >
                               {Math.floor(preset / INVITE_VALUE)} INVITES
                             </div>
@@ -195,11 +197,11 @@
   </section>
 
   <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-primary text-xs font-circles font-bold text-left">
+    <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
+      <div class="text-xs font-bold text-left text-primary font-circles">
         ALTERNATIVES
       </div>
-      <div class="flex items-center  w-full space-x-2 sm:space-x-6">
+      <div class="flex items-center w-full space-x-2 sm:space-x-6">
         <div class="flex-grow ">
           <div class="text-left">
             You can transfer xDai from any other wallet or exchange. <br />
@@ -207,11 +209,11 @@
             address below to get you started:
           </div>
           <div class="mt-4">
-            <div class="break-all text-xs text-center" id="clipboard">
+            <div class="text-xs text-center break-all" id="clipboard">
               <input type="text" class="hidden" bind:value={accountAddress} />
               <p class="text-2xl">{accountAddress}</p>
               <div
-                class="inline-block text-lighttext-center text-xs relative -bottom-1"
+                class="relative inline-block text-xs text-lighttext-center -bottom-1"
                 on:click={copy}
                 alt="Copy to Clipboard"
               >
