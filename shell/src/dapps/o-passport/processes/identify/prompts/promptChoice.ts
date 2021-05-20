@@ -5,9 +5,12 @@ import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 
 export type PromptChoiceSpec<TContext extends ProcessContext<any>, TEvent extends PlatformEvent> = {
   id: string
-  promptLabel: string
+  //promptLabel: string
+  params: {
+    options:{key:string, label:string, target:string}[]
+    [x: string]: any,
+  }|((context:TContext)=>{[x: string]: any});
   entry?: (context:TContext, event:TEvent) => void
-  options:{key:string, label:string, target:string}[]
   onlyWhenDirty?:boolean
   navigation?: {
     // If you want to allow the user to go one step back then specify here where he came from
@@ -38,10 +41,10 @@ export function promptChoice<
         fieldName: spec.id,
         component: ChoiceSelector,
         onlyWhenDirty: spec.onlyWhenDirty,
-        params: {
+        params: spec.params /* {
           label: spec.promptLabel,
           choices: spec.options
-        },
+        }*/,
         navigation: {
           next: "#checkChoiceAndContinue",
           previous: spec.navigation?.previous,
@@ -52,17 +55,20 @@ export function promptChoice<
       }),
       checkChoiceAndContinue: {
         id: "checkChoiceAndContinue",
-        always: spec.options.map(c => {
-          return {
-            cond: (context) => {
-              return context.data[spec.id]?.key == c.key
-            },
-            target: c.target,
-          }
-        }).concat({
-          cond: (context) => !context.data[spec.id]?.key,
-          target:spec.navigation?.skip ?? ""
-        })
+        always: (context) => {
+          const concreteParams = typeof spec?.params === "function" ? spec.params(context) : spec.params;
+          concreteParams.options.map(c => {
+            return {
+              cond: (context) => {
+                return context.data[spec.id]?.key == c.key
+              },
+              target: c.target,
+            }
+          }).concat({
+            cond: (context) => !context.data[spec.id]?.key,
+            target: spec.navigation?.skip ?? ""
+          })
+        }
       },
     }
   };

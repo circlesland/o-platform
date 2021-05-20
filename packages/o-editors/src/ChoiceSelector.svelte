@@ -45,12 +45,12 @@
   </div>
 {/if}
 <div class="flex w-full space-x-2">
-  {#each context.params.choices as choice}
+  {#each context.params.options as option}
     <button
-      on:click={() => submit(choice)}
-      class="w-1/{context.params.choices.length} btn btn-outline btn-white"
+      on:click={() => submit(option)}
+      class="w-1/{context.params.options.length} btn btn-outline btn-white"
     >
-      {choice.label}
+      {option.label}
     </button>
   {/each}
 </div>

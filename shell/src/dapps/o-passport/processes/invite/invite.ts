@@ -6,11 +6,15 @@ import { promptChoice } from "../identify/prompts/promptChoice";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transfer } from "../../../o-banking/processes/transfer";
 import { loadProfile } from "../identify/services/loadProfile";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {Profile} from "../../data/api/types";
 
 export type InviteContextData = {
   safeAddress?: string;
   inviteProfileId?: number;
+  inviteProfile?: Profile;
   circlesSafeOwner?: string;
+
 };
 
 export const INVITE_VALUE = 0.1;
@@ -33,6 +37,7 @@ const processDefinition = (processId: string) =>
           },
           onDone: {
             actions: (context, event) => {
+              context.data.inviteProfile = event.data;
               context.data.circlesSafeOwner = event.data.circlesSafeOwner;
             },
             target: "#amount",
@@ -43,24 +48,27 @@ const processDefinition = (processId: string) =>
 
       amount: promptChoice({
         id: "amount",
-        promptLabel: "" + "How many invites do you want to send to XXX?",
-        options: [
-          {
-            key: "1",
-            label: "1 invite",
-            target: "#transfer",
-          },
-          {
-            key: "5",
-            label: "5 invites",
-            target: "#transfer",
-          },
-          {
-            key: "25",
-            label: "25 invites",
-            target: "#transfer",
-          },
-        ],
+        params: (context:InviteContext) => {
+          return {
+            label: `How many invites do you want to send to ${context.data.inviteProfile.firstName}?`,
+            options: [{
+              key: "1",
+              label: "1 invite",
+              target: "#transfer",
+            },
+              {
+                key: "5",
+                label: "5 invites",
+                target: "#transfer",
+              },
+              {
+                key: "25",
+                label: "25 invites",
+                target: "#transfer",
+              },
+            ]
+          }
+        }
       }),
 
       transfer: {
