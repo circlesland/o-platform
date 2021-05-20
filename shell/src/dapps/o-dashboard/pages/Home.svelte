@@ -1,16 +1,12 @@
 <script lang="ts">
-  import { dashboard } from "../../o-dashboard.manifest";
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import { me } from "../../../shared/stores/me";
-  import { showToast } from "../../../shared/toast";
   import { onMount } from "svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { BN } from "ethereumjs-util";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
 
   const { mySafe } = require("src/dapps/o-banking/stores/safe");
-  import { INVITE_VALUE } from "src/dapps/o-passport/processes/invite/invite";
-  import Web3 from "web3";
 
   $: me;
 
@@ -19,7 +15,6 @@
   let accountAddress: string = "";
   let accountBalance: string = "";
   let safeDeployThreshold: string = "200000000000000000";
-  let inviteThreshold: string = "";
   let showFundHint: boolean = false;
   let inviteLink: string = "";
 
@@ -102,7 +97,9 @@
             > if someone can invite you.
           </p>
           <p class="pb-4 mt-4 text-xs">
-            alternatively, <a href="#/dashboard/become-a-hub" class="btn-link">become an invite hub</a>
+            alternatively, <a href="#/dashboard/become-a-hub" class="btn-link"
+              >become an invite hub</a
+            >
           </p>
           <div class="mr-1 text-primary" />
         </div>
@@ -130,7 +127,10 @@
             />
           </div> -->
           <p class="mt-4 text">
-            Help your family, friends and others to get onboard by <a href="/#/dashboard/become-a-hub" class="btn-link">becoming an invite hub</a> 
+            Help your family, friends and others to get onboard by <a
+              href="/#/dashboard/become-a-hub"
+              class="btn-link">becoming an invite hub</a
+            >
           </p>
           <div class="mr-1 text-primary" />
         </div>
@@ -347,23 +347,3 @@
     </div>
   </section>
 </div>
-<!-- 
-  <div
-  class="w-full bg-center bg-no-repeat bg-cover h-72"
-  style="background-image: url('https://images.unsplash.com/photo-1609343007774-dad98a8f8c33?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1225&q=80');"
->
-  <div
-    class="relative flex items-center justify-center w-full bg-black bg-opacity-50 h-72"
-  >
-    <div class="mx-4 text-center text-white">
-      <h1 class="mb-4 text-6xl font-bold">Xats is what you need!</h1>
-      <h2 class="mb-12 text-3xl font-bold">Xats is what you want!</h2>
-    </div>
-    <div class="absolute bottom-4">
-      <button class="btn btn-primary" on:click={() => buyXats()}
-        >buy Xats now</button
-      >
-    </div>
-  </div>
-</div> 
--->
