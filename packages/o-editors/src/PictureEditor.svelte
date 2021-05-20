@@ -16,7 +16,8 @@
   let zoom = 1;
   let aspect = 1 / 1;
   let cropShape = "round";
-  let canvas;
+  let cropCanvas;
+  let resizeCanvas;
   let ctx;
   let image;
   let uploadFile;
@@ -47,9 +48,8 @@
   }
 
   onMount(async () => {
-    canvas = <HTMLCanvasElement>document.getElementById("cropCanvas");
-    ctx = canvas.getContext("2d");
-    // canvas = document.createElement("canvas");
+    ctx = cropCanvas.getContext("2d");
+    // cropCanvas = document.createElement("cropCanvas");
   });
 
   const addedfile = (file) => {
@@ -81,9 +81,10 @@
         const scaleX = image.naturalWidth / image.width;
         const scaleY = image.naturalHeight / image.height;
 
-        canvas.width = detail.detail.pixels.width;
-        canvas.height = detail.detail.pixels.height;
-        // const ctx = canvas.getContext("2d");
+        cropCanvas.width = detail.detail.pixels.width;
+        cropCanvas.height = detail.detail.pixels.height;
+
+        // const ctx = cropCanvas.getContext("2d");
 
         ctx.drawImage(
           image,
@@ -97,17 +98,27 @@
           detail.detail.pixels.height
         );
 
-        canvas.toBlob((blob) => {
+        resizeCanvas.width = 512;
+        resizeCanvas.height = 512;
+        const resizeCanvasCtx = resizeCanvas.getContext("2d");
+        resizeCanvasCtx.drawImage(
+                cropCanvas,
+                0,
+                0,
+                512,
+                512
+        );
+
+        resizeCanvas.toBlob((blob) => {
           const reader = new FileReader();
 
           reader.addEventListener("loadend", () => {
-            const arrayBuffer = reader.result;
             imageStore.value = Buffer.from(<ArrayBuffer>reader.result);
             imageStore.isValid = true;
           });
 
           reader.readAsArrayBuffer(blob);
-        }, "image/jpg");
+        }, "image/jpg", 72);
 
         return true;
       };
@@ -141,11 +152,18 @@
 </label>
 <div class="w-full h-full">
   <canvas
-    style="display:none"
-    bind:this={canvas}
-    id="cropCanvas"
-    width="300"
-    height="300"
+          style="display:none"
+          bind:this={cropCanvas}
+          id="cropCanvas"
+          width="300"
+          height="300"
+  />
+  <canvas
+          style="display:none"
+          bind:this={resizeCanvas}
+          id="resizeCanvas"
+          width="300"
+          height="300"
   />
   {#if uploadFile}
     <div class="relative" style="top: -30px;">
