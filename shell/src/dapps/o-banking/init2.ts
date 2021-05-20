@@ -84,7 +84,8 @@ export class Banking {
         return Banking.execute("onTrustChange", "Updating trust relations ..", [{
             id: "trust",
             message: "Loading trust relations ..",
-            run: async () => this.refreshTrusts()
+            run: async () => this.refreshTrusts(),
+            updateUi: true
         }, {
             id: "acceptedTokens",
             message: "Loading accepted Circles tokens ..",
