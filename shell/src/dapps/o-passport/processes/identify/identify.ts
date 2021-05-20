@@ -141,21 +141,19 @@ const processDefinition = (processId: string) =>
 
       connectOrCreate: promptChoice({
         id: "connectOrCreate",
-        params: {
-          label: strings.choiceLabel,
-          options: [
-            {
-              key: "connect",
-              label: strings.choiceYesLabel,
-              target: "#connectSafe",
-            },
-            {
-              key: "create",
-              label: strings.choiceNoLabel,
-              target: "#createSafe",
-            },
-          ]
-        }
+        promptLabel: strings.choiceLabel,
+        options: [
+          {
+            key: "connect",
+            label: strings.choiceYesLabel,
+            target: "#connectSafe",
+          },
+          {
+            key: "create",
+            label: strings.choiceNoLabel,
+            target: "#createSafe",
+          },
+        ],
       }),
 
       connectSafe: {

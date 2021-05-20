@@ -48,27 +48,24 @@ const processDefinition = (processId: string) =>
 
       amount: promptChoice({
         id: "amount",
-        params: (context:InviteContext) => {
-          return {
-            label: `How many invites do you want to send to ${context.data.inviteProfile.firstName}?`,
-            options: [{
-              key: "1",
-              label: "1 invite",
-              target: "#transfer",
-            },
-              {
-                key: "5",
-                label: "5 invites",
-                target: "#transfer",
-              },
-              {
-                key: "25",
-                label: "25 invites",
-                target: "#transfer",
-              },
-            ]
-          }
-        }
+        promptLabel: "" + "How many invites do you want to send to XXX?",
+        options: [
+          {
+            key: "1",
+            label: "1 invite",
+            target: "#transfer",
+          },
+          {
+            key: "5",
+            label: "5 invites",
+            target: "#transfer",
+          },
+          {
+            key: "25",
+            label: "25 invites",
+            target: "#transfer",
+          },
+        ],
       }),
 
       transfer: {

@@ -309,19 +309,17 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             context.data.avatarMimeType = event.data?.mimeType;
           }
         },
-        params: {
-          label: strings.labelNewsletter,
-          options: [{
-            key: "create",
-            label: "No thanks",
-            target: "#dontSubscribeToNewsletter"
-          }, {
-            key: "connect",
-            label: "Yes please",
-            target: "#subscribeToNewsletter"
-          }]
-        },
+        promptLabel: strings.labelNewsletter,
         onlyWhenDirty: skipIfNotDirty,
+        options: [{
+          key: "create",
+          label: "No thanks",
+          target: "#dontSubscribeToNewsletter"
+        }, {
+          key: "connect",
+          label: "Yes please",
+          target: "#subscribeToNewsletter"
+        }],
         navigation: {
           canGoBack: () => true,
           canSkip: () => false,

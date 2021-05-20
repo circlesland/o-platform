@@ -25,7 +25,7 @@
   {@html context.params.label}
 </p>
 {#if context.messages[context.fieldName]}
-  <div class="mt-2 mb-2 alert alert-error">
+  <div class="alert alert-error mb-2 mt-2">
     <div class="flex-1">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -45,12 +45,12 @@
   </div>
 {/if}
 <div class="flex w-full space-x-2">
-  {#each context.params.options as option}
+  {#each context.params.choices as choice}
     <button
-      on:click={() => submit(option)}
-      class="w-1/{context.params.options.length} btn btn-outline btn-white h-auto"
+      on:click={() => submit(choice)}
+      class="w-1/{context.params.choices.length} btn btn-outline btn-white"
     >
-      {option.label}
+      {choice.label}
     </button>
   {/each}
 </div>

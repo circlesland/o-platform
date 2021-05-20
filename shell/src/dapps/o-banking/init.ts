@@ -101,15 +101,24 @@ function reportProgress(safe: Safe, message?:string, progressPercent?:number, do
   if (!dontUpdateData || !_currentSafe) {
     _currentSafe = safe;
 
-    const progress = <any>{
+    const refreshEvent = <any>{
       type: "shell.refresh",
       dapp: "banking:1",
       data: safe
     };
 
-    console.log(`progress:`, progress);
-    window.o.publishEvent(progress);
+    console.log(`shell.refresh:`, refreshEvent);
+    window.o.publishEvent(refreshEvent);
   }
+
+  const progressEvent = <PlatformEvent><any>{
+    type: "shell.progress",
+    dapp: "banking:1",
+    message: message,
+    percent: progressPercent
+  };
+  console.log(`shell.progress:`, progressEvent);
+  window.o.publishEvent(progressEvent);
 
   _currentSafe.ui = safe.ui;
 }
