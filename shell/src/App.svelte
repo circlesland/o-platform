@@ -209,16 +209,11 @@
   $: {
     /* Avoid scrolling background on open modal */
 
-    /*
-
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "visible";
     }
-
-     */
-
 
     if ($me && $me.circlesSafeOwner && !balanceThresholdTrigger) {
       if (!!localStorage.getItem("isCreatingSafe")) {
@@ -280,11 +275,11 @@
 
 <div class="flex flex-col h-screen ">
   <!-- TODO: Note: All headers are now part of their dapps
-  <header class="w-full mx-auto md:w-2/3 xl:w-1/2 z-10">
+  <header class="z-10 w-full mx-auto md:w-2/3 xl:w-1/2">
   </header> -->
 
   <SvelteToast />
-  <main class="flex-1 overflow-y-visible z-30" class:blur={isOpen}>
+  <main class="z-30 flex-1 overflow-y-visible" class:blur={isOpen}>
     <div class="w-full mx-auto {layoutClasses}">
       <Router
         {routes}
@@ -298,7 +293,7 @@
   {#if lastLoadedDapp && lastLoadedPage && !lastLoadedDapp.hideFooter && !lastLoadedPage.hideFooter}
     {#if lastLoadedDapp.dappId === "homepage:1"}
       <footer
-        class="z-50  w-full sticky bottom-0 bg-white h-12 border-t border-base-300 pb-16"
+        class="sticky bottom-0 z-50 w-full h-12 pb-16 bg-white border-t border-base-300"
         class:isOpen
       >
         <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
@@ -317,7 +312,7 @@
                 href="#/{lastLoadedDapp.routeParts.join('/') +
                   '/' +
                   page.routeParts.join('/')}"
-                class="justify-self-center tab w-full text-center focus:text-teal-500 hover:text-teal-500  "
+                class="w-full text-center justify-self-center tab focus:text-teal-500 hover:text-teal-500 "
                 class:hidden={isOpen}
               >
                 <NavItem
@@ -336,7 +331,7 @@
                 >
               {/if}
               <button
-                class="justify-self-center min-w-min w-16 h-16 mx-2"
+                class="w-16 h-16 mx-2 justify-self-center min-w-min"
                 class:bg-white={!isOpen}
                 class:shadow-lg={!isOpen}
                 class:col-start-3={!lastPrompt ||
@@ -405,7 +400,7 @@
                   href="#/{lastLoadedDapp.routeParts.join('/') +
                     '/' +
                     page.routeParts.join('/')}"
-                  class="justify-self-center tab text-center"
+                  class="text-center justify-self-center tab"
                   class:hidden={isOpen}
                 >
                   <NavItem
@@ -421,7 +416,7 @@
       </footer>
     {:else}
       <footer
-        class="z-50  w-full sticky bottom-0 bg-white h-12 border-t border-base-300 pb-16"
+        class="sticky bottom-0 z-50 w-full h-12 pb-16 bg-white border-t border-base-300"
         class:isOpen
       >
         <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
@@ -440,7 +435,7 @@
                 href="#/{lastLoadedDapp.routeParts.join('/') +
                   '/' +
                   page.routeParts.join('/')}"
-                class="justify-self-center tab w-full text-center focus:text-teal-500 hover:text-teal-500  "
+                class="w-full text-center justify-self-center tab focus:text-teal-500 hover:text-teal-500 "
                 class:hidden={isOpen}
               >
                 <NavItem
@@ -460,7 +455,7 @@
                 >
               {/if}
               <button
-                class="justify-self-center btn-circle -m-4 min-w-min w-16 h-16 mx-2 circles-button "
+                class="w-16 h-16 mx-2 -m-4 justify-self-center btn-circle min-w-min circles-button "
                 class:bg-white={!isOpen}
                 class:shadow-lg={!isOpen}
                 class:col-start-3={!lastPrompt ||
@@ -508,7 +503,7 @@
                   href="#/{lastLoadedDapp.routeParts.join('/') +
                     '/' +
                     page.routeParts.join('/')}"
-                  class="justify-self-center tab text-center"
+                  class="text-center justify-self-center tab"
                   class:hidden={isOpen}
                 >
                   <NavItem
