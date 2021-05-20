@@ -9,11 +9,12 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import * as yup from "yup";
 import {
-  LoginWithEmailDocument, TosDocument,
+  LoginWithEmailDocument,
+  TosDocument,
   VerifyDocument,
 } from "../../../../data/auth/types";
-import {SessionInfoDocument} from "../../../../data/api/types";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import { SessionInfoDocument } from "../../../../data/api/types";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 
 export type AuthenticateContextData = {
   appId?: string;
@@ -40,19 +41,19 @@ export type AuthenticateContext = ProcessContext<AuthenticateContextData>;
 const strings = {
   labelLoginEmail:
     "Welcome, a pleasure you found your way to CirclesLand. <br/><strong class='text-primary block mt-3'>Please provide your email address</strong>",
-  labelVerificationCode: (email:string) =>
+  labelVerificationCode: (email: string) =>
     `An email has been sent to you (<b>${email}</b>), please check your inbox. To login please click the link in the email or enter the code you received by mail. <br/><span class="text-xs">It may take a moment. Also check your spam folder.</span>`,
   placeholder: "you@example.com",
 };
 async function sha256(str) {
   const strBuffer = new TextEncoder().encode(str);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', strBuffer);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", strBuffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+  return hashArray.map((b) => ("00" + b.toString(16)).slice(-2)).join("");
 }
 
 export type ToSConsents = {
-  [emailHash:string]:string
+  [emailHash: string]: string;
 };
 
 const processDefinition = (processId: string) =>
@@ -101,23 +102,29 @@ const processDefinition = (processId: string) =>
             // TODO: E-Mail hashing doesn't belong in the 'getTosVersion' step
             context.data.hashedEmail = await sha256(context.data.loginEmail);
 
-            const authClient = await window.o.authClient.client.subscribeToResult();
+            const authClient =
+              await window.o.authClient.client.subscribeToResult();
             const result = await authClient.query({
               query: TosDocument,
               variables: {
-                appId: context.data.appId
-              }
+                appId: context.data.appId,
+              },
             });
-            if (result.errors && result.errors.length > 0 || !result.data.tos.found) {
-              result.errors?.forEach(o => console.error(o));
-              throw new Error(`Couldn't query the terms of service for appId '${context.data.appId}'.`);
+            if (
+              (result.errors && result.errors.length > 0) ||
+              !result.data.tos.found
+            ) {
+              result.errors?.forEach((o) => console.error(o));
+              throw new Error(
+                `Couldn't query the terms of service for appId '${context.data.appId}'.`
+              );
             }
             context.data.tosUrl = result.data.tos.url;
             context.data.tosVersion = result.data.tos.version;
           },
           onDone: "#checkSkipAcceptTos",
-          onError: "#error"
-        }
+          onError: "#error",
+        },
       },
       checkSkipAcceptTos: {
         id: "checkSkipAcceptTos",
@@ -129,14 +136,24 @@ const processDefinition = (processId: string) =>
                 return false;
               }
               try {
-                const storedConsents:ToSConsents = JSON.parse(storedConsentsJson);
-                if (!storedConsents || !storedConsents[context.data.hashedEmail]) {
+                const storedConsents: ToSConsents =
+                  JSON.parse(storedConsentsJson);
+                if (
+                  !storedConsents ||
+                  !storedConsents[context.data.hashedEmail]
+                ) {
                   return false;
                 }
 
-                if (storedConsents[context.data.hashedEmail] !== context.data.tosVersion) {
+                if (
+                  storedConsents[context.data.hashedEmail] !==
+                  context.data.tosVersion
+                ) {
                   delete storedConsents[context.data.hashedEmail];
-                  localStorage.setItem("tosConsents", JSON.stringify(storedConsents));
+                  localStorage.setItem(
+                    "tosConsents",
+                    JSON.stringify(storedConsents)
+                  );
                   return false;
                 }
               } catch (e) {
@@ -159,15 +176,17 @@ const processDefinition = (processId: string) =>
 
         component: HtmlViewer,
         params: {
-        //  link: "",
-        //  linkLabel: "terms of service & privacy policy",
-        //submitButtonText: "",
+          //  link: "",
+          //  linkLabel: "terms of service & privacy policy",
+          //submitButtonText: "",
           submitButtonText: "I read and accept them",
-          html: (context) => `CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. 
+          html: (
+            context
+          ) => `CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. 
           With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/>
           For details read our <a class="text-primary" href="https://circlesland.ghost.io/terms-of-service">privacy policy & terms of service</a>`,
         },
-/*
+        /*
         dataSchema: yup
           .boolean()
           .oneOf([true], "Please accept the terms to proceed"),
@@ -175,7 +194,7 @@ const processDefinition = (processId: string) =>
         navigation: {
           next: "#storeAcceptTos",
           canGoBack: () => true,
-          previous: "#loginEmail"
+          previous: "#loginEmail",
         },
       }),
       storeAcceptTos: {
@@ -185,15 +204,16 @@ const processDefinition = (processId: string) =>
 
           try {
             let storedConsents: ToSConsents = storedConsentsJson
-                ? JSON.parse(storedConsentsJson)
-                : undefined;
+              ? JSON.parse(storedConsentsJson)
+              : undefined;
 
             if (!storedConsents) {
               storedConsents = {};
             }
 
             if (!storedConsents[context.data.hashedEmail]) {
-              storedConsents[context.data.hashedEmail] = context.data.tosVersion;
+              storedConsents[context.data.hashedEmail] =
+                context.data.tosVersion;
             }
 
             localStorage.setItem("tosConsents", JSON.stringify(storedConsents));
@@ -210,18 +230,19 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Sending the email ..`
+            message: `Sending the email ..`,
           });
         },
         invoke: {
           src: async (context) => {
-            const authClient = await window.o.authClient.client.subscribeToResult();
+            const authClient =
+              await window.o.authClient.client.subscribeToResult();
             const result = await authClient.mutate({
               mutation: LoginWithEmailDocument,
               variables: {
                 appId: context.data.appId,
                 emailAddress: context.data.loginEmail,
-                acceptTosVersion: context.data.tosVersion
+                acceptTosVersion: context.data.tosVersion,
               },
             });
 
@@ -252,7 +273,7 @@ const processDefinition = (processId: string) =>
                 <li><b>You have a typo in your email address</b><br/>
                 Please check if the email address is correct. You entered "${context.data.loginEmail}".</li>
                 <li><b>Something went wrong at our or your provider.</b><br/>
-                If the problem persists, please contact us in our <a href="https://discord.gg/SACzRXa35v" target="_blank">Discord channel</a> or at <a href="mailto:lab@circles.land">lab@circles.land</a>.</li>
+                If the problem persists, please contact us in our <a href="https://discord.gg/SACzRXa35v" target="_blank" class='btn-link'>Discord channel</a>.</li>
             </ul>
           `;
         },
@@ -260,10 +281,10 @@ const processDefinition = (processId: string) =>
         isSensitive: true,
         params: {
           submitButtonText: "Try again",
-          html: (context) => context.data.errorSendingAuthMail
+          html: (context) => context.data.errorSendingAuthMail,
         },
         navigation: {
-          next: "#loginEmail"
+          next: "#loginEmail",
         },
       }),
       // Wait for the user to enter the code he received in the login-email
@@ -274,8 +295,8 @@ const processDefinition = (processId: string) =>
         params: (context) => {
           return {
             label: strings.labelVerificationCode(context.data.loginEmail),
-            submitButtonText: "Login"
-          }
+            submitButtonText: "Login",
+          };
         },
         dataSchema: yup.string().required("Please enter your one time token."),
         navigation: {
@@ -289,12 +310,13 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `We're logging you in ..`
+            message: `We're logging you in ..`,
           });
         },
         invoke: {
           src: async (context) => {
-            const authClient = await window.o.authClient.client.subscribeToResult();
+            const authClient =
+              await window.o.authClient.client.subscribeToResult();
             const result = await authClient.mutate({
               mutation: VerifyDocument,
               variables: {
@@ -331,10 +353,10 @@ const processDefinition = (processId: string) =>
         isSensitive: true,
         params: {
           submitButtonText: "Try again",
-          html: (context) => context.data.errorExchangingCode
+          html: (context) => context.data.errorExchangingCode,
         },
         navigation: {
-          next: "#code"
+          next: "#code",
         },
       }),
       success: {
