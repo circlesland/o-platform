@@ -196,7 +196,11 @@ module.exports = {
     compress: true,
     contentBase: [path.join(__dirname, "public")],
     port: 5000,
+    host:
+      process.env.DEPLOY_ENVIRONMENT === "thorsten"
+        ? "192.168.178.35"
+        : "localhost",
     open: true,
-    https: false,
+    https: process.env.DEPLOY_ENVIRONMENT === "thorsten" ? true : false,
   },
 };
