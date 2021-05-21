@@ -141,7 +141,7 @@
         To connect yourself, send your "trust link" to other citizens you know in
         person.
         <a
-          href="https://circlesland.ghost.io/whitepaper/"
+          href="https://blog.circles.land/whitepaper/"
           alt="CirclesLand Whitepaper"
           target="_blank"
           class="btn-link">Learn more</a

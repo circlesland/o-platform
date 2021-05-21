@@ -184,7 +184,7 @@ const processDefinition = (processId: string) =>
             context
           ) => `CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. 
           With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/>
-          For details read our <a class="text-primary" href="https://circlesland.ghost.io/terms-of-service">privacy policy & terms of service</a>`,
+          For details read our <a class="text-primary" href="https://blog.circles.land/terms-of-service">privacy policy & terms of service</a>`,
         },
         /*
         dataSchema: yup
