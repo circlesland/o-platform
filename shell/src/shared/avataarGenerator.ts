@@ -34,4 +34,26 @@ export class AvataarGenerator {
         });
         return svg;
     }
+
+    public static boring() {
+        const svg = createAvatar(style, {
+            seed: "boring",
+            // backgroundColor: "#65C9FF",
+            topChance: 100,
+            accessoriesChance: 0,
+            facialHairChance: 0,
+            top: ["shortHair"],
+            hatColor: ["gray"],
+            hairColor: ["gray"],
+            clothes: ["hoodie"],
+            clothesColor: ["gray"],
+            eyes: ["default"],
+            eyebrow: ["defaultNatural"],
+            mouth: ["default"],
+            skin: ["pale"],
+            style: "transparent",
+            dataUri: true,
+        });
+        return svg;
+    }
 }

@@ -37,7 +37,7 @@
       accountxDai = {
         symbol: "xdai",
         icon: "",
-        address: $me.circlesSafeOwner,
+        address: RpcGateway.get().eth.accounts.privateKeyToAccount(localStorage.getItem("circlesKey")).address,
         title: "Safe owner",
         balance: parseFloat(
           RpcGateway.get()
@@ -52,7 +52,7 @@
         symbol: "xdai",
         icon: "",
         title: "Safe",
-        address: $me.circlesAddress,
+        address: RpcGateway.get().utils.toChecksumAddress($me.circlesAddress),
         balance: parseFloat(
           RpcGateway.get()
             .utils.fromWei($mySafe.xDaiBalance, "ether")

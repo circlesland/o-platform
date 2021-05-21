@@ -4,26 +4,20 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
-import BooleanEditor from "@o-platform/o-editors/src/BooleanEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
 import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import { countries } from "../../../shared/countries";
-
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { uploadFile } from "../../../shared/api/uploadFile";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { UpsertProfileDocument } from "../data/api/types";
 import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import { createAvatar } from "@dicebear/avatars";
-import * as style from "@dicebear/avatars-avataaars-sprites";
 import {promptChoice} from "./identify/prompts/promptChoice";
 import {AvataarGenerator} from "../../../shared/avataarGenerator";
-import {ShellEvent} from "@o-platform/o-process/dist/events/shellEvent";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import {AuthenticateContext} from "./identify/aquireSession/authenticate/authenticate";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -230,8 +224,13 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "generateAvataar",
         invoke: {
           src: async (context) => {
-            const svg = AvataarGenerator.generate(context.data.circlesAddress ?? context.data.circlesSafeOwner);
-            context.data.avatarUrl = svg;
+            if (context.data.circlesAddress) {
+              const svg = AvataarGenerator.generate(context.data.circlesAddress.toLowerCase());
+              context.data.avatarUrl = svg;
+            } else {
+              // Point 3 of https://github.com/circlesland/o-platform/issues/96 - circles.land no safe no profile picture => grey avatar icon
+              context.data.avatarUrl = AvataarGenerator.boring();
+            }
           },
           onDone: "#newsletter",
           onError: "#error",

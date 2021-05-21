@@ -112,7 +112,7 @@ const processDefinition = (processId: string) =>
                 ? result.data.search
                     .map((o) => {
                       return <Choice>{
-                        value: o.circlesAddress,
+                        value: RpcGateway.get().utils.toChecksumAddress(o.circlesAddress),
                         label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
                         avatarUrl: o.avatarUrl,
                       };

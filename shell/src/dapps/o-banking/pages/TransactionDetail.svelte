@@ -24,55 +24,58 @@
   $: {
     transfer = $mySafe.transfers.rows.find((o) => o._id == params._id);
 
-    displayableFromName = transfer.fromProfile
-      ? transfer.fromProfile.displayName
-      : transfer.from;
+    if (transfer) {
+      displayableFromName = transfer.fromProfile
+              ? transfer.fromProfile.displayName
+              : transfer.from;
 
-    displayableFromName =
-      displayableFromName === "0x0000000000000000000000000000000000000000"
-        ? "CirclesLand"
-        : displayableFromName;
+      displayName =
+            transfer.direction === "in"
+                  ? transfer.fromProfile
+                    ? transfer.fromProfile.displayName
+                    : transfer.from
+                  : transfer.toProfile
+                    ? transfer.toProfile.displayName
+                    : transfer.to;
 
-    message =
-      displayableFromName === "CirclesLand"
-        ? "Universal basic income"
-        : message;
 
-    displayName =
-      transfer.direction === "in"
-        ? transfer.fromProfile
-          ? transfer.fromProfile.displayName
-          : transfer.from
-        : transfer.toProfile
-        ? transfer.toProfile.displayName
-        : transfer.to;
+      pictureUrl =
+            transfer.direction === "in"
+                  ? transfer.fromProfile
+                    ? transfer.fromProfile.avatarUrl
+                    : undefined
+                  : transfer.toProfile
+                    ? transfer.toProfile.avatarUrl
+                    : undefined;
 
-    pictureUrl =
-      transfer.direction === "in"
-        ? transfer.fromProfile
-          ? transfer.fromProfile.avatarUrl
-          : undefined
-        : transfer.toProfile
-        ? transfer.toProfile.avatarUrl
-        : undefined;
+      classes =
+            transfer.direction === "in"
+                    ? "transactionpositive"
+                    : "transactionnegative";
 
-    classes =
-      transfer.direction === "in"
-        ? "transactionpositive"
-        : "transactionnegative";
+      displayableFromName =
+              displayableFromName === "0x0000000000000000000000000000000000000000"
+                      ? "CirclesLand"
+                      : displayableFromName;
 
-    amountInWei = RpcGateway.get().utils.fromWei(transfer.amount, "ether");
+      message =
+              displayableFromName === "CirclesLand"
+                      ? "Universal basic income"
+                      : message;
 
-    otherSafeAddress =
-      transfer.direction === "in" ? transfer.from : transfer.to;
 
-    if (!pictureUrl) {
-      pictureUrl = createAvatar(style, {
-        seed: otherSafeAddress,
-        topChance: 100,
-        style: "transparent",
-        dataUri: true,
-      });
+      amountInWei = RpcGateway.get().utils.fromWei(transfer.amount, "ether");
+
+      otherSafeAddress = transfer.direction === "in" ? transfer.from : transfer.to;
+
+      if (!pictureUrl) {
+        pictureUrl = createAvatar(style, {
+          seed: otherSafeAddress,
+          topChance: 100,
+          style: "transparent",
+          dataUri: true,
+        });
+      }
     }
   }
 

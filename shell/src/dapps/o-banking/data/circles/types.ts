@@ -50,7 +50,6 @@ export type TrustObject = {
 
 export type Safe = {
   safeAddress: string;
-  ownerAddress?: string;
   firstBlock?: number;
   lastBlock?: number;
   token?: Token;

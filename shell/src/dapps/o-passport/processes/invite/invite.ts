@@ -6,11 +6,15 @@ import { promptChoice } from "../identify/prompts/promptChoice";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transfer } from "../../../o-banking/processes/transfer";
 import { loadProfile } from "../identify/services/loadProfile";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {Profile} from "../../data/api/types";
 
 export type InviteContextData = {
   safeAddress?: string;
   inviteProfileId?: number;
+  inviteProfile?: Profile;
   circlesSafeOwner?: string;
+
 };
 
 export const INVITE_VALUE = 0.1;
@@ -33,6 +37,7 @@ const processDefinition = (processId: string) =>
           },
           onDone: {
             actions: (context, event) => {
+              context.data.inviteProfile = event.data;
               context.data.circlesSafeOwner = event.data.circlesSafeOwner;
             },
             target: "#amount",

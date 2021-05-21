@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
 import {ApiProfile} from "./apiProfile";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export async function loadProfileBySafeAddress(safeAddress: string) : Promise<ApiProfile> {
     // 1. Try to find a profile via the api
@@ -37,8 +38,12 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Ap
         result.data.profiles && result.data.profiles.length
             ? result.data.profiles[0]
             : undefined;
+
     if (profile) {
-        return profile;
+        return {
+            ...profile,
+            circlesAddress: RpcGateway.get().utils.toChecksumAddress(profile.circlesAddress)
+        };
     }
 
     // 2. Try to find a profile via circles garden
@@ -51,7 +56,7 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Ap
                 ? resultJson.data[0]
                 : undefined;
         return {
-            circlesAddress: safeAddress,
+            circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
             firstName: profile ? profile.username : "",
             avatarUrl: profile ? profile.avatarUrl : undefined,
         };
@@ -59,7 +64,7 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Ap
 
     // 3. No profile found
     return {
-        circlesAddress: safeAddress,
+        circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
         firstName: "",
     };
 }

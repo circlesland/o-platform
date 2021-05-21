@@ -5,6 +5,7 @@
   import { Transfer } from "../data/circles/queries";
   import {createAvatar} from "@dicebear/avatars";
   import * as style from "@dicebear/avatars-avataaars-sprites";
+  const {AvataarGenerator} = require("src/shared/avataarGenerator");
 
   export let transfer: Transfer;
   export let message: String;
@@ -55,14 +56,14 @@
         : "transactionnegative";
 
 
-    if (!pictureUrl) {
+    /*if (!pictureUrl) {
       pictureUrl = createAvatar(style, {
         seed: otherSafeAddress,
         topChance: 100,
         style: "transparent",
         dataUri: true,
       });
-    }
+    }*/
   }
 
   let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
@@ -85,7 +86,7 @@
     <div class="mr-2 text-center">
       <div class="avatar">
         <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto mt-1">
-          <img src={pictureUrl} alt={displayName} />
+          <img src={pictureUrl} alt={otherSafeAddress} />
         </div>
       </div>
     </div>

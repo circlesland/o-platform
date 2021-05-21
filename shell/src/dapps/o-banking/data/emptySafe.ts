@@ -34,6 +34,5 @@ export const emptySafe: Safe = {
     untrusted: {},
     lastBlock: 0,
     firstBlock: 0
-  },
-  ownerAddress: "0x00"
+  }
 };

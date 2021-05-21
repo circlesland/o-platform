@@ -8,6 +8,7 @@ const webpack = require("webpack");
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
 
+let circlesGardenApiBaseUrl = "https://api.circles.garden/api/users/";
 let auth_endpoint = "https://auth.circles.name";
 let api_endpoint = "https://api.circles.land";
 let files_endpoint = "https://files.circles.land";
@@ -51,6 +52,7 @@ console.log(`Api Endpoint Url: ${api_endpoint}`);
 console.log(`Files Endpoint Url: ${files_endpoint}`);
 console.log(`AppId: ${appId}`);
 console.log(`Files AppId: ${filesAppId}`);
+console.log(`circlesGardenApiBaseUrl: ${circlesGardenApiBaseUrl}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
@@ -95,6 +97,15 @@ module.exports = {
         options: {
           search: "__API_ENDPOINT__",
           replace: api_endpoint,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__CIRCLES_GARDEN_API__",
+          replace: circlesGardenApiBaseUrl,
           flags: "g",
         },
       },

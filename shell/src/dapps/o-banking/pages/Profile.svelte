@@ -19,6 +19,9 @@
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
   import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
+  import {onDestroy, onMount} from "svelte";
+  import {Subscription} from "rxjs";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
   export let params: {
     id?: String;
@@ -33,6 +36,18 @@
       inviteLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${$me.id}`;
     }
   }
+
+  let shellEventSubscription:Subscription;
+
+  onMount(() => {
+    shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent) => {
+      if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
+        return;
+      }
+      await loadProfile();
+    });
+  });
+  onDestroy(() => shellEventSubscription.unsubscribe());
 
   let isEditable: boolean = false;
   let isLoading: boolean = true;
