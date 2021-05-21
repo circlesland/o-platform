@@ -484,7 +484,7 @@ export class Banking {
             }
         });
 
-        return result.data.profiles.map(p => {
+        return (result.data ?? []).profiles.map(p => {
             return {
                 ...p,
                 circlesAddress : RpcGateway.get().utils.toChecksumAddress(p.circlesAddress),
