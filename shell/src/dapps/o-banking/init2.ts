@@ -72,11 +72,7 @@ export class Banking {
         }, {
             id: "cacheSafe",
             message: "Writing transactions to cache ..",
-            run: async () => {
-                const safeCopy = JSON.parse(JSON.stringify(this._safe));
-                safeCopy.ui = {};
-                localStorage.setItem("safe", JSON.stringify(safeCopy))
-            }
+            run: async () => this.cacheSafe()
         }]);
     }
 
@@ -101,11 +97,7 @@ export class Banking {
         }, {
             id: "cacheSafe",
             message: "Writing transactions to cache ..",
-            run: async () => {
-                const safeCopy = JSON.parse(JSON.stringify(this._safe));
-                safeCopy.ui = {};
-                localStorage.setItem("safe", JSON.stringify(safeCopy))
-            }
+            run: async () => this.cacheSafe()
         }]);
     }
 
@@ -114,21 +106,7 @@ export class Banking {
         return Banking.execute("onMount", "Initializing safe ..", [{
             id: "tryToRestoreCache",
             message: "Trying to restore the cache ..",
-            run: async () => {
-                const cachedSafeJson = localStorage.getItem("safe");
-                if (!cachedSafeJson) {
-                    return;
-                } else {
-                    try {
-                        this._safe = JSON.parse(cachedSafeJson) ?? emptySafe;
-                        this._safe.ui = {};
-                    } catch (e) {
-                        this._safe = emptySafe;
-                        console.error("An error occurred while restoring the cached safe:", e);
-                        localStorage.removeItem("safe");
-                    }
-                }
-            },
+            run: async () => this.tryToRestoreCache(),
             updateUi: true
         }, {
             id: "ownToken",
@@ -175,12 +153,112 @@ export class Banking {
         }, {
             id: "cacheSafe",
             message: "Writing transactions to cache ..",
-            run: async () => {
-                const safeCopy = JSON.parse(JSON.stringify(this._safe));
-                safeCopy.ui = {};
-                localStorage.setItem("safe", JSON.stringify(safeCopy))
-            }
+            run: async () => this.cacheSafe()
         }]);
+    }
+
+    private cacheSafe() {
+        const safeCopy: Safe = JSON.parse(JSON.stringify(this._safe));
+
+        // Remove all image data image urls
+        if (safeCopy.token?.ownerProfile?.avatarUrl?.startsWith("data:image")) {
+            safeCopy.token.ownerProfile.avatarUrl = undefined;
+        }
+
+        // Remove all data urls from the one way trusts
+        Object.values(safeCopy.trustRelations?.trustedBy ?? {})
+            .concat(Object.values(safeCopy.trustRelations?.trusting ?? {}))
+            .concat(Object.values(safeCopy.trustRelations?.untrusted ?? {}))
+            .filter(oneWayTrust => oneWayTrust.profile?.avatarUrl?.startsWith("data:image"))
+            .forEach(oneWayTrust => {
+                //generatedAvatars[oneWayTrust.safeAddress] = oneWayTrust.profile.avatarUrl;
+                oneWayTrust.profile.avatarUrl = undefined
+            });
+
+        // Remove all data urls from the mutual trusts
+        Object.values(safeCopy.trustRelations?.mutualTrusts ?? {})
+            .filter(o => o.trustedBy.profile?.avatarUrl?.startsWith("data:image"))
+            .forEach(o => {
+                //generatedAvatars[o.trustedBy.safeAddress] = o.trustedBy.profile.avatarUrl;
+                o.trustedBy.profile.avatarUrl = undefined;
+            });
+
+        Object.values(safeCopy.trustRelations?.mutualTrusts ?? {})
+            .filter(o => o.trusting.profile?.avatarUrl?.startsWith("data:image"))
+            .forEach(o => {
+                //generatedAvatars[o.trusting.safeAddress] = o.trusting.profile.avatarUrl;
+                o.trusting.profile.avatarUrl = undefined;
+            });
+
+        // Remove all data urls from the transactions
+        safeCopy.transfers?.rows?.forEach(transfer => {
+            if (transfer.fromProfile?.avatarUrl?.startsWith("data:image")) {
+                //generatedAvatars[transfer.from] = transfer.fromProfile.avatarUrl;
+                transfer.fromProfile.avatarUrl = undefined;
+            }
+            if (transfer.toProfile?.avatarUrl?.startsWith("data:image")) {
+                //generatedAvatars[transfer.to] = transfer.toProfile.avatarUrl;
+                transfer.toProfile.avatarUrl = undefined;
+            }
+        });
+
+        safeCopy.ui = {};
+        localStorage.setItem("safe", JSON.stringify(safeCopy))
+    }
+
+    private tryToRestoreCache() {
+        const cachedSafeJson = localStorage.getItem("safe");
+        if (!cachedSafeJson) {
+            return;
+        } else {
+            try {
+                const frankenstein:Safe = JSON.parse(cachedSafeJson) ?? emptySafe;
+                this._safe.ui = {};
+
+                // Add all data urls for the one way trusts
+                Object.values(frankenstein.trustRelations?.trustedBy ?? {})
+                    .concat(Object.values(frankenstein.trustRelations?.trusting ?? {}))
+                    .concat(Object.values(frankenstein.trustRelations?.untrusted ?? {}))
+                    .filter(oneWayTrust => oneWayTrust.profile && !oneWayTrust.profile.avatarUrl)
+                    .forEach((oneWayTrust:TrustObject) => {
+                        //generatedAvatars[oneWayTrust.safeAddress] = oneWayTrust.profile.avatarUrl;
+                        oneWayTrust.profile.avatarUrl = AvataarGenerator.generate(oneWayTrust.safeAddress.toLowerCase());
+                    });
+
+                // Add all data urls for the mutual trusts
+                Object.values(frankenstein.trustRelations?.mutualTrusts ?? {})
+                    .filter(o => o.trustedBy.profile && !o.trustedBy.profile.avatarUrl)
+                    .forEach(o => {
+                        //generatedAvatars[o.trustedBy.safeAddress] = o.trustedBy.profile.avatarUrl;
+                        o.trustedBy.profile.avatarUrl = AvataarGenerator.generate(o.trustedBy.safeAddress.toLowerCase());
+                    });
+
+                Object.values(frankenstein.trustRelations?.mutualTrusts ?? {})
+                    .filter(o => o.trusting.profile && !o.trusting.profile.avatarUrl)
+                    .forEach(o => {
+                        //generatedAvatars[o.trusting.safeAddress] = o.trusting.profile.avatarUrl;
+                        o.trusting.profile.avatarUrl = AvataarGenerator.generate(o.trusting.safeAddress.toLowerCase());
+                    });
+
+                // Add all data urls for the transactions
+                frankenstein.transfers?.rows?.forEach(transfer => {
+                    if (transfer.fromProfile && !transfer.fromProfile.avatarUrl) {
+                        //generatedAvatars[transfer.from] = transfer.fromProfile.avatarUrl;
+                        transfer.fromProfile.avatarUrl = AvataarGenerator.generate(transfer.from.toLowerCase());
+                    }
+                    if (transfer.toProfile && !transfer.toProfile.avatarUrl) {
+                        //generatedAvatars[transfer.to] = transfer.toProfile.avatarUrl;
+                        transfer.toProfile.avatarUrl = AvataarGenerator.generate(transfer.to.toLowerCase());
+                    }
+                });
+
+                this._safe = frankenstein;
+            } catch (e) {
+                this._safe = emptySafe;
+                console.error("An error occurred while restoring the cached safe:", e);
+                localStorage.removeItem("safe");
+            }
+        }
     }
 
     async tryGetUbi() : Promise<void> {
@@ -344,7 +422,7 @@ export class Banking {
                 return {
                     safeAddress: unmapped,
                     displayName: unmapped.substr(0, 12) + "..",
-                    avatarUrl: AvataarGenerator.generate(unmapped)
+                    avatarUrl: AvataarGenerator.generate(unmapped.toLowerCase())
                 }
             });
 

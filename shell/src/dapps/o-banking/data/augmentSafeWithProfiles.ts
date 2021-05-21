@@ -59,7 +59,7 @@ async function createProfileMap(safeAddresses:string[]) {
   const land = profiles[0];
   land.forEach(profile => {
     map[profile.circlesAddress] = {
-      safeAddress: profile.circlesAddress,
+      safeAddress: RpcGateway.get().utils.toChecksumAddress(profile.circlesAddress),
       displayName: `${profile.firstName} ${profile.lastName ?? ""}`,
       avatarUrl: profile.avatarUrl
     };
@@ -69,8 +69,6 @@ async function createProfileMap(safeAddresses:string[]) {
 
 function findAllSafeAddresses(safe:Safe) {
   const addresses: {[safeAddress:string]: null} = {};
-
-  addresses[safe.safeAddress.toLowerCase()] = null;
 
   // First: Add the own address
   if (safe.safeAddress) {

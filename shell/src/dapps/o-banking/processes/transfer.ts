@@ -148,7 +148,7 @@ const processDefinition = (processId: string) =>
               ? result.data.search
                   .map((o) => {
                     return <Choice>{
-                      value: o.circlesAddress,
+                      value: RpcGateway.get().utils.toChecksumAddress(o.circlesAddress),
                       label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
                       avatarUrl: o.avatarUrl,
                     };
@@ -308,7 +308,7 @@ const processDefinition = (processId: string) =>
 
             toAvatarUrl = toAvatarUrl
               ? toAvatarUrl
-              : AvataarGenerator.generate(context.data.recipientAddress);
+              : AvataarGenerator.generate(context.data.recipientAddress.toLowerCase());
 
             if (!context.data.tokens) {
               throw new Error(`No currency or amount selected`);

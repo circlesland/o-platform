@@ -120,10 +120,15 @@ createMachine<HubSignupContext, any>({
 
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.authenticated",
-            profile: result.data.upsertProfile,
+            profile: {
+              ...result.data.upsertProfile,
+              circlesAddress: RpcGateway.get().utils.toChecksumAddress(result.data.upsertProfile.circlesAddress)
+            }
           });
 
-          return result.data.upsertProfile;
+          return {
+            ...result.data.upsertProfile
+          };
         },
         onDone: "#fundSafe",
         onError: "#error",

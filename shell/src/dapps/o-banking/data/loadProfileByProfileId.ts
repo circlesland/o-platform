@@ -1,6 +1,7 @@
 import {ProfilesDocument} from "../../o-passport/data/api/types";
 import {Profile} from "./api/types";
 import {ApiProfile} from "./apiProfile";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export async function loadProfileByProfileId(profileId: number) : Promise<ApiProfile> {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -27,5 +28,8 @@ export async function loadProfileByProfileId(profileId: number) : Promise<ApiPro
         throw new Error(`Couldn't find a profile with id '${profileId}'.`);
     }
 
-    return apiProfile;
+    return {
+        ...apiProfile,
+        circlesAddress: RpcGateway.get().utils.toChecksumAddress(apiProfile.circlesAddress)
+    };
 }

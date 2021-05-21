@@ -82,7 +82,7 @@
       {/each}
     {/if}
 
-    {#if Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress.toLowerCase() !== $mySafe.safeAddress.toLowerCase()).length >= 1}
+    {#if Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress !== $mySafe.safeAddress).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
         <div
           class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
@@ -93,7 +93,7 @@
         </div>
       </section>
       <!-- TODO: Possible actions: trust, transfer money -->
-      {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress.toLowerCase() !== $mySafe.safeAddress.toLowerCase()) as trustedBy}
+      {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress !== $mySafe.safeAddress) as trustedBy}
         <TrustCard {trustedBy} />
       {/each}
     {/if}

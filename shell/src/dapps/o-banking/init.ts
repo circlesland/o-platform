@@ -55,7 +55,7 @@ export async function init() {
   unsubscribeMe = me.subscribe(async profileOrNull => {
     profile = profileOrNull;
     if (!bankingInstance && RpcGateway.get().utils.isAddress(profileOrNull.circlesAddress ?? "")) {
-      bankingInstance = new Banking(profile.circlesAddress);
+      bankingInstance = new Banking(RpcGateway.get().utils.toChecksumAddress(profile.circlesAddress));
     } else {
       return;
     }
@@ -63,6 +63,8 @@ export async function init() {
       mountTrigger.trigger();
     }
   });
+
+  mountTrigger.trigger();
 
   shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent & {
     profile: Profile
