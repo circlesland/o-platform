@@ -64,7 +64,7 @@
   <ul class="flex items-center hidden space-x-8 lg:flex">
     <li>
       <a
-        href="https://circlesland.ghost.io/"
+        href="https://blog.circles.land/"
         target="_blank"
         aria-label="About us"
         title="About us"
@@ -74,7 +74,7 @@
     </li>
     <li>
       <a
-        href="https://circlesland.ghost.io/whitepaper/"
+        href="https://blog.circles.land/whitepaper/"
         target="_blank"
         aria-label="Sign in"
         title="Sign in"
