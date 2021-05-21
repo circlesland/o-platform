@@ -23,7 +23,7 @@ const strings = {
   labelSafeAddress: `Please copy and paste in your "Profile Address", which you can find on the <a class="text-primary" href="https://circles.garden/settings" target="_blank">settings page</a> of your circles.garden Wallet`,
   placeholderSafeAddress: "your safe address",
   labelSeedPhrase:
-    "If you already have a safe address from Circles.garden you can find it at <a href='https://circles.garden/seedphrase' class='btn-link' target='_blank'>circles.garden/seedphrase</a>.<br/><br/>Your seedphrase is always only stored on your device. To connect this device, <span class='text-primary'>please enter your seedphrase</span>.",
+    "Your seedphrase is always only stored locally on your device. You can also copy and paste it from <a href='https://circles.garden/seedphrase' class='btn-link' target='_blank'>circles.garden/seedphrase</a>.<br/>To connect this device,<br/><span class='text-primary'>Please enter your seedphrase</span>.",
   placeholderSeedPhrase: "Seedphrase",
 };
 
