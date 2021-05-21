@@ -85,6 +85,8 @@ export async function init() {
     }
   });
 
+  bankingInstance.tryGetUbi();
+
   return function stop() {
     shellEventSubscription.unsubscribe();
     unsubscribeMe();
