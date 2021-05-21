@@ -1,6 +1,6 @@
 <div class="loading-spinner">
   <img
-    src="/images/common/circles.png"
+    src="/images/common/loadingspinnerlogo.png"
     alt="loading..."
     class="w-20 h-20 mb-6 rotate"
   />
