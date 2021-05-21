@@ -23,7 +23,7 @@
             new universal basic income currency to secure our most basic needs.
           </p>
           <a
-            href="https://circlesland.ghost.io/whitepaper/"
+            href="https://blog.circles.land/whitepaper/"
             aria-label=""
             class="inline-flex items-center mt-6 font-semibold transition-colors duration-200 text-primary hover:text-secondary"
           >

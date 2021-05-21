@@ -39,7 +39,7 @@
     >
 
     <a
-      href="https://circlesland.ghost.io/"
+      href="https://blog.circles.land/"
       target="_blank"
       aria-label="About us"
       title="About us"
@@ -48,7 +48,7 @@
     >
 
     <a
-      href="https://circlesland.ghost.io/whitepaper/"
+      href="https://blog.circles.land/whitepaper/"
       target="_blank"
       aria-label="Sign in"
       title="Sign in"

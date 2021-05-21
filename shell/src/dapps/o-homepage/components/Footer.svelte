@@ -51,7 +51,7 @@
         <ul class="mt-2 space-y-2">
           <li>
             <a
-              href="https://circlesland.ghost.io/"
+              href="https://blog.circles.land/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Blog</a
@@ -75,7 +75,7 @@
           </li>
           <li>
             <a
-              href="https://circlesland.ghost.io/whitepaper/"
+              href="https://blog.circles.land/whitepaper/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Whitepaper</a
@@ -113,7 +113,7 @@
         <ul class="mt-2 space-y-2">
           <li>
             <a
-              href="https://circlesland.ghost.io/terms-of-service/"
+              href="https://blog.circles.land/terms-of-service/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Terms Of Service</a
@@ -121,7 +121,7 @@
           </li>
           <li>
             <a
-              href="https://circlesland.ghost.io/privacy/"
+              href="https://blog.circles.land/privacy/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Data Privacy</a
@@ -129,7 +129,7 @@
           </li>
           <li>
             <a
-              href="https://circlesland.ghost.io//legal-notice/"
+              href="https://blog.circles.land//legal-notice/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
               >Impressum - Legal</a

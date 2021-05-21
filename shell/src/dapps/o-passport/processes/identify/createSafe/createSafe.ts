@@ -7,6 +7,7 @@ import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextViewer from "@o-platform/o-editors/src/TextViewer.svelte";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import * as yup from "yup";
 import * as bip39 from "bip39";
 
 export type CreateSafeContextData = {
@@ -94,6 +95,7 @@ const processDefinition = (processId: string) =>
           hideCharacterCount: true,
           submitButtonText: strings.buttonCheckSeedphrase,
         },
+        dataSchema: yup.string().required("Please enter your seedphrase."),
         navigation: {
           next: "#verifyCheckSeedPhrase",
           previous: "#backupSeedphrase",
