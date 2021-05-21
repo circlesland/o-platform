@@ -35,7 +35,7 @@ export type IdentifyContextData = {
 
 const strings = {
   choiceLabel:
-    "In the circles world, instead of bank account numbers (IBAN’s) you have 'safe addresses' to identify your account number. <br/><br/><span class='text-primary'>Do you want to create a new safe account or connect your existing safe from circles.garden?<span>",
+    "In the circles world, instead of bank account numbers (IBAN’s) you have 'safe addresses' to identify your account number. <br/><br/>If you already have a safe address from Circles.garden you can find it at <a href='https://circles.garden/seedphrase' class='btn-link' target='_blank'>circles.garden/seedphrase</a>.<br/><br/><span class='text-primary'>Do you want to create a new safe account or connect your existing safe from circles.garden?<span>",
   choiceYesLabel: "Connect",
   choiceNoLabel: "Create New",
 };
