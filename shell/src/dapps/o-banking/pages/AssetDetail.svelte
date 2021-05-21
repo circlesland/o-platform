@@ -2,7 +2,7 @@
   import { Token } from "../data/circles/types";
   import TokenCard from "../atoms/TokenCard.svelte";
   import XdaiAssetCard from "../atoms/XdaiAssetCard.svelte";
-
+  import { INVITE_VALUE } from "src/dapps/o-passport/processes/invite/invite";
   import { mySafe } from "../stores/safe";
   import { BN } from "ethereumjs-util";
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
@@ -31,13 +31,16 @@
   };
 
   let tokens: Token[];
+  let presets = [10, 20, 50];
 
   $: {
     if (params.symbol == "xdai" && $mySafe && $mySafe.accountxDai) {
       accountxDai = {
         symbol: "xdai",
         icon: "",
-        address: RpcGateway.get().eth.accounts.privateKeyToAccount(localStorage.getItem("circlesKey")).address,
+        address: RpcGateway.get().eth.accounts.privateKeyToAccount(
+          localStorage.getItem("circlesKey")
+        ).address,
         title: "Safe owner",
         balance: parseFloat(
           RpcGateway.get()
@@ -79,7 +82,7 @@
 <div class="mx-4 -mt-6">
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
     <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>Loading Tokens...</div>
         </div>
@@ -88,9 +91,9 @@
   {:else if params && params.symbol == "xdai"}
     <section class="justify-center mb-4">
       <div
-        class="flex flex-col infocard shadow p-4 w-full space-y-2 rounded-sm"
+        class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard"
       >
-        <div class="text-info text-xs font-circles font-bold text-left">
+        <div class="text-xs font-bold text-left text-info font-circles">
           WHAT IS THIS?
         </div>
 
@@ -127,4 +130,43 @@
       {/if}
     {/each}
   {/if}
+  <section class="flex items-center justify-center mt-4 mb-2">
+    <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
+      <div class="text-xs font-bold text-left text-primary font-circles">
+        BUY MORE XDAI
+      </div>
+      <div
+        class="flex items-center justify-center w-full space-x-2 sm:space-x-6"
+      >
+        <div class="flex flex-row mt-4 space-x-4">
+          {#each presets as preset}
+            <a
+              href="https://buy.ramp.network/?userAddress={accountxDai.address}&swapAsset=XDAI&swapAmount={preset}000000000000000000"
+              target="_blank"
+              class="cursor-pointer"
+            >
+              <div
+                class="text-white cursor-pointer card compact side bg-primary font-circles"
+              >
+                <div
+                  class="flex-row items-center space-x-4 cursor-pointer card-body"
+                >
+                  <label for="input" class="flex-0"
+                    ><div
+                      class="text-sm font-bold tracking-wider text-center sm:text-lg"
+                    >
+                      {Math.floor(preset / INVITE_VALUE)} INVITES
+                    </div>
+                    <p class="text-xs text-center sm:text-l ">
+                      ({preset} xDai)
+                    </p>
+                  </label>
+                </div>
+              </div>
+            </a>
+          {/each}
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
