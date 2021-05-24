@@ -262,6 +262,9 @@ export class Banking {
     }
 
     async tryGetUbi() : Promise<void> {
+        if (!this._safe.safeAddress) {
+            return;
+        }
         const lastUBIDateString = localStorage.getItem("lastUBI");
         if (!lastUBIDateString) {
             return await this.getUbi(this._safe.safeAddress);
