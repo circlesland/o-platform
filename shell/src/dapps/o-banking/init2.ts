@@ -58,17 +58,17 @@ export class Banking {
             message: "Loading balances ..",
             run: async () => this.refreshBalances()
         }, {
+            id: "blockTimes",
+            message: "Loading block timestamps ..",
+            run: async () => this.augmentBlockTimes()
+        }, {
             id: "augmentProfiles",
             message: "Loading profiles ..",
             run: async () => this.augmentProfiles()
         }, {
             id: "sort",
             message: "Sorting all entries ..",
-            run: async () => this.sortEntries(),
-        }, {
-            id: "blockTimes",
-            message: "Loading block timestamps ..",
-            run: async () => this.augmentBlockTimes()
+            run: async () => this.sortEntries()
         }, {
             id: "cacheSafe",
             message: "Writing transactions to cache ..",
