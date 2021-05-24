@@ -58,6 +58,10 @@ export class Banking {
             message: "Loading balances ..",
             run: async () => this.refreshBalances()
         }, {
+            id: "sort",
+            message: "Sorting all entries ..",
+            run: async () => this.sortEntries()
+        }, {
             id: "blockTimes",
             message: "Loading block timestamps ..",
             run: async () => this.augmentBlockTimes()
@@ -65,10 +69,6 @@ export class Banking {
             id: "augmentProfiles",
             message: "Loading profiles ..",
             run: async () => this.augmentProfiles()
-        }, {
-            id: "sort",
-            message: "Sorting all entries ..",
-            run: async () => this.sortEntries()
         }, {
             id: "cacheSafe",
             message: "Writing transactions to cache ..",
@@ -89,7 +89,11 @@ export class Banking {
         }, {
             id: "sort",
             message: "Sorting all entries ..",
-            run: async () => this.sortEntries(),
+            run: async () => this.sortEntries()
+        }, {
+            id: "blockTimes",
+            message: "Loading block timestamps ..",
+            run: async () => this.augmentBlockTimes()
         }, {
             id: "augmentProfiles",
             message: "Loading profiles ..",
@@ -139,6 +143,10 @@ export class Banking {
             message: "Loading balances ..",
             run: async () => this.refreshBalances()
         }, {
+            id: "sort",
+            message: "Sorting all entries ..",
+            run: async () => this.sortEntries()
+        }, {
             id: "blockTimes",
             message: "Loading block timestamps ..",
             run: async () => this.augmentBlockTimes()
@@ -146,10 +154,6 @@ export class Banking {
             id: "augmentProfiles",
             message: "Loading profiles ..",
             run: async () => this.augmentProfiles()
-        }, {
-            id: "sort",
-            message: "Sorting all entries ..",
-            run: async () => this.sortEntries()
         }, {
             id: "cacheSafe",
             message: "Writing transactions to cache ..",
