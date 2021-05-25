@@ -229,6 +229,13 @@ export class Banking {
         } else {
             try {
                 const frankenstein:Safe = JSON.parse(cachedSafeJson) ?? emptySafe;
+
+                if (frankenstein.__schemaVersion !== "__SAFE_SCHEMA_VERSION__") {
+                    localStorage.removeItem("safe");
+                    this._safe = emptySafe;
+                    return;
+                }
+
                 this._safe.ui = {};
 
                 // Add all data urls for the one way trusts
