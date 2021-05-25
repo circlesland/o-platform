@@ -45,6 +45,10 @@ body {
     height: 100vh;
 }
 
+.label a:hover,
+.label a:active {
+  @apply text-primary;
+}
 .btn {
   font-family: Poppins;
   @apply font-bold;
