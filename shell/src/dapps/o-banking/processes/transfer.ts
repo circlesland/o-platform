@@ -306,9 +306,15 @@ const processDefinition = (processId: string) =>
               ? context.data.recipientProfile.avatarUrl
               : null;
 
-            toAvatarUrl = toAvatarUrl
-              ? toAvatarUrl
-              : AvataarGenerator.generate(context.data.recipientAddress);
+            if (context.data.tokens?.currency?.toLowerCase() != "xdai") {
+              toAvatarUrl = toAvatarUrl
+                  ? toAvatarUrl
+                  : AvataarGenerator.generate(context.data.recipientAddress);
+            } else {
+              toAvatarUrl = toAvatarUrl
+                  ? toAvatarUrl
+                  : AvataarGenerator.default();
+            }
 
             if (!context.data.tokens) {
               throw new Error(`No currency or amount selected`);

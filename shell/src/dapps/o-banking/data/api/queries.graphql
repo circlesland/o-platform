@@ -12,8 +12,8 @@ query profilesByCirclesAddress($circlesAddresses:[String!]!) {
     }
 }
 
-query profilesByIds($circlesAddresses:[String!]!) {
-    profiles(query:{circlesAddress:$circlesAddresses}) {
+query profilesByIds($id:[Int!]!) {
+    profiles(query:{id:$id}) {
         id
         circlesAddress
         firstName

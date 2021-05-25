@@ -160,7 +160,7 @@ export type QueryProfileInput = {
   circlesAddress?: Maybe<Array<Scalars['String']>>;
   country?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Array<Scalars['Int']>>;
   lastName?: Maybe<Scalars['String']>;
 };
 
@@ -332,7 +332,7 @@ export type MyProfileQuery = (
 );
 
 export type ProfilesQueryVariables = Exact<{
-  id: Scalars['Int'];
+  id: Array<Scalars['Int']> | Scalars['Int'];
 }>;
 
 
@@ -431,7 +431,7 @@ export const MyProfileDocument = gql`
 }
     `;
 export const ProfilesDocument = gql`
-    query profiles($id: Int!) {
+    query profiles($id: [Int!]!) {
   profiles(query: {id: $id}) {
     id
     circlesAddress
