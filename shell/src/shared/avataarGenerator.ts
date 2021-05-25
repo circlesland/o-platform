@@ -4,6 +4,9 @@ import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export class AvataarGenerator {
     public static generate(seed:string) {
+        if (!seed || seed.trim() == "") {
+            return this.boring();
+        }
 
         if (seed.startsWith("0x") && RpcGateway.get().utils.isAddress(seed)) {
             seed = RpcGateway.get().utils.toChecksumAddress(seed);

@@ -344,68 +344,6 @@ export class Banking {
         return newTrustRelation;
     }
 
-    private static executeRecursive<TResult>(
-        id: string,
-        message: string,
-        subscriber: Subscriber<InitActionProgress<TResult>>,
-        next: (previousAction?: InitAction<TResult>, previousResult?: TResult) => InitAction<TResult>,
-        current?: InitAction<TResult>
-    ) {
-        let currentAction: InitAction<TResult> = current ?? next();
-        if (!currentAction) {
-            return;
-        }
-
-        console.log(`Executing ${currentAction.id ?? id} ..`)
-
-        currentAction.run()
-            .then(result => {
-                console.log(`Executed ${currentAction.id ?? id}.`)
-                const nextAction = next(currentAction, result);
-                this.executeRecursive(
-                    nextAction.id ?? id,
-                    nextAction.message ?? message,
-                    subscriber,
-                    next,
-                    nextAction
-                );
-            })
-            .catch(error => subscriber.error(error))
-    }
-
-    private static execute<TResult>(id: string, message: string, actions: InitAction<TResult>[])
-        : Observable<InitActionProgress<TResult>> {
-        return new Observable(subscriber => {
-            let remainingActionCount = actions.length;
-
-            const next = (previousAction?: InitAction<TResult>, previousResult?: TResult) => {
-                const currentIndex = actions.length - (remainingActionCount--);
-                const progress = {
-                    id: previousAction?.id ?? id,
-                    message: previousAction?.message ?? message,
-                    percent: (100 / actions.length) * currentIndex,
-                    result: previousResult,
-                    updateUi: previousAction?.updateUi
-                };
-                subscriber.next(progress);
-
-                if (remainingActionCount < 0) {
-                    subscriber.complete();
-                    return undefined;
-                }
-
-                return actions[currentIndex];
-            };
-
-            this.executeRecursive(
-                id,
-                message,
-                subscriber,
-                next
-            );
-        });
-    }
-
     private async augmentProfiles()
     {
         const allKnownAddresses = this.allKnownSafeAddresses;
@@ -429,7 +367,7 @@ export class Banking {
                 return {
                     safeAddress: unmapped,
                     displayName: unmapped.substr(0, 12) + "..",
-                    avatarUrl: AvataarGenerator.generate(unmapped.toLowerCase())
+                    avatarUrl: AvataarGenerator.generate(unmapped)
                 }
             });
 
@@ -490,7 +428,7 @@ export class Banking {
         const result = await apiClient.query({
             query: ProfilesByCirclesAddressDocument,
             variables: {
-                circlesAddresses: safeAddresses
+                circlesAddresses: safeAddresses.map(o => o.toLowerCase())
             }
         });
 
@@ -499,7 +437,8 @@ export class Banking {
                 ...p,
                 circlesAddress : RpcGateway.get().utils.toChecksumAddress(p.circlesAddress),
                 safeAddress : RpcGateway.get().utils.toChecksumAddress(p.circlesAddress),
-                displayName: `${p.firstName}${!!p.lastName ? " " + p.lastName : ""}`
+                displayName: `${p.firstName}${!!p.lastName ? " " + p.lastName : ""}`,
+                avatarUrl: p.avatarUrl ? p.avatarUrl : AvataarGenerator.generate(p.circlesAddress)
             };
         });
     }
@@ -533,7 +472,13 @@ export class Banking {
 
             const result = await fetch(`__CIRCLES_GARDEN_API__?${query}`);
             const resultJson = await result.json();
-            circlesGardenProfiles = circlesGardenProfiles.concat(resultJson.data.map(o => {return {...o, displayName: o.username}}) ?? []);
+            circlesGardenProfiles = circlesGardenProfiles.concat(resultJson.data.map(o => {
+                return {
+                    ...o,
+                    displayName: o.username,
+                    avatarUrl: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.safeAddress)
+                }
+            }) ?? []);
         }
 
         return circlesGardenProfiles;
@@ -768,5 +713,67 @@ export class Banking {
             });
 
         this._safe.transfers = transfers;
+    }
+
+    private static executeRecursive<TResult>(
+        id: string,
+        message: string,
+        subscriber: Subscriber<InitActionProgress<TResult>>,
+        next: (previousAction?: InitAction<TResult>, previousResult?: TResult) => InitAction<TResult>,
+        current?: InitAction<TResult>
+    ) {
+        let currentAction: InitAction<TResult> = current ?? next();
+        if (!currentAction) {
+            return;
+        }
+
+        console.log(`Executing ${currentAction.id ?? id} ..`)
+
+        currentAction.run()
+            .then(result => {
+                console.log(`Executed ${currentAction.id ?? id}.`)
+                const nextAction = next(currentAction, result);
+                this.executeRecursive(
+                    nextAction.id ?? id,
+                    nextAction.message ?? message,
+                    subscriber,
+                    next,
+                    nextAction
+                );
+            })
+            .catch(error => subscriber.error(error))
+    }
+
+    private static execute<TResult>(id: string, message: string, actions: InitAction<TResult>[])
+        : Observable<InitActionProgress<TResult>> {
+        return new Observable(subscriber => {
+            let remainingActionCount = actions.length;
+
+            const next = (previousAction?: InitAction<TResult>, previousResult?: TResult) => {
+                const currentIndex = actions.length - (remainingActionCount--);
+                const progress = {
+                    id: previousAction?.id ?? id,
+                    message: previousAction?.message ?? message,
+                    percent: (100 / actions.length) * currentIndex,
+                    result: previousResult,
+                    updateUi: previousAction?.updateUi
+                };
+                subscriber.next(progress);
+
+                if (remainingActionCount < 0) {
+                    subscriber.complete();
+                    return undefined;
+                }
+
+                return actions[currentIndex];
+            };
+
+            this.executeRecursive(
+                id,
+                message,
+                subscriber,
+                next
+            );
+        });
     }
 }
