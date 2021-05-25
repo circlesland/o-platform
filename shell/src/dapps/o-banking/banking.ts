@@ -416,15 +416,15 @@ export class Banking {
         const landProfiles = await Banking.findCirclesLandProfiles(allKnownAddresses);
         const landMap = Banking.createProfileMap(landProfiles);
 
-        this.applyProfileMap(gardenMap);
-        this.applyProfileMap(landMap);
+        const mappedAddresses = Object.keys(gardenMap)
+            .concat(Object.keys(landMap))
+            .reduce((p,c) => {
+                p[c] = true;
+                return p;
+            }, {});
 
-        const mappedAddresses = Object.keys(gardenMap).concat(Object.keys(landMap)).reduce((p,c) => {
-            p[c] = true;
-            return p;
-        }, {});
-
-        const anonProfiles = allKnownAddresses.filter(o => !mappedAddresses[o] && o != "0x0000000000000000000000000000000000000000")
+        const anonProfiles = allKnownAddresses
+            .filter(o => !mappedAddresses[o] && o != "0x0000000000000000000000000000000000000000")
             .map(unmapped => {
                 return {
                     safeAddress: unmapped,
@@ -434,6 +434,9 @@ export class Banking {
             });
 
         const anonMap = Banking.createProfileMap(anonProfiles);
+
+        this.applyProfileMap(gardenMap);
+        this.applyProfileMap(landMap);
         this.applyProfileMap(anonMap);
     }
 

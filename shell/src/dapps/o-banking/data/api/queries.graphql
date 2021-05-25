@@ -11,3 +11,17 @@ query profilesByCirclesAddress($circlesAddresses:[String!]!) {
         avatarMimeType
     }
 }
+
+query profilesByIds($circlesAddresses:[String!]!) {
+    profiles(query:{circlesAddress:$circlesAddresses}) {
+        id
+        circlesAddress
+        firstName
+        lastName
+        dream
+        country
+        avatarUrl
+        avatarCid
+        avatarMimeType
+    }
+}

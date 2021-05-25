@@ -1,8 +1,14 @@
 import {createAvatar} from "@dicebear/avatars";
 import * as style from "@dicebear/avatars-avataaars-sprites";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export class AvataarGenerator {
     public static generate(seed:string) {
+
+        if (seed.startsWith("0x") && RpcGateway.get().utils.isAddress(seed)) {
+            seed = RpcGateway.get().utils.toChecksumAddress(seed);
+        }
+
         const svg = createAvatar(style, {
             seed: seed,
             // backgroundColor: "#65C9FF",
