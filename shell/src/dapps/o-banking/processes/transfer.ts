@@ -308,7 +308,7 @@ const processDefinition = (processId: string) =>
 
             toAvatarUrl = toAvatarUrl
               ? toAvatarUrl
-              : AvataarGenerator.generate(context.data.recipientAddress.toLowerCase());
+              : AvataarGenerator.generate(context.data.recipientAddress);
 
             if (!context.data.tokens) {
               throw new Error(`No currency or amount selected`);

@@ -5,7 +5,7 @@ import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 export class AvataarGenerator {
     public static generate(seed:string) {
         if (!seed || seed.trim() == "") {
-            return this.boring();
+            return this.default();
         }
 
         if (seed.startsWith("0x") && RpcGateway.get().utils.isAddress(seed)) {
@@ -44,9 +44,9 @@ export class AvataarGenerator {
         return svg;
     }
 
-    public static boring() {
+    public static default() {
         const svg = createAvatar(style, {
-            seed: "boring",
+            seed: "default",
             // backgroundColor: "#65C9FF",
             topChance: 100,
             accessoriesChance: 0,

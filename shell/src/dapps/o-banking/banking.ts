@@ -226,7 +226,7 @@ export class Banking {
                     .filter(oneWayTrust => oneWayTrust.profile && !oneWayTrust.profile.avatarUrl)
                     .forEach((oneWayTrust:TrustObject) => {
                         //generatedAvatars[oneWayTrust.safeAddress] = oneWayTrust.profile.avatarUrl;
-                        oneWayTrust.profile.avatarUrl = AvataarGenerator.generate(oneWayTrust.safeAddress.toLowerCase());
+                        oneWayTrust.profile.avatarUrl = AvataarGenerator.generate(oneWayTrust.safeAddress);
                     });
 
                 // Add all data urls for the mutual trusts
@@ -234,25 +234,25 @@ export class Banking {
                     .filter(o => o.trustedBy.profile && !o.trustedBy.profile.avatarUrl)
                     .forEach(o => {
                         //generatedAvatars[o.trustedBy.safeAddress] = o.trustedBy.profile.avatarUrl;
-                        o.trustedBy.profile.avatarUrl = AvataarGenerator.generate(o.trustedBy.safeAddress.toLowerCase());
+                        o.trustedBy.profile.avatarUrl = AvataarGenerator.generate(o.trustedBy.safeAddress);
                     });
 
                 Object.values(frankenstein.trustRelations?.mutualTrusts ?? {})
                     .filter(o => o.trusting.profile && !o.trusting.profile.avatarUrl)
                     .forEach(o => {
                         //generatedAvatars[o.trusting.safeAddress] = o.trusting.profile.avatarUrl;
-                        o.trusting.profile.avatarUrl = AvataarGenerator.generate(o.trusting.safeAddress.toLowerCase());
+                        o.trusting.profile.avatarUrl = AvataarGenerator.generate(o.trusting.safeAddress);
                     });
 
                 // Add all data urls for the transactions
                 frankenstein.transfers?.rows?.forEach(transfer => {
                     if (transfer.fromProfile && !transfer.fromProfile.avatarUrl) {
                         //generatedAvatars[transfer.from] = transfer.fromProfile.avatarUrl;
-                        transfer.fromProfile.avatarUrl = AvataarGenerator.generate(transfer.from.toLowerCase());
+                        transfer.fromProfile.avatarUrl = AvataarGenerator.generate(transfer.from);
                     }
                     if (transfer.toProfile && !transfer.toProfile.avatarUrl) {
                         //generatedAvatars[transfer.to] = transfer.toProfile.avatarUrl;
-                        transfer.toProfile.avatarUrl = AvataarGenerator.generate(transfer.to.toLowerCase());
+                        transfer.toProfile.avatarUrl = AvataarGenerator.generate(transfer.to);
                     }
                 });
 

@@ -138,9 +138,10 @@
     const trust = apiProfile.circlesAddress
       ? loadTrustRelation(apiProfile.circlesAddress)
       : undefined;
+
     isEditable = $me && $me.id === apiProfile.id;
 
-    if (!apiProfile.avatarUrl && apiProfile.circlesAddress) {
+    if (!apiProfile.avatarUrl) {
       apiProfile.avatarUrl = AvataarGenerator.generate(apiProfile.circlesAddress);
     }
 

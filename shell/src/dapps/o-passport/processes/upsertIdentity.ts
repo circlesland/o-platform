@@ -165,8 +165,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "checkEditAvatar",
         always: [
           {
-            cond: (context) =>
-              context.dirtyFlags["avatarUrl"] || !context.data.avatarUrl,
+            cond: (context) => context.dirtyFlags["avatarUrl"],
             actions: (context) => {
               delete context.dirtyFlags["avatarUrl"];
               context.dirtyFlags["avatar"] = true;
@@ -206,7 +205,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             },
             target: "#uploadAvatar",
           },
-          {
+          /*{
             cond: (context) => {
               return (
                 context.dirtyFlags["avatar"] &&
@@ -214,12 +213,13 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
               );
             },
             target: "#generateAvataar",
-          },
+          },*/
           {
             target: "#newsletter",
           },
         ],
       },
+      /*
       generateAvataar: {
         id: "generateAvataar",
         invoke: {
@@ -229,13 +229,14 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
               context.data.avatarUrl = svg;
             } else {
               // Point 3 of https://github.com/circlesland/o-platform/issues/96 - circles.land no safe no profile picture => grey avatar icon
-              context.data.avatarUrl = AvataarGenerator.boring();
+              context.data.avatarUrl = AvataarGenerator.default();
             }
           },
           onDone: "#newsletter",
           onError: "#error",
         },
       },
+       */
       uploadAvatar: {
         id: "uploadAvatar",
         on: {
@@ -267,13 +268,13 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
               target: "#errorUploadingAvatar",
             },
             {
-              cond: (context) =>
-                  !!context.data.avatar && !!context.data.avatar.bytes,
+              /*cond: (context) =>
+                  !!context.data.avatar && !!context.data.avatar.bytes,*/
               target: "#newsletter",
             },
-            {
+            /*{
               target: "#generateAvataar",
-            },
+            },*/
           ],
           onError: "#errorUploadingAvatar",
         },

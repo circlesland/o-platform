@@ -1,10 +1,24 @@
 <script lang="ts">
   import { me } from "../../../shared/stores/me";
   import PassportHeader from "../atoms/PassportHeader.svelte";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
 
   $: me;
 
-  console.log("ME: ", $me);
+  let avatarUrl:string = "";
+  $: {
+    if ($me && $me.avatarUrl) {
+      avatarUrl = $me.avatarUrl
+    }
+    else if ($me)
+    {
+      avatarUrl = AvataarGenerator.generate($me.circlesAddress)
+    }
+    else
+    {
+      avatarUrl = AvataarGenerator.default();
+    }
+  }
 </script>
 
 <PassportHeader />
@@ -20,7 +34,7 @@
           <div class="avatar">
             <div class="rounded-full w-14 h-14 m-auto">
               <img
-                src={$me && $me.avatarUrl ? $me.avatarUrl : ""}
+                src={avatarUrl}
                 alt={$me
                   ? $me.lastName
                     ? `${$me.firstName} ${$me.lastName}`
