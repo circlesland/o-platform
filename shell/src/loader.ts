@@ -14,7 +14,6 @@ import {passport} from "./dapps/o-passport.manifest";
 import {banking} from "./dapps/o-banking.manifest";
 import {dashboard} from "./dapps/o-dashboard.manifest";
 import {homepage} from "./dapps/o-homepage.manifest";
-import {SvelteComponent} from "svelte";
 import {miva} from "./dapps/o-miva.manifest";
 
 const errorIndicator = Error;

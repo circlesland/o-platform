@@ -95,6 +95,10 @@ export class Banking {
             message: "Loading accepted Circles tokens ..",
             run: async () => this.refreshAcceptedTokens()
         }, {
+            id: "balances",
+            message: "Loading balances ..",
+            run: async () => this.refreshBalances()
+        }, {
             id: "sort",
             message: "Sorting all entries ..",
             run: async () => this.sortEntries()
