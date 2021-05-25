@@ -282,8 +282,8 @@ export const banking: DappManifest<DappState> = {
       });
     });
 
-    if(myProfileResult && myProfileResult.circlesAddress){
-      init();
+    if(myProfileResult){
+      await init();
     }
 
     return {

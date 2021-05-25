@@ -39,6 +39,10 @@ export class Banking {
     }
 
     onTokenTransfer() : Observable<InitActionProgress<any>> {
+        if (!this._safe?.transfers?.rows?.length) {
+            return this.onMount();
+        }
+
         return Banking.execute("onTokenTransfer", "Updating token transfers ..", [{
             id: "hubTransfers",
             message: "Loading past Circles transfers ..",
@@ -77,6 +81,10 @@ export class Banking {
     }
 
     onTrustChange() : Observable<InitActionProgress<any>> {
+        if (!this._safe?.transfers?.rows?.length) {
+            return this.onMount();
+        }
+
         return Banking.execute("onTrustChange", "Updating trust relations ..", [{
             id: "trust",
             message: "Loading trust relations ..",

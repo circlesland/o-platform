@@ -28,6 +28,7 @@ export const me = readable<Profile|null>(null, function start(set) {
       return;
     }
     if (event.type == "shell.authenticated" && event.profile) {
+      console.log("me.ts new $me: ", event.profile);
       set(event.profile);
       localStorage.setItem("me", JSON.stringify(event.profile));
     }

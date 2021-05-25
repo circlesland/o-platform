@@ -115,16 +115,18 @@ createMachine<HubSignupContext, any>({
             },
           });
 
-          localStorage.removeItem("isCreatingSafe");
-          localStorage.setItem("fundsSafe", "true");
+          if (result.errors?.length) {
+            throw new Error(`An error occurred while storing the safe address to the profile for the first time: ${JSON.stringify(result.errors)}`)
+          }
 
+          context.data.profile = result.data;
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.authenticated",
-            profile: {
-              ...result.data.upsertProfile,
-              circlesAddress: RpcGateway.get().utils.toChecksumAddress(result.data.upsertProfile.circlesAddress)
-            }
+            profile: context.data.profile
           });
+
+          localStorage.removeItem("isCreatingSafe");
+          localStorage.setItem("fundsSafe", "true");
 
           return {
             ...result.data.upsertProfile
@@ -183,6 +185,7 @@ createMachine<HubSignupContext, any>({
           );
           const receipt = await hubSignupResult.toPromise();
           localStorage.removeItem("signsUpAtCircles");
+          localStorage.setItem("hubSignup", new Date().toJSON());
           localStorage.setItem("lastUBI", new Date().toJSON());
           console.log("Signed up at hub:", receipt);
         },
@@ -193,8 +196,14 @@ createMachine<HubSignupContext, any>({
     success: {
       id: 'success',
       type: 'final',
-      entry: () => {
+      entry: (context) => {
         push("#/banking/transactions");
+
+        window.o.depositedEvent = <PlatformEvent>{
+          type: "shell.authenticated",
+          profile: context.data.profile
+        };
+        //window.o.publishEvent();
       },
       data: (context, event: PlatformEvent) => {
         return context.data;

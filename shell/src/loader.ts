@@ -68,7 +68,7 @@ async function getDappEntryPoint(dappManifest:DappManifest<any>, pageManifest:Pa
 
         if (!freshRuntimeDapp.initialPage) {
           // TODO: Every auth needs a initial page for all conditions, else the generic loader error is displayed
-          throw new Error("The auth '" + freshRuntimeDapp.runtimeDapp.dappId  + "' has no 'initialPage' attribute or its value is null.");
+          throw new Error("The dapp '" + freshRuntimeDapp.runtimeDapp.dappId  + "' has no 'initialPage' attribute or its value is null.");
         }
 
         lastLoadedPage = freshRuntimeDapp.initialPage;
@@ -174,6 +174,9 @@ async function initializeDapp(stack: RuntimeDapp<any>[], runtimeDapp: RuntimeDap
 
       if (cancelled) {
         console.log(logPrefix + "Loading sequence was cancelled in " + runtimeDapp.dappId);
+        if (window.o.depositedEvent) {
+          window.o.depositedEvent = undefined;
+        }
         return {
           runtimeDapp,
           cancelDependencyLoading: true,
@@ -200,6 +203,12 @@ async function initializeDapp(stack: RuntimeDapp<any>[], runtimeDapp: RuntimeDap
   if (runtimeDapp.initialize) {
     initializationResult = await runtimeDapp.initialize(stack, runtimeDapp);
     console.log("initializedDappState", initializationResult);
+  }
+
+  // TODO: Hack (kind of). Is used to pass events to freshly loaded dapps.
+  if (window.o.depositedEvent) {
+    window.o.publishEvent(window.o.depositedEvent);
+    window.o.depositedEvent = undefined;
   }
 
   return {
