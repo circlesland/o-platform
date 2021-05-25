@@ -25,17 +25,22 @@ export let formatValue = function(value) {
 };
 
 export let userInfo = async function(addresses) {
-    const profiles = await Banking.findCirclesGardenProfiles(addresses);
-    return profiles;
-/*
-    let queryString = '';
-    for (let addr of addresses) {
-        queryString += '&address[]=' + addr;
-    }
-    if (queryString == '') { return []; }
-
-    return (await (await fetch(CirclesAPI + '/users?' + queryString)).json()).data;
- */
+    const profiles = await Promise.all([
+        await Banking.findCirclesGardenProfiles(addresses),
+        await Banking.findCirclesLandProfiles(addresses)
+    ]);
+    const garden = profiles[0];
+    const land = profiles[1];
+    const dedup = {};
+    garden.forEach(o => dedup[o.safeAddress] = o);
+    land.forEach(o => dedup[o.safeAddress] = o);
+    return Object.values(dedup).map(o => {
+        if (!o.safeAddress && o.circlesAddress)
+            o.safeAddress = o.circlesAddress;
+        if (!o.username && o.displayName)
+            o.username = o.displayName;
+        return o;
+    });
 };
 
 export let tokenOwner = async function(token) {

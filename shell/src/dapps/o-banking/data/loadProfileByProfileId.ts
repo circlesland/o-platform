@@ -8,7 +8,7 @@ export async function loadProfileByProfileId(profileId: number) : Promise<ApiPro
     const result = await apiClient.query({
         query: ProfilesDocument,
         variables: {
-            id: profileId,
+            id: [profileId],
         },
     });
     if (result.errors) {

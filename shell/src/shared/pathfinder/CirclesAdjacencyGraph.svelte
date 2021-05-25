@@ -26,7 +26,7 @@
   });
 
   let small = function (node) {
-    node["size"] = 10;
+    node["size"] = 25;
     return node;
   };
 
@@ -48,7 +48,7 @@
         edges.update({
           from: edge.user,
           to: edge.trusts,
-          label: edge.percentage == 50 ? "" : edge.percentage + "%",
+          // label: edge.percentage == 50 ? "" : edge.percentage + "%",
           arrows: "to",
           font: { align: "top" },
         });

@@ -7,7 +7,7 @@ export const loadProfile = async (profileId?:number) => {
     const profiles = await apiClient.query({
       query: ProfilesDocument,
       variables: {
-        id: profileId
+        id: [profileId]
       }
     });
 
