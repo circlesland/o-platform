@@ -136,3 +136,10 @@ body {
 .infocard-body {
   color: #0c5460; 
 }
+
+*:focus {
+  outline: none;
+}
+.vis-network:focus {
+outline: none;
+}
