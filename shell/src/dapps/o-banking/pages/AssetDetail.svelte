@@ -119,6 +119,47 @@
         colorClass="text-primary"
       />
     {/each}
+    <section class="flex items-center justify-center mt-4 mb-2">
+      <div
+        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
+      >
+        <div class="text-xs font-bold text-left text-primary font-circles">
+          BUY MORE XDAI
+        </div>
+        <div
+          class="flex items-center justify-center w-full space-x-2 sm:space-x-6"
+        >
+          <div class="flex flex-row mt-4 space-x-4">
+            {#each presets as preset}
+              <a
+                href="https://buy.ramp.network/?userAddress={accountxDai.address}&swapAsset=XDAI&swapAmount={preset}000000000000000000"
+                target="_blank"
+                class="cursor-pointer"
+              >
+                <div
+                  class="text-white cursor-pointer card compact side bg-primary font-circles"
+                >
+                  <div
+                    class="flex-row items-center space-x-4 cursor-pointer card-body"
+                  >
+                    <label for="input" class="flex-0"
+                      ><div
+                        class="text-sm font-bold tracking-wider text-center sm:text-lg"
+                      >
+                        {Math.floor(preset / INVITE_VALUE)} INVITES
+                      </div>
+                      <p class="text-xs text-center sm:text-l ">
+                        ({preset} xDai)
+                      </p>
+                    </label>
+                  </div>
+                </div>
+              </a>
+            {/each}
+          </div>
+        </div>
+      </div>
+    </section>
   {:else}
     {#each ($mySafe.token ? [$mySafe.token] : []).concat(tokens) as token}
       {#if token && token.balance > 0}
@@ -130,43 +171,4 @@
       {/if}
     {/each}
   {/if}
-  <section class="flex items-center justify-center mt-4 mb-2">
-    <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
-      <div class="text-xs font-bold text-left text-primary font-circles">
-        BUY MORE XDAI
-      </div>
-      <div
-        class="flex items-center justify-center w-full space-x-2 sm:space-x-6"
-      >
-        <div class="flex flex-row mt-4 space-x-4">
-          {#each presets as preset}
-            <a
-              href="https://buy.ramp.network/?userAddress={accountxDai.address}&swapAsset=XDAI&swapAmount={preset}000000000000000000"
-              target="_blank"
-              class="cursor-pointer"
-            >
-              <div
-                class="text-white cursor-pointer card compact side bg-primary font-circles"
-              >
-                <div
-                  class="flex-row items-center space-x-4 cursor-pointer card-body"
-                >
-                  <label for="input" class="flex-0"
-                    ><div
-                      class="text-sm font-bold tracking-wider text-center sm:text-lg"
-                    >
-                      {Math.floor(preset / INVITE_VALUE)} INVITES
-                    </div>
-                    <p class="text-xs text-center sm:text-l ">
-                      ({preset} xDai)
-                    </p>
-                  </label>
-                </div>
-              </div>
-            </a>
-          {/each}
-        </div>
-      </div>
-    </div>
-  </section>
 </div>
