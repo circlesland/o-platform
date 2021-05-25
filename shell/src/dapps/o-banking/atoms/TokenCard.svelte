@@ -2,8 +2,8 @@
   import { push } from "svelte-spa-router";
   import Web3 from "web3";
   import { Token } from "../data/circles/queries";
-  import {createAvatar} from "@dicebear/avatars";
   import * as style from "@dicebear/avatars-avataaars-sprites";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
 
   export let token: Token;
   export let label: String;
@@ -20,12 +20,7 @@
 
     pictureUrl = token.ownerProfile ? token.ownerProfile.avatarUrl : undefined;
     if (!pictureUrl) {
-      pictureUrl = createAvatar(style, {
-        seed: token.tokenOwner,
-        topChance: 100,
-        style: "transparent",
-        dataUri: true,
-      });
+      pictureUrl = AvataarGenerator.generate(token.tokenOwner);
     }
 
     console.log("TOKEN: ", token);

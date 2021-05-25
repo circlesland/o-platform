@@ -3,9 +3,6 @@
   import { push } from "svelte-spa-router";
   import Web3 from "web3";
   import { Transfer } from "../data/circles/queries";
-  import {createAvatar} from "@dicebear/avatars";
-  import * as style from "@dicebear/avatars-avataaars-sprites";
-  const {AvataarGenerator} = require("src/shared/avataarGenerator");
 
   export let transfer: Transfer;
   export let message: String;

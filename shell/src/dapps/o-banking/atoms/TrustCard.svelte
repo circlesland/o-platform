@@ -8,8 +8,8 @@
   import { transfer } from "../processes/transfer";
   import { TrustObject } from "../data/circles/types";
   import { tryGetCurrentSafe } from "../init";
-  import { createAvatar } from "@dicebear/avatars";
   import * as style from "@dicebear/avatars-avataaars-sprites";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -57,12 +57,7 @@
     }
 
     if (!pictureUrl) {
-      pictureUrl = createAvatar(style, {
-        seed: safeAddress,
-        topChance: 100,
-        style: "transparent",
-        dataUri: true,
-      });
+      pictureUrl = AvataarGenerator.generate(safeAddress);
     }
   }
 

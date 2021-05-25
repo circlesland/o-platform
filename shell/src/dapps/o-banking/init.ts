@@ -6,7 +6,7 @@ import {emptySafe} from "./data/emptySafe";
 import {Queries} from "./data/circles/queries";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
-import {Banking, InitAction} from "./init2";
+import {Banking} from "./banking";
 
 let _currentSafe: Safe | null = emptySafe;
 let profile: Profile | undefined;

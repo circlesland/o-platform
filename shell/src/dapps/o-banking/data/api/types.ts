@@ -243,9 +243,37 @@ export type ProfilesByCirclesAddressQuery = (
   )> }
 );
 
+export type ProfilesByIdsQueryVariables = Exact<{
+  circlesAddresses: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type ProfilesByIdsQuery = (
+  { __typename?: 'Query' }
+  & { profiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType'>
+  )> }
+);
+
 
 export const ProfilesByCirclesAddressDocument = gql`
     query profilesByCirclesAddress($circlesAddresses: [String!]!) {
+  profiles(query: {circlesAddress: $circlesAddresses}) {
+    id
+    circlesAddress
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+  }
+}
+    `;
+export const ProfilesByIdsDocument = gql`
+    query profilesByIds($circlesAddresses: [String!]!) {
   profiles(query: {circlesAddress: $circlesAddresses}) {
     id
     circlesAddress
@@ -268,6 +296,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
       return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));
+    },
+    profilesByIds(variables: ProfilesByIdsQueryVariables): Promise<ProfilesByIdsQuery> {
+      return withWrapper(() => client.request<ProfilesByIdsQuery>(print(ProfilesByIdsDocument), variables));
     }
   };
 }

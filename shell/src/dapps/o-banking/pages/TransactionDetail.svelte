@@ -5,8 +5,7 @@
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
   import { push } from "svelte-spa-router";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import { createAvatar } from "@dicebear/avatars";
-  import * as style from "@dicebear/avatars-avataaars-sprites";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
 
   export let params: {
     _id: string;
@@ -68,12 +67,7 @@
         transfer.direction === "in" ? transfer.from : transfer.to;
 
       if (!pictureUrl) {
-        pictureUrl = createAvatar(style, {
-          seed: otherSafeAddress,
-          topChance: 100,
-          style: "transparent",
-          dataUri: true,
-        });
+        pictureUrl = AvataarGenerator.generate(otherSafeAddress);
       }
     }
   }
