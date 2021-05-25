@@ -1,6 +1,7 @@
 const CirclesAPI = 'https://api.circles.garden/api/';
 const PathfinderAPI = 'https://pathfinder.circles.land';
 const GraphAPI = 'https://graph.circles.garden/subgraphs/name/CirclesUBI/circles-subgraph';
+import {Banking} from "../../dapps/o-banking/banking"
 
 export let toAddress = async function(input) {
     if (!input || input.match(/0x[0-9a-fA-F]{40}/)) {
@@ -24,6 +25,9 @@ export let formatValue = function(value) {
 };
 
 export let userInfo = async function(addresses) {
+    const profiles = await Banking.findCirclesGardenProfiles(addresses);
+    return profiles;
+/*
     let queryString = '';
     for (let addr of addresses) {
         queryString += '&address[]=' + addr;
@@ -31,6 +35,7 @@ export let userInfo = async function(addresses) {
     if (queryString == '') { return []; }
 
     return (await (await fetch(CirclesAPI + '/users?' + queryString)).json()).data;
+ */
 };
 
 export let tokenOwner = async function(token) {
