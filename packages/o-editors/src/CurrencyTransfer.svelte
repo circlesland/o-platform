@@ -49,6 +49,13 @@
   function handleSelect(event) {
     selected = event.detail.value;
   }
+
+  function onkeydown(e: KeyboardEvent) {
+    console.log("KEYDOWN");
+    if (e.key == "Enter") {
+      sendAnswer(amount, selectedCurrency);
+    }
+  }
 </script>
 
 <p class="label-text">
@@ -106,6 +113,7 @@
       bind:value={amount}
       on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
       bind:this={inputField}
+      on:keydown={onkeydown}
     />
     <div class="absolute inset-y-0 flex items-center right-1 themed">
       <label for="currency" class="sr-only">Currency</label>

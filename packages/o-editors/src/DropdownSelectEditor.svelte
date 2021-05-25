@@ -10,7 +10,6 @@
 
   $: selected = {};
   let selectedLabel: String;
-
   let graphql = false;
   let optionIdentifier = "value";
   let getOptionLabel = (option) => option.label;
@@ -54,7 +53,7 @@
   }
 
   function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Enter") {
+    if (e.key == "Enter" && selected && selected.value) {
       submitHandler();
     }
   }
@@ -66,7 +65,7 @@
   </label>
 
   {#if !!context.params.asyncChoices}
-    <div class="themed">
+    <div class="themed" on:keydown={onkeydown}>
       <Select
         name="value"
         isFocused={true}
@@ -102,7 +101,7 @@
     </div>
   {/if}
   {#if context.messages[context.fieldName]}
-    <label class="label text-right" for="form-error">
+    <label class="text-right label" for="form-error">
       <span id="form-error" class="label-text-alt text-error "
         >{context.messages[context.fieldName]}</span
       >
