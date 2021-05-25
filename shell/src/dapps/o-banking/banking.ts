@@ -443,7 +443,7 @@ export class Banking {
         });
     }
 
-    static async findCirclesGardenProfiles(safeAddresses: string[]) : Promise<{
+    public static async findCirclesGardenProfiles(safeAddresses: string[]) : Promise<{
         safeAddress: string,
         displayName: string,
         avatarUrl?: string
