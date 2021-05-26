@@ -278,8 +278,12 @@ const processDefinition = (processId: string) =>
             localStorage.setItem("circlesKey", context.data.privateKey);
           }
           if (context.data.redirectTo) {
-            setTimeout(() => {
-              push(context.data.redirectTo);
+            setTimeout(async () => {
+              if (context.data.redirectTo.startsWith("http")) {
+                document.location.href = context.data.redirectTo;
+              } else {
+                await push(context.data.redirectTo);
+              }
             }, 5); // TODO: Check if this is really necessary
           }
         },
