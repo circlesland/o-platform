@@ -254,6 +254,11 @@ const processDefinition = (processId: string) =>
             target: "#loadRecipientProfile",
           },
           {
+            actions: (context) => {
+              const formattedAmount = parseFloat(context.data.tokens.amount).toFixed(2);
+              const formattedMax = parseFloat(RpcGateway.get().utils.fromWei(context.data.maxFlows[context.data.tokens.currency.toLowerCase()].toString(), "ether")).toFixed(2);
+              context.messages["tokens"] = `The chosen amount (${formattedAmount}) exceeds the maximum transferable amount of (${formattedMax}).`;
+            },
             target: "#tokens",
           },
         ],
