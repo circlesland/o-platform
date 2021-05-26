@@ -41,12 +41,10 @@
 
 <TopNav showBackArrow={true} />
 
-{#if isLoading}
-  <LoadingIndicator />
-{:else}
-  <div
-    class="flex flex-col items-stretch w-full text-white h-60 justify-items-stretch bg-gradient-to-r from-gradient1 to-gradient2"
-  >
+<div
+  class="flex flex-col items-stretch w-full text-white h-60 justify-items-stretch bg-gradient-to-r from-gradient1 to-gradient2"
+>
+  {#if !isLoading}
     <div class="self-center text-center avatar justify-self-center">
       <div class="mb-4 rounded-full w-36 h-36">
         <img
@@ -65,5 +63,5 @@
         {profile && profile.lastName ? profile.lastName : ""}
       </h2>
     </div>
-  </div>
-{/if}
+  {/if}
+</div>

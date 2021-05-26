@@ -9,7 +9,7 @@
   import { TrustObject } from "../data/circles/types";
   import { tryGetCurrentSafe } from "../init";
   import * as style from "@dicebear/avatars-avataaars-sprites";
-  import {AvataarGenerator} from "../../../shared/avataarGenerator";
+  import { AvataarGenerator } from "../../../shared/avataarGenerator";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -82,33 +82,33 @@
   }
 </script>
 
-<section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+<section
+  class="flex items-center justify-center mb-2 text-circlesdarkblue"
+  on:click|once={() => loadDetailPage(safeAddress)}
+>
   <div
-    class="flex items-center bg-white shadow w-full space-x-2 px-4 sm:space-x-6 pt-5 rounded-sm"
+    class="flex items-center w-full px-4 pt-5 space-x-2 bg-white rounded-sm shadow sm:space-x-6"
   >
     <div class="mr-2 -mt-3 text-center">
       <div class="avatar">
-        <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
+        <div class="w-12 h-12 m-auto rounded-full sm:w-12 sm:h-12">
           <img src={pictureUrl} alt={displayName} />
         </div>
       </div>
     </div>
 
-    <div class="text-left flex-grow truncate relative">
-      <div
-        class="max-w-full truncateThis cursor-pointer"
-        on:click|once={() => loadDetailPage(safeAddress)}
-      >
+    <div class="relative flex-grow text-left truncate">
+      <div class="max-w-full cursor-pointer truncateThis">
         <h2 class="text-2xl sm:text-3xl">
           {displayName}
         </h2>
       </div>
 
       {#if untrusted}
-        <div class="text-left text-sm text-red mb-4">
+        <div class="mb-4 text-sm text-left text-red">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 inline -mt-1"
+            class="inline w-4 h-4 -mt-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -124,10 +124,10 @@
         </div>
       {/if}
       {#if trustedBy && trusting}
-        <div class="text-left text-sm text-green mb-4">
+        <div class="mb-4 text-sm text-left text-green">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 inline -mt-1"
+            class="inline w-4 h-4 -mt-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -143,10 +143,10 @@
         </div>
       {/if}
       {#if !(trustedBy && trusting) && trustedBy}
-        <div class="text-left text-sm text-green mb-4">
+        <div class="mb-4 text-sm text-left text-green">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 inline -mt-1"
+            class="inline w-4 h-4 -mt-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -162,10 +162,10 @@
         </div>
       {/if}
       {#if !(trustedBy && trusting) && trusting}
-        <div class="text-left text-sm text-green mb-4">
+        <div class="mb-4 text-sm text-left text-green">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 inline -mt-1"
+            class="inline w-4 h-4 -mt-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -182,15 +182,15 @@
       {/if}
     </div>
 
-    <div class="flex flex-1 flex-col justify-items-end self-start">
-      <div class="self-end flex flex-col space-y-2 text-2xl sm:text-3xl ">
+    <div class="flex flex-col self-start flex-1 justify-items-end">
+      <div class="flex flex-col self-end space-y-2 text-2xl sm:text-3xl ">
         <button
           on:click={() => execTransfer(safeAddress)}
-          class="btn btn-square self-end btn-md btn-primary"
+          class="self-end btn btn-square btn-md btn-primary"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-10 w-10"
+            class="w-10 h-10"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
