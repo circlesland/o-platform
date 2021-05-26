@@ -11,6 +11,9 @@ import {getUBIService} from "./processes/getUBIService";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {GetUbiContextData} from "./processes/getUbi";
 import {AvataarGenerator} from "../../shared/avataarGenerator";
+import {Web3Contract} from "@o-platform/o-circles/dist/web3Contract";
+
+export const INITIAL_ACCOUNT_XDAI = new BN(RpcGateway.get().utils.toWei("0.025", "ether"));
 
 export type InitAction<TResult> = {
     id?: string
@@ -290,16 +293,16 @@ export class Banking {
         }
         const lastUBIDateString = localStorage.getItem("lastUBI");
         if (!lastUBIDateString) {
-            return await this.getUbi(this._safe.safeAddress);
+            return await Banking.getUbi(this._safe.safeAddress);
         } else {
             const date = Date.parse(lastUBIDateString);
             if (date < Date.now() - 24*60*60*1000) {
-                return await this.getUbi(this._safe.safeAddress);
+                return await Banking.getUbi(this._safe.safeAddress);
             }
         }
     }
 
-    private async getUbi(safeAddress:string) : Promise<void> {
+    private static async getUbi(safeAddress:string) : Promise<void> {
         try {
             await getUBIService(<ProcessContext<GetUbiContextData>> {
                 data: {
@@ -761,6 +764,30 @@ export class Banking {
                 );
             })
             .catch(error => subscriber.error(error))
+    }
+
+    /**
+     * Transfers all xDai from the specified account (derived from key) to the safeAddress.
+     */
+    static async transferAllAccountXdaiToSafe(safeAddress:string, accountPrivateKey:string)
+    {
+        const ownerAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(accountPrivateKey).address;
+        const totalAccountBalance = new BN(await RpcGateway.get().eth.getBalance(ownerAddress));
+        const transferAmount = totalAccountBalance.sub(INITIAL_ACCOUNT_XDAI);
+
+        if (transferAmount.gt(new BN(RpcGateway.get().utils.toWei("0.01", "ether")))) {
+            const signedRawTransaction = await Web3Contract.signRawTransaction(
+                ownerAddress,
+                accountPrivateKey,
+                safeAddress,
+                "0x00",
+                new BN(RpcGateway.get().utils.toWei("28000", "wei")),
+                transferAmount);
+
+            const execResult = await Web3Contract.sendSignedRawTransaction(signedRawTransaction);
+            const receipt = await execResult.toPromise();
+            console.log(receipt);
+        }
     }
 
     private static execute<TResult>(id: string, message: string, actions: InitAction<TResult>[])
