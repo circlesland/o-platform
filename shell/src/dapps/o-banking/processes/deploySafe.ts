@@ -119,7 +119,7 @@ createMachine<HubSignupContext, any>({
             throw new Error(`An error occurred while storing the safe address to the profile for the first time: ${JSON.stringify(result.errors)}`)
           }
 
-          context.data.profile = result.data;
+          context.data.profile = result.data.upsertProfile;
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.authenticated",
             profile: context.data.profile

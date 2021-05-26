@@ -280,7 +280,11 @@ const processDefinition = (processId: string) =>
           if (context.data.redirectTo) {
             setTimeout(async () => {
               if (context.data.redirectTo.startsWith("http")) {
-                document.location.href = context.data.redirectTo;
+                if (document.location.href == context.data.redirectTo) {
+                  return;
+                } else {
+                  document.location.href = context.data.redirectTo;
+                }
               } else {
                 await push(context.data.redirectTo);
               }
