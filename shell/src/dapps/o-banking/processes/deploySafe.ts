@@ -16,6 +16,7 @@ import {Profile} from "../data/api/types";
 import {UpsertProfileDocument} from "../../o-passport/data/api/types";
 import {emptySafe} from "../data/emptySafe";
 import {push} from "svelte-spa-router";
+import {Banking} from "../banking";
 
 export type HubSignupContextData = {
   privateKey:string;
@@ -36,7 +37,6 @@ export type HubSignupContext = ProcessContext<HubSignupContextData>;
 const strings = {
 };
 
-export const INITIAL_ACCOUNT_XDAI = new BN(RpcGateway.get().utils.toWei("0.025", "ether"));
 
 const processDefinition = (processId: string) =>
 createMachine<HubSignupContext, any>({
@@ -147,20 +147,7 @@ createMachine<HubSignupContext, any>({
       invoke: {
         src: async (context) => {
           // Transfer all xdai to the safe except INITIAL_ACCOUNT_XDAI
-          const ownerAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(context.data.privateKey).address;
-          const totalAccountBalance = new BN(await RpcGateway.get().eth.getBalance(ownerAddress));
-          const transferAmount = totalAccountBalance.sub(INITIAL_ACCOUNT_XDAI);
-
-          const signedRawTransaction = await Web3Contract.signRawTransaction(
-              ownerAddress,
-              context.data.privateKey,
-              context.data.profile.circlesAddress,
-              "0x00",
-              new BN(RpcGateway.get().utils.toWei("28000", "wei")),
-              transferAmount);
-
-          const execResult = await Web3Contract.sendSignedRawTransaction(signedRawTransaction);
-          const receipt = await execResult.toPromise();
+          await Banking.transferAllAccountXdaiToSafe(context.data.profile.circlesAddress, context.data.privateKey);
           localStorage.removeItem("fundsSafe");
           localStorage.setItem("signsUpAtCircles", "true");
         },

@@ -43,6 +43,7 @@ const mountTrigger = new DelayedTrigger(100, async () => {
   reportProgress(bankingInstance.safe);
   await subscribeChainEvents(bankingInstance.safe);
   await bankingInstance.tryGetUbi();
+  await Banking.transferAllAccountXdaiToSafe(bankingInstance.safe.safeAddress, localStorage.getItem("circlesKey"));
 });
 
 export async function init() {
@@ -67,8 +68,6 @@ export async function init() {
     }
   });
   console.log(`banking:1 subscribed to $me`)
-
-  // mountTrigger.trigger();
 
   shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent & {
     profile: Profile
