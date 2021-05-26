@@ -507,7 +507,8 @@
                   class:hidden={isOpen}
                 >
                   <NavItem
-                    isSelected={lastLoadedPage.title == page.title}
+                    isSelected={lastLoadedPage.routeParts[0] ===
+                      page.title.toLowerCase()}
                     label={page.title}
                   />
                 </a>

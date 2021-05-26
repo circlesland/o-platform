@@ -72,7 +72,10 @@ export class Queries {
     const requests = trustedBy.map(async trust => {
       const checksumSafeAddress = RpcGateway.get().utils.toChecksumAddress(trust.safeAddress);
       return {
-        token: (await this.addOwnToken({safeAddress: checksumSafeAddress})).token,
+        token: (await this.addOwnToken({
+          __schemaVersion: "__SAFE_SCHEMA_VERSION__",
+          safeAddress: checksumSafeAddress
+        })).token,
         limit: trust.limit,
         lastTrustBlock: trust.lastBlock
       };

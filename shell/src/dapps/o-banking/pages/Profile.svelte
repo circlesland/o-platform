@@ -9,8 +9,6 @@
   import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
   import { mySafe } from "../stores/safe";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import { createAvatar } from "@dicebear/avatars";
-  import * as style from "@dicebear/avatars-avataaars-sprites";
   import { invite } from "../../o-passport/processes/invite/invite";
   import { getCountryName } from "src/shared/countries";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
@@ -22,6 +20,7 @@
   import {onDestroy, onMount} from "svelte";
   import {Subscription} from "rxjs";
   import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
 
   export let params: {
     id?: String;
@@ -139,15 +138,11 @@
     const trust = apiProfile.circlesAddress
       ? loadTrustRelation(apiProfile.circlesAddress)
       : undefined;
+
     isEditable = $me && $me.id === apiProfile.id;
 
-    if (!apiProfile.avatarUrl && apiProfile.circlesAddress) {
-      apiProfile.avatarUrl = createAvatar(style, {
-        seed: apiProfile.circlesAddress,
-        topChance: 100,
-        style: "transparent",
-        dataUri: true,
-      });
+    if (!apiProfile.avatarUrl) {
+      apiProfile.avatarUrl = AvataarGenerator.generate(apiProfile.circlesAddress);
     }
 
     profile = {

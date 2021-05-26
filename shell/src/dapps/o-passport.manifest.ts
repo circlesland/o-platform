@@ -3,9 +3,6 @@ import Home from "./o-passport/pages/Home.svelte";
 import Account from "./o-passport/pages/Account.svelte";
 import Keys from "./o-passport/pages/Keys.svelte";
 import Settings from "./o-passport/pages/Settings.svelte";
-import
-  CreatePassport from "./o-passport/pages/CreatePassport.svelte";
-import CreateOrImportKey from "./o-passport/pages/CreateOrImportKey.svelte";
 import Login from "./o-passport/pages/Login.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";

@@ -6,7 +6,7 @@ import {emptySafe} from "./data/emptySafe";
 import {Queries} from "./data/circles/queries";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
-import {Banking, InitAction} from "./init2";
+import {Banking} from "./banking";
 
 let _currentSafe: Safe | null = emptySafe;
 let profile: Profile | undefined;
@@ -42,6 +42,7 @@ const mountTrigger = new DelayedTrigger(100, async () => {
   });
   reportProgress(bankingInstance.safe);
   await subscribeChainEvents(bankingInstance.safe);
+  await bankingInstance.tryGetUbi();
 });
 
 export async function init() {
@@ -52,9 +53,11 @@ export async function init() {
     unsubscribeMe();
   }
 
+  console.log(`banking:1 subscribes to $me ..`)
   unsubscribeMe = me.subscribe(async profileOrNull => {
+    console.log(`banking:1 $me changed:`, profileOrNull)
     profile = profileOrNull;
-    if (!bankingInstance && RpcGateway.get().utils.isAddress(profileOrNull.circlesAddress ?? "")) {
+    if (!bankingInstance && RpcGateway.get().utils.isAddress(profileOrNull?.circlesAddress)) {
       bankingInstance = new Banking(RpcGateway.get().utils.toChecksumAddress(profile.circlesAddress));
     } else {
       return;
@@ -63,8 +66,9 @@ export async function init() {
       mountTrigger.trigger();
     }
   });
+  console.log(`banking:1 subscribed to $me`)
 
-  mountTrigger.trigger();
+  // mountTrigger.trigger();
 
   shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent & {
     profile: Profile
@@ -84,8 +88,6 @@ export async function init() {
       return;
     }
   });
-
-  await bankingInstance.tryGetUbi();
 
   return function stop() {
     shellEventSubscription.unsubscribe();
@@ -141,6 +143,20 @@ async function subscribeChainEvents(safe: Safe)
 
     (await Queries.trustEvents(safe)).subscribe((event:any) => {
       console.log("NEW TRUST EVENT:", event);
+      /*
+      returnValues: Result
+      0: "0xf3acd805F1715C41a2A5DbEfb473cdB7890114EA"
+      1: "0xf3acd805F1715C41a2A5DbEfb473cdB7890114EA"
+      2: "100"
+      canSendTo: "0xf3acd805F1715C41a2A5DbEfb473cdB7890114EA"
+      limit: "100"
+      user: "0xf3acd805F1715C41a2A5DbEfb473cdB7890114EA"
+       */
+      if (event.returnValues?.user == safe.safeAddress
+      && event.returnValues?.canSendTo == safe.safeAddress) {
+        console.log("Ignoring trust event because its only subject is the own safe:", event);
+        return;
+      }
       trustTrigger.trigger();
     });
   } else {

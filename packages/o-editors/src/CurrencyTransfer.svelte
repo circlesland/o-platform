@@ -12,13 +12,14 @@
   let amount: string =
     context.data && context.data.tokens ? context.data.tokens.amount : "";
   let maxAmount: string = "0";
+  let selected = "CRC";
 
   onMount(() => inputField.focus());
 
-  $: selectedCurrency = context.params.currencies.find(
-    (o) => o.value === "crc"
-  );
-  $: selected = "CRC";
+  $: selectedCurrency = context.data.tokens
+    ? context.data.tokens.currency
+    : context.params.currencies.find((o) => o.value === "crc");
+
   $: {
     if (selected && context.data.maxFlows) {
       const key = selected.toLowerCase();
@@ -48,13 +49,20 @@
   function handleSelect(event) {
     selected = event.detail.value;
   }
+
+  function onkeydown(e: KeyboardEvent) {
+    console.log("KEYDOWN");
+    if (e.key == "Enter") {
+      sendAnswer(amount, selectedCurrency);
+    }
+  }
 </script>
 
 <p class="label-text">
   {context.params.label}
 </p>
 {#if context.messages[context.fieldName]}
-  <div class="alert alert-error mb-2 mt-2">
+  <div class="mt-2 mb-2 alert alert-error">
     <div class="flex-1">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -74,14 +82,14 @@
   </div>
 {/if}
 <div class="flex flex-col w-full">
-  <div class="mt-1 relative rounded-md w-full shadow-sm">
+  <div class="relative w-full mt-1 rounded-md shadow-sm">
     <div
-      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+      class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
     >
       <span class="text-base-300 sm:text-sm">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-8 w-8 m-auto"
+          class="w-8 h-8 m-auto"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -99,14 +107,15 @@
       type="text"
       name="price"
       id="price"
-      class="input input-bordered block w-full pl-12 pr-12 sm:text-sm "
+      class="block w-full pl-12 pr-12 input input-bordered sm:text-sm "
       placeholder="0.00 (Max: {maxAmount})"
       autocomplete="off"
       bind:value={amount}
       on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
       bind:this={inputField}
+      on:keydown={onkeydown}
     />
-    <div class="absolute inset-y-0 right-1 flex items-center themed">
+    <div class="absolute inset-y-0 flex items-center right-1 themed">
       <label for="currency" class="sr-only">Currency</label>
       <Select
         name="currency"
@@ -116,7 +125,7 @@
         listAutoWidth={false}
         listPlacement="top"
         isClearable={false}
-        containerClasses="w-34 min-w-full rounded-md"
+        containerClasses="w-24 min-w-full rounded-md"
         {Item}
         on:select={handleSelect}
         on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}

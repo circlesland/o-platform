@@ -1,4 +1,5 @@
 import { userDB } from './userdb.js';
+import {AvataarGenerator} from "src/shared/avataarGenerator";
 
 export let labelFor = function(id) {
     let user = userDB[id.toLowerCase()];
@@ -11,9 +12,9 @@ export let labelFor = function(id) {
 export let createNodeContents = function(id) {
     let user = userDB[id.toLowerCase()];
     let node = {id: id, label: labelFor(id)};
-    if (user && user.avatarUrl) {
-        node['shape'] = 'circularImage';
-        node['image'] = user.avatarUrl;
-    }
+    node['shape'] = 'circularImage';
+    node['image'] = user && user.avatarUrl
+        ? user.avatarUrl
+        : AvataarGenerator.generate(id);
     return node;
 }

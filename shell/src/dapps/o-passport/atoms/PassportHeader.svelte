@@ -9,6 +9,7 @@
   import { Profile } from "../data/api/types";
   import { loadProfile } from "../processes/identify/services/loadProfile";
   import TopNav from "src/shared/atoms/TopNav.svelte";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
 
   let profile: Profile;
 
@@ -22,11 +23,25 @@
     }
   }
 
+
+  let avatarUrl:string = "";
   $: {
     if (params && params.profileId) {
       execLoadProfile(params ? params.profileId : $me.id.toString());
     } else if ($me) {
       profile = $me;
+    }
+
+    if (profile && profile.avatarUrl) {
+      avatarUrl = profile.avatarUrl
+    }
+    else if (profile)
+    {
+      avatarUrl = AvataarGenerator.generate(profile.circlesAddress)
+    }
+    else
+    {
+      avatarUrl = AvataarGenerator.default();
     }
   }
 
@@ -73,7 +88,7 @@
     <div class="avatar">
       <div class="w-36 h-36 rounded-full mb-4">
         <img
-          src={profile && profile.avatarUrl ? profile.avatarUrl : ""}
+          src={avatarUrl}
           alt={profile
             ? profile.lastName
               ? `${profile.firstName} ${profile.lastName}`

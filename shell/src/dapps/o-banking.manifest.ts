@@ -17,9 +17,7 @@ import {
 import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
-import {push} from "svelte-spa-router";
 import {me, Profile} from "../shared/stores/me";
-import {getLastLoadedPage} from "../loader";
 import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
 
 const transactions: PageManifest = {
@@ -284,8 +282,8 @@ export const banking: DappManifest<DappState> = {
       });
     });
 
-    if(myProfileResult && myProfileResult.circlesAddress){
-      init();
+    if(myProfileResult){
+      await init();
     }
 
     return {

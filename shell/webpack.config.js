@@ -8,51 +8,53 @@ const webpack = require("webpack");
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
 
-let circlesGardenApiBaseUrl = "https://api.circles.garden/api/users/";
-let auth_endpoint = "https://auth.circles.name";
-let api_endpoint = "https://api.circles.land";
-let files_endpoint = "https://files.circles.land";
-let appId = "circles.land";
-let filesAppId = "files.circles.land";
+let __CIRCLES_GARDEN_API__ = "https://api.circles.garden/api/users/";
+let __AUTH_ENDPOINT__ = "https://auth.circles.name";
+let __API_ENDPOINT__ = "https://api.circles.land";
+let __FILES_ENDPOINT__ = "https://files.circles.land";
+let __APP_ID__ = "circles.land";
+let __FILES_APP_ID__ = "files.circles.land";
+let __SAFE_SCHEMA_VERSION__ = "1";
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
-  auth_endpoint = "https://auth.circles.name";
-  api_endpoint = "https://api.circles.land";
-  files_endpoint = "https://files.circles.land";
-  appId = "circles.land";
-  filesAppId = "files.circles.land";
+  __AUTH_ENDPOINT__ = "https://auth.circles.name";
+  __API_ENDPOINT__ = "https://api.circles.land";
+  __FILES_ENDPOINT__ = "https://files.circles.land";
+  __APP_ID__ = "circles.land";
+  __FILES_APP_ID__ = "files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "dev") {
-  auth_endpoint = "https://dev.auth.circles.name";
-  api_endpoint = "https://dev.api.circles.land";
-  files_endpoint = "https://dev.files.circles.land";
-  appId = "dev.circles.land";
-  filesAppId = "dev.files.circles.land";
+  __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
+  __API_ENDPOINT__ = "https://dev.api.circles.land";
+  __FILES_ENDPOINT__ = "https://dev.files.circles.land";
+  __APP_ID__ = "dev.circles.land";
+  __FILES_APP_ID__ = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "thorsten") {
-  auth_endpoint = "https://dev.auth.circles.name";
-  api_endpoint = "https://thorsten.api.circles.land";
-  files_endpoint = "https://dev.files.circles.land";
-  appId = "thorsten.circles.land";
-  filesAppId = "dev.files.circles.land";
+  __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
+  __API_ENDPOINT__ = "https://thorsten.api.circles.land";
+  __FILES_ENDPOINT__ = "https://dev.files.circles.land";
+  __APP_ID__ = "thorsten.circles.land";
+  __FILES_APP_ID__ = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "local") {
-  auth_endpoint = "https://dev.auth.circles.name";
-  api_endpoint = "https://local.api.circles.land";
-  files_endpoint = "https://dev.files.circles.land";
-  appId = "local.circles.land";
-  filesAppId = "dev.files.circles.land";
+  __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
+  __API_ENDPOINT__ = "https://local.api.circles.land";
+  __FILES_ENDPOINT__ = "https://dev.files.circles.land";
+  __APP_ID__ = "local.circles.land";
+  __FILES_APP_ID__ = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "ultralocal") {
-  auth_endpoint = "https://dev.auth.circles.name";
-  api_endpoint = "http://localhost:8989";
-  files_endpoint = "https://dev.files.circles.land";
-  appId = "ultralocal.circles.land";
-  filesAppId = "dev.files.circles.land";
+  __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
+  __API_ENDPOINT__ = "http://localhost:8989";
+  __FILES_ENDPOINT__ = "https://dev.files.circles.land";
+  __APP_ID__ = "ultralocal.circles.land";
+  __FILES_APP_ID__ = "dev.files.circles.land";
 }
 
-console.log(`Auth Endpoint Url: ${auth_endpoint}`);
-console.log(`Api Endpoint Url: ${api_endpoint}`);
-console.log(`Files Endpoint Url: ${files_endpoint}`);
-console.log(`AppId: ${appId}`);
-console.log(`Files AppId: ${filesAppId}`);
-console.log(`circlesGardenApiBaseUrl: ${circlesGardenApiBaseUrl}`);
+console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
+console.log(`__API_ENDPOINT__: ${__API_ENDPOINT__}`);
+console.log(`__FILES_ENDPOINT__: ${__FILES_ENDPOINT__}`);
+console.log(`__APP_ID__: ${__APP_ID__}`);
+console.log(`__FILES_APP_ID__: ${__FILES_APP_ID__}`);
+console.log(`__CIRCLES_GARDEN_API__: ${__CIRCLES_GARDEN_API__}`);
+console.log(`__SAFE_SCHEMA_VERSION__: ${__SAFE_SCHEMA_VERSION__}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
@@ -87,7 +89,7 @@ module.exports = {
         loader: "string-replace-loader",
         options: {
           search: "__AUTH_ENDPOINT__",
-          replace: auth_endpoint,
+          replace: __AUTH_ENDPOINT__,
           flags: "g",
         },
       },
@@ -96,7 +98,16 @@ module.exports = {
         loader: "string-replace-loader",
         options: {
           search: "__API_ENDPOINT__",
-          replace: api_endpoint,
+          replace: __API_ENDPOINT__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__SAFE_SCHEMA_VERSION__",
+          replace: __SAFE_SCHEMA_VERSION__,
           flags: "g",
         },
       },
@@ -105,7 +116,7 @@ module.exports = {
         loader: "string-replace-loader",
         options: {
           search: "__CIRCLES_GARDEN_API__",
-          replace: circlesGardenApiBaseUrl,
+          replace: __CIRCLES_GARDEN_API__,
           flags: "g",
         },
       },
@@ -114,7 +125,7 @@ module.exports = {
         loader: "string-replace-loader",
         options: {
           search: "__FILES_ENDPOINT__",
-          replace: files_endpoint,
+          replace: __FILES_ENDPOINT__,
           flags: "g",
         },
       },
@@ -123,7 +134,7 @@ module.exports = {
         loader: "string-replace-loader",
         options: {
           search: "__APP_ID__",
-          replace: appId,
+          replace: __APP_ID__,
           flags: "g",
         },
       },
@@ -132,7 +143,7 @@ module.exports = {
         loader: "string-replace-loader",
         options: {
           search: "__FILES_APP_ID__",
-          replace: filesAppId,
+          replace: __FILES_APP_ID__,
           flags: "g",
         },
       },

@@ -39,6 +39,12 @@
     }, 0);
   };
 
+  /* trim input and set dirty flag */
+  const validateFormatting = () => {
+    context.editorDirtyFlags[context.fieldName] = true;
+    _context.data[context.fieldName] = _context.data[context.fieldName].trim();
+  };
+
   onMount(() => {
     let textarea = document.querySelector("textarea");
     textarea.addEventListener("input", autoExpand);
@@ -68,7 +74,7 @@
   <label class="label" for={context.fieldName}>
     <div class="label-text">{@html context.params.label}</div>
     {#if context.params.canCopy}
-      <div class="inline-block break-all text-xs" id="clipboard">
+      <div class="inline-block text-xs break-all" id="clipboard">
         <input
           name="name"
           type="text"
@@ -76,7 +82,7 @@
           bind:value={_context.data[context.fieldName]}
         />
         <div
-          class="flex text-gray-300 cursor-pointertext-center text-xs relative -bottom-1"
+          class="relative flex text-xs text-gray-300 cursor-pointertext-center -bottom-1"
           on:click={copy}
           alt="Copy to Clipboard"
         >
@@ -101,7 +107,7 @@
   </label>
 
   {#if context.messages[context.fieldName]}
-    <div class="alert alert-error mb-2 mt-2">
+    <div class="mt-2 mb-2 alert alert-error">
       <div class="flex-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -128,14 +134,14 @@
     id={context.fieldName}
     type="text"
     placeholder={context.params.placeholder}
-    class="textarea textarea textarea-bordered overflow-hidden"
+    class="overflow-hidden textarea textarea-bordered"
     class:input-error={context.messages[context.fieldName]}
     bind:value={_context.data[context.fieldName]}
     bind:this={inputField}
-    on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
+    on:change={validateFormatting}
   />
   {#if !context.params.hideCharacterCount}
-    <p class="text-xs text-white relative right-0 top-2 text-right">
+    <p class="relative right-0 text-xs text-right text-white top-2">
       {length}/{maxlength} Characters. {length > maxlength
         ? "Oops, please enter a maximum of " + maxlength + " characters."
         : ""}

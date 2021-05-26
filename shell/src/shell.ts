@@ -3,11 +3,10 @@ import {Subject} from "rxjs";
 import {Process} from "@o-platform/o-process/dist/interfaces/process";
 import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
-import ApolloClient from "apollo-client";
-import {NormalizedCacheObject} from "apollo-cache-inmemory";
 import {ApiConnection} from "./shared/apiConnection";
 
 export interface IShell {
+  depositedEvent?: PlatformEvent; // TODO: Hack. This field should be checked by a freshly initializing dapp. The value must be cleared whenever a dapp was loaded (success or error).
   contactUsername?: string;
   authorization?:string;
   authClient?: ApiConnection,

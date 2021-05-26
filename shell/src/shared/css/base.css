@@ -45,6 +45,10 @@ body {
     height: 100vh;
 }
 
+.label a:hover,
+.label a:active {
+  @apply text-primary;
+}
 .btn {
   font-family: Poppins;
   @apply font-bold;
@@ -131,4 +135,11 @@ body {
 
 .infocard-body {
   color: #0c5460; 
+}
+
+*:focus {
+  outline: none;
+}
+.vis-network:focus {
+outline: none;
 }

@@ -1,6 +1,7 @@
 import {Safe} from "./circles/types";
 
 export const emptySafe: Safe = {
+  __schemaVersion: "__SAFE_SCHEMA_VERSION__",
   safeAddress: "0x00",
   balance: "0",
   ui: {

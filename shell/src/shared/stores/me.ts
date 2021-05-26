@@ -1,5 +1,9 @@
 import {readable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+import {shellProcess, ShellProcessContext} from "../processes/shellProcess";
+import {identify, IdentifyContextData} from "../../dapps/o-passport/processes/identify/identify";
+import {location} from "svelte-spa-router";
 
 export type Profile = {
   id: number
@@ -24,6 +28,7 @@ export const me = readable<Profile|null>(null, function start(set) {
       return;
     }
     if (event.type == "shell.authenticated" && event.profile) {
+      console.log("me.ts new $me: ", event.profile);
       set(event.profile);
       localStorage.setItem("me", JSON.stringify(event.profile));
     }
@@ -39,6 +44,21 @@ export const me = readable<Profile|null>(null, function start(set) {
       localStorage.removeItem("me");
       localStorage.removeItem("safe");
     }
+
+    const requestEvent = new RunProcess<ShellProcessContext>(
+        shellProcess,
+        true,
+        async (ctx) => {
+          ctx.childProcessDefinition = identify;
+          ctx.childContext = {
+            data: <IdentifyContextData>{
+              redirectTo: window.document.location.href,
+            },
+          };
+          return ctx;
+        }
+    );
+    window.o.publishEvent(requestEvent);
   }
 
   return function stop() {

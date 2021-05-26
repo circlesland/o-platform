@@ -39,6 +39,10 @@ export class Banking {
     }
 
     onTokenTransfer() : Observable<InitActionProgress<any>> {
+        if (!this._safe?.transfers?.rows?.length) {
+            return this.onMount();
+        }
+
         return Banking.execute("onTokenTransfer", "Updating token transfers ..", [{
             id: "hubTransfers",
             message: "Loading past Circles transfers ..",
@@ -58,17 +62,17 @@ export class Banking {
             message: "Loading balances ..",
             run: async () => this.refreshBalances()
         }, {
-            id: "augmentProfiles",
-            message: "Loading profiles ..",
-            run: async () => this.augmentProfiles()
-        }, {
             id: "sort",
             message: "Sorting all entries ..",
-            run: async () => this.sortEntries(),
+            run: async () => this.sortEntries()
         }, {
             id: "blockTimes",
             message: "Loading block timestamps ..",
             run: async () => this.augmentBlockTimes()
+        }, {
+            id: "augmentProfiles",
+            message: "Loading profiles ..",
+            run: async () => this.augmentProfiles()
         }, {
             id: "cacheSafe",
             message: "Writing transactions to cache ..",
@@ -77,6 +81,10 @@ export class Banking {
     }
 
     onTrustChange() : Observable<InitActionProgress<any>> {
+        if (!this._safe?.transfers?.rows?.length) {
+            return this.onMount();
+        }
+
         return Banking.execute("onTrustChange", "Updating trust relations ..", [{
             id: "trust",
             message: "Loading trust relations ..",
@@ -87,9 +95,17 @@ export class Banking {
             message: "Loading accepted Circles tokens ..",
             run: async () => this.refreshAcceptedTokens()
         }, {
+            id: "balances",
+            message: "Loading balances ..",
+            run: async () => this.refreshBalances()
+        }, {
             id: "sort",
             message: "Sorting all entries ..",
-            run: async () => this.sortEntries(),
+            run: async () => this.sortEntries()
+        }, {
+            id: "blockTimes",
+            message: "Loading block timestamps ..",
+            run: async () => this.augmentBlockTimes()
         }, {
             id: "augmentProfiles",
             message: "Loading profiles ..",
@@ -139,6 +155,10 @@ export class Banking {
             message: "Loading balances ..",
             run: async () => this.refreshBalances()
         }, {
+            id: "sort",
+            message: "Sorting all entries ..",
+            run: async () => this.sortEntries()
+        }, {
             id: "blockTimes",
             message: "Loading block timestamps ..",
             run: async () => this.augmentBlockTimes()
@@ -146,10 +166,6 @@ export class Banking {
             id: "augmentProfiles",
             message: "Loading profiles ..",
             run: async () => this.augmentProfiles()
-        }, {
-            id: "sort",
-            message: "Sorting all entries ..",
-            run: async () => this.sortEntries()
         }, {
             id: "cacheSafe",
             message: "Writing transactions to cache ..",
@@ -213,6 +229,13 @@ export class Banking {
         } else {
             try {
                 const frankenstein:Safe = JSON.parse(cachedSafeJson) ?? emptySafe;
+
+                if (frankenstein.__schemaVersion !== "__SAFE_SCHEMA_VERSION__") {
+                    localStorage.removeItem("safe");
+                    this._safe = emptySafe;
+                    return;
+                }
+
                 this._safe.ui = {};
 
                 // Add all data urls for the one way trusts
@@ -222,7 +245,7 @@ export class Banking {
                     .filter(oneWayTrust => oneWayTrust.profile && !oneWayTrust.profile.avatarUrl)
                     .forEach((oneWayTrust:TrustObject) => {
                         //generatedAvatars[oneWayTrust.safeAddress] = oneWayTrust.profile.avatarUrl;
-                        oneWayTrust.profile.avatarUrl = AvataarGenerator.generate(oneWayTrust.safeAddress.toLowerCase());
+                        oneWayTrust.profile.avatarUrl = AvataarGenerator.generate(oneWayTrust.safeAddress);
                     });
 
                 // Add all data urls for the mutual trusts
@@ -230,25 +253,25 @@ export class Banking {
                     .filter(o => o.trustedBy.profile && !o.trustedBy.profile.avatarUrl)
                     .forEach(o => {
                         //generatedAvatars[o.trustedBy.safeAddress] = o.trustedBy.profile.avatarUrl;
-                        o.trustedBy.profile.avatarUrl = AvataarGenerator.generate(o.trustedBy.safeAddress.toLowerCase());
+                        o.trustedBy.profile.avatarUrl = AvataarGenerator.generate(o.trustedBy.safeAddress);
                     });
 
                 Object.values(frankenstein.trustRelations?.mutualTrusts ?? {})
                     .filter(o => o.trusting.profile && !o.trusting.profile.avatarUrl)
                     .forEach(o => {
                         //generatedAvatars[o.trusting.safeAddress] = o.trusting.profile.avatarUrl;
-                        o.trusting.profile.avatarUrl = AvataarGenerator.generate(o.trusting.safeAddress.toLowerCase());
+                        o.trusting.profile.avatarUrl = AvataarGenerator.generate(o.trusting.safeAddress);
                     });
 
                 // Add all data urls for the transactions
                 frankenstein.transfers?.rows?.forEach(transfer => {
                     if (transfer.fromProfile && !transfer.fromProfile.avatarUrl) {
                         //generatedAvatars[transfer.from] = transfer.fromProfile.avatarUrl;
-                        transfer.fromProfile.avatarUrl = AvataarGenerator.generate(transfer.from.toLowerCase());
+                        transfer.fromProfile.avatarUrl = AvataarGenerator.generate(transfer.from);
                     }
                     if (transfer.toProfile && !transfer.toProfile.avatarUrl) {
                         //generatedAvatars[transfer.to] = transfer.toProfile.avatarUrl;
-                        transfer.toProfile.avatarUrl = AvataarGenerator.generate(transfer.to.toLowerCase());
+                        transfer.toProfile.avatarUrl = AvataarGenerator.generate(transfer.to);
                     }
                 });
 
@@ -340,68 +363,6 @@ export class Banking {
         return newTrustRelation;
     }
 
-    private static executeRecursive<TResult>(
-        id: string,
-        message: string,
-        subscriber: Subscriber<InitActionProgress<TResult>>,
-        next: (previousAction?: InitAction<TResult>, previousResult?: TResult) => InitAction<TResult>,
-        current?: InitAction<TResult>
-    ) {
-        let currentAction: InitAction<TResult> = current ?? next();
-        if (!currentAction) {
-            return;
-        }
-
-        console.log(`Executing ${currentAction.id ?? id} ..`)
-
-        currentAction.run()
-            .then(result => {
-                console.log(`Executed ${currentAction.id ?? id}.`)
-                const nextAction = next(currentAction, result);
-                this.executeRecursive(
-                    nextAction.id ?? id,
-                    nextAction.message ?? message,
-                    subscriber,
-                    next,
-                    nextAction
-                );
-            })
-            .catch(error => subscriber.error(error))
-    }
-
-    private static execute<TResult>(id: string, message: string, actions: InitAction<TResult>[])
-        : Observable<InitActionProgress<TResult>> {
-        return new Observable(subscriber => {
-            let remainingActionCount = actions.length;
-
-            const next = (previousAction?: InitAction<TResult>, previousResult?: TResult) => {
-                const currentIndex = actions.length - (remainingActionCount--);
-                const progress = {
-                    id: previousAction?.id ?? id,
-                    message: previousAction?.message ?? message,
-                    percent: (100 / actions.length) * currentIndex,
-                    result: previousResult,
-                    updateUi: previousAction?.updateUi
-                };
-                subscriber.next(progress);
-
-                if (remainingActionCount < 0) {
-                    subscriber.complete();
-                    return undefined;
-                }
-
-                return actions[currentIndex];
-            };
-
-            this.executeRecursive(
-                id,
-                message,
-                subscriber,
-                next
-            );
-        });
-    }
-
     private async augmentProfiles()
     {
         const allKnownAddresses = this.allKnownSafeAddresses;
@@ -412,24 +373,27 @@ export class Banking {
         const landProfiles = await Banking.findCirclesLandProfiles(allKnownAddresses);
         const landMap = Banking.createProfileMap(landProfiles);
 
-        this.applyProfileMap(gardenMap);
-        this.applyProfileMap(landMap);
+        const mappedAddresses = Object.keys(gardenMap)
+            .concat(Object.keys(landMap))
+            .reduce((p,c) => {
+                p[c] = true;
+                return p;
+            }, {});
 
-        const mappedAddresses = Object.keys(gardenMap).concat(Object.keys(landMap)).reduce((p,c) => {
-            p[c] = true;
-            return p;
-        }, {});
-
-        const anonProfiles = allKnownAddresses.filter(o => !mappedAddresses[o] && o != "0x0000000000000000000000000000000000000000")
+        const anonProfiles = allKnownAddresses
+            .filter(o => !mappedAddresses[o] && o != "0x0000000000000000000000000000000000000000")
             .map(unmapped => {
                 return {
                     safeAddress: unmapped,
                     displayName: unmapped.substr(0, 12) + "..",
-                    avatarUrl: AvataarGenerator.generate(unmapped.toLowerCase())
+                    avatarUrl: AvataarGenerator.generate(unmapped)
                 }
             });
 
         const anonMap = Banking.createProfileMap(anonProfiles);
+
+        this.applyProfileMap(gardenMap);
+        this.applyProfileMap(landMap);
         this.applyProfileMap(anonMap);
     }
 
@@ -483,7 +447,7 @@ export class Banking {
         const result = await apiClient.query({
             query: ProfilesByCirclesAddressDocument,
             variables: {
-                circlesAddresses: safeAddresses
+                circlesAddresses: safeAddresses.map(o => o.toLowerCase())
             }
         });
 
@@ -492,12 +456,13 @@ export class Banking {
                 ...p,
                 circlesAddress : RpcGateway.get().utils.toChecksumAddress(p.circlesAddress),
                 safeAddress : RpcGateway.get().utils.toChecksumAddress(p.circlesAddress),
-                displayName: `${p.firstName}${!!p.lastName ? " " + p.lastName : ""}`
+                displayName: `${p.firstName}${!!p.lastName ? " " + p.lastName : ""}`,
+                avatarUrl: p.avatarUrl ? p.avatarUrl : AvataarGenerator.generate(p.circlesAddress)
             };
         });
     }
 
-    static async findCirclesGardenProfiles(safeAddresses: string[]) : Promise<{
+    public static async findCirclesGardenProfiles(safeAddresses: string[]) : Promise<{
         safeAddress: string,
         displayName: string,
         avatarUrl?: string
@@ -526,7 +491,13 @@ export class Banking {
 
             const result = await fetch(`__CIRCLES_GARDEN_API__?${query}`);
             const resultJson = await result.json();
-            circlesGardenProfiles = circlesGardenProfiles.concat(resultJson.data.map(o => {return {...o, displayName: o.username}}) ?? []);
+            circlesGardenProfiles = circlesGardenProfiles.concat(resultJson.data.map(o => {
+                return {
+                    ...o,
+                    displayName: o.username,
+                    avatarUrl: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.safeAddress)
+                }
+            }) ?? []);
         }
 
         return circlesGardenProfiles;
@@ -761,5 +732,67 @@ export class Banking {
             });
 
         this._safe.transfers = transfers;
+    }
+
+    private static executeRecursive<TResult>(
+        id: string,
+        message: string,
+        subscriber: Subscriber<InitActionProgress<TResult>>,
+        next: (previousAction?: InitAction<TResult>, previousResult?: TResult) => InitAction<TResult>,
+        current?: InitAction<TResult>
+    ) {
+        let currentAction: InitAction<TResult> = current ?? next();
+        if (!currentAction) {
+            return;
+        }
+
+        console.log(`Executing ${currentAction.id ?? id} ..`)
+
+        currentAction.run()
+            .then(result => {
+                console.log(`Executed ${currentAction.id ?? id}.`)
+                const nextAction = next(currentAction, result);
+                this.executeRecursive(
+                    nextAction.id ?? id,
+                    nextAction.message ?? message,
+                    subscriber,
+                    next,
+                    nextAction
+                );
+            })
+            .catch(error => subscriber.error(error))
+    }
+
+    private static execute<TResult>(id: string, message: string, actions: InitAction<TResult>[])
+        : Observable<InitActionProgress<TResult>> {
+        return new Observable(subscriber => {
+            let remainingActionCount = actions.length;
+
+            const next = (previousAction?: InitAction<TResult>, previousResult?: TResult) => {
+                const currentIndex = actions.length - (remainingActionCount--);
+                const progress = {
+                    id: previousAction?.id ?? id,
+                    message: previousAction?.message ?? message,
+                    percent: (100 / actions.length) * currentIndex,
+                    result: previousResult,
+                    updateUi: previousAction?.updateUi
+                };
+                subscriber.next(progress);
+
+                if (remainingActionCount < 0) {
+                    subscriber.complete();
+                    return undefined;
+                }
+
+                return actions[currentIndex];
+            };
+
+            this.executeRecursive(
+                id,
+                message,
+                subscriber,
+                next
+            );
+        });
     }
 }

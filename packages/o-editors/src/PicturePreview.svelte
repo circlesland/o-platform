@@ -33,6 +33,7 @@
     on:click={() => {
       context.dirtyFlags[context.fieldName] = true;
       context.editorDirtyFlags[context.fieldName] = true;
+      context.data[context.fieldName] = null;
       submit();
     }}>Clear</button
   >

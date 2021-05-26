@@ -1,8 +1,17 @@
 import {createAvatar} from "@dicebear/avatars";
 import * as style from "@dicebear/avatars-avataaars-sprites";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export class AvataarGenerator {
     public static generate(seed:string) {
+        if (!seed || seed.trim() == "") {
+            return this.default();
+        }
+
+        if (seed.startsWith("0x") && RpcGateway.get().utils.isAddress(seed)) {
+            seed = RpcGateway.get().utils.toChecksumAddress(seed);
+        }
+
         const svg = createAvatar(style, {
             seed: seed,
             // backgroundColor: "#65C9FF",
@@ -29,15 +38,28 @@ export class AvataarGenerator {
                 "wink",
                 "winkWacky",
             ],
+            eyebrow: [
+                "default" ,
+                "defaultNatural" ,
+                "flat" ,
+                "flatNatural" ,
+                "raised" ,
+                "raisedExcited" ,
+                "raisedExcitedNatural" ,
+                "unibrow" ,
+                "unibrowNatural" ,
+                "up" ,
+                "upDownNatural" ,
+            ],
             style: "transparent",
             dataUri: true,
         });
         return svg;
     }
 
-    public static boring() {
+    public static default() {
         const svg = createAvatar(style, {
-            seed: "boring",
+            seed: "default",
             // backgroundColor: "#65C9FF",
             topChance: 100,
             accessoriesChance: 0,

@@ -49,6 +49,7 @@ module.exports = {
         transactionpositive: "#32CD32",
         transactionnegative: "#DC143C",
         primary: "#0ad99c",
+        primaryhighlight: "#66f7cd",
         secondary: "#003399",
         light: "#b4b4b4",
         dark: "#0D285F",

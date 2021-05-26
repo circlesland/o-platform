@@ -49,6 +49,7 @@ export type TrustObject = {
 };
 
 export type Safe = {
+  __schemaVersion: string;
   safeAddress: string;
   firstBlock?: number;
   lastBlock?: number;
