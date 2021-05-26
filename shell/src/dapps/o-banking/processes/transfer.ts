@@ -146,13 +146,14 @@ const processDefinition = (processId: string) =>
 
             return result.data.search && result.data.search.length > 0
               ? result.data.search
-                  .map((o) => {
-                    return <Choice>{
-                      value: RpcGateway.get().utils.toChecksumAddress(o.circlesAddress),
-                      label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
-                      avatarUrl: o.avatarUrl,
-                    };
-                  })
+                    .filter(o => o.circlesAddress)
+                    .map((o) => {
+                      return <Choice>{
+                        value: RpcGateway.get().utils.toChecksumAddress(o.circlesAddress),
+                        label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
+                        avatarUrl: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.circlesAddress),
+                      };
+                    })
                   .filter((o) => o.value)
               : [];
           },

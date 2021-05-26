@@ -13,6 +13,7 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
 import { HUB_ADDRESS } from "@o-platform/o-circles/dist/consts";
 import { BN } from "ethereumjs-util";
+import {AvataarGenerator} from "../../../shared/avataarGenerator";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -110,11 +111,12 @@ const processDefinition = (processId: string) =>
             const items =
               result.data.search && result.data.search.length > 0
                 ? result.data.search
+                    .filter(o => o.circlesAddress)
                     .map((o) => {
                       return <Choice>{
                         value: RpcGateway.get().utils.toChecksumAddress(o.circlesAddress),
                         label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
-                        avatarUrl: o.avatarUrl,
+                        avatarUrl: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.circlesAddress),
                       };
                     })
                     .filter((o) => o.value)
