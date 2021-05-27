@@ -8,10 +8,13 @@ import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {GNOSIS_SAFE_ADDRESS, HUB_ADDRESS, PROXY_FACTORY_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import {Web3Contract} from "@o-platform/o-circles/dist/web3Contract";
+import {BN} from "ethereumjs-util";
 import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
 import {Profile} from "../data/api/types";
 import {UpsertProfileDocument} from "../../o-passport/data/api/types";
+import {emptySafe} from "../data/emptySafe";
 import {push} from "svelte-spa-router";
 import {Banking} from "../banking";
 
