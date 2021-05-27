@@ -17,7 +17,7 @@ import {
 import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
-import {me, Profile} from "../shared/stores/me";
+import { me, Profile } from "../shared/stores/me";
 import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
 
 const transactions: PageManifest = {
@@ -171,9 +171,9 @@ const findMySafe: PageManifest = {
 
 const graph: PageManifest = {
   isDefault: false,
-  routeParts: ["graph"],
+  routeParts: ["network"],
   component: Graph,
-  title: "Graph",
+  title: "Network",
   available: [
     (detail) => {
       // Can navigate to?
@@ -277,12 +277,12 @@ export const banking: DappManifest<DappState> = {
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     const myProfileResult = await new Promise<Profile>((resolve) => {
-      me.subscribe(myProfile => {
+      me.subscribe((myProfile) => {
         resolve(myProfile);
       });
     });
 
-    if(myProfileResult){
+    if (myProfileResult) {
       await init();
     }
 
@@ -302,6 +302,6 @@ export const banking: DappManifest<DappState> = {
     graph,
     sendInvite,
     profile,
-    findMySafe
+    findMySafe,
   ],
 };
