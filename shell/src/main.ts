@@ -164,6 +164,9 @@ async function connectToApi() {
 
   console.log(`Connecting to __API_ENDPOINT__ ..`);
   shell.apiClient = new ApiConnection("__API_ENDPOINT__/", "include");
+
+  console.log(`Connecting to https://api.thegraph.com/subgraphs/name/circlesubi/circles ..`);
+  shell.theGraphClient = new ApiConnection("https://api.thegraph.com/subgraphs/name/circlesubi/circles");
 }
 connectToApi().then(() => {
   console.log(`Connected to __AUTH_ENDPOINT__ and __API_ENDPOINT__`)

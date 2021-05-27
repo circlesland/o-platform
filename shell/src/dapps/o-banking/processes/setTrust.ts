@@ -37,28 +37,6 @@ const strings = {
   labelTrustLimit: "Enter the trust limit (0-100)",
 };
 
-const trustUsersQuery = {
-  query: gql`
-    query safe($id: String!) {
-      safe(id: $id) {
-        incoming {
-          userAddress
-          canSendToAddress
-          limit
-        }
-        outgoing {
-          userAddress
-          canSendToAddress
-          limit
-        }
-      }
-    }
-  `,
-  variables: {
-    id: "0xd460db4cfa021c42edeb7e555d904400dab65ecc",
-  },
-};
-
 const processDefinition = (processId: string) =>
   createMachine<SetTrustContext, any>({
     id: `${processId}:setTrust`,
@@ -134,7 +112,13 @@ const processDefinition = (processId: string) =>
       }),
       checkTrustLimit: {
         id: "checkTrustLimit",
-        always: [
+        always: [{
+            cond: context => context.data.trustReceiver.toLowerCase() == context.data.safeAddress.toLowerCase(),
+            actions: (context) => {
+              context.messages["trustReceiver"] = "\"As soon as you trust yourself, you will know how to live.\" --Johann Wolfgang von Goethe";
+            },
+            target: "#trustReceiver"
+          },
           {
             cond: (context) =>
               context.data.trustLimit !== undefined &&
