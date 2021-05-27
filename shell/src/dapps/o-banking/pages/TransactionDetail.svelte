@@ -5,7 +5,7 @@
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
   import { push } from "svelte-spa-router";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import {AvataarGenerator} from "../../../shared/avataarGenerator";
+  import { AvataarGenerator } from "../../../shared/avataarGenerator";
 
   export let params: {
     _id: string;
@@ -71,11 +71,6 @@
       }
     }
   }
-
-  let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
-  function dateOlderThanSevenDays(unixTime: Number) {
-    return timestampSevenDays > unixTime;
-  }
 </script>
 
 <BankingDetailHeader amount={transfer ? transfer.amount : 0} {classes} />
@@ -85,20 +80,8 @@
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-xs font-bold text-left text-primary font-circles">
-          {#if transfer.time}
-            {#if dateOlderThanSevenDays(transfer.time)}
-              <Time
-                timestamp={new Date(transfer.time * 1000)}
-                format="D. MMMM YYYY HH:mm"
-              />
-            {:else}
-              <Time relative timestamp={new Date(transfer.time * 1000)} />
-            {/if}
-          {/if}
-        </div>
         <div
-          class="flex flex-row justify-center w-full space-x-2 bg-white sm:space-x-6"
+          class="flex flex-row justify-center w-full pt-2 space-x-2 bg-white sm:space-x-6"
         >
           <div
             class="flex flex-col cursor-pointer"
@@ -191,6 +174,22 @@
             >
               <table class="w-full">
                 <tbody class="">
+                  <tr
+                    class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
+                  >
+                    <td class="pl-5 pr-3 whitespace-no-wrap">
+                      <div class="text-gray-400">Date</div>
+                    </td>
+
+                    <td class="px-2 py-2 whitespace-no-wrap">
+                      <div class="font-medium leading-5 text-gray-500">
+                        <Time
+                          timestamp={new Date(transfer.time * 1000)}
+                          format="D. MMMM YYYY HH:mm"
+                        />
+                      </div>
+                    </td>
+                  </tr>
                   <tr
                     class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
                   >

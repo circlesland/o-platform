@@ -1,5 +1,6 @@
 <script lang="ts">
   import Time from "svelte-time";
+  import { svelteTime } from "svelte-time";
   import { push } from "svelte-spa-router";
   import Web3 from "web3";
   import { Transfer } from "../data/circles/queries";
@@ -23,9 +24,7 @@
         : transfer.to;
 
     otherSafeAddress =
-            transfer.direction === "in"
-                    ? transfer.from
-                    : transfer.to;
+      transfer.direction === "in" ? transfer.from : transfer.to;
 
     displayName =
       displayName === "0x0000000000000000000000000000000000000000"
@@ -52,7 +51,6 @@
         ? "transactionpositive"
         : "transactionnegative";
 
-
     /*if (!pictureUrl) {
       pictureUrl = createAvatar(style, {
         seed: otherSafeAddress,
@@ -63,13 +61,15 @@
     }*/
   }
 
-  let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
+  let now = new Date();
+  let sevendaysago = now.setDate(now.getDate() - 7);
+
+  function dateOlderThanSevenDays(unixTime: number) {
+    return sevendaysago > unixTime * 1000;
+  }
 
   function loadDetailPage(path) {
     push("#/banking/transactions/" + path);
-  }
-  function dateOlderThanSevenDays(unixTime: Number) {
-    return timestampSevenDays > unixTime;
   }
 </script>
 
@@ -78,26 +78,26 @@
   class="flex items-center justify-center mb-2 text-circlesdarkblue"
 >
   <div
-    class="flex items-center bg-white shadow p-4 w-full space-x-2 sm:space-x-6 rounded-sm"
+    class="flex items-center w-full p-4 space-x-2 bg-white rounded-sm shadow sm:space-x-6"
   >
     <div class="mr-2 text-center">
       <div class="avatar">
-        <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto mt-1">
+        <div class="w-12 h-12 m-auto mt-1 rounded-full sm:w-12 sm:h-12">
           <img src={pictureUrl} alt={otherSafeAddress} />
         </div>
       </div>
     </div>
 
-    <div class="text-left flex-grow truncate relative">
+    <div class="relative flex-grow text-left truncate">
       <div class="truncateThis">
         <h2 class="text-2xl sm:text-3xl">
           {displayName}
         </h2>
       </div>
-      <p class="text-sm mt-2 text-light">{message}</p>
+      <p class="mt-2 text-sm text-light">{message}</p>
     </div>
 
-    <div class="flex flex-1 flex-col justify-items-end">
+    <div class="flex flex-col flex-1 justify-items-end">
       <div class="self-end text-{classes} text-2xl sm:text-3xl">
         <span>
           {Number.parseFloat(
@@ -115,7 +115,11 @@
               format="D. MMMM YYYY"
             />
           {:else}
-            <Time relative timestamp={new Date(transfer.time * 1000)} />
+            <Time
+              relative
+              timestamp={new Date(transfer.time * 1000)}
+              live={true}
+            />
           {/if}
         {/if}
       </div>
