@@ -3,7 +3,7 @@
   import { DataSet } from "vis-data";
   import { onMount } from "svelte";
 
-  import { fillUsernames} from "./userdb.js";
+  import { fillUsernames, userDB } from "./userdb.js";
   import { toAddress, getAdjacencies } from "./utility.js";
   import { createNodeContents } from "./visUtils.js";
 
