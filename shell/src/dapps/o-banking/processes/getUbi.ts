@@ -3,11 +3,6 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
-import {CirclesAccount} from "@o-platform/o-circles/dist/model/circlesAccount";
-import {emptySafe} from "../data/emptySafe";
-import {mySafe} from "../stores/safe";
 import {getUBIService} from "./getUBIService";
 
 export type GetUbiContextData = {

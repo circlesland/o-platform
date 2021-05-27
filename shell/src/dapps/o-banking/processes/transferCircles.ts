@@ -5,16 +5,19 @@ import { createMachine } from "xstate";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {BN} from "ethereumjs-util";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import PaymentPath from "../../../shared/molecules/PaymentPath.svelte";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {requestPathToRecipient} from "../services/requestPathToRecipient";
+import {show} from "@o-platform/o-process/dist/actions/show";
 
 export type TransferCirclesContextData = {
   safeAddress:string;
   recipientAddress:string;
   amount:string;
   privateKey:string;
+  transitivePath?:TransitivePath;
   pathToRecipient?: {
     tokenOwners: string[];
     sources: string[];
@@ -61,21 +64,32 @@ createMachine<TransferCirclesContext, any>({
     requestPathToRecipient: {
       id: "requestPathToRecipient",
       invoke: {
-        src: requestPathToRecipient,
-        onDone: "#transferCircles",
+        src: async (context) => {
+          context.data.transitivePath = await requestPathToRecipient(context);
+        },
+        onDone:  "#transferCircles",
         onError: "#error"
       }
     },
     transferCircles: {
       id: "transferCircles",
-      entry: () => {
-        window.o.publishEvent(<PlatformEvent>{
-          type: "shell.progress",
-          message: `Processing Circles transfer ..`
-        });
-      },
+      entry: <any>show({
+        fieldName: "__",
+        component: PaymentPath,
+        params: (context) => {
+          return {
+            hideNav: true,
+            label: "Transferring Circles ..",
+            transfers: context.data.transitivePath.transfers
+          }
+        },
+        navigation: {
+          canGoBack: () => false,
+          canSkip: () => false,
+        }
+      }),
       invoke: {
-        src: async (context, event) => {
+        src: async (context) => {
           const ownerAddress = RpcGateway.get()
             .eth
             .accounts
@@ -85,33 +99,12 @@ createMachine<TransferCirclesContext, any>({
           const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
 
           try {
-            const circlesValueInWei = RpcGateway.get().utils
-              .toWei(context.data.amount.toString(), "ether")
-              .toString();
-            const oValueInWei = new BN(circlesValueInWei);
-            /*
-            const pathResult = await sendMessage({
-              call: "findPath",
-              args: {
-                from: context.environment.safe.address,
-                to: context.data.recipient.value,
-                value: wei
-              }
-            });
-
-            window.o.logger.log(pathResult);
-            const tokenOwners = [safeState.mySafeAddress];
-            const sources = [safeState.mySafeAddress];
-            const destinations = [context.data.recipient.value];
-            const values = [oValueInWei];
-        */
             const tokenOwners = [];
             const sources = [];
             const destinations = [];
             const values = [];
 
-            const path = <TransitivePath>event.data;
-            path.transfers.forEach(transfer => {
+            context.data.transitivePath.transfers.forEach(transfer => {
               tokenOwners.push(transfer.tokenOwner);
               sources.push(transfer.from);
               destinations.push(transfer.to);
@@ -127,7 +120,6 @@ createMachine<TransferCirclesContext, any>({
               values
             );
             const receipt = await transferTroughResult.toPromise();
-
             console.log(receipt);
           } catch (e) {
             console.error(e);
