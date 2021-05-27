@@ -26,7 +26,7 @@
   class="flex mb-2 items-centerjustify-center text-circlesdarkblue customItem {itemClasses}"
 >
   <div
-    class="flex items-center w-full p-3 pt-4 space-x-2 bg-white rounded-sm shadow sm:space-x-6 item-body"
+    class="flex items-center w-full p-3 pt-4 space-x-2 bg-white border rounded-sm shadow-md sm:space-x-6 item-body"
   >
     <div class="mr-2 text-center">
       <div class="avatar">

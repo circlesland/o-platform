@@ -1,4 +1,5 @@
 <script lang="ts">
+  // import Select from "../../../shell/src/shared/molecules/Select/Select.svelte";
   import Select from "svelte-select";
   import { ChoiceSelectorContext } from "./choiceSelectorContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
@@ -59,8 +60,14 @@
   }
 </script>
 
-<div class="form-control justify-self-center">
-  <label class="label" for={context.fieldName}>
+<div
+  class="flex flex-col items-end form-control justify-self-center"
+  style="height: 29rem"
+>
+  <label
+    class="self-center flex-1 mb-4 text-center label"
+    for={context.fieldName}
+  >
     <span class="label-text">{@html context.params.label}</span>
   </label>
 
@@ -110,6 +117,41 @@
 </div>
 <ProcessNavigation on:buttonClick={submitHandler} {context} />
 
+<!-- <style>
+  .themed {
+    width: 100%;
+    padding: 0 !important;
+    --listMaxHeight: 400px;
+    --padding: 0;
+
+    --listBackground: transparent;
+    --listShadow: none;
+    --borderRadius: var(--rounded-btn, 0.5rem);
+    --border: 1px solid hsla(var(--bc, 215 28% 17%) / var(--tw-border-opacity));
+
+    @apply input-lg;
+    --height: auto;
+    height: auto !important;
+    min-height: 4rem;
+    --inputTop: 3px;
+    --inputFontSize: 18px;
+    --inputPadding: 0.5rem 0.5rem 0.5rem 1rem;
+  }
+  .themed-select {
+    padding: 0 !important;
+    --listMaxHeight: 400px;
+    --listMaxWidth: 10rem;
+    width: 100%;
+    --borderRadius: var(--rounded-btn, 0.5rem);
+    --border: 1px solid hsla(var(--bc, 215 28% 17%) / var(--tw-border-opacity));
+    --height: 4rem;
+    --inputTop: 3px;
+    --inputFontSize: 18px;
+    --inputPadding: 0.5rem 0.5rem 0.5rem 1rem;
+    height: 3.5rem;
+    @apply input-lg;
+  }
+</style> -->
 <style>
   .themed {
     width: 100%;
@@ -118,14 +160,17 @@
     /* --listMaxWidth: 10rem; */
     --listBackground: transparent;
     --listShadow: none;
-    --borderRadius: 0.5rem;
-    --border: none;
+    --borderRadius: var(--rounded-btn, 0.5rem);
+    --border: 1px solid hsla(var(--bc, 215 28% 17%) / var(--tw-border-opacity));
     --height: 4rem;
     --inputTop: 3px;
     --inputFontSize: 18px;
     --inputPadding: 0.5rem 0.5rem 0.5rem 1rem;
+    --itemIsActiveBG: #dddddd;
+    --itemIsActiveColor: #001c6e;
     height: 3.5rem;
-    @apply input-lg input-bordered;
+    @apply input-lg;
+    @apply input-bordered;
   }
 
   .themed-select {
@@ -133,13 +178,16 @@
     --listMaxHeight: 400px;
     --listMaxWidth: 10rem;
     width: 100%;
-    --borderRadius: 0.5rem;
-    --border: none;
+    --borderRadius: var(--rounded-btn, 0.5rem);
+    --border: 1px solid hsla(var(--bc, 215 28% 17%) / var(--tw-border-opacity));
     --height: 4rem;
     --inputTop: 3px;
     --inputFontSize: 18px;
     --inputPadding: 0.5rem 0.5rem 0.5rem 1rem;
+    --itemIsActiveBG: #dddddd;
+    --itemIsActiveColor: #001c6e;
     height: 3.5rem;
-    @apply input-lg input-bordered;
+    @apply input-lg;
+    @apply input-bordered;
   }
 </style>

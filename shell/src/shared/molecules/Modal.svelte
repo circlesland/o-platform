@@ -1,7 +1,8 @@
 <script lang="ts">
   // imports
   import { createEventDispatcher } from "svelte";
-  import { fade } from "svelte/transition";
+  import { fade, slide } from "svelte/transition";
+  import { linear } from "svelte/easing";
 
   const dispatch = createEventDispatcher();
   // public props
@@ -13,6 +14,9 @@
     dispatch("closeRequest");
   };
   const handleEsc = (e) => e.key === "Escape" && handleClose();
+  let options = { duration: 200, easing: linear };
+
+  // transition:slide={options}
 </script>
 
 {#if isOpen}
@@ -26,18 +30,17 @@
     in:fade
     out:fade
     on:click|self={handleClose}
-    class="z-40 overlay p-2"
+    class="z-40 overlay"
   >
     <div
-      class="w-full min-w-min grid
-      justify-items-stretch pt-2 mb-14 rounded-t-lg  md:w-2/3 xl:w-1/2 "
+      class="grid w-full pt-2 bg-white rounded-t-lg pb-14 min-w-min justify-items-stretch md:w-2/3 xl:w-1/2 "
     >
       <!-- <img
-        class="inline justify-self-center -mt-8 w-12 h-12 -mb-6 z-30 "
+        class="z-30 inline w-12 h-12 -mt-8 -mb-6 justify-self-center "
         src="/images/common/circles.png"
         alt="circles.land"
       /> -->
-      <div class="p-4 py-8 space-y-2 md:p-8">
+      <div class="p-4 pb-8 space-y-2 lg:px-8">
         <div class="flex">
           <div class="w-full m-auto">
             <slot />

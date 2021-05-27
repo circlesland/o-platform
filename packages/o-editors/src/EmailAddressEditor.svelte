@@ -25,13 +25,13 @@
 
 <div class="form-control justify-self-center">
   <label
-    class="label text-center self-center justify-center"
+    class="self-center justify-center mb-2 text-center label"
     for={context.fieldName}
   >
     <span class="label-text">{@html context.params.label}</span>
   </label>
   {#if context.messages[context.fieldName]}
-    <div class="alert alert-error mb-2 mt-2">
+    <div class="mt-2 mb-2 alert alert-error">
       <div class="flex-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"

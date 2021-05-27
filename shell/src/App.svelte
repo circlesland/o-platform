@@ -325,7 +325,7 @@
             {#if !processWaiting}
               {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
                 <button
-                  class="btn btn-outline btn-white ml-7 sm:ml-9"
+                  class="ml-4 btn btn-light sm:ml-6"
                   on:click={() => modalProcess.sendAnswer(new Back())}
                   >BACK</button
                 >
@@ -368,8 +368,30 @@
                     Join Now
                   </div>
                 {:else}
-                  <img
-                    class="w-full -mt-4"
+                  <div
+                    class="-mt-3 text-lightgrey hover:text-primary active:text-primary"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-12 h-12"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      ><path
+                        d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"
+                        on:click={() => {
+                          isOpen = !isOpen;
+                          if (!isOpen) {
+                            lastPrompt = null;
+                            if (modalProcess) {
+                              modalProcess.sendEvent(new Cancel());
+                            }
+                          }
+                        }}
+                      /></svg
+                    >
+                  </div>
+                  <!-- <img
+                    class="w-full -mt-2"
                     src="/images/common/close.png"
                     alt="close"
                     on:click={() => {
@@ -381,12 +403,12 @@
                         }
                       }
                     }}
-                  />
+                  /> -->
                 {/if}
               </button>
               {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
                 <button
-                  class="btn btn-outline btn-white mr-7 sm:mr-9"
+                  class="mr-4 btn btn-light sm:mr-6"
                   on:click={() => modalProcess.sendAnswer(new Skip())}
                   >SKIP</button
                 >
@@ -449,7 +471,7 @@
             {#if !processWaiting}
               {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
                 <button
-                  class="btn btn-outline btn-white ml-7 sm:ml-9"
+                  class="ml-4 btn btn-light sm:ml-6"
                   on:click={() => modalProcess.sendAnswer(new Back())}
                   >BACK</button
                 >
@@ -480,16 +502,33 @@
                     alt="open"
                   />
                 {:else}
-                  <img
-                    class="w-full"
-                    src="/images/common/close.png"
-                    alt="close"
-                  />
+                  <div
+                    class="mt-3 text-lightgrey hover:text-primary active:text-primary"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-12 h-12"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      ><path
+                        d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"
+                        on:click={() => {
+                          isOpen = !isOpen;
+                          if (!isOpen) {
+                            lastPrompt = null;
+                            if (modalProcess) {
+                              modalProcess.sendEvent(new Cancel());
+                            }
+                          }
+                        }}
+                      /></svg
+                    >
+                  </div>
                 {/if}
               </button>
               {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
                 <button
-                  class="btn btn-outline btn-white mr-7 sm:mr-9"
+                  class="mr-4 btn btn-light sm:mr-6"
                   on:click={() => modalProcess.sendAnswer(new Skip())}
                   >SKIP</button
                 >

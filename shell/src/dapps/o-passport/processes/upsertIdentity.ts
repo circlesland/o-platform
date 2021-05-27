@@ -15,8 +15,8 @@ import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { UpsertProfileDocument } from "../data/api/types";
 import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import {promptChoice} from "./identify/prompts/promptChoice";
-import {AvataarGenerator} from "../../../shared/avataarGenerator";
+import { promptChoice } from "./identify/prompts/promptChoice";
+import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 
 export type UpsertIdentityContextData = {
@@ -35,7 +35,7 @@ export type UpsertIdentityContextData = {
   avatarUrl?: string;
   avatarCid?: string;
   avatarMimeType?: string;
-  errorUploadingAvatar?:string;
+  errorUploadingAvatar?: string;
 };
 
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
@@ -245,7 +245,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Uploading your avatar ..`
+            message: `Uploading your avatar ..`,
           });
         },
         invoke: {
@@ -295,15 +295,15 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         isSensitive: true,
         params: {
           submitButtonText: "Try again",
-          html: (context) => context.data.errorUploadingAvatar
+          html: (context) => context.data.errorUploadingAvatar,
         },
         navigation: {
-          next: "#checkPreviewAvatar"
+          next: "#checkPreviewAvatar",
         },
       }),
       newsletter: promptChoice({
         id: "newsletter",
-        entry: (context, event:any) => {
+        entry: (context, event: any) => {
           if (event.data?.url) {
             context.data.avatarUrl = event.data?.url;
             context.data.avatarMimeType = event.data?.mimeType;
@@ -311,35 +311,38 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
         promptLabel: strings.labelNewsletter,
         onlyWhenDirty: skipIfNotDirty,
-        options: [{
-          key: "create",
-          label: "No thanks",
-          target: "#dontSubscribeToNewsletter"
-        }, {
-          key: "connect",
-          label: "Yes please",
-          target: "#subscribeToNewsletter"
-        }],
+        options: [
+          {
+            key: "create",
+            label: "No thanks",
+            target: "#dontSubscribeToNewsletter",
+          },
+          {
+            key: "connect",
+            label: "Yes please",
+            target: "#subscribeToNewsletter",
+          },
+        ],
         navigation: {
           canGoBack: () => true,
           canSkip: () => false,
           previous: "#avatarUrl",
-          skip: "#upsertIdentity"
-        }
+          skip: "#upsertIdentity",
+        },
       }),
       subscribeToNewsletter: {
         id: "subscribeToNewsletter",
         entry: (context, event) => {
           context.data.newsletter = true;
         },
-        always: "#upsertIdentity"
+        always: "#upsertIdentity",
       },
       dontSubscribeToNewsletter: {
         id: "dontSubscribeToNewsletter",
         entry: (context, event) => {
           context.data.newsletter = false;
         },
-        always: "#upsertIdentity"
+        always: "#upsertIdentity",
       },
       upsertIdentity: {
         id: "upsertIdentity",

@@ -53,6 +53,21 @@ body {
   font-family: Poppins;
   @apply font-bold;
   letter-spacing: 3px;
+  @apply text-secondary;
+}
+
+.btn-light {
+  @apply text-secondary;
+  @apply bg-lightgrey;
+  border: none;
+}
+.btn-light:hover {
+  @apply text-secondary;
+  @apply bg-primary;
+}
+
+.btn-error {
+  @apply text-white;
 }
 
 .btn-outline.btn-white {
@@ -111,9 +126,10 @@ body {
 .label {
     @apply text-center;
     @apply block;
+    @apply p-0;
 }
 .label-text {
-  @apply text-white;
+  @apply text-secondary;
   @apply font-circles;
   font-size: 1.12rem;
   line-height: 1.7rem;
