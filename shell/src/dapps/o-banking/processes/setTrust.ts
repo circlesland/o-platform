@@ -14,7 +14,6 @@ import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
 import { HUB_ADDRESS } from "@o-platform/o-circles/dist/consts";
 import { BN } from "ethereumjs-util";
 import {AvataarGenerator} from "../../../shared/avataarGenerator";
-import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -176,22 +175,10 @@ const processDefinition = (processId: string) =>
 
             return execResult.toPromise();
           },
-          onDone: "#showSuccess",
+          onDone: "#success",
           onError: "#error",
         },
       },
-      showSuccess: prompt({
-        id: "showSuccess",
-        fieldName: "__",
-        component: HtmlViewer,
-        params: {
-          html: () => `<p>Trust changed</p>`,
-          submitButtonText: "Close"
-        },
-        navigation: {
-          next: "#success"
-        }
-      }),
       success: {
         type: "final",
         id: "success",

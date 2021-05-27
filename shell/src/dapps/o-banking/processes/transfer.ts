@@ -407,7 +407,7 @@ const processDefinition = (processId: string) =>
             messages: {},
             dirtyFlags: {},
           },
-          onDone: "#showSuccess",
+          onDone: "#success",
           onError: "#error",
         },
       },
@@ -430,22 +430,10 @@ const processDefinition = (processId: string) =>
             messages: {},
             dirtyFlags: {},
           },
-          onDone: "#showSuccess",
+          onDone: "#success",
           onError: "#error",
         },
       },
-      showSuccess: prompt({
-        id: "showSuccess",
-        fieldName: "__",
-        component: HtmlViewer,
-        params: {
-          html: () => `<p>Transfer successful</p>`,
-          submitButtonText: "Close"
-        },
-        navigation: {
-          next: "#success"
-        }
-      }),
       success: {
         id: "success",
         type: "final",
