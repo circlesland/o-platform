@@ -44,12 +44,18 @@ export let userInfo = async function(addresses) {
 };
 
 export let tokenOwner = async function(token) {
-    return (await (await fetch(GraphAPI, {
+    const owner = (await (await fetch(GraphAPI, {
         method: 'POST',
         body: JSON.stringify({
             query: `{token(id: "${token}") { owner { id } } }`
         })
-    })).json()).data.token.owner.id;
+    })).json());
+    const tokenResult = owner.data.token;
+    if (!tokenResult) {
+        return "";
+    }
+    const ownerAddress = tokenResult.owner.id;
+    return ownerAddress;
 };
 
 export let computeFlow = async function(from, to, maxValue) {

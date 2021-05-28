@@ -3,17 +3,18 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import TextEditor from "../../../../../packages/o-editors/src/TextEditor.svelte";
+import TextEditor from "@o-platform/o-editors/src//TextEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import gql from "graphql-tag";
-import { Choice } from "../../../../../packages/o-editors/src/choiceSelectorContext";
+import { Choice } from "@o-platform/o-editors/src/choiceSelectorContext";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
 import { HUB_ADDRESS } from "@o-platform/o-circles/dist/consts";
 import { BN } from "ethereumjs-util";
 import {AvataarGenerator} from "../../../shared/avataarGenerator";
+import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -175,10 +176,22 @@ const processDefinition = (processId: string) =>
 
             return execResult.toPromise();
           },
-          onDone: "#success",
+          onDone: "#showSuccess",
           onError: "#error",
         },
       },
+      showSuccess: prompt({
+        id: "showSuccess",
+        fieldName: "__",
+        component: HtmlViewer,
+        params: {
+          html: () => `<p>Trust changed</p>`,
+          submitButtonText: "Close"
+        },
+        navigation: {
+          next: "#success"
+        }
+      }),
       success: {
         type: "final",
         id: "success",

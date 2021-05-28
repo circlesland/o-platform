@@ -13,6 +13,7 @@ export type EditorContext = {
   isSensitive?: boolean;
   canGoBack: boolean;
   canSkip: boolean;
+  hideNav: boolean;
   dataSchema?: any;
   sendAnswer(answer:PlatformEvent) : void;
 };
