@@ -440,7 +440,8 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           html: () => `<p>Transfer successful</p>`,
-          submitButtonText: "Close"
+          submitButtonText: "Close",
+          hideNav: true
         },
         navigation: {
           next: "#success"

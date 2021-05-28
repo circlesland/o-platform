@@ -186,7 +186,8 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           html: () => `<p>Trust changed</p>`,
-          submitButtonText: "Close"
+          submitButtonText: "Close",
+          hideNav: true
         },
         navigation: {
           next: "#success"
