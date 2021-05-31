@@ -7,4 +7,5 @@ export type ApiProfile = {
     circlesSafeOwner?: string;
     firstName: string;
     lastName?: string;
+    cityGeonameid?: number
 };

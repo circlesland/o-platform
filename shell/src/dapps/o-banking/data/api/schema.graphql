@@ -5,6 +5,17 @@ schema {
     mutation: Mutation
 }
 
+type City {
+    country: String!
+    feature_code: String!
+    geonameid: Int!
+    latitude: Float!
+    longitude: Float!
+    name: String!
+    population: Int!
+    source: String!
+}
+
 type ConsumeDepositedChallengeResponse {
     challenge: String
     success: Boolean!
@@ -58,6 +69,7 @@ type Profile {
     circlesAddress: String
     circlesSafeOwner: String
     circlesTokenAddress: String
+    cityGeonameid: Int
     country: String
     dream: String
     firstName: String!
@@ -67,6 +79,7 @@ type Profile {
 }
 
 type Query {
+    cities(query: QueryCitiesInput!): [City!]!
     profiles(query: QueryProfileInput!): [Profile!]!
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
@@ -119,6 +132,11 @@ input IndexTransferInput {
     to: String!
 }
 
+input QueryCitiesInput {
+    languageCode: String
+    name: String!
+}
+
 input QueryProfileInput {
     circlesAddress: [String!]
     country: String
@@ -150,6 +168,7 @@ input UpsertProfileInput {
     circlesAddress: String
     circlesSafeOwner: String
     circlesTokenAddress: String
+    cityGeonameid: Int
     country: String
     dream: String
     emailAddress: String

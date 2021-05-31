@@ -21,6 +21,18 @@ export enum CacheControlScope {
   Public = 'PUBLIC'
 }
 
+export type City = {
+  __typename?: 'City';
+  country: Scalars['String'];
+  feature_code: Scalars['String'];
+  geonameid: Scalars['Int'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+  name: Scalars['String'];
+  population: Scalars['Int'];
+  source: Scalars['String'];
+};
+
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
@@ -129,6 +141,7 @@ export type Profile = {
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
   circlesTokenAddress?: Maybe<Scalars['String']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
   country?: Maybe<Scalars['String']>;
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
@@ -139,11 +152,17 @@ export type Profile = {
 
 export type Query = {
   __typename?: 'Query';
+  cities: Array<City>;
   profiles: Array<Profile>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryCitiesArgs = {
+  query: QueryCitiesInput;
 };
 
 
@@ -154,6 +173,11 @@ export type QueryProfilesArgs = {
 
 export type QuerySearchArgs = {
   query: SearchInput;
+};
+
+export type QueryCitiesInput = {
+  languageCode?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
 };
 
 export type QueryProfileInput = {
@@ -214,6 +238,7 @@ export type UpsertProfileInput = {
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
   circlesTokenAddress?: Maybe<Scalars['String']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
   country?: Maybe<Scalars['String']>;
   dream?: Maybe<Scalars['String']>;
   emailAddress?: Maybe<Scalars['String']>;
@@ -290,6 +315,7 @@ export type UpsertProfileMutationVariables = Exact<{
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -297,7 +323,7 @@ export type UpsertProfileMutation = (
   { __typename?: 'Mutation' }
   & { upsertProfile: (
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'circlesAddress' | 'circlesSafeOwner' | 'newsletter'>
+    & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'circlesAddress' | 'circlesSafeOwner' | 'newsletter' | 'cityGeonameid'>
   ) }
 );
 
@@ -327,7 +353,7 @@ export type MyProfileQuery = (
   { __typename?: 'Query' }
   & { profiles: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'cityGeonameid'>
   )> }
 );
 
@@ -340,7 +366,7 @@ export type ProfilesQuery = (
   { __typename?: 'Query' }
   & { profiles: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
   )> }
 );
 
@@ -381,9 +407,9 @@ export const LogoutDocument = gql`
 }
     `;
 export const UpsertProfileDocument = gql`
-    mutation upsertProfile($id: Int, $firstName: String!, $lastName: String, $dream: String, $country: String, $avatarUrl: String, $avatarCid: String, $avatarMimeType: String, $circlesAddress: String, $circlesSafeOwner: String, $newsletter: Boolean) {
+    mutation upsertProfile($id: Int, $firstName: String!, $lastName: String, $dream: String, $country: String, $avatarUrl: String, $avatarCid: String, $avatarMimeType: String, $circlesAddress: String, $circlesSafeOwner: String, $newsletter: Boolean, $cityGeonameid: Int) {
   upsertProfile(
-    data: {id: $id, firstName: $firstName, lastName: $lastName, dream: $dream, country: $country, avatarUrl: $avatarUrl, avatarCid: $avatarCid, avatarMimeType: $avatarMimeType, circlesAddress: $circlesAddress, circlesSafeOwner: $circlesSafeOwner, newsletter: $newsletter}
+    data: {id: $id, firstName: $firstName, lastName: $lastName, dream: $dream, country: $country, avatarUrl: $avatarUrl, avatarCid: $avatarCid, avatarMimeType: $avatarMimeType, circlesAddress: $circlesAddress, circlesSafeOwner: $circlesSafeOwner, newsletter: $newsletter, cityGeonameid: $cityGeonameid}
   ) {
     id
     firstName
@@ -396,6 +422,7 @@ export const UpsertProfileDocument = gql`
     circlesAddress
     circlesSafeOwner
     newsletter
+    cityGeonameid
   }
 }
     `;
@@ -427,6 +454,7 @@ export const MyProfileDocument = gql`
     avatarCid
     avatarMimeType
     newsletter
+    cityGeonameid
   }
 }
     `;
@@ -443,6 +471,7 @@ export const ProfilesDocument = gql`
     avatarUrl
     avatarCid
     avatarMimeType
+    cityGeonameid
   }
 }
     `;

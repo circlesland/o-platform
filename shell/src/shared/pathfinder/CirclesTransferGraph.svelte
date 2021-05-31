@@ -57,7 +57,7 @@ let drawGraph = async function(steps) {
             from: step.from,
             to: step.to,
             value: step.value,
-            label: formatValue(step.value) + " - " + label,
+            label: formatValue(step.value),
             arrows: "to",
             font: {align: "top"}
         })
