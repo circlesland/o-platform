@@ -47,13 +47,17 @@
     deploySafe,
     HubSignupContextData,
   } from "./dapps/o-banking/processes/deploySafe";
-  import Progress from "./dapps/o-homepage/components/Progress.svelte";
+
+  import DappsNav from "./shared/molecules/DappsNav.svelte";
+  import DappNavItem from "./shared/atoms/DappsNavItem.svelte";
 
   let isOpen: boolean = false;
   let processWaiting: boolean = false;
   let beforeCancelPrompt: Prompt; // Is set when the "do you want to cancel?" prompt is shown
   let modalProcess: Process;
   let modalProcessEventSubscription: Subscription;
+  let current;
+
   let publicUrls = {
     "/": true,
     "/miva": true,
@@ -271,6 +275,7 @@
         ? ""
         : "md:w-2/3 xl:w-1/2";
   }
+
 </script>
 
 <div class="flex flex-col h-screen ">
@@ -278,8 +283,8 @@
   <header class="z-10 w-full mx-auto md:w-2/3 xl:w-1/2">
   </header> -->
 
-  <SvelteToast />
-  <main class="z-30 flex-1 overflow-y-visible" class:blur={isOpen}>
+  <main class="z-30 flex-1 overflow-y-auto" class:blur={isOpen}>
+    <SvelteToast />
     <div class="w-full mx-auto {layoutClasses}">
       <Router
         {routes}
@@ -293,8 +298,9 @@
   {#if lastLoadedDapp && lastLoadedPage && !lastLoadedDapp.hideFooter && !lastLoadedPage.hideFooter}
     {#if lastLoadedDapp.dappId === "homepage:1"}
       <footer
-        class="sticky bottom-0 z-50 w-full h-12 pb-16 bg-white border-t border-base-300"
+        class="fixed bottom-0 z-50 w-full h-12 pb-16 bg-white border-t border-base-300"
         class:isOpen
+        class:hidden={isOpen}
       >
         <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
           <!-- NOT MODAL START -->
@@ -305,31 +311,7 @@
               : 'grid-cols-5'}"
             class:px-4={!isOpen}
           >
-            {#each lastLoadedDapp.pages
-              .filter((o) => !o.isSystem)
-              .slice(0, 2) as page}
-              <a
-                href="#/{lastLoadedDapp.routeParts.join('/') +
-                  '/' +
-                  page.routeParts.join('/')}"
-                class="w-full text-center justify-self-center tab focus:text-teal-500 hover:text-teal-500 "
-                class:hidden={isOpen}
-              >
-                <NavItem
-                  isSelected={lastLoadedPage.routeParts[0] ===
-                    page.title.toLowerCase()}
-                  label={page.title}
-                />
-              </a>
-            {/each}
             {#if !processWaiting}
-              {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
-                <button
-                  class="ml-4 btn btn-light sm:ml-6"
-                  on:click={() => modalProcess.sendAnswer(new Back())}
-                  >BACK</button
-                >
-              {/if}
               <button
                 class="w-16 h-16 mx-2 justify-self-center min-w-min"
                 class:bg-white={!isOpen}
@@ -340,214 +322,106 @@
                   !lastPrompt ||
                   (lastPrompt && !lastPrompt.navigation.canGoBack)}
               >
-                {#if !isOpen}
-                  <div
-                    class="absolute transition-none shadow-md joinnowbutton btn btn-primary bottom-2 left-1/2"
-                    on:click={() => login()}
+                <div
+                  class="absolute transition-none shadow-md joinnowbutton btn btn-primary bottom-2 left-1/2"
+                  on:click={() => login()}
+                >
+                  <svg
+                    class="inline w-6 h-6 mr-3"
+                    viewBox="0 0 229 255"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      class="inline w-6 h-6 mr-3"
-                      viewBox="0 0 229 255"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M118.5 237C150.437 237 179.424 224.366 200.734 203.822C209.904 197.627 215.933 187.136 215.933 175.236C215.933 156.198 200.499 140.764 181.461 140.764C170.572 140.764 160.863 145.812 154.545 153.695L154.457 153.627C145.313 163.112 132.476 169.012 118.261 169.012C90.4957 169.012 67.9879 146.504 67.9879 118.739C67.9879 90.9745 90.4957 68.4667 118.261 68.4667C132.339 68.4667 145.067 74.254 154.193 83.5795L154.29 83.5037C160.581 90.2293 169.535 94.4328 179.471 94.4328C198.51 94.4328 213.944 78.9988 213.944 59.9601C213.944 48.1884 208.043 37.7949 199.039 31.5755C177.899 11.9794 149.599 0 118.5 0C53.0543 0 0 53.0543 0 118.5C0 183.946 53.0543 237 118.5 237Z"
-                        fill="white"
-                      />
-                      <ellipse
-                        cx="118.979"
-                        cy="118.739"
-                        rx="26.5727"
-                        ry="26.3333"
-                        fill="white"
-                      />
-                    </svg>
-                    Join Now
-                  </div>
-                {:else}
-                  <div
-                    class="-mt-3 text-lightgrey hover:text-primary active:text-primary"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="w-12 h-12"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      ><path
-                        d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"
-                        on:click={() => {
-                          isOpen = !isOpen;
-                          if (!isOpen) {
-                            lastPrompt = null;
-                            if (modalProcess) {
-                              modalProcess.sendEvent(new Cancel());
-                            }
-                          }
-                        }}
-                      /></svg
-                    >
-                  </div>
-                  <!-- <img
-                    class="w-full -mt-2"
-                    src="/images/common/close.png"
-                    alt="close"
-                    on:click={() => {
-                      isOpen = !isOpen;
-                      if (!isOpen) {
-                        lastPrompt = null;
-                        if (modalProcess) {
-                          modalProcess.sendEvent(new Cancel());
-                        }
-                      }
-                    }}
-                  /> -->
-                {/if}
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M118.5 237C150.437 237 179.424 224.366 200.734 203.822C209.904 197.627 215.933 187.136 215.933 175.236C215.933 156.198 200.499 140.764 181.461 140.764C170.572 140.764 160.863 145.812 154.545 153.695L154.457 153.627C145.313 163.112 132.476 169.012 118.261 169.012C90.4957 169.012 67.9879 146.504 67.9879 118.739C67.9879 90.9745 90.4957 68.4667 118.261 68.4667C132.339 68.4667 145.067 74.254 154.193 83.5795L154.29 83.5037C160.581 90.2293 169.535 94.4328 179.471 94.4328C198.51 94.4328 213.944 78.9988 213.944 59.9601C213.944 48.1884 208.043 37.7949 199.039 31.5755C177.899 11.9794 149.599 0 118.5 0C53.0543 0 0 53.0543 0 118.5C0 183.946 53.0543 237 118.5 237Z"
+                      fill="white"
+                    />
+                    <ellipse
+                      cx="118.979"
+                      cy="118.739"
+                      rx="26.5727"
+                      ry="26.3333"
+                      fill="white"
+                    />
+                  </svg>
+                  Join Now
+                </div>
               </button>
-              {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
-                <button
-                  class="mr-4 btn btn-light sm:mr-6"
-                  on:click={() => modalProcess.sendAnswer(new Skip())}
-                  >SKIP</button
-                >
-              {/if}
             {/if}
-            {#if lastLoadedDapp}
-              {#each lastLoadedDapp.pages
-                .filter((o) => !o.isSystem)
-                .splice(2) as page}
-                <a
-                  href="#/{lastLoadedDapp.routeParts.join('/') +
-                    '/' +
-                    page.routeParts.join('/')}"
-                  class="text-center justify-self-center tab"
-                  class:hidden={isOpen}
-                >
-                  <NavItem
-                    isSelected={lastLoadedPage.title == page.title}
-                    label={page.title}
-                  />
-                </a>
-              {/each}
-            {/if}
-            <!-- NOT MODAL END -->
           </div>
         </div>
       </footer>
     {:else}
-      <footer
-        class="sticky bottom-0 z-50 w-full h-12 pb-16 bg-white border-t border-base-300"
-        class:isOpen
-      >
-        <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
-          <!-- NOT MODAL START -->
-          <div
-            class="grid  {lastPrompt &&
-            (lastPrompt.navigation.canGoBack || lastPrompt.navigation.canSkip)
-              ? 'grid-cols-3'
-              : 'grid-cols-5'}"
-            class:px-4={!isOpen}
-          >
-            {#each lastLoadedDapp.pages
-              .filter((o) => !o.isSystem)
-              .slice(0, 2) as page}
-              <a
-                href="#/{lastLoadedDapp.routeParts.join('/') +
-                  '/' +
-                  page.routeParts.join('/')}"
-                class="w-full text-center justify-self-center tab focus:text-teal-500 hover:text-teal-500 "
-                class:hidden={isOpen}
-              >
-                <NavItem
-                  isSelected={lastLoadedPage.routeParts[0] ===
-                    page.title.toLowerCase()}
-                  label={page.title}
-                />
-              </a>
-            {/each}
+      <DappsNav {isOpen}>
+        <DappNavItem segment="/#/dashboard" title="home" />
+        {#each lastLoadedDapp.pages
+          .filter((o) => !o.isSystem)
+          .slice(0, 2) as page}
+          <DappNavItem
+            segment="#/{lastLoadedDapp.routeParts.join('/') +
+              '/' +
+              page.routeParts.join('/')}"
+            title={page.title}
+          />
+        {/each}
 
-            {#if !processWaiting}
-              {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
-                <button
-                  class="ml-4 btn btn-light sm:ml-6"
-                  on:click={() => modalProcess.sendAnswer(new Back())}
-                  >BACK</button
-                >
-              {/if}
-              <button
-                class="w-16 h-16 mx-2 -m-4 justify-self-center btn-circle min-w-min circles-button "
-                class:bg-white={!isOpen}
-                class:shadow-lg={!isOpen}
-                class:col-start-3={!lastPrompt ||
-                  (lastPrompt && !lastPrompt.navigation.canGoBack)}
-                class:col-end-3={beforeCancelPrompt ||
-                  !lastPrompt ||
-                  (lastPrompt && !lastPrompt.navigation.canGoBack)}
-                on:click={() => {
-                  isOpen = !isOpen;
-                  if (!isOpen) {
-                    lastPrompt = null;
-                    if (modalProcess) {
-                      modalProcess.sendEvent(new Cancel());
-                    }
-                  }
-                }}
-              >
-                {#if !isOpen}
-                  <img
-                    class="w-full"
-                    src="/images/common/circles.png"
-                    alt="open"
-                  />
-                {:else}
-                  <div
-                    class="mt-3 text-lightgrey hover:text-primary active:text-primary"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="w-12 h-12"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      ><path
-                        d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"
-                      /></svg
-                    >
-                  </div>
-                {/if}
-              </button>
-              {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
-                <button
-                  class="mr-4 btn btn-light sm:mr-6"
-                  on:click={() => modalProcess.sendAnswer(new Skip())}
-                  >SKIP</button
-                >
-              {/if}
-            {/if}
-            {#if lastLoadedDapp}
-              {#each lastLoadedDapp.pages
-                .filter((o) => !o.isSystem)
-                .splice(2) as page}
-                <a
-                  href="#/{lastLoadedDapp.routeParts.join('/') +
-                    '/' +
-                    page.routeParts.join('/')}"
-                  class="text-center justify-self-center tab"
-                  class:hidden={isOpen}
-                >
-                  <NavItem
-                    isSelected={lastLoadedPage.routeParts[0] ===
-                      page.title.toLowerCase()}
-                    label={page.title}
-                  />
-                </a>
-              {/each}
-            {/if}
-            <!-- NOT MODAL END -->
-          </div>
-        </div>
-      </footer>
+        <li
+          on:click={() => {
+            isOpen = !isOpen;
+            if (!isOpen) {
+              lastPrompt = null;
+              if (modalProcess) {
+                modalProcess.sendEvent(new Cancel());
+              }
+            }
+          }}
+          class="self-center block text-center text-white rounded-full cursor-pointer bg-primary h-9 w-9"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-9 h-9"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+        </li>
+
+        {#each lastLoadedDapp.pages
+          .filter((o) => !o.isSystem)
+          .splice(2) as page}
+          <DappNavItem
+            segment="#/{lastLoadedDapp.routeParts.join('/') +
+              '/' +
+              page.routeParts.join('/')}"
+            title={page.title}
+          />
+        {/each}
+        <li class="self-center block text-light">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6 m-auto"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+            />
+          </svg>
+        </li>
+      </DappsNav>
     {/if}
   {/if}
 </div>
@@ -565,6 +439,56 @@
           modalProcess = null;
         }}
       />
+      <div class="grid grid-cols-3 mt-4">
+        {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
+          <button on:click={() => modalProcess.sendAnswer(new Back())}>
+            <div class="text-lightgrey hover:text-primary active:text-primary">
+              <svg
+                class="w-8 h-8"
+                viewBox="0 0 22 22"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12.5757 19.895L11.4917 20.979C11.0327 21.438 10.2905 21.438 9.83643 20.979L0.344238 11.4917C-0.114746 11.0327 -0.114746 10.2905 0.344238 9.83643L9.83643 0.344238C10.2954 -0.114746 11.0376 -0.114746 11.4917 0.344238L12.5757 1.42822C13.0395 1.89209 13.0298 2.64893 12.5562 3.10303L6.67236 8.7085H20.7056C21.355 8.7085 21.8774 9.23096 21.8774 9.88037V11.4429C21.8774 12.0923 21.355 12.6147 20.7056 12.6147H6.67236L12.5562 18.2202C13.0347 18.6743 13.0444 19.4312 12.5757 19.895Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </button>
+        {/if}
+
+        <button
+          class="col-start-2 col-end-2 justify-self-center min-w-min"
+          on:click={() => {
+            lastPrompt = null;
+            if (modalProcess) {
+              modalProcess.sendEvent(new Cancel());
+            }
+          }}
+        >
+          <div class="text-lightgrey hover:text-primary active:text-primary">
+            <svg
+              class="w-14 h-14"
+              viewBox="0 0 44 43"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11.2099 10.7901C5.45377 16.7508 5.61948 26.2439 11.5801 32.0001C17.5408 37.7562 27.034 37.5905 32.7901 31.6299C38.5463 25.6692 38.3805 16.176 32.4199 10.4199C26.4592 4.66374 16.9661 4.82944 11.2099 10.7901ZM29.2685 16.1212C29.5557 16.3985 29.5637 16.8603 29.2864 17.1475L25.421 21.1503L29.4238 25.0157C29.7109 25.293 29.719 25.7548 29.4417 26.042L27.0888 28.4785C26.8115 28.7656 26.3497 28.7737 26.0625 28.4964L22.0597 24.6309L18.1943 28.6337C17.917 28.9209 17.4552 28.9289 17.168 28.6516L14.7315 26.2988C14.4444 26.0215 14.4363 25.5596 14.7136 25.2725L18.579 21.2697L14.5763 17.4043C14.2891 17.127 14.2811 16.6651 14.5584 16.378L16.9112 13.9415C17.1885 13.6543 17.6504 13.6463 17.9375 13.9236L21.9403 17.789L25.8057 13.7862C26.083 13.4991 26.5449 13.491 26.832 13.7683L29.2685 16.1212Z"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+        </button>
+        {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
+          <button
+            class="text-2xl btn-text justify-self-end text-lightgrey hover:text-primary active:text-primary"
+            on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
+          >
+        {/if}
+      </div>
     {:else}
       <!-- No process -->
       {#if getLastLoadedDapp()}
@@ -621,4 +545,5 @@
     transform: translate(-50%, 0);
     animation: none !important;
   }
+
 </style>

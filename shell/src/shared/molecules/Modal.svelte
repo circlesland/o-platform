@@ -17,6 +17,7 @@
   let options = { duration: 200, easing: linear };
 
   // transition:slide={options}
+
 </script>
 
 {#if isOpen}
@@ -33,14 +34,14 @@
     class="z-40 overlay"
   >
     <div
-      class="grid w-full pt-2 bg-white rounded-t-lg pb-14 min-w-min justify-items-stretch md:w-2/3 xl:w-1/2 "
+      class="grid w-full pt-2 bg-white rounded-t-lg min-w-min justify-items-stretch md:w-2/3 xl:w-1/2 "
     >
       <!-- <img
         class="z-30 inline w-12 h-12 -mt-8 -mb-6 justify-self-center "
         src="/images/common/circles.png"
         alt="circles.land"
       /> -->
-      <div class="p-4 pb-8 space-y-2 lg:px-8">
+      <div class="p-4 pb-4 space-y-2 lg:px-8">
         <div class="flex">
           <div class="w-full m-auto">
             <slot />
@@ -76,4 +77,5 @@
       backdrop-filter: blur(4px);
     }
   }
+
 </style>
