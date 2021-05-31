@@ -2,12 +2,12 @@ const colors = require("tailwindcss/colors");
 const production = !process.env.NODE_ENV;
 
 module.exports = {
+  // future: {
+  //   purgeLayersByDefault: true,
+  //   removeDeprecatedGapUtilities: true,
+  // },
   darkMode: false,
-  /*
-  future: {
-    purgeLayersByDefault: true,
-    removeDeprecatedGapUtilities: true,
-  },*/
+
   purge: {
     enabled: production,
     content: ["./../packages/**/*.svelte", "./src/**/*.svelte"],
@@ -51,7 +51,7 @@ module.exports = {
         primary: "#0ad99c",
         primaryhighlight: "#66f7cd",
         secondary: "#001c6e",
-        lightgrey: "#dddddd",
+        lightgrey: "#D9E2EE",
         light: "#b4b4b4",
         dark: "#0D285F",
         warning: "#FF9900",
