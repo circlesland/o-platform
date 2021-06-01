@@ -1,0 +1,59 @@
+mutation createOffer (
+    $createdByProfileId: Int!
+    $title: String!
+    $pictureUrl: String!
+    $description: String
+    $category: String!
+    $geonameid: Int!
+    $pricePerUnit: String!
+    $unit: String!
+    $maxUnits: Int
+    $deliveryTerms: String!
+) {
+    createOffer(data: {
+        geonameid: $geonameid
+        category: $category
+        createdByProfileId: $createdByProfileId,
+        deliveryTerms: $deliveryTerms
+        description: $description,
+        maxUnits: $maxUnits
+        pictureUrl: $pictureUrl
+        pricePerUnit: $pricePerUnit
+        title: $title
+        unit: $unit
+    }) {
+        id
+        createdBy {
+            firstName
+            lastName
+            avatarUrl
+            avatarMimeType
+            city {
+                name
+                country
+            }
+        }
+        createdByProfileId
+        publishedAt
+        unlistedAt
+        purchasedAt
+        title
+        pictureUrl
+        description
+        category
+        geonameid
+        pricePerUnit
+        unit
+        maxUnits
+        deliveryTerms
+        city {
+            geonameid
+            country
+            name
+            latitude
+            longitude
+            population
+            feature_code
+        }
+    }
+}

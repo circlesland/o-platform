@@ -1,0 +1,71 @@
+query offers (
+    $createdByProfileId: Int
+    $id: Int
+    $publishedAt_gt: String
+    $publishedAt_lt: String
+) {
+    offers(query: {
+        createdByProfileId: $createdByProfileId
+        id: $id
+        publishedAt_gt: $publishedAt_gt
+        publishedAt_lt: $publishedAt_lt
+    }) {
+        id
+        createdBy {
+            firstName
+            lastName
+            avatarUrl
+            avatarMimeType
+            city {
+                name
+                country
+            }
+        }
+        createdByProfileId
+        publishedAt
+        unlistedAt
+        purchasedAt
+        title
+        pictureUrl
+        description
+        category
+        geonameid
+        pricePerUnit
+        unit
+        maxUnits
+        deliveryTerms
+        city {
+            geonameid
+            country
+            name
+            latitude
+            longitude
+            population
+            feature_code
+        }
+    }
+}
+
+query citiesByName ($name:String! $languageCode: String) {
+    cities(query: {byName: {name_like: $name, languageCode: $languageCode}}) {
+        geonameid
+        name
+        country
+        population
+        latitude
+        longitude
+        feature_code
+    }
+}
+
+query citiesById ($ids: [Int!]!) {
+    cities(query: {byId: {geonameid: $ids}}) {
+        geonameid
+        name
+        country
+        population
+        latitude
+        longitude
+        feature_code
+    }
+}

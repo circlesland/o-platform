@@ -264,6 +264,50 @@
     </a>
   {/if}
 
+  <!-- Market -->
+
+  <a href="/#/marketplace/stream">
+    <section class="flex items-center justify-center mb-4">
+      <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
+        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary">
+          <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="m-auto h-14 w-14"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+          >
+            <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+        </div>
+        <div class="flex flex-col items-left">
+          <h2 class="mr-2 text-4xl font-circles text-secondary">Market</h2>
+          <p class="text-sm text-base-300">coming soon</p>
+        </div>
+        <div class="flex justify-end flex-1 mr-1 text-primary">
+        <div class="flex justify-end flex-1 mr-1 text-base-300">
+          <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-5 h-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+          >
+            <path
+                    fill-rule="evenodd"
+                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </div>
+    </section>
+  </a>
+
   <!-- Chat -->
 
   <a href="https://discord.gg/4DBbRCMnFZ" target="_blank">
@@ -305,45 +349,4 @@
       </div>
     </section>
   </a>
-
-  <!-- Market -->
-
-  <section class="flex items-center justify-center mb-4">
-    <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
-      <div class="px-4 py-2 mr-4 -ml-3 text-center text-base-300">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="m-auto h-14 w-14"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1"
-            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-          />
-        </svg>
-      </div>
-      <div class="flex flex-col items-left">
-        <h2 class="mr-2 text-4xl font-circles text-base-300">Market</h2>
-        <p class="text-sm text-base-300">coming soon</p>
-      </div>
-      <div class="flex justify-end flex-1 mr-1 text-base-300">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </div>
-    </div>
-  </section>
 </div>

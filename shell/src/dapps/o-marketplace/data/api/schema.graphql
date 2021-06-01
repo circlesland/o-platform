@@ -1,0 +1,312 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type City {
+    country: String!
+    feature_code: String!
+    geonameid: Int!
+    latitude: Float!
+    longitude: Float!
+    name: String!
+    population: Int!
+}
+
+type ConsumeDepositedChallengeResponse {
+    challenge: String
+    success: Boolean!
+}
+
+type DelegateAuthInit {
+    appId: String!
+    challengeType: String
+    delegateAuthCode: String
+    errorMessage: String
+    success: Boolean!
+    validTo: String
+}
+
+type DepositChallengeResponse {
+    errorMessage: String
+    success: Boolean!
+}
+
+type ExchangeTokenResponse {
+    errorMessage: String
+    success: Boolean!
+}
+
+type IndexTransferResponse {
+    errorMessage: String
+    success: Boolean!
+}
+
+type IndexedTransfer {
+    blockNo: Int!
+    from: String!
+    tags: [Tag!]!
+    to: String!
+    transactionHash: String!
+    value: String!
+}
+
+type LockOfferResult {
+    lockedUntil: String
+    success: Boolean!
+}
+
+type LogoutResponse {
+    errorMessage: String
+    success: Boolean!
+}
+
+type Mutation {
+    authenticateAt(appId: String!): DelegateAuthInit!
+    consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
+    createOffer(data: CreateOfferInput!): Offer!
+    depositChallenge(jwt: String!): DepositChallengeResponse!
+    exchangeToken: ExchangeTokenResponse!
+    indexTransfer(data: IndexTransferInput!): IndexTransferResponse!
+    lockOffer(data: LockOfferInput!): LockOfferResult!
+    logout: LogoutResponse!
+    provePayment(data: PaymentProof!): ProvePaymentResult!
+    requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
+    unlistOffer(offerId: Int!): Boolean!
+    updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
+    upsertProfile(data: UpsertProfileInput!): Profile!
+}
+
+type Offer {
+    category: String!
+    city: City
+    createdBy: Profile
+    createdByProfileId: Int!
+    deliveryTerms: String!
+    description: String
+    geonameid: Int!
+    id: Int!
+    maxUnits: Int
+    pictureUrl: String!
+    pricePerUnit: String!
+    publishedAt: String!
+    purchasedAt: String
+    title: String!
+    unit: String!
+    unlistedAt: String
+}
+
+type Profile {
+    avatarCid: String
+    avatarMimeType: String
+    avatarUrl: String
+    circlesAddress: String
+    circlesSafeOwner: String
+    circlesTokenAddress: String
+    city: City
+    cityGeonameid: Int
+    country: String
+    dream: String
+    firstName: String!
+    id: Int!
+    lastName: String
+    newsletter: Boolean
+    offers: [Offer!]
+}
+
+type ProvePaymentResult {
+    success: Boolean!
+}
+
+type Purchase {
+    id: Int!
+    purchasedAt: String!
+    purchasedBy: Profile!
+    purchasedByProfileId: Int!
+    purchasedFrom: Profile!
+    purchasedFromProfileId: Int!
+    purchasedItem: Offer!
+    purchasedOfferId: Int!
+    status: PurchaseStatus!
+}
+
+type Query {
+    cities(query: QueryCitiesInput!): [City!]!
+    offers(query: QueryOfferInput!): [Offer!]!
+    profiles(query: QueryProfileInput!): [Profile!]!
+    search(query: SearchInput!): [Profile!]!
+    sessionInfo: SessionInfo!
+    version: Version!
+    whoami: String
+}
+
+type RequestUpdateSafeResponse {
+    challenge: String
+    errorMessage: String
+    success: Boolean!
+}
+
+type Server {
+    version: String!
+}
+
+type SessionInfo {
+    hasProfile: Boolean
+    isLoggedOn: Boolean!
+    profileId: Int
+}
+
+type Tag {
+    id: Int!
+    type: String!
+    value: String
+}
+
+type UpdateSafeResponse {
+    errorMessage: String
+    newSafeAddress: String
+    success: Boolean!
+}
+
+type Version {
+    major: Int!
+    minor: Int!
+    revision: Int!
+}
+
+enum CacheControlScope {
+    PRIVATE
+    PUBLIC
+}
+
+enum PurchaseStatus {
+    INVALID
+    ITEM_LOCKED
+    PAYMENT_PROVEN
+}
+
+input CreateOfferInput {
+    category: String!
+    createdByProfileId: Int!
+    deliveryTerms: String!
+    description: String
+    geonameid: Int!
+    maxUnits: Int
+    pictureUrl: String!
+    pricePerUnit: String!
+    title: String!
+    unit: String!
+}
+
+input DepositChallenge {
+    jwt: String!
+}
+
+input IndexTransferInput {
+    blockNo: Int!
+    from: String!
+    tags: [TagInput!]
+    to: String!
+    transactionHash: String!
+    value: String!
+}
+
+input LockOfferInput {
+    offerId: Int!
+}
+
+input PaymentProof {
+    destinations: [String!]!
+    forOfferId: Int!
+    sources: [String!]!
+    tokenOwners: [String!]!
+    values: [String!]!
+}
+
+input QueryCitiesByGeonameIdInput {
+    geonameid: [Int!]!
+}
+
+input QueryCitiesByNameInput {
+    languageCode: String
+    name_like: String!
+}
+
+input QueryCitiesInput {
+    byId: QueryCitiesByGeonameIdInput
+    byName: QueryCitiesByNameInput
+}
+
+input QueryIndexedTransferInput {
+    from: String
+    tags: [QueryIndexedTransferTagsInput!]
+    to: String
+}
+
+input QueryIndexedTransferTagsInput {
+    type: String
+    value: String
+}
+
+input QueryOfferInput {
+    createdByProfileId: Int
+    id: Int
+    publishedAt_gt: String
+    publishedAt_lt: String
+}
+
+input QueryProfileInput {
+    circlesAddress: [String!]
+    country: String
+    firstName: String
+    id: [Int!]
+    lastName: String
+}
+
+input QueryPurchaseInput {
+    purchasedByProfileId: String!
+}
+
+input QueryUniqueProfileInput {
+    id: Int!
+}
+
+input RequestUpdateSafeInput {
+    newSafeAddress: String!
+}
+
+input SearchInput {
+    searchString: String!
+}
+
+input TagInput {
+    type: String!
+    value: String
+}
+
+input UpdateSafeInput {
+    signature: String!
+}
+
+input UpsertProfileInput {
+    avatarCid: String
+    avatarMimeType: String
+    avatarUrl: String
+    circlesAddress: String
+    circlesSafeOwner: String
+    circlesTokenAddress: String
+    cityGeonameid: Int
+    country: String
+    dream: String
+    emailAddress: String
+    firstName: String!
+    id: Int
+    lastName: String
+    newsletter: Boolean
+}
+
+
+"The `Upload` scalar type represents a file upload."
+scalar Upload
