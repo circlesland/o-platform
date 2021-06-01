@@ -136,7 +136,7 @@ body {
 .label {
     @apply text-center;
     @apply block;
-    @apply p-0;
+    
 }
 .label-text {
   @apply text-secondary;

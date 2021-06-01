@@ -21,11 +21,12 @@
       submitHandler();
     }
   }
+
 </script>
 
 <div class="form-control justify-self-center">
   <label
-    class="self-center justify-center mb-2 text-center label"
+    class="self-center justify-center text-center label"
     for={context.fieldName}
   >
     <span class="label-text">{@html context.params.label}</span>
