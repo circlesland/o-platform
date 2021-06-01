@@ -1,6 +1,5 @@
 <script lang="ts">
   import Time from "svelte-time";
-  import { svelteTime } from "svelte-time";
   import { push } from "svelte-spa-router";
   import Web3 from "web3";
   import { Transfer } from "../data/circles/queries";
@@ -71,6 +70,7 @@
   function loadDetailPage(path) {
     push("#/banking/transactions/" + path);
   }
+
 </script>
 
 <section

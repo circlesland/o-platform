@@ -12,13 +12,15 @@
   let amount: string =
     context.data && context.data.tokens ? context.data.tokens.amount : "";
   let maxAmount: string = "0";
-  let selected = "CRC";
-
+  let selected = context.data.tokens ? context.data.tokens.currency : "crc";
+  let selectedCurrency = context.params.currencies.find(
+    (o) => o.value === "crc"
+  );
   onMount(() => inputField.focus());
 
   $: selectedCurrency = context.data.tokens
     ? context.data.tokens.currency
-    : context.params.currencies.find((o) => o.value === "crc");
+    : context.params.currencies.find((o) => o.value === selected);
 
   $: {
     if (selected && context.data.maxFlows) {
@@ -51,11 +53,11 @@
   }
 
   function onkeydown(e: KeyboardEvent) {
-    console.log("KEYDOWN");
     if (e.key == "Enter") {
-      sendAnswer(amount, selectedCurrency);
+      sendAnswer(amount);
     }
   }
+
 </script>
 
 <p class="label-text">
@@ -133,10 +135,7 @@
     </div>
   </div>
 
-  <ProcessNavigation
-    on:buttonClick={() => sendAnswer(amount, selectedCurrency)}
-    {context}
-  />
+  <ProcessNavigation on:buttonClick={() => sendAnswer(amount)} {context} />
 </div>
 
 <style>
@@ -144,4 +143,5 @@
     --borderRadius: 5px;
     --indicatorTop: 7px;
   }
+
 </style>
