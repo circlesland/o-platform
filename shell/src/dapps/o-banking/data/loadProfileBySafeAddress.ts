@@ -1,30 +1,13 @@
-import gql from "graphql-tag";
-import {ApiProfile} from "./apiProfile";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {Profile, ProfilesByCirclesAddressDocument} from "./api/types";
 
-export async function loadProfileBySafeAddress(safeAddress: string) : Promise<ApiProfile> {
+export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Profile> {
     // 1. Try to find a profile via the api
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
-        query: gql`
-            query profiles($circlesAddress: [String!]) {
-                profiles(query: { circlesAddress: $circlesAddress }) {
-                    id
-                    circlesAddress
-                    circlesSafeOwner
-                    firstName
-                    lastName
-                    avatarUrl
-                    avatarCid
-                    avatarMimeType
-                    dream
-                    country
-                    cityGeonameid
-                }
-            }
-        `,
+        query: ProfilesByCirclesAddressDocument,
         variables: {
-            circlesAddress: [safeAddress],
+            circlesAddresses: [safeAddress],
         },
     });
     if (result.errors) {
@@ -57,6 +40,7 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Ap
                 ? resultJson.data[0]
                 : undefined;
         return {
+            id: profile.id,
             circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
             firstName: profile ? profile.username : "",
             avatarUrl: profile ? profile.avatarUrl : undefined,
@@ -65,6 +49,7 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Ap
 
     // 3. No profile found
     return {
+        id: 0,
         circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
         firstName: "",
     };

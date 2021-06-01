@@ -59,6 +59,7 @@
             lastName: profile.lastName,
             country: profile.country,
             dream: profile.dream,
+            cityGeonameid: profile.cityGeonameid
           },
           dirtyFlags: dirtyFlags,
         };
@@ -165,6 +166,43 @@
   <section class="justify-center mb-2 text-circlesdarkblue">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
       <div
+              class="text-circleslightblue text-xs font-circles font-bold text-left"
+      >
+        CITY
+      </div>
+
+      <div class="flex items-center w-full space-x-2 sm:space-x-4">
+        <div class="text-left">
+          <small>
+            {#if profile && profile.city}
+              {profile.city ? profile.city.name : ''}
+            {:else}
+              No city set.
+            {/if}
+            <button
+                    class="link link-primary text-primary text-2xs"
+                    on:click={() => editProfile({ cityGeonameid: true })}
+            >
+              <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-3 w-3"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+              >
+                <path
+                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                />
+              </svg>
+            </button>
+          </small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="justify-center mb-2 text-circlesdarkblue">
+    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+      <div
         class="text-circleslightblue text-xs font-circles font-bold text-left"
       >
         COUNTRY
@@ -173,14 +211,14 @@
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
           <small>
-            {#if profile && profile.country}
-              {getCountryName(profile.country)}
+            {#if profile}
+              {profile.city ? profile.city.country : getCountryName(profile)}
             {:else}
               No Country set.
             {/if}
             <button
               class="link link-primary text-primary text-2xs"
-              on:click={() => editProfile({ country: true })}
+              on:click={() => editProfile({ cityGeonameid: true })}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -13,7 +13,6 @@ type City {
     longitude: Float!
     name: String!
     population: Int!
-    source: String!
 }
 
 type ConsumeDepositedChallengeResponse {
@@ -45,6 +44,20 @@ type IndexTransferResponse {
     success: Boolean!
 }
 
+type IndexedTransfer {
+    blockNo: Int!
+    from: String!
+    tags: [Tag!]!
+    to: String!
+    transactionHash: String!
+    value: String!
+}
+
+type LockOfferResult {
+    lockedUntil: String
+    success: Boolean!
+}
+
 type LogoutResponse {
     errorMessage: String
     success: Boolean!
@@ -53,13 +66,36 @@ type LogoutResponse {
 type Mutation {
     authenticateAt(appId: String!): DelegateAuthInit!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
+    createOffer(data: CreateOfferInput!): Offer!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
     indexTransfer(data: IndexTransferInput!): IndexTransferResponse!
+    lockOffer(data: LockOfferInput!): LockOfferResult!
     logout: LogoutResponse!
+    provePayment(data: PaymentProof!): ProvePaymentResult!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
+    unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
     upsertProfile(data: UpsertProfileInput!): Profile!
+}
+
+type Offer {
+    category: String!
+    city: City
+    createdBy: Profile
+    createdByProfileId: Int!
+    deliveryTerms: String!
+    description: String
+    geonameid: Int!
+    id: Int!
+    maxUnits: Int
+    pictureUrl: String!
+    pricePerUnit: String!
+    publishedAt: String!
+    purchasedAt: String
+    title: String!
+    unit: String!
+    unlistedAt: String
 }
 
 type Profile {
@@ -69,6 +105,7 @@ type Profile {
     circlesAddress: String
     circlesSafeOwner: String
     circlesTokenAddress: String
+    city: City
     cityGeonameid: Int
     country: String
     dream: String
@@ -76,10 +113,28 @@ type Profile {
     id: Int!
     lastName: String
     newsletter: Boolean
+    offers: [Offer!]
+}
+
+type ProvePaymentResult {
+    success: Boolean!
+}
+
+type Purchase {
+    id: Int!
+    purchasedAt: String!
+    purchasedBy: Profile!
+    purchasedByProfileId: Int!
+    purchasedFrom: Profile!
+    purchasedFromProfileId: Int!
+    purchasedItem: Offer!
+    purchasedOfferId: Int!
+    status: PurchaseStatus!
 }
 
 type Query {
     cities(query: QueryCitiesInput!): [City!]!
+    offers(query: QueryOfferInput!): [Offer!]!
     profiles(query: QueryProfileInput!): [Profile!]!
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
@@ -103,6 +158,12 @@ type SessionInfo {
     profileId: Int
 }
 
+type Tag {
+    id: Int!
+    type: String!
+    value: String
+}
+
 type UpdateSafeResponse {
     errorMessage: String
     newSafeAddress: String
@@ -120,21 +181,80 @@ enum CacheControlScope {
     PUBLIC
 }
 
+enum PurchaseStatus {
+    INVALID
+    ITEM_LOCKED
+    PAYMENT_PROVEN
+}
+
+input CreateOfferInput {
+    category: String!
+    createdByProfileId: Int!
+    deliveryTerms: String!
+    description: String
+    geonameid: Int!
+    maxUnits: Int
+    pictureUrl: String!
+    pricePerUnit: String!
+    title: String!
+    unit: String!
+}
+
 input DepositChallenge {
     jwt: String!
 }
 
 input IndexTransferInput {
-    amount: String!
     blockNo: Int!
     from: String!
-    message: String!
+    tags: [TagInput!]
     to: String!
+    transactionHash: String!
+    value: String!
+}
+
+input LockOfferInput {
+    offerId: Int!
+}
+
+input PaymentProof {
+    destinations: [String!]!
+    forOfferId: Int!
+    sources: [String!]!
+    tokenOwners: [String!]!
+    values: [String!]!
+}
+
+input QueryCitiesByGeonameIdInput {
+    geonameid: [Int!]!
+}
+
+input QueryCitiesByNameInput {
+    languageCode: String
+    name_like: String!
 }
 
 input QueryCitiesInput {
-    languageCode: String
-    name: String!
+    byId: QueryCitiesByGeonameIdInput
+    byName: QueryCitiesByNameInput
+}
+
+input QueryIndexedTransferInput {
+    from: String
+    tags: [QueryIndexedTransferTagsInput!]
+    to: String
+}
+
+input QueryIndexedTransferTagsInput {
+    type: String
+    value: String
+}
+
+input QueryOfferInput {
+    createdByProfileId: Int
+    id: Int
+    publishedAt_gt: String
+    publishedAt_lt: String
 }
 
 input QueryProfileInput {
@@ -143,6 +263,10 @@ input QueryProfileInput {
     firstName: String
     id: [Int!]
     lastName: String
+}
+
+input QueryPurchaseInput {
+    purchasedByProfileId: String!
 }
 
 input QueryUniqueProfileInput {
@@ -155,6 +279,11 @@ input RequestUpdateSafeInput {
 
 input SearchInput {
     searchString: String!
+}
+
+input TagInput {
+    type: String!
+    value: String
 }
 
 input UpdateSafeInput {

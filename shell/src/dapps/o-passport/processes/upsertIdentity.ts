@@ -11,12 +11,11 @@ import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { uploadFile } from "../../../shared/api/uploadFile";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
-import { UpsertProfileDocument } from "../data/api/types";
+import {CitiesByIdDocument, CitiesByNameDocument, City, UpsertProfileDocument} from "../data/api/types";
 import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { promptChoice } from "./identify/prompts/promptChoice";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import gql from "graphql-tag";
 import {Choice} from "@o-platform/o-editors/src/choiceSelectorContext";
 
 export type UpsertIdentityContextData = {
@@ -29,6 +28,7 @@ export type UpsertIdentityContextData = {
   country?: string;
   dream?: string;
   cityGeonameid?: number;
+  city?: City;
   avatar?: {
     bytes: Buffer;
     mimeType: string;
@@ -111,23 +111,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           asyncChoices: async (searchText?: string) => {
             const n = <any>navigator;
             const lang = n.language || n.userLanguage;
-            const apiClient =
-                await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.query({
-              query: gql`
-                query ($name:String! $languageCode: String) {
-                  cities(query:{name:$name, languageCode:$languageCode}) {
-                    geonameid
-                    name
-                    country
-                    population
-                    latitude
-                    longitude
-                    feature_code
-                    source
-                  }
-                }
-              `,
+              query: CitiesByNameDocument,
               variables: {
                 name: (searchText ?? "" ) + "%",
                 languageCode: lang.substr(0, 2)
@@ -152,11 +138,36 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           getSelectionLabel: (option) => option.label,
         },
         navigation: {
-          next: "#dream",
+          next: "#setCity",
           previous: "#lastName",
           canSkip: () => true,
+          skip: "#dream"
         },
       }),
+      setCity: {
+        id: "setCity",
+        invoke: {
+          src: async (context) => {
+            if (!context.data.cityGeonameid) {
+              context.data.city = undefined;
+              return;
+            }
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.query({
+              query: CitiesByIdDocument,
+              variables: {
+                ids: [context.data.cityGeonameid]
+              },
+            });
+            if (result.errors && result.errors.length) {
+              throw new Error(`An error occurred while fetching a city: ${JSON.stringify(result.errors)}`)
+            }
+            context.data.city =  result.data.city?.length ? result.data.city[0] : undefined;
+          },
+          onDone: "#dream",
+          onError: "#error"
+        }
+      },
       dream: prompt<UpsertIdentityContext, any>({
         fieldName: "dream",
         onlyWhenDirty: skipIfNotDirty,
@@ -386,9 +397,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 avatarCid: context.data.avatarCid,
                 avatarMimeType: context.data.avatarMimeType,
                 cityGeonameid: context.data.cityGeonameid
-              },
+              }
             });
-
+            context.data.city = result.data.upsertProfile.city;
             return result.data.upsertProfile;
           },
           onDone: "#success",

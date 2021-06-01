@@ -1,3 +1,5 @@
+import {Profile} from "../dapps/o-passport/data/api/types";
+
 export let countries = [
   { label: "Albania", value: "AL" },
   { label: "Åland Islands", value: "AX" },
@@ -252,10 +254,6 @@ export let countries = [
   { label: "Zimbabwe", value: "ZW" },
 ];
 
-export function getCountryName(countryId) {
-  for (var i = 0; i < countries.length; i++) {
-    if (countries[i].value === countryId) {
-      return countries[i].label;
-    }
-  }
+export function getCountryName(profile:Profile) {
+  return countries.find(o => o.value == profile.country)?.label;
 }

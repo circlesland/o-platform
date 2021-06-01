@@ -10,6 +10,14 @@ query profilesByCirclesAddress($circlesAddresses:[String!]!) {
         avatarCid
         avatarMimeType
         cityGeonameid
+        city {
+            geonameid
+            name
+            country
+            latitude
+            longitude
+            population
+        }
     }
 }
 
@@ -25,5 +33,13 @@ query profilesByIds($id:[Int!]!) {
         avatarCid
         avatarMimeType
         cityGeonameid
+        city {
+            geonameid
+            name
+            country
+            latitude
+            longitude
+            population
+        }
     }
 }

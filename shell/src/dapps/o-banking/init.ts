@@ -1,4 +1,4 @@
-import {me, Profile} from "../../shared/stores/me";
+import {me} from "../../shared/stores/me";
 import {Subscription} from "rxjs";
 import {Safe} from "./data/circles/types";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
@@ -7,6 +7,7 @@ import {Queries} from "./data/circles/queries";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
 import {Banking} from "./banking";
+import {Profile} from "./data/api/types";
 
 let _currentSafe: Safe | null = emptySafe;
 let profile: Profile | undefined;

@@ -3,20 +3,7 @@ import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
 import {shellProcess, ShellProcessContext} from "../processes/shellProcess";
 import {identify, IdentifyContextData} from "../../dapps/o-passport/processes/identify/identify";
-import {location} from "svelte-spa-router";
-
-export type Profile = {
-  id: number
-  circlesAddress?: string
-  firstName: string
-  lastName?: string
-  dream: string
-  country?: string
-  avatarUrl?: string
-  avatarCid?: string
-  avatarMimeType?: string
-  newsletter?:boolean
-}
+import {Profile} from "../../dapps/o-passport/data/api/types";
 
 export const me = readable<Profile|null>(null, function start(set) {
   const subscription = window.o.events.subscribe((event: PlatformEvent & {

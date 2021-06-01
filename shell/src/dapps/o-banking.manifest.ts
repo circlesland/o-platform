@@ -17,8 +17,9 @@ import {
 import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
-import { me, Profile } from "../shared/stores/me";
+import { me } from "../shared/stores/me";
 import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
+import {Profile} from "./o-banking/data/api/types";
 
 const transactions: PageManifest = {
   isDefault: true,

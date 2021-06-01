@@ -18,15 +18,15 @@ import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { BN } from "ethereumjs-util";
 import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
-import { ApiProfile } from "../data/apiProfile";
 import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
+import {Profile} from "../data/api/types";
 
 export type TransferContextData = {
   safeAddress: string;
   recipientAddress?: string;
   recipientProfileId?: number;
-  recipientProfile?: ApiProfile;
+  recipientProfile?: Profile;
   message?: string;
   tokens?: {
     currency: string;

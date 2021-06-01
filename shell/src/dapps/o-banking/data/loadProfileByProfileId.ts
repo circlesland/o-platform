@@ -1,9 +1,8 @@
 import {ProfilesDocument} from "../../o-passport/data/api/types";
 import {Profile} from "./api/types";
-import {ApiProfile} from "./apiProfile";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
-export async function loadProfileByProfileId(profileId: number) : Promise<ApiProfile> {
+export async function loadProfileByProfileId(profileId: number) : Promise<Profile> {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
         query: ProfilesDocument,

@@ -30,13 +30,25 @@ export type City = {
   longitude: Scalars['Float'];
   name: Scalars['String'];
   population: Scalars['Int'];
-  source: Scalars['String'];
 };
 
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type CreateOfferInput = {
+  category: Scalars['String'];
+  createdByProfileId: Scalars['Int'];
+  deliveryTerms: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  geonameid: Scalars['Int'];
+  maxUnits?: Maybe<Scalars['Int']>;
+  pictureUrl: Scalars['String'];
+  pricePerUnit: Scalars['String'];
+  title: Scalars['String'];
+  unit: Scalars['String'];
 };
 
 export type DelegateAuthInit = {
@@ -66,16 +78,37 @@ export type ExchangeTokenResponse = {
 };
 
 export type IndexTransferInput = {
-  amount: Scalars['String'];
   blockNo: Scalars['Int'];
   from: Scalars['String'];
-  message: Scalars['String'];
+  tags?: Maybe<Array<TagInput>>;
   to: Scalars['String'];
+  transactionHash: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type IndexTransferResponse = {
   __typename?: 'IndexTransferResponse';
   errorMessage?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
+export type IndexedTransfer = {
+  __typename?: 'IndexedTransfer';
+  blockNo: Scalars['Int'];
+  from: Scalars['String'];
+  tags: Array<Tag>;
+  to: Scalars['String'];
+  transactionHash: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type LockOfferInput = {
+  offerId: Scalars['Int'];
+};
+
+export type LockOfferResult = {
+  __typename?: 'LockOfferResult';
+  lockedUntil?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
 
@@ -89,11 +122,15 @@ export type Mutation = {
   __typename?: 'Mutation';
   authenticateAt: DelegateAuthInit;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
+  createOffer: Offer;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   indexTransfer: IndexTransferResponse;
+  lockOffer: LockOfferResult;
   logout: LogoutResponse;
+  provePayment: ProvePaymentResult;
   requestUpdateSafe: RequestUpdateSafeResponse;
+  unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
   upsertProfile: Profile;
 };
@@ -109,6 +146,11 @@ export type MutationConsumeDepositedChallengeArgs = {
 };
 
 
+export type MutationCreateOfferArgs = {
+  data: CreateOfferInput;
+};
+
+
 export type MutationDepositChallengeArgs = {
   jwt: Scalars['String'];
 };
@@ -119,8 +161,23 @@ export type MutationIndexTransferArgs = {
 };
 
 
+export type MutationLockOfferArgs = {
+  data: LockOfferInput;
+};
+
+
+export type MutationProvePaymentArgs = {
+  data: PaymentProof;
+};
+
+
 export type MutationRequestUpdateSafeArgs = {
   data: RequestUpdateSafeInput;
+};
+
+
+export type MutationUnlistOfferArgs = {
+  offerId: Scalars['Int'];
 };
 
 
@@ -133,6 +190,34 @@ export type MutationUpsertProfileArgs = {
   data: UpsertProfileInput;
 };
 
+export type Offer = {
+  __typename?: 'Offer';
+  category: Scalars['String'];
+  city?: Maybe<City>;
+  createdBy?: Maybe<Profile>;
+  createdByProfileId: Scalars['Int'];
+  deliveryTerms: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  geonameid: Scalars['Int'];
+  id: Scalars['Int'];
+  maxUnits?: Maybe<Scalars['Int']>;
+  pictureUrl: Scalars['String'];
+  pricePerUnit: Scalars['String'];
+  publishedAt: Scalars['String'];
+  purchasedAt?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
+  unit: Scalars['String'];
+  unlistedAt?: Maybe<Scalars['String']>;
+};
+
+export type PaymentProof = {
+  destinations: Array<Scalars['String']>;
+  forOfferId: Scalars['Int'];
+  sources: Array<Scalars['String']>;
+  tokenOwners: Array<Scalars['String']>;
+  values: Array<Scalars['String']>;
+};
+
 export type Profile = {
   __typename?: 'Profile';
   avatarCid?: Maybe<Scalars['String']>;
@@ -141,6 +226,7 @@ export type Profile = {
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
   circlesTokenAddress?: Maybe<Scalars['String']>;
+  city?: Maybe<City>;
   cityGeonameid?: Maybe<Scalars['Int']>;
   country?: Maybe<Scalars['String']>;
   dream?: Maybe<Scalars['String']>;
@@ -148,11 +234,37 @@ export type Profile = {
   id: Scalars['Int'];
   lastName?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
+  offers?: Maybe<Array<Offer>>;
 };
+
+export type ProvePaymentResult = {
+  __typename?: 'ProvePaymentResult';
+  success: Scalars['Boolean'];
+};
+
+export type Purchase = {
+  __typename?: 'Purchase';
+  id: Scalars['Int'];
+  purchasedAt: Scalars['String'];
+  purchasedBy: Profile;
+  purchasedByProfileId: Scalars['Int'];
+  purchasedFrom: Profile;
+  purchasedFromProfileId: Scalars['Int'];
+  purchasedItem: Offer;
+  purchasedOfferId: Scalars['Int'];
+  status: PurchaseStatus;
+};
+
+export enum PurchaseStatus {
+  Invalid = 'INVALID',
+  ItemLocked = 'ITEM_LOCKED',
+  PaymentProven = 'PAYMENT_PROVEN'
+}
 
 export type Query = {
   __typename?: 'Query';
   cities: Array<City>;
+  offers: Array<Offer>;
   profiles: Array<Profile>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
@@ -166,6 +278,11 @@ export type QueryCitiesArgs = {
 };
 
 
+export type QueryOffersArgs = {
+  query: QueryOfferInput;
+};
+
+
 export type QueryProfilesArgs = {
   query: QueryProfileInput;
 };
@@ -175,9 +292,36 @@ export type QuerySearchArgs = {
   query: SearchInput;
 };
 
-export type QueryCitiesInput = {
+export type QueryCitiesByGeonameIdInput = {
+  geonameid: Array<Scalars['Int']>;
+};
+
+export type QueryCitiesByNameInput = {
   languageCode?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
+  name_like: Scalars['String'];
+};
+
+export type QueryCitiesInput = {
+  byId?: Maybe<QueryCitiesByGeonameIdInput>;
+  byName?: Maybe<QueryCitiesByNameInput>;
+};
+
+export type QueryIndexedTransferInput = {
+  from?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<QueryIndexedTransferTagsInput>>;
+  to?: Maybe<Scalars['String']>;
+};
+
+export type QueryIndexedTransferTagsInput = {
+  type?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+export type QueryOfferInput = {
+  createdByProfileId?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['Int']>;
+  publishedAt_gt?: Maybe<Scalars['String']>;
+  publishedAt_lt?: Maybe<Scalars['String']>;
 };
 
 export type QueryProfileInput = {
@@ -186,6 +330,10 @@ export type QueryProfileInput = {
   firstName?: Maybe<Scalars['String']>;
   id?: Maybe<Array<Scalars['Int']>>;
   lastName?: Maybe<Scalars['String']>;
+};
+
+export type QueryPurchaseInput = {
+  purchasedByProfileId: Scalars['String'];
 };
 
 export type QueryUniqueProfileInput = {
@@ -217,6 +365,18 @@ export type SessionInfo = {
   hasProfile?: Maybe<Scalars['Boolean']>;
   isLoggedOn: Scalars['Boolean'];
   profileId?: Maybe<Scalars['Int']>;
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  id: Scalars['Int'];
+  type: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
+};
+
+export type TagInput = {
+  type: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 export type UpdateSafeInput = {
@@ -324,6 +484,10 @@ export type UpsertProfileMutation = (
   & { upsertProfile: (
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'circlesAddress' | 'circlesSafeOwner' | 'newsletter' | 'cityGeonameid'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
+    )> }
   ) }
 );
 
@@ -354,6 +518,10 @@ export type MyProfileQuery = (
   & { profiles: Array<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'cityGeonameid'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+    )> }
   )> }
 );
 
@@ -367,6 +535,37 @@ export type ProfilesQuery = (
   & { profiles: Array<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+    )> }
+  )> }
+);
+
+export type CitiesByNameQueryVariables = Exact<{
+  name: Scalars['String'];
+  languageCode?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CitiesByNameQuery = (
+  { __typename?: 'Query' }
+  & { cities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, 'geonameid' | 'name' | 'country' | 'population' | 'latitude' | 'longitude' | 'feature_code'>
+  )> }
+);
+
+export type CitiesByIdQueryVariables = Exact<{
+  ids: Array<Scalars['Int']> | Scalars['Int'];
+}>;
+
+
+export type CitiesByIdQuery = (
+  { __typename?: 'Query' }
+  & { cities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, 'geonameid' | 'name' | 'country' | 'population' | 'latitude' | 'longitude' | 'feature_code'>
   )> }
 );
 
@@ -423,6 +622,15 @@ export const UpsertProfileDocument = gql`
     circlesSafeOwner
     newsletter
     cityGeonameid
+    city {
+      geonameid
+      country
+      name
+      latitude
+      longitude
+      population
+      feature_code
+    }
   }
 }
     `;
@@ -455,6 +663,14 @@ export const MyProfileDocument = gql`
     avatarMimeType
     newsletter
     cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
   }
 }
     `;
@@ -472,6 +688,40 @@ export const ProfilesDocument = gql`
     avatarCid
     avatarMimeType
     cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+  }
+}
+    `;
+export const CitiesByNameDocument = gql`
+    query citiesByName($name: String!, $languageCode: String) {
+  cities(query: {byName: {name_like: $name, languageCode: $languageCode}}) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+    `;
+export const CitiesByIdDocument = gql`
+    query citiesById($ids: [Int!]!) {
+  cities(query: {byId: {geonameid: $ids}}) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
   }
 }
     `;
@@ -508,6 +758,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     profiles(variables: ProfilesQueryVariables): Promise<ProfilesQuery> {
       return withWrapper(() => client.request<ProfilesQuery>(print(ProfilesDocument), variables));
+    },
+    citiesByName(variables: CitiesByNameQueryVariables): Promise<CitiesByNameQuery> {
+      return withWrapper(() => client.request<CitiesByNameQuery>(print(CitiesByNameDocument), variables));
+    },
+    citiesById(variables: CitiesByIdQueryVariables): Promise<CitiesByIdQuery> {
+      return withWrapper(() => client.request<CitiesByIdQuery>(print(CitiesByIdDocument), variables));
     }
   };
 }

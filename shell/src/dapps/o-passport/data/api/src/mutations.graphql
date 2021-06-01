@@ -75,5 +75,14 @@ mutation upsertProfile(
         circlesSafeOwner
         newsletter
         cityGeonameid
+        city {
+            geonameid
+            country
+            name
+            latitude
+            longitude
+            population
+            feature_code
+        }
     }
 }

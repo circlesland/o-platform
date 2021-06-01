@@ -21,6 +21,7 @@
   import {Subscription} from "rxjs";
   import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
   import {AvataarGenerator} from "../../../shared/avataarGenerator";
+  import {Profile} from "../data/api/types";
 
   export let params: {
     id?: String;
@@ -66,7 +67,8 @@
     lastName?: string;
     circlesAddress?: string;
     circlesSafeOwner?: string;
-
+    cityGeonameid?: number;
+    city: any;
     // The incoming trust limit
     trustedBy?: number;
     // The outgoing trust limit
@@ -125,16 +127,7 @@
     return trust;
   }
 
-  function setProfile(apiProfile: {
-    id?: number;
-    avatarUrl?: string;
-    dream?: string;
-    country?: string;
-    circlesAddress?: string;
-    circlesSafeOwner?: string;
-    firstName: string;
-    lastName?: string;
-  }) {
+  function setProfile(apiProfile: Profile) {
     const trust = apiProfile.circlesAddress
       ? loadTrustRelation(apiProfile.circlesAddress)
       : undefined;
@@ -160,6 +153,8 @@
       }`,
       trusting: trust ? trust.trusting : undefined,
       trustedBy: trust ? trust.trustedBy : undefined,
+      cityGeonameid: apiProfile.cityGeonameid,
+      city: apiProfile.city
     };
   }
 
@@ -273,6 +268,8 @@
             lastName: profile.lastName,
             country: profile.country,
             dream: profile.dream,
+            cityGeonameid: profile.cityGeonameid,
+            city: profile.city
           },
           dirtyFlags: dirtyFlags,
         };
@@ -468,11 +465,48 @@
     </section>
 
     <section class="justify-center mb-2 text-circlesdarkblue">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
+      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
         <div
-          class="text-xs font-bold text-left text-circleslightblue font-circles"
+                class="text-circleslightblue text-xs font-circles font-bold text-left"
+        >
+          CITY
+        </div>
+
+        <div class="flex items-center w-full space-x-2 sm:space-x-4">
+          <div class="text-left">
+            <small>
+              {#if profile && profile.city}
+                {profile.city ? profile.city.name : ''}
+              {:else}
+                No city set.
+              {/if}
+              {#if isEditable}
+              <button
+                      class="link link-primary text-primary text-2xs"
+                      on:click={() => editProfile({ cityGeonameid: true })}
+              >
+                <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-3 w-3"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                >
+                  <path
+                          d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                  />
+                </svg>
+              </button>
+              {/if}
+            </small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="justify-center mb-2 text-circlesdarkblue">
+      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+        <div
+                class="text-circleslightblue text-xs font-circles font-bold text-left"
         >
           COUNTRY
         </div>
@@ -480,27 +514,27 @@
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
             <small>
-              {#if profile && profile.country}
-                {getCountryName(profile.country)}
+              {#if profile}
+                {profile.city ? profile.city.country : getCountryName(profile)}
               {:else}
                 No Country set.
               {/if}
               {#if isEditable}
-                <button
-                  class="link link-primary text-primary text-2xs"
-                  on:click={() => editProfile({ country: true })}
+              <button
+                      class="link link-primary text-primary text-2xs"
+                      on:click={() => editProfile({ cityGeonameid: true })}
+              >
+                <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-3 w-3"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-3 h-3"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                    />
-                  </svg>
-                </button>
+                  <path
+                          d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                  />
+                </svg>
+              </button>
               {/if}
             </small>
           </div>

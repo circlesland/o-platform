@@ -24,6 +24,14 @@ query myProfile {
         avatarMimeType
         newsletter
         cityGeonameid
+        city {
+            geonameid
+            name
+            country
+            latitude
+            longitude
+            population
+        }
     }
 }
 
@@ -40,5 +48,37 @@ query profiles($id:[Int!]!) {
         avatarCid
         avatarMimeType
         cityGeonameid
+        city {
+            geonameid
+            name
+            country
+            latitude
+            longitude
+            population
+        }
+    }
+}
+
+query citiesByName ($name:String! $languageCode: String) {
+    cities(query: {byName: {name_like: $name, languageCode: $languageCode}}) {
+        geonameid
+        name
+        country
+        population
+        latitude
+        longitude
+        feature_code
+    }
+}
+
+query citiesById ($ids: [Int!]!) {
+    cities(query: {byId: {geonameid: $ids}}) {
+        geonameid
+        name
+        country
+        population
+        latitude
+        longitude
+        feature_code
     }
 }
