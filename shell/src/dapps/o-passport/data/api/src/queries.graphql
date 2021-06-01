@@ -23,6 +23,7 @@ query myProfile {
         avatarCid
         avatarMimeType
         newsletter
+        cityGeonameid
     }
 }
 
@@ -38,5 +39,6 @@ query profiles($id:[Int!]!) {
         avatarUrl
         avatarCid
         avatarMimeType
+        cityGeonameid
     }
 }

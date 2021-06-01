@@ -21,6 +21,18 @@ export enum CacheControlScope {
   Public = 'PUBLIC'
 }
 
+export type City = {
+  __typename?: 'City';
+  country: Scalars['String'];
+  feature_code: Scalars['String'];
+  geonameid: Scalars['Int'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+  name: Scalars['String'];
+  population: Scalars['Int'];
+  source: Scalars['String'];
+};
+
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
@@ -129,6 +141,7 @@ export type Profile = {
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
   circlesTokenAddress?: Maybe<Scalars['String']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
   country?: Maybe<Scalars['String']>;
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
@@ -139,11 +152,17 @@ export type Profile = {
 
 export type Query = {
   __typename?: 'Query';
+  cities: Array<City>;
   profiles: Array<Profile>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryCitiesArgs = {
+  query: QueryCitiesInput;
 };
 
 
@@ -154,6 +173,11 @@ export type QueryProfilesArgs = {
 
 export type QuerySearchArgs = {
   query: SearchInput;
+};
+
+export type QueryCitiesInput = {
+  languageCode?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
 };
 
 export type QueryProfileInput = {
@@ -214,6 +238,7 @@ export type UpsertProfileInput = {
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
   circlesTokenAddress?: Maybe<Scalars['String']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
   country?: Maybe<Scalars['String']>;
   dream?: Maybe<Scalars['String']>;
   emailAddress?: Maybe<Scalars['String']>;
@@ -239,7 +264,7 @@ export type ProfilesByCirclesAddressQuery = (
   { __typename?: 'Query' }
   & { profiles: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
   )> }
 );
 
@@ -252,7 +277,7 @@ export type ProfilesByIdsQuery = (
   { __typename?: 'Query' }
   & { profiles: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
   )> }
 );
 
@@ -269,6 +294,7 @@ export const ProfilesByCirclesAddressDocument = gql`
     avatarUrl
     avatarCid
     avatarMimeType
+    cityGeonameid
   }
 }
     `;
@@ -284,6 +310,7 @@ export const ProfilesByIdsDocument = gql`
     avatarUrl
     avatarCid
     avatarMimeType
+    cityGeonameid
   }
 }
     `;

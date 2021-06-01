@@ -19,6 +19,7 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Ap
                     avatarMimeType
                     dream
                     country
+                    cityGeonameid
                 }
             }
         `,

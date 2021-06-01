@@ -8,7 +8,6 @@ import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
 import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
-import { countries } from "../../../shared/countries";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { uploadFile } from "../../../shared/api/uploadFile";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
@@ -16,8 +15,9 @@ import { UpsertProfileDocument } from "../data/api/types";
 import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { promptChoice } from "./identify/prompts/promptChoice";
-import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
+import gql from "graphql-tag";
+import {Choice} from "@o-platform/o-editors/src/choiceSelectorContext";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -28,6 +28,7 @@ export type UpsertIdentityContextData = {
   lastName?: string;
   country?: string;
   dream?: string;
+  cityGeonameid?: number;
   avatar?: {
     bytes: Buffer;
     mimeType: string;
@@ -98,14 +99,54 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
       }),
       country: prompt<UpsertIdentityContext, any>({
-        fieldName: "country",
+        id: "country",
+        fieldName: "cityGeonameid",
         onlyWhenDirty: skipIfNotDirty,
         component: DropdownSelectEditor,
         params: {
           label: strings.labelCountry,
           placeholder: strings.placeholderCountry,
           submitButtonText: "Submit vote",
-          choices: countries,
+          graphql: true,
+          asyncChoices: async (searchText?: string) => {
+            const n = <any>navigator;
+            const lang = n.language || n.userLanguage;
+            const apiClient =
+                await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.query({
+              query: gql`
+                query ($name:String! $languageCode: String) {
+                  cities(query:{name:$name, languageCode:$languageCode}) {
+                    geonameid
+                    name
+                    country
+                    population
+                    latitude
+                    longitude
+                    feature_code
+                    source
+                  }
+                }
+              `,
+              variables: {
+                name: (searchText ?? "" ) + "%",
+                languageCode: lang.substr(0, 2)
+              },
+            });
+
+            const items =
+                result.data.cities && result.data.cities.length > 0
+                    ? result.data.cities
+                        .map((o) => {
+                          return <Choice>{
+                            label: `${o.name} (${o.country})`,
+                            value: o.geonameid
+                          };
+                        })
+                    : [];
+
+            return items;
+          },
           optionIdentifier: "value",
           getOptionLabel: (option) => option.label,
           getSelectionLabel: (option) => option.label,
@@ -205,38 +246,11 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             },
             target: "#uploadAvatar",
           },
-          /*{
-            cond: (context) => {
-              return (
-                context.dirtyFlags["avatar"] &&
-                (!context.data.avatar || !context.data.avatar.bytes)
-              );
-            },
-            target: "#generateAvataar",
-          },*/
           {
             target: "#newsletter",
           },
         ],
       },
-      /*
-      generateAvataar: {
-        id: "generateAvataar",
-        invoke: {
-          src: async (context) => {
-            if (context.data.circlesAddress) {
-              const svg = AvataarGenerator.generate(context.data.circlesAddress.toLowerCase());
-              context.data.avatarUrl = svg;
-            } else {
-              // Point 3 of https://github.com/circlesland/o-platform/issues/96 - circles.land no safe no profile picture => grey avatar icon
-              context.data.avatarUrl = AvataarGenerator.default();
-            }
-          },
-          onDone: "#newsletter",
-          onError: "#error",
-        },
-      },
-       */
       uploadAvatar: {
         id: "uploadAvatar",
         on: {
@@ -371,6 +385,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 avatarUrl: context.data.avatarUrl,
                 avatarCid: context.data.avatarCid,
                 avatarMimeType: context.data.avatarMimeType,
+                cityGeonameid: context.data.cityGeonameid
               },
             });
 
