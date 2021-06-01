@@ -439,56 +439,6 @@
           modalProcess = null;
         }}
       />
-      <div class="grid grid-cols-3 mt-4">
-        {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
-          <button on:click={() => modalProcess.sendAnswer(new Back())}>
-            <div class="text-lightgrey hover:text-primary active:text-primary">
-              <svg
-                class="w-8 h-8"
-                viewBox="0 0 22 22"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12.5757 19.895L11.4917 20.979C11.0327 21.438 10.2905 21.438 9.83643 20.979L0.344238 11.4917C-0.114746 11.0327 -0.114746 10.2905 0.344238 9.83643L9.83643 0.344238C10.2954 -0.114746 11.0376 -0.114746 11.4917 0.344238L12.5757 1.42822C13.0395 1.89209 13.0298 2.64893 12.5562 3.10303L6.67236 8.7085H20.7056C21.355 8.7085 21.8774 9.23096 21.8774 9.88037V11.4429C21.8774 12.0923 21.355 12.6147 20.7056 12.6147H6.67236L12.5562 18.2202C13.0347 18.6743 13.0444 19.4312 12.5757 19.895Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-          </button>
-        {/if}
-
-        <button
-          class="col-start-2 col-end-2 justify-self-center min-w-min"
-          on:click={() => {
-            lastPrompt = null;
-            if (modalProcess) {
-              modalProcess.sendEvent(new Cancel());
-            }
-          }}
-        >
-          <div class="text-lightgrey hover:text-primary active:text-primary">
-            <svg
-              class="w-14 h-14"
-              viewBox="0 0 44 43"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11.2099 10.7901C5.45377 16.7508 5.61948 26.2439 11.5801 32.0001C17.5408 37.7562 27.034 37.5905 32.7901 31.6299C38.5463 25.6692 38.3805 16.176 32.4199 10.4199C26.4592 4.66374 16.9661 4.82944 11.2099 10.7901ZM29.2685 16.1212C29.5557 16.3985 29.5637 16.8603 29.2864 17.1475L25.421 21.1503L29.4238 25.0157C29.7109 25.293 29.719 25.7548 29.4417 26.042L27.0888 28.4785C26.8115 28.7656 26.3497 28.7737 26.0625 28.4964L22.0597 24.6309L18.1943 28.6337C17.917 28.9209 17.4552 28.9289 17.168 28.6516L14.7315 26.2988C14.4444 26.0215 14.4363 25.5596 14.7136 25.2725L18.579 21.2697L14.5763 17.4043C14.2891 17.127 14.2811 16.6651 14.5584 16.378L16.9112 13.9415C17.1885 13.6543 17.6504 13.6463 17.9375 13.9236L21.9403 17.789L25.8057 13.7862C26.083 13.4991 26.5449 13.491 26.832 13.7683L29.2685 16.1212Z"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </div>
-        </button>
-        {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
-          <button
-            class="text-2xl btn-text justify-self-end text-lightgrey hover:text-primary active:text-primary"
-            on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
-          >
-        {/if}
-      </div>
     {:else}
       <!-- No process -->
       {#if getLastLoadedDapp()}
@@ -505,6 +455,58 @@
         </div>
       {/if}
     {/if}
+    <div class="grid grid-cols-3 mt-4">
+      {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
+        <button on:click={() => modalProcess.sendAnswer(new Back())}>
+          <div class="text-lightgrey hover:text-primary active:text-primary">
+            <svg
+              class="w-8 h-8"
+              viewBox="0 0 22 22"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12.5757 19.895L11.4917 20.979C11.0327 21.438 10.2905 21.438 9.83643 20.979L0.344238 11.4917C-0.114746 11.0327 -0.114746 10.2905 0.344238 9.83643L9.83643 0.344238C10.2954 -0.114746 11.0376 -0.114746 11.4917 0.344238L12.5757 1.42822C13.0395 1.89209 13.0298 2.64893 12.5562 3.10303L6.67236 8.7085H20.7056C21.355 8.7085 21.8774 9.23096 21.8774 9.88037V11.4429C21.8774 12.0923 21.355 12.6147 20.7056 12.6147H6.67236L12.5562 18.2202C13.0347 18.6743 13.0444 19.4312 12.5757 19.895Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+        </button>
+      {/if}
+
+      <button
+        class="col-start-2 col-end-2 justify-self-center min-w-min"
+        on:click={() => {
+          lastPrompt = null;
+          if (modalProcess) {
+            modalProcess.sendEvent(new Cancel());
+          } else {
+            isOpen = false;
+          }
+        }}
+      >
+        <div class="text-lightgrey hover:text-primary active:text-primary">
+          <svg
+            class="w-14 h-14"
+            viewBox="0 0 44 43"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M11.2099 10.7901C5.45377 16.7508 5.61948 26.2439 11.5801 32.0001C17.5408 37.7562 27.034 37.5905 32.7901 31.6299C38.5463 25.6692 38.3805 16.176 32.4199 10.4199C26.4592 4.66374 16.9661 4.82944 11.2099 10.7901ZM29.2685 16.1212C29.5557 16.3985 29.5637 16.8603 29.2864 17.1475L25.421 21.1503L29.4238 25.0157C29.7109 25.293 29.719 25.7548 29.4417 26.042L27.0888 28.4785C26.8115 28.7656 26.3497 28.7737 26.0625 28.4964L22.0597 24.6309L18.1943 28.6337C17.917 28.9209 17.4552 28.9289 17.168 28.6516L14.7315 26.2988C14.4444 26.0215 14.4363 25.5596 14.7136 25.2725L18.579 21.2697L14.5763 17.4043C14.2891 17.127 14.2811 16.6651 14.5584 16.378L16.9112 13.9415C17.1885 13.6543 17.6504 13.6463 17.9375 13.9236L21.9403 17.789L25.8057 13.7862C26.083 13.4991 26.5449 13.491 26.832 13.7683L29.2685 16.1212Z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </button>
+      {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
+        <button
+          class="text-2xl btn-text justify-self-end text-lightgrey hover:text-primary active:text-primary"
+          on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
+        >
+      {/if}
+    </div>
   </div>
 </Modal>
 
