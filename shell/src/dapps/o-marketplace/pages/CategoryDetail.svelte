@@ -5,7 +5,10 @@
     import {onMount} from "svelte";
     import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
     import {Subscription} from "rxjs";
-    import {me} from "../../../shared/stores/me";
+
+    export let params: {
+        category: string
+    };
 
     let isLoading: boolean;
     let error: Error;
@@ -13,7 +16,7 @@
     let shellEventSubscription: Subscription;
 
     async function load() {
-        if (isLoading)
+        if (isLoading || !params || !params.category)
             return;
 
         isLoading = true;
@@ -21,7 +24,7 @@
         const result = await apiClient.query({
             query: OffersDocument,
             variables: {
-                createdByProfileId: $me.id
+                category: params.category
             }
         });
         if (result.errors && result.errors.length) {
@@ -75,7 +78,7 @@
                         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
                 >
                     <div class="text-xs font-bold text-left text-secondary font-circles">
-                        My offers
+                        Offers
                     </div>
                 </div>
             </section>
@@ -83,13 +86,7 @@
                 <OfferCard offer={offer} />
             {/each}
         {:else}
-            <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-                <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-                    <div class="flex flex-col items-start">
-                        <div>No offers</div>
-                    </div>
-                </div>
-            </section>
+
         {/if}
     {/if}
 </div>

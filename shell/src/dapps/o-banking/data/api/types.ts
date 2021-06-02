@@ -326,6 +326,7 @@ export type QueryIndexedTransferTagsInput = {
 };
 
 export type QueryOfferInput = {
+  category?: Maybe<Scalars['String']>;
   createdByProfileId?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   publishedAt_gt?: Maybe<Scalars['String']>;

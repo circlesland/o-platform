@@ -326,6 +326,7 @@ export type QueryIndexedTransferTagsInput = {
 };
 
 export type QueryOfferInput = {
+  category?: Maybe<Scalars['String']>;
   createdByProfileId?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   publishedAt_gt?: Maybe<Scalars['String']>;
@@ -462,6 +463,7 @@ export type OffersQueryVariables = Exact<{
   id?: Maybe<Scalars['Int']>;
   publishedAt_gt?: Maybe<Scalars['String']>;
   publishedAt_lt?: Maybe<Scalars['String']>;
+  category?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -565,9 +567,9 @@ export const CreateOfferDocument = gql`
 }
     `;
 export const OffersDocument = gql`
-    query offers($createdByProfileId: Int, $id: Int, $publishedAt_gt: String, $publishedAt_lt: String) {
+    query offers($createdByProfileId: Int, $id: Int, $publishedAt_gt: String, $publishedAt_lt: String, $category: String) {
   offers(
-    query: {createdByProfileId: $createdByProfileId, id: $id, publishedAt_gt: $publishedAt_gt, publishedAt_lt: $publishedAt_lt}
+    query: {createdByProfileId: $createdByProfileId, id: $id, publishedAt_gt: $publishedAt_gt, publishedAt_lt: $publishedAt_lt, category: $category}
   ) {
     id
     createdBy {

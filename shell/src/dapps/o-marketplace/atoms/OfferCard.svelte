@@ -12,7 +12,7 @@
   }
 
   function loadDetailPage() {
-    push("#/marketplace/offers/" + offer.id);
+    push("#/marketplace/offer/" + offer.id);
   }
 
   function buy() {

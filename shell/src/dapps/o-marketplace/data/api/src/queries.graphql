@@ -3,12 +3,14 @@ query offers (
     $id: Int
     $publishedAt_gt: String
     $publishedAt_lt: String
+    $category: String
 ) {
     offers(query: {
         createdByProfileId: $createdByProfileId
         id: $id
         publishedAt_gt: $publishedAt_gt
         publishedAt_lt: $publishedAt_lt
+        category: $category
     }) {
         id
         createdBy {

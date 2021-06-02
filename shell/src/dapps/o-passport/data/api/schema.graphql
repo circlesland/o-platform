@@ -254,6 +254,7 @@ input QueryIndexedTransferTagsInput {
 }
 
 input QueryOfferInput {
+    category: String
     createdByProfileId: Int
     id: Int
     publishedAt_gt: String
