@@ -27,7 +27,7 @@ export type CreateOfferContextData = {
     };
     errorUploadingOfferPicture?: any
     description?: string
-    category: string
+    categoryTagId: number
     geonameid: number
     pricePerUnit: string
     unit: string
@@ -108,14 +108,14 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     submitButtonText: strings.submitDescription,
                 },
                 navigation: {
-                    next: "#category",
+                    next: "#categoryTagId",
                     previous: "#title",
                     canSkip: () => true,
-                    skip: "#category"
+                    skip: "#categoryTagId"
                 },
             }),
-            category: prompt<CreateOfferContext, any>({
-                fieldName: "category",
+            categoryTagId: prompt<CreateOfferContext, any>({
+                fieldName: "categoryTagId",
                 onlyWhenDirty: skipIfNotDirty,
                 component: DropdownSelectEditor,
                 params: {
@@ -193,7 +193,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
                 navigation: {
                     next: "#unit",
-                    previous: "#category"
+                    previous: "#categoryTagId"
                 },
             }),
             unit: prompt<CreateOfferContext, any>({
@@ -338,7 +338,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                             mutation: CreateOfferDocument,
                             variables: {
                                 geonameid: context.data.geonameid,
-                                category: context.data.category,
+                                categoryTagId: context.data.categoryTagId,
                                 createdByProfileId: context.data.geonameid,
                                 deliveryTerms: context.data.deliveryTerms,
                                 description: context.data.description,

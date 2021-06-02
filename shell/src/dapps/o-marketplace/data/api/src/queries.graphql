@@ -3,14 +3,14 @@ query offers (
     $id: Int
     $publishedAt_gt: String
     $publishedAt_lt: String
-    $category: String
+    $categoryTagId: Int
 ) {
     offers(query: {
         createdByProfileId: $createdByProfileId
         id: $id
         publishedAt_gt: $publishedAt_gt
         publishedAt_lt: $publishedAt_lt
-        category: $category
+        categoryTagId: $categoryTagId
     }) {
         id
         createdBy {
@@ -33,7 +33,12 @@ query offers (
         pictureUrl
         pictureMimeType
         description
-        category
+        categoryTagId
+        categoryTag {
+            id
+            type
+            value
+        }
         geonameid
         pricePerUnit
         unit
@@ -52,7 +57,11 @@ query offers (
 }
 
 query offerCategories($like:String!) {
-    offerCategories(like: $like)
+    offerCategories(like: $like) {
+        id
+        type
+        value
+    }
 }
 
 query citiesByName ($name:String! $languageCode: String) {

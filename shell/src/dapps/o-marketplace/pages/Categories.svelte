@@ -46,8 +46,8 @@
         }
     });
 
-    function loadDetailPage(category:string) {
-        push("#/marketplace/offers/" + category);
+    function loadDetailPage(categoryId:string) {
+        push("#/marketplace/offers/" + categoryId);
     }
 </script>
 <MarketplaceHeader />
@@ -84,12 +84,12 @@
             </section>
             {#each categories as category}
                 <section class="flex items-center justify-center mb-1 "
-                         on:click|once={() => loadDetailPage(category)}>
+                         on:click|once={() => loadDetailPage(category.id)}>
                     <div
                             class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
                     >
                         <div class="text-xs font-bold text-left text-secondary font-circles">
-                            {category}
+                            {category.value}
                         </div>
                     </div>
                 </section>

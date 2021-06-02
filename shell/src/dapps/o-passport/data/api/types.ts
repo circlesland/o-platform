@@ -39,7 +39,7 @@ export type ConsumeDepositedChallengeResponse = {
 };
 
 export type CreateOfferInput = {
-  category: Scalars['String'];
+  categoryTagId: Scalars['Int'];
   createdByProfileId: Scalars['Int'];
   deliveryTerms: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -193,7 +193,8 @@ export type MutationUpsertProfileArgs = {
 
 export type Offer = {
   __typename?: 'Offer';
-  category: Scalars['String'];
+  categoryTag?: Maybe<Tag>;
+  categoryTagId: Scalars['Int'];
   city?: Maybe<City>;
   createdBy?: Maybe<Profile>;
   createdByProfileId: Scalars['Int'];
@@ -326,7 +327,7 @@ export type QueryIndexedTransferTagsInput = {
 };
 
 export type QueryOfferInput = {
-  category?: Maybe<Scalars['String']>;
+  categoryTagId?: Maybe<Scalars['Int']>;
   createdByProfileId?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   publishedAt_gt?: Maybe<Scalars['String']>;

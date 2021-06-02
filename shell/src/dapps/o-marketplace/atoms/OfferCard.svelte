@@ -6,7 +6,21 @@
   import {shellProcess, ShellProcessContext} from "../../../shared/processes/shellProcess";
   import {purchase} from "../processes/purchase";
 
-  export let offer: Offer;
+  export let offer: Offer = <any>{
+    categoryTag: {
+      value: "",
+      id: 0
+    },
+    categoryTagId: 0,
+    deliveryTerms: "",
+    description: "",
+    unit: "",
+    pricePerUnit: "",
+    id: 0,
+    title: "",
+    geonameid: 0,
+    createdBy: {}
+  };
 
   $: {
   }
@@ -74,7 +88,8 @@
             d="M13 7l5 5m0 0l-5 5m5-5H6"
           />
         </svg>
-        Category: <span class="inline text-dark">{offer.category}</span><br/>
+        {#if offer.categoryTag}
+        Category: <span class="inline text-dark">{offer.categoryTag.value}</span><br/>
         <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="inline w-4 h-4 -mt-1"
@@ -89,6 +104,7 @@
                   d="M13 7l5 5m0 0l-5 5m5-5H6"
           />
         </svg>
+        {/if}
         Location: <span class="inline text-dark">{offer.city.name} ({offer.city.country})</span><br/>
         <svg
                 xmlns="http://www.w3.org/2000/svg"

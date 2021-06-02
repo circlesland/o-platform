@@ -80,7 +80,8 @@ type Mutation {
 }
 
 type Offer {
-    category: String!
+    categoryTag: Tag
+    categoryTagId: Int!
     city: City
     createdBy: Profile
     createdByProfileId: Int!
@@ -135,7 +136,7 @@ type Purchase {
 
 type Query {
     cities(query: QueryCitiesInput!): [City!]!
-    offerCategories(like: String): [String!]!
+    offerCategories(like: String): [Tag!]!
     offers(query: QueryOfferInput!): [Offer!]!
     profiles(query: QueryProfileInput!): [Profile!]!
     search(query: SearchInput!): [Profile!]!
@@ -190,7 +191,7 @@ enum PurchaseStatus {
 }
 
 input CreateOfferInput {
-    category: String!
+    categoryTagId: Int!
     createdByProfileId: Int!
     deliveryTerms: String!
     description: String
@@ -254,7 +255,7 @@ input QueryIndexedTransferTagsInput {
 }
 
 input QueryOfferInput {
-    category: String
+    categoryTagId: Int
     createdByProfileId: Int
     id: Int
     publishedAt_gt: String

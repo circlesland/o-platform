@@ -39,7 +39,7 @@ export type ConsumeDepositedChallengeResponse = {
 };
 
 export type CreateOfferInput = {
-  category: Scalars['String'];
+  categoryTagId: Scalars['Int'];
   createdByProfileId: Scalars['Int'];
   deliveryTerms: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -193,7 +193,8 @@ export type MutationUpsertProfileArgs = {
 
 export type Offer = {
   __typename?: 'Offer';
-  category: Scalars['String'];
+  categoryTag?: Maybe<Tag>;
+  categoryTagId: Scalars['Int'];
   city?: Maybe<City>;
   createdBy?: Maybe<Profile>;
   createdByProfileId: Scalars['Int'];
@@ -266,7 +267,7 @@ export enum PurchaseStatus {
 export type Query = {
   __typename?: 'Query';
   cities: Array<City>;
-  offerCategories: Array<Scalars['String']>;
+  offerCategories: Array<Tag>;
   offers: Array<Offer>;
   profiles: Array<Profile>;
   search: Array<Profile>;
@@ -326,7 +327,7 @@ export type QueryIndexedTransferTagsInput = {
 };
 
 export type QueryOfferInput = {
-  category?: Maybe<Scalars['String']>;
+  categoryTagId?: Maybe<Scalars['Int']>;
   createdByProfileId?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   publishedAt_gt?: Maybe<Scalars['String']>;
@@ -430,7 +431,7 @@ export type CreateOfferMutationVariables = Exact<{
   pictureUrl: Scalars['String'];
   pictureMimeType: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  category: Scalars['String'];
+  categoryTagId: Scalars['Int'];
   geonameid: Scalars['Int'];
   pricePerUnit: Scalars['String'];
   unit: Scalars['String'];
@@ -443,7 +444,7 @@ export type CreateOfferMutation = (
   { __typename?: 'Mutation' }
   & { createOffer: (
     { __typename?: 'Offer' }
-    & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'category' | 'geonameid' | 'pricePerUnit' | 'unit' | 'maxUnits' | 'deliveryTerms'>
+    & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'categoryTagId' | 'geonameid' | 'pricePerUnit' | 'unit' | 'maxUnits' | 'deliveryTerms'>
     & { createdBy?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'avatarMimeType'>
@@ -451,6 +452,9 @@ export type CreateOfferMutation = (
         { __typename?: 'City' }
         & Pick<City, 'name' | 'country'>
       )> }
+    )>, categoryTag?: Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'type' | 'value'>
     )>, city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
@@ -463,7 +467,7 @@ export type OffersQueryVariables = Exact<{
   id?: Maybe<Scalars['Int']>;
   publishedAt_gt?: Maybe<Scalars['String']>;
   publishedAt_lt?: Maybe<Scalars['String']>;
-  category?: Maybe<Scalars['String']>;
+  categoryTagId?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -471,7 +475,7 @@ export type OffersQuery = (
   { __typename?: 'Query' }
   & { offers: Array<(
     { __typename?: 'Offer' }
-    & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'category' | 'geonameid' | 'pricePerUnit' | 'unit' | 'maxUnits' | 'deliveryTerms'>
+    & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'categoryTagId' | 'geonameid' | 'pricePerUnit' | 'unit' | 'maxUnits' | 'deliveryTerms'>
     & { createdBy?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl' | 'avatarMimeType'>
@@ -479,6 +483,9 @@ export type OffersQuery = (
         { __typename?: 'City' }
         & Pick<City, 'name' | 'country'>
       )> }
+    )>, categoryTag?: Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'type' | 'value'>
     )>, city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
@@ -493,7 +500,10 @@ export type OfferCategoriesQueryVariables = Exact<{
 
 export type OfferCategoriesQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'offerCategories'>
+  & { offerCategories: Array<(
+    { __typename?: 'Tag' }
+    & Pick<Tag, 'id' | 'type' | 'value'>
+  )> }
 );
 
 export type CitiesByNameQueryVariables = Exact<{
@@ -525,9 +535,9 @@ export type CitiesByIdQuery = (
 
 
 export const CreateOfferDocument = gql`
-    mutation createOffer($createdByProfileId: Int!, $title: String!, $pictureUrl: String!, $pictureMimeType: String!, $description: String, $category: String!, $geonameid: Int!, $pricePerUnit: String!, $unit: String!, $maxUnits: Int, $deliveryTerms: String!) {
+    mutation createOffer($createdByProfileId: Int!, $title: String!, $pictureUrl: String!, $pictureMimeType: String!, $description: String, $categoryTagId: Int!, $geonameid: Int!, $pricePerUnit: String!, $unit: String!, $maxUnits: Int, $deliveryTerms: String!) {
   createOffer(
-    data: {geonameid: $geonameid, category: $category, createdByProfileId: $createdByProfileId, deliveryTerms: $deliveryTerms, description: $description, maxUnits: $maxUnits, pictureUrl: $pictureUrl, pictureMimeType: $pictureMimeType, pricePerUnit: $pricePerUnit, title: $title, unit: $unit}
+    data: {geonameid: $geonameid, categoryTagId: $categoryTagId, createdByProfileId: $createdByProfileId, deliveryTerms: $deliveryTerms, description: $description, maxUnits: $maxUnits, pictureUrl: $pictureUrl, pictureMimeType: $pictureMimeType, pricePerUnit: $pricePerUnit, title: $title, unit: $unit}
   ) {
     id
     createdBy {
@@ -548,7 +558,12 @@ export const CreateOfferDocument = gql`
     pictureUrl
     pictureMimeType
     description
-    category
+    categoryTagId
+    categoryTag {
+      id
+      type
+      value
+    }
     geonameid
     pricePerUnit
     unit
@@ -567,9 +582,9 @@ export const CreateOfferDocument = gql`
 }
     `;
 export const OffersDocument = gql`
-    query offers($createdByProfileId: Int, $id: Int, $publishedAt_gt: String, $publishedAt_lt: String, $category: String) {
+    query offers($createdByProfileId: Int, $id: Int, $publishedAt_gt: String, $publishedAt_lt: String, $categoryTagId: Int) {
   offers(
-    query: {createdByProfileId: $createdByProfileId, id: $id, publishedAt_gt: $publishedAt_gt, publishedAt_lt: $publishedAt_lt, category: $category}
+    query: {createdByProfileId: $createdByProfileId, id: $id, publishedAt_gt: $publishedAt_gt, publishedAt_lt: $publishedAt_lt, categoryTagId: $categoryTagId}
   ) {
     id
     createdBy {
@@ -592,7 +607,12 @@ export const OffersDocument = gql`
     pictureUrl
     pictureMimeType
     description
-    category
+    categoryTagId
+    categoryTag {
+      id
+      type
+      value
+    }
     geonameid
     pricePerUnit
     unit
@@ -612,7 +632,11 @@ export const OffersDocument = gql`
     `;
 export const OfferCategoriesDocument = gql`
     query offerCategories($like: String!) {
-  offerCategories(like: $like)
+  offerCategories(like: $like) {
+    id
+    type
+    value
+  }
 }
     `;
 export const CitiesByNameDocument = gql`

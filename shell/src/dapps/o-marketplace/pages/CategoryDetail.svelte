@@ -7,7 +7,7 @@
     import {Subscription} from "rxjs";
 
     export let params: {
-        category: string
+        category: number
     };
 
     let isLoading: boolean;
@@ -24,7 +24,7 @@
         const result = await apiClient.query({
             query: OffersDocument,
             variables: {
-                category: params.category
+                categoryTagId: parseInt(params.category.toString())
             }
         });
         if (result.errors && result.errors.length) {

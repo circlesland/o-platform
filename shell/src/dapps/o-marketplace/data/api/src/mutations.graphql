@@ -4,7 +4,7 @@ mutation createOffer (
     $pictureUrl: String!
     $pictureMimeType: String!
     $description: String
-    $category: String!
+    $categoryTagId: Int!
     $geonameid: Int!
     $pricePerUnit: String!
     $unit: String!
@@ -13,7 +13,7 @@ mutation createOffer (
 ) {
     createOffer(data: {
         geonameid: $geonameid
-        category: $category
+        categoryTagId: $categoryTagId
         createdByProfileId: $createdByProfileId,
         deliveryTerms: $deliveryTerms
         description: $description,
@@ -43,7 +43,12 @@ mutation createOffer (
         pictureUrl
         pictureMimeType
         description
-        category
+        categoryTagId
+        categoryTag {
+            id
+            type
+            value
+        }
         geonameid
         pricePerUnit
         unit
