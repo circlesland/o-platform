@@ -357,7 +357,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
             },
             success: {
-                type: "final",
                 id: "success",
                 data: (context, event: any) => {
                     window.o.publishEvent(<PlatformEvent>{

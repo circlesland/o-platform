@@ -21,9 +21,6 @@
         ctx.childProcessDefinition = purchase;
         ctx.childContext = {
           data: {
-            recipientAddress,
-            safeAddress: tryGetCurrentSafe()?.safeAddress,
-            privateKey: localStorage.getItem("circlesKey"),
           },
         };
         return ctx;
@@ -52,6 +49,10 @@
         <h2 class="text-2xl sm:text-3xl">
           {offer.title}
         </h2>
+        {#if offer.description}
+          <span class="inline text-dark">{offer.description}</span><br/>
+        {/if}
+        <span class="inline text-sm">{offer.deliveryTerms}</span><br/>
       </div>
 
       <div class="mb-4 text-sm text-left text-green">

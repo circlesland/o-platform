@@ -3,12 +3,12 @@ import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import Home from "./o-marketplace/pages/Home.svelte";
 import Categories from "./o-marketplace/pages/Categories.svelte";
+import OfferDetail from "./o-marketplace/pages/OfferDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
 import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
 import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
-import {tryGetCurrentSafe} from "./o-banking/init";
 import {createOffer} from "./o-marketplace/processes/createOffer";
 
 const stream: PageManifest = {
@@ -16,6 +16,19 @@ const stream: PageManifest = {
   routeParts: ["stream"],
   component: Home,
   title: "Stream",
+  available: [
+    (detail) => {
+      // Can navigate to?
+      // Sure!
+      return true;
+    },
+  ],
+};
+const offerDetail: PageManifest = {
+  isDefault: true,
+  routeParts: ["offers", ":id"],
+  component: OfferDetail,
+  title: "Offer detail",
   available: [
     (detail) => {
       // Can navigate to?
@@ -102,5 +115,5 @@ export const marketplace: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  pages: [stream, categories, favorites, myOffers],
+  pages: [stream, categories, favorites, myOffers, offerDetail],
 };
