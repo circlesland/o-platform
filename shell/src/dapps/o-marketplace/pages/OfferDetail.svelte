@@ -5,6 +5,7 @@
     import {onMount} from "svelte";
     import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
     import {Subscription} from "rxjs";
+    import CreatorCard from "../atoms/CreatorCard.svelte";
 
     let isLoading: boolean;
     let error: Error;
@@ -51,7 +52,6 @@
     });
 </script>
 <MarketplaceHeader />
-
 <div class="mx-4 -mt-6">
     {#if isLoading}
         <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
@@ -83,6 +83,7 @@
                 </div>
             </section>
             {#each offers as offer}
+                <CreatorCard profile={offer.createdBy} />
                 <OfferCard offer={offer} />
             {/each}
         {:else}

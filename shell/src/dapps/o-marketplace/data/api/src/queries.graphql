@@ -12,6 +12,8 @@ query offers (
     }) {
         id
         createdBy {
+            id
+            circlesAddress
             firstName
             lastName
             avatarUrl
@@ -47,8 +49,8 @@ query offers (
     }
 }
 
-query offerCategories {
-    offerCategories
+query offerCategories($like:String!) {
+    offerCategories(like: $like)
 }
 
 query citiesByName ($name:String! $languageCode: String) {

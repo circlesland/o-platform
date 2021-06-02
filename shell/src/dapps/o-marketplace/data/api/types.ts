@@ -472,7 +472,7 @@ export type OffersQuery = (
     & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'category' | 'geonameid' | 'pricePerUnit' | 'unit' | 'maxUnits' | 'deliveryTerms'>
     & { createdBy?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'avatarMimeType'>
+      & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl' | 'avatarMimeType'>
       & { city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'name' | 'country'>
@@ -484,7 +484,9 @@ export type OffersQuery = (
   )> }
 );
 
-export type OfferCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+export type OfferCategoriesQueryVariables = Exact<{
+  like: Scalars['String'];
+}>;
 
 
 export type OfferCategoriesQuery = (
@@ -569,6 +571,8 @@ export const OffersDocument = gql`
   ) {
     id
     createdBy {
+      id
+      circlesAddress
       firstName
       lastName
       avatarUrl
@@ -605,8 +609,8 @@ export const OffersDocument = gql`
 }
     `;
 export const OfferCategoriesDocument = gql`
-    query offerCategories {
-  offerCategories
+    query offerCategories($like: String!) {
+  offerCategories(like: $like)
 }
     `;
 export const CitiesByNameDocument = gql`
@@ -648,7 +652,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     offers(variables?: OffersQueryVariables): Promise<OffersQuery> {
       return withWrapper(() => client.request<OffersQuery>(print(OffersDocument), variables));
     },
-    offerCategories(variables?: OfferCategoriesQueryVariables): Promise<OfferCategoriesQuery> {
+    offerCategories(variables: OfferCategoriesQueryVariables): Promise<OfferCategoriesQuery> {
       return withWrapper(() => client.request<OfferCategoriesQuery>(print(OfferCategoriesDocument), variables));
     },
     citiesByName(variables: CitiesByNameQueryVariables): Promise<CitiesByNameQuery> {

@@ -27,6 +27,10 @@
       })
     );
   }
+
+  function edit() {
+
+  }
 </script>
 
 <section
@@ -116,7 +120,7 @@
           />
         </svg>
         Price per unit: <span class="inline text-dark">{offer.pricePerUnit}</span> Circles<br/>
-        {#if offer.maxUnits}
+        {#if offer.maxUnits !== undefined}
           <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="inline w-4 h-4 -mt-1"
