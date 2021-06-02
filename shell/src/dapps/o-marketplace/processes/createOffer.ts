@@ -123,8 +123,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     placeholder: strings.placeholderCategory,
                     submitButtonText: strings.submitCategory,
                     asyncChoices: async (searchText?: string) => {
-                        const n = <any>navigator;
-                        const lang = n.language || n.userLanguage;
                         const apiClient = await window.o.apiClient.client.subscribeToResult();
                         const result = await apiClient.query({
                             query: OfferCategoriesDocument,
@@ -134,8 +132,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                         });
 
                         const items =
-                            result.data.cities && result.data.cities.length > 0
-                                ? result.data.cities
+                            result.data.offerCategories && result.data.offerCategories.length > 0
+                                ? result.data.offerCategories
                                     .map((o) => {
                                         return <Choice>{
                                             label: o,
@@ -344,7 +342,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                                 createdByProfileId: context.data.geonameid,
                                 deliveryTerms: context.data.deliveryTerms,
                                 description: context.data.description,
-                                maxUnits: context.data.maxUnits,
+                                maxUnits: context.data.maxUnits ? Number.parseFloat(context.data.maxUnits?.toString() ?? "0") : undefined,
                                 pictureUrl: context.data.pictureUrl,
                                 pictureMimeType: context.data.pictureMimeType,
                                 pricePerUnit: context.data.pricePerUnit,
@@ -362,12 +360,11 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 type: "final",
                 id: "success",
                 data: (context, event: any) => {
-                    console.log(`enter: upsertIdentity.success`, context.data);
                     window.o.publishEvent(<PlatformEvent>{
-                        type: "shell.authenticated",
-                        profile: context.data,
+                        type: "shell.refresh",
+                        appId: "marketplace:1",
+                        offer: event.data
                     });
-                    return event.data;
                 },
             },
         },
