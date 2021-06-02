@@ -1,15 +1,6 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
 
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
-  import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
-  import { me } from "../../../shared/stores/me";
-  import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-
   let isLoading: boolean = true;
 
   export let profile: {

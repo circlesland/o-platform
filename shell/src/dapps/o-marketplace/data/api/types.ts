@@ -38,20 +38,6 @@ export type ConsumeDepositedChallengeResponse = {
   success: Scalars['Boolean'];
 };
 
-export type CreateOfferInput = {
-  categoryTagId: Scalars['Int'];
-  createdByProfileId: Scalars['Int'];
-  deliveryTerms: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  geonameid: Scalars['Int'];
-  maxUnits?: Maybe<Scalars['Int']>;
-  pictureMimeType: Scalars['String'];
-  pictureUrl: Scalars['String'];
-  pricePerUnit: Scalars['String'];
-  title: Scalars['String'];
-  unit: Scalars['String'];
-};
-
 export type DelegateAuthInit = {
   __typename?: 'DelegateAuthInit';
   appId: Scalars['String'];
@@ -123,7 +109,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   authenticateAt: DelegateAuthInit;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
-  createOffer: Offer;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   indexTransfer: IndexTransferResponse;
@@ -133,6 +118,7 @@ export type Mutation = {
   requestUpdateSafe: RequestUpdateSafeResponse;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
+  upsertOffer: Offer;
   upsertProfile: Profile;
 };
 
@@ -144,11 +130,6 @@ export type MutationAuthenticateAtArgs = {
 
 export type MutationConsumeDepositedChallengeArgs = {
   delegateAuthCode: Scalars['String'];
-};
-
-
-export type MutationCreateOfferArgs = {
-  data: CreateOfferInput;
 };
 
 
@@ -184,6 +165,11 @@ export type MutationUnlistOfferArgs = {
 
 export type MutationUpdateSafeArgs = {
   data: UpdateSafeInput;
+};
+
+
+export type MutationUpsertOfferArgs = {
+  data: UpsertOfferInput;
 };
 
 
@@ -401,6 +387,20 @@ export type UpdateSafeResponse = {
 };
 
 
+export type UpsertOfferInput = {
+  categoryTagId: Scalars['Int'];
+  deliveryTerms: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  geonameid: Scalars['Int'];
+  id?: Maybe<Scalars['Int']>;
+  maxUnits?: Maybe<Scalars['Int']>;
+  pictureMimeType: Scalars['String'];
+  pictureUrl: Scalars['String'];
+  pricePerUnit: Scalars['String'];
+  title: Scalars['String'];
+  unit: Scalars['String'];
+};
+
 export type UpsertProfileInput = {
   avatarCid?: Maybe<Scalars['String']>;
   avatarMimeType?: Maybe<Scalars['String']>;
@@ -425,8 +425,8 @@ export type Version = {
   revision: Scalars['Int'];
 };
 
-export type CreateOfferMutationVariables = Exact<{
-  createdByProfileId: Scalars['Int'];
+export type UpsertOfferMutationVariables = Exact<{
+  id?: Maybe<Scalars['Int']>;
   title: Scalars['String'];
   pictureUrl: Scalars['String'];
   pictureMimeType: Scalars['String'];
@@ -440,9 +440,9 @@ export type CreateOfferMutationVariables = Exact<{
 }>;
 
 
-export type CreateOfferMutation = (
+export type UpsertOfferMutation = (
   { __typename?: 'Mutation' }
-  & { createOffer: (
+  & { upsertOffer: (
     { __typename?: 'Offer' }
     & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'categoryTagId' | 'geonameid' | 'pricePerUnit' | 'unit' | 'maxUnits' | 'deliveryTerms'>
     & { createdBy?: Maybe<(
@@ -534,10 +534,10 @@ export type CitiesByIdQuery = (
 );
 
 
-export const CreateOfferDocument = gql`
-    mutation createOffer($createdByProfileId: Int!, $title: String!, $pictureUrl: String!, $pictureMimeType: String!, $description: String, $categoryTagId: Int!, $geonameid: Int!, $pricePerUnit: String!, $unit: String!, $maxUnits: Int, $deliveryTerms: String!) {
-  createOffer(
-    data: {geonameid: $geonameid, categoryTagId: $categoryTagId, createdByProfileId: $createdByProfileId, deliveryTerms: $deliveryTerms, description: $description, maxUnits: $maxUnits, pictureUrl: $pictureUrl, pictureMimeType: $pictureMimeType, pricePerUnit: $pricePerUnit, title: $title, unit: $unit}
+export const UpsertOfferDocument = gql`
+    mutation upsertOffer($id: Int, $title: String!, $pictureUrl: String!, $pictureMimeType: String!, $description: String, $categoryTagId: Int!, $geonameid: Int!, $pricePerUnit: String!, $unit: String!, $maxUnits: Int, $deliveryTerms: String!) {
+  upsertOffer(
+    data: {id: $id, geonameid: $geonameid, categoryTagId: $categoryTagId, deliveryTerms: $deliveryTerms, description: $description, maxUnits: $maxUnits, pictureUrl: $pictureUrl, pictureMimeType: $pictureMimeType, pricePerUnit: $pricePerUnit, title: $title, unit: $unit}
   ) {
     id
     createdBy {
@@ -672,8 +672,8 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    createOffer(variables: CreateOfferMutationVariables): Promise<CreateOfferMutation> {
-      return withWrapper(() => client.request<CreateOfferMutation>(print(CreateOfferDocument), variables));
+    upsertOffer(variables: UpsertOfferMutationVariables): Promise<UpsertOfferMutation> {
+      return withWrapper(() => client.request<UpsertOfferMutation>(print(UpsertOfferDocument), variables));
     },
     offers(variables?: OffersQueryVariables): Promise<OffersQuery> {
       return withWrapper(() => client.request<OffersQuery>(print(OffersDocument), variables));

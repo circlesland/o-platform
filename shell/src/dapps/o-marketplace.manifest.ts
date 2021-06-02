@@ -10,7 +10,7 @@ import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
 import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
 import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
-import {createOffer} from "./o-marketplace/processes/createOffer";
+import {upsertOffer} from "./o-marketplace/processes/upsertOffer";
 
 const stream: PageManifest = {
   isDefault: true,
@@ -114,7 +114,7 @@ export const marketplace: DappManifest<DappState> = {
           shellProcess,
           true,
           async (ctx) => {
-            ctx.childProcessDefinition = createOffer;
+            ctx.childProcessDefinition = upsertOffer;
             ctx.childContext = {
               data: { },
             };

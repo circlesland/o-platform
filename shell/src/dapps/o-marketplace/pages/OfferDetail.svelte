@@ -84,7 +84,7 @@
             </section>
             {#each offers as offer}
                 <CreatorCard profile={offer.createdBy} />
-                <OfferCard offer={offer} />
+                <OfferCard offer={offer} allowEdit={true} />
             {/each}
         {:else}
 

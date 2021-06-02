@@ -38,20 +38,6 @@ export type ConsumeDepositedChallengeResponse = {
   success: Scalars['Boolean'];
 };
 
-export type CreateOfferInput = {
-  categoryTagId: Scalars['Int'];
-  createdByProfileId: Scalars['Int'];
-  deliveryTerms: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  geonameid: Scalars['Int'];
-  maxUnits?: Maybe<Scalars['Int']>;
-  pictureMimeType: Scalars['String'];
-  pictureUrl: Scalars['String'];
-  pricePerUnit: Scalars['String'];
-  title: Scalars['String'];
-  unit: Scalars['String'];
-};
-
 export type DelegateAuthInit = {
   __typename?: 'DelegateAuthInit';
   appId: Scalars['String'];
@@ -123,7 +109,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   authenticateAt: DelegateAuthInit;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
-  createOffer: Offer;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   indexTransfer: IndexTransferResponse;
@@ -133,6 +118,7 @@ export type Mutation = {
   requestUpdateSafe: RequestUpdateSafeResponse;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
+  upsertOffer: Offer;
   upsertProfile: Profile;
 };
 
@@ -144,11 +130,6 @@ export type MutationAuthenticateAtArgs = {
 
 export type MutationConsumeDepositedChallengeArgs = {
   delegateAuthCode: Scalars['String'];
-};
-
-
-export type MutationCreateOfferArgs = {
-  data: CreateOfferInput;
 };
 
 
@@ -184,6 +165,11 @@ export type MutationUnlistOfferArgs = {
 
 export type MutationUpdateSafeArgs = {
   data: UpdateSafeInput;
+};
+
+
+export type MutationUpsertOfferArgs = {
+  data: UpsertOfferInput;
 };
 
 
@@ -267,7 +253,7 @@ export enum PurchaseStatus {
 export type Query = {
   __typename?: 'Query';
   cities: Array<City>;
-  offerCategories: Array<Scalars['String']>;
+  offerCategories: Array<Tag>;
   offers: Array<Offer>;
   profiles: Array<Profile>;
   search: Array<Profile>;
@@ -400,6 +386,20 @@ export type UpdateSafeResponse = {
   success: Scalars['Boolean'];
 };
 
+
+export type UpsertOfferInput = {
+  categoryTagId: Scalars['Int'];
+  deliveryTerms: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  geonameid: Scalars['Int'];
+  id?: Maybe<Scalars['Int']>;
+  maxUnits?: Maybe<Scalars['Int']>;
+  pictureMimeType: Scalars['String'];
+  pictureUrl: Scalars['String'];
+  pricePerUnit: Scalars['String'];
+  title: Scalars['String'];
+  unit: Scalars['String'];
+};
 
 export type UpsertProfileInput = {
   avatarCid?: Maybe<Scalars['String']>;

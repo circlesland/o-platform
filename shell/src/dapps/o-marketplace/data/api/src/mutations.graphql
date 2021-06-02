@@ -1,5 +1,5 @@
-mutation createOffer (
-    $createdByProfileId: Int!
+mutation upsertOffer (
+    $id: Int
     $title: String!
     $pictureUrl: String!
     $pictureMimeType: String!
@@ -11,10 +11,10 @@ mutation createOffer (
     $maxUnits: Int
     $deliveryTerms: String!
 ) {
-    createOffer(data: {
+    upsertOffer(data: {
+        id: $id
         geonameid: $geonameid
         categoryTagId: $categoryTagId
-        createdByProfileId: $createdByProfileId,
         deliveryTerms: $deliveryTerms
         description: $description,
         maxUnits: $maxUnits

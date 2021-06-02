@@ -12,11 +12,11 @@ import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import * as yup from "yup";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {Choice} from "@o-platform/o-editors/src/choiceSelectorContext";
-import {CreateOfferDocument, OfferCategoriesDocument} from "../data/api/types";
+import {UpsertOfferDocument, OfferCategoriesDocument} from "../data/api/types";
 import {CitiesByNameDocument} from "../../o-passport/data/api/types";
 import {UpsertIdentityContext} from "../../o-passport/processes/upsertIdentity";
 
-export type CreateOfferContextData = {
+export type upsertOfferContextData = {
     createdByProfileId: number
     title: string
     pictureUrl: string
@@ -35,7 +35,7 @@ export type CreateOfferContextData = {
     deliveryTerms: string
 };
 
-export type CreateOfferContext = ProcessContext<CreateOfferContextData>;
+export type upsertOfferContext = ProcessContext<upsertOfferContextData>;
 
 const strings = {
     labelTitle: "labelTitle",
@@ -76,15 +76,15 @@ const strings = {
 };
 
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
-    createMachine<CreateOfferContext, any>({
-        id: `${processId}:createOffer`,
+    createMachine<upsertOfferContext, any>({
+        id: `${processId}:upsertOffer`,
         initial: "title",
         states: {
             // Include a default 'error' state that propagates the error by re-throwing it in an action.
             // TODO: Check if this works as intended
-            ...fatalError<CreateOfferContext, any>("error"),
+            ...fatalError<upsertOfferContext, any>("error"),
 
-            title: prompt<CreateOfferContext, any>({
+            title: prompt<upsertOfferContext, any>({
                 fieldName: "title",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
@@ -98,7 +98,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     next: "#description",
                 },
             }),
-            description: prompt<CreateOfferContext, any>({
+            description: prompt<upsertOfferContext, any>({
                 fieldName: "description",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
@@ -114,7 +114,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     skip: "#categoryTagId"
                 },
             }),
-            categoryTagId: prompt<CreateOfferContext, any>({
+            categoryTagId: prompt<upsertOfferContext, any>({
                 fieldName: "categoryTagId",
                 onlyWhenDirty: skipIfNotDirty,
                 component: DropdownSelectEditor,
@@ -196,7 +196,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     previous: "#categoryTagId"
                 },
             }),
-            unit: prompt<CreateOfferContext, any>({
+            unit: prompt<upsertOfferContext, any>({
                 fieldName: "unit",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
@@ -210,7 +210,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     previous: "#geonameid"
                 },
             }),
-            pricePerUnit: prompt<CreateOfferContext, any>({
+            pricePerUnit: prompt<upsertOfferContext, any>({
                 fieldName: "pricePerUnit",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
@@ -224,7 +224,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     previous: "#unit"
                 },
             }),
-            maxUnits: prompt<CreateOfferContext, any>({
+            maxUnits: prompt<upsertOfferContext, any>({
                 fieldName: "maxUnits",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
@@ -238,7 +238,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     previous: "#pricePerUnit"
                 },
             }),
-            deliveryTerms: prompt<CreateOfferContext, any>({
+            deliveryTerms: prompt<upsertOfferContext, any>({
                 fieldName: "deliveryTerms",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
@@ -252,7 +252,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     previous: "#pricePerUnit"
                 },
             }),
-            picture: prompt<CreateOfferContext, any>({
+            picture: prompt<upsertOfferContext, any>({
                 fieldName: "picture",
                 onlyWhenDirty: skipIfNotDirty,
                 component: PictureEditor,
@@ -296,13 +296,13 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                             target: "#errorUploadingOfferPicture",
                         },
                         {
-                            target: "#createOffer",
+                            target: "#upsertOffer",
                         },
                     ],
                     onError: "#errorUploadingOfferPicture",
                 },
             },
-            errorUploadingOfferPicture: prompt<CreateOfferContext, any>({
+            errorUploadingOfferPicture: prompt<upsertOfferContext, any>({
                 fieldName: "errorUploadingOfferPicture",
                 entry: (context) => {
                     context.data.errorUploadingOfferPicture = `
@@ -324,8 +324,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     next: "#picture",
                 },
             }),
-            createOffer: {
-                id: "createOffer",
+            upsertOffer: {
+                id: "upsertOffer",
                 invoke: {
                     src: async (context, event) => {
                         if (event.data?.url) {
@@ -335,8 +335,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                         delete context.data.picture;
                         const apiClient = await window.o.apiClient.client.subscribeToResult();
                         const result = await apiClient.mutate({
-                            mutation: CreateOfferDocument,
+                            mutation: UpsertOfferDocument,
                             variables: {
+                                id: undefined,
                                 geonameid: context.data.geonameid,
                                 categoryTagId: context.data.categoryTagId,
                                 createdByProfileId: context.data.geonameid,
@@ -350,7 +351,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                                 unit: context.data.unit
                             }
                         });
-                        return result.data.createOffer;
+                        return result.data.upsertOffer;
                     },
                     onDone: "#success",
                     onError: "#error",
@@ -370,7 +371,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
     });
 
-export const createOffer: ProcessDefinition<void, CreateOfferContextData> = {
-    name: "createOffer",
+export const upsertOffer: ProcessDefinition<void, upsertOfferContextData> = {
+    name: "upsertOffer",
     stateMachine: <any>processDefinition,
 };

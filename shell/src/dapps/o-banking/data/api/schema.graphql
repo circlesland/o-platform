@@ -66,7 +66,6 @@ type LogoutResponse {
 type Mutation {
     authenticateAt(appId: String!): DelegateAuthInit!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
-    createOffer(data: CreateOfferInput!): Offer!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
     indexTransfer(data: IndexTransferInput!): IndexTransferResponse!
@@ -76,6 +75,7 @@ type Mutation {
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
+    upsertOffer(data: UpsertOfferInput!): Offer!
     upsertProfile(data: UpsertProfileInput!): Profile!
 }
 
@@ -136,7 +136,7 @@ type Purchase {
 
 type Query {
     cities(query: QueryCitiesInput!): [City!]!
-    offerCategories(like: String): [String!]!
+    offerCategories(like: String): [Tag!]!
     offers(query: QueryOfferInput!): [Offer!]!
     profiles(query: QueryProfileInput!): [Profile!]!
     search(query: SearchInput!): [Profile!]!
@@ -188,20 +188,6 @@ enum PurchaseStatus {
     INVALID
     ITEM_LOCKED
     PAYMENT_PROVEN
-}
-
-input CreateOfferInput {
-    categoryTagId: Int!
-    createdByProfileId: Int!
-    deliveryTerms: String!
-    description: String
-    geonameid: Int!
-    maxUnits: Int
-    pictureMimeType: String!
-    pictureUrl: String!
-    pricePerUnit: String!
-    title: String!
-    unit: String!
 }
 
 input DepositChallenge {
@@ -293,6 +279,20 @@ input TagInput {
 
 input UpdateSafeInput {
     signature: String!
+}
+
+input UpsertOfferInput {
+    categoryTagId: Int!
+    deliveryTerms: String!
+    description: String
+    geonameid: Int!
+    id: Int
+    maxUnits: Int
+    pictureMimeType: String!
+    pictureUrl: String!
+    pricePerUnit: String!
+    title: String!
+    unit: String!
 }
 
 input UpsertProfileInput {
