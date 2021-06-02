@@ -64,7 +64,7 @@ const processDefinition = (processId: string) =>
         component: DropdownSelectEditor,
         params: {
           label: strings.labelTrustReceiver,
-          graphql: true,
+          
           asyncChoices: async (searchText?: string) => {
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();

@@ -198,42 +198,7 @@ export const banking: DappManifest<DappState> = {
   routeParts: ["banking"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
-  actions: [
-    /*{
-      key: "getUbi",
-      label: "Get UBI",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = getUbi;
-            ctx.childContext = {
-              data: {
-                safeAddress: tryGetCurrentSafe()?.safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
-      },
-    },
-    {
-      key: "hubSignup",
-      label: "Signup at Circles Hub",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = hubSignup;
-            return ctx;
-          }
-        );
-      },
-    },*/
-    {
+  actions: [{
       key: "setTrust",
       label: "Trust someone",
       event: (runtimeDapp: RuntimeDapp<any>) => {

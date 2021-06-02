@@ -11,13 +11,11 @@
 
   $: selected = {};
   let selectedLabel: String;
-  let graphql = false;
   let optionIdentifier = "value";
   let getOptionLabel = (option) => option.label;
   let getSelectionLabel = (option) => option.label;
 
   onMount(() => {
-    graphql = context.params.graphql;
     getOptionLabel = context.params.getOptionLabel
       ? context.params.getOptionLabel
       : getOptionLabel;
@@ -25,7 +23,7 @@
       ? context.params.getSelectionLabel
       : getSelectionLabel;
 
-    if (graphql) {
+    if (context.params.asyncChoices) {
       selected = context.data[context.fieldName];
     } else {
       selected = context.params.choices.find(

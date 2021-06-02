@@ -45,6 +45,7 @@ export type CreateOfferInput = {
   description?: Maybe<Scalars['String']>;
   geonameid: Scalars['Int'];
   maxUnits?: Maybe<Scalars['Int']>;
+  pictureMimeType: Scalars['String'];
   pictureUrl: Scalars['String'];
   pricePerUnit: Scalars['String'];
   title: Scalars['String'];
@@ -201,6 +202,7 @@ export type Offer = {
   geonameid: Scalars['Int'];
   id: Scalars['Int'];
   maxUnits?: Maybe<Scalars['Int']>;
+  pictureMimeType: Scalars['String'];
   pictureUrl: Scalars['String'];
   pricePerUnit: Scalars['String'];
   publishedAt: Scalars['String'];
@@ -264,6 +266,7 @@ export enum PurchaseStatus {
 export type Query = {
   __typename?: 'Query';
   cities: Array<City>;
+  offerCategories: Array<Scalars['String']>;
   offers: Array<Offer>;
   profiles: Array<Profile>;
   search: Array<Profile>;
@@ -275,6 +278,11 @@ export type Query = {
 
 export type QueryCitiesArgs = {
   query: QueryCitiesInput;
+};
+
+
+export type QueryOfferCategoriesArgs = {
+  like?: Maybe<Scalars['String']>;
 };
 
 

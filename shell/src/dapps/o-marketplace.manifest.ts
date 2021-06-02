@@ -5,6 +5,11 @@ import Home from "./o-marketplace/pages/Home.svelte";
 import Categories from "./o-marketplace/pages/Categories.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
+import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
+import {tryGetCurrentSafe} from "./o-banking/init";
+import {createOffer} from "./o-marketplace/processes/createOffer";
 
 const stream: PageManifest = {
   isDefault: true,
@@ -72,7 +77,23 @@ export const marketplace: DappManifest<DappState> = {
   title: "Marketplace",
   routeParts: ["marketplace"],
   tag: Promise.resolve("alpha"),
-  actions: [],
+  actions: [{
+    key: "createOffer",
+    label: "Create offer",
+    event: (runtimeDapp: RuntimeDapp<any>) => {
+      return new RunProcess<ShellProcessContext>(
+          shellProcess,
+          true,
+          async (ctx) => {
+            ctx.childProcessDefinition = createOffer;
+            ctx.childContext = {
+              data: { },
+            };
+            return ctx;
+          }
+      );
+    },
+  }],
   isEnabled: true,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here

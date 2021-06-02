@@ -136,12 +136,10 @@
 
   function submit() {
     const answer = new Continue();
-    answer.data = {
-      ...context.data,
-      avatar: {
-        mimeType: "image/jpeg",
-        bytes: imageStore.value,
-      },
+    answer.data = context.data;
+    answer.data[context.fieldName] = {
+      mimeType: "image/jpeg",
+      bytes: imageStore.value,
     };
     context.process.sendAnswer(answer);
   }

@@ -107,7 +107,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           label: strings.labelCountry,
           placeholder: strings.placeholderCountry,
           submitButtonText: "Submit vote",
-          graphql: true,
+          
           asyncChoices: async (searchText?: string) => {
             const n = <any>navigator;
             const lang = n.language || n.userLanguage;

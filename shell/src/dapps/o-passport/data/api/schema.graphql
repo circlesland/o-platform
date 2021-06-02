@@ -89,6 +89,7 @@ type Offer {
     geonameid: Int!
     id: Int!
     maxUnits: Int
+    pictureMimeType: String!
     pictureUrl: String!
     pricePerUnit: String!
     publishedAt: String!
@@ -134,6 +135,7 @@ type Purchase {
 
 type Query {
     cities(query: QueryCitiesInput!): [City!]!
+    offerCategories(like: String): [String!]!
     offers(query: QueryOfferInput!): [Offer!]!
     profiles(query: QueryProfileInput!): [Profile!]!
     search(query: SearchInput!): [Profile!]!
@@ -194,6 +196,7 @@ input CreateOfferInput {
     description: String
     geonameid: Int!
     maxUnits: Int
+    pictureMimeType: String!
     pictureUrl: String!
     pricePerUnit: String!
     title: String!

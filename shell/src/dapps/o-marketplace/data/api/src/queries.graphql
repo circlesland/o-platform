@@ -27,6 +27,7 @@ query offers (
         purchasedAt
         title
         pictureUrl
+        pictureMimeType
         description
         category
         geonameid
@@ -44,6 +45,10 @@ query offers (
             feature_code
         }
     }
+}
+
+query offerCategories {
+    offerCategories
 }
 
 query citiesByName ($name:String! $languageCode: String) {

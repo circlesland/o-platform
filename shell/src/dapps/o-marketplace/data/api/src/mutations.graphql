@@ -2,6 +2,7 @@ mutation createOffer (
     $createdByProfileId: Int!
     $title: String!
     $pictureUrl: String!
+    $pictureMimeType: String!
     $description: String
     $category: String!
     $geonameid: Int!
@@ -18,6 +19,7 @@ mutation createOffer (
         description: $description,
         maxUnits: $maxUnits
         pictureUrl: $pictureUrl
+        pictureMimeType: $pictureMimeType
         pricePerUnit: $pricePerUnit
         title: $title
         unit: $unit
@@ -39,6 +41,7 @@ mutation createOffer (
         purchasedAt
         title
         pictureUrl
+        pictureMimeType
         description
         category
         geonameid
