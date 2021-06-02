@@ -8,7 +8,9 @@
 
     let isLoading: boolean;
     let error: Error;
-    let offers: Offer[] = []
+    let citites: {
+        [name:string]: Offer[]
+    } = {};
     let shellEventSubscription: Subscription;
 
     async function load() {
@@ -26,8 +28,14 @@
             error = new Error(`An error occurred while the offer was loaded: ${JSON.stringify(result.errors)}`);
             throw error;
         }
+        citites = result.data.offers.reduce((p,c) => {
+            if (!p[c.city.name]) {
+                p[c.city.name] = [];
+            }
+            p[c.city.name].push(c);
+            return p;
+        }, {});
         isLoading = false;
-        offers = result.data.offers;
     }
 
     onMount(async () => {
@@ -67,21 +75,34 @@
             </div>
         </section>
     {:else}
-        {#if offers.length}
+        {#if Object.keys(citites).length}
             <section class="flex items-center justify-center mb-1 ">
-                <div
-                        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-                >
+                <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
                     <div class="text-xs font-bold text-left text-secondary font-circles">
                         Offers
                     </div>
                 </div>
             </section>
-            {#each offers as offer}
-                <OfferCard offer={offer} />
+            {#each Object.keys(citites) as city}
+                <section class="flex items-center justify-center mb-1 ">
+                    <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
+                        <div class="text-xs font-bold text-left text-secondary font-circles">
+                            {city}
+                        </div>
+                    </div>
+                </section>
+                {#each citites[city] as offer}
+                    <OfferCard offer={offer} />
+                {/each}
             {/each}
         {:else}
-
+            <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+                <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
+                    <div class="flex flex-col items-start">
+                        <div>No offers</div>
+                    </div>
+                </div>
+            </section>
         {/if}
     {/if}
 </div>
