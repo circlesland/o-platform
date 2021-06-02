@@ -9,11 +9,12 @@
   setContext("nav", current);
 
   $: $current = segment;
+
 </script>
 
 <footer
   id="dappsNav"
-  class="z-50 w-full h-12 px-2 bg-white border-t border-base-300"
+  class="z-50 w-full h-16 px-2 bg-white border-t border-base-300"
   class:hidden={isOpen}
 >
   <ul class="flex flex-row items-stretch justify-between h-full primary">
