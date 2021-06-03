@@ -24,10 +24,10 @@
       : getSelectionLabel;
 
     if (context.params.asyncChoices) {
-      selected = context.data[context.fieldName];
+      selected = context.data[context.field];
     } else {
       selected = context.params.choices.find(
-        (o) => o.value === context.data[context.fieldName]
+        (o) => o.value === context.data[context.field]
       );
     }
   });
@@ -35,19 +35,19 @@
   function handleSelect(event) {
     selected = event.detail;
     selectedLabel = event.detail.label;
-    context.editorDirtyFlags[context.fieldName] = true;
+    context.editorDirtyFlags[context.field] = true;
   }
 
   export function handleClear() {
     selected = undefined;
-    context.editorDirtyFlags[context.fieldName] = true;
+    context.editorDirtyFlags[context.field] = true;
   }
 
   function submitHandler() {
     const event = new Continue();
     event.data = {};
-    event.data[context.fieldName] = selected.value;
-    context.data[context.fieldName] = selected.value;
+    event.data[context.field] = selected.value;
+    context.data[context.field] = selected.value;
     context.process.sendAnswer(event);
   }
 
@@ -64,7 +64,7 @@
 >
   <label
     class="self-center flex-1 mb-4 text-center label"
-    for={context.fieldName}
+    for={context.field}
   >
     <span class="label-text">{@html context.params.label}</span>
   </label>
@@ -105,10 +105,10 @@
       />
     </div>
   {/if}
-  {#if context.messages[context.fieldName]}
+  {#if context.messages[context.field]}
     <label class="text-right label" for="form-error">
       <span id="form-error" class="label-text-alt text-error "
-        >{context.messages[context.fieldName]}</span
+        >{context.messages[context.field]}</span
       >
     </label>
   {/if}

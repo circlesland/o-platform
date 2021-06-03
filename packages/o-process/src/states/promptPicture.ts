@@ -8,7 +8,7 @@ const { assign } = actions;
 export type PromptPictureSpec<TContext, TEvent> = {
     id?: string;
     entry?: (context:TContext, event:TEvent) => void;
-    fieldName: string;
+    field: string;
     previewComponent: any;
     editorComponent: any;
     /**
@@ -46,14 +46,20 @@ export function promptPicture<TContext extends ProcessContext<any>, TEvent exten
     if (canGoBack && spec.navigation?.canGoBack) {
         canGoBack = spec.navigation.canGoBack;
     }
+
+    const pictureData: {
+      bytes: Uint8Array,
+      mimeType: string
+    }|undefined = undefined;
+
     const editDataFieldConfig: StatesConfig<TContext, StateSchema, TEvent> = {
-        id: spec.id ?? spec.fieldName,
+        id: spec.id ?? spec.field,
         initial: "entry",
         states: {
             // If the spec contains an 'entry' action execute it now
             entry: {
                 entry: (context:TContext, event:TEvent) => {
-                    console.log(`entry: ${spec.id} ${spec.fieldName}`)
+                    console.log(`entry: ${spec.id} ${spec.field}`)
                     if (spec.entry) {
                         spec.entry(context, event);
                     }
@@ -63,27 +69,43 @@ export function promptPicture<TContext extends ProcessContext<any>, TEvent exten
             // If 'onlyWhenDirty' == 'true' and 'context.dirtyFlags' contains an entry or 'onlyWhenDirty' == 'false' then the editor is displayed.
             // If 'onlyWhenDirty' == 'true' abd no dirtyFlag is set, then the next step is the the validation.
             checkSkip: {
-                entry: () => console.log(`checkSkip: ${spec.id} ${spec.fieldName}`),
+                entry: () => console.log(`checkSkip: ${spec.id} ${spec.field}`),
                 always:[{
-                    cond: (context:TContext) => spec.onlyWhenDirty && !context.dirtyFlags[spec.fieldName],
+                    cond: (context:TContext) => {
+                        const skip = spec.onlyWhenDirty && !context.dirtyFlags[spec.field];
+                        if (skip){
+                            console.log(`checkSkip: ${spec.id} ${spec.field} - skipping because '${spec.field}' is not dirty and 'onlyWhenDirty' == true.`);
+                        }
+                        return skip;
+                    },
                     target: "validate"
                 }, {
                     target: "checkPreview"
                 }]
             },
-            // If 'context[fieldName]' already contains an image then it should be displayed first,
+            // If 'context[field]' already contains an image then it should be displayed first,
             // else the PictureEditor should be shown directly
             checkPreview: {
-                entry: () => console.log(`checkPreview: ${spec.id} ${spec.fieldName}`),
+                entry: () => console.log(`checkPreview: ${spec.id} ${spec.field}`),
                 always:[{
-                    cond:(context:TContext) => context.data[spec.fieldName]
+                    cond:(context:TContext) =>
+                    {
+                        const hasValue = !!context.data[spec.field];
+                        if (hasValue) {
+                            console.log(`checkPreview: ${spec.id} ${spec.field} - showing preview for '${context.data[spec.field]}'`);
+                        }
+                        return hasValue;
+                    },
+                    target: "showPreview"
+                }, {
+                    target: "checkEditor"
                 }]
             },
             showPreview: {
                 entry: [
-                    () => console.log(`showPreview: ${spec.id} ${spec.fieldName}`),
+                    () => console.log(`showPreview: ${spec.id} ${spec.field}`),
                     show({
-                        fieldName: spec.fieldName,
+                        field: spec.field,
                         component: spec.previewComponent,
                         params: spec.params,
                         navigation: {
@@ -104,11 +126,27 @@ export function promptPicture<TContext extends ProcessContext<any>, TEvent exten
                     "process.skip": "skip",
                 }
             },
+            checkEditor: {
+                entry: () => console.log(`checkEditor: ${spec.id} ${spec.field}`),
+                always:[{
+                    cond:(context:TContext) =>
+                    {
+                        const noValueOrDirty = !context.data[spec.field] || context.dirtyFlags[spec.field];
+                        if (noValueOrDirty) {
+                            console.log(`checkEditor: ${spec.id} ${spec.field} - showing editor because the field has no value or is marked as 'dirty'.`);
+                        }
+                        return noValueOrDirty;
+                    },
+                    target: "showEditor"
+                }, {
+                    target: "validate"
+                }]
+            },
             showEditor: {
                 entry: [
-                    () => console.log(`showEditor: ${spec.id} ${spec.fieldName}`),
+                    () => console.log(`showEditor: ${spec.id} ${spec.field}`),
                     show({
-                        fieldName: spec.fieldName,
+                        field: spec.field,
                         component: spec.editorComponent,
                         params: spec.params,
                         navigation: {
@@ -130,7 +168,7 @@ export function promptPicture<TContext extends ProcessContext<any>, TEvent exten
                 }
             },
             back: {
-                entry: () => console.log(`back: ${spec.fieldName}`),
+                entry: () => console.log(`back: ${spec.field}`),
                 always: [
                     {
                         cond: (context: TContext, event: TEvent) => {
@@ -140,15 +178,15 @@ export function promptPicture<TContext extends ProcessContext<any>, TEvent exten
                                     spec.navigation.canGoBack(context, event))
                             );
                         },
-                        target: spec.navigation?.previous ?? "show",
+                        target: spec.navigation?.previous ?? "checkPreview",
                     },
                     {
-                        target: "show",
+                        target: "checkPreview",
                     },
                 ],
             },
             skip: {
-                entry: () => console.log(`skip: ${spec.fieldName}`),
+                entry: () => console.log(`skip: ${spec.field}`),
                 always: [
                     {
                         cond: (context: TContext, event: TEvent) => {
@@ -157,10 +195,10 @@ export function promptPicture<TContext extends ProcessContext<any>, TEvent exten
                                 spec.navigation.canSkip(context, event)
                             );
                         },
-                        target: spec.navigation?.skip ?? spec.navigation?.next ?? "show",
+                        target: spec.navigation?.skip ?? spec.navigation?.next ?? "checkPreview",
                     },
                     {
-                        target: "show",
+                        target: "checkPreview",
                     },
                 ],
             },
@@ -176,13 +214,13 @@ export function promptPicture<TContext extends ProcessContext<any>, TEvent exten
                             );
                         }
                         if (spec.dataSchema) {
-                            delete context.messages[spec.fieldName];
-                            const valueToValidate = data[spec.fieldName];
+                            delete context.messages[spec.field];
+                            const valueToValidate = data[spec.field];
                             try {
                                 await spec.dataSchema.validate(valueToValidate, {abortEarly: false})
                             } catch (e) {
                                 if (e.errors) {
-                                    context.messages[spec.fieldName] = e.errors;
+                                    context.messages[spec.field] = e.errors;
                                 } else {
                                     throw e;
                                 }
@@ -192,17 +230,17 @@ export function promptPicture<TContext extends ProcessContext<any>, TEvent exten
                         return event.data;
                     },
                     onDone: [{
-                        cond: (context:TContext) => !context.messages[spec.fieldName],
+                        cond: (context:TContext) => !context.messages[spec.field],
                         target: "submit"
                     }, {
-                        target: "show"
+                        target: "checkPreview"
                     }],
                     onError: "#error"
                 }
             },
             submit: {
                 entry: [
-                    () => console.log(`submit: ${spec.fieldName}`),
+                    () => console.log(`submit: ${spec.field}`),
                     assign((context: TContext, event: Continue) => {
                         // TODO: Try to use a nicer equivalence check for change tracking and setting the dirty flag
                         const data = event.data;
@@ -213,16 +251,16 @@ export function promptPicture<TContext extends ProcessContext<any>, TEvent exten
                                 )}`
                             );
                         }
-                        if (context.data[spec.fieldName] !== data[spec.fieldName]) {
-                            context.data[spec.fieldName] = data[spec.fieldName];
-                            context.dirtyFlags[spec.fieldName] = true;
+                        if (context.data[spec.field] !== data[spec.field]) {
+                            context.data[spec.field] = data[spec.field];
+                            context.dirtyFlags[spec.field] = true;
                         }
                         return context;
                     }),
                 ],
                 always: [
                     {
-                        target: spec.navigation?.next ?? "show",
+                        target: spec.navigation?.next ?? "checkPreview",
                     },
                 ],
             },

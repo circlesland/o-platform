@@ -40,7 +40,7 @@ const processDefinition = (processId: string) =>
       ...fatalError<ConnectSafeContext, any>("error"),
 
       seedPhrase: prompt<ConnectSafeContext, any>({
-        fieldName: "seedPhrase",
+        field: "seedPhrase",
         component: TextareaEditor,
         isSensitive: true,
         params: {
@@ -126,7 +126,7 @@ const processDefinition = (processId: string) =>
         }
       },
       safeAddress: prompt({
-        fieldName: "safeAddress",
+        field: "safeAddress",
         component: DropdownSelectEditor,
         params: (context) => {
           return {

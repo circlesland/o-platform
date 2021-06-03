@@ -2,7 +2,7 @@ import { Process } from "@o-platform/o-process/dist/interfaces/process";
 import {PlatformEvent} from "../../o-events/dist/platformEvent";
 
 export type EditorContext = {
-  fieldName?: string;
+  field?: string;
   data: { [x: string]: any };
   dirtyFlags: { [x: string]: any };
   editorDirtyFlags: { [x: string]: any };

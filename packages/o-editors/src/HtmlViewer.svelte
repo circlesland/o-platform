@@ -18,7 +18,7 @@
   }
 </script>
 
-{#if context.messages[context.fieldName]}
+{#if context.messages[context.field]}
   <div class="alert alert-error mb-2 mt-2">
     <div class="flex-1">
       <svg
@@ -34,7 +34,7 @@
           d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
         />
       </svg>
-      <label for="input">{context.messages[context.fieldName]} </label>
+      <label for="input">{context.messages[context.field]} </label>
     </div>
   </div>
 {/if}

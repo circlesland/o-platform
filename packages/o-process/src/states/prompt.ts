@@ -1,4 +1,4 @@
-import {actions} from "xstate";
+import {actions, StateSchema, StatesConfig} from "xstate";
 import { ProcessContext } from "../interfaces/processContext";
 import { show } from "../actions/show";
 import { Continue } from "../events/continue";
@@ -7,7 +7,7 @@ const { assign } = actions;
 
 /**
  * Displays the specified editor to the user.
- * The editor is expected to understand the 'fieldName' property
+ * The editor is expected to understand the 'field' property
  * and the supplied params.
  *
  * @param spec
@@ -15,7 +15,7 @@ const { assign } = actions;
 
 export type PromptSpec<TContext, TEvent> = {
   entry?: (context:TContext, event:TEvent) => void;
-  fieldName: string;
+  field: string;
   component: any;
   id?: string;
   isSensitive?: boolean;
@@ -50,14 +50,13 @@ export function prompt<
   if (canGoBack && spec.navigation?.canGoBack) {
     canGoBack = spec.navigation.canGoBack;
   }
-  const editDataFieldConfig: any = {
-    // TODO: Fix 'any'
-    id: spec.id ?? spec.fieldName,
+  const editDataFieldConfig: StatesConfig<TContext, StateSchema, TEvent> = {
+    id: spec.id ?? spec.field,
     initial: "checkSkip",
     states: {
       checkSkip: {
         entry: (context:TContext, event:TEvent) => {
-          console.log(`show: ${spec.id} ${spec.fieldName}`)
+          console.log(`show: ${spec.id} ${spec.field}`)
           if (spec.entry) {
             spec.entry(context, event);
           }
@@ -67,9 +66,9 @@ export function prompt<
             return context.data;
           },
           onDone:[{
-            cond: (context:TContext) => spec.onlyWhenDirty && !context.dirtyFlags[spec.fieldName],
+            cond: (context:TContext) => spec.onlyWhenDirty && !context.dirtyFlags[spec.field],
             actions: [
-              () => console.log(`checkSkip: skipping because '${spec.fieldName}' is not dirty and 'onlyWhenDirty' == true.`)
+              () => console.log(`checkSkip: skipping because '${spec.field}' is not dirty and 'onlyWhenDirty' == true.`)
             ],
             target: "validate",
           }, {
@@ -81,10 +80,10 @@ export function prompt<
       show: {
         entry: [
           () => {
-            console.log(`show: ${spec.id} ${spec.fieldName}`);
+            console.log(`show: ${spec.id} ${spec.field}`);
           },
           show({
-            fieldName: spec.fieldName,
+            field: spec.field,
             component: spec.component,
             params: spec.params,
             isSensitive: spec.isSensitive,
@@ -107,7 +106,7 @@ export function prompt<
         },
       },
       back: {
-        entry: () => console.log(`back: ${spec.fieldName}`),
+        entry: () => console.log(`back: ${spec.field}`),
         always: [
           {
             cond: (context: TContext, event: TEvent) => {
@@ -125,7 +124,7 @@ export function prompt<
         ],
       },
       skip: {
-        entry: () => console.log(`skip: ${spec.fieldName}`),
+        entry: () => console.log(`skip: ${spec.field}`),
         always: [
           {
             cond: (context: TContext, event: TEvent) => {
@@ -153,13 +152,13 @@ export function prompt<
               );
             }
             if (spec.dataSchema) {
-              delete context.messages[spec.fieldName];
-              const valueToValidate = data[spec.fieldName];
+              delete context.messages[spec.field];
+              const valueToValidate = data[spec.field];
               try {
                 await spec.dataSchema.validate(valueToValidate, {abortEarly: false})
               } catch (e) {
                 if (e.errors) {
-                  context.messages[spec.fieldName] = e.errors;
+                  context.messages[spec.field] = e.errors;
                 } else {
                   throw e;
                 }
@@ -169,7 +168,7 @@ export function prompt<
             return event.data;
           },
           onDone: [{
-            cond: (context:TContext) => !context.messages[spec.fieldName],
+            cond: (context:TContext) => !context.messages[spec.field],
             target: "submit"
           }, {
             target: "show"
@@ -179,7 +178,7 @@ export function prompt<
       },
       submit: {
         entry: [
-          () => console.log(`submit: ${spec.fieldName}`),
+          () => console.log(`submit: ${spec.field}`),
           assign((context: TContext, event: Continue) => {
             // TODO: Try to use a nicer equivalence check for change tracking and setting the dirty flag
             const data = event.data;
@@ -190,9 +189,9 @@ export function prompt<
                 )}`
               );
             }
-            if (context.data[spec.fieldName] !== data[spec.fieldName]) {
-              context.data[spec.fieldName] = data[spec.fieldName];
-              context.dirtyFlags[spec.fieldName] = true;
+            if (context.data[spec.field] !== data[spec.field]) {
+              context.data[spec.field] = data[spec.field];
+              context.dirtyFlags[spec.field] = true;
             }
             return context;
           }),

@@ -8,7 +8,7 @@ import {Schema} from "yup";
 export class Prompt implements PlatformEvent {
   type: PlatformEventTypes = "process.prompt";
 
-  fieldName?: string;
+  field?: string;
 
   /**
    * The component that should be displayed during a state.

@@ -10,8 +10,8 @@
 
   $: {
     _context = context;
-    length = _context.data[context.fieldName]
-      ? _context.data[context.fieldName].length
+    length = _context.data[context.field]
+      ? _context.data[context.field].length
       : 0;
   }
   function submit() {
@@ -28,13 +28,13 @@
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),
-      props: { name: context.data[context.fieldName] },
+      props: { name: context.data[context.field] },
     });
     app.$destroy();
   };
 </script>
 
-<label class="label" for={context.fieldName}>
+<label class="label" for={context.field}>
   <div class="label-text">{@html context.params.label}</div>
   {#if context.params.canCopy}
     <div class="inline-block break-all text-xs" id="clipboard">
@@ -42,7 +42,7 @@
         name="name"
         type="text"
         class="hidden"
-        bind:value={_context.data[context.fieldName]}
+        bind:value={_context.data[context.field]}
       />
       <div
         class="flex text-gray-300 cursor-pointertext-center text-xs relative -bottom-1"
@@ -70,7 +70,7 @@
 </label>
 
 <div class="form-control justify-self-center bg-white border p-4">
-  {_context.data[context.fieldName]}
+  {_context.data[context.field]}
 </div>
 
 <ProcessNavigation on:buttonClick={submit} {context} />

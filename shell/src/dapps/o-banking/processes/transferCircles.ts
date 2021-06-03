@@ -74,7 +74,7 @@ createMachine<TransferCirclesContext, any>({
     transferCircles: {
       id: "transferCircles",
       entry: <any>show({
-        fieldName: "__",
+        field: "__",
         component: PaymentPath,
         params: (context) => {
           return {

@@ -85,7 +85,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             ...fatalError<upsertOfferContext, any>("error"),
 
             title: prompt<upsertOfferContext, any>({
-                fieldName: "title",
+                field: "title",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
                 params: {
@@ -99,7 +99,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
             }),
             description: prompt<upsertOfferContext, any>({
-                fieldName: "description",
+                field: "description",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
                 params: {
@@ -115,7 +115,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
             }),
             categoryTagId: prompt<upsertOfferContext, any>({
-                fieldName: "categoryTagId",
+                field: "categoryTagId",
                 onlyWhenDirty: skipIfNotDirty,
                 component: DropdownSelectEditor,
                 params: {
@@ -154,7 +154,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
             }),
             geonameid: prompt<UpsertIdentityContext, any>({
-                fieldName: "geonameid",
+                field: "geonameid",
                 onlyWhenDirty: skipIfNotDirty,
                 component: DropdownSelectEditor,
                 params: {
@@ -197,7 +197,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
             }),
             unit: prompt<upsertOfferContext, any>({
-                fieldName: "unit",
+                field: "unit",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
                 params: {
@@ -211,7 +211,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
             }),
             pricePerUnit: prompt<upsertOfferContext, any>({
-                fieldName: "pricePerUnit",
+                field: "pricePerUnit",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
                 params: {
@@ -225,7 +225,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
             }),
             maxUnits: prompt<upsertOfferContext, any>({
-                fieldName: "maxUnits",
+                field: "maxUnits",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
                 params: {
@@ -239,7 +239,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
             }),
             deliveryTerms: prompt<upsertOfferContext, any>({
-                fieldName: "deliveryTerms",
+                field: "deliveryTerms",
                 onlyWhenDirty: skipIfNotDirty,
                 component: TextEditor,
                 params: {
@@ -253,7 +253,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
             }),
             picture: prompt<upsertOfferContext, any>({
-                fieldName: "picture",
+                field: "picture",
                 onlyWhenDirty: skipIfNotDirty,
                 component: PictureEditor,
                 params: {
@@ -303,7 +303,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 },
             },
             errorUploadingOfferPicture: prompt<upsertOfferContext, any>({
-                fieldName: "errorUploadingOfferPicture",
+                field: "errorUploadingOfferPicture",
                 entry: (context) => {
                     context.data.errorUploadingOfferPicture = `
             <b>Oops.</b><br/>

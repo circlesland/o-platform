@@ -15,8 +15,8 @@
 
   $: {
     _context = context;
-    length = _context.data[context.fieldName]
-      ? _context.data[context.fieldName].length
+    length = _context.data[context.field]
+      ? _context.data[context.field].length
       : 0;
   }
 
@@ -41,8 +41,8 @@
 
   /* trim input and set dirty flag */
   const validateFormatting = () => {
-    context.editorDirtyFlags[context.fieldName] = true;
-    _context.data[context.fieldName] = _context.data[context.fieldName].trim();
+    context.editorDirtyFlags[context.field] = true;
+    _context.data[context.field] = _context.data[context.field].trim();
   };
 
   onMount(() => {
@@ -64,14 +64,14 @@
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),
-      props: { name: context.data[context.fieldName] },
+      props: { name: context.data[context.field] },
     });
     app.$destroy();
   };
 </script>
 
 <div class="form-control justify-self-center">
-  <label class="label" for={context.fieldName}>
+  <label class="label" for={context.field}>
     <div class="label-text">{@html context.params.label}</div>
     {#if context.params.canCopy}
       <div class="inline-block text-xs break-all" id="clipboard">
@@ -79,7 +79,7 @@
           name="name"
           type="text"
           class="hidden"
-          bind:value={_context.data[context.fieldName]}
+          bind:value={_context.data[context.field]}
         />
         <div
           class="relative flex text-xs text-gray-300 cursor-pointertext-center -bottom-1"
@@ -106,7 +106,7 @@
     {/if}
   </label>
 
-  {#if context.messages[context.fieldName]}
+  {#if context.messages[context.field]}
     <div class="mt-2 mb-2 alert alert-error">
       <div class="flex-1">
         <svg
@@ -122,7 +122,7 @@
             d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
           />
         </svg>
-        <label for="input">{context.messages[context.fieldName]} </label>
+        <label for="input">{context.messages[context.field]} </label>
       </div>
     </div>
   {/if}
@@ -131,12 +131,12 @@
     {maxlength}
     name="input"
     rows="1"
-    id={context.fieldName}
+    id={context.field}
     type="text"
     placeholder={context.params.placeholder}
     class="overflow-hidden textarea textarea-bordered"
-    class:input-error={context.messages[context.fieldName]}
-    bind:value={_context.data[context.fieldName]}
+    class:input-error={context.messages[context.field]}
+    bind:value={_context.data[context.field]}
     bind:this={inputField}
     on:change={validateFormatting}
   />

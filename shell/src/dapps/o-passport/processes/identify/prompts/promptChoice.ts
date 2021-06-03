@@ -35,7 +35,7 @@ export function promptChoice<
     states: {
       promptChoice: prompt<ProcessContext<any>, any>({
         entry: spec.entry,
-        fieldName: spec.id,
+        field: spec.id,
         component: ChoiceSelector,
         onlyWhenDirty: spec.onlyWhenDirty,
         params: {

@@ -9,14 +9,14 @@
     if (!context.editorDirtyFlags) {
       context.editorDirtyFlags = {};
     }
-    context.editorDirtyFlags[context.fieldName] = true;
+    context.editorDirtyFlags[context.field] = true;
   });
 
   function submit(selected: { key: string; label: string }) {
     const event = new Continue();
     event.data = {};
-    event.data[context.fieldName] = selected;
-    context.data[context.fieldName] = selected;
+    event.data[context.field] = selected;
+    context.data[context.field] = selected;
     context.process.sendAnswer(event);
   }
 </script>
@@ -24,7 +24,7 @@
 <p class="py-4 label-text">
   {@html context.params.label}
 </p>
-{#if context.messages[context.fieldName]}
+{#if context.messages[context.field]}
   <div class="mt-2 mb-2 alert alert-error">
     <div class="flex-1">
       <svg
@@ -40,7 +40,7 @@
           d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
         />
       </svg>
-      <label for="input">{context.messages[context.fieldName]} </label>
+      <label for="input">{context.messages[context.field]} </label>
     </div>
   </div>
 {/if}

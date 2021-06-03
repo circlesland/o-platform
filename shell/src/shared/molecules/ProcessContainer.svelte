@@ -129,7 +129,7 @@
           cancelDialogVisible = true;
           const p = <Prompt>{
             type: "process.prompt",
-            fieldName: "___cancelRequest",
+            field: "___cancelRequest",
             component: ChoiceSelector,
             data: {
               ___cancelRequest: undefined,

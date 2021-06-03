@@ -60,7 +60,7 @@ const processDefinition = (processId: string) =>
         ],
       },
       trustReceiver: prompt<SetTrustContext, any>({
-        fieldName: "trustReceiver",
+        field: "trustReceiver",
         component: DropdownSelectEditor,
         params: {
           label: strings.labelTrustReceiver,
@@ -132,7 +132,7 @@ const processDefinition = (processId: string) =>
         ],
       },
       trustLimit: prompt<SetTrustContext, any>({
-        fieldName: "trustLimit",
+        field: "trustLimit",
         component: TextEditor,
         params: {
           label: strings.labelTrustLimit,
@@ -182,7 +182,7 @@ const processDefinition = (processId: string) =>
       },
       showSuccess: prompt({
         id: "showSuccess",
-        fieldName: "__",
+        field: "__",
         component: HtmlViewer,
         params: {
           html: () => `<p>Trust changed</p>`,
