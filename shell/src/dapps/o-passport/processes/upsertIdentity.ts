@@ -127,8 +127,10 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           maxLength: "150",
         },
         dataSchema: yup
-          .string()
-          .max(150, "The maximum amount of characters allowed is 150."),
+            .string()
+            .nullable()
+            .notRequired()
+            .max(150, "The maximum amount of characters allowed is 150."),
         navigation: {
           next: "#checkPreviewAvatar",
           canSkip: () => true,
@@ -148,6 +150,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         ],
       },
       previewAvatar: prompt<UpsertIdentityContext, any>({
+        id: "avatarUrl",
         fieldName: "avatarUrl",
         onlyWhenDirty: skipIfNotDirty,
         component: PicturePreview,
@@ -165,7 +168,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "checkEditAvatar",
         always: [
           {
-            cond: (context) => context.dirtyFlags["avatarUrl"],
+            cond: (context) => !context.data.avatarUrl,
             actions: (context) => {
               delete context.dirtyFlags["avatarUrl"];
               context.dirtyFlags["avatar"] = true;
@@ -179,6 +182,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         ],
       },
       editAvatar: prompt<UpsertIdentityContext, any>({
+        id:"avatar",
         fieldName: "avatar",
         onlyWhenDirty: skipIfNotDirty,
         component: PictureEditor,
@@ -205,38 +209,11 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             },
             target: "#uploadAvatar",
           },
-          /*{
-            cond: (context) => {
-              return (
-                context.dirtyFlags["avatar"] &&
-                (!context.data.avatar || !context.data.avatar.bytes)
-              );
-            },
-            target: "#generateAvataar",
-          },*/
           {
             target: "#newsletter",
           },
         ],
       },
-      /*
-      generateAvataar: {
-        id: "generateAvataar",
-        invoke: {
-          src: async (context) => {
-            if (context.data.circlesAddress) {
-              const svg = AvataarGenerator.generate(context.data.circlesAddress.toLowerCase());
-              context.data.avatarUrl = svg;
-            } else {
-              // Point 3 of https://github.com/circlesland/o-platform/issues/96 - circles.land no safe no profile picture => grey avatar icon
-              context.data.avatarUrl = AvataarGenerator.default();
-            }
-          },
-          onDone: "#newsletter",
-          onError: "#error",
-        },
-      },
-       */
       uploadAvatar: {
         id: "uploadAvatar",
         on: {
