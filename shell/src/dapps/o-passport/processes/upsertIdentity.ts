@@ -179,8 +179,10 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           maxLength: "150",
         },
         dataSchema: yup
-          .string()
-          .max(150, "The maximum amount of characters allowed is 150."),
+            .string()
+            .nullable()
+            .notRequired()
+            .max(150, "The maximum amount of characters allowed is 150."),
         navigation: {
           next: "#checkPreviewAvatar",
           canSkip: () => true,
@@ -200,6 +202,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         ],
       },
       previewAvatar: prompt<UpsertIdentityContext, any>({
+        id: "avatarUrl",
         fieldName: "avatarUrl",
         onlyWhenDirty: skipIfNotDirty,
         component: PicturePreview,
@@ -217,7 +220,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "checkEditAvatar",
         always: [
           {
-            cond: (context) => context.dirtyFlags["avatarUrl"],
+            cond: (context) => !context.data.avatarUrl,
             actions: (context) => {
               delete context.dirtyFlags["avatarUrl"];
               context.dirtyFlags["avatar"] = true;
@@ -231,6 +234,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         ],
       },
       editAvatar: prompt<UpsertIdentityContext, any>({
+        id:"avatar",
         fieldName: "avatar",
         onlyWhenDirty: skipIfNotDirty,
         component: PictureEditor,
@@ -270,7 +274,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Uploading your avatar ..`,
+            message: `Uploading your avatar ..`
           });
         },
         invoke: {
@@ -320,10 +324,10 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         isSensitive: true,
         params: {
           submitButtonText: "Try again",
-          html: (context) => context.data.errorUploadingAvatar,
+          html: (context) => context.data.errorUploadingAvatar
         },
         navigation: {
-          next: "#checkPreviewAvatar",
+          next: "#checkPreviewAvatar"
         },
       }),
       newsletter: promptChoice({
@@ -336,38 +340,35 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
         promptLabel: strings.labelNewsletter,
         onlyWhenDirty: skipIfNotDirty,
-        options: [
-          {
-            key: "create",
-            label: "No thanks",
-            target: "#dontSubscribeToNewsletter",
-          },
-          {
-            key: "connect",
-            label: "Yes please",
-            target: "#subscribeToNewsletter",
-          },
-        ],
+        options: [{
+          key: "create",
+          label: "No thanks",
+          target: "#dontSubscribeToNewsletter"
+        }, {
+          key: "connect",
+          label: "Yes please",
+          target: "#subscribeToNewsletter"
+        }],
         navigation: {
           canGoBack: () => true,
           canSkip: () => false,
           previous: "#avatarUrl",
-          skip: "#upsertIdentity",
-        },
+          skip: "#upsertIdentity"
+        }
       }),
       subscribeToNewsletter: {
         id: "subscribeToNewsletter",
         entry: (context, event) => {
           context.data.newsletter = true;
         },
-        always: "#upsertIdentity",
+        always: "#upsertIdentity"
       },
       dontSubscribeToNewsletter: {
         id: "dontSubscribeToNewsletter",
         entry: (context, event) => {
           context.data.newsletter = false;
         },
-        always: "#upsertIdentity",
+        always: "#upsertIdentity"
       },
       upsertIdentity: {
         id: "upsertIdentity",
