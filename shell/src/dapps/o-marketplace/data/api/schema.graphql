@@ -85,7 +85,8 @@ type Offer {
     city: City
     createdBy: Profile
     createdByProfileId: Int!
-    deliveryTerms: String!
+    deliveryTermsTag: Tag
+    deliveryTermsTagId: Int!
     description: String
     geonameid: Int!
     id: Int!
@@ -96,7 +97,8 @@ type Offer {
     publishedAt: String!
     purchasedAt: String
     title: String!
-    unit: String!
+    unitTag: Tag
+    unitTagId: Int!
     unlistedAt: String
 }
 
@@ -283,7 +285,7 @@ input UpdateSafeInput {
 
 input UpsertOfferInput {
     categoryTagId: Int!
-    deliveryTerms: String!
+    deliveryTermsTagId: Int!
     description: String
     geonameid: Int!
     id: Int
@@ -292,7 +294,7 @@ input UpsertOfferInput {
     pictureUrl: String!
     pricePerUnit: String!
     title: String!
-    unit: String!
+    unitTagId: Int!
 }
 
 input UpsertProfileInput {

@@ -184,7 +184,8 @@ export type Offer = {
   city?: Maybe<City>;
   createdBy?: Maybe<Profile>;
   createdByProfileId: Scalars['Int'];
-  deliveryTerms: Scalars['String'];
+  deliveryTermsTag?: Maybe<Tag>;
+  deliveryTermsTagId: Scalars['Int'];
   description?: Maybe<Scalars['String']>;
   geonameid: Scalars['Int'];
   id: Scalars['Int'];
@@ -195,7 +196,8 @@ export type Offer = {
   publishedAt: Scalars['String'];
   purchasedAt?: Maybe<Scalars['String']>;
   title: Scalars['String'];
-  unit: Scalars['String'];
+  unitTag?: Maybe<Tag>;
+  unitTagId: Scalars['Int'];
   unlistedAt?: Maybe<Scalars['String']>;
 };
 
@@ -389,7 +391,7 @@ export type UpdateSafeResponse = {
 
 export type UpsertOfferInput = {
   categoryTagId: Scalars['Int'];
-  deliveryTerms: Scalars['String'];
+  deliveryTermsTagId: Scalars['Int'];
   description?: Maybe<Scalars['String']>;
   geonameid: Scalars['Int'];
   id?: Maybe<Scalars['Int']>;
@@ -398,7 +400,7 @@ export type UpsertOfferInput = {
   pictureUrl: Scalars['String'];
   pricePerUnit: Scalars['String'];
   title: Scalars['String'];
-  unit: Scalars['String'];
+  unitTagId: Scalars['Int'];
 };
 
 export type UpsertProfileInput = {
@@ -434,9 +436,9 @@ export type UpsertOfferMutationVariables = Exact<{
   categoryTagId: Scalars['Int'];
   geonameid: Scalars['Int'];
   pricePerUnit: Scalars['String'];
-  unit: Scalars['String'];
+  unitTagId: Scalars['Int'];
   maxUnits?: Maybe<Scalars['Int']>;
-  deliveryTerms: Scalars['String'];
+  deliveryTermsTagId: Scalars['Int'];
 }>;
 
 
@@ -444,7 +446,7 @@ export type UpsertOfferMutation = (
   { __typename?: 'Mutation' }
   & { upsertOffer: (
     { __typename?: 'Offer' }
-    & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'categoryTagId' | 'geonameid' | 'pricePerUnit' | 'unit' | 'maxUnits' | 'deliveryTerms'>
+    & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'categoryTagId' | 'geonameid' | 'pricePerUnit' | 'unitTagId' | 'maxUnits' | 'deliveryTermsTagId'>
     & { createdBy?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'avatarMimeType'>
@@ -475,7 +477,7 @@ export type OffersQuery = (
   { __typename?: 'Query' }
   & { offers: Array<(
     { __typename?: 'Offer' }
-    & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'categoryTagId' | 'geonameid' | 'pricePerUnit' | 'unit' | 'maxUnits' | 'deliveryTerms'>
+    & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'categoryTagId' | 'geonameid' | 'pricePerUnit' | 'unitTagId' | 'maxUnits' | 'deliveryTermsTagId'>
     & { createdBy?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl' | 'avatarMimeType'>
@@ -484,6 +486,12 @@ export type OffersQuery = (
         & Pick<City, 'name' | 'country'>
       )> }
     )>, categoryTag?: Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'type' | 'value'>
+    )>, unitTag?: Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'type' | 'value'>
+    )>, deliveryTermsTag?: Maybe<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'type' | 'value'>
     )>, city?: Maybe<(
@@ -535,9 +543,9 @@ export type CitiesByIdQuery = (
 
 
 export const UpsertOfferDocument = gql`
-    mutation upsertOffer($id: Int, $title: String!, $pictureUrl: String!, $pictureMimeType: String!, $description: String, $categoryTagId: Int!, $geonameid: Int!, $pricePerUnit: String!, $unit: String!, $maxUnits: Int, $deliveryTerms: String!) {
+    mutation upsertOffer($id: Int, $title: String!, $pictureUrl: String!, $pictureMimeType: String!, $description: String, $categoryTagId: Int!, $geonameid: Int!, $pricePerUnit: String!, $unitTagId: Int!, $maxUnits: Int, $deliveryTermsTagId: Int!) {
   upsertOffer(
-    data: {id: $id, geonameid: $geonameid, categoryTagId: $categoryTagId, deliveryTerms: $deliveryTerms, description: $description, maxUnits: $maxUnits, pictureUrl: $pictureUrl, pictureMimeType: $pictureMimeType, pricePerUnit: $pricePerUnit, title: $title, unit: $unit}
+    data: {id: $id, geonameid: $geonameid, categoryTagId: $categoryTagId, deliveryTermsTagId: $deliveryTermsTagId, description: $description, maxUnits: $maxUnits, pictureUrl: $pictureUrl, pictureMimeType: $pictureMimeType, pricePerUnit: $pricePerUnit, title: $title, unitTagId: $unitTagId}
   ) {
     id
     createdBy {
@@ -566,9 +574,9 @@ export const UpsertOfferDocument = gql`
     }
     geonameid
     pricePerUnit
-    unit
+    unitTagId
     maxUnits
-    deliveryTerms
+    deliveryTermsTagId
     city {
       geonameid
       country
@@ -615,9 +623,19 @@ export const OffersDocument = gql`
     }
     geonameid
     pricePerUnit
-    unit
+    unitTag {
+      id
+      type
+      value
+    }
+    unitTagId
     maxUnits
-    deliveryTerms
+    deliveryTermsTag {
+      id
+      type
+      value
+    }
+    deliveryTermsTagId
     city {
       geonameid
       country

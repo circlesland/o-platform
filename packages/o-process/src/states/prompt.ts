@@ -1,4 +1,4 @@
-import {actions, send} from "xstate";
+import {actions} from "xstate";
 import { ProcessContext } from "../interfaces/processContext";
 import { show } from "../actions/show";
 import { Continue } from "../events/continue";
@@ -41,10 +41,6 @@ export type PromptSpec<TContext, TEvent> = {
   params: { [x: string]: any }|((context:TContext)=>{[x: string]: any});
   dataSchema?: any // ((context:TContext, event:TEvent) => any)|any;
 };
-
-function isFunction(functionToCheck:any) {
-  return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
-}
 
 export function prompt<
   TContext extends ProcessContext<any>,

@@ -30,9 +30,9 @@ export type upsertOfferContextData = {
     categoryTagId: number
     geonameid: number
     pricePerUnit: string
-    unit: string
+    unitTagId: number
     maxUnits?: number
-    deliveryTerms: string
+    deliveryTermsTagId: number
 };
 
 export type upsertOfferContext = ProcessContext<upsertOfferContextData>;
@@ -327,7 +327,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             upsertOffer: {
                 id: "upsertOffer",
                 invoke: {
-                    src: async (context, event) => {
+                    src: async (context, event:any) => {
                         if (event.data?.url) {
                             context.data.pictureUrl = event.data?.url;
                             context.data.pictureMimeType = event.data?.mimeType;
@@ -341,14 +341,14 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                                 geonameid: context.data.geonameid,
                                 categoryTagId: context.data.categoryTagId,
                                 createdByProfileId: context.data.geonameid,
-                                deliveryTerms: context.data.deliveryTerms,
+                                deliveryTermsTagId: context.data.deliveryTermsTagId,
                                 description: context.data.description,
                                 maxUnits: context.data.maxUnits ? Number.parseFloat(context.data.maxUnits?.toString() ?? "0") : undefined,
                                 pictureUrl: context.data.pictureUrl,
                                 pictureMimeType: context.data.pictureMimeType,
                                 pricePerUnit: context.data.pricePerUnit,
                                 title: context.data.title,
-                                unit: context.data.unit
+                                unitTagId: context.data.unitTagId
                             }
                         });
                         return result.data.upsertOffer;

@@ -184,7 +184,8 @@ export type Offer = {
   city?: Maybe<City>;
   createdBy?: Maybe<Profile>;
   createdByProfileId: Scalars['Int'];
-  deliveryTerms: Scalars['String'];
+  deliveryTermsTag?: Maybe<Tag>;
+  deliveryTermsTagId: Scalars['Int'];
   description?: Maybe<Scalars['String']>;
   geonameid: Scalars['Int'];
   id: Scalars['Int'];
@@ -195,7 +196,8 @@ export type Offer = {
   publishedAt: Scalars['String'];
   purchasedAt?: Maybe<Scalars['String']>;
   title: Scalars['String'];
-  unit: Scalars['String'];
+  unitTag?: Maybe<Tag>;
+  unitTagId: Scalars['Int'];
   unlistedAt?: Maybe<Scalars['String']>;
 };
 
@@ -389,7 +391,7 @@ export type UpdateSafeResponse = {
 
 export type UpsertOfferInput = {
   categoryTagId: Scalars['Int'];
-  deliveryTerms: Scalars['String'];
+  deliveryTermsTagId: Scalars['Int'];
   description?: Maybe<Scalars['String']>;
   geonameid: Scalars['Int'];
   id?: Maybe<Scalars['Int']>;
@@ -398,7 +400,7 @@ export type UpsertOfferInput = {
   pictureUrl: Scalars['String'];
   pricePerUnit: Scalars['String'];
   title: Scalars['String'];
-  unit: Scalars['String'];
+  unitTagId: Scalars['Int'];
 };
 
 export type UpsertProfileInput = {

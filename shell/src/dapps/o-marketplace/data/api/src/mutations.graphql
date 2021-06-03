@@ -7,22 +7,22 @@ mutation upsertOffer (
     $categoryTagId: Int!
     $geonameid: Int!
     $pricePerUnit: String!
-    $unit: String!
+    $unitTagId: Int!
     $maxUnits: Int
-    $deliveryTerms: String!
+    $deliveryTermsTagId: Int!
 ) {
     upsertOffer(data: {
         id: $id
         geonameid: $geonameid
         categoryTagId: $categoryTagId
-        deliveryTerms: $deliveryTerms
+        deliveryTermsTagId: $deliveryTermsTagId
         description: $description,
         maxUnits: $maxUnits
         pictureUrl: $pictureUrl
         pictureMimeType: $pictureMimeType
         pricePerUnit: $pricePerUnit
         title: $title
-        unit: $unit
+        unitTagId: $unitTagId
     }) {
         id
         createdBy {
@@ -51,9 +51,9 @@ mutation upsertOffer (
         }
         geonameid
         pricePerUnit
-        unit
+        unitTagId
         maxUnits
-        deliveryTerms
+        deliveryTermsTagId
         city {
             geonameid
             country

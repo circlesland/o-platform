@@ -15,9 +15,15 @@
             id: 0
         },
         categoryTagId: 0,
-        deliveryTerms: "",
+        deliveryTermsTag: {
+            value: "",
+            id: 0
+        },
         description: "",
-        unit: "",
+        unitTag: {
+            value: "",
+            id: 0
+        },
         pricePerUnit: "",
         id: 0,
         title: "",
@@ -117,19 +123,21 @@
                     </span>
                     <br/>
                 {/if}
-                <span class="inline text-sm">{offer.deliveryTerms}
-                    {#if isEditable}
-                        <button class="link link-primary text-primary text-2xs"
-                                on:click={() => edit({ deliveryTerms: true })}>
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 class="h-3 w-3"
-                                 viewBox="0 0 20 20"
-                                 fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                            </svg>
-                        </button>
-                    {/if}
-                </span>
+                {#if offer.deliveryTermsTag}
+                    <span class="inline text-sm">{offer.deliveryTermsTag.value}
+                        {#if isEditable}
+                            <button class="link link-primary text-primary text-2xs"
+                                    on:click={() => edit({ deliveryTermsTag: true })}>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-3 w-3"
+                                     viewBox="0 0 20 20"
+                                     fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                </svg>
+                            </button>
+                        {/if}
+                    </span>
+                {/if}
                 <br/>
             </div>
 
@@ -139,18 +147,19 @@
                 valueExtractor: (offer) => offer.categoryTag.value
             }}  />
             <OfferCardField allowEdit={allowEdit} offer={offer} field={{
-                key: "city",
+                key: "geonameid",
                 title: "City",
                 valueExtractor: (offer) => offer.city.name
             }}  />
             <OfferCardField allowEdit={allowEdit} offer={offer} field={{
-                key: "city",
+                key: "geonameid",
                 title: "Country",
                 valueExtractor: (offer) => offer.city.country
             }}  />
             <OfferCardField allowEdit={allowEdit} offer={offer} field={{
-                key: "unit",
-                title: "Unit"
+                key: "unitTag",
+                title: "Unit",
+                valueExtractor: (offer) => offer.unitTag.value
             }}  />
             <OfferCardField allowEdit={allowEdit} offer={offer} field={{
                 key: "pricePerUnit",
