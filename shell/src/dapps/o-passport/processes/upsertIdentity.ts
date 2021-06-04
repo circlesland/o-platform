@@ -6,18 +6,13 @@ import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
-import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
-import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { uploadFile } from "../../../shared/api/uploadFile";
-import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import {CitiesByIdDocument, CitiesByNameDocument, City, UpsertProfileDocument} from "../data/api/types";
 import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { promptChoice } from "./identify/prompts/promptChoice";
-import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {Choice} from "@o-platform/o-editors/src/choiceSelectorContext";
-import {promptPicture} from "@o-platform/o-process/dist/states/promptPicture";
+import {promptFile} from "../../../shared/api/promptFile";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -190,158 +185,19 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           previous: "#country",
         },
       }),
-      avatarUrl: promptPicture({
+      x: {
+        entry:() => console.log("#avatarUrl entry"),
         id: "avatarUrl",
-        field: "avatarUrl",
-        previewComponent: PicturePreview,
-        editorComponent: PictureEditor,
-        params: {
-        },
-        navigation: {
-          canSkip: () => true,
-          next: "#newsletter",
-          canGoBack: () => true,
-          previous: "#dream"
-        }
-      }),
-      /*
-      checkPreviewAvatar: {
-        id: "checkPreviewAvatar",
-        always: [
-          {
-            cond: (context) => !!context.data.avatarUrl,
-            target: "#avatarUrl",
-          },
-          {
-            target: "#checkEditAvatar",
-          },
-        ],
+        always: "avatarUrl"
       },
-      previewAvatar: prompt<UpsertIdentityContext, any>({
+      avatarUrl: promptFile({
         id: "avatarUrl",
+        next: "#newsletter",
+        previous: "#dream",
         field: "avatarUrl",
-        onlyWhenDirty: skipIfNotDirty,
-        component: PicturePreview,
-        params: {
-          label: strings.labelAvatar,
-          submitButtonText: "Save Image",
-        },
-        navigation: {
-          next: "#checkEditAvatar",
-          previous: "#dream",
-          canSkip: () => true,
-        },
+        isOptional: true,
+        skipIfNotDirty: skipIfNotDirty
       }),
-      checkEditAvatar: {
-        id: "checkEditAvatar",
-        always: [
-          {
-            cond: (context) => !context.data.avatarUrl,
-            actions: (context) => {
-              delete context.dirtyFlags["avatarUrl"];
-              context.dirtyFlags["avatar"] = true;
-              context.data.avatar = undefined;
-            },
-            target: "#avatar",
-          },
-          {
-            target: "#newsletter",
-          },
-        ],
-      },
-      editAvatar: prompt<UpsertIdentityContext, any>({
-        id:"avatar",
-        field: "avatar",
-        onlyWhenDirty: skipIfNotDirty,
-        component: PictureEditor,
-        params: {
-          label: strings.labelAvatar,
-          submitButtonText: "Save Image",
-        },
-        navigation: {
-          next: "#uploadGenerateOrSkip",
-          previous: "#dream",
-          canSkip: () => true,
-        },
-      }),
-      uploadGenerateOrSkip: {
-        id: "uploadGenerateOrSkip",
-        always: [
-          {
-            cond: (context) => {
-              return (
-                context.dirtyFlags["avatar"] &&
-                !!context.data.avatar &&
-                !!context.data.avatar.bytes
-              );
-            },
-            target: "#uploadAvatar",
-          },
-          {
-            target: "#newsletter",
-          },
-        ],
-      },
-      uploadAvatar: {
-        id: "uploadAvatar",
-        on: {
-          ...(<any>ipc(`uploadAvatar`)),
-        },
-        entry: () => {
-          window.o.publishEvent(<PlatformEvent>{
-            type: "shell.progress",
-            message: `Uploading your avatar ..`
-          });
-        },
-        invoke: {
-          src: uploadFile.stateMachine("uploadAvatar"),
-          data: {
-            data: (context, event) => {
-              return {
-                appId: "__FILES_APP_ID__",
-                fileName: "avatar",
-                mimeType: context.data.avatar.mimeType,
-                bytes: context.data.avatar.bytes,
-              };
-            },
-            messages: {},
-            dirtyFlags: {},
-          },
-          onDone: [
-            {
-              cond: (context, event) => event.data instanceof Error,
-              target: "#errorUploadingAvatar",
-            },
-            {
-              target: "#newsletter",
-            },
-          ],
-          onError: "#errorUploadingAvatar",
-        },
-      },
-      errorUploadingAvatar: prompt<UpsertIdentityContext, any>({
-        field: "errorUploadingAvatar",
-        entry: (context) => {
-          context.data.errorUploadingAvatar = `
-            <b>Oops.</b><br/>
-            We couldn't upload your avatar.<br/>
-            <br/>
-            Please make sure that your avatar doesn't exceed the maximum allowed file size of 4 MB.<br/>
-            Either choose a different file or skip it for now.
-          `;
-          context.dirtyFlags["avatarUrl"] = true;
-        },
-        component: HtmlViewer,
-        isSensitive: true,
-        params: {
-          submitButtonText: "Try again",
-          html: (context) => context.data.errorUploadingAvatar
-        },
-        navigation: {
-          next: "#checkPreviewAvatar"
-        },
-      }),
-       */
       newsletter: promptChoice({
         id: "newsletter",
         entry: (context, event: any) => {

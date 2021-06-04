@@ -5,6 +5,32 @@ import { Continue } from "../events/continue";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 const { assign } = actions;
 
+export type DynamicPromptField<TContext extends ProcessContext<any>> = {
+  name: string,
+  get:(context:TContext)=>any,
+  set:(o:any, context:TContext)=>void
+};
+
+export type PromptField<TContext extends ProcessContext<any>>
+    = string | DynamicPromptField<TContext>
+
+export function normalizePromptField<TContext extends ProcessContext<any>>(field:PromptField<TContext>)
+    : DynamicPromptField<TContext> {
+  if (typeof field == "string") {
+    return {
+      name: field,
+      get: (context:TContext) => {
+        return context.data[field];
+      },
+      set:(o:any, context:TContext) => {
+        context.data[field] = o;
+      }
+    }
+  } else {
+    return <DynamicPromptField<TContext>>field;
+  }
+}
+
 /**
  * Displays the specified editor to the user.
  * The editor is expected to understand the 'field' property
@@ -12,13 +38,13 @@ const { assign } = actions;
  *
  * @param spec
  */
-
-export type PromptSpec<TContext, TEvent> = {
-  entry?: (context:TContext, event:TEvent) => void;
-  field: string;
-  component: any;
+export type PromptSpec<TContext extends ProcessContext<any>, TEvent> = {
   id?: string;
+  entry?: (context:TContext, event:TEvent) => void;
+  field: PromptField<TContext>;
+  component: any;
   isSensitive?: boolean;
+  passDataByReference?: boolean;
   /**
    * If set to 'true' every prompt will automatically submit its present data
    * and go to the next step if it's dirty flag is not set.
@@ -28,13 +54,13 @@ export type PromptSpec<TContext, TEvent> = {
     // If you want to allow the user to go one step back then specify here where he came from
     previous?: string;
     canGoBack?: (
-      context: ProcessContext<any>,
+      context: ProcessContext<TContext>,
       event: { type: string; [x: string]: any }
     ) => boolean;
-    next: string;
+    next?: string;
     skip?: string;
     canSkip?: (
-      context: ProcessContext<any>,
+      context: ProcessContext<TContext>,
       event: { type: string; [x: string]: any }
     ) => boolean;
   };
@@ -52,25 +78,37 @@ export function prompt<
   }
   const editDataFieldConfig: StatesConfig<TContext, StateSchema, TEvent> = {
     id: spec.id ?? spec.field,
-    initial: "checkSkip",
+    initial: "entry",
     states: {
-      checkSkip: {
+      // If the spec contains an 'entry' action execute it now
+      entry: {
         entry: (context:TContext, event:TEvent) => {
-          console.log(`show: ${spec.id} ${spec.field}`)
+          console.log(`entry: ${spec.id} ${spec.field}`)
           if (spec.entry) {
             spec.entry(context, event);
           }
         },
+        always: "checkSkip"
+      },
+      checkSkip: {
+        entry: () => console.log(`checkSkip: ${spec.id} ${spec.field}`),
         invoke: {
           src: async (context:TContext) => {
+            // Emit 'context.data' as event.
+            // 'validate' and 'submit' get their value from this event
+            // in the case that 'checkSkip' == true.
             return context.data;
           },
-          onDone:[{
-            cond: (context:TContext) => spec.onlyWhenDirty && !context.dirtyFlags[spec.field],
-            actions: [
-              () => console.log(`checkSkip: skipping because '${spec.field}' is not dirty and 'onlyWhenDirty' == true.`)
-            ],
-            target: "validate",
+          onDone: [{
+            cond: (context:TContext) => {
+              const field = normalizePromptField(spec.field);
+              const skip = spec.onlyWhenDirty && !context.dirtyFlags[field.name];
+              if (skip){
+                console.log(`checkSkip: ${spec.id} ${spec.field} - skipping because '${spec.field}' is not dirty and 'onlyWhenDirty' == true.`);
+              }
+              return skip;
+            },
+            target: "validate"
           }, {
             target: "show"
           }],
@@ -152,13 +190,15 @@ export function prompt<
               );
             }
             if (spec.dataSchema) {
-              delete context.messages[spec.field];
-              const valueToValidate = data[spec.field];
+              const field = normalizePromptField(spec.field);
+              delete context.messages[field.name];
+              const valueToValidate = field.get(context);
+
               try {
                 await spec.dataSchema.validate(valueToValidate, {abortEarly: false})
               } catch (e) {
                 if (e.errors) {
-                  context.messages[spec.field] = e.errors;
+                  context.messages[field.name] = e.errors;
                 } else {
                   throw e;
                 }
@@ -168,7 +208,10 @@ export function prompt<
             return event.data;
           },
           onDone: [{
-            cond: (context:TContext) => !context.messages[spec.field],
+            cond: (context:TContext) => {
+              const field = normalizePromptField(spec.field);
+              return !context.messages[field.name];
+            },
             target: "submit"
           }, {
             target: "show"
@@ -189,9 +232,10 @@ export function prompt<
                 )}`
               );
             }
-            if (context.data[spec.field] !== data[spec.field]) {
-              context.data[spec.field] = data[spec.field];
-              context.dirtyFlags[spec.field] = true;
+            const field = normalizePromptField(spec.field);
+            if (field.get(context) !== data[field.name]) {
+              field.set(data[field.name], context);
+              context.dirtyFlags[field.name] = true;
             }
             return context;
           }),

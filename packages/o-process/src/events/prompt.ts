@@ -1,14 +1,19 @@
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { PlatformEventTypes } from "@o-platform/o-events/dist/eventTypes";
 import {Schema} from "yup";
+import {PromptField} from "../states/prompt";
+import {ProcessContext} from "../interfaces/processContext";
 
 /**
  * Can be used to ask for user input or to display status information.
  */
-export class Prompt implements PlatformEvent {
+export class Prompt<TContext extends ProcessContext<any>> implements PlatformEvent {
   type: PlatformEventTypes = "process.prompt";
 
-  field?: string;
+  /**
+   * The name of the 'context.data' field that should be bound to the editor.
+   */
+  field?: PromptField<TContext>;
 
   /**
    * The component that should be displayed during a state.
