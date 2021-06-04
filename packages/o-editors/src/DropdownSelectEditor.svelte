@@ -60,10 +60,7 @@
 </script>
 
 <div class="flex flex-col items-end form-control justify-self-center">
-  <label
-    class="self-center flex-1 mb-4 text-center label"
-    for={context.field}
-  >
+  <label class="self-center flex-1 mb-4 text-center label" for={context.field}>
     <span class="label-text">{@html context.params.label}</span>
   </label>
 

@@ -13,6 +13,7 @@
   import isOutOfViewport from "./utils/isOutOfViewport";
   import debounce from "./utils/debounce";
   import DefaultClearIcon from "./ClearIcon.svelte";
+  import { number } from "yup/lib/locale";
 
   const dispatch = createEventDispatcher();
   export let container = undefined;
@@ -129,7 +130,10 @@
   $: updateSelectedValueDisplay(items);
 
   $: {
-    if (typeof selectedValue === "string") {
+    if (
+      typeof selectedValue === "string" ||
+      typeof selectedValue === "number"
+    ) {
       selectedValue = {
         [optionIdentifier]: selectedValue,
         label: selectedValue,
