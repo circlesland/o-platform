@@ -5,6 +5,7 @@
   import Dropzone from "svelte-file-dropzone";
   import ProcessNavigation from "./ProcessNavigation.svelte";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
+  import {normalizePromptField} from "@o-platform/o-process/dist/states/prompt";
 
   export let context: EditorContext;
 
@@ -54,10 +55,10 @@
 
   const addedfile = (file) => {
     const reader = new FileReader();
-
+    const field = normalizePromptField(context.field);
     reader.addEventListener("loadend", (e) => {
       uploadFile = Buffer.from(<ArrayBuffer>reader.result);
-      context.editorDirtyFlags[context.field] = true;
+      context.editorDirtyFlags[field.name] = true;
     });
 
     reader.readAsArrayBuffer(file);
@@ -65,7 +66,8 @@
   };
 
   function clearImage() {
-    context.editorDirtyFlags[context.field] = true;
+    const field = normalizePromptField(context.field);
+    context.editorDirtyFlags[field.name] = true;
     imageStore.value = null;
     uploadFile = null;
     image = null;
@@ -137,7 +139,8 @@
   function submit() {
     const answer = new Continue();
     answer.data = context.data;
-    answer.data[context.field] = {
+    const field = normalizePromptField(context.field);
+    answer.data[field.name] = {
       mimeType: "image/jpeg",
       bytes: imageStore.value,
     };
@@ -145,7 +148,7 @@
   }
 </script>
 
-<label class="label block text-center" for={context.field}>
+<label class="label block text-center" for={normalizePromptField(context.field).name}>
   <span class="label-text">{@html context.params.label}</span>
 </label>
 <div class="w-full h-full">

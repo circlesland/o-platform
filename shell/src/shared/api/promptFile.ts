@@ -10,22 +10,42 @@ import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import {Generate} from "@o-platform/o-utils/dist/generate";
 
 const strings = {
-  labelFile: (context:ProcessContext<any>) => `labelFile`,
+  labelFile: `Please select a file to upload`,
 };
 
 type UploadPictureSpec<TContext extends ProcessContext<any>> = {
   id?:string;
   field: PromptField<TContext>;
   isOptional: boolean,
-  next: string,
   skipIfNotDirty?: boolean,
-  previous?: string
+  params?: {
+    label: string
+  },
+  navigation: {
+    // If you want to allow the user to go one step back then specify here where he came from
+    previous?: string;
+    canGoBack?: (
+        context: ProcessContext<TContext>,
+        event: { type: string; [x: string]: any }
+    ) => boolean;
+    next: string;
+    skip?: string;
+    canSkip?: (
+        context: ProcessContext<TContext>,
+        event: { type: string; [x: string]: any }
+    ) => boolean;
+  };
 }
 
 export function promptFile<
     TContext extends ProcessContext<any>,
     TEvent extends PlatformEvent
     >(spec: UploadPictureSpec<TContext>) {
+  let file: {
+    mimeType:string;
+    fileName: string;
+    bytes: Buffer;
+  };
   spec.id = spec.id ? spec.id : Generate.randomHexString(4)
   const generatedId = Generate.randomHexString(4);
   const id = (x:string) => `${spec.id}/${generatedId}/${x}`;
@@ -53,15 +73,15 @@ export function promptFile<
         onlyWhenDirty: spec.skipIfNotDirty,
         component: PicturePreview,
         params: {
-          label: strings.labelFile,
+          label: spec.params?.label ?? strings.labelFile,
           submitButtonText: "Save",
         },
         navigation: {
           next: `#${id("checkEditFile")}`,
-          canGoBack: () => !!spec.previous,
-          previous: spec.previous,
+          canGoBack: () => !!spec.navigation.previous,
+          previous: spec.navigation.previous,
           canSkip: () => spec.isOptional,
-          skip: spec.next
+          skip: spec.navigation.next
         },
       }),
       checkEditFile: {
@@ -80,23 +100,32 @@ export function promptFile<
           },
           target: `#${id("editFile")}`,
         }, {
-          target: spec.next,
+          target: spec.navigation.next,
         }],
       },
       editFile: prompt<TContext, any>({
         id: id("editFile"),
         entry: () => console.log(`editFile entry`),
-        field: "file",
+        field: {
+          name: "file",
+          get: () => {
+            return file ?? {};
+          },
+          set: (o) => {
+            console.log("Setting 'file' to:", o);
+            file = o;
+          }
+        },
         onlyWhenDirty: spec.skipIfNotDirty,
         component: PictureEditor,
         params: {
-          label: strings.labelFile,
+          label: spec.params?.label ?? strings.labelFile,
           submitButtonText: "Save Image",
         },
         navigation: {
           next: `#${id("uploadOrSkip")}`,
-          previous: spec.previous,
-          canSkip: () => true,
+          previous: spec.navigation.previous,
+          canSkip: spec.navigation.canSkip,
         },
       }),
       uploadOrSkip: {
@@ -107,15 +136,15 @@ export function promptFile<
             cond: (context) => {
               return (
                   context.dirtyFlags["file"] &&
-                  !!context.data.file &&
-                  !!context.data.file.bytes
+                  !!file &&
+                  !!file.bytes
               );
             },
             target: `#${id("uploadFile")}`,
           },
           {
             cond: () => spec.isOptional,
-            target: spec.next,
+            target: spec.navigation.next,
           },
           {
             actions: (context: TContext) => {
@@ -143,9 +172,9 @@ export function promptFile<
             data: (context, event) => {
               return {
                 appId: "__FILES_APP_ID__",
-                fileName: context.data.fileName ?? "",
-                mimeType: context.data.file.mimeType,
-                bytes: context.data.file.bytes,
+                fileName: file.fileName ?? "",
+                mimeType: file.mimeType,
+                bytes: file.bytes,
               };
             },
             messages: {},
@@ -157,7 +186,7 @@ export function promptFile<
               target: "errorUploadingFile",
             },
             {
-              target: spec.next,
+              target: spec.navigation.next,
             },
           ],
           onError: "errorUploadingFile",

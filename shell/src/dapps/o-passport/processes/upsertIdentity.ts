@@ -25,10 +25,6 @@ export type UpsertIdentityContextData = {
   dream?: string;
   cityGeonameid?: number;
   city?: City;
-  avatar?: {
-    bytes: Buffer;
-    mimeType: string;
-  };
   avatarUrl?: string;
   avatarCid?: string;
   avatarMimeType?: string;
@@ -186,18 +182,18 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           previous: "#country",
         },
       }),
-      x: {
-        entry:() => console.log("#avatarUrl entry"),
-        id: "avatarUrl",
-        always: "avatarUrl"
-      },
       avatarUrl: promptFile({
         id: "avatarUrl",
-        next: "#newsletter",
-        previous: "#dream",
         field: "avatarUrl",
         isOptional: true,
-        skipIfNotDirty: skipIfNotDirty
+        skipIfNotDirty: skipIfNotDirty,
+        params: {
+          label: strings.labelAvatar
+        },
+        navigation: {
+          next: "#newsletter",
+          previous: "#dream"
+        }
       }),
       newsletter: promptChoice({
         id: "newsletter",
@@ -243,9 +239,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "upsertIdentity",
         invoke: {
           src: async (context, event) => {
-            delete context.data.avatar;
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: UpsertProfileDocument,
               variables: {

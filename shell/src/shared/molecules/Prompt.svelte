@@ -2,11 +2,13 @@
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
   import {Schema} from "yup";
+  import {PromptField} from "@o-platform/o-process/dist/states/prompt";
+  import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 
   export let process: Process;
-  export let prompt: Prompt;
+  export let prompt: Prompt<ProcessContext<any>>;
   let componentContext: {
-    field: string;
+    field: PromptField<ProcessContext<any>>;
     data: { [x: string]: any };
     dirtyFlags: { [x: string]: any };
     editorDirtyFlags: { [x: string]: any };

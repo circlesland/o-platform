@@ -1,12 +1,11 @@
 import { Process } from "@o-platform/o-process/dist/interfaces/process";
 import {PlatformEvent} from "../../o-events/dist/platformEvent";
+import {PromptField} from "@o-platform/o-process/dist/states/prompt";
+import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 
-export type EditorContext = {
-  field?: string;
-  data: { [x: string]: any };
-  dirtyFlags: { [x: string]: any };
+export interface EditorContext extends ProcessContext<any> {
+  field?: PromptField<any>;
   editorDirtyFlags: { [x: string]: any };
-  messages: { [x: string]: string };
   params: { [x: string]: any };
   process: Process;
   isReadonly?: boolean;
@@ -16,4 +15,4 @@ export type EditorContext = {
   hideNav: boolean;
   dataSchema?: any;
   sendAnswer(answer:PlatformEvent) : void;
-};
+}
