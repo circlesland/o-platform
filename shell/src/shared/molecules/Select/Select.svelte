@@ -13,6 +13,7 @@
   import isOutOfViewport from "./utils/isOutOfViewport";
   import debounce from "./utils/debounce";
   import DefaultClearIcon from "./ClearIcon.svelte";
+  import { number } from "yup/lib/locale";
 
   const dispatch = createEventDispatcher();
   export let container = undefined;
@@ -129,7 +130,10 @@
   $: updateSelectedValueDisplay(items);
 
   $: {
-    if (typeof selectedValue === "string") {
+    if (
+      typeof selectedValue === "string" ||
+      typeof selectedValue === "number"
+    ) {
       selectedValue = {
         [optionIdentifier]: selectedValue,
         label: selectedValue,
@@ -277,7 +281,6 @@
       if (listOpen) {
         loadList();
       } else {
-        console.log("ALSDKJASLKDJASLDK");
         removeList();
       }
     }
@@ -604,6 +607,7 @@
 
     list = list;
     target = target;
+
     if (container) container.appendChild(target);
 
     list = new List({
@@ -673,6 +677,7 @@
   onDestroy(() => {
     removeList();
   });
+
 </script>
 
 <svelte:window
@@ -848,6 +853,11 @@
     height: var(--height, 42px);
     overflow-x: hidden;
     padding: var(--selectedItemPadding, 0 20px 0 0);
+    position: relative;
+    bottom: -3rem;
+    left: 0;
+    max-width: inherit;
+    width: 100%;
   }
 
   .selectedItem:focus {
@@ -861,6 +871,7 @@
     bottom: var(--clearSelectBottom, 11px);
     width: var(--clearSelectWidth, 20px);
     color: var(--clearSelectColor, #c5cacf);
+    height: var(--clearSelectHeight, 42px);
     flex: none !important;
   }
 
@@ -946,4 +957,5 @@
       transform: rotate(360deg);
     }
   }
+
 </style>

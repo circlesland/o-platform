@@ -1,29 +1,39 @@
 <script>
-  import { beforeUpdate, createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
+  import {
+    beforeUpdate,
+    afterUpdate,
+    createEventDispatcher,
+    onDestroy,
+    onMount,
+    tick,
+  } from "svelte";
 
   const dispatch = createEventDispatcher();
 
   export let container = undefined;
 
-  import ItemComponent from './Item.svelte';
-  import VirtualList from './VirtualList.svelte';
+  import ItemComponent from "./Item.svelte";
+  import VirtualList from "./VirtualList.svelte";
 
   export let Item = ItemComponent;
   export let isVirtualList = false;
   export let items = [];
   export let getOptionLabel = (option, filterText) => {
-    if (option) return option.isCreator ? `Create \"${filterText}\"` : option.label;
+    if (option)
+      return option.isCreator ? `Create \"${filterText}\"` : option.label;
   };
-  export let getGroupHeaderLabel = (option) => { return option.label };
+  export let getGroupHeaderLabel = (option) => {
+    return option.label;
+  };
   export let itemHeight = 40;
   export let hoverItemIndex = 0;
   export let selectedValue = undefined;
-  export let optionIdentifier = 'value';
+  export let optionIdentifier = "value";
   export let hideEmptyState = false;
-  export let noOptionsMessage = 'No options';
+  export let noOptionsMessage = "No options";
   export let isMulti = false;
   export let activeItemIndex = 0;
-  export let filterText = '';
+  export let filterText = "";
 
   let isScrollingTimer = 0;
   let isScrolling = false;
@@ -33,23 +43,30 @@
 
   onMount(() => {
     if (items.length > 0 && !isMulti && selectedValue) {
-      const _hoverItemIndex = items.findIndex((item) => item[optionIdentifier] === selectedValue[optionIdentifier]);
+      const _hoverItemIndex = items.findIndex(
+        (item) => item[optionIdentifier] === selectedValue
+      );
 
       if (_hoverItemIndex) {
         hoverItemIndex = _hoverItemIndex;
+      } else {
+        hoverItemIndex = items.length - 1;
       }
+      activeItemIndex = hoverItemIndex;
     }
 
-    scrollToActiveItem('active');
+    scrollToActiveItem("active");
 
-
-    container.addEventListener('scroll', () => {
-      clearTimeout(isScrollingTimer);
-
-      isScrollingTimer = setTimeout(() => {
-        isScrolling = false;
-      }, 100);
-    }, false);
+    container.addEventListener(
+      "scroll",
+      () => {
+        clearTimeout(isScrollingTimer);
+        isScrollingTimer = setTimeout(() => {
+          isScrolling = false;
+        }, 100);
+      },
+      false
+    );
   });
 
   onDestroy(() => {
@@ -57,41 +74,31 @@
   });
 
   beforeUpdate(() => {
-
     if (items !== prev_items && items.length > 0) {
-      hoverItemIndex = 0;
+      if (selectedValue) {
+        const _hoverItemIndex = items.findIndex(
+          (item) => item[optionIdentifier] === selectedValue
+        );
+        hoverItemIndex = _hoverItemIndex;
+        activeItemIndex = _hoverItemIndex;
+      } else {
+        hoverItemIndex = items.length - 1;
+        activeItemIndex = items.length - 1;
+      }
     }
-
-
-    // if (prev_activeItemIndex && activeItemIndex > -1) {
-    //   hoverItemIndex = activeItemIndex;
-
-    //   scrollToActiveItem('active');
-    // }
-    // if (prev_selectedValue && selectedValue) {
-    //   scrollToActiveItem('active');
-
-    //   if (items && !isMulti) {
-    //     const hoverItemIndex = items.findIndex((item) => item[optionIdentifier] === selectedValue[optionIdentifier]);
-
-    //     if (hoverItemIndex) {
-    //       hoverItemIndex = hoverItemIndex;
-    //     }
-    //   }
-    // }
 
     prev_items = items;
     prev_activeItemIndex = activeItemIndex;
     prev_selectedValue = selectedValue;
   });
 
-  function itemClasses(hoverItemIndex, item, itemIndex, items, selectedValue, optionIdentifier, isMulti) {
-    return `${selectedValue && !isMulti && (selectedValue[optionIdentifier] === item[optionIdentifier]) ? 'active ' : ''}${hoverItemIndex === itemIndex || items.length === 1 ? 'hover' : ''}`;
-  }
+  afterUpdate(() => {
+    scrollToActiveItem("hover");
+  });
 
   function handleSelect(item) {
     if (item.isCreator) return;
-    dispatch('itemSelected', item);
+    dispatch("itemSelected", item);
   }
 
   function handleHover(i) {
@@ -102,11 +109,14 @@
   function handleClick(args) {
     const { item, i, event } = args;
     event.stopPropagation();
-
-    if (selectedValue && !isMulti && selectedValue[optionIdentifier] === item[optionIdentifier]) return closeList();
+    console.log("CLICKER");
+    if (selectedValue && !isMulti && selectedValue === item[optionIdentifier]) {
+      console.log("yeah, fucked");
+      return closeList();
+    }
 
     if (item.isCreator) {
-      dispatch('itemCreated', filterText);
+      dispatch("itemCreated", filterText);
     } else {
       activeItemIndex = i;
       hoverItemIndex = i;
@@ -115,7 +125,7 @@
   }
 
   function closeList() {
-    dispatch('closeList');
+    dispatch("closeList");
   }
 
   async function updateHoverItem(increment) {
@@ -124,54 +134,62 @@
     let isNonSelectableItem = true;
 
     while (isNonSelectableItem) {
-      if (increment > 0 && hoverItemIndex === (items.length - 1)) {
+      if (increment > 0 && hoverItemIndex === items.length - 1) {
         hoverItemIndex = 0;
-      }
-      else if (increment < 0 && hoverItemIndex === 0) {
+      } else if (increment < 0 && hoverItemIndex === 0) {
         hoverItemIndex = items.length - 1;
-      }
-      else {
+      } else {
         hoverItemIndex = hoverItemIndex + increment;
       }
 
-      isNonSelectableItem = items[hoverItemIndex].isGroupHeader && !items[hoverItemIndex].isSelectable;
+      isNonSelectableItem =
+        items[hoverItemIndex].isGroupHeader &&
+        !items[hoverItemIndex].isSelectable;
     }
 
     await tick();
-
-    scrollToActiveItem('hover');
+    scrollToActiveItem("active");
   }
 
   function handleKeyDown(e) {
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         items.length && updateHoverItem(1);
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         items.length && updateHoverItem(-1);
         break;
-      case 'Enter':
+      case "Enter":
         e.preventDefault();
         if (items.length === 0) break;
         const hoverItem = items[hoverItemIndex];
-        if (selectedValue && !isMulti && selectedValue[optionIdentifier] === hoverItem[optionIdentifier]) {
+        if (
+          selectedValue &&
+          !isMulti &&
+          selectedValue[optionIdentifier] === hoverItem[optionIdentifier]
+        ) {
           closeList();
           break;
         }
 
         if (hoverItem.isCreator) {
-          dispatch('itemCreated', filterText);
+          dispatch("itemCreated", filterText);
         } else {
           activeItemIndex = hoverItemIndex;
           handleSelect(items[hoverItemIndex]);
         }
         break;
-      case 'Tab':
+      case "Tab":
         e.preventDefault();
         if (items.length === 0) break;
-        if (selectedValue && selectedValue[optionIdentifier] === items[hoverItemIndex][optionIdentifier]) return closeList();
+        if (
+          selectedValue &&
+          selectedValue[optionIdentifier] ===
+            items[hoverItemIndex][optionIdentifier]
+        )
+          return closeList();
         activeItemIndex = hoverItemIndex;
         handleSelect(items[hoverItemIndex]);
         break;
@@ -182,22 +200,26 @@
     if (isVirtualList || !container) return;
 
     let offsetBounding;
-    const focusedElemBounding = container.querySelector(`.listItem .${className}`);
+    const focusedElemBounding = container.querySelector(
+      `.listItem .${className}`
+    );
 
     if (focusedElemBounding) {
-      offsetBounding = container.getBoundingClientRect().bottom - focusedElemBounding.getBoundingClientRect().bottom;
+      offsetBounding =
+        container.getBoundingClientRect().bottom -
+        focusedElemBounding.getBoundingClientRect().bottom;
     }
 
     container.scrollTop -= offsetBounding;
   }
 
   function isItemActive(item, selectedValue, optionIdentifier) {
-    return selectedValue && (selectedValue[optionIdentifier] === item[optionIdentifier]);
-  };
+    return selectedValue && selectedValue === item[optionIdentifier];
+  }
 
   function isItemFirst(itemIndex) {
     return itemIndex === 0;
-  };
+  }
 
   function isItemHover(hoverItemIndex, item, itemIndex, items) {
     return hoverItemIndex === itemIndex || items.length === 1;
@@ -205,58 +227,58 @@
 
 </script>
 
-<svelte:window on:keydown="{handleKeyDown}" />
+<svelte:window on:keydown={handleKeyDown} />
 
 {#if isVirtualList}
-<div class="listContainer virtualList" bind:this={container}>
-
-  <VirtualList {items} {itemHeight} let:item let:i>
-
-    <div on:mouseover="{() => handleHover(i)}" on:click="{event => handleClick({item, i, event})}"
-        class="listItem">
-          <svelte:component
-            this="{Item}"
-            {item}
-            {filterText}
-            {getOptionLabel}
-            isFirst="{isItemFirst(i)}"
-            isActive="{isItemActive(item, selectedValue, optionIdentifier)}"
-            isHover="{isItemHover(hoverItemIndex, item, i, items)}"
-          />
-    </div>
-
-</VirtualList>
-</div>
+  <div class="listContainer virtualList" bind:this={container}>
+    <VirtualList {items} {itemHeight} let:item let:i>
+      <div
+        on:mouseover={() => handleHover(i)}
+        on:click={(event) => handleClick({ item, i, event })}
+        class="listItem"
+      >
+        <svelte:component
+          this={Item}
+          {item}
+          {filterText}
+          {getOptionLabel}
+          isFirst={isItemFirst(i)}
+          isActive={isItemActive(item, selectedValue, optionIdentifier)}
+          isHover={isItemHover(hoverItemIndex, item, i, items)}
+        />
+      </div>
+    </VirtualList>
+  </div>
 {/if}
 
 {#if !isVirtualList}
-<div class="listContainer" bind:this={container}>
-  {#each items as item, i}
-    {#if item.isGroupHeader && !item.isSelectable}
-      <div class="listGroupTitle">{getGroupHeaderLabel(item)}</div>
-    { :else }
-    <div
-      on:mouseover="{() => handleHover(i)}"
-      on:click="{event => handleClick({item, i, event})}"
-      class="listItem"
-    >
-      <svelte:component
-        this="{Item}"
-        {item}
-        {filterText}
-        {getOptionLabel}
-        isFirst="{isItemFirst(i)}"
-        isActive="{isItemActive(item, selectedValue, optionIdentifier)}"
-        isHover="{isItemHover(hoverItemIndex, item, i, items)}"
-      />
-    </div>
-    {/if}
-  {:else}
-    {#if !hideEmptyState}
-      <div class="empty">{noOptionsMessage}</div>
-    {/if}
-  {/each}
-</div>
+  <div class="listContainer" bind:this={container}>
+    {#each items as item, i}
+      {#if item.isGroupHeader && !item.isSelectable}
+        <div class="listGroupTitle">{getGroupHeaderLabel(item)}</div>
+      {:else}
+        <div
+          on:mouseover={() => handleHover(i)}
+          on:click={(event) => handleClick({ item, i, event })}
+          class="listItem"
+        >
+          <svelte:component
+            this={Item}
+            {item}
+            {filterText}
+            {getOptionLabel}
+            isFirst={isItemFirst(i)}
+            isActive={isItemActive(item, selectedValue, optionIdentifier)}
+            isHover={isItemHover(hoverItemIndex, item, i, items)}
+          />
+        </div>
+      {/if}
+    {:else}
+      {#if !hideEmptyState}
+        <div class="empty">{noOptionsMessage}</div>
+      {/if}
+    {/each}
+  </div>
 {/if}
 
 <style>
@@ -286,9 +308,16 @@
     text-transform: var(--groupTitleTextTransform, uppercase);
   }
 
+  /* .listContainer div {
+    margin-top: 10px;
+  }
+  .listContainer div.empty {
+    margin-top: 0;
+  } */
   .empty {
     text-align: var(--listEmptyTextAlign, center);
-    padding: var(--listEmptyPadding, 20px 0);
-    color: var(--listEmptyColor, #78848F);
+    padding: var(--listEmptyPadding, 0 0);
+    color: var(--listEmptyColor, #78848f);
   }
+
 </style>

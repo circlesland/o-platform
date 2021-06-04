@@ -117,15 +117,16 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             });
 
             const items =
-                result.data.cities && result.data.cities.length > 0
-                    ? result.data.cities
-                        .map((o) => {
-                          return <Choice>{
-                            label: `${o.name} (${o.country})`,
-                            value: o.geonameid
-                          };
-                        })
-                    : [];
+              result.data.cities && result.data.cities.length > 0
+                ? result.data.cities
+                    .map((o) => {
+                      return <Choice>{
+                        label: `${o.name} (${o.country})`,
+                        value: o.geonameid,
+                      };
+                    })
+                    .reverse()
+                : [];
 
             return items;
           },

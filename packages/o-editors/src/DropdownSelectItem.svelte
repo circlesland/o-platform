@@ -20,19 +20,20 @@
     }
     itemClasses = classes.join(" ");
   }
+
 </script>
 
 <section
   class="flex mb-2 items-centerjustify-center text-circlesdarkblue customItem {itemClasses}"
 >
   <div
-    class="flex items-center w-full p-3 pt-4 space-x-2 bg-white border rounded-sm shadow-md sm:space-x-6 item-body"
+    class="flex items-center w-full p-3 pt-4 space-x-2 border rounded-sm shadow-md sm:space-x-6 item-body"
   >
     <div class="mr-2 text-center">
       <div class="avatar">
         <div class="w-12 h-12 m-auto rounded-full sm:w-12 sm:h-12">
           <img
-            src={item.avatarUrl ? item.avatarUrl : "/images/common/circles.png"}
+            src={item.avatarUrl ? item.avatarUrl : "/images/market/city.png"}
             alt="user-icon"
           />
         </div>
@@ -59,28 +60,34 @@
     cursor: default;
     padding: 0 4px;
     overflow: hidden;
-  }
-
-  .customItem:active {
-    background: #0ad99c;
+    @apply bg-white;
   }
 
   .customItem.active {
-    background: #0ad99c;
+    @apply bg-primary;
+  }
+
+  .customItem.active .item-body {
+    @apply bg-white;
   }
 
   .customItem.hover:not(.active) {
-    background: #0ad99c;
+    @apply bg-primary;
   }
-  .customItem.hover:not(.active) .item-body {
-    background: #ccc;
+  .customItem.hover .item-body {
+    @apply bg-lightgrey;
   }
 
-  .customItem.hover:not(.active) .item-body .truncateThis:before {
+  .customItem.hover .item-body .truncateThis:before {
     background: linear-gradient(
       to right,
-      rgba(255, 255, 255, 0.001) 80%,
-      #ccc 100%
+      rgba(217, 226, 238, 0.001) 80%,
+      #d9e2ee 100%
+    );
+    background: -webkit-linear-gradient(
+      to right,
+      rgba(217, 226, 238, 0.001) 80%,
+      #d9e2ee 100%
     );
 
     /* background: #ffcc33; */
@@ -100,4 +107,5 @@
   .customItem_tagline {
     display: inline-block;
   }
+
 </style>
