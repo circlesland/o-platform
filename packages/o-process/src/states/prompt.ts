@@ -192,7 +192,7 @@ export function prompt<
             if (spec.dataSchema) {
               const field = normalizePromptField(spec.field);
               delete context.messages[field.name];
-              const valueToValidate = field.get(context);
+              const valueToValidate = data[field.name];
 
               try {
                 await spec.dataSchema.validate(valueToValidate, {abortEarly: false})
