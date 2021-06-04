@@ -277,7 +277,6 @@
       if (listOpen) {
         loadList();
       } else {
-        console.log("ALSDKJASLKDJASLDK");
         removeList();
       }
     }
@@ -600,6 +599,7 @@
       position: "static",
       "z-index": 2,
       visibility: "hidden",
+      marginTop: "10px",
     });
 
     list = list;
@@ -673,6 +673,7 @@
   onDestroy(() => {
     removeList();
   });
+
 </script>
 
 <svelte:window
@@ -848,6 +849,11 @@
     height: var(--height, 42px);
     overflow-x: hidden;
     padding: var(--selectedItemPadding, 0 20px 0 0);
+    position: relative;
+    bottom: -3rem;
+    left: 0;
+    max-width: inherit;
+    width: 100%;
   }
 
   .selectedItem:focus {
@@ -861,6 +867,7 @@
     bottom: var(--clearSelectBottom, 11px);
     width: var(--clearSelectWidth, 20px);
     color: var(--clearSelectColor, #c5cacf);
+    height: var(--clearSelectHeight, 42px);
     flex: none !important;
   }
 
@@ -946,4 +953,5 @@
       transform: rotate(360deg);
     }
   }
+
 </style>

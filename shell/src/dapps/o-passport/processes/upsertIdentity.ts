@@ -11,12 +11,17 @@ import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { uploadFile } from "../../../shared/api/uploadFile";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
-import {CitiesByIdDocument, CitiesByNameDocument, City, UpsertProfileDocument} from "../data/api/types";
+import {
+  CitiesByIdDocument,
+  CitiesByNameDocument,
+  City,
+  UpsertProfileDocument,
+} from "../data/api/types";
 import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { promptChoice } from "./identify/prompts/promptChoice";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import {Choice} from "@o-platform/o-editors/src/choiceSelectorContext";
+import { Choice } from "@o-platform/o-editors/src/choiceSelectorContext";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -107,29 +112,31 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           label: strings.labelCountry,
           placeholder: strings.placeholderCountry,
           submitButtonText: "Submit vote",
-          
+
           asyncChoices: async (searchText?: string) => {
             const n = <any>navigator;
             const lang = n.language || n.userLanguage;
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.query({
               query: CitiesByNameDocument,
               variables: {
-                name: (searchText ?? "" ) + "%",
-                languageCode: lang.substr(0, 2)
+                name: (searchText ?? "") + "%",
+                languageCode: lang.substr(0, 2),
               },
             });
 
             const items =
-                result.data.cities && result.data.cities.length > 0
-                    ? result.data.cities
-                        .map((o) => {
-                          return <Choice>{
-                            label: `${o.name} (${o.country})`,
-                            value: o.geonameid
-                          };
-                        })
-                    : [];
+              result.data.cities && result.data.cities.length > 0
+                ? result.data.cities
+                    .map((o) => {
+                      return <Choice>{
+                        label: `${o.name} (${o.country})`,
+                        value: o.geonameid,
+                      };
+                    })
+                    .reverse()
+                : [];
 
             return items;
           },
@@ -141,7 +148,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           next: "#setCity",
           previous: "#lastName",
           canSkip: () => true,
-          skip: "#dream"
+          skip: "#dream",
         },
       }),
       setCity: {
@@ -152,21 +159,28 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
               context.data.city = undefined;
               return;
             }
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.query({
               query: CitiesByIdDocument,
               variables: {
-                ids: [context.data.cityGeonameid]
+                ids: [context.data.cityGeonameid],
               },
             });
             if (result.errors && result.errors.length) {
-              throw new Error(`An error occurred while fetching a city: ${JSON.stringify(result.errors)}`)
+              throw new Error(
+                `An error occurred while fetching a city: ${JSON.stringify(
+                  result.errors
+                )}`
+              );
             }
-            context.data.city =  result.data.city?.length ? result.data.city[0] : undefined;
+            context.data.city = result.data.city?.length
+              ? result.data.city[0]
+              : undefined;
           },
           onDone: "#dream",
-          onError: "#error"
-        }
+          onError: "#error",
+        },
       },
       dream: prompt<UpsertIdentityContext, any>({
         fieldName: "dream",
@@ -396,8 +410,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 avatarUrl: context.data.avatarUrl,
                 avatarCid: context.data.avatarCid,
                 avatarMimeType: context.data.avatarMimeType,
-                cityGeonameid: context.data.cityGeonameid
-              }
+                cityGeonameid: context.data.cityGeonameid,
+              },
             });
             context.data.city = result.data.upsertProfile.city;
             return result.data.upsertProfile;

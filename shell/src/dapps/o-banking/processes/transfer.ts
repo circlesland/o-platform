@@ -20,7 +20,7 @@ import { BN } from "ethereumjs-util";
 import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
-import {Profile} from "../data/api/types";
+import { Profile } from "../data/api/types";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -121,7 +121,7 @@ const processDefinition = (processId: string) =>
         component: DropdownSelectEditor,
         params: {
           label: strings.labelRecipientAddress,
-          
+
           asyncChoices: async (searchText?: string) => {
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();
@@ -146,14 +146,19 @@ const processDefinition = (processId: string) =>
 
             return result.data.search && result.data.search.length > 0
               ? result.data.search
-                    .filter(o => o.circlesAddress)
-                    .map((o) => {
-                      return <Choice>{
-                        value: RpcGateway.get().utils.toChecksumAddress(o.circlesAddress),
-                        label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
-                        avatarUrl: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.circlesAddress),
-                      };
-                    })
+                  .filter((o) => o.circlesAddress)
+                  .map((o) => {
+                    return <Choice>{
+                      value: RpcGateway.get().utils.toChecksumAddress(
+                        o.circlesAddress
+                      ),
+                      label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
+                      avatarUrl: o.avatarUrl
+                        ? o.avatarUrl
+                        : AvataarGenerator.generate(o.circlesAddress),
+                    };
+                  })
+                  .reverse()
                   .filter((o) => o.value)
               : [];
           },
@@ -255,9 +260,20 @@ const processDefinition = (processId: string) =>
           },
           {
             actions: (context) => {
-              const formattedAmount = parseFloat(context.data.tokens.amount).toFixed(2);
-              const formattedMax = parseFloat(RpcGateway.get().utils.fromWei(context.data.maxFlows[context.data.tokens.currency.toLowerCase()].toString(), "ether")).toFixed(2);
-              context.messages["tokens"] = `The chosen amount (${formattedAmount}) exceeds the maximum transferable amount of (${formattedMax}).`;
+              const formattedAmount = parseFloat(
+                context.data.tokens.amount
+              ).toFixed(2);
+              const formattedMax = parseFloat(
+                RpcGateway.get().utils.fromWei(
+                  context.data.maxFlows[
+                    context.data.tokens.currency.toLowerCase()
+                  ].toString(),
+                  "ether"
+                )
+              ).toFixed(2);
+              context.messages[
+                "tokens"
+              ] = `The chosen amount (${formattedAmount}) exceeds the maximum transferable amount of (${formattedMax}).`;
             },
             target: "#tokens",
           },
@@ -314,12 +330,12 @@ const processDefinition = (processId: string) =>
 
             if (context.data.tokens?.currency?.toLowerCase() != "xdai") {
               toAvatarUrl = toAvatarUrl
-                  ? toAvatarUrl
-                  : AvataarGenerator.generate(context.data.recipientAddress);
+                ? toAvatarUrl
+                : AvataarGenerator.generate(context.data.recipientAddress);
             } else {
               toAvatarUrl = toAvatarUrl
-                  ? toAvatarUrl
-                  : AvataarGenerator.default();
+                ? toAvatarUrl
+                : AvataarGenerator.default();
             }
 
             if (!context.data.tokens) {
@@ -441,11 +457,11 @@ const processDefinition = (processId: string) =>
         params: {
           html: () => `<p>Transfer successful</p>`,
           submitButtonText: "Close",
-          hideNav: true
+          hideNav: true,
         },
         navigation: {
-          next: "#success"
-        }
+          next: "#success",
+        },
       }),
       success: {
         id: "success",
