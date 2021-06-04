@@ -6,7 +6,7 @@
   export let process: Process;
   export let prompt: Prompt;
   let componentContext: {
-    fieldName: string;
+    field: string;
     data: { [x: string]: any };
     dirtyFlags: { [x: string]: any };
     editorDirtyFlags: { [x: string]: any };
@@ -25,7 +25,7 @@
       //console.log("Prompt.svelte got a 'prompt':", prompt);
       componentContext = {
         process: process,
-        fieldName: prompt.fieldName,
+        field: prompt.field,
         data: prompt.data,
         dirtyFlags: prompt.dirtyFlags,
         messages: prompt.messages,

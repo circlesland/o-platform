@@ -41,9 +41,19 @@ query offers (
         }
         geonameid
         pricePerUnit
-        unit
+        unitTag {
+            id
+            type
+            value
+        }
+        unitTagId
         maxUnits
-        deliveryTerms
+        deliveryTermsTag {
+            id
+            type
+            value
+        }
+        deliveryTermsTagId
         city {
             geonameid
             country

@@ -80,7 +80,7 @@ const processDefinition = (processId: string) =>
         ],
       },
       loginEmail: prompt<AuthenticateContext, any>({
-        fieldName: "loginEmail",
+        field: "loginEmail",
         component: EmailAddressEditor,
         params: {
           label: strings.labelLoginEmail,
@@ -172,7 +172,7 @@ const processDefinition = (processId: string) =>
       },
       // Ask the user to accept TOS
       acceptTos: prompt<AuthenticateContext, any>({
-        fieldName: "acceptTos",
+        field: "acceptTos",
 
         component: HtmlViewer,
         params: {
@@ -260,7 +260,7 @@ const processDefinition = (processId: string) =>
       },
       // Wait for the user to enter the code he received in the login-email
       errorSendingAuthMail: prompt<AuthenticateContext, any>({
-        fieldName: "errorSendingAuthMail",
+        field: "errorSendingAuthMail",
         entry: (context) => {
           context.data.errorSendingAuthMail = `
             <b>Oops.</b><br/>
@@ -289,7 +289,7 @@ const processDefinition = (processId: string) =>
       }),
       // Wait for the user to enter the code he received in the login-email
       code: prompt<AuthenticateContext, any>({
-        fieldName: "code",
+        field: "code",
         component: TextEditor,
         isSensitive: true,
         params: (context) => {
@@ -340,7 +340,7 @@ const processDefinition = (processId: string) =>
       },
       // Wait for the user to enter the code he received in the login-email
       errorExchangingCode: prompt<AuthenticateContext, any>({
-        fieldName: "errorExchangingCode",
+        field: "errorExchangingCode",
         entry: (context) => {
           context.data.errorExchangingCode = `
             <b>Oops.</b><br/>

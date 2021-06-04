@@ -7,7 +7,7 @@ import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type PromptSpec<TContext> = {
   passDataByReference?: boolean; // If the value of 'context.data' should be passed by reference (default: no)
-  fieldName?: string;
+  field?: string;
   component: any;
   params?: { [x: string]: any }|((context:TContext)=>{[x: string]: any});
   /**
@@ -43,7 +43,7 @@ export function show<TContext extends ProcessContext<any>, TEvent extends Platfo
       : concreteSpec.navigation.canSkip(context, event);
     return <Prompt>{
       type: "process.prompt",
-      fieldName: concreteSpec.fieldName,
+      field: concreteSpec.field,
       component: concreteSpec.component,
       data: concreteSpec.passDataByReference
         ? context.data

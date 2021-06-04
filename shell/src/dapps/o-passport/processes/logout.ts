@@ -36,7 +36,7 @@ const processDefinition = (processId: string) =>
       ...fatalError<LogoutContext, any>("error"),
 
       checkSeedPhrase: prompt<LogoutContext, any>({
-        fieldName: "checkSeedPhrase",
+        field: "checkSeedPhrase",
         component: TextareaEditor,
         params: {
           label: strings.labelCheckSeedPhrase,

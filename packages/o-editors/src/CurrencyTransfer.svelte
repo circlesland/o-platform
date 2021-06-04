@@ -38,12 +38,12 @@
   function sendAnswer(amount: string) {
     const event = new Continue();
     event.data = {};
-    event.data[context.fieldName] = {
+    event.data[context.field] = {
       amount: amount,
       currency: selected,
     };
 
-    context.data[context.fieldName] = selectedCurrency.label;
+    context.data[context.field] = selectedCurrency.label;
 
     context.process.sendAnswer(event);
   }
@@ -63,7 +63,7 @@
 <p class="label-text">
   {context.params.label}
 </p>
-{#if context.messages[context.fieldName]}
+{#if context.messages[context.field]}
   <div class="mt-2 mb-2 alert alert-error">
     <div class="flex-1">
       <svg
@@ -79,7 +79,7 @@
           d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
         />
       </svg>
-      <label for="input">{context.messages[context.fieldName]} </label>
+      <label for="input">{context.messages[context.field]} </label>
     </div>
   </div>
 {/if}
@@ -113,7 +113,7 @@
       placeholder="0.00 (Max: {maxAmount})"
       autocomplete="off"
       bind:value={amount}
-      on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
+      on:change={() => (context.editorDirtyFlags[context.field] = true)}
       bind:this={inputField}
       on:keydown={onkeydown}
     />
@@ -130,7 +130,7 @@
         containerClasses="w-24 min-w-full rounded-md"
         {Item}
         on:select={handleSelect}
-        on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
+        on:change={() => (context.editorDirtyFlags[context.field] = true)}
       />
     </div>
   </div>

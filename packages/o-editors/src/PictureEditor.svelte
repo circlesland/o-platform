@@ -57,7 +57,7 @@
 
     reader.addEventListener("loadend", (e) => {
       uploadFile = Buffer.from(<ArrayBuffer>reader.result);
-      context.editorDirtyFlags[context.fieldName] = true;
+      context.editorDirtyFlags[context.field] = true;
     });
 
     reader.readAsArrayBuffer(file);
@@ -65,7 +65,7 @@
   };
 
   function clearImage() {
-    context.editorDirtyFlags[context.fieldName] = true;
+    context.editorDirtyFlags[context.field] = true;
     imageStore.value = null;
     uploadFile = null;
     image = null;
@@ -137,7 +137,7 @@
   function submit() {
     const answer = new Continue();
     answer.data = context.data;
-    answer.data[context.fieldName] = {
+    answer.data[context.field] = {
       mimeType: "image/jpeg",
       bytes: imageStore.value,
     };
@@ -145,7 +145,7 @@
   }
 </script>
 
-<label class="label block text-center" for={context.fieldName}>
+<label class="label block text-center" for={context.field}>
   <span class="label-text">{@html context.params.label}</span>
 </label>
 <div class="w-full h-full">

@@ -12,10 +12,10 @@
     _context = context;
   }
 
-  context.data[context.fieldName] =
-    context.data[context.fieldName] === undefined
+  context.data[context.field] =
+    context.data[context.field] === undefined
       ? false
-      : context.data[context.fieldName];
+      : context.data[context.field];
 
   const submitHandler = () => {
     const answer = new Continue();
@@ -28,7 +28,7 @@
 
 <div class="mt-4 bordered">
   <div class="form-control">
-    {#if context.messages[context.fieldName]}
+    {#if context.messages[context.field]}
       <div class="alert alert-error mb-2 mt-2">
         <div class="flex-1">
           <svg
@@ -44,11 +44,11 @@
               d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
             />
           </svg>
-          <label for="input">{context.messages[context.fieldName]} </label>
+          <label for="input">{context.messages[context.field]} </label>
         </div>
       </div>
     {/if}
-    <label class="cursor-pointer label" for={context.fieldName}>
+    <label class="cursor-pointer label" for={context.field}>
       <span class="label-text inline">
         {context.params.label}
         {#if context.params.link}
@@ -65,16 +65,16 @@
       <div class="inline-block">
         <input
           name="checkbox"
-          id={context.fieldName}
+          id={context.field}
           type="checkbox"
           class="checkbox checkbox-primary"
-          bind:checked={_context.data[context.fieldName]}
+          bind:checked={_context.data[context.field]}
           bind:this={inputField}
-          on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
+          on:change={() => (context.editorDirtyFlags[context.field] = true)}
         />
         <span
           class="checkbox-mark bg-white"
-          class:input-error={context.messages[context.fieldName]}
+          class:input-error={context.messages[context.field]}
         />
       </div>
     </label>

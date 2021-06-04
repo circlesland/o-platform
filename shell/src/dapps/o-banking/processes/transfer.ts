@@ -117,7 +117,7 @@ const processDefinition = (processId: string) =>
         ],
       },
       recipientAddress: prompt<TransferContext, any>({
-        fieldName: "recipientAddress",
+        field: "recipientAddress",
         component: DropdownSelectEditor,
         params: {
           label: strings.labelRecipientAddress,
@@ -210,7 +210,7 @@ const processDefinition = (processId: string) =>
         },
       },
       tokens: prompt<TransferContext, any>({
-        fieldName: "tokens",
+        field: "tokens",
         component: CurrencyTransfer,
         params: {
           label: strings.tokensLabel,
@@ -280,7 +280,7 @@ const processDefinition = (processId: string) =>
         ],
       },
       message: prompt<TransferContext, any>({
-        fieldName: "message",
+        field: "message",
         component: TextareaEditor,
         params: {
           label: strings.messageLabel,
@@ -373,7 +373,7 @@ const processDefinition = (processId: string) =>
         },
       },
       acceptSummary: prompt<TransferContext, any>({
-        fieldName: "acceptSummary",
+        field: "acceptSummary",
         component: HtmlViewer,
         params: {
           label: strings.summaryLabel,
@@ -452,7 +452,7 @@ const processDefinition = (processId: string) =>
       },
       showSuccess: prompt({
         id: "showSuccess",
-        fieldName: "__",
+        field: "__",
         component: HtmlViewer,
         params: {
           html: () => `<p>Transfer successful</p>`,

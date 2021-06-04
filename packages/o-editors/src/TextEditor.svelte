@@ -14,7 +14,7 @@
   let inputField: any;
   let fieldId = context.isSensitive
     ? Math.random().toString().replace(".", "")
-    : context.fieldName;
+    : context.field;
 
   const submitHandler = () => {
     const answer = new Continue();
@@ -36,7 +36,7 @@
     <span class="label-text">{@html context.params.label}</span>
   </label>
 
-  {#if context.messages[context.fieldName]}
+  {#if context.messages[context.field]}
     <div class="mt-2 mb-2 alert alert-error">
       <div class="flex-1">
         <svg
@@ -52,7 +52,7 @@
             d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
           />
         </svg>
-        <label for="input">{context.messages[context.fieldName]} </label>
+        <label for="input">{context.messages[context.field]} </label>
       </div>
     </div>
   {/if}
@@ -65,10 +65,10 @@
     type="text"
     placeholder={context.params.placeholder}
     class="input input-lg input-bordered"
-    class:input-error={context.messages[context.fieldName]}
-    bind:value={_context.data[context.fieldName]}
+    class:input-error={context.messages[context.field]}
+    bind:value={_context.data[context.field]}
     bind:this={inputField}
-    on:change={() => (context.editorDirtyFlags[context.fieldName] = true)}
+    on:change={() => (context.editorDirtyFlags[context.field] = true)}
   />
 </div>
 

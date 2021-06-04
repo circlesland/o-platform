@@ -71,7 +71,7 @@ const processDefinition = (processId: string) =>
       },
       backupSeedphrase: prompt<CreateSafeContext, any>({
         id: "backupSeedphrase",
-        fieldName: "seedPhrase",
+        field: "seedPhrase",
         component: TextViewer,
         params: {
           label: strings.labelExportSeedphrase,
@@ -88,7 +88,7 @@ const processDefinition = (processId: string) =>
       }),
       askForBackup: prompt<CreateSafeContext, any>({
         id: "askForBackup",
-        fieldName: "checkSeedPhrase",
+        field: "checkSeedPhrase",
         component: TextareaEditor,
         params: {
           label: strings.labelCheckSeedphrase,

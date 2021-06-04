@@ -8,7 +8,7 @@
 
   let initialData:any;
   onMount(() => {
-    initialData = context.data[context.fieldName];
+    initialData = context.data[context.field];
   });
 
   function submit() {
@@ -24,16 +24,16 @@
   }
 </script>
 
-<label class="label" for={context.fieldName}>
+<label class="label" for={context.field}>
   <span class="label-text">{@html context.params.label}</span>
 </label>
 <div class="flex flex-col w-full h-full">
   <button
     class="self-end text-primary"
     on:click={() => {
-      context.dirtyFlags[context.fieldName] = true;
-      context.editorDirtyFlags[context.fieldName] = true;
-      context.data[context.fieldName] = null;
+      context.dirtyFlags[context.field] = true;
+      context.editorDirtyFlags[context.field] = true;
+      context.data[context.field] = null;
       submit();
     }}>Clear</button
   >
@@ -43,7 +43,7 @@
         <img
           class="m-auto"
           id="cropCanvas"
-          src={context.data[context.fieldName]}
+          src={context.data[context.field]}
           height="300"
           alt="avatar"
         />

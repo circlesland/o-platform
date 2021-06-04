@@ -18,7 +18,7 @@
         isEditable = allowEdit && $me && offer && $me.id == offer.createdByProfileId;
     }
 
-    function edit(dirtyFlags: { [fieldName: string]: boolean }) {
+    function edit(dirtyFlags: { [field: string]: boolean }) {
         console.log("edit: dirtyFlags:", dirtyFlags);
 
         const requestEvent = new RunProcess<ShellProcessContext>(

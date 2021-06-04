@@ -21,7 +21,8 @@ import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { promptChoice } from "./identify/prompts/promptChoice";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import { Choice } from "@o-platform/o-editors/src/choiceSelectorContext";
+import {Choice} from "@o-platform/o-editors/src/choiceSelectorContext";
+import {promptPicture} from "@o-platform/o-process/dist/states/promptPicture";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -75,7 +76,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       ...fatalError<UpsertIdentityContext, any>("error"),
 
       firstName: prompt<UpsertIdentityContext, any>({
-        fieldName: "firstName",
+        field: "firstName",
         onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
@@ -89,7 +90,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
       }),
       lastName: prompt<UpsertIdentityContext, any>({
-        fieldName: "lastName",
+        field: "lastName",
         onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
@@ -105,7 +106,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       country: prompt<UpsertIdentityContext, any>({
         id: "country",
-        fieldName: "cityGeonameid",
+        field: "cityGeonameid",
         onlyWhenDirty: skipIfNotDirty,
         component: DropdownSelectEditor,
         params: {
@@ -183,7 +184,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
       },
       dream: prompt<UpsertIdentityContext, any>({
-        fieldName: "dream",
+        field: "dream",
         onlyWhenDirty: skipIfNotDirty,
         component: TextareaEditor,
         params: {
@@ -193,14 +194,31 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           maxLength: "150",
         },
         dataSchema: yup
-          .string()
-          .max(150, "The maximum amount of characters allowed is 150."),
+            .string()
+            .nullable()
+            .notRequired()
+            .max(150, "The maximum amount of characters allowed is 150."),
         navigation: {
-          next: "#checkPreviewAvatar",
+          next: "#avatarUrl",
           canSkip: () => true,
           previous: "#country",
         },
       }),
+      avatarUrl: promptPicture({
+        id: "avatarUrl",
+        field: "avatarUrl",
+        previewComponent: PicturePreview,
+        editorComponent: PictureEditor,
+        params: {
+        },
+        navigation: {
+          canSkip: () => true,
+          next: "#newsletter",
+          canGoBack: () => true,
+          previous: "#dream"
+        }
+      }),
+      /*
       checkPreviewAvatar: {
         id: "checkPreviewAvatar",
         always: [
@@ -214,7 +232,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         ],
       },
       previewAvatar: prompt<UpsertIdentityContext, any>({
-        fieldName: "avatarUrl",
+        id: "avatarUrl",
+        field: "avatarUrl",
         onlyWhenDirty: skipIfNotDirty,
         component: PicturePreview,
         params: {
@@ -231,7 +250,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "checkEditAvatar",
         always: [
           {
-            cond: (context) => context.dirtyFlags["avatarUrl"],
+            cond: (context) => !context.data.avatarUrl,
             actions: (context) => {
               delete context.dirtyFlags["avatarUrl"];
               context.dirtyFlags["avatar"] = true;
@@ -245,7 +264,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         ],
       },
       editAvatar: prompt<UpsertIdentityContext, any>({
-        fieldName: "avatar",
+        id:"avatar",
+        field: "avatar",
         onlyWhenDirty: skipIfNotDirty,
         component: PictureEditor,
         params: {
@@ -284,7 +304,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Uploading your avatar ..`,
+            message: `Uploading your avatar ..`
           });
         },
         invoke: {
@@ -307,19 +327,14 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
               target: "#errorUploadingAvatar",
             },
             {
-              /*cond: (context) =>
-                  !!context.data.avatar && !!context.data.avatar.bytes,*/
               target: "#newsletter",
             },
-            /*{
-              target: "#generateAvataar",
-            },*/
           ],
           onError: "#errorUploadingAvatar",
         },
       },
       errorUploadingAvatar: prompt<UpsertIdentityContext, any>({
-        fieldName: "errorUploadingAvatar",
+        field: "errorUploadingAvatar",
         entry: (context) => {
           context.data.errorUploadingAvatar = `
             <b>Oops.</b><br/>
@@ -334,12 +349,13 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         isSensitive: true,
         params: {
           submitButtonText: "Try again",
-          html: (context) => context.data.errorUploadingAvatar,
+          html: (context) => context.data.errorUploadingAvatar
         },
         navigation: {
-          next: "#checkPreviewAvatar",
+          next: "#checkPreviewAvatar"
         },
       }),
+       */
       newsletter: promptChoice({
         id: "newsletter",
         entry: (context, event: any) => {
@@ -350,38 +366,35 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
         promptLabel: strings.labelNewsletter,
         onlyWhenDirty: skipIfNotDirty,
-        options: [
-          {
-            key: "create",
-            label: "No thanks",
-            target: "#dontSubscribeToNewsletter",
-          },
-          {
-            key: "connect",
-            label: "Yes please",
-            target: "#subscribeToNewsletter",
-          },
-        ],
+        options: [{
+          key: "create",
+          label: "No thanks",
+          target: "#dontSubscribeToNewsletter"
+        }, {
+          key: "connect",
+          label: "Yes please",
+          target: "#subscribeToNewsletter"
+        }],
         navigation: {
           canGoBack: () => true,
           canSkip: () => false,
           previous: "#avatarUrl",
-          skip: "#upsertIdentity",
-        },
+          skip: "#upsertIdentity"
+        }
       }),
       subscribeToNewsletter: {
         id: "subscribeToNewsletter",
         entry: (context, event) => {
           context.data.newsletter = true;
         },
-        always: "#upsertIdentity",
+        always: "#upsertIdentity"
       },
       dontSubscribeToNewsletter: {
         id: "dontSubscribeToNewsletter",
         entry: (context, event) => {
           context.data.newsletter = false;
         },
-        always: "#upsertIdentity",
+        always: "#upsertIdentity"
       },
       upsertIdentity: {
         id: "upsertIdentity",
