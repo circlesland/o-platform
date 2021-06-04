@@ -603,11 +603,11 @@
       position: "static",
       "z-index": 2,
       visibility: "hidden",
-      marginTop: "10px",
     });
 
     list = list;
     target = target;
+
     if (container) container.appendChild(target);
 
     list = new List({

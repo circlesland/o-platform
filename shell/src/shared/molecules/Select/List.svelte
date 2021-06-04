@@ -308,9 +308,15 @@
     text-transform: var(--groupTitleTextTransform, uppercase);
   }
 
+  /* .listContainer div {
+    margin-top: 10px;
+  }
+  .listContainer div.empty {
+    margin-top: 0;
+  } */
   .empty {
     text-align: var(--listEmptyTextAlign, center);
-    padding: var(--listEmptyPadding, 20px 0);
+    padding: var(--listEmptyPadding, 0 0);
     color: var(--listEmptyColor, #78848f);
   }
 
