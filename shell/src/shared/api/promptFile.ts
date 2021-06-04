@@ -16,7 +16,6 @@ const strings = {
 type UploadPictureSpec<TContext extends ProcessContext<any>> = {
   id?:string;
   field: PromptField<TContext>;
-  isOptional: boolean,
   skipIfNotDirty?: boolean,
   params?: {
     label: string
@@ -41,11 +40,17 @@ export function promptFile<
     TContext extends ProcessContext<any>,
     TEvent extends PlatformEvent
     >(spec: UploadPictureSpec<TContext>) {
+
+  // This variable will be used to back the 'file' value which
+  // usually would be on context.data.file but the
+  // PromptField's behaviour is overridden so that it uses
+  // this field instead (see 'editFile'.'field' for details).
   let file: {
     mimeType:string;
     fileName: string;
     bytes: Buffer;
   };
+
   spec.id = spec.id ? spec.id : Generate.randomHexString(4)
   const generatedId = Generate.randomHexString(4);
   const id = (x:string) => `${spec.id}/${generatedId}/${x}`;
@@ -80,7 +85,7 @@ export function promptFile<
           next: `#${id("checkEditFile")}`,
           canGoBack: () => !!spec.navigation.previous,
           previous: spec.navigation.previous,
-          canSkip: () => spec.isOptional,
+          canSkip: spec.navigation.canSkip,
           skip: spec.navigation.next
         },
       }),
@@ -109,6 +114,7 @@ export function promptFile<
         field: {
           name: "file",
           get: () => {
+            // TODO: The contents could be loaded from the 'url' but in the current flow its not necessary
             return file ?? {};
           },
           set: (o) => {
@@ -143,7 +149,7 @@ export function promptFile<
             target: `#${id("uploadFile")}`,
           },
           {
-            cond: () => spec.isOptional,
+            cond: spec.navigation.canSkip,
             target: spec.navigation.next,
           },
           {

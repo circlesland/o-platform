@@ -26,9 +26,7 @@ export type UpsertIdentityContextData = {
   cityGeonameid?: number;
   city?: City;
   avatarUrl?: string;
-  avatarCid?: string;
   avatarMimeType?: string;
-  errorUploadingAvatar?: string;
 };
 
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
@@ -185,14 +183,14 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       avatarUrl: promptFile({
         id: "avatarUrl",
         field: "avatarUrl",
-        isOptional: true,
         skipIfNotDirty: skipIfNotDirty,
         params: {
           label: strings.labelAvatar
         },
         navigation: {
           next: "#newsletter",
-          previous: "#dream"
+          previous: "#dream",
+          canSkip: () => true
         }
       }),
       newsletter: promptChoice({
@@ -208,11 +206,17 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         options: [{
           key: "create",
           label: "No thanks",
-          target: "#dontSubscribeToNewsletter"
+          target: "#upsertIdentity",
+          action: (context, event) => {
+            context.data.newsletter = false;
+          }
         }, {
           key: "connect",
           label: "Yes please",
-          target: "#subscribeToNewsletter"
+          target: "#upsertIdentity",
+          action: (context, event) => {
+            context.data.newsletter = true;
+          }
         }],
         navigation: {
           canGoBack: () => true,
@@ -221,20 +225,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           skip: "#upsertIdentity"
         }
       }),
-      subscribeToNewsletter: {
-        id: "subscribeToNewsletter",
-        entry: (context, event) => {
-          context.data.newsletter = true;
-        },
-        always: "#upsertIdentity"
-      },
-      dontSubscribeToNewsletter: {
-        id: "dontSubscribeToNewsletter",
-        entry: (context, event) => {
-          context.data.newsletter = false;
-        },
-        always: "#upsertIdentity"
-      },
       upsertIdentity: {
         id: "upsertIdentity",
         invoke: {
@@ -258,7 +248,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 newsletter: context.data.newsletter ?? false,
                 country: context.data.country,
                 avatarUrl: context.data.avatarUrl,
-                avatarCid: context.data.avatarCid,
                 avatarMimeType: context.data.avatarMimeType,
                 cityGeonameid: context.data.cityGeonameid
               }

@@ -7,7 +7,12 @@ export type PromptChoiceSpec<TContext extends ProcessContext<any>, TEvent extend
   id: string
   promptLabel: string
   entry?: (context:TContext, event:TEvent) => void
-  options:{key:string, label:string, target:string}[]
+  options: {
+    key:string,
+    label:string,
+    action?: (context:TContext, event:TEvent) => void,
+    target:string
+  }[]
   onlyWhenDirty?:boolean
   navigation?: {
     // If you want to allow the user to go one step back then specify here where he came from
@@ -53,10 +58,12 @@ export function promptChoice<
       checkChoiceAndContinue: {
         id: "checkChoiceAndContinue",
         always: spec.options.map(c => {
-          return {
+          // TODO: fix <any>
+          return <any>{
             cond: (context) => {
               return context.data[spec.id]?.key == c.key
             },
+            actions: c.action,
             target: c.target,
           }
         }).concat({
