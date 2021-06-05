@@ -42,8 +42,7 @@ const processDefinition = () => {
             const newChildContext:ProcessContext<any> = {
               data:{},
               messages:{},
-              dirtyFlags:{},
-              environment:{}
+              dirtyFlags:{}
             };
             if (context.childContext) {
               Object.keys(context.childContext).forEach(key => {

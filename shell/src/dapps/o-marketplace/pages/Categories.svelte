@@ -1,6 +1,6 @@
 <script lang="ts">
     import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
-    import {OfferCategoriesDocument} from "../data/api/types";
+    import {OfferCategoriesDocument, TagsDocument} from "../data/api/types";
     import {onMount} from "svelte";
     import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
     import {Subscription} from "rxjs";
@@ -18,9 +18,9 @@
         isLoading = true;
         const apiClient = await window.o.apiClient.client.subscribeToResult();
         const result = await apiClient.query({
-            query: OfferCategoriesDocument,
+            query: TagsDocument,
             variables: {
-                like: ""
+                typeId_in: ["o-marketplace:offer:category:1"]
             },
         });
         if (result.errors && result.errors.length) {
@@ -28,7 +28,7 @@
             throw error;
         }
         isLoading = false;
-        categories = result.data.offerCategories;
+        categories = result.data.tags;
     }
 
     onMount(async () => {

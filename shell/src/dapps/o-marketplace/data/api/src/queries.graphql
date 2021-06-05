@@ -36,21 +36,21 @@ query offers (
         categoryTagId
         categoryTag {
             id
-            type
+            typeId
             value
         }
         geonameid
         pricePerUnit
         unitTag {
             id
-            type
+            typeId
             value
         }
         unitTagId
         maxUnits
         deliveryTermsTag {
             id
-            type
+            typeId
             value
         }
         deliveryTermsTagId
@@ -65,11 +65,20 @@ query offers (
         }
     }
 }
-
-query offerCategories($like:String!) {
-    offerCategories(like: $like) {
+query tags($typeId_in:[String!]! $value_like:String) {
+    tags(query: {
+        typeId_in: $typeId_in
+        value_like: $value_like
+    }) {
         id
-        type
+        typeId
+        value
+    }
+}
+query tagById($id:Int!) {
+    tagById(id:$id) {
+        id
+        typeId
         value
     }
 }

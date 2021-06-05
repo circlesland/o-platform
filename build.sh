@@ -32,6 +32,14 @@ cd o-circles || exit
 npx --no-install tsc || exit
 cd ../.. || exit
 
+echo "Generating graphql types for shared/api/data"
+echo "* api"
+cd shell/src/shared/api/data
+npx graphql-codegen
+echo "* api"
+npx graphql-codegen
+
+cd ../../../../..
 echo "Generating graphql types for dapps/o-passport"
 echo "* api"
 cd shell/src/dapps/o-passport/data/api

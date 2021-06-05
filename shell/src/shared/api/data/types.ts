@@ -455,130 +455,81 @@ export type Version = {
   revision: Scalars['Int'];
 };
 
-export type ExchangeTokenMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ExchangeTokenMutation = (
-  { __typename?: 'Mutation' }
-  & { exchangeToken: (
-    { __typename?: 'ExchangeTokenResponse' }
-    & Pick<ExchangeTokenResponse, 'success' | 'errorMessage'>
-  ) }
-);
-
-export type AuthenticateAtMutationVariables = Exact<{
-  appId: Scalars['String'];
+export type ProfilesByNameQueryVariables = Exact<{
+  searchString: Scalars['String'];
 }>;
 
 
-export type AuthenticateAtMutation = (
-  { __typename?: 'Mutation' }
-  & { authenticateAt: (
-    { __typename?: 'DelegateAuthInit' }
-    & Pick<DelegateAuthInit, 'appId' | 'success' | 'errorMessage' | 'challengeType' | 'delegateAuthCode' | 'validTo'>
-  ) }
-);
-
-export type ConsumeDepositedChallengeMutationVariables = Exact<{
-  delegateAuthCode: Scalars['String'];
-}>;
-
-
-export type ConsumeDepositedChallengeMutation = (
-  { __typename?: 'Mutation' }
-  & { consumeDepositedChallenge: (
-    { __typename?: 'ConsumeDepositedChallengeResponse' }
-    & Pick<ConsumeDepositedChallengeResponse, 'success' | 'challenge'>
-  ) }
-);
-
-export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LogoutMutation = (
-  { __typename?: 'Mutation' }
-  & { logout: (
-    { __typename?: 'LogoutResponse' }
-    & Pick<LogoutResponse, 'success'>
-  ) }
-);
-
-export type UpsertProfileMutationVariables = Exact<{
-  id?: Maybe<Scalars['Int']>;
-  firstName: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  dream?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  avatarUrl?: Maybe<Scalars['String']>;
-  avatarCid?: Maybe<Scalars['String']>;
-  avatarMimeType?: Maybe<Scalars['String']>;
-  circlesAddress?: Maybe<Scalars['String']>;
-  circlesSafeOwner?: Maybe<Scalars['String']>;
-  newsletter?: Maybe<Scalars['Boolean']>;
-  cityGeonameid?: Maybe<Scalars['Int']>;
-}>;
-
-
-export type UpsertProfileMutation = (
-  { __typename?: 'Mutation' }
-  & { upsertProfile: (
+export type ProfilesByNameQuery = (
+  { __typename?: 'Query' }
+  & { search: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'circlesAddress' | 'circlesSafeOwner' | 'newsletter' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName' | 'dream' | 'country' | 'cityGeonameid'>
     & { city?: Maybe<(
       { __typename?: 'City' }
-      & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
-    )> }
-  ) }
-);
-
-export type SessionInfoQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SessionInfoQuery = (
-  { __typename?: 'Query' }
-  & { sessionInfo: (
-    { __typename?: 'SessionInfo' }
-    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId'>
-  ) }
-);
-
-export type WhoamiQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type WhoamiQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'whoami'>
-);
-
-export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MyProfileQuery = (
-  { __typename?: 'Query' }
-  & { profiles: Array<(
-    { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'cityGeonameid'>
-    & { city?: Maybe<(
-      { __typename?: 'City' }
-      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+      & Pick<City, 'geonameid' | 'country' | 'name'>
     )> }
   )> }
 );
 
-export type ProfilesQueryVariables = Exact<{
-  id: Array<Scalars['Int']> | Scalars['Int'];
+export type ProfileByIdQueryVariables = Exact<{
+  id: Scalars['Int'];
 }>;
 
 
-export type ProfilesQuery = (
+export type ProfileByIdQuery = (
   { __typename?: 'Query' }
   & { profiles: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName' | 'dream' | 'country' | 'cityGeonameid'>
     & { city?: Maybe<(
       { __typename?: 'City' }
-      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+      & Pick<City, 'geonameid' | 'country' | 'name'>
     )> }
+  )> }
+);
+
+export type ProfileBySafeAddressQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type ProfileBySafeAddressQuery = (
+  { __typename?: 'Query' }
+  & { profiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName' | 'dream' | 'country' | 'cityGeonameid'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'country' | 'name'>
+    )> }
+  )> }
+);
+
+export type TagsQueryVariables = Exact<{
+  typeId_in: Array<Scalars['String']> | Scalars['String'];
+  value_like?: Maybe<Scalars['String']>;
+}>;
+
+
+export type TagsQuery = (
+  { __typename?: 'Query' }
+  & { tags: Array<(
+    { __typename?: 'Tag' }
+    & Pick<Tag, 'id' | 'typeId' | 'value'>
+  )> }
+);
+
+export type TagByIdQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type TagByIdQuery = (
+  { __typename?: 'Query' }
+  & { tagById?: Maybe<(
+    { __typename?: 'Tag' }
+    & Pick<Tag, 'id' | 'typeId' | 'value'>
   )> }
 );
 
@@ -610,132 +561,81 @@ export type CitiesByIdQuery = (
 );
 
 
-export const ExchangeTokenDocument = gql`
-    mutation exchangeToken {
-  exchangeToken {
-    success
-    errorMessage
-  }
-}
-    `;
-export const AuthenticateAtDocument = gql`
-    mutation authenticateAt($appId: String!) {
-  authenticateAt(appId: $appId) {
-    appId
-    success
-    errorMessage
-    challengeType
-    delegateAuthCode
-    validTo
-  }
-}
-    `;
-export const ConsumeDepositedChallengeDocument = gql`
-    mutation consumeDepositedChallenge($delegateAuthCode: String!) {
-  consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
-    success
-    challenge
-  }
-}
-    `;
-export const LogoutDocument = gql`
-    mutation logout {
-  logout {
-    success
-  }
-}
-    `;
-export const UpsertProfileDocument = gql`
-    mutation upsertProfile($id: Int, $firstName: String!, $lastName: String, $dream: String, $country: String, $avatarUrl: String, $avatarCid: String, $avatarMimeType: String, $circlesAddress: String, $circlesSafeOwner: String, $newsletter: Boolean, $cityGeonameid: Int) {
-  upsertProfile(
-    data: {id: $id, firstName: $firstName, lastName: $lastName, dream: $dream, country: $country, avatarUrl: $avatarUrl, avatarCid: $avatarCid, avatarMimeType: $avatarMimeType, circlesAddress: $circlesAddress, circlesSafeOwner: $circlesSafeOwner, newsletter: $newsletter, cityGeonameid: $cityGeonameid}
-  ) {
+export const ProfilesByNameDocument = gql`
+    query profilesByName($searchString: String!) {
+  search(query: {searchString: $searchString}) {
     id
+    circlesSafeOwner
+    circlesAddress
+    avatarUrl
     firstName
     lastName
     dream
     country
-    avatarUrl
-    avatarCid
-    avatarMimeType
-    circlesAddress
-    circlesSafeOwner
-    newsletter
     cityGeonameid
     city {
       geonameid
       country
       name
-      latitude
-      longitude
-      population
-      feature_code
     }
   }
 }
     `;
-export const SessionInfoDocument = gql`
-    query sessionInfo {
-  sessionInfo {
-    isLoggedOn
-    hasProfile
-    profileId
-  }
-}
-    `;
-export const WhoamiDocument = gql`
-    query whoami {
-  whoami
-}
-    `;
-export const MyProfileDocument = gql`
-    query myProfile {
-  profiles(query: {}) {
+export const ProfileByIdDocument = gql`
+    query profileById($id: Int!) {
+  profiles(query: {id: [$id]}) {
     id
-    circlesAddress
     circlesSafeOwner
+    circlesAddress
+    avatarUrl
     firstName
     lastName
     dream
     country
-    avatarUrl
-    avatarCid
-    avatarMimeType
-    newsletter
     cityGeonameid
     city {
       geonameid
-      name
       country
-      latitude
-      longitude
-      population
+      name
     }
   }
 }
     `;
-export const ProfilesDocument = gql`
-    query profiles($id: [Int!]!) {
-  profiles(query: {id: $id}) {
+export const ProfileBySafeAddressDocument = gql`
+    query profileBySafeAddress($safeAddress: String!) {
+  profiles(query: {circlesAddress: [$safeAddress]}) {
     id
-    circlesAddress
     circlesSafeOwner
+    circlesAddress
+    avatarUrl
     firstName
     lastName
     dream
     country
-    avatarUrl
-    avatarCid
-    avatarMimeType
     cityGeonameid
     city {
       geonameid
-      name
       country
-      latitude
-      longitude
-      population
+      name
     }
+  }
+}
+    `;
+export const TagsDocument = gql`
+    query tags($typeId_in: [String!]!, $value_like: String) {
+  tags(query: {typeId_in: $typeId_in, value_like: $value_like}) {
+    id
+    typeId
+    value
+  }
+}
+    `;
+export const TagByIdDocument = gql`
+    query tagById($id: Int!) {
+  tagById(id: $id) {
+    id
+    typeId
+    value
   }
 }
     `;
@@ -772,32 +672,20 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    exchangeToken(variables?: ExchangeTokenMutationVariables): Promise<ExchangeTokenMutation> {
-      return withWrapper(() => client.request<ExchangeTokenMutation>(print(ExchangeTokenDocument), variables));
+    profilesByName(variables: ProfilesByNameQueryVariables): Promise<ProfilesByNameQuery> {
+      return withWrapper(() => client.request<ProfilesByNameQuery>(print(ProfilesByNameDocument), variables));
     },
-    authenticateAt(variables: AuthenticateAtMutationVariables): Promise<AuthenticateAtMutation> {
-      return withWrapper(() => client.request<AuthenticateAtMutation>(print(AuthenticateAtDocument), variables));
+    profileById(variables: ProfileByIdQueryVariables): Promise<ProfileByIdQuery> {
+      return withWrapper(() => client.request<ProfileByIdQuery>(print(ProfileByIdDocument), variables));
     },
-    consumeDepositedChallenge(variables: ConsumeDepositedChallengeMutationVariables): Promise<ConsumeDepositedChallengeMutation> {
-      return withWrapper(() => client.request<ConsumeDepositedChallengeMutation>(print(ConsumeDepositedChallengeDocument), variables));
+    profileBySafeAddress(variables: ProfileBySafeAddressQueryVariables): Promise<ProfileBySafeAddressQuery> {
+      return withWrapper(() => client.request<ProfileBySafeAddressQuery>(print(ProfileBySafeAddressDocument), variables));
     },
-    logout(variables?: LogoutMutationVariables): Promise<LogoutMutation> {
-      return withWrapper(() => client.request<LogoutMutation>(print(LogoutDocument), variables));
+    tags(variables: TagsQueryVariables): Promise<TagsQuery> {
+      return withWrapper(() => client.request<TagsQuery>(print(TagsDocument), variables));
     },
-    upsertProfile(variables: UpsertProfileMutationVariables): Promise<UpsertProfileMutation> {
-      return withWrapper(() => client.request<UpsertProfileMutation>(print(UpsertProfileDocument), variables));
-    },
-    sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
-      return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));
-    },
-    whoami(variables?: WhoamiQueryVariables): Promise<WhoamiQuery> {
-      return withWrapper(() => client.request<WhoamiQuery>(print(WhoamiDocument), variables));
-    },
-    myProfile(variables?: MyProfileQueryVariables): Promise<MyProfileQuery> {
-      return withWrapper(() => client.request<MyProfileQuery>(print(MyProfileDocument), variables));
-    },
-    profiles(variables: ProfilesQueryVariables): Promise<ProfilesQuery> {
-      return withWrapper(() => client.request<ProfilesQuery>(print(ProfilesDocument), variables));
+    tagById(variables: TagByIdQueryVariables): Promise<TagByIdQuery> {
+      return withWrapper(() => client.request<TagByIdQuery>(print(TagByIdDocument), variables));
     },
     citiesByName(variables: CitiesByNameQueryVariables): Promise<CitiesByNameQuery> {
       return withWrapper(() => client.request<CitiesByNameQuery>(print(CitiesByNameDocument), variables));

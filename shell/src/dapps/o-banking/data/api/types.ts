@@ -32,6 +32,12 @@ export type City = {
   population: Scalars['Int'];
 };
 
+export type CityStats = {
+  __typename?: 'CityStats';
+  city: City;
+  rank: Scalars['Int'];
+};
+
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
@@ -83,7 +89,7 @@ export type IndexedTransfer = {
   __typename?: 'IndexedTransfer';
   blockNo: Scalars['Int'];
   from: Scalars['String'];
-  tags: Array<Tag>;
+  tags?: Maybe<Array<Tag>>;
   to: Scalars['String'];
   transactionHash: Scalars['String'];
   value: Scalars['String'];
@@ -255,11 +261,13 @@ export enum PurchaseStatus {
 export type Query = {
   __typename?: 'Query';
   cities: Array<City>;
-  offerCategories: Array<Tag>;
   offers: Array<Offer>;
   profiles: Array<Profile>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
+  stats?: Maybe<Stats>;
+  tagById?: Maybe<Tag>;
+  tags: Array<Tag>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
 };
@@ -267,11 +275,6 @@ export type Query = {
 
 export type QueryCitiesArgs = {
   query: QueryCitiesInput;
-};
-
-
-export type QueryOfferCategoriesArgs = {
-  like?: Maybe<Scalars['String']>;
 };
 
 
@@ -287,6 +290,16 @@ export type QueryProfilesArgs = {
 
 export type QuerySearchArgs = {
   query: SearchInput;
+};
+
+
+export type QueryTagByIdArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QueryTagsArgs = {
+  query: QueryTagsInput;
 };
 
 export type QueryCitiesByGeonameIdInput = {
@@ -310,7 +323,7 @@ export type QueryIndexedTransferInput = {
 };
 
 export type QueryIndexedTransferTagsInput = {
-  type?: Maybe<Scalars['String']>;
+  typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
 };
 
@@ -332,6 +345,11 @@ export type QueryProfileInput = {
 
 export type QueryPurchaseInput = {
   purchasedByProfileId: Scalars['String'];
+};
+
+export type QueryTagsInput = {
+  typeId_in: Array<Scalars['String']>;
+  value_like?: Maybe<Scalars['String']>;
 };
 
 export type QueryUniqueProfileInput = {
@@ -365,15 +383,25 @@ export type SessionInfo = {
   profileId?: Maybe<Scalars['Int']>;
 };
 
+export type Stats = {
+  __typename?: 'Stats';
+  citites: Array<CityStats>;
+  cityRank?: Maybe<Scalars['Int']>;
+  currentGoal: Scalars['Int'];
+  inviteRank: Scalars['Int'];
+  nextGoalAt: Scalars['Int'];
+  totalCitizens: Scalars['Int'];
+};
+
 export type Tag = {
   __typename?: 'Tag';
   id: Scalars['Int'];
-  type: Scalars['String'];
+  typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
 };
 
 export type TagInput = {
-  type: Scalars['String'];
+  typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
 };
 
@@ -396,8 +424,8 @@ export type UpsertOfferInput = {
   geonameid: Scalars['Int'];
   id?: Maybe<Scalars['Int']>;
   maxUnits?: Maybe<Scalars['Int']>;
-  pictureMimeType: Scalars['String'];
-  pictureUrl: Scalars['String'];
+  pictureMimeType?: Maybe<Scalars['String']>;
+  pictureUrl?: Maybe<Scalars['String']>;
   pricePerUnit: Scalars['String'];
   title: Scalars['String'];
   unitTagId: Scalars['Int'];

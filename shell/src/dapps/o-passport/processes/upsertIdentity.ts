@@ -5,14 +5,13 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
-import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {CitiesByIdDocument, CitiesByNameDocument, City, UpsertProfileDocument} from "../data/api/types";
+import {City, UpsertProfileDocument} from "../data/api/types";
 import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { promptChoice } from "./identify/prompts/promptChoice";
-import {Choice} from "@o-platform/o-editors/src/choiceSelectorContext";
 import {promptFile} from "../../../shared/api/promptFile";
+import {promptCity} from "../../../shared/api/promptCity";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -88,77 +87,21 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           canSkip: () => true,
         },
       }),
-      country: prompt<UpsertIdentityContext, any>({
+      country: promptCity<UpsertIdentityContext, any>({
         id: "country",
         field: "cityGeonameid",
         onlyWhenDirty: skipIfNotDirty,
-        component: DropdownSelectEditor,
         params: {
           label: strings.labelCountry,
           placeholder: strings.placeholderCountry,
-          submitButtonText: "Submit vote",
-
-          asyncChoices: async (searchText?: string) => {
-            const n = <any>navigator;
-            const lang = n.language || n.userLanguage;
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
-            const result = await apiClient.query({
-              query: CitiesByNameDocument,
-              variables: {
-                name: (searchText ?? "" ) + "%",
-                languageCode: lang.substr(0, 2)
-              },
-            });
-
-            const items =
-              result.data.cities && result.data.cities.length > 0
-                ? result.data.cities
-                    .map((o) => {
-                      return <Choice>{
-                        label: `${o.name} (${o.country})`,
-                        value: o.geonameid,
-                      };
-                    })
-                    .reverse()
-                : [];
-
-            return items;
-          },
-          optionIdentifier: "value",
-          getOptionLabel: (option) => option.label,
-          getSelectionLabel: (option) => option.label,
+          submitButtonText: "Submit vote"
         },
         navigation: {
-          next: "#setCity",
+          next: "#dream",
           previous: "#lastName",
-          canSkip: () => true,
-          skip: "#dream"
-        },
-      }),
-      setCity: {
-        id: "setCity",
-        invoke: {
-          src: async (context) => {
-            if (!context.data.cityGeonameid) {
-              context.data.city = undefined;
-              return;
-            }
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
-            const result = await apiClient.query({
-              query: CitiesByIdDocument,
-              variables: {
-                ids: [context.data.cityGeonameid]
-              },
-            });
-            if (result.errors && result.errors.length) {
-              throw new Error(`An error occurred while fetching a city: ${JSON.stringify(result.errors)}`)
-            }
-            context.data.city =  result.data.city?.length ? result.data.city[0] : undefined;
-          },
-          onDone: "#dream",
-          onError: "#error"
+          canSkip: () => true
         }
-      },
+      }),
       dream: prompt<UpsertIdentityContext, any>({
         field: "dream",
         onlyWhenDirty: skipIfNotDirty,
@@ -183,7 +126,11 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       avatarUrl: promptFile({
         id: "avatarUrl",
         field: "avatarUrl",
-        skipIfNotDirty: skipIfNotDirty,
+        onlyWhenDirty: skipIfNotDirty,
+        uploaded:(context, event) => {
+          context.data.avatarUrl = event.data?.url;
+          context.data.avatarMimeType = event.data?.mimeType;
+        },
         params: {
           label: strings.labelAvatar
         },
@@ -195,23 +142,17 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       newsletter: promptChoice({
         id: "newsletter",
-        entry: (context, event: any) => {
-          if (event.data?.url) {
-            context.data.avatarUrl = event.data?.url;
-            context.data.avatarMimeType = event.data?.mimeType;
-          }
-        },
         promptLabel: strings.labelNewsletter,
         onlyWhenDirty: skipIfNotDirty,
         options: [{
-          key: "create",
+          key: "dontSubscribe",
           label: "No thanks",
           target: "#upsertIdentity",
           action: (context, event) => {
             context.data.newsletter = false;
           }
         }, {
-          key: "connect",
+          key: "subscribe",
           label: "Yes please",
           target: "#upsertIdentity",
           action: (context, event) => {
@@ -220,7 +161,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         }],
         navigation: {
           canGoBack: () => true,
-          canSkip: () => false,
           previous: "#avatarUrl",
           skip: "#upsertIdentity"
         }
@@ -228,20 +168,18 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       upsertIdentity: {
         id: "upsertIdentity",
         invoke: {
-          src: async (context, event) => {
+          src: async (context) => {
             const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const safeOwnerAddress = context.data.circlesSafeOwner ??
+                (localStorage.getItem("circlesKey")
+                    ? RpcGateway.get().eth.accounts.privateKeyToAccount(localStorage.getItem("circlesKey")).address
+                    : undefined);
             const result = await apiClient.mutate({
               mutation: UpsertProfileDocument,
               variables: {
                 id: context.data.id,
                 circlesAddress: context.data.circlesAddress,
-                circlesSafeOwner:
-                  context.data.circlesSafeOwner ??
-                  (localStorage.getItem("circlesKey")
-                    ? RpcGateway.get().eth.accounts.privateKeyToAccount(
-                        localStorage.getItem("circlesKey")
-                      ).address
-                    : undefined),
+                circlesSafeOwner: safeOwnerAddress,
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 dream: context.data.dream,
@@ -252,7 +190,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 cityGeonameid: context.data.cityGeonameid
               }
             });
-            context.data.city = result.data.upsertProfile.city;
             return result.data.upsertProfile;
           },
           onDone: "#success",
@@ -266,7 +203,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           console.log(`enter: upsertIdentity.success`, context.data);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.authenticated",
-            profile: context.data,
+            profile: event.data,
           });
           return event.data;
         },

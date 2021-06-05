@@ -7,7 +7,6 @@
     import OfferCardField from "./OfferCardField.svelte";
     import {me} from "../../../shared/stores/me";
     import {upsertOffer} from "../processes/upsertOffer";
-    import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
 
     export let offer: Offer = <any>{
         categoryTag: {
@@ -142,24 +141,24 @@
             </div>
 
             <OfferCardField allowEdit={allowEdit} offer={offer} field={{
-                key: "categoryTag",
+                key: "categoryTagId",
                 title: "Category",
-                valueExtractor: (offer) => offer.categoryTag.value
+                displayName: (offer) => offer.categoryTag.value
             }}  />
             <OfferCardField allowEdit={allowEdit} offer={offer} field={{
                 key: "geonameid",
                 title: "City",
-                valueExtractor: (offer) => offer.city.name
+                displayName: (offer) => offer.city.name
             }}  />
             <OfferCardField allowEdit={allowEdit} offer={offer} field={{
                 key: "geonameid",
                 title: "Country",
-                valueExtractor: (offer) => offer.city.country
+                displayName: (offer) => offer.city.country
             }}  />
             <OfferCardField allowEdit={allowEdit} offer={offer} field={{
-                key: "unitTag",
+                key: "unitTagId",
                 title: "Unit",
-                valueExtractor: (offer) => offer.unitTag.value
+                displayName: (offer) => offer.unitTag.value
             }}  />
             <OfferCardField allowEdit={allowEdit} offer={offer} field={{
                 key: "pricePerUnit",

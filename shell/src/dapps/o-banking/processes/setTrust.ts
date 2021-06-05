@@ -4,17 +4,14 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import TextEditor from "@o-platform/o-editors/src//TextEditor.svelte";
-import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import gql from "graphql-tag";
-import { Choice } from "@o-platform/o-editors/src/choiceSelectorContext";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
 import { HUB_ADDRESS } from "@o-platform/o-circles/dist/consts";
 import { BN } from "ethereumjs-util";
-import {AvataarGenerator} from "../../../shared/avataarGenerator";
 import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
+import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -59,53 +56,13 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      trustReceiver: prompt<SetTrustContext, any>({
+      trustReceiver: promptCirclesSafe<SetTrustContext, any>({
         field: "trustReceiver",
-        component: DropdownSelectEditor,
+        onlyWhenDirty: false,
         params: {
           label: strings.labelTrustReceiver,
-          
-          asyncChoices: async (searchText?: string) => {
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
-            const result = await apiClient.query({
-              query: gql`
-                query search($searchString: String!) {
-                  search(query: { searchString: $searchString }) {
-                    id
-                    circlesAddress
-                    firstName
-                    lastName
-                    dream
-                    country
-                    avatarUrl
-                  }
-                }
-              `,
-              variables: {
-                searchString: searchText ?? "",
-              },
-            });
-
-            const items =
-              result.data.search && result.data.search.length > 0
-                ? result.data.search
-                    .filter(o => o.circlesAddress)
-                    .map((o) => {
-                      return <Choice>{
-                        value: RpcGateway.get().utils.toChecksumAddress(o.circlesAddress),
-                        label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
-                        avatarUrl: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.circlesAddress),
-                      };
-                    })
-                    .filter((o) => o.value)
-                : [];
-
-            return items;
-          },
-          optionIdentifier: "value",
-          getOptionLabel: (option) => option.label,
-          getSelectionLabel: (option) => option.label,
+          placeholder: "Person to trust",
+          submitButtonText: "Set trust",
         },
         navigation: {
           next: "#checkTrustLimit",
@@ -113,12 +70,16 @@ const processDefinition = (processId: string) =>
       }),
       checkTrustLimit: {
         id: "checkTrustLimit",
-        always: [{
-            cond: context => context.data.trustReceiver.toLowerCase() == context.data.safeAddress.toLowerCase(),
+        always: [
+          {
+            cond: (context) =>
+              context.data.trustReceiver.toLowerCase() ==
+              context.data.safeAddress.toLowerCase(),
             actions: (context) => {
-              context.messages["trustReceiver"] = "\"As soon as you trust yourself, you will know how to live.\" --Johann Wolfgang von Goethe";
+              context.messages["trustReceiver"] =
+                '"As soon as you trust yourself, you will know how to live." --Johann Wolfgang von Goethe';
             },
-            target: "#trustReceiver"
+            target: "#trustReceiver",
           },
           {
             cond: (context) =>
@@ -187,11 +148,11 @@ const processDefinition = (processId: string) =>
         params: {
           html: () => `<p>Trust changed</p>`,
           submitButtonText: "Close",
-          hideNav: true
+          hideNav: true,
         },
         navigation: {
-          next: "#success"
-        }
+          next: "#success",
+        },
       }),
       success: {
         type: "final",

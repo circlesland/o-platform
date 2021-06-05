@@ -15,6 +15,11 @@ type City {
     population: Int!
 }
 
+type CityStats {
+    city: City!
+    rank: Int!
+}
+
 type ConsumeDepositedChallengeResponse {
     challenge: String
     success: Boolean!
@@ -47,7 +52,7 @@ type IndexTransferResponse {
 type IndexedTransfer {
     blockNo: Int!
     from: String!
-    tags: [Tag!]!
+    tags: [Tag!]
     to: String!
     transactionHash: String!
     value: String!
@@ -138,11 +143,13 @@ type Purchase {
 
 type Query {
     cities(query: QueryCitiesInput!): [City!]!
-    offerCategories(like: String): [Tag!]!
     offers(query: QueryOfferInput!): [Offer!]!
     profiles(query: QueryProfileInput!): [Profile!]!
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
+    stats: Stats
+    tagById(id: Int!): Tag
+    tags(query: QueryTagsInput!): [Tag!]!
     version: Version!
     whoami: String
 }
@@ -163,9 +170,18 @@ type SessionInfo {
     profileId: Int
 }
 
+type Stats {
+    citites: [CityStats!]!
+    cityRank: Int
+    currentGoal: Int!
+    inviteRank: Int!
+    nextGoalAt: Int!
+    totalCitizens: Int!
+}
+
 type Tag {
     id: Int!
-    type: String!
+    typeId: String!
     value: String
 }
 
@@ -238,7 +254,7 @@ input QueryIndexedTransferInput {
 }
 
 input QueryIndexedTransferTagsInput {
-    type: String
+    typeId: String!
     value: String
 }
 
@@ -262,6 +278,11 @@ input QueryPurchaseInput {
     purchasedByProfileId: String!
 }
 
+input QueryTagsInput {
+    typeId_in: [String!]!
+    value_like: String
+}
+
 input QueryUniqueProfileInput {
     id: Int!
 }
@@ -275,7 +296,7 @@ input SearchInput {
 }
 
 input TagInput {
-    type: String!
+    typeId: String!
     value: String
 }
 
@@ -290,8 +311,8 @@ input UpsertOfferInput {
     geonameid: Int!
     id: Int
     maxUnits: Int
-    pictureMimeType: String!
-    pictureUrl: String!
+    pictureMimeType: String
+    pictureUrl: String
     pricePerUnit: String!
     title: String!
     unitTagId: Int!

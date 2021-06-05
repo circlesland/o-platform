@@ -66,7 +66,7 @@ createMachine<UploadFileContext, any>({
             },
             "method": "POST",
             "body": JSON.stringify({
-              fileName: "",
+              fileName: context.data.fileName ?? "",
               mimeType: "image/*",
               bytes: Buffer.from(context.data.bytes).toString("base64")
             })

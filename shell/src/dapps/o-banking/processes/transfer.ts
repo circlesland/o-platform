@@ -11,7 +11,6 @@ import { transferXdai } from "./transferXdai";
 import { transferCircles } from "./transferCircles";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import gql from "graphql-tag";
-import { Choice } from "@o-platform/o-editors/src/choiceSelectorContext";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
@@ -21,6 +20,8 @@ import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import { Profile } from "../data/api/types";
+import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
+import {SetTrustContext} from "./setTrust";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -116,57 +117,14 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      recipientAddress: prompt<TransferContext, any>({
+      recipientAddress: promptCirclesSafe<SetTrustContext, any>({
         field: "recipientAddress",
-        component: DropdownSelectEditor,
+        onlyWhenDirty: false,
         params: {
           label: strings.labelRecipientAddress,
-
-          asyncChoices: async (searchText?: string) => {
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
-            const result = await apiClient.query({
-              query: gql`
-                query search($searchString: String!) {
-                  search(query: { searchString: $searchString }) {
-                    id
-                    circlesAddress
-                    firstName
-                    lastName
-                    dream
-                    country
-                    avatarUrl
-                  }
-                }
-              `,
-              variables: {
-                searchString: searchText ?? "",
-              },
-            });
-
-            return result.data.search && result.data.search.length > 0
-              ? result.data.search
-                  .filter((o) => o.circlesAddress)
-                  .map((o) => {
-                    return <Choice>{
-                      value: RpcGateway.get().utils.toChecksumAddress(
-                        o.circlesAddress
-                      ),
-                      label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
-                      avatarUrl: o.avatarUrl
-                        ? o.avatarUrl
-                        : AvataarGenerator.generate(o.circlesAddress),
-                    };
-                  })
-                  .reverse()
-                  .filter((o) => o.value)
-              : [];
-          },
-          optionIdentifier: "value",
-          getOptionLabel: (option) => option.label,
-          getSelectionLabel: (option) => option.label,
+          placeholder: "Recipient",
+          submitButtonText: "Check send limit",
         },
-        dataSchema: yup.string().required("Please enter a valid eth-address."),
         navigation: {
           next: "#findMaxFlow",
         },

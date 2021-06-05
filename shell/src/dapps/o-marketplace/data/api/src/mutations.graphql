@@ -46,7 +46,7 @@ mutation upsertOffer (
         categoryTagId
         categoryTag {
             id
-            type
+            typeId
             value
         }
         geonameid

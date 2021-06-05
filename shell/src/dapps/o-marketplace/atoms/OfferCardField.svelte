@@ -9,7 +9,7 @@
     export let field: {
         key: string
         title: string,
-        valueExtractor?: (offer:Offer) => string
+        displayName?: (offer:Offer) => string
     };
 
     export let allowEdit:boolean = false;
@@ -55,7 +55,7 @@
                   stroke-width="2"
                   d="M13 7l5 5m0 0l-5 5m5-5H6"/>
         </svg>
-        {field.title}: <span class="inline text-dark">{field.valueExtractor ? field.valueExtractor(offer) : offer[field.key]}</span>
+        {field.title}: <span class="inline text-dark">{field.displayName ? field.displayName(offer) : offer[field.key]}</span>
         {#if isEditable}
             <button class="link link-primary text-primary text-2xs"
                     on:click={() => edit({ [field.key]: true })}>

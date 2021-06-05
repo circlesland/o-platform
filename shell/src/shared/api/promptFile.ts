@@ -16,7 +16,14 @@ const strings = {
 type UploadPictureSpec<TContext extends ProcessContext<any>> = {
   id?:string;
   field: PromptField<TContext>;
-  skipIfNotDirty?: boolean,
+  onlyWhenDirty?: boolean,
+  uploaded?:(context:TContext, event:{
+    data: {
+      url: string
+      mimeType: string
+      fileName: string
+    }
+  }) => void,
   params?: {
     label: string
   },
@@ -75,7 +82,7 @@ export function promptFile<
         id: id("previewFile"),
         entry: () => console.log(`previewFile entry`),
         field: spec.field,
-        onlyWhenDirty: spec.skipIfNotDirty,
+        onlyWhenDirty: spec.onlyWhenDirty,
         component: PicturePreview,
         params: {
           label: spec.params?.label ?? strings.labelFile,
@@ -95,12 +102,12 @@ export function promptFile<
         always: [{
           cond: (context) => {
             const field = normalizePromptField(spec.field);
-            return !context.data[field.name];
+            return !field.get(context);
           },
           actions: (context) => {
             const field = normalizePromptField(spec.field);
+            context.dirtyFlags["file"] = context.dirtyFlags[field.name];
             delete context.dirtyFlags[field.name];
-            context.dirtyFlags["file"] = true;
             context.data.file = undefined;
           },
           target: `#${id("editFile")}`,
@@ -122,7 +129,7 @@ export function promptFile<
             file = o;
           }
         },
-        onlyWhenDirty: spec.skipIfNotDirty,
+        onlyWhenDirty: spec.onlyWhenDirty,
         component: PictureEditor,
         params: {
           label: spec.params?.label ?? strings.labelFile,
@@ -149,8 +156,12 @@ export function promptFile<
             target: `#${id("uploadFile")}`,
           },
           {
-            cond: spec.navigation.canSkip,
-            target: spec.navigation.next,
+            cond: (context, event) => {
+              const field = normalizePromptField(spec.field);
+              const skipNotDirty = !context.dirtyFlags[field.name] && spec.onlyWhenDirty;
+              return skipNotDirty;
+            },
+            target: spec.navigation.skip ?? spec.navigation.next,
           },
           {
             actions: (context: TContext) => {
@@ -167,6 +178,7 @@ export function promptFile<
           ...(<any>ipc(id("uploadFile"))),
         },
         entry: () => {
+          console.log(`uploadFile entry`);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
             message: `Uploading your file ..`
@@ -192,6 +204,7 @@ export function promptFile<
               target: "errorUploadingFile",
             },
             {
+              actions: spec.uploaded,
               target: spec.navigation.next,
             },
           ],
