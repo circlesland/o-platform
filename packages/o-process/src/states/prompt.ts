@@ -44,7 +44,6 @@ export type PromptSpec<TContext extends ProcessContext<any>, TEvent> = {
   field: PromptField<TContext>;
   component: any;
   isSensitive?: boolean;
-  passDataByReference?: boolean;
   /**
    * If set to 'true' every prompt will automatically submit its present data
    * and go to the next step if it's dirty flag is not set.
@@ -76,6 +75,7 @@ export function prompt<
   if (canGoBack && spec.navigation?.canGoBack) {
     canGoBack = spec.navigation.canGoBack;
   }
+  const field = normalizePromptField(spec.field);
   const editDataFieldConfig: StatesConfig<TContext, StateSchema, TEvent> = {
     id: spec.id ?? spec.field,
     initial: "entry",
@@ -101,7 +101,6 @@ export function prompt<
           },
           onDone: [{
             cond: (context:TContext) => {
-              const field = normalizePromptField(spec.field);
               const skip = spec.onlyWhenDirty && !context.dirtyFlags[field.name];
               if (skip){
                 console.log(`checkSkip: ${spec.id} ${spec.field} - skipping because '${spec.field}' is not dirty and 'onlyWhenDirty' == true.`);
@@ -190,7 +189,6 @@ export function prompt<
               );
             }
             if (spec.dataSchema) {
-              const field = normalizePromptField(spec.field);
               delete context.messages[field.name];
               const valueToValidate = data[field.name];
 
@@ -209,7 +207,6 @@ export function prompt<
           },
           onDone: [{
             cond: (context:TContext) => {
-              const field = normalizePromptField(spec.field);
               return !context.messages[field.name];
             },
             target: "submit"
@@ -232,7 +229,6 @@ export function prompt<
                 )}`
               );
             }
-            const field = normalizePromptField(spec.field);
             if (field.get(context) !== data[field.name]) {
               field.set(data[field.name], context);
               context.dirtyFlags[field.name] = true;

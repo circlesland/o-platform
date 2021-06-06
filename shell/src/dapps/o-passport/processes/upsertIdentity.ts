@@ -2,7 +2,7 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
-import {assign, createMachine} from "xstate";
+import {createMachine} from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -220,5 +220,5 @@ export const upsertIdentity: ProcessDefinition<
   UpsertIdentityContextData
 > = {
   name: "upsertIdentity",
-  stateMachine: <any>processDefinition,
+  stateMachine: processDefinition,
 };

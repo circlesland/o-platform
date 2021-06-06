@@ -19,7 +19,7 @@ export function promptTag<
   TEvent extends PlatformEvent
 >(spec: {
   field: PromptField<TContext>;
-  onlyWhenDirty: boolean;
+  onlyWhenDirty?: boolean;
   typeId: string;
   id?: string;
   params: {

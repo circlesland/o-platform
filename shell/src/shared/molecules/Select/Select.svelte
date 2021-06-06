@@ -13,7 +13,6 @@
   import isOutOfViewport from "./utils/isOutOfViewport";
   import debounce from "./utils/debounce";
   import DefaultClearIcon from "./ClearIcon.svelte";
-  import { number } from "yup/lib/locale";
 
   const dispatch = createEventDispatcher();
   export let container = undefined;
@@ -102,7 +101,7 @@
   }
 
   let getItemsHasInvoked = false;
-  const getItems = debounce(async () => {
+  export const getItems = debounce(async () => {
     getItemsHasInvoked = true;
     isWaiting = true;
 
@@ -191,11 +190,7 @@
       _filteredItems = JSON.parse(originalItemsClone);
       _items = JSON.parse(originalItemsClone);
     } else {
-      _filteredItems = loadOptions
-        ? filterText.length === 0
-          ? []
-          : _items
-        : _items.filter((item) => {
+      _filteredItems = _items ? _items.filter((item) => {
             let keepItem = true;
 
             if (isMulti && selectedValue) {
@@ -211,7 +206,7 @@
               filterText,
               item
             );
-          });
+          }) : [];
     }
 
     if (groupBy) {

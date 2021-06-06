@@ -143,6 +143,7 @@ export function promptFile<
           next: `#${id("uploadOrSkip")}`,
           previous: spec.navigation.previous,
           canSkip: spec.navigation.canSkip,
+          skip: spec.navigation.skip ?? spec.navigation.next
         },
       }),
       uploadOrSkip: {

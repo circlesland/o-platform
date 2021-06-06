@@ -11,7 +11,12 @@
 
   $: selected = {};
 
+  let selectComponent:Select;
   let field:PromptField<any>;
+  let filterText:string;
+
+  $: {
+  }
 
   onMount(async () => {
     field = normalizePromptField(context.field);
@@ -20,6 +25,11 @@
       selected = await context.params.choices.byKey(currentKey);
     } else {
       selected = undefined;
+      filterText = "0x";
+      setTimeout(() => {
+        filterText = "";
+        selectComponent.getItems();
+      },1);
     }
   });
 
@@ -71,6 +81,8 @@
               getOptionLabel={context.params.getLabel}
               Item={context.params.itemTemplate ? context.params.itemTemplate : Item}
               on:select={handleSelect}
+              bind:this={selectComponent}
+              bind:filterText={filterText}
       />
     </div>
     {#if context.messages[context.field]}
