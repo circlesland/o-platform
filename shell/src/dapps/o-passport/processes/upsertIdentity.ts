@@ -2,7 +2,7 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
-import { createMachine } from "xstate";
+import {assign, createMachine} from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -123,8 +123,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           previous: "#country",
         },
       }),
-      avatarUrl: promptFile({
-        id: "avatarUrl",
+      avatarUrl: promptFile<UpsertIdentityContext, any> ({
         field: "avatarUrl",
         onlyWhenDirty: skipIfNotDirty,
         uploaded:(context, event) => {
@@ -132,7 +131,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           context.data.avatarMimeType = event.data?.mimeType;
         },
         params: {
-          label: strings.labelAvatar
+          label: strings.labelAvatar,
+          submitButtonText: "Save"
         },
         navigation: {
           next: "#newsletter",
@@ -140,7 +140,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           canSkip: () => true
         }
       }),
-      newsletter: promptChoice({
+      newsletter: promptChoice<UpsertIdentityContext, any> ({
         id: "newsletter",
         promptLabel: strings.labelNewsletter,
         onlyWhenDirty: skipIfNotDirty,
@@ -148,14 +148,14 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           key: "dontSubscribe",
           label: "No thanks",
           target: "#upsertIdentity",
-          action: (context, event) => {
+          action: (context) => {
             context.data.newsletter = false;
           }
         }, {
           key: "subscribe",
           label: "Yes please",
           target: "#upsertIdentity",
-          action: (context, event) => {
+          action: (context) => {
             context.data.newsletter = true;
           }
         }],

@@ -55,11 +55,11 @@
       <span class="label-text">{@html context.params.label}</span>
     </label>
 
-    <div class="themed-select">
+    <div class="themed">
       <Select name="value"
               isFocused={true}
               selectedValue={selected}
-              loadOptions={context.params.choices.find}
+              loadOptions={(searchString) => context.params.choices.find(searchString, context)}
               noOptionsMessage=""
               placeholder="Search..."
               listAutoWidth={false}
@@ -102,23 +102,4 @@
     @apply input-bordered;
     height: auto;
   }
-
-  .themed-select {
-    padding: 0 !important;
-    --listMaxHeight: 30rem;
-    --listMaxWidth: 10rem;
-    width: 100%;
-    --borderRadius: var(--rounded-btn, 0.5rem);
-    --border: 1px solid hsla(var(--bc, 215 28% 17%) / var(--tw-border-opacity));
-    --height: auto;
-    --inputTop: 3px;
-    --inputFontSize: 18px;
-    --inputPadding: 0.5rem 0.5rem 0.5rem 1rem;
-    --itemHoverBG: "#cccccc";
-    --itemIsActiveColor: #001c6e;
-    @apply input-lg;
-    @apply input-bordered;
-    height: auto;
-  }
-
 </style>

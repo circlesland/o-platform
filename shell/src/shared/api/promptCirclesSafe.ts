@@ -43,7 +43,7 @@ export function promptCirclesSafe<TContext extends ProcessContext<any>,TEvent ex
         field: spec.field,
         onlyWhenDirty: spec.onlyWhenDirty,
         component: DropdownSelectEditor,
-        params: <DropdownSelectorParams<Profile, string>>{
+        params: <DropdownSelectorParams<TContext, Profile, string>>{
             label: spec.params.label,
             placeholder: spec.params.placeholder,
             submitButtonText: spec.params.submitButtonText,

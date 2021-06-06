@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "@o-platform/o-events": "0.1.0",
-    "xstate": "^4.14.1",
-    "xstate-svelte": "^1.0.1",
-    "@xstate/fsm": "^1.5.2"
+    "xstate": "^4.20.0",
+    "@xstate/fsm": "^1.6.1",
+    "xstate-svelte": "^1.0.1"
   },
   "devDependencies": {
     "typescript": "^4.1.3",

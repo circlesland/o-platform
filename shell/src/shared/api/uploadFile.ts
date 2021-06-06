@@ -30,7 +30,7 @@ createMachine<UploadFileContext, any>({
 
     authenticateSso: {
       id: "authenticateSso",
-      entry: (ctx) => console.log(`enter: uploadFile.authenticateSso`),
+      entry: () => console.log(`enter: uploadFile.authenticateSso`),
       on: {
         ...<any>ipc(`authenticateSso`)
       },
@@ -38,7 +38,7 @@ createMachine<UploadFileContext, any>({
         id: "authenticateSso",
         src: authenticateSso.stateMachine(`authenticateSso`),
         data: {
-          data: (context, event) => {
+          data: (context) => {
             return {
               appId: context.data.appId
             }
@@ -52,7 +52,7 @@ createMachine<UploadFileContext, any>({
     },
     upload: {
       id: "upload",
-      entry: (ctx) => console.log(`enter: uploadFile.upload`),
+      entry: () => console.log(`enter: uploadFile.upload`),
       on: {
         ...<any>ipc(`upload`)
       },
@@ -88,7 +88,7 @@ createMachine<UploadFileContext, any>({
       id: "uploadError",
       entry: () => console.log(`Enter: uploadFile.error`),
       type: "final",
-      data: (context) => {
+      data: () => {
         return new Error("Couldn't upload the file");
       }
     },

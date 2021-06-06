@@ -48,7 +48,7 @@ export function promptCity<
     field: spec.field,
     onlyWhenDirty: spec.onlyWhenDirty,
     component: DropdownSelectEditor,
-    params: <DropdownSelectorParams<City, number>>{
+    params: <DropdownSelectorParams<TContext, City, number>>{
       label: spec.params.label,
       placeholder: spec.params.placeholder,
       submitButtonText: spec.params.submitButtonText,

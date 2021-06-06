@@ -86,7 +86,13 @@
                 <OfferCard offer={offer} />
             {/each}
         {:else}
-
+            <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+                <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
+                    <div class="flex flex-col items-start">
+                        <div>No offers</div>
+                    </div>
+                </div>
+            </section>
         {/if}
     {/if}
 </div>

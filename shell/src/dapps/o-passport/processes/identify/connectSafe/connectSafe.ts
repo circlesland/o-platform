@@ -10,6 +10,8 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import * as bip39 from "bip39";
 import {Account} from "web3-core";
 import gql from "graphql-tag";
+import {DropdownSelectorParams} from "@o-platform/o-editors/src/DropdownSelectEditorContext";
+import DropDownString from "@o-platform/o-editors/src/dropdownItems/DropDownString.svelte";
 
 export type ConnectSafeContextData = {
   safeAddress?: string;
@@ -128,16 +130,21 @@ const processDefinition = (processId: string) =>
       safeAddress: prompt({
         field: "safeAddress",
         component: DropdownSelectEditor,
-        params: (context) => {
-          return {
-            label: "We found multiple safes for your account. Please select the one you want to connect.",
-            placeholder: "Click to select a safe",
-            submitButtonText: "Connect",
-            optionIdentifier: "value",
-            getOptionLabel: (option) => option,
-            getSelectionLabel: (option) => option,
-            choices: context.data.foundSafeAddresses
-          }
+        params: <DropdownSelectorParams<ConnectSafeContext, string, string>>{
+          label: "We found multiple safes for your account. Please select the one you want to connect.",
+          placeholder: "Click to select a safe",
+          submitButtonText: "Connect",
+          itemTemplate: DropDownString,
+          getKey: (safeAddress:any) => safeAddress.value,
+          getLabel: (safeAddress:any) => safeAddress.label,
+          choices: {
+            byKey: async (key: string, context) => {
+              return context.data.foundSafeAddresses.find(o => o == key);
+            },
+            find: async (filter: string|undefined, context) => {
+              return context.data.foundSafeAddresses.filter(o => o.toLowerCase().startsWith(filter?.toLowerCase() ?? ""));
+            },
+          },
         },
         navigation: {
           next: "#checkSafeAddress",

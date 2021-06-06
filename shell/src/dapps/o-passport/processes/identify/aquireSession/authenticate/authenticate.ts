@@ -3,7 +3,6 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.svelte";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
-import BooleanEditor from "@o-platform/o-editors/src/BooleanEditor.svelte";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
@@ -13,7 +12,6 @@ import {
   TosDocument,
   VerifyDocument,
 } from "../../../../data/auth/types";
-import { SessionInfoDocument } from "../../../../data/api/types";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 
 export type AuthenticateContextData = {

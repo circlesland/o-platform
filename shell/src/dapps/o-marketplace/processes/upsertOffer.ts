@@ -185,21 +185,20 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                     submitButtonText: strings.submitDeliveryTerms
                 },
                 navigation: {
-                    next: "#picture",
+                    next: "#pictureUrl",
                     previous: "#pricePerUnit"
                 },
             }),
-            picture: promptFile({
-                id: "picture",
-                field: "picture",
+            pictureUrl: promptFile<UpsertOfferContext, any>({
+                field: "pictureUrl",
                 onlyWhenDirty: skipIfNotDirty,
                 uploaded:(context, event) => {
                     context.data.pictureUrl = event.data?.url;
                     context.data.pictureMimeType = event.data?.mimeType;
                 },
-                params: <any>{
+                params: {
                     label: strings.labelPicture,
-                    submitButtonText: strings.submitPicture,
+                    submitButtonText: strings.submitPicture
                 },
                 navigation: {
                     next: "#upsertOffer",

@@ -1,13 +1,18 @@
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import {StateSchema, StatesConfig} from "xstate";
-import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {uploadFile} from "./uploadFile";
-import {normalizePromptField, prompt, PromptField} from "@o-platform/o-process/dist/states/prompt";
+import { StateSchema} from "xstate";
+import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { uploadFile } from "./uploadFile";
+import {
+  normalizePromptField,
+  prompt,
+  PromptField,
+} from "@o-platform/o-process/dist/states/prompt";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
 import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
-import {Generate} from "@o-platform/o-utils/dist/generate";
+import { Generate } from "@o-platform/o-utils/dist/generate";
+import {StateNodeConfig} from "xstate/lib/types";
 
 const strings = {
   labelFile: `Please select a file to upload`,
@@ -25,7 +30,8 @@ type UploadPictureSpec<TContext extends ProcessContext<any>> = {
     }
   }) => void,
   params?: {
-    label: string
+    label: string,
+    submitButtonText: string
   },
   navigation: {
     // If you want to allow the user to go one step back then specify here where he came from
@@ -58,10 +64,11 @@ export function promptFile<
     bytes: Buffer;
   };
 
-  spec.id = spec.id ? spec.id : Generate.randomHexString(4)
+  const field = normalizePromptField(spec.field);
+  spec.id = spec.id ? spec.id : field.name;
   const generatedId = Generate.randomHexString(4);
   const id = (x:string) => `${spec.id}/${generatedId}/${x}`;
-  const editDataFieldConfig: StatesConfig<TContext, StateSchema, TEvent> = <any>{
+  const editDataFieldConfig: StateNodeConfig<TContext, StateSchema, TEvent> = {
     id: spec.id,
     initial: "checkPreviewFile",
     states: {
@@ -70,7 +77,6 @@ export function promptFile<
         entry: () => console.log(`checkPreviewFile entry`),
         always: [{
           cond: (context) => {
-            const field = normalizePromptField(spec.field);
             return !!context.data[field.name];
           },
           target: `#${id("previewFile")}`
@@ -86,7 +92,7 @@ export function promptFile<
         component: PicturePreview,
         params: {
           label: spec.params?.label ?? strings.labelFile,
-          submitButtonText: "Save",
+          submitButtonText: spec.params.submitButtonText,
         },
         navigation: {
           next: `#${id("checkEditFile")}`,
@@ -101,11 +107,9 @@ export function promptFile<
         entry: () => console.log(`checkEditFile entry`),
         always: [{
           cond: (context) => {
-            const field = normalizePromptField(spec.field);
             return !field.get(context);
           },
           actions: (context) => {
-            const field = normalizePromptField(spec.field);
             context.dirtyFlags["file"] = context.dirtyFlags[field.name];
             delete context.dirtyFlags[field.name];
             context.data.file = undefined;
@@ -156,16 +160,11 @@ export function promptFile<
             target: `#${id("uploadFile")}`,
           },
           {
-            cond: (context, event) => {
-              const field = normalizePromptField(spec.field);
-              const skipNotDirty = !context.dirtyFlags[field.name] && spec.onlyWhenDirty;
-              return skipNotDirty;
-            },
+            cond: (context) => !context.dirtyFlags[field.name] && spec.onlyWhenDirty,
             target: spec.navigation.skip ?? spec.navigation.next,
           },
           {
             actions: (context: TContext) => {
-              const field = normalizePromptField(spec.field);
               context.messages[field.name] = `Please specify a valid file.`;
             },
             target: `#${id("checkPreviewFile")}`
@@ -187,7 +186,7 @@ export function promptFile<
         invoke: {
           src: uploadFile.stateMachine(id("uploadFile")),
           data: {
-            data: (context, event) => {
+            data: () => {
               return {
                 appId: "__FILES_APP_ID__",
                 fileName: file.fileName ?? "",
@@ -221,7 +220,6 @@ export function promptFile<
           Please make sure that your file doesn't exceed the maximum allowed file size of 4 MB.<br/>
           Either choose a different file or skip it for now.
         `;
-          const field = normalizePromptField(spec.field);
           context.dirtyFlags[field.name] = true;
         },
         component: HtmlViewer,

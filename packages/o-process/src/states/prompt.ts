@@ -72,7 +72,7 @@ export function prompt<
   TContext extends ProcessContext<any>,
   TEvent extends PlatformEvent
 >(spec: PromptSpec<TContext, TEvent>) {
-  let canGoBack = (context: ProcessContext<any>, event: any) => !!spec.navigation?.previous;
+  let canGoBack:(context: ProcessContext<any>, event: any)=>boolean = () => !!spec.navigation?.previous;
   if (canGoBack && spec.navigation?.canGoBack) {
     canGoBack = spec.navigation.canGoBack;
   }
