@@ -28,9 +28,9 @@ export function show<TContext extends ProcessContext<any>, TEvent extends Platfo
       type: "process.prompt",
       field: concreteSpec.field,
       component: concreteSpec.component,
-      data: concreteSpec.passDataByReference
+      data: /*concreteSpec.passDataByReference
         ? context.data
-        : JSON.parse(JSON.stringify(context.data)),
+        : */JSON.parse(JSON.stringify(context.data)),
       dirtyFlags: context.dirtyFlags,
       messages: context.messages,
       params: concreteParams,

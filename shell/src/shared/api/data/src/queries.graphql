@@ -97,3 +97,26 @@ query citiesById ($ids: [Int!]!) {
         feature_code
     }
 }
+
+query stats {
+    stats {
+        cityRank
+        inviteRank
+        currentGoal
+        totalCitizens
+        currentGoalFrom
+        nextGoalAt
+        cities {
+            geonameid
+            latitude
+            longitude
+            name
+            citizenCount
+            population
+        }
+        countries {
+            citizenCount
+            name
+        }
+    }
+}

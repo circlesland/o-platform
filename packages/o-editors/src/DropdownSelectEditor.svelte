@@ -7,6 +7,12 @@
   import {normalizePromptField, PromptField} from "@o-platform/o-process/dist/states/prompt";
   import {DropdownSelectorContext} from "./DropdownSelectEditorContext";
 
+  /*
+  * allow arbitrary values in dropdownselecteditor
+  * allow to add new tags in dropdownselecteditor
+  * add a "most-recent" list to the dropdownselecteditor
+  */
+
   export let context: DropdownSelectorContext<any,any>;
 
   $: selected = {};

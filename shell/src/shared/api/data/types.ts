@@ -21,7 +21,7 @@ export enum CacheControlScope {
   Public = 'PUBLIC'
 }
 
-export type City = {
+export type City = ICity & {
   __typename?: 'City';
   country: Scalars['String'];
   feature_code: Scalars['String'];
@@ -32,16 +32,28 @@ export type City = {
   population: Scalars['Int'];
 };
 
-export type CityStats = {
+export type CityStats = ICity & {
   __typename?: 'CityStats';
-  city: City;
-  rank: Scalars['Int'];
+  citizenCount: Scalars['Int'];
+  country: Scalars['String'];
+  feature_code: Scalars['String'];
+  geonameid: Scalars['Int'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+  name: Scalars['String'];
+  population: Scalars['Int'];
 };
 
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type CountryStats = {
+  __typename?: 'CountryStats';
+  citizenCount: Scalars['Int'];
+  name: Scalars['String'];
 };
 
 export type DelegateAuthInit = {
@@ -68,6 +80,16 @@ export type ExchangeTokenResponse = {
   __typename?: 'ExchangeTokenResponse';
   errorMessage?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type ICity = {
+  country: Scalars['String'];
+  feature_code: Scalars['String'];
+  geonameid: Scalars['Int'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+  name: Scalars['String'];
+  population: Scalars['Int'];
 };
 
 export type IndexTransferInput = {
@@ -385,9 +407,11 @@ export type SessionInfo = {
 
 export type Stats = {
   __typename?: 'Stats';
-  citites: Array<CityStats>;
+  cities: Array<CityStats>;
   cityRank?: Maybe<Scalars['Int']>;
+  countries: Array<CountryStats>;
   currentGoal: Scalars['Int'];
+  currentGoalFrom: Scalars['Int'];
   inviteRank: Scalars['Int'];
   nextGoalAt: Scalars['Int'];
   totalCitizens: Scalars['Int'];
@@ -560,6 +584,24 @@ export type CitiesByIdQuery = (
   )> }
 );
 
+export type StatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StatsQuery = (
+  { __typename?: 'Query' }
+  & { stats?: Maybe<(
+    { __typename?: 'Stats' }
+    & Pick<Stats, 'cityRank' | 'inviteRank' | 'currentGoal' | 'totalCitizens' | 'currentGoalFrom' | 'nextGoalAt'>
+    & { cities: Array<(
+      { __typename?: 'CityStats' }
+      & Pick<CityStats, 'geonameid' | 'latitude' | 'longitude' | 'name' | 'citizenCount' | 'population'>
+    )>, countries: Array<(
+      { __typename?: 'CountryStats' }
+      & Pick<CountryStats, 'citizenCount' | 'name'>
+    )> }
+  )> }
+);
+
 
 export const ProfilesByNameDocument = gql`
     query profilesByName($searchString: String!) {
@@ -665,6 +707,30 @@ export const CitiesByIdDocument = gql`
   }
 }
     `;
+export const StatsDocument = gql`
+    query stats {
+  stats {
+    cityRank
+    inviteRank
+    currentGoal
+    totalCitizens
+    currentGoalFrom
+    nextGoalAt
+    cities {
+      geonameid
+      latitude
+      longitude
+      name
+      citizenCount
+      population
+    }
+    countries {
+      citizenCount
+      name
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -692,6 +758,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     citiesById(variables: CitiesByIdQueryVariables): Promise<CitiesByIdQuery> {
       return withWrapper(() => client.request<CitiesByIdQuery>(print(CitiesByIdDocument), variables));
+    },
+    stats(variables?: StatsQueryVariables): Promise<StatsQuery> {
+      return withWrapper(() => client.request<StatsQuery>(print(StatsDocument), variables));
     }
   };
 }

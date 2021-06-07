@@ -16,6 +16,8 @@ import {dashboard} from "./dapps/o-dashboard.manifest";
 import {homepage} from "./dapps/o-homepage.manifest";
 import {miva} from "./dapps/o-miva.manifest";
 import {marketplace} from "./dapps/o-marketplace.manifest";
+import {trustnetwork} from "./dapps/o-trustnetwork.manifest";
+import {stats} from "./dapps/o-stats.manifest";
 
 const errorIndicator = Error;
 
@@ -25,7 +27,9 @@ export const dapps: DappManifest<any>[] = [
   banking,
   dashboard,
   miva,
-  marketplace
+  marketplace,
+  trustnetwork,
+  stats
 ];
 
 export const loadedDapps: RuntimeDapp<any>[] = [];
