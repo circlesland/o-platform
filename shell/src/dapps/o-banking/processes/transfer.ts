@@ -235,19 +235,6 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-      message: prompt<TransferContext, any>({
-        field: "message",
-        component: TextareaEditor,
-        params: {
-          label: strings.messageLabel,
-          maxLength: "100",
-        },
-        navigation: {
-          previous: "#tokens",
-          next: "#loadRecipientProfile",
-          canSkip: () => true,
-        },
-      }),
       loadRecipientProfile: {
         id: "loadRecipientProfile",
         invoke: {
@@ -265,10 +252,23 @@ const processDefinition = (processId: string) =>
               // No profile found
             }
           },
-          onDone: "#prepareSummary",
+          onDone: "#message",
           onError: "#error",
         },
       },
+      message: prompt<TransferContext, any>({
+        field: "message",
+        component: TextareaEditor,
+        params: {
+          label: strings.messageLabel,
+          maxLength: "100",
+        },
+        navigation: {
+          previous: "#tokens",
+          next: "#prepareSummary",
+          canSkip: () => true,
+        },
+      }),
       prepareSummary: {
         id: "prepareSummary",
         invoke: {
@@ -300,9 +300,7 @@ const processDefinition = (processId: string) =>
               context.data.summaryHtml = `<span>You are about to transfer</span>
                 <strong class='text-primary text-5xl block mt-2'>
                     ${context.data.tokens.amount}
-                    ${
-                      currencyLookup[context.data.tokens.currency.toUpperCase()]
-                    }</strong>
+                    ${currencyLookup[context.data.tokens.currency.toUpperCase()]}</strong>
                 <span class='block mt-2'>
                 to 
                 </span>
@@ -319,6 +317,9 @@ const processDefinition = (processId: string) =>
                     ${to}
                   </h2>
                 </div>
+                <span class='block mt-2'>
+                ${context.data.message ? '<b>Purpose:</b><br/>' + context.data.message : ""}
+                </span>
                 <strong class='text-primary block mt-4'>
                 Do you want to continue?
                 </strong>`;
@@ -337,7 +338,7 @@ const processDefinition = (processId: string) =>
           html: (context) => context.data.summaryHtml,
         },
         navigation: {
-          previous: "#tokens",
+          previous: "#message",
           next: "#checkChoice",
         },
       }),
@@ -374,6 +375,7 @@ const processDefinition = (processId: string) =>
                 recipientAddress: context.data.recipientAddress,
                 amount: context.data.tokens.amount,
                 privateKey: localStorage.getItem("circlesKey"),
+                message: context.data.message
               };
             },
             messages: {},
@@ -397,6 +399,7 @@ const processDefinition = (processId: string) =>
                 recipientAddress: context.data.recipientAddress,
                 amount: context.data.tokens.amount,
                 privateKey: localStorage.getItem("circlesKey"),
+                message: context.data.message
               };
             },
             messages: {},

@@ -6,12 +6,14 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { BN } from "ethereumjs-util";
+import {CreateTagInput, IndexTransactionDocument} from "../data/api/types";
 
 export type TransferXdaiContextData = {
   safeAddress: string;
   recipientAddress: string;
   amount: string;
   privateKey: string;
+  message?:string;
 };
 
 /**
@@ -63,13 +65,58 @@ const processDefinition = (processId: string) =>
                 "ether"
               )
             );
-            const resultObservable = await gnosisSafeProxy.transferEth(
+            const receipt = await (await gnosisSafeProxy.transferEth(
               context.data.privateKey,
               ethAmount,
               context.data.recipientAddress
-            );
+            )).toPromise();
 
-            return resultObservable.toPromise();
+            const transactionTags: CreateTagInput[] = [];
+            if (context.data.message) {
+              transactionTags.push({
+                typeId: "o-banking:transfer:message:1",
+                value: context.data.message
+              });
+            }
+
+            const api = await window.o.apiClient.client.subscribeToResult();
+            const indexedTransaction = await api.mutate({
+              mutation: IndexTransactionDocument,
+              variables: {
+                data: {
+                  blockHash: receipt.blockHash,
+                  blockNumber: receipt.blockNumber,
+                  confirmations: (<any>receipt).confirmations,
+                  contractAddress: receipt.contractAddress,
+                  cumulativeGasUsed: receipt.cumulativeGasUsed.toString(),
+                  from: receipt.from,
+                  gasUsed: receipt.gasUsed.toString(),
+                  logs: receipt.logs.map(log => {
+                    return {
+                      address: log.address,
+                      blockHash: log.blockHash,
+                      blockNumber: log.blockNumber,
+                      data: log.data,
+                      logIndex: log.logIndex,
+                      removed: (<any>log).removed,
+                      topics: log.topics,
+                      transactionHash: log.transactionHash,
+                      transactionIndex: log.transactionIndex
+                    }
+                  }),
+                  logsBloom: receipt.logsBloom,
+                  root: (<any>receipt).root,
+                  status: receipt.status?.toString(),
+                  tags: transactionTags,
+                  to: receipt.to,
+                  transactionHash: receipt.transactionHash,
+                  transactionIndex: receipt.transactionIndex
+                }
+              }
+            });
+            console.log(indexedTransaction);
+
+            return receipt;
           },
           onDone: "#success",
           onError: "#error",

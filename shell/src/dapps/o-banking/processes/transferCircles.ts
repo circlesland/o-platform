@@ -11,10 +11,12 @@ import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {requestPathToRecipient} from "../services/requestPathToRecipient";
 import {show} from "@o-platform/o-process/dist/actions/show";
+import {CreateTagInput, IndexTransactionDocument, IndexTransactionMutation} from "../data/api/types";
 
 export type TransferCirclesContextData = {
   safeAddress:string;
   recipientAddress:string;
+  message:string;
   amount:string;
   privateKey:string;
   transitivePath?:TransitivePath;
@@ -90,12 +92,6 @@ createMachine<TransferCirclesContext, any>({
       }),
       invoke: {
         src: async (context) => {
-          const ownerAddress = RpcGateway.get()
-            .eth
-            .accounts
-            .privateKeyToAccount(context.data.privateKey)
-            .address;
-
           const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
 
           try {
@@ -121,6 +117,55 @@ createMachine<TransferCirclesContext, any>({
             );
             const receipt = await transferTroughResult.toPromise();
             console.log(receipt);
+
+            const transactionTags: CreateTagInput[] = [{
+              typeId: "o-banking:transfer:transitivePath:1",
+              value: JSON.stringify(context.data.transitivePath)
+            }];
+            if (context.data.message) {
+              transactionTags.push({
+                typeId: "o-banking:transfer:message:1",
+                value: context.data.message
+              });
+            }
+
+            const api = await window.o.apiClient.client.subscribeToResult();
+            const indexedTransaction = await api.mutate({
+              mutation: IndexTransactionDocument,
+              variables: {
+                data: {
+                  blockHash: receipt.blockHash,
+                  blockNumber: receipt.blockNumber,
+                  confirmations: (<any>receipt).confirmations,
+                  contractAddress: receipt.contractAddress,
+                  cumulativeGasUsed: receipt.cumulativeGasUsed.toString(),
+                  from: receipt.from,
+                  gasUsed: receipt.gasUsed.toString(),
+                  logs: receipt.logs.map(log => {
+                    return {
+                      address: log.address,
+                      blockHash: log.blockHash,
+                      blockNumber: log.blockNumber,
+                      data: log.data,
+                      logIndex: log.logIndex,
+                      removed: (<any>log).removed,
+                      topics: log.topics,
+                      transactionHash: log.transactionHash,
+                      transactionIndex: log.transactionIndex
+                    }
+                  }),
+                  logsBloom: receipt.logsBloom,
+                  root: (<any>receipt).root,
+                  status: receipt.status?.toString(),
+                  tags: transactionTags,
+                  to: receipt.to,
+                  transactionHash: receipt.transactionHash,
+                  transactionIndex: receipt.transactionIndex
+                }
+              }
+            });
+            console.log(indexedTransaction);
+
           } catch (e) {
             console.error(e);
             throw e;

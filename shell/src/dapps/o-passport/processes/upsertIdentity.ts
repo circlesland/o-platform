@@ -37,13 +37,13 @@ const strings = {
     "<strong class='text-primary  block mt-3'>What is your last name?</strong>",
   labelAvatar:
     "<span>Add a profile image to become<br/> more recognizable</span>",
-  labelCountry:
-    "<span>Vote for your country in the global universal basic income economy ranking leaderboard.</span><strong class='text-primary block mt-3'>Select country</strong>",
+  labelCity:
+    "<span>Vote for your city in the global universal basic income economy ranking leaderboard.</span><strong class='text-primary block mt-3'>Select city</strong>",
   labeldream:
     "<span class='block'>What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?</span><strong class='text-primary  block mt-3'>Share your passion</strong>",
   placeholderFirstName: "First name",
   placeholderLastName: "Last name",
-  placeholderCountry: "Select a country",
+  placeholderCity: "Select a city",
   placeholderDream: "Your passion.",
   labelNewsletter:
     "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
@@ -92,8 +92,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         field: "cityGeonameid",
         onlyWhenDirty: skipIfNotDirty,
         params: {
-          label: strings.labelCountry,
-          placeholder: strings.placeholderCountry,
+          label: strings.labelCity,
+          placeholder: strings.placeholderCity,
           submitButtonText: "Submit vote"
         },
         navigation: {

@@ -135,7 +135,6 @@ export class CirclesHub extends Web3Contract {
       transfer.values,
     ).encodeABI();
 
-
     return await safeProxy.execTransaction(
       privateKey,
       {

@@ -21,7 +21,7 @@ export enum CacheControlScope {
   Public = 'PUBLIC'
 }
 
-export type City = {
+export type City = ICity & {
   __typename?: 'City';
   country: Scalars['String'];
   feature_code: Scalars['String'];
@@ -32,16 +32,33 @@ export type City = {
   population: Scalars['Int'];
 };
 
-export type CityStats = {
+export type CityStats = ICity & {
   __typename?: 'CityStats';
-  city: City;
-  rank: Scalars['Int'];
+  citizenCount: Scalars['Int'];
+  country: Scalars['String'];
+  feature_code: Scalars['String'];
+  geonameid: Scalars['Int'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+  name: Scalars['String'];
+  population: Scalars['Int'];
 };
 
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type CountryStats = {
+  __typename?: 'CountryStats';
+  citizenCount: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type CreateTagInput = {
+  typeId: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 export type DelegateAuthInit = {
@@ -70,29 +87,83 @@ export type ExchangeTokenResponse = {
   success: Scalars['Boolean'];
 };
 
-export type IndexTransferInput = {
-  blockNo: Scalars['Int'];
+export type Goal = {
+  __typename?: 'Goal';
+  totalCitizens: Scalars['Int'];
+};
+
+export type ICity = {
+  country: Scalars['String'];
+  feature_code: Scalars['String'];
+  geonameid: Scalars['Int'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+  name: Scalars['String'];
+  population: Scalars['Int'];
+};
+
+export type IndexTransactionInput = {
+  blockHash: Scalars['String'];
+  blockNumber: Scalars['Int'];
+  confirmations?: Maybe<Scalars['Int']>;
+  contractAddress?: Maybe<Scalars['String']>;
+  cumulativeGasUsed: Scalars['String'];
   from: Scalars['String'];
-  tags?: Maybe<Array<TagInput>>;
+  gasUsed: Scalars['String'];
+  logs?: Maybe<Array<IndexTransactionLogInput>>;
+  logsBloom: Scalars['String'];
+  root?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<CreateTagInput>>;
   to: Scalars['String'];
   transactionHash: Scalars['String'];
-  value: Scalars['String'];
+  transactionIndex: Scalars['Int'];
 };
 
-export type IndexTransferResponse = {
-  __typename?: 'IndexTransferResponse';
-  errorMessage?: Maybe<Scalars['String']>;
-  success: Scalars['Boolean'];
+export type IndexTransactionLog = {
+  __typename?: 'IndexTransactionLog';
+  address: Scalars['String'];
+  blockHash: Scalars['String'];
+  blockNumber: Scalars['Int'];
+  data?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  logIndex: Scalars['Int'];
+  removed?: Maybe<Scalars['Boolean']>;
+  topics: Array<Scalars['String']>;
+  transactionHash: Scalars['String'];
+  transactionIndex: Scalars['Int'];
 };
 
-export type IndexedTransfer = {
-  __typename?: 'IndexedTransfer';
-  blockNo: Scalars['Int'];
+export type IndexTransactionLogInput = {
+  address: Scalars['String'];
+  blockHash: Scalars['String'];
+  blockNumber: Scalars['Int'];
+  data?: Maybe<Scalars['String']>;
+  logIndex: Scalars['Int'];
+  removed?: Maybe<Scalars['Boolean']>;
+  topics: Array<Scalars['String']>;
+  transactionHash: Scalars['String'];
+  transactionIndex: Scalars['Int'];
+};
+
+export type IndexedTransaction = {
+  __typename?: 'IndexedTransaction';
+  blockHash: Scalars['String'];
+  blockNumber: Scalars['Int'];
+  confirmations?: Maybe<Scalars['Int']>;
+  contractAddress?: Maybe<Scalars['String']>;
+  cumulativeGasUsed: Scalars['String'];
   from: Scalars['String'];
+  gasUsed: Scalars['String'];
+  id: Scalars['Int'];
+  logs?: Maybe<Array<IndexTransactionLog>>;
+  logsBloom: Scalars['String'];
+  root?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Tag>>;
   to: Scalars['String'];
   transactionHash: Scalars['String'];
-  value: Scalars['String'];
+  transactionIndex: Scalars['Int'];
 };
 
 export type LockOfferInput = {
@@ -117,7 +188,7 @@ export type Mutation = {
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
-  indexTransfer: IndexTransferResponse;
+  indexTransaction: IndexedTransaction;
   lockOffer: LockOfferResult;
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
@@ -126,6 +197,7 @@ export type Mutation = {
   updateSafe: UpdateSafeResponse;
   upsertOffer: Offer;
   upsertProfile: Profile;
+  upsertTag: Tag;
 };
 
 
@@ -144,8 +216,8 @@ export type MutationDepositChallengeArgs = {
 };
 
 
-export type MutationIndexTransferArgs = {
-  data: IndexTransferInput;
+export type MutationIndexTransactionArgs = {
+  data: IndexTransactionInput;
 };
 
 
@@ -181,6 +253,11 @@ export type MutationUpsertOfferArgs = {
 
 export type MutationUpsertProfileArgs = {
   data: UpsertProfileInput;
+};
+
+
+export type MutationUpsertTagArgs = {
+  data: UpsertTagInput;
 };
 
 export type Offer = {
@@ -316,13 +393,13 @@ export type QueryCitiesInput = {
   byName?: Maybe<QueryCitiesByNameInput>;
 };
 
-export type QueryIndexedTransferInput = {
-  from?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<QueryIndexedTransferTagsInput>>;
-  to?: Maybe<Scalars['String']>;
+export type QueryIndexedTransactionInput = {
+  fromAddress?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<QueryIndexedTransactionTagInput>>;
+  toAddress?: Maybe<Scalars['String']>;
 };
 
-export type QueryIndexedTransferTagsInput = {
+export type QueryIndexedTransactionTagInput = {
   typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
 };
@@ -385,9 +462,12 @@ export type SessionInfo = {
 
 export type Stats = {
   __typename?: 'Stats';
-  citites: Array<CityStats>;
+  cities: Array<CityStats>;
   cityRank?: Maybe<Scalars['Int']>;
+  countries: Array<CountryStats>;
   currentGoal: Scalars['Int'];
+  currentGoalFrom: Scalars['Int'];
+  goals: Array<Goal>;
   inviteRank: Scalars['Int'];
   nextGoalAt: Scalars['Int'];
   totalCitizens: Scalars['Int'];
@@ -396,11 +476,6 @@ export type Stats = {
 export type Tag = {
   __typename?: 'Tag';
   id: Scalars['Int'];
-  typeId: Scalars['String'];
-  value?: Maybe<Scalars['String']>;
-};
-
-export type TagInput = {
   typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
 };
@@ -446,6 +521,12 @@ export type UpsertProfileInput = {
   id?: Maybe<Scalars['Int']>;
   lastName?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
+};
+
+export type UpsertTagInput = {
+  id?: Maybe<Scalars['Int']>;
+  typeId: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 export type Version = {

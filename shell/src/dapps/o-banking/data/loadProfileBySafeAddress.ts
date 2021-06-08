@@ -39,11 +39,19 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Pr
             resultJson.data && resultJson.data.length
                 ? resultJson.data[0]
                 : undefined;
+
+        if (!profile) {
+            return {
+                id: 0,
+                circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
+                firstName: ""
+            }
+        }
         return {
             id: profile.id,
             circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
             firstName: profile ? profile.username : "",
-            avatarUrl: profile ? profile.avatarUrl : undefined,
+            avatarUrl: profile ? profile.avatarUrl : undefined
         };
     }
 

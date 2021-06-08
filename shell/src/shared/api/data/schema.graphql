@@ -65,18 +65,40 @@ type ExchangeTokenResponse {
     success: Boolean!
 }
 
-type IndexTransferResponse {
-    errorMessage: String
-    success: Boolean!
+type Goal {
+    totalCitizens: Int!
 }
 
-type IndexedTransfer {
-    blockNo: Int!
+type IndexTransactionLog {
+    address: String!
+    blockHash: String!
+    blockNumber: Int!
+    data: String
+    id: Int!
+    logIndex: Int!
+    removed: Boolean
+    topics: [String!]!
+    transactionHash: String!
+    transactionIndex: Int!
+}
+
+type IndexedTransaction {
+    blockHash: String!
+    blockNumber: Int!
+    confirmations: Int
+    contractAddress: String
+    cumulativeGasUsed: String!
     from: String!
+    gasUsed: String!
+    id: Int!
+    logs: [IndexTransactionLog!]
+    logsBloom: String!
+    root: String
+    status: String
     tags: [Tag!]
     to: String!
     transactionHash: String!
-    value: String!
+    transactionIndex: Int!
 }
 
 type LockOfferResult {
@@ -94,7 +116,7 @@ type Mutation {
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
-    indexTransfer(data: IndexTransferInput!): IndexTransferResponse!
+    indexTransaction(data: IndexTransactionInput!): IndexedTransaction!
     lockOffer(data: LockOfferInput!): LockOfferResult!
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
@@ -103,6 +125,7 @@ type Mutation {
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
     upsertOffer(data: UpsertOfferInput!): Offer!
     upsertProfile(data: UpsertProfileInput!): Profile!
+    upsertTag(data: UpsertTagInput!): Tag!
 }
 
 type Offer {
@@ -197,6 +220,7 @@ type Stats {
     countries: [CountryStats!]!
     currentGoal: Int!
     currentGoalFrom: Int!
+    goals: [Goal!]!
     inviteRank: Int!
     nextGoalAt: Int!
     totalCitizens: Int!
@@ -231,17 +255,43 @@ enum PurchaseStatus {
     PAYMENT_PROVEN
 }
 
+input CreateTagInput {
+    typeId: String!
+    value: String
+}
+
 input DepositChallenge {
     jwt: String!
 }
 
-input IndexTransferInput {
-    blockNo: Int!
+input IndexTransactionInput {
+    blockHash: String!
+    blockNumber: Int!
+    confirmations: Int
+    contractAddress: String
+    cumulativeGasUsed: String!
     from: String!
-    tags: [TagInput!]
+    gasUsed: String!
+    logs: [IndexTransactionLogInput!]
+    logsBloom: String!
+    root: String
+    status: String
+    tags: [CreateTagInput!]
     to: String!
     transactionHash: String!
-    value: String!
+    transactionIndex: Int!
+}
+
+input IndexTransactionLogInput {
+    address: String!
+    blockHash: String!
+    blockNumber: Int!
+    data: String
+    logIndex: Int!
+    removed: Boolean
+    topics: [String!]!
+    transactionHash: String!
+    transactionIndex: Int!
 }
 
 input LockOfferInput {
@@ -270,13 +320,13 @@ input QueryCitiesInput {
     byName: QueryCitiesByNameInput
 }
 
-input QueryIndexedTransferInput {
-    from: String
-    tags: [QueryIndexedTransferTagsInput!]
-    to: String
+input QueryIndexedTransactionInput {
+    fromAddress: String
+    tags: [QueryIndexedTransactionTagInput!]
+    toAddress: String
 }
 
-input QueryIndexedTransferTagsInput {
+input QueryIndexedTransactionTagInput {
     typeId: String!
     value: String
 }
@@ -318,11 +368,6 @@ input SearchInput {
     searchString: String!
 }
 
-input TagInput {
-    typeId: String!
-    value: String
-}
-
 input UpdateSafeInput {
     signature: String!
 }
@@ -356,6 +401,12 @@ input UpsertProfileInput {
     id: Int
     lastName: String
     newsletter: Boolean
+}
+
+input UpsertTagInput {
+    id: Int
+    typeId: String!
+    value: String
 }
 
 
