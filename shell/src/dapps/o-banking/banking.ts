@@ -221,6 +221,13 @@ export class Banking {
             }
         });
 
+        // Remove all data urls from the accepted tokens
+        for (let tokensKey in safeCopy.acceptedTokens.tokens) {
+            if (safeCopy.acceptedTokens.tokens[tokensKey].ownerProfile?.avatarUrl?.startsWith("data:image")) {
+                safeCopy.acceptedTokens.tokens[tokensKey].ownerProfile.avatarUrl = undefined;
+            }
+        }
+
         safeCopy.ui = {};
         localStorage.setItem("safe", JSON.stringify(safeCopy))
     }

@@ -14,7 +14,7 @@ let __API_ENDPOINT__ = "https://api.circles.land";
 let __FILES_ENDPOINT__ = "https://files.circles.land";
 let __APP_ID__ = "circles.land";
 let __FILES_APP_ID__ = "files.circles.land";
-let __SAFE_SCHEMA_VERSION__ = "1";
+let __SAFE_SCHEMA_VERSION__ = "2";
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __AUTH_ENDPOINT__ = "https://auth.circles.name";
