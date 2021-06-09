@@ -44,7 +44,7 @@
   onMount(() => {
     if (items.length > 0 && !isMulti && selectedValue) {
       const _hoverItemIndex = items.findIndex(
-        (item) => item[optionIdentifier] === selectedValue
+        (item) => item[optionIdentifier] === selectedValue[optionIdentifier]
       );
 
       if (_hoverItemIndex) {
@@ -92,10 +92,6 @@
     prev_selectedValue = selectedValue;
   });
 
-  afterUpdate(() => {
-    scrollToActiveItem("hover");
-  });
-
   function handleSelect(item) {
     if (item.isCreator) return;
     dispatch("itemSelected", item);
@@ -108,10 +104,14 @@
 
   function handleClick(args) {
     const { item, i, event } = args;
+
     event.stopPropagation();
-    console.log("CLICKER");
-    if (selectedValue && !isMulti && selectedValue === item[optionIdentifier]) {
-      console.log("yeah, fucked");
+
+    if (
+      selectedValue &&
+      !isMulti &&
+      selectedValue[optionIdentifier] === item[optionIdentifier]
+    ) {
       return closeList();
     }
 
@@ -120,6 +120,7 @@
     } else {
       activeItemIndex = i;
       hoverItemIndex = i;
+
       handleSelect(item);
     }
   }
@@ -214,7 +215,10 @@
   }
 
   function isItemActive(item, selectedValue, optionIdentifier) {
-    return selectedValue && selectedValue === item[optionIdentifier];
+    return (
+      selectedValue &&
+      selectedValue[optionIdentifier] === item[optionIdentifier]
+    );
   }
 
   function isItemFirst(itemIndex) {
