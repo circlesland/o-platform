@@ -3,9 +3,13 @@
   import Time from "svelte-time";
   import { mySafe } from "../stores/safe";
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
-  import { push } from "svelte-spa-router";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  const {showProfile} = require("src/dapps/o-banking/processes/showProfile");
+  const {ShellProcessContext} = require("src/shared/processes/shellProcess");
+  const {RunProcess} = require("@o-platform/o-process/dist/events/runProcess");
+  const {shellProcess} = require("src/shared/processes/shellProcess");
+  const {Generate} = require("@o-platform/o-utils/dist/generate");
 
   export let params: {
     _id: string;
@@ -71,6 +75,26 @@
       }
     }
   }
+
+  function openDetail(id:string) {
+    if (id.startsWith("0x000")) {
+      return;
+    }
+
+    const modifier = async (ctx) => {
+      ctx.childProcessDefinition = showProfile;
+      ctx.childContext = {
+        data: {
+          id
+        },
+      };
+      return ctx;
+    };
+
+    const requestEvent = new RunProcess(shellProcess, true, modifier);
+    requestEvent.id = Generate.randomHexString(8);
+    window.o.publishEvent(requestEvent);
+  }
 </script>
 
 <BankingDetailHeader amount={transfer ? transfer.amount : 0} {classes} />
@@ -85,11 +109,7 @@
         >
           <div
             class="flex flex-col cursor-pointer"
-            on:click={() => {
-              if (!transfer.from.startsWith("0x000")) {
-                push("#/banking/trusts/" + transfer.from);
-              }
-            }}
+            on:click={() => openDetail(transfer.from)}
           >
             <div class="avatar">
               <div class="w-24 h-24 m-auto rounded-full">
@@ -126,11 +146,7 @@
           </div>
           <div
             class="flex flex-col cursor-pointer"
-            on:click={() => {
-              if (!transfer.to.startsWith("0x000")) {
-                push("#/banking/trusts/" + transfer.to);
-              }
-            }}
+            on:click={() => openDetail(transfer.to)}
           >
             <div class="avatar">
               <div class="w-24 h-24 m-auto rounded-full">

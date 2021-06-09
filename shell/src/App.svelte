@@ -50,6 +50,8 @@
 
   import DappsNav from "./shared/molecules/DappsNav.svelte";
   import DappNavItem from "./shared/atoms/DappsNavItem.svelte";
+  import {onMount} from "svelte";
+  import {showProfile, ShowProfileContextData} from "./dapps/o-banking/processes/showProfile";
 
   let isOpen: boolean = false;
   let processWaiting: boolean = false;
