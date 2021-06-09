@@ -169,3 +169,10 @@ body {
 .vis-network:focus {
 outline: none;
 }
+
+  .navbuttonicon {
+    margin-left: 0.15rem;
+    margin-top: 0.15rem;
+  }
+
+  
