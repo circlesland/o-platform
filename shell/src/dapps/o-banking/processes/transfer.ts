@@ -17,7 +17,7 @@ import { BN } from "ethereumjs-util";
 import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
-import { Profile } from "../data/api/types";
+import {Profile, ProfilesByCirclesAddressDocument} from "../data/api/types";
 import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
 import {SetTrustContext} from "./setTrust";
 
@@ -142,7 +142,7 @@ const processDefinition = (processId: string) =>
               throw new Error(`No recipient address on context`);
             }
             context.data.maxFlows = {};
-            const p1 = new Promise<void>(async (resolve, reject) => {
+            const p1 = new Promise<void>(async (resolve) => {
               const flow = await requestPathToRecipient({
                 data: {
                   recipientAddress: context.data.recipientAddress,
@@ -252,7 +252,12 @@ const processDefinition = (processId: string) =>
               // No profile found
             }
           },
-          onDone: "#message",
+          onDone: [{
+            cond: (context) => !!context.data.recipientProfile,
+            target: "#message"
+          }, {
+            target: "#prepareSummary"
+          }],
           onError: "#error",
         },
       },
