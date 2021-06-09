@@ -15,6 +15,8 @@ import { createSafe } from "./createSafe/createSafe";
 import { UpsertProfileDocument } from "../../data/api/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Profile } from "../../../o-banking/data/api/types";
+import {prompt} from "@o-platform/o-process/dist/states/prompt";
+import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 
 export type IdentifyContextData = {
   oneTimeCode?: string;
@@ -114,14 +116,14 @@ const processDefinition = (processId: string) =>
               cond: (context) =>
                 !!context.data.profile.circlesAddress &&
                 !!localStorage.getItem("circlesKey"),
-              target: "#success",
+              target: "#checkSafeAddress",
             },
             {
               // Has no safe but is creating one?
               cond: (context) =>
                 !context.data.profile.circlesAddress &&
                 !!localStorage.getItem("isCreatingSafe"),
-              target: "#success",
+              target: "#checkSafeAddress",
             },
             {
               // Has safe but no key?
@@ -239,7 +241,7 @@ const processDefinition = (processId: string) =>
             });
             context.data.profile = result.data.upsertProfile;
           },
-          onDone: "#success",
+          onDone: "#checkSafeAddress",
           onError: "#error",
         },
       },
@@ -265,6 +267,77 @@ const processDefinition = (processId: string) =>
         },
       },
 
+      checkSafeAddress: {
+        id: "checkSafeAddress",
+        always:[{
+          cond:(context) => !!context.data.profile.circlesAddress,
+          target: "#success"
+        }, {
+          target: "#getInvite"
+        }]
+      },
+
+      getInvite: prompt({
+        id: "getInvite",
+        entry:(context) => {
+          const inviteLink = "https://";
+          (<any>context.data).__getInviteHtml = `
+          <section class="mb-8">
+      <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm shadow">
+        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary" />
+        <div style="text-align: center">
+          <p
+            class="w-64 m-auto mt-2 text-2xl font-bold font-circles text-gradient"
+          >
+            You're almost there.
+          </p>
+          <p class="mt-4 text">
+            To unlock your Circles basic income, you need to get invited by a
+            CirclesLand citizen.
+          </p>
+          <div class="mt-4 mb-4 text-xs break-all" id="clipboard">
+            <input type="text" class="hidden" value="${inviteLink}" />
+            <div class="inline-block text-2xl">
+              <button class="btn btn-primary" 
+                >Copy Invite Link</button
+              >
+            </div>
+
+            <div class="block mt-2 text-sm text-light ">
+              {inviteLink}
+            </div>
+          </div>
+          <p class="text">
+            If you don't know anybody who has Circles yet, ask nicely in our <a
+              href="https://discord.gg/4DBbRCMnFZ"
+              target="_blank"
+              class="btn-link">Discord</a
+            > if someone can invite you.
+          </p>
+          <p class="pb-4 mt-4 text-xs">
+            alternatively, <a href="#/dashboard/become-a-hub" class="btn-link"
+              >become an invite hub</a
+            >
+          </p>
+          <div class="mr-1 text-primary" />
+        </div>
+      </div>
+    </section>`
+        },
+        component: HtmlViewer,
+        params: {
+          html: (context) => (<any>context.data).__getInviteHtml,
+          submitButtonText: "Close",
+          hideNav: true,
+        },
+        field: "__getInviteHtml",
+        navigation: {
+          next: "#getInvite",
+          canGoBack: () => false,
+          canSkip: () =>  false
+        }
+      }),
+
       success: {
         type: "final",
         id: "success",
@@ -277,6 +350,7 @@ const processDefinition = (processId: string) =>
           if (context.data.privateKey) {
             localStorage.setItem("circlesKey", context.data.privateKey);
           }
+
           if (context.data.redirectTo) {
             setTimeout(async () => {
               if (context.data.redirectTo.startsWith("http")) {
