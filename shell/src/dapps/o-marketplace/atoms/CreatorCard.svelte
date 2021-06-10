@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { push } from "svelte-spa-router";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import {Profile} from "../data/api/types";
   import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";

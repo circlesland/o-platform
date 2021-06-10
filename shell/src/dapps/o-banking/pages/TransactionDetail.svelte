@@ -1,15 +1,14 @@
 <script lang="ts">
-  import { Transfer } from "../data/circles/queries";
   import Time from "svelte-time";
   import { mySafe } from "../stores/safe";
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  const {showProfile} = require("src/dapps/o-banking/processes/showProfile");
-  const {ShellProcessContext} = require("src/shared/processes/shellProcess");
-  const {RunProcess} = require("@o-platform/o-process/dist/events/runProcess");
-  const {shellProcess} = require("src/shared/processes/shellProcess");
-  const {Generate} = require("@o-platform/o-utils/dist/generate");
+  import {showProfile} from "src/dapps/o-banking/processes/showProfile";
+  import {shellProcess} from "src/shared/processes/shellProcess";
+  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+  import {Generate} from "@o-platform/o-utils/dist/generate";
+  import {Transfer} from "../data/circles/types";
 
   export let params: {
     _id: string;

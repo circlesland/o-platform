@@ -1,13 +1,11 @@
 <script lang="ts">
-  import { push } from "svelte-spa-router";
   import Web3 from "web3";
-  import { Token } from "../data/circles/queries";
-  import * as style from "@dicebear/avatars-avataaars-sprites";
   import {AvataarGenerator} from "../../../shared/avataarGenerator";
   import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
   import {shellProcess, ShellProcessContext} from "../../../shared/processes/shellProcess";
   import {showProfile, ShowProfileContextData} from "../processes/showProfile";
   import {Generate} from "@o-platform/o-utils/dist/generate";
+  import {Token} from "../data/circles/types";
 
   export let token: Token;
   export let label: String;
