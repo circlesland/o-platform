@@ -170,9 +170,30 @@ body {
 outline: none;
 }
 
-  .navbuttonicon {
-    margin-left: 0.15rem;
-    margin-top: 0.15rem;
+.navbuttonicon {
+  margin-left: 0.15rem;
+  margin-top: 0.15rem;
+  @apply w-5;
+  @apply h-5;
+}
+
+.processpill .navbuttonicon {
+  margin-left: 0.15rem;
+  margin-top: 0.15rem;
+    @apply w-3;
+    @apply h-3;
+}
+
+  .navlogo {
+    margin-top: -1.25rem;
+    @apply w-16;
+    @apply h-16;
+  }
+
+  .processpill .navlogo {
+    margin-top: -1rem;
+    @apply w-12;
+    @apply h-12;
   }
 
   

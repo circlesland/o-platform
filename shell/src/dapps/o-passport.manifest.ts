@@ -7,8 +7,11 @@ import Login from "./o-passport/pages/Login.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { logout } from "./o-passport/processes/logout";
-import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
+import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+import {
+  shellProcess,
+  ShellProcessContext,
+} from "../shared/processes/shellProcess";
 
 const index: PageManifest = {
   isDefault: true,
@@ -81,7 +84,7 @@ const settings: PageManifest = {
 };
 
 // Same as 'index' but accepts a ':code' parameter that will be passed to 'Home'
-const login : PageManifest = {
+const login: PageManifest = {
   isDefault: false,
   isSystem: true,
   routeParts: ["login", ":code"],
@@ -92,8 +95,8 @@ const login : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
 
 export interface DappState {
@@ -113,6 +116,7 @@ export const passport: DappManifest<DappState> = {
     {
       key: "logout",
       label: "Logout",
+      icon: "logout",
       event: () => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,

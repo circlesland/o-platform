@@ -6,53 +6,63 @@
   import ListComponent from "./Components/List.svelte";
   import LinkComponent from "./Components/Link.svelte";
   import NavPill from "./Components/NavPill.svelte";
+  import ProcessPill from "./Components/ProcessPill.svelte";
 
-  export let segment;
   export let isOpen: boolean = false;
-
+  export let modalProcess;
   let component;
   let props;
-
+  let newnav: any;
   const current = writable(null);
   setContext("nav", current);
 
-  $: $current = segment;
-
-  const newnav = {
-    leftSlot: {
-      component: FilterComponent,
-      props: {
-        icon: "filter",
-      },
-    },
-    navPill: {
-      type: "menu", // menu|process|detail
-      left: {
-        component: ListComponent,
-        props: {
-          icon: "list",
-          action: "dappsList",
+  $: {
+    newnav = {
+      // leftSlot: {
+      //   component: FilterComponent,
+      //   props: {
+      //     icon: "filter",
+      //   },
+      // },
+      navPill: {
+        type: "menu", // menu|process|detail
+        left: {
+          component: ListComponent,
+          props: {
+            icon: "list",
+            action: "dappsList",
+          },
+        },
+        right: {
+          component: LinkComponent,
+          props: {
+            icon: "home",
+            action: "link",
+            link: "#/dashboard",
+          },
+        },
+        actionButton: {
+          component: ActionButtonComponent, // action|
+          props: {
+            disabled: false,
+            actions: ["logout"],
+          },
         },
       },
-      right: {
-        component: LinkComponent,
-        props: {
-          icon: "home",
-          action: "link",
-          link: "#/dashboard",
+      processPill: {
+        modalProcess: modalProcess,
+        isOpen: true,
+        back: true,
+        skip: true,
+        actionButton: {
+          component: ActionButtonComponent, // action|
+          props: {
+            action: "close",
+          },
         },
       },
-      actionButton: {
-        component: ActionButtonComponent, // action|
-        props: {
-          action: "quick",
-          actions: ["logout"],
-          isActive: false,
-        },
-      },
-    },
-  };
-
+    };
+  }
   const list = () => {
     component = ListComponent;
     props = { page2Prop: 2 };
@@ -67,17 +77,24 @@
 
 <footer
   id="nextnav"
-  class="fixed bottom-0 z-50 grid justify-center w-full h-20 grid-cols-4 auto-cols-max place-content-center"
+  class="fixed bottom-0 z-50 grid justify-center w-full h-20 grid-cols-3 auto-cols-max place-content-center"
 >
-  <div class="w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full text-secondary">
-    <svelte:component
-      this={newnav.leftSlot.component}
-      {...newnav.leftSlot.props}
-    />
-  </div>
-  <div class="h-12 col-span-2 px-2 py-3 bg-white rounded-full">
+  {#if newnav.leftSlot}
+    <div
+      class="w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full text-secondary"
+      class:hidden={isOpen}
+    >
+      <svelte:component
+        this={newnav.leftSlot.component}
+        {...newnav.leftSlot.props}
+      />
+    </div>
+  {/if}
+  {#if isOpen}
+    <ProcessPill props={newnav.processPill} on:actionButton {isOpen} />
+  {:else}
     <NavPill props={newnav.navPill} on:actionButton {isOpen} />
-  </div>
+  {/if}
 </footer>
 
 <style>

@@ -3,22 +3,20 @@
   const dispatch = createEventDispatcher();
 
   export let isOpen: boolean = true;
-  export let link: string = null;
-  export let action: string = null;
-  export let actions: Array = null;
-
-  let actionButtonIcon = "/logos/logo.svg";
-  let actionButtonCloseIcon = "/logos/close.svg";
-  let actionButtonImage;
+  export let disabled: boolean = false;
 
   function startAction(event) {
+    if (disabled) {
+      return;
+    }
+
     dispatch("actionButton", {
       actionButton: event,
     });
 
     if (event == "close") {
       isOpen = false;
-    } else if (event == "open") {
+    } else {
       isOpen = true;
     }
   }
@@ -30,20 +28,13 @@
     on:click={() => startAction("close")}
     src="/logos/close.svg"
     alt="circlesLand"
-    class="w-16 h-16 bg-white rounded-full navlogo"
+    class="bg-white rounded-full navlogo"
   />
 {:else}
   <img
     on:click={() => startAction("open")}
     src="/logos/logo.svg"
     alt="circlesLand"
-    class="w-16 h-16 bg-white rounded-full navlogo"
+    class="bg-white rounded-full navlogo"
   />
 {/if}
-
-<style>
-  .navlogo {
-    margin-top: -1.25rem;
-  }
-
-</style>

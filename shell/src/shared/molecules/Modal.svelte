@@ -34,7 +34,7 @@
     class="z-40 overlay"
   >
     <div
-      class="grid w-full pt-2 ml-1 mr-1 bg-white rounded-lg min-w-min justify-items-stretch md:w-2/3 xl:w-1/2"
+      class="grid w-full pt-2 ml-2 mr-2 bg-white rounded-lg min-w-min justify-items-stretch md:w-2/3 xl:w-1/2"
     >
       <div class="p-4 pb-4 space-y-2 lg:px-8">
         <div class="flex">
@@ -57,19 +57,20 @@
     position: fixed;
     top: 0;
     left: 0;
-    @apply bottom-24;
+    bottom: 0;
     right: 0;
     display: flex;
     align-items: flex-end;
     justify-content: center;
     overflow-y: hidden;
+    @apply pb-24;
   }
   /* Background Blurring for firefox and other non supportive browsers lies in App.svelte through the .blur class */
-  @supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
     aside {
       opacity: 1;
-      -webkit-backdrop-filter: blur(8px);
-      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
     }
   }
 

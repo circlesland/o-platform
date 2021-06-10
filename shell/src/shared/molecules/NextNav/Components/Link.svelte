@@ -1,6 +1,6 @@
 <script lang="ts">
   import { push } from "svelte-spa-router";
-  import Icons from "./../Icons.svelte";
+  import Icons from "./../../Icons.svelte";
 
   export let icon: any = null;
   export let link: string = null;
