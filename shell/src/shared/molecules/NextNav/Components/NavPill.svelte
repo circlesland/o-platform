@@ -10,7 +10,11 @@
 >
   <div class="grid grid-cols-3 justify-items-center">
     <div class="w-5 h-12 cursor-pointer text-secondary">
-      <svelte:component this={props.left.component} {...props.left.props} />
+      <svelte:component
+        this={props.left.component}
+        {...props.left.props}
+        on:menuButton
+      />
     </div>
     <div class="w-16 ml-1 cursor-pointer">
       <svelte:component

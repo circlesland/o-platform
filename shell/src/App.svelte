@@ -57,6 +57,7 @@
   let processWaiting: boolean = false;
   let beforeCancelPrompt: Prompt; // Is set when the "do you want to cancel?" prompt is shown
   let modalProcess: Process;
+  let showList: boolean = false;
   let modalProcessEventSubscription: Subscription;
   let current;
 
@@ -149,6 +150,7 @@
     }
     if (!modalProcess && isOpen) {
       isOpen = false;
+      showList = false;
     }
   }
 
@@ -286,6 +288,15 @@
       isOpen = true;
     }
   }
+  function handleMenuButton(event) {
+    if (event.detail.menuButton == "close") {
+      modalWantsToClose();
+    }
+    if (event.detail.menuButton == "open") {
+      showList = true;
+      isOpen = true;
+    }
+  }
 
 </script>
 
@@ -310,7 +321,12 @@
     </div>
   </main>
 </div>
-<NextNav {isOpen} bind:modalProcess on:actionButton={handleActionButton} />
+<NextNav
+  {isOpen}
+  bind:modalProcess
+  on:actionButton={handleActionButton}
+  on:menuButton={handleMenuButton}
+/>
 
 <Modal bind:isOpen on:closeRequest={modalWantsToClose}>
   {#if modalProcess}
@@ -324,6 +340,25 @@
         modalProcess = null;
       }}
     />
+  {:else if showList}
+    <ul>
+      <li>
+        <a href="/#/passport/profile">Passport</a>
+      </li>
+      <li>
+        <!-- {#if showFundHint || disableBanking}
+          Banking
+        {:else} -->
+        <a href="/#/banking/transactions"
+          >Banking (TODO: showFundHint||disableBanking)</a
+        >
+        <!-- {/if} -->
+      </li>
+      <li>
+        <a href="/#/marketplace/stream">Market</a>
+      </li>
+      <li><a href="https://discord.gg/4DBbRCMnFZ" target="_blank">Chat</a></li>
+    </ul>
   {:else}
     <!-- No process -->
     {#if getLastLoadedDapp()}
@@ -344,7 +379,7 @@
       </div>
     {/if}
   {/if}
-  <div class="grid grid-cols-3 mt-4">
+  <!-- <div class="grid grid-cols-3 mt-4">
     {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
       <button on:click={() => modalProcess.sendAnswer(new Back())}>
         <div class="text-lightgrey hover:text-primary active:text-primary">
@@ -369,7 +404,7 @@
         on:click={() => modalProcess.sendAnswer(new Skip())}>SKIP</button
       >
     {/if}
-  </div>
+  </div> -->
 </Modal>
 
 <style>
