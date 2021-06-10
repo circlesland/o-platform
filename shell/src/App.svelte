@@ -226,7 +226,7 @@
         balanceThresholdTrigger = new XDaiThresholdTrigger(
           $me.circlesSafeOwner,
           INVITE_VALUE - 0.005,
-          async (address, threshold) => {
+          async (address:string, threshold:number) => {
             console.log("The safe creation balance threshold was reached!");
             const requestEvent = new RunProcess<ShellProcessContext>(
               shellProcess,
