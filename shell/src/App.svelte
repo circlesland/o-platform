@@ -6,6 +6,7 @@
   import routes from "./loader";
   import { getLastLoadedDapp } from "./loader";
   import { getLastLoadedPage } from "./loader";
+  import { onMount } from "svelte";
 
   import Router, { push, location } from "svelte-spa-router";
   import Modal from "./shared/molecules/Modal.svelte";
@@ -293,6 +294,7 @@
       modalWantsToClose();
     }
     if (event.detail.menuButton == "open") {
+      // Load menu from dispatch.
       showList = true;
       isOpen = true;
     }
@@ -341,30 +343,21 @@
       }}
     />
   {:else if showList}
-    <ul>
-      <li>
-        <a href="/#/passport/profile">Passport</a>
-      </li>
-      <li>
-        <!-- {#if showFundHint || disableBanking}
-          Banking
-        {:else} -->
-        <a href="/#/banking/transactions"
-          >Banking (TODO: showFundHint||disableBanking)</a
-        >
-        <!-- {/if} -->
-      </li>
-      <li>
-        <a href="/#/marketplace/stream">Market</a>
-      </li>
-      <li><a href="https://discord.gg/4DBbRCMnFZ" target="_blank">Chat</a></li>
-    </ul>
+    <div class="flex flex-col space-y-6">
+      {#each lastLoadedDapp.pages.filter((o) => !o.isSystem) as page}
+        <DappNavItem
+          segment="#/{lastLoadedDapp.routeParts.join('/') +
+            '/' +
+            page.routeParts.join('/')}"
+          title={page.title}
+          on:navigate={modalWantsToClose}
+        />
+      {/each}
+    </div>
   {:else}
     <!-- No process -->
     {#if getLastLoadedDapp()}
-      <div
-        class="flex flex-wrap items-center content-around justify-center space-x-10"
-      >
+      <div class="flex flex-wrap items-center justify-center space-x-10">
         {#each getLastLoadedDapp().actions.concat(contextActions) as action}
           <div
             on:click={() =>
