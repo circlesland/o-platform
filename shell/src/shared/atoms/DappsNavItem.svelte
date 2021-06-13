@@ -2,6 +2,7 @@
   import { getContext } from "svelte";
   import { createEventDispatcher } from "svelte";
   import Router, { push } from "svelte-spa-router";
+  import Icons from "../molecules/Icons.svelte";
 
   const dispatch = createEventDispatcher();
 
@@ -49,8 +50,9 @@
   class:active={$current === segment}
   class="flex flex-row self-start space-x-10 cursor-pointer text-secondary"
 >
-  <div>
-    <svg
+  <div class="text-secondary">
+    <Icons icon={title.toLowerCase()} />
+    <!-- <svg
       xmlns="http://www.w3.org/2000/svg"
       class="w-6 h-6 m-auto"
       fill="none"
@@ -63,7 +65,7 @@
         stroke-width="2"
         d={icons[title.toLowerCase()]}
       />
-    </svg>
+    </svg> -->
   </div>
   <div>{title}</div>
 </div>
