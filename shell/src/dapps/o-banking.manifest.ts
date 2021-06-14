@@ -56,7 +56,7 @@ const transactionDetail: PageManifest = {
   isSystem: true,
   routeParts: ["transactions", ":_id"],
   component: TransactionDetail,
-  title: "TransactionDetail",
+  title: "Transaction",
   available: [
     (detail) => {
       // Can navigate to?
@@ -100,7 +100,7 @@ const tokenDetail: PageManifest = {
   isSystem: true,
   routeParts: ["assets", ":symbol"],
   component: AssetDetail,
-  title: "TokenDetail",
+  title: "Asset",
   available: [
     (detail) => {
       // Can navigate to?
@@ -144,7 +144,7 @@ const trustDetail: PageManifest = {
   isSystem: true,
   routeParts: ["trusts", ":id"],
   component: ProfilePage,
-  title: "TrustDetail",
+  title: "Trust",
   available: [
     (detail) => {
       // Can navigate to?

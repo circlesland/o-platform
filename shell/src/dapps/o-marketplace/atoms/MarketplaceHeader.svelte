@@ -1,15 +1,16 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
+
 </script>
 
 <TopNav />
 
 <div
-  class="h-60 flex flex-col w-full items-stretch justify-items-stretch  bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+  class="flex flex-col items-stretch w-full text-white h-60 justify-items-stretch bg-primarydark"
 >
-  <div class="self-center text-center block">
+  <div class="self-center block text-center">
     <div class="avatar">
-      <div class="w-36 h-36 rounded-full mb-4">
+      <div class="mb-4 rounded-full w-36 h-36">
         <!--<img
           src={avatarUrl}
           alt={profile
@@ -21,9 +22,7 @@
       </div>
     </div>
     <div class="">
-      <h2>
-        Marketplace
-      </h2>
+      <h2>Marketplace</h2>
     </div>
   </div>
 </div>
