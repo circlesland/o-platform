@@ -10,6 +10,7 @@
 
   export let isOpen: boolean = false;
   export let modalProcess;
+  export let lastPrompt;
   let component;
   let props;
   let newnav: any;
@@ -50,6 +51,7 @@
         },
       },
       processPill: {
+        lastPrompt: lastPrompt,
         modalProcess: modalProcess,
         isOpen: true,
         back: true,

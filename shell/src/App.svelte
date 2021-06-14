@@ -6,7 +6,6 @@
   import routes from "./loader";
   import { getLastLoadedDapp } from "./loader";
   import { getLastLoadedPage } from "./loader";
-  import { onMount } from "svelte";
 
   import Router, { push, location } from "svelte-spa-router";
   import Modal from "./shared/molecules/Modal.svelte";
@@ -25,8 +24,7 @@
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { Subscription } from "rxjs";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
-  import { Back } from "@o-platform/o-process/dist/events/back";
-  import { Skip } from "@o-platform/o-process/dist/events/skip";
+
   import {
     Cancel,
     CancelRequest,
@@ -49,12 +47,14 @@
     HubSignupContextData,
   } from "./dapps/o-banking/processes/deploySafe";
 
-  import DappsNav from "./shared/molecules/DappsNav.svelte";
   import DappNavItem from "./shared/atoms/DappsNavItem.svelte";
   import NextNav from "./shared/molecules/NextNav/NextNav.svelte";
   import Icons from "./shared/molecules/Icons.svelte";
-  import {onMount} from "svelte";
-  import {showProfile, ShowProfileContextData} from "./dapps/o-banking/processes/showProfile";
+
+  import {
+    showProfile,
+    ShowProfileContextData,
+  } from "./dapps/o-banking/processes/showProfile";
 
   let isOpen: boolean = false;
   let processWaiting: boolean = false;
@@ -231,7 +231,7 @@
         balanceThresholdTrigger = new XDaiThresholdTrigger(
           $me.circlesSafeOwner,
           INVITE_VALUE - 0.005,
-          async (address:string, threshold:number) => {
+          async (address: string, threshold: number) => {
             console.log("The safe creation balance threshold was reached!");
             const requestEvent = new RunProcess<ShellProcessContext>(
               shellProcess,
@@ -328,6 +328,7 @@
 <NextNav
   {isOpen}
   bind:modalProcess
+  bind:lastPrompt
   on:actionButton={handleActionButton}
   on:menuButton={handleMenuButton}
 />
