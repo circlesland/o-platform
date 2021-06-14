@@ -54,8 +54,7 @@
         lastPrompt: lastPrompt,
         modalProcess: modalProcess,
         isOpen: true,
-        back: true,
-        skip: true,
+
         actionButton: {
           component: ActionButtonComponent, // action|
           props: {
