@@ -52,6 +52,7 @@ module.exports = {
         primaryhighlight: "#66f7cd",
         secondary: "#001c6e",
         lightgrey: "#D9E2EE",
+        lightdark: "#98B2D0",
         light: "#b4b4b4",
         dark: "#0D285F",
         warning: "#FF9900",

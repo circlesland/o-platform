@@ -191,7 +191,7 @@ outline: none;
   }
 
   .processpill .navlogo {
-    margin-top: -1rem;
+    margin-top: -0.7rem;
     @apply w-12;
     @apply h-12;
   }

@@ -97,6 +97,10 @@
     transactions: `<svg class='w-6 h-6 m-auto'  viewBox="0 0 20 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M15 1.40405L19 5.40405M19 5.40405L15 9.40405M19 5.40405H5C3.93913 5.40405 2.92172 5.82548 2.17157 6.57563C1.42143 7.32577 1 8.34319 1 9.40405V11.4041M5 23.4041L1 19.4041M1 19.4041L5 15.4041M1 19.4041H15C16.0609 19.4041 17.0783 18.9826 17.8284 18.2325C18.5786 17.4823 19 16.4649 19 15.4041V13.4041" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
+    profile: `<svg width="24" height="26" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.6667 25V22.3333C22.6667 20.9188 22.1048 19.5623 21.1046 18.5621C20.1044 17.5619 18.7478 17 17.3333 17H6.66668C5.25219 17 3.89563 17.5619 2.89544 18.5621C1.89525 19.5623 1.33334 20.9188 1.33334 22.3333V25" stroke="#081B4B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 11.6667C14.9455 11.6667 17.3333 9.27885 17.3333 6.33333C17.3333 3.38781 14.9455 1 12 1C9.05449 1 6.66668 3.38781 6.66668 6.33333C6.66668 9.27885 9.05449 11.6667 12 11.6667Z" stroke="#081B4B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
   };
 
   export let icon: string = null;
