@@ -280,10 +280,10 @@ const processDefinition = (processId: string) =>
       getInvite: prompt({
         id: "getInvite",
         entry:(context) => {
-          const inviteLink = "https://";
+          const profileLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${context.data.profile.id}`;
           (<any>context.data).__getInviteHtml = `
           <section class="mb-8">
-      <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm shadow">
+      <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm">
         <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary" />
         <div style="text-align: center">
           <p
@@ -292,19 +292,19 @@ const processDefinition = (processId: string) =>
             You're almost there.
           </p>
           <p class="mt-4 text">
-            To unlock your Circles basic income, you need to get invited by a
-            CirclesLand citizen.
+            To activate your citizenship you need to be invited.<br/>
+            Send your profile link to a CirclesLand citizen to unlock your basic income.
           </p>
           <div class="mt-4 mb-4 text-xs break-all" id="clipboard">
-            <input type="text" class="hidden" value="${inviteLink}" />
+            <input type="text" class="hidden" value="${profileLink}" />
             <div class="inline-block text-2xl">
               <button class="btn btn-primary" 
-                >Copy Invite Link</button
+                >Copy profile Link</button
               >
             </div>
 
             <div class="block mt-2 text-sm text-light ">
-              {inviteLink}
+              ${profileLink}
             </div>
           </div>
           <p class="text">
@@ -312,12 +312,10 @@ const processDefinition = (processId: string) =>
               href="https://discord.gg/4DBbRCMnFZ"
               target="_blank"
               class="btn-link">Discord</a
-            > if someone can invite you.
+            > if someone can activate your citizenship.
           </p>
-          <p class="pb-4 mt-4 text-xs">
-            alternatively, <a href="#/dashboard/become-a-hub" class="btn-link"
-              >become an invite hub</a
-            >
+          <p class="pb-4 mt-4 text-xs text-light">
+            alternatively, <a href="#/dashboard/become-a-hub" class="btn-link">unlock yourself</a> and grow a new local community</a>
           </p>
           <div class="mr-1 text-primary" />
         </div>

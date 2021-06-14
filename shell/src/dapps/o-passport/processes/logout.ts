@@ -23,7 +23,7 @@ export type LogoutContext = ProcessContext<LogoutContextData>;
 
 const strings = {
   labelCheckSeedPhrase:
-    "Please enter your seedphrase to logout. If you haven't stored your seedphrase at a safe place yet, do it now and come back again later to log-out.",
+    "Please enter your Secret Recovery Code to logout. If you haven't stored your Secret Recovery Code at a safe place yet, do it now and come back again later to log-out.",
 };
 
 const processDefinition = (processId: string) =>
@@ -65,7 +65,7 @@ const processDefinition = (processId: string) =>
               const match = context.data.checkSeedPhrase.trim() == seedPhrase;
               if (!match) {
                 context.messages["checkSeedPhrase"] =
-                  "The seedphrases don't match";
+                  "The codes don't match";
               }
               return match;
             },

@@ -53,6 +53,8 @@
   import DappNavItem from "./shared/atoms/DappsNavItem.svelte";
   import NextNav from "./shared/molecules/NextNav/NextNav.svelte";
   import Icons from "./shared/molecules/Icons.svelte";
+  import {onMount} from "svelte";
+  import {showProfile, ShowProfileContextData} from "./dapps/o-banking/processes/showProfile";
 
   let isOpen: boolean = false;
   let processWaiting: boolean = false;
@@ -229,7 +231,7 @@
         balanceThresholdTrigger = new XDaiThresholdTrigger(
           $me.circlesSafeOwner,
           INVITE_VALUE - 0.005,
-          async (address, threshold) => {
+          async (address:string, threshold:number) => {
             console.log("The safe creation balance threshold was reached!");
             const requestEvent = new RunProcess<ShellProcessContext>(
               shellProcess,

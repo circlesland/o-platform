@@ -1,10 +1,9 @@
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { prompt, PromptSpec } from "@o-platform/o-process/dist/states/prompt";
+import { prompt} from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
-import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextViewer from "@o-platform/o-editors/src/TextViewer.svelte";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import * as yup from "yup";
@@ -23,17 +22,15 @@ export type CreateSafeContext = ProcessContext<CreateSafeContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  choiceLabel:
-    "Do you want to create a new private key or connect an existing Circles Seedphrase?",
   choiceConnect: "Connect",
   choiceCreate: "Create",
-  labelEditSeedphrase: "Please enter your seedphrase below:",
   labelExportSeedphrase:
-    "The following 24 word sentence is your seedphrase, which is like a non-changeable password. It is your full responsibility to save and protect your seedphrase. If you loose or forget it, all your funds are lost forever.<br/><strong class='text-primary block mt-3'>Make a backup now</strong>",
-  buttonExportSeedphrase: "I made a backup",
+    "Your Secret Recovery Code is the only key which can open your safe. It is your full responsibility to save and protect this code like a password. " +
+      "If you loose or forget it, all your funds are lost forever.<br/><strong class='text-primary block mt-3'>Secret Recovery Code</strong>",
+  buttonExportSeedphrase: "I stored it securely",
   // labelCheckSeedphrase: (context: CreateSafeContext) => `Please enter the ${context.data.checkWordIndex == 0 ? (context.data.checkWordIndex + 1).toString() + "st" : (context.data.checkWordIndex + 1).toString() + "nd"} word of your seedphrase:`,
-  labelCheckSeedphrase: `Keep in mind, everyone who knows your seedphrase can access all your funds! Did you store your seedphrase in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your seedphrase password</strong>`,
-  buttonCheckSeedphrase: "It is stored safely",
+  labelCheckSeedphrase: `Keep in mind, everyone who knows your Secret Recovery Code can access all your funds! Did you store your Secret Recovery Code in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your Secret Recovery Code</strong>`,
+  buttonCheckSeedphrase: "Really, I did it!",
 };
 
 function randomIntFromInterval(min, max) {
@@ -95,7 +92,7 @@ const processDefinition = (processId: string) =>
           hideCharacterCount: true,
           submitButtonText: strings.buttonCheckSeedphrase,
         },
-        dataSchema: yup.string().required("Please enter your seedphrase."),
+        dataSchema: yup.string().required("Please enter your Secret Recovery Code."),
         navigation: {
           next: "#verifyCheckSeedPhrase",
           previous: "#backupSeedphrase",

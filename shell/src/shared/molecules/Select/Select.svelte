@@ -190,7 +190,8 @@
       _filteredItems = JSON.parse(originalItemsClone);
       _items = JSON.parse(originalItemsClone);
     } else {
-      _filteredItems = _items ? _items.filter((item) => {
+      _filteredItems = _items
+        ? _items.filter((item) => {
             let keepItem = true;
 
             if (isMulti && selectedValue) {
@@ -206,7 +207,8 @@
               filterText,
               item
             );
-          }) : [];
+          })
+        : [];
     }
 
     if (groupBy) {
@@ -847,12 +849,13 @@
     line-height: var(--height, 42px);
     height: var(--height, 42px);
     overflow-x: hidden;
-    padding: var(--selectedItemPadding, 0 20px 0 0);
+    padding: var(--selectedItemPadding, 0 20px 0 10px);
     position: relative;
     bottom: -3rem;
     left: 0;
     max-width: inherit;
     width: 100%;
+    align-self: flex-start;
   }
 
   .selectedItem:focus {

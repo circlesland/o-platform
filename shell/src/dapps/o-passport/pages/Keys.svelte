@@ -36,7 +36,7 @@
   >
     <div class="flex items-center bg-white shadow p-4 w-full rounded-sm">
       <div class="flex flex-col items-start">
-        <h3 class="font-bold mr-2">My Seedphrase</h3>
+        <h3 class="font-bold mr-2">My Secret Recovery Code</h3>
       </div>
       <div class="flex justify-end flex-1 text-base-300">
         <svg

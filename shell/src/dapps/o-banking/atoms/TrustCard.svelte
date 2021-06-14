@@ -10,6 +10,9 @@
   import { tryGetCurrentSafe } from "../init";
   import * as style from "@dicebear/avatars-avataaars-sprites";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import {showProfile, ShowProfileContextData} from "../processes/showProfile";
+  import {Generate} from "@o-platform/o-utils/dist/generate";
+  import {profile} from "../../o-marketplace/atoms/CreatorCard.svelte";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -62,7 +65,24 @@
   }
 
   function loadDetailPage(path) {
-    push("#/banking/trusts/" + path);
+    //push("#/banking/trusts/" + path);
+
+    const requestEvent = new RunProcess<ShellProcessContext>(
+            shellProcess,
+            true,
+            async (ctx) => {
+              ctx.childProcessDefinition = showProfile;
+              ctx.childContext = {
+                data: <ShowProfileContextData>{
+                  id: path
+                },
+              };
+              return ctx;
+            }
+    );
+
+    requestEvent.id = Generate.randomHexString(8);
+    window.o.publishEvent(requestEvent);
   }
 
   function execTransfer(recipientAddress?: string) {
