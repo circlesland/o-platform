@@ -304,13 +304,13 @@
 
 </script>
 
+<SvelteToast />
 <div class="flex flex-col h-screen ">
   <!-- TODO: Note: All headers are now part of their dapps
   <header class="z-10 w-full mx-auto md:w-2/3 xl:w-1/2">
   </header> -->
 
   <main class="z-30 flex-1 overflow-y-auto">
-    <SvelteToast />
     <div
       class="w-full mx-auto {layoutClasses}"
       class:mb-16={!isOpen}
