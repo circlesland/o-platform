@@ -8,9 +8,7 @@
 
 <TopNav />
 
-<div
-  class="flex flex-col items-stretch text-white h-60 navbar bg-gradient-to-r from-gradient1 to-gradient2"
->
+<div class="flex flex-col items-stretch text-white h-60 navbar bg-primarydark">
   <div class="self-center block mt-12 mb-8 text-center">
     <span class="block text-base-300">Your Balance</span>
     <span class="inline-block ml-10 text-6xl font-circles "
