@@ -78,9 +78,10 @@
 <TopNav />
 
 <div
-  class="flex flex-col items-stretch w-full text-white h-60 justify-items-stretch bg-primarydark"
+  class="flex flex-col items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primarydark"
+  style="background-image: url(/images/common/nice-bg.jpg);"
 >
-  <div class="self-center block text-center">
+  <div class="self-center block mt-4 text-center">
     <div class="avatar">
       <div class="mb-4 rounded-full w-36 h-36">
         <img
