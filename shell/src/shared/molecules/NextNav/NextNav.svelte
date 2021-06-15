@@ -7,7 +7,9 @@
   import LinkComponent from "./Components/Link.svelte";
   import NavPill from "./Components/NavPill.svelte";
   import ProcessPill from "./Components/ProcessPill.svelte";
+  import LoginPill from "./Components/LoginPill.svelte";
 
+  export let login: boolean = false;
   export let isOpen: boolean = false;
   export let modalProcess;
   export let lastPrompt;
@@ -62,6 +64,18 @@
           },
         },
       },
+      loginPill: {
+        modalProcess: modalProcess,
+        isOpen: false,
+
+        actionButton: {
+          component: ActionButtonComponent, // action|
+          props: {
+            disabled: false,
+            actions: ["login"],
+          },
+        },
+      },
     };
   }
   const list = () => {
@@ -91,7 +105,9 @@
       />
     </div>
   {/if}
-  {#if isOpen}
+  {#if login}
+    <LoginPill props={newnav.loginPill} />
+  {:else if isOpen}
     <ProcessPill props={newnav.processPill} on:actionButton {isOpen} />
   {:else}
     <NavPill props={newnav.navPill} on:actionButton {isOpen} on:menuButton />

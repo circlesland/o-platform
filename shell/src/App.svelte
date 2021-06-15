@@ -327,6 +327,7 @@
 </div>
 <NextNav
   {isOpen}
+  login={lastLoadedDapp && lastLoadedDapp.dappId === "homepage:1"}
   bind:modalProcess
   bind:lastPrompt
   on:actionButton={handleActionButton}
