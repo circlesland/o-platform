@@ -4,14 +4,16 @@
 
   export let amount;
   export let classes: String;
+
 </script>
 
 <TopNav showBackArrow={true} />
 
 <div
-  class="h-60 flex flex-row w-full items-stretch justify-items-stretch  bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+  class="flex flex-row items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primarydark"
+  style="background-image: url(/images/common/nice-bg.jpg);"
 >
-  <div class="h-24 -mt-6 self-center flex-grow justify-self-center text-center">
+  <div class="self-center flex-grow h-24 -mt-6 text-center justify-self-center">
     {#if classes == "transactionpositive"}
       <span class="block ">Received</span>
     {:else if classes == "transactionnegative"}
@@ -19,7 +21,7 @@
     {:else}
       <span class="block text-base">Transfer</span>
     {/if}
-    <span class="inline-block text-6xl font-circles ml-10 ">
+    <span class="inline-block ml-10 text-6xl font-circles ">
       {#if classes == "transactionpositive"}
         {Number.parseFloat(
           Web3.utils.fromWei(amount ? amount : "0", "ether")
@@ -31,7 +33,7 @@
       {/if}
 
       <svg
-        class="w-8 h-8 inline -ml-4 -mt-1"
+        class="inline w-8 h-8 -mt-1 -ml-4"
         viewBox="0 0 229 255"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -51,6 +53,6 @@
         />
       </svg></span
     >
-    <span class="inline-block align-middle h-full pt-2 text-left" />
+    <span class="inline-block h-full pt-2 text-left align-middle" />
   </div>
 </div>

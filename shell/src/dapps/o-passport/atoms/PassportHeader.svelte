@@ -9,7 +9,7 @@
   import { Profile } from "../data/api/types";
   import { loadProfile } from "../processes/identify/services/loadProfile";
   import TopNav from "src/shared/atoms/TopNav.svelte";
-  import {AvataarGenerator} from "../../../shared/avataarGenerator";
+  import { AvataarGenerator } from "../../../shared/avataarGenerator";
 
   let profile: Profile;
 
@@ -23,8 +23,7 @@
     }
   }
 
-
-  let avatarUrl:string = "";
+  let avatarUrl: string = "";
   $: {
     if (params && params.profileId) {
       execLoadProfile(params ? params.profileId : $me.id.toString());
@@ -33,14 +32,10 @@
     }
 
     if (profile && profile.avatarUrl) {
-      avatarUrl = profile.avatarUrl
-    }
-    else if (profile)
-    {
-      avatarUrl = AvataarGenerator.generate(profile.circlesAddress)
-    }
-    else
-    {
+      avatarUrl = profile.avatarUrl;
+    } else if (profile) {
+      avatarUrl = AvataarGenerator.generate(profile.circlesAddress);
+    } else {
       avatarUrl = AvataarGenerator.default();
     }
   }
@@ -77,16 +72,18 @@
 
     window.o.publishEvent(requestEvent);
   }
+
 </script>
 
 <TopNav />
 
 <div
-  class="h-60 flex flex-col w-full items-stretch justify-items-stretch  bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+  class="flex flex-col items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primarydark"
+  style="background-image: url(/images/common/nice-bg.jpg);"
 >
-  <div class="self-center text-center block">
+  <div class="self-center block mt-4 text-center">
     <div class="avatar">
-      <div class="w-36 h-36 rounded-full mb-4">
+      <div class="mb-4 rounded-full w-36 h-36">
         <img
           src={avatarUrl}
           alt={profile
@@ -97,12 +94,12 @@
         />
       </div>
       <button
-        class="link link-primary text-primary text-2xs self-start relative top-1 right-2"
+        class="relative self-start link link-primary text-primary text-2xs top-1 right-2"
         on:click={() => editProfileField({ avatarUrl: true })}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-3 w-3 relative top-0 right-0"
+          class="relative top-0 right-0 w-3 h-3"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -117,12 +114,12 @@
         {profile ? profile.firstName : ""}
         {profile && profile.lastName ? profile.lastName : ""}
         <button
-          class="link link-primary text-primary text-2xs self-start -mt-2 -mr-3"
+          class="self-start -mt-2 -mr-3 link link-primary text-primary text-2xs"
           on:click={() => editProfileField({ firstName: true, lastName: true })}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-3 w-3 relative top-0 right-0"
+            class="relative top-0 right-0 w-3 h-3"
             viewBox="0 0 20 20"
             fill="currentColor"
           >

@@ -43,6 +43,7 @@
     requestEvent.id = Generate.randomHexString(8);
     window.o.publishEvent(requestEvent);
   }
+
 </script>
 
 <div
@@ -116,7 +117,7 @@
   <div class="flex overflow-hidden text-xs bg-gray-300 h-11">
     <div
       style="width:100%"
-      class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-gradient-to-r from-gradient1 to-gradient2"
+      class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-primarydark"
     />
   </div>
 </div>
@@ -167,4 +168,5 @@
       inset -10px -24px 40px 0px #003399, inset 20px -10px 40px 0px #003399,
       inset -20px 10px 40px 0px #003399;
   } */
+
 </style>

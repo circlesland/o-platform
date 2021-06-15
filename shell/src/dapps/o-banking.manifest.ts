@@ -19,7 +19,7 @@ import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
 import { me } from "../shared/stores/me";
 import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
-import {Profile} from "./o-banking/data/api/types";
+import { Profile } from "./o-banking/data/api/types";
 
 const transactions: PageManifest = {
   isDefault: true,
@@ -56,7 +56,7 @@ const transactionDetail: PageManifest = {
   isSystem: true,
   routeParts: ["transactions", ":_id"],
   component: TransactionDetail,
-  title: "TransactionDetail",
+  title: "Transaction",
   available: [
     (detail) => {
       // Can navigate to?
@@ -100,7 +100,7 @@ const tokenDetail: PageManifest = {
   isSystem: true,
   routeParts: ["assets", ":symbol"],
   component: AssetDetail,
-  title: "TokenDetail",
+  title: "Asset",
   available: [
     (detail) => {
       // Can navigate to?
@@ -144,7 +144,7 @@ const trustDetail: PageManifest = {
   isSystem: true,
   routeParts: ["trusts", ":id"],
   component: ProfilePage,
-  title: "TrustDetail",
+  title: "Trust",
   available: [
     (detail) => {
       // Can navigate to?
@@ -198,9 +198,11 @@ export const banking: DappManifest<DappState> = {
   routeParts: ["banking"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
-  actions: [{
+  actions: [
+    {
       key: "setTrust",
       label: "Trust someone",
+      icon: "trust",
       event: (runtimeDapp: RuntimeDapp<any>) => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,
@@ -221,6 +223,7 @@ export const banking: DappManifest<DappState> = {
     },
     {
       key: "transfer",
+      icon: "sendmoney",
       label: "Send Money",
       event: (runtimeDapp: RuntimeDapp<any>) => {
         return new RunProcess<ShellProcessContext>(

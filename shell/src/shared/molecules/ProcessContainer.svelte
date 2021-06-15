@@ -267,6 +267,7 @@
       icon: faTimes,
     },
   };
+
 </script>
 
 {#if waiting}

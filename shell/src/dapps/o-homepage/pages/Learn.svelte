@@ -26,7 +26,7 @@
         ctx.childContext = {
           data: <IdentifyContextData>{
             redirectTo: "/dashboard",
-          }
+          },
         };
         return ctx;
       }
@@ -35,21 +35,20 @@
     requestEvent.id = Generate.randomHexString(8);
     window.o.publishEvent(requestEvent);
   }
+
 </script>
 
-<div
-  class="flex flex-col h-screen  bg-gradient-to-r from-gradient1 to-gradient2 text-white"
->
-  <main class="flex-1 overflow-y-visible z-30">
+<div class="flex flex-col h-screen text-white bg-primarydark">
+  <main class="z-30 flex-1 overflow-y-visible">
     <div class="flex flex-col text-center justify-items-center pt-11">
-      <h1 class="font-circles font-bold">You got us!</h1>
-      <h2 class="font-circles font-thin pt-11">
+      <h1 class="font-bold font-circles">You got us!</h1>
+      <h2 class="font-thin font-circles pt-11">
         We're currently actively working on this.<br />All Data will be re-set
         when we launch.
       </h2>
     </div>
   </main>
-  <footer class="z-50  w-full sticky bottom-0 ">
+  <footer class="sticky bottom-0 z-50 w-full ">
     <div class="flex justify-around ">
       <button on:click={login} class="mb-4 btn btn-white">
         <img

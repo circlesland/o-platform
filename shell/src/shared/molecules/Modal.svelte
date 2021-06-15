@@ -34,13 +34,8 @@
     class="z-40 overlay"
   >
     <div
-      class="grid w-full pt-2 bg-white rounded-t-lg min-w-min justify-items-stretch md:w-2/3 xl:w-1/2 "
+      class="relative grid w-full max-h-full pt-2 ml-2 mr-2 overflow-y-scroll bg-white rounded-lg top-2 min-w-min justify-items-stretch md:w-2/3 xl:w-1/2"
     >
-      <!-- <img
-        class="z-30 inline w-12 h-12 -mt-8 -mb-6 justify-self-center "
-        src="/images/common/circles.png"
-        alt="circles.land"
-      /> -->
       <div class="p-4 pb-4 space-y-2 lg:px-8">
         <div class="flex">
           <div class="w-full m-auto">
@@ -58,7 +53,7 @@
   }
   aside {
     /* z-index: 1000; */
-    background-color: rgba(42, 46, 55, 0.8);
+    background-color: rgba(177, 192, 200, 0.4);
     position: fixed;
     top: 0;
     left: 0;
@@ -68,6 +63,7 @@
     align-items: flex-end;
     justify-content: center;
     overflow-y: hidden;
+    @apply pb-20;
   }
   /* Background Blurring for firefox and other non supportive browsers lies in App.svelte through the .blur class */
   @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {

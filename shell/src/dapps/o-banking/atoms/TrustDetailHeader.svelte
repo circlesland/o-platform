@@ -28,12 +28,14 @@
       isLoading = false;
     }
   }
+
 </script>
 
-<TopNav showBackArrow={true} />
+<TopNav />
 
 <div
-  class="flex flex-col items-stretch w-full text-white h-60 justify-items-stretch bg-gradient-to-r from-gradient1 to-gradient2"
+  class="flex flex-col items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primarydark"
+  style="background-image: url(/images/common/nice-bg.jpg);"
 >
   {#if !isLoading}
     <div class="self-center text-center avatar justify-self-center">

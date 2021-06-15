@@ -3,12 +3,14 @@
   import { mySafe } from "../stores/safe";
 
   export let balance: string = "0";
+
 </script>
 
 <TopNav />
 
 <div
-  class="flex flex-col items-stretch text-white h-60 navbar bg-gradient-to-r from-gradient1 to-gradient2"
+  class="flex flex-col items-stretch text-white bg-cover h-60 navbar bg-primarydark"
+  style="background-image: url(/images/common/nice-bg.jpg);"
 >
   <div class="self-center block mt-12 mb-8 text-center">
     <span class="block text-base-300">Your Balance</span>
