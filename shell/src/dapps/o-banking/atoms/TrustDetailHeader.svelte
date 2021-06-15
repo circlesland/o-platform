@@ -31,7 +31,7 @@
 
 </script>
 
-<TopNav showBackArrow={true} />
+<TopNav />
 
 <div
   class="flex flex-col items-stretch w-full text-white h-60 justify-items-stretch bg-primarydark"

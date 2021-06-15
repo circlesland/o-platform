@@ -78,11 +78,11 @@
   class="flex items-center justify-center mb-2 text-circlesdarkblue"
 >
   <div
-    class="flex items-center w-full p-4 space-x-2 bg-white rounded-sm shadow sm:space-x-6"
+    class="flex items-center w-full px-3 py-2 space-x-2 bg-white rounded-sm shadow sm:space-x-6"
   >
     <div class="mr-2 text-center">
       <div class="avatar">
-        <div class="w-12 h-12 m-auto mt-1 rounded-full sm:w-12 sm:h-12">
+        <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
           <img src={pictureUrl} alt={otherSafeAddress} />
         </div>
       </div>
@@ -94,7 +94,7 @@
           {displayName}
         </h2>
       </div>
-      <p class="mt-2 text-sm text-light">{message}</p>
+      <p class="text-sm text-light">{message}</p>
     </div>
 
     <div class="flex flex-col flex-1 justify-items-end">
@@ -105,9 +105,7 @@
           ).toFixed(2)}
         </span>
       </div>
-      <div
-        class="self-end mt-2 text-xs text-circleslightblue whitespace-nowrap"
-      >
+      <div class="self-end text-xs text-light whitespace-nowrap">
         {#if transfer.time}
           {#if dateOlderThanSevenDays(transfer.time)}
             <Time

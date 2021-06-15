@@ -78,7 +78,7 @@
 
 <footer
   id="nextnav"
-  class="fixed bottom-0 z-50 grid justify-center w-full h-20 grid-cols-3 auto-cols-max place-content-center"
+  class="fixed bottom-0 z-50 grid justify-center w-full h-20 grid-cols-3 pb-3 auto-cols-max place-content-center"
 >
   {#if newnav.leftSlot}
     <div

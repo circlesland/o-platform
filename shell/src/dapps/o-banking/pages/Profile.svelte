@@ -17,11 +17,11 @@
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
   import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
-  import {onDestroy, onMount} from "svelte";
-  import {Subscription} from "rxjs";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {AvataarGenerator} from "../../../shared/avataarGenerator";
-  import {Profile} from "../data/api/types";
+  import { onDestroy, onMount } from "svelte";
+  import { Subscription } from "rxjs";
+  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import { Profile } from "../data/api/types";
 
   export let params: {
     id?: String;
@@ -37,15 +37,17 @@
     }
   }
 
-  let shellEventSubscription:Subscription;
+  let shellEventSubscription: Subscription;
 
   onMount(() => {
-    shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent) => {
-      if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
-        return;
+    shellEventSubscription = window.o.events.subscribe(
+      async (event: PlatformEvent) => {
+        if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
+          return;
+        }
+        await loadProfile();
       }
-      await loadProfile();
-    });
+    );
   });
   onDestroy(() => shellEventSubscription.unsubscribe());
 
@@ -135,7 +137,9 @@
     isEditable = $me && $me.id === apiProfile.id;
 
     if (!apiProfile.avatarUrl) {
-      apiProfile.avatarUrl = AvataarGenerator.generate(apiProfile.circlesAddress);
+      apiProfile.avatarUrl = AvataarGenerator.generate(
+        apiProfile.circlesAddress
+      );
     }
 
     profile = {
@@ -154,7 +158,7 @@
       trusting: trust ? trust.trusting : undefined,
       trustedBy: trust ? trust.trustedBy : undefined,
       cityGeonameid: apiProfile.cityGeonameid,
-      city: apiProfile.city
+      city: apiProfile.city,
     };
   }
 
@@ -269,7 +273,7 @@
             country: profile.country,
             dream: profile.dream,
             cityGeonameid: profile.cityGeonameid,
-            city: profile.city
+            city: profile.city,
           },
           dirtyFlags: dirtyFlags,
         };
@@ -288,6 +292,7 @@
     });
     app.$destroy();
   };
+
 </script>
 
 <TrustDetailHeader {profile} />
@@ -465,9 +470,11 @@
     </section>
 
     <section class="justify-center mb-2 text-circlesdarkblue">
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+      <div
+        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
+      >
         <div
-                class="text-circleslightblue text-xs font-circles font-bold text-left"
+          class="text-xs font-bold text-left text-circleslightblue font-circles"
         >
           CITY
         </div>
@@ -476,26 +483,26 @@
           <div class="text-left">
             <small>
               {#if profile && profile.city}
-                {profile.city ? profile.city.name : ''}
+                {profile.city ? profile.city.name : ""}
               {:else}
                 No city set.
               {/if}
               {#if isEditable}
-              <button
-                      class="link link-primary text-primary text-2xs"
-                      on:click={() => editProfile({ cityGeonameid: true })}
-              >
-                <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-3 w-3"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                <button
+                  class="link link-primary text-primary text-2xs"
+                  on:click={() => editProfile({ cityGeonameid: true })}
                 >
-                  <path
-                          d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-3 h-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                    />
+                  </svg>
+                </button>
               {/if}
             </small>
           </div>
@@ -504,9 +511,11 @@
     </section>
 
     <section class="justify-center mb-2 text-circlesdarkblue">
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+      <div
+        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
+      >
         <div
-                class="text-circleslightblue text-xs font-circles font-bold text-left"
+          class="text-xs font-bold text-left text-circleslightblue font-circles"
         >
           COUNTRY
         </div>
@@ -520,21 +529,21 @@
                 No Country set.
               {/if}
               {#if isEditable}
-              <button
-                      class="link link-primary text-primary text-2xs"
-                      on:click={() => editProfile({ cityGeonameid: true })}
-              >
-                <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-3 w-3"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                <button
+                  class="link link-primary text-primary text-2xs"
+                  on:click={() => editProfile({ cityGeonameid: true })}
                 >
-                  <path
-                          d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-3 h-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                    />
+                  </svg>
+                </button>
               {/if}
             </small>
           </div>

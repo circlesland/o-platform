@@ -10,9 +10,13 @@
   import { tryGetCurrentSafe } from "../init";
   import * as style from "@dicebear/avatars-avataaars-sprites";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import {showProfile, ShowProfileContextData} from "../processes/showProfile";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
-  import {profile} from "../../o-marketplace/atoms/CreatorCard.svelte";
+  import {
+    showProfile,
+    ShowProfileContextData,
+  } from "../processes/showProfile";
+  import { Generate } from "@o-platform/o-utils/dist/generate";
+  import { profile } from "../../o-marketplace/atoms/CreatorCard.svelte";
+  import Icons from "../../../shared/molecules/Icons.svelte";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -68,17 +72,17 @@
     //push("#/banking/trusts/" + path);
 
     const requestEvent = new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = showProfile;
-              ctx.childContext = {
-                data: <ShowProfileContextData>{
-                  id: path
-                },
-              };
-              return ctx;
-            }
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = showProfile;
+        ctx.childContext = {
+          data: <ShowProfileContextData>{
+            id: path,
+          },
+        };
+        return ctx;
+      }
     );
 
     requestEvent.id = Generate.randomHexString(8);
@@ -100,6 +104,7 @@
       })
     );
   }
+
 </script>
 
 <section
@@ -206,22 +211,9 @@
       <div class="flex flex-col self-end space-y-2 text-2xl sm:text-3xl ">
         <button
           on:click={() => execTransfer(safeAddress)}
-          class="self-end btn btn-square btn-md btn-primary"
+          class="self-end btn btn-link"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-10 h-10"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          </svg>
+          <Icons icon="sendmoney" />
         </button>
       </div>
       <!-- <div class="self-end mt-2 text-xs text-circleslightblue">

@@ -17,13 +17,13 @@
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
   import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
-  import {onDestroy, onMount} from "svelte";
-  import {Subscription} from "rxjs";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {AvataarGenerator} from "../../../shared/avataarGenerator";
-  import {Profile} from "../data/api/types";
-  import {Continue} from "@o-platform/o-process/dist/events/continue";
-  import {EditorContext} from "@o-platform/o-editors/src/editorContext";
+  import { onDestroy, onMount } from "svelte";
+  import { Subscription } from "rxjs";
+  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import { Profile } from "../data/api/types";
+  import { Continue } from "@o-platform/o-process/dist/events/continue";
+  import { EditorContext } from "@o-platform/o-editors/src/editorContext";
 
   export let context: EditorContext;
 
@@ -34,13 +34,14 @@
   };
 
   onMount(() => {
-    shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent) => {
-      if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
-        return;
+    shellEventSubscription = window.o.events.subscribe(
+      async (event: PlatformEvent) => {
+        if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
+          return;
+        }
+        await loadProfile();
       }
-      await loadProfile();
-    });
-
+    );
 
     if (context.params.id) {
       isLoading = true;
@@ -62,7 +63,7 @@
     }
   }
 
-  let shellEventSubscription:Subscription;
+  let shellEventSubscription: Subscription;
 
   onDestroy(() => shellEventSubscription.unsubscribe());
 
@@ -100,8 +101,13 @@
       return;
     }
 
-    if (Number.parseInt(context.params.id) && !context.params.id.startsWith("0x")) {
-      const profile = await loadProfileByProfileId(Number.parseInt(context.params.id));
+    if (
+      Number.parseInt(context.params.id) &&
+      !context.params.id.startsWith("0x")
+    ) {
+      const profile = await loadProfileByProfileId(
+        Number.parseInt(context.params.id)
+      );
       setProfile(profile);
     } else if (RpcGateway.get().utils.isAddress(context.params.id)) {
       const profile = await loadProfileBySafeAddress(context.params.id);
@@ -152,7 +158,9 @@
     isEditable = $me && $me.id === apiProfile.id;
 
     if (!apiProfile.avatarUrl) {
-      apiProfile.avatarUrl = AvataarGenerator.generate(apiProfile.circlesAddress);
+      apiProfile.avatarUrl = AvataarGenerator.generate(
+        apiProfile.circlesAddress
+      );
     }
 
     profile = {
@@ -171,7 +179,7 @@
       trusting: trust ? trust.trusting : undefined,
       trustedBy: trust ? trust.trustedBy : undefined,
       cityGeonameid: apiProfile.cityGeonameid,
-      city: apiProfile.city
+      city: apiProfile.city,
     };
   }
 
@@ -286,7 +294,7 @@
             country: profile.country,
             dream: profile.dream,
             cityGeonameid: profile.cityGeonameid,
-            city: profile.city
+            city: profile.city,
           },
           dirtyFlags: dirtyFlags,
         };
@@ -305,13 +313,27 @@
     });
     app.$destroy();
   };
+
 </script>
 
-<TrustDetailHeader {profile} />
 {#if isLoading}
   <LoadingIndicator />
 {:else}
-  <div class="mx-4 -mt-6">
+  <div class="absolute top-0 left-0 grid w-full bg-primarydark">
+    <div class="self-center text-center avatar justify-self-center">
+      <div class="rounded-full w-36 h-36">
+        <img
+          src={profile && profile.avatarUrl ? profile.avatarUrl : ""}
+          alt={profile
+            ? profile.lastName
+              ? `${profile.firstName} ${profile.lastName}`
+              : profile.firstName
+            : "avatar"}
+        />
+      </div>
+    </div>
+  </div>
+  <div class="mt-36">
     {#if !profile.safeAddress && !isMe}
       <section class="justify-center mb-2 text-circlesdarkblue">
         <div
@@ -392,15 +414,18 @@
     {/if}
 
     {#if profile && profile.safeAddress}
-      <section class="justify-center mb-2 text-circlesdarkblue">
-        <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-        >
-          <div
-            class="text-xs font-bold text-left text-circleslightblue font-circles"
-          >
-            ADDRESS
+      <section class="justify-center mb-2 text-primarydark">
+        <div class="flex flex-col w-full p-2 space-y-1">
+          <div class="text-xs font-bold text-left font-circles">NAME</div>
+
+          <div class="flex items-center w-full space-x-2 sm:space-x-4">
+            <div class="text-xs text-left ">Ritchie Mc Bums</div>
           </div>
+        </div>
+      </section>
+      <section class="justify-center mb-2 text-primarydark">
+        <div class="flex flex-col w-full p-2 space-y-1">
+          <div class="text-xs font-bold text-left font-circles">ADDRESS</div>
 
           <div class="flex items-center w-full space-x-2 sm:space-x-4">
             <div class="text-left">
@@ -440,15 +465,9 @@
         </div>
       </section>
     {/if}
-    <section class="justify-center mb-2 text-circlesdarkblue">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div
-          class="text-xs font-bold text-left text-circleslightblue font-circles"
-        >
-          PASSION
-        </div>
+    <section class="justify-center mb-2 text-primarydark">
+      <div class="flex flex-col w-full p-2 space-y-1">
+        <div class="text-xs font-bold text-left font-circles">PASSION</div>
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
@@ -481,10 +500,10 @@
       </div>
     </section>
 
-    <section class="justify-center mb-2 text-circlesdarkblue">
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
+    <section class="justify-center mb-2 text-primarydark">
+      <div class="flex flex-col w-full p-2 space-y-1">
         <div
-                class="text-circleslightblue text-xs font-circles font-bold text-left"
+          class="text-xs font-bold text-left text-circleslightblue font-circles"
         >
           CITY
         </div>
@@ -493,26 +512,26 @@
           <div class="text-left">
             <small>
               {#if profile && profile.city}
-                {profile.city ? profile.city.name : ''}
+                {profile.city ? profile.city.name : ""}
               {:else}
                 No city set.
               {/if}
               {#if isEditable}
-              <button
-                      class="link link-primary text-primary text-2xs"
-                      on:click={() => editProfile({ cityGeonameid: true })}
-              >
-                <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-3 w-3"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                <button
+                  class="link link-primary text-primary text-2xs"
+                  on:click={() => editProfile({ cityGeonameid: true })}
                 >
-                  <path
-                          d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-3 h-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                    />
+                  </svg>
+                </button>
               {/if}
             </small>
           </div>
@@ -520,13 +539,9 @@
       </div>
     </section>
 
-    <section class="justify-center mb-2 text-circlesdarkblue">
-      <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-        <div
-                class="text-circleslightblue text-xs font-circles font-bold text-left"
-        >
-          COUNTRY
-        </div>
+    <section class="justify-center mb-2 text-primarydark">
+      <div class="flex flex-col w-full p-2 space-y-1">
+        <div class="text-xs font-bold text-left font-circles">COUNTRY</div>
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
@@ -537,21 +552,21 @@
                 No Country set.
               {/if}
               {#if isEditable}
-              <button
-                      class="link link-primary text-primary text-2xs"
-                      on:click={() => editProfile({ cityGeonameid: true })}
-              >
-                <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-3 w-3"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                <button
+                  class="link link-primary text-primary text-2xs"
+                  on:click={() => editProfile({ cityGeonameid: true })}
                 >
-                  <path
-                          d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-3 h-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                    />
+                  </svg>
+                </button>
               {/if}
             </small>
           </div>
