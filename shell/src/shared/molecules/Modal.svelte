@@ -31,10 +31,10 @@
     in:fade
     out:fade
     on:click|self={handleClose}
-    class="z-40 overlay"
+    class="z-40 pt-2 overlay"
   >
     <div
-      class="relative grid w-full max-h-full pt-2 ml-2 mr-2 overflow-y-scroll bg-white rounded-lg top-2 min-w-min justify-items-stretch md:w-2/3 xl:w-1/2"
+      class="relative grid w-full max-h-full mb-2 ml-2 mr-2 overflow-y-scroll bg-white rounded-lg top-2 min-w-min justify-items-stretch md:w-2/3 xl:w-1/2"
     >
       <div class="p-4 pb-4 space-y-2 lg:px-8">
         <div class="flex">

@@ -9,20 +9,20 @@
 </script>
 
 <div
-  class="w-auto h-8 col-start-2 py-1 bg-white rounded-full place-self-center processpill"
+  class="w-auto h-8 col-start-2 place-self-center processpill"
   class:pl-2={props.lastPrompt && props.lastPrompt.navigation.canGoBack}
   class:pr-2={props.lastPrompt && props.lastPrompt.navigation.canSkip}
 >
-  <div class="flex flex-row justify-items-center">
+  <div class="grid grid-cols-3 justify-items-center">
     {#if props.lastPrompt && props.lastPrompt.navigation.canGoBack}
       <div
-        class="h-8 px-2 cursor-pointer w-14 text-lightdark"
+        class="w-20 h-8 px-3 py-1 bg-white rounded-full cursor-pointer text-lightdark"
         on:click={() => props.modalProcess.sendAnswer(new Back())}
       >
         back
       </div>
     {/if}
-    <div class="w-12 cursor-pointer">
+    <div class="z-50 w-12 col-start-2 cursor-pointer">
       <svelte:component
         this={props.actionButton.component}
         {...props.actionButton.props}
@@ -32,7 +32,7 @@
     </div>
     {#if props.lastPrompt && props.lastPrompt.navigation.canSkip}
       <div
-        class="h-8 px-3 cursor-pointer w-14 text-lightdark"
+        class="w-20 h-8 py-1 bg-white rounded-full cursor-pointer px-9 text-lightdark"
         on:click={() => props.modalProcess.sendAnswer(new Skip())}
       >
         skip
