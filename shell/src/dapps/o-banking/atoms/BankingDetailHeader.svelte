@@ -10,7 +10,8 @@
 <TopNav showBackArrow={true} />
 
 <div
-  class="flex flex-row items-stretch w-full text-white h-60 justify-items-stretch bg-primarydark"
+  class="flex flex-row items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primarydark"
+  style="background-image: url(/images/common/nice-bg.jpg);"
 >
   <div class="self-center flex-grow h-24 -mt-6 text-center justify-self-center">
     {#if classes == "transactionpositive"}
