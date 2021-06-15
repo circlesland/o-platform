@@ -105,10 +105,11 @@
       />
     </div>
   {/if}
-  {#if login}
-    <LoginPill props={newnav.loginPill} />
-  {:else if isOpen}
+
+  {#if isOpen}
     <ProcessPill props={newnav.processPill} on:actionButton {isOpen} />
+  {:else if login}
+    <LoginPill props={newnav.loginPill} />
   {:else}
     <NavPill props={newnav.navPill} on:actionButton {isOpen} on:menuButton />
   {/if}
