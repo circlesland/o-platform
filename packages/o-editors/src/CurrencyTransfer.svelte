@@ -60,7 +60,7 @@
 
 </script>
 
-<p class="label-text">
+<p class="mt-12 label-text">
   {context.params.label}
 </p>
 {#if context.messages[context.field]}
