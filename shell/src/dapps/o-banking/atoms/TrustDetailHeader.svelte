@@ -31,8 +31,6 @@
 
 </script>
 
-<TopNav />
-
 <div
   class="flex flex-col items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primarydark"
   style="background-image: url(/images/common/nice-bg.jpg);"

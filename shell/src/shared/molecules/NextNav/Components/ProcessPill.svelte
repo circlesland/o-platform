@@ -9,11 +9,11 @@
 </script>
 
 <div
-  class="w-auto h-8 col-start-2 place-self-center processpill"
+  class="w-auto h-8 col-start-2 place-self-center processPill"
   class:pl-2={props.lastPrompt && props.lastPrompt.navigation.canGoBack}
   class:pr-2={props.lastPrompt && props.lastPrompt.navigation.canSkip}
 >
-  <div class="grid grid-cols-3 justify-items-center">
+  <div class="grid grid-cols-3 justify-items-center processPillGrid">
     {#if props.lastPrompt && props.lastPrompt.navigation.canGoBack}
       <div
         class="w-20 h-8 px-3 py-1 bg-white rounded-full cursor-pointer text-lightdark"

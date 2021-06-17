@@ -2,7 +2,7 @@
   import { me } from "../../../shared/stores/me";
   import TopNav from "src/shared/atoms/TopNav.svelte";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-
+  import PageHeader from "src/shared/atoms/PageHeader.svelte";
   $: me;
 
   let avatarUrl: string = "";
@@ -20,9 +20,9 @@
 
 <TopNav />
 
-<div
-  class="flex flex-col items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primarydark"
-  style="background-image: url(/images/common/nice-bg.jpg);"
+<PageHeader
+  heightClass="h-72"
+  headerBackground="/images/common/headerbackground/header-background-passport.jpg"
 >
   <div class="self-center mt-4 text-center avatar justify-self-center">
     <div class="mb-4 rounded-full w-36 h-36">
@@ -41,4 +41,4 @@
       <strong>Welcome {$me ? $me.firstName : ""}</strong>
     </div>
   </div>
-</div>
+</PageHeader>

@@ -9,6 +9,7 @@
   import { Profile } from "../data/api/types";
   import { loadProfile } from "../processes/identify/services/loadProfile";
   import TopNav from "src/shared/atoms/TopNav.svelte";
+  import PageHeader from "src/shared/atoms/PageHeader.svelte";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
 
   let profile: Profile;
@@ -77,9 +78,9 @@
 
 <TopNav />
 
-<div
-  class="flex flex-col items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primarydark"
-  style="background-image: url(/images/common/nice-bg.jpg);"
+<PageHeader
+  heightClass="h-72"
+  headerBackground="/images/common/headerbackground/header-background-passport.jpg"
 >
   <div class="self-center block mt-4 text-center">
     <div class="avatar">
@@ -131,4 +132,4 @@
       </h2>
     </div>
   </div>
-</div>
+</PageHeader>

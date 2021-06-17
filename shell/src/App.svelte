@@ -305,7 +305,7 @@
 </script>
 
 <SvelteToast />
-<div class="flex flex-col h-screen ">
+<div class="flex flex-col">
   <!-- TODO: Note: All headers are now part of their dapps
   <header class="z-10 w-full mx-auto md:w-2/3 xl:w-1/2">
   </header> -->

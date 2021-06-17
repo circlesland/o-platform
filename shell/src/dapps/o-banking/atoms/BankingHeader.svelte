@@ -1,5 +1,6 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
+  import PageHeader from "src/shared/atoms/PageHeader.svelte";
   import { mySafe } from "../stores/safe";
 
   export let balance: string = "0";
@@ -8,13 +9,12 @@
 
 <TopNav />
 
-<div
-  class="flex flex-col items-stretch text-white bg-cover h-60 navbar bg-primarydark"
-  style="background-image: url(/images/common/nice-bg.jpg);"
+<PageHeader
+  heightClass="h-40"
+  headerBackground="/images/common/headerbackground/header-background-transactions.jpg"
 >
-  <div class="self-center block mt-12 mb-8 text-center">
-    <span class="block text-base-300">Your Balance</span>
-    <span class="inline-block ml-10 text-6xl font-circles "
+  <div class="self-center block text-center">
+    <span class="inline-block text-5xl"
       >{balance}
       <svg
         class="inline w-8 h-8 -mt-1 -ml-4"
@@ -37,22 +37,24 @@
         />
       </svg>
     </span>
-    <div class="self-end p-6 m-auto mt-2 space-y-2 text-base-300 max-w-max">
-      {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ""}
-        <small class="block whitespace-nowrap">
-          {$mySafe.transfers && $mySafe.transfers.rows
-            ? $mySafe.transfers.rows.length
-            : ""} transactions
-        </small>
-      {/if}
-      <small class="block whitespace-nowrap">
-        {$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ""}
-      </small>
-      <progress
-        class="progress progress-accent transaction-update-progress"
-        value={$mySafe.ui.loadingPercent ? $mySafe.ui.loadingPercent : 0}
-        max="100"
-      />
-    </div>
   </div>
-</div>
+  <div
+    class="self-end m-auto mt-2 space-y-2 text-center text-base-300 max-w-max"
+  >
+    {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ""}
+      <small class="block whitespace-nowrap">
+        {$mySafe.transfers && $mySafe.transfers.rows
+          ? $mySafe.transfers.rows.length
+          : ""} transactions
+      </small>
+    {/if}
+    <small class="block whitespace-nowrap">
+      {$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ""}
+    </small>
+    <progress
+      class="progress progress-accent transaction-update-progress"
+      value={$mySafe.ui.loadingPercent ? $mySafe.ui.loadingPercent : 0}
+      max="100"
+    />
+  </div>
+</PageHeader>

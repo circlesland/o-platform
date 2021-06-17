@@ -1,5 +1,6 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
+  import PageHeader from "src/shared/atoms/PageHeader.svelte";
   import Web3 from "web3";
 
   export let amount;
@@ -7,13 +8,10 @@
 
 </script>
 
-<TopNav showBackArrow={true} />
+<TopNav />
 
-<div
-  class="flex flex-row items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primarydark"
-  style="background-image: url(/images/common/nice-bg.jpg);"
->
-  <div class="self-center flex-grow h-24 -mt-6 text-center justify-self-center">
+<PageHeader heightClass="h-60">
+  <div class="self-center block mt-12 mb-8 text-center">
     {#if classes == "transactionpositive"}
       <span class="block ">Received</span>
     {:else if classes == "transactionnegative"}
@@ -53,6 +51,5 @@
         />
       </svg></span
     >
-    <span class="inline-block h-full pt-2 text-left align-middle" />
   </div>
-</div>
+</PageHeader>

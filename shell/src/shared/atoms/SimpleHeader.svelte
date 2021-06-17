@@ -1,13 +1,9 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
-  export let showBackArrow: boolean = false;
-  export let showHomeButton: boolean = true;
+  import PageHeader from "src/shared/atoms/PageHeader.svelte";
 
 </script>
 
-<TopNav {showHomeButton} {showBackArrow} />
+<TopNav />
 
-<div
-  class="flex flex-col items-stretch h-24 text-white bg-cover navbar bg-primarydark"
-  style="background-image: url(/images/common/nice-bg.jpg);"
-/>
+<PageHeader heightClass="h-24" />

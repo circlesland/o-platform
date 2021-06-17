@@ -37,12 +37,11 @@
   --toastContainerTop: 0;
   --toastContainerRight: 0;
   --toastWidth: 100%;
-  --primary: "#0ad99c",
-
+  --primary: "#0ad99c";
 }
 
 body {
-    height: 100vh;
+  height: 100vh;
 }
 
 .label a:hover,
@@ -56,13 +55,14 @@ body {
   @apply text-secondary;
 }
 
-.btn-text { 
+.btn-text {
   font-family: Poppins;
   @apply font-bold;
   letter-spacing: 3px;
 }
 
-.btn-text:hover, .btn-text:active {
+.btn-text:hover,
+.btn-text:active {
   @apply no-underline;
 }
 
@@ -83,7 +83,6 @@ body {
 .btn-outline.btn-white {
   @apply text-white;
   @apply border-white;
-
 }
 
 .circles-button {
@@ -120,7 +119,7 @@ body {
 .truncateThis:before {
   content: "";
   @apply w-full;
-@apply h-full;
+  @apply h-full;
   @apply absolute;
   @apply left-0;
   @apply top-0;
@@ -134,9 +133,8 @@ body {
   /* background: #ffcc33; */
 }
 .label {
-    @apply text-center;
-    @apply block;
-    
+  @apply text-center;
+  @apply block;
 }
 .label-text {
   @apply text-secondary;
@@ -148,8 +146,8 @@ body {
 }
 
 .input-error {
-  --tw-border-opacity: 1!important;
-  border-color: hsla(var(--er, 14 100% 57%)/var(--tw-border-opacity));
+  --tw-border-opacity: 1 !important;
+  border-color: hsla(var(--er, 14 100% 57%) / var(--tw-border-opacity));
 }
 
 .infocard {
@@ -160,14 +158,14 @@ body {
 }
 
 .infocard-body {
-  color: #0c5460; 
+  color: #0c5460;
 }
 
 *:focus {
   outline: none;
 }
 .vis-network:focus {
-outline: none;
+  outline: none;
 }
 
 .navbuttonicon {
@@ -177,23 +175,25 @@ outline: none;
   @apply h-5;
 }
 
-.processpill .navbuttonicon {
+.processPill .navbuttonicon {
   margin-left: 0.15rem;
   margin-top: 0.15rem;
-    @apply w-3;
-    @apply h-3;
+  @apply w-3;
+  @apply h-3;
 }
 
-  .navlogo {
-    margin-top: -1.25rem;
-    @apply w-16;
-    @apply h-16;
-  }
+.navlogo {
+  margin-top: -1.25rem;
+  @apply w-16;
+  @apply h-16;
+}
 
-  .processpill .navlogo {
-    margin-top: -0.5rem;
-    @apply w-12;
-    @apply h-12;
-  }
+.processPill .navlogo {
+  margin-top: -0.5rem;
+  @apply w-12;
+  @apply h-12;
+}
 
-  
+.processPillGrid {
+  max-width: 7rem;
+}

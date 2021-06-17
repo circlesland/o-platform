@@ -33,6 +33,7 @@ module.exports = {
     extend: {
       // colors: require("daisyui/colors"),
       colors: {
+        darklight: "#0F2662",
         base: "#2c2c2c",
         "base-300": "#D1D5DB",
         red: "#DC143C",
@@ -66,7 +67,7 @@ module.exports = {
       },
       fontFamily: {
         circles: ["Poppins", "sans"],
-        primary: ["Open Sans", "sans-serif"],
+        primary: ["Poppins", "sans"],
         sans: ["Open Sans", "sans-serif"],
         serif: ["Merriweather", "serif"],
       },
