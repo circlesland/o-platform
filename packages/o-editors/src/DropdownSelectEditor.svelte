@@ -112,7 +112,7 @@
   .themed {
     width: 100%;
     padding: 0 !important;
-    --listMaxHeight: 30rem;
+    --listMaxHeight: 19rem;
     --listBackground: transparent;
     --listShadow: none;
     --borderRadius: var(--rounded-btn, 0.5rem);
