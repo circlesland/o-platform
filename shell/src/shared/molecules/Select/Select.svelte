@@ -12,6 +12,7 @@
   import MultiSelectionComponent from "./MultiSelection.svelte";
   import isOutOfViewport from "./utils/isOutOfViewport";
   import debounce from "./utils/debounce";
+  import Icons from "../../molecules/Icons.svelte";
   import DefaultClearIcon from "./ClearIcon.svelte";
 
   const dispatch = createEventDispatcher();
@@ -722,17 +723,31 @@
       disabled
     />
   {:else}
-    <input
-      type="text"
-      name="searchTerm"
-      {..._inputAttributes}
-      bind:this={input}
-      on:focus={handleFocus}
-      bind:value={filterText}
-      placeholder={placeholderText}
-      style={inputStyles}
-      class="order-1 input input-lg input-bordered"
-    />
+    <div class="flex flex-row order-1 w-full mt-1 space-x-4 bg-white">
+      <div class="flex-grow">
+        <input
+          type="text"
+          name="searchTerm"
+          {..._inputAttributes}
+          bind:this={input}
+          on:focus={handleFocus}
+          bind:value={filterText}
+          placeholder={placeholderText}
+          style={inputStyles}
+          class="order-1 input input-lg input-bordered"
+        />
+      </div>
+      <div>
+        <button
+          type="submit"
+          on:click={() => {
+            dispatch("buttonClick");
+          }}
+          class="btn btn-primary btn-square"
+          ><Icons icon="submitsmall" />
+        </button>
+      </div>
+    </div>
   {/if}
 
   {#if !isMulti && showSelectedItem}
@@ -809,13 +824,11 @@
     padding: var(--inputPadding, var(--padding));
     width: 100%;
     background: transparent;
-    font-size: var(--inputFontSize, 14px);
-    letter-spacing: var(--inputLetterSpacing, -0.08px);
     position: static;
     left: var(--inputLeft, 0);
     @apply input;
-    @apply input-lg;
     @apply input-bordered;
+    @apply text-lg;
   }
 
   .selectContainer input::placeholder {
@@ -847,14 +860,15 @@
   }
 
   .selectedItem {
-    line-height: var(--height, 42px);
+    @apply text-lg;
+    line-height: 2.75rem;
     height: var(--height, 42px);
     overflow-x: hidden;
     padding: var(--selectedItemPadding, 0 20px 0 10px);
     position: relative;
-    bottom: -3rem;
+    bottom: -3.12rem;
     left: 0;
-    max-width: inherit;
+    max-width: 80%;
     width: 100%;
     align-self: flex-start;
   }

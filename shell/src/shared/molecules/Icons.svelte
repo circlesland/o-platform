@@ -110,6 +110,18 @@
     settings: `<svg class='w-6 h-6 m-auto' viewBox="0 0 32 26" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M5.33334 25V15.6667M5.33334 10.3333V1M16 25V13M16 7.66667V1M26.6667 25V18.3333M26.6667 13V1M1.33334 15.6667H9.33334M12 7.66667H20M22.6667 18.3333H30.6667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
+    submitsmall: `<svg width="23" height="22" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.5 15L15.5 11M15.5 11L11.5 7M15.5 11H7.5M21.5 11C21.5 16.5228 17.0228 21 11.5 21C5.97715 21 1.5 16.5228 1.5 11C1.5 5.47715 5.97715 1 11.5 1C17.0228 1 21.5 5.47715 21.5 11Z" stroke="#003399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+    dropdownclear: `<svg
+  width="100%"
+  height="100%"
+  viewBox="-2 -2 50 50"
+  focusable="false"
+  role="presentation">
+  <path fill="currentColor" d="M34.923,37.251L24,26.328L13.077,37.251L9.436,33.61l10.923-10.923L9.436,11.765l3.641-3.641L24,19.047L34.923,8.124l3.641,3.641L27.641,22.688L38.564,33.61L34.923,37.251z"/></svg>
+`,
   };
 
   export let icon: string = null;

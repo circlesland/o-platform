@@ -96,6 +96,7 @@
         on:select={handleSelect}
         bind:this={selectComponent}
         bind:filterText
+        on:buttonClick={submitHandler}
       />
     </div>
     {#if context.messages[context.field]}
@@ -107,8 +108,8 @@
     {/if}
   </div>
 {/if}
-<ProcessNavigation on:buttonClick={submitHandler} {context} />
 
+<!-- <ProcessNavigation on:buttonClick={submitHandler} {context} type="small" /> -->
 <style>
   .themed {
     width: 100%;
@@ -124,10 +125,9 @@
     --inputPadding: 0.5rem 0.5rem 0.5rem 1rem;
     --itemHoverBG: "#cccccc";
     --itemIsActiveColor: #001c6e;
-    --clearSelectTop: 3rem;
+    --clearSelectTop: 3.25rem;
     --clearSelectHeight: 2.5rem;
-    @apply input-lg;
-    @apply input-bordered;
+    --clearSelectRight: 4.5rem;
     height: auto;
   }
 

@@ -145,6 +145,11 @@ body {
   @apply break-words;
 }
 
+.input {
+  @apply text-lg;
+  @apply text-darklight;
+}
+
 .input-error {
   --tw-border-opacity: 1 !important;
   border-color: hsla(var(--er, 14 100% 57%) / var(--tw-border-opacity));

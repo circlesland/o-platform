@@ -24,10 +24,10 @@
 </script>
 
 <section
-  class="flex mb-2 items-centerjustify-center text-circlesdarkblue customItem {itemClasses}"
+  class="flex mb-2 mr-1 items-center justify-center text-circlesdarkblue border rounded-sm border-lightgrey shadow-sm customItem  {itemClasses}"
 >
   <div
-    class="flex items-center w-full px-3 pt-1 space-x-2 border rounded-sm shadow-md sm:space-x-6 item-body "
+    class="flex items-center w-full px-3 pt-1 space-x-2 sm:space-x-6 item-body "
   >
     <div class="mr-2 text-center">
       <div class="avatar">
@@ -55,40 +55,21 @@
     display: flex;
     align-items: center;
     cursor: default;
-    padding: 0 4px;
+    padding: 0;
     overflow: hidden;
     @apply bg-white;
   }
 
   .customItem.active {
-    @apply bg-primary;
-  }
-
-  .customItem.active .item-body {
-    @apply bg-white;
+    @apply border;
+    @apply border-primary;
   }
 
   .customItem.hover:not(.active) {
-    @apply bg-primary;
-  }
-  .customItem.hover .item-body {
-    @apply bg-lightgrey;
+    @apply border;
+    @apply border-primary;
   }
 
-  .customItem.hover .item-body .truncateThis:before {
-    background: linear-gradient(
-      to right,
-      rgba(217, 226, 238, 0.001) 80%,
-      #d9e2ee 100%
-    );
-    background: -webkit-linear-gradient(
-      to right,
-      rgba(217, 226, 238, 0.001) 80%,
-      #d9e2ee 100%
-    );
-
-    /* background: #ffcc33; */
-  }
   .customItem_title {
     overflow: hidden;
     text-overflow: ellipsis;
