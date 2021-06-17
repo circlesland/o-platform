@@ -724,6 +724,7 @@
   {:else}
     <input
       type="text"
+      name="searchTerm"
       {..._inputAttributes}
       bind:this={input}
       on:focus={handleFocus}

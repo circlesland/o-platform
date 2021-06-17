@@ -77,7 +77,8 @@
 
     <div class="themed">
       <Select
-        name="value"
+        name="searchTerm"
+        autoComplete="off"
         isFocused={true}
         selectedValue={selected}
         loadOptions={(searchString) =>
