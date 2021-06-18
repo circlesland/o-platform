@@ -163,7 +163,6 @@ export const homepage: DappManifest<DappState> = {
         component: ActionButtonComponent, // action|
         props: {
           disabled: false,
-          actions: ["login"],
         },
       },
     },

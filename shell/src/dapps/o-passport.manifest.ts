@@ -134,7 +134,6 @@ export const passport: DappManifest<DappState> = {
   ],
   navigation: {
     navPill: {
-      type: "menu", // menu|process|detail
       left: {
         component: ListComponent,
         props: {
@@ -154,7 +153,6 @@ export const passport: DappManifest<DappState> = {
         component: ActionButtonComponent, // action|
         props: {
           disabled: false,
-          actions: ["logout"],
         },
       },
     },

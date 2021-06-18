@@ -248,7 +248,6 @@ export const banking: DappManifest<DappState> = {
   ],
   navigation: {
     navPill: {
-      type: "menu", // menu|process|detail
       left: {
         component: ListComponent,
         props: {
@@ -268,7 +267,6 @@ export const banking: DappManifest<DappState> = {
         component: ActionButtonComponent, // action|
         props: {
           disabled: false,
-          actions: ["logout"],
         },
       },
     },

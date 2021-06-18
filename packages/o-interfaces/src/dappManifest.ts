@@ -1,5 +1,6 @@
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import { PageManifest } from "./pageManifest";
+import { NavigationManifest } from "./navigationManifest";
 import { RuntimeDapp } from "./runtimeDapp";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 
@@ -65,48 +66,8 @@ export interface DappManifest<TState extends { [x: string]: any }> {
     event: (runtimeDapp: RuntimeDapp<any>) => PlatformEvent;
   }[];
 
-  navigation?: {
-    leftSlot?: {
-      component?: any;
-      props: {
-        icon: string;
-      };
-    };
-    navPill?: {
-      left?: {
-        component: string;
-        props: {
-          icon: string;
-          action: string;
-        };
-      };
-      right?: {
-        component: string;
-        props: {
-          icon: string;
-          action: string;
-          link: string;
-        };
-      };
-      actionButton: {
-        component: any; // action|
-        props: {
-          disabled: boolean;
-          actions: [];
-        };
-      };
-    };
-    loginPill?: {
-      isOpen: boolean;
-      actionButton: {
-        component: any; // action|
-        props: {
-          disabled: boolean;
-          actions: [];
-        };
-      };
-    };
-  }[];
+  navigation?: NavigationManifest;
+
   /**
    * If the auth needs to initialize things before it can be used,
    * then these steps must be performed in this factory.

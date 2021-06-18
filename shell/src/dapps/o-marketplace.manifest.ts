@@ -135,7 +135,6 @@ export const marketplace: DappManifest<DappState> = {
   isEnabled: true,
   navigation: {
     navPill: {
-      type: "menu", // menu|process|detail
       left: {
         component: ListComponent,
         props: {
@@ -155,7 +154,6 @@ export const marketplace: DappManifest<DappState> = {
         component: ActionButtonComponent, // action|
         props: {
           disabled: false,
-          actions: ["logout"],
         },
       },
     },
