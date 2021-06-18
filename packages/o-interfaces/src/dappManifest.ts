@@ -1,15 +1,14 @@
-import {IconDefinition} from "@fortawesome/fontawesome-common-types";
-import {PageManifest} from "./pageManifest";
-import {RuntimeDapp} from "./runtimeDapp";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import { IconDefinition } from "@fortawesome/fontawesome-common-types";
+import { PageManifest } from "./pageManifest";
+import { RuntimeDapp } from "./runtimeDapp";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 
-export interface DappManifest<TState extends {[x:string]:any}>
-{
+export interface DappManifest<TState extends { [x: string]: any }> {
   /**
    * A unique identifier for this auth manifest.
    * This identifier is used as a namespace for all incoming and outgoing events of the auth.
    */
-  dappId: string,
+  dappId: string;
 
   /**
    * If 'true' then the 'id' will be used as the 'runtimeId' of a RuntimeDapp
@@ -23,56 +22,102 @@ export interface DappManifest<TState extends {[x:string]:any}>
   /**
    * If the auth should be hidden in menus.
    */
-  isHidden?: boolean,
+  isHidden?: boolean;
   /**
    * This icon will be displayed in the auth overview.
    */
-  icon?: IconDefinition,
+  icon?: IconDefinition;
   /**
    * This title will be displayed as the auth name.
    */
-  title: string,
+  title: string;
 
   /**
    * The route of the entry page of this auth.
    */
-  routeParts: string[],
+  routeParts: string[];
 
   /**
    * Can be used to indicate a status in the auth overview next to the icon.
    */
-  tag: Promise<string|null|undefined>,
+  tag: Promise<string | null | undefined>;
   /**
    * Can be used to indicate if this auth is currently available in the auth overview (greyed out or not)
    */
-  isEnabled: boolean,
+  isEnabled: boolean;
 
   /**
    * Contains all pages of the auth.
    */
-  pages: PageManifest[],
+  pages: PageManifest[];
 
   /**
    * Dapps can depend on other dapps.
    * When a auth depends on another auth, then the dependent auth cannot be initialized
    * before the dependency was initialized.
    */
-  dependencies?: string[],
+  dependencies?: string[];
 
   actions?: {
     key: string;
     icon?: string;
     label: string;
-    event: (runtimeDapp:RuntimeDapp<any>) => PlatformEvent
+    event: (runtimeDapp: RuntimeDapp<any>) => PlatformEvent;
   }[];
 
+  navigation?: {
+    leftSlot?: {
+      component?: any;
+      props: {
+        icon: string;
+      };
+    };
+    navPill: {
+      left?: {
+        component: string;
+        props: {
+          icon: string;
+          action: string;
+        };
+      };
+      right?: {
+        component: string;
+        props: {
+          icon: string;
+          action: string;
+          link: string;
+        };
+      };
+      actionButton: {
+        component: any; // action|
+        props: {
+          disabled: boolean;
+          actions: [];
+        };
+      };
+    };
+    loginPill?: {
+      isOpen: boolean;
+
+      actionButton: {
+        component: any; // action|
+        props: {
+          disabled: boolean;
+          actions: [];
+        };
+      };
+    };
+  }[];
   /**
    * If the auth needs to initialize things before it can be used,
    * then these steps must be performed in this factory.
    * @param runtimeDapp
    */
-  initialize?: (stack:RuntimeDapp<TState>[], runtimeDapp: RuntimeDapp<TState>) => Promise<{
-    initialPage: PageManifest,
-    cancelDependencyLoading: boolean,
-  }>
+  initialize?: (
+    stack: RuntimeDapp<TState>[],
+    runtimeDapp: RuntimeDapp<TState>
+  ) => Promise<{
+    initialPage: PageManifest;
+    cancelDependencyLoading: boolean;
+  }>;
 }

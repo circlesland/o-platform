@@ -14,6 +14,9 @@ import {
   ShellProcessContext,
 } from "../shared/processes/shellProcess";
 import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
+import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
+import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 
 const stream: PageManifest = {
   isDefault: true,
@@ -130,6 +133,33 @@ export const marketplace: DappManifest<DappState> = {
     },
   ],
   isEnabled: true,
+  navigation: {
+    navPill: {
+      type: "menu", // menu|process|detail
+      left: {
+        component: ListComponent,
+        props: {
+          icon: "list",
+          action: "dappsList",
+        },
+      },
+      right: {
+        component: LinkComponent,
+        props: {
+          icon: "home",
+          action: "link",
+          link: "#/dashboard",
+        },
+      },
+      actionButton: {
+        component: ActionButtonComponent, // action|
+        props: {
+          disabled: false,
+          actions: ["logout"],
+        },
+      },
+    },
+  },
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {

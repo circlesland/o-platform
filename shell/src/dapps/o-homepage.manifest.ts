@@ -9,6 +9,7 @@ import Tos from "./o-homepage/pages/Tos.svelte";
 import Learn from "./o-homepage/pages/Learn.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 
 const login: PageManifest = {
   isDefault: false,
@@ -155,6 +156,18 @@ export const homepage: DappManifest<DappState> = {
   hideFooter: false,
   isFullWidth: true,
   actions: [],
+  navigation: {
+    loginPill: {
+      isOpen: false,
+      actionButton: {
+        component: ActionButtonComponent, // action|
+        props: {
+          disabled: false,
+          actions: ["login"],
+        },
+      },
+    },
+  },
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
@@ -162,5 +175,15 @@ export const homepage: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  pages: [index, citizens, countries, imprint, milestones, privacy, tos, learn, login],
+  pages: [
+    index,
+    citizens,
+    countries,
+    imprint,
+    milestones,
+    privacy,
+    tos,
+    learn,
+    login,
+  ],
 };

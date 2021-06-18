@@ -325,15 +325,17 @@
     </div>
   </main>
 </div>
-<NextNav
-  {isOpen}
-  login={lastLoadedDapp && lastLoadedDapp.dappId === "homepage:1"}
-  bind:modalProcess
-  bind:lastPrompt
-  on:actionButton={handleActionButton}
-  on:menuButton={handleMenuButton}
-/>
-
+{#if lastLoadedDapp && lastLoadedDapp.navigation}
+  <NextNav
+    {isOpen}
+    login={lastLoadedDapp && lastLoadedDapp.dappId === "homepage:1"}
+    navigation={lastLoadedDapp.navigation}
+    bind:modalProcess
+    bind:lastPrompt
+    on:actionButton={handleActionButton}
+    on:menuButton={handleMenuButton}
+  />
+{/if}
 <Modal bind:isOpen on:closeRequest={modalWantsToClose}>
   {#if modalProcess}
     <ProcessContainer

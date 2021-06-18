@@ -12,6 +12,9 @@ import {
   shellProcess,
   ShellProcessContext,
 } from "../shared/processes/shellProcess";
+import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
+import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 
 const index: PageManifest = {
   isDefault: true,
@@ -129,6 +132,33 @@ export const passport: DappManifest<DappState> = {
       },
     },
   ],
+  navigation: {
+    navPill: {
+      type: "menu", // menu|process|detail
+      left: {
+        component: ListComponent,
+        props: {
+          icon: "list",
+          action: "dappsList",
+        },
+      },
+      right: {
+        component: LinkComponent,
+        props: {
+          icon: "home",
+          action: "link",
+          link: "#/dashboard",
+        },
+      },
+      actionButton: {
+        component: ActionButtonComponent, // action|
+        props: {
+          disabled: false,
+          actions: ["logout"],
+        },
+      },
+    },
+  },
   isEnabled: true,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here

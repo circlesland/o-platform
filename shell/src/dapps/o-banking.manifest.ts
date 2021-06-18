@@ -20,6 +20,9 @@ import { init, tryGetCurrentSafe } from "./o-banking/init";
 import { me } from "../shared/stores/me";
 import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
 import { Profile } from "./o-banking/data/api/types";
+import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
+import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 
 const transactions: PageManifest = {
   isDefault: true,
@@ -243,6 +246,33 @@ export const banking: DappManifest<DappState> = {
       },
     },
   ],
+  navigation: {
+    navPill: {
+      type: "menu", // menu|process|detail
+      left: {
+        component: ListComponent,
+        props: {
+          icon: "list",
+          action: "dappsList",
+        },
+      },
+      right: {
+        component: LinkComponent,
+        props: {
+          icon: "home",
+          action: "link",
+          link: "#/dashboard",
+        },
+      },
+      actionButton: {
+        component: ActionButtonComponent, // action|
+        props: {
+          disabled: false,
+          actions: ["logout"],
+        },
+      },
+    },
+  },
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     const myProfileResult = await new Promise<Profile>((resolve) => {

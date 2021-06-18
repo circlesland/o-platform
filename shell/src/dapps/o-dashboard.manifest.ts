@@ -1,15 +1,17 @@
-import {
-  faPeopleArrows,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-dashboard/pages/Home.svelte";
 import CreateHub from "./o-dashboard/pages/CreateHub.svelte";
-import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
-import {transfer} from "./o-banking/processes/transfer";
+import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
 
-const index : PageManifest = {
+import {
+  shellProcess,
+  ShellProcessContext,
+} from "../shared/processes/shellProcess";
+import { transfer } from "./o-banking/processes/transfer";
+
+const index: PageManifest = {
   isDefault: true,
   isSystem: true,
   routeParts: [],
@@ -20,10 +22,10 @@ const index : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-const createHub : PageManifest = {
+const createHub: PageManifest = {
   isDefault: true,
   isSystem: true,
   routeParts: ["become-a-hub"],
@@ -34,16 +36,15 @@ const createHub : PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
-    }
-  ]
+    },
+  ],
 };
-
 
 export interface DappState {
   // put state here
 }
 
-export const dashboard : DappManifest<DappState> = {
+export const dashboard: DappManifest<DappState> = {
   dappId: "dashboard:1",
   isSingleton: true,
   dependencies: [],
@@ -55,12 +56,13 @@ export const dashboard : DappManifest<DappState> = {
   isEnabled: true,
   hideFooter: true,
   actions: [],
+
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
       initialPage: index,
-      cancelDependencyLoading: false
+      cancelDependencyLoading: false,
     };
   },
-  pages: [index, createHub]
+  pages: [index, createHub],
 };
