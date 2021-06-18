@@ -72,7 +72,7 @@ export interface DappManifest<TState extends { [x: string]: any }> {
         icon: string;
       };
     };
-    navPill: {
+    navPill?: {
       left?: {
         component: string;
         props: {
@@ -98,7 +98,6 @@ export interface DappManifest<TState extends { [x: string]: any }> {
     };
     loginPill?: {
       isOpen: boolean;
-
       actionButton: {
         component: any; // action|
         props: {
