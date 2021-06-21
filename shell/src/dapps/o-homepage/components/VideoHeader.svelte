@@ -45,7 +45,7 @@
     <button class="inline-block " on:click={() => playVideo()}>
       <div class="inline-flex mt-2">
         <div
-          class="flex items-center justify-center w-10 h-10 pl-1 transition duration-300 transform bg-gray-100 bg-opacity-50 shadow-2xl sm:w-16 sm:h-16 group-hover:scale-110"
+          class="flex items-center justify-center w-10 h-10 pl-1 transition duration-300 transform bg-gray-100 bg-opacity-50 rounded-full shadow-2xl sm:w-16 sm:h-16 group-hover:scale-110"
         >
           <svg
             class="w-8 h-8 text-white sm:w-10 sm:h-10"
