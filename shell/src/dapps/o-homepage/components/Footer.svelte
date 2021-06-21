@@ -1,4 +1,4 @@
-<footer class="text-white bg-darkblue">
+<footer class="text-white bg-secondary-dark">
   <div
     class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8"
   >
@@ -6,9 +6,7 @@
       <div>
         <img src="/circles.png" alt="CirclesLand" class="w-16" />
         <div class="mt-6 lg:max-w-sm">
-          <p class="text-sm text-white">
-            Be free to live the life you deserve
-          </p>
+          <p class="text-sm text-white">Be free to live the life you deserve</p>
         </div>
       </div>
       <!-- <div>

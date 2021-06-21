@@ -79,7 +79,7 @@
         </h2>
       </div>
 
-      <div class="mb-4 text-sm text-left text-red">
+      <div class="mb-4 text-sm text-left text-alert">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="inline w-4 h-4 -mt-1"
@@ -120,7 +120,7 @@
           </svg>
         </button>
       </div>
-      <!-- <div class="self-end mt-2 text-xs text-circleslightblue">
+      <!-- <div class="self-end mt-2 text-xs text-light-dark">
           9 days ago
         </div> -->
     </div>

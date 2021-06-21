@@ -321,7 +321,7 @@
 {:else}
   <div class="flex flex-col">
     <div
-      class="absolute top-0 left-0 grid w-full h-48 py-2 bg-cover bg-darkgrey"
+      class="absolute top-0 left-0 grid w-full h-48 py-2 bg-cover bg-dark"
       style="background-image: url(/images/common/nice-bg.jpg);"
     />
 
@@ -343,7 +343,7 @@
           <div
             class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
           >
-            <div class="text-xs font-bold text-left text-circleslightblue ">
+            <div class="text-xs font-bold text-left text-light-dark">
               This citizen is waiting to be empowered by you.
             </div>
 
@@ -379,7 +379,7 @@
           <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm shadow">
             <div class="px-4 py-2 mr-4 -ml-3 text-center " />
             <div style="text-align: center">
-              <p class="w-64 m-auto mt-2 text-2xl font-bold  text-gradient">
+              <p class="w-64 m-auto mt-2 text-2xl font-bold text-gradient">
                 You're almost there.
               </p>
               <p class="mt-4 text">
@@ -575,7 +575,7 @@
       {#if !isMe && (profile.trusting || profile.trustedBy)}
         <section class="justify-center mb-2 ">
           <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
-            <div class="text-sm font-bold text-circleslightblue">TRUST</div>
+            <div class="text-sm font-bold text-light-dark">TRUST</div>
             <div class="flex flex-col">
               {#if profile.trusting && profile.trustedBy}
                 <div class="mb-4 text-sm text-left text-light">
@@ -668,7 +668,7 @@
       {#if !isMe && profile.safeAddress}
         <section class="justify-center mb-2 ">
           <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
-            <div class="text-sm font-bold text-circleslightblue">TRANSFER</div>
+            <div class="text-sm font-bold text-light-dark">TRANSFER</div>
 
             <div class="flex items-center w-full space-x-2 sm:space-x-4">
               <button
@@ -681,9 +681,7 @@
         </section>
         <section class="justify-center mb-2 ">
           <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
-            <div class="text-sm font-bold text-circleslightblue">
-              CHANGE TRUST
-            </div>
+            <div class="text-sm font-bold text-light-dark">CHANGE TRUST</div>
             {#if profile.trusting && profile.trusting > 0}
               <div class="flex items-center w-full space-x-2 sm:space-x-4">
                 <button

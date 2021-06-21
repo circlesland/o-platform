@@ -160,9 +160,6 @@
           <Icons icon="sendmoney" />
         </button>
       </div>
-      <!-- <div class="self-end mt-2 text-xs text-circleslightblue">
-          9 days ago
-        </div> -->
     </div>
   </div>
 </section>

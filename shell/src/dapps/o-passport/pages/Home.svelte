@@ -78,15 +78,13 @@
   {#if profile && profile.circlesAddress}
     <section class="justify-center mb-2 ">
       <div
-        class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-circleslightblue text-xs  font-bold text-left">
-          ADDRESS
-        </div>
+        <div class="text-xs font-bold text-left text-light-dark">ADDRESS</div>
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
-            <div class="inline-block break-all text-xs" id="clipboard">
+            <div class="inline-block text-xs break-all" id="clipboard">
               {#if profile}
                 <input
                   name="name"
@@ -97,7 +95,7 @@
                 {profile.circlesAddress ? profile.circlesAddress : ""}
               {/if}
               <div
-                class="inline-block text-primary cursor-pointertext-center text-xs relative -bottom-1"
+                class="relative inline-block text-xs text-primary cursor-pointertext-center -bottom-1"
                 on:click={copy}
                 alt="Copy to Clipboard"
               >
@@ -124,11 +122,9 @@
   {/if}
   <section class="justify-center mb-2 ">
     <div
-      class="card flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm"
+      class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow card"
     >
-      <div class="text-circleslightblue text-xs  font-bold text-left">
-        PASSION
-      </div>
+      <div class="text-xs font-bold text-left text-light-dark">PASSION</div>
 
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
@@ -145,7 +141,7 @@
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-3 w-3"
+                class="w-3 h-3"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -161,8 +157,8 @@
   </section>
 
   <section class="justify-center mb-2 ">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-circleslightblue text-xs  font-bold text-left">CITY</div>
+    <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
+      <div class="text-xs font-bold text-left text-light-dark">CITY</div>
 
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
@@ -178,7 +174,7 @@
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-3 w-3"
+                class="w-3 h-3"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -194,10 +190,8 @@
   </section>
 
   <section class="justify-center mb-2 ">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-circleslightblue text-xs  font-bold text-left">
-        COUNTRY
-      </div>
+    <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
+      <div class="text-xs font-bold text-left text-light-dark">COUNTRY</div>
 
       <div class="flex items-center w-full space-x-2 sm:space-x-4">
         <div class="text-left">
@@ -213,7 +207,7 @@
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-3 w-3"
+                class="w-3 h-3"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >

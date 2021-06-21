@@ -109,7 +109,7 @@
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-3 w-3"
+                class="w-3 h-3"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -130,7 +130,7 @@
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-3 w-3"
+                  class="w-3 h-3"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -153,7 +153,7 @@
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-3 w-3"
+                  class="w-3 h-3"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -236,7 +236,7 @@
           </svg>
         </button>
       </div>
-      <div class="self-end mt-2 text-xs text-circleslightblue">
+      <div class="self-end mt-2 text-xs text-light-dark">
         {offer.publishedAt} (9 days ago)
       </div>
     </div>

@@ -87,25 +87,14 @@ module.exports = {
 
         darklight: "#0F2662",
 
-        red: "#DC143C",
-        green: "#32CD32",
         gradient1: "#003399",
         gradient2: "#0ad99c",
-        circlesblue: "#08568B",
-        circlesdarkblue: "#032A45",
-        circleshighlightblue: "#099BB0",
-        circleslightblue: "#7c96a3",
-        linkgrey: "#97acbc",
-        darkgrey: "#484b52",
-        darkblue: "#061549",
+
         transactionpositive: "#0BE09D",
         transactionnegative: "#F47474",
 
-        primaryhighlight: "#66f7cd",
-
         lightgrey: "#D9E2EE",
 
-        darkgrey: "#081B4B",
         primarydark: "#052D7C",
 
         warning: "#FF9900",

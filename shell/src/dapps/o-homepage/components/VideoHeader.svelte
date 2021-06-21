@@ -29,7 +29,7 @@
 </script>
 
 <div
-  class="relative flex items-center content-center justify-center block overflow-hidden  "
+  class="relative flex items-center content-center justify-center block overflow-hidden "
 >
   <div
     id="video-overlay"
@@ -66,7 +66,7 @@
 
   <div
     id="container"
-    class="z-10 w-full max-w-full min-w-full min-h-full bg-circlesdarkblue"
+    class="z-10 w-full max-w-full min-w-full min-h-full bg-base"
   >
     <vm-player>
       <vm-vimeo video-id="548283844" cross-origin="true" />

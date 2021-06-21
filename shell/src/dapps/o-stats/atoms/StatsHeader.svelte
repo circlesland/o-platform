@@ -33,13 +33,13 @@
                   background: -webkit-linear-gradient(left, {fromColor} 0%, {stopColor} {percent}%, {stopColor} {percent}%, {toColor} 100%);
                   background: linear-gradient(to right, {fromColor} 0%, {stopColor} {percent}%, {stopColor} {percent}%, {toColor} 100%);"
       >
-        <div class="w-1/3 text-left bg-green-100">
+        <div class="w-1/3 text-left bg-primary-lightest">
           <b>{stats.totalCitizens}</b>
         </div>
-        <div class="w-1/3 text-center bg-green-200">
+        <div class="w-1/3 text-center bg-primary-light">
           <!--{percent.toFixed(0)} %-->
         </div>
-        <div class="w-1/3 text-right bg-green-300">
+        <div class="w-1/3 text-right bg-primary">
           <b>+ {stats.nextGoalAt - stats.totalCitizens}</b>
         </div>
       </div>

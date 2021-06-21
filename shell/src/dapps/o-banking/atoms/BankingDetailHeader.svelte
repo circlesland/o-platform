@@ -19,7 +19,7 @@
     {:else}
       <span class="block text-base">Transfer</span>
     {/if}
-    <span class="inline-block ml-10 text-6xl  ">
+    <span class="inline-block ml-10 text-6xl ">
       {#if classes == "transactionpositive"}
         {Number.parseFloat(
           Web3.utils.fromWei(amount ? amount : "0", "ether")
