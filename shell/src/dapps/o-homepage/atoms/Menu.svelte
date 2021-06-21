@@ -28,6 +28,7 @@
     requestEvent.id = Generate.randomHexString(8);
     window.o.publishEvent(requestEvent);
   }
+
 </script>
 
 <nav class="relative flex items-center justify-center w-full lg:space-x-16">
@@ -57,7 +58,7 @@
     href="/"
     aria-label="Company"
     title="Company"
-    class="inline-flex items-center h-10 md:h-12 -ml-14 lg:-ml-0"
+    class="inline-flex items-center h-10 md:h-12 "
   >
     <img src="/circles.png" alt="CirclesLAND" class="h-8 md:h-12" />
   </a>

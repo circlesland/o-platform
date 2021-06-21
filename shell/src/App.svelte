@@ -61,6 +61,8 @@
   let beforeCancelPrompt: Prompt; // Is set when the "do you want to cancel?" prompt is shown
   let modalProcess: Process;
   let showList: boolean = false;
+  let showHomeMenuList: boolean = false;
+
   let modalProcessEventSubscription: Subscription;
   let current;
 
@@ -297,7 +299,11 @@
     }
     if (event.detail.menuButton == "open") {
       // Load menu from dispatch.
-      showList = true;
+      if (event.detail.action && event.detail.action == "homemenu") {
+        showHomeMenuList = true;
+      } else {
+        showList = true;
+      }
       isOpen = true;
     }
   }
@@ -313,7 +319,9 @@
   <main class="z-30 flex-1 overflow-y-auto">
     <div
       class="w-full mx-auto {layoutClasses}"
-      class:mb-16={!isOpen}
+      class:mb-16={!isOpen &&
+        lastLoadedDapp &&
+        lastLoadedDapp.dappId !== "homepage:1"}
       class:blur={isOpen}
     >
       <Router
@@ -359,6 +367,34 @@
           on:navigate={modalWantsToClose}
         />
       {/each}
+    </div>
+  {:else if showHomeMenuList}
+    <div class="flex flex-col space-y-6">
+      <DappNavItem segment="/" title="Home" on:navigate={modalWantsToClose} />
+      <DappNavItem
+        segment="https://discord.gg/CS6xq7jECR"
+        title="Chat"
+        external={true}
+        on:navigate={modalWantsToClose}
+      />
+      <DappNavItem
+        segment="https://aboutcircles.com"
+        title="Forum"
+        external={true}
+        on:navigate={modalWantsToClose}
+      />
+      <DappNavItem
+        segment="https://blog.circles.land/"
+        title="Blog"
+        external={true}
+        on:navigate={modalWantsToClose}
+      />
+      <DappNavItem
+        segment="https://blog.circles.land/whitepaper/"
+        title="Whitepaper"
+        external={true}
+        on:navigate={modalWantsToClose}
+      />
     </div>
   {:else}
     <!-- No process -->

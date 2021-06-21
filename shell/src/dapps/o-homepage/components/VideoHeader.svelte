@@ -25,29 +25,30 @@
     player.play();
     document.getElementById("video-overlay").style.visibility = "hidden";
   }
+
 </script>
 
 <div
-  class="relative flex items-center content-center justify-center block overflow-hidden font-circles"
+  class="relative flex items-center content-center justify-center block overflow-hidden font-circles "
 >
   <div
     id="video-overlay"
-    class="grid absolute grid-row z-30 items-stretch content-center text-center video-overlay h-full min-h-full w-full"
+    class="absolute z-30 grid items-stretch content-center w-full h-full min-h-full text-center grid-row video-overlay "
     on:click={() => playVideo()}
   >
-    <h1 class=" px-5 text-md md:text-6xl font-bold text-white ">
+    <h1 class="px-5 font-bold text-white text-md md:text-6xl">
       Be free to live the life you deserve
     </h1>
-    <h2 class="px-5 pt-4 text-sm sm:text-3xl font-thin text-gray-200 ">
+    <h2 class="px-5 pt-4 text-sm font-thin text-gray-200 sm:text-3xl ">
       together we build today the universal basic income economy of tomorrow.
     </h2>
     <button class="inline-block " on:click={() => playVideo()}>
       <div class="inline-flex mt-2">
         <div
-          class="flex items-center pl-1 justify-center w-10 h-10 sm:w-16 sm:h-16 transition duration-300 transform bg-gray-100 bg-opacity-50 rounded-full shadow-2xl group-hover:scale-110"
+          class="flex items-center justify-center w-10 h-10 pl-1 transition duration-300 transform bg-gray-100 bg-opacity-50 shadow-2xl sm:w-16 sm:h-16 group-hover:scale-110"
         >
           <svg
-            class="w-8 h-8 sm:w-10 sm:h-10 text-white"
+            class="w-8 h-8 text-white sm:w-10 sm:h-10"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
@@ -57,13 +58,16 @@
           </svg>
         </div>
       </div>
-      <div class="pt-0 sm:pt-2 text-center text-gray-200 text-opacity-50">
+      <div class="pt-0 text-center text-gray-200 text-opacity-50 sm:pt-2">
         play
       </div>
     </button>
   </div>
 
-  <div id="container" class="z-10 w-full max-w-full min-w-full min-h-full ">
+  <div
+    id="container"
+    class="z-10 w-full max-w-full min-w-full min-h-full bg-circlesdarkblue"
+  >
     <vm-player>
       <vm-vimeo video-id="548283844" cross-origin="true" />
       <!-- poster="/images/homepage/befree.jpg" -->
@@ -83,4 +87,5 @@
     --tw-bg-opacity: 0.5;
     background-color: rgba(30, 58, 138, var(--tw-bg-opacity));
   }
+
 </style>

@@ -3,6 +3,7 @@ export interface NavigationManifest {
     component: any;
     props: {
       icon: string;
+      action: string;
     };
   };
   rightSlot?: {

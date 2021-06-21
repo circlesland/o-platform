@@ -4,10 +4,12 @@
   const dispatch = createEventDispatcher();
 
   export let icon: any = null;
+  export let action: any = null;
 
   function openList() {
     dispatch("menuButton", {
       menuButton: "open",
+      action: action,
     });
   }
 

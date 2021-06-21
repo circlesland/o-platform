@@ -1,10 +1,12 @@
 <script>
   import { clickOutside } from "src/shared/functions/clickOutside.ts";
+  import Hamburger from "./Hamburger.svelte";
   export let open = false;
 
   function handleClickOutside(event) {
     open = false;
   }
+
 </script>
 
 <aside
@@ -13,6 +15,9 @@
   use:clickOutside
   on:click_outside={handleClickOutside}
 >
+  <nav class="z-50 mt-3 ml-1 lg:hidden">
+    <Hamburger bind:open />
+  </nav>
   <nav class="pt-16 pl-4 text-xl">
     <a
       href="/"
@@ -85,4 +90,5 @@
   .open {
     left: 0;
   }
+
 </style>

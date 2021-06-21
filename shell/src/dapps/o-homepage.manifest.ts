@@ -10,6 +10,7 @@ import Learn from "./o-homepage/pages/Learn.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 
 const login: PageManifest = {
   isDefault: false,
@@ -157,6 +158,13 @@ export const homepage: DappManifest<DappState> = {
   isFullWidth: true,
   actions: [],
   navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "list",
+        action: "homemenu",
+      },
+    },
     loginPill: {
       isOpen: false,
       actionButton: {

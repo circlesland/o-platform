@@ -28,12 +28,14 @@
 >
   {#if navigation.leftSlot}
     <div
-      class="w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full text-secondary"
+      class="w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full cursor-pointer text-secondary"
       class:hidden={isOpen}
     >
       <svelte:component
         this={navigation.leftSlot.component}
         {...navigation.leftSlot.props}
+        {isOpen}
+        on:menuButton
       />
     </div>
   {/if}

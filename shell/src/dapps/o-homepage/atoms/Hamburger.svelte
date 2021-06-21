@@ -1,15 +1,16 @@
 <script>
   export let open = false;
+
 </script>
 
 <button
-  class="text-gray-500 hover:text-gray-700 cursor-pointer mr-4 border-none focus:outline-none z-50"
+  class="z-50 mr-4 text-gray-500 border-none cursor-pointer hover:text-gray-700 focus:outline-none"
   class:open
   on:click={() => (open = !open)}
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="closed h-6 w-6"
+    class="w-6 h-6 closed"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
@@ -24,7 +25,7 @@
 
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="open h-6 w-6"
+    class="w-6 h-6 open"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
@@ -61,4 +62,5 @@
   .open svg.closed {
     display: none;
   }
+
 </style>
