@@ -24,11 +24,11 @@
 
 <footer
   id="nextnav"
-  class="fixed bottom-0 z-50 grid justify-center w-full h-20 grid-cols-3 pb-3 auto-cols-max place-content-center"
+  class="fixed bottom-0 z-50 grid justify-center w-full h-20 grid-cols-3 pb-3 auto-cols-max place-content-center text-secondary"
 >
   {#if navigation.leftSlot}
     <div
-      class="w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full cursor-pointer text-secondary"
+      class="w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full cursor-pointer"
       class:hidden={isOpen}
     >
       <svelte:component

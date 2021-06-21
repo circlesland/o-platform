@@ -6,6 +6,7 @@
 
   let maxValue = "0";
   let transfers = [];
+
 </script>
 
 <div class="bg-gray-50">
@@ -19,7 +20,7 @@
         Calculate paymentpath
       </p>
       <h2
-        class="max-w-lg mx-auto mb-6 text-3xl font-bold tracking-tight text-center font-circles text-secondary sm:text-4xl sm:leading-none"
+        class="max-w-lg mx-auto mb-6 text-3xl font-bold tracking-tight text-center   sm:text-4xl sm:leading-none"
       >
         Check your maximum amount of Circles
       </h2>
@@ -38,11 +39,10 @@
       you can use up to
     </p>
     <h3
-      class="max-w-lg mx-auto mb-6 text-3xl font-bold tracking-tight text-center font-circles text-secondary sm:text-4xl sm:leading-none"
+      class="max-w-lg mx-auto mb-6 text-3xl font-bold tracking-tight text-center   sm:text-4xl sm:leading-none"
     >
       {formatValue(maxValue)} Circles
     </h3>
     <TransferGraph {transfers} />
   </div>
- 
 </div>

@@ -4,7 +4,7 @@
   import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
   import { onMount } from "svelte";
   import { UpsertProfileDocument, WhoamiDocument } from "../data/api/types";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 
   async function editProfile() {
     /*
@@ -85,16 +85,15 @@
     // TODO: Make call to upsertProfile shorter
     await editProfile();
   });
+
 </script>
 
 <PassportHeader />
 
 <div class="mx-4 -mt-6">
-  <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
+  <section class="flex items-center justify-center mb-2  ">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-primary text-xs font-circles font-bold text-left">
-        EMAIL
-      </div>
+      <div class="text-primary text-xs  font-bold text-left">EMAIL</div>
       <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
         <div class="mr-2 text-center">
           {email}
@@ -102,11 +101,9 @@
       </div>
     </div>
   </section>
-  <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
+  <section class="flex items-center justify-center mb-2  ">
     <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-primary text-xs font-circles font-bold text-left">
-        NEWSLETTER
-      </div>
+      <div class="text-primary text-xs  font-bold text-left">NEWSLETTER</div>
       <div class="bg-white w-full space-x-2 sm:space-x-6">
         <div class="form-control w-full">
           <label class="label" for="newsletter">

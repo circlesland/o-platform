@@ -200,14 +200,15 @@
       dream: "poajsdhf öanskd fkandsf asdffn askdfn alksdfadf",
     },
   ];
+
 </script>
 
-<div class="p-4 m-4 uppercase text-secondary ">Most recent citizens</div>
+<div class="p-4 m-4 uppercase  ">Most recent citizens</div>
 <div class="pb-12 pt-6 m-auto mt-6 text-center">
   <a
     href="/#/citizens"
     aria-label=""
-    class="text-xl font-semibold  transition-colors duration-200 text-primary hover:text-secondary"
+    class="text-xl font-semibold  transition-colors duration-200 text-primary hover:"
   >
     Show more citizens
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">
@@ -227,7 +228,7 @@
       </div>
 
       <div class="flex flex-col py-2 ml-4">
-        <p class="text-lg font-semibold font-circles text-secondary">
+        <p class="text-lg font-semibold  ">
           {c.name}
         </p>
         <p class="text-sm text-left text-primary">
@@ -245,7 +246,7 @@
   <a
     href="/#/citizens"
     aria-label=""
-    class="flex items-center w-full py-12 mx-auto mt-6 text-xl font-semibold text-center transition-colors duration-200 text-primary hover:text-secondary"
+    class="flex items-center w-full py-12 mx-auto mt-6 text-xl font-semibold text-center transition-colors duration-200 text-primary hover:"
   >
     Show more citizens
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">

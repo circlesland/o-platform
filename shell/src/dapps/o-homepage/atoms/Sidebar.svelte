@@ -21,7 +21,7 @@
   <nav class="pt-16 pl-4 text-xl">
     <a
       href="/"
-      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200  hover:text-primary"
       >Home</a
     >
 
@@ -30,7 +30,7 @@
       target="_blank"
       aria-label="Our product"
       title="Our product"
-      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200  hover:text-primary"
       >Chat</a
     >
 
@@ -39,7 +39,7 @@
       target="_blank"
       aria-label="Our product"
       title="Our product"
-      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200  hover:text-primary"
       >Forum</a
     >
 
@@ -48,7 +48,7 @@
       target="_blank"
       aria-label="About us"
       title="About us"
-      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200  hover:text-primary"
       >Blog</a
     >
 
@@ -57,25 +57,25 @@
       target="_blank"
       aria-label="Sign in"
       title="Sign in"
-      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200  hover:text-primary"
       >Whitepaper</a
     >
 
     <!-- <a
       href="/#/citizens"
-      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200  hover:text-primary"
       >Citizens</a
     >
 
     <a
       href="/#/countries"
-      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200  hover:text-primary"
       >Countries</a
     >
 
     <a
       href="/#/milestones"
-      class="block mb-10 font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+      class="block mb-10 font-bold tracking-wide transition-colors duration-200  hover:text-primary"
       >Milestones</a
     > -->
   </nav>

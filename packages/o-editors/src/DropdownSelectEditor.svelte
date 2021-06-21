@@ -75,7 +75,7 @@
       <span class="label-text">{@html context.params.label}</span>
     </label>
 
-    <div class="themed">
+    <div class="text-base themed">
       <Select
         name="searchTerm"
         autoComplete="off"
@@ -124,7 +124,6 @@
     --inputFontSize: 18px;
     --inputPadding: 0.5rem 0.5rem 0.5rem 1rem;
     --itemHoverBG: "#cccccc";
-    --itemIsActiveColor: #001c6e;
     --clearSelectTop: 3.25rem;
     --clearSelectHeight: 2.5rem;
     --clearSelectRight: 4.5rem;

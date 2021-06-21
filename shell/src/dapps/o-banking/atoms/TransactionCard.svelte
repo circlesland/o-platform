@@ -49,15 +49,6 @@
       transfer.direction === "in"
         ? "transactionpositive"
         : "transactionnegative";
-
-    /*if (!pictureUrl) {
-      pictureUrl = createAvatar(style, {
-        seed: otherSafeAddress,
-        topChance: 100,
-        style: "transparent",
-        dataUri: true,
-      });
-    }*/
   }
 
   let now = new Date();
@@ -75,7 +66,7 @@
 
 <section
   on:click|once={() => loadDetailPage(transfer._id)}
-  class="flex items-center justify-center mb-2 text-circlesdarkblue"
+  class="flex items-center justify-center mb-2 "
 >
   <div
     class="flex items-center w-full px-3 py-2 space-x-2 bg-white rounded-sm shadow sm:space-x-6"
@@ -94,7 +85,7 @@
           {displayName}
         </h2>
       </div>
-      <p class="text-sm text-light">{message}</p>
+      <p class="text-sm text-light-dark">{message}</p>
     </div>
 
     <div class="flex flex-col flex-1 justify-items-end">

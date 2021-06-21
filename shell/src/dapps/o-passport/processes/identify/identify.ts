@@ -15,7 +15,7 @@ import { createSafe } from "./createSafe/createSafe";
 import { UpsertProfileDocument } from "../../data/api/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Profile } from "../../../o-banking/data/api/types";
-import {prompt} from "@o-platform/o-process/dist/states/prompt";
+import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 
 export type IdentifyContextData = {
@@ -269,25 +269,28 @@ const processDefinition = (processId: string) =>
 
       checkSafeAddress: {
         id: "checkSafeAddress",
-        always:[{
-          cond:(context) => !!context.data.profile.circlesAddress,
-          target: "#success"
-        }, {
-          target: "#getInvite"
-        }]
+        always: [
+          {
+            cond: (context) => !!context.data.profile.circlesAddress,
+            target: "#success",
+          },
+          {
+            target: "#getInvite",
+          },
+        ],
       },
 
       getInvite: prompt({
         id: "getInvite",
-        entry:(context) => {
+        entry: (context) => {
           const profileLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${context.data.profile.id}`;
           (<any>context.data).__getInviteHtml = `
           <section class="mb-8">
       <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary" />
+        <div class="px-4 py-2 mr-4 -ml-3 text-center " />
         <div style="text-align: center">
           <p
-            class="w-64 m-auto mt-2 text-2xl font-bold font-circles text-gradient"
+            class="w-64 m-auto mt-2 text-2xl font-bold  text-gradient"
           >
             You're almost there.
           </p>
@@ -320,7 +323,7 @@ const processDefinition = (processId: string) =>
           <div class="mr-1 text-primary" />
         </div>
       </div>
-    </section>`
+    </section>`;
         },
         component: HtmlViewer,
         params: {
@@ -332,8 +335,8 @@ const processDefinition = (processId: string) =>
         navigation: {
           next: "#getInvite",
           canGoBack: () => false,
-          canSkip: () =>  false
-        }
+          canSkip: () => false,
+        },
       }),
 
       success: {

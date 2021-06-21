@@ -140,6 +140,7 @@
       active: false,
     },
   ];
+
 </script>
 
 <div class="grid max-w-5xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mx-auto">
@@ -158,7 +159,7 @@
           </div>
 
           <div class="flex flex-col py-2 ml-4">
-            <span class="text-lg font-semibold font-circles text-primary">
+            <span class="text-lg font-semibold  text-primary">
               {m.citizens}
             </span>
             <p class="text-sm text-left text-primary">
@@ -177,12 +178,10 @@
           </div>
 
           <div class="flex flex-col py-2 ml-4">
-            <p class="text-lg font-semibold font-circles text-secondary">
+            <p class="text-lg font-semibold  ">
               {m.citizens}
             </p>
-            <p class="text-sm text-left text-secondary">
-              citizen to reach milestone
-            </p>
+            <p class="text-sm text-left ">citizen to reach milestone</p>
           </div>
         {:else}
           <div class="avatar ">
@@ -196,7 +195,7 @@
           </div>
 
           <div class="flex flex-col py-2 ml-4">
-            <p class="text-lg font-semibold text-gray-500 font-circles">
+            <p class="text-lg font-semibold text-gray-500 ">
               {m.citizens}
             </p>
             <p class="text-sm text-left text-gray-500">
@@ -213,7 +212,7 @@
   <a
     href="/#/milestones"
     aria-label=""
-    class="text-xl font-semibold transition-colors duration-200 text-primary hover:text-secondary"
+    class="text-xl font-semibold transition-colors duration-200 text-primary hover:"
   >
     Show all milestones
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">

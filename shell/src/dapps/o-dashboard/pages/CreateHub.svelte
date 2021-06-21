@@ -104,6 +104,7 @@
     });
     app.$destroy();
   };
+
 </script>
 
 <DashboardHeader showBackArrow={true} />
@@ -111,9 +112,7 @@
 <div class="mx-4 -mt-6">
   <section class="flex items-center justify-center mb-2">
     <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
-      <div class="text-xs font-bold text-left text-primary font-circles">
-        BECOME A HUB
-      </div>
+      <div class="text-xs font-bold text-left text-primary ">BECOME A HUB</div>
       <div class="flex items-center w-full space-x-2 sm:space-x-6">
         <div class="flex-grow text-left ">
           <div class="max-w-full">
@@ -137,9 +136,7 @@
 
   <section class="flex items-center justify-center mb-2 ">
     <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
-      <div class="text-xs font-bold text-left text-primary font-circles">
-        GET XDAI
-      </div>
+      <div class="text-xs font-bold text-left text-primary ">GET XDAI</div>
       <div class="flex items-center w-full space-x-2 sm:space-x-6">
         <div class="flex-grow text-left ">
           <div class="max-w-full">
@@ -170,7 +167,7 @@
                       class="cursor-pointer"
                     >
                       <div
-                        class="text-white cursor-pointer card compact side bg-primary font-circles"
+                        class="text-white cursor-pointer card compact side bg-primary "
                       >
                         <div
                           class="flex-row items-center space-x-4 cursor-pointer card-body"
@@ -196,11 +193,9 @@
     </div>
   </section>
 
-  <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
+  <section class="flex items-center justify-center mb-2  ">
     <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
-      <div class="text-xs font-bold text-left text-primary font-circles">
-        ALTERNATIVES
-      </div>
+      <div class="text-xs font-bold text-left text-primary ">ALTERNATIVES</div>
       <div class="flex items-center w-full space-x-2 sm:space-x-6">
         <div class="flex-grow ">
           <div class="text-left">

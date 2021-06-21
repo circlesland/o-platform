@@ -1,11 +1,17 @@
 <script lang="ts">
   import Web3 from "web3";
-  import {AvataarGenerator} from "../../../shared/avataarGenerator";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-  import {shellProcess, ShellProcessContext} from "../../../shared/processes/shellProcess";
-  import {showProfile, ShowProfileContextData} from "../processes/showProfile";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
-  import {Token} from "../data/circles/types";
+  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import {
+    shellProcess,
+    ShellProcessContext,
+  } from "../../../shared/processes/shellProcess";
+  import {
+    showProfile,
+    ShowProfileContextData,
+  } from "../processes/showProfile";
+  import { Generate } from "@o-platform/o-utils/dist/generate";
+  import { Token } from "../data/circles/types";
 
   export let token: Token;
   export let label: String;
@@ -32,31 +38,32 @@
     console.log(path);
 
     const requestEvent = new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = showProfile;
-              ctx.childContext = {
-                data: <ShowProfileContextData>{
-                  id: path
-                },
-              };
-              return ctx;
-            }
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = showProfile;
+        ctx.childContext = {
+          data: <ShowProfileContextData>{
+            id: path,
+          },
+        };
+        return ctx;
+      }
     );
 
     requestEvent.id = Generate.randomHexString(8);
     window.o.publishEvent(requestEvent);
     //push("#/banking/trusts/" + path);
   }
+
 </script>
 
-<section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
+<section class="flex items-center justify-center mb-2  ">
   <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
     <div
       class="{colorClass
         ? colorClass
-        : 'text-light'} text-xs font-circles font-bold text-left"
+        : 'text-light'} text-xs  font-bold text-left"
     >
       {label ? label : ""}
     </div>
@@ -74,9 +81,7 @@
           class="max-w-full truncateThis "
           class:cursor-pointer={displayName != "You"}
           on:click={() =>
-            displayName == "You"
-              ? false
-              : loadDetailPage(token.tokenOwner)}
+            displayName == "You" ? false : loadDetailPage(token.tokenOwner)}
         >
           <h2 class="text-2xl sm:text-3xl truncate ">
             {displayName}
@@ -103,4 +108,5 @@
       max-width: 200px;
     }
   }
+
 </style>

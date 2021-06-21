@@ -23,9 +23,7 @@
 
 </script>
 
-<section
-  class="flex mb-2 items-centerjustify-center text-circlesdarkblue customItem {itemClasses}"
->
+<section class="flex mb-2 items-centerjustify-center  customItem {itemClasses}">
   <div
     class="flex items-center w-full p-3 pt-4 space-x-2 border rounded-sm shadow-md sm:space-x-6 item-body"
   >

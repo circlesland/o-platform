@@ -805,7 +805,6 @@
 <style>
   .selectContainer {
     --padding: 0;
-
     border: none;
     border-radius: var(--borderRadius, 3px);
     height: var(--height, 42px);
@@ -818,7 +817,6 @@
 
   .selectContainer input {
     cursor: default;
-    color: var(--inputColor, #3f4f5f);
     height: var(--height, 42px);
     line-height: var(--height, 42px);
     padding: var(--inputPadding, var(--padding));

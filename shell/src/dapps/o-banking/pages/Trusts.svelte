@@ -23,13 +23,14 @@
     });
     app.$destroy();
   };
+
 </script>
 
 <SimpleHeader />
 
 <div class="mx-4 -mt-6">
   {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts || !$mySafe.trustRelations.trusting || !$mySafe.trustRelations.trustedBy}
-    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+    <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>Loading Trusts...</div>
@@ -37,7 +38,7 @@
       </div>
     </section>
   {:else if $mySafe.ui.error}
-    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+    <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
@@ -53,9 +54,7 @@
         <div
           class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
         >
-          <div class="text-xs font-bold text-left text-secondary font-circles">
-            MUTUAL TRUST
-          </div>
+          <div class="text-xs font-bold text-left  ">MUTUAL TRUST</div>
         </div>
       </section>
       <!-- TODO: Possible actions: untrust, transfer money -->
@@ -71,9 +70,7 @@
         <div
           class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
         >
-          <div class="text-xs font-bold text-left text-secondary font-circles">
-            TRUSTING
-          </div>
+          <div class="text-xs font-bold text-left  ">TRUSTING</div>
         </div>
       </section>
       {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting}
@@ -87,7 +84,7 @@
         <div
           class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
         >
-          <div class="text-xs font-bold text-left text-primary font-circles">
+          <div class="text-xs font-bold text-left text-primary ">
             TRUSTED BY
           </div>
         </div>
@@ -103,7 +100,7 @@
         <div
           class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
         >
-          <div class="text-xs font-bold text-left text-error font-circles">
+          <div class="text-xs font-bold text-left text-error ">
             TRUST REMOVED
           </div>
         </div>
@@ -114,7 +111,7 @@
       {/each}
     {/if}
   {/if}
-  <section class="justify-center mb-2 text-circlesdarkblue">
+  <section class="justify-center mb-2 ">
     <div class="flex flex-col w-full p-4 space-y-2 shadow infocard">
       <div class="text-sm font-bold text-info">WHAT IS THIS?</div>
     </div>

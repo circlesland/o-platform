@@ -108,7 +108,7 @@
 </script>
 
 <section
-  class="flex items-center justify-center mb-2 text-circlesdarkblue"
+  class="flex items-center justify-center mb-2 "
   on:click|once={() => loadDetailPage(safeAddress)}
 >
   <div
@@ -130,79 +130,23 @@
       </div>
 
       {#if untrusted}
-        <div class="mb-4 text-sm text-left text-red">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="inline w-4 h-4 -mt-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-            />
-          </svg>
-          <span class="inline text-dark">Not trusted</span>
+        <div class="mb-4 text-sm text-left text-alert-dark">
+          <span class="inline ">Not trusted</span>
         </div>
       {/if}
       {#if trustedBy && trusting}
-        <div class="mb-4 text-sm text-left text-green">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="inline w-4 h-4 -mt-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-            />
-          </svg>
-          <span class="inline text-dark">Mutual trust</span>
+        <div class="mb-4 text-sm text-left text-light-dark">
+          <span class="inline ">Mutual trust</span>
         </div>
       {/if}
       {#if !(trustedBy && trusting) && trustedBy}
-        <div class="mb-4 text-sm text-left text-green">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="inline w-4 h-4 -mt-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M11 17l-5-5m0 0l5-5m-5 5h12"
-            />
-          </svg>
-          <span class="inline text-dark">Is trusting you</span>
+        <div class="mb-4 text-sm text-left text-light-dark">
+          <span class="inline">Is trusting you</span>
         </div>
       {/if}
       {#if !(trustedBy && trusting) && trusting}
-        <div class="mb-4 text-sm text-left text-green">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="inline w-4 h-4 -mt-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 7l5 5m0 0l-5 5m5-5H6"
-            />
-          </svg>
-          <span class="inline text-dark">Trusted by you</span>
+        <div class="mb-4 text-sm text-left text-light-dark">
+          <span class="inline">Trusted by you</span>
         </div>
       {/if}
     </div>

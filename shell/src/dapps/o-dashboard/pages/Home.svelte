@@ -58,6 +58,7 @@
       inviteLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${$me.id}`;
     }
   }
+
 </script>
 
 <DashboardHeader />
@@ -66,11 +67,9 @@
     <!-- Create safe  -->
     <section class="mb-8">
       <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm shadow">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary" />
+        <div class="px-4 py-2 mr-4 -ml-3 text-center " />
         <div style="text-align: center">
-          <p
-            class="w-64 m-auto mt-2 text-2xl font-bold font-circles text-gradient"
-          >
+          <p class="w-64 m-auto mt-2 text-2xl font-bold text-gradient">
             You're almost there.
           </p>
           <p class="mt-4 text">
@@ -109,14 +108,12 @@
     <!-- Create safe  -->
     <section class="mb-8">
       <div class="w-full px-2 pb-8 -mt-6 bg-white rounded-sm shadow">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary" />
+        <div class="px-4 py-2 mr-4 -ml-3 text-center " />
         <div class="text-center">
-          <p
-            class="w-full m-auto mt-2 text-2xl font-bold font-circles text-gradient"
-          >
+          <p class="w-full m-auto mt-2 text-2xl font-bold text-gradient">
             Grow the basic income economy!
           </p>
-          <!-- <p class="mt-4 text-lg font-circles">
+          <!-- <p class="mt-4 text-lg ">
             xxxxxxx/1.000.000.000 Progress
           </p>
           <div class="w-full px-2 m-auto">
@@ -142,7 +139,7 @@
   <a href="/#/passport/profile">
     <section class="flex items-center justify-center mb-4">
       <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary">
+        <div class="px-4 py-2 mr-4 -ml-3 text-center ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="m-auto h-14 w-14"
@@ -159,9 +156,7 @@
           </svg>
         </div>
         <div class="flex items-center">
-          <h2 class="mr-2 text-4xl font-medium font-circles text-secondary">
-            Passport
-          </h2>
+          <h2 class="mr-2 text-4xl font-medium ">Passport</h2>
         </div>
         <div class="flex justify-end flex-1 mr-1 text-primary">
           <svg
@@ -202,7 +197,7 @@
           </svg>
         </div>
         <div class="flex flex-col items-left">
-          <h2 class="mr-2 text-4xl font-circles text-base-300">Banking</h2>
+          <h2 class="mr-2 text-4xl text-base-300">Banking</h2>
         </div>
         <div class="flex justify-end flex-1 mr-1 text-base-300">
           <svg
@@ -224,7 +219,7 @@
     <a href={showFundHint ? "/#/dashboard" : "/#/banking/transactions"}>
       <section class="flex items-center justify-center mb-4">
         <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
-          <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary">
+          <div class="px-4 py-2 mr-4 -ml-3 text-center ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="m-auto h-14 w-14"
@@ -241,9 +236,7 @@
             </svg>
           </div>
           <div class="flex items-center">
-            <h2 class="mr-2 text-4xl font-medium font-circles text-secondary">
-              Banking
-            </h2>
+            <h2 class="mr-2 text-4xl font-medium ">Banking</h2>
           </div>
           <div class="flex justify-end flex-1 mr-1 text-primary">
             <svg
@@ -269,40 +262,41 @@
   <a href="/#/marketplace/stream">
     <section class="flex items-center justify-center mb-4">
       <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary">
+        <div class="px-4 py-2 mr-4 -ml-3 text-center ">
           <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="m-auto h-14 w-14"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            class="m-auto h-14 w-14"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
             <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1"
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
         </div>
         <div class="flex flex-col items-left">
-          <h2 class="mr-2 text-4xl font-circles text-secondary">Market</h2>
+          <h2 class="mr-2 text-4xl ">Market</h2>
           <p class="text-sm text-base-300">coming soon</p>
         </div>
         <div class="flex justify-end flex-1 mr-1 text-primary">
-        <div class="flex justify-end flex-1 mr-1 text-base-300">
-          <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-5 h-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-          >
-            <path
-                    fill-rule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-            />
-          </svg>
+          <div class="flex justify-end flex-1 mr-1 text-base-300">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
         </div>
       </div>
     </section>
@@ -313,7 +307,7 @@
   <a href="https://discord.gg/4DBbRCMnFZ" target="_blank">
     <section class="flex items-center justify-center mb-4">
       <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary">
+        <div class="px-4 py-2 mr-4 -ml-3 text-center ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="m-auto h-14 w-14"
@@ -330,7 +324,7 @@
           </svg>
         </div>
         <div class="flex flex-col items-left">
-          <h2 class="mr-2 text-4xl font-circles text-secondary">Chat</h2>
+          <h2 class="mr-2 text-4xl ">Chat</h2>
         </div>
         <div class="flex justify-end flex-1 mr-1 text-primary">
           <svg

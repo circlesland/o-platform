@@ -301,13 +301,11 @@
 {:else}
   <div class="mx-4 -mt-6">
     {#if !profile.safeAddress && !isMe}
-      <section class="justify-center mb-2 text-circlesdarkblue">
+      <section class="justify-center mb-2 ">
         <div
           class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
         >
-          <div
-            class="text-xs font-bold text-left text-circleslightblue font-circles"
-          >
+          <div class="text-xs font-bold text-left text-circleslightblue ">
             This citizen is waiting to be empowered by you.
           </div>
 
@@ -338,11 +336,9 @@
       <!-- Create safe  -->
       <section class="mb-8">
         <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm shadow">
-          <div class="px-4 py-2 mr-4 -ml-3 text-center text-secondary" />
+          <div class="px-4 py-2 mr-4 -ml-3 text-center " />
           <div style="text-align: center">
-            <p
-              class="w-64 m-auto mt-2 text-2xl font-bold font-circles text-gradient"
-            >
+            <p class="w-64 m-auto mt-2 text-2xl font-bold  text-gradient">
               You're almost there.
             </p>
             <p class="mt-4 text">
@@ -380,13 +376,11 @@
     {/if}
 
     {#if profile && profile.safeAddress}
-      <section class="justify-center mb-2 text-circlesdarkblue">
+      <section class="justify-center mb-2 ">
         <div
           class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
         >
-          <div
-            class="text-xs font-bold text-left text-circleslightblue font-circles"
-          >
+          <div class="text-xs font-bold text-left text-circleslightblue ">
             ADDRESS
           </div>
 
@@ -428,13 +422,11 @@
         </div>
       </section>
     {/if}
-    <section class="justify-center mb-2 text-circlesdarkblue">
+    <section class="justify-center mb-2 ">
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div
-          class="text-xs font-bold text-left text-circleslightblue font-circles"
-        >
+        <div class="text-xs font-bold text-left text-circleslightblue ">
           PASSION
         </div>
 
@@ -469,13 +461,11 @@
       </div>
     </section>
 
-    <section class="justify-center mb-2 text-circlesdarkblue">
+    <section class="justify-center mb-2 ">
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div
-          class="text-xs font-bold text-left text-circleslightblue font-circles"
-        >
+        <div class="text-xs font-bold text-left text-circleslightblue ">
           CITY
         </div>
 
@@ -510,13 +500,11 @@
       </div>
     </section>
 
-    <section class="justify-center mb-2 text-circlesdarkblue">
+    <section class="justify-center mb-2 ">
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div
-          class="text-xs font-bold text-left text-circleslightblue font-circles"
-        >
+        <div class="text-xs font-bold text-left text-circleslightblue ">
           COUNTRY
         </div>
 
@@ -552,7 +540,7 @@
     </section>
 
     {#if !isMe && (profile.trusting || profile.trustedBy)}
-      <section class="justify-center mb-2 text-circlesdarkblue">
+      <section class="justify-center mb-2 ">
         <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
           <div class="text-sm font-bold text-circleslightblue">TRUST</div>
           <div class="flex flex-col">
@@ -645,7 +633,7 @@
       </section>
     {/if}
     {#if !isMe && profile.safeAddress}
-      <section class="justify-center mb-2 text-circlesdarkblue">
+      <section class="justify-center mb-2 ">
         <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
           <div class="text-sm font-bold text-circleslightblue">TRANSFER</div>
 
@@ -658,7 +646,7 @@
           </div>
         </div>
       </section>
-      <section class="justify-center mb-2 text-circlesdarkblue">
+      <section class="justify-center mb-2 ">
         <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
           <div class="text-sm font-bold text-circleslightblue">
             CHANGE TRUST

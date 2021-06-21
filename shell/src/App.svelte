@@ -311,7 +311,7 @@
 </script>
 
 <SvelteToast />
-<div class="flex flex-col">
+<div class="flex flex-col text-base">
   <!-- TODO: Note: All headers are now part of their dapps
   <header class="z-10 w-full mx-auto md:w-2/3 xl:w-1/2">
   </header> -->
@@ -404,7 +404,7 @@
           <div
             on:click={() =>
               window.o.publishEvent(action.event(getLastLoadedDapp()))}
-            class="text-xs text-center cursor-pointer text-secondary"
+            class="text-xs text-center cursor-pointer "
             class:text-error={action.key == "logout"}
           >
             <Icons icon={action.icon} />
@@ -423,7 +423,7 @@
     @apply text-light;
   }
   .tab:hover {
-    @apply text-secondary;
+    @apply text-base;
   }
   .isOpen {
     background: transparent;

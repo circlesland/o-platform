@@ -75,13 +75,14 @@
           : 0
       );
   }
+
 </script>
 
 <SimpleHeader showBackArrow={true} />
 
 <div class="mx-4 -mt-6">
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
-    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+    <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>Loading Tokens...</div>
@@ -93,9 +94,7 @@
       <div
         class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard"
       >
-        <div class="text-xs font-bold text-left text-info font-circles">
-          WHAT IS THIS?
-        </div>
+        <div class="text-xs font-bold text-left text-info ">WHAT IS THIS?</div>
 
         <div class="text-sm md:text-base">
           Your xDAI is distributed between two accounts. <br /><br />
@@ -123,7 +122,7 @@
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-xs font-bold text-left text-primary font-circles">
+        <div class="text-xs font-bold text-left text-primary ">
           BUY MORE XDAI
         </div>
         <div
@@ -137,7 +136,7 @@
                 class="cursor-pointer"
               >
                 <div
-                  class="text-white cursor-pointer card compact side bg-primary font-circles"
+                  class="text-white cursor-pointer card compact side bg-primary "
                 >
                   <div
                     class="flex-row items-center space-x-4 cursor-pointer card-body"

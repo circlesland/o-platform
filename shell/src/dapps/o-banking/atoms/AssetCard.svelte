@@ -15,10 +15,11 @@
   function loadDetailPage() {
     push("#/banking/assets/" + symbol);
   }
+
 </script>
 
 <section
-  class="flex items-center justify-center mb-2 text-circlesdarkblue "
+  class="flex items-center justify-center mb-2  "
   on:click={() => loadDetailPage()}
 >
   <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">

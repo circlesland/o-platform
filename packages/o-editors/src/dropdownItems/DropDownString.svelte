@@ -24,7 +24,7 @@
 </script>
 
 <section
-  class="flex mb-2 mr-1 items-center justify-center text-circlesdarkblue border rounded-sm border-lightgrey shadow-sm customItem {itemClasses}"
+  class="flex mb-2 mr-1 items-center justify-center  border rounded-sm border-lightgrey shadow-sm customItem {itemClasses}"
 >
   <div
     class="flex items-center w-full p-3 pt-4 space-x-2 sm:space-x-6 item-body"

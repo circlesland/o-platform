@@ -1,8 +1,5 @@
 <script lang="ts">
-  import Hamburger from "./Hamburger.svelte";
   import Menu from "./Menu.svelte";
-
-  export let sidebar = false;
 
 </script>
 

@@ -52,7 +52,7 @@ body {
   font-family: Poppins;
   @apply font-bold;
   letter-spacing: 3px;
-  @apply text-secondary;
+  
 }
 
 .btn-text {
@@ -67,16 +67,20 @@ body {
 }
 
 .btn-light {
+  @apply bg-light-lighter;
   @apply text-secondary;
-  @apply bg-lightgrey;
-  border: none;
+  @apply: border-0;
 }
 .btn-light:hover {
+  @apply bg-white;
   @apply text-secondary;
-  @apply bg-primary;
+  @apply border-solid;
+  @apply border-2;
+  @apply border-secondary;
 }
 
 .btn-error {
+  @apply bg-alert-dark;
   @apply text-white;
 }
 
@@ -137,17 +141,16 @@ body {
   @apply block;
 }
 .label-text {
-  @apply text-secondary;
-  @apply font-circles;
   font-size: 1.12rem;
   line-height: 1.7rem;
   @apply text-center;
   @apply break-words;
+  @apply text-base;
 }
 
 .input {
   @apply text-lg;
-  @apply text-darklight;
+  @apply text-dark-lightest;
 }
 
 .input-error {

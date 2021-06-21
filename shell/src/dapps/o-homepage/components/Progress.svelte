@@ -50,7 +50,7 @@
   class="sticky bottom-0 z-50 w-full pt-1 bg-white border-t progressnav border-base-300"
 >
   <!-- <div class="flex flex-row items-stretch w-full bg-white">
-    <div class="m-auto tracking-wider text-secondary">
+    <div class="m-auto tracking-wider ">
       <span class="relative top-2">2489 CITIZENS</span>
     </div>
   </div>
@@ -58,7 +58,7 @@
     <div
       class="relative flex-grow h-2 mt-8 border-b-2 border-r-2 w-42 border-secondary"
     >
-      <span class="absolute tracking-wider -right-4 bottom-2 text-secondary"
+      <span class="absolute tracking-wider -right-4 bottom-2 "
         >GOAL 12</span
       >
     </div>

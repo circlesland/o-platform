@@ -9,7 +9,7 @@
         our citizens
       </p>
       <h2
-        class="max-w-lg mb-6 text-3xl font-bold tracking-tight text-center font-circles text-secondary sm:text-4xl sm:leading-none"
+        class="max-w-lg mb-6 text-3xl font-bold tracking-tight text-center   sm:text-4xl sm:leading-none"
       >
         Following their passions
       </h2>
@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="flex flex-col sm:text-center">
-          <p class="text-lg font-bold text-secondary">Oliver Aguilerra</p>
+          <p class="text-lg font-bold ">Oliver Aguilerra</p>
           <p class="mb-5 text-xs text-primary">Citizen 15 from Germany</p>
           <div class="flex items-center space-x-3 sm:justify-center">
             ...is dreaming of "building the universal basic income economy of
@@ -54,7 +54,7 @@
         </div>
 
         <div class="flex flex-col sm:text-center">
-          <p class="text-lg font-bold text-secondary">Marta Clermont</p>
+          <p class="text-lg font-bold ">Marta Clermont</p>
           <p class="mb-5 text-xs text-primary">Citizen 16 from France</p>
           <div class="flex items-center space-x-3 sm:justify-center">
             ...is dreaming of "building the universal basic income economy of
@@ -76,7 +76,7 @@
         </div>
 
         <div class="flex flex-col sm:text-center">
-          <p class="text-lg font-bold text-secondary">Alice Melbourne</p>
+          <p class="text-lg font-bold ">Alice Melbourne</p>
           <p class="mb-5 text-xs text-primary">Citizen 17 from Australia</p>
           <div class="flex items-center space-x-3 sm:justify-center">
             ...is dreaming of "building the universal basic income economy of
@@ -97,7 +97,7 @@
           </div>
         </div>
         <div class="flex flex-col sm:text-center">
-          <p class="text-lg font-bold text-secondary">Doris Auer</p>
+          <p class="text-lg font-bold ">Doris Auer</p>
           <p class="mb-5 text-xs text-primary">Citizen 18 from Denmark</p>
           <div class="flex items-center space-x-3 sm:justify-center">
             ...is dreaming of "building the universal basic income"
@@ -117,7 +117,7 @@
           </div>
         </div>
         <div class="flex flex-col sm:text-center">
-          <p class="text-lg font-bold text-secondary">John Doe</p>
+          <p class="text-lg font-bold ">John Doe</p>
           <p class="mb-5 text-xs text-primary">Citizen 19 from Nigeria</p>
           <div class="flex items-center space-x-3 sm:justify-center">
             ...is dreaming of "building the universal basic income economy of
@@ -138,7 +138,7 @@
           </div>
         </div>
         <div class="flex flex-col sm:text-center">
-          <p class="text-lg font-bold text-secondary">Li Pon</p>
+          <p class="text-lg font-bold ">Li Pon</p>
           <p class="mb-5 text-xs text-primary">Citizen 20 from Japan</p>
           <div class="flex items-center space-x-3 sm:justify-center">
             ...is dreaming of "building the universal basic income economy of

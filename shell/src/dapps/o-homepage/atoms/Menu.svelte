@@ -39,7 +39,7 @@
         target="_blank"
         aria-label="Our product"
         title="Our product"
-        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+        class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
         >Chat</a
       >
     </li>
@@ -49,7 +49,7 @@
         target="_blank"
         aria-label="Our product"
         title="Our product"
-        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+        class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
         >Forum</a
       >
     </li>
@@ -69,7 +69,7 @@
         target="_blank"
         aria-label="About us"
         title="About us"
-        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+        class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
         >Blog</a
       >
     </li>
@@ -79,7 +79,7 @@
         target="_blank"
         aria-label="Sign in"
         title="Sign in"
-        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
+        class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
         >Whitepaper</a
       >
     </li>

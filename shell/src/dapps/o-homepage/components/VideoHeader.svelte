@@ -29,7 +29,7 @@
 </script>
 
 <div
-  class="relative flex items-center content-center justify-center block overflow-hidden font-circles "
+  class="relative flex items-center content-center justify-center block overflow-hidden  "
 >
   <div
     id="video-overlay"

@@ -4,11 +4,11 @@
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import {showProfile} from "src/dapps/o-banking/processes/showProfile";
-  import {shellProcess} from "src/shared/processes/shellProcess";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
-  import {Transfer} from "../data/circles/types";
+  import { showProfile } from "src/dapps/o-banking/processes/showProfile";
+  import { shellProcess } from "src/shared/processes/shellProcess";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import { Generate } from "@o-platform/o-utils/dist/generate";
+  import { Transfer } from "../data/circles/types";
 
   export let params: {
     _id: string;
@@ -75,7 +75,7 @@
     }
   }
 
-  function openDetail(id:string) {
+  function openDetail(id: string) {
     if (id.startsWith("0x000")) {
       return;
     }
@@ -84,7 +84,7 @@
       ctx.childProcessDefinition = showProfile;
       ctx.childContext = {
         data: {
-          id
+          id,
         },
       };
       return ctx;
@@ -94,12 +94,13 @@
     requestEvent.id = Generate.randomHexString(8);
     window.o.publishEvent(requestEvent);
   }
+
 </script>
 
 <BankingDetailHeader amount={transfer ? transfer.amount : 0} {classes} />
 {#if transfer}
   <div class="mx-4 -mt-6">
-    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
+    <section class="flex items-center justify-center mb-2 ">
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
@@ -172,13 +173,11 @@
       </div>
     </section>
 
-    <section
-      class="flex flex-col items-center justify-center mb-2 text-circlesdarkblue"
-    >
+    <section class="flex flex-col items-center justify-center mb-2 ">
       <div
         class="flex flex-col w-full pt-4 pb-1 pl-4 pr-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-xs font-bold text-left text-primary font-circles">
+        <div class="text-xs font-bold text-left text-primary ">
           TRANSACTION DETAILS
         </div>
         <div class="flex flex-col w-full space-y-2">

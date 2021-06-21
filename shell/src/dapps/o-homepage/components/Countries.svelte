@@ -8,7 +8,7 @@
     Leaderboard ranking
   </p>
   <h2
-    class="max-w-lg mb-6 text-3xl font-bold tracking-tight text-center font-circles text-secondary sm:text-4xl sm:leading-none"
+    class="max-w-lg mb-6 text-3xl font-bold tracking-tight text-center   sm:text-4xl sm:leading-none"
   >
     All over the world
   </h2>
@@ -82,7 +82,7 @@
   <a
     href="/#/countries"
     aria-label=""
-    class="text-xl font-semibold transition-colors duration-200 text-primary hover:text-secondary"
+    class="text-xl font-semibold transition-colors duration-200 text-primary hover:"
   >
     Show all countries
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">

@@ -10,9 +10,10 @@
   $: {
     pictureUrl = symbol;
   }
+
 </script>
 
-<section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
+<section class="flex items-center justify-center mb-2  ">
   <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
     <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
       <div class="mr-2 text-center">

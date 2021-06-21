@@ -11,7 +11,7 @@
         </p>
       </div>
       <h2
-        class="max-w-lg mb-6 text-3xl font-bold leading-none tracking-tight text-secondary font-circles sm:text-4xl md:mx-auto"
+        class="max-w-lg mb-6 text-3xl font-bold leading-none tracking-tight   sm:text-4xl md:mx-auto"
       >
         <span class="relative inline-block">
           <svg
@@ -52,9 +52,7 @@
         >
           <img src="/illustrations/passport.svg" alt="Passport" />
         </div>
-        <h6
-          class="mt-8 mb-2 text-lg font-semibold leading-5 uppercase text-secondary"
-        >
+        <h6 class="mt-8 mb-2 text-lg font-semibold leading-5 uppercase ">
           1. Create Passport
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
@@ -68,9 +66,7 @@
         >
           <img src="/illustrations/invite.svg" alt="Invite" />
         </div>
-        <h6
-          class="mb-2 text-lg font-semibold leading-5 uppercase text-secondary"
-        >
+        <h6 class="mb-2 text-lg font-semibold leading-5 uppercase ">
           2. Get invited
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
@@ -82,9 +78,7 @@
         <div class="flex items-center justify-center w-full p-8 sm:mx-auto">
           <img src="/illustrations/ubi.svg" alt="Invite" />
         </div>
-        <h6
-          class="mb-2 text-lg font-semibold leading-5 uppercase text-secondary"
-        >
+        <h6 class="mb-2 text-lg font-semibold leading-5 uppercase ">
           3. Unlock UBI
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">

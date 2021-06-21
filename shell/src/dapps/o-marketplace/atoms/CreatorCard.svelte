@@ -1,24 +1,30 @@
 <script lang="ts">
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import {Profile} from "../data/api/types";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-  import {shellProcess, ShellProcessContext} from "../../../shared/processes/shellProcess";
-  import {showProfile, ShowProfileContextData} from "../../o-banking/processes/showProfile";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
+  import { Profile } from "../data/api/types";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import {
+    shellProcess,
+    ShellProcessContext,
+  } from "../../../shared/processes/shellProcess";
+  import {
+    showProfile,
+    ShowProfileContextData,
+  } from "../../o-banking/processes/showProfile";
+  import { Generate } from "@o-platform/o-utils/dist/generate";
 
   export let profile: Profile;
 
-  let displayName:string;
-  let pictureUrl:string;
-  let safeAddress:string;
-  let id:number;
+  let displayName: string;
+  let pictureUrl: string;
+  let safeAddress: string;
+  let id: number;
 
   $: {
     if (profile) {
       // <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
       displayName = profile
-              ? profile.firstName + " " + profile.lastName
-              : profile.circlesAddress;
+        ? profile.firstName + " " + profile.lastName
+        : profile.circlesAddress;
       pictureUrl = profile ? profile.avatarUrl : undefined;
       safeAddress = profile.circlesAddress;
       id = profile.id;
@@ -30,28 +36,29 @@
   }
 
   function loadDetailPage() {
-      const requestEvent = new RunProcess<ShellProcessContext>(
-              shellProcess,
-              true,
-              async (ctx) => {
-                ctx.childProcessDefinition = showProfile;
-                ctx.childContext = {
-                  data: <ShowProfileContextData>{
-                    id: profile.id.toString()
-                  },
-                };
-                return ctx;
-              }
-      );
+    const requestEvent = new RunProcess<ShellProcessContext>(
+      shellProcess,
+      true,
+      async (ctx) => {
+        ctx.childProcessDefinition = showProfile;
+        ctx.childContext = {
+          data: <ShowProfileContextData>{
+            id: profile.id.toString(),
+          },
+        };
+        return ctx;
+      }
+    );
 
-      requestEvent.id = Generate.randomHexString(8);
-      window.o.publishEvent(requestEvent);
+    requestEvent.id = Generate.randomHexString(8);
+    window.o.publishEvent(requestEvent);
     //push("#/banking/profile/" + profile.id);
   }
+
 </script>
 
 <section
-  class="flex items-center justify-center mb-2 text-circlesdarkblue"
+  class="flex items-center justify-center mb-2 "
   on:click|once={() => loadDetailPage()}
 >
   <div

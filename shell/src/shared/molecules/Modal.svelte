@@ -31,7 +31,7 @@
     in:fade
     out:fade
     on:click|self={handleClose}
-    class="z-40 pt-2 overlay"
+    class="z-40 pt-2 text-base overlay"
   >
     <div
       class="relative grid w-full max-h-full mb-2 ml-2 mr-2 overflow-hidden bg-white rounded-lg top-2 min-w-min justify-items-stretch md:w-2/3 xl:w-1/2"

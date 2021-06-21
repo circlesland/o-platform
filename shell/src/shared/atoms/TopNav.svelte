@@ -17,19 +17,19 @@
 {#if lastLoadedDapp && lastLoadedPage}
   <div class="fixed top-0 left-0 z-10 w-full">
     <div
-      class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white md:w-2/3 xl:w-1/2 navbar bg-primarydark "
+      class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white md:w-2/3 xl:w-1/2 navbar bg-secondary-dark "
     >
       <div
         class="cursor-pointer justify-self-start"
         on:click|once={() => history.back()}
       >
-        <span class="text-lg uppercase font-circles">
+        <span class="text-lg uppercase ">
           {lastLoadedDapp.title}
         </span>
       </div>
       {#if lastLoadedDapp.title != lastLoadedPage.title}
         <div class="cursor-pointer justify-self-center">
-          <span class="text-sm font-circles">
+          <span class="text-sm ">
             {lastLoadedPage.title}
           </span>
         </div>

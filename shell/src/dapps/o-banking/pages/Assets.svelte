@@ -60,16 +60,15 @@
       };
     }
   }
+
 </script>
 
 <SimpleHeader />
 
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-2">
-    <div class="flex flex-col infocard shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-info text-xs font-circles font-bold text-left">
-        WHAT IS THIS?
-      </div>
+    <div class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard">
+      <div class="text-xs font-bold text-left text-info ">WHAT IS THIS?</div>
 
       <div class="text-sm md:text-base">
         Since everyone has their own personalized Circles money, you will always
@@ -83,8 +82,8 @@
   </section>
 
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
-    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+    <section class="flex items-center justify-center mb-2 ">
+      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>Loading Tokens...</div>
         </div>
@@ -97,36 +96,7 @@
         title={token.title}
         balance={token.balance}
         variety={token.variety}
-        colorClass="text-primary"
       />
     {/each}
   {/if}
-  <!--
-  {#if $mySafe && $mySafe.acceptedTokens && $mySafe.acceptedTokens.tokens}
-    {#each [$mySafe.token].concat(Object.values($mySafe.acceptedTokens.tokens).filter((o) => o.limit > 0)) as token (token._id)}
-      <TokenCard
-        {token}
-        label="ACCEPTING TOKENS FROM"
-        colorClass="text-secondary"
-      />
-    {/each}
-  {/if}
--->
-  <!--
-  {#each [xdai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token (token._id)}
-    <TokenCard
-      {token}
-      label="ACCOUNT XDAI BALANCE (used to pay for transactions)"
-      colorClass="text-light"
-    />
-  {/each}
-
-  {#each [safexDai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token (token._id)}
-    <TokenCard
-      {token}
-      label="SAFE XDAI BALANCE (used to invite new people)"
-      colorClass="text-light"
-    />
-  {/each}
--->
 </div>

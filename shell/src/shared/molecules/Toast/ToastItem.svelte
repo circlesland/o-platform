@@ -18,6 +18,7 @@
     }
     prevProgress = item.progress;
   }
+
 </script>
 
 <div class="_toastItem">
@@ -70,7 +71,7 @@
   ._toastBtn {
     width: 2rem;
     height: 100%;
-    font: 1rem sans-serif;
+    font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -99,4 +100,5 @@
   ._toastBar::-moz-progress-bar {
     background: var(--toastProgressBackground, rgba(33, 150, 243, 0.75));
   }
+
 </style>

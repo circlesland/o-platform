@@ -26,17 +26,10 @@
 <div
   on:click={setSegment}
   class:active={$current === segment}
-  class="flex flex-row self-start space-x-10 cursor-pointer text-secondary"
+  class="flex flex-row self-start space-x-10 cursor-pointer"
 >
-  <div class="text-secondary">
+  <div class="">
     <Icons icon={title.toLowerCase()} />
   </div>
   <div>{title}</div>
 </div>
-
-<style>
-  .active {
-    @apply text-secondary;
-  }
-
-</style>

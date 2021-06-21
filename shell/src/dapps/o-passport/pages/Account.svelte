@@ -1,32 +1,27 @@
 <script lang="ts">
   import { me } from "../../../shared/stores/me";
   import PassportHeader from "../atoms/PassportHeader.svelte";
-  import {AvataarGenerator} from "../../../shared/avataarGenerator";
+  import { AvataarGenerator } from "../../../shared/avataarGenerator";
 
   $: me;
 
-  let avatarUrl:string = "";
+  let avatarUrl: string = "";
   $: {
     if ($me && $me.avatarUrl) {
-      avatarUrl = $me.avatarUrl
-    }
-    else if ($me)
-    {
-      avatarUrl = AvataarGenerator.generate($me.circlesAddress)
-    }
-    else
-    {
+      avatarUrl = $me.avatarUrl;
+    } else if ($me) {
+      avatarUrl = AvataarGenerator.generate($me.circlesAddress);
+    } else {
       avatarUrl = AvataarGenerator.default();
     }
   }
+
 </script>
 
 <PassportHeader />
 <div style="margin-top: -2.2rem;">
   <div class="mx-4 mt-4">
-    <section
-      class="flex items-center justify-center mb-2 text-circlesdarkblue -mt-10"
-    >
+    <section class="flex items-center justify-center mb-2  -mt-10">
       <div
         class="flex items-center bg-white shadow px-4 w-full space-x-2 rounded-sm"
       >
