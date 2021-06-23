@@ -9,10 +9,13 @@
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { Transfer } from "../data/circles/types";
+  import {EditorContext} from "@o-platform/o-editors/src/editorContext";
 
   export let params: {
     _id: string;
   };
+
+  export let context: EditorContext;
 
   let transfer: Transfer;
   let pictureUrl: string;
@@ -23,8 +26,14 @@
   let amountInWei: string;
   let otherSafeAddress: string;
 
+  let transactionId:string;
+
   $: {
-    transfer = $mySafe.transfers.rows.find((o) => o._id == params._id);
+    transactionId = context && context.data
+            ? context.data.id
+            : params._id;
+
+    transfer = $mySafe.transfers.rows.find((o) => o._id == transactionId);
 
     if (transfer) {
       displayableFromName = transfer.fromProfile

@@ -269,15 +269,30 @@ const processDefinition = (processId: string) =>
 
       checkSafeAddress: {
         id: "checkSafeAddress",
-        always: [
-          {
-            cond: (context) => !!context.data.profile.circlesAddress,
-            target: "#success",
+        always:[{
+          cond:(context) => !!context.data.profile.circlesAddress,
+          actions: (context) => {
+            window.o.publishEvent(<PlatformEvent>{
+              type: "shell.authenticated",
+              profile: context.data.profile,
+            });
+            if (context.data.privateKey) {
+              localStorage.setItem("circlesKey", context.data.privateKey);
+            }
           },
-          {
-            target: "#getInvite",
+          target: "#success"
+        }, {
+          target: "#getInvite",
+          actions: (context) => {
+            window.o.publishEvent(<PlatformEvent>{
+              type: "shell.authenticated",
+              profile: context.data.profile,
+            });
+            if (context.data.privateKey) {
+              localStorage.setItem("circlesKey", context.data.privateKey);
+            }
           },
-        ],
+        }]
       },
 
       getInvite: prompt({
@@ -344,6 +359,7 @@ const processDefinition = (processId: string) =>
         id: "success",
         entry: (context) => {
           console.log(`enter: identify.success`, context.data);
+          /*
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.authenticated",
             profile: context.data.profile,
@@ -351,6 +367,7 @@ const processDefinition = (processId: string) =>
           if (context.data.privateKey) {
             localStorage.setItem("circlesKey", context.data.privateKey);
           }
+           */
 
           if (context.data.redirectTo) {
             setTimeout(async () => {

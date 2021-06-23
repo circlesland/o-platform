@@ -230,6 +230,7 @@
 
     if ($me && $me.circlesSafeOwner && !balanceThresholdTrigger) {
       if (!!localStorage.getItem("isCreatingSafe")) {
+        console.log("Waiting until the required balance to create a new safe is reached ..");
         balanceThresholdTrigger = new XDaiThresholdTrigger(
           $me.circlesSafeOwner,
           INVITE_VALUE - 0.005,
