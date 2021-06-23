@@ -49,9 +49,9 @@
     }
   });
 
-  export let params: {
-    id?: String;
-  };
+  // export let params: {
+  //   id?: String;
+  // };
 
   $: {
     if (context.params) {
@@ -313,7 +313,6 @@
     });
     app.$destroy();
   };
-
 </script>
 
 {#if isLoading}

@@ -66,7 +66,6 @@
       submitHandler();
     }
   }
-
 </script>
 
 {#if field}
@@ -86,6 +85,7 @@
         noOptionsMessage=""
         placeholder="Search..."
         listAutoWidth={false}
+        inlineSubmit={true}
         listPlacement="top"
         containerClasses="min-w-full asyncList  max-w-xs"
         on:clear={handleClear}
@@ -129,5 +129,4 @@
     --clearSelectRight: 4.5rem;
     height: auto;
   }
-
 </style>

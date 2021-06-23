@@ -20,7 +20,6 @@
     }
     itemClasses = classes.join(" ");
   }
-
 </script>
 
 <section class="flex mb-2 items-centerjustify-center  customItem {itemClasses}">
@@ -73,7 +72,7 @@
     @apply bg-primary;
   }
   .customItem.hover .item-body {
-    @apply bg-lightgrey;
+    @apply bg-light-dark;
   }
 
   .customItem.hover .item-body .truncateThis:before {
@@ -105,5 +104,4 @@
   .customItem_tagline {
     display: inline-block;
   }
-
 </style>

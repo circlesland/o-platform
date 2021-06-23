@@ -2,12 +2,16 @@
   import { Continue } from "@o-platform/o-process/dist/events/continue";
   import { CurrencyTransferContext } from "./currencyTransferContext";
   import ProcessNavigation from "./ProcessNavigation.svelte";
-  import Select from "svelte-select";
+  import Select from "../../../shell/src/shared/molecules/Select/Select.svelte";
   import Item from "./DropdownCurrencyItem.svelte";
+  import Icons from "../../../shell/src/shared/molecules/Icons.svelte";
+  import circlesIcon from "./dropdownItems/CirclesIcon.svelte";
+  import xdaiIcon from "./dropdownItems/XdaiIcon.svelte";
   import { RpcGateway } from "../../o-circles/dist/rpcGateway";
   import { onMount } from "svelte";
   export let context: CurrencyTransferContext;
 
+  let Icon = circlesIcon;
   let inputField: any;
   let amount: string =
     context.data && context.data.tokens ? context.data.tokens.amount : "";
@@ -33,6 +37,12 @@
           .toString();
       }
     }
+
+    if (selectedCurrency && selectedCurrency.value == "crc") {
+      Icon = circlesIcon;
+    } else if (selectedCurrency && selectedCurrency.value == "xdai") {
+      Icon = xdaiIcon;
+    }
   }
 
   function sendAnswer(amount: string) {
@@ -57,7 +67,6 @@
       sendAnswer(amount);
     }
   }
-
 </script>
 
 <p class="mt-12 label-text">
@@ -83,10 +92,10 @@
     </div>
   </div>
 {/if}
-<div class="flex flex-col w-full">
-  <div class="relative w-full mt-1 rounded-md shadow-sm">
+<div class="flex flex-row w-full space-x-2">
+  <div class="relative w-full mt-1 rounded-md shadow-sm ">
     <div
-      class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+      class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none"
     >
       <span class="text-base-300 sm:text-sm">
         <svg
@@ -109,7 +118,7 @@
       type="text"
       name="price"
       id="price"
-      class="block w-full pl-12 pr-12 input input-bordered sm:text-sm "
+      class="block w-full pl-12 input input-bordered"
       placeholder="0.00 (Max: {maxAmount})"
       autocomplete="off"
       bind:value={amount}
@@ -117,31 +126,41 @@
       bind:this={inputField}
       on:keydown={onkeydown}
     />
-    <div class="absolute inset-y-0 flex items-center right-1 themed">
-      <label for="currency" class="sr-only">Currency</label>
-      <Select
-        name="currency"
-        selectedValue={selectedCurrency}
-        items={context.params.currencies}
-        showIndicator={true}
-        listAutoWidth={false}
-        listPlacement="top"
-        isClearable={false}
-        containerClasses="w-24 min-w-full rounded-md"
-        {Item}
-        on:select={handleSelect}
-        on:change={() => (context.editorDirtyFlags[context.field] = true)}
-      />
-    </div>
   </div>
-
-  <ProcessNavigation on:buttonClick={() => sendAnswer(amount)} {context} />
+  <div class="themed">
+    <label for="currency" class="sr-only">Currency</label>
+    <Select
+      name="currency"
+      selectedValue={selectedCurrency}
+      items={context.params.currencies}
+      showIndicator={true}
+      listAutoWidth={false}
+      listPlacement="top"
+      staticList={true}
+      isClearable={false}
+      isSearchable={false}
+      containerClasses="w-28 min-w-full rounded-md"
+      {Item}
+      {Icon}
+      on:select={handleSelect}
+      on:change={() => (context.editorDirtyFlags[context.field] = true)}
+    />
+  </div>
 </div>
+<ProcessNavigation on:buttonClick={() => sendAnswer(amount)} {context} />
 
 <style>
   .themed {
     --borderRadius: 5px;
     --indicatorTop: 7px;
+    --padding: 0 16px 0 0;
+    --inputPadding: 0;
+    --inputPosition: absolute;
+    --inputTop: 0.25rem;
+    --text-align: right;
+    --selectedItemBottom: 0;
+    --selectedItemTop: 0.4rem;
+    --selectedItemOverflowX: clip;
+    --selectedItemMaxWidth: 100%;
   }
-
 </style>

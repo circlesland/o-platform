@@ -26,6 +26,7 @@
   export let isDisabled = false;
   export let isCreatable = false;
   export let isFocused = false;
+  export let inlineSubmit = false;
   export let selectedValue = undefined;
   export let filterText = "";
   export let placeholder = "Select...";
@@ -83,6 +84,7 @@
   export let showChevron = false;
   export let showIndicator = false;
   export let containerClasses = "";
+  export let staticList = false;
   export let indicatorSvg = undefined;
   export let ClearIcon = DefaultClearIcon;
 
@@ -596,12 +598,20 @@
     }
 
     target = document.createElement("div");
+    target.classList.add("selectList");
 
     Object.assign(target.style, {
       position: "static",
-      "z-index": 2,
+      "z-index": 999,
       visibility: "hidden",
     });
+
+    if (staticList) {
+      Object.assign(target.style, {
+        "margin-top": "-4.4rem",
+        "margin-left": "0.95rem",
+      });
+    }
 
     list = list;
     target = target;
@@ -675,7 +685,6 @@
   onDestroy(() => {
     removeList();
   });
-
 </script>
 
 <svelte:window
@@ -737,16 +746,18 @@
           class="order-1 input input-lg input-bordered"
         />
       </div>
-      <div>
-        <button
-          type="submit"
-          on:click={() => {
-            dispatch("buttonClick");
-          }}
-          class="btn btn-primary btn-square"
-          ><Icons icon="submitsmall" />
-        </button>
-      </div>
+      {#if inlineSubmit}
+        <div>
+          <button
+            type="submit"
+            on:click={() => {
+              dispatch("buttonClick");
+            }}
+            class="btn btn-primary btn-square"
+            ><Icons icon="submitsmall" />
+          </button>
+        </div>
+      {/if}
     </div>
   {/if}
 
@@ -804,15 +815,15 @@
 
 <style>
   .selectContainer {
-    --padding: 0;
     border: none;
     border-radius: var(--borderRadius, 3px);
     height: var(--height, 42px);
     position: relative;
     display: flex;
     align-items: center;
-    padding: var(--padding);
+    padding: var(--padding, 0);
     background: var(--background, #fff);
+    text-align: var(--text-align, left);
   }
 
   .selectContainer input {
@@ -822,8 +833,11 @@
     padding: var(--inputPadding, var(--padding));
     width: 100%;
     background: transparent;
-    position: static;
+    position: var(--inputPosition, static);
+    top: var(--inputTop, 0);
     left: var(--inputLeft, 0);
+    /* color: transparent; */
+    /* caret-color: transparent; */
     @apply input;
     @apply input-bordered;
     @apply text-lg;
@@ -861,14 +875,16 @@
     @apply text-lg;
     line-height: 2.75rem;
     height: var(--height, 42px);
-    overflow-x: hidden;
+    overflow-x: var(--selectedItemOverflowX, hidden);
     padding: var(--selectedItemPadding, 0 20px 0 10px);
     position: relative;
-    bottom: -3.12rem;
+    bottom: var(--selectedItemBottom, -3.12rem);
+    top: var(--selectedItemTop, inherit);
     left: 0;
-    max-width: 80%;
+    max-width: var(--selectedItemMaxWidth, 80%);
     width: 100%;
     align-self: flex-start;
+    z-index: 98;
   }
 
   .selectedItem:focus {
@@ -968,5 +984,4 @@
       transform: rotate(360deg);
     }
   }
-
 </style>
