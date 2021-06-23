@@ -1,5 +1,10 @@
 <script lang="ts">
   import { push } from "svelte-spa-router";
+  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+  import {shellProcess, ShellProcessContext} from "../../../shared/processes/shellProcess";
+  import {showProfile, ShowProfileContextData} from "../processes/showProfile";
+  import {showAssetDetail} from "../processes/showAssetDetail";
+  import {Generate} from "@o-platform/o-utils/dist/generate";
 
   export let symbol: string;
   export let title: string;
@@ -12,8 +17,30 @@
     pictureUrl = symbol;
   }
 
+  /*
   function loadDetailPage() {
     push("#/banking/assets/" + symbol);
+  }
+   */
+
+  function loadDetailPage() {
+    const requestEvent = new RunProcess<ShellProcessContext>(
+            shellProcess,
+            true,
+            async (ctx) => {
+              showProfile
+              ctx.childProcessDefinition = showAssetDetail;
+              ctx.childContext = {
+                data: <ShowProfileContextData>{
+                  symbol,
+                },
+              };
+              return ctx;
+            }
+    );
+
+    requestEvent.id = Generate.randomHexString(8);
+    window.o.publishEvent(requestEvent);
   }
 
 </script>

@@ -8,10 +8,13 @@
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { me } from "../../../shared/stores/me";
+  import {EditorContext} from "@o-platform/o-editors/src/editorContext";
 
   export let params: {
     symbol: string;
   };
+
+  export let context: EditorContext;
 
   let accountxDai = {
     symbol: "xdai",
@@ -32,9 +35,14 @@
 
   let tokens: Token[];
   let presets = [10, 20, 50];
+  let symbol:string;
 
   $: {
-    if (params.symbol == "xdai" && $mySafe && $mySafe.accountxDai) {
+    symbol = context && context.data
+            ? context.data.symbol
+            : params.symbol;
+
+    if (symbol == "xdai" && $mySafe && $mySafe.accountxDai) {
       accountxDai = {
         symbol: "xdai",
         icon: "",
@@ -50,7 +58,7 @@
         variety: 1,
       };
     }
-    if (params.symbol == "xdai" && $mySafe && $mySafe.xDaiBalance) {
+    if (symbol == "xdai" && $mySafe && $mySafe.xDaiBalance) {
       safexDai = {
         symbol: "xdai",
         icon: "",
@@ -89,7 +97,7 @@
         </div>
       </div>
     </section>
-  {:else if params && params.symbol == "xdai"}
+  {:else if symbol == "xdai"}
     <section class="justify-center mb-4">
       <div
         class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard"
