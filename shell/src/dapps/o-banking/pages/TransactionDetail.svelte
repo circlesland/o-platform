@@ -9,7 +9,8 @@
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { Transfer } from "../data/circles/types";
-  import {EditorContext} from "@o-platform/o-editors/src/editorContext";
+  import { EditorContext } from "@o-platform/o-editors/src/editorContext";
+  import Icons from "../../../shared/molecules/Icons.svelte";
 
   export let params: {
     _id: string;
@@ -26,12 +27,10 @@
   let amountInWei: string;
   let otherSafeAddress: string;
 
-  let transactionId:string;
+  let transactionId: string;
 
   $: {
-    transactionId = context && context.data
-            ? context.data.id
-            : params._id;
+    transactionId = context && context.data ? context.data.id : params._id;
 
     transfer = $mySafe.transfers.rows.find((o) => o._id == transactionId);
 
@@ -103,19 +102,14 @@
     requestEvent.id = Generate.randomHexString(8);
     window.o.publishEvent(requestEvent);
   }
-
 </script>
 
 <BankingDetailHeader amount={transfer ? transfer.amount : 0} {classes} />
-{#if transfer}
-  <div class="mx-4 -mt-6">
-    <section class="flex items-center justify-center mb-2 ">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div
-          class="flex flex-row justify-center w-full pt-2 space-x-2 bg-white sm:space-x-6"
-        >
+<div class="pb-4 px-9">
+  {#if transfer}
+    <section class="flex items-center justify-center pt-10 pb-2">
+      <div class="flex flex-col w-full space-y-2 ">
+        <div class="flex flex-row justify-center w-full space-x-2 sm:space-x-6">
           <div
             class="flex flex-col cursor-pointer"
             on:click={() => openDetail(transfer.from)}
@@ -138,20 +132,7 @@
           </div>
 
           <div class="self-center text-xl text-light">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-12 h-12"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
+            <Icons icon="rightarrow" />
           </div>
           <div
             class="flex flex-col cursor-pointer"
@@ -176,125 +157,93 @@
             </div>
           </div>
         </div>
-        <div>
-          {transfer.message ? transfer.message : ""}
-        </div>
       </div>
     </section>
 
-    <section class="flex flex-col items-center justify-center mb-2 ">
-      <div
-        class="flex flex-col w-full pt-4 pb-1 pl-4 pr-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div class="text-xs font-bold text-left text-primary ">
-          TRANSACTION DETAILS
-        </div>
-        <div class="flex flex-col w-full space-y-2">
-          <div class="flex flex-col w-full">
-            <div
-              class="w-full h-full overflow-auto bg-white"
-              id="journal-scroll"
-            >
-              <table class="w-full">
-                <tbody class="">
-                  <tr
-                    class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
-                  >
-                    <td class="pl-5 pr-3 whitespace-no-wrap">
-                      <div class="text-gray-400">Date</div>
-                    </td>
+    <section class="justify-center mt-4 mb-2">
+      <div class="flex flex-col w-full space-y-1">
+        <div class="text-xs text-left text-light-dark">Message</div>
 
-                    <td class="px-2 py-2 whitespace-no-wrap">
-                      <div class="font-medium leading-5 text-gray-500">
-                        <Time
-                          timestamp={new Date(transfer.time * 1000)}
-                          format="D. MMMM YYYY HH:mm"
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
-                  >
-                    <td class="pl-5 pr-3 whitespace-no-wrap">
-                      <div class="text-gray-400">From</div>
-                    </td>
-
-                    <td class="px-2 py-2 whitespace-no-wrap">
-                      <div class="font-medium leading-5 text-gray-500">
-                        {displayableFromName}
-                      </div>
-                      <div class="leading-5 text-gray-900">
-                        {transfer.fromProfile ? `${transfer.from}` : ""}
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
-                  >
-                    <td class="pl-5 pr-3 whitespace-no-wrap">
-                      <div class="text-gray-400">To</div>
-                    </td>
-
-                    <td class="px-2 py-2 whitespace-no-wrap">
-                      <div class="font-medium leading-5 text-gray-500">
-                        {transfer.toProfile
-                          ? transfer.toProfile.displayName
-                          : transfer.to}
-                      </div>
-                      <div class="leading-5 text-gray-900">
-                        {transfer.toProfile ? `${transfer.to}` : ""}
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
-                  >
-                    <td class="pl-5 pr-3 whitespace-no-wrap">
-                      <div class="text-gray-400">Amount</div>
-                    </td>
-
-                    <td class="px-2 py-2 whitespace-no-wrap">
-                      <div class="font-medium leading-5 text-gray-500">
-                        {amountInWei}
-                        {amountInWei > 1 ? " Cirlces" : " Circle"}
-                      </div>
-                    </td>
-                  </tr>
-                  {#if message}
-                    <tr
-                      class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
-                    >
-                      <td class="pl-5 pr-3 whitespace-no-wrap">
-                        <div class="text-gray-400">Message</div>
-                      </td>
-
-                      <td class="px-2 py-2 whitespace-no-wrap">
-                        <div class="font-medium leading-5 text-gray-500">
-                          {message}
-                        </div>
-                      </td>
-                    </tr>
-                  {/if}
-                  <tr
-                    class="relative py-1 text-xs transform scale-100 cursor-default"
-                  >
-                    <td class="pl-5 pr-3 whitespace-no-wrap">
-                      <div class="text-gray-400">Block</div>
-                    </td>
-
-                    <td class="px-2 py-2 whitespace-no-wrap">
-                      <div class="font-medium leading-5 text-gray-500">
-                        {transfer.firstBlock}
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+        <div class="flex items-center w-full text-primarydark">
+          <div class="text-xl text-left ">
+            {transfer.message ? transfer.message : "No Message"}
           </div>
         </div>
       </div>
     </section>
-  </div>
-{/if}
+
+    <section class="justify-center mt-4 mb-2">
+      <div class="flex flex-col w-full space-y-1">
+        <div class="text-xs text-left text-light-dark">Amount</div>
+
+        <div class="flex items-center w-full text-primarydark">
+          <div class="text-xs text-left ">
+            {amountInWei}
+            {amountInWei > 1 ? " Cirlces" : " Circle"}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="justify-center mt-4 mb-2">
+      <div class="flex flex-col w-full space-y-1">
+        <div class="text-xs text-left text-light-dark">Date</div>
+
+        <div class="flex items-center w-full text-primarydark">
+          <div class="text-xs text-left ">
+            <Time
+              timestamp={new Date(transfer.time * 1000)}
+              format="D. MMMM YYYY HH:mm"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="justify-center mt-4 mb-2">
+      <div class="flex flex-col w-full space-y-1">
+        <div class="text-xs text-left text-light-dark">From</div>
+
+        <div class="flex items-center w-full text-primarydark">
+          <div class="text-xs text-left ">
+            {transfer.fromProfile ? `${transfer.from}` : ""}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="justify-center mt-4 mb-2">
+      <div class="flex flex-col w-full space-y-1">
+        <div class="text-xs text-left text-light-dark">To</div>
+
+        <div class="flex items-center w-full text-primarydark">
+          <div class="text-xs text-left ">
+            {transfer.toProfile ? `${transfer.to}` : ""}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="justify-center mt-4 mb-2">
+      <div class="flex flex-col w-full space-y-1">
+        <div class="text-xs text-left text-light-dark">Block</div>
+
+        <div class="flex items-center w-full text-primarydark">
+          <div class="text-xs text-left ">
+            {transfer.firstBlock}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="justify-center mt-4 mb-2">
+      <div class="flex flex-col w-full space-y-1">
+        <div class="text-xs text-left text-light-dark">Transaction Hash</div>
+
+        <div class="flex items-center w-full text-primarydark">
+          <div class="text-xs text-left ">Hash</div>
+        </div>
+      </div>
+    </section>
+  {/if}
+</div>

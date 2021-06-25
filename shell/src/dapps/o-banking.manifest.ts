@@ -54,7 +54,7 @@ const profile: PageManifest = {
   ],
 };
 
-const transactionDetail: PageManifest = {
+export const transactionDetail: PageManifest = {
   isDefault: false,
   isSystem: true,
   routeParts: ["transactions", ":_id"],
@@ -65,6 +65,51 @@ const transactionDetail: PageManifest = {
       // Can navigate to?
       // Sure!
       return true;
+    },
+  ],
+  actions: [
+    {
+      key: "setTrust",
+      label: "Trust",
+      icon: "trust",
+      event: (runtimeDapp: RuntimeDapp<any>) => {
+        return new RunProcess<ShellProcessContext>(
+          shellProcess,
+          true,
+          async (ctx) => {
+            ctx.childProcessDefinition = setTrust;
+            ctx.childContext = {
+              data: {
+                trustLimit: 100,
+                safeAddress: tryGetCurrentSafe().safeAddress,
+                privateKey: localStorage.getItem("circlesKey"),
+              },
+            };
+            return ctx;
+          }
+        );
+      },
+    },
+    {
+      key: "transfer",
+      icon: "sendmoney",
+      label: "Send Money",
+      event: (runtimeDapp: RuntimeDapp<any>) => {
+        return new RunProcess<ShellProcessContext>(
+          shellProcess,
+          true,
+          async (ctx) => {
+            ctx.childProcessDefinition = transfer;
+            ctx.childContext = {
+              data: {
+                safeAddress: tryGetCurrentSafe().safeAddress,
+                privateKey: localStorage.getItem("circlesKey"),
+              },
+            };
+            return ctx;
+          }
+        );
+      },
     },
   ],
 };

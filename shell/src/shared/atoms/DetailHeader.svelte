@@ -5,7 +5,7 @@
 </script>
 
 <header
-  class="grid place-content-center text-white bg-cover mt-11 {heightClass} overflow-hidden"
+  class="grid place-content-center text-white bg-cover rounded-t-lg {heightClass} overflow-hidden"
   style="background: linear-gradient(to right, #0f266280, #0f266280), url('{headerBackground}') no-repeat center center; background-size: cover;"
 >
   <slot />

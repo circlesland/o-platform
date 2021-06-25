@@ -230,7 +230,9 @@
 
     if ($me && $me.circlesSafeOwner && !balanceThresholdTrigger) {
       if (!!localStorage.getItem("isCreatingSafe")) {
-        console.log("Waiting until the required balance to create a new safe is reached ..");
+        console.log(
+          "Waiting until the required balance to create a new safe is reached .."
+        );
         balanceThresholdTrigger = new XDaiThresholdTrigger(
           $me.circlesSafeOwner,
           INVITE_VALUE - 0.005,
@@ -308,7 +310,6 @@
       isOpen = true;
     }
   }
-
 </script>
 
 <SvelteToast />
@@ -358,7 +359,7 @@
       }}
     />
   {:else if showList}
-    <div class="flex flex-col space-y-6">
+    <div class="flex flex-col p-4 space-y-6">
       {#each lastLoadedDapp.pages.filter((o) => !o.isSystem) as page}
         <DappNavItem
           segment="#/{lastLoadedDapp.routeParts.join('/') +
@@ -370,7 +371,7 @@
       {/each}
     </div>
   {:else if showHomeMenuList}
-    <div class="flex flex-col space-y-6">
+    <div class="flex flex-col p-4 space-y-6">
       <DappNavItem segment="/" title="Home" on:navigate={modalWantsToClose} />
       <DappNavItem
         segment="https://discord.gg/CS6xq7jECR"
@@ -400,7 +401,7 @@
   {:else}
     <!-- No process -->
     {#if getLastLoadedDapp()}
-      <div class="flex flex-wrap items-center justify-center space-x-10">
+      <div class="flex flex-wrap items-center justify-center p-4 space-x-10">
         {#each getLastLoadedDapp().actions.concat(contextActions) as action}
           <div
             on:click={() =>
@@ -454,5 +455,4 @@
     transform: translate(-50%, 0);
     animation: none !important;
   }
-
 </style>

@@ -17,7 +17,6 @@
   let options = { duration: 200, easing: linear };
 
   // transition:slide={options}
-
 </script>
 
 {#if isOpen}
@@ -34,10 +33,13 @@
     class="z-40 pt-2 text-base overlay"
   >
     <div
-      class="relative grid w-full max-h-full mb-2 ml-2 mr-2 overflow-hidden bg-white rounded-lg top-2 min-w-min justify-items-stretch md:w-2/3 xl:w-1/2"
+      class="w-full mt-1 mb-24 modalAsideContentContainer"
+      on:click|self={handleClose}
     >
-      <div class="p-4 pb-4 space-y-2 lg:px-8">
-        <div class="flex">
+      <div
+        class="w-full bg-white rounded-lg modalAsideContent md:w-2/3 xl:w-1/2"
+      >
+        <div class="modalAsideScrollableContent">
           <div class="w-full m-auto">
             <slot />
           </div>
@@ -64,6 +66,32 @@
     justify-content: center;
     overflow-y: hidden;
     @apply pb-20;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+  .modalAsideContentContainer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    justify-content: flex-end;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .modalAsideContent {
+    flex-grow: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .modalAsideScrollableContent {
+    flex-grow: 1;
+    overflow: auto;
+    min-height: 0;
   }
   /* Background Blurring for firefox and other non supportive browsers lies in App.svelte through the .blur class */
   @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
@@ -73,5 +101,4 @@
       backdrop-filter: blur(4px);
     }
   }
-
 </style>

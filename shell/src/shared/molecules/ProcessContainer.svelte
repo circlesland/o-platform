@@ -267,16 +267,21 @@
       icon: faTimes,
     },
   };
-
 </script>
 
 {#if waiting}
-  <LoadingIndicator />
+  <div class="p-4">
+    <LoadingIndicator />
+  </div>
 {:else if error}
-  <Error data={{ error }} />
+  <div class="p-4">
+    <Error data={{ error }} />
+  </div>
 {:else if interceptedProcess && prompt}
   <Prompt process={interceptedProcess} {prompt} bubble={lastBubble} />
 {:else}
   <!-- TODO: This could be both: Undefined state or loading .. -->
-  <LoadingIndicator />
+  <div class="p-4">
+    <LoadingIndicator />
+  </div>
 {/if}

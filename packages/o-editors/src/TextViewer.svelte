@@ -34,43 +34,45 @@
   };
 </script>
 
-<label class="label" for={context.field}>
-  <div class="label-text">{@html context.params.label}</div>
-  {#if context.params.canCopy}
-    <div class="inline-block break-all text-xs" id="clipboard">
-      <input
-        name="name"
-        type="text"
-        class="hidden"
-        bind:value={_context.data[context.field]}
-      />
-      <div
-        class="flex text-gray-300 cursor-pointertext-center text-xs relative -bottom-1"
-        on:click={copy}
-        alt="Copy to Clipboard"
-      >
-        Copy to Clipboard
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="ml-2 h-5 w-5 stroke-current transform group-hover:rotate-[-4deg] transition"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+<div class="p-4">
+  <label class="label" for={context.field}>
+    <div class="label-text">{@html context.params.label}</div>
+    {#if context.params.canCopy}
+      <div class="inline-block text-xs break-all" id="clipboard">
+        <input
+          name="name"
+          type="text"
+          class="hidden"
+          bind:value={_context.data[context.field]}
+        />
+        <div
+          class="relative flex text-xs text-gray-300 cursor-pointertext-center -bottom-1"
+          on:click={copy}
+          alt="Copy to Clipboard"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-          />
-        </svg>
+          Copy to Clipboard
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="ml-2 h-5 w-5 stroke-current transform group-hover:rotate-[-4deg] transition"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            />
+          </svg>
+        </div>
       </div>
-    </div>
-  {/if}
-</label>
+    {/if}
+  </label>
 
-<div class="form-control justify-self-center bg-white border p-4">
-  {_context.data[context.field]}
+  <div class="p-4 bg-white border form-control justify-self-center">
+    {_context.data[context.field]}
+  </div>
+
+  <ProcessNavigation on:buttonClick={submit} {context} />
 </div>
-
-<ProcessNavigation on:buttonClick={submit} {context} />

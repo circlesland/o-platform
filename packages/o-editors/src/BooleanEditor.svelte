@@ -26,10 +26,10 @@
   onMount(() => inputField.focus());
 </script>
 
-<div class="mt-4 bordered">
+<div class="p-4 mt-4 bordered">
   <div class="form-control">
     {#if context.messages[context.field]}
-      <div class="alert alert-error mb-2 mt-2">
+      <div class="mt-2 mb-2 alert alert-error">
         <div class="flex-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -49,14 +49,14 @@
       </div>
     {/if}
     <label class="cursor-pointer label" for={context.field}>
-      <span class="label-text inline">
+      <span class="inline label-text">
         {context.params.label}
         {#if context.params.link}
           <a
             href={context.params.link}
             id={context.params.linkLabel}
             target="_blank"
-            class="text-primary underline"
+            class="underline text-primary"
           >
             {context.params.linkLabel}
           </a>
@@ -73,7 +73,7 @@
           on:change={() => (context.editorDirtyFlags[context.field] = true)}
         />
         <span
-          class="checkbox-mark bg-white"
+          class="bg-white checkbox-mark"
           class:input-error={context.messages[context.field]}
         />
       </div>

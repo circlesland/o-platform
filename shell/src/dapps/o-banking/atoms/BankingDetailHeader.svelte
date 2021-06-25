@@ -1,16 +1,15 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
-  import PageHeader from "src/shared/atoms/PageHeader.svelte";
+  import DetailHeader from "src/shared/atoms/DetailHeader.svelte";
   import Web3 from "web3";
 
   export let amount;
   export let classes: String;
-
 </script>
 
 <TopNav />
 
-<PageHeader heightClass="h-60">
+<DetailHeader heightClass="h-60">
   <div class="self-center block mt-12 mb-8 text-center">
     {#if classes == "transactionpositive"}
       <span class="block ">Received</span>
@@ -19,7 +18,7 @@
     {:else}
       <span class="block text-base">Transfer</span>
     {/if}
-    <span class="inline-block ml-10 text-6xl ">
+    <span class="inline-block text-6xl ">
       {#if classes == "transactionpositive"}
         {Number.parseFloat(
           Web3.utils.fromWei(amount ? amount : "0", "ether")
@@ -52,4 +51,4 @@
       </svg></span
     >
   </div>
-</PageHeader>
+</DetailHeader>

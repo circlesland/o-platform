@@ -24,7 +24,9 @@
   import { Profile } from "../data/api/types";
   import { Continue } from "@o-platform/o-process/dist/events/continue";
   import { EditorContext } from "@o-platform/o-editors/src/editorContext";
-
+  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+  import { DetailActionFactory } from "../../../shared/molecules/DetailActionBarFactory";
+  import { transactionDetail } from "../../o-banking.manifest";
   export let context: EditorContext;
 
   const submitHandler = () => {
@@ -45,17 +47,15 @@
 
     if (context.params.id) {
       isLoading = true;
+      console.log("LOADPRO");
       loadProfile();
     }
   });
 
-  // export let params: {
-  //   id?: String;
-  // };
-
   $: {
     if (context.params) {
       isLoading = true;
+      console.log("LOADPRO NOCHMAL");
       loadProfile();
     }
     if ($me) {
@@ -94,6 +94,7 @@
   } = {};
 
   async function loadProfile() {
+    console.log("LOADING PROFILE!!!");
     if (!context.params || !context.params.id) {
       console.warn(
         `No profile specified ('id' must contain safeAddress or profileId)`
@@ -318,13 +319,13 @@
 {#if isLoading}
   <LoadingIndicator />
 {:else}
-  <div class="flex flex-col">
+  <header
+    class="grid overflow-hidden text-white bg-cover rounded-t-lg h-80 place-content-center"
+    style="background: linear-gradient(to right, #0f266280, #0f266280), url('/images/common/nice-bg.jpg') no-repeat center center; background-size: cover;"
+  >
     <div
-      class="absolute top-0 left-0 grid w-full h-48 py-2 bg-cover bg-dark"
-      style="background-image: url(/images/common/nice-bg.jpg);"
-    />
-
-    <div class="self-center m-auto text-center avatar justify-self-center w-36">
+      class="flex flex-col items-center self-center w-full m-auto text-center text-white avatar justify-self-center"
+    >
       <div class="rounded-full w-36 h-36">
         <img
           src={profile && profile.avatarUrl ? profile.avatarUrl : ""}
@@ -335,14 +336,33 @@
             : "avatar"}
         />
       </div>
+      {#if profile && profile.safeAddress}
+        <div class="text-2xl mt-9">
+          {profile
+            ? profile.lastName
+              ? `${profile.firstName} ${profile.lastName}`
+              : profile.firstName
+            : profile.safeAddress}
+        </div>
+      {/if}
+      {#if profile && profile.city}
+        <div class="mt-1 text-sm">
+          {profile.city ? profile.city.name : ""}
+          {profile.city
+            ? ", " + profile.city.country
+            : ", " + getCountryName(profile)}
+        </div>
+      {/if}
     </div>
+  </header>
+  <div class="flex flex-col p-4">
     <div class="mt-10">
       {#if !profile.safeAddress && !isMe}
         <section class="justify-center mb-2 ">
           <div
             class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
           >
-            <div class="text-xs font-bold text-left text-light-dark">
+            <div class="text-xs text-left text-light-darktext-light-dark">
               This citizen is waiting to be empowered by you.
             </div>
 
@@ -419,22 +439,36 @@
       {#if profile && profile.safeAddress}
         <section class="justify-center mb-2 text-primarydark">
           <div class="flex flex-col w-full p-2 space-y-1">
-            <div class="text-xs font-bold text-left ">NAME</div>
+            <div class="text-xs text-left text-light-dark">Passion</div>
 
-            <div class="flex items-center w-full">
-              <div class="text-xs text-left ">
-                {profile
-                  ? profile.lastName
-                    ? `${profile.firstName} ${profile.lastName}`
-                    : profile.firstName
-                  : profile.safeAddress}
-              </div>
+            <div class="flex items-center w-full text-xl">
+              {#if profile && profile.dream}
+                {profile.dream}
+              {/if}
+              {#if isEditable}
+                <button
+                  class="link link-primary text-primary text-2xs"
+                  on:click={() => editProfile({ dream: true })}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-3 h-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                    />
+                  </svg>
+                </button>
+              {/if}
             </div>
           </div>
         </section>
+
         <section class="justify-center mb-2 text-primarydark">
           <div class="flex flex-col w-full p-2 space-y-1">
-            <div class="text-xs font-bold text-left ">ADDRESS</div>
+            <div class="text-xs text-left text-light-dark">Address</div>
 
             <div class="flex items-center w-full">
               <div class="inline-block text-xs break-all" id="clipboard">
@@ -472,199 +506,35 @@
           </div>
         </section>
       {/if}
-      <section class="justify-center mb-2 text-primarydark">
-        <div class="flex flex-col w-full p-2 space-y-1">
-          <div class="text-xs font-bold text-left ">PASSION</div>
-
-          <div class="flex items-center w-full">
-            <small>
-              {#if profile && profile.dream}
-                {profile.dream}
-              {:else}
-                No passion set.
-              {/if}
-              {#if isEditable}
-                <button
-                  class="link link-primary text-primary text-2xs"
-                  on:click={() => editProfile({ dream: true })}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-3 h-3"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                    />
-                  </svg>
-                </button>
-              {/if}
-            </small>
-          </div>
-        </div>
-      </section>
-
-      <section class="justify-center mb-2 text-primarydark">
-        <div class="flex flex-col w-full p-2 space-y-">
-          <div class="text-xs font-bold text-left ">CITY</div>
-
-          <div class="flex items-center w-full">
-            <small>
-              {#if profile && profile.city}
-                {profile.city ? profile.city.name : ""}
-              {:else}
-                No city set.
-              {/if}
-              {#if isEditable}
-                <button
-                  class="link link-primary text-primary text-2xs"
-                  on:click={() => editProfile({ cityGeonameid: true })}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-3 h-3"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                    />
-                  </svg>
-                </button>
-              {/if}
-            </small>
-          </div>
-        </div>
-      </section>
-
-      <section class="justify-center mb-2 text-primarydark">
-        <div class="flex flex-col w-full p-2 space-y-1">
-          <div class="text-xs font-bold text-left ">COUNTRY</div>
-
-          <div class="flex items-center w-full">
-            <small>
-              {#if profile}
-                {profile.city ? profile.city.country : getCountryName(profile)}
-              {:else}
-                No Country set.
-              {/if}
-              {#if isEditable}
-                <button
-                  class="link link-primary text-primary text-2xs"
-                  on:click={() => editProfile({ cityGeonameid: true })}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-3 h-3"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                    />
-                  </svg>
-                </button>
-              {/if}
-            </small>
-          </div>
-        </div>
-      </section>
 
       {#if !isMe && (profile.trusting || profile.trustedBy)}
-        <section class="justify-center mb-2 ">
-          <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
-            <div class="text-sm font-bold text-light-dark">TRUST</div>
-            <div class="flex flex-col">
-              {#if profile.trusting && profile.trustedBy}
-                <div class="mb-4 text-sm text-left text-light">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="inline w-4 h-4 "
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 17l-5-5m0 0l5-5m-5 5h12"
-                    />
-                  </svg>
-                  <span class="inline text-dark"
-                    >You are trusting {profile.displayName}
-                    {profile.trusting}%
-                  </span>
-                </div>
+        <section class="justify-center mb-2 text-primarydark">
+          <div class="flex flex-col w-full p-2 space-y-1">
+            <div class="text-xs text-left text-light-dark">Trust</div>
 
-                <div class="mb-4 text-sm text-left text-light">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="inline w-4 h-4 "
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                  <span class="inline text-dark"
-                    >{profile.displayName} is trusting you {profile.trustedBy}%
-                  </span>
-                </div>
-              {:else if profile.trusting && !profile.trustedBy}
-                <div class="mb-4 text-sm text-left text-light">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="inline w-4 h-4 "
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 17l-5-5m0 0l5-5m-5 5h12"
-                    />
-                  </svg>
-                  <span class="inline text-dark"
-                    >You are trusting {profile.displayName}
-                    {profile.trusting}%
-                  </span>
-                </div>
-              {:else if !profile.trusting && profile.trustedBy}
-                <div class="mb-4 text-sm text-left text-light">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="inline w-4 h-4 "
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 17l-5-5m0 0l5-5m-5 5h12"
-                    />
-                  </svg>
-                  <span class="inline text-dark"
-                    >{profile.displayName} is trusting you
-                    {profile.trustedBy}%
-                  </span>
-                </div>
-              {/if}
+            <div class="flex items-center w-full">
+              <small>
+                {#if profile.trusting && profile.trustedBy}
+                  You are trusting {profile.displayName}
+                  {profile.trusting}%
+                  <br />
+                  {profile.displayName} is trusting you {profile.trustedBy}%
+                {:else if profile.trusting && !profile.trustedBy}
+                  You are trusting {profile.displayName}
+                  {profile.trusting}%
+                {:else if !profile.trusting && profile.trustedBy}
+                  {profile.displayName} is trusting you
+                  {profile.trustedBy}%
+                {/if}
+              </small>
             </div>
           </div>
         </section>
       {/if}
-      {#if !isMe && profile.safeAddress}
+      <DetailActionBar actions={transactionDetail.actions} />
+      <!-- ACTIONS  -->
+
+      <!-- {#if !isMe && profile.safeAddress}
         <section class="justify-center mb-2 ">
           <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
             <div class="text-sm font-bold text-light-dark">TRANSFER</div>
@@ -728,7 +598,7 @@
             {/if}
           </div>
         </section>
-      {/if}
+      {/if} -->
     </div>
   </div>
 {/if}
