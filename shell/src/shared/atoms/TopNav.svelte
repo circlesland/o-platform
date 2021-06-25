@@ -11,13 +11,12 @@
     lastLoadedPage = getLastLoadedPage();
     lastLoadedDapp = getLastLoadedDapp();
   });
-
 </script>
 
 {#if lastLoadedDapp && lastLoadedPage}
   <div class="fixed top-0 left-0 z-10 w-full">
     <div
-      class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white md:w-2/3 xl:w-1/2 navbar bg-secondary-dark "
+      class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white navbar bg-secondary-dark "
     >
       <div
         class="cursor-pointer justify-self-start"

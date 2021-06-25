@@ -357,7 +357,7 @@
     </div>
   </header>
   <div class="flex flex-col p-4">
-    <div class="mt-10">
+    <div class="mt-4">
       {#if !profile.safeAddress && !isMe}
         <section class="justify-center mb-2 ">
           <div

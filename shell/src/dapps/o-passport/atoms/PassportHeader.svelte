@@ -73,7 +73,6 @@
 
     window.o.publishEvent(requestEvent);
   }
-
 </script>
 
 <TopNav />
@@ -111,7 +110,7 @@
       </button>
     </div>
     <div class="">
-      <h2>
+      <h2 class="text-2xl">
         {profile ? profile.firstName : ""}
         {profile && profile.lastName ? profile.lastName : ""}
         <button
