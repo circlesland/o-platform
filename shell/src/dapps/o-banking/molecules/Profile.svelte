@@ -42,12 +42,13 @@
           return;
         }
         await loadProfile();
+        console.log("AWAIT LOADPRO");
       }
     );
 
     if (context.params.id) {
       isLoading = true;
-      console.log("LOADPRO");
+      console.log("LOADPRO IF CONTEXT");
       loadProfile();
     }
   });
@@ -362,7 +363,7 @@
           <div
             class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
           >
-            <div class="text-xs text-left text-light-darktext-light-dark">
+            <div class="text-left text-2xs text-light-darktext-light-dark">
               This citizen is waiting to be empowered by you.
             </div>
 
@@ -379,7 +380,7 @@
             {:else}
               <div class="flex items-center w-full space-x-2 sm:space-x-4">
                 <div class="text-left">
-                  <div class="inline-block text-xs break-all">
+                  <div class="inline-block break-all">
                     <div
                       class="flex items-center w-full space-x-2 sm:space-x-4"
                     >
@@ -439,7 +440,7 @@
       {#if profile && profile.safeAddress}
         <section class="justify-center mb-2 text-primarydark">
           <div class="flex flex-col w-full p-2 space-y-1">
-            <div class="text-xs text-left text-light-dark">Passion</div>
+            <div class="text-left text-2xs text-light-dark">Passion</div>
 
             <div class="flex items-center w-full text-xl">
               {#if profile && profile.dream}
@@ -468,10 +469,10 @@
 
         <section class="justify-center mb-2 text-primarydark">
           <div class="flex flex-col w-full p-2 space-y-1">
-            <div class="text-xs text-left text-light-dark">Address</div>
+            <div class="text-left text-2xs text-light-dark">Address</div>
 
             <div class="flex items-center w-full">
-              <div class="inline-block text-xs break-all" id="clipboard">
+              <div class="inline-block break-all" id="clipboard">
                 {#if profile}
                   <input
                     name="name"
@@ -482,7 +483,7 @@
                   {profile.safeAddress ? profile.safeAddress : ""}
                 {/if}
                 <div
-                  class="relative inline-block text-xs text-primary cursor-pointertext-center -bottom-1"
+                  class="relative inline-block text-primary cursor-pointertext-center -bottom-1"
                   on:click={copy}
                   alt="Copy to Clipboard"
                 >
@@ -510,23 +511,21 @@
       {#if !isMe && (profile.trusting || profile.trustedBy)}
         <section class="justify-center mb-2 text-primarydark">
           <div class="flex flex-col w-full p-2 space-y-1">
-            <div class="text-xs text-left text-light-dark">Trust</div>
+            <div class="text-left text-2xs text-light-dark">Trust</div>
 
             <div class="flex items-center w-full">
-              <small>
-                {#if profile.trusting && profile.trustedBy}
-                  You are trusting {profile.displayName}
-                  {profile.trusting}%
-                  <br />
-                  {profile.displayName} is trusting you {profile.trustedBy}%
-                {:else if profile.trusting && !profile.trustedBy}
-                  You are trusting {profile.displayName}
-                  {profile.trusting}%
-                {:else if !profile.trusting && profile.trustedBy}
-                  {profile.displayName} is trusting you
-                  {profile.trustedBy}%
-                {/if}
-              </small>
+              {#if profile.trusting && profile.trustedBy}
+                You are trusting {profile.displayName}
+                {profile.trusting}%
+                <br />
+                {profile.displayName} is trusting you {profile.trustedBy}%
+              {:else if profile.trusting && !profile.trustedBy}
+                You are trusting {profile.displayName}
+                {profile.trusting}%
+              {:else if !profile.trusting && profile.trustedBy}
+                {profile.displayName} is trusting you
+                {profile.trustedBy}%
+              {/if}
             </div>
           </div>
         </section>

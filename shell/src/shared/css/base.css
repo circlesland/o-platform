@@ -2,13 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+.text-base {
+  font-size: 0.875rem
+  /* 14px */
+  ;
+  line-height: 1.25rem
+  /* 20px */
+  ;
+  
+}
+.text-2xs {
+  line-height: 0.7rem;
+}
+
 @layer base {
   h1 {
     @apply text-2xl;
   }
 
   h2 {
-    @apply text-xl;
+    @apply text-xs;
   }
 }
 

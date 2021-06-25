@@ -107,7 +107,7 @@
 <BankingDetailHeader amount={transfer ? transfer.amount : 0} {classes} />
 <div class="pb-4 px-9">
   {#if transfer}
-    <section class="flex items-center justify-center pt-10 pb-2">
+    <section class="flex items-center justify-center pt-10 pb-2 text-secondary">
       <div class="flex flex-col w-full space-y-2 ">
         <div class="flex flex-row justify-center w-full space-x-2 sm:space-x-6">
           <div
@@ -162,7 +162,7 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-xs text-left text-light-dark">Message</div>
+        <div class="text-left text-2xs text-light-dark">Message</div>
 
         <div class="flex items-center w-full text-primarydark">
           <div class="text-xl text-left ">
@@ -174,10 +174,10 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-xs text-left text-light-dark">Amount</div>
+        <div class="text-left text-2xs text-light-dark">Amount</div>
 
         <div class="flex items-center w-full text-primarydark">
-          <div class="text-xs text-left ">
+          <div class="text-left ">
             {amountInWei}
             {amountInWei > 1 ? " Cirlces" : " Circle"}
           </div>
@@ -187,10 +187,10 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-xs text-left text-light-dark">Date</div>
+        <div class="text-left text-2xs text-light-dark">Date</div>
 
         <div class="flex items-center w-full text-primarydark">
-          <div class="text-xs text-left ">
+          <div class="text-left ">
             <Time
               timestamp={new Date(transfer.time * 1000)}
               format="D. MMMM YYYY HH:mm"
@@ -202,10 +202,10 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-xs text-left text-light-dark">From</div>
+        <div class="text-left text-2xs text-light-dark">From</div>
 
         <div class="flex items-center w-full text-primarydark">
-          <div class="text-xs text-left ">
+          <div class="text-left break-all">
             {transfer.fromProfile ? `${transfer.from}` : ""}
           </div>
         </div>
@@ -214,10 +214,10 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-xs text-left text-light-dark">To</div>
+        <div class="text-left text-2xs text-light-dark">To</div>
 
         <div class="flex items-center w-full text-primarydark">
-          <div class="text-xs text-left ">
+          <div class="text-left break-all">
             {transfer.toProfile ? `${transfer.to}` : ""}
           </div>
         </div>
@@ -226,10 +226,10 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-xs text-left text-light-dark">Block</div>
+        <div class="text-left text-2xs text-light-dark">Block</div>
 
         <div class="flex items-center w-full text-primarydark">
-          <div class="text-xs text-left ">
+          <div class="text-left break-all">
             {transfer.firstBlock}
           </div>
         </div>
@@ -238,10 +238,10 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-xs text-left text-light-dark">Transaction Hash</div>
+        <div class="text-left text-2xs text-light-dark">Transaction Hash</div>
 
         <div class="flex items-center w-full text-primarydark">
-          <div class="text-xs text-left ">Hash</div>
+          <div class="text-left break-all">Hash</div>
         </div>
       </div>
     </section>

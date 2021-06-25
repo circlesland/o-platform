@@ -115,15 +115,15 @@
 
     <div class="relative flex-grow text-left truncate">
       <div class="truncateThis">
-        <h2 class="text-2xl sm:text-3xl">
+        <h2 class="text-base">
           {displayName}
         </h2>
       </div>
-      <p class="text-sm text-light-dark">{message}</p>
+      <p class="text-xs text-light-dark">{message}</p>
     </div>
 
     <div class="flex flex-col flex-1 justify-items-end">
-      <div class="self-end text-{classes} text-2xl sm:text-3xl">
+      <div class="self-end text-{classes} text-lg sm:text-3xl">
         <span>
           {Number.parseFloat(
             Web3.utils.fromWei(transfer.amount, "ether")
