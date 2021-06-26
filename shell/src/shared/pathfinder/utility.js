@@ -1,5 +1,5 @@
 const CirclesAPI = 'https://api.circles.garden/api/';
-const PathfinderAPI = 'https://pathfinder.circles.land';
+const PathfinderAPI = "__PATHFINDER_ENDPOINT__";
 const GraphAPI = 'https://graph.circles.garden/subgraphs/name/CirclesUBI/circles-subgraph';
 import {Banking} from "../../dapps/o-banking/banking"
 

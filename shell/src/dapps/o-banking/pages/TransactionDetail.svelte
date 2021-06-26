@@ -92,7 +92,7 @@
       ctx.childProcessDefinition = showProfile;
       ctx.childContext = {
         data: {
-          id,
+          id
         },
       };
       return ctx;
@@ -136,8 +136,9 @@
           </div>
           <div
             class="flex flex-col cursor-pointer"
-            on:click={() => openDetail(transfer.to)}
           >
+            <!-- TODO: Re-implement the detail link -->
+            <!--on:click={() => openDetail(transfer.to)}-->
             <div class="avatar">
               <div class="w-24 h-24 m-auto rounded-full">
                 <img

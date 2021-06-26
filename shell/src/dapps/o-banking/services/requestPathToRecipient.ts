@@ -21,7 +21,8 @@ export async function requestPathToRecipient (context:{data:{safeAddress:string;
       body: raw
     };
 
-    const response = await fetch("https://pathfinder.circles.land/flow", requestOptions)
+    const response = await fetch(
+        `__PATHFINDER_ENDPOINT__/flow/${context.data.safeAddress}/${context.data.recipientAddress}/${circlesValueInWei.toString()}`);
     const result = await response.json();
 
     console.log("Transitive path is: ", result);

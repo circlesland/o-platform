@@ -12,6 +12,8 @@ let __CIRCLES_GARDEN_API__ = "https://api.circles.garden/api/users/";
 let __AUTH_ENDPOINT__ = "https://auth.circles.name";
 let __API_ENDPOINT__ = "https://api.circles.land";
 let __FILES_ENDPOINT__ = "https://files.circles.land";
+let __CIRCLES_SUBGRAPH_ENDPOINT__ = "https://api.thegraph.com/subgraphs/name/circlesubi/circles";
+let __PATHFINDER_ENDPOINT__ = "https://rpc.circles.land/pathfinder";
 let __APP_ID__ = "circles.land";
 let __FILES_APP_ID__ = "files.circles.land";
 let __SAFE_SCHEMA_VERSION__ = "2";
@@ -55,6 +57,8 @@ console.log(`__APP_ID__: ${__APP_ID__}`);
 console.log(`__FILES_APP_ID__: ${__FILES_APP_ID__}`);
 console.log(`__CIRCLES_GARDEN_API__: ${__CIRCLES_GARDEN_API__}`);
 console.log(`__SAFE_SCHEMA_VERSION__: ${__SAFE_SCHEMA_VERSION__}`);
+console.log(`__PATHFINDER_ENDPOINT__: ${__PATHFINDER_ENDPOINT__}`);
+console.log(`__CIRCLES_SUBGRAPH_ENDPOINT__: ${__CIRCLES_SUBGRAPH_ENDPOINT__}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
@@ -84,6 +88,24 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__PATHFINDER_ENDPOINT__",
+          replace: __PATHFINDER_ENDPOINT__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__CIRCLES_SUBGRAPH_ENDPOINT__",
+          replace: __CIRCLES_SUBGRAPH_ENDPOINT__,
+          flags: "g",
+        },
+      },
       {
         test: /\.ts|\.svelte$/,
         loader: "string-replace-loader",
