@@ -17,7 +17,7 @@ import { BN } from "ethereumjs-util";
 import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
-import {Profile, ProfilesByCirclesAddressDocument} from "../data/api/types";
+import {Profile} from "../data/api/types";
 import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
 import {SetTrustContext} from "./setTrust";
 
@@ -102,13 +102,12 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-
       checkRecipientAddress: {
         id: "checkRecipientAddress",
         always: [
           {
             cond: (context) => !!context.data.recipientAddress,
-            target: "#findMaxFlow",
+            target: "#tokens",
           },
           {
             target: "#recipientAddress",
@@ -124,47 +123,9 @@ const processDefinition = (processId: string) =>
           submitButtonText: "Check send limit",
         },
         navigation: {
-          next: "#findMaxFlow",
+          next: "#tokens",
         },
       }),
-      findMaxFlow: {
-        id: "findMaxFlow",
-        entry: () => {
-          window.o.publishEvent(<PlatformEvent>{
-            type: "shell.progress",
-            message: `Calculating the maximum transfer amount ..`,
-          });
-        },
-        invoke: {
-          id: "findMaxFlow",
-          src: async (context) => {
-            if (!context.data.recipientAddress) {
-              throw new Error(`No recipient address on context`);
-            }
-            context.data.maxFlows = {};
-            const p1 = new Promise<void>(async (resolve) => {
-              const flow = await requestPathToRecipient({
-                data: {
-                  recipientAddress: context.data.recipientAddress,
-                  amount: "9999999000000000000000000",
-                  safeAddress: context.data.safeAddress,
-                },
-              });
-              context.data.maxFlows["crc"] = flow.flow;
-              resolve();
-            });
-            const p2 = await RpcGateway.trigger(async (web3) => {
-              context.data.maxFlows["xdai"] = await web3.eth.getBalance(
-                web3.utils.toChecksumAddress(context.data.safeAddress)
-              );
-            }, 1000);
-
-            await Promise.all([p1, p2]);
-          },
-          onDone: "#tokens",
-          onError: "#error",
-        },
-      },
       tokens: prompt<TransferContext, any>({
         field: "tokens",
         component: CurrencyTransfer,
@@ -190,10 +151,48 @@ const processDefinition = (processId: string) =>
           currency: yup.string().required("Please select a valid currency."),
         }),
         navigation: {
-          next: "#checkAmount",
+          next: "#findMaxFlow",
           previous: "#recipientAddress",
         },
       }),
+      findMaxFlow: {
+        id: "findMaxFlow",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Calculating the maximum transfer amount ..`,
+          });
+        },
+        invoke: {
+          id: "findMaxFlow",
+          src: async (context) => {
+            if (!context.data.recipientAddress) {
+              throw new Error(`No recipient address on context`);
+            }
+            context.data.maxFlows = {};
+            const p1 = new Promise<void>(async (resolve) => {
+              const flow = await requestPathToRecipient({
+                data: {
+                  recipientAddress: context.data.recipientAddress,
+                  amount: context.data.tokens.amount,
+                  safeAddress: context.data.safeAddress,
+                },
+              });
+              context.data.maxFlows["crc"] = flow.flow;
+              resolve();
+            });
+            const p2 = await RpcGateway.trigger(async (web3) => {
+              context.data.maxFlows["xdai"] = await web3.eth.getBalance(
+                  web3.utils.toChecksumAddress(context.data.safeAddress)
+              );
+            }, 1000);
+
+            await Promise.all([p1, p2]);
+          },
+          onDone: "#checkAmount",
+          onError: "#error",
+        },
+      },
       checkAmount: {
         id: "checkAmount",
         always: [
