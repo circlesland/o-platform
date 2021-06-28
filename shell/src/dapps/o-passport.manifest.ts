@@ -115,7 +115,7 @@ export const passport: DappManifest<DappState> = {
   title: "Passport",
   routeParts: ["passport"],
   tag: Promise.resolve("alpha"),
-  actions: [
+  actions: () => [
     {
       key: "logout",
       label: "Logout",

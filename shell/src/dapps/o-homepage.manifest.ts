@@ -156,7 +156,7 @@ export const homepage: DappManifest<DappState> = {
   isEnabled: true,
   hideFooter: false,
   isFullWidth: true,
-  actions: [],
+  actions: () => [],
   navigation: {
     leftSlot: {
       component: ListComponent,

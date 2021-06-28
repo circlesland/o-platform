@@ -112,12 +112,12 @@ export const marketplace: DappManifest<DappState> = {
   title: "Marketplace",
   routeParts: ["marketplace"],
   tag: Promise.resolve("alpha"),
-  actions: [
+  actions: () => [
     {
       key: "createOffer",
       label: "Create offer",
       icon: "createoffer",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
+      event: () => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,
           true,

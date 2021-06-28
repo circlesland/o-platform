@@ -34,7 +34,7 @@ export const miva: DappManifest<DappState> = {
   isEnabled: true,
   hideFooter: true,
   isFullWidth: true,
-  actions: [],
+  actions: () => [],
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {

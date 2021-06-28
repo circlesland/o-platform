@@ -55,7 +55,7 @@ export const dashboard: DappManifest<DappState> = {
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
-  actions: [],
+  actions: () => [],
 
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here

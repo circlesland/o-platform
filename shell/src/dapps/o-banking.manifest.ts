@@ -257,12 +257,12 @@ export const banking: DappManifest<DappState> = {
   routeParts: ["banking"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
-  actions: [
+  actions: (runtimeDapp: RuntimeDapp<any>) => [
     {
       key: "setTrust",
       label: "Trust someone",
       icon: "trust",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
+      event: () => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,
           true,
@@ -284,7 +284,7 @@ export const banking: DappManifest<DappState> = {
       key: "transfer",
       icon: "sendmoney",
       label: "Send Money",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
+      event: () => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,
           true,

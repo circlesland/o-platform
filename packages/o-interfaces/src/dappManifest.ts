@@ -59,11 +59,11 @@ export interface DappManifest<TState extends { [x: string]: any }> {
    */
   dependencies?: string[];
 
-  actions?: {
+  actions?: (runtimeDapp: RuntimeDapp<any>) => {
     key: string;
     icon?: string;
     label: string;
-    event: (runtimeDapp: RuntimeDapp<any>) => PlatformEvent;
+    event: () => PlatformEvent;
   }[];
 
   navigation?: NavigationManifest;
