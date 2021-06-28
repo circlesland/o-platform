@@ -19,8 +19,13 @@ export interface RuntimeDapp<TState extends {[x:string]:any}> extends DappManife
    */
   outEvents?:Topic<PlatformEvent>,
 
+  state: TState;
+  setState: (state:TState) => void;
+
+/*
   state: BehaviorSubject<StatePropagation<TState>>
 
   emitSignal: (signal:Signal) => void;
   emitState: (state:TState) => void;
+ */
 }

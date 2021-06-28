@@ -34,8 +34,8 @@ export const dapps: DappManifest<any>[] = [
 
 export const loadedDapps: RuntimeDapp<any>[] = [];
 
-export function getLastLoadedDapp() {
-  return lastLoadedDapp;
+export function getLastLoadedDapp<TState extends {[x:string]:any}>() {
+  return <RuntimeDapp<TState>>lastLoadedDapp;
 }
 let lastLoadedDapp: RuntimeDapp<any>;
 
@@ -235,7 +235,8 @@ async function loadDapp(stack: RuntimeDapp<any>[], dappManifest: DappManifest<an
     route: appDefaultRoute,
     dappId: dappManifest.isSingleton
       ? dappManifest.dappId
-      : `${dappManifest.dappId}:${Generate.randomHexString()}`
+      : `${dappManifest.dappId}:${Generate.randomHexString()}`,
+
     // runtimePages: dappManifest.pages.map(pageManifest => {
       // const pageUrl = constructPageUrl(appBaseUrl, pageManifest);
       // return <RuntimePageManifest>{

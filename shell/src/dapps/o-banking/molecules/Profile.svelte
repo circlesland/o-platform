@@ -26,8 +26,13 @@
   import { EditorContext } from "@o-platform/o-editors/src/editorContext";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { DetailActionFactory } from "../../../shared/molecules/DetailActionBarFactory";
-  import { transactionDetail } from "../../o-banking.manifest";
+  import {BankingDappState, transactionDetail} from "../../o-banking.manifest";
+  import {getLastLoadedDapp} from "../../../loader";
   export let context: EditorContext;
+
+  export let params: {
+    id?: String;
+  };
 
   const submitHandler = () => {
     const answer = new Continue();
@@ -120,6 +125,12 @@
     isMe = profile.id == ($me ? $me.id : 0);
     isLoading = false;
     name = profile.safeAddress;
+
+    // TODO: This is bullshit but works. Refactor ASAP.
+    getLastLoadedDapp<BankingDappState>().state = {
+      currentProfileId: context.params.id,
+      currentSafeAddress: profile.safeAddress
+    };
   }
 
   function loadTrustRelation(safeAddress: string): {

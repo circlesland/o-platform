@@ -13,6 +13,7 @@ export interface PageManifest {
   available?: any[],
   routeParts: string[],
   userData?: {
+    [x:string]:any
   }
   actions?: {
     key: string;

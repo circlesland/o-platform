@@ -72,7 +72,7 @@ export const transactionDetail: PageManifest = {
       key: "setTrust",
       label: "Trust",
       icon: "trust",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
+      event: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,
           true,
@@ -81,7 +81,7 @@ export const transactionDetail: PageManifest = {
             ctx.childContext = {
               data: {
                 trustLimit: 100,
-                safeAddress: tryGetCurrentSafe().safeAddress,
+                safeAddress: runtimeDapp.state.currentSafeAddress,
                 privateKey: localStorage.getItem("circlesKey"),
               },
             };
@@ -94,7 +94,7 @@ export const transactionDetail: PageManifest = {
       key: "transfer",
       icon: "sendmoney",
       label: "Send Money",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
+      event: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,
           true,
@@ -102,7 +102,7 @@ export const transactionDetail: PageManifest = {
             ctx.childProcessDefinition = transfer;
             ctx.childContext = {
               data: {
-                safeAddress: tryGetCurrentSafe().safeAddress,
+                safeAddress: runtimeDapp.state.currentSafeAddress,
                 privateKey: localStorage.getItem("circlesKey"),
               },
             };
@@ -234,6 +234,17 @@ const graph: PageManifest = {
 
 export interface DappState {
   // put state here
+}
+
+export class BankingDappState {
+  /**
+   * The currently displayed profile (e.g. in the profile detail)
+   */
+  currentProfileId?: number
+  /**
+   * The address of the currently displayed safe (e.g. in the profile detail)
+   */
+  currentSafeAddress?: string
 }
 
 export const banking: DappManifest<DappState> = {
