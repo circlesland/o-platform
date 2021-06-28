@@ -220,5 +220,5 @@ export const upsertIdentity: ProcessDefinition<
   UpsertIdentityContextData
 > = {
   name: "upsertIdentity",
-  stateMachine: processDefinition,
+  stateMachine: <any>processDefinition,
 };

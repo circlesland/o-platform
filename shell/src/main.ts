@@ -57,10 +57,6 @@ const shell: IShell = {
             ? await contextModifier(await getProcessContext())
             : await getProcessContext()
       };
-      const _1 = useMachine(machine, machineOptions);
-      const _2 = useMachine(machine, machineOptions);
-      const _3 = useMachine(machine, machineOptions);
-
       const {service, state, send} = useMachine(machine, machineOptions);
 
       const outEvents = new Subject<ProcessEvent>();
