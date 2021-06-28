@@ -236,6 +236,7 @@ async function loadDapp(stack: RuntimeDapp<any>[], dappManifest: DappManifest<an
     dappId: dappManifest.isSingleton
       ? dappManifest.dappId
       : `${dappManifest.dappId}:${Generate.randomHexString()}`,
+    state: {}
 
     // runtimePages: dappManifest.pages.map(pageManifest => {
       // const pageUrl = constructPageUrl(appBaseUrl, pageManifest);
