@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icons from "./Icons.svelte";
+  import {getLastLoadedDapp} from "src/loader";
 
   export let actions: any;
 
@@ -9,7 +10,7 @@
 <div class="flex flex-row justify-between p-2 text-secondary">
   {#each actions as action}
     <div
-      on:click={() => window.o.publishEvent(action.event(undefined))}
+      on:click={() => window.o.publishEvent(action.event(getLastLoadedDapp()))}
       class="flex flex-col items-center content-center self-start space-y-2 cursor-pointer"
     >
       <div>
