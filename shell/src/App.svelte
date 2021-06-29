@@ -402,7 +402,7 @@
     <!-- No process -->
     {#if getLastLoadedDapp()}
       <div class="flex flex-wrap items-center justify-center p-4 space-x-10">
-        {#each getLastLoadedDapp().actions.concat(contextActions) as action}
+        {#each getLastLoadedDapp().actions(getLastLoadedDapp()).concat(contextActions) as action}
           <div
             on:click={() =>
               window.o.publishEvent(action.event(getLastLoadedDapp()))}

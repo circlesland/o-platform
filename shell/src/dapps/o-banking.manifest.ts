@@ -68,81 +68,79 @@ export const transactionDetail: PageManifest = {
     },
   ],
   actions: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
-    let actions = [{
-      key: "transfer",
-      icon: "sendmoney",
-      label: "Send Money",
-      event: () => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = transfer;
-            ctx.childContext = {
-              data: {
-                safeAddress: tryGetCurrentSafe().safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
+    let actions = [
+      {
+        key: "transfer",
+        icon: "sendmoney",
+        label: "Send Money",
+        event: () => {
+          return new RunProcess<ShellProcessContext>(
+            shellProcess,
+            true,
+            async (ctx) => {
+              ctx.childProcessDefinition = transfer;
+              ctx.childContext = {
+                data: {
+                  safeAddress: tryGetCurrentSafe().safeAddress,
+                  privateKey: localStorage.getItem("circlesKey"),
+                },
+              };
+              return ctx;
+            }
+          );
+        },
       },
-    }];
+    ];
 
-    if (runtimeDapp.state.trusted){
-    actions.push(
-    {
-      key: "setTrust",
-      label: "Trust someone",
-      icon: "trust",
-      event: () => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = setTrust;
-            ctx.childContext = {
-              data: {
-                trustLimit: 100,
-                safeAddress: tryGetCurrentSafe().safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
-      },
-    });
-  }else{
-    actions.push(
-    {
-      key: "setUntrust",
-      label: "Untrust someone",
-      icon: "untrust",
-      event: () => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = setTrust;
-            ctx.childContext = {
-              data: {
-                trustLimit: 0,
-                safeAddress: tryGetCurrentSafe().safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
-      },
-    });
-  }
-  return actions;  
-
+    if (runtimeDapp.state.trusted) {
+      actions.push({
+        key: "setTrust",
+        label: "Trust someone",
+        icon: "trust",
+        event: () => {
+          return new RunProcess<ShellProcessContext>(
+            shellProcess,
+            true,
+            async (ctx) => {
+              ctx.childProcessDefinition = setTrust;
+              ctx.childContext = {
+                data: {
+                  trustLimit: 0,
+                  safeAddress: runtimeDapp.state.currentSafeAddress,
+                  privateKey: localStorage.getItem("circlesKey"),
+                },
+              };
+              return ctx;
+            }
+          );
+        },
+      });
+    } else {
+      actions.push({
+        key: "setUntrust",
+        label: "Untrust someone",
+        icon: "untrust",
+        event: () => {
+          return new RunProcess<ShellProcessContext>(
+            shellProcess,
+            true,
+            async (ctx) => {
+              ctx.childProcessDefinition = setTrust;
+              ctx.childContext = {
+                data: {
+                  trustLimit: 100,
+                  safeAddress: runtimeDapp.state.currentSafeAddress,
+                  privateKey: localStorage.getItem("circlesKey"),
+                },
+              };
+              return ctx;
+            }
+          );
+        },
+      });
+    }
+    return actions;
   },
-  
 };
 
 const transactionSend: PageManifest = {
@@ -271,13 +269,13 @@ export class BankingDappState {
   /**
    * The currently displayed profile (e.g. in the profile detail)
    */
-  currentProfileId?: number
+  currentProfileId?: number;
   /**
    * The address of the currently displayed safe (e.g. in the profile detail)
    */
-  currentSafeAddress?: string
+  currentSafeAddress?: string;
 
-  trusted?: boolean
+  trusted?: boolean;
 }
 
 export const banking: DappManifest<DappState> = {
@@ -291,79 +289,78 @@ export const banking: DappManifest<DappState> = {
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   actions: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
-    let actions = [{
-      key: "transfer",
-      icon: "sendmoney",
-      label: "Send Money",
-      event: () => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = transfer;
-            ctx.childContext = {
-              data: {
-                safeAddress: tryGetCurrentSafe().safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
+    let actions = [
+      {
+        key: "transfer",
+        icon: "sendmoney",
+        label: "Send Money",
+        event: () => {
+          return new RunProcess<ShellProcessContext>(
+            shellProcess,
+            true,
+            async (ctx) => {
+              ctx.childProcessDefinition = transfer;
+              ctx.childContext = {
+                data: {
+                  safeAddress: tryGetCurrentSafe().safeAddress,
+                  privateKey: localStorage.getItem("circlesKey"),
+                },
+              };
+              return ctx;
+            }
+          );
+        },
       },
-    }];
+    ];
 
-    if (runtimeDapp.state.trusted){
-    actions.push(
-    {
-      key: "setTrust",
-      label: "Trust someone",
-      icon: "trust",
-      event: () => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = setTrust;
-            ctx.childContext = {
-              data: {
-                trustLimit: 100,
-                safeAddress: tryGetCurrentSafe().safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
-      },
-    });
-  }else{
-    actions.push(
-    {
-      key: "setUntrust",
-      label: "Untrust someone",
-      icon: "untrust",
-      event: () => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = setTrust;
-            ctx.childContext = {
-              data: {
-                trustLimit: 0,
-                safeAddress: tryGetCurrentSafe().safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
-      },
-    });
-  }
-  return actions;  
-
+    if (runtimeDapp.state.trusted) {
+      actions.push({
+        key: "setTrust",
+        label: "Trust someone",
+        icon: "trust",
+        event: () => {
+          return new RunProcess<ShellProcessContext>(
+            shellProcess,
+            true,
+            async (ctx) => {
+              ctx.childProcessDefinition = setTrust;
+              ctx.childContext = {
+                data: {
+                  trustLimit: 100,
+                  safeAddress: tryGetCurrentSafe().safeAddress,
+                  privateKey: localStorage.getItem("circlesKey"),
+                },
+              };
+              return ctx;
+            }
+          );
+        },
+      });
+    } else {
+      actions.push({
+        key: "setUntrust",
+        label: "Untrust someone",
+        icon: "untrust",
+        event: () => {
+          return new RunProcess<ShellProcessContext>(
+            shellProcess,
+            true,
+            async (ctx) => {
+              ctx.childProcessDefinition = setTrust;
+              ctx.childContext = {
+                data: {
+                  trustLimit: 0,
+                  safeAddress: tryGetCurrentSafe().safeAddress,
+                  privateKey: localStorage.getItem("circlesKey"),
+                },
+              };
+              return ctx;
+            }
+          );
+        },
+      });
+    }
+    return actions;
   },
   navigation: {
     navPill: {
