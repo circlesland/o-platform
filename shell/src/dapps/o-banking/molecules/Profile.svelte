@@ -26,8 +26,11 @@
   import { EditorContext } from "@o-platform/o-editors/src/editorContext";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { DetailActionFactory } from "../../../shared/molecules/DetailActionBarFactory";
-  import {BankingDappState, transactionDetail} from "../../o-banking.manifest";
-  import {getLastLoadedDapp} from "../../../loader";
+  import {
+    BankingDappState,
+    transactionDetail,
+  } from "../../o-banking.manifest";
+  import { getLastLoadedDapp } from "../../../loader";
   export let context: EditorContext;
 
   export let params: {
@@ -52,6 +55,7 @@
     );
 
     if (context.params.id) {
+      console.log(context);
       isLoading = true;
       console.log("LOADPRO IF CONTEXT");
       loadProfile();
@@ -129,7 +133,7 @@
     // TODO: This is bullshit but works. Refactor ASAP.
     getLastLoadedDapp<BankingDappState>().state = {
       currentProfileId: context.params.id,
-      currentSafeAddress: profile.safeAddress
+      currentSafeAddress: profile.safeAddress,
     };
   }
 
@@ -160,6 +164,13 @@
       trust.trustedBy = trustedBy.limit;
     }
 
+    // TODO: This is bullshit but works. Refactor ASAP.
+
+    getLastLoadedDapp<BankingDappState>().state = {
+      currentProfileId: context.params.id,
+      currentSafeAddress: profile.safeAddress,
+      trusted: trust.trusting > 0,
+    };
     return trust;
   }
 
@@ -541,7 +552,9 @@
           </div>
         </section>
       {/if}
-      <DetailActionBar actions={transactionDetail.actions} />
+      <DetailActionBar
+        actions={transactionDetail.actions(getLastLoadedDapp())}
+      />
       <!-- ACTIONS  -->
 
       <!-- {#if !isMe && profile.safeAddress}

@@ -15,10 +15,11 @@ export interface PageManifest {
   userData?: {
     [x:string]:any
   }
-  actions?: {
+    actions?: (runtimeDapp: RuntimeDapp<any>) => {
     key: string;
     icon?: string;
     label: string;
-    event: (runtimeDapp:RuntimeDapp<any>, lastLoadedComponent:any) => PlatformEvent
+    event: () => PlatformEvent;
   }[];
+
 }

@@ -92,7 +92,7 @@
       ctx.childProcessDefinition = showProfile;
       ctx.childContext = {
         data: {
-          id
+          id,
         },
       };
       return ctx;

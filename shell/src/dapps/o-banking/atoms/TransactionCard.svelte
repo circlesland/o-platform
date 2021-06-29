@@ -69,12 +69,6 @@
     return sevendaysago > unixTime * 1000;
   }
 
-  /*
-  function loadDetailPage(path) {
-    push("#/banking/transactions/" + path);
-  }
-   */
-
   function loadDetailPage(path) {
     //push("#/banking/trusts/" + path);
 

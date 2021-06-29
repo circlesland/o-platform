@@ -67,12 +67,36 @@ export const transactionDetail: PageManifest = {
       return true;
     },
   ],
-  actions: [
+  actions: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
+    let actions = [{
+      key: "transfer",
+      icon: "sendmoney",
+      label: "Send Money",
+      event: () => {
+        return new RunProcess<ShellProcessContext>(
+          shellProcess,
+          true,
+          async (ctx) => {
+            ctx.childProcessDefinition = transfer;
+            ctx.childContext = {
+              data: {
+                safeAddress: tryGetCurrentSafe().safeAddress,
+                privateKey: localStorage.getItem("circlesKey"),
+              },
+            };
+            return ctx;
+          }
+        );
+      },
+    }];
+
+    if (runtimeDapp.state.trusted){
+    actions.push(
     {
       key: "setTrust",
-      label: "Trust",
+      label: "Trust someone",
       icon: "trust",
-      event: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
+      event: () => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,
           true,
@@ -81,7 +105,7 @@ export const transactionDetail: PageManifest = {
             ctx.childContext = {
               data: {
                 trustLimit: 100,
-                safeAddress: runtimeDapp.state.currentSafeAddress,
+                safeAddress: tryGetCurrentSafe().safeAddress,
                 privateKey: localStorage.getItem("circlesKey"),
               },
             };
@@ -89,20 +113,23 @@ export const transactionDetail: PageManifest = {
           }
         );
       },
-    },
+    });
+  }else{
+    actions.push(
     {
-      key: "transfer",
-      icon: "sendmoney",
-      label: "Send Money",
-      event: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
+      key: "setUntrust",
+      label: "Untrust someone",
+      icon: "untrust",
+      event: () => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,
           true,
           async (ctx) => {
-            ctx.childProcessDefinition = transfer;
+            ctx.childProcessDefinition = setTrust;
             ctx.childContext = {
               data: {
-                safeAddress: runtimeDapp.state.currentSafeAddress,
+                trustLimit: 0,
+                safeAddress: tryGetCurrentSafe().safeAddress,
                 privateKey: localStorage.getItem("circlesKey"),
               },
             };
@@ -110,8 +137,12 @@ export const transactionDetail: PageManifest = {
           }
         );
       },
-    },
-  ],
+    });
+  }
+  return actions;  
+
+  },
+  
 };
 
 const transactionSend: PageManifest = {
@@ -245,6 +276,8 @@ export class BankingDappState {
    * The address of the currently displayed safe (e.g. in the profile detail)
    */
   currentSafeAddress?: string
+
+  trusted?: boolean
 }
 
 export const banking: DappManifest<DappState> = {
@@ -257,7 +290,31 @@ export const banking: DappManifest<DappState> = {
   routeParts: ["banking"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
-  actions: (runtimeDapp: RuntimeDapp<any>) => [
+  actions: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
+    let actions = [{
+      key: "transfer",
+      icon: "sendmoney",
+      label: "Send Money",
+      event: () => {
+        return new RunProcess<ShellProcessContext>(
+          shellProcess,
+          true,
+          async (ctx) => {
+            ctx.childProcessDefinition = transfer;
+            ctx.childContext = {
+              data: {
+                safeAddress: tryGetCurrentSafe().safeAddress,
+                privateKey: localStorage.getItem("circlesKey"),
+              },
+            };
+            return ctx;
+          }
+        );
+      },
+    }];
+
+    if (runtimeDapp.state.trusted){
+    actions.push(
     {
       key: "setTrust",
       label: "Trust someone",
@@ -279,19 +336,22 @@ export const banking: DappManifest<DappState> = {
           }
         );
       },
-    },
+    });
+  }else{
+    actions.push(
     {
-      key: "transfer",
-      icon: "sendmoney",
-      label: "Send Money",
+      key: "setUntrust",
+      label: "Untrust someone",
+      icon: "untrust",
       event: () => {
         return new RunProcess<ShellProcessContext>(
           shellProcess,
           true,
           async (ctx) => {
-            ctx.childProcessDefinition = transfer;
+            ctx.childProcessDefinition = setTrust;
             ctx.childContext = {
               data: {
+                trustLimit: 0,
                 safeAddress: tryGetCurrentSafe().safeAddress,
                 privateKey: localStorage.getItem("circlesKey"),
               },
@@ -300,8 +360,11 @@ export const banking: DappManifest<DappState> = {
           }
         );
       },
-    },
-  ],
+    });
+  }
+  return actions;  
+
+  },
   navigation: {
     navPill: {
       left: {
