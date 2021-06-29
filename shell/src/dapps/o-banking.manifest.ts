@@ -82,6 +82,7 @@ export const transactionDetail: PageManifest = {
               ctx.childContext = {
                 data: {
                   safeAddress: tryGetCurrentSafe().safeAddress,
+                  recipientAddress: runtimeDapp.state.currentSafeAddress,
                   privateKey: localStorage.getItem("circlesKey"),
                 },
               };
@@ -95,7 +96,7 @@ export const transactionDetail: PageManifest = {
     if (runtimeDapp.state.trusted) {
       actions.push({
         key: "setTrust",
-        label: "Trust someone",
+        label: "Trust",
         icon: "trust",
         event: () => {
           return new RunProcess<ShellProcessContext>(
@@ -106,7 +107,8 @@ export const transactionDetail: PageManifest = {
               ctx.childContext = {
                 data: {
                   trustLimit: 0,
-                  safeAddress: runtimeDapp.state.currentSafeAddress,
+                  trustReceiver: runtimeDapp.state.currentSafeAddress,
+                  safeAddress: tryGetCurrentSafe().safeAddress,
                   privateKey: localStorage.getItem("circlesKey"),
                 },
               };
@@ -118,7 +120,7 @@ export const transactionDetail: PageManifest = {
     } else {
       actions.push({
         key: "setUntrust",
-        label: "Untrust someone",
+        label: "Untrust",
         icon: "untrust",
         event: () => {
           return new RunProcess<ShellProcessContext>(
@@ -129,7 +131,8 @@ export const transactionDetail: PageManifest = {
               ctx.childContext = {
                 data: {
                   trustLimit: 100,
-                  safeAddress: runtimeDapp.state.currentSafeAddress,
+                  trustReceiver: runtimeDapp.state.currentSafeAddress,
+                  safeAddress: tryGetCurrentSafe().safeAddress,
                   privateKey: localStorage.getItem("circlesKey"),
                 },
               };
@@ -291,30 +294,6 @@ export const banking: DappManifest<DappState> = {
   actions: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
     let actions = [
       {
-        key: "transfer",
-        icon: "sendmoney",
-        label: "Send Money",
-        event: () => {
-          return new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = transfer;
-              ctx.childContext = {
-                data: {
-                  safeAddress: tryGetCurrentSafe().safeAddress,
-                  privateKey: localStorage.getItem("circlesKey"),
-                },
-              };
-              return ctx;
-            }
-          );
-        },
-      },
-    ];
-
-    if (runtimeDapp.state.trusted) {
-      actions.push({
         key: "setTrust",
         label: "Trust someone",
         icon: "trust",
@@ -335,22 +314,21 @@ export const banking: DappManifest<DappState> = {
             }
           );
         },
-      });
-    } else {
-      actions.push({
-        key: "setUntrust",
-        label: "Untrust someone",
-        icon: "untrust",
+      },
+      {
+        key: "transfer",
+        icon: "sendmoney",
+        label: "Send Money",
         event: () => {
           return new RunProcess<ShellProcessContext>(
             shellProcess,
             true,
             async (ctx) => {
-              ctx.childProcessDefinition = setTrust;
+              ctx.childProcessDefinition = transfer;
               ctx.childContext = {
                 data: {
-                  trustLimit: 0,
                   safeAddress: tryGetCurrentSafe().safeAddress,
+                  recipientAddress: runtimeDapp.state.currentSafeAddress,
                   privateKey: localStorage.getItem("circlesKey"),
                 },
               };
@@ -358,8 +336,9 @@ export const banking: DappManifest<DappState> = {
             }
           );
         },
-      });
-    }
+      },
+    ];
+
     return actions;
   },
   navigation: {
