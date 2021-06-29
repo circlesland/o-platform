@@ -18,10 +18,7 @@
     <div
       class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white navbar bg-secondary-dark "
     >
-      <div
-        class="cursor-pointer justify-self-start"
-        on:click|once={() => history.back()}
-      >
+      <div class="cursor-pointer justify-self-start">
         <span class="text-lg uppercase ">
           {lastLoadedDapp.title}
         </span>

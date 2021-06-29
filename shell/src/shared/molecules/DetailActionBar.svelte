@@ -11,7 +11,7 @@
   {#each actions as action}
     <div
       on:click={() => window.o.publishEvent(action.event())}
-      class="flex flex-col items-center content-center self-start space-y-2 cursor-pointer"
+      class="flex flex-col items-center content-center self-start px-6 space-y-2 cursor-pointer"
     >
       <div>
         <Icons icon={action.icon} />
