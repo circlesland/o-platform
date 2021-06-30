@@ -5,6 +5,8 @@
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { BN } from "ethereumjs-util";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
+  import { push } from "svelte-spa-router";
+  import Icons from "../../../shared/molecules/Icons.svelte";
 
   const { mySafe } = require("src/dapps/o-banking/stores/safe");
 
@@ -46,6 +48,14 @@
     app.$destroy();
   };
 
+  function loadLink(link, external = false) {
+    if (external) {
+      window.open(link, "_blank").focus();
+    } else {
+      push(link);
+    }
+  }
+
   const sub = window.o.events.subscribe((event) => {
     if (event.type !== "shell.refresh") {
       return;
@@ -58,21 +68,39 @@
       inviteLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${$me.id}`;
     }
   }
-
 </script>
 
-<DashboardHeader />
-<div class="mx-4">
-  {#if showFundHint}
-    <!-- Create safe  -->
-    <section class="mb-8">
-      <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm shadow">
+<!-- <DashboardHeader /> -->
+<div class="m-4">
+  <section class="mb-8">
+    <div
+      class="grid w-full grid-cols-3 gap-4 p-4 text-xs bg-white rounded-lg shadow "
+    >
+      <div class="flex flex-col items-center justify-items-center">
+        <div class="text-5xl font-bold text-secondary">5.</div>
+        <div class="mt-4 text-secondary-lighter">city rank</div>
+      </div>
+      <div class="flex flex-col items-center justify-items-center ">
+        <div class="text-5xl font-bold text-secondary">86.</div>
+        <div class="mt-4 text-secondary-lighter">leader rank</div>
+      </div>
+      <div class="flex flex-col items-center justify-items-center ">
+        <div class="text-5xl font-bold text-secondary">0</div>
+        <div class="mt-4 text-secondary-lighter">my invites</div>
+      </div>
+    </div>
+  </section>
+
+  {#if true}
+    <!-- Create safe  showFundHint-->
+    <section class="mt-4 mb-8">
+      <div class="w-full p-4 bg-white rounded-lg shadow">
         <div class="px-4 py-2 mr-4 -ml-3 text-center " />
         <div style="text-align: center">
-          <p class="w-64 m-auto mt-2 text-2xl font-bold text-gradient">
+          <p class="w-64 m-auto mt-2 text-2xl font-bold text-secondary">
             You're almost there.
           </p>
-          <p class="mt-4 text">
+          <p class="mt-4 ">
             To unlock your Circles basic income, you need to get invited by a
             CirclesLand citizen.
           </p>
@@ -105,15 +133,31 @@
       </div>
     </section>
   {:else if $mySafe}
+    <section class="mb-8" on:click={() => loadLink("/dashboard/become-a-hub")}>
+      <div
+        class="flex flex-row justify-center w-full p-4 bg-white rounded-lg shadow "
+      >
+        <div class="">
+          <Icons icon="networkmedium" />
+        </div>
+        <div class="self-center flex-grow font-bold text-center text-secondary">
+          explore your trust network
+        </div>
+        <div class="text-primary">
+          <Icons icon="submitmedium" />
+        </div>
+      </div>
+    </section>
+
     <!-- Create safe  -->
-    <section class="mb-8">
-      <div class="w-full px-2 pb-8 -mt-6 bg-white rounded-sm shadow">
+    <!-- <section class="mb-8">
+      <div class="w-full px-2 pb-8 -mt-6 bg-white rounded-lg shadow">
         <div class="px-4 py-2 mr-4 -ml-3 text-center " />
         <div class="text-center">
           <p class="w-full m-auto mt-2 text-2xl font-bold text-gradient">
             Grow the basic income economy!
           </p>
-          <!-- <p class="mt-4 text-lg ">
+          <p class="mt-4 text-lg ">
             xxxxxxx/1.000.000.000 Progress
           </p>
           <div class="w-full px-2 m-auto">
@@ -122,7 +166,7 @@
               value={12}
               max="100"
             />
-          </div> -->
+          </div> 
           <p class="mt-4 text">
             Help your family, friends and others to get onboard by <a
               href="/#/dashboard/become-a-hub"
@@ -132,215 +176,120 @@
           <div class="mr-1 text-primary" />
         </div>
       </div>
-    </section>
+    </section> -->
   {/if}
 
-  <!-- PASSPORT  -->
-  <a href="/#/passport/profile">
-    <section class="flex items-center justify-center mb-4">
-      <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center ">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="m-auto h-14 w-14"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1"
-              d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
-            />
-          </svg>
-        </div>
-        <div class="flex items-center">
-          <h2 class="mr-2 text-4xl font-medium ">Passport</h2>
-        </div>
-        <div class="flex justify-end flex-1 mr-1 text-primary">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </div>
-      </div>
-    </section>
-  </a>
+  <div
+    class="grid grid-cols-2 gap-6 text-base auto-rows-fr sm:grid-cols-3 dashboard-grid"
+  >
+    <!-- PASSPORT  -->
 
-  <!-- BANKING -->
-  {#if showFundHint || disableBanking}
-    <section class="flex items-center justify-center mb-4">
-      <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center text-base-300">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="m-auto h-14 w-14"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1"
-              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          </svg>
+    <section
+      class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
+      on:click={() => loadLink("/passport/profile")}
+    >
+      <div
+        class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+      >
+        <div class="pt-2">
+          <Icons icon="dashpassport" />
         </div>
-        <div class="flex flex-col items-left">
-          <h2 class="mr-2 text-4xl text-base-300">Banking</h2>
-        </div>
-        <div class="flex justify-end flex-1 mr-1 text-base-300">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </div>
+        <div class="mt-4 text-xl font-bold text-secondary">passport</div>
       </div>
     </section>
-  {:else}
-    <a href={showFundHint ? "/#/dashboard" : "/#/banking/transactions"}>
-      <section class="flex items-center justify-center mb-4">
-        <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
-          <div class="px-4 py-2 mr-4 -ml-3 text-center ">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="m-auto h-14 w-14"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1"
-                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
+
+    <!-- BANKING -->
+    {#if showFundHint || disableBanking}
+      <section
+        class="flex items-center justify-center bg-white rounded-lg shadow dashboard-card text-base-300 "
+      >
+        <div
+          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+        >
+          <div class="pt-2">
+            <Icons icon="dashbanking" />
           </div>
-          <div class="flex items-center">
-            <h2 class="mr-2 text-4xl font-medium ">Banking</h2>
-          </div>
-          <div class="flex justify-end flex-1 mr-1 text-primary">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </div>
+          <div class="mt-4 text-xl font-bold text-base-300">banking</div>
         </div>
       </section>
-    </a>
-  {/if}
-
-  <!-- Market -->
-
-  <a href="/#/marketplace/stream">
-    <section class="flex items-center justify-center mb-4">
-      <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center ">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="m-auto h-14 w-14"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1"
-              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          </svg>
-        </div>
-        <div class="flex flex-col items-left">
-          <h2 class="mr-2 text-4xl ">Market</h2>
-          <p class="text-sm text-base-300">coming soon</p>
-        </div>
-        <div class="flex justify-end flex-1 mr-1 text-primary">
-          <div class="flex justify-end flex-1 mr-1 text-base-300">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
+    {:else}
+      <section
+        class="flex items-center justify-center bg-white rounded-lg shadow dashboard-card cursor-pointerbg-white"
+        on:click={() =>
+          loadLink(showFundHint ? "/dashboard" : "/banking/transactions")}
+      >
+        <div
+          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+        >
+          <div class="pt-2">
+            <Icons icon="dashbanking" />
           </div>
+          <div class="mt-4 text-xl font-bold text-secondary">banking</div>
         </div>
+      </section>
+    {/if}
+
+    <!-- Market -->
+
+    <section
+      class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
+      on:click={() => loadLink("/marketplace/stream")}
+    >
+      <div
+        class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+      >
+        <div class="pt-2">
+          <Icons icon="dashmarket" />
+        </div>
+        <div class="mt-4 text-xl font-bold text-secondary">market</div>
       </div>
     </section>
-  </a>
 
-  <!-- Chat -->
+    <!-- Chat -->
 
-  <a href="https://discord.gg/4DBbRCMnFZ" target="_blank">
-    <section class="flex items-center justify-center mb-4">
-      <div class="flex items-center w-full px-2 bg-white rounded-sm shadow">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center ">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="m-auto h-14 w-14"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1"
-              d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
-            />
-          </svg>
+    <section
+      class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card "
+      on:click={() => loadLink("https://discord.gg/4DBbRCMnFZ", true)}
+    >
+      <div
+        class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+      >
+        <div class="pt-2">
+          <Icons icon="dashchat" />
         </div>
-        <div class="flex flex-col items-left">
-          <h2 class="mr-2 text-4xl ">Chat</h2>
-        </div>
-        <div class="flex justify-end flex-1 mr-1 text-primary">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </div>
+        <div class="mt-4 text-xl font-bold text-secondary">chat</div>
       </div>
     </section>
-  </a>
+  </div>
 </div>
+
+<style>
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    grid-auto-rows: 1fr;
+  }
+  @media (min-width: 640px) {
+    .dashboard-grid {
+      grid-template-columns: repeat(3, minmax(8rem, 1fr));
+    }
+  }
+
+  .dashboard-grid::before {
+    content: "";
+    width: 0;
+    padding-bottom: 100%;
+    grid-row: 1 / 1;
+    grid-column: 1 / 1;
+  }
+
+  .dashboard-grid > *:first-child {
+    grid-row: 1 / 1;
+    grid-column: 1 / 1;
+  }
+  /* .dashboard-card {
+    width: 100%;
+    padding-bottom: 100%;
+    position: relative;
+    background-color: #2980b9;
+  } */
+</style>

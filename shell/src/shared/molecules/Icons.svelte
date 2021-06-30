@@ -1,4 +1,5 @@
 <script lang="ts">
+  export let size: number = "6";
   const icons = {
     filter: `<svg
       class="navbuttonicon"
@@ -91,6 +92,9 @@
     network: `<svg class='w-6 h-6 m-auto' viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M8.45333 17.0133L17.56 22.32M17.5467 7.67996L8.45333 12.9866M25 5.66663C25 7.87577 23.2091 9.66663 21 9.66663C18.7909 9.66663 17 7.87577 17 5.66663C17 3.45749 18.7909 1.66663 21 1.66663C23.2091 1.66663 25 3.45749 25 5.66663ZM9 15C9 17.2091 7.20914 19 5 19C2.79086 19 1 17.2091 1 15C1 12.7908 2.79086 11 5 11C7.20914 11 9 12.7908 9 15ZM25 24.3333C25 26.5424 23.2091 28.3333 21 28.3333C18.7909 28.3333 17 26.5424 17 24.3333C17 22.1242 18.7909 20.3333 21 20.3333C23.2091 20.3333 25 22.1242 25 24.3333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
+    networkmedium: `<svg class='w-8 m-auto' viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.45333 17.0133L17.56 22.32M17.5467 7.67996L8.45333 12.9866M25 5.66663C25 7.87577 23.2091 9.66663 21 9.66663C18.7909 9.66663 17 7.87577 17 5.66663C17 3.45749 18.7909 1.66663 21 1.66663C23.2091 1.66663 25 3.45749 25 5.66663ZM9 15C9 17.2091 7.20914 19 5 19C2.79086 19 1 17.2091 1 15C1 12.7908 2.79086 11 5 11C7.20914 11 9 12.7908 9 15ZM25 24.3333C25 26.5424 23.2091 28.3333 21 28.3333C18.7909 28.3333 17 26.5424 17 24.3333C17 22.1242 18.7909 20.3333 21 20.3333C23.2091 20.3333 25 22.1242 25 24.3333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
     assets: `<svg class='w-6 h-6 m-auto'  viewBox="0 0 20 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M19 4.40405C19 6.06091 14.9706 7.40405 10 7.40405C5.02944 7.40405 1 6.06091 1 4.40405M19 4.40405C19 2.7472 14.9706 1.40405 10 1.40405C5.02944 1.40405 1 2.7472 1 4.40405M19 4.40405V18.4041C19 20.0641 15 21.4041 10 21.4041C5 21.4041 1 20.0641 1 18.4041V4.40405M19 11.4041C19 13.0641 15 14.4041 10 14.4041C5 14.4041 1 13.0641 1 11.4041" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
@@ -113,7 +117,11 @@
     settings: `<svg class='w-6 h-6 m-auto' viewBox="0 0 32 26" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M5.33334 25V15.6667M5.33334 10.3333V1M16 25V13M16 7.66667V1M26.6667 25V18.3333M26.6667 13V1M1.33334 15.6667H9.33334M12 7.66667H20M22.6667 18.3333H30.6667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
-    submitsmall: `<svg width="23" height="22" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    submitsmall: `<svg class='w-6 m-auto' viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.5 15L15.5 11M15.5 11L11.5 7M15.5 11H7.5M21.5 11C21.5 16.5228 17.0228 21 11.5 21C5.97715 21 1.5 16.5228 1.5 11C1.5 5.47715 5.97715 1 11.5 1C17.0228 1 21.5 5.47715 21.5 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+    submitmedium: `<svg class='w-8 m-auto' viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M11.5 15L15.5 11M15.5 11L11.5 7M15.5 11H7.5M21.5 11C21.5 16.5228 17.0228 21 11.5 21C5.97715 21 1.5 16.5228 1.5 11C1.5 5.47715 5.97715 1 11.5 1C17.0228 1 21.5 5.47715 21.5 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
@@ -1204,6 +1212,27 @@ EwAAAABJRU5ErkJggg==" />
 </svg>`,
     rightarrow: `<svg class='w-8 h-8 m-auto' viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M1.66669 10.5H20.3334M20.3334 10.5L11 1.1665M20.3334 10.5L11 19.8332" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+    dashpassport: `
+<svg width="42" height="48" viewBox="0 0 42 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M41.0615 46.5V41.5C41.0615 38.8478 40.008 36.3043 38.1326 34.4289C36.2572 32.5536 33.7137 31.5 31.0615 31.5H11.0615C8.40936 31.5 5.86582 32.5536 3.99046 34.4289C2.11509 36.3043 1.06152 38.8478 1.06152 41.5V46.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M21.0615 21.5C26.5844 21.5 31.0615 17.0228 31.0615 11.5C31.0615 5.97715 26.5844 1.5 21.0615 1.5C15.5387 1.5 11.0615 5.97715 11.0615 11.5C11.0615 17.0228 15.5387 21.5 21.0615 21.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+    dashbanking: `
+<svg width="48" height="48" viewBox="0 0 48 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.5615 1.5L46.5615 11.5M46.5615 11.5L36.5615 21.5M46.5615 11.5H11.5615C8.90936 11.5 6.36582 12.5536 4.49046 14.4289C2.61509 16.3043 1.56152 18.8478 1.56152 21.5V26.5M11.5615 56.5L1.56152 46.5M1.56152 46.5L11.5615 36.5M1.56152 46.5H36.5615C39.2137 46.5 41.7572 45.4464 43.6326 43.5711C45.508 41.6957 46.5615 39.1522 46.5615 36.5V31.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+    dashmarket: `
+<svg width="58" height="48" viewBox="0 0 58 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.56152 1.5H11.5615L18.2615 34.975C18.4901 36.126 19.1163 37.1599 20.0304 37.8957C20.9445 38.6316 22.0883 39.0225 23.2615 39H47.5615C48.7348 39.0225 49.8786 38.6316 50.7927 37.8957C51.7068 37.1599 52.3329 36.126 52.5615 34.975L56.5615 14H14.0615M24.0615 51.5C24.0615 52.8807 22.9422 54 21.5615 54C20.1808 54 19.0615 52.8807 19.0615 51.5C19.0615 50.1193 20.1808 49 21.5615 49C22.9422 49 24.0615 50.1193 24.0615 51.5ZM51.5615 51.5C51.5615 52.8807 50.4422 54 49.0615 54C47.6808 54 46.5615 52.8807 46.5615 51.5C46.5615 50.1193 47.6808 49 49.0615 49C50.4422 49 51.5615 50.1193 51.5615 51.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+    dashchat: `
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M46.5615 22.7501C46.5701 26.0497 45.7992 29.3048 44.3115 32.2501C42.5476 35.7794 39.8359 38.748 36.4801 40.8233C33.1244 42.8985 29.2571 43.9985 25.3115 44.0001C22.0119 44.0087 18.7568 43.2377 15.8115 41.7501L1.56152 46.5001L6.31152 32.2501C4.82385 29.3048 4.05292 26.0497 4.06152 22.7501C4.06305 18.8045 5.16305 14.9372 7.23832 11.5814C9.31359 8.22569 12.2822 5.51399 15.8115 3.75007C18.7568 2.2624 22.0119 1.49147 25.3115 1.50007H26.5615C31.7724 1.78755 36.6941 3.98697 40.3844 7.67722C44.0746 11.3675 46.274 16.2892 46.5615 21.5001V22.7501Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
   };

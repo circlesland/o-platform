@@ -4,6 +4,10 @@ import CreateHub from "./o-dashboard/pages/CreateHub.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
+import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
+import { logout } from "./o-passport/processes/logout";
 
 import {
   shellProcess,
@@ -55,7 +59,33 @@ export const dashboard: DappManifest<DappState> = {
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
-  actions: () => [],
+  actions: () => [
+    {
+      key: "logout",
+      label: "Logout",
+      icon: "logout",
+      event: () => {
+        return new RunProcess<ShellProcessContext>(
+          shellProcess,
+          true,
+          async (ctx) => {
+            ctx.childProcessDefinition = logout;
+            return ctx;
+          }
+        );
+      },
+    },
+  ],
+  navigation: {
+    navPill: {
+      actionButton: {
+        component: ActionButtonComponent, // action|
+        props: {
+          disabled: false,
+        },
+      },
+    },
+  },
 
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here

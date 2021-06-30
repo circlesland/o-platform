@@ -147,9 +147,9 @@
         : ""}
     </p>
   {/if}
-</div>
 
-<ProcessNavigation on:buttonClick={submitHandler} {context} />
+  <ProcessNavigation on:buttonClick={submitHandler} {context} />
+</div>
 
 <style>
   textarea {
