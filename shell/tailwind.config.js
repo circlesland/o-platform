@@ -31,7 +31,10 @@ module.exports = {
 
   theme: {
     extend: {
-      // colors: require("daisyui/colors"),
+      screens: {
+        xs: "500px",
+      },
+
       colors: {
         DEFAULT: "#132B69",
         base: "#132B69",

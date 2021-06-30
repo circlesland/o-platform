@@ -82,13 +82,12 @@ body {
 .btn-light {
   @apply bg-light-lighter;
   @apply text-secondary;
-  @apply: border-0;
+  border: none;
 }
 .btn-light:hover {
   @apply bg-white;
   @apply text-secondary;
-  @apply border-solid;
-  @apply border-2;
+  border: 1px solid;
   @apply border-secondary;
 }
 
