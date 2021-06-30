@@ -14,7 +14,7 @@
     dispatch("closeRequest");
   };
   const handleEsc = (e) => e.key === "Escape" && handleClose();
-  let options = { duration: 200, easing: linear };
+  let options = { duration: 50, easing: linear };
 
   // transition:slide={options}
 </script>
@@ -27,8 +27,8 @@
     aria-modal="true"
     tabIndex={-1}
     {role}
-    in:fade
-    out:fade
+    in:fade={{ duration: 50 }}
+    out:fade={{ duration: 50 }}
     on:click|self={handleClose}
     class="z-40 pt-2 text-base overlay"
   >
