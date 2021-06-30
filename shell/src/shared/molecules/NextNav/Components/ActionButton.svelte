@@ -13,14 +13,7 @@
     dispatch("actionButton", {
       actionButton: event,
     });
-
-    if (event == "close") {
-      isOpen = false;
-    } else {
-      isOpen = true;
-    }
   }
-
 </script>
 
 {#if isOpen}
