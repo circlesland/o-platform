@@ -153,7 +153,7 @@ export abstract class Web3Contract {
         const nonce = "0x" + Web3.utils.toBN(await web3.eth.getTransactionCount(ownerAddress)).toString("hex");
 
         const rawTx: TxData = {
-            gasPrice: "0x" + new BN(RpcGateway.getGasPrice()).toString("hex"),
+            gasPrice: "0x" + (await RpcGateway.getGasPrice()).toString("hex"),
             gasLimit: "0x" + gasLimit.toString("hex"),
             to: to,
             value: "0x" + value.toString("hex"),

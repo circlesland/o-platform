@@ -126,8 +126,11 @@ export class RpcGateway {
         );
     }
 
-    static getGasPrice() {
-        return new BN(this.get().utils.toWei("1", "gwei"))
+    static async getGasPrice() {
+        const gasPrice = await this._web3?.eth.getGasPrice();
+        if (!gasPrice)
+            throw new Error(`Cannot determine the gasPrice (_web3 not set?)`)
+        return new BN(gasPrice);
     }
 
     static rotateProvider() {
