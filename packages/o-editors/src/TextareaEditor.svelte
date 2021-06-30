@@ -141,7 +141,7 @@
     on:change={validateFormatting}
   />
   {#if !context.params.hideCharacterCount}
-    <p class="relative right-0 text-xs text-right text-white top-2">
+    <p class="relative right-0 text-right text-2xs top-2">
       {length}/{maxlength} Characters. {length > maxlength
         ? "Oops, please enter a maximum of " + maxlength + " characters."
         : ""}
