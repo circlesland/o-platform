@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
 export class RpcGateway {
     static readonly gateways = [
         "wss://rpc.circles.land/",
-        //"wss://circles-xdai-rpc.lab10.io/wss"
+        // "wss://circles-xdai-rpc.lab10.io/wss"
     ];
 
     private static _lastProviderUrl?: string;
@@ -126,8 +126,11 @@ export class RpcGateway {
         );
     }
 
-    static getGasPrice() {
-        return new BN(this.get().utils.toWei("1", "gwei"))
+    static async getGasPrice() {
+        const gasPrice = await this._web3?.eth.getGasPrice();
+        if (!gasPrice)
+            throw new Error(`Cannot determine the gasPrice (_web3 not set?)`)
+        return new BN(gasPrice);
     }
 
     static rotateProvider() {
