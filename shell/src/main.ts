@@ -103,7 +103,7 @@ const shell: IShell = {
         events: outEvents,
         inEvents: inEvents,
         lastReceivedBubble: null,
-        sendEvent: (event) => {
+        sendEvent: (event: PlatformEvent & {type:string}) => {
           if (isProcessEvent(event)) {
             lastInEvent = event;
             inEvents.next(<any>{
@@ -147,15 +147,12 @@ async function connectToApi() {
   console.log(`Connecting to __CIRCLES_SUBGRAPH_ENDPOINT__ ..`);
   shell.theGraphClient = new ApiConnection("__CIRCLES_SUBGRAPH_ENDPOINT__");
 }
+
 connectToApi().then(() => {
   console.log(`Connected to __AUTH_ENDPOINT__ and __API_ENDPOINT__`)
-});
+})
 
 window.o = shell;
-
-console.log("Starting ..", {
-  userAgent: navigator.userAgent
-})
 
 export default new App({
   target: document.body,

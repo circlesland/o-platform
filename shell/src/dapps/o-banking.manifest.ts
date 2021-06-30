@@ -23,6 +23,8 @@ import { Profile } from "./o-banking/data/api/types";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
+import {showProfile} from "./o-banking/processes/showProfile";
+import {Generate} from "@o-platform/o-utils/dist/generate";
 
 const transactions: PageManifest = {
   isDefault: true,
@@ -42,7 +44,22 @@ const profile: PageManifest = {
   isDefault: false,
   isSystem: true,
   routeParts: ["profile", ":id"],
-  component: ProfilePage,
+  // component: ProfilePage,
+  onMountAction: (params:{id:string}) => {
+    const modifier = async (ctx) => {
+      ctx.childProcessDefinition = showProfile;
+      ctx.childContext = {
+        data: {
+          id: params.id,
+        },
+      };
+      return ctx;
+    };
+    const requestEvent = new RunProcess(shellProcess, true, modifier);
+    (<any>requestEvent).id = Generate.randomHexString(8);
+
+    return requestEvent;
+  },
   hideFooter: false,
   title: "Profile",
   available: [

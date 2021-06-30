@@ -3,7 +3,7 @@ import {RuntimeDapp} from "./runtimeDapp";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export interface PageManifest {
-  component: any,
+  component?: any,
   isDefault?:boolean,
   isSystem?:boolean,
   isFullWidth?:boolean,
@@ -22,4 +22,5 @@ export interface PageManifest {
     event: () => PlatformEvent;
   }[];
 
+  onMountAction?: (params:{[x:string]:any}|undefined) => PlatformEvent;
 }

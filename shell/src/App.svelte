@@ -55,10 +55,11 @@
     showProfile,
     ShowProfileContextData,
   } from "./dapps/o-banking/processes/showProfile";
+  import {onMount} from "svelte";
 
   let isOpen: boolean = false;
   let processWaiting: boolean = false;
-  let beforeCancelPrompt: Prompt; // Is set when the "do you want to cancel?" prompt is shown
+  let beforeCancelPrompt: Prompt<any>; // Is set when the "do you want to cancel?" prompt is shown
   let modalProcess: Process;
   let showList: boolean = false;
   let showHomeMenuList: boolean = false;
@@ -117,7 +118,7 @@
                 "lastPrompt:",
                 (<any>processEvent.event).wrappedEvent
               );
-              lastPrompt = <Prompt>(<any>processEvent.event).wrappedEvent;
+              lastPrompt = <Prompt<any>>(<any>processEvent.event).wrappedEvent;
             }
           }
         );
@@ -163,7 +164,7 @@
     // TODO: Cannot currently remember what this callback does. Lookup documentation.
   }
 
-  let lastPrompt: Prompt | undefined = undefined;
+  let lastPrompt: Prompt<any> | undefined = undefined;
 
   function routeLoading(args) {
     processWaiting = false;
@@ -310,8 +311,16 @@
       isOpen = true;
     }
   }
+
+  let _routes:any;
+
+  onMount(async () => {
+    _routes = await routes();
+    console.log("Loaded routes:", _routes);
+  });
 </script>
 
+{#if _routes}
 <SvelteToast />
 <div class="flex flex-col text-base">
   <!-- TODO: Note: All headers are now part of their dapps
@@ -326,12 +335,12 @@
         lastLoadedDapp.dappId !== "homepage:1"}
       class:blur={isOpen}
     >
-      <Router
-        {routes}
-        on:conditionsFailed={conditionsFailed}
-        on:routeLoading={routeLoading}
-        on:routeLoaded={routeLoaded}
-      />
+        <Router
+          routes={_routes}
+          on:conditionsFailed={conditionsFailed}
+          on:routeLoading={routeLoading}
+          on:routeLoaded={routeLoaded}
+        />
     </div>
   </main>
 </div>
@@ -459,3 +468,4 @@
     animation: none !important;
   }
 </style>
+{/if}

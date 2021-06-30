@@ -8,6 +8,7 @@ import {Generate} from "@o-platform/o-utils/dist/generate";
 
 import LoadingIndicator from 'src/shared/atoms/LoadingIndicator.svelte'
 import NotFound from 'src/shared/pages/NotFound.svelte'
+import DappFrame from 'src/shared/molecules/DappFrame.svelte'
 import wrap from "svelte-spa-router/wrap";
 
 import {passport} from "./dapps/o-passport.manifest";
@@ -100,21 +101,28 @@ async function getDappEntryPoint(dappManifest:DappManifest<any>, pageManifest:Pa
   }
 }
 
-function constructRoutes(dappManifests: DappManifest<any>[]) {
+async function constructRoutes(dappManifests: DappManifest<any>[]) {
   const routes = {};
 
-  dappManifests.forEach(dappManifest => {
+  for (let dappManifest of dappManifests)
+  {
     const appUrls = constructAppUrl(dappManifest);
 
-    dappManifest.pages.forEach(pageManifest => {
+    for (let pageManifest of dappManifest.pages)
+    {
       const pageUrl = constructPageUrl(appUrls.appBaseUrl, pageManifest);
+      const entryPoint = await getDappEntryPoint(dappManifest, pageManifest);
       routes[pageUrl] = wrap({
         loadingComponent: LoadingIndicator,
         userData: pageManifest.userData,
-        asyncComponent: async () => await getDappEntryPoint(dappManifest, pageManifest)
+        component: DappFrame,
+        props: {
+          innerComponent: entryPoint,
+          onMountAction: pageManifest.onMountAction
+        }
       });
-    });
-  });
+    }
+  }
 
   routes["*"] = wrap({
     component: NotFound
@@ -250,7 +258,7 @@ async function loadDapp(stack: RuntimeDapp<any>[], dappManifest: DappManifest<an
   return await initializeDapp(stack, runtimeDapp);
 }
 
-const routes = constructRoutes(dapps);
+const routes = async () => await constructRoutes(dapps);
 console.log("Registered the following routes: ", routes);
 
 export default routes;
