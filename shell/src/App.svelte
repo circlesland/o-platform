@@ -409,7 +409,7 @@
           <div
             on:click={() =>
               window.o.publishEvent(action.event(getLastLoadedDapp()))}
-            class="text-xs text-center cursor-pointer "
+            class="flex-grow text-xs text-center cursor-pointer "
             class:text-error={action.key == "logout"}
           >
             <Icons icon={action.icon} />
