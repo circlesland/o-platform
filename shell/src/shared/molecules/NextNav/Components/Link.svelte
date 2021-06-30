@@ -10,9 +10,13 @@
       push(link);
     }
   }
-
 </script>
 
-<div on:click={() => loadLink()} class="cursor-pointer">
-  <Icons {icon} />
+<div
+  class="w-24 h-12 px-12 py-3 bg-white rounded-full cursor-pointer sm:-ml-12"
+  on:click={() => loadLink()}
+>
+  <div>
+    <Icons {icon} />
+  </div>
 </div>

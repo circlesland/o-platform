@@ -12,9 +12,13 @@
       action: action,
     });
   }
-
 </script>
 
-<div on:click={() => openList()}>
-  <Icons {icon} />
+<div
+  class="w-24 h-12 px-5 py-3 bg-white rounded-full cursor-pointer sm:-mr-12"
+  on:click={() => openList()}
+>
+  <div>
+    <Icons {icon} />
+  </div>
 </div>
