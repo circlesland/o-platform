@@ -57,6 +57,10 @@ body {
   height: 100vh;
 }
 
+  .textarea:focus {
+    box-shadow: none;
+  }
+  
 .label a:hover,
 .label a:active {
   @apply text-primary;
