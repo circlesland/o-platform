@@ -60,7 +60,7 @@ export class GnosisSafeProxy extends Web3Contract
       data: "0x",
       gasToken: ZERO_ADDRESS,
       refundReceiver: ZERO_ADDRESS,
-      gasPrice: RpcGateway.getGasPrice()
+      gasPrice: await RpcGateway.getGasPrice()
     };
     return await this.execTransaction(privateKey, safeTransaction);
   }
@@ -71,7 +71,7 @@ export class GnosisSafeProxy extends Web3Contract
 
     const estimatedBaseGas = dontEstimate
       ? new BN(this.web3.utils.toWei("1000000", "wei"))
-      : this.estimateBaseGasCosts(safeTransaction, 1)
+      : (await this.estimateBaseGasCosts(safeTransaction, 1))
         .add(new BN(this.web3.utils.toWei("100000", "wei")));
 
     const estimatedSafeTxGas = dontEstimate
@@ -103,7 +103,7 @@ export class GnosisSafeProxy extends Web3Contract
       executableTransaction.operation,
       executableTransaction.safeTxGas,
       executableTransaction.baseGas,
-      RpcGateway.getGasPrice(),
+      await RpcGateway.getGasPrice(),
       executableTransaction.gasToken,
       executableTransaction.refundReceiver,
       signatures.signature).estimateGas();
@@ -111,7 +111,7 @@ export class GnosisSafeProxy extends Web3Contract
     const gasEstimate = new BN(gasEstimationResult).add(estimatedBaseGas).add(estimatedSafeTxGas);
     console.log("gasEstimate:", gasEstimate.toNumber());
 
-    const execTransactionData = this.toAbiMessage(executableTransaction, signatures.signature);
+    const execTransactionData = await this.toAbiMessage(executableTransaction, signatures.signature);
     console.log("execTransactionData:", execTransactionData);
 
     const signedTransactionData = await Web3Contract.signRawTransaction(
@@ -163,7 +163,7 @@ export class GnosisSafeProxy extends Web3Contract
       safeTransaction.operation,
       safeTransaction.safeTxGas,
       safeTransaction.baseGas,
-      RpcGateway.getGasPrice(),
+      await RpcGateway.getGasPrice(),
       safeTransaction.gasToken,
       safeTransaction.refundReceiver,
       safeTransaction.nonce
@@ -223,9 +223,9 @@ export class GnosisSafeProxy extends Web3Contract
     return txGasEstimation.add(dataGasEstimation);
   }
 
-  private estimateBaseGasCosts(safeTransaction: SafeTransaction, signatureCount: number): BN
+  private async estimateBaseGasCosts(safeTransaction: SafeTransaction, signatureCount: number): Promise<BN>
   {
-    const abiMessage = this.toAbiMessage(safeTransaction);
+    const abiMessage = await this.toAbiMessage(safeTransaction);
     const dataGasCosts = this.estimateDataGasCosts(abiMessage);
     const signatureCosts = signatureCount == 0
       ? new BN(0)
@@ -240,7 +240,7 @@ export class GnosisSafeProxy extends Web3Contract
     return new BN(signatureCount * (68 + 2176 + 2176 + 6000));
   }
 
-  private toAbiMessage(safeTransaction: SafeTransaction, signatures?: string)
+  private async toAbiMessage(safeTransaction: SafeTransaction, signatures?: string)
   {
     this.validateSafeTransaction(safeTransaction);
 
@@ -251,7 +251,7 @@ export class GnosisSafeProxy extends Web3Contract
       safeTransaction.operation,
       safeTransaction.safeTxGas ?? new BN("0"),
       safeTransaction.baseGas ?? new BN("0"),
-      RpcGateway.getGasPrice(),
+      await RpcGateway.getGasPrice(),
       safeTransaction.gasToken,
       safeTransaction.refundReceiver,
       signatures ?? "0x")
