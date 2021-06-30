@@ -70,7 +70,10 @@
 
 {#if field}
   <div class="flex flex-col items-end p-4 form-control justify-self-center">
-    <label class="self-center flex-1 mb-4 text-center label" for={field.name}>
+    <label
+      class="self-center flex-1 p-0 mb-4 text-center label"
+      for={field.name}
+    >
       <span class="label-text">{@html context.params.label}</span>
     </label>
 

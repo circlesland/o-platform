@@ -70,7 +70,7 @@
 </script>
 
 <div class="p-4">
-  <p class="mt-12 label-text">
+  <p class="mb-4 label-text">
     {context.params.label}
   </p>
   {#if context.messages[context.field]}

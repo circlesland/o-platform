@@ -71,8 +71,8 @@
 </script>
 
 <div class="p-4 form-control justify-self-center">
-  <label class="label" for={context.field}>
-    <div class="label-text">{@html context.params.label}</div>
+  <label class="p-0 label" for={context.field}>
+    <div class="mb-4 label-text">{@html context.params.label}</div>
     {#if context.params.canCopy}
       <div class="inline-block text-xs break-all" id="clipboard">
         <input

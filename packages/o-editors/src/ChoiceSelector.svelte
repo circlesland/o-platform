@@ -22,11 +22,11 @@
 </script>
 
 <div class="p-4">
-  <p class="py-4 label-text">
+  <p class="mb-4 label-text">
     {@html context.params.label}
   </p>
   {#if context.messages[context.field]}
-    <div class="mt-2 mb-2 alert alert-error">
+    <div class="mb-2 alert alert-error">
       <div class="flex-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -45,14 +45,16 @@
       </div>
     </div>
   {/if}
-  <div class="flex w-full space-x-2">
+  <div class="flex flex-row w-full space-x-4">
     {#each context.params.choices as choice}
-      <button
-        on:click={() => submit(choice)}
-        class="w-1/{context.params.choices.length} btn btn-light h-auto"
-      >
-        {choice.label}
-      </button>
+      <div class="flex-grow">
+        <button
+          on:click={() => submit(choice)}
+          class="h-auto btn-block btn btn-light"
+        >
+          {choice.label}
+        </button>
+      </div>
     {/each}
   </div>
 </div>

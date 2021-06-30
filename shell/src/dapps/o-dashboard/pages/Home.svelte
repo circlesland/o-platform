@@ -91,7 +91,7 @@
     </div>
   </section>
 
-  {#if true}
+  {#if showFundHint}
     <!-- Create safe  showFundHint-->
     <section class="mt-4 mb-8">
       <div class="w-full p-4 bg-white rounded-lg shadow">
