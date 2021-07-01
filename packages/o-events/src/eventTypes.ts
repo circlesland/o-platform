@@ -14,6 +14,8 @@ export type PlatformEventTypes =
     | "shell.showNotification"
     | "shell.closeModal"
     | "shell.processStarted"
+    | "shell.dappLoading"
+    | "shell.dappLoaded"
     | "circles.web3providerChanged"
     | "process.ready"
     | "process.nop"

@@ -4,6 +4,7 @@
     import {Page} from "@o-platform/o-interfaces/dist/routables/page";
     import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
     import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
+    import {DappLoading} from "@o-platform/o-events/dist/shell/dappLoading";
 
     export let params:{[x:string]:any}|undefined;
     export let getDappEntryPoint:() => Promise<Routable>;
@@ -16,7 +17,10 @@
         if (!dappManifest) {
             throw new Error(`The 'dappManifest' parameter is not set.`);
         }
-        const entryPoint = await getDappEntryPoint()
+        const entryPoint = await getDappEntryPoint();
+        window.o.publishEvent(new DappLoading(
+            dappManifest, _entryPage, entryPoint
+        ));
         if (!entryPoint) {
             throw new Error(`Couldn't find the dapp entry point.`);
         }

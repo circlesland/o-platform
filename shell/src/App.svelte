@@ -77,7 +77,10 @@
     if (event.type === "shell.openModal") {
       isOpen = true;
     }
-    if (event.type == "shell.runProcess") {
+    if (event.type === "shell.dappLoading") {
+      routeLoaded();
+    }
+    if (event.type === "shell.runProcess") {
       const runProcessEvent = <RunProcess<any>>event;
       const runningProcess = await window.o.stateMachines.run(
         runProcessEvent.definition,
@@ -315,7 +318,6 @@
           routes={_routes}
           on:conditionsFailed={conditionsFailed}
           on:routeLoading={routeLoading}
-          on:routeLoaded={routeLoaded}
         />
     </div>
   </main>
