@@ -31,7 +31,7 @@
     <div class="text-center">
       <div class="avatar">
         <div class="w-10 h-10 m-auto rounded-full">
-          <img src={"/images/common/tag.png"} alt="user-icon" />
+          <img src={"/images/common/bottle.png"} alt="user-icon" />
         </div>
       </div>
     </div>
