@@ -9,6 +9,7 @@
   line-height: 1rem
   /* 20px */
   ;
+  @apply font-normal;
   
 }
 .text-2xs {
