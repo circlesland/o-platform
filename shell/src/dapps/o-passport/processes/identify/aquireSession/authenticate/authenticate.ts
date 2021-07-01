@@ -38,10 +38,10 @@ export type AuthenticateContext = ProcessContext<AuthenticateContextData>;
  */
 const strings = {
   labelLoginEmail:
-    "Welcome, a pleasure you found your way to CirclesLand. <br/><strong class='text-primary block mt-3'>Please provide your email address</strong>",
+    "Welcome CirclesLand. <br/><span class='text-base text-light-dark font-normal block mt-3'>A pleasure you found your way here. Please provide your email address to Sign-In</span>",
   labelVerificationCode: (email: string) =>
-    `An email has been sent to you (<b>${email}</b>), please check your inbox. To login please click the link in the email or enter the code you received by mail. <br/><span class="text-xs">It may take a moment. Also check your spam folder.</span>`,
-  placeholder: "you@example.com",
+    `Please enter pin<br/><span class='text-base text-light-dark font-normal block mt-3'>We have send you a 6 digit login pin to your mail ${email}.</span><br/><span class='text-light-dark text-xs font-normal'> It may take a moment. Also check your spam folder</span>`,
+  placeholder: "email",
 };
 async function sha256(str) {
   const strBuffer = new TextEncoder().encode(str);
@@ -178,11 +178,8 @@ const processDefinition = (processId: string) =>
           //  linkLabel: "terms of service & privacy policy",
           //submitButtonText: "",
           submitButtonText: "I read and accept them",
-          html: (
-            context
-          ) => `CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. 
-          With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/>
-          For details read our <a class="text-primary" href="https://blog.circles.land/terms-of-service">privacy policy & terms of service</a>`,
+          html: (context) =>
+            `Terms & Privacy <br/> <span class='text-base text-light-dark font-normal block mt-3'>CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/></span><span class='text-light-dark text-xs font-normal'>For details read our <a class="text-primary" href="https://blog.circles.land/terms-of-service">privacy policy & terms of service</a></span>`,
         },
         /*
         dataSchema: yup
