@@ -4,11 +4,10 @@
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import { showProfile } from "src/dapps/o-banking/processes/showProfile";
-  import {runShellProcess} from "src/shared/processes/shellProcess";
   import { Transfer } from "../data/circles/types";
   import { EditorContext } from "@o-platform/o-editors/src/editorContext";
   import Icons from "../../../shared/molecules/Icons.svelte";
+  import {push} from "svelte-spa-router";
 
   export let params: {
     _id: string;
@@ -85,7 +84,8 @@
     if (id.startsWith("0x000")) {
       return;
     }
-    window.o.publishEvent(runShellProcess(showProfile, { id }));
+
+    push(`#/banking/profile/${id}`);
   }
 </script>
 

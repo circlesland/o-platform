@@ -1,13 +1,8 @@
 <script lang="ts">
   import Web3 from "web3";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import {
-    runShellProcess
-  } from "../../../shared/processes/shellProcess";
-  import {
-    showProfile
-  } from "../processes/showProfile";
   import { Token } from "../data/circles/types";
+  import {push} from "svelte-spa-router";
 
   export let token: Token;
   export let label: String;
@@ -31,7 +26,7 @@
   }
 
   function loadDetailPage(path) {
-    window.o.publishEvent(runShellProcess(showProfile, {id: path}));
+    push(`#/banking/profile/${path}`)
   }
 
 </script>

@@ -2,10 +2,7 @@
   import Time from "svelte-time";
   import Web3 from "web3";
   import { Transfer } from "../data/circles/types";
-  import {
-    runShellProcess
-  } from "../../../shared/processes/shellProcess";
-  import { showTransaction } from "../processes/showTransaction";
+  import {push} from "svelte-spa-router";
 
   export let transfer: Transfer;
   export let message: String;
@@ -62,7 +59,7 @@
   }
 
   function loadDetailPage(path) {
-    window.o.publishEvent(runShellProcess(showTransaction, { id: path }));
+    push(`#/banking/transactions/${path}`)
   }
 </script>
 

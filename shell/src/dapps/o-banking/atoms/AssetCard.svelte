@@ -1,6 +1,5 @@
 <script lang="ts">
-  import {runShellProcess} from "../../../shared/processes/shellProcess";
-  import {showAssetDetail} from "../processes/showAssetDetail";
+  import {push} from "svelte-spa-router";
 
   export let symbol: string;
   export let title: string;
@@ -13,21 +12,11 @@
     pictureUrl = symbol;
   }
 
-  /*
-  function loadDetailPage() {
-    push("#/banking/assets/" + symbol);
-  }
-   */
-
-  function loadDetailPage() {
-    window.o.publishEvent(runShellProcess(showAssetDetail, {symbol}));
-  }
-
 </script>
 
 <section
   class="flex items-center justify-center mb-2 "
-  on:click={() => loadDetailPage()}
+  on:click={() => push(`#/banking/assets/${symbol}`)}
 >
   <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
     <div class="flex items-center w-full space-x-2 bg-white sm:space-x-6">

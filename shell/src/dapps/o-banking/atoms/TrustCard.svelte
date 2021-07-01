@@ -6,10 +6,8 @@
   import { TrustObject } from "../data/circles/types";
   import { tryGetCurrentSafe } from "../init";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import {
-    showProfile
-  } from "../processes/showProfile";
   import Icons from "../../../shared/molecules/Icons.svelte";
+  import {push} from "svelte-spa-router";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -62,7 +60,7 @@
   }
 
   function loadDetailPage(path) {
-    window.o.publishEvent(runShellProcess(showProfile, { id: path }));
+    push(`#/banking/profile/${path}`)
   }
 
   function execTransfer(recipientAddress?: string) {

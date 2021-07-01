@@ -90,17 +90,17 @@ const transactionSend: Trigger<{ to: string, amount: string, message: string }, 
         throw new Error(`Not implemented`)
     }
 };
-const tokens: Page<any, BankingDappState> = {
+const assets: Page<any, BankingDappState> = {
     routeParts: ["assets"],
     component: Assets,
     title: "Assets",
     type: "page"
 };
-const tokenDetail: Trigger<{ symbol: string }, BankingDappState> = {
+const assetDetail: Trigger<{ symbol: string }, BankingDappState> = {
     isSystem: true,
     routeParts: ["assets", ":symbol"],
     eventFactory: (params) => runShellProcess(showAssetDetail, {
-        id: params.symbol,
+        symbol: params.symbol,
     }),
     title: "Asset",
     type: "trigger"
@@ -218,8 +218,8 @@ export const banking: DappManifest<BankingDappState> = {
         transactionDetail,
         transactionSend,
         trusts,
-        tokens,
-        tokenDetail,
+        assets,
+        assetDetail,
         trustDetail,
         graph,
         sendInvite,

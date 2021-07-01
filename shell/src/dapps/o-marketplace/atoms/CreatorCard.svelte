@@ -1,12 +1,7 @@
 <script lang="ts">
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { Profile } from "../data/api/types";
-  import {
-    runShellProcess
-  } from "../../../shared/processes/shellProcess";
-  import {
-    showProfile,
-  } from "../../o-banking/processes/showProfile";
+  import {push} from "svelte-spa-router";
 
   export let profile: Profile;
 
@@ -32,7 +27,7 @@
   }
 
   function loadDetailPage() {
-    window.o.publishEvent(runShellProcess(showProfile, { id: profile.id.toString() }));
+    push(`#/banking/profile/${profile.id.toString()}`)
   }
 
 </script>
