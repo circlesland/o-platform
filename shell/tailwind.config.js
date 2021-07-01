@@ -31,6 +31,14 @@ module.exports = {
 
   theme: {
     extend: {
+      typography: {
+        "text-base": {
+          css: {
+            fontSize: "1rem",
+            lineHeight: "1rem",
+          },
+        },
+      },
       screens: {
         xs: "500px",
       },

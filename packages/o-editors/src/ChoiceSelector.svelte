@@ -46,15 +46,26 @@
     </div>
   {/if}
   <div class="flex flex-row w-full space-x-4">
-    {#each context.params.choices as choice}
-      <div class="flex-grow">
-        <button
-          on:click={() => submit(choice)}
-          class="h-auto btn-block btn btn-light"
-        >
-          {choice.label}
-        </button>
-      </div>
+    {#each context.params.choices as choice, i}
+      {#if i == 0}
+        <div>
+          <button
+            on:click={() => submit(choice)}
+            class="h-auto btn-block btn btn-light"
+          >
+            {choice.label}
+          </button>
+        </div>
+      {:else}
+        <div class="flex-grow">
+          <button
+            on:click={() => submit(choice)}
+            class="h-auto btn-block btn btn-primary"
+          >
+            {choice.label}
+          </button>
+        </div>
+      {/if}
     {/each}
   </div>
 </div>

@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 .text-base {
-  font-size: 0.875rem
+  font-size: 1rem
   /* 14px */
   ;
-  line-height: 1.25rem
+  line-height: 1rem
   /* 20px */
   ;
   
@@ -55,6 +55,7 @@
 
 body {
   height: 100vh;
+  @apply text-base;
 }
 
   .textarea:focus {
@@ -66,16 +67,19 @@ body {
   @apply text-primary;
 }
 .btn {
-  font-family: Poppins;
-  @apply font-bold;
-  letter-spacing: 3px;
-  
+@apply text-base;
+@apply text-secondary;
+@apply normal-case;
+@apply font-medium;
+@apply tracking-normal;
+font-size: 1rem;
+line-height: 1rem;
 }
 
 .btn-text {
-  font-family: Poppins;
+  @apply text-base;
   @apply font-bold;
-  letter-spacing: 3px;
+  @apply tracking-normal;
 }
 
 .btn-text:hover,
@@ -87,6 +91,10 @@ body {
   @apply bg-light-lighter;
   @apply text-secondary;
   border: none;
+}
+.btn-primary {
+  @apply text-secondary;
+  @apply normal-case;
 }
 .btn-light:hover {
   @apply bg-white;
@@ -157,6 +165,7 @@ body {
   @apply block;
 }
 .label-text {
+  @apply text-xl;
   @apply text-secondary;
   @apply font-bold;
 }

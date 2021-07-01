@@ -11,7 +11,6 @@
   $: {
     console.log(context);
   }
-
 </script>
 
 <div
@@ -33,19 +32,9 @@
           >{context.params.submitButtonText
             ? context.params.submitButtonText
             : "Submit"}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            class="inline-block w-6 h-6 ml-2 stroke-current"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+          <div>
+            <Icons icon="buttonrightarrow" />
+          </div>
         </button>
       {:else if type == "small"}
         <button

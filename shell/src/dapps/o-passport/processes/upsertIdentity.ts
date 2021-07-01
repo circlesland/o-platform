@@ -2,16 +2,16 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
-import {createMachine} from "xstate";
+import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {City, UpsertProfileDocument} from "../data/api/types";
+import { City, UpsertProfileDocument } from "../data/api/types";
 import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { promptChoice } from "./identify/prompts/promptChoice";
-import {promptFile} from "../../../shared/api/promptFile";
-import {promptCity} from "../../../shared/api/promptCity";
+import { promptFile } from "../../../shared/api/promptFile";
+import { promptCity } from "../../../shared/api/promptCity";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -32,21 +32,22 @@ export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
 
 const strings = {
   labelFirstName:
-    "<span>Awesome!<br/>You are finally a citizen of CirclesLand.<br/>Glad to have you here.</span><strong class='text-primary block mt-3'>What is your first name?</strong>",
+    "What is your first name?<br/><span class='text-base text-light-dark font-normal block mt-3'>Welcome, you are finally a citizen of CirclesLand. Glad to have you here.</span>",
   labelLastName:
-    "<strong class='text-primary  block mt-3'>What is your last name?</strong>",
+    "What is your last name?<br/><span class='text-base text-light-dark font-normal block mt-3'>Display your full name in your profile to become more trust worthy.</span>",
   labelAvatar:
-    "<span>Add a profile image to become<br/> more recognizable</span>",
+    "Profile Image<br/><span class='text-base text-light-dark font-normal block mt-3'>Show the world who you are to become more recognizeable.</span>",
   labelCity:
-    "<span>Vote for your city in the global universal basic income economy ranking leaderboard.</span><strong class='text-primary block mt-3'>Select city</strong>",
+    "Vote for your City<br/><span class='text-base text-light-dark font-normal block mt-3'>Advance your city in the basic income ranking and push the political discorse in your area.</span>",
   labeldream:
-    "<span class='block'>What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?</span><strong class='text-primary  block mt-3'>Share your passion</strong>",
+    "Share your passion<br/><span class='text-base text-light-dark font-normal block mt-3'>What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?</span>",
+
   placeholderFirstName: "First name",
   placeholderLastName: "Last name",
   placeholderCity: "Select a city",
   placeholderDream: "Your passion.",
   labelNewsletter:
-    "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
+    "Newsletter<br/><span class='text-base text-light-dark font-normal block mt-3'>Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?</span>",
 };
 
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
@@ -94,13 +95,13 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         params: {
           label: strings.labelCity,
           placeholder: strings.placeholderCity,
-          submitButtonText: "Submit vote"
+          submitButtonText: "Submit vote",
         },
         navigation: {
           next: "#dream",
           previous: "#lastName",
-          canSkip: () => true
-        }
+          canSkip: () => true,
+        },
       }),
       dream: prompt<UpsertIdentityContext, any>({
         field: "dream",
@@ -113,67 +114,74 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           maxLength: "150",
         },
         dataSchema: yup
-            .string()
-            .nullable()
-            .notRequired()
-            .max(150, "The maximum amount of characters allowed is 150."),
+          .string()
+          .nullable()
+          .notRequired()
+          .max(150, "The maximum amount of characters allowed is 150."),
         navigation: {
           next: "#avatarUrl",
           canSkip: () => true,
           previous: "#country",
         },
       }),
-      avatarUrl: promptFile<UpsertIdentityContext, any> ({
+      avatarUrl: promptFile<UpsertIdentityContext, any>({
         field: "avatarUrl",
         onlyWhenDirty: skipIfNotDirty,
-        uploaded:(context, event) => {
+        uploaded: (context, event) => {
           context.data.avatarUrl = event.data?.url;
           context.data.avatarMimeType = event.data?.mimeType;
         },
         params: {
           label: strings.labelAvatar,
-          submitButtonText: "Save"
+          submitButtonText: "Save",
         },
         navigation: {
           next: "#newsletter",
           previous: "#dream",
-          canSkip: () => true
-        }
+          canSkip: () => true,
+        },
       }),
-      newsletter: promptChoice<UpsertIdentityContext, any> ({
+      newsletter: promptChoice<UpsertIdentityContext, any>({
         id: "newsletter",
         promptLabel: strings.labelNewsletter,
         onlyWhenDirty: skipIfNotDirty,
-        options: [{
-          key: "dontSubscribe",
-          label: "No thanks",
-          target: "#upsertIdentity",
-          action: (context) => {
-            context.data.newsletter = false;
-          }
-        }, {
-          key: "subscribe",
-          label: "Yes please",
-          target: "#upsertIdentity",
-          action: (context) => {
-            context.data.newsletter = true;
-          }
-        }],
+        options: [
+          {
+            key: "dontSubscribe",
+            label: "No thanks",
+            target: "#upsertIdentity",
+            action: (context) => {
+              context.data.newsletter = false;
+            },
+          },
+          {
+            key: "subscribe",
+            label: "Yes please",
+            target: "#upsertIdentity",
+            action: (context) => {
+              context.data.newsletter = true;
+            },
+          },
+        ],
         navigation: {
           canGoBack: () => true,
           previous: "#avatarUrl",
-          skip: "#upsertIdentity"
-        }
+          skip: "#upsertIdentity",
+        },
       }),
       upsertIdentity: {
         id: "upsertIdentity",
         invoke: {
           src: async (context) => {
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
-            const safeOwnerAddress = context.data.circlesSafeOwner ??
-                (localStorage.getItem("circlesKey")
-                    ? RpcGateway.get().eth.accounts.privateKeyToAccount(localStorage.getItem("circlesKey")).address
-                    : undefined);
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
+            const safeOwnerAddress =
+              context.data.circlesSafeOwner ??
+              (localStorage.getItem("circlesKey")
+                ? RpcGateway.get().eth.accounts.privateKeyToAccount(
+                    localStorage.getItem("circlesKey")
+                  ).address
+                : undefined);
             const result = await apiClient.mutate({
               mutation: UpsertProfileDocument,
               variables: {
@@ -187,8 +195,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 country: context.data.country,
                 avatarUrl: context.data.avatarUrl,
                 avatarMimeType: context.data.avatarMimeType,
-                cityGeonameid: context.data.cityGeonameid
-              }
+                cityGeonameid: context.data.cityGeonameid,
+              },
             });
             return result.data.upsertProfile;
           },
