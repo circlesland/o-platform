@@ -19,7 +19,7 @@
         }
         const entryPoint = await getDappEntryPoint();
         window.o.publishEvent(new DappLoading(
-            dappManifest, _entryPage, entryPoint
+            dappManifest, _entryPage, params
         ));
         if (!entryPoint) {
             throw new Error(`Couldn't find the dapp entry point.`);
