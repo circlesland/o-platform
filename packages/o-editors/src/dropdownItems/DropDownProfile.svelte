@@ -20,7 +20,6 @@
     }
     itemClasses = classes.join(" ");
   }
-
 </script>
 
 <section
@@ -29,9 +28,9 @@
   <div
     class="flex items-center w-full px-3 pt-1 space-x-2 sm:space-x-6 item-body "
   >
-    <div class="mr-2 text-center">
+    <div class="text-center">
       <div class="avatar">
-        <div class="w-10 h-10 m-auto rounded-full sm:w-12 sm:h-12">
+        <div class="w-10 h-10 m-auto rounded-full">
           <img
             src={item.avatarUrl ? item.avatarUrl : "/images/market/city.png"}
             alt="user-icon"
@@ -42,9 +41,7 @@
 
     <div class="relative flex-grow text-left truncate">
       <div class="max-w-full -mt-1 cursor-pointer truncateThis">
-        <h2 class="text-2xl sm:text-3xl">
-          {`${item.firstName} ${item.lastName ? item.lastName : ""}`}
-        </h2>
+        {`${item.firstName} ${item.lastName ? item.lastName : ""}`}
       </div>
     </div>
   </div>
@@ -85,5 +82,4 @@
   .customItem_tagline {
     display: inline-block;
   }
-
 </style>
