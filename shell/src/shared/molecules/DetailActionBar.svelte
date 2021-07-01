@@ -10,7 +10,7 @@
 <div class="flex flex-row justify-between p-2 text-secondary">
   {#each actions as action}
     <div
-      on:click={() => window.o.publishEvent(action.event())}
+      on:click={() => window.o.publishEvent(action.event)}
       class="flex flex-col items-center content-center self-start px-6 space-y-2 cursor-pointer"
     >
       <div>

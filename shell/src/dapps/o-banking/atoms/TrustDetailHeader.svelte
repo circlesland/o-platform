@@ -1,6 +1,4 @@
 <script lang="ts">
-  import TopNav from "src/shared/atoms/TopNav.svelte";
-
   let isLoading: boolean = true;
 
   export let profile: {

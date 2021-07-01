@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { push } from "svelte-spa-router";
   import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
   import {shellProcess, ShellProcessContext} from "../../../shared/processes/shellProcess";
   import {showProfile, ShowProfileContextData} from "../processes/showProfile";
@@ -16,12 +15,6 @@
   $: {
     pictureUrl = symbol;
   }
-
-  /*
-  function loadDetailPage() {
-    push("#/banking/assets/" + symbol);
-  }
-   */
 
   function loadDetailPage() {
     const requestEvent = new RunProcess<ShellProcessContext>(

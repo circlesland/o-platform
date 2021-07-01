@@ -6,9 +6,6 @@ import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
 import Trusts from "./o-banking/pages/Trusts.svelte";
 import Graph from "./o-banking/pages/Graph.svelte";
 import ProfilePage from "./o-banking/molecules/Profile.svelte";
-import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
 import {
   shellProcess,
@@ -25,27 +22,22 @@ import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import {showProfile} from "./o-banking/processes/showProfile";
 import {Generate} from "@o-platform/o-utils/dist/generate";
+import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
+import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 
-const transactions: PageManifest = {
-  isDefault: true,
+const transactions : Page<any, DappState> = {
   routeParts: ["transactions"],
   component: Transactions,
   title: "Transactions",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page"
 };
-
-const profile: PageManifest = {
-  isDefault: false,
+export const profile : Trigger = {
+  type: "trigger",
   isSystem: true,
   routeParts: ["profile", ":id"],
-  // component: ProfilePage,
-  onMountAction: (params:{id:string}) => {
+  title: "Profile",
+  eventFactory:(params, runtimeDapp) => {
     const modifier = async (ctx) => {
       ctx.childProcessDefinition = showProfile;
       ctx.childContext = {
@@ -59,226 +51,121 @@ const profile: PageManifest = {
     (<any>requestEvent).id = Generate.randomHexString(8);
 
     return requestEvent;
-  },
-  hideFooter: false,
-  title: "Profile",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  }
 };
-
-export const transactionDetail: PageManifest = {
-  isDefault: false,
+type TransactionDetailParams = {
+  _id:string
+};
+const transactionDetail : Page<TransactionDetailParams, BankingDappState> = {
+  type: "page",
   isSystem: true,
   routeParts: ["transactions", ":_id"],
   component: TransactionDetail,
   title: "Transaction",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
-  actions: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
-    let actions = [
-      {
+  jumplist: {
+    type: "jumplist",
+    title: "Actions",
+    isSystem: false,
+    routeParts: ["actions"],
+    items: (params, runtimeDapp) => {
+      const transferEvent = new RunProcess<ShellProcessContext>(
+          shellProcess,
+          true,
+          async (ctx) => {
+            ctx.childProcessDefinition = transfer;
+            ctx.childContext = {
+              data: {
+                safeAddress: tryGetCurrentSafe().safeAddress,
+                recipientAddress: runtimeDapp.state.currentSafeAddress,
+                privateKey: localStorage.getItem("circlesKey"),
+              },
+            };
+            return ctx;
+          }
+      );
+
+      const toggleTrustEvent = new RunProcess<ShellProcessContext>(
+          shellProcess,
+          true,
+          async (ctx) => {
+            ctx.childProcessDefinition = setTrust;
+            ctx.childContext = {
+              data: {
+                trustLimit: runtimeDapp.state.trusted ? 0 : 100,
+                trustReceiver: runtimeDapp.state.currentSafeAddress,
+                safeAddress: tryGetCurrentSafe().safeAddress,
+                privateKey: localStorage.getItem("circlesKey"),
+              },
+            };
+            return ctx;
+          }
+      );
+      return [{
         key: "transfer",
         icon: "sendmoney",
         label: "Send Money",
-        event: () => {
-          return new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = transfer;
-              ctx.childContext = {
-                data: {
-                  safeAddress: tryGetCurrentSafe().safeAddress,
-                  recipientAddress: runtimeDapp.state.currentSafeAddress,
-                  privateKey: localStorage.getItem("circlesKey"),
-                },
-              };
-              return ctx;
-            }
-          );
-        },
-      },
-    ];
-
-    if (runtimeDapp.state.trusted) {
-      actions.push({
+        event: transferEvent
+      },{
         key: "setTrust",
-        label: "Trust",
         icon: "trust",
-        event: () => {
-          return new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = setTrust;
-              ctx.childContext = {
-                data: {
-                  trustLimit: 0,
-                  trustReceiver: runtimeDapp.state.currentSafeAddress,
-                  safeAddress: tryGetCurrentSafe().safeAddress,
-                  privateKey: localStorage.getItem("circlesKey"),
-                },
-              };
-              return ctx;
-            }
-          );
-        },
-      });
-    } else {
-      actions.push({
-        key: "setUntrust",
-        label: "Untrust",
-        icon: "untrust",
-        event: () => {
-          return new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = setTrust;
-              ctx.childContext = {
-                data: {
-                  trustLimit: 100,
-                  trustReceiver: runtimeDapp.state.currentSafeAddress,
-                  safeAddress: tryGetCurrentSafe().safeAddress,
-                  privateKey: localStorage.getItem("circlesKey"),
-                },
-              };
-              return ctx;
-            }
-          );
-        },
-      });
+        label: runtimeDapp.state.trusted ? "Untrust" : "Trust",
+        event: toggleTrustEvent
+      }];
     }
-    return actions;
-  },
+  }
 };
-
-const transactionSend: PageManifest = {
-  isDefault: false,
+const transactionSend : Page<any, DappState> = {
   isSystem: true,
   routeParts: ["transactions", "send", ":to", ":amount", ":message"],
   component: Transactions,
   title: "Transactions",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page"
 };
-
-const tokens: PageManifest = {
-  isDefault: false,
+const tokens : Page<any, DappState> = {
   routeParts: ["assets"],
   component: Assets,
   title: "Assets",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page"
 };
-
-const tokenDetail: PageManifest = {
-  isDefault: false,
+const tokenDetail : Page<any, DappState> = {
   isSystem: true,
   routeParts: ["assets", ":symbol"],
   component: AssetDetail,
   title: "Asset",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page"
 };
-
-const trusts: PageManifest = {
-  isDefault: false,
+const trusts : Page<any, DappState> = {
   routeParts: ["trusts"],
   component: Trusts,
   title: "Trusts",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page"
 };
-
-const sendInvite: PageManifest = {
-  isDefault: false,
+const sendInvite : Page<any, DappState> = {
   routeParts: ["trusts", "invite", ":inviteAccountAddress"],
   isSystem: true,
   component: Trusts,
   title: "Trusts",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page"
 };
-
-const trustDetail: PageManifest = {
-  isDefault: false,
+const trustDetail : Page<any, DappState> = {
   isSystem: true,
   routeParts: ["trusts", ":id"],
   component: ProfilePage,
   title: "Trust",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page"
 };
-
-const findMySafe: PageManifest = {
-  isDefault: false,
+const findMySafe : Page<any, DappState> = {
   isSystem: true,
   routeParts: ["find-my-safe"],
   component: FindMySafe,
-  hideFooter: true,
   title: "FindMySafe",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page"
 };
-
-const graph: PageManifest = {
-  isDefault: false,
+const graph : Page<any, DappState> = {
   routeParts: ["network"],
   component: Graph,
   title: "Network",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page"
 };
 
 export interface DappState {
@@ -298,65 +185,63 @@ export class BankingDappState {
   trusted?: boolean;
 }
 
-export const banking: DappManifest<DappState> = {
+export const banking: DappManifest<BankingDappState> = {
   dappId: "banking:1",
+  type: "dapp",
   isSingleton: true,
-  dependencies: [],
   isHidden: false,
   icon: faPeopleArrows,
   title: "Banking",
   routeParts: ["banking"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
-  actions: (runtimeDapp: RuntimeDapp<BankingDappState>) => {
-    let actions = [
-      {
+  jumplist: {
+    type: "jumplist",
+    title: "Actions",
+    isSystem: false,
+    routeParts: ["actions"],
+    items: (params, runtimeDapp) => {
+      return [{
         key: "setTrust",
         label: "Trust someone",
         icon: "trust",
-        event: () => {
-          return new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = setTrust;
-              ctx.childContext = {
-                data: {
-                  trustLimit: 100,
-                  safeAddress: tryGetCurrentSafe().safeAddress,
-                  privateKey: localStorage.getItem("circlesKey"),
-                },
-              };
-              return ctx;
-            }
-          );
-        },
+        event: new RunProcess<ShellProcessContext>(
+              shellProcess,
+              true,
+              async (ctx) => {
+                ctx.childProcessDefinition = setTrust;
+                ctx.childContext = {
+                  data: {
+                    trustLimit: 100,
+                    safeAddress: tryGetCurrentSafe().safeAddress,
+                    privateKey: localStorage.getItem("circlesKey"),
+                  },
+                };
+                return ctx;
+              }
+          )
       },
-      {
-        key: "transfer",
-        icon: "sendmoney",
-        label: "Send Money",
-        event: () => {
-          return new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = transfer;
-              ctx.childContext = {
-                data: {
-                  safeAddress: tryGetCurrentSafe().safeAddress,
-                  recipientAddress: runtimeDapp.state.currentSafeAddress,
-                  privateKey: localStorage.getItem("circlesKey"),
-                },
-              };
-              return ctx;
-            }
-          );
-        },
-      },
-    ];
-
-    return actions;
+        {
+          key: "transfer",
+          icon: "sendmoney",
+          label: "Send Money",
+          event: new RunProcess<ShellProcessContext>(
+                shellProcess,
+                true,
+                async (ctx) => {
+                  ctx.childProcessDefinition = transfer;
+                  ctx.childContext = {
+                    data: {
+                      safeAddress: tryGetCurrentSafe().safeAddress,
+                      recipientAddress: runtimeDapp.state.currentSafeAddress,
+                      privateKey: localStorage.getItem("circlesKey"),
+                    },
+                  };
+                  return ctx;
+                }
+            )
+        }];
+    }
   },
   navigation: {
     navPill: {
@@ -396,11 +281,11 @@ export const banking: DappManifest<DappState> = {
     }
 
     return {
-      initialPage: transactions,
+      initialRoutable: transactions,
       cancelDependencyLoading: false,
     };
   },
-  pages: [
+  routables: [
     transactions,
     transactionDetail,
     transactionSend,

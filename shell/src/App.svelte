@@ -2,15 +2,12 @@
   import "./shared/css/base.css";
   import "./shared/css/components.css";
   import "./shared/css/utilities.css";
-
   import routes from "./loader";
   import { getLastLoadedDapp } from "./loader";
   import { getLastLoadedPage } from "./loader";
-
-  import Router, { push, location } from "svelte-spa-router";
+  import Router, { push } from "svelte-spa-router";
   import Modal from "./shared/molecules/Modal.svelte";
   import ProcessContainer from "./shared/molecules/ProcessContainer.svelte";
-  import NavItem from "./shared/atoms/NavItem.svelte";
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
@@ -24,21 +21,17 @@
   import { Generate } from "@o-platform/o-utils/dist/generate";
   import { Subscription } from "rxjs";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
-
   import {
     Cancel,
     CancelRequest,
   } from "@o-platform/o-process/dist/events/cancel";
   import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
-  import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import {
     identify,
     IdentifyContextData,
   } from "./dapps/o-passport/processes/identify/identify";
   import { SvelteToast } from "./shared/molecules/Toast";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";
   import { XDaiThresholdTrigger } from "./xDaiThresholdTrigger";
   import { me } from "./shared/stores/me";
   import { INVITE_VALUE } from "./dapps/o-passport/processes/invite/invite";
@@ -46,16 +39,11 @@
     deploySafe,
     HubSignupContextData,
   } from "./dapps/o-banking/processes/deploySafe";
-
   import DappNavItem from "./shared/atoms/DappsNavItem.svelte";
   import NextNav from "./shared/molecules/NextNav/NextNav.svelte";
   import Icons from "./shared/molecules/Icons.svelte";
-
-  import {
-    showProfile,
-    ShowProfileContextData,
-  } from "./dapps/o-banking/processes/showProfile";
   import {onMount} from "svelte";
+  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
 
   let isOpen: boolean = false;
   let processWaiting: boolean = false;
@@ -80,13 +68,6 @@
     message: string;
     percent: number;
   };
-
-  let contextActions: {
-    key: string;
-    icon?: string;
-    label: string;
-    event: (runtimeDapp: RuntimeDapp<any>) => PlatformEvent;
-  }[];
 
   window.o.events.subscribe(async (event: PlatformEvent) => {
     if (event.type === "shell.closeModal") {
@@ -144,9 +125,6 @@
         percent: progressEvent.percent,
       };
     }
-    if (event.type === "shell.contextAction") {
-      contextActions.push((<ContextAction>event).action);
-    }
   });
 
   function modalWantsToClose() {
@@ -175,7 +153,7 @@
     }
   }
 
-  let lastLoadedPage: PageManifest;
+  let lastLoadedPage: Page<any,any>;
   let lastLoadedDapp: DappManifest<any>;
 
   function routeLoaded() {
@@ -183,9 +161,8 @@
     lastLoadedPage = getLastLoadedPage();
     lastLoadedDapp = getLastLoadedDapp();
 
+    console.log("LAST DAPP: ", lastLoadedDapp);
     console.log("LAST PAGE: ", lastLoadedPage);
-    // Clear the context actions after every route change
-    contextActions = [];
   }
 
   async function login(appId: string, code?: string) {
@@ -313,7 +290,6 @@
   }
 
   let _routes:any;
-
   onMount(async () => {
     _routes = await routes();
     console.log("Loaded routes:", _routes);
@@ -370,7 +346,7 @@
     />
   {:else if showList}
     <div class="flex flex-col p-4 space-y-6">
-      {#each lastLoadedDapp.pages.filter((o) => !o.isSystem) as page}
+      {#each lastLoadedDapp.routables.filter((o) => !o.isSystem) as page}
         <DappNavItem
           segment="#/{lastLoadedDapp.routeParts.join('/') +
             '/' +
@@ -411,10 +387,9 @@
   {:else}
     <!-- No process -->
     {#if getLastLoadedDapp()}
+      {console.log("Last loaded dapp:", getLastLoadedDapp())}
       <div class="flex flex-wrap items-center justify-center p-4 space-x-10">
-        {#each getLastLoadedDapp()
-          .actions(getLastLoadedDapp())
-          .concat(contextActions) as action}
+        {#each getLastLoadedDapp().jumplist.items({}, getLastLoadedDapp()) as action}
           <div
             on:click={() =>
               window.o.publishEvent(action.event(getLastLoadedDapp()))}

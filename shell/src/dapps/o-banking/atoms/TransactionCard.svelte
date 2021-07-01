@@ -1,8 +1,7 @@
 <script lang="ts">
   import Time from "svelte-time";
-  import { push } from "svelte-spa-router";
   import Web3 from "web3";
-  import { Transfer } from "../data/circles/queries";
+  import { Transfer } from "../data/circles/types";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,

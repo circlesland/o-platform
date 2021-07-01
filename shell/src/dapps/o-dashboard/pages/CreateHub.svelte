@@ -6,7 +6,7 @@
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { INVITE_VALUE } from "src/dapps/o-passport/processes/invite/invite";
-  import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
+
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { getLastLoadedDapp, getLastLoadedPage } from "../../../loader";
   import { Subscription } from "web3-core-subscriptions";

@@ -6,7 +6,6 @@
   } from "../../../shared/processes/shellProcess";
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
-  import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
   import { mySafe } from "../stores/safe";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { invite } from "../../o-passport/processes/invite/invite";
@@ -25,10 +24,8 @@
   import { Continue } from "@o-platform/o-process/dist/events/continue";
   import { EditorContext } from "@o-platform/o-editors/src/editorContext";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import { DetailActionFactory } from "../../../shared/molecules/DetailActionBarFactory";
   import {
-    BankingDappState,
-    transactionDetail,
+    BankingDappState
   } from "../../o-banking.manifest";
   import { getLastLoadedDapp } from "../../../loader";
   export let context: EditorContext;
@@ -562,7 +559,7 @@
       </div>
       <div class="absolute bottom-0 left-0 w-full bg-white">
         <DetailActionBar
-          actions={transactionDetail.actions(getLastLoadedDapp())}
+          actions={profile.jumplist.items(params, getLastLoadedDapp())}
         />
       </div>
       <!-- ACTIONS  -->

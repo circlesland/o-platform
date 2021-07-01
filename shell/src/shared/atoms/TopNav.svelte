@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { getLastLoadedDapp, getLastLoadedPage } from "../../loader";
-  import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
 
-  let lastLoadedPage: PageManifest;
+  let lastLoadedPage: Page<any,any>;
   let lastLoadedDapp: DappManifest<any>;
 
   onMount(() => {

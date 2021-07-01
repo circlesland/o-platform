@@ -9,7 +9,6 @@ export type PlatformEventTypes =
     | "shell.refresh"
     | "shell.navigateTo"
     | "shell.authenticated"
-    | "shell.contextAction"
     | "shell.loggedOut"
     | "shell.gotProfile"
     | "shell.showNotification"

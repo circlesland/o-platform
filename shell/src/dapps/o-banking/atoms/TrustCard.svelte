@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { push } from "svelte-spa-router";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
     shellProcess,
@@ -8,14 +7,12 @@
   import { transfer } from "../processes/transfer";
   import { TrustObject } from "../data/circles/types";
   import { tryGetCurrentSafe } from "../init";
-  import * as style from "@dicebear/avatars-avataaars-sprites";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import {
     showProfile,
     ShowProfileContextData,
   } from "../processes/showProfile";
   import { Generate } from "@o-platform/o-utils/dist/generate";
-  import { profile } from "../../o-marketplace/atoms/CreatorCard.svelte";
   import Icons from "../../../shared/molecules/Icons.svelte";
 
   export let trusting: TrustObject;
