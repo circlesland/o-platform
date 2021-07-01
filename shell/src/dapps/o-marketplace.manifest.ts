@@ -5,10 +5,8 @@ import OfferDetail from "./o-marketplace/pages/OfferDetail.svelte";
 import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
 import {
-  shellProcess,
-  ShellProcessContext,
+  runShellProcess,
 } from "../shared/processes/shellProcess";
 import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
@@ -75,21 +73,11 @@ export const marketplace: DappManifest<DappState> = {
       title: "Actions",
       isSystem: false,
       routeParts: ["actions"],
-      items: (params: {[x: string]: any} | undefined, runtimeDapp: RuntimeDapp<any>) => [{
+      items: () => [{
         key: "createOffer",
         label: "Create offer",
         icon: "createoffer",
-        event: new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = upsertOffer;
-              ctx.childContext = {
-                data: {},
-              };
-              return ctx;
-            }
-        )
+        event: runShellProcess(upsertOffer, { })
       }],
     },
   isEnabled: true,

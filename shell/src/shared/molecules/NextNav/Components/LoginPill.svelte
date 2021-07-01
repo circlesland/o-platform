@@ -1,10 +1,7 @@
 <script lang="ts">
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
-    shellProcess,
-    ShellProcessContext,
+    runShellProcess
   } from "../../../processes/shellProcess";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
   import {
     identify,
     IdentifyContextData,
@@ -14,22 +11,9 @@
   export let isOpen: boolean = false;
 
   async function login() {
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = identify;
-        ctx.childContext = {
-          data: <IdentifyContextData>{
-            redirectTo: "/dashboard",
-          },
-        };
-        return ctx;
-      }
-    );
-
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
+    window.o.publishEvent(runShellProcess(identify, <IdentifyContextData>{
+      redirectTo: "/dashboard",
+    }));
   }
 
 </script>

@@ -45,8 +45,12 @@ let lastLoadedDapp: RuntimeDapp<any>;
 export function getLastLoadedPage() {
     return lastLoadedPage;
 }
-
 let lastLoadedPage: Page<any, any>;
+
+export function getLastLoadedRoutable() {
+    return lastLoadedRoutable;
+}
+let lastLoadedRoutable: Routable;
 
 export function constructAppUrl(dappManifest: DappManifest<any>): { appBaseUrl: string, appDefaultRoute: string } {
     const appBaseUrl = dappManifest.routeParts.reduce((p, c) => p + "/" + c, "");
@@ -72,6 +76,7 @@ function constructPageUrl(appBaseUrl: string, routable: Routable): string {
 
 async function getDappEntryPoint(dappManifest: DappManifest<any>, routable: Routable): Promise<Routable> {
     try {
+        lastLoadedRoutable = routable;
         if (routable.type == "page") {
             lastLoadedPage = <Page<any, any>>routable;
         }
@@ -88,6 +93,7 @@ async function getDappEntryPoint(dappManifest: DappManifest<any>, routable: Rout
                     throw new Error("The dapp '" + freshRuntimeDapp.runtimeDapp.dappId + "' has no 'initialRoutable' attribute or its value is null.");
                 }
 
+                lastLoadedRoutable = freshRuntimeDapp.initialRoutable;
                 if (freshRuntimeDapp.initialRoutable.type == "page") {
                     lastLoadedPage = <Page<any, any>>freshRuntimeDapp.initialRoutable;
                 }
@@ -105,6 +111,8 @@ async function getDappEntryPoint(dappManifest: DappManifest<any>, routable: Rout
             console.log("lastLoadedDapp:", runtimeDapp);
             lastLoadedDapp = runtimeDapp;
         }
+
+        lastLoadedRoutable = routable;
         if (routable.type == "page") {
             lastLoadedPage = <Page<any, any>>routable;
         }

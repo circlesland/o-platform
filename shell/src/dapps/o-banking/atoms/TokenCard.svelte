@@ -1,16 +1,12 @@
 <script lang="ts">
   import Web3 from "web3";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
-    shellProcess,
-    ShellProcessContext,
+    runShellProcess
   } from "../../../shared/processes/shellProcess";
   import {
-    showProfile,
-    ShowProfileContextData,
+    showProfile
   } from "../processes/showProfile";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
   import { Token } from "../data/circles/types";
 
   export let token: Token;
@@ -35,25 +31,7 @@
   }
 
   function loadDetailPage(path) {
-    console.log(path);
-
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = showProfile;
-        ctx.childContext = {
-          data: <ShowProfileContextData>{
-            id: path,
-          },
-        };
-        return ctx;
-      }
-    );
-
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
-    //push("#/banking/trusts/" + path);
+    window.o.publishEvent(runShellProcess(showProfile, {id: path}));
   }
 
 </script>

@@ -1,24 +1,3 @@
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-import { shellProcess, ShellProcessContext } from "../processes/shellProcess";
-
-function execTransfer(profile, safeAddress, isMe, transfer) {
-  if (!profile || !safeAddress || isMe || !transfer) return;
-
-  window.o.publishEvent(
-    new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-      ctx.childProcessDefinition = transfer;
-      ctx.childContext = {
-        data: {
-          safeAddress: safeAddress,
-          recipientAddress: profile.safeAddress,
-          recipientProfileId: profile.id,
-        },
-      };
-      return ctx;
-    })
-  );
-}
-
 function executeFunctionByName(functionName, context, argumentsa) {
   var args = Array.prototype.slice.call(argumentsa, 2);
   var namespaces = functionName.split(".");

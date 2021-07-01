@@ -2,10 +2,8 @@
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { onMount } from "svelte";
   import {
-    shellProcess,
-    ShellProcessContext,
+    runShellProcess
   } from "../../../shared/processes/shellProcess";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import { tryGetCurrentSafe } from "../init";
   import { transfer } from "../processes/transfer";
   import TransactionCard from "../atoms/TransactionCard.svelte";
@@ -30,29 +28,17 @@
       params.amount != ""
     ) {
       if ((safeAddress = tryGetCurrentSafe()?.safeAddress) && $me) {
-        window.o.publishEvent(
-          new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = transfer;
-              ctx.childContext = {
-                data: {
-                  recipientAddress: params.to,
-                  message: params.message,
-                  tokens: {
-                    currency: "crc",
-                    amount: params.amount,
-                  },
-                  acceptSummary: true,
-                  safeAddress: safeAddress,
-                  privateKey: localStorage.getItem("circlesKey"),
-                },
-              };
-              return ctx;
-            }
-          )
-        );
+        window.o.publishEvent(runShellProcess(transfer, {
+          recipientAddress: params.to,
+          message: params.message,
+          tokens: {
+            currency: "crc",
+            amount: params.amount,
+          },
+          acceptSummary: true,
+          safeAddress: safeAddress,
+          privateKey: localStorage.getItem("circlesKey"),
+        }));
       }
     }
   });

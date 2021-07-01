@@ -1,6 +1,7 @@
 <script lang="ts">
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
+    runShellProcess,
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
@@ -27,7 +28,10 @@
   import {
     BankingDappState
   } from "../../o-banking.manifest";
-  import { getLastLoadedDapp } from "../../../loader";
+  import {getLastLoadedDapp, getLastLoadedRoutable} from "../../../loader";
+  import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
+  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+  import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
   export let context: EditorContext;
 
   export let params: {
@@ -40,7 +44,21 @@
     context.process.sendAnswer(answer);
   };
 
+  let jumplist:Jumplist<any, any>|undefined;
+
   onMount(() => {
+
+    const lastLoadedRoutable = getLastLoadedRoutable();
+    if (lastLoadedRoutable.type === "page") {
+      jumplist = (<Page<any,any>>lastLoadedRoutable).jumplist;
+    }
+    else if (lastLoadedRoutable.type === "trigger") {
+      jumplist = (<Trigger<any,any>>lastLoadedRoutable).jumplist;
+    }
+    else {
+      jumplist = undefined;
+    }
+
     shellEventSubscription = window.o.events.subscribe(
       async (event: PlatformEvent) => {
         if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
@@ -209,78 +227,40 @@
   function execTransfer() {
     if (!profile || !$mySafe.safeAddress || isMe) return;
 
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = transfer;
-        ctx.childContext = {
-          data: {
-            safeAddress: $mySafe.safeAddress,
-            recipientAddress: profile.safeAddress,
-            recipientProfileId: profile.id,
-          },
-        };
-        return ctx;
-      })
-    );
+    window.o.publishEvent(runShellProcess(transfer, {
+      safeAddress: $mySafe.safeAddress,
+      recipientAddress: profile.safeAddress,
+      recipientProfileId: profile.id,
+    }));
   }
 
   function execTrust() {
     if (!profile || !$mySafe.safeAddress || isMe) return;
-
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = setTrust;
-        ctx.childContext = {
-          data: {
-            safeAddress: $mySafe.safeAddress,
-            trustLimit: 100,
-            trustReceiver: profile.safeAddress,
-            privateKey: localStorage.getItem("circlesKey"),
-          },
-        };
-        return ctx;
-      })
-    );
+    window.o.publishEvent(runShellProcess(setTrust, {
+      safeAddress: $mySafe.safeAddress,
+      trustLimit: 100,
+      trustReceiver: profile.safeAddress,
+      privateKey: localStorage.getItem("circlesKey"),
+    }));
   }
 
   function execUntrust() {
     if (!profile || !$mySafe.safeAddress || isMe) return;
-
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = setTrust;
-        ctx.childContext = {
-          data: {
-            safeAddress: $mySafe.safeAddress,
-            trustLimit: 0,
-            trustReceiver: profile.safeAddress,
-            privateKey: localStorage.getItem("circlesKey"),
-          },
-        };
-        return ctx;
-      })
-    );
+    window.o.publishEvent(runShellProcess(setTrust, {
+      safeAddress: $mySafe.safeAddress,
+      trustLimit: 0,
+      trustReceiver: profile.safeAddress,
+      privateKey: localStorage.getItem("circlesKey"),
+    }));
   }
 
   function execInvite() {
     if (!profile || !$mySafe.safeAddress || !profile.id || isMe) return;
 
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = invite;
-        ctx.childContext = {
-          data: {
-            safeAddress: $mySafe.safeAddress,
-            inviteProfileId: profile.id,
-          },
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
+    window.o.publishEvent(runShellProcess(invite, {
+      safeAddress: $mySafe.safeAddress,
+      inviteProfileId: profile.id,
+    }));
   }
 
   const copy = () => {
@@ -558,9 +538,11 @@
         {/if}
       </div>
       <div class="absolute bottom-0 left-0 w-full bg-white">
-        <DetailActionBar
-          actions={profile.jumplist.items(params, getLastLoadedDapp())}
-        />
+        {#if jumplist}
+          <DetailActionBar
+            actions={jumplist.items(params, getLastLoadedDapp())}
+          />
+        {/if}
       </div>
       <!-- ACTIONS  -->
 

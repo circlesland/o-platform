@@ -5,12 +5,28 @@ import {createMachine, actions} from "xstate";
 import {Bubble} from "@o-platform/o-process/dist/events/bubble";
 import {show} from "@o-platform/o-process/dist/actions/show";
 import {ipcSinker} from "@o-platform/o-process/dist/triggers/ipcSinker";
+import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+import {Generate} from "@o-platform/o-utils/dist/generate";
 const {send} = actions;
 
 export class ShellProcessContext extends ProcessContext<any> {
   childProcessId: string;
   childProcessDefinition:ProcessDefinition<any,any>
   childContext? :{[x:string]:any};
+}
+
+export function runShellProcess(processDefinition:ProcessDefinition<any, any>, contextData:{[x:string]:any}) : PlatformEvent & {id: string} {
+  const modifier = async (ctx) => {
+    ctx.childProcessDefinition = processDefinition;
+    ctx.childContext = {
+      data: contextData
+    };
+    return ctx;
+  };
+  const requestEvent:any = new RunProcess(shellProcess, true, modifier);
+  requestEvent.id = Generate.randomHexString(8);
+
+  return requestEvent;
 }
 
 /**

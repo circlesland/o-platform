@@ -1,12 +1,10 @@
 import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-dashboard/pages/Home.svelte";
 import CreateHub from "./o-dashboard/pages/CreateHub.svelte";
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 import { logout } from "./o-passport/processes/logout";
 import {
-  shellProcess,
-  ShellProcessContext,
+  runShellProcess
 } from "../shared/processes/shellProcess";
 import {Page} from "@o-platform/o-interfaces/dist/routables/page";
 import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
@@ -51,14 +49,7 @@ export const dashboard: DappManifest<DappState> = {
         key: "logout",
         label: "Logout",
         icon: "logout",
-        event: new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = logout;
-              return ctx;
-            }
-        )
+        event: runShellProcess(logout, {})
       }];
     }
   },

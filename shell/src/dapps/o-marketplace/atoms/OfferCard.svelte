@@ -3,6 +3,7 @@
   import { Offer } from "../data/api/types";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
+    runShellProcess,
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
@@ -70,15 +71,7 @@
   }
 
   function buy() {
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = purchase;
-        ctx.childContext = {
-          data: {},
-        };
-        return ctx;
-      })
-    );
+    window.o.publishEvent(runShellProcess(purchase, {  }));
   }
 
 </script>

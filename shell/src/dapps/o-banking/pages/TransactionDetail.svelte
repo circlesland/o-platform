@@ -5,9 +5,7 @@
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { showProfile } from "src/dapps/o-banking/processes/showProfile";
-  import { shellProcess } from "src/shared/processes/shellProcess";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
+  import {runShellProcess} from "src/shared/processes/shellProcess";
   import { Transfer } from "../data/circles/types";
   import { EditorContext } from "@o-platform/o-editors/src/editorContext";
   import Icons from "../../../shared/molecules/Icons.svelte";
@@ -87,20 +85,7 @@
     if (id.startsWith("0x000")) {
       return;
     }
-
-    const modifier = async (ctx) => {
-      ctx.childProcessDefinition = showProfile;
-      ctx.childContext = {
-        data: {
-          id,
-        },
-      };
-      return ctx;
-    };
-
-    const requestEvent = new RunProcess(shellProcess, true, modifier);
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
+    window.o.publishEvent(runShellProcess(showProfile, { id }));
   }
 </script>
 

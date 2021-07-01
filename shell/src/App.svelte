@@ -15,10 +15,8 @@
   import { ProgressSignal } from "@o-platform/o-events/dist/signals/progressSignal";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
   import {
-    shellProcess,
-    ShellProcessContext,
+    runShellProcess
   } from "./shared/processes/shellProcess";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
   import { Subscription } from "rxjs";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
   import {
@@ -177,22 +175,9 @@
       }
       return;
     }
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = identify;
-        ctx.childContext = {
-          data: <IdentifyContextData>{
-            redirectTo: "/dashboard",
-          },
-        };
-        return ctx;
-      }
-    );
-
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
+    window.o.publishEvent(runShellProcess(identify, <IdentifyContextData>{
+      redirectTo: "/dashboard",
+    }));
   }
 
   let layoutClasses = "";
@@ -219,22 +204,9 @@
           INVITE_VALUE - 0.005,
           async (address: string, threshold: number) => {
             console.log("The safe creation balance threshold was reached!");
-            const requestEvent = new RunProcess<ShellProcessContext>(
-              shellProcess,
-              true,
-              async (ctx) => {
-                ctx.childProcessDefinition = deploySafe;
-                ctx.childContext = {
-                  data: <HubSignupContextData>{
-                    privateKey: localStorage.getItem("circlesKey"),
-                  },
-                };
-                return ctx;
-              }
-            );
-
-            requestEvent.id = Generate.randomHexString(8);
-            window.o.publishEvent(requestEvent);
+            window.o.publishEvent(runShellProcess(deploySafe, <HubSignupContextData>{
+              privateKey: localStorage.getItem("circlesKey"),
+            }));
           }
         );
       } else if (
@@ -242,22 +214,9 @@
         (!!localStorage.getItem("fundsSafe") ||
           !!localStorage.getItem("signsUpAtCircles"))
       ) {
-        const requestEvent = new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = deploySafe;
-            ctx.childContext = {
-              data: <HubSignupContextData>{
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
-
-        requestEvent.id = Generate.randomHexString(8);
-        window.o.publishEvent(requestEvent);
+        window.o.publishEvent(runShellProcess(deploySafe, <HubSignupContextData>{
+          privateKey: localStorage.getItem("circlesKey"),
+        }));
         triggered = true;
       }
     }
@@ -389,14 +348,12 @@
   {:else}
     <!-- No process -->
     {#if getLastLoadedDapp()}
-      {console.log("Last loaded dapp:", getLastLoadedDapp())}
       <div class="flex flex-wrap items-center justify-center p-4 space-x-10">
         {#each getLastLoadedDapp().jumplist.items({}, getLastLoadedDapp()) as action}
           <div
-            on:click={() =>
-              window.o.publishEvent(action.event(getLastLoadedDapp()))}
+            on:click={() => window.o.publishEvent(action.event)}
             class="flex-grow text-xs text-center cursor-pointer "
-            class:text-error={action.key == "logout"}
+            class:text-error={action.key === "logout"}
           >
             <Icons icon={action.icon} />
             <span class="block mt-2">{action.label}</span>

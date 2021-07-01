@@ -1,7 +1,6 @@
 import {readable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-import {shellProcess, ShellProcessContext} from "../processes/shellProcess";
+import {runShellProcess} from "../processes/shellProcess";
 import {identify, IdentifyContextData} from "../../dapps/o-passport/processes/identify/identify";
 import {Profile} from "../../dapps/o-passport/data/api/types";
 
@@ -32,20 +31,9 @@ export const me = readable<Profile|null>(null, function start(set) {
       localStorage.removeItem("safe");
     }
 
-    const requestEvent = new RunProcess<ShellProcessContext>(
-        shellProcess,
-        true,
-        async (ctx) => {
-          ctx.childProcessDefinition = identify;
-          ctx.childContext = {
-            data: <IdentifyContextData>{
-              redirectTo: window.document.location.href,
-            },
-          };
-          return ctx;
-        }
-    );
-    window.o.publishEvent(requestEvent);
+    window.o.publishEvent(runShellProcess(identify, <IdentifyContextData>{
+      redirectTo: window.document.location.href,
+    }));
   }
 
   return function stop() {

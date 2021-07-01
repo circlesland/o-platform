@@ -1,9 +1,6 @@
 <script lang="ts">
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-  import {shellProcess, ShellProcessContext} from "../../../shared/processes/shellProcess";
-  import {showProfile, ShowProfileContextData} from "../processes/showProfile";
+  import {runShellProcess} from "../../../shared/processes/shellProcess";
   import {showAssetDetail} from "../processes/showAssetDetail";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
 
   export let symbol: string;
   export let title: string;
@@ -16,24 +13,14 @@
     pictureUrl = symbol;
   }
 
+  /*
   function loadDetailPage() {
-    const requestEvent = new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              showProfile
-              ctx.childProcessDefinition = showAssetDetail;
-              ctx.childContext = {
-                data: <ShowProfileContextData>{
-                  symbol,
-                },
-              };
-              return ctx;
-            }
-    );
+    push("#/banking/assets/" + symbol);
+  }
+   */
 
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
+  function loadDetailPage() {
+    window.o.publishEvent(runShellProcess(showAssetDetail, {symbol}));
   }
 
 </script>

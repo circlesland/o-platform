@@ -5,10 +5,8 @@ import Keys from "./o-passport/pages/Keys.svelte";
 import Settings from "./o-passport/pages/Settings.svelte";
 import Login from "./o-passport/pages/Login.svelte";
 import { logout } from "./o-passport/processes/logout";
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
 import {
-  shellProcess,
-  ShellProcessContext,
+  runShellProcess,
 } from "../shared/processes/shellProcess";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
@@ -75,20 +73,13 @@ export const passport: DappManifest<DappState> = {
     title: "Actions",
     isSystem: false,
     routeParts: ["actions"],
-    items: (params, runtimeDapp) => {
+    items: () => {
       return [{
         key: "logout",
         label: "Logout",
         icon: "logout",
-        event: new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = logout;
-              return ctx;
-            }
-        )
-      }];
+        event: runShellProcess(logout, {})
+      }]
     }
   },
   navigation: {

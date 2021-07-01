@@ -1,17 +1,14 @@
 <script lang="ts">
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import {
-    shellProcess,
-    ShellProcessContext,
+    runShellProcess,
   } from "../../../shared/processes/shellProcess";
   import ProcessContainer from "../../../shared/molecules/ProcessContainer.svelte";
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { Subscription } from "rxjs";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
   import { onMount } from "svelte";
   const {push} = require("svelte-spa-router");
-  import {identify} from "../processes/identify/identify";
+  import {identify, IdentifyContextData} from "../processes/identify/identify";
 
   let runningProcess: Process;
 
@@ -28,22 +25,10 @@
     // TODO: Refactor to request/response pattern with timeout
     let answerSubscription: Subscription;
     const code = params ? params.code : undefined;
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = identify;
-        ctx.childContext = {
-          data: {
-            oneTimeCode: code,
-            redirectTo: "/dashboard"
-          }
-        };
-        return ctx;
-      }
-    );
-    requestEvent.id = Generate.randomHexString(16);
-
+    const requestEvent = runShellProcess(identify, <IdentifyContextData>{
+      oneTimeCode: code,
+      redirectTo: "/dashboard"
+    });
     answerSubscription = window.o.events.subscribe((event) => {
       console.log("Home.svelte: received event: ", event);
       if (
