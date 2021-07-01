@@ -157,11 +157,8 @@ body {
   @apply block;
 }
 .label-text {
-  font-size: 1.12rem;
-  line-height: 1.7rem;
-  @apply text-center;
-  @apply break-words;
-  @apply text-base;
+  @apply text-secondary;
+  @apply font-bold;
 }
 
 .input {
