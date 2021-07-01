@@ -28,7 +28,11 @@
             _entryPage = <Page<any, any>>entryPoint;
         } else if (entryPoint.type === "trigger") {
             _entryTrigger = <Trigger>entryPoint;
-            _entryTrigger.eventFactory(params, dappManifest);
+            const triggerEvent = _entryTrigger.eventFactory(params, dappManifest);
+            if (!triggerEvent) {
+                throw new Error(`The _entryTrigger.eventFactory didn't return an event.`)
+            }
+            window.o.publishEvent(triggerEvent);
         } else {
             throw new Error(`Entry point type '${entryPoint.type}' is not supported by the DappFrame.`)
         }
