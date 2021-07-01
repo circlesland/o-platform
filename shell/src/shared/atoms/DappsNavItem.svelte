@@ -20,13 +20,12 @@
       dispatch("navigate");
     }
   }
-
 </script>
 
 <div
   on:click={setSegment}
   class:active={$current === segment}
-  class="flex flex-row self-start space-x-10 cursor-pointer"
+  class="flex flex-row self-start w-full space-x-10 cursor-pointer"
 >
   <div class="">
     <Icons icon={title.toLowerCase()} />

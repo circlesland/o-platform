@@ -10,7 +10,7 @@ import Learn from "./o-homepage/pages/Learn.svelte";
 import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
-import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
+import ListComponent from "../shared/molecules/NextNav/Components/SingleList.svelte";
 
 const login: PageManifest = {
   isDefault: false,
