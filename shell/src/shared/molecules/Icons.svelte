@@ -1236,7 +1236,7 @@ EwAAAABJRU5ErkJggg==" />
 </svg>
 `,
     buttonrightarrow: `
-<svg class='w-8 h-8 m-auto' viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg class='w-4 h-4 m-auto' viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M1 8.00012H15M15 8.00012L7.99998 1M15 8.00012L7.99998 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
   };

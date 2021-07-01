@@ -28,11 +28,11 @@
           context.process.submit(answer);
           */
           }}
-          class="btn btn-primary btn-block"
+          class="relative btn btn-primary btn-block"
           >{context.params.submitButtonText
             ? context.params.submitButtonText
             : "Submit"}
-          <div>
+          <div class="absolute right-2">
             <Icons icon="buttonrightarrow" />
           </div>
         </button>
