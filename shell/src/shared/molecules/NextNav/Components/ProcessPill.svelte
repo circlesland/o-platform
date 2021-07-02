@@ -7,7 +7,6 @@
   export let isOpen: boolean = false;
   export let modalProcess: any;
   export let lastPrompt: any;
-
 </script>
 
 <div
@@ -18,7 +17,7 @@
   <div class="grid grid-cols-3 justify-items-center processPillGrid">
     {#if lastPrompt && lastPrompt.navigation.canGoBack}
       <div
-        class="w-20 h-8 px-3 py-1 bg-white rounded-full cursor-pointer text-lightdark"
+        class="w-20 h-8 px-3 py-2 bg-white rounded-full cursor-pointer text-lightdark"
         on:click={() => modalProcess.sendAnswer(new Back())}
       >
         back
@@ -29,7 +28,7 @@
     </div>
     {#if lastPrompt && lastPrompt.navigation.canSkip}
       <div
-        class="w-20 h-8 py-1 bg-white rounded-full cursor-pointer px-9 text-lightdark"
+        class="w-20 h-8 py-2 bg-white rounded-full cursor-pointer px-9 text-lightdark"
         on:click={() => modalProcess.sendAnswer(new Skip())}
       >
         skip
