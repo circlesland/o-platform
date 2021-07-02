@@ -154,7 +154,7 @@
 <style>
   .themed {
     --borderRadius: 5px;
-    --indicatorTop: 7px;
+    --indicatorTop: 16px;
     --padding: 0 16px 0 0;
     --inputPadding: 0;
     --inputPosition: absolute;
