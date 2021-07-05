@@ -1,13 +1,10 @@
 <script lang="ts">
-  import TopNav from "src/shared/atoms/TopNav.svelte";
   import DetailHeader from "src/shared/atoms/DetailHeader.svelte";
   import Web3 from "web3";
 
   export let amount;
   export let classes: String;
 </script>
-
-<TopNav />
 
 <DetailHeader heightClass="h-60">
   <div class="self-center block mt-12 mb-8 text-center">

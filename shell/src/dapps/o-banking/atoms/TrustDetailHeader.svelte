@@ -26,7 +26,6 @@
       isLoading = false;
     }
   }
-
 </script>
 
 <div
