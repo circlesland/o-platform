@@ -1,4 +1,5 @@
-import {IconDefinition} from "@fortawesome/fontawesome-common-types";
+import { IconDefinition } from "@fortawesome/fontawesome-common-types";
+import { NavigationManifest } from "./navigationManifest";
 
 /**
  * An element of the dapp(manifest) for which the loader will create a route.
@@ -6,7 +7,8 @@ import {IconDefinition} from "@fortawesome/fontawesome-common-types";
 export interface Routable {
   type: "dapp" | "trigger" | "jumplist" | "page";
   routeParts: string[];
-  isSystem?:boolean,
-  title: string,
-  icon?: IconDefinition,
+  isSystem?: boolean;
+  title: string;
+  icon?: IconDefinition;
+  navigation?: NavigationManifest;
 }

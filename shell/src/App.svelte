@@ -14,9 +14,7 @@
   import { NavigateTo } from "@o-platform/o-events/dist/shell/navigateTo";
   import { ProgressSignal } from "@o-platform/o-events/dist/signals/progressSignal";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
-  import {
-    runShellProcess
-  } from "./shared/processes/shellProcess";
+  import { runShellProcess } from "./shared/processes/shellProcess";
   import { Subscription } from "rxjs";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
   import {
@@ -40,9 +38,9 @@
   import DappNavItem from "./shared/atoms/DappsNavItem.svelte";
   import NextNav from "./shared/molecules/NextNav/NextNav.svelte";
   import Icons from "./shared/molecules/Icons.svelte";
-  import {onMount} from "svelte";
-  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-  import {backStack} from "./main";
+  import { onMount } from "svelte";
+  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+  import { backStack } from "./main";
 
   let isOpen: boolean = false;
   let processWaiting: boolean = false;
@@ -70,12 +68,12 @@
 
   window.o.events.subscribe(async (event: PlatformEvent) => {
     if (event.type === "shell.closeModal") {
-      console.log("___modal: close")
+      console.log("___modal: close");
       isOpen = false;
       lastPrompt = null;
     }
     if (event.type === "shell.openModal") {
-      console.log("___modal: open")
+      console.log("___modal: open");
       isOpen = true;
     }
     if (event.type === "shell.dappLoading") {
@@ -137,7 +135,7 @@
       modalProcess.sendEvent(new CancelRequest());
     }
     if (!modalProcess && isOpen) {
-      console.log("___modal: closed")
+      console.log("___modal: closed");
       isOpen = false;
       showList = false;
     }
@@ -158,7 +156,7 @@
     }
   }
 
-  let lastLoadedPage: Page<any,any>;
+  let lastLoadedPage: Page<any, any>;
   let lastLoadedDapp: DappManifest<any>;
 
   function routeLoaded() {
@@ -172,7 +170,7 @@
 
   async function login(appId: string, code?: string) {
     if (isOpen) {
-      console.log("___modal: closed")
+      console.log("___modal: closed");
       isOpen = false;
       lastPrompt = null;
       if (modalProcess) {
@@ -180,9 +178,11 @@
       }
       return;
     }
-    window.o.publishEvent(runShellProcess(identify, <IdentifyContextData>{
-      redirectTo: "/dashboard",
-    }));
+    window.o.publishEvent(
+      runShellProcess(identify, <IdentifyContextData>{
+        redirectTo: "/dashboard",
+      })
+    );
   }
 
   let layoutClasses = "";
@@ -209,9 +209,11 @@
           INVITE_VALUE - 0.005,
           async (address: string, threshold: number) => {
             console.log("The safe creation balance threshold was reached!");
-            window.o.publishEvent(runShellProcess(deploySafe, <HubSignupContextData>{
-              privateKey: localStorage.getItem("circlesKey"),
-            }));
+            window.o.publishEvent(
+              runShellProcess(deploySafe, <HubSignupContextData>{
+                privateKey: localStorage.getItem("circlesKey"),
+              })
+            );
           }
         );
       } else if (
@@ -219,9 +221,11 @@
         (!!localStorage.getItem("fundsSafe") ||
           !!localStorage.getItem("signsUpAtCircles"))
       ) {
-        window.o.publishEvent(runShellProcess(deploySafe, <HubSignupContextData>{
-          privateKey: localStorage.getItem("circlesKey"),
-        }));
+        window.o.publishEvent(
+          runShellProcess(deploySafe, <HubSignupContextData>{
+            privateKey: localStorage.getItem("circlesKey"),
+          })
+        );
         triggered = true;
       }
     }
@@ -238,7 +242,7 @@
       modalWantsToClose();
     }
     if (event.detail.actionButton == "open") {
-      console.log("___modal: open")
+      console.log("___modal: open");
       isOpen = true;
     }
   }
@@ -253,12 +257,12 @@
       } else {
         showList = true;
       }
-      console.log("___modal: open")
+      console.log("___modal: open");
       isOpen = true;
     }
   }
 
-  let _routes:any;
+  let _routes: any;
   onMount(async () => {
     _routes = await routes();
     console.log("Loaded routes:", _routes);
@@ -266,154 +270,154 @@
 </script>
 
 {#if _routes}
-<SvelteToast />
-<div class="flex flex-col text-base">
-  <!-- TODO: Note: All headers are now part of their dapps
+  <SvelteToast />
+  <div class="flex flex-col text-base">
+    <!-- TODO: Note: All headers are now part of their dapps
   <header class="z-10 w-full mx-auto md:w-2/3 xl:w-1/2">
   </header> -->
 
-  <main class="z-30 flex-1 overflow-y-auto">
-    <div
-      class="w-full mx-auto {layoutClasses}"
-      class:mb-16={!isOpen &&
-        lastLoadedDapp &&
-        lastLoadedDapp.dappId !== "homepage:1"}
-      class:blur={isOpen}
-    >
+    <main class="z-30 flex-1 overflow-y-auto">
+      <div
+        class="w-full mx-auto {layoutClasses}"
+        class:mb-16={!isOpen &&
+          lastLoadedDapp &&
+          lastLoadedDapp.dappId !== "homepage:1"}
+        class:blur={isOpen}
+      >
         <Router
           routes={_routes}
           on:conditionsFailed={conditionsFailed}
           on:routeLoading={routeLoading}
         />
-    </div>
-  </main>
-</div>
-{#if lastLoadedDapp && lastLoadedDapp.navigation}
-  <NextNav
-    {isOpen}
-    login={lastLoadedDapp && lastLoadedDapp.dappId === "homepage:1"}
-    navigation={lastLoadedDapp.navigation}
-    bind:modalProcess
-    bind:lastPrompt
-    on:actionButton={handleActionButton}
-    on:menuButton={handleMenuButton}
-  />
-{/if}
-<Modal bind:isOpen on:closeRequest={modalWantsToClose}>
-  <!-- TODO: Put each nav content into Components and load via manifest  -->
-  {#if modalProcess}
-    <ProcessContainer
-      bind:beforeCancelPrompt
-      bind:waiting={processWaiting}
-      process={modalProcess}
-      on:stopped={() => {
-        console.log("___modal: closed")
-
-        isOpen = false;
-        lastPrompt = null;
-        modalProcess = null;
-
-        if (backStack.length > 0) {
-          backStack.pop();
-          history.back();
-        }
-      }}
+      </div>
+    </main>
+  </div>
+  {#if lastLoadedDapp && lastLoadedDapp.navigation}
+    <NextNav
+      {isOpen}
+      login={lastLoadedDapp && lastLoadedDapp.dappId === "homepage:1"}
+      navigation={lastLoadedDapp.navigation}
+      bind:modalProcess
+      bind:lastPrompt
+      on:actionButton={handleActionButton}
+      on:menuButton={handleMenuButton}
     />
-  {:else if showList}
-    <div class="flex flex-col p-4 space-y-6">
-      {#each lastLoadedDapp.routables.filter((o) => !o.isSystem) as page}
-        <DappNavItem
-          segment="#/{lastLoadedDapp.routeParts.join('/') +
-            '/' +
-            page.routeParts.join('/')}"
-          title={page.title}
-          on:navigate={modalWantsToClose}
-        />
-      {/each}
-    </div>
-  {:else if showHomeMenuList}
-    <div class="flex flex-col p-4 space-y-6">
-      <DappNavItem segment="/" title="Home" on:navigate={modalWantsToClose} />
-      <DappNavItem
-        segment="https://discord.gg/CS6xq7jECR"
-        title="Chat"
-        external={true}
-        on:navigate={modalWantsToClose}
+  {/if}
+  <Modal bind:isOpen on:closeRequest={modalWantsToClose}>
+    <!-- TODO: Put each nav content into Components and load via manifest  -->
+    {#if modalProcess}
+      <ProcessContainer
+        bind:beforeCancelPrompt
+        bind:waiting={processWaiting}
+        process={modalProcess}
+        on:stopped={() => {
+          console.log("___modal: closed");
+
+          isOpen = false;
+          lastPrompt = null;
+          modalProcess = null;
+
+          if (backStack.length > 0) {
+            backStack.pop();
+            history.back();
+          }
+        }}
       />
-      <DappNavItem
-        segment="https://aboutcircles.com"
-        title="Forum"
-        external={true}
-        on:navigate={modalWantsToClose}
-      />
-      <DappNavItem
-        segment="https://blog.circles.land/"
-        title="Blog"
-        external={true}
-        on:navigate={modalWantsToClose}
-      />
-      <DappNavItem
-        segment="https://blog.circles.land/whitepaper/"
-        title="Whitepaper"
-        external={true}
-        on:navigate={modalWantsToClose}
-      />
-    </div>
-  {:else}
-    <!-- No process -->
-    {#if getLastLoadedDapp()}
-      <div class="flex flex-wrap items-center justify-center p-4 space-x-10">
-        {#each getLastLoadedDapp().jumplist.items({}, getLastLoadedDapp()) as action}
-          <div
-            on:click={() => window.o.publishEvent(action.event)}
-            class="flex-grow text-xs text-center cursor-pointer "
-            class:text-error={action.key === "logout"}
-          >
-            <Icons icon={action.icon} />
-            <span class="block mt-2">{action.label}</span>
-          </div>
+    {:else if showList}
+      <div class="flex flex-col p-4 space-y-6">
+        {#each lastLoadedDapp.routables.filter((o) => !o.isSystem) as page}
+          <DappNavItem
+            segment="#/{lastLoadedDapp.routeParts.join('/') +
+              '/' +
+              page.routeParts.join('/')}"
+            title={page.title}
+            on:navigate={modalWantsToClose}
+          />
         {/each}
       </div>
+    {:else if showHomeMenuList}
+      <div class="flex flex-col p-4 space-y-6">
+        <DappNavItem segment="/" title="Home" on:navigate={modalWantsToClose} />
+        <DappNavItem
+          segment="https://discord.gg/CS6xq7jECR"
+          title="Chat"
+          external={true}
+          on:navigate={modalWantsToClose}
+        />
+        <DappNavItem
+          segment="https://aboutcircles.com"
+          title="Forum"
+          external={true}
+          on:navigate={modalWantsToClose}
+        />
+        <DappNavItem
+          segment="https://blog.circles.land/"
+          title="Blog"
+          external={true}
+          on:navigate={modalWantsToClose}
+        />
+        <DappNavItem
+          segment="https://blog.circles.land/whitepaper/"
+          title="Whitepaper"
+          external={true}
+          on:navigate={modalWantsToClose}
+        />
+      </div>
+    {:else}
+      <!-- No process -->
+      {#if getLastLoadedDapp()}
+        <div class="flex flex-wrap items-center justify-center p-4 space-x-10">
+          {#each getLastLoadedDapp().jumplist.items({}, getLastLoadedDapp()) as action}
+            <div
+              on:click={() => window.o.publishEvent(action.event)}
+              class="flex-grow text-xs text-center cursor-pointer "
+              class:text-error={action.key === "logout"}
+            >
+              <Icons icon={action.icon} />
+              <span class="block mt-2">{action.label}</span>
+            </div>
+          {/each}
+        </div>
+      {/if}
     {/if}
-  {/if}
-</Modal>
+  </Modal>
 
-<style>
-  .tab:hover,
-  .tab:focus,
-  .tab:active {
-    @apply text-light;
-  }
-  .tab:hover {
-    @apply text-base;
-  }
-  .isOpen {
-    background: transparent;
-    border: none;
-  }
-  /* Background Blurring for firefox and other non supportive browsers */
-  @supports not (
-    (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
-  ) {
-    .blur {
-      filter: blur(4px);
-      -webkit-transition: all 0.35s ease-in-out;
-      -moz-transition: all 0.35s ease-in-out;
-      transition: all 0.35s ease-in-out;
+  <style>
+    .tab:hover,
+    .tab:focus,
+    .tab:active {
+      @apply text-light;
     }
-    /* Firefox fix for sticky bottom prev-sibling height */
-    main {
-      padding-bottom: 4rem;
+    .tab:hover {
+      @apply text-base;
     }
-  }
-  .joinnowbutton {
-    transform: translate(-50%, 0) !important;
-    animation: none !important;
-  }
-  .joinnowbutton:active:focus,
-  .joinnowbutton:active:hover {
-    transform: translate(-50%, 0);
-    animation: none !important;
-  }
-</style>
+    .isOpen {
+      background: transparent;
+      border: none;
+    }
+    /* Background Blurring for firefox and other non supportive browsers */
+    @supports not (
+      (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
+    ) {
+      .blur {
+        filter: blur(4px);
+        -webkit-transition: all 0.35s ease-in-out;
+        -moz-transition: all 0.35s ease-in-out;
+        transition: all 0.35s ease-in-out;
+      }
+      /* Firefox fix for sticky bottom prev-sibling height */
+      main {
+        padding-bottom: 4rem;
+      }
+    }
+    .joinnowbutton {
+      transform: translate(-50%, 0) !important;
+      animation: none !important;
+    }
+    .joinnowbutton:active:focus,
+    .joinnowbutton:active:hover {
+      transform: translate(-50%, 0);
+      animation: none !important;
+    }
+  </style>
 {/if}

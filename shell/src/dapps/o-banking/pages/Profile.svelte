@@ -30,16 +30,9 @@
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
-  export let context: EditorContext;
 
   export let params: {
     id?: String;
-  };
-
-  const submitHandler = () => {
-    const answer = new Continue();
-    answer.data = context.data;
-    context.process.sendAnswer(answer);
   };
 
   let jumplist: Jumplist<any, any> | undefined;
@@ -64,8 +57,7 @@
       }
     );
 
-    if (context.params.id) {
-      console.log(context);
+    if (params.id) {
       isLoading = true;
       console.log("LOADPRO IF CONTEXT");
       loadProfile();
@@ -73,7 +65,7 @@
   });
 
   $: {
-    if (context.params) {
+    if (params) {
       isLoading = true;
       console.log("LOADPRO NOCHMAL");
       loadProfile();
@@ -115,23 +107,18 @@
 
   async function loadProfile() {
     console.log("LOADING PROFILE!!!");
-    if (!context.params || !context.params.id) {
+    if (!params || !params.id) {
       console.warn(
         `No profile specified ('id' must contain safeAddress or profileId)`
       );
       return;
     }
 
-    if (
-      Number.parseInt(context.params.id) &&
-      !context.params.id.startsWith("0x")
-    ) {
-      const profile = await loadProfileByProfileId(
-        Number.parseInt(context.params.id)
-      );
+    if (Number.parseInt(params.id) && !params.id.startsWith("0x")) {
+      const profile = await loadProfileByProfileId(Number.parseInt(params.id));
       setProfile(profile);
-    } else if (RpcGateway.get().utils.isAddress(context.params.id)) {
-      const profile = await loadProfileBySafeAddress(context.params.id);
+    } else if (RpcGateway.get().utils.isAddress(params.id)) {
+      const profile = await loadProfileBySafeAddress(params.id);
       setProfile(profile);
     } else {
       throw new Error(`params.id isn't an integer nor an eth address.`);
@@ -144,7 +131,7 @@
 
     // TODO: This is bullshit but works. Refactor ASAP.
     getLastLoadedDapp<BankingDappState>().state = {
-      currentProfileId: context.params.id,
+      currentProfileId: params.id,
       currentSafeAddress: profile.safeAddress,
     };
   }
@@ -179,7 +166,7 @@
     // TODO: This is bullshit but works. Refactor ASAP.
 
     getLastLoadedDapp<BankingDappState>().state = {
-      currentProfileId: context.params.id,
+      currentProfileId: params.id,
       currentSafeAddress: profile.safeAddress,
       trusted: trust.trusting > 0,
     };

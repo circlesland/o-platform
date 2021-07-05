@@ -19,7 +19,6 @@
   let newnav: any;
   const current = writable(null);
   setContext("nav", current);
-
 </script>
 
 <footer
@@ -63,5 +62,4 @@
       rgba(13, 43, 102, 0.5) 100%
     );
   }
-
 </style>

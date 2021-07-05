@@ -1,10 +1,11 @@
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
-import { NavigationManifest } from "./navigationManifest";
-import { RuntimeDapp } from "./runtimeDapp";
-import {Routable} from "./routable";
-import {Jumplist} from "./routables/jumplist";
 
-export interface DappManifest<TState extends { [x: string]: any }> extends Routable {
+import { RuntimeDapp } from "./runtimeDapp";
+import { Routable } from "./routable";
+import { Jumplist } from "./routables/jumplist";
+
+export interface DappManifest<TState extends { [x: string]: any }>
+  extends Routable {
   type: "dapp";
   /**
    * A unique identifier for this auth manifest.
@@ -46,7 +47,7 @@ export interface DappManifest<TState extends { [x: string]: any }> extends Routa
    */
   routeParts: string[];
 
-  defaultRoute?:string[];
+  defaultRoute?: string[];
 
   /**
    * Can be used to indicate a status in the auth overview next to the icon.
@@ -65,7 +66,6 @@ export interface DappManifest<TState extends { [x: string]: any }> extends Routa
   routables: Routable[];
   jumplist?: Jumplist<any, TState>;
   navigation?: NavigationManifest;
-
 
   /**
    * If the auth needs to initialize things before it can be used,
