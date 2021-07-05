@@ -1,6 +1,5 @@
 import {DappManifest} from "./dappManifest";
 import {Routable} from "./routable";
-import {merge} from "rxjs";
 
 export interface NavigationManifest {
   leftSlot?: {
@@ -77,6 +76,9 @@ export function getMergedNavigationManifest(dapp: DappManifest<any>, routable:Ro
   }
   if (other.rightSlot) {
     mergedManifest.rightSlot = other.rightSlot;
+  }
+  if (other.loginPill) {
+    mergedManifest.loginPill = other.loginPill;
   }
 
   return mergedManifest;
