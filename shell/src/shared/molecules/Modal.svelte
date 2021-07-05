@@ -33,7 +33,7 @@
     class="z-40 pt-2 text-base overlay"
   >
     <div
-      class="w-full mt-1 mb-24 modalAsideContentContainer"
+      class="w-full mt-1 mb-20 modalAsideContentContainer"
       on:click|self={handleClose}
     >
       <div

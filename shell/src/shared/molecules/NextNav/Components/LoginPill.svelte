@@ -15,7 +15,6 @@
       redirectTo: "/dashboard",
     }));
   }
-
 </script>
 
 <div
@@ -33,6 +32,6 @@
       />
     </div>
 
-    <div class="-ml-1 justify-self-start">Sign In</div>
+    <div class="pt-1 -ml-1 justify-self-start">Sign In</div>
   </div>
 </div>

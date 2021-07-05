@@ -69,6 +69,6 @@
     bind:this={inputField}
     on:change={() => (context.editorDirtyFlags[context.field] = true)}
   />
-</div>
 
-<ProcessNavigation on:buttonClick={submitHandler} {context} />
+  <ProcessNavigation on:buttonClick={submitHandler} {context} />
+</div>
