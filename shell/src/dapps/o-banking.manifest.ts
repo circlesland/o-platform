@@ -15,6 +15,7 @@ import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
 import { Profile } from "./o-banking/data/api/types";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
+import BacklinkComponent from "../shared/molecules/NextNav/Components/Backlink.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { showProfile } from "./o-banking/processes/showProfile";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
@@ -80,7 +81,13 @@ const transactionDetail: Page<{ _id: string }, BankingDappState> = {
   routeParts: ["transactions", ":_id"],
   title: "Transaction",
   component: TransactionDetailPage,
-
+  navigation: {
+    navPill: {
+      left: {
+        component: BacklinkComponent,
+      },
+    },
+  },
   jumplist: profileJumplist,
 };
 const transactionSend: Trigger<

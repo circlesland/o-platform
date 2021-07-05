@@ -28,7 +28,7 @@ export interface NavigationManifest {
         link: string;
       };
     };
-    actionButton: {
+    actionButton?: {
       component: any;
       props: {
         disabled: boolean;

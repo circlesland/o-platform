@@ -1,5 +1,5 @@
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
-
+import { NavigationManifest } from "./navigationManifest";
 import { RuntimeDapp } from "./runtimeDapp";
 import { Routable } from "./routable";
 import { Jumplist } from "./routables/jumplist";
