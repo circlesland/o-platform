@@ -73,14 +73,6 @@ export const profile: Page<any, BankingDappState> = {
   title: "Profile",
   component: ProfilePage,
   jumplist: profileJumplist,
-};
-
-const transactionDetail: Page<{ _id: string }, BankingDappState> = {
-  type: "page",
-  isSystem: true,
-  routeParts: ["transactions", ":_id"],
-  title: "Transaction",
-  component: TransactionDetailPage,
   navigation: {
     navPill: {
       left: {
@@ -88,6 +80,14 @@ const transactionDetail: Page<{ _id: string }, BankingDappState> = {
       },
     },
   },
+};
+const transactionDetail: Page<{ _id: string }, BankingDappState> = {
+  type: "page",
+  isSystem: true,
+  routeParts: ["transactions", ":_id"],
+  title: "Transaction",
+  component: TransactionDetailPage,
+
   jumplist: profileJumplist,
 };
 const transactionSend: Trigger<

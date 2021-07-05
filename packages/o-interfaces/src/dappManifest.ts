@@ -3,7 +3,6 @@ import { NavigationManifest } from "./navigationManifest";
 import { RuntimeDapp } from "./runtimeDapp";
 import { Routable } from "./routable";
 import { Jumplist } from "./routables/jumplist";
-import {NavigationManifest} from "./navigationManifest";
 
 export interface DappManifest<TState extends { [x: string]: any }>
   extends Routable {

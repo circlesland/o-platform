@@ -16,6 +16,7 @@
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
   import { runShellProcess } from "./shared/processes/shellProcess";
   import { Subscription } from "rxjs";
+  import { getMergedNavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
   import {
     Cancel,
@@ -296,7 +297,7 @@
     <NextNav
       {isOpen}
       login={lastLoadedDapp && lastLoadedDapp.dappId === "homepage:1"}
-      navigation={lastLoadedDapp.navigation}
+      navigation={getMergedNavigationManifest(lastLoadedDapp, lastLoadedPage)}
       bind:modalProcess
       bind:lastPrompt
       on:actionButton={handleActionButton}

@@ -1,5 +1,5 @@
-import {DappManifest} from "./dappManifest";
-import {Routable} from "./routable";
+import { DappManifest } from "./dappManifest";
+import { Routable } from "./routable";
 
 export interface NavigationManifest {
   leftSlot?: {
@@ -18,14 +18,14 @@ export interface NavigationManifest {
   navPill?: {
     left?: {
       component: any;
-      props: {
+      props?: {
         icon: string;
         action: string;
       };
     };
     right?: {
       component: any;
-      props: {
+      props?: {
         icon: string;
         action: string;
         link: string;
@@ -49,12 +49,14 @@ export interface NavigationManifest {
   };
 }
 
-
-export function getMergedNavigationManifest(dapp: DappManifest<any>, routable:Routable) {
+export function getMergedNavigationManifest(
+  dapp: DappManifest<any>,
+  routable: Routable
+) {
   const mergedManifest = dapp.navigation ?? {};
   const other = routable.navigation;
-  if (!other)
-    return mergedManifest;
+
+  if (!other) return mergedManifest;
 
   if (other.leftSlot) {
     mergedManifest.leftSlot = other.leftSlot;
