@@ -42,6 +42,7 @@
   import Icons from "./shared/molecules/Icons.svelte";
   import {onMount} from "svelte";
   import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+  import {backStack} from "./main";
 
   let isOpen: boolean = false;
   let processWaiting: boolean = false;
@@ -69,10 +70,12 @@
 
   window.o.events.subscribe(async (event: PlatformEvent) => {
     if (event.type === "shell.closeModal") {
+      console.log("___modal: close")
       isOpen = false;
       lastPrompt = null;
     }
     if (event.type === "shell.openModal") {
+      console.log("___modal: open")
       isOpen = true;
     }
     if (event.type === "shell.dappLoading") {
@@ -134,6 +137,7 @@
       modalProcess.sendEvent(new CancelRequest());
     }
     if (!modalProcess && isOpen) {
+      console.log("___modal: closed")
       isOpen = false;
       showList = false;
     }
@@ -168,6 +172,7 @@
 
   async function login(appId: string, code?: string) {
     if (isOpen) {
+      console.log("___modal: closed")
       isOpen = false;
       lastPrompt = null;
       if (modalProcess) {
@@ -233,6 +238,7 @@
       modalWantsToClose();
     }
     if (event.detail.actionButton == "open") {
+      console.log("___modal: open")
       isOpen = true;
     }
   }
@@ -247,6 +253,7 @@
       } else {
         showList = true;
       }
+      console.log("___modal: open")
       isOpen = true;
     }
   }
@@ -300,9 +307,16 @@
       bind:waiting={processWaiting}
       process={modalProcess}
       on:stopped={() => {
+        console.log("___modal: closed")
+
         isOpen = false;
         lastPrompt = null;
         modalProcess = null;
+
+        if (backStack.length > 0) {
+          backStack.pop();
+          history.back();
+        }
       }}
     />
   {:else if showList}

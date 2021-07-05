@@ -20,6 +20,7 @@ import {Page} from "@o-platform/o-interfaces/dist/routables/page";
 import {Routable} from "@o-platform/o-interfaces/dist/routable";
 import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import {arraysEqual} from "./shared/functions/arraysEqual";
 
 const errorIndicator = Error;
 
@@ -45,19 +46,19 @@ let lastLoadedDapp: RuntimeDapp<any>;
 export function getLastLoadedPage() {
     return lastLoadedPage;
 }
+
 let lastLoadedPage: Page<any, any>;
 
 export function getLastLoadedRoutable() {
     return lastLoadedRoutable;
 }
+
 let lastLoadedRoutable: Routable;
 
 export function constructAppUrl(dappManifest: DappManifest<any>): { appBaseUrl: string, appDefaultRoute: string } {
     const appBaseUrl = dappManifest.routeParts.reduce((p, c) => p + "/" + c, "");
     const appDefaultPage = dappManifest.defaultRoute
-        ? dappManifest.routables.find(
-            o => o.routeParts.length === dappManifest.defaultRoute.length
-                && o.routeParts.every((value, index) => value === dappManifest.defaultRoute[index]))
+        ? dappManifest.routables.find(o => arraysEqual(o.routeParts, dappManifest.defaultRoute))
         : dappManifest.routables[0];
 
 
@@ -135,17 +136,23 @@ async function constructRoutes(dappManifests: DappManifest<any>[]) {
     for (let dappManifest of dappManifests) {
         const appUrls = constructAppUrl(dappManifest);
 
-        for (let routable of dappManifest.routables)
-        {
+        for (let routable of dappManifest.routables) {
             const pageUrl = constructPageUrl(appUrls.appBaseUrl, routable);
-
             routes[pageUrl] = wrap({
-              loadingComponent: LoadingIndicator,
-              component: DappFrame,
-              props: {
-                dappManifest: dappManifest,
-                getDappEntryPoint: async () => await getDappEntryPoint(dappManifest, routable)
-              }
+                loadingComponent: LoadingIndicator,
+                component: DappFrame,
+                conditions: detail => {
+                    console.log("Router condition: ", detail);
+                    return true;
+                },
+                userData: {
+                    dappManifest,
+                    routable
+                },
+                props: {
+                    dappManifest,
+                    getDappEntryPoint: async () => await getDappEntryPoint(dappManifest, routable)
+                }
             });
         }
     }
@@ -175,65 +182,12 @@ async function initializeDapp(stack: RuntimeDapp<any>[], runtimeDapp: RuntimeDap
     initialRoutable: Routable,
     cancelDependencyLoading: boolean
 }> {
-    const logPrefix = "  ".repeat(stack.length) + "initializeDapp(" + runtimeDapp.dappId + "): ";
-
     let cancelled = false;
     let defaultPage = null;
 
-    // first check if all dependencies are fulfilled
-    /*
-    if (runtimeDapp.dependencies) {
-        console.log(logPrefix + "Initializing " + runtimeDapp.dependencies.length + " dependencies ...");
-        const missingDependencies = runtimeDapp.dependencies.filter(dep => !loadedDapps.find(o => o.dappId == dep));
-        if (missingDependencies.length == 0) {
-            // All dependencies are already loaded
-            console.log(logPrefix + "All dependencies are already loaded");
-        } else {
-            // Some or all dependencies need to be loaded
-            console.log(logPrefix + "Some or all dependencies must be loaded before proceeding");
-
-            const nextStack = [...stack, runtimeDapp];
-            await Promise.all(missingDependencies.map(async dep => {
-                if (cancelled) {
-                    return;
-                }
-
-                const dappManifest = dapps.find(o => o.dappId == dep);
-                if (!dappManifest) {
-                    throw new Error(logPrefix + "Couldn't find the manifest for auth '" + dep + "' (Dependency of '" + runtimeDapp.dappId + "')");
-                }
-                const loadDappResult = await loadDapp(nextStack, dappManifest);
-                if (loadDappResult.cancelDependencyLoading) {
-                    console.log(logPrefix + "Loading sequence was cancelled by " + dep + " in " + runtimeDapp.dappId);
-                    cancelled = true;
-                    if (loadDappResult.initialRoutable) {
-                        defaultPage = loadDappResult.initialRoutable;
-                    }
-                }
-            }));
-
-            if (cancelled) {
-                console.log(logPrefix + "Loading sequence was cancelled in " + runtimeDapp.dappId);
-                if (window.o.depositedEvent) {
-                    window.o.depositedEvent = undefined;
-                }
-                return {
-                    runtimeDapp,
-                    cancelDependencyLoading: true,
-                    initialRoutable: defaultPage
-                };
-            } else {
-                console.log(logPrefix + "Loaded all dependencies of " + runtimeDapp.dappId);
-            }
-        }
-    }
-    */
-
     if (!cancelled) {
         defaultPage = runtimeDapp.defaultRoute
-            ? runtimeDapp.routables.find(
-                o => o.routeParts.length === runtimeDapp.defaultRoute.length
-                    && o.routeParts.every((value, index) => value === runtimeDapp.defaultRoute[index]))
+            ? runtimeDapp.routables.find(o => arraysEqual(o.routeParts, runtimeDapp.defaultRoute))
             : runtimeDapp.routables[0];
     }
 
@@ -277,13 +231,6 @@ async function loadDapp(stack: RuntimeDapp<any>[], dappManifest: DappManifest<an
             ? dappManifest.dappId
             : `${dappManifest.dappId}:${Generate.randomHexString()}`,
         state: {}
-
-        // runtimePages: dappManifest.pages.map(pageManifest => {
-        // const pageUrl = constructPageUrl(appBaseUrl, pageManifest);
-        // return <RuntimePageManifest>{
-        //   ...pageManifest,
-        //   route: pageUrl
-        // };
     }
 
     runtimeDapp = createDappTopics(runtimeDapp);

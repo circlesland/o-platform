@@ -37,6 +37,13 @@ export async function getProcessContext(): Promise<ProcessContext<any>> {
   };
 }
 
+/**
+ * Contains events which have been sent by the DappFrame.
+ * It's used to track which "modal-close" events should also
+ * trigger a history.back() call.
+ */
+export let backStack:PlatformEvent[] = [];
+
 const runningProcesses : {
   [id:string]:Process
 } = {
