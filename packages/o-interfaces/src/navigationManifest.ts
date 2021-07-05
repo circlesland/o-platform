@@ -1,3 +1,7 @@
+import {DappManifest} from "./dappManifest";
+import {Routable} from "./routable";
+import {merge} from "rxjs";
+
 export interface NavigationManifest {
   leftSlot?: {
     component: any;
@@ -44,4 +48,36 @@ export interface NavigationManifest {
       };
     };
   };
+}
+
+
+export function getMergedNavigationManifest(dapp: DappManifest<any>, routable:Routable) {
+  const mergedManifest = dapp.navigation ?? {};
+  const other = routable.navigation;
+  if (!other)
+    return mergedManifest;
+
+  if (other.leftSlot) {
+    mergedManifest.leftSlot = other.leftSlot;
+  }
+  if (other.navPill) {
+    if (!mergedManifest.navPill) {
+      mergedManifest.navPill = other.navPill;
+    } else {
+      if (other.navPill.actionButton) {
+        mergedManifest.navPill.actionButton = other.navPill.actionButton;
+      }
+      if (other.navPill.left) {
+        mergedManifest.navPill.left = other.navPill.left;
+      }
+      if (other.navPill.right) {
+        mergedManifest.navPill.right = other.navPill.right;
+      }
+    }
+  }
+  if (other.rightSlot) {
+    mergedManifest.rightSlot = other.rightSlot;
+  }
+
+  return mergedManifest;
 }
