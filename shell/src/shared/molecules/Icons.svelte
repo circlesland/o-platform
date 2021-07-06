@@ -1,5 +1,4 @@
 <script lang="ts">
-  export let size: number = "6";
   const icons = {
     filter: `<svg
       class="navbuttonicon"
