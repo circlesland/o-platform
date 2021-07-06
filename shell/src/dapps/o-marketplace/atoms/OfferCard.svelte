@@ -38,14 +38,16 @@
 
   function edit(dirtyFlags: { [field: string]: boolean }) {
     console.log("edit: dirtyFlags:", dirtyFlags);
-    window.o.runProcess({
-              id: upsertOffer.id,
-              name: upsertOffer.name,
-              stateMachine: (processId?: string) =>
-                      (<any>upsertOffer).stateMachine(processId, true)
-            },
-            offer,
-            dirtyFlags);
+    window.o.runProcess(
+      {
+        id: upsertOffer.id,
+        name: upsertOffer.name,
+        stateMachine: (processId?: string) =>
+          (<any>upsertOffer).stateMachine(processId, true),
+      },
+      offer,
+      dirtyFlags
+    );
   }
 
   function loadDetailPage() {
@@ -53,27 +55,39 @@
   }
 
   function buy() {
-    window.o.runProcess(purchase, {  });
+    window.o.runProcess(purchase, {});
   }
-
 </script>
 
 <section
   class="flex items-center justify-center mb-2 "
   on:click|once={() => loadDetailPage()}
 >
-  <div
-    class="flex items-center w-full px-4 pt-5 space-x-2 bg-white rounded-sm shadow sm:space-x-6"
-  >
-    <div class="mr-2 -mt-3 text-center">
-      <div class="avatar">
-        <div class="w-12 h-12 m-auto rounded-full sm:w-12 sm:h-12">
-          <img src={offer.pictureUrl} alt={offer.title} />
-        </div>
+  <div class="flex flex-col w-full bg-white rounded-lg shadow ">
+    <header
+      class="grid w-full overflow-hidden bg-cover rounded-t-lg h-28 place-content-center"
+      style="background: url('{offer.pictureUrl}') no-repeat center center; background-size: cover;"
+    />
+    <div class="p-2 text-base text-left text-secondary">
+      {offer.title}
+    </div>
+    <div class="p-2 text-xl font-bold text-left text-primary">
+      {offer.pricePerUnit}
+      <img src="/logos/crc.svg" class="inline w-6 h-6 -mt-1" alt="circles" />
+    </div>
+    <div class="flex flex-row p-2 space-x-2">
+      <div class="p-2 rounded-full bg-light-lighter text-2xs">
+        {offer.categoryTag.value}
+      </div>
+      <div class="p-2 rounded-full bg-light-lighter text-2xs">
+        {offer.city.name}
+      </div>
+      <div class="p-2 rounded-full bg-light-lighter text-2xs">
+        {offer.city.country}
       </div>
     </div>
 
-    <div class="relative flex-grow text-left">
+    <!-- <div class="relative flex-grow text-left">
       <div class="max-w-full cursor-pointer">
         <h2 class="text-2xl sm:text-3xl">
           {offer.title}
@@ -187,9 +201,9 @@
           title: "Price per unit",
         }}
       />
-    </div>
+    </div> -->
 
-    <div class="flex flex-col self-start flex-1 justify-items-end">
+    <!-- <div class="flex flex-col self-start flex-1 justify-items-end">
       <div class="flex flex-col self-end space-y-2 text-2xl sm:text-3xl ">
         <button
           on:click={() => buy()}
@@ -214,6 +228,6 @@
       <div class="self-end mt-2 text-xs text-light-dark">
         {offer.publishedAt} (9 days ago)
       </div>
-    </div>
+    </div> -->
   </div>
 </section>
