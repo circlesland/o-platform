@@ -4,6 +4,7 @@ import ActionButtonComponent from "../shared/molecules/NextNav/Components/Action
 import { logout } from "./o-passport/processes/logout";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import BacklinkComponent from "../shared/molecules/NextNav/Components/Backlink.svelte";
 
 const index: Page<any, DappState> = {
   isSystem: true,
@@ -18,6 +19,13 @@ const createHub: Page<any, DappState> = {
   component: CreateHub,
   title: "Become a hub",
   type: "page",
+  navigation: {
+    navPill: {
+      left: {
+        component: BacklinkComponent,
+      },
+    },
+  },
 };
 
 export interface DappState {

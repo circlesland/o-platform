@@ -5,6 +5,11 @@
   import { onMount } from "svelte";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { Subscription } from "rxjs";
+  import { Swiper, SwiperSlide } from "swiper/svelte";
+  import "swiper/swiper-bundle.min.css";
+
+  import "swiper/components/navigation/navigation.min.css";
+  import "swiper/components/pagination/pagination.min.css";
 
   let isLoading: boolean;
   let error: Error;
@@ -59,14 +64,13 @@
       shellEventSubscription.unsubscribe();
     };
   });
-
 </script>
 
 <MarketplaceHeader />
 
-<div class="mx-4 -mt-6">
+<div class="">
   {#if isLoading}
-    <section class="flex items-center justify-center mb-2 ">
+    <section class="flex items-center justify-center mx-4 mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>Loading offers...</div>
@@ -74,7 +78,7 @@
       </div>
     </section>
   {:else if error}
-    <section class="flex items-center justify-center mb-2 ">
+    <section class="flex items-center justify-center mx-4 mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
@@ -84,26 +88,56 @@
       </div>
     </section>
   {:else if Object.keys(citites).length}
-    <section class="flex items-center justify-center mb-1 ">
+    <!-- <section class="flex items-center justify-center mb-1 ">
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-xs font-bold text-left  ">Offers</div>
+        <div class="text-xs font-bold text-left ">Offers</div>
       </div>
-    </section>
+    </section> -->
+
+    <div class="p-2">
+      <Swiper
+        slidesPerView={4.1}
+        spaceBetween={10}
+        grabCursor={true}
+        pagination={{
+          clickable: true,
+        }}
+        on:slideChange={() => console.log("slide change")}
+        on:swiper={(e) => console.log(e.detail[0])}
+      >
+        {#each Object.keys(citites) as city}
+          <SwiperSlide>
+            <div class="p-2 rounded-full bg-light-lighter text-2xs">
+              {city}
+            </div>
+          </SwiperSlide>
+        {/each}
+      </Swiper>
+    </div>
+
     {#each Object.keys(citites) as city}
-      <section class="flex items-center justify-center mb-1 ">
-        <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-        >
-          <div class="text-xs font-bold text-left  ">
+      <section class="flex items-center justify-center mx-4 mb-1 ">
+        <div class="flex flex-col w-full p-4 space-y-2 ">
+          <div class="text-xs font-bold text-left ">
             {city}
           </div>
         </div>
       </section>
-      {#each citites[city] as offer}
-        <OfferCard {offer} />
-      {/each}
+      <Swiper
+        spaceBetween={10}
+        slidesPerView={1.1}
+        centeredSlides={true}
+        on:slideChange={() => console.log("slide change")}
+        on:swiper={(e) => console.log(e.detail[0])}
+      >
+        {#each citites[city] as offer}
+          <SwiperSlide>
+            <OfferCard {offer} />
+          </SwiperSlide>
+        {/each}
+      </Swiper>
     {/each}
   {:else}
     <section class="flex items-center justify-center mb-2 ">
