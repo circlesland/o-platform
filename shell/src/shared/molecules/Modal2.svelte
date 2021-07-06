@@ -42,27 +42,30 @@
     const lastDapp = getLastLoadedDapp();
     const lastRoutable = getLastLoadedRoutable();
 
-    let combinedItems: JumplistItem[] = [];
+    let combinedItems: {[x:string]:JumplistItem} = {};
+
     if (lastDapp.jumplist) {
       try {
-        const dappItems = lastDapp.jumplist.items(params, lastDapp);
-        combinedItems = dappItems;
+        lastDapp.jumplist.items(params, lastDapp).forEach(o => {
+          combinedItems[o.key] = o
+        });
       } catch (e) {
         console.error(`Cannot load the dapp's jumplist`);
       }
     }
-    if (
-      lastRoutable.type == "page" &&
-      (<Page<any, any>>lastRoutable).jumplist
-    ) {
-      try {
-        const pageItems = lastDapp.jumplist.items(params, lastDapp);
-        combinedItems = combinedItems.concat(pageItems);
-      } catch (e) {
-        console.error(`Cannot load the page's jumplist`);
+    if (lastRoutable.type == "page") {
+      const pageJumplist = (<Page<any, any>>lastRoutable).jumplist;
+      if (pageJumplist) {
+        try {
+          pageJumplist.items(params, lastDapp).forEach(o => {
+            combinedItems[o.key] = o
+          });
+        } catch (e) {
+          console.error(`Cannot load the page's jumplist.`);
+        }
       }
     }
-    jumplistItems = combinedItems;
+    jumplistItems = Object.values(combinedItems);
     _isOpen = true;
   }
 
