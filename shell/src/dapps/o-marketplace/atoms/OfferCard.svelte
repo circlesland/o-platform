@@ -1,11 +1,6 @@
 <script lang="ts">
   import { push } from "svelte-spa-router";
   import { Offer } from "../data/api/types";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
   import { purchase } from "../processes/purchase";
   import OfferCardField from "./OfferCardField.svelte";
   import { me } from "../../../shared/stores/me";
@@ -43,26 +38,14 @@
 
   function edit(dirtyFlags: { [field: string]: boolean }) {
     console.log("edit: dirtyFlags:", dirtyFlags);
-
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = {
-          id: upsertOffer.id,
-          name: upsertOffer.name,
-          stateMachine: (processId?: string) =>
-            (<any>upsertOffer).stateMachine(processId, true),
-        };
-        ctx.childContext = {
-          data: offer,
-          dirtyFlags: dirtyFlags,
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
+    window.o.runProcess({
+              id: upsertOffer.id,
+              name: upsertOffer.name,
+              stateMachine: (processId?: string) =>
+                      (<any>upsertOffer).stateMachine(processId, true)
+            },
+            offer,
+            dirtyFlags);
   }
 
   function loadDetailPage() {
@@ -70,15 +53,7 @@
   }
 
   function buy() {
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = purchase;
-        ctx.childContext = {
-          data: {},
-        };
-        return ctx;
-      })
-    );
+    window.o.runProcess(purchase, {  });
   }
 
 </script>

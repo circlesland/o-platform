@@ -1,17 +1,8 @@
 <script lang="ts">
   import Web3 from "web3";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
-  import {
-    showProfile,
-    ShowProfileContextData,
-  } from "../processes/showProfile";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
   import { Token } from "../data/circles/types";
+  import {push} from "svelte-spa-router";
 
   export let token: Token;
   export let label: String;
@@ -35,25 +26,7 @@
   }
 
   function loadDetailPage(path) {
-    console.log(path);
-
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = showProfile;
-        ctx.childContext = {
-          data: <ShowProfileContextData>{
-            id: path,
-          },
-        };
-        return ctx;
-      }
-    );
-
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
-    //push("#/banking/trusts/" + path);
+    push(`#/banking/profile/${path}`)
   }
 
 </script>

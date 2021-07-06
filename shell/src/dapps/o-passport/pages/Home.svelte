@@ -1,19 +1,11 @@
 <script lang="ts">
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
-  import { upsertIdentity } from "../processes/upsertIdentity";
+  import {upsertIdentityOnlyWhereDirty} from "../processes/upsertIdentity";
 
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import { getCountryName } from "../../../shared/countries";
   import { me } from "../../../shared/stores/me";
   import { Profile } from "../data/api/types";
-  import { invite } from "../processes/invite/invite";
-  import { loadProfile } from "../processes/identify/services/loadProfile";
-  import { mySafe } from "../../o-banking/stores/safe";
 
   let name;
   let profile: Profile;
@@ -37,37 +29,7 @@
   };
 
   function editProfile(dirtyFlags: { [x: string]: boolean }) {
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = {
-          id: upsertIdentity.id,
-          name: upsertIdentity.name,
-          stateMachine: (processId?: string) =>
-            (<any>upsertIdentity).stateMachine(processId, true),
-        };
-        ctx.childContext = {
-          data: {
-            id: profile.id,
-            circlesAddress: profile.circlesAddress,
-            circlesSafeOwner: profile.circlesSafeOwner,
-            avatarCid: profile.avatarCid,
-            avatarUrl: profile.avatarUrl,
-            avatarMimeType: profile.avatarMimeType,
-            firstName: profile.firstName,
-            lastName: profile.lastName,
-            country: profile.country,
-            dream: profile.dream,
-            cityGeonameid: profile.cityGeonameid,
-          },
-          dirtyFlags: dirtyFlags,
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
+    window.o.runProcess(upsertIdentityOnlyWhereDirty, profile, dirtyFlags);
   }
 </script>
 

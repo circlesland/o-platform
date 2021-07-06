@@ -1,16 +1,7 @@
 <script lang="ts">
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { Profile } from "../data/api/types";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
-  import {
-    showProfile,
-    ShowProfileContextData,
-  } from "../../o-banking/processes/showProfile";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
+  import {push} from "svelte-spa-router";
 
   export let profile: Profile;
 
@@ -36,23 +27,7 @@
   }
 
   function loadDetailPage() {
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = showProfile;
-        ctx.childContext = {
-          data: <ShowProfileContextData>{
-            id: profile.id.toString(),
-          },
-        };
-        return ctx;
-      }
-    );
-
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
-    //push("#/banking/profile/" + profile.id);
+    push(`#/banking/profile/${profile.id.toString()}`)
   }
 
 </script>

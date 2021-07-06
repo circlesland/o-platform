@@ -1,97 +1,65 @@
-import {
-  faPeopleArrows,
-} from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-stats/pages/Home.svelte";
 import MyRank from "./o-stats/pages/MyRank.svelte";
 import Citites from "./o-stats/pages/Cities.svelte";
 import Countries from "./o-stats/pages/Countries.svelte";
-import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-const index : PageManifest = {
-  isDefault: true,
+const index: Page<any, DappState> = {
   isSystem: true,
   routeParts: [],
   component: Home,
   title: "Statistics",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    }
-  ]
+  type: "page",
 };
 
 // My invite rank in my city
-const myCityRank : PageManifest = {
-  isDefault: true,
+const myCityRank: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["my-rank"],
   component: MyRank,
   title: "My rank",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    }
-  ]
+  type: "page",
 };
 
-const cityRanks : PageManifest = {
-  isDefault: true,
+const cityRanks: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["cities"],
   component: Citites,
   title: "Citites",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    }
-  ]
+  type: "page",
 };
 
-const countryRanks : PageManifest = {
-  isDefault: true,
+const countryRanks: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["countries"],
   component: Countries,
   title: "Countries",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    }
-  ]
+  type: "page",
 };
-
 
 export interface DappState {
   // put state here
 }
 
-export const stats : DappManifest<DappState> = {
+export const stats: DappManifest<DappState> = {
+  type: "dapp",
   dappId: "stats:1",
   isSingleton: true,
-  dependencies: [],
   isHidden: true,
-  icon: faPeopleArrows,
+  icon: "stats",
   title: "Statistics",
   routeParts: ["stats"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
-  actions: () => [],
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
-      initialPage: index,
-      cancelDependencyLoading: false
+      initialRoutable: index,
+      cancelDependencyLoading: false,
     };
   },
-  pages: [index, myCityRank, cityRanks, countryRanks]
+  routables: [index, myCityRank, cityRanks, countryRanks],
+  //pages: [index, myCityRank, cityRanks, countryRanks]
 };

@@ -1,18 +1,12 @@
 <script lang="ts">
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
-  import TrustDetailHeader from "../atoms/TrustDetailHeader.svelte";
   import { mySafe } from "../stores/safe";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { invite } from "../../o-passport/processes/invite/invite";
   import { getCountryName } from "src/shared/countries";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
+  import { upsertIdentityOnlyWhereDirty } from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
@@ -22,28 +16,30 @@
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { Profile } from "../data/api/types";
-  import { Continue } from "@o-platform/o-process/dist/events/continue";
-  import { EditorContext } from "@o-platform/o-editors/src/editorContext";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import { DetailActionFactory } from "../../../shared/molecules/DetailActionBarFactory";
-  import {
-    BankingDappState,
-    transactionDetail,
-  } from "../../o-banking.manifest";
-  import { getLastLoadedDapp } from "../../../loader";
-  export let context: EditorContext;
+  import { BankingDappState } from "../../o-banking.manifest";
+  import { getLastLoadedDapp, getLastLoadedRoutable } from "../../../loader";
+  import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+  import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
+  import TopNav from "src/shared/atoms/TopNav.svelte";
 
   export let params: {
     id?: String;
   };
 
-  const submitHandler = () => {
-    const answer = new Continue();
-    answer.data = context.data;
-    context.process.sendAnswer(answer);
-  };
+  let jumplist: Jumplist<any, any> | undefined;
 
   onMount(() => {
+    const lastLoadedRoutable = getLastLoadedRoutable();
+    if (lastLoadedRoutable.type === "page") {
+      jumplist = (<Page<any, any>>lastLoadedRoutable).jumplist;
+    } else if (lastLoadedRoutable.type === "trigger") {
+      jumplist = (<Trigger<any, any>>lastLoadedRoutable).jumplist;
+    } else {
+      jumplist = undefined;
+    }
+
     shellEventSubscription = window.o.events.subscribe(
       async (event: PlatformEvent) => {
         if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
@@ -54,8 +50,7 @@
       }
     );
 
-    if (context.params.id) {
-      console.log(context);
+    if (params.id) {
       isLoading = true;
       console.log("LOADPRO IF CONTEXT");
       loadProfile();
@@ -63,7 +58,7 @@
   });
 
   $: {
-    if (context.params) {
+    if (params) {
       isLoading = true;
       console.log("LOADPRO NOCHMAL");
       loadProfile();
@@ -105,23 +100,18 @@
 
   async function loadProfile() {
     console.log("LOADING PROFILE!!!");
-    if (!context.params || !context.params.id) {
+    if (!params || !params.id) {
       console.warn(
         `No profile specified ('id' must contain safeAddress or profileId)`
       );
       return;
     }
 
-    if (
-      Number.parseInt(context.params.id) &&
-      !context.params.id.startsWith("0x")
-    ) {
-      const profile = await loadProfileByProfileId(
-        Number.parseInt(context.params.id)
-      );
+    if (Number.parseInt(params.id) && !params.id.startsWith("0x")) {
+      const profile = await loadProfileByProfileId(Number.parseInt(params.id));
       setProfile(profile);
-    } else if (RpcGateway.get().utils.isAddress(context.params.id)) {
-      const profile = await loadProfileBySafeAddress(context.params.id);
+    } else if (RpcGateway.get().utils.isAddress(params.id)) {
+      const profile = await loadProfileBySafeAddress(params.id);
       setProfile(profile);
     } else {
       throw new Error(`params.id isn't an integer nor an eth address.`);
@@ -134,7 +124,7 @@
 
     // TODO: This is bullshit but works. Refactor ASAP.
     getLastLoadedDapp<BankingDappState>().state = {
-      currentProfileId: context.params.id,
+      currentProfileId: params.id,
       currentSafeAddress: profile.safeAddress,
     };
   }
@@ -169,7 +159,7 @@
     // TODO: This is bullshit but works. Refactor ASAP.
 
     getLastLoadedDapp<BankingDappState>().state = {
-      currentProfileId: context.params.id,
+      currentProfileId: params.id,
       currentSafeAddress: profile.safeAddress,
       trusted: trust.trusting > 0,
     };
@@ -212,78 +202,42 @@
   function execTransfer() {
     if (!profile || !$mySafe.safeAddress || isMe) return;
 
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = transfer;
-        ctx.childContext = {
-          data: {
-            safeAddress: $mySafe.safeAddress,
-            recipientAddress: profile.safeAddress,
-            recipientProfileId: profile.id,
-          },
-        };
-        return ctx;
-      })
-    );
+    window.o.runProcess(transfer, {
+      safeAddress: $mySafe.safeAddress,
+      recipientAddress: profile.safeAddress,
+      recipientProfileId: profile.id,
+    });
   }
 
   function execTrust() {
     if (!profile || !$mySafe.safeAddress || isMe) return;
 
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = setTrust;
-        ctx.childContext = {
-          data: {
-            safeAddress: $mySafe.safeAddress,
-            trustLimit: 100,
-            trustReceiver: profile.safeAddress,
-            privateKey: localStorage.getItem("circlesKey"),
-          },
-        };
-        return ctx;
-      })
-    );
+    window.o.runProcess(setTrust, {
+      safeAddress: $mySafe.safeAddress,
+      trustLimit: 100,
+      trustReceiver: profile.safeAddress,
+      privateKey: localStorage.getItem("circlesKey"),
+    });
   }
 
   function execUntrust() {
     if (!profile || !$mySafe.safeAddress || isMe) return;
 
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = setTrust;
-        ctx.childContext = {
-          data: {
-            safeAddress: $mySafe.safeAddress,
-            trustLimit: 0,
-            trustReceiver: profile.safeAddress,
-            privateKey: localStorage.getItem("circlesKey"),
-          },
-        };
-        return ctx;
-      })
-    );
+    window.o.runProcess(setTrust, {
+      safeAddress: $mySafe.safeAddress,
+      trustLimit: 0,
+      trustReceiver: profile.safeAddress,
+      privateKey: localStorage.getItem("circlesKey"),
+    });
   }
 
   function execInvite() {
     if (!profile || !$mySafe.safeAddress || !profile.id || isMe) return;
 
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = invite;
-        ctx.childContext = {
-          data: {
-            safeAddress: $mySafe.safeAddress,
-            inviteProfileId: profile.id,
-          },
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
+    window.o.runProcess(invite, {
+      safeAddress: $mySafe.safeAddress,
+      inviteProfileId: profile.id,
+    });
   }
 
   const copy = () => {
@@ -297,38 +251,7 @@
   function editProfile(dirtyFlags: { [x: string]: boolean }) {
     if (!profile || !profile.id || !isEditable) return;
 
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = {
-          id: upsertIdentity.id,
-          name: upsertIdentity.name,
-          stateMachine: (processId?: string) =>
-            (<any>upsertIdentity).stateMachine(processId, true),
-        };
-        ctx.childContext = {
-          data: {
-            id: profile.id,
-            circlesAddress: profile.safeAddress,
-            circlesSafeOwner: profile.circlesSafeOwner,
-            avatarCid: profile.avatarCid,
-            avatarUrl: profile.avatarUrl,
-            avatarMimeType: profile.avatarMimeType,
-            firstName: profile.firstName,
-            lastName: profile.lastName,
-            country: profile.country,
-            dream: profile.dream,
-            cityGeonameid: profile.cityGeonameid,
-            city: profile.city,
-          },
-          dirtyFlags: dirtyFlags,
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
+    window.o.runProcess(upsertIdentityOnlyWhereDirty, profile, dirtyFlags);
   }
 
   let inviteLink: string = "";
@@ -344,8 +267,9 @@
 {#if isLoading}
   <LoadingIndicator />
 {:else}
+  <TopNav />
   <header
-    class="grid overflow-hidden text-white bg-cover rounded-t-lg h-80 place-content-center"
+    class="grid mt-10 overflow-hidden text-white bg-cover h-80 place-content-center"
     style="background: linear-gradient(to right, #0f266280, #0f266280), url('/images/common/nice-bg.jpg') no-repeat center center; background-size: cover;"
   >
     <div
@@ -382,7 +306,7 @@
   </header>
   <div class="flex flex-col p-4">
     <div class="mt-4">
-      <div class="mb-4">
+      <div class="pb-16">
         {#if !profile.safeAddress && !isMe}
           <section class="justify-center mb-2 ">
             <div
@@ -467,6 +391,22 @@
         {/if}
 
         {#if profile && profile.safeAddress}
+          <section class="mb-8">
+            <div class="grid w-full grid-cols-3 gap-4 text-2xs ">
+              <div class="flex flex-col items-center justify-items-center">
+                <div class="text-3xl font-medium text-secondary">5</div>
+                <div class="mt-4 text-light-dark">mutual friends</div>
+              </div>
+              <div class="flex flex-col items-center justify-items-center ">
+                <div class="text-3xl font-medium text-secondary">86</div>
+                <div class="mt-4 text-light-dark">leader rank</div>
+              </div>
+              <div class="flex flex-col items-center justify-items-center ">
+                <div class="text-3xl font-medium text-secondary">230</div>
+                <div class="mt-4 text-light-dark">invited</div>
+              </div>
+            </div>
+          </section>
           <section class="justify-center mb-2 text-primarydark">
             <div class="flex flex-col w-full p-2 space-y-1">
               <div class="text-left text-2xs text-light-dark">Passion</div>
@@ -560,11 +500,15 @@
           </section>
         {/if}
       </div>
-      <div class="absolute bottom-0 left-0 w-full bg-white">
-        <DetailActionBar
-          actions={transactionDetail.actions(getLastLoadedDapp())}
-        />
-      </div>
+      {#if jumplist && !isMe}
+        <div
+          class="fixed bottom-0 left-0 right-0 w-full mx-auto bg-white md:w-2/3 xl:w-1/2 h-36"
+        >
+          <DetailActionBar
+            actions={jumplist.items(params, getLastLoadedDapp())}
+          />
+        </div>
+      {/if}
       <!-- ACTIONS  -->
 
       <!-- {#if !isMe && profile.safeAddress}

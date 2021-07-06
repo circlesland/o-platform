@@ -59,17 +59,3 @@ echo "Generating graphql types for dapps/o-marketplace"
 echo "* api"
 cd shell/src/dapps/o-marketplace/data/api
 npx graphql-codegen
-
-cd ../../../../../..
-
-echo "Building 'shell' with dapps .."
-cd shell || exit
-npm run build
-cd .. || exit
-
-#
-search='__TIMESTAMP__'
-replace=`date +"%s"`
-search_replace="s/$search/$replace/g"
-cp -f ./shell/public/index.template.html ./shell/public/index.html
-sed -i "$search_replace" ./shell/public/index.html

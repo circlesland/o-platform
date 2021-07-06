@@ -1,102 +1,53 @@
-import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
-import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import Home from "./o-marketplace/pages/Home.svelte";
 import Categories from "./o-marketplace/pages/Categories.svelte";
 import OfferDetail from "./o-marketplace/pages/OfferDetail.svelte";
 import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-import {
-  shellProcess,
-  ShellProcessContext,
-} from "../shared/processes/shellProcess";
 import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-const stream: PageManifest = {
-  isDefault: true,
+const stream: Page<any, DappState> = {
   routeParts: ["stream"],
   component: Home,
   title: "Stream",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const offerDetail: PageManifest = {
-  isDefault: false,
+const offerDetail: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["offer", ":id"],
   component: OfferDetail,
   title: "Offer detail",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const categories: PageManifest = {
-  isDefault: false,
+const categories: Page<any, DappState> = {
   routeParts: ["categories"],
   component: Categories,
   title: "Categories",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const categoryDetail: PageManifest = {
-  isDefault: false,
+const categoryDetail: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["offers", ":category"],
   component: CategoryDetail,
   title: "Category detail",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const favorites: PageManifest = {
-  isDefault: false,
+const favorites: Page<any, DappState> = {
   routeParts: ["favorites"],
   component: Favorites,
   title: "Favorites",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const myOffers: PageManifest = {
-  isDefault: false,
+const myOffers: Page<any, DappState> = {
   routeParts: ["my-offers"],
   component: MyOffers,
   title: "My offers",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
 
 export interface DappState {
@@ -104,34 +55,28 @@ export interface DappState {
 }
 
 export const marketplace: DappManifest<DappState> = {
+  type: "dapp",
   dappId: "marketplace:1",
   isSingleton: true,
-  dependencies: [],
   isHidden: false,
-  icon: faPeopleArrows,
+  icon: "marketplace",
   title: "Marketplace",
   routeParts: ["marketplace"],
   tag: Promise.resolve("alpha"),
-  actions: () => [
-    {
-      key: "createOffer",
-      label: "Create offer",
-      icon: "createoffer",
-      event: () => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = upsertOffer;
-            ctx.childContext = {
-              data: {},
-            };
-            return ctx;
-          }
-        );
+  jumplist: {
+    type: "jumplist",
+    title: "Actions",
+    isSystem: false,
+    routeParts: ["actions"],
+    items: () => [
+      {
+        key: "createOffer",
+        title: "Create offer",
+        icon: "createoffer",
+        action: () => window.o.runProcess(upsertOffer, {}),
       },
-    },
-  ],
+    ],
+  },
   isEnabled: true,
   navigation: {
     navPill: {
@@ -161,9 +106,16 @@ export const marketplace: DappManifest<DappState> = {
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
-      initialPage: stream,
+      initialRoutable: stream,
       cancelDependencyLoading: false,
     };
   },
-  pages: [stream, categories, favorites, myOffers, offerDetail, categoryDetail],
+  routables: [
+    stream,
+    categories,
+    favorites,
+    myOffers,
+    offerDetail,
+    categoryDetail,
+  ],
 };

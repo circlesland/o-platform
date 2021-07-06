@@ -1,10 +1,11 @@
-import { IconDefinition } from "@fortawesome/fontawesome-common-types";
-import { PageManifest } from "./pageManifest";
 import { NavigationManifest } from "./navigationManifest";
 import { RuntimeDapp } from "./runtimeDapp";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { Routable } from "./routable";
+import { Jumplist } from "./routables/jumplist";
 
-export interface DappManifest<TState extends { [x: string]: any }> {
+export interface DappManifest<TState extends { [x: string]: any }>
+  extends Routable {
+  type: "dapp";
   /**
    * A unique identifier for this auth manifest.
    * This identifier is used as a namespace for all incoming and outgoing events of the auth.
@@ -27,16 +28,25 @@ export interface DappManifest<TState extends { [x: string]: any }> {
   /**
    * This icon will be displayed in the auth overview.
    */
-  icon?: IconDefinition;
+  icon?: string;
   /**
    * This title will be displayed as the auth name.
    */
   title: string;
 
   /**
+   * Dapps can depend on other dapps.
+   * When a auth depends on another auth, then the dependent auth cannot be initialized
+   * before the dependency was initialized.
+   */
+  // dependencies?: string[];
+
+  /**
    * The route of the entry page of this auth.
    */
   routeParts: string[];
+
+  defaultRoute?: string[];
 
   /**
    * Can be used to indicate a status in the auth overview next to the icon.
@@ -50,22 +60,10 @@ export interface DappManifest<TState extends { [x: string]: any }> {
   /**
    * Contains all pages of the auth.
    */
-  pages: PageManifest[];
+  //pages: PageManifest[];
 
-  /**
-   * Dapps can depend on other dapps.
-   * When a auth depends on another auth, then the dependent auth cannot be initialized
-   * before the dependency was initialized.
-   */
-  dependencies?: string[];
-
-  actions?: (runtimeDapp: RuntimeDapp<any>) => {
-    key: string;
-    icon?: string;
-    label: string;
-    event: () => PlatformEvent;
-  }[];
-
+  routables: Routable[];
+  jumplist?: Jumplist<any, TState>;
   navigation?: NavigationManifest;
 
   /**
@@ -77,7 +75,7 @@ export interface DappManifest<TState extends { [x: string]: any }> {
     stack: RuntimeDapp<TState>[],
     runtimeDapp: RuntimeDapp<TState>
   ) => Promise<{
-    initialPage: PageManifest;
+    initialRoutable: Routable;
     cancelDependencyLoading: boolean;
   }>;
 }

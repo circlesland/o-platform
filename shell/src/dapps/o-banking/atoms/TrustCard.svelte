@@ -1,22 +1,10 @@
 <script lang="ts">
-  import { push } from "svelte-spa-router";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
   import { transfer } from "../processes/transfer";
   import { TrustObject } from "../data/circles/types";
   import { tryGetCurrentSafe } from "../init";
-  import * as style from "@dicebear/avatars-avataaars-sprites";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import {
-    showProfile,
-    ShowProfileContextData,
-  } from "../processes/showProfile";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
-  import { profile } from "../../o-marketplace/atoms/CreatorCard.svelte";
   import Icons from "../../../shared/molecules/Icons.svelte";
+  import {push} from "svelte-spa-router";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -69,40 +57,15 @@
   }
 
   function loadDetailPage(path) {
-    //push("#/banking/trusts/" + path);
-
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = showProfile;
-        ctx.childContext = {
-          data: <ShowProfileContextData>{
-            id: path,
-          },
-        };
-        return ctx;
-      }
-    );
-
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
+    push(`#/banking/profile/${path}`)
   }
 
   function execTransfer(recipientAddress?: string) {
-    window.o.publishEvent(
-      new RunProcess<ShellProcessContext>(shellProcess, true, async (ctx) => {
-        ctx.childProcessDefinition = transfer;
-        ctx.childContext = {
-          data: {
-            recipientAddress,
-            safeAddress: tryGetCurrentSafe()?.safeAddress,
-            privateKey: localStorage.getItem("circlesKey"),
-          },
-        };
-        return ctx;
-      })
-    );
+    window.o.runProcess(transfer, {
+      recipientAddress,
+      safeAddress: tryGetCurrentSafe()?.safeAddress,
+      privateKey: localStorage.getItem("circlesKey"),
+    });
   }
 </script>
 

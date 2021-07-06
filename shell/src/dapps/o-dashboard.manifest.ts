@@ -1,47 +1,23 @@
-import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-dashboard/pages/Home.svelte";
 import CreateHub from "./o-dashboard/pages/CreateHub.svelte";
-import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
-import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
-import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { logout } from "./o-passport/processes/logout";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-import {
-  shellProcess,
-  ShellProcessContext,
-} from "../shared/processes/shellProcess";
-import { transfer } from "./o-banking/processes/transfer";
-
-const index: PageManifest = {
-  isDefault: true,
+const index: Page<any, DappState> = {
   isSystem: true,
   routeParts: [],
   component: Home,
   title: "Dashboard",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const createHub: PageManifest = {
-  isDefault: true,
+const createHub: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["become-a-hub"],
   component: CreateHub,
   title: "Become a hub",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
 
 export interface DappState {
@@ -49,33 +25,32 @@ export interface DappState {
 }
 
 export const dashboard: DappManifest<DappState> = {
+  type: "dapp",
   dappId: "dashboard:1",
   isSingleton: true,
-  dependencies: [],
   isHidden: true,
-  icon: faPeopleArrows,
+  icon: "dashboard",
   title: "Dashboard",
   routeParts: ["dashboard"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
-  actions: () => [
-    {
-      key: "logout",
-      label: "Logout",
-      icon: "logout",
-      event: () => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = logout;
-            return ctx;
-          }
-        );
-      },
+  jumplist: {
+    type: "jumplist",
+    title: "Actions",
+    isSystem: false,
+    routeParts: ["actions"],
+    items: (params, runtimeDapp) => {
+      return [
+        {
+          key: "logout",
+          title: "Logout",
+          icon: "logout",
+          action: () => window.o.runProcess(logout, {}),
+        },
+      ];
     },
-  ],
+  },
   navigation: {
     navPill: {
       actionButton: {
@@ -90,9 +65,9 @@ export const dashboard: DappManifest<DappState> = {
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
-      initialPage: index,
+      initialRoutable: index,
       cancelDependencyLoading: false,
     };
   },
-  pages: [index, createHub],
+  routables: [index, createHub],
 };

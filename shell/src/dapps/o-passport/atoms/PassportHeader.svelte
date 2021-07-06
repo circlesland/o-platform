@@ -4,7 +4,7 @@
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
-  import { upsertIdentity } from "../processes/upsertIdentity";
+  import {upsertIdentity, upsertIdentityOnlyWhereDirty} from "../processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import { Profile } from "../data/api/types";
   import { loadProfile } from "../processes/identify/services/loadProfile";
@@ -42,36 +42,7 @@
   }
 
   function editProfileField(dirtyFlags: { [x: string]: boolean }) {
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = {
-          id: upsertIdentity.id,
-          name: upsertIdentity.name,
-          stateMachine: (processId?: string) =>
-            (<any>upsertIdentity).stateMachine(processId, true),
-        };
-        ctx.childContext = {
-          data: {
-            id: profile.id,
-            circlesAddress: profile.circlesAddress,
-            circlesSafeOwner: profile.circlesSafeOwner,
-            avatarCid: profile.avatarCid,
-            avatarUrl: profile.avatarUrl,
-            avatarMimeType: profile.avatarMimeType,
-            firstName: profile.firstName,
-            lastName: profile.lastName,
-            country: profile.country,
-            dream: profile.dream,
-          },
-          dirtyFlags: dirtyFlags,
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
+    window.o.runProcess(upsertIdentityOnlyWhereDirty, profile, dirtyFlags);
   }
 </script>
 

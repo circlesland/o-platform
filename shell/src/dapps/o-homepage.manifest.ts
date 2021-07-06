@@ -1,4 +1,3 @@
-import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-homepage/pages/Home.svelte";
 import Citizens from "./o-homepage/pages/Citizens.svelte";
 import Countries from "./o-homepage/pages/Countries.svelte";
@@ -7,137 +6,105 @@ import Milestones from "./o-homepage/pages/Milestones.svelte";
 import Privacy from "./o-homepage/pages/Privacy.svelte";
 import Tos from "./o-homepage/pages/Tos.svelte";
 import Learn from "./o-homepage/pages/Learn.svelte";
-import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
-import ListComponent from "../shared/molecules/NextNav/Components/SingleList.svelte";
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 
-const login: PageManifest = {
-  isDefault: false,
+const externalChat: Link<any, DappState> = {
+  type: "link",
+  title: "Chat",
+  routeParts: ["chat"],
+  openInNewTab: true,
+  url: () => "https://discord.gg/CS6xq7jECR",
+};
+const externalForum: Link<any, DappState> = {
+  type: "link",
+  title: "Forum",
+  routeParts: ["forum"],
+  openInNewTab: true,
+  url: () => "https://aboutcircles.com",
+};
+const login: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["login"],
   component: Home,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
 
-const index: PageManifest = {
-  isDefault: true,
+const externalBlog: Link<any, DappState> = {
+  type: "link",
+  title: "Blog",
+  routeParts: ["blog"],
+  openInNewTab: true,
+  url: () => "https://blog.circles.land/",
+};
+
+const externalWhitepaper: Link<any, DappState> = {
+  type: "link",
+  title: "Whitepaper",
+  routeParts: ["whitepaper"],
+  openInNewTab: true,
+  url: () => "https://blog.circles.land/whitepaper/",
+};
+
+const index: Page<any, DappState> = {
   isSystem: true,
   routeParts: [""],
   component: Home,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const citizens: PageManifest = {
-  isDefault: true,
+const citizens: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["citizens"],
   component: Citizens,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const countries: PageManifest = {
-  isDefault: true,
+const countries: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["countries"],
   component: Countries,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const imprint: PageManifest = {
-  isDefault: true,
+const imprint: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["imprint"],
   component: Imprint,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const milestones: PageManifest = {
-  isDefault: true,
+const milestones: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["milestones"],
   component: Milestones,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const privacy: PageManifest = {
-  isDefault: true,
+const privacy: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["privacy"],
   component: Privacy,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const tos: PageManifest = {
-  isDefault: true,
+const tos: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["tos"],
   component: Tos,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const learn: PageManifest = {
-  isDefault: true,
+const learn: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["learn"],
   component: Learn,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
 
 export interface DappState {
@@ -145,18 +112,17 @@ export interface DappState {
 }
 
 export const homepage: DappManifest<DappState> = {
+  type: "dapp",
   dappId: "homepage:1",
   isSingleton: true,
-  dependencies: [],
   isHidden: true,
-  icon: faPeopleArrows,
+  icon: "home",
   title: "Circles Land",
   routeParts: [],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: false,
   isFullWidth: true,
-  actions: () => [],
   navigation: {
     leftSlot: {
       component: ListComponent,
@@ -178,11 +144,11 @@ export const homepage: DappManifest<DappState> = {
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
-      initialPage: index,
+      initialRoutable: index,
       cancelDependencyLoading: false,
     };
   },
-  pages: [
+  routables: [
     index,
     citizens,
     countries,
@@ -192,5 +158,9 @@ export const homepage: DappManifest<DappState> = {
     tos,
     learn,
     login,
+    externalChat,
+    externalForum,
+    externalBlog,
+    externalWhitepaper,
   ],
 };

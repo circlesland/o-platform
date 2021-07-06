@@ -1,48 +1,37 @@
-import {
-  faPeopleArrows,
-} from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-trustnetwork/pages/Home.svelte";
-import {PageManifest} from "@o-platform/o-interfaces/dist/pageManifest";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-const index : PageManifest = {
-  isDefault: true,
+const index: Page<any, DappState> = {
   isSystem: true,
   routeParts: [],
   component: Home,
   title: "Trust network",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    }
-  ]
+  type: "page",
 };
-
 
 export interface DappState {
   // put state here
 }
 
-export const trustnetwork : DappManifest<DappState> = {
+export const trustnetwork: DappManifest<DappState> = {
+  type: "dapp",
   dappId: "trustnetwork:1",
   isSingleton: true,
-  dependencies: [],
   isHidden: true,
-  icon: faPeopleArrows,
+  icon: "network",
   title: "Trust network",
   routeParts: ["trustnetwork"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
-  actions: () => [],
+  //actions: () => [],
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
-      initialPage: index,
-      cancelDependencyLoading: false
+      initialRoutable: index,
+      cancelDependencyLoading: false,
     };
   },
-  pages: [index]
+  routables: [index],
 };

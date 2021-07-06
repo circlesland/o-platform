@@ -25,25 +25,12 @@
   function edit(dirtyFlags: { [field: string]: boolean }) {
     console.log("edit: dirtyFlags:", dirtyFlags);
 
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = {
-          id: upsertOffer.id,
-          name: upsertOffer.name,
-          stateMachine: (processId?: string) =>
-            (<any>upsertOffer).stateMachine(processId, true),
-        };
-        ctx.childContext = {
-          data: offer,
-          dirtyFlags: dirtyFlags,
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
+    window.o.runProcess({
+      id: upsertOffer.id,
+      name: upsertOffer.name,
+      stateMachine: (processId?: string) =>
+        (<any>upsertOffer).stateMachine(processId, true),
+    }, offer, dirtyFlags);
   }
 
 </script>

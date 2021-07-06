@@ -12,7 +12,8 @@ let __CIRCLES_GARDEN_API__ = "https://api.circles.garden/api/users/";
 let __AUTH_ENDPOINT__ = "https://auth.circles.name";
 let __API_ENDPOINT__ = "https://api.circles.land";
 let __FILES_ENDPOINT__ = "https://files.circles.land";
-let __CIRCLES_SUBGRAPH_ENDPOINT__ = "https://api.thegraph.com/subgraphs/name/circlesubi/circles";
+let __CIRCLES_SUBGRAPH_ENDPOINT__ =
+  "https://api.thegraph.com/subgraphs/name/circlesubi/circles";
 let __PATHFINDER_ENDPOINT__ = "https://rpc.circles.land/pathfinder";
 let __APP_ID__ = "circles.land";
 let __FILES_APP_ID__ = "files.circles.land";
@@ -170,7 +171,7 @@ module.exports = {
         },
       },
       {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         use: "ts-loader",
         exclude: [/node_modules/],
       },

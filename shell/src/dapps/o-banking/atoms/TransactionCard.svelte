@@ -1,19 +1,8 @@
 <script lang="ts">
   import Time from "svelte-time";
-  import { push } from "svelte-spa-router";
   import Web3 from "web3";
-  import { Transfer } from "../data/circles/queries";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
-  import {
-    showProfile,
-    ShowProfileContextData,
-  } from "../processes/showProfile";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
-  import { showTransaction } from "../processes/showTransaction";
+  import { Transfer } from "../data/circles/types";
+  import {push} from "svelte-spa-router";
 
   export let transfer: Transfer;
   export let message: String;
@@ -70,25 +59,7 @@
   }
 
   function loadDetailPage(path) {
-    //push("#/banking/trusts/" + path);
-
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        showProfile;
-        ctx.childProcessDefinition = showTransaction;
-        ctx.childContext = {
-          data: <ShowProfileContextData>{
-            id: path,
-          },
-        };
-        return ctx;
-      }
-    );
-
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
+    push(`#/banking/transactions/${path}`)
   }
 </script>
 
