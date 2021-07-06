@@ -5,16 +5,12 @@ import OfferDetail from "./o-marketplace/pages/OfferDetail.svelte";
 import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
-import {
-  runShellProcess,
-} from "../shared/processes/shellProcess";
 import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import {Page} from "@o-platform/o-interfaces/dist/routables/page";
 import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 
 const stream : Page<any, DappState> = {
   routeParts: ["stream"],
@@ -75,9 +71,9 @@ export const marketplace: DappManifest<DappState> = {
       routeParts: ["actions"],
       items: () => [{
         key: "createOffer",
-        label: "Create offer",
+        title: "Create offer",
         icon: "createoffer",
-        event: runShellProcess(upsertOffer, { })
+        action: () => window.o.runProcess(upsertOffer, {})
       }],
     },
   isEnabled: true,

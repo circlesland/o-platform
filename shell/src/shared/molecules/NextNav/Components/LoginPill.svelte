@@ -1,8 +1,5 @@
 <script lang="ts">
   import {
-    runShellProcess
-  } from "../../../processes/shellProcess";
-  import {
     identify,
     IdentifyContextData,
   } from "../../../../dapps/o-passport/processes/identify/identify";
@@ -11,9 +8,9 @@
   export let isOpen: boolean = false;
 
   async function login() {
-    window.o.publishEvent(runShellProcess(identify, <IdentifyContextData>{
+    window.o.runProcess(identify, <IdentifyContextData>{
       redirectTo: "/dashboard",
-    }));
+    });
   }
 </script>
 

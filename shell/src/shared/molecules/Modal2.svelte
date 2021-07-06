@@ -1,51 +1,106 @@
-<script context="module" lang="ts">
-  import {CancelRequest} from "@o-platform/o-process/dist/events/cancel";
-  import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
-  import {shellProcess} from "../processes/shellProcess";
-  import {ProcessStarted} from "@o-platform/o-process/dist/events/processStarted";
+<script lang="ts">
   import {Process} from "@o-platform/o-process/dist/interfaces/process";
+  import {fade} from "svelte/transition";
+  import {CancelRequest} from "@o-platform/o-process/dist/events/cancel";
+  import {getLastLoadedDapp, getLastLoadedRoutable} from "../../loader";
+  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+  import DappNavItem from "./../atoms/DappsNavItem.svelte";
+  import ProcessContainer from "./ProcessContainer.svelte";
+  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+  import {JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
+  import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
+  import {Link} from "@o-platform/o-interfaces/dist/routables/link";
 
-  let isOpen = false;
   let runningProcess: Process|undefined;
+  let jumplistItems: JumplistItem[]|undefined;
+  let navigation: {
+    icon?:IconDefinition;
+    title:string;
+    url:string;
+    extern: boolean;
+  }[]|undefined;
 
-  export async function runProcess (processDefinition:ProcessDefinition<any, any>, contextData:{[x:string]:any}) {
-    const modifier = async (ctx) => {
-      ctx.childProcessDefinition = processDefinition;
-      ctx.childContext = {
-        data: contextData
-      };
-      return ctx;
-    };
-    const requestEvent:any = new RunProcess(shellProcess, true, modifier);
-    requestEvent.id = Generate.randomHexString(8);
+  export function isOpen() {
+    return _isOpen;
+  }
+  let _isOpen = false;
 
-    const processStarted:ProcessStarted = await window.o.requestEvent<ProcessStarted>(requestEvent);
-    showProcess(processStarted.processId);
+  export function showJumplist(params:{[x:string]:any})
+  {
+    if (!closeModal()) {
+      return;
+    }
+
+    const lastDapp = getLastLoadedDapp();
+    const lastRoutable = getLastLoadedRoutable();
+
+    let combinedItems:JumplistItem[] = [];
+    if(lastDapp.jumplist) {
+      try {
+        const dappItems = lastDapp.jumplist.items(params, lastDapp);
+        combinedItems = dappItems;
+      } catch (e) {
+        console.error(`Cannot load the dapp's jumplist`)
+      }
+    }
+    if(lastRoutable.type == "page" && (<Page<any, any>>lastRoutable).jumplist) {
+      try {
+        const pageItems = lastDapp.jumplist.items(params, lastDapp);
+        combinedItems = combinedItems.concat(pageItems);
+      } catch (e) {
+        console.error(`Cannot load the page's jumplist`)
+      }
+    }
+    jumplistItems = combinedItems;
+    _isOpen = true;
+  }
+
+  export function showNavigation(dapp:DappManifest<any>)
+  {
+    if (!closeModal()) {
+      return;
+    }
+    const routables = dapp.routables.filter((o) => (o.type === "page" || o.type === "link") && !o.isSystem);
+    navigation = routables.map(o => {
+      if (o.type == "page") {
+        return {
+          title: o.title,
+          icon: o.icon,
+          url: getLastLoadedDapp().routeParts.join('/') + '/' + o.routeParts.join('/'),
+          extern: false
+        }
+      } else {
+        return {
+          title: o.title,
+          icon: o.icon,
+          url: (<Link<any, any>>o).url({}, getLastLoadedDapp()),
+          extern: (<Link<any, any>>o).openInNewTab
+        }
+      }
+    })
+    _isOpen = true;
   }
 
   export function showProcess(processId:string) {
     runningProcess = window.o.stateMachines.findById(processId);
-    if (!isOpen && runningProcess) {
-      isOpen = true;
+    if (!_isOpen && runningProcess) {
+      _isOpen = true;
     }
   }
 
-  export function closeModal() {
-    if (runningProcess && isOpen) {
+  export function closeModal() : boolean {
+    if (runningProcess && _isOpen) {
       runningProcess.sendEvent(new CancelRequest());
+      return false;
     }
-    if (!runningProcess && isOpen) {
-      isOpen = false;
+    if (!runningProcess && _isOpen) {
+      _isOpen = false;
     }
+    runningProcess = undefined;
+    jumplistItems = undefined;
+    navigation = undefined;
+    return true;
   }
-</script>
-<script lang="ts">
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import ProcessContainer from "./ProcessContainer.svelte";
-  import {onMount} from "svelte";
-  import {fade} from "svelte/transition";
 
   const onKeyDown = (e) => {
     if (e.key !== "Escape")
@@ -53,14 +108,9 @@
 
     closeModal();
   };
-
-  onMount(() => {
-    window.o.events.subscribe(async (event: PlatformEvent) => {
-    });
-  });
 </script>
 
-{#if isOpen}
+{#if _isOpen}
   <aside
     id="modalAside"
     on:keydown={onKeyDown}
@@ -89,8 +139,35 @@
                   runningProcess = null;
                   closeModal();
                 }}/>
+            {:else if navigation}
+              {#each navigation as item}
+                <DappNavItem
+                        segment={item.url}
+                        title={item.title}
+                        external={item.extern}
+                        on:navigate={closeModal}
+                />
+              {/each}
+            {:else if jumplistItems}
+              <div class="flex flex-col p-4 space-y-6">
+                {#each jumplistItems as item}
+                  <DappNavItem
+                          clickOnly={true}
+                          segment=""
+                          title={item.title}
+                          on:navigate={() => {
+                            if (item.event) {
+                              window.o.publishEvent(item.event);
+                            }
+                            if (item.action) {
+                              item.action();
+                            }
+                          }}
+                  />
+                {/each}
+              </div>
             {:else}
-              No running process
+              Nothing to show
             {/if}
           </div>
         </div>

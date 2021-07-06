@@ -1,9 +1,6 @@
 <script lang="ts">
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { onMount } from "svelte";
-  import {
-    runShellProcess
-  } from "../../../shared/processes/shellProcess";
   import { tryGetCurrentSafe } from "../init";
   import { transfer } from "../processes/transfer";
   import TransactionCard from "../atoms/TransactionCard.svelte";
@@ -28,7 +25,7 @@
       params.amount != ""
     ) {
       if ((safeAddress = tryGetCurrentSafe()?.safeAddress) && $me) {
-        window.o.publishEvent(runShellProcess(transfer, {
+        window.o.runProcess(transfer, {
           recipientAddress: params.to,
           message: params.message,
           tokens: {
@@ -38,7 +35,7 @@
           acceptSummary: true,
           safeAddress: safeAddress,
           privateKey: localStorage.getItem("circlesKey"),
-        }));
+        });
       }
     }
   });

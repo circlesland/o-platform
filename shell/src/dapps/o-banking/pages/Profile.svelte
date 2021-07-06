@@ -1,10 +1,4 @@
 <script lang="ts">
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    runShellProcess,
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
   import { transfer } from "../processes/transfer";
   import { setTrust } from "../processes/setTrust";
   import { mySafe } from "../stores/safe";
@@ -12,7 +6,7 @@
   import { invite } from "../../o-passport/processes/invite/invite";
   import { getCountryName } from "src/shared/countries";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
+  import {upsertIdentityOnlyWhereDirty} from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
@@ -22,8 +16,6 @@
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { Profile } from "../data/api/types";
-  import { Continue } from "@o-platform/o-process/dist/events/continue";
-  import { EditorContext } from "@o-platform/o-editors/src/editorContext";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { BankingDappState } from "../../o-banking.manifest";
   import { getLastLoadedDapp, getLastLoadedRoutable } from "../../../loader";
@@ -209,48 +201,42 @@
   function execTransfer() {
     if (!profile || !$mySafe.safeAddress || isMe) return;
 
-    window.o.publishEvent(
-      runShellProcess(transfer, {
+      window.o.runProcess(transfer, {
         safeAddress: $mySafe.safeAddress,
         recipientAddress: profile.safeAddress,
         recipientProfileId: profile.id,
-      })
-    );
+      });
   }
 
   function execTrust() {
     if (!profile || !$mySafe.safeAddress || isMe) return;
-    window.o.publishEvent(
-      runShellProcess(setTrust, {
-        safeAddress: $mySafe.safeAddress,
-        trustLimit: 100,
-        trustReceiver: profile.safeAddress,
-        privateKey: localStorage.getItem("circlesKey"),
-      })
-    );
+
+    window.o.runProcess(setTrust, {
+      safeAddress: $mySafe.safeAddress,
+      trustLimit: 100,
+      trustReceiver: profile.safeAddress,
+      privateKey: localStorage.getItem("circlesKey"),
+    });
   }
 
   function execUntrust() {
     if (!profile || !$mySafe.safeAddress || isMe) return;
-    window.o.publishEvent(
-      runShellProcess(setTrust, {
-        safeAddress: $mySafe.safeAddress,
-        trustLimit: 0,
-        trustReceiver: profile.safeAddress,
-        privateKey: localStorage.getItem("circlesKey"),
-      })
-    );
+
+    window.o.runProcess(setTrust, {
+      safeAddress: $mySafe.safeAddress,
+      trustLimit: 0,
+      trustReceiver: profile.safeAddress,
+      privateKey: localStorage.getItem("circlesKey"),
+    });
   }
 
   function execInvite() {
     if (!profile || !$mySafe.safeAddress || !profile.id || isMe) return;
 
-    window.o.publishEvent(
-      runShellProcess(invite, {
-        safeAddress: $mySafe.safeAddress,
-        inviteProfileId: profile.id,
-      })
-    );
+    window.o.runProcess(invite, {
+      safeAddress: $mySafe.safeAddress,
+      inviteProfileId: profile.id,
+    });
   }
 
   const copy = () => {
@@ -264,38 +250,7 @@
   function editProfile(dirtyFlags: { [x: string]: boolean }) {
     if (!profile || !profile.id || !isEditable) return;
 
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = {
-          id: upsertIdentity.id,
-          name: upsertIdentity.name,
-          stateMachine: (processId?: string) =>
-            (<any>upsertIdentity).stateMachine(processId, true),
-        };
-        ctx.childContext = {
-          data: {
-            id: profile.id,
-            circlesAddress: profile.safeAddress,
-            circlesSafeOwner: profile.circlesSafeOwner,
-            avatarCid: profile.avatarCid,
-            avatarUrl: profile.avatarUrl,
-            avatarMimeType: profile.avatarMimeType,
-            firstName: profile.firstName,
-            lastName: profile.lastName,
-            country: profile.country,
-            dream: profile.dream,
-            cityGeonameid: profile.cityGeonameid,
-            city: profile.city,
-          },
-          dirtyFlags: dirtyFlags,
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
+    window.o.runProcess(upsertIdentityOnlyWhereDirty, profile, dirtyFlags);
   }
 
   let inviteLink: string = "";

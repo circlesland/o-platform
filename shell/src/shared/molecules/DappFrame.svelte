@@ -8,7 +8,8 @@
   import { getLastLoadedPage } from "../../loader";
   import { arraysEqual } from "../functions/arraysEqual";
   import NotFound from "../pages/NotFound.svelte";
-  import { backStack } from "../../main";
+  import {backStack} from "./../../App.svelte";
+  import {Link} from "@o-platform/o-interfaces/dist/routables/link";
 
   export let params: { [x: string]: any } | undefined;
   export let getDappEntryPoint: () => Promise<Routable>;
@@ -47,6 +48,11 @@
       if (_entryTrigger.action) {
         const triggerEvent = _entryTrigger.action(params, dappManifest);
       }
+    } else if (entryPoint.type === "link") {
+      const link = <Link<any, any>>entryPoint;
+      link.url(params, dappManifest);
+      history.back();
+      return;
     } else {
       throw new Error(
         `Entry point type '${entryPoint.type}' is not supported by the DappFrame.`

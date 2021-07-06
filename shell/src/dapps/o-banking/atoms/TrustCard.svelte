@@ -1,7 +1,4 @@
 <script lang="ts">
-  import {
-    runShellProcess
-  } from "../../../shared/processes/shellProcess";
   import { transfer } from "../processes/transfer";
   import { TrustObject } from "../data/circles/types";
   import { tryGetCurrentSafe } from "../init";
@@ -64,11 +61,11 @@
   }
 
   function execTransfer(recipientAddress?: string) {
-    window.o.publishEvent(runShellProcess(transfer, {
+    window.o.runProcess(transfer, {
       recipientAddress,
       safeAddress: tryGetCurrentSafe()?.safeAddress,
       privateKey: localStorage.getItem("circlesKey"),
-    }));
+    });
   }
 </script>
 

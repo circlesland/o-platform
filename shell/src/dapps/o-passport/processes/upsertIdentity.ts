@@ -230,3 +230,10 @@ export const upsertIdentity: ProcessDefinition<
   name: "upsertIdentity",
   stateMachine: <any>processDefinition,
 };
+
+export const upsertIdentityOnlyWhereDirty = {
+  id: upsertIdentity.id,
+  name: upsertIdentity.name,
+  stateMachine: (processId?: string) =>
+      (<any>upsertIdentity).stateMachine(processId, true),
+};

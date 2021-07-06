@@ -2,9 +2,6 @@
  TODO: Login via Link is currently not used. Replace it with a "Trigger"-Routable.
  -->
 <script lang="ts">
-  import {
-    runShellProcess,
-  } from "../../../shared/processes/shellProcess";
   import { onMount } from "svelte";
 
   import {identify, IdentifyContextData} from "../processes/identify/identify";
@@ -18,10 +15,10 @@
     if (!params.code) {
       throw new Error(`Can't login: No one time code supplied.`)
     }
-    window.o.publishEvent(runShellProcess(identify, <IdentifyContextData>{
+    window.o.runProcess(identify, <IdentifyContextData>{
       oneTimeCode: params.code,
       redirectTo: "/dashboard"
-    }));
+    });
   });
 </script>
 

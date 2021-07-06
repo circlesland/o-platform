@@ -31,8 +31,8 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Pr
     }
 
     // 2. Try to find a profile via circles garden
+    const requestUrl = `https://api.circles.garden/api/users/?address[]=${safeAddress}`;
     try {
-        const requestUrl = `https://api.circles.garden/api/users/?address[]=${safeAddress}`;
         const gardenResult = await fetch(requestUrl);
         if (gardenResult && gardenResult.status == 200) {
             const resultJson = await gardenResult.json();
@@ -56,7 +56,7 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Pr
             };
         }
     } catch (e) {
-        console.error(`Couldn't load the following profile metadata from api.circles.garden:`, safeAddress);
+        console.error(`Couldn't load the profile metadata from api.circles.garden. RequestUrl: ${requestUrl}`);
     }
 
     // 3. No profile found

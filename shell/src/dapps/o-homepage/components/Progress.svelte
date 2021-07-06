@@ -1,8 +1,5 @@
 <script lang="ts">
   import {
-    runShellProcess
-  } from "../../../shared/processes/shellProcess";
-  import {
     identify
   } from "../../o-passport/processes/identify/identify";
   import { me } from "../../../shared/stores/me";
@@ -22,7 +19,7 @@
   });
 
   async function login() {
-    window.o.publishEvent(runShellProcess(identify, { redirectTo: "/dashboard" }));
+    window.o.runProcess(identify, { redirectTo: "/dashboard" });
   }
 
 </script>

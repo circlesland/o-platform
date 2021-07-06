@@ -5,7 +5,6 @@ import Trusts from "./o-banking/pages/Trusts.svelte";
 import Graph from "./o-banking/pages/Graph.svelte";
 import ProfilePage from "./o-banking/pages/Profile.svelte";
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
-import { runShellProcess } from "../shared/processes/shellProcess";
 import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
@@ -20,8 +19,8 @@ import { showProfile } from "./o-banking/processes/showProfile";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { showAssetDetail } from "./o-banking/processes/showAssetDetail";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["transactions"],
@@ -36,30 +35,31 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
   isSystem: false,
   routeParts: ["actions"],
   items: (params, runtimeDapp) => {
-    const transferEvent = runShellProcess(transfer, {
-      safeAddress: tryGetCurrentSafe().safeAddress,
-      recipientAddress: runtimeDapp.state.currentSafeAddress,
-      privateKey: localStorage.getItem("circlesKey"),
-    });
-
-    const toggleTrustEvent = runShellProcess(setTrust, {
-      trustLimit: runtimeDapp.state.trusted ? 0 : 100,
-      trustReceiver: runtimeDapp.state.currentSafeAddress,
-      safeAddress: tryGetCurrentSafe().safeAddress,
-      privateKey: localStorage.getItem("circlesKey"),
-    });
     return [
       {
         key: "transfer",
         icon: "sendmoney",
-        label: "Send Money",
-        event: transferEvent,
+        title: "Send Money",
+        action: () => {
+          window.o.runProcess(transfer, {
+            safeAddress: tryGetCurrentSafe().safeAddress,
+            recipientAddress: runtimeDapp.state.currentSafeAddress,
+            privateKey: localStorage.getItem("circlesKey"),
+          });
+        }
       },
       {
         key: "setTrust",
         icon: "trust",
-        label: runtimeDapp.state.trusted ? "Untrust" : "Trust",
-        event: toggleTrustEvent,
+        title: runtimeDapp.state.trusted ? "Untrust" : "Trust",
+        action: () => {
+          window.o.runProcess(setTrust, {
+            trustLimit: runtimeDapp.state.trusted ? 0 : 100,
+            trustReceiver: runtimeDapp.state.currentSafeAddress,
+            safeAddress: tryGetCurrentSafe().safeAddress,
+            privateKey: localStorage.getItem("circlesKey"),
+          });
+        }
       },
     ];
   },
@@ -108,12 +108,12 @@ const assets: Page<any, BankingDappState> = {
   title: "Assets",
   type: "page",
 };
-const assetDetail: Trigger<{ symbol: string }, BankingDappState> = {
+const assetDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
   routeParts: ["assets", ":symbol"],
-  action: (params) => window.o.runProcess(showAssetDetail, { symbol: params.symbol }),
+  component: AssetDetail,
   title: "Asset",
-  type: "trigger",
+  type: "page"
 };
 const trusts: Page<any, BankingDappState> = {
   routeParts: ["trusts"],
@@ -128,16 +128,12 @@ const sendInvite: Page<{ inviteAccountAddress: string }, BankingDappState> = {
   title: "Trusts",
   type: "page",
 };
-const trustDetail: Trigger<{ id: string }, BankingDappState> = {
+const trustDetail: Page<{ id: string }, BankingDappState> = {
   isSystem: true,
   routeParts: ["trusts", ":id"],
-  eventFactory: (params) => {
-    return runShellProcess(showProfile, {
-      id: params.id,
-    });
-  },
+  component: ProfilePage,
   title: "Trust",
-  type: "trigger",
+  type: "page",
 };
 const findMySafe: Page<any, BankingDappState> = {
   isSystem: true,

@@ -9,9 +9,14 @@
   export let segment = null;
   export let title: string = null;
   export let external: boolean = false;
+  export let clickOnly: boolean = false;
   const current = getContext("nav");
 
   function setSegment() {
+    if (clickOnly) {
+      dispatch("navigate");
+      return;
+    }
     if (external) {
       window.open(segment, "_blank").focus();
       dispatch("navigate");

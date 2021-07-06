@@ -5,9 +5,6 @@ import Keys from "./o-passport/pages/Keys.svelte";
 import Settings from "./o-passport/pages/Settings.svelte";
 import Login from "./o-passport/pages/Login.svelte";
 import { logout } from "./o-passport/processes/logout";
-import {
-  runShellProcess,
-} from "../shared/processes/shellProcess";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
@@ -76,9 +73,9 @@ export const passport: DappManifest<DappState> = {
     items: () => {
       return [{
         key: "logout",
-        label: "Logout",
+        title: "Logout",
         icon: "logout",
-        event: runShellProcess(logout, {})
+        action: () => window.o.runProcess(logout, {})
       }]
     }
   },

@@ -11,7 +11,22 @@ import ActionButtonComponent from "../shared/molecules/NextNav/Components/Action
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import {Page} from "@o-platform/o-interfaces/dist/routables/page";
 import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import {Link} from "@o-platform/o-interfaces/dist/routables/link";
 
+const externalChat: Link<any, DappState> = {
+  type: "link",
+  title: "Chat",
+  routeParts: ["chat"],
+  openInNewTab: true,
+  url: () => "https://discord.gg/CS6xq7jECR"
+};
+const externalForum: Link<any, DappState> = {
+  type: "link",
+  title: "Forum",
+  routeParts: ["forum"],
+  openInNewTab: true,
+  url: () => "https://aboutcircles.com"
+};
 const login : Page<any, DappState> = {
   isSystem: true,
   routeParts: ["login"],
@@ -19,6 +34,23 @@ const login : Page<any, DappState> = {
   title: "Circles Land",
   type: "page"
 };
+
+const externalBlog: Link<any, DappState> = {
+  type: "link",
+  title: "Blog",
+  routeParts: ["blog"],
+  openInNewTab: true,
+  url: () => "https://blog.circles.land/"
+};
+
+const externalWhitepaper: Link<any, DappState> = {
+  type: "link",
+  title: "Whitepaper",
+  routeParts: ["whitepaper"],
+  openInNewTab: true,
+  url: () => "https://blog.circles.land/whitepaper/"
+};
+
 const index : Page<any, DappState> = {
   isSystem: true,
   routeParts: [""],
@@ -127,5 +159,9 @@ export const homepage: DappManifest<DappState> = {
     tos,
     learn,
     login,
+    externalChat,
+    externalForum,
+    externalBlog,
+    externalWhitepaper
   ]
 };

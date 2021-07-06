@@ -54,7 +54,7 @@ export function getMergedNavigationManifest(
   routable: Routable
 ) {
   const mergedManifest = dapp.navigation ?? {};
-  const other = routable.navigation;
+  const other = routable?.navigation;
 
   if (!other) return mergedManifest;
 

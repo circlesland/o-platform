@@ -3,9 +3,6 @@ import Home from "./o-dashboard/pages/Home.svelte";
 import CreateHub from "./o-dashboard/pages/CreateHub.svelte";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 import { logout } from "./o-passport/processes/logout";
-import {
-  runShellProcess
-} from "../shared/processes/shellProcess";
 import {Page} from "@o-platform/o-interfaces/dist/routables/page";
 import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 
@@ -47,9 +44,9 @@ export const dashboard: DappManifest<DappState> = {
     items: (params, runtimeDapp) => {
       return [{
         key: "logout",
-        label: "Logout",
+        title: "Logout",
         icon: "logout",
-        event: runShellProcess(logout, {})
+        action: () => window.o.runProcess(logout, {})
       }];
     }
   },
