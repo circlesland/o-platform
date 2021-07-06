@@ -1,5 +1,6 @@
 import { DappManifest } from "./dappManifest";
 import { Routable } from "./routable";
+import {merge} from "rxjs";
 
 export interface NavigationManifest {
   leftSlot?: {
@@ -53,35 +54,18 @@ export function getMergedNavigationManifest(
   dapp: DappManifest<any>,
   routable: Routable
 ) {
-  const mergedManifest = dapp.navigation ?? {};
   const other = routable?.navigation;
+  if (!other) return dapp.navigation;
 
-  if (!other) return mergedManifest;
-
-  if (other.leftSlot) {
-    mergedManifest.leftSlot = other.leftSlot;
-  }
-  if (other.navPill) {
-    if (!mergedManifest.navPill) {
-      mergedManifest.navPill = other.navPill;
-    } else {
-      if (other.navPill.actionButton) {
-        mergedManifest.navPill.actionButton = other.navPill.actionButton;
-      }
-      if (other.navPill.left) {
-        mergedManifest.navPill.left = other.navPill.left;
-      }
-      if (other.navPill.right) {
-        mergedManifest.navPill.right = other.navPill.right;
-      }
-    }
-  }
-  if (other.rightSlot) {
-    mergedManifest.rightSlot = other.rightSlot;
-  }
-  if (other.loginPill) {
-    mergedManifest.loginPill = other.loginPill;
-  }
+  let mergedManifest:NavigationManifest = {};
+  mergedManifest.leftSlot = other.leftSlot ?? dapp.navigation?.leftSlot;
+  mergedManifest.rightSlot = other.rightSlot ?? dapp.navigation?.rightSlot;
+  mergedManifest.navPill = {
+    left: other.navPill?.left ?? dapp.navigation?.navPill?.left,
+    actionButton: other.navPill?.actionButton ?? dapp.navigation?.navPill?.actionButton,
+    right: other.navPill?.right ?? dapp.navigation?.navPill?.right
+  };
+  mergedManifest.loginPill = other.loginPill ?? dapp.navigation?.loginPill;
 
   return mergedManifest;
 }
