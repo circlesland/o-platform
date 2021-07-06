@@ -8,6 +8,7 @@ import {Jumplist} from "./jumplist";
  */
 export interface Trigger<TParams extends {[x:string]:any}, TDappState extends {[x:string]:any}> extends Routable {
     type: "trigger";
-    eventFactory: (params:TParams, runtimeDapp: DappManifest<any>) => PlatformEvent;
+    eventFactory?: (params:TParams, runtimeDapp: DappManifest<any>) => PlatformEvent;
+    action?: (params:TParams, runtimeDapp: DappManifest<any>) => void;
     jumplist?: Jumplist<TParams, TDappState>
 }

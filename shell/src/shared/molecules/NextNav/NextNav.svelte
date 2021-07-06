@@ -1,16 +1,19 @@
 <script lang="ts">
-  import { setContext } from "svelte";
+  import {onMount, setContext} from "svelte";
   import { writable } from "svelte/store";
 
   import FilterComponent from "./Components/Filter.svelte";
   import ListComponent from "./Components/List.svelte";
   import LinkComponent from "./Components/Link.svelte";
+  import {runProcess} from "../../../shared/molecules/Modal2.svelte";
   import NavPill from "./Components/NavPill.svelte";
   import ProcessPill from "./Components/ProcessPill.svelte";
   import LoginPill from "./Components/LoginPill.svelte";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+//  import {ModalChanged} from "@o-platform/o-events/dist/shell/modalChanged";
 
   export let login: boolean = false;
-  export let isOpen: boolean = false;
+  let isOpen: boolean = false;
   export let modalProcess;
   export let lastPrompt;
   export let navigation: any;
@@ -19,6 +22,15 @@
   let newnav: any;
   const current = writable(null);
   setContext("nav", current);
+
+  onMount(() => {
+    window.o.events.subscribe(async (event: PlatformEvent) => {
+      if (event.type === "shell.modalChanged") {
+        //isOpen = (<ModalChanged>event).isOpen;
+        lastPrompt = null;
+      }
+    });
+  });
 </script>
 
 <footer

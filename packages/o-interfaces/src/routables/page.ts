@@ -12,7 +12,7 @@ export interface Page<TParams extends {[x:string]:any}, TDappState extends {[x:s
   component?: any,
   jumplist?: Jumplist<TParams, TDappState>
   isFullWidth?:boolean,
-  hideFooter?:boolean,
+  hideFooter?:boolean
 }
 /*
 export interface PageManifest {

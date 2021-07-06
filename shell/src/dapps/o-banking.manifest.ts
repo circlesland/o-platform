@@ -5,7 +5,6 @@ import Trusts from "./o-banking/pages/Trusts.svelte";
 import Graph from "./o-banking/pages/Graph.svelte";
 import ProfilePage from "./o-banking/pages/Profile.svelte";
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
-
 import { runShellProcess } from "../shared/processes/shellProcess";
 import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
@@ -21,7 +20,6 @@ import { showProfile } from "./o-banking/processes/showProfile";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { showTransaction } from "./o-banking/processes/showTransaction";
 import { showAssetDetail } from "./o-banking/processes/showAssetDetail";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 
@@ -43,6 +41,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
       recipientAddress: runtimeDapp.state.currentSafeAddress,
       privateKey: localStorage.getItem("circlesKey"),
     });
+
     const toggleTrustEvent = runShellProcess(setTrust, {
       trustLimit: runtimeDapp.state.trusted ? 0 : 100,
       trustReceiver: runtimeDapp.state.currentSafeAddress,
@@ -81,13 +80,13 @@ export const profile: Page<any, BankingDappState> = {
     },
   },
 };
+
 const transactionDetail: Page<{ _id: string }, BankingDappState> = {
   type: "page",
   isSystem: true,
   routeParts: ["transactions", ":_id"],
   title: "Transaction",
   component: TransactionDetailPage,
-
   jumplist: profileJumplist,
 };
 const transactionSend: Trigger<
@@ -112,10 +111,7 @@ const assets: Page<any, BankingDappState> = {
 const assetDetail: Trigger<{ symbol: string }, BankingDappState> = {
   isSystem: true,
   routeParts: ["assets", ":symbol"],
-  eventFactory: (params) =>
-    runShellProcess(showAssetDetail, {
-      symbol: params.symbol,
-    }),
+  action: (params) => window.o.runProcess(showAssetDetail, { symbol: params.symbol }),
   title: "Asset",
   type: "trigger",
 };

@@ -1,37 +1,208 @@
+<script context="module" lang="ts">
+  import {IShell} from "./shell";
+  import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
+  import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
+  import {Generate} from "@o-platform/o-utils/dist/generate";
+  import LoadingIndicator from "./shared/atoms/LoadingIndicator.svelte";
+  import Success from "./shared/atoms/Success.svelte";
+  import ErrorIndicator from "./shared/atoms/Error.svelte";
+  import {useMachine} from "xstate-svelte";
+  import {Subject, Subscription} from "rxjs";
+  import {ProcessEvent} from "@o-platform/o-process/dist/interfaces/processEvent";
+  import {AnyEventObject} from "xstate";
+  import {Bubble} from "@o-platform/o-process/dist/events/bubble";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Process} from "@o-platform/o-process/dist/interfaces/process";
+  import {Sinker} from "@o-platform/o-process/dist/events/sinker";
+  import {shellEvents} from "./shared/shellEvents";
+  import {ApiConnection} from "./shared/apiConnection";
+  import {getProcessContext} from "./main";
+
+  /**
+   * Contains events which have been sent by the DappFrame.
+   * It's used to track which "modal-close" events should also
+   * trigger a history.back() call.
+   */
+  export let backStack:PlatformEvent[] = [];
+
+  const runningProcesses : {
+    [id:string]:Process
+  } = {
+  }
+
+  const shell: IShell = {
+    stateMachines: {
+      findById(processId:string) {
+        return runningProcesses[processId];
+      },
+      async run<TContext>(definition: ProcessDefinition<any, any>, contextModifier?: (processContext: ProcessContext<any>) => Promise<TContext>) {
+        const processId = Generate.randomHexString(8);
+        console.log(`Starting process (id: ${processId}) with definition:`, definition);
+
+        const machine = (<any>definition).stateMachine(LoadingIndicator, Success, ErrorIndicator);
+        const machineOptions = {
+          context: contextModifier
+                  ? await contextModifier(await getProcessContext())
+                  : await getProcessContext()
+        };
+        const {service, state, send} = useMachine(machine, machineOptions);
+
+        const outEvents = new Subject<ProcessEvent>();
+        const inEvents = new Subject<ProcessEvent>();
+
+        let lastInEvent:AnyEventObject;
+
+        service.onTransition((state1, event) => {
+          if (event.type == 'error.platform' || event.type == "xstate.error") {
+            console.error(`An error occurred during the execution of process '${definition.name}'::`, event);
+          }
+          if (event.type == "process.ipc.bubble") {
+            process.lastReceivedBubble = <Bubble>event;
+          }
+
+          //console.log(`window.o.stateMachines: forwarding event to the processEvents stream of process '${definition.name}':`, event);
+          if (event == lastInEvent) {
+            // TODO: Hack: Skip this event - it's 'reflected'
+            lastInEvent = null;
+            return;
+          }
+          outEvents.next(<any>{
+            stopped: false,
+            currentState: state1,
+            previousState: state1.history,
+            event: event
+          });
+        });
+
+        service.onStop(() => {
+          outEvents.next({
+            stopped: true
+          });
+
+          delete runningProcesses[processId];
+        });
+
+        function isProcessEvent (event: PlatformEvent | ProcessEvent): event is ProcessEvent {
+          return (event as ProcessEvent).currentState !== null;
+        }
+
+        const process: Process = {
+          id: processId,
+          events: outEvents,
+          inEvents: inEvents,
+          lastReceivedBubble: null,
+          sendEvent: (event: PlatformEvent & {type:string}) => {
+            if (isProcessEvent(event)) {
+              lastInEvent = event;
+              inEvents.next(<any>{
+                event: event
+              });
+            }
+            send(event);
+          },
+          sendAnswer(answer: PlatformEvent) {
+            if (!this.lastReceivedBubble || this.lastReceivedBubble.noReply) {
+              throw new Error("Cannot answer because no Bubble event was received before or the event hat the 'noReply' property set.")
+            }
+            process.sendEvent(<Sinker>{
+              type: "process.ipc.sinker",
+              levels: this.lastReceivedBubble.levels ?? 0,
+              backTrace: this.lastReceivedBubble.trace,
+              wrappedEvent: answer
+            });
+          }
+        };
+
+        service.start();
+
+        runningProcesses[processId] = process;
+
+        return process;
+      }
+    },
+    events: shellEvents.observable,
+    publishEvent: event => shellEvents.publish(event),
+    requestEvent: <TResult extends PlatformEvent>(requestEvent) => {
+      const timeoutPeriod = 100;
+      return new Promise<TResult>((resolve, reject) => {
+        let answerSubscription: Subscription;
+        let answered = false;
+
+        let timeout = setTimeout(() => {
+          if (answered)
+            return;
+
+          reject(new Error(`The request event with the id ${requestEvent.id} wasn't answered within ${timeoutPeriod} ms`));
+        }, timeoutPeriod);
+
+        answerSubscription = window.o.events.subscribe((event) => {
+          if (event.responseToId != requestEvent.id) {
+            return;
+          }
+
+          answerSubscription.unsubscribe();
+          clearTimeout(timeout);
+
+          resolve(<TResult>event);
+        });
+      });
+    },
+    authClient: null
+  };
+
+  async function connectToApi() {
+    console.log(`Connecting to __AUTH_ENDPOINT__ ..`);
+    shell.authClient = new ApiConnection("__AUTH_ENDPOINT__/");
+
+    console.log(`Connecting to __API_ENDPOINT__ ..`);
+    shell.apiClient = new ApiConnection("__API_ENDPOINT__/", "include");
+
+    console.log(`Connecting to __CIRCLES_SUBGRAPH_ENDPOINT__ ..`);
+    shell.theGraphClient = new ApiConnection("__CIRCLES_SUBGRAPH_ENDPOINT__");
+  }
+
+  connectToApi().then(() => {
+    console.log(`Connected to __AUTH_ENDPOINT__ and __API_ENDPOINT__`)
+  });
+
+  declare global {
+    interface Window {
+      o: IShell
+    }
+  }
+
+  window.o = shell;
+</script>
 <script lang="ts">
   import "./shared/css/base.css";
   import "./shared/css/components.css";
   import "./shared/css/utilities.css";
   import routes from "./loader";
-  import { getLastLoadedDapp } from "./loader";
-  import { getLastLoadedPage } from "./loader";
-  import Router, { push } from "svelte-spa-router";
+  import {getLastLoadedDapp} from "./loader";
+  import {getLastLoadedPage} from "./loader";
+  import Router, {push} from "svelte-spa-router";
   import Modal from "./shared/molecules/Modal.svelte";
   import ProcessContainer from "./shared/molecules/ProcessContainer.svelte";
-  import { Process } from "@o-platform/o-process/dist/interfaces/process";
-  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import { NavigateTo } from "@o-platform/o-events/dist/shell/navigateTo";
-  import { ProgressSignal } from "@o-platform/o-events/dist/signals/progressSignal";
-  import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
-  import { runShellProcess } from "./shared/processes/shellProcess";
-  import { Subscription } from "rxjs";
-  import { getMergedNavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
-  import { Prompt } from "@o-platform/o-process/dist/events/prompt";
+  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+  import {NavigateTo} from "@o-platform/o-events/dist/shell/navigateTo";
+  import {ProgressSignal} from "@o-platform/o-events/dist/signals/progressSignal";
+  import {ProcessStarted} from "@o-platform/o-process/dist/events/processStarted";
+  import {runShellProcess} from "./shared/processes/shellProcess";
+  import {getMergedNavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
+  import {Prompt} from "@o-platform/o-process/dist/events/prompt";
   import {
     Cancel,
     CancelRequest,
   } from "@o-platform/o-process/dist/events/cancel";
-  import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
-  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
   import {
     identify,
     IdentifyContextData,
   } from "./dapps/o-passport/processes/identify/identify";
-  import { SvelteToast } from "./shared/molecules/Toast";
-  import { XDaiThresholdTrigger } from "./xDaiThresholdTrigger";
-  import { me } from "./shared/stores/me";
-  import { INVITE_VALUE } from "./dapps/o-passport/processes/invite/invite";
+  import {SvelteToast} from "./shared/molecules/Toast";
+  import {XDaiThresholdTrigger} from "./xDaiThresholdTrigger";
+  import {me} from "./shared/stores/me";
+  import {INVITE_VALUE} from "./dapps/o-passport/processes/invite/invite";
   import {
     deploySafe,
     HubSignupContextData,
@@ -39,9 +210,9 @@
   import DappNavItem from "./shared/atoms/DappsNavItem.svelte";
   import NextNav from "./shared/molecules/NextNav/NextNav.svelte";
   import Icons from "./shared/molecules/Icons.svelte";
-  import { onMount } from "svelte";
-  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-  import { backStack } from "./main";
+  import {onMount} from "svelte";
+  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+  import Modal2 from "./shared/molecules/Modal2.svelte";
 
   let isOpen: boolean = false;
   let processWaiting: boolean = false;
@@ -83,8 +254,8 @@
     if (event.type === "shell.runProcess") {
       const runProcessEvent = <RunProcess<any>>event;
       const runningProcess = await window.o.stateMachines.run(
-        runProcessEvent.definition,
-        runProcessEvent.contextModifier
+              runProcessEvent.definition,
+              runProcessEvent.contextModifier
       );
 
       if (runProcessEvent.inWindow) {
@@ -92,19 +263,19 @@
         modalProcess = runningProcess;
         isOpen = true;
         modalProcessEventSubscription = modalProcess.events.subscribe(
-          (processEvent: ProcessEvent) => {
-            if (
-              processEvent.event &&
-              processEvent.event.type == "process.ipc.bubble" &&
-              (<any>processEvent.event).wrappedEvent.type == "process.prompt"
-            ) {
-              console.log(
-                "lastPrompt:",
-                (<any>processEvent.event).wrappedEvent
-              );
-              lastPrompt = <Prompt<any>>(<any>processEvent.event).wrappedEvent;
-            }
-          }
+                (processEvent: ProcessEvent) => {
+                  if (
+                          processEvent.event &&
+                          processEvent.event.type == "process.ipc.bubble" &&
+                          (<any>processEvent.event).wrappedEvent.type == "process.prompt"
+                  ) {
+                    console.log(
+                            "lastPrompt:",
+                            (<any>processEvent.event).wrappedEvent
+                    );
+                    lastPrompt = <Prompt<any>>(<any>processEvent.event).wrappedEvent;
+                  }
+                }
         );
       } else {
         // If not, send an event with the process id.
@@ -180,9 +351,9 @@
       return;
     }
     window.o.publishEvent(
-      runShellProcess(identify, <IdentifyContextData>{
-        redirectTo: "/dashboard",
-      })
+            runShellProcess(identify, <IdentifyContextData>{
+              redirectTo: "/dashboard",
+            })
     );
   }
 
@@ -203,39 +374,39 @@
     if ($me && $me.circlesSafeOwner && !balanceThresholdTrigger) {
       if (!!localStorage.getItem("isCreatingSafe")) {
         console.log(
-          "Waiting until the required balance to create a new safe is reached .."
+                "Waiting until the required balance to create a new safe is reached .."
         );
         balanceThresholdTrigger = new XDaiThresholdTrigger(
-          $me.circlesSafeOwner,
-          INVITE_VALUE - 0.005,
-          async (address: string, threshold: number) => {
-            console.log("The safe creation balance threshold was reached!");
-            window.o.publishEvent(
-              runShellProcess(deploySafe, <HubSignupContextData>{
-                privateKey: localStorage.getItem("circlesKey"),
-              })
-            );
-          }
+                $me.circlesSafeOwner,
+                INVITE_VALUE - 0.005,
+                async (address: string, threshold: number) => {
+                  console.log("The safe creation balance threshold was reached!");
+                  window.o.publishEvent(
+                          runShellProcess(deploySafe, <HubSignupContextData>{
+                            privateKey: localStorage.getItem("circlesKey"),
+                          })
+                  );
+                }
         );
       } else if (
-        !triggered &&
-        (!!localStorage.getItem("fundsSafe") ||
-          !!localStorage.getItem("signsUpAtCircles"))
+              !triggered &&
+              (!!localStorage.getItem("fundsSafe") ||
+                      !!localStorage.getItem("signsUpAtCircles"))
       ) {
         window.o.publishEvent(
-          runShellProcess(deploySafe, <HubSignupContextData>{
-            privateKey: localStorage.getItem("circlesKey"),
-          })
+                runShellProcess(deploySafe, <HubSignupContextData>{
+                  privateKey: localStorage.getItem("circlesKey"),
+                })
         );
         triggered = true;
       }
     }
 
     layoutClasses =
-      (lastLoadedDapp && lastLoadedDapp.isFullWidth) ||
-      (lastLoadedPage && lastLoadedPage.isFullWidth)
-        ? ""
-        : "md:w-2/3 xl:w-1/2";
+            (lastLoadedDapp && lastLoadedDapp.isFullWidth) ||
+            (lastLoadedPage && lastLoadedPage.isFullWidth)
+                    ? ""
+                    : "md:w-2/3 xl:w-1/2";
   }
 
   function handleActionButton(event) {
@@ -247,6 +418,7 @@
       isOpen = true;
     }
   }
+
   function handleMenuButton(event) {
     if (event.detail.menuButton == "close") {
       modalWantsToClose();
@@ -270,6 +442,7 @@
   });
 </script>
 
+<Modal2 />
 {#if _routes}
   <SvelteToast />
   <div class="flex flex-col text-base">

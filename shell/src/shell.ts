@@ -15,6 +15,8 @@ export interface IShell {
   lastError?: any;
   events?: Subject<PlatformEvent>,
   publishEvent?: (event: PlatformEvent) => void,
+  requestEvent?: <TResult extends PlatformEvent>(event: PlatformEvent) => Promise<TResult>,
+  runProcess?: (processDefinition:ProcessDefinition<any, any>, contextData:{[x:string]:any}) => Promise<any>,
   stateMachines: {
     findById(processId:string): Process;
     run<TContext>(definition: ProcessDefinition<any,any>, contextModifier?: (processContext: ProcessContext<any>) => Promise<TContext>) : Promise<Process>

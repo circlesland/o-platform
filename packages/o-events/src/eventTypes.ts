@@ -16,6 +16,7 @@ export type PlatformEventTypes =
     | "shell.processStarted"
     | "shell.dappLoading"
     | "shell.dappLoaded"
+    | "shell.modalChanged"
     | "circles.web3providerChanged"
     | "process.ready"
     | "process.nop"

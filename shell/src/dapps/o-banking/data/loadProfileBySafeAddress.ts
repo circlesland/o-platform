@@ -31,28 +31,32 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Pr
     }
 
     // 2. Try to find a profile via circles garden
-    const requestUrl = `https://api.circles.garden/api/users/?address[]=${safeAddress}`;
-    const gardenResult = await fetch(requestUrl);
-    if (gardenResult && gardenResult.status == 200) {
-        const resultJson = await gardenResult.json();
-        const profile =
-            resultJson.data && resultJson.data.length
-                ? resultJson.data[0]
-                : undefined;
+    try {
+        const requestUrl = `https://api.circles.garden/api/users/?address[]=${safeAddress}`;
+        const gardenResult = await fetch(requestUrl);
+        if (gardenResult && gardenResult.status == 200) {
+            const resultJson = await gardenResult.json();
+            const profile =
+                resultJson.data && resultJson.data.length
+                    ? resultJson.data[0]
+                    : undefined;
 
-        if (!profile) {
-            return {
-                id: 0,
-                circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
-                firstName: ""
+            if (!profile) {
+                return {
+                    id: 0,
+                    circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
+                    firstName: ""
+                }
             }
+            return {
+                id: profile.id,
+                circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
+                firstName: profile ? profile.username : "",
+                avatarUrl: profile ? profile.avatarUrl : undefined
+            };
         }
-        return {
-            id: profile.id,
-            circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
-            firstName: profile ? profile.username : "",
-            avatarUrl: profile ? profile.avatarUrl : undefined
-        };
+    } catch (e) {
+        console.error(`Couldn't load the following profile metadata from api.circles.garden:`, safeAddress);
     }
 
     // 3. No profile found

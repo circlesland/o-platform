@@ -34,14 +34,19 @@
       _entryPage = <Page<any, any>>entryPoint;
     } else if (entryPoint.type === "trigger") {
       _entryTrigger = <Trigger<any, any>>entryPoint;
-      const triggerEvent = _entryTrigger.eventFactory(params, dappManifest);
-      if (!triggerEvent) {
-        throw new Error(
-          `The _entryTrigger.eventFactory didn't return an event.`
-        );
+      if (_entryTrigger.eventFactory) {
+        const triggerEvent = _entryTrigger.eventFactory(params, dappManifest);
+        if (!triggerEvent) {
+          throw new Error(
+                  `The _entryTrigger.eventFactory didn't return an event.`
+          );
+        }
+        backStack.push(triggerEvent);
+        window.o.publishEvent(triggerEvent);
       }
-      backStack.push(triggerEvent);
-      window.o.publishEvent(triggerEvent);
+      if (_entryTrigger.action) {
+        const triggerEvent = _entryTrigger.action(params, dappManifest);
+      }
     } else {
       throw new Error(
         `Entry point type '${entryPoint.type}' is not supported by the DappFrame.`
