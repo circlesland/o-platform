@@ -95,6 +95,28 @@
         <div class="text-xs font-bold text-left ">Offers</div>
       </div>
     </section> -->
+
+    <div class="p-2">
+      <Swiper
+        slidesPerView={4.1}
+        spaceBetween={10}
+        grabCursor={true}
+        pagination={{
+          clickable: true,
+        }}
+        on:slideChange={() => console.log("slide change")}
+        on:swiper={(e) => console.log(e.detail[0])}
+      >
+        {#each Object.keys(citites) as city}
+          <SwiperSlide>
+            <div class="p-2 rounded-full bg-light-lighter text-2xs">
+              {city}
+            </div>
+          </SwiperSlide>
+        {/each}
+      </Swiper>
+    </div>
+
     {#each Object.keys(citites) as city}
       <section class="flex items-center justify-center mx-4 mb-1 ">
         <div class="flex flex-col w-full p-4 space-y-2 ">
