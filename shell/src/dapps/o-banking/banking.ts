@@ -370,7 +370,21 @@ export class Banking {
     {
         const allKnownAddresses = this.allKnownSafeAddresses;
 
-        const gardenProfiles = await Banking.findCirclesGardenProfiles(allKnownAddresses);
+
+        const findCirclesGardenProfiles = new Promise<{
+            safeAddress: string,
+            displayName: string,
+            avatarUrl?: string
+        }[]>(async (resolve) => {
+            try {
+                resolve(await Banking.findCirclesGardenProfiles(allKnownAddresses));
+                return;
+            } catch (e) {
+                console.error(`Couldn't load the following profiles from api.circles.garden:`, resolve);
+            }
+            return resolve([]);
+        });
+        const gardenProfiles = await findCirclesGardenProfiles;
         const gardenMap = Banking.createProfileMap(gardenProfiles);
 
         const landProfiles = await Banking.findCirclesLandProfiles(allKnownAddresses);
