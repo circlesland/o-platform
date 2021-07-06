@@ -15,7 +15,6 @@ import ActionButtonComponent from "../shared/molecules/NextNav/Components/Action
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import BacklinkComponent from "../shared/molecules/NextNav/Components/Backlink.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
-import { showProfile } from "./o-banking/processes/showProfile";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";

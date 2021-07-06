@@ -21,7 +21,7 @@
       window.open(segment, "_blank").focus();
       dispatch("navigate");
     } else {
-      push(segment);
+      push("/" + segment);
       dispatch("navigate");
     }
   }
