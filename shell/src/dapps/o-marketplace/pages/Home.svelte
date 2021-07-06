@@ -68,9 +68,9 @@
 
 <MarketplaceHeader />
 
-<div class="mx-4 ">
+<div class="">
   {#if isLoading}
-    <section class="flex items-center justify-center mb-2 ">
+    <section class="flex items-center justify-center mx-4 mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>Loading offers...</div>
@@ -78,7 +78,7 @@
       </div>
     </section>
   {:else if error}
-    <section class="flex items-center justify-center mb-2 ">
+    <section class="flex items-center justify-center mx-4 mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
@@ -96,7 +96,7 @@
       </div>
     </section> -->
     {#each Object.keys(citites) as city}
-      <section class="flex items-center justify-center mb-1 ">
+      <section class="flex items-center justify-center mx-4 mb-1 ">
         <div class="flex flex-col w-full p-4 space-y-2 ">
           <div class="text-xs font-bold text-left ">
             {city}
