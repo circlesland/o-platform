@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {onMount, setContext} from "svelte";
+  import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
 
   import FilterComponent from "./Components/Filter.svelte";
@@ -9,11 +9,11 @@
   import NavPill from "./Components/NavPill.svelte";
   import ProcessPill from "./Components/ProcessPill.svelte";
   import LoginPill from "./Components/LoginPill.svelte";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-//  import {ModalChanged} from "@o-platform/o-events/dist/shell/modalChanged";
+  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+  //  import {ModalChanged} from "@o-platform/o-events/dist/shell/modalChanged";
 
   export let login: boolean = false;
-  let isOpen: boolean = false;
+  export let isOpen: boolean = false;
   export let modalProcess;
   export let lastPrompt;
   export let navigation: any;

@@ -1,32 +1,40 @@
 <script lang="ts">
-  import {Process} from "@o-platform/o-process/dist/interfaces/process";
-  import {fade} from "svelte/transition";
-  import {CancelRequest} from "@o-platform/o-process/dist/events/cancel";
-  import {getLastLoadedDapp, getLastLoadedRoutable} from "../../loader";
-  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+  import { Process } from "@o-platform/o-process/dist/interfaces/process";
+  import { fade } from "svelte/transition";
+  import { createEventDispatcher } from "svelte";
+  import { CancelRequest } from "@o-platform/o-process/dist/events/cancel";
+  import { getLastLoadedDapp, getLastLoadedRoutable } from "../../loader";
+  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import DappNavItem from "./../atoms/DappsNavItem.svelte";
   import ProcessContainer from "./ProcessContainer.svelte";
-  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-  import {JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
-  import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
-  import {Link} from "@o-platform/o-interfaces/dist/routables/link";
+  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
+  import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+  import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 
-  let runningProcess: Process|undefined;
-  let jumplistItems: JumplistItem[]|undefined;
-  let navigation: {
-    icon?:IconDefinition;
-    title:string;
-    url:string;
-    extern: boolean;
-  }[]|undefined;
+  let runningProcess: Process | undefined;
+  let jumplistItems: JumplistItem[] | undefined;
+  let navigation:
+    | {
+        icon?: IconDefinition;
+        title: string;
+        url: string;
+        extern: boolean;
+      }[]
+    | undefined;
 
   export function isOpen() {
     return _isOpen;
   }
+
+  const dispatch = createEventDispatcher();
+
+  $: {
+    dispatch("modalOpen", _isOpen);
+  }
   let _isOpen = false;
 
-  export function showJumplist(params:{[x:string]:any})
-  {
+  export function showJumplist(params: { [x: string]: any }) {
     if (!closeModal()) {
       return;
     }
@@ -34,61 +42,68 @@
     const lastDapp = getLastLoadedDapp();
     const lastRoutable = getLastLoadedRoutable();
 
-    let combinedItems:JumplistItem[] = [];
-    if(lastDapp.jumplist) {
+    let combinedItems: JumplistItem[] = [];
+    if (lastDapp.jumplist) {
       try {
         const dappItems = lastDapp.jumplist.items(params, lastDapp);
         combinedItems = dappItems;
       } catch (e) {
-        console.error(`Cannot load the dapp's jumplist`)
+        console.error(`Cannot load the dapp's jumplist`);
       }
     }
-    if(lastRoutable.type == "page" && (<Page<any, any>>lastRoutable).jumplist) {
+    if (
+      lastRoutable.type == "page" &&
+      (<Page<any, any>>lastRoutable).jumplist
+    ) {
       try {
         const pageItems = lastDapp.jumplist.items(params, lastDapp);
         combinedItems = combinedItems.concat(pageItems);
       } catch (e) {
-        console.error(`Cannot load the page's jumplist`)
+        console.error(`Cannot load the page's jumplist`);
       }
     }
     jumplistItems = combinedItems;
     _isOpen = true;
   }
 
-  export function showNavigation(dapp:DappManifest<any>)
-  {
+  export function showNavigation(dapp: DappManifest<any>) {
     if (!closeModal()) {
       return;
     }
-    const routables = dapp.routables.filter((o) => (o.type === "page" || o.type === "link") && !o.isSystem);
-    navigation = routables.map(o => {
+    const routables = dapp.routables.filter(
+      (o) => (o.type === "page" || o.type === "link") && !o.isSystem
+    );
+    navigation = routables.map((o) => {
       if (o.type == "page") {
         return {
           title: o.title,
           icon: o.icon,
-          url: getLastLoadedDapp().routeParts.join('/') + '/' + o.routeParts.join('/'),
-          extern: false
-        }
+          url:
+            getLastLoadedDapp().routeParts.join("/") +
+            "/" +
+            o.routeParts.join("/"),
+          extern: false,
+        };
       } else {
         return {
           title: o.title,
           icon: o.icon,
           url: (<Link<any, any>>o).url({}, getLastLoadedDapp()),
-          extern: (<Link<any, any>>o).openInNewTab
-        }
+          extern: (<Link<any, any>>o).openInNewTab,
+        };
       }
-    })
+    });
     _isOpen = true;
   }
 
-  export function showProcess(processId:string) {
+  export function showProcess(processId: string) {
     runningProcess = window.o.stateMachines.findById(processId);
     if (!_isOpen && runningProcess) {
       _isOpen = true;
     }
   }
 
-  export function closeModal() : boolean {
+  export function closeModal(): boolean {
     if (runningProcess && _isOpen) {
       runningProcess.sendEvent(new CancelRequest());
       return false;
@@ -103,8 +118,7 @@
   }
 
   const onKeyDown = (e) => {
-    if (e.key !== "Escape")
-      return;
+    if (e.key !== "Escape") return;
 
     closeModal();
   };
@@ -134,35 +148,37 @@
           <div class="w-full m-auto">
             {#if runningProcess}
               <ProcessContainer
-                      process={runningProcess}
-                      on:stopped={() => {
+                process={runningProcess}
+                on:stopped={() => {
                   runningProcess = null;
                   closeModal();
-                }}/>
+                }}
+              />
             {:else if navigation}
               {#each navigation as item}
                 <DappNavItem
-                        segment={item.url}
-                        title={item.title}
-                        external={item.extern}
-                        on:navigate={closeModal}
+                  segment={item.url}
+                  title={item.title}
+                  external={item.extern}
+                  on:navigate={closeModal}
                 />
               {/each}
             {:else if jumplistItems}
               <div class="flex flex-col p-4 space-y-6">
                 {#each jumplistItems as item}
                   <DappNavItem
-                          clickOnly={true}
-                          segment=""
-                          title={item.title}
-                          on:navigate={() => {
-                            if (item.event) {
-                              window.o.publishEvent(item.event);
-                            }
-                            if (item.action) {
-                              item.action();
-                            }
-                          }}
+                    clickOnly={true}
+                    segment=""
+                    icon={item.icon}
+                    title={item.title}
+                    on:navigate={() => {
+                      if (item.event) {
+                        window.o.publishEvent(item.event);
+                      }
+                      if (item.action) {
+                        item.action();
+                      }
+                    }}
                   />
                 {/each}
               </div>

@@ -498,7 +498,7 @@
           </section>
         {/if}
       </div>
-      {#if jumplist}
+      {#if jumplist && !isMe}
         <div
           class="fixed bottom-0 left-0 right-0 w-full mx-auto bg-white md:w-2/3 xl:w-1/2 h-36"
         >
