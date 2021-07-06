@@ -1,4 +1,3 @@
-import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Transactions from "./o-banking/pages/Transactions.svelte";
 import Assets from "./o-banking/pages/Assets.svelte";
 import Trusts from "./o-banking/pages/Trusts.svelte";
@@ -25,18 +24,8 @@ const transactions: Page<any, BankingDappState> = {
   routeParts: ["transactions"],
   component: Transactions,
   title: "Transactions",
+  icon: "transactions",
   type: "page",
-  navigation: {
-    navPill: {
-      left: {
-        component: ListComponent,
-        props: {
-          icon: "list",
-          action: "dappsList",
-        },
-      },
-    },
-  },
 };
 
 const profileJumplist: Jumplist<any, BankingDappState> = {
@@ -123,6 +112,7 @@ const assets: Page<any, BankingDappState> = {
   routeParts: ["assets"],
   component: Assets,
   title: "Assets",
+  icon: "assets",
   type: "page",
 };
 const assetDetail: Page<{ symbol: string }, BankingDappState> = {
@@ -136,6 +126,7 @@ const trusts: Page<any, BankingDappState> = {
   routeParts: ["trusts"],
   component: Trusts,
   title: "Trusts",
+  icon: "trusts",
   type: "page",
 };
 const sendInvite: Page<{ inviteAccountAddress: string }, BankingDappState> = {
@@ -163,6 +154,7 @@ const graph: Page<any, BankingDappState> = {
   routeParts: ["network"],
   component: Graph,
   title: "Network",
+  icon: "network",
   type: "page",
 };
 
@@ -188,7 +180,7 @@ export const banking: DappManifest<BankingDappState> = {
   type: "dapp",
   isSingleton: true,
   isHidden: false,
-  icon: faPeopleArrows,
+  icon: "banking",
   title: "Banking",
   routeParts: ["banking"],
   defaultRoute: ["transactions"],

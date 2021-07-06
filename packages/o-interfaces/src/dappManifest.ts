@@ -1,4 +1,3 @@
-import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import { NavigationManifest } from "./navigationManifest";
 import { RuntimeDapp } from "./runtimeDapp";
 import { Routable } from "./routable";
@@ -29,7 +28,7 @@ export interface DappManifest<TState extends { [x: string]: any }>
   /**
    * This icon will be displayed in the auth overview.
    */
-  icon?: IconDefinition;
+  icon?: string;
   /**
    * This title will be displayed as the auth name.
    */

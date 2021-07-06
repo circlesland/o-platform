@@ -22,6 +22,7 @@
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
+  import TopNav from "src/shared/atoms/TopNav.svelte";
 
   export let params: {
     id?: String;
@@ -266,6 +267,7 @@
 {#if isLoading}
   <LoadingIndicator />
 {:else}
+  <TopNav />
   <header
     class="grid mt-10 overflow-hidden text-white bg-cover h-80 place-content-center"
     style="background: linear-gradient(to right, #0f266280, #0f266280), url('/images/common/nice-bg.jpg') no-repeat center center; background-size: cover;"

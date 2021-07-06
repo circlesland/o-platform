@@ -1,24 +1,23 @@
-import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-dashboard/pages/Home.svelte";
 import CreateHub from "./o-dashboard/pages/CreateHub.svelte";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 import { logout } from "./o-passport/processes/logout";
-import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-const index : Page<any, DappState> = {
+const index: Page<any, DappState> = {
   isSystem: true,
   routeParts: [],
   component: Home,
   title: "Dashboard",
-  type: "page"
+  type: "page",
 };
-const createHub : Page<any, DappState> = {
+const createHub: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["become-a-hub"],
   component: CreateHub,
   title: "Become a hub",
-  type: "page"
+  type: "page",
 };
 
 export interface DappState {
@@ -30,7 +29,7 @@ export const dashboard: DappManifest<DappState> = {
   dappId: "dashboard:1",
   isSingleton: true,
   isHidden: true,
-  icon: faPeopleArrows,
+  icon: "dashboard",
   title: "Dashboard",
   routeParts: ["dashboard"],
   tag: Promise.resolve("alpha"),
@@ -42,13 +41,15 @@ export const dashboard: DappManifest<DappState> = {
     isSystem: false,
     routeParts: ["actions"],
     items: (params, runtimeDapp) => {
-      return [{
-        key: "logout",
-        title: "Logout",
-        icon: "logout",
-        action: () => window.o.runProcess(logout, {})
-      }];
-    }
+      return [
+        {
+          key: "logout",
+          title: "Logout",
+          icon: "logout",
+          action: () => window.o.runProcess(logout, {}),
+        },
+      ];
+    },
   },
   navigation: {
     navPill: {

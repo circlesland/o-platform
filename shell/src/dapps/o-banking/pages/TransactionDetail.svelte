@@ -6,8 +6,9 @@
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { Transfer } from "../data/circles/types";
   import { EditorContext } from "@o-platform/o-editors/src/editorContext";
+
   import Icons from "../../../shared/molecules/Icons.svelte";
-  import {push} from "svelte-spa-router";
+  import { push } from "svelte-spa-router";
 
   export let params: {
     _id: string;

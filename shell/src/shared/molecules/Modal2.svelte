@@ -9,14 +9,14 @@
   import ProcessContainer from "./ProcessContainer.svelte";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
-  import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+
   import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 
   let runningProcess: Process | undefined;
   let jumplistItems: JumplistItem[] | undefined;
   let navigation:
     | {
-        icon?: IconDefinition;
+        icon?: string;
         title: string;
         url: string;
         extern: boolean;
@@ -155,14 +155,17 @@
                 }}
               />
             {:else if navigation}
-              {#each navigation as item}
-                <DappNavItem
-                  segment={item.url}
-                  title={item.title}
-                  external={item.extern}
-                  on:navigate={closeModal}
-                />
-              {/each}
+              <div class="flex flex-col p-4 space-y-6">
+                {#each navigation as item}
+                  <DappNavItem
+                    segment={item.url}
+                    title={item.title}
+                    icon={item.icon}
+                    external={item.extern}
+                    on:navigate={closeModal}
+                  />
+                {/each}
+              </div>
             {:else if jumplistItems}
               <div class="flex flex-col p-4 space-y-6">
                 {#each jumplistItems as item}

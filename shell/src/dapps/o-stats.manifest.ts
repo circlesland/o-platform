@@ -1,57 +1,53 @@
-import {
-  faPeopleArrows,
-} from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-stats/pages/Home.svelte";
 import MyRank from "./o-stats/pages/MyRank.svelte";
 import Citites from "./o-stats/pages/Cities.svelte";
 import Countries from "./o-stats/pages/Countries.svelte";
-import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-const index : Page<any, DappState> = {
+const index: Page<any, DappState> = {
   isSystem: true,
   routeParts: [],
   component: Home,
   title: "Statistics",
-  type: "page"
+  type: "page",
 };
 
 // My invite rank in my city
-const myCityRank : Page<any, DappState> = {
+const myCityRank: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["my-rank"],
   component: MyRank,
   title: "My rank",
-  type: "page"
+  type: "page",
 };
 
-const cityRanks : Page<any, DappState> = {
+const cityRanks: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["cities"],
   component: Citites,
   title: "Citites",
-  type: "page"
+  type: "page",
 };
 
-const countryRanks : Page<any, DappState> = {
+const countryRanks: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["countries"],
   component: Countries,
   title: "Countries",
-  type: "page"
+  type: "page",
 };
-
 
 export interface DappState {
   // put state here
 }
 
-export const stats : DappManifest<DappState> = {
+export const stats: DappManifest<DappState> = {
   type: "dapp",
   dappId: "stats:1",
   isSingleton: true,
   isHidden: true,
-  icon: faPeopleArrows,
+  icon: "stats",
   title: "Statistics",
   routeParts: ["stats"],
   tag: Promise.resolve("alpha"),
@@ -61,9 +57,9 @@ export const stats : DappManifest<DappState> = {
     // Do init stuff here
     return {
       initialRoutable: index,
-      cancelDependencyLoading: false
+      cancelDependencyLoading: false,
     };
   },
-  routables: [index, myCityRank, cityRanks, countryRanks]
+  routables: [index, myCityRank, cityRanks, countryRanks],
   //pages: [index, myCityRank, cityRanks, countryRanks]
 };

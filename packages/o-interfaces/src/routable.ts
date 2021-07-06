@@ -1,4 +1,3 @@
-import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import { NavigationManifest } from "./navigationManifest";
 
 /**
@@ -9,6 +8,6 @@ export interface Routable {
   routeParts: string[];
   isSystem?: boolean;
   title: string;
-  icon?: IconDefinition;
+  icon?: string;
   navigation?: NavigationManifest;
 }
