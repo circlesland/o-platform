@@ -26,6 +26,17 @@ const transactions: Page<any, BankingDappState> = {
   component: Transactions,
   title: "Transactions",
   type: "page",
+  navigation: {
+    navPill: {
+      left: {
+        component: ListComponent,
+        props: {
+          icon: "list",
+          action: "dappsList",
+        },
+      },
+    },
+  },
 };
 
 const profileJumplist: Jumplist<any, BankingDappState> = {
@@ -45,7 +56,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
             recipientAddress: runtimeDapp.state.currentSafeAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });
-        }
+        },
       },
       {
         key: "setTrust",
@@ -58,7 +69,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
             safeAddress: tryGetCurrentSafe().safeAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });
-        }
+        },
       },
     ];
   },
@@ -87,6 +98,13 @@ const transactionDetail: Page<{ _id: string }, BankingDappState> = {
   title: "Transaction",
   component: TransactionDetailPage,
   jumplist: profileJumplist,
+  navigation: {
+    navPill: {
+      left: {
+        component: BacklinkComponent,
+      },
+    },
+  },
 };
 const transactionSend: Trigger<
   { to: string; amount: string; message: string },
@@ -112,7 +130,7 @@ const assetDetail: Page<{ symbol: string }, BankingDappState> = {
   routeParts: ["assets", ":symbol"],
   component: AssetDetail,
   title: "Asset",
-  type: "page"
+  type: "page",
 };
 const trusts: Page<any, BankingDappState> = {
   routeParts: ["trusts"],

@@ -6,7 +6,7 @@
   import { invite } from "../../o-passport/processes/invite/invite";
   import { getCountryName } from "src/shared/countries";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import {upsertIdentityOnlyWhereDirty} from "../../o-passport/processes/upsertIdentity";
+  import { upsertIdentityOnlyWhereDirty } from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
@@ -201,11 +201,11 @@
   function execTransfer() {
     if (!profile || !$mySafe.safeAddress || isMe) return;
 
-      window.o.runProcess(transfer, {
-        safeAddress: $mySafe.safeAddress,
-        recipientAddress: profile.safeAddress,
-        recipientProfileId: profile.id,
-      });
+    window.o.runProcess(transfer, {
+      safeAddress: $mySafe.safeAddress,
+      recipientAddress: profile.safeAddress,
+      recipientProfileId: profile.id,
+    });
   }
 
   function execTrust() {
@@ -267,7 +267,7 @@
   <LoadingIndicator />
 {:else}
   <header
-    class="grid overflow-hidden text-white bg-cover rounded-t-lg h-80 place-content-center"
+    class="grid mt-10 overflow-hidden text-white bg-cover h-80 place-content-center"
     style="background: linear-gradient(to right, #0f266280, #0f266280), url('/images/common/nice-bg.jpg') no-repeat center center; background-size: cover;"
   >
     <div
@@ -304,7 +304,7 @@
   </header>
   <div class="flex flex-col p-4">
     <div class="mt-4">
-      <div class="mb-12">
+      <div class="pb-16">
         {#if !profile.safeAddress && !isMe}
           <section class="justify-center mb-2 ">
             <div
@@ -389,6 +389,22 @@
         {/if}
 
         {#if profile && profile.safeAddress}
+          <section class="mb-8">
+            <div class="grid w-full grid-cols-3 gap-4 text-2xs ">
+              <div class="flex flex-col items-center justify-items-center">
+                <div class="text-3xl font-medium text-secondary">5</div>
+                <div class="mt-4 text-light-dark">mutual friends</div>
+              </div>
+              <div class="flex flex-col items-center justify-items-center ">
+                <div class="text-3xl font-medium text-secondary">86</div>
+                <div class="mt-4 text-light-dark">leader rank</div>
+              </div>
+              <div class="flex flex-col items-center justify-items-center ">
+                <div class="text-3xl font-medium text-secondary">230</div>
+                <div class="mt-4 text-light-dark">invited</div>
+              </div>
+            </div>
+          </section>
           <section class="justify-center mb-2 text-primarydark">
             <div class="flex flex-col w-full p-2 space-y-1">
               <div class="text-left text-2xs text-light-dark">Passion</div>
@@ -482,13 +498,15 @@
           </section>
         {/if}
       </div>
-      <div class="absolute bottom-0 left-0 w-full bg-white">
-        {#if jumplist}
+      {#if jumplist && !isMe}
+        <div
+          class="fixed bottom-0 left-0 right-0 w-full mx-auto bg-white md:w-2/3 xl:w-1/2 h-36"
+        >
           <DetailActionBar
             actions={jumplist.items(params, getLastLoadedDapp())}
           />
-        {/if}
-      </div>
+        </div>
+      {/if}
       <!-- ACTIONS  -->
 
       <!-- {#if !isMe && profile.safeAddress}

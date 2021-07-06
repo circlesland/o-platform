@@ -169,6 +169,7 @@ line-height: 1rem;
   @apply text-xl;
   @apply text-secondary;
   @apply font-bold;
+  @apply text-center;
 }
 
 .input {

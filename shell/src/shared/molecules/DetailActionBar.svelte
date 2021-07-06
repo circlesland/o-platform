@@ -11,20 +11,19 @@
   {#each actions as action}
     <div
       on:click={() => {
-          if (action.event) {
-            window.o.publishEvent(action.event)
-          }
-          if (action.action) {
-            action.action();
-          }
+        if (action.event) {
+          window.o.publishEvent(action.event);
         }
-      }
+        if (action.action) {
+          action.action();
+        }
+      }}
       class="flex flex-col items-center content-center self-start px-6 space-y-2 cursor-pointer"
     >
       <div>
         <Icons icon={action.icon} />
       </div>
-      <div class="text-xs">{action.label}</div>
+      <div class="text-xs">{action.title}</div>
     </div>
   {/each}
 </div>

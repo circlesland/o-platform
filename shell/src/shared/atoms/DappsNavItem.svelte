@@ -8,6 +8,7 @@
 
   export let segment = null;
   export let title: string = null;
+  export let icon: string = null;
   export let external: boolean = false;
   export let clickOnly: boolean = false;
   const current = getContext("nav");
@@ -33,7 +34,7 @@
   class="flex flex-row self-start w-full space-x-10 cursor-pointer"
 >
   <div class="">
-    <Icons icon={title.toLowerCase()} />
+    <Icons {icon} />
   </div>
   <div>{title}</div>
 </div>
