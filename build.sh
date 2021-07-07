@@ -11,15 +11,14 @@ cd packages/o-utils || exit
 npx --no-install tsc || exit
 cd .. || exit
 
+echo "Building 'o-interfaces' .."
+cd o-interfaces || exit
+npx --no-install tsc || exit
+cd .. || exit
 
 echo "Building 'o-events' .."
 rm -r -f o-events/dist
 cd o-events || exit
-npx --no-install tsc || exit
-cd .. || exit
-
-echo "Building 'o-interfaces' .."
-cd o-interfaces || exit
 npx --no-install tsc || exit
 cd .. || exit
 
@@ -71,6 +70,6 @@ cd .. || exit
 #
 search='__TIMESTAMP__'
 replace=`date +"%s"`
+search_replace="s/$search/$replace/g"
 cp -f ./shell/public/index.template.html ./shell/public/index.html
-sed -i '' "s/$search/$replace/g" shell/public/index.html
-
+sed -i "$search_replace" ./shell/public/index.html
