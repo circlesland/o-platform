@@ -267,20 +267,33 @@
   };
 
   function handleActionButton(event) {
-    if (event.detail.actionButton == "close") {
+    if (
+      event.detail.menuButton == "close" ||
+      event.detail.actionButton == "close"
+    ) {
       modal.closeModal();
+      return;
     }
     if (event.detail.actionButton == "open") {
       modal.showJumplist(getLastLoadedDapp());
+      return;
     }
-  }
 
-  function handleMenuButton(event) {
-    if (event.detail.menuButton == "close") {
-      modal.closeModal();
+    if (event.detail.action.type && event.detail.action.type == "linklist") {
+      if (event.detail.action.target == "dappsList") {
+        modal.showNavigation(getLastLoadedDapp());
+        return;
+      }
     }
-    if (event.detail.menuButton == "open") {
-      modal.showNavigation(getLastLoadedDapp());
+
+    if (event.detail.action.type && event.detail.action.type == "link") {
+      if (event.detail.action.target) {
+        if (event.detail.action.target == "backlink") {
+          window.history.back();
+        } else {
+          push(event.detail.action.target);
+        }
+      }
     }
   }
 
@@ -410,7 +423,7 @@
   <div class="flex flex-col text-base">
     <main class="z-30 flex-1 overflow-y-auto">
       <div
-        class="w-full mx-auto {layoutClasses}"
+        class="mainContent w-full mx-auto {layoutClasses}"
         class:mb-16={(!modal || !isOpen) &&
           lastLoadedDapp &&
           lastLoadedDapp.dappId !== "homepage:1"}
@@ -431,7 +444,6 @@
       navigation={getMergedNavigationManifest(lastLoadedDapp, lastLoadedPage)}
       bind:lastPrompt
       on:actionButton={handleActionButton}
-      on:menuButton={handleMenuButton}
     />
   {/if}
   <Modal2
@@ -476,6 +488,15 @@
     .joinnowbutton:active:hover {
       transform: translate(-50%, 0);
       animation: none !important;
+    }
+    .mainContent {
+      --tw-text-opacity: 1;
+      background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 1) 0%,
+        rgba(253, 254, 255, 1) 85%,
+        rgba(13, 43, 102, 0) 100%
+      );
     }
   </style>
 {/if}

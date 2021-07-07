@@ -15,6 +15,7 @@ import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 const externalChat: Link<any, DappState> = {
   type: "link",
   title: "Chat",
+  icon: "chat",
   routeParts: ["chat"],
   openInNewTab: true,
   url: () => "https://discord.gg/CS6xq7jECR",
@@ -22,6 +23,7 @@ const externalChat: Link<any, DappState> = {
 const externalForum: Link<any, DappState> = {
   type: "link",
   title: "Forum",
+  icon: "forum",
   routeParts: ["forum"],
   openInNewTab: true,
   url: () => "https://aboutcircles.com",
@@ -37,6 +39,7 @@ const login: Page<any, DappState> = {
 const externalBlog: Link<any, DappState> = {
   type: "link",
   title: "Blog",
+  icon: "blog",
   routeParts: ["blog"],
   openInNewTab: true,
   url: () => "https://blog.circles.land/",
@@ -45,6 +48,7 @@ const externalBlog: Link<any, DappState> = {
 const externalWhitepaper: Link<any, DappState> = {
   type: "link",
   title: "Whitepaper",
+  icon: "whitepaper",
   routeParts: ["whitepaper"],
   openInNewTab: true,
   url: () => "https://blog.circles.land/whitepaper/",
@@ -55,6 +59,7 @@ const index: Page<any, DappState> = {
   routeParts: [""],
   component: Home,
   title: "Circles Land",
+  icon: "home",
   type: "page",
 };
 const citizens: Page<any, DappState> = {
@@ -128,7 +133,10 @@ export const homepage: DappManifest<DappState> = {
       component: ListComponent,
       props: {
         icon: "list",
-        action: "homemenu",
+        action: {
+          type: "linklist",
+          target: "dappsList",
+        },
       },
     },
     loginPill: {
