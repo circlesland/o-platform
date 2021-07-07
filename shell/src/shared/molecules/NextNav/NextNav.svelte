@@ -1,16 +1,10 @@
 <script lang="ts">
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
-
-  import FilterComponent from "./Components/Filter.svelte";
-  import ListComponent from "./Components/List.svelte";
-  import LinkComponent from "./Components/Link.svelte";
-  // import {runProcess} from "../../../shared/molecules/Modal2.svelte";
   import NavPill from "./Components/NavPill.svelte";
   import ProcessPill from "./Components/ProcessPill.svelte";
   import LoginPill from "./Components/LoginPill.svelte";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-  //  import {ModalChanged} from "@o-platform/o-events/dist/shell/modalChanged";
   import { PromptNavigation } from "@o-platform/o-process/dist/events/prompt";
 
   import { createEventDispatcher } from "svelte";
