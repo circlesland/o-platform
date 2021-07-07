@@ -12,11 +12,14 @@
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   //  import {ModalChanged} from "@o-platform/o-events/dist/shell/modalChanged";
 
+  import { createEventDispatcher } from "svelte";
+
   export let login: boolean = false;
   export let isOpen: boolean = false;
   export let modalProcess;
   export let lastPrompt;
   export let navigation: any;
+
   let component;
   let props;
   let newnav: any;
@@ -31,6 +34,14 @@
       }
     });
   });
+
+  const dispatch = createEventDispatcher();
+
+  function action(action) {
+    dispatch("actionButton", {
+      action: action,
+    });
+  }
 </script>
 
 <footer
@@ -41,6 +52,7 @@
     <div
       class="w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full cursor-pointer"
       class:hidden={isOpen}
+      on:click={() => action(navigation.leftSlot.props.action)}
     >
       <svelte:component
         this={navigation.leftSlot.component}

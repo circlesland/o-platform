@@ -86,15 +86,20 @@ export const passport: DappManifest<DappState> = {
         component: ListComponent,
         props: {
           icon: "list",
-          action: "dappsList",
+          action: {
+            type: "linklist",
+            target: "dappsList",
+          },
         },
       },
       right: {
         component: LinkComponent,
         props: {
           icon: "home",
-          action: "link",
-          link: "#/dashboard",
+          action: {
+            type: "link",
+            target: "#/dashboard",
+          },
         },
       },
       actionButton: {

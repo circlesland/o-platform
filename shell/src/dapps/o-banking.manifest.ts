@@ -12,7 +12,6 @@ import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
 import { Profile } from "./o-banking/data/api/types";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
-import BacklinkComponent from "../shared/molecules/NextNav/Components/Backlink.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
@@ -74,7 +73,14 @@ export const profile: Page<any, BankingDappState> = {
   navigation: {
     navPill: {
       left: {
-        component: BacklinkComponent,
+        component: LinkComponent,
+        props: {
+          text: "Back",
+          action: {
+            type: "link",
+            target: "backlink",
+          },
+        },
       },
     },
   },
@@ -90,7 +96,14 @@ const transactionDetail: Page<{ _id: string }, BankingDappState> = {
   navigation: {
     navPill: {
       left: {
-        component: BacklinkComponent,
+        component: LinkComponent,
+        props: {
+          text: "Back",
+          action: {
+            type: "link",
+            target: "backlink",
+          },
+        },
       },
     },
   },
@@ -193,15 +206,22 @@ export const banking: DappManifest<BankingDappState> = {
         component: ListComponent,
         props: {
           icon: "list",
-          action: "dappsList",
+          action: {
+            type: "linklist",
+            target: "dappsList",
+          },
         },
       },
       right: {
         component: LinkComponent,
         props: {
           icon: "home",
-          action: "link",
-          link: "#/dashboard",
+          action: {
+            type: "link",
+            target: "#/dashboard",
+          },
+          // action: "link",
+          // link: "#/dashboard",
         },
       },
       actionButton: {

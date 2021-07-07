@@ -1,10 +1,10 @@
 import Home from "./o-dashboard/pages/Home.svelte";
 import CreateHub from "./o-dashboard/pages/CreateHub.svelte";
 import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
+import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { logout } from "./o-passport/processes/logout";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import BacklinkComponent from "../shared/molecules/NextNav/Components/Backlink.svelte";
 
 const index: Page<any, DappState> = {
   isSystem: true,
@@ -22,7 +22,14 @@ const createHub: Page<any, DappState> = {
   navigation: {
     navPill: {
       left: {
-        component: BacklinkComponent,
+        component: LinkComponent,
+        props: {
+          text: "Back",
+          action: {
+            type: "link",
+            target: "backlink",
+          },
+        },
       },
     },
   },

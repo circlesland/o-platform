@@ -1,13 +1,16 @@
 import { DappManifest } from "./dappManifest";
 import { Routable } from "./routable";
-import {merge} from "rxjs";
+import { merge } from "rxjs";
 
 export interface NavigationManifest {
   leftSlot?: {
     component: any;
     props: {
       icon: string;
-      action: string;
+      action: {
+        type: string;
+        target: string;
+      };
     };
   };
   rightSlot?: {
@@ -20,16 +23,23 @@ export interface NavigationManifest {
     left?: {
       component: any;
       props?: {
-        icon: string;
-        action: string;
+        icon?: string;
+        text?: string;
+        action: {
+          type: string;
+          target: string;
+        };
       };
     };
     right?: {
       component: any;
       props?: {
-        icon: string;
-        action: string;
-        link: string;
+        icon?: string;
+        text?: string;
+        action: {
+          type: string;
+          target: string;
+        };
       };
     };
     actionButton?: {
@@ -57,13 +67,14 @@ export function getMergedNavigationManifest(
   const other = routable?.navigation;
   if (!other) return dapp.navigation;
 
-  let mergedManifest:NavigationManifest = {};
+  let mergedManifest: NavigationManifest = {};
   mergedManifest.leftSlot = other.leftSlot ?? dapp.navigation?.leftSlot;
   mergedManifest.rightSlot = other.rightSlot ?? dapp.navigation?.rightSlot;
   mergedManifest.navPill = {
     left: other.navPill?.left ?? dapp.navigation?.navPill?.left,
-    actionButton: other.navPill?.actionButton ?? dapp.navigation?.navPill?.actionButton,
-    right: other.navPill?.right ?? dapp.navigation?.navPill?.right
+    actionButton:
+      other.navPill?.actionButton ?? dapp.navigation?.navPill?.actionButton,
+    right: other.navPill?.right ?? dapp.navigation?.navPill?.right,
   };
   mergedManifest.loginPill = other.loginPill ?? dapp.navigation?.loginPill;
 

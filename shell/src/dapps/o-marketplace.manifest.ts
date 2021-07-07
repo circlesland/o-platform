@@ -10,7 +10,6 @@ import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import BacklinkComponent from "../shared/molecules/NextNav/Components/Backlink.svelte";
 
 const stream: Page<any, DappState> = {
   routeParts: ["stream"],
@@ -27,7 +26,14 @@ const offerDetail: Page<any, DappState> = {
   navigation: {
     navPill: {
       left: {
-        component: BacklinkComponent,
+        component: LinkComponent,
+        props: {
+          text: "Back",
+          action: {
+            type: "link",
+            target: "backlink",
+          },
+        },
       },
     },
   },
@@ -92,15 +98,20 @@ export const marketplace: DappManifest<DappState> = {
         component: ListComponent,
         props: {
           icon: "list",
-          action: "dappsList",
+          action: {
+            type: "linklist",
+            target: "dappsList",
+          },
         },
       },
       right: {
         component: LinkComponent,
         props: {
           icon: "home",
-          action: "link",
-          link: "#/dashboard",
+          action: {
+            type: "link",
+            target: "#/dashboard",
+          },
         },
       },
       actionButton: {
