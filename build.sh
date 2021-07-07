@@ -11,11 +11,6 @@ cd packages/o-utils || exit
 npx --no-install tsc || exit
 cd .. || exit
 
-echo "Building 'o-interfaces' .."
-cd o-interfaces || exit
-npx --no-install tsc || exit
-cd .. || exit
-
 
 echo "Building 'o-events' .."
 rm -r -f o-events/dist
