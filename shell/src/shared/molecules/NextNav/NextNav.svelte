@@ -11,6 +11,7 @@
   import LoginPill from "./Components/LoginPill.svelte";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   //  import {ModalChanged} from "@o-platform/o-events/dist/shell/modalChanged";
+  import { PromptNavigation } from "@o-platform/o-process/dist/events/prompt";
 
   import { createEventDispatcher } from "svelte";
 
@@ -18,6 +19,7 @@
   export let isOpen: boolean = false;
   export let modalProcess;
   export let lastPrompt;
+  export let processNavigation: PromptNavigation;
   export let navigation: any;
 
   let component;
@@ -64,7 +66,13 @@
   {/if}
 
   {#if isOpen}
-    <ProcessPill {modalProcess} {lastPrompt} on:actionButton {isOpen} />
+    <ProcessPill
+      {modalProcess}
+      {processNavigation}
+      {navigation}
+      on:actionButton
+      {isOpen}
+    />
   {:else if login}
     <LoginPill props={navigation.loginPill} />
   {:else}

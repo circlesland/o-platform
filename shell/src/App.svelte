@@ -225,11 +225,14 @@
   import NextNav from "./shared/molecules/NextNav/NextNav.svelte";
   import { onMount } from "svelte";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+  import { PromptNavigation } from "@o-platform/o-process/dist/events/prompt";
 
   let modalProcessEventSubscription: Subscription;
   let current;
   let isOpen = false;
   let modal: Modal2;
+
+  let processNavigation: PromptNavigation;
 
   let publicUrls = {
     "/": true,
@@ -440,6 +443,7 @@
   {#if lastLoadedDapp && lastLoadedDapp.navigation}
     <NextNav
       {isOpen}
+      {processNavigation}
       login={lastLoadedDapp && lastLoadedDapp.dappId === "homepage:1"}
       navigation={getMergedNavigationManifest(lastLoadedDapp, lastLoadedPage)}
       bind:lastPrompt
@@ -448,7 +452,7 @@
   {/if}
   <Modal2
     bind:this={modal}
-    on:navigation={(event) => console.log(`Modal2 navigation changed to:`, event.detail)}
+    on:navigation={(event) => (processNavigation = event.detail)}
     on:modalOpen={(e) => {
       isOpen = e.detail;
     }}

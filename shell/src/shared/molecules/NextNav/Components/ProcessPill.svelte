@@ -3,10 +3,14 @@
   import { Back } from "@o-platform/o-process/dist/events/back";
   import { Skip } from "@o-platform/o-process/dist/events/skip";
   import ActionButtonComponent from "../Components/ActionButton.svelte";
+  import { PromptNavigation } from "@o-platform/o-process/dist/events/prompt";
 
   export let isOpen: boolean = false;
   export let modalProcess: any;
+  export let navigation: any;
   export let lastPrompt: any;
+  export let processNavigation: PromptNavigation;
+  console.log("NAVIGATION: ", processNavigation);
 </script>
 
 <div
@@ -15,6 +19,7 @@
   class:pr-2={lastPrompt && lastPrompt.navigation.canSkip}
 >
   <div class="grid grid-cols-3 justify-items-center processPillGrid">
+    {console.log("LASTPOR: ", lastPrompt)}
     {#if lastPrompt && lastPrompt.navigation.canGoBack}
       <div
         class="w-20 h-8 px-3 py-2 bg-white rounded-full cursor-pointer text-lightdark"
