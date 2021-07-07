@@ -1,10 +1,23 @@
+<script context="module" lang="ts">
+  import {PromptNavigation} from "@o-platform/o-process/dist/events/prompt";
+
+  export interface ProcessContainerNavigation extends PromptNavigation
+  {
+    canSkip: boolean;
+    canGoBack: boolean;
+    canSubmit: boolean;
+    skip: () => void;
+    back: () => void;
+    cancel: () => void;
+  }
+</script>
 <script lang="ts">
   import { faTimes } from "@fortawesome/free-solid-svg-icons";
   import Prompt from "./Prompt.svelte";
   import { createEventDispatcher } from "svelte";
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { ShellEvent } from "@o-platform/o-process/dist/events/shellEvent";
-  import { Cancel } from "@o-platform/o-process/dist/events/cancel";
+  import {Cancel, CancelRequest} from "@o-platform/o-process/dist/events/cancel";
   import { Prompt as PromptEvent } from "@o-platform/o-process/dist/events/prompt";
   import { Subscription } from "rxjs";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -13,6 +26,8 @@
   import Error from "../atoms/Error.svelte";
   import LoadingIndicator from "../atoms/LoadingIndicator.svelte";
   import ChoiceSelector from "../../../../packages/o-editors/src/ChoiceSelector.svelte";
+  import {Skip} from "@o-platform/o-process/dist/events/skip";
+  import {Back} from "@o-platform/o-process/dist/events/back";
 
   /**
    * A channel to an already running process.
@@ -206,7 +221,12 @@
         if (event.type === "process.prompt") {
           const promptEvent = <PromptEvent<any>>event;
           if (promptEvent.navigation) {
-            dispatch("navigation", promptEvent.navigation);
+            dispatch("navigation", {
+              ...promptEvent.navigation,
+              skip:() => process.sendAnswer(new Skip()),
+              back:() => process.sendAnswer(new Back()),
+              cancel: () => process.sendAnswer(new CancelRequest())
+            });
           }
         }
 

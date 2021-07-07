@@ -1,14 +1,12 @@
 <script lang="ts">
   import Icons from "./../../Icons.svelte";
-  import { Back } from "@o-platform/o-process/dist/events/back";
-  import { Skip } from "@o-platform/o-process/dist/events/skip";
   import ActionButtonComponent from "../Components/ActionButton.svelte";
-  import { PromptNavigation } from "@o-platform/o-process/dist/events/prompt";
+  import {ProcessContainerNavigation} from "../../ProcessContainer.svelte";
 
   export let isOpen: boolean = false;
   export let modalProcess: any;
   export let navigation: any;
-  export let processNavigation: PromptNavigation;
+  export let processNavigation: ProcessContainerNavigation;
 </script>
 
 <div
@@ -20,7 +18,7 @@
     {#if processNavigation && processNavigation.canGoBack}
       <div
         class="w-20 h-8 px-3 py-2 bg-white rounded-full cursor-pointer text-lightdark"
-        on:click={() => modalProcess.sendAnswer(new Back())}
+        on:click={() => processNavigation.back()}
       >
         back
       </div>
@@ -31,7 +29,7 @@
     {#if processNavigation && processNavigation.canSkip}
       <div
         class="w-20 h-8 py-2 bg-white rounded-full cursor-pointer px-9 text-lightdark"
-        on:click={() => modalProcess.sendAnswer(new Skip())}
+        on:click={() => processNavigation.skip()}
       >
         skip
       </div>

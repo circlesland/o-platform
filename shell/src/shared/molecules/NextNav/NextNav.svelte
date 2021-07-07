@@ -5,15 +5,15 @@
   import ProcessPill from "./Components/ProcessPill.svelte";
   import LoginPill from "./Components/LoginPill.svelte";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-  import { PromptNavigation } from "@o-platform/o-process/dist/events/prompt";
 
   import { createEventDispatcher } from "svelte";
+  import {ProcessContainerNavigation} from "../ProcessContainer.svelte";
 
   export let login: boolean = false;
   export let isOpen: boolean = false;
   export let modalProcess;
   export let lastPrompt;
-  export let processNavigation: PromptNavigation;
+  export let processNavigation: ProcessContainerNavigation;
   export let navigation: any;
 
   let component;
