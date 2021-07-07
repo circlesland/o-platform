@@ -152,6 +152,7 @@
             {#if runningProcess}
               <ProcessContainer
                 process={runningProcess}
+                on:navigation={(event) => dispatch("navigation", event.detail)}
                 on:stopped={() => {
                   runningProcess = null;
                   closeModal();

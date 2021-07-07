@@ -448,6 +448,7 @@
   {/if}
   <Modal2
     bind:this={modal}
+    on:navigation={(event) => console.log(`Modal2 navigation changed to:`, event.detail)}
     on:modalOpen={(e) => {
       isOpen = e.detail;
     }}

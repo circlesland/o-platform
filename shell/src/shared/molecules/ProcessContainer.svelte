@@ -82,6 +82,11 @@
       canSkip = false;
       prompt = null;
     }
+
+    if (!process) {
+      canSkip = undefined;
+      canGoBack = undefined;
+    }
   }
 
   let lastBubble: Bubble;
@@ -196,6 +201,13 @@
           event = bubble.wrappedEvent;
         } else {
           event = next.event;
+        }
+
+        if (event.type === "process.prompt") {
+          const promptEvent = <PromptEvent<any>>event;
+          if (promptEvent.navigation) {
+            dispatch("navigation", promptEvent.navigation);
+          }
         }
 
         try {

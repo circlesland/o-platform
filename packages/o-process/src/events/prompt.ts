@@ -4,6 +4,13 @@ import {Schema} from "yup";
 import {PromptField} from "../states/prompt";
 import {ProcessContext} from "../interfaces/processContext";
 
+export interface PromptNavigation
+{
+  canSkip: boolean;
+  canGoBack: boolean;
+  canSubmit: boolean;
+}
+
 /**
  * Can be used to ask for user input or to display status information.
  */
@@ -43,11 +50,7 @@ export class Prompt<TContext extends ProcessContext<any>> implements PlatformEve
    */
   isSensitive?: boolean;
 
-  navigation: {
-    canSkip: boolean;
-    canGoBack: boolean;
-    canSubmit: boolean;
-  } = {
+  navigation: PromptNavigation = {
     canSkip: false,
     canGoBack: false,
     canSubmit: true,
