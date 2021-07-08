@@ -146,9 +146,13 @@
       </Swiper>
     </div>
 
-    {#each offers as offer}
-      <OfferCard {offer} />
-    {/each}
+    <div
+      class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid svelte-hq9rde"
+    >
+      {#each offers as offer}
+        <OfferCard {offer} />
+      {/each}
+    </div>
 
     <!-- {#each Object.keys(citites) as city}
       <section class="flex items-center justify-center mx-4 mb-1 ">
@@ -173,3 +177,30 @@
     </section>
   {/if}
 </div>
+
+<style>
+  .marketplace-grid {
+    grid-template-columns: repeat(1, minmax(8rem, 1fr));
+    grid-auto-rows: 1fr;
+  }
+
+  @media (min-width: 640px) {
+    .marketplace-grid {
+      grid-template-columns: repeat(2, minmax(8rem, 1fr));
+    }
+  }
+
+  .marketplace-grid::before {
+    content: "";
+    width: 0;
+    padding-bottom: 100%;
+    grid-row: 1 / 1;
+    grid-column: 1 / 1;
+    display: none;
+  }
+
+  .marketplace-grid > *:first-child {
+    grid-row: 1 / 1;
+    grid-column: 1 / 1;
+  }
+</style>

@@ -74,11 +74,11 @@
 </script>
 
 <section
-  class="flex items-center justify-center mb-12 "
+  class="flex items-center justify-center"
   on:click|once={() => loadDetailPage()}
 >
   <div
-    class="flex flex-col w-full bg-white border rounded-lg border-light-lighter"
+    class="relative flex flex-col w-full bg-white border rounded-lg h-80 border-light-lighter"
   >
     <header
       class="relative grid w-full h-40 overflow-hidden bg-cover rounded-t-lg place-content-center"
@@ -120,7 +120,9 @@
         {offer.unitTag.value})
       </div>
     </div>
-    <div class="relative flex flex-row p-2 mt-6 space-x-2">
+    <div
+      class="absolute bottom-0 right-0 flex flex-row w-full p-2 mt-6 space-x-2"
+    >
       <div class="flex flex-row flex-grow space-x-2">
         <div class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs">
           <a
