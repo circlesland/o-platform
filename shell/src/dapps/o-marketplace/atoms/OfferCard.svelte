@@ -56,10 +56,6 @@
     push("#/marketplace/offer/" + offer.id);
   }
 
-  function loadCategoryPage(categoryId: number) {
-    push("#/marketplace/offers/" + categoryId);
-  }
-
   function buy() {
     window.o.runProcess(purchase, {});
   }
@@ -126,7 +122,8 @@
       <div class="flex flex-row flex-grow space-x-2">
         <div class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs">
           <a
-            href="#/marketplace/offers/{offer.categoryTagId}"
+            href="#/marketplace/categories/{offer.categoryTagId}/{offer
+              .categoryTag.value}"
             alt={offer.categoryTag.value}
           >
             {offer.categoryTag.value}
@@ -141,7 +138,7 @@
       </div>
 
       <div
-        class="absolute bottom-0 right-0 flex flex-row items-center content-start self-end p-2 space-x-2 text-xs rounded-tl-lg bg-light-lighter"
+        class="absolute bottom-0 right-0 flex flex-row items-center content-start self-end p-2 space-x-2 text-xs rounded-tl-lg rounded-br-lg bg-light-lighter"
       >
         <div>
           {offer.createdBy.firstName}

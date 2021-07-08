@@ -219,14 +219,15 @@
             <div class="mt-4 text-base">{offer.deliveryTermsTag.value}</div>
           </div>
           <div
-            class="relative bottom-0 right-0 flex flex-row w-full p-2 mt-6 space-x-2"
+            class="relative bottom-0 right-0 flex flex-row w-full mt-6 space-x-2"
           >
             <div class="flex flex-row flex-grow space-x-2">
               <div
                 class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs"
               >
                 <a
-                  href="#/marketplace/offers/{offer.categoryTagId}"
+                  href="#/marketplace/categories/{offer.categoryTagId}/{offer
+                    .categoryTag.value}"
                   alt={offer.categoryTag.value}
                 >
                   {offer.categoryTag.value}

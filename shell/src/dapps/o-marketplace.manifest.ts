@@ -60,7 +60,7 @@ const categories: Page<any, DappState> = {
 };
 const categoryDetail: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["offers", ":category"],
+  routeParts: ["categories", ":category", ":categoryName"],
   component: CategoryDetail,
   title: "Category detail",
   type: "page",

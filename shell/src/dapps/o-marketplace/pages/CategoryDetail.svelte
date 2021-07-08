@@ -8,6 +8,7 @@
 
   export let params: {
     category: number;
+    categoryName: string;
   };
 
   let isLoading: boolean;
@@ -57,10 +58,9 @@
       shellEventSubscription.unsubscribe();
     };
   });
-
 </script>
 
-<MarketplaceHeader />
+<MarketplaceHeader header={params.categoryName} />
 
 <div class="mx-4 -mt-6">
   {#if isLoading}
@@ -82,16 +82,13 @@
       </div>
     </section>
   {:else if offers.length}
-    <section class="flex items-center justify-center mb-1 ">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div class="text-xs font-bold text-left  ">Offers</div>
-      </div>
-    </section>
-    {#each offers as offer}
-      <OfferCard {offer} />
-    {/each}
+    <div
+      class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid svelte-hq9rde"
+    >
+      {#each offers as offer}
+        <OfferCard {offer} />
+      {/each}
+    </div>
   {:else}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">

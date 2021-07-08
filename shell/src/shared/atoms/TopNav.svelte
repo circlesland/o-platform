@@ -2,9 +2,9 @@
   import { onMount } from "svelte";
   import { getLastLoadedDapp, getLastLoadedPage } from "../../loader";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 
-  let lastLoadedPage: Page<any,any>;
+  let lastLoadedPage: Page<any, any>;
   let lastLoadedDapp: DappManifest<any>;
 
   onMount(() => {
@@ -18,13 +18,13 @@
     <div
       class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white navbar bg-secondary-dark "
     >
-      <div class="cursor-pointer justify-self-start">
+      <div class="justify-self-start">
         <span class="text-lg uppercase ">
           {lastLoadedDapp.title}
         </span>
       </div>
       {#if lastLoadedDapp.title != lastLoadedPage.title}
-        <div class="cursor-pointer justify-self-center">
+        <div class="justify-self-center">
           <span class="text-sm ">
             {lastLoadedPage.title}
           </span>

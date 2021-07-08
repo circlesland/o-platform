@@ -85,8 +85,8 @@
     };
   });
 
-  function loadCategoryPage(categoryId: string) {
-    push("#/marketplace/offers/" + categoryId);
+  function loadCategoryPage(category: any) {
+    push("#/marketplace/categories/" + category.id + "/" + category.value);
   }
 </script>
 
@@ -120,7 +120,7 @@
       </div>
     </section> -->
 
-    <div class="p-2">
+    <div class="p-2 mt-4 mb-4">
       <Swiper
         slidesPerView={4.1}
         spaceBetween={10}
@@ -136,7 +136,7 @@
           <SwiperSlide>
             <div
               class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs"
-              on:click|once={() => loadCategoryPage(category.id)}
+              on:click|once={() => loadCategoryPage(category)}
             >
               <!-- {city} -->
               {category.value}

@@ -54,10 +54,9 @@
     };
   });
 
-  function loadDetailPage(categoryId: string) {
-    push("#/marketplace/offers/" + categoryId);
+  function loadCategoryPage(category: any) {
+    push("#/marketplace/categories/" + category.id + "/" + category.value);
   }
-
 </script>
 
 <MarketplaceHeader />
@@ -86,18 +85,18 @@
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-xs font-bold text-left  ">Categories</div>
+        <div class="text-xs font-bold text-left ">Categories</div>
       </div>
     </section>
     {#each categories as category}
       <section
         class="flex items-center justify-center mb-1 "
-        on:click|once={() => loadDetailPage(category.id)}
+        on:click|once={() => loadCategoryPage(category.id)}
       >
         <div
           class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
         >
-          <div class="text-xs font-bold text-left  ">
+          <div class="text-xs font-bold text-left ">
             {category.value}
           </div>
         </div>

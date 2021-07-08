@@ -1,6 +1,6 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
-
+  export let header: string = null;
 </script>
 
 <TopNav />
@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="">
-      <h2>Marketplace</h2>
+      <h2 class="text-2xl">{header ? header : "Marketplace"}</h2>
     </div>
   </div>
 </div>
