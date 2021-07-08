@@ -6,6 +6,7 @@
   import { getLastLoadedDapp, getLastLoadedRoutable } from "../../loader";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import DappNavItem from "./../atoms/DappsNavItem.svelte";
+  import ActionListItem from "./../atoms/ActionListItem.svelte";
   import ProcessContainer from "./ProcessContainer.svelte";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
@@ -42,12 +43,12 @@
     const lastDapp = getLastLoadedDapp();
     const lastRoutable = getLastLoadedRoutable();
 
-    let combinedItems: {[x:string]:JumplistItem} = {};
+    let combinedItems: { [x: string]: JumplistItem } = {};
 
     if (lastDapp.jumplist) {
       try {
-        lastDapp.jumplist.items(params, lastDapp).forEach(o => {
-          combinedItems[o.key] = o
+        lastDapp.jumplist.items(params, lastDapp).forEach((o) => {
+          combinedItems[o.key] = o;
         });
       } catch (e) {
         console.error(`Cannot load the dapp's jumplist`);
@@ -57,8 +58,8 @@
       const pageJumplist = (<Page<any, any>>lastRoutable).jumplist;
       if (pageJumplist) {
         try {
-          pageJumplist.items(params, lastDapp).forEach(o => {
-            combinedItems[o.key] = o
+          pageJumplist.items(params, lastDapp).forEach((o) => {
+            combinedItems[o.key] = o;
           });
         } catch (e) {
           console.error(`Cannot load the page's jumplist.`);
@@ -171,9 +172,11 @@
                 {/each}
               </div>
             {:else if jumplistItems}
-              <div class="flex flex-col p-4 space-y-6">
+              <div
+                class="flex flex-wrap items-center justify-center p-4 space-x-10"
+              >
                 {#each jumplistItems as item}
-                  <DappNavItem
+                  <ActionListItem
                     clickOnly={true}
                     segment=""
                     icon={item.icon}

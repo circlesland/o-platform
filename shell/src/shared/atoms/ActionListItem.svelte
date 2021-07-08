@@ -30,11 +30,8 @@
 
 <div
   on:click={setSegment}
-  class:active={$current === segment}
-  class="flex flex-row self-start w-full space-x-4 cursor-pointer"
+  class="flex-grow text-xs text-center cursor-pointer "
 >
-  <div class="">
-    <Icons {icon} />
-  </div>
-  <div>{title}</div>
+  <Icons {icon} />
+  <span class="block mt-2">{title}</span>
 </div>
