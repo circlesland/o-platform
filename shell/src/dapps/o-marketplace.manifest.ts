@@ -62,7 +62,7 @@ const categoryDetail: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["categories", ":category", ":categoryName"],
   component: CategoryDetail,
-  title: "Category detail",
+  title: "Category",
   type: "page",
   navigation: {
     navPill: {
