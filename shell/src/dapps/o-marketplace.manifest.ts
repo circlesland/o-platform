@@ -43,6 +43,20 @@ const categories: Page<any, DappState> = {
   component: Categories,
   title: "Categories",
   type: "page",
+  navigation: {
+    navPill: {
+      left: {
+        component: LinkComponent,
+        props: {
+          text: "Back",
+          action: {
+            type: "link",
+            target: "backlink",
+          },
+        },
+      },
+    },
+  },
 };
 const categoryDetail: Page<any, DappState> = {
   isSystem: true,
@@ -50,6 +64,20 @@ const categoryDetail: Page<any, DappState> = {
   component: CategoryDetail,
   title: "Category detail",
   type: "page",
+  navigation: {
+    navPill: {
+      left: {
+        component: LinkComponent,
+        props: {
+          text: "Back",
+          action: {
+            type: "link",
+            target: "backlink",
+          },
+        },
+      },
+    },
+  },
 };
 const favorites: Page<any, DappState> = {
   routeParts: ["favorites"],

@@ -3,8 +3,10 @@
   import { Offer } from "../data/api/types";
   import { purchase } from "../processes/purchase";
   import OfferCardField from "./OfferCardField.svelte";
+  import Icons from "../../../shared/molecules/Icons.svelte";
   import { me } from "../../../shared/stores/me";
   import { upsertOffer } from "../processes/upsertOffer";
+  import Time from "svelte-time";
 
   export let offer: Offer = <any>{
     categoryTag: {
@@ -54,39 +56,107 @@
     push("#/marketplace/offer/" + offer.id);
   }
 
+  function loadCategoryPage(categoryId: number) {
+    push("#/marketplace/offers/" + categoryId);
+  }
+
   function buy() {
     window.o.runProcess(purchase, {});
   }
+
+  let now = new Date();
+  let sevendaysago = now.setDate(now.getDate() - 7);
+
+  function dateOlderThanSevenDays(unixTime: number) {
+    return sevendaysago > unixTime * 1000;
+  }
+  console.log("OFFER: ", offer);
 </script>
 
 <section
-  class="flex items-center justify-center mb-2 "
+  class="flex items-center justify-center mb-12 "
   on:click|once={() => loadDetailPage()}
 >
-  <div class="flex flex-col w-full bg-white rounded-lg shadow ">
+  <div
+    class="flex flex-col w-full bg-white border rounded-lg border-light-lighter"
+  >
     <header
-      class="grid w-full overflow-hidden bg-cover rounded-t-lg h-28 place-content-center"
+      class="relative grid w-full h-40 overflow-hidden bg-cover rounded-t-lg place-content-center"
       style="background: url('{offer.pictureUrl}') no-repeat center center; background-size: cover;"
-    />
+    >
+      <div
+        class="absolute top-0 right-0 px-4 py-1 text-xs rounded-tr-lg rounded-bl-lg shadow bg-light-lighter text-light-dark"
+      >
+        <Time relative timestamp={offer.publishedAt} />
+        <!-- {#if offer.publishedAt}
+          {#if dateOlderThanSevenDays(offer.publishedAt)}
+            <Time
+              timestamp={new Date(offer.publishedAt * 1000)}
+              format="D. MMMM YYYY"
+            />
+          {:else}
+            <Time
+              relative
+              timestamp={new Date(offer.publishedAt * 1000)}
+              live={true}
+            />
+          {/if}
+        {/if} -->
+      </div>
+    </header>
     <div class="p-2 text-base text-left text-secondary">
       {offer.title}
     </div>
-    <div class="p-2 text-xl font-bold text-left text-primary">
-      {offer.pricePerUnit}
-      <img src="/logos/crc.svg" class="inline w-6 h-6 -mt-1" alt="circles" />
-    </div>
-    <div class="flex flex-row p-2 space-x-2">
-      <div class="p-2 rounded-full bg-light-lighter text-2xs">
-        {offer.categoryTag.value}
+    <div class="flex flex-row items-center content-start p-2 space-x-1">
+      <div class="text-2xl font-bold text-left text-secondary">
+        {offer.pricePerUnit}
       </div>
-      <div class="p-2 rounded-full bg-light-lighter text-2xs">
-        {offer.city.name}
+      <div class="text-secondary">
+        <Icons icon="circlessimple" />
+        <!-- <img src="/logos/crc.svg" class="inline w-6 h-6 -mt-1" alt="circles" /> -->
       </div>
-      <div class="p-2 rounded-full bg-light-lighter text-2xs">
-        {offer.city.country}
+      <div class="ml-2 text-base text-2xs">
+        ({offer.maxUnits}
+        {offer.unitTag.value})
       </div>
     </div>
+    <div class="relative flex flex-row p-2 mt-6 space-x-2">
+      <div class="flex flex-row flex-grow space-x-2">
+        <div class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs">
+          <a
+            href="#/marketplace/offers/{offer.categoryTagId}"
+            alt={offer.categoryTag.value}
+          >
+            {offer.categoryTag.value}
+          </a>
+        </div>
+        <!-- <div class="p-2 rounded-full bg-light-lighter text-2xs">
+          {offer.city.name}
+        </div>
+        <div class="p-2 rounded-full bg-light-lighter text-2xs">
+          {offer.city.country}
+        </div> -->
+      </div>
 
+      <div
+        class="absolute bottom-0 right-0 flex flex-row items-center content-start self-end p-2 space-x-2 text-xs rounded-tl-lg bg-light-lighter"
+      >
+        <div>
+          {offer.createdBy.firstName}
+          {offer.createdBy.lastName}
+        </div>
+        <div class="avatar">
+          <div class="w-8 h-8 m-auto rounded-full sm:w-12 sm:h-12">
+            <img
+              src={offer.createdBy.avatarUrl
+                ? offer.createdBy.avatarUrl
+                : "/images/market/city.png"}
+              alt="user-icon"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- <div class="relative flex-grow text-left">
       <div class="max-w-full cursor-pointer">
         <h2 class="text-2xl sm:text-3xl">

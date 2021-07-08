@@ -1,11 +1,12 @@
 <script lang="ts">
   import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
-  import { Offer, OffersDocument } from "../data/api/types";
+  import { Offer, OffersDocument, TagsDocument } from "../data/api/types";
   import OfferCard from "../atoms/OfferCard.svelte";
   import { onMount } from "svelte";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { Subscription } from "rxjs";
   import { Swiper, SwiperSlide } from "swiper/svelte";
+  import { push } from "svelte-spa-router";
   import "swiper/swiper-bundle.min.css";
 
   import "swiper/components/navigation/navigation.min.css";
@@ -13,9 +14,11 @@
 
   let isLoading: boolean;
   let error: Error;
+  let offers: Offer[] = [];
   let citites: {
     [name: string]: Offer[];
   } = {};
+  let categories: string[] = [];
   let shellEventSubscription: Subscription;
 
   async function load() {
@@ -42,6 +45,23 @@
       p[c.city.name].push(c);
       return p;
     }, {});
+    offers = result.data.offers;
+
+    const categoryResult = await apiClient.query({
+      query: TagsDocument,
+      variables: {
+        typeId_in: ["o-marketplace:offer:category:1"],
+      },
+    });
+    if (categoryResult.errors && categoryResult.errors.length) {
+      error = new Error(
+        `An error occurred while loading the categories: ${JSON.stringify(
+          categoryResult.errors
+        )}`
+      );
+      throw error;
+    }
+    categories = categoryResult.data.tags;
     isLoading = false;
   }
 
@@ -64,11 +84,15 @@
       shellEventSubscription.unsubscribe();
     };
   });
+
+  function loadCategoryPage(categoryId: string) {
+    push("#/marketplace/offers/" + categoryId);
+  }
 </script>
 
 <MarketplaceHeader />
 
-<div class="">
+<div class="p-2 bg-light-lightest">
   {#if isLoading}
     <section class="flex items-center justify-center mx-4 mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -87,7 +111,7 @@
         </div>
       </div>
     </section>
-  {:else if Object.keys(citites).length}
+  {:else if offers.length}
     <!-- <section class="flex items-center justify-center mb-1 ">
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
@@ -107,17 +131,26 @@
         on:slideChange={() => console.log("slide change")}
         on:swiper={(e) => console.log(e.detail[0])}
       >
-        {#each Object.keys(citites) as city}
+        <!-- {#each Object.keys(citites) as city} -->
+        {#each categories as category}
           <SwiperSlide>
-            <div class="p-2 rounded-full bg-light-lighter text-2xs">
-              {city}
+            <div
+              class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs"
+              on:click|once={() => loadCategoryPage(category.id)}
+            >
+              <!-- {city} -->
+              {category.value}
             </div>
           </SwiperSlide>
         {/each}
       </Swiper>
     </div>
 
-    {#each Object.keys(citites) as city}
+    {#each offers as offer}
+      <OfferCard {offer} />
+    {/each}
+
+    <!-- {#each Object.keys(citites) as city}
       <section class="flex items-center justify-center mx-4 mb-1 ">
         <div class="flex flex-col w-full p-4 space-y-2 ">
           <div class="text-xs font-bold text-left ">
@@ -125,20 +158,11 @@
           </div>
         </div>
       </section>
-      <Swiper
-        spaceBetween={10}
-        slidesPerView={1.1}
-        centeredSlides={true}
-        on:slideChange={() => console.log("slide change")}
-        on:swiper={(e) => console.log(e.detail[0])}
-      >
-        {#each citites[city] as offer}
-          <SwiperSlide>
-            <OfferCard {offer} />
-          </SwiperSlide>
-        {/each}
-      </Swiper>
-    {/each}
+
+      {#each citites[city] as offer}
+        <OfferCard {offer} />
+      {/each}
+    {/each} -->
   {:else}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">

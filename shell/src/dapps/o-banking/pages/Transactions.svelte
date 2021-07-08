@@ -39,9 +39,6 @@
       }
     }
   });
-
-  let timestampSevenDays = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
-
 </script>
 
 <BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
