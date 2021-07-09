@@ -25,9 +25,8 @@
       }[]
     | undefined;
 
-
-  export function getState() : {
-    contentType?: "process" | "jumplist" | "page" | "navigation",
+  export function getState(): {
+    contentType?: "process" | "jumplist" | "page" | "navigation";
     isOpen: boolean;
   } {
     if (runningProcess) {
@@ -39,7 +38,7 @@
     } else if (navigation) {
       return { contentType: "navigation", isOpen: _isOpen };
     } else {
-      return { contentType:undefined, isOpen: false}
+      return { contentType: undefined, isOpen: false };
     }
   }
 
@@ -125,7 +124,7 @@
     }
   }
 
-  export function showPage(page:Page<any, any>) {
+  export function showPage(page: Page<any, any>) {
     if (!closeModal()) {
       return;
     }
@@ -163,8 +162,6 @@
     aria-modal="true"
     tabIndex={-1}
     role="dialog"
-    in:fade={{ duration: 50 }}
-    out:fade={{ duration: 50 }}
     on:click|self={closeModal}
     class="z-40 pt-2 text-base overlay"
   >
@@ -261,7 +258,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 4.25rem;
+    margin-bottom: 5rem;
   }
   .modalAsideContent {
     flex-grow: 0;

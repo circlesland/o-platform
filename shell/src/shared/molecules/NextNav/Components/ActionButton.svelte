@@ -1,12 +1,17 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  const dispatch = createEventDispatcher();
-
   export let icon: string;
 </script>
 
-<img
-  src={icon}
-  alt="circlesLand"
-  class="bg-white rounded-full navlogo"
-/>
+{#if icon == "close"}
+  <img
+    src="/logos/close.svg"
+    alt="circlesLand"
+    class="bg-white rounded-full navlogo"
+  />
+{:else}
+  <img
+    src="/logos/logo.svg"
+    alt="circlesLand"
+    class="bg-white rounded-full navlogo"
+  />
+{/if}
