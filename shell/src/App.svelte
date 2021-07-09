@@ -425,10 +425,10 @@
     });
 
     async function getNavigationManifest(): Promise<NavigationManifest> {
-        const sessionInfo = await getSessionInfo();
+        /*const sessionInfo = await getSessionInfo();
         if (!$me || !sessionInfo.isLoggedOn) {
             return getNoSessionNavigation();
-        }
+        }*/
 
         const modalState = modal.getState();
         if (modalState.isOpen) {
