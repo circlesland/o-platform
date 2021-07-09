@@ -5,9 +5,8 @@
   export let text: string = null;
 </script>
 
-{#if icon}
-  <Icons {icon} />
-{/if}
 {#if text}
   {text}
+{:else if icon}
+  <Icons {icon} />
 {/if}
