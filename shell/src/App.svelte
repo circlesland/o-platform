@@ -541,7 +541,11 @@
             bind:this={modal}
             on:navigation={(event) => (processNavigation = event.detail)}
             on:modalOpen={(e) => {
-      isOpen = e.detail;
+              isOpen = e.detail;
+              const a = async () => {
+                navManifest = await getNavigationManifest();
+              };
+              a();
     }}
     />
     <style>
