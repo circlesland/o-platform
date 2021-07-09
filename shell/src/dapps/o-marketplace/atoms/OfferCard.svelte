@@ -75,7 +75,13 @@
   >
     <header class="relative rounded-t-lg headerImageContainer">
       <div class="rounded-t-lg image-wrapper">
-        <img src={offer.pictureUrl} alt="" class="rounded-t-lg" />
+        <img
+          src={offer.pictureUrl
+            ? offer.pictureUrl
+            : "/images/market/circles-no-image.jpg"}
+          alt=""
+          class="rounded-t-lg"
+        />
       </div>
 
       <div
