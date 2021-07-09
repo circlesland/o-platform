@@ -454,14 +454,15 @@
     }
 
     function getRegularNavigation(): NavigationManifest {
-        return {
+        const lastLoadedDapp = getLastLoadedDapp();
+        const manifest = {
           navPill: {
             left: {
               component: ListComponent,
               props: {
                   icon: "list",
                   action: () => {
-                      modal.showNavigation(getLastLoadedDapp())
+                      modal.showNavigation(lastLoadedDapp)
                   }
               }
             },
@@ -469,7 +470,7 @@
               component: ActionButtonComponent,
               props: {
                   icon: "/logos/logo.svg",
-                  action: () => modal.showJumplist(getLastLoadedDapp())
+                  action: () => modal.showJumplist(lastLoadedDapp)
               }
             },
             right: {
@@ -483,6 +484,12 @@
             }
           }
         };
+
+        // If the current dapp has no navigation items then hide the button
+        if (lastLoadedDapp.routables.filter(o => !o.isSystem).length == 0) {
+            delete manifest.navPill.left;
+        }
+        return manifest;
     }
 
     /**
