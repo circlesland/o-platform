@@ -32,6 +32,8 @@
 
   let imageStore = { value: null, isValid: false };
 
+  console.log("CONTEXT: ", context);
+
   function handleFilesSelect(e) {
     const { acceptedFiles, fileRejections } = e.detail;
     files.accepted = [...files.accepted, ...acceptedFiles];
@@ -131,6 +133,10 @@
     if (imageStore && imageStore.value) {
       imageStore.isValid = true;
       setTimeout(() => {});
+    }
+    if (context.params.cropShape && context.params.cropShape == "rect") {
+      cropShape = context.params.cropShape;
+      aspect = 16 / 9;
     }
   }
 
