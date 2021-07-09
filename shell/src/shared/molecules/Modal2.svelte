@@ -118,6 +118,7 @@
     runningProcess = undefined;
     jumplistItems = undefined;
     navigation = undefined;
+    dispatch("navigation", null);
     return true;
   }
 

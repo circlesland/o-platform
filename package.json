@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@prisma/client": "^2.18.0",
+    "@sveltejs/svelte-virtual-list": "^3.0.1",
     "core-util-is": "^1.0.2",
     "rxjs": "^6.6.3",
     "svelte": "^3.38.3",
