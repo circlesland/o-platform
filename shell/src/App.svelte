@@ -234,6 +234,7 @@
     let current;
     let isOpen = false;
     let modal: Modal2;
+    let navManifest:NavigationManifest;
 
     let processNavigation: PromptNavigation;
 
@@ -357,10 +358,12 @@
     let lastLoadedPage: Page<any, any>;
     let lastLoadedDapp: DappManifest<any>;
 
-    function routeLoaded() {
+    async function routeLoaded() {
         // Pretty self explanatory. For more lookup the svelte-spa-router docs,
         lastLoadedPage = getLastLoadedPage();
         lastLoadedDapp = getLastLoadedDapp();
+
+        navManifest = await getNavigationManifest();
 
         console.log("LAST DAPP: ", lastLoadedDapp);
         console.log("LAST PAGE: ", lastLoadedPage);
@@ -417,6 +420,7 @@
     let _routes: any;
     onMount(async () => {
         _routes = await routes();
+        navManifest = await getNavigationManifest();
         console.log("Loaded routes:", _routes);
     });
 
@@ -528,10 +532,11 @@
             </div>
         </main>
     </div>
-    {#await getNavigationManifest()}
-    {:then navManifest}
+
+    {#if navManifest}
         <NextNav navigation={navManifest} />
-    {/await}
+    {/if}
+
     <Modal2
             bind:this={modal}
             on:navigation={(event) => (processNavigation = event.detail)}
