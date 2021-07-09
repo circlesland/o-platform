@@ -1,6 +1,6 @@
 const CirclesAPI = 'https://api.circles.garden/api/';
 const PathfinderAPI = "__PATHFINDER_ENDPOINT__";
-const GraphAPI = 'https://graph.circles.garden/subgraphs/name/CirclesUBI/circles-subgraph';
+const GraphAPI = 'https://api.thegraph.com/subgraphs/name/circlesubi/circles';
 import {Banking} from "../../dapps/o-banking/banking"
 
 export let toAddress = async function(input) {

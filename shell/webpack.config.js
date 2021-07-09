@@ -90,7 +90,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts|\.svelte$/,
+        test: /\.ts|\.js|\.svelte$/,
         loader: "string-replace-loader",
         options: {
           search: "__PATHFINDER_ENDPOINT__",
@@ -99,7 +99,7 @@ module.exports = {
         },
       },
       {
-        test: /\.ts|\.svelte$/,
+        test: /\.ts|\.js|\.svelte$/,
         loader: "string-replace-loader",
         options: {
           search: "__CIRCLES_SUBGRAPH_ENDPOINT__",

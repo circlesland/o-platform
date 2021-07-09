@@ -227,12 +227,8 @@
   import NextNav from "./shared/molecules/NextNav/NextNav.svelte";
   import { onMount } from "svelte";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-  import { PromptNavigation } from "@o-platform/o-process/dist/events/prompt";
-  import ListComponent from "./shared/molecules/NextNav/Components/List.svelte";
-  import LinkComponent from "./shared/molecules/NextNav/Components/Link.svelte";
-  import ActionButtonComponent from "./shared/molecules/NextNav/Components/ActionButton.svelte";
-  import { getSessionInfo } from "./dapps/o-passport/processes/identify/services/getSessionInfo";
 
+  import { getNavigationManifest } from "./shared/functions/GetNavigationManifest.svelte";
   import { ProcessContainerNavigation } from "./shared/molecules/ProcessContainer.svelte";
 
   let modalProcessEventSubscription: Subscription;
@@ -368,7 +364,7 @@
     lastLoadedPage = getLastLoadedPage();
     lastLoadedDapp = getLastLoadedDapp();
 
-    navManifest = await getNavigationManifest();
+    navManifest = getNavigationManifest(processNavigation, modal);
 
     console.log("LAST DAPP: ", lastLoadedDapp);
     console.log("LAST PAGE: ", lastLoadedPage);
@@ -404,150 +400,9 @@
   let _routes: any;
   onMount(async () => {
     _routes = await routes();
-    navManifest = await getNavigationManifest();
+    navManifest = getNavigationManifest(processNavigation, modal);
     console.log("Loaded routes:", _routes);
   });
-
-  async function getNavigationManifest(): Promise<NavigationManifest> {
-    /*const sessionInfo = await getSessionInfo();
-        if (!$me || !sessionInfo.isLoggedOn) {
-            return getNoSessionNavigation();
-        }*/
-
-    const modalState = modal.getState();
-    if (modalState.isOpen) {
-      return getModalNavigation();
-    }
-    return getRegularNavigation();
-  }
-
-  function getModalNavigation(): NavigationManifest {
-    const modalState = modal.getState();
-    switch (modalState.contentType) {
-      case "jumplist":
-      case "navigation":
-        return getListNavigation();
-      case "process":
-        return getProcessNavigation();
-      case "page":
-        return getDetailNavigation();
-    }
-    throw new Error(`Unknown modal state: ${modalState.contentType}.`);
-  }
-
-  function getNoSessionNavigation(): NavigationManifest {
-    return {
-      loginPill: true,
-    };
-  }
-
-  function getRegularNavigation(): NavigationManifest {
-    const lastLoadedDapp = getLastLoadedDapp();
-    const manifest = {
-      navPill: {
-        left: {
-          component: ListComponent,
-          props: {
-            icon: "list",
-            action: () => {
-              modal.showNavigation(lastLoadedDapp);
-            },
-          },
-        },
-        center: {
-          component: ActionButtonComponent,
-          props: {
-            icon: "logo",
-            action: () => modal.showJumplist(lastLoadedDapp),
-          },
-        },
-        right: {
-          component: LinkComponent,
-          props: {
-            icon: "home",
-            action: () => {
-              push("#/dashboard");
-            },
-          },
-        },
-      },
-    };
-
-    // If the current dapp has no navigation items then hide the button
-    if (lastLoadedDapp.routables.filter((o) => !o.isSystem).length == 0) {
-      delete manifest.navPill.left;
-    }
-    return manifest;
-  }
-
-  /**
-   * Generates a NavigationManifest for "jumplist"s and "navigation" modals.
-   */
-  function getListNavigation(): NavigationManifest {
-    const manifest = {
-      navPill: {
-        center: {
-          component: ActionButtonComponent,
-          props: {
-            icon: "close",
-            action: () => modal.closeModal(),
-          },
-        },
-      },
-    };
-    return manifest;
-  }
-
-  function getProcessNavigation(): NavigationManifest {
-    const manifest: NavigationManifest = {
-      navPill: {
-        center: {
-          component: ActionButtonComponent,
-          props: {
-            icon: "/logos/close.svg",
-            action: () => modal.closeModal(),
-          },
-        },
-      },
-    };
-
-    if (processNavigation && processNavigation.canGoBack) {
-      manifest.navPill.left = {
-        component: LinkComponent,
-        props: {
-          text: "Back",
-          action: () => processNavigation.back(),
-        },
-      };
-    }
-
-    if (processNavigation && processNavigation.canSkip) {
-      manifest.navPill.right = {
-        component: LinkComponent,
-        props: {
-          text: "Skip",
-          action: () => processNavigation.skip(),
-        },
-      };
-    }
-
-    return manifest;
-  }
-
-  function getDetailNavigation(): NavigationManifest {
-    const manifest = {
-      navPill: {
-        center: {
-          component: ActionButtonComponent,
-          props: {
-            icon: "close",
-            action: () => modal.closeModal(),
-          },
-        },
-      },
-    };
-    return manifest;
-  }
 </script>
 
 {#if _routes}
@@ -576,16 +431,13 @@
 
   <Modal2
     bind:this={modal}
-    on:navigation={async (event) => {
+    on:navigation={(event) => {
       processNavigation = event.detail;
-      navManifest = await getNavigationManifest();
+      navManifest = getNavigationManifest(processNavigation, modal);
     }}
     on:modalOpen={(e) => {
       isOpen = e.detail;
-      const a = async () => {
-        navManifest = await getNavigationManifest();
-      };
-      a();
+      navManifest = getNavigationManifest(processNavigation, modal);
     }}
   />
   <style>
