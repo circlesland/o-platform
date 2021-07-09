@@ -26,7 +26,7 @@
     | undefined;
 
 
-  export function isOpen() : {
+  export function getState() : {
     contentType: "process" | "jumplist" | "page" | "navigation",
     isOpen: boolean;
   } {

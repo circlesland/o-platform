@@ -25,10 +25,7 @@ const createHub: Page<any, DappState> = {
         component: LinkComponent,
         props: {
           text: "Back",
-          action: {
-            type: "link",
-            target: "backlink",
-          },
+          action: () => history.back(),
         },
       },
     },
@@ -68,11 +65,9 @@ export const dashboard: DappManifest<DappState> = {
   },
   navigation: {
     navPill: {
-      actionButton: {
-        component: ActionButtonComponent, // action|
-        props: {
-          disabled: false,
-        },
+      center: {
+        component: ActionButtonComponent, // action|,
+        props: {}
       },
     },
   },

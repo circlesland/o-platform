@@ -11,6 +11,7 @@ import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
+import {push} from "svelte-spa-router";
 
 const externalChat: Link<any, DappState> = {
   type: "link",
@@ -133,21 +134,11 @@ export const homepage: DappManifest<DappState> = {
       component: ListComponent,
       props: {
         icon: "list",
-        action: {
-          type: "linklist",
-          target: "dappsList",
-        },
+        text: "Back",
+        action: () => push("#/dashboard"),
       },
     },
-    loginPill: {
-      isOpen: false,
-      actionButton: {
-        component: ActionButtonComponent, // action|
-        props: {
-          disabled: false,
-        },
-      },
-    },
+    loginPill: true,
   },
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here

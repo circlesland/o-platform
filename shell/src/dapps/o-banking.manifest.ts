@@ -76,10 +76,7 @@ export const profile: Page<any, BankingDappState> = {
         component: LinkComponent,
         props: {
           text: "Back",
-          action: {
-            type: "link",
-            target: "backlink",
-          },
+          action: () => history.back(),
         },
       },
     },
@@ -99,10 +96,7 @@ const transactionDetail: Page<{ _id: string }, BankingDappState> = {
         component: LinkComponent,
         props: {
           text: "Back",
-          action: {
-            type: "link",
-            target: "backlink",
-          },
+          action: () => history.back(),
         },
       },
     },
@@ -200,38 +194,6 @@ export const banking: DappManifest<BankingDappState> = {
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   jumplist: profileJumplist,
-  navigation: {
-    navPill: {
-      left: {
-        component: ListComponent,
-        props: {
-          icon: "list",
-          action: {
-            type: "linklist",
-            target: "dappsList",
-          },
-        },
-      },
-      right: {
-        component: LinkComponent,
-        props: {
-          icon: "home",
-          action: {
-            type: "link",
-            target: "#/dashboard",
-          },
-          // action: "link",
-          // link: "#/dashboard",
-        },
-      },
-      actionButton: {
-        component: ActionButtonComponent, // action|
-        props: {
-          disabled: false,
-        },
-      },
-    },
-  },
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     const myProfileResult = await new Promise<Profile>((resolve) => {

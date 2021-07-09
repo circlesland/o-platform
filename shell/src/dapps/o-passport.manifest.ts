@@ -9,6 +9,7 @@ import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import {push} from "svelte-spa-router";
 
 const index: Page<any, DappState> = {
   routeParts: ["profile"],
@@ -86,27 +87,19 @@ export const passport: DappManifest<DappState> = {
         component: ListComponent,
         props: {
           icon: "list",
-          action: {
-            type: "linklist",
-            target: "dappsList",
-          },
+          action: () => {}
         },
       },
       right: {
         component: LinkComponent,
         props: {
           icon: "home",
-          action: {
-            type: "link",
-            target: "#/dashboard",
-          },
+          action: () => push("#/dashboard")
         },
       },
-      actionButton: {
+      center: {
         component: ActionButtonComponent, // action|
-        props: {
-          disabled: false,
-        },
+        props: {},
       },
     },
   },

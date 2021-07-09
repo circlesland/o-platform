@@ -10,6 +10,7 @@ import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import {push} from "svelte-spa-router";
 
 const stream: Page<any, DappState> = {
   routeParts: ["stream"],
@@ -29,10 +30,7 @@ const offerDetail: Page<any, DappState> = {
         component: LinkComponent,
         props: {
           text: "Back",
-          action: {
-            type: "link",
-            target: "backlink",
-          },
+          action: () => history.back(),
         },
       },
     },
@@ -49,10 +47,7 @@ const categories: Page<any, DappState> = {
         component: LinkComponent,
         props: {
           text: "Back",
-          action: {
-            type: "link",
-            target: "backlink",
-          },
+          action: () => history.back(),
         },
       },
     },
@@ -70,10 +65,7 @@ const categoryDetail: Page<any, DappState> = {
         component: LinkComponent,
         props: {
           text: "Back",
-          action: {
-            type: "link",
-            target: "backlink",
-          },
+          action: () => history.back(),
         },
       },
     },
@@ -126,27 +118,19 @@ export const marketplace: DappManifest<DappState> = {
         component: ListComponent,
         props: {
           icon: "list",
-          action: {
-            type: "linklist",
-            target: "dappsList",
-          },
+          action: () => {},
         },
       },
       right: {
         component: LinkComponent,
         props: {
           icon: "home",
-          action: {
-            type: "link",
-            target: "#/dashboard",
-          },
+          action: () => push("#/dashboard")
         },
       },
-      actionButton: {
+      center: {
         component: ActionButtonComponent, // action|
-        props: {
-          disabled: false,
-        },
+        props: { },
       },
     },
   },

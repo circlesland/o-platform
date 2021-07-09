@@ -22,7 +22,7 @@ export interface NavigationManifest {
     right?: NavigationElement;
     center?: NavigationElement;
   };
-  loginPill?: NavigationElement;
+  loginPill?: boolean;
 }
 
 export function getMergedNavigationManifest(
