@@ -17,10 +17,10 @@
     {#if props.left}
       <div
         class="flex justify-center flex-shrink-0 w-20 h-12 -mr-4 bg-white rounded-l-full cursor-pointer"
+        on:click={props.left.props.action}
       >
         <div
           class="self-center"
-          on:click={props.left.props.action}
         >
           <svelte:component
             this={props.left.component}
@@ -41,10 +41,10 @@
     {#if props.right}
       <div
         class="flex justify-center flex-shrink-0 w-20 h-12 -ml-4 bg-white rounded-r-full cursor-pointer "
+        on:click={props.right.props.action}
       >
         <div
           class="self-center"
-          on:click={props.right.props.action}
         >
           <svelte:component
             this={props.right.component}

@@ -25,7 +25,6 @@
       <svelte:component
         this={props.actionButton.component}
         {...props.actionButton.props}
-        {isOpen}
       />
     </div>
 
