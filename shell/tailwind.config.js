@@ -7,22 +7,14 @@ module.exports = {
   //   removeDeprecatedGapUtilities: true,
   // },
   darkMode: false,
+  mode: "jit",
+  purge: [
+    "./public/**/*.html",
+    "./../packages/**/*.svelte",
+    "./src/**/*.svelte",
+    "./src/**/*.{js,jsx,ts,tsx,vue}",
+  ],
 
-  purge: {
-    enabled: production,
-    content: ["./../packages/**/*.svelte", "./src/**/*.svelte"],
-    defaultExtractor: (content) => {
-      const broadMatches = content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [];
-      const broadMatchesWithoutTrailingSlash = broadMatches.map((match) =>
-        _.trimEnd(match, "\\")
-      );
-      const matches = broadMatches.concat(broadMatchesWithoutTrailingSlash);
-      return matches;
-    },
-    options: {
-      safelist: [/data-theme$/],
-    },
-  },
   daisyui: {
     styled: true,
     themes: false,

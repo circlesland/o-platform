@@ -2,7 +2,7 @@
   import Time from "svelte-time";
   import Web3 from "web3";
   import { Transfer } from "../data/circles/types";
-  import {push} from "svelte-spa-router";
+  import { push } from "svelte-spa-router";
 
   export let transfer: Transfer;
   export let message: String;
@@ -59,7 +59,7 @@
   }
 
   function loadDetailPage(path) {
-    push(`#/banking/transactions/${path}`)
+    push(`#/banking/transactions/${path}`);
   }
 </script>
 

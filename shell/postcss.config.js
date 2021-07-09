@@ -12,6 +12,7 @@ module.exports = {
         "custom-properties": false,
       },
     },
+    // "@tailwindcss/jit": {},
     // "@fullhuman/postcss-purgecss": {
     //   content: [
     //     "./pages/**/*.{js,jsx,ts,tsx}",
