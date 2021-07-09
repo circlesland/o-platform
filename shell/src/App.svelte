@@ -511,7 +511,7 @@
       },
     };
 
-    if (processNavigation.canGoBack) {
+    if (processNavigation && processNavigation.canGoBack) {
       manifest.navPill.left = {
         component: LinkComponent,
         props: {
@@ -521,7 +521,7 @@
       };
     }
 
-    if (processNavigation.canSkip) {
+    if (processNavigation && processNavigation.canSkip) {
       manifest.navPill.right = {
         component: LinkComponent,
         props: {
