@@ -69,37 +69,22 @@
   console.log("OFFER: ", offer);
 </script>
 
-<section
-  class="flex items-center justify-center"
-  on:click|once={() => loadDetailPage()}
->
+<section class="flex items-start" on:click|once={() => loadDetailPage()}>
   <div
-    class="relative flex flex-col w-full bg-white border rounded-lg h-80 border-light-lighter"
+    class="flex flex-col w-full bg-white border rounded-lg border-light-lighter"
   >
-    <header
-      class="relative grid w-full h-40 overflow-hidden bg-cover rounded-t-lg place-content-center"
-      style="background: url('{offer.pictureUrl}') no-repeat center center; background-size: cover;"
-    >
+    <header class="relative rounded-t-lg headerImageContainer">
+      <div class="rounded-t-lg image-wrapper">
+        <img src={offer.pictureUrl} alt="" class="rounded-t-lg" />
+      </div>
+
       <div
         class="absolute top-0 right-0 px-4 py-1 text-xs rounded-tr-lg rounded-bl-lg shadow bg-light-lighter text-light-dark"
       >
         <Time relative timestamp={offer.publishedAt} />
-        <!-- {#if offer.publishedAt}
-          {#if dateOlderThanSevenDays(offer.publishedAt)}
-            <Time
-              timestamp={new Date(offer.publishedAt * 1000)}
-              format="D. MMMM YYYY"
-            />
-          {:else}
-            <Time
-              relative
-              timestamp={new Date(offer.publishedAt * 1000)}
-              live={true}
-            />
-          {/if}
-        {/if} -->
       </div>
     </header>
+
     <div class="p-2 text-base text-left text-secondary">
       {offer.title}
     </div>
@@ -116,9 +101,7 @@
         {offer.unitTag.value})
       </div>
     </div>
-    <div
-      class="absolute bottom-0 right-0 flex flex-row w-full p-2 mt-6 space-x-2"
-    >
+    <div class="relative flex flex-row w-full p-2 mt-6 space-x-2">
       <div class="flex flex-row flex-grow space-x-2">
         <div class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs">
           <a
@@ -300,3 +283,22 @@
     </div> -->
   </div>
 </section>
+
+<style>
+  /* Ensure image is always 16:9 Ratio */
+  .headerImageContainer {
+    max-width: none;
+  }
+
+  .image-wrapper {
+    position: relative;
+    padding-bottom: 56.2%;
+  }
+
+  .image-wrapper img {
+    position: absolute;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+</style>
