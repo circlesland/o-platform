@@ -505,7 +505,7 @@
                 center: {
                     component: ActionButtonComponent,
                     props: {
-                        icon: "/logos/logo.svg",
+                        icon: "/logos/close.svg",
                         action: () => modal.closeModal()
                     }
                 }
@@ -520,7 +520,7 @@
                 center: {
                     component: ActionButtonComponent,
                     props: {
-                        icon: "/logos/logo.svg",
+                        icon: "/logos/close.svg",
                         action: () => modal.closeModal()
                     }
                 }
@@ -535,7 +535,7 @@
                 center: {
                     component: ActionButtonComponent,
                     props: {
-                        icon: "/logos/logo.svg",
+                        icon: "/logos/close.svg",
                         action: () => modal.closeModal()
                     }
                 }
