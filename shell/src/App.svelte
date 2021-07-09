@@ -500,15 +500,48 @@
      * Generates a NavigationManifest for "jumplist"s and "navigation" modals.
      */
     function getListNavigation(): NavigationManifest {
-        throw new Error(`Not implemented`);
+        const manifest = {
+            navPill: {
+                center: {
+                    component: ActionButtonComponent,
+                    props: {
+                        icon: "/logos/logo.svg",
+                        action: () => modal.closeModal()
+                    }
+                }
+            }
+        };
+        return manifest;
     }
 
     function getProcessNavigation(): NavigationManifest {
-        throw new Error(`Not implemented`);
+        const manifest = {
+            navPill: {
+                center: {
+                    component: ActionButtonComponent,
+                    props: {
+                        icon: "/logos/logo.svg",
+                        action: () => modal.closeModal()
+                    }
+                }
+            }
+        };
+        return manifest;
     }
 
     function getDetailNavigation(): NavigationManifest {
-        throw new Error(`Not implemented`);
+        const manifest = {
+            navPill: {
+                center: {
+                    component: ActionButtonComponent,
+                    props: {
+                        icon: "/logos/logo.svg",
+                        action: () => modal.closeModal()
+                    }
+                }
+            }
+        };
+        return manifest;
     }
 
 </script>
