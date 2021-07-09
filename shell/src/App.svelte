@@ -232,6 +232,34 @@
   import LinkComponent from "./shared/molecules/NextNav/Components/Link.svelte";
   import ActionButtonComponent from "./shared/molecules/NextNav/Components/ActionButton.svelte";
   import { getSessionInfo } from "./dapps/o-passport/processes/identify/services/getSessionInfo";
+    import "./shared/css/base.css";
+    import "./shared/css/components.css";
+    import "./shared/css/utilities.css";
+    import routes from "./loader";
+    import {getLastLoadedDapp} from "./loader";
+    import {getLastLoadedPage} from "./loader";
+    import Router, {push} from "svelte-spa-router";
+    import Modal2 from "./shared/molecules/Modal2.svelte";
+    import {ProgressSignal} from "@o-platform/o-events/dist/signals/progressSignal";
+    import {getMergedNavigationManifest, NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
+    import {Prompt} from "@o-platform/o-process/dist/events/prompt";
+    import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+    import {SvelteToast} from "./shared/molecules/Toast";
+    import {XDaiThresholdTrigger} from "./xDaiThresholdTrigger";
+    import {me} from "./shared/stores/me";
+    import {INVITE_VALUE} from "./dapps/o-passport/processes/invite/invite";
+    import {
+        deploySafe,
+        HubSignupContextData,
+    } from "./dapps/o-banking/processes/deploySafe";
+    import NextNav from "./shared/molecules/NextNav/NextNav.svelte";
+    import {onMount} from "svelte";
+    import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+    import {PromptNavigation} from "@o-platform/o-process/dist/events/prompt";
+    import ListComponent from "./shared/molecules/NextNav/Components/List.svelte";
+    import LinkComponent from "./shared/molecules/NextNav/Components/Link.svelte";
+    import ActionButtonComponent from "./shared/molecules/NextNav/Components/ActionButton.svelte";
+    import {ProcessContainerNavigation} from "./shared/molecules/ProcessContainer.svelte";
 
   let modalProcessEventSubscription: Subscription;
   let current;
@@ -239,7 +267,7 @@
   let modal: Modal2;
   let navManifest: NavigationManifest;
 
-  let processNavigation: PromptNavigation;
+    let processNavigation: ProcessContainerNavigation;
 
   let publicUrls = {
     "/": true,
@@ -386,32 +414,11 @@
       document.body.style.overflow = "visible";
     }
 
-    if ($me && $me.circlesSafeOwner && !balanceThresholdTrigger) {
-      if (!!localStorage.getItem("isCreatingSafe")) {
-        console.log(
-          "Waiting until the required balance to create a new safe is reached .."
-        );
-        balanceThresholdTrigger = new XDaiThresholdTrigger(
-          $me.circlesSafeOwner,
-          INVITE_VALUE - 0.005,
-          async (address: string, threshold: number) => {
-            console.log("The safe creation balance threshold was reached!");
-            window.o.runProcess(deploySafe, <HubSignupContextData>{
-              privateKey: localStorage.getItem("circlesKey"),
-            });
-          }
-        );
-      } else if (
-        !triggered &&
-        (!!localStorage.getItem("fundsSafe") ||
-          !!localStorage.getItem("signsUpAtCircles"))
-      ) {
-        window.o.runProcess(deploySafe, <HubSignupContextData>{
-          privateKey: localStorage.getItem("circlesKey"),
-        });
-        triggered = true;
-      }
-    }
+    let _routes: any;
+    onMount(async () => {
+        _routes = await routes();
+        console.log("Loaded routes:", _routes);
+    });
 
     layoutClasses =
       (lastLoadedDapp && lastLoadedDapp.isFullWidth) ||
@@ -517,20 +524,41 @@
     return manifest;
   }
 
-  function getProcessNavigation(): NavigationManifest {
-    const manifest = {
-      navPill: {
-        center: {
-          component: ActionButtonComponent,
-          props: {
-            icon: "close",
-            action: () => modal.closeModal(),
-          },
-        },
-      },
-    };
-    return manifest;
-  }
+    function getProcessNavigation(): NavigationManifest {
+        const manifest : NavigationManifest = {
+            navPill: {
+                center: {
+                    component: ActionButtonComponent,
+                    props: {
+                        icon: "/logos/close.svg",
+                        action: () => modal.closeModal()
+                    }
+                }
+            }
+        };
+
+        if (processNavigation.canGoBack) {
+            manifest.navPill.left = {
+                component: LinkComponent,
+                props: {
+                    text: "Back",
+                    action: () => processNavigation.back()
+                }
+            }
+        }
+
+        if (processNavigation.canSkip) {
+            manifest.navPill.right = {
+                component: LinkComponent,
+                props: {
+                    text: "Skip",
+                    action: () => processNavigation.skip()
+                }
+            }
+        }
+
+        return manifest;
+    }
 
   function getDetailNavigation(): NavigationManifest {
     const manifest = {
