@@ -23,7 +23,7 @@
 
   /**
    * Contains events which have been sent by the DappFrame.
-   * It's used to track which "modal-close" events should also
+   * It's used to track which "_modal-close" events should also
    * trigger a history.back() call.
    */
   export let backStack: PlatformEvent[] = [];
@@ -209,7 +209,6 @@
   import { getLastLoadedPage } from "./loader";
   import Router, { push } from "svelte-spa-router";
   import Modal2 from "./shared/molecules/Modal2.svelte";
-  import { NavigateTo } from "@o-platform/o-events/dist/shell/navigateTo";
   import { ProgressSignal } from "@o-platform/o-events/dist/signals/progressSignal";
   import { getMergedNavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
@@ -323,9 +322,6 @@
         break;
       case "shell.begin":
         break;
-      case "shell.navigateTo":
-        push("#" + (<NavigateTo>event).route);
-        break;
       case "shell.done":
         progressIndicator = null;
         break;
@@ -372,7 +368,7 @@
   let triggered = false;
 
   $: {
-    /* Avoid scrolling background on open modal */
+    /* Avoid scrolling background on open _modal */
 
     if (modal && isOpen) {
       document.body.style.overflow = "hidden";
