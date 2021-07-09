@@ -1,6 +1,5 @@
 <script context="module" lang="ts">
 import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
-import {getLastLoadedDapp} from "../../loader";
 import ListComponent from "../molecules/NextNav/Components/List.svelte";
 import ActionButtonComponent from "../molecules/NextNav/Components/ActionButton.svelte";
 import LinkComponent from "../molecules/NextNav/Components/Link.svelte";
@@ -8,37 +7,41 @@ import {push} from "svelte-spa-router";
 
 import { ProcessContainerNavigation } from "../molecules/ProcessContainer.svelte";
 import Modal2 from "../molecules/Modal2.svelte";
+import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 
 export function getNavigationManifest(
+    dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
     modal: Modal2
 ): NavigationManifest {
     if (modal) {
         const modalState = modal.getState();
         if (modalState.isOpen) {
-            return getModalNavigation(processNavigation, modal);
+            return getModalNavigation(dappManifest, processNavigation, modal);
         }
     }
-    return getRegularNavigation(processNavigation, modal);
+    return getRegularNavigation(dappManifest, processNavigation, modal);
 }
 
 function getModalNavigation(
+    dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
     modal: Modal2): NavigationManifest {
     const modalState = modal.getState();
     switch (modalState.contentType) {
         case "jumplist":
         case "navigation":
-            return getListNavigation(processNavigation, modal);
+            return getListNavigation(dappManifest, processNavigation, modal);
         case "process":
-            return getProcessNavigation(processNavigation, modal);
+            return getProcessNavigation(dappManifest, processNavigation, modal);
         case "page":
-            return getDetailNavigation(processNavigation, modal);
+            return getDetailNavigation(dappManifest, processNavigation, modal);
     }
     throw new Error(`Unknown modal state: ${modalState.contentType}.`);
 }
 
 function getNoSessionNavigation(
+    dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
     modal: Modal2): NavigationManifest {
     return {
@@ -47,9 +50,9 @@ function getNoSessionNavigation(
 }
 
 function getRegularNavigation(
+    dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
     modal: Modal2): NavigationManifest {
-    const lastLoadedDapp = getLastLoadedDapp();
     const manifest = {
         navPill: {
             left: {
@@ -57,7 +60,7 @@ function getRegularNavigation(
                 props: {
                     icon: "list",
                     action: () => {
-                        modal.showNavigation(lastLoadedDapp);
+                        modal.showNavigation(dappManifest);
                     },
                 },
             },
@@ -65,7 +68,7 @@ function getRegularNavigation(
                 component: ActionButtonComponent,
                 props: {
                     icon: "logo",
-                    action: () => modal.showJumplist(lastLoadedDapp),
+                    action: () => modal.showJumplist(dappManifest),
                 },
             },
             right: {
@@ -81,7 +84,7 @@ function getRegularNavigation(
     };
 
     // If the current dapp has no navigation items then hide the button
-    if (lastLoadedDapp.routables.filter((o) => !o.isSystem).length == 0) {
+    if (dappManifest.routables.filter((o) => !o.isSystem).length == 0) {
         delete manifest.navPill.left;
     }
     return manifest;
@@ -91,6 +94,7 @@ function getRegularNavigation(
  * Generates a NavigationManifest for "jumplist"s and "navigation" modals.
  */
 function getListNavigation(
+    dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
     modal: Modal2): NavigationManifest {
     const manifest = {
@@ -108,6 +112,7 @@ function getListNavigation(
 }
 
 function getProcessNavigation(
+    dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
     modal: Modal2): NavigationManifest {
     const manifest: NavigationManifest = {
@@ -146,6 +151,7 @@ function getProcessNavigation(
 }
 
 function getDetailNavigation(
+    dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
     modal: Modal2): NavigationManifest {
     const manifest = {

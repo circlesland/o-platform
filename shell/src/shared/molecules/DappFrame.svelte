@@ -1,3 +1,12 @@
+<script context="module">
+    import {writable} from "svelte/store";
+
+    const { subscribe, set, update } = writable(undefined);
+
+    export const navigation = {
+      subscribe
+    };
+</script>
 <script lang="ts">
   import {onMount} from "svelte";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
@@ -7,11 +16,12 @@
   import {DappLoading} from "@o-platform/o-events/dist/shell/dappLoading";
   import {getLastLoadedPage} from "../../loader";
   import {arraysEqual} from "../functions/arraysEqual";
-  import NotFound from "../pages/NotFound.svelte";
-  import {backStack} from "./../../App.svelte";
   import {Link} from "@o-platform/o-interfaces/dist/routables/link";
   import Modal2 from "./Modal2.svelte";
   import {PromptNavigation} from "@o-platform/o-process/dist/events/prompt";
+
+  import { getNavigationManifest } from "../functions/GetNavigationManifest.svelte";
+  import { ProcessContainerNavigation } from "./ProcessContainer.svelte";
 
   export let params: { [x: string]: any } | undefined;
   export let getDappEntryPoint: () => Promise<Routable>;
@@ -33,7 +43,10 @@
     }
 
     const entryPoint = await getDappEntryPoint();
+
     window.o.publishEvent(new DappLoading(dappManifest.dappId, params));
+    set(getNavigationManifest(dappManifest, _processNavigation, _modal));
+
     if (!entryPoint) {
       throw new Error(`Couldn't find the dapp entry point.`);
     }
@@ -49,7 +62,6 @@
                   `The _entryTrigger.eventFactory didn't return an event.`
           );
         }
-        backStack.push(triggerEvent);
         window.o.publishEvent(triggerEvent);
       }
       if (_entryTrigger.action) {

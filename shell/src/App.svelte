@@ -210,10 +210,7 @@
   import Router, { push } from "svelte-spa-router";
   import Modal2 from "./shared/molecules/Modal2.svelte";
   import { ProgressSignal } from "@o-platform/o-events/dist/signals/progressSignal";
-  import {
-    getMergedNavigationManifest,
-    NavigationManifest,
-  } from "@o-platform/o-interfaces/dist/navigationManifest";
+  import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { SvelteToast } from "./shared/molecules/Toast";
@@ -363,7 +360,7 @@
     lastLoadedPage = getLastLoadedPage();
     lastLoadedDapp = getLastLoadedDapp();
 
-    navManifest = getNavigationManifest(processNavigation, modal);
+    navManifest = getNavigationManifest(lastLoadedDapp, processNavigation, modal);
 
     console.log("LAST DAPP: ", lastLoadedDapp);
     console.log("LAST PAGE: ", lastLoadedPage);
@@ -399,7 +396,7 @@
   let _routes: any;
   onMount(async () => {
     _routes = await routes();
-    navManifest = getNavigationManifest(processNavigation, modal);
+//    navManifest = getNavigationManifest(lastLoadedDapp, processNavigation, modal);
     console.log("Loaded routes:", _routes);
   });
 </script>
@@ -432,11 +429,11 @@
     bind:this={modal}
     on:navigation={(event) => {
       processNavigation = event.detail;
-      navManifest = getNavigationManifest(processNavigation, modal);
+      navManifest = getNavigationManifest(lastLoadedDapp, processNavigation, modal);
     }}
     on:modalOpen={(e) => {
       isOpen = e.detail;
-      navManifest = getNavigationManifest(processNavigation, modal);
+      navManifest = getNavigationManifest(lastLoadedDapp, processNavigation, modal);
     }}
   />
   <style>
