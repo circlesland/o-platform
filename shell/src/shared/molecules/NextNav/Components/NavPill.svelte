@@ -20,7 +20,7 @@
       >
         <div
           class="self-center"
-          on:click={() => action(props.left.props.action)}
+          on:click={props.left.props.action}
         >
           <svelte:component
             this={props.left.component}
@@ -30,11 +30,11 @@
         </div>
       </div>
     {/if}
-    <div class="z-50 flex-shrink-0 w-16 col-start-2 mt-3 ml-1 cursor-pointer">
+    <div class="z-50 flex-shrink-0 w-16 col-start-2 mt-3 ml-1 cursor-pointer"
+         on:click={props.actionButton.action}>
       <svelte:component
         this={props.actionButton.component}
         {...props.actionButton.props}
-        {isOpen}
         on:actionButton
       />
     </div>
@@ -44,7 +44,7 @@
       >
         <div
           class="self-center"
-          on:click={() => action(props.right.props.action)}
+          on:click={props.right.props.action}
         >
           <svelte:component
             this={props.right.component}

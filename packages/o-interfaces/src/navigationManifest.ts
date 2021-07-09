@@ -2,67 +2,35 @@ import { DappManifest } from "./dappManifest";
 import { Routable } from "./routable";
 import { merge } from "rxjs";
 
+export interface NavigationElement {
+  isActive?: boolean;
+  component: any;
+  props: {
+    icon?: string;
+    text?: string;
+    action?: () => void
+  }
+}
+
 export interface NavigationManifest {
-  leftSlot?: {
-    component: any;
-    props: {
-      icon: string;
-      action: {
-        type: string;
-        target: string;
-      };
-    };
-  };
-  rightSlot?: {
-    component: any;
-    props: {
-      icon: string;
-    };
-  };
+  leftSlot?: NavigationElement;
+  rightSlot?: NavigationElement;
   navPill?: {
-    left?: {
-      component: any;
-      props?: {
-        icon?: string;
-        text?: string;
-        action: {
-          type: string;
-          target: string;
-        };
-      };
-    };
-    right?: {
-      component: any;
-      props?: {
-        icon?: string;
-        text?: string;
-        action: {
-          type: string;
-          target: string;
-        };
-      };
-    };
-    actionButton?: {
-      component: any;
-      props: {
-        disabled: boolean;
-      };
-    };
+    left?: NavigationElement;
+    right?: NavigationElement;
+    center?: NavigationElement
   };
-  loginPill?: {
-    isOpen: false;
-    actionButton: {
-      component: any;
-      props: {
-        disabled: false;
-      };
-    };
-  };
+  loginPill?: NavigationElement;
 }
 
 export function getMergedNavigationManifest(
   dapp: DappManifest<any>,
-  routable: Routable
+  routable: Routable,
+  processNav?: {
+    canSkip: boolean;
+    canGoBack: boolean;
+    canSubmit: boolean;
+  }
 ) {
   const other = routable?.navigation;
   if (!other) return dapp.navigation;
@@ -72,8 +40,7 @@ export function getMergedNavigationManifest(
   mergedManifest.rightSlot = other.rightSlot ?? dapp.navigation?.rightSlot;
   mergedManifest.navPill = {
     left: other.navPill?.left ?? dapp.navigation?.navPill?.left,
-    actionButton:
-      other.navPill?.actionButton ?? dapp.navigation?.navPill?.actionButton,
+    center: other.navPill?.center ?? dapp.navigation?.navPill?.center,
     right: other.navPill?.right ?? dapp.navigation?.navPill?.right,
   };
   mergedManifest.loginPill = other.loginPill ?? dapp.navigation?.loginPill;

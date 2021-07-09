@@ -142,6 +142,7 @@
     runningProcess = undefined;
     jumplistItems = undefined;
     navigation = undefined;
+    page = undefined;
     dispatch("navigation", null);
     return true;
   }

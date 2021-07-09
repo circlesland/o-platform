@@ -441,7 +441,11 @@
       {isOpen}
       {processNavigation}
       login={lastLoadedDapp && lastLoadedDapp.dappId === "homepage:1"}
-      navigation={getMergedNavigationManifest(lastLoadedDapp, lastLoadedPage)}
+      navigation={
+      getMergedNavigationManifest(
+              lastLoadedDapp, 
+              lastLoadedPage)
+      }
       bind:lastPrompt
       on:actionButton={handleActionButton}
     />
