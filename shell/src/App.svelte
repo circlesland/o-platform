@@ -228,7 +228,7 @@
     import ListComponent from "./shared/molecules/NextNav/Components/List.svelte";
     import LinkComponent from "./shared/molecules/NextNav/Components/Link.svelte";
     import ActionButtonComponent from "./shared/molecules/NextNav/Components/ActionButton.svelte";
-    import {getSessionInfo} from "./dapps/o-passport/processes/identify/services/getSessionInfo";
+    import {ProcessContainerNavigation} from "./shared/molecules/ProcessContainer.svelte";
 
     let modalProcessEventSubscription: Subscription;
     let current;
@@ -236,7 +236,7 @@
     let modal: Modal2;
     let navManifest:NavigationManifest;
 
-    let processNavigation: PromptNavigation;
+    let processNavigation: ProcessContainerNavigation;
 
     let publicUrls = {
         "/": true,
@@ -420,7 +420,6 @@
     let _routes: any;
     onMount(async () => {
         _routes = await routes();
-        navManifest = await getNavigationManifest();
         console.log("Loaded routes:", _routes);
     });
 
@@ -515,7 +514,7 @@
     }
 
     function getProcessNavigation(): NavigationManifest {
-        const manifest = {
+        const manifest : NavigationManifest = {
             navPill: {
                 center: {
                     component: ActionButtonComponent,
@@ -526,6 +525,27 @@
                 }
             }
         };
+
+        if (processNavigation.canGoBack) {
+            manifest.navPill.left = {
+                component: LinkComponent,
+                props: {
+                    text: "Back",
+                    action: () => processNavigation.back()
+                }
+            }
+        }
+
+        if (processNavigation.canSkip) {
+            manifest.navPill.right = {
+                component: LinkComponent,
+                props: {
+                    text: "Skip",
+                    action: () => processNavigation.skip()
+                }
+            }
+        }
+
         return manifest;
     }
 
