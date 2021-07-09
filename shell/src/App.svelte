@@ -592,7 +592,10 @@
 
     <Modal2
             bind:this={modal}
-            on:navigation={(event) => (processNavigation = event.detail)}
+            on:navigation={async (event) => {
+                processNavigation = event.detail;
+                navManifest = await getNavigationManifest();
+            }}
             on:modalOpen={(e) => {
               isOpen = e.detail;
               const a = async () => {
