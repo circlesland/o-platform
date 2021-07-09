@@ -27,7 +27,7 @@
 
 
   export function getState() : {
-    contentType: "process" | "jumplist" | "page" | "navigation",
+    contentType?: "process" | "jumplist" | "page" | "navigation",
     isOpen: boolean;
   } {
     if (runningProcess) {
@@ -38,8 +38,9 @@
       return { contentType: "page", isOpen: _isOpen };
     } else if (navigation) {
       return { contentType: "navigation", isOpen: _isOpen };
+    } else {
+      return { contentType:undefined, isOpen: false}
     }
-    throw new Error(`Invalid state`);
   }
 
   const dispatch = createEventDispatcher();

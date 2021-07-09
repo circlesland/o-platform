@@ -467,7 +467,10 @@
             },
             center: {
               component: ActionButtonComponent,
-              props: {}
+              props: {
+                  icon: "/logos/logo.svg",
+                  action: () => modal.showJumplist(getLastLoadedDapp())
+              }
             },
             right: {
               component: LinkComponent,
@@ -518,9 +521,10 @@
             </div>
         </main>
     </div>
-    {#if lastLoadedDapp && lastLoadedDapp.navigation}
-        <NextNav navigation={getNavigationManifest()} />
-    {/if}
+    {#await getNavigationManifest()}
+    {:then navManifest}
+        <NextNav navigation={navManifest} />
+    {/await}
     <Modal2
             bind:this={modal}
             on:navigation={(event) => (processNavigation = event.detail)}

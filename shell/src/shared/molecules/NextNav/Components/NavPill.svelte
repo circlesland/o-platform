@@ -31,10 +31,10 @@
       </div>
     {/if}
     <div class="z-50 flex-shrink-0 w-16 col-start-2 mt-3 ml-1 cursor-pointer"
-         on:click={props.actionButton.action}>
+         on:click={props.center.props.action}>
       <svelte:component
-        this={props.actionButton.component}
-        {...props.actionButton.props}
+        this={props.center.component}
+        {...props.center.props}
         on:actionButton
       />
     </div>
