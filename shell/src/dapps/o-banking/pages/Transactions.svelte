@@ -1,11 +1,12 @@
 <script lang="ts">
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import { onMount } from "svelte";
-  import { tryGetCurrentSafe } from "../init";
-  import { transfer } from "../processes/transfer";
+  import {onMount} from "svelte";
+  import {tryGetCurrentSafe} from "../init";
+  import {transfer} from "../processes/transfer";
   import TransactionCard from "../atoms/TransactionCard.svelte";
-  import { mySafe } from "../stores/safe";
-  import { me } from "../../../shared/stores/me";
+  import {mySafe} from "../stores/safe";
+  import {me} from "../../../shared/stores/me";
+  import VirtualList from "../../../shared/molecules/Select/VirtualList.svelte";
 
   export let params: {
     to: string;
@@ -18,11 +19,11 @@
 
   onMount(() => {
     if (
-      params &&
-      params.to &&
-      params.amount &&
-      params.to != "" &&
-      params.amount != ""
+            params &&
+            params.to &&
+            params.amount &&
+            params.to != "" &&
+            params.amount != ""
     ) {
       if ((safeAddress = tryGetCurrentSafe()?.safeAddress) && $me) {
         window.o.runProcess(transfer, {
@@ -39,6 +40,8 @@
       }
     }
   });
+  let start;
+  let end;
 </script>
 
 <BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
@@ -64,6 +67,15 @@
       </div>
     </section>
   {:else if $mySafe.transfers && $mySafe.transfers.rows}
+    <!--
+    <VirtualList height="600px" items={$mySafe.transfers.rows} bind:start bind:end let:item>
+      {#if item.direction === "in"}
+        <TransactionCard transfer={item} message="" />
+      {:else}
+        <TransactionCard transfer={item} message="" />
+      {/if}
+    </VirtualList>
+    -->
     {#each $mySafe.transfers.rows as transfer}
       {#if transfer.direction === "in"}
         <TransactionCard {transfer} message="" />

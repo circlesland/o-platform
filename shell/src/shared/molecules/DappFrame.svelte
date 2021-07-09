@@ -1,15 +1,17 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-  import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
-  import { DappLoading } from "@o-platform/o-events/dist/shell/dappLoading";
-  import { getLastLoadedPage } from "../../loader";
-  import { arraysEqual } from "../functions/arraysEqual";
+  import {onMount} from "svelte";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+  import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
+  import {DappLoading} from "@o-platform/o-events/dist/shell/dappLoading";
+  import {getLastLoadedPage} from "../../loader";
+  import {arraysEqual} from "../functions/arraysEqual";
   import NotFound from "../pages/NotFound.svelte";
   import {backStack} from "./../../App.svelte";
   import {Link} from "@o-platform/o-interfaces/dist/routables/link";
+  import Modal2 from "./Modal2.svelte";
+  import {PromptNavigation} from "@o-platform/o-process/dist/events/prompt";
 
   export let params: { [x: string]: any } | undefined;
   export let getDappEntryPoint: () => Promise<Routable>;
@@ -18,6 +20,11 @@
   let _entryPage: Page<any, any>;
   let _entryTrigger: Trigger<any, any>;
   let _lastLoadedPage: Page<any, any>;
+
+  let _modal: Modal2;
+  let _modalIsOpen = false;
+
+  let _processNavigation: PromptNavigation;
 
   onMount(async () => {
     let lastLoadedPage = getLastLoadedPage();
@@ -55,21 +62,21 @@
       return;
     } else {
       throw new Error(
-        `Entry point type '${entryPoint.type}' is not supported by the DappFrame.`
+              `Entry point type '${entryPoint.type}' is not supported by the DappFrame.`
       );
     }
 
     if (!lastLoadedPage && dappManifest.defaultRoute) {
       const defaultRoute = dappManifest.routables.find((o) =>
-        arraysEqual(o.routeParts, dappManifest.defaultRoute)
+              arraysEqual(o.routeParts, dappManifest.defaultRoute)
       );
       if (defaultRoute && defaultRoute.type === "page") {
         lastLoadedPage = <Page<any, any>>defaultRoute;
       } else {
         throw new Error(
-          `Couldn't find the default route (${dappManifest.defaultRoute.join(
-            "/"
-          )}) or the default route doesn't point to a page.`
+                `Couldn't find the default route (${dappManifest.defaultRoute.join(
+                        "/"
+                )}) or the default route doesn't point to a page.`
         );
       }
     }
@@ -91,3 +98,11 @@
 {:else}
   <!--<NotFound />-->
 {/if}
+
+<Modal2
+    bind:this={_modal}
+    on:navigation={(event) => (_processNavigation = event.detail)}
+    on:modalOpen={(e) => {
+      _modalIsOpen = e.detail;
+    }}
+/>

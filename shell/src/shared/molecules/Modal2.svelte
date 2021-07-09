@@ -15,6 +15,7 @@
 
   let runningProcess: Process | undefined;
   let jumplistItems: JumplistItem[] | undefined;
+  let page: Page<any, any>;
   let navigation:
     | {
         icon?: string;
@@ -24,8 +25,21 @@
       }[]
     | undefined;
 
-  export function isOpen() {
-    return _isOpen;
+
+  export function isOpen() : {
+    contentType: "process" | "jumplist" | "page" | "navigation",
+    isOpen: boolean;
+  } {
+    if (runningProcess) {
+      return { contentType: "process", isOpen: _isOpen };
+    } else if (jumplistItems) {
+      return { contentType: "jumplist", isOpen: _isOpen };
+    } else if (page) {
+      return { contentType: "page", isOpen: _isOpen };
+    } else if (navigation) {
+      return { contentType: "navigation", isOpen: _isOpen };
+    }
+    throw new Error(`Invalid state`);
   }
 
   const dispatch = createEventDispatcher();
@@ -101,10 +115,20 @@
   }
 
   export function showProcess(processId: string) {
+    if (!closeModal()) {
+      return;
+    }
     runningProcess = window.o.stateMachines.findById(processId);
     if (!_isOpen && runningProcess) {
       _isOpen = true;
     }
+  }
+
+  export function showPage(page:Page<any, any>) {
+    if (!closeModal()) {
+      return;
+    }
+    page = page;
   }
 
   export function closeModal(): boolean {
@@ -118,6 +142,7 @@
     runningProcess = undefined;
     jumplistItems = undefined;
     navigation = undefined;
+    dispatch("navigation", null);
     return true;
   }
 
