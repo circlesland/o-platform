@@ -600,15 +600,18 @@
     <NextNav navigation={navManifest} />
   {/if}
 
-  <Modal2
-    bind:this={modal}
-    on:navigation={(event) => (processNavigation = event.detail)}
-    on:modalOpen={(e) => {
-      isOpen = e.detail;
-      const a = async () => {
-        navManifest = await getNavigationManifest();
-      };
-      a();
+    <Modal2
+            bind:this={modal}
+            on:navigation={async (event) => {
+                processNavigation = event.detail;
+                navManifest = await getNavigationManifest();
+            }}
+            on:modalOpen={(e) => {
+              isOpen = e.detail;
+              const a = async () => {
+                navManifest = await getNavigationManifest();
+              };
+              a();
     }}
   />
   <style>
