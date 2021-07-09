@@ -2,14 +2,16 @@ import { DappManifest } from "./dappManifest";
 import { Routable } from "./routable";
 import { merge } from "rxjs";
 
+export interface NavigationProps {
+  icon?: string;
+  text?: string;
+  action?: () => void;
+}
+
 export interface NavigationElement {
   isActive?: boolean;
   component: any;
-  props: {
-    icon?: string;
-    text?: string;
-    action?: () => void
-  }
+  props: NavigationProps;
 }
 
 export interface NavigationManifest {
@@ -18,7 +20,7 @@ export interface NavigationManifest {
   navPill?: {
     left?: NavigationElement;
     right?: NavigationElement;
-    center?: NavigationElement
+    center?: NavigationElement;
   };
   loginPill?: NavigationElement;
 }
