@@ -238,7 +238,6 @@
   let navManifest: NavigationManifest;
 
   let processNavigation: ProcessContainerNavigation;
-
   let publicUrls = {
     "/": true,
     "/miva": true,
@@ -484,7 +483,7 @@
       animation: none !important;
     }
 
-    .mainContent {
+    /* .mainContent {
       --tw-text-opacity: 1;
       background-image: linear-gradient(
         180deg,
@@ -492,6 +491,6 @@
         rgba(253, 254, 255, 1) 85%,
         rgba(13, 43, 102, 0) 100%
       );
-    }
+    } */
   </style>
 {/if}

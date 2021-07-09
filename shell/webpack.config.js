@@ -7,6 +7,8 @@ const webpack = require("webpack");
 
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
+const DEBUG = !process.argv.includes("--release");
+const VERBOSE = process.argv.includes("--verbose");
 
 let __CIRCLES_GARDEN_API__ = "https://api.circles.garden/api/users/";
 let __AUTH_ENDPOINT__ = "https://auth.circles.name";
@@ -65,7 +67,7 @@ const sveltePath = path.resolve("node_modules", "svelte");
 
 module.exports = {
   mode,
-  devtool: prod ? false : "source-map",
+  devtool: prod ? false : "inline-cheap-module-source-map",
   entry: {
     bundle: ["./src/main.ts"],
   },
@@ -79,6 +81,17 @@ module.exports = {
     },
     extensions: [".mjs", ".tsx", ".ts", ".js", ".svelte", ".svx"],
     mainFields: ["svelte", "browser", "module", "main"],
+  },
+  stats: {
+    colors: true,
+    reasons: DEBUG,
+    hash: VERBOSE,
+    version: VERBOSE,
+    timings: true,
+    chunks: VERBOSE,
+    chunkModules: VERBOSE,
+    cached: VERBOSE,
+    cachedAssets: VERBOSE,
   },
   output: {
     path: __dirname + "/public",
@@ -185,7 +198,7 @@ module.exports = {
               importLoaders: 1,
             },
           },
-          "postcss-loader",
+          // "postcss-loader",
         ],
       },
       {
@@ -196,15 +209,15 @@ module.exports = {
             emitCss: true,
             hotReload: true,
             preprocess: sveltePreprocess({
-              // https://github.com/kaisermann/svelte-preprocess/#user-content-options
-              // sourceMap: true,
-              postcss: {
-                plugins: [
-                  require("tailwindcss"),
-                  require("autoprefixer"),
-                  require("postcss-nesting"),
-                ],
-              },
+              //   // https://github.com/kaisermann/svelte-preprocess/#user-content-options
+              //   // sourceMap: true,
+              //   // postcss: {
+              //   //   plugins: [
+              //   //     require("tailwindcss"),
+              //   //     require("autoprefixer"),
+              //   //     require("postcss-nesting"),
+              //   //   ],
+              //   // },
             }),
           },
         },
@@ -238,7 +251,7 @@ module.exports = {
   },
   devServer: {
     watchContentBase: true,
-    compress: true,
+    compress: false,
     contentBase: [path.join(__dirname, "public")],
     port: 5000,
     host:
