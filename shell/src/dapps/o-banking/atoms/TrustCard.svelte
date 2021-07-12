@@ -71,7 +71,7 @@
 
 <section
   class="flex items-center justify-center mb-2 "
-  on:click|once={() => loadDetailPage(safeAddress)}
+  on:click={() => loadDetailPage(safeAddress)}
 >
   <div
     class="flex items-center w-full px-4 pt-4 space-x-2 bg-white rounded-sm shadow sm:space-x-6"

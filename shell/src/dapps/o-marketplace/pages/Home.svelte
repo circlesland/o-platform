@@ -141,7 +141,7 @@
           <SwiperSlide>
             <div
               class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs"
-              on:click|once={() => loadCategoryPage(category)}
+              on:click={() => loadCategoryPage(category)}
             >
               <!-- {city} -->
               {category.value}

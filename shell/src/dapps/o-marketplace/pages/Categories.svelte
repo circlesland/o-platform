@@ -95,7 +95,7 @@
     {#each categories as category}
       <section
         class="flex items-center justify-center mb-1 "
-        on:click|once={() => loadCategoryPage(category.id)}
+        on:click={() => loadCategoryPage(category.id)}
       >
         <div
           class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"

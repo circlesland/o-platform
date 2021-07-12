@@ -34,7 +34,7 @@
 
 <section
   class="flex items-center justify-center mb-2 "
-  on:click|once={() => loadDetailPage()}
+  on:click={() => loadDetailPage()}
 >
   <div
     class="flex items-center w-full px-4 pt-5 space-x-2 bg-white rounded-sm shadow sm:space-x-6"
