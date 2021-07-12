@@ -66,6 +66,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
 export const profile: Page<any, BankingDappState> = {
   type: "page",
   isSystem: true,
+  position: "modal",
   routeParts: ["=profile", ":id"],
   title: "Profile",
   component: ProfilePage,
@@ -86,6 +87,7 @@ export const profile: Page<any, BankingDappState> = {
 const transactionDetail: Page<{ _id: string }, BankingDappState> = {
   type: "page",
   isSystem: true,
+  position: "modal",
   routeParts: ["=transactions", ":_id"],
   title: "Transaction",
   component: TransactionDetailPage,
@@ -124,6 +126,7 @@ const assets: Page<any, BankingDappState> = {
 };
 const assetDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
+  position: "modal",
   routeParts: ["=assets", ":symbol"],
   component: AssetDetail,
   title: "Asset",
@@ -138,6 +141,7 @@ const trusts: Page<any, BankingDappState> = {
 };
 const sendInvite: Page<{ inviteAccountAddress: string }, BankingDappState> = {
   routeParts: ["=trusts", "=invite", ":inviteAccountAddress"],
+  position: "modal",
   isSystem: true,
   component: Trusts,
   title: "Trusts",
@@ -145,6 +149,7 @@ const sendInvite: Page<{ inviteAccountAddress: string }, BankingDappState> = {
 };
 const trustDetail: Page<{ id: string }, BankingDappState> = {
   isSystem: true,
+  position: "modal",
   routeParts: ["=trusts", ":id"],
   component: ProfilePage,
   title: "Trust",

@@ -8,9 +8,10 @@ import {Routable} from "../routable";
  * Page jumplist-items with the same key hide the dapp jumplist items.
  */
 export interface Page<TParams extends {[x:string]:any}, TDappState extends {[x:string]:any}> extends Routable {
-  type: "page";
+  type: "page",
+  position?: ("main"|"modal"),
   component?: any,
-  jumplist?: Jumplist<TParams, TDappState>
+  jumplist?: Jumplist<TParams, TDappState>,
   isFullWidth?:boolean,
   hideFooter?:boolean
 }

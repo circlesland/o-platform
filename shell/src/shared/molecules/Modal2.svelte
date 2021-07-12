@@ -15,7 +15,6 @@
 
   let runningProcess: Process | undefined;
   let jumplistItems: JumplistItem[] | undefined;
-  let page: Page<any, any>;
   let navigation:
     | {
         icon?: string;
@@ -25,6 +24,9 @@
       }[]
     | undefined;
 
+  let _page: Page<any, any>;
+  let _pageParams: {[x:string]:any};
+
   export function getState(): {
     contentType?: "process" | "jumplist" | "page" | "navigation";
     isOpen: boolean;
@@ -33,7 +35,7 @@
       return { contentType: "process", isOpen: _isOpen };
     } else if (jumplistItems) {
       return { contentType: "jumplist", isOpen: _isOpen };
-    } else if (page) {
+    } else if (_page) {
       return { contentType: "page", isOpen: _isOpen };
     } else if (navigation) {
       return { contentType: "navigation", isOpen: _isOpen };
@@ -124,11 +126,15 @@
     }
   }
 
-  export function showPage(page: Page<any, any>) {
+  export function showPage(page: Page<any, any>, pageParams: {[x:string]:any}) {
     if (!closeModal()) {
       return;
     }
-    page = page;
+    _page = page;
+    _pageParams = pageParams;
+    if (_page) {
+      _isOpen = true;
+    }
   }
 
   export function closeModal(): boolean {
@@ -139,11 +145,17 @@
     if (!runningProcess && _isOpen) {
       _isOpen = false;
     }
+    if (_page && _isOpen) {
+      _isOpen = false;
+    }
     runningProcess = undefined;
     jumplistItems = undefined;
     navigation = undefined;
-    page = undefined;
+    _page = undefined;
+    _pageParams = undefined;
+
     dispatch("navigation", null);
+
     return true;
   }
 
@@ -187,14 +199,16 @@
               <div class="flex flex-col p-4 space-y-6">
                 {#each navigation as item}
                   <DappNavItem
-                    segment={item.url}
-                    title={item.title}
-                    icon={item.icon}
-                    external={item.extern}
-                    on:navigate={closeModal}
+                          segment={item.url}
+                          title={item.title}
+                          icon={item.icon}
+                          external={item.extern}
+                          on:navigate={closeModal}
                   />
                 {/each}
               </div>
+            {:else if _page}
+              <svelte:component this={_page.component} params={_pageParams}/>
             {:else if jumplistItems}
               <div
                 class="flex flex-wrap items-center justify-center p-4 space-x-10"

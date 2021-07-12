@@ -8,7 +8,7 @@
     import {arraysEqual} from "../functions/arraysEqual";
     import {Link} from "@o-platform/o-interfaces/dist/routables/link";
     import Modal2 from "./Modal2.svelte";
-
+    import {location, push} from 'svelte-spa-router'
     import {getNavigationManifest} from "../functions/GetNavigationManifest.svelte";
     import {ProcessContainerNavigation} from "./ProcessContainer.svelte";
     import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
@@ -35,7 +35,9 @@
 
     let layoutClasses = "";
 
-    let _entryPage: Page<any, any>;
+    let _mainPage: Page<any, any>;
+    let _modalPage: Page<any, any>;
+
     let _entryTrigger: Trigger<any, any>;
 
     let _modal: Modal2;
@@ -49,6 +51,8 @@
     let dapp: DappManifest<any>;
     let runtimeDapp: RuntimeDapp<any>;
     let routable: Routable;
+    let mounted: boolean;
+    let lastMainUrl:string;
 
     onMount(async () => {
         window.o.events.subscribe(async (event: PlatformEvent) => {
@@ -90,15 +94,19 @@
         };
 
         onParamsChanged();
+        mounted = true;
     });
 
+    let lastParamsJson:string;
+
     $: {
-        if (params) {
+        if (params && mounted && lastParamsJson != JSON.stringify(params)) {
             onParamsChanged()
+            lastParamsJson = JSON.stringify(params);
         }
         layoutClasses =
             (dapp && dapp.isFullWidth) ||
-            (_entryPage && _entryPage.isFullWidth)
+            (_mainPage && _mainPage.isFullWidth)
                 ? ""
                 : "md:w-2/3 xl:w-1/2";
 
@@ -112,7 +120,7 @@
     function onParamsChanged() {
         const dappId = params.dappId && params.dappId.endsWith(":1") ? params.dappId : params.dappId + ":1";
         if (!dappId) {
-            _entryPage = <any>{
+            _mainPage = <any>{
                 component: NotFound
             };
             return;
@@ -134,7 +142,7 @@
         setLastLoadedDapp(runtimeDapp);
 
         if (!dapp) {
-            _entryPage = <any>{
+            _mainPage = <any>{
                 component: NotFound
             };
             return;
@@ -151,6 +159,8 @@
         let possibleRoutes = dapp.routables.filter(o => o.routeParts.length == routePartsFromParams.length);
         console.log("Possible routes (same length):", possibleRoutes);
 
+        const newPageParams = {};
+
         for (let matchingRoute of possibleRoutes) {
             const exactParts = matchingRoute.routeParts.filter(part => part.startsWith("=")).map(o => o.replace("=", ""));
             if (exactParts.length <= routePartsFromParams.length) {
@@ -164,12 +174,10 @@
                     const remainingParamsSpec = matchingRoute.routeParts.slice(exactParts.length).map(o => o.replace(":", "").replace("?", ""));
                     const remainingParams = routePartsFromParams.slice(exactParts.length);
 
-                    const newPageParams = {};
                     for (let i = 0; i < remainingParamsSpec.length; i++) {
                         newPageParams[remainingParamsSpec[i]] = remainingParams[i];
                     }
 
-                    pageParams = newPageParams;
                     break;
                 }
             }
@@ -182,8 +190,13 @@
 
         _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
 
-        if (routable.type === "page") {
-            _entryPage = <Page<any, any>>routable;
+        if (routable.type === "page" && (<Page<any, any>>routable).position !== "modal") {
+            _mainPage = <Page<any, any>>routable;
+            lastMainUrl = $location;
+            pageParams = newPageParams;
+        } else if (routable.type === "page" && (<Page<any, any>>routable).position === "modal") {
+            _modalPage = <Page<any, any>>routable;
+            _modal.showPage(_modalPage, newPageParams);
         } else if (routable.type === "trigger") {
             _entryTrigger = <Trigger<any, any>>routable;
             if (_entryTrigger.eventFactory) {
@@ -217,8 +230,8 @@
                 class="mainContent w-full mx-auto {layoutClasses}"
                 class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== "homepage:1"}
                 class:blur={_modal && _modalIsOpen}>
-            {#if _entryPage}
-                <svelte:component this={_entryPage.component} params={pageParams}/>
+            {#if _mainPage}
+                <svelte:component this={_mainPage.component} params={pageParams}/>
             {:else}
                 <!--<NotFound />-->
             {/if}
@@ -230,13 +243,17 @@
     <NextNav navigation={_navManifest} />
 {/if}
 <Modal2
-        bind:this={_modal}
-        on:navigation={(event) => {
+    bind:this={_modal}
+    on:navigation={(event) => {
       _processNavigation = event.detail;
       _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
     }}
-        on:modalOpen={(e) => {
+    on:modalOpen={(e) => {
       _modalIsOpen = e.detail;
+      if (!_modalIsOpen && _modalPage && lastMainUrl) {
+          push(lastMainUrl);
+          _modalPage = null;
+      }
       _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
     }}
 />
