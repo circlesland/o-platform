@@ -17,8 +17,6 @@
   import { shellEvents } from "./shared/shellEvents";
   import { ApiConnection } from "./shared/apiConnection";
   import { getProcessContext } from "./main";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
 
   /**
    * Contains events which have been sent by the DappFrame.
@@ -207,23 +205,6 @@
   import { SvelteToast } from "./shared/molecules/Toast";
   import DappFrame from "src/shared/molecules/DappFrame.svelte";
   import NotFound from "src/shared/pages/NotFound.svelte";
-
-  window.o.events.subscribe(async (event: PlatformEvent) => {
-    switch (event.type) {
-      case "shell.runProcess":
-          const runProcessEvent = <RunProcess<any>>event;
-          const runningProcess = await window.o.stateMachines.run(
-              runProcessEvent.definition,
-              runProcessEvent.contextModifier
-          );
-
-          // If not, send an event with the process id.
-          const startedEvent = new ProcessStarted(runningProcess.id);
-          startedEvent.responseToId = runProcessEvent.id;
-          window.o.publishEvent(startedEvent);
-        break;
-    }
-  });
 
   /*
   let publicUrls = {

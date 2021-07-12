@@ -1,12 +1,3 @@
-<script context="module">
-    import {writable} from "svelte/store";
-
-    const {subscribe, set, update} = writable(undefined);
-
-    export const navigation = {
-        subscribe
-    };
-</script>
 <script lang="ts">
     import {onMount} from "svelte";
     import {Routable} from "@o-platform/o-interfaces/dist/routable";
@@ -29,6 +20,7 @@
     import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
     import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
     import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+    import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
     export let params: {
         dappId: string;
@@ -59,6 +51,23 @@
     let routable: Routable;
 
     onMount(async () => {
+        window.o.events.subscribe(async (event: PlatformEvent) => {
+            switch (event.type) {
+                case "shell.runProcess":
+                    const runProcessEvent = <RunProcess<any>>event;
+                    const runningProcess = await window.o.stateMachines.run(
+                        runProcessEvent.definition,
+                        runProcessEvent.contextModifier
+                    );
+
+                    // If not, send an event with the process id.
+                    const startedEvent = new ProcessStarted(runningProcess.id);
+                    startedEvent.responseToId = runProcessEvent.id;
+                    window.o.publishEvent(startedEvent);
+                    break;
+            }
+        });
+
         window.o.runProcess = async function runProcess(
             processDefinition: ProcessDefinition<any, any>,
             contextData: { [x: string]: any },
