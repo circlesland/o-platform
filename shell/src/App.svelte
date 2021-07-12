@@ -19,7 +19,6 @@
   import { getProcessContext } from "./main";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
-  import { shellProcess } from "./shared/processes/shellProcess";
 
   /**
    * Contains events which have been sent by the DappFrame.
@@ -205,17 +204,28 @@
   import "./shared/css/components.css";
   import "./shared/css/utilities.css";
   import Router from "svelte-spa-router";
-  import { ProgressSignal } from "@o-platform/o-events/dist/signals/progressSignal";
-  import { Prompt } from "@o-platform/o-process/dist/events/prompt";
   import { SvelteToast } from "./shared/molecules/Toast";
-  import { XDaiThresholdTrigger } from "./xDaiThresholdTrigger";
-  import { me } from "./shared/stores/me";
   import DappFrame from "src/shared/molecules/DappFrame.svelte";
   import NotFound from "src/shared/pages/NotFound.svelte";
 
+  window.o.events.subscribe(async (event: PlatformEvent) => {
+    switch (event.type) {
+      case "shell.runProcess":
+          const runProcessEvent = <RunProcess<any>>event;
+          const runningProcess = await window.o.stateMachines.run(
+              runProcessEvent.definition,
+              runProcessEvent.contextModifier
+          );
 
-  let current;
+          // If not, send an event with the process id.
+          const startedEvent = new ProcessStarted(runningProcess.id);
+          startedEvent.responseToId = runProcessEvent.id;
+          window.o.publishEvent(startedEvent);
+        break;
+    }
+  });
 
+  /*
   let publicUrls = {
     "/": true,
     "/miva": true,
@@ -224,59 +234,7 @@
     "/banking/find-my-safe": true,
     "/milestones": true,
   };
-
-  let progressIndicator: {
-    message: string;
-    percent: number;
-  };
-
-  async function onRunProcess(event: PlatformEvent) {
-    const runProcessEvent = <RunProcess<any>>event;
-    const runningProcess = await window.o.stateMachines.run(
-      runProcessEvent.definition,
-      runProcessEvent.contextModifier
-    );
-
-    // If not, send an event with the process id.
-    const startedEvent = new ProcessStarted(runningProcess.id);
-    startedEvent.responseToId = runProcessEvent.id;
-    window.o.publishEvent(startedEvent);
-  }
-
-  window.o.events.subscribe(async (event: PlatformEvent) => {
-    switch (event.type) {
-      case "shell.runProcess":
-        await onRunProcess(event);
-        break;
-      case "shell.begin":
-        break;
-      case "shell.done":
-        progressIndicator = null;
-        break;
-      case "shell.progress":
-        const progressEvent: ProgressSignal = <ProgressSignal>event;
-        progressIndicator = {
-          message: progressEvent.message,
-          percent: progressEvent.percent,
-        };
-        break;
-    }
-  });
-
-  let lastPrompt: Prompt<any> | undefined = undefined;
-
-  function routeLoading(args) {
-    // processWaiting = false;
-    if (!publicUrls[args.detail.location] && !$me) {
-      setTimeout(() => {
-        window.location.href = "/#/login";
-      }, 0);
-    }
-  }
-
-  let balanceThresholdTrigger: XDaiThresholdTrigger;
-  let triggered = false;
-
+   */
   let _routes = {
     "/:dappId/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
     "*": NotFound
@@ -285,9 +243,5 @@
 </script>
 
 <SvelteToast />
-
-<Router
-  routes={_routes}
-  on:routeLoading={routeLoading}
-/>
+<Router routes={_routes} />
 
