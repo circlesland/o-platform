@@ -7,8 +7,6 @@
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { INVITE_VALUE } from "src/dapps/o-passport/processes/invite/invite";
 
-  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-  import { getLastLoadedDapp, getLastLoadedPage } from "../../../loader";
   import { Subscription } from "web3-core-subscriptions";
 
   $: me;
@@ -26,16 +24,10 @@
   let invitePersonCount: number = 0;
   let invitePersonCountString: string = "0 People";
 
-  let lastLoadedPage: PageManifest;
-  let lastLoadedDapp: DappManifest<any>;
-
   let presets = [10, 20, 50];
   let subscription: Subscription<any>;
 
   onMount(async () => {
-    lastLoadedPage = getLastLoadedPage();
-    lastLoadedDapp = getLastLoadedDapp();
-
     const pk = localStorage.getItem("circlesKey");
     if (!pk) {
       return;

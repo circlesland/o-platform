@@ -1,6 +1,5 @@
 <script lang="ts">
   import Icons from "./Icons.svelte";
-  import { getLastLoadedDapp } from "src/loader";
 
   export let actions: any;
 

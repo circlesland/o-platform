@@ -1,10 +1,14 @@
 <script lang="ts">
   import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
-  import { OfferCategoriesDocument, TagsDocument } from "../data/api/types";
+  import { TagsDocument } from "../data/api/types";
   import { onMount } from "svelte";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { Subscription } from "rxjs";
   import { push } from "svelte-spa-router";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   let isLoading: boolean;
   let error: Error;
@@ -59,7 +63,7 @@
   }
 </script>
 
-<MarketplaceHeader />
+<MarketplaceHeader  {runtimeDapp} {routable} />
 
 <div class="mx-4 -mt-6">
   {#if isLoading}

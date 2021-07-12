@@ -6,9 +6,14 @@
   import { getCountryName } from "../../../shared/countries";
   import { me } from "../../../shared/stores/me";
   import { Profile } from "../data/api/types";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
 
   let name;
   let profile: Profile;
+
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   $: name = profile ? profile.circlesAddress : "";
 
@@ -33,7 +38,7 @@
   }
 </script>
 
-<PassportHeader />
+<PassportHeader {runtimeDapp} {routable}  />
 
 <div class="flex flex-col p-4">
   <div class="mt-4">

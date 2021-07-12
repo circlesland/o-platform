@@ -2,12 +2,16 @@
   import DetailHeader from "src/shared/atoms/DetailHeader.svelte";
   import TopNav from "src/shared/atoms/TopNav.svelte";
   import Web3 from "web3";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
 
   export let amount;
   export let classes: String;
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 </script>
 
-<TopNav />
+<TopNav {runtimeDapp} {routable} />
 <DetailHeader heightClass="h-60">
   <div class="self-center block mt-12 mb-8 text-center">
     {#if classes == "transactionpositive"}

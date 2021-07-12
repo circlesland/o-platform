@@ -17,25 +17,24 @@
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { Profile } from "../data/api/types";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import { BankingDappState } from "../../o-banking.manifest";
-  import { getLastLoadedDapp, getLastLoadedRoutable } from "../../../loader";
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-  import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
   import TopNav from "src/shared/atoms/TopNav.svelte";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
 
   export let params: {
     id?: String;
   };
 
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
+
   let jumplist: Jumplist<any, any> | undefined;
 
   onMount(() => {
-    const lastLoadedRoutable = getLastLoadedRoutable();
-    if (lastLoadedRoutable.type === "page") {
-      jumplist = (<Page<any, any>>lastLoadedRoutable).jumplist;
-    } else if (lastLoadedRoutable.type === "trigger") {
-      jumplist = (<Trigger<any, any>>lastLoadedRoutable).jumplist;
+    if (routable.type === "page") {
+      jumplist = (<Page<any, any>>routable).jumplist;
     } else {
       jumplist = undefined;
     }
@@ -121,12 +120,6 @@
     name = profile.safeAddress;
 
     console.log("PROFILE: ", profile);
-
-    // TODO: This is bullshit but works. Refactor ASAP.
-    getLastLoadedDapp<BankingDappState>().state = {
-      currentProfileId: params.id,
-      currentSafeAddress: profile.safeAddress,
-    };
   }
 
   function loadTrustRelation(safeAddress: string): {
@@ -156,13 +149,6 @@
       trust.trustedBy = trustedBy.limit;
     }
 
-    // TODO: This is bullshit but works. Refactor ASAP.
-
-    getLastLoadedDapp<BankingDappState>().state = {
-      currentProfileId: params.id,
-      currentSafeAddress: profile.safeAddress,
-      trusted: trust.trusting > 0,
-    };
     return trust;
   }
 
@@ -267,7 +253,7 @@
 {#if isLoading}
   <LoadingIndicator />
 {:else}
-  <TopNav />
+  <TopNav {runtimeDapp} {routable} />
   <header
     class="grid mt-10 overflow-hidden text-white bg-cover h-80 place-content-center"
     style="background: linear-gradient(to right, #0f266280, #0f266280), url('/images/common/nice-bg.jpg') no-repeat center center; background-size: cover;"
@@ -505,7 +491,7 @@
           class="fixed bottom-0 left-0 right-0 w-full mx-auto bg-white md:w-2/3 xl:w-1/2 h-36"
         >
           <DetailActionBar
-            actions={jumplist.items(params, getLastLoadedDapp())}
+            actions={jumplist.items(params, runtimeDapp)}
           />
         </div>
       {/if}

@@ -2,6 +2,10 @@
   import { me } from "../../../shared/stores/me";
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   $: me;
 
@@ -18,7 +22,7 @@
 
 </script>
 
-<PassportHeader />
+<PassportHeader {runtimeDapp} {routable}  />
 <div style="margin-top: -2.2rem;">
   <div class="mx-4 mt-4">
     <section class="flex items-center justify-center mb-2  -mt-10">

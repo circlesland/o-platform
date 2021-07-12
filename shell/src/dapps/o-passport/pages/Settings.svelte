@@ -5,6 +5,10 @@
   import { onMount } from "svelte";
   import { UpsertProfileDocument, WhoamiDocument } from "../data/api/types";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   async function editProfile() {
     /*
@@ -88,7 +92,7 @@
 
 </script>
 
-<PassportHeader />
+<PassportHeader {runtimeDapp} {routable}  />
 
 <div class="mx-4 -mt-6">
   <section class="flex items-center justify-center mb-2  ">

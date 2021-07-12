@@ -3,7 +3,7 @@
 
 </script>
 
-<TopNav />
+<TopNav {runtimeDapp} {routable} />
 
 <div
   class="flex flex-col items-stretch h-24 text-white bg-cover navbar bg-primarydark"

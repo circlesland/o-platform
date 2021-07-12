@@ -4,7 +4,7 @@
     import {Page} from "@o-platform/o-interfaces/dist/routables/page";
     import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
     import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
-    import {dapps, setLastLoadedDapp, setLastLoadedRoutable} from "../../loader";
+    import {dapps} from "../../loader";
     import {arraysEqual} from "../functions/arraysEqual";
     import {Link} from "@o-platform/o-interfaces/dist/routables/link";
     import Modal2 from "./Modal2.svelte";
@@ -120,9 +120,7 @@
     function onParamsChanged() {
         const dappId = params.dappId && params.dappId.endsWith(":1") ? params.dappId : params.dappId + ":1";
         if (!dappId) {
-            _mainPage = <any>{
-                component: NotFound
-            };
+            _mainPage = null;
             return;
         }
 
@@ -139,12 +137,9 @@
         }
 
         runtimeDapp = _runtimeDapps[dappId];
-        setLastLoadedDapp(runtimeDapp);
 
         if (!dapp) {
-            _mainPage = <any>{
-                component: NotFound
-            };
+            _mainPage = null;
             return;
         }
 
@@ -168,7 +163,6 @@
                 const overlapFromParams = routePartsFromParams.slice(0, exactParts.length);
                 if (arraysEqual(exactParts, overlapFromParams)) {
                     routable = matchingRoute;
-                    setLastLoadedRoutable(routable);
                     console.log("Matching route:", matchingRoute);
 
                     const remainingParamsSpec = matchingRoute.routeParts.slice(exactParts.length).map(o => o.replace(":", "").replace("?", ""));
@@ -184,8 +178,8 @@
         }
 
         if (!routable) {
-            // 404
-            throw new Error(`Not found!`);
+            _mainPage = null;
+            return;
         }
 
         _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
@@ -196,7 +190,7 @@
             pageParams = newPageParams;
         } else if (routable.type === "page" && (<Page<any, any>>routable).position === "modal") {
             _modalPage = <Page<any, any>>routable;
-            _modal.showPage(_modalPage, newPageParams);
+            _modal.showPage(_modalPage, newPageParams, runtimeDapp, routable);
         } else if (routable.type === "trigger") {
             _entryTrigger = <Trigger<any, any>>routable;
             if (_entryTrigger.eventFactory) {
@@ -209,7 +203,7 @@
                 window.o.publishEvent(triggerEvent);
             }
             if (_entryTrigger.action) {
-                const triggerEvent = _entryTrigger.action(params, dapp);
+                _entryTrigger.action(params, dapp);
             }
         } else if (routable.type === "link") {
             const link = <Link<any, any>>routable;
@@ -231,9 +225,9 @@
                 class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== "homepage:1"}
                 class:blur={_modal && _modalIsOpen}>
             {#if _mainPage}
-                <svelte:component this={_mainPage.component} params={pageParams}/>
+                <svelte:component this={_mainPage.component} params={pageParams} runtimeDapp={runtimeDapp} routable={routable} />
             {:else}
-                <!--<NotFound />-->
+                <NotFound />
             {/if}
         </div>
     </main>
@@ -243,6 +237,8 @@
     <NextNav navigation={_navManifest} />
 {/if}
 <Modal2
+    {runtimeDapp}
+    {routable}
     bind:this={_modal}
     on:navigation={(event) => {
       _processNavigation = event.detail;

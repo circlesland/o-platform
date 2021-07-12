@@ -2,6 +2,10 @@
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import * as bip39 from "bip39";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   let showPhrase = !localStorage.getItem("circlesKey");
   // TODO: 0x123 is for testing without private key. Needs to be removed later.
@@ -29,7 +33,7 @@
 
 </script>
 
-<PassportHeader />
+<PassportHeader {runtimeDapp} {routable}  />
 
 <div class="mx-4 mt-4">
   <section class="flex items-center justify-center mb-1  -mt-10">

@@ -4,6 +4,11 @@
   import { BN } from "ethereumjs-util";
   import AssetCard from "../atoms/AssetCard.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   let xdai: { [x: string]: any } = {
     symbol: "xdai",
@@ -63,7 +68,7 @@
 
 </script>
 
-<SimpleHeader />
+<SimpleHeader {runtimeDapp} {routable} />
 
 <div class="mx-4 -mt-6">
   <section class="justify-center mb-2">

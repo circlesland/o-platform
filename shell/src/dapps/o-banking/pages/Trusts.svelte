@@ -5,6 +5,11 @@
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { me } from "../../../shared/stores/me";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   let inviteLink: string = "";
 
@@ -26,7 +31,7 @@
 
 </script>
 
-<SimpleHeader />
+<SimpleHeader {runtimeDapp} {routable}  />
 
 <div class="mx-4 -mt-6">
   {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts || !$mySafe.trustRelations.trusting || !$mySafe.trustRelations.trustedBy}

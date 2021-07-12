@@ -3,7 +3,12 @@
   import TopNav from "src/shared/atoms/TopNav.svelte";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import PageHeader from "src/shared/atoms/PageHeader.svelte";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
   $: me;
+
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   let avatarUrl: string = "";
   $: {
@@ -18,7 +23,7 @@
 
 </script>
 
-<TopNav />
+<TopNav {runtimeDapp} {routable} />
 
 <PageHeader
   heightClass="h-72"

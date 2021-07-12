@@ -5,16 +5,18 @@
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { Transfer } from "../data/circles/types";
-  import { EditorContext } from "@o-platform/o-editors/src/editorContext";
 
   import Icons from "../../../shared/molecules/Icons.svelte";
   import { push } from "svelte-spa-router";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
 
   export let params: {
     _id: string;
   };
 
-  export let context: EditorContext;
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   let transfer: Transfer;
   let pictureUrl: string;
@@ -28,7 +30,7 @@
   let transactionId: string;
 
   $: {
-    transactionId = context && context.data ? context.data.id : params._id;
+    transactionId = params._id;
 
     transfer = $mySafe.transfers.rows.find((o) => o._id == transactionId);
 
@@ -90,7 +92,7 @@
   }
 </script>
 
-<BankingDetailHeader amount={transfer ? transfer.amount : 0} {classes} />
+<BankingDetailHeader {runtimeDapp} {routable} amount={transfer ? transfer.amount : 0} {classes} />
 <div class="pb-4 px-9">
   {#if transfer}
     <section class="flex items-center justify-center pt-10 pb-2 text-secondary">

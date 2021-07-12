@@ -8,13 +8,14 @@
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { me } from "../../../shared/stores/me";
-  import {EditorContext} from "@o-platform/o-editors/src/editorContext";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
 
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
   export let params: {
     symbol: string;
   };
-
-  export let context: EditorContext;
 
   let accountxDai = {
     symbol: "xdai",
@@ -38,9 +39,7 @@
   let symbol:string;
 
   $: {
-    symbol = context && context.data
-            ? context.data.symbol
-            : params.symbol;
+    symbol = params.symbol;
 
     if (symbol == "xdai" && $mySafe && $mySafe.accountxDai) {
       accountxDai = {
@@ -86,7 +85,7 @@
 
 </script>
 
-<SimpleHeader showBackArrow={true} />
+<SimpleHeader {runtimeDapp} {routable} showBackArrow={true} />
 
 <div class="mx-4 -mt-6">
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}

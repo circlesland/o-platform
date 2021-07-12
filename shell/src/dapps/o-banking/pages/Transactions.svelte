@@ -7,12 +7,16 @@
   import {mySafe} from "../stores/safe";
   import {me} from "../../../shared/stores/me";
   import VirtualList from "../../../shared/molecules/Select/VirtualList.svelte";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
 
   export let params: {
     to: string;
     amount: string;
     message: string;
   };
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   $: me;
   let safeAddress: string;
@@ -44,7 +48,7 @@
   let end;
 </script>
 
-<BankingHeader balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
+<BankingHeader {runtimeDapp} {routable}  balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 
 <div class="mx-4 -mt-6">
   {#if $mySafe.ui && $mySafe.ui.loadingPercent === 0}

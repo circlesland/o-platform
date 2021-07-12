@@ -1,9 +1,7 @@
 <script lang="ts">
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
-  import { fade } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
   import { CancelRequest } from "@o-platform/o-process/dist/events/cancel";
-  import { getLastLoadedDapp, getLastLoadedRoutable } from "../../loader";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import DappNavItem from "./../atoms/DappsNavItem.svelte";
   import ActionListItem from "./../atoms/ActionListItem.svelte";
@@ -12,6 +10,11 @@
   import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 
   import { Link } from "@o-platform/o-interfaces/dist/routables/link";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 
   let runningProcess: Process | undefined;
   let jumplistItems: JumplistItem[] | undefined;
@@ -26,6 +29,8 @@
 
   let _page: Page<any, any>;
   let _pageParams: {[x:string]:any};
+  let _pageRuntimeDapp: RuntimeDapp<any>;
+  let _pageRoutable: Routable;
 
   export function getState(): {
     contentType?: "process" | "jumplist" | "page" | "navigation";
@@ -56,25 +61,22 @@
       return;
     }
 
-    const lastDapp = getLastLoadedDapp();
-    const lastRoutable = getLastLoadedRoutable();
-
     let combinedItems: { [x: string]: JumplistItem } = {};
 
-    if (lastDapp.jumplist) {
+    if (runtimeDapp.jumplist) {
       try {
-        lastDapp.jumplist.items(params, lastDapp).forEach((o) => {
+        runtimeDapp.jumplist.items(params, runtimeDapp).forEach((o) => {
           combinedItems[o.key] = o;
         });
       } catch (e) {
         console.error(`Cannot load the dapp's jumplist`);
       }
     }
-    if (lastRoutable.type == "page") {
-      const pageJumplist = (<Page<any, any>>lastRoutable).jumplist;
+    if (routable.type == "page") {
+      const pageJumplist = (<Page<any, any>>routable).jumplist;
       if (pageJumplist) {
         try {
-          pageJumplist.items(params, lastDapp).forEach((o) => {
+          pageJumplist.items(params, runtimeDapp).forEach((o) => {
             combinedItems[o.key] = o;
           });
         } catch (e) {
@@ -99,7 +101,7 @@
           title: o.title,
           icon: o.icon,
           url:
-            getLastLoadedDapp().routeParts.map(o => o.startsWith("=") ? o.replace("=","") : o).join("/") +
+            runtimeDapp.routeParts.map(o => o.startsWith("=") ? o.replace("=","") : o).join("/") +
             "/" +
             o.routeParts.map(o => o.startsWith("=") ? o.replace("=","") : o).join("/"),
           extern: false,
@@ -108,7 +110,7 @@
         return {
           title: o.title,
           icon: o.icon,
-          url: (<Link<any, any>>o).url({}, getLastLoadedDapp()),
+          url: (<Link<any, any>>o).url({}, runtimeDapp),
           extern: (<Link<any, any>>o).openInNewTab,
         };
       }
@@ -126,12 +128,14 @@
     }
   }
 
-  export function showPage(page: Page<any, any>, pageParams: {[x:string]:any}) {
+  export function showPage(page: Page<any, any>, pageParams: {[x:string]:any}, runtimeDapp: RuntimeDapp<any>, routable:Routable) {
     if (!closeModal()) {
       return;
     }
     _page = page;
     _pageParams = pageParams;
+    _pageRuntimeDapp = runtimeDapp;
+    _pageRoutable = routable;
     if (_page) {
       _isOpen = true;
     }
@@ -153,6 +157,8 @@
     navigation = undefined;
     _page = undefined;
     _pageParams = undefined;
+    _pageRoutable = undefined;
+    _pageRuntimeDapp = undefined;
 
     dispatch("navigation", null);
 
@@ -208,7 +214,7 @@
                 {/each}
               </div>
             {:else if _page}
-              <svelte:component this={_page.component} params={_pageParams}/>
+              <svelte:component this={_page.component} params={_pageParams}  runtimeDapp={_pageRuntimeDapp} routable={_pageRoutable}/>
             {:else if jumplistItems}
               <div
                 class="flex flex-wrap items-center justify-center p-4 space-x-10"

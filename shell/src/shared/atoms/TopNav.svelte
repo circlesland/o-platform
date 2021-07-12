@@ -1,35 +1,26 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { getLastLoadedDapp, getLastLoadedPage } from "../../loader";
-  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
 
-  let lastLoadedPage: Page<any, any>;
-  let lastLoadedDapp: DappManifest<any>;
-
-  onMount(() => {
-    lastLoadedPage = getLastLoadedPage();
-    lastLoadedDapp = getLastLoadedDapp();
-  });
+  export let runtimeDapp:RuntimeDapp<any>;
+  export let routable:Routable;
 </script>
 
-{#if lastLoadedDapp && lastLoadedPage}
-  <div class="fixed top-0 left-0 z-10 w-full">
-    <div
-      class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white navbar bg-secondary-dark "
-    >
-      <div class="justify-self-start">
-        <span class="text-lg uppercase ">
-          {lastLoadedDapp.title}
+<div class="fixed top-0 left-0 z-10 w-full">
+  <div
+    class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white navbar bg-secondary-dark "
+  >
+    <div class="justify-self-start">
+      <span class="text-lg uppercase ">
+        {runtimeDapp.title}
+      </span>
+    </div>
+    {#if routable.title != routable.title}
+      <div class="justify-self-center">
+        <span class="text-sm ">
+          {routable.title}
         </span>
       </div>
-      {#if lastLoadedDapp.title != lastLoadedPage.title}
-        <div class="justify-self-center">
-          <span class="text-sm ">
-            {lastLoadedPage.title}
-          </span>
-        </div>
-      {/if}
-    </div>
+    {/if}
   </div>
-{/if}
+</div>
