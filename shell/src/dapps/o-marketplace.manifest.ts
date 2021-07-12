@@ -98,6 +98,7 @@ export const marketplace: DappManifest<DappState> = {
   icon: "marketplace",
   title: "Marketplace",
   routeParts: ["=marketplace"],
+  defaultRoute: ["stream"],
   tag: Promise.resolve("alpha"),
   jumplist: {
     type: "jumplist",

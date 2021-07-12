@@ -7,7 +7,7 @@
     import {dapps} from "../../loader";
     import {arraysEqual} from "../functions/arraysEqual";
     import {Link} from "@o-platform/o-interfaces/dist/routables/link";
-    import Modal2, {closeModal} from "./Modal2.svelte";
+    import Modal2 from "./Modal2.svelte";
     import {location, push} from 'svelte-spa-router'
     import {getNavigationManifest} from "../functions/GetNavigationManifest.svelte";
     import {ProcessContainerNavigation} from "./ProcessContainer.svelte";
@@ -118,10 +118,18 @@
     }
 
     function onParamsChanged() {
-        const dappId = params.dappId && params.dappId.endsWith(":1") ? params.dappId : params.dappId + ":1";
-        if (!dappId) {
-            _mainPage = null;
-            return;
+        let dappId:string;
+        if (!params.dappId) {
+            const defaultApp = dapps.find(o => o.routeParts && o.routeParts.length == 0);
+            if (defaultApp) {
+                dappId = defaultApp.dappId;
+            } else {
+                _mainPage = null;
+                return;
+            }
+            params.dappId = dappId;
+        } else {
+            dappId = params.dappId.endsWith(":1") ? params.dappId : params.dappId + ":1";
         }
 
         dapp = dapps.find(o => o.dappId == dappId);
