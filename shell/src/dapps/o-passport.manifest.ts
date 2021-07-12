@@ -70,7 +70,7 @@ export const passport: DappManifest<DappState> = {
     title: "Actions",
     isSystem: false,
     routeParts: ["=actions"],
-    items: () => {
+    items: async () => {
       return [
         {
           key: "logout",

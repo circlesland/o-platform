@@ -56,7 +56,7 @@
   }
   let _isOpen = false;
 
-  export function showJumplist(params: { [x: string]: any }) {
+  export async function showJumplist(params: { [x: string]: any }) {
     if (!closeModal()) {
       return;
     }
@@ -65,7 +65,7 @@
 
     if (runtimeDapp.jumplist) {
       try {
-        runtimeDapp.jumplist.items(params, runtimeDapp).forEach((o) => {
+        (await runtimeDapp.jumplist.items(params, runtimeDapp)).forEach((o) => {
           combinedItems[o.key] = o;
         });
       } catch (e) {
@@ -76,7 +76,7 @@
       const pageJumplist = (<Page<any, any>>routable).jumplist;
       if (pageJumplist) {
         try {
-          pageJumplist.items(params, runtimeDapp).forEach((o) => {
+          (await pageJumplist.items(params, runtimeDapp)).forEach((o) => {
             combinedItems[o.key] = o;
           });
         } catch (e) {

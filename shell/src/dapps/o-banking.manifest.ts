@@ -18,6 +18,11 @@ import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {loadProfileByProfileId} from "./o-banking/data/loadProfileByProfileId";
+import {Prompt} from "@o-platform/o-process/dist/events/prompt";
+import {mySafe} from "./o-banking/stores/safe";
+import {Unsubscriber} from "svelte/store";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
@@ -32,16 +37,50 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
   title: "Actions",
   isSystem: false,
   routeParts: ["=actions"],
-  items: (params, runtimeDapp) => {
+  items: async (params, runtimeDapp) => {
+    const getRecipientAddress = async () => {
+      if (RpcGateway.get().utils.isAddress(params.id)) {
+        return params.id;
+      } else if (Number.isInteger(params.id)) {
+        const profile = await loadProfileByProfileId(parseInt(params.id));
+        if (profile) {
+          return profile.circlesAddress;
+        }
+      }
+      return undefined;
+    };
+    const getTrustState = () => new Promise<number|undefined>((resolve, reject) => {
+      let safeSub:Unsubscriber = undefined;
+      safeSub = mySafe.subscribe(safe => {
+        if (!safe || !safe.trustRelations) {
+          resolve(undefined);
+          return;
+        }
+        if (safeSub)
+          safeSub();
+
+        const trustingSafe = Object.entries(safe.trustRelations.trusting).find(o => o[0] === recipientSafeAddress);
+        if (!trustingSafe) {
+          resolve(undefined);
+          return;
+        }
+
+        resolve(trustingSafe[1].limit);
+      });
+    });
+
+    const recipientSafeAddress = params.id ? await getRecipientAddress() : undefined;
+    const trustState = params.id ?  await getTrustState() : 0;
+
     return [
       {
         key: "transfer",
         icon: "sendmoney",
         title: "Send Money",
-        action: () => {
+        action: async () => {
           window.o.runProcess(transfer, {
             safeAddress: tryGetCurrentSafe().safeAddress,
-            recipientAddress: runtimeDapp.state.currentSafeAddress,
+            recipientAddress: recipientSafeAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });
         },
@@ -49,11 +88,11 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
       {
         key: "setTrust",
         icon: "trust",
-        title: runtimeDapp.state.trusted ? "Untrust" : "Trust",
-        action: () => {
+        title: trustState ? "Untrust" : "Trust",
+        action: async () => {
           window.o.runProcess(setTrust, {
-            trustLimit: runtimeDapp.state.trusted ? 0 : 100,
-            trustReceiver: runtimeDapp.state.currentSafeAddress,
+            trustLimit: trustState ? 0 : 100,
+            trustReceiver:  recipientSafeAddress,
             safeAddress: tryGetCurrentSafe().safeAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });

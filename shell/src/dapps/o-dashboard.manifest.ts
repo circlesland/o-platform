@@ -52,7 +52,7 @@ export const dashboard: DappManifest<DappState> = {
     title: "Actions",
     isSystem: false,
     routeParts: ["=actions"],
-    items: (params, runtimeDapp) => {
+    items: async  (params, runtimeDapp) => {
       return [
         {
           key: "logout",

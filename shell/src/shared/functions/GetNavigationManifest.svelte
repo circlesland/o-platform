@@ -68,7 +68,7 @@ function getRegularNavigation(
                 component: ActionButtonComponent,
                 props: {
                     icon: "logo",
-                    action: () => modal.showJumplist(dappManifest),
+                    action: () => modal.showJumplist({}, dappManifest),
                 },
             },
             right: {

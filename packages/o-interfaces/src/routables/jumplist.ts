@@ -12,7 +12,7 @@ export interface Jumplist<
   items: (
     params: TParams,
     runtimeDapp: RuntimeDapp<TDappState>
-  ) => JumplistItem[];
+  ) => Promise<JumplistItem[]>;
 }
 
 export interface JumplistItem {

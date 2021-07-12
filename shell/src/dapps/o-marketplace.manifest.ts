@@ -105,7 +105,7 @@ export const marketplace: DappManifest<DappState> = {
     title: "Actions",
     isSystem: false,
     routeParts: ["=actions"],
-    items: () => [
+    items: async  () => [
       {
         key: "createOffer",
         title: "Create offer",
