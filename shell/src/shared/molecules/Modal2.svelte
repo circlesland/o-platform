@@ -12,6 +12,7 @@
   import { Link } from "@o-platform/o-interfaces/dist/routables/link";
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {run} from "svelte/internal";
 
   export let runtimeDapp:RuntimeDapp<any>;
   export let routable:Routable;
@@ -146,11 +147,9 @@
       runningProcess.sendEvent(new CancelRequest());
       return false;
     }
-    if (!runningProcess && _isOpen && (!_page && source !== "stopped")) {
-      _isOpen = false;
-    }
-    if (_page && _isOpen && source !== "stopped") {
-      _isOpen = false;
+
+    if (!runningProcess && _isOpen) {
+      _isOpen = !!(source === "stopped" && _page);
     }
 
     runningProcess = undefined;
