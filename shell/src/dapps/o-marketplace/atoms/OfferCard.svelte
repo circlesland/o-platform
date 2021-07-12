@@ -69,7 +69,7 @@
   console.log("OFFER: ", offer);
 </script>
 
-<section class="flex items-start" on:click|once={() => loadDetailPage()}>
+<section class="flex items-start" on:click={() => loadDetailPage()}>
   <div
     class="flex flex-col w-full bg-white border rounded-lg border-light-lighter"
   >
