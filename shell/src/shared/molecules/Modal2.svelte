@@ -97,9 +97,9 @@
           title: o.title,
           icon: o.icon,
           url:
-            getLastLoadedDapp().routeParts.join("/") +
+            getLastLoadedDapp().routeParts.map(o => o.startsWith("=") ? o.replace("=","") : o).join("/") +
             "/" +
-            o.routeParts.join("/"),
+            o.routeParts.map(o => o.startsWith("=") ? o.replace("=","") : o).join("/"),
           extern: false,
         };
       } else {

@@ -40,17 +40,24 @@ export const loadedDapps: RuntimeDapp<any>[] = [];
 export function getLastLoadedDapp<TState extends { [x: string]: any }>() {
     return <RuntimeDapp<TState>>lastLoadedDapp;
 }
+export function setLastLoadedDapp(dapp:RuntimeDapp<any>) {
+    lastLoadedDapp = dapp;
+}
 
 let lastLoadedDapp: RuntimeDapp<any>;
-
 export function getLastLoadedPage() {
     return lastLoadedPage;
 }
 
 let lastLoadedPage: Page<any, any>;
-
 export function getLastLoadedRoutable() {
     return lastLoadedRoutable;
+}
+export function setLastLoadedRoutable(routable:Routable) {
+    lastLoadedRoutable = routable;
+    if (routable && routable.type == "page") {
+        lastLoadedPage = <Page<any, any>>routable;
+    }
 }
 
 let lastLoadedRoutable: Routable;
@@ -68,7 +75,7 @@ export function constructAppUrl(dappManifest: DappManifest<any>): { appBaseUrl: 
 }
 
 function constructPageUrl(appBaseUrl: string, routable: Routable): string {
-    let pageUrl = routable.routeParts.reduce((p, c) => p + "/" + c, appBaseUrl);
+    let pageUrl = routable.routeParts.reduce((p, c, i) => p + "/" + (c.startsWith("=") ? `:${i}` : c), appBaseUrl);
     if (pageUrl == "")
         pageUrl = "/";
 
