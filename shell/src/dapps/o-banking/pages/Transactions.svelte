@@ -1,7 +1,5 @@
 <script lang="ts">
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import {onMount} from "svelte";
-  import {tryGetCurrentSafe} from "../init";
   import {transfer} from "../processes/transfer";
   import TransactionCard from "../atoms/TransactionCard.svelte";
   import {mySafe} from "../stores/safe";
@@ -19,30 +17,6 @@
   export let routable:Routable;
 
   $: me;
-
-  onMount(() => {
-    if (
-            params &&
-            params.to &&
-            params.amount &&
-            params.to != "" &&
-            params.amount != ""
-    ) {
-      if ((safeAddress = tryGetCurrentSafe()?.safeAddress) && $me) {
-        window.o.runProcess(transfer, {
-          recipientAddress: params.to,
-          message: params.message,
-          tokens: {
-            currency: "crc",
-            amount: params.amount,
-          },
-          acceptSummary: true,
-          safeAddress: safeAddress,
-          privateKey: localStorage.getItem("circlesKey"),
-        });
-      }
-    }
-  });
 
   const pageSize = 30;
   let currentPage = 0;

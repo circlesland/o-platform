@@ -119,7 +119,7 @@
   }
 
   export function showProcess(processId: string) {
-    if (!closeModal()) {
+    if (!closeModal("showProcess")) {
       return;
     }
     runningProcess = window.o.stateMachines.findById(processId);
@@ -141,24 +141,28 @@
     }
   }
 
-  export function closeModal(): boolean {
+  export function closeModal(source?:string): boolean {
     if (runningProcess && _isOpen) {
       runningProcess.sendEvent(new CancelRequest());
       return false;
     }
-    if (!runningProcess && _isOpen) {
+    if (!runningProcess && _isOpen && (!_page && source !== "stopped")) {
       _isOpen = false;
     }
-    if (_page && _isOpen) {
+    if (_page && _isOpen && source !== "stopped") {
       _isOpen = false;
     }
+
     runningProcess = undefined;
     jumplistItems = undefined;
     navigation = undefined;
-    _page = undefined;
-    _pageParams = undefined;
-    _pageRoutable = undefined;
-    _pageRuntimeDapp = undefined;
+
+    if (source !== "showProcess" && source !== "stopped") {
+      _page = undefined;
+      _pageParams = undefined;
+      _pageRoutable = undefined;
+      _pageRuntimeDapp = undefined;
+    }
 
     dispatch("navigation", null);
 
@@ -197,8 +201,9 @@
                 process={runningProcess}
                 on:navigation={(event) => dispatch("navigation", event.detail)}
                 on:stopped={() => {
+                  dispatch("stopped");
                   runningProcess = null;
-                  closeModal();
+                  closeModal("stopped");
                 }}
               />
             {:else if navigation}

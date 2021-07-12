@@ -284,6 +284,10 @@
     {runtimeDapp}
     {routable}
     bind:this={_modal}
+    on:stopped={() => {
+        // A process ended
+
+    }}
     on:navigation={(event) => {
       _processNavigation = event.detail;
       _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
