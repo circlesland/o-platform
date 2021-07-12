@@ -10,8 +10,6 @@ import { init, tryGetCurrentSafe } from "./o-banking/init";
 import { me } from "../shared/stores/me";
 import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
 import { Profile } from "./o-banking/data/api/types";
-import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
-import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
@@ -20,7 +18,6 @@ import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {loadProfileByProfileId} from "./o-banking/data/loadProfileByProfileId";
-import {Prompt} from "@o-platform/o-process/dist/events/prompt";
 import {mySafe} from "./o-banking/stores/safe";
 import {Unsubscriber} from "svelte/store";
 

@@ -4,7 +4,7 @@
   import { mySafe } from "../stores/safe";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { invite } from "../../o-passport/processes/invite/invite";
-  import { getCountryName } from "src/shared/countries";
+  import { getCountryName } from "../../../shared/countries";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { upsertIdentityOnlyWhereDirty } from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
@@ -19,7 +19,7 @@
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-  import TopNav from "src/shared/atoms/TopNav.svelte";
+  import TopNav from "../../../shared/atoms/TopNav.svelte";
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
 
