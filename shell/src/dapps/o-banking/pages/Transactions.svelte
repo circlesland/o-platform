@@ -6,9 +6,9 @@
   import TransactionCard from "../atoms/TransactionCard.svelte";
   import {mySafe} from "../stores/safe";
   import {me} from "../../../shared/stores/me";
-  import VirtualList from "../../../shared/molecules/Select/VirtualList.svelte";
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {Transfer} from "../data/circles/types";
 
   export let params: {
     to: string;
@@ -19,7 +19,6 @@
   export let routable:Routable;
 
   $: me;
-  let safeAddress: string;
 
   onMount(() => {
     if (
@@ -44,10 +43,47 @@
       }
     }
   });
-  let start;
-  let end;
+
+  const pageSize = 30;
+  let currentPage = 0;
+  let eof = false;
+
+  function loadMore() {
+    if ($mySafe.transfers.rows.length == 0)
+      return;
+
+    const maxPageSize = $mySafe.transfers.rows.length >= pageSize ? pageSize : $mySafe.transfers.rows.length;
+    if (maxPageSize < pageSize) {
+      // EOF
+      eof = true;
+    }
+    const from = currentPage * pageSize;
+    const to = from  + pageSize;
+    displayRows = [...displayRows, ...$mySafe.transfers.rows.slice(from, to)];
+    console.log("Next page ..");
+    currentPage++;
+  }
+
+  $: {
+    if (displayRows.length == 0 && $mySafe.transfers.rows) {
+      loadMore();
+    } else {
+      const stopElementY = stopElement ? stopElement.offsetTop : -1;
+      if (stopElementY - window.innerHeight - scrollY < 50 && !eof) {
+        loadMore();
+      }
+    }
+  }
+
+  let stopElement: HTMLDivElement;
+  let firstElement: TransactionCard;
+  let displayRows: Transfer[] = [];
+
+  let scrollY;
+
 </script>
 
+<svelte:window bind:scrollY={scrollY}/>
 <BankingHeader {runtimeDapp} {routable}  balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
 
 <div class="mx-4 -mt-6">
@@ -71,22 +107,14 @@
       </div>
     </section>
   {:else if $mySafe.transfers && $mySafe.transfers.rows}
-    <!--
-    <VirtualList height="600px" items={$mySafe.transfers.rows} bind:start bind:end let:item>
-      {#if item.direction === "in"}
-        <TransactionCard transfer={item} message="" />
-      {:else}
-        <TransactionCard transfer={item} message="" />
-      {/if}
-    </VirtualList>
-    -->
-    {#each $mySafe.transfers.rows as transfer}
-      {#if transfer.direction === "in"}
-        <TransactionCard {transfer} message="" />
+    {#each displayRows as transfer, i}
+      {#if i === 0}
+        <TransactionCard bind:this={firstElement} {transfer} message="" />
       {:else}
         <TransactionCard {transfer} message="" />
       {/if}
     {/each}
+    <div bind:this={stopElement}>Stop</div>
   {:else}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
