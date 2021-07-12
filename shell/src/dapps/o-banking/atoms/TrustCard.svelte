@@ -116,7 +116,11 @@
     <div class="flex flex-col self-start flex-1 mt-2 justify-items-end">
       <div class="flex flex-col self-end space-y-2 text-2xl sm:text-3xl ">
         <button
-          on:click={() => execTransfer(safeAddress)}
+          on:click={(e) => {
+            execTransfer(safeAddress);
+            e.stopPropagation();
+            return false;
+          }}
           class="self-end text-base "
         >
           <Icons icon="sendmoney" />
