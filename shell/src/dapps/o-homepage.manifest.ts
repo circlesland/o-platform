@@ -17,7 +17,7 @@ const externalChat: Link<any, DappState> = {
   type: "link",
   title: "Chat",
   icon: "chat",
-  routeParts: ["chat"],
+  routeParts: ["=chat"],
   openInNewTab: true,
   url: () => "https://discord.gg/CS6xq7jECR",
 };
@@ -25,13 +25,13 @@ const externalForum: Link<any, DappState> = {
   type: "link",
   title: "Forum",
   icon: "forum",
-  routeParts: ["forum"],
+  routeParts: ["=forum"],
   openInNewTab: true,
   url: () => "https://aboutcircles.com",
 };
 const login: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["login"],
+  routeParts: ["=login"],
   component: Home,
   title: "Circles Land",
   type: "page",
@@ -41,7 +41,7 @@ const externalBlog: Link<any, DappState> = {
   type: "link",
   title: "Blog",
   icon: "blog",
-  routeParts: ["blog"],
+  routeParts: ["=blog"],
   openInNewTab: true,
   url: () => "https://blog.circles.land/",
 };
@@ -50,7 +50,7 @@ const externalWhitepaper: Link<any, DappState> = {
   type: "link",
   title: "Whitepaper",
   icon: "whitepaper",
-  routeParts: ["whitepaper"],
+  routeParts: ["=whitepaper"],
   openInNewTab: true,
   url: () => "https://blog.circles.land/whitepaper/",
 };
@@ -65,49 +65,49 @@ const index: Page<any, DappState> = {
 };
 const citizens: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["citizens"],
+  routeParts: ["=citizens"],
   component: Citizens,
   title: "Circles Land",
   type: "page",
 };
 const countries: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["countries"],
+  routeParts: ["=countries"],
   component: Countries,
   title: "Circles Land",
   type: "page",
 };
 const imprint: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["imprint"],
+  routeParts: ["=imprint"],
   component: Imprint,
   title: "Circles Land",
   type: "page",
 };
 const milestones: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["milestones"],
+  routeParts: ["=milestones"],
   component: Milestones,
   title: "Circles Land",
   type: "page",
 };
 const privacy: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["privacy"],
+  routeParts: ["=privacy"],
   component: Privacy,
   title: "Circles Land",
   type: "page",
 };
 const tos: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["tos"],
+  routeParts: ["=tos"],
   component: Tos,
   title: "Circles Land",
   type: "page",
 };
 const learn: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["learn"],
+  routeParts: ["=learn"],
   component: Learn,
   title: "Circles Land",
   type: "page",

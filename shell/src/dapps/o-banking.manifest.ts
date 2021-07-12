@@ -20,7 +20,7 @@ import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
 
 const transactions: Page<any, BankingDappState> = {
-  routeParts: ["transactions"],
+  routeParts: ["=transactions"],
   component: Transactions,
   title: "Transactions",
   icon: "transactions",
@@ -31,7 +31,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
   type: "jumplist",
   title: "Actions",
   isSystem: false,
-  routeParts: ["actions"],
+  routeParts: ["=actions"],
   items: (params, runtimeDapp) => {
     return [
       {
@@ -66,7 +66,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
 export const profile: Page<any, BankingDappState> = {
   type: "page",
   isSystem: true,
-  routeParts: ["profile", ":id"],
+  routeParts: ["=profile", ":id"],
   title: "Profile",
   component: ProfilePage,
   jumplist: profileJumplist,
@@ -86,7 +86,7 @@ export const profile: Page<any, BankingDappState> = {
 const transactionDetail: Page<{ _id: string }, BankingDappState> = {
   type: "page",
   isSystem: true,
-  routeParts: ["transactions", ":_id"],
+  routeParts: ["=transactions", ":_id"],
   title: "Transaction",
   component: TransactionDetailPage,
   jumplist: profileJumplist,
@@ -107,7 +107,7 @@ const transactionSend: Trigger<
   BankingDappState
 > = {
   isSystem: true,
-  routeParts: ["transactions", "send", ":to", ":amount", ":message"],
+  routeParts: ["=transactions", "=send", ":to", ":amount", ":message"],
   title: "Transactions",
   type: "trigger",
   eventFactory: (params) => {
@@ -116,7 +116,7 @@ const transactionSend: Trigger<
   },
 };
 const assets: Page<any, BankingDappState> = {
-  routeParts: ["assets"],
+  routeParts: ["=assets"],
   component: Assets,
   title: "Assets",
   icon: "assets",
@@ -124,20 +124,20 @@ const assets: Page<any, BankingDappState> = {
 };
 const assetDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
-  routeParts: ["assets", ":symbol"],
+  routeParts: ["=assets", ":symbol"],
   component: AssetDetail,
   title: "Asset",
   type: "page",
 };
 const trusts: Page<any, BankingDappState> = {
-  routeParts: ["trusts"],
+  routeParts: ["=trusts"],
   component: Trusts,
   title: "Trusts",
   icon: "trusts",
   type: "page",
 };
 const sendInvite: Page<{ inviteAccountAddress: string }, BankingDappState> = {
-  routeParts: ["trusts", "invite", ":inviteAccountAddress"],
+  routeParts: ["=trusts", "=invite", ":inviteAccountAddress"],
   isSystem: true,
   component: Trusts,
   title: "Trusts",
@@ -145,20 +145,20 @@ const sendInvite: Page<{ inviteAccountAddress: string }, BankingDappState> = {
 };
 const trustDetail: Page<{ id: string }, BankingDappState> = {
   isSystem: true,
-  routeParts: ["trusts", ":id"],
+  routeParts: ["=trusts", ":id"],
   component: ProfilePage,
   title: "Trust",
   type: "page",
 };
 const findMySafe: Page<any, BankingDappState> = {
   isSystem: true,
-  routeParts: ["find-my-safe"],
+  routeParts: ["=find-my-safe"],
   component: FindMySafe,
   title: "FindMySafe",
   type: "page",
 };
 const graph: Page<any, BankingDappState> = {
-  routeParts: ["network"],
+  routeParts: ["=network"],
   component: Graph,
   title: "Network",
   icon: "network",
@@ -190,7 +190,7 @@ export const banking: DappManifest<BankingDappState> = {
   icon: "banking",
   title: "Banking",
   routeParts: ["banking"],
-  defaultRoute: ["transactions"],
+  defaultRoute: ["=transactions"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   jumplist: profileJumplist,

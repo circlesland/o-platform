@@ -17,9 +17,6 @@
   import { shellEvents } from "./shared/shellEvents";
   import { ApiConnection } from "./shared/apiConnection";
   import { getProcessContext } from "./main";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
-  import { shellProcess } from "./shared/processes/shellProcess";
 
   /**
    * Contains events which have been sent by the DappFrame.
@@ -204,37 +201,12 @@
   import "./shared/css/base.css";
   import "./shared/css/components.css";
   import "./shared/css/utilities.css";
-  import routes from "./loader";
-  import { getLastLoadedDapp } from "./loader";
-  import { getLastLoadedPage } from "./loader";
-  import Router, { push } from "svelte-spa-router";
-  import Modal2 from "./shared/molecules/Modal2.svelte";
-  import { ProgressSignal } from "@o-platform/o-events/dist/signals/progressSignal";
-  import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
-  import { Prompt } from "@o-platform/o-process/dist/events/prompt";
-  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import Router from "svelte-spa-router";
   import { SvelteToast } from "./shared/molecules/Toast";
-  import { XDaiThresholdTrigger } from "./xDaiThresholdTrigger";
-  import { me } from "./shared/stores/me";
-  import { INVITE_VALUE } from "./dapps/o-passport/processes/invite/invite";
-  import {
-    deploySafe,
-    HubSignupContextData,
-  } from "./dapps/o-banking/processes/deploySafe";
-  import NextNav from "./shared/molecules/NextNav/NextNav.svelte";
-  import { onMount } from "svelte";
-  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+  import DappFrame from "src/shared/molecules/DappFrame.svelte";
+  import NotFound from "src/shared/pages/NotFound.svelte";
 
-  import { getNavigationManifest } from "./shared/functions/GetNavigationManifest.svelte";
-  import { ProcessContainerNavigation } from "./shared/molecules/ProcessContainer.svelte";
-
-  let modalProcessEventSubscription: Subscription;
-  let current;
-  let isOpen = false;
-  let modal: Modal2;
-  let navManifest: NavigationManifest;
-
-  let processNavigation: ProcessContainerNavigation;
+  /*
   let publicUrls = {
     "/": true,
     "/miva": true,
@@ -243,251 +215,14 @@
     "/banking/find-my-safe": true,
     "/milestones": true,
   };
-
-  let progressIndicator: {
-    message: string;
-    percent: number;
-  };
-
-  window.o.runProcess = async function runProcess(
-    processDefinition: ProcessDefinition<any, any>,
-    contextData: { [x: string]: any },
-    dirtyFlags: { [x: string]: boolean } | undefined
-  ) {
-    const modifier = async (ctx) => {
-      ctx.childProcessDefinition = processDefinition;
-      ctx.childContext = {
-        data: contextData,
-        dirtyFlags: !dirtyFlags ? {} : dirtyFlags,
-      };
-      return ctx;
-    };
-    const requestEvent: any = new RunProcess(shellProcess, true, modifier);
-    requestEvent.id = Generate.randomHexString(8);
-
-    const processStarted: ProcessStarted =
-      await window.o.requestEvent<ProcessStarted>(requestEvent);
-    modal.showProcess(processStarted.processId);
-  };
-
-  function handleActionButton(event) {
-    if (
-      event.detail.menuButton == "close" ||
-      event.detail.actionButton == "close"
-    ) {
-      modal.closeModal();
-      return;
-    }
-    if (event.detail.actionButton == "open") {
-      modal.showJumplist(getLastLoadedDapp());
-      return;
-    }
-
-    if (event.detail.action.type && event.detail.action.type == "linklist") {
-      if (event.detail.action.target == "dappsList") {
-        modal.showNavigation(getLastLoadedDapp());
-        return;
-      }
-    }
-
-    if (event.detail.action.type && event.detail.action.type == "link") {
-      if (event.detail.action.target) {
-        if (event.detail.action.target == "backlink") {
-          window.history.back();
-        } else {
-          push(event.detail.action.target);
-        }
-      }
-    }
+   */
+  let _routes = {
+    "/:dappId/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
+    "*": NotFound
   }
 
-  async function onRunProcess(event: PlatformEvent) {
-    const runProcessEvent = <RunProcess<any>>event;
-    const runningProcess = await window.o.stateMachines.run(
-      runProcessEvent.definition,
-      runProcessEvent.contextModifier
-    );
-
-    // If not, send an event with the process id.
-    const startedEvent = new ProcessStarted(runningProcess.id);
-    startedEvent.responseToId = runProcessEvent.id;
-    window.o.publishEvent(startedEvent);
-  }
-
-  window.o.events.subscribe(async (event: PlatformEvent) => {
-    switch (event.type) {
-      case "shell.dappLoading":
-        routeLoaded();
-        break;
-      case "shell.runProcess":
-        await onRunProcess(event);
-        break;
-      case "shell.begin":
-        break;
-      case "shell.done":
-        progressIndicator = null;
-        break;
-      case "shell.progress":
-        const progressEvent: ProgressSignal = <ProgressSignal>event;
-        progressIndicator = {
-          message: progressEvent.message,
-          percent: progressEvent.percent,
-        };
-        break;
-    }
-  });
-
-  function conditionsFailed(event) {
-    // TODO: Cannot currently remember what this callback does. Lookup documentation.
-  }
-
-  let lastPrompt: Prompt<any> | undefined = undefined;
-
-  function routeLoading(args) {
-    // processWaiting = false;
-    if (!publicUrls[args.detail.location] && !$me) {
-      setTimeout(() => {
-        window.location.href = "/#/login";
-      }, 0);
-    }
-  }
-
-  let lastLoadedPage: Page<any, any>;
-  let lastLoadedDapp: DappManifest<any>;
-
-  async function routeLoaded() {
-    // Pretty self explanatory. For more lookup the svelte-spa-router docs,
-    lastLoadedPage = getLastLoadedPage();
-    lastLoadedDapp = getLastLoadedDapp();
-
-    navManifest = getNavigationManifest(lastLoadedDapp, processNavigation, modal);
-
-    console.log("LAST DAPP: ", lastLoadedDapp);
-    console.log("LAST PAGE: ", lastLoadedPage);
-  }
-
-  let layoutClasses = "";
-
-  let balanceThresholdTrigger: XDaiThresholdTrigger;
-  let triggered = false;
-
-  $: {
-    /* Avoid scrolling background on open _modal */
-
-    if (modal && isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "visible";
-    }
-
-    let _routes: any;
-    onMount(async () => {
-      _routes = await routes();
-      console.log("Loaded routes:", _routes);
-    });
-
-    layoutClasses =
-      (lastLoadedDapp && lastLoadedDapp.isFullWidth) ||
-      (lastLoadedPage && lastLoadedPage.isFullWidth)
-        ? ""
-        : "md:w-2/3 xl:w-1/2";
-  }
-
-  let _routes: any;
-  onMount(async () => {
-    _routes = await routes();
-//    navManifest = getNavigationManifest(lastLoadedDapp, processNavigation, modal);
-    console.log("Loaded routes:", _routes);
-  });
 </script>
 
-{#if _routes}
-  <SvelteToast />
-  <div class="flex flex-col text-base">
-    <main class="z-30 flex-1 overflow-y-auto">
-      <div
-        class="mainContent w-full mx-auto {layoutClasses}"
-        class:mb-16={(!modal || !isOpen) &&
-          lastLoadedDapp &&
-          lastLoadedDapp.dappId !== "homepage:1"}
-        class:blur={modal && isOpen}
-      >
-        <Router
-          routes={_routes}
-          on:conditionsFailed={conditionsFailed}
-          on:routeLoading={routeLoading}
-        />
-      </div>
-    </main>
-  </div>
+<SvelteToast />
+<Router routes={_routes} />
 
-  {#if navManifest}
-    <NextNav navigation={navManifest} />
-  {/if}
-
-  <Modal2
-    bind:this={modal}
-    on:navigation={(event) => {
-      processNavigation = event.detail;
-      navManifest = getNavigationManifest(lastLoadedDapp, processNavigation, modal);
-    }}
-    on:modalOpen={(e) => {
-      isOpen = e.detail;
-      navManifest = getNavigationManifest(lastLoadedDapp, processNavigation, modal);
-    }}
-  />
-  <style>
-    .tab:hover,
-    .tab:focus,
-    .tab:active {
-      @apply text-light;
-    }
-
-    .tab:hover {
-      @apply text-base;
-    }
-
-    .isOpen {
-      background: transparent;
-      border: none;
-    }
-
-    /* Background Blurring for firefox and other non supportive browsers */
-    @supports not (
-      (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
-    ) {
-      .blur {
-        filter: blur(4px);
-        -webkit-transition: all 0.35s ease-in-out;
-        -moz-transition: all 0.35s ease-in-out;
-        transition: all 0.35s ease-in-out;
-      }
-
-      /* Firefox fix for sticky bottom prev-sibling height */
-      main {
-        padding-bottom: 4rem;
-      }
-    }
-
-    .joinnowbutton {
-      transform: translate(-50%, 0) !important;
-      animation: none !important;
-    }
-
-    .joinnowbutton:active:focus,
-    .joinnowbutton:active:hover {
-      transform: translate(-50%, 0);
-      animation: none !important;
-    }
-
-    /* .mainContent {
-      --tw-text-opacity: 1;
-      background-image: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 1) 0%,
-        rgba(253, 254, 255, 1) 85%,
-        rgba(13, 43, 102, 0) 100%
-      );
-    } */
-  </style>
-{/if}

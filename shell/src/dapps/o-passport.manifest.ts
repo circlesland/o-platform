@@ -12,32 +12,32 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import {push} from "svelte-spa-router";
 
 const index: Page<any, DappState> = {
-  routeParts: ["profile"],
+  routeParts: ["=profile"],
   component: Home,
   title: "Profile",
   type: "page",
 };
 const profile: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["profile", ":profileId"],
+  routeParts: ["=profile", ":profileId"],
   component: Home,
   title: "Profile",
   type: "page",
 };
 const account: Page<any, DappState> = {
-  routeParts: ["account"],
+  routeParts: ["=account"],
   component: Account,
   title: "Accounts",
   type: "page",
 };
 const keys: Page<any, DappState> = {
-  routeParts: ["keys"],
+  routeParts: ["=keys"],
   component: Keys,
   title: "Keys",
   type: "page",
 };
 const settings: Page<any, DappState> = {
-  routeParts: ["settings"],
+  routeParts: ["=settings"],
   component: Settings,
   title: "Settings",
   type: "page",
@@ -46,7 +46,7 @@ const settings: Page<any, DappState> = {
 // Same as 'index' but accepts a ':code' parameter that will be passed to 'Home'
 const login: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["login", ":code"],
+  routeParts: ["=login", ":code"],
   component: Login,
   title: "Login with Circles",
   type: "page",
@@ -63,13 +63,13 @@ export const passport: DappManifest<DappState> = {
   isHidden: false,
   icon: "passport",
   title: "Passport",
-  routeParts: ["passport"],
+  routeParts: ["=passport"],
   tag: Promise.resolve("alpha"),
   jumplist: {
     type: "jumplist",
     title: "Actions",
     isSystem: false,
-    routeParts: ["actions"],
+    routeParts: ["=actions"],
     items: () => {
       return [
         {
