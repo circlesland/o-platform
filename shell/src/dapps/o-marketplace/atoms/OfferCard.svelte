@@ -69,47 +69,48 @@
   console.log("OFFER: ", offer);
 </script>
 
-<section class="flex items-start" on:click={() => loadDetailPage()}>
-  <div
-    class="flex flex-col w-full bg-white border rounded-lg border-light-lighter"
-  >
-    <header class="relative rounded-t-lg headerImageContainer">
-      <div class="rounded-t-lg image-wrapper">
+<section class="flex items-start bg-white shadow-lg rounded-xl">
+  <div class="flex flex-col w-full ">
+    <header class=" rounded-t-xl headerImageContainer">
+      <div class="relative rounded-t-xl image-wrapper">
         <img
           src={offer.pictureUrl
             ? offer.pictureUrl
             : "/images/market/circles-no-image.jpg"}
           alt=""
-          class="rounded-t-lg"
+          class="rounded-t-xl"
         />
-      </div>
-
-      <div
-        class="absolute top-0 right-0 px-4 py-1 text-xs rounded-tr-lg rounded-bl-lg shadow bg-light-lighter text-light-dark"
-      >
-        <Time relative timestamp={offer.publishedAt} />
+        <div
+          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest"
+        >
+          {offer.pricePerUnit} C / {offer.unitTag.value}
+          <!-- <Time relative timestamp={offer.publishedAt} /> -->
+        </div>
       </div>
     </header>
-
-    <div class="p-2 text-base text-left text-secondary">
-      {offer.title}
+    <div
+      class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter"
+    >
+      <div class="avatar">
+        <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
+          <img
+            src={offer.createdBy.avatarUrl
+              ? offer.createdBy.avatarUrl
+              : "/images/market/city.png"}
+            alt="user-icon"
+          />
+        </div>
+      </div>
+      <div>
+        {offer.createdBy.firstName}
+        {offer.createdBy.lastName}
+      </div>
     </div>
-    <div class="flex flex-row items-center content-start p-2 space-x-1">
-      <div class="text-2xl font-bold text-left text-secondary">
-        {offer.pricePerUnit}
-      </div>
-      <div class="text-secondary">
-        <Icons icon="circlessimple" />
-        <!-- <img src="/logos/crc.svg" class="inline w-6 h-6 -mt-1" alt="circles" /> -->
-      </div>
-      <div class="ml-2 text-base text-2xs">
-        ({offer.maxUnits}
-        {offer.unitTag.value})
-      </div>
-    </div>
-    <div class="relative flex flex-row w-full p-2 mt-6 space-x-2">
+    <div class="flex flex-col w-full px-6 mt-6 space-y-4 bg-white">
       <div class="flex flex-row flex-grow space-x-2">
-        <div class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs">
+        <div
+          class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs"
+        >
           <a
             href="#/marketplace/categories/{offer.categoryTagId}/{offer
               .categoryTag.value}"
@@ -118,33 +119,35 @@
             {offer.categoryTag.value}
           </a>
         </div>
-        <!-- <div class="p-2 rounded-full bg-light-lighter text-2xs">
-          {offer.city.name}
-        </div>
-        <div class="p-2 rounded-full bg-light-lighter text-2xs">
-          {offer.city.country}
-        </div> -->
+      </div>
+      <div class="text-lg font-bold text-left uppercase">
+        {offer.title}
       </div>
 
-      <div
-        class="absolute bottom-0 right-0 flex flex-row items-center content-start self-end p-2 space-x-2 text-xs rounded-tl-lg rounded-br-lg bg-light-lighter"
-      >
-        <div>
-          {offer.createdBy.firstName}
-          {offer.createdBy.lastName}
+      {#if offer.description}
+        <div class="text-sm text-dark-lightest">
+          {offer.description}
         </div>
-        <div class="avatar">
-          <div class="w-8 h-8 m-auto rounded-full sm:w-12 sm:h-12">
-            <img
-              src={offer.createdBy.avatarUrl
-                ? offer.createdBy.avatarUrl
-                : "/images/market/city.png"}
-              alt="user-icon"
-            />
-          </div>
+      {/if}
+      <div class="flex flex-row space-x-4">
+        <div>
+          <button class="btn btn-square btn-light">
+            <Icons icon="star" />
+          </button>
+        </div>
+        <div class="flex-grow">
+          <button
+            type="submit"
+            class="relative btn btn-primary btn-block"
+            on:click|once={() => loadDetailPage()}
+            >Show detail <div class="absolute mr-1 right-2">
+              <Icons icon="eye" />
+            </div></button
+          >
         </div>
       </div>
     </div>
+
     <!-- <div class="relative flex-grow text-left">
       <div class="max-w-full cursor-pointer">
         <h2 class="text-2xl sm:text-3xl">
@@ -292,7 +295,7 @@
 
 <style>
   /* Ensure image is always 16:9 Ratio */
-  .headerImageContainer {
+  /* .headerImageContainer {
     max-width: none;
   }
 
@@ -306,5 +309,5 @@
     object-fit: cover;
     width: 100%;
     height: 100%;
-  }
+  } */
 </style>

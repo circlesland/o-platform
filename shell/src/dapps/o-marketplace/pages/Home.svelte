@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
+  import TopNav from "src/shared/atoms/TopNav.svelte";
   import { Offer, OffersDocument, TagsDocument } from "../data/api/types";
   import OfferCard from "../atoms/OfferCard.svelte";
   import { onMount } from "svelte";
@@ -96,8 +96,9 @@
 </script>
 
 <MarketplaceHeader  {runtimeDapp} {routable} />
+<TopNav />
 
-<div class="p-2 bg-light-lightest">
+<div class="p-2 mt-6 bg-light-lightest">
   {#if isLoading}
     <section class="flex items-center justify-center mx-4 mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">

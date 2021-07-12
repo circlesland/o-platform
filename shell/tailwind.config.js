@@ -35,6 +35,9 @@ module.exports = {
         xs: "500px",
       },
 
+      borderRadius: {
+        xl: "16px",
+      },
       colors: {
         DEFAULT: "#132B69",
         base: "#132B69",
