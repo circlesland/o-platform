@@ -203,9 +203,16 @@
         const newPageParams = findRouteResult.pageParams;
 
         if (routable.type === "page" && (<Page<any, any>>routable).position !== "modal") {
+            if (_modalPage && _modalIsOpen) {
+                if (!_modal.closeModal()) {
+                    // TODO: This doesn't work as intended. (when in a process and user presses browser->back then strange URLs can arise).
+                    push(lastMainUrl);
+                    return;
+                }
+            }
             _mainPage = <Page<any, any>>routable;
-            lastMainUrl = $location;
             pageParams = newPageParams;
+            lastMainUrl = $location;
         } else if (routable.type === "page" && (<Page<any, any>>routable).position === "modal") {
             _modalPage = <Page<any, any>>routable;
             _modal.showPage(_modalPage, newPageParams, runtimeDapp, routable);
