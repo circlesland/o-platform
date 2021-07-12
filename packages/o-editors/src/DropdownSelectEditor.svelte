@@ -34,11 +34,13 @@
       selected = await context.params.choices.byKey(currentKey);
     } else {
       selected = undefined;
-      filterText = "0x";
-      setTimeout(() => {
-        filterText = "";
-        selectComponent.getItems();
-      }, 1);
+      if (context.params.showResultsOnLoad) {
+        filterText = "0x";
+        setTimeout(() => {
+          filterText = "";
+          selectComponent.getItems();
+        }, 1);
+      }
     }
   });
 

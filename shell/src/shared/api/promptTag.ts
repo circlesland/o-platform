@@ -53,6 +53,7 @@ export function promptTag<
       label: spec.params.label,
       placeholder: spec.params.placeholder,
       submitButtonText: spec.params.submitButtonText,
+      showResultsOnLoad: spec.params.showResultsOnLoad,
       getKey: (tag) => tag.id,
       itemTemplate: DropDownTag,
       keyProperty: "id",

@@ -100,6 +100,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           label: strings.labelDescription,
           placeholder: strings.placeholderDescription,
           submitButtonText: strings.submitDescription,
+          showResultsOnLoad: true,
         },
         navigation: {
           next: "#categoryTagId",
@@ -116,6 +117,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           label: strings.labelCategory,
           placeholder: strings.placeholderCategory,
           submitButtonText: strings.submitCategory,
+          showResultsOnLoad: true,
         },
         navigation: {
           next: "#geonameid",
@@ -143,6 +145,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           label: strings.labelUnit,
           placeholder: strings.placeholderUnit,
           submitButtonText: strings.submitUnit,
+          showResultsOnLoad: true,
         },
         navigation: {
           next: "#pricePerUnit",
@@ -185,6 +188,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           label: strings.labelDeliveryTerms,
           placeholder: strings.placeholderDeliveryTerms,
           submitButtonText: strings.submitDeliveryTerms,
+          showResultsOnLoad: true,
         },
         navigation: {
           next: "#pictureUrl",
