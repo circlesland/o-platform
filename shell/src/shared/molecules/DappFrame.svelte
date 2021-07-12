@@ -39,14 +39,12 @@
         "5": string | null;
         "6": string | null;
     };
-
-    // export let getDappEntryPoint: () => Promise<Routable>;
+    let pageParams:{[x:string]:any} = {};
 
     let layoutClasses = "";
 
     let _entryPage: Page<any, any>;
     let _entryTrigger: Trigger<any, any>;
-    let _lastLoadedPage: Page<any, any>;
 
     let _modal: Modal2;
     let _modalIsOpen = false;
@@ -126,8 +124,6 @@
         runtimeDapp = _runtimeDapps[dappId];
         setLastLoadedDapp(runtimeDapp);
 
-        let lastLoadedPage = _entryPage;
-
         if (!dapp) {
             _entryPage = <any>{
                 component: NotFound
@@ -155,6 +151,16 @@
                     routable = matchingRoute;
                     setLastLoadedRoutable(routable);
                     console.log("Matching route:", matchingRoute);
+
+                    const remainingParamsSpec = matchingRoute.routeParts.slice(exactParts.length).map(o => o.replace(":", "").replace("?", ""));
+                    const remainingParams = routePartsFromParams.slice(exactParts.length);
+
+                    const newPageParams = {};
+                    for (let i = 0; i < remainingParamsSpec.length; i++) {
+                        newPageParams[remainingParamsSpec[i]] = remainingParams[i];
+                    }
+
+                    pageParams = newPageParams;
                     break;
                 }
             }
@@ -193,15 +199,7 @@
                 `Entry point type '${routable.type}' is not supported by the DappFrame.`
             );
         }
-
-        if (lastLoadedPage) {
-            // Deffer the loading of the background to make the event-processing of Triggers much snappier
-            setTimeout(() => {
-                _lastLoadedPage = lastLoadedPage;
-            }, 1);
-        }
     }
-
 
 </script>
 <div class="flex flex-col text-base">
@@ -211,10 +209,7 @@
                 class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== "homepage:1"}
                 class:blur={_modal && _modalIsOpen}>
             {#if _entryPage}
-                <svelte:component this={_entryPage.component} {params}/>
-            {:else if _lastLoadedPage}
-                <!-- Whenever a Trigger is called via URL, just display the last page (in the background) -->
-                <svelte:component this={_lastLoadedPage.component} {params}/>
+                <svelte:component this={_entryPage.component} params={pageParams}/>
             {:else}
                 <!--<NotFound />-->
             {/if}
