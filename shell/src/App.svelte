@@ -18,13 +18,6 @@
   import { ApiConnection } from "./shared/apiConnection";
   import { getProcessContext } from "./main";
 
-  /**
-   * Contains events which have been sent by the DappFrame.
-   * It's used to track which "_modal-close" events should also
-   * trigger a history.back() call.
-   */
-  export let backStack: PlatformEvent[] = [];
-
   const runningProcesses: {
     [id: string]: Process;
   } = {};

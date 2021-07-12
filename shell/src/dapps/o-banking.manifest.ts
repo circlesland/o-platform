@@ -195,7 +195,7 @@ export const banking: DappManifest<BankingDappState> = {
   icon: "banking",
   title: "Banking",
   routeParts: ["banking"],
-  defaultRoute: ["=transactions"],
+  defaultRoute: ["transactions"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   jumplist: profileJumplist,

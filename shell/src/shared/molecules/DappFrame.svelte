@@ -7,7 +7,7 @@
     import {dapps} from "../../loader";
     import {arraysEqual} from "../functions/arraysEqual";
     import {Link} from "@o-platform/o-interfaces/dist/routables/link";
-    import Modal2 from "./Modal2.svelte";
+    import Modal2, {closeModal} from "./Modal2.svelte";
     import {location, push} from 'svelte-spa-router'
     import {getNavigationManifest} from "../functions/GetNavigationManifest.svelte";
     import {ProcessContainerNavigation} from "./ProcessContainer.svelte";
@@ -143,44 +143,56 @@
             return;
         }
 
-        let routePartsFromParams = [];
-        if (params["1"]) routePartsFromParams.push(params["1"]);
-        if (params["2"]) routePartsFromParams.push(params["2"]);
-        if (params["3"]) routePartsFromParams.push(params["3"]);
-        if (params["4"]) routePartsFromParams.push(params["4"]);
-        if (params["5"]) routePartsFromParams.push(params["5"]);
-        if (params["6"]) routePartsFromParams.push(params["6"]);
+        const findRoute = (params:{[x:string]:string}) => {
+            const newPageParams = {};
+            let matchingRoute:Routable;
 
-        let possibleRoutes = dapp.routables.filter(o => o.routeParts.length == routePartsFromParams.length);
-        console.log("Possible routes (same length):", possibleRoutes);
+            let routePartsFromParams = [];
+            if (params["1"]) routePartsFromParams.push(params["1"]);
+            if (params["2"]) routePartsFromParams.push(params["2"]);
+            if (params["3"]) routePartsFromParams.push(params["3"]);
+            if (params["4"]) routePartsFromParams.push(params["4"]);
+            if (params["5"]) routePartsFromParams.push(params["5"]);
+            if (params["6"]) routePartsFromParams.push(params["6"]);
 
-        const newPageParams = {};
+            let possibleRoutes = dapp.routables.filter(o => o.routeParts.length == routePartsFromParams.length);
+            console.log("Possible routes (same length):", possibleRoutes);
 
-        for (let matchingRoute of possibleRoutes) {
-            const exactParts = matchingRoute.routeParts.filter(part => part.startsWith("=")).map(o => o.replace("=", ""));
-            if (exactParts.length <= routePartsFromParams.length) {
-                // Could be a matching route
-                const overlapFromParams = routePartsFromParams.slice(0, exactParts.length);
-                if (arraysEqual(exactParts, overlapFromParams)) {
-                    routable = matchingRoute;
-                    console.log("Matching route:", matchingRoute);
+            for (let route of possibleRoutes) {
+                const exactParts = route.routeParts.filter(part => part.startsWith("=")).map(o => o.replace("=", ""));
+                if (exactParts.length <= routePartsFromParams.length) {
+                    // Could be a matching route
+                    const overlapFromParams = routePartsFromParams.slice(0, exactParts.length);
+                    if (arraysEqual(exactParts, overlapFromParams)) {
+                        matchingRoute = route;
+                        console.log("Matching route:", route);
 
-                    const remainingParamsSpec = matchingRoute.routeParts.slice(exactParts.length).map(o => o.replace(":", "").replace("?", ""));
-                    const remainingParams = routePartsFromParams.slice(exactParts.length);
+                        const remainingParamsSpec = route.routeParts.slice(exactParts.length).map(o => o.replace(":", "").replace("?", ""));
+                        const remainingParams = routePartsFromParams.slice(exactParts.length);
 
-                    for (let i = 0; i < remainingParamsSpec.length; i++) {
-                        newPageParams[remainingParamsSpec[i]] = remainingParams[i];
+                        for (let i = 0; i < remainingParamsSpec.length; i++) {
+                            newPageParams[remainingParamsSpec[i]] = remainingParams[i];
+                        }
+                        break;
                     }
-
-                    break;
                 }
             }
-        }
 
-        if (!routable) {
+            return {
+                found: !!matchingRoute,
+                routable: matchingRoute,
+                pageParams: newPageParams
+            }
+        };
+
+        const findRouteResult = findRoute(params);
+        if (!findRouteResult.found) {
             _mainPage = null;
             return;
         }
+
+        routable = findRouteResult.routable;
+        const newPageParams = findRouteResult.pageParams;
 
         if (routable.type === "page" && (<Page<any, any>>routable).position !== "modal") {
             _mainPage = <Page<any, any>>routable;
@@ -212,6 +224,23 @@
             throw new Error(
                 `Entry point type '${routable.type}' is not supported by the DappFrame.`
             );
+        }
+
+        if (!_mainPage && dapp.defaultRoute) {
+            const defaultRoutable = findRoute({
+                "dappId": dapp.dappId,
+                "1": dapp.defaultRoute.length > 0 ? dapp.defaultRoute[0] : null,
+                "2": dapp.defaultRoute.length > 1 ? dapp.defaultRoute[1] : null,
+                "3": dapp.defaultRoute.length > 2 ? dapp.defaultRoute[2] : null,
+                "4": dapp.defaultRoute.length > 3 ? dapp.defaultRoute[3] : null,
+                "5": dapp.defaultRoute.length > 4 ? dapp.defaultRoute[4] : null,
+                "6": dapp.defaultRoute.length > 5 ? dapp.defaultRoute[5] : null,
+            });
+            if (defaultRoutable.found) {
+                _mainPage = <any>defaultRoutable.routable;
+                lastMainUrl = `/${dapp.dappId}/${defaultRoutable.routable.routeParts.map(o => o.replace("=", "")).join("/")}`;
+            }
+            pageParams = defaultRoutable.pageParams;
         }
 
         _navManifest = getNavigationManifest(runtimeDapp, _processNavigation, _modal);
