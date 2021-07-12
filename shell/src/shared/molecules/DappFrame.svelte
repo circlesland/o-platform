@@ -182,8 +182,6 @@
             return;
         }
 
-        _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
-
         if (routable.type === "page" && (<Page<any, any>>routable).position !== "modal") {
             _mainPage = <Page<any, any>>routable;
             lastMainUrl = $location;
@@ -215,6 +213,8 @@
                 `Entry point type '${routable.type}' is not supported by the DappFrame.`
             );
         }
+
+        _navManifest = getNavigationManifest(runtimeDapp, _processNavigation, _modal);
     }
 
 </script>

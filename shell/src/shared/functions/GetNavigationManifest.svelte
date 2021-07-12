@@ -120,7 +120,7 @@ function getProcessNavigation(
             center: {
                 component: ActionButtonComponent,
                 props: {
-                    icon: "/logos/close.svg",
+                    icon: "close",
                     action: () => modal.closeModal(),
                 },
             },
