@@ -21,7 +21,7 @@ export const miva: DappManifest<DappState> = {
   isHidden: true,
   icon: "miva",
   title: "Miva",
-  routeParts: ["miva"],
+  routeParts: ["=miva"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,

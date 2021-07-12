@@ -15,7 +15,7 @@ const index: Page<any, DappState> = {
 };
 const createHub: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["become-a-hub"],
+  routeParts: ["=become-a-hub"],
   component: CreateHub,
   title: "Become a hub",
   type: "page",
@@ -43,7 +43,7 @@ export const dashboard: DappManifest<DappState> = {
   isHidden: true,
   icon: "dashboard",
   title: "Dashboard",
-  routeParts: ["dashboard"],
+  routeParts: ["=dashboard"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
@@ -51,7 +51,7 @@ export const dashboard: DappManifest<DappState> = {
     type: "jumplist",
     title: "Actions",
     isSystem: false,
-    routeParts: ["actions"],
+    routeParts: ["=actions"],
     items: (params, runtimeDapp) => {
       return [
         {

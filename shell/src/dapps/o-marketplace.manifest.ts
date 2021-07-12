@@ -13,14 +13,14 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import {push} from "svelte-spa-router";
 
 const stream: Page<any, DappState> = {
-  routeParts: ["stream"],
+  routeParts: ["=stream"],
   component: Home,
   title: "Stream",
   type: "page",
 };
 const offerDetail: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["offer", ":id"],
+  routeParts: ["=offer", ":id"],
   component: OfferDetail,
   title: "Offer detail",
   type: "page",
@@ -37,7 +37,7 @@ const offerDetail: Page<any, DappState> = {
   },
 };
 const categories: Page<any, DappState> = {
-  routeParts: ["categories"],
+  routeParts: ["=categories"],
   component: Categories,
   title: "Categories",
   type: "page",
@@ -55,7 +55,7 @@ const categories: Page<any, DappState> = {
 };
 const categoryDetail: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["categories", ":category", ":categoryName"],
+  routeParts: ["=categories", ":category", ":categoryName"],
   component: CategoryDetail,
   title: "Category",
   type: "page",
@@ -72,13 +72,13 @@ const categoryDetail: Page<any, DappState> = {
   },
 };
 const favorites: Page<any, DappState> = {
-  routeParts: ["favorites"],
+  routeParts: ["=favorites"],
   component: Favorites,
   title: "Favorites",
   type: "page",
 };
 const myOffers: Page<any, DappState> = {
-  routeParts: ["my-offers"],
+  routeParts: ["=my-offers"],
   component: MyOffers,
   title: "My offers",
   type: "page",
@@ -95,13 +95,13 @@ export const marketplace: DappManifest<DappState> = {
   isHidden: false,
   icon: "marketplace",
   title: "Marketplace",
-  routeParts: ["marketplace"],
+  routeParts: ["=marketplace"],
   tag: Promise.resolve("alpha"),
   jumplist: {
     type: "jumplist",
     title: "Actions",
     isSystem: false,
-    routeParts: ["actions"],
+    routeParts: ["=actions"],
     items: () => [
       {
         key: "createOffer",

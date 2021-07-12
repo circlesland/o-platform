@@ -16,7 +16,7 @@ const index: Page<any, DappState> = {
 // My invite rank in my city
 const myCityRank: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["my-rank"],
+  routeParts: ["=my-rank"],
   component: MyRank,
   title: "My rank",
   type: "page",
@@ -24,7 +24,7 @@ const myCityRank: Page<any, DappState> = {
 
 const cityRanks: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["cities"],
+  routeParts: ["=cities"],
   component: Citites,
   title: "Citites",
   type: "page",
@@ -32,7 +32,7 @@ const cityRanks: Page<any, DappState> = {
 
 const countryRanks: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["countries"],
+  routeParts: ["=countries"],
   component: Countries,
   title: "Countries",
   type: "page",
@@ -49,7 +49,7 @@ export const stats: DappManifest<DappState> = {
   isHidden: true,
   icon: "stats",
   title: "Statistics",
-  routeParts: ["stats"],
+  routeParts: ["=stats"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,

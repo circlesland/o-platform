@@ -21,7 +21,7 @@ export const trustnetwork: DappManifest<DappState> = {
   isHidden: true,
   icon: "network",
   title: "Trust network",
-  routeParts: ["trustnetwork"],
+  routeParts: ["=trustnetwork"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
