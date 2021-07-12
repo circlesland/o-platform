@@ -28,6 +28,7 @@
     import {shellProcess} from "../processes/shellProcess";
     import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
     import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
+    import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 
     export let params: {
         dappId: string;
@@ -52,6 +53,12 @@
 
     let _processNavigation: ProcessContainerNavigation;
     let _navManifest: NavigationManifest;
+
+    let _runtimeDapps: {[dappId:string]:RuntimeDapp<any>} = {};
+
+    let dapp: DappManifest<any>;
+    let runtimeDapp: RuntimeDapp<any>;
+    let routable: Routable;
 
     onMount(async () => {
         window.o.runProcess = async function runProcess(
@@ -95,9 +102,6 @@
         }
     }
 
-    let dapp: DappManifest<any>;
-    let routable: Routable;
-
     function onParamsChanged() {
         const dappId = params.dappId && params.dappId.endsWith(":1") ? params.dappId : params.dappId + ":1";
         if (!dappId) {
@@ -108,13 +112,19 @@
         }
 
         dapp = dapps.find(o => o.dappId == dappId);
+        if (!_runtimeDapps[dappId]) {
+            _runtimeDapps[dappId] = <RuntimeDapp<any>>{
+                ...dapp,
+                route: dapp,
+                state: {}
+            }
+            if (_runtimeDapps[dappId].initialize) {
+                _runtimeDapps[dappId].initialize([], runtimeDapp);
+            }
+        }
 
-        setLastLoadedDapp({
-            ...dapp,
-            runtimeId: "",
-            route: "",
-            state:{}
-        });
+        runtimeDapp = _runtimeDapps[dappId];
+        setLastLoadedDapp(runtimeDapp);
 
         let lastLoadedPage = _entryPage;
 
