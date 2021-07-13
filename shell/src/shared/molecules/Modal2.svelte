@@ -10,12 +10,12 @@
   import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 
   import { Link } from "@o-platform/o-interfaces/dist/routables/link";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {run} from "svelte/internal";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import { run } from "svelte/internal";
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   let runningProcess: Process | undefined;
   let jumplistItems: JumplistItem[] | undefined;
@@ -29,7 +29,7 @@
     | undefined;
 
   let _page: Page<any, any>;
-  let _pageParams: {[x:string]:any};
+  let _pageParams: { [x: string]: any };
   let _pageRuntimeDapp: RuntimeDapp<any>;
   let _pageRoutable: Routable;
 
@@ -102,7 +102,9 @@
           title: o.title,
           icon: o.icon,
           url:
-            runtimeDapp.routeParts.map(o => o.startsWith("=") ? o.replace("=","") : o).join("/") +
+            runtimeDapp.routeParts
+              .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
+              .join("/") +
             "/" +
             o.routeParts
               .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
@@ -131,7 +133,12 @@
     }
   }
 
-  export function showPage(page: Page<any, any>, pageParams: {[x:string]:any}, runtimeDapp: RuntimeDapp<any>, routable:Routable) {
+  export function showPage(
+    page: Page<any, any>,
+    pageParams: { [x: string]: any },
+    runtimeDapp: RuntimeDapp<any>,
+    routable: Routable
+  ) {
     if (!closeModal()) {
       return;
     }
@@ -144,7 +151,7 @@
     }
   }
 
-  export function closeModal(source?:string): boolean {
+  export function closeModal(source?: string): boolean {
     if (runningProcess && _isOpen) {
       runningProcess.sendEvent(new CancelRequest());
       return false;
@@ -220,7 +227,12 @@
                 {/each}
               </div>
             {:else if _page}
-              <svelte:component this={_page.component} params={_pageParams}  runtimeDapp={_pageRuntimeDapp} routable={_pageRoutable}/>
+              <svelte:component
+                this={_page.component}
+                params={_pageParams}
+                runtimeDapp={_pageRuntimeDapp}
+                routable={_pageRoutable}
+              />
             {:else if jumplistItems}
               <div
                 class="flex flex-wrap items-center justify-center p-4 space-x-10"

@@ -8,15 +8,15 @@
 
   import Icons from "../../../shared/molecules/Icons.svelte";
   import { push } from "svelte-spa-router";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
   export let params: {
     _id: string;
   };
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   let transfer: Transfer;
   let pictureUrl: string;
@@ -92,8 +92,13 @@
   }
 </script>
 
-<BankingDetailHeader {runtimeDapp} {routable} amount={transfer ? transfer.amount : 0} {classes} />
-<div class="pb-4 px-9">
+<BankingDetailHeader
+  {runtimeDapp}
+  {routable}
+  amount={transfer ? transfer.amount : 0}
+  {classes}
+/>
+<div class="px-6">
   {#if transfer}
     <section class="flex items-center justify-center pt-10 pb-2 text-secondary">
       <div class="flex flex-col w-full space-y-2 ">
