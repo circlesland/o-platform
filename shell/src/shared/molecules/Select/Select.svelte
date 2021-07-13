@@ -900,6 +900,7 @@
     color: var(--clearSelectColor, #c5cacf);
     height: var(--clearSelectHeight, 42px);
     flex: none !important;
+    z-index: 999;
   }
 
   .clearSelect:hover {
