@@ -1,20 +1,15 @@
 <script lang="ts">
   import BankingHeader from "../atoms/BankingHeader.svelte";
-  import {transfer} from "../processes/transfer";
+  import { transfer } from "../processes/transfer";
   import TransactionCard from "../atoms/TransactionCard.svelte";
-  import {mySafe} from "../stores/safe";
-  import {me} from "../../../shared/stores/me";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {Transfer} from "../data/circles/types";
+  import { mySafe } from "../stores/safe";
+  import { me } from "../../../shared/stores/me";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import { Transfer } from "../data/circles/types";
 
-  export let params: {
-    to: string;
-    amount: string;
-    message: string;
-  };
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   $: me;
 
@@ -23,16 +18,18 @@
   let eof = false;
 
   function loadMore() {
-    if ($mySafe.transfers.rows.length == 0)
-      return;
+    if ($mySafe.transfers.rows.length == 0) return;
 
-    const maxPageSize = $mySafe.transfers.rows.length >= pageSize ? pageSize : $mySafe.transfers.rows.length;
+    const maxPageSize =
+      $mySafe.transfers.rows.length >= pageSize
+        ? pageSize
+        : $mySafe.transfers.rows.length;
     if (maxPageSize < pageSize) {
       // EOF
       eof = true;
     }
     const from = currentPage * pageSize;
-    const to = from  + pageSize;
+    const to = from + pageSize;
     displayRows = [...displayRows, ...$mySafe.transfers.rows.slice(from, to)];
     console.log("Next page ..");
     currentPage++;
@@ -54,11 +51,14 @@
   let displayRows: Transfer[] = [];
 
   let scrollY;
-
 </script>
 
-<svelte:window bind:scrollY={scrollY}/>
-<BankingHeader {runtimeDapp} {routable}  balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"} />
+<svelte:window bind:scrollY />
+<BankingHeader
+  {runtimeDapp}
+  {routable}
+  balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"}
+/>
 
 <div class="mx-4 -mt-6">
   {#if $mySafe.ui && $mySafe.ui.loadingPercent === 0}

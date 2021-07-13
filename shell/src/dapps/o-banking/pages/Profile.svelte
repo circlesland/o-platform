@@ -485,15 +485,7 @@
           </section>
         {/if}
       </div>
-      {#if jumplist && !isMe}
-        <div
-          class="absolute bottom-0 left-0 right-0 w-full p-5 mx-auto md:w-2/3 xl:w-1/2"
-        >
-          {#await jumplist.items(params, runtimeDapp) then items}
-            <DetailActionBar actions={items} />
-          {/await}
-        </div>
-      {/if}
+
       <!-- ACTIONS  -->
 
       <!-- {#if !isMe && profile.safeAddress}
@@ -566,9 +558,9 @@
       <div
         class="absolute bottom-0 left-0 right-0 w-full p-5 mx-auto md:w-2/3 xl:w-1/2"
       >
-        <DetailActionBar
-          actions={jumplist.items(params, getLastLoadedDapp())}
-        />
+        {#await jumplist.items(params, runtimeDapp) then items}
+          <DetailActionBar actions={items} />
+        {/await}
       </div>
     {/if}
   </div>
