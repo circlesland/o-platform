@@ -21,6 +21,7 @@
     import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
     import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
     import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+    import {identify} from "../../dapps/o-passport/processes/identify/identify";
 
     export let params: {
         dappId: string;
@@ -53,6 +54,8 @@
     let routable: Routable;
     let mounted: boolean;
     let lastMainUrl:string;
+
+    let identityChecked:boolean = false;
 
     onMount(async () => {
         window.o.events.subscribe(async (event: PlatformEvent) => {
@@ -95,6 +98,11 @@
 
         onParamsChanged();
         mounted = true;
+
+        if (!identityChecked) {
+            window.o.runProcess(identify, {}, {});
+            identityChecked = true;
+        }
     });
 
     let lastParamsJson:string;

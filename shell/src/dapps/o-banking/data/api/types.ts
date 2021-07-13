@@ -102,24 +102,6 @@ export type ICity = {
   population: Scalars['Int'];
 };
 
-export type IndexTransactionInput = {
-  blockHash: Scalars['String'];
-  blockNumber: Scalars['Int'];
-  confirmations?: Maybe<Scalars['Int']>;
-  contractAddress?: Maybe<Scalars['String']>;
-  cumulativeGasUsed: Scalars['String'];
-  from: Scalars['String'];
-  gasUsed: Scalars['String'];
-  logs?: Maybe<Array<IndexTransactionLogInput>>;
-  logsBloom: Scalars['String'];
-  root?: Maybe<Scalars['String']>;
-  status?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<CreateTagInput>>;
-  to: Scalars['String'];
-  transactionHash: Scalars['String'];
-  transactionIndex: Scalars['Int'];
-};
-
 export type IndexTransactionLog = {
   __typename?: 'IndexTransactionLog';
   address: Scalars['String'];
@@ -134,14 +116,14 @@ export type IndexTransactionLog = {
   transactionIndex: Scalars['Int'];
 };
 
-export type IndexTransactionLogInput = {
-  address: Scalars['String'];
-  blockHash: Scalars['String'];
+export type IndexTransactionRequest = {
+  __typename?: 'IndexTransactionRequest';
   blockNumber: Scalars['Int'];
-  data?: Maybe<Scalars['String']>;
-  logIndex: Scalars['Int'];
-  removed?: Maybe<Scalars['Boolean']>;
-  topics: Array<Scalars['String']>;
+  createdAt: Scalars['String'];
+  createdBy?: Maybe<Profile>;
+  createdByProfileId: Scalars['Int'];
+  id: Scalars['Int'];
+  tags?: Maybe<Array<Tag>>;
   transactionHash: Scalars['String'];
   transactionIndex: Scalars['Int'];
 };
@@ -188,10 +170,10 @@ export type Mutation = {
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
-  indexTransaction: IndexedTransaction;
   lockOffer: LockOfferResult;
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
+  requestIndexTransaction: IndexTransactionRequest;
   requestUpdateSafe: RequestUpdateSafeResponse;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
@@ -216,11 +198,6 @@ export type MutationDepositChallengeArgs = {
 };
 
 
-export type MutationIndexTransactionArgs = {
-  data: IndexTransactionInput;
-};
-
-
 export type MutationLockOfferArgs = {
   data: LockOfferInput;
 };
@@ -228,6 +205,11 @@ export type MutationLockOfferArgs = {
 
 export type MutationProvePaymentArgs = {
   data: PaymentProof;
+};
+
+
+export type MutationRequestIndexTransactionArgs = {
+  data: RequestIndexTransactionInput;
 };
 
 
@@ -309,6 +291,14 @@ export type Profile = {
   lastName?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
   offers?: Maybe<Array<Offer>>;
+};
+
+export type ProfileEvent = {
+  createdAt: Scalars['String'];
+  data: Scalars['String'];
+  id: Scalars['Int'];
+  profileId: Scalars['Int'];
+  type: Scalars['String'];
 };
 
 export type ProvePaymentResult = {
@@ -433,6 +423,13 @@ export type QueryUniqueProfileInput = {
   id: Scalars['Int'];
 };
 
+export type RequestIndexTransactionInput = {
+  blockNumber: Scalars['Int'];
+  tags?: Maybe<Array<CreateTagInput>>;
+  transactionHash: Scalars['String'];
+  transactionIndex: Scalars['Int'];
+};
+
 export type RequestUpdateSafeInput = {
   newSafeAddress: Scalars['String'];
 };
@@ -536,20 +533,17 @@ export type Version = {
   revision: Scalars['Int'];
 };
 
-export type IndexTransactionMutationVariables = Exact<{
-  data: IndexTransactionInput;
+export type RequestIndexTransactionMutationVariables = Exact<{
+  data: RequestIndexTransactionInput;
 }>;
 
 
-export type IndexTransactionMutation = (
+export type RequestIndexTransactionMutation = (
   { __typename?: 'Mutation' }
-  & { indexTransaction: (
-    { __typename?: 'IndexedTransaction' }
-    & Pick<IndexedTransaction, 'blockHash' | 'blockNumber' | 'confirmations' | 'contractAddress' | 'cumulativeGasUsed' | 'from' | 'gasUsed' | 'id' | 'logsBloom' | 'root' | 'status' | 'to' | 'transactionHash' | 'transactionIndex'>
-    & { logs?: Maybe<Array<(
-      { __typename?: 'IndexTransactionLog' }
-      & Pick<IndexTransactionLog, 'address' | 'blockHash' | 'blockNumber' | 'data' | 'id' | 'logIndex' | 'removed' | 'topics' | 'transactionHash' | 'transactionIndex'>
-    )>>, tags?: Maybe<Array<(
+  & { requestIndexTransaction: (
+    { __typename?: 'IndexTransactionRequest' }
+    & Pick<IndexTransactionRequest, 'blockNumber' | 'id' | 'transactionHash' | 'transactionIndex'>
+    & { tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'typeId' | 'value'>
     )>> }
@@ -591,38 +585,16 @@ export type ProfilesByIdsQuery = (
 );
 
 
-export const IndexTransactionDocument = gql`
-    mutation indexTransaction($data: IndexTransactionInput!) {
-  indexTransaction(data: $data) {
-    blockHash
+export const RequestIndexTransactionDocument = gql`
+    mutation requestIndexTransaction($data: RequestIndexTransactionInput!) {
+  requestIndexTransaction(data: $data) {
     blockNumber
-    confirmations
-    contractAddress
-    cumulativeGasUsed
-    from
-    gasUsed
     id
-    logs {
-      address
-      blockHash
-      blockNumber
-      data
-      id
-      logIndex
-      removed
-      topics
-      transactionHash
-      transactionIndex
-    }
-    logsBloom
-    root
-    status
     tags {
       id
       typeId
       value
     }
-    to
     transactionHash
     transactionIndex
   }
@@ -683,8 +655,8 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    indexTransaction(variables: IndexTransactionMutationVariables): Promise<IndexTransactionMutation> {
-      return withWrapper(() => client.request<IndexTransactionMutation>(print(IndexTransactionDocument), variables));
+    requestIndexTransaction(variables: RequestIndexTransactionMutationVariables): Promise<RequestIndexTransactionMutation> {
+      return withWrapper(() => client.request<RequestIndexTransactionMutation>(print(RequestIndexTransactionDocument), variables));
     },
     profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
       return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));

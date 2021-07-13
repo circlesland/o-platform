@@ -15,6 +15,14 @@ interface ICity {
     population: Int!
 }
 
+interface ProfileEvent {
+    createdAt: String!
+    data: String!
+    id: Int!
+    profileId: Int!
+    type: String!
+}
+
 type City implements ICity {
     country: String!
     feature_code: String!
@@ -82,6 +90,17 @@ type IndexTransactionLog {
     transactionIndex: Int!
 }
 
+type IndexTransactionRequest {
+    blockNumber: Int!
+    createdAt: String!
+    createdBy: Profile
+    createdByProfileId: Int!
+    id: Int!
+    tags: [Tag!]
+    transactionHash: String!
+    transactionIndex: Int!
+}
+
 type IndexedTransaction {
     blockHash: String!
     blockNumber: Int!
@@ -116,10 +135,10 @@ type Mutation {
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
-    indexTransaction(data: IndexTransactionInput!): IndexedTransaction!
     lockOffer(data: LockOfferInput!): LockOfferResult!
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
+    requestIndexTransaction(data: RequestIndexTransactionInput!): IndexTransactionRequest!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
@@ -264,36 +283,6 @@ input DepositChallenge {
     jwt: String!
 }
 
-input IndexTransactionInput {
-    blockHash: String!
-    blockNumber: Int!
-    confirmations: Int
-    contractAddress: String
-    cumulativeGasUsed: String!
-    from: String!
-    gasUsed: String!
-    logs: [IndexTransactionLogInput!]
-    logsBloom: String!
-    root: String
-    status: String
-    tags: [CreateTagInput!]
-    to: String!
-    transactionHash: String!
-    transactionIndex: Int!
-}
-
-input IndexTransactionLogInput {
-    address: String!
-    blockHash: String!
-    blockNumber: Int!
-    data: String
-    logIndex: Int!
-    removed: Boolean
-    topics: [String!]!
-    transactionHash: String!
-    transactionIndex: Int!
-}
-
 input LockOfferInput {
     offerId: Int!
 }
@@ -358,6 +347,13 @@ input QueryTagsInput {
 
 input QueryUniqueProfileInput {
     id: Int!
+}
+
+input RequestIndexTransactionInput {
+    blockNumber: Int!
+    tags: [CreateTagInput!]
+    transactionHash: String!
+    transactionIndex: Int!
 }
 
 input RequestUpdateSafeInput {

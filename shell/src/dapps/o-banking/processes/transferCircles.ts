@@ -11,7 +11,7 @@ import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {requestPathToRecipient} from "../services/requestPathToRecipient";
 import {show} from "@o-platform/o-process/dist/actions/show";
-import {CreateTagInput, IndexTransactionDocument, IndexTransactionMutation} from "../data/api/types";
+import {CreateTagInput, RequestIndexTransactionDocument} from "../data/api/types";
 
 export type TransferCirclesContextData = {
   safeAddress:string;
@@ -131,34 +131,11 @@ createMachine<TransferCirclesContext, any>({
 
             const api = await window.o.apiClient.client.subscribeToResult();
             const indexedTransaction = await api.mutate({
-              mutation: IndexTransactionDocument,
+              mutation: RequestIndexTransactionDocument,
               variables: {
                 data: {
-                  blockHash: receipt.blockHash,
                   blockNumber: receipt.blockNumber,
-                  confirmations: (<any>receipt).confirmations,
-                  contractAddress: receipt.contractAddress,
-                  cumulativeGasUsed: receipt.cumulativeGasUsed.toString(),
-                  from: receipt.from,
-                  gasUsed: receipt.gasUsed.toString(),
-                  logs: receipt.logs.map(log => {
-                    return {
-                      address: log.address,
-                      blockHash: log.blockHash,
-                      blockNumber: log.blockNumber,
-                      data: log.data,
-                      logIndex: log.logIndex,
-                      removed: (<any>log).removed,
-                      topics: log.topics,
-                      transactionHash: log.transactionHash,
-                      transactionIndex: log.transactionIndex
-                    }
-                  }),
-                  logsBloom: receipt.logsBloom,
-                  root: (<any>receipt).root,
-                  status: receipt.status?.toString(),
                   tags: transactionTags,
-                  to: receipt.to,
                   transactionHash: receipt.transactionHash,
                   transactionIndex: receipt.transactionIndex
                 }

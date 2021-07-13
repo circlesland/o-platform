@@ -1,34 +1,12 @@
-mutation indexTransaction($data:IndexTransactionInput!) {
-    indexTransaction(data: $data) {
-        blockHash
+mutation requestIndexTransaction($data:RequestIndexTransactionInput!) {
+    requestIndexTransaction(data: $data) {
         blockNumber
-        confirmations
-        contractAddress
-        cumulativeGasUsed
-        from
-        gasUsed
         id
-        logs {
-            address
-            blockHash
-            blockNumber
-            data
-            id
-            logIndex
-            removed
-            topics
-            transactionHash
-            transactionIndex
-        }
-        logsBloom
-        root
-        status
         tags {
             id
             typeId
             value
         }
-        to
         transactionHash
         transactionIndex
     }

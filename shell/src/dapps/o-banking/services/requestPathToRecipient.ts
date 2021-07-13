@@ -9,18 +9,6 @@ export async function requestPathToRecipient (context:{data:{safeAddress:string;
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    const raw = JSON.stringify({
-      "from": context.data.safeAddress,
-      "to": context.data.recipientAddress,
-      "value": circlesValueInWei.toString()
-    });
-
-    const requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw
-    };
-
     const response = await fetch(
         `__PATHFINDER_ENDPOINT__/flow/${context.data.safeAddress}/${context.data.recipientAddress}/${circlesValueInWei.toString()}`);
     const result = await response.json();
