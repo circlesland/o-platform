@@ -13,10 +13,7 @@
 
 <TopNav {runtimeDapp} {routable} />
 
-<PageHeader
-  heightClass="h-40"
-  headerBackground="/images/common/headerbackground/header-background-transactions.jpg"
->
+<PageHeader heightClass="h-40">
   <div class="self-center block text-center">
     <span class="inline-block text-5xl"
       >{balance}

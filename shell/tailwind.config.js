@@ -9,9 +9,9 @@ module.exports = {
   darkMode: false,
   mode: "jit",
   purge: [
+    "./src/**/*.svelte",
     "./public/**/*.html",
     "./../packages/**/*.svelte",
-    "./src/**/*.svelte",
     "./src/**/*.{js,jsx,ts,tsx,vue}",
   ],
 

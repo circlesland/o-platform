@@ -1,7 +1,5 @@
 <script lang="ts">
-  import "../../../shared/css/base.css";
-  import "../../../shared/css/components.css";
-  import "../../../shared/css/utilities.css";
+  import "../../../shared/css/tailwind.css";
 
   import Header from "../components/Header.svelte";
   import VideoHeader from "../components/VideoHeader.svelte";
@@ -14,7 +12,6 @@
   import Aside from "../components/Aside.svelte";
   import Footer from "../components/Footer.svelte";
   import IntroAnimation from "../components/IntroAnimation.svelte";
-
 </script>
 
 <div class="flex flex-col ">

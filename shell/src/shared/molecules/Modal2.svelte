@@ -104,7 +104,9 @@
           url:
             runtimeDapp.routeParts.map(o => o.startsWith("=") ? o.replace("=","") : o).join("/") +
             "/" +
-            o.routeParts.map(o => o.startsWith("=") ? o.replace("=","") : o).join("/"),
+            o.routeParts
+              .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
+              .join("/"),
           extern: false,
         };
       } else {
@@ -191,9 +193,9 @@
       on:click|self={closeModal}
     >
       <div
-        class="w-full bg-white rounded-lg modalAsideContent md:w-2/3 xl:w-1/2"
+        class="w-full pb-6 mt-10 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
       >
-        <div class="modalAsideScrollableContent">
+        <div class="modalAsideScrollableContent rounded-t-xl">
           <div class="w-full m-auto">
             {#if runningProcess}
               <ProcessContainer
@@ -209,11 +211,11 @@
               <div class="flex flex-col p-4 space-y-6">
                 {#each navigation as item}
                   <DappNavItem
-                          segment={item.url}
-                          title={item.title}
-                          icon={item.icon}
-                          external={item.extern}
-                          on:navigate={closeModal}
+                    segment={item.url}
+                    title={item.title}
+                    icon={item.icon}
+                    external={item.extern}
+                    on:navigate={closeModal}
                   />
                 {/each}
               </div>

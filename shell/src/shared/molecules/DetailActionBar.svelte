@@ -17,12 +17,12 @@
           action.action();
         }
       }}
-      class="flex flex-col items-center content-center self-start px-6 space-y-2 cursor-pointer"
+      class="flex flex-col items-center content-center self-start px-6 py-4 space-y-1 rounded-lg cursor-pointer bg-light-lighter"
     >
       <div>
         <Icons icon={action.icon} />
       </div>
-      <div class="text-xs">{action.title}</div>
+      <div class="text-2xs">{action.title}</div>
     </div>
   {/each}
 </div>

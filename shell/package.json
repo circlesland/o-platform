@@ -10,7 +10,8 @@
     "local": "DEPLOY_ENVIRONMENT=ultralocal webpack-dev-server --config webpack.config.js --mode=development",
     "dmc": "DEPLOY_ENVIRONMENT=thorsten webpack-dev-server --config webpack.config.js --mode=development",
     "build": "cross-env NODE_ENV=production webpack",
-    "deploy": "npm run clean && npm i && npm run build && fission app publish --verbose"
+    "deploy": "npm run clean && npm i && npm run build && fission app publish --verbose",
+    "tailwind:watch": "cross-env TAILWIND_MODE=watch cross-env NODE_ENV=development postcss src/shared/css/App.css -o src/shared/css/App-output.css -w"
   },
   "dependencies": {
     "@o-platform/o-editors": "0.1.0",

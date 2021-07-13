@@ -20,15 +20,15 @@
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import TopNav from "../../../shared/atoms/TopNav.svelte";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
   export let params: {
     id?: String;
   };
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   let jumplist: Jumplist<any, any> | undefined;
 
@@ -255,13 +255,12 @@
 {:else}
   <TopNav {runtimeDapp} {routable} />
   <header
-    class="grid mt-10 overflow-hidden text-white bg-cover h-80 place-content-center"
-    style="background: linear-gradient(to right, #0f266280, #0f266280), url('/images/common/nice-bg.jpg') no-repeat center center; background-size: cover;"
+    class="grid overflow-hidden text-white bg-cover rounded-t-xl h-80 place-content-center bg-gradient-to-r from-primary to-secondary-light"
   >
     <div
       class="flex flex-col items-center self-center w-full m-auto text-center text-white avatar justify-self-center"
     >
-      <div class="rounded-full w-36 h-36">
+      <div class="rounded-full ring ring-white w-36 h-36">
         <img
           src={profile && profile.avatarUrl ? profile.avatarUrl : ""}
           alt={profile
@@ -272,7 +271,7 @@
         />
       </div>
       {#if profile && profile.safeAddress}
-        <div class="text-2xl mt-9">
+        <div class="mt-4 text-2xl uppercase">
           {profile
             ? profile.lastName
               ? `${profile.firstName} ${profile.lastName}`
@@ -488,13 +487,10 @@
       </div>
       {#if jumplist && !isMe}
         <div
-          class="fixed bottom-0 left-0 right-0 w-full mx-auto bg-white md:w-2/3 xl:w-1/2 h-36"
+          class="absolute bottom-0 left-0 right-0 w-full p-5 mx-auto md:w-2/3 xl:w-1/2"
         >
-          {#await jumplist.items(params, runtimeDapp)}
-          {:then items}
-            <DetailActionBar
-              actions={items}
-            />
+          {#await jumplist.items(params, runtimeDapp) then items}
+            <DetailActionBar actions={items} />
           {/await}
         </div>
       {/if}
@@ -566,5 +562,14 @@
         </section>
       {/if} -->
     </div>
+    {#if jumplist && !isMe}
+      <div
+        class="absolute bottom-0 left-0 right-0 w-full p-5 mx-auto md:w-2/3 xl:w-1/2"
+      >
+        <DetailActionBar
+          actions={jumplist.items(params, getLastLoadedDapp())}
+        />
+      </div>
+    {/if}
   </div>
 {/if}

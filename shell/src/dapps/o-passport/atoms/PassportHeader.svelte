@@ -4,7 +4,10 @@
     shellProcess,
     ShellProcessContext,
   } from "../../../shared/processes/shellProcess";
-  import {upsertIdentity, upsertIdentityOnlyWhereDirty} from "../processes/upsertIdentity";
+  import {
+    upsertIdentity,
+    upsertIdentityOnlyWhereDirty,
+  } from "../processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import { Profile } from "../data/api/types";
   import { loadProfile } from "../processes/identify/services/loadProfile";
@@ -52,13 +55,10 @@
 
 <TopNav {runtimeDapp} {routable} />
 
-<PageHeader
-  heightClass="h-72"
-  headerBackground="/images/common/headerbackground/header-background-passport.jpg"
->
+<PageHeader heightClass="h-72">
   <div class="self-center block mt-4 text-center">
     <div class="avatar">
-      <div class="mb-4 rounded-full w-36 h-36">
+      <div class="mb-4 rounded-full ring ring-white w-36 h-36">
         <img
           src={avatarUrl}
           alt={profile

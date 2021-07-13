@@ -1,0 +1,295 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "./fonts.css";
+
+
+.text-base {
+    font-size: 1rem
+        /* 14px */
+    ;
+    line-height: 1rem
+        /* 20px */
+    ;
+    @apply font-normal;
+
+}
+
+.text-2xs {
+    line-height: 0.7rem;
+}
+
+
+@layer base {
+    h1 {
+        @apply text-2xl;
+    }
+
+    h2 {
+        @apply text-xs;
+    }
+}
+
+.bg-opacity-60 {
+    --tw-bg-opacity: 0.6;
+}
+
+:root {
+    --p: 162 91% 44%;
+    --pf: 162 91% 44%;
+    --pc: 0 0% 100%;
+    --s: 220 100% 29%;
+    --sf: 219 100% 28%;
+    --sc: 0 0% 100%;
+    --a: 162 91% 44%;
+    --af: 162 91% 44%;
+    --ac: 0 0% 100%;
+    --n: 0 0% 17%;
+    --nf: 0 0% 17%;
+    --nc: 0 0% 100%;
+    --b1: 0 0% 100%;
+    --b2: 210 20% 98%;
+    --b3: 216 12% 84%;
+    --bc: 215 28% 17%;
+    --in: 207 90% 54%;
+    --su: 145 45% 50%;
+    --wa: 36 100% 50%;
+    --er: 0 87% 67%;
+
+    --toastContainerTop: 0;
+    --toastContainerRight: 0;
+    --toastWidth: 100%;
+    --primary: "#0ad99c";
+}
+
+body {
+    height: 100vh;
+    @apply text-base;
+}
+
+.textarea:focus {
+    box-shadow: none;
+}
+
+.label a:hover,
+.label a:active {
+    @apply text-primary;
+}
+
+.btn {
+    @apply text-base;
+    @apply text-secondary;
+    @apply normal-case;
+    @apply font-medium;
+    @apply tracking-normal;
+    font-size: 1rem;
+    line-height: 1rem;
+}
+
+.btn-text {
+    @apply text-base;
+    @apply font-bold;
+    @apply tracking-normal;
+}
+
+.btn-text:hover,
+.btn-text:active {
+    @apply no-underline;
+}
+
+.btn-light {
+    @apply bg-light-lighter;
+    @apply text-secondary;
+    border: none;
+}
+
+.btn-primary {
+    @apply text-secondary;
+    @apply normal-case;
+}
+
+.btn-light:hover {
+    @apply bg-white;
+    @apply text-secondary;
+    border: 1px solid;
+    @apply border-secondary;
+}
+
+.btn-error {
+    @apply bg-alert-dark;
+    @apply text-white;
+}
+
+.btn-outline.btn-white {
+    @apply text-white;
+    @apply border-white;
+}
+
+.circles-button {
+    padding-left: 3px;
+    padding-right: 5px;
+    padding-bottom: 4px;
+    padding-top: 3px;
+    min-width: 3.5rem;
+}
+
+.text-gradient {
+    --tw-text-opacity: 1;
+    background-image: linear-gradient(270deg, #0ad99c, #003399);
+    /* background-image: linear-gradient(270deg, #4398ee, #4f45d6); Also Cool Color gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* 
+.gradient-text {
+  --tw-text-opacity: 1;
+  color: rgba(67, 152, 238, var(--tw-text-opacity));
+  @apply text-base;
+  text-decoration: none;
+}
+
+.gradient-text:not(.text-gradient-none) {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(270deg, #4398ee, #4f45d6);
+  background-image: linear-gradient(270deg, #003399, #0ad99c);
+}
+*/
+
+.truncateThis:before {
+    content: "";
+    @apply w-full;
+    @apply h-full;
+    @apply absolute;
+    @apply left-0;
+    @apply top-0;
+    /* background: linear-gradient(transparent 150px, #ffcc33); */
+    background: linear-gradient(to right,
+            rgba(255, 255, 255, 0.001) 80%,
+            #fff 100%);
+
+    /* background: #ffcc33; */
+}
+
+.label {
+    @apply text-center;
+    @apply block;
+}
+
+.label-text {
+    @apply text-xl;
+    @apply text-secondary;
+    @apply font-bold;
+    @apply text-center;
+}
+
+.input {
+    @apply text-lg;
+    @apply text-dark-lightest;
+}
+
+.input-error {
+    --tw-border-opacity: 1 !important;
+    border-color: hsla(var(--er, 14 100% 57%) / var(--tw-border-opacity));
+}
+
+.infocard {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+    border: 1px solid #bee5eb;
+}
+
+.infocard-body {
+    color: #0c5460;
+}
+
+*:focus {
+    outline: none;
+}
+
+.vis-network:focus {
+    outline: none;
+}
+
+.navbuttonicon {
+    margin-left: 0.15rem;
+    margin-top: 0.15rem;
+    @apply w-5;
+    @apply h-5;
+}
+
+.processPill .navbuttonicon {
+    margin-left: 0.15rem;
+    margin-top: 0.15rem;
+    @apply w-3;
+    @apply h-3;
+}
+
+.navlogo {
+    margin-top: -1.25rem;
+    @apply w-16;
+    @apply h-16;
+}
+
+.processPill .navlogo {
+    margin-top: -0.5rem;
+    @apply w-12;
+    @apply h-12;
+}
+
+.processPillGrid {
+    max-width: 7rem;
+}
+
+input:focus,
+select:focus,
+button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.autocomplete {
+    height: calc(2rem * 3);
+    width: 100%;
+}
+
+.autocomplete-results-list {
+    /* bottom: 12.9rem;
+    top: auto !important;
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: wrap-reverse; */
+    position: relative;
+    display: inline-flex;
+    top: auto !important;
+    bottom: 196px;
+    width: 110%;
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+    /* ADJUSTED */
+    height: 150px;
+}
+
+.autocomplete-list-item {
+    padding: 0.5rem !important;
+    width: 100%;
+    height: 2rem;
+}
+
+.autocomplete-list-item-no-results {
+    width: 100%;
+}
+
+.transaction-update-progress {
+    vertical-align: top;
+    height: 0.1rem;
+    margin-top: 0.1rem !important;
+}
+
+/* Toast overrides */
+._toastItem {
+    width: 100% !important;
+
+}

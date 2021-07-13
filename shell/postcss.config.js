@@ -2,16 +2,16 @@ const production = !process.env.NODE_ENV;
 
 module.exports = {
   plugins: {
-    "postcss-flexbugs-fixes": {},
-    "postcss-preset-env": {
-      autoprefixer: {
-        flexbox: "no-2009",
-      },
-      stage: 3,
-      features: {
-        "custom-properties": false,
-      },
-    },
+    // "postcss-flexbugs-fixes": {},
+    // "postcss-preset-env": {
+    //   autoprefixer: {
+    //     flexbox: "no-2009",
+    //   },
+    //   stage: 3,
+    //   features: {
+    //     "custom-properties": false,
+    //   },
+    // },
     // "@tailwindcss/jit": {},
     // "@fullhuman/postcss-purgecss": {
     //   content: [
@@ -28,7 +28,7 @@ module.exports = {
     //   defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
     //   safelist: ["html", "body", /data-theme$/],
     // },
-    tailwindcss: {},
     autoprefixer: {},
+    tailwindcss: {},
   },
 };

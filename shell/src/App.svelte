@@ -191,9 +191,8 @@
 </script>
 
 <script lang="ts">
-  import "./shared/css/base.css";
-  import "./shared/css/components.css";
-  import "./shared/css/utilities.css";
+  import "./shared/css/tailwind.css";
+
   import Router from "svelte-spa-router";
   import { SvelteToast } from "./shared/molecules/Toast";
   import DappFrame from "src/shared/molecules/DappFrame.svelte";
@@ -210,6 +209,9 @@
   };
    */
   let _routes = {
+    "/:dappId/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
+    "*": NotFound,
+  };
     "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
     "*": NotFound
   }
@@ -218,4 +220,3 @@
 
 <SvelteToast />
 <Router routes={_routes} />
-
