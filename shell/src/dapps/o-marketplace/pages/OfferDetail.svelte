@@ -8,11 +8,11 @@
   import CreatorCard from "../atoms/CreatorCard.svelte";
   import Time from "svelte-time";
   import Icons from "../../../shared/molecules/Icons.svelte";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   let isLoading: boolean;
   let error: Error;
@@ -69,8 +69,7 @@
   });
 </script>
 
-<MarketplaceHeader  {runtimeDapp} {routable} />
-<div class="mx-4 -mt-6">
+<div class="">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -91,144 +90,47 @@
     </section>
   {:else if offers.length}
     {#each offers as offer}
-      <section class="flex items-center justify-center">
-        <div class="flex flex-col w-full p-2 space-y-12">
-          <header
-            class="relative grid w-full overflow-hidden bg-cover rounded-lg h-96 place-content-center"
-            style="background: url('{offer.pictureUrl}') no-repeat center center; background-size: cover;"
-          >
-            <div
-              class="absolute top-0 right-0 px-4 py-1 text-xs rounded-tr-lg rounded-bl-lg shadow bg-light-lighter text-light-dark"
-            >
-              Offer created: <Time relative timestamp={offer.publishedAt} />
-              <!-- {#if offer.publishedAt}
-          {#if dateOlderThanSevenDays(offer.publishedAt)}
-            <Time
-              timestamp={new Date(offer.publishedAt * 1000)}
-              format="D. MMMM YYYY"
-            />
-          {:else}
-            <Time
-              relative
-              timestamp={new Date(offer.publishedAt * 1000)}
-              live={true}
-            />
-          {/if}
-        {/if} -->
+      <section class="flex items-start rounded-xl">
+        <div class="flex flex-col w-full ">
+          <header class=" rounded-t-xl headerImageContainer">
+            <div class="relative rounded-t-xl image-wrapper">
+              <img
+                src={offer.pictureUrl
+                  ? offer.pictureUrl
+                  : "/images/market/circles-no-image.jpg"}
+                alt=""
+                class="w-full rounded-t-xl"
+              />
+              <div
+                class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest"
+              >
+                {offer.pricePerUnit} C / {offer.unitTag.value}
+                <!-- <Time relative timestamp={offer.publishedAt} /> -->
+              </div>
             </div>
           </header>
-          <div class="text-base text-3xl text-left text-secondary">
-            {offer.title}
-          </div>
-          <div class="flex flex-row items-center content-start space-x-1">
-            <div class="text-base text-2xl text-left">Price</div>
-            <div class="pl-2 text-2xl text-left text-secondary">
-              {offer.pricePerUnit}
-            </div>
-            <div class="text-secondary">
-              <Icons icon="circlessimple" />
-              <!-- <img src="/logos/crc.svg" class="inline w-6 h-6 -mt-1" alt="circles" /> -->
-            </div>
-            <div class="ml-2 text-base text-2xs">
-              ({offer.maxUnits}
-              {offer.unitTag.value})
-            </div>
-          </div>
-          <div class="flex flex-row">
-            <div class="flex-grow">
-              <div class="text-base text-2xl">Offer Details</div>
-              <div class="mt-4 text-base">{offer.description}</div>
+          <div
+            class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter"
+          >
+            <div class="avatar">
+              <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
+                <img
+                  src={offer.createdBy.avatarUrl
+                    ? offer.createdBy.avatarUrl
+                    : "/images/market/city.png"}
+                  alt="user-icon"
+                />
+              </div>
             </div>
             <div>
-              <button class="self-end btn btn-md btn-primary">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 100 100"
-                  class="inline w-6 h-6 mr-2"
-                  ><path
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-miterlimit="10"
-                    d="M80.24 61.203H30.392l-6.623-38.61h65.882z"
-                  /><path
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-miterlimit="10"
-                    d="M30.392 61.203L18.889 73.752"
-                  /><path
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-miterlimit="10"
-                    d="M18.889 73.752H90"
-                  /><path
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-miterlimit="10"
-                    d="M23.769 22.593l-5.839-9.027"
-                  /><path
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-miterlimit="10"
-                    d="M17.93 13.566H10"
-                  /><circle
-                    cx="30.981"
-                    cy="80.093"
-                    r="6.341"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-miterlimit="10"
-                  /><circle
-                    cx="76.995"
-                    cy="80.093"
-                    r="6.341"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-miterlimit="10"
-                  /><metadata xmlns:d="https://loading.io/stock/">
-                    <d:name>shopping cart</d:name>
-                    <d:tags
-                      >shopping
-                      cart,checkout,purchase,payment,buy,subscribe,spend,sale,trolley,handbarrow</d:tags
-                    >
-                    <d:license>by</d:license>
-                    <d:slug>4tk536</d:slug>
-                  </metadata></svg
-                >
-                Add to cart
-              </button>
+              {offer.createdBy.firstName}
+              {offer.createdBy.lastName}
             </div>
           </div>
-          <div>
-            <div class="text-base text-2xl">Shipping</div>
-            <div class="mt-4 text-base">{offer.deliveryTermsTag.value}</div>
-          </div>
-          <div
-            class="relative bottom-0 right-0 flex flex-row w-full mt-6 space-x-2"
-          >
+          <div class="flex flex-col w-full px-6 mt-6 space-y-4 bg-white">
             <div class="flex flex-row flex-grow space-x-2">
               <div
-                class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs"
+                class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs"
               >
                 <a
                   href="#/marketplace/categories/{offer.categoryTagId}/{offer
@@ -238,33 +140,48 @@
                   {offer.categoryTag.value}
                 </a>
               </div>
-              <!-- <div class="p-2 rounded-full bg-light-lighter text-2xs">
-          {offer.city.name}
-        </div>
-        <div class="p-2 rounded-full bg-light-lighter text-2xs">
-          {offer.city.country}
-        </div> -->
+            </div>
+            <div class="text-lg font-bold text-left uppercase">
+              {offer.title}
             </div>
 
-            <div
-              class="absolute bottom-0 right-0 flex flex-row items-center content-start self-end p-2 space-x-2 text-xs rounded-lg bg-light-lighter"
-            >
-              <div>
-                {offer.createdBy.firstName}
-                {offer.createdBy.lastName}
+            {#if offer.description}
+              <div class="text-sm text-dark-lightest">
+                {offer.description}
               </div>
-              <div class="avatar">
-                <div class="w-8 h-8 m-auto rounded-full sm:w-12 sm:h-12">
-                  <img
-                    src={offer.createdBy.avatarUrl
-                      ? offer.createdBy.avatarUrl
-                      : "/images/market/city.png"}
-                    alt="user-icon"
-                  />
+            {/if}
+            {#if offer.deliveryTermsTag}
+              <div class="flex flex-col space-y-1">
+                <div class="text-2xs">Shipping</div>
+                <div class="text-sm text-dark-lightest">
+                  {offer.deliveryTermsTag.value}
                 </div>
+              </div>
+            {/if}
+            {#if offer.city}
+              <div class="flex flex-col space-y-1">
+                <div class="text-2xs">Location</div>
+                <div class="text-sm text-dark-lightest">
+                  {offer.city.name}
+                </div>
+              </div>
+            {/if}
+            <div class="flex flex-row space-x-4">
+              <div>
+                <button class="btn btn-square btn-light">
+                  <Icons icon="star" />
+                </button>
+              </div>
+              <div class="flex-grow">
+                <button type="submit" class="relative btn btn-primary btn-block"
+                  >Buy now <div class="absolute mr-1 right-2">
+                    <Icons icon="cart" />
+                  </div></button
+                >
               </div>
             </div>
           </div>
+
           <!-- <div class="relative flex-grow text-left">
       <div class="max-w-full cursor-pointer">
         <h2 class="text-2xl sm:text-3xl">
@@ -409,6 +326,7 @@
     </div> -->
         </div>
       </section>
+
       <!-- 
       <CreatorCard profile={offer.createdBy} />
       <OfferCard {offer} allowEdit={true} /> -->

@@ -1271,6 +1271,15 @@ EwAAAABJRU5ErkJggg==" />
 <path d="M12 11.9999C13.6568 11.9999 15 10.6567 15 8.99988C15 7.34302 13.6568 5.99988 12 5.99988C10.3431 5.99988 8.99999 7.34302 8.99999 8.99988C8.99999 10.6567 10.3431 11.9999 12 11.9999Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
+    cart: `
+<svg class='w-6 h-6 m-auto'  viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6M10 21C10 21.5523 9.55229 22 9 22C8.44772 22 8 21.5523 8 21C8 20.4477 8.44772 20 9 20C9.55229 20 10 20.4477 10 21ZM21 21C21 21.5523 20.5523 22 20 22C19.4477 22 19 21.5523 19 21C19 20.4477 19.4477 20 20 20C20.5523 20 21 20.4477 21 21Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+    scrolldown: `
+<svg class='w-6 h-6 m-auto' viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.33325 10.3333L7.99992 17L14.6666 10.3333M1.33325 1L7.99992 7.66667L14.6666 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
   };
 
   export let icon: string = null;
