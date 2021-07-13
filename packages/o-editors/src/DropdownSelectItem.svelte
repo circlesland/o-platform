@@ -38,7 +38,7 @@
     </div>
 
     <div class="relative flex-grow text-left truncate">
-      <div class="max-w-full -mt-1 cursor-pointer truncateThis">
+      <div class="max-w-full -mt-1 leading-8 cursor-pointer truncateThis">
         <h2 class="text-2xl sm:text-3xl">
           {item.label}
         </h2>

@@ -2,28 +2,28 @@
   import DetailHeader from "src/shared/atoms/DetailHeader.svelte";
   import TopNav from "src/shared/atoms/TopNav.svelte";
   import Web3 from "web3";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
   export let amount;
   export let classes: String;
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 </script>
 
 <TopNav {runtimeDapp} {routable} />
-<DetailHeader heightClass="h-60">
-  <div class="self-center block mt-12 mb-8 text-center">
-    {#if classes == "transactionpositive"}
+<DetailHeader heightClass="h-40">
+  <div class="self-center block text-center">
+    <!-- {#if classes == "transactionpositive"}
       <span class="block ">Received</span>
     {:else if classes == "transactionnegative"}
       <span class="block ">Sent</span>
     {:else}
       <span class="block text-base">Transfer</span>
-    {/if}
+    {/if} -->
     <span class="inline-block text-6xl ">
       {#if classes == "transactionpositive"}
-        {Number.parseFloat(
+        +{Number.parseFloat(
           Web3.utils.fromWei(amount ? amount : "0", "ether")
         ).toFixed(2)}
       {:else if classes == "transactionnegative"}
