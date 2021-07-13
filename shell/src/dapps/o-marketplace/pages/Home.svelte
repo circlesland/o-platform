@@ -11,11 +11,11 @@
 
   import "swiper/components/navigation/navigation.min.css";
   import "swiper/components/pagination/pagination.min.css";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   let isLoading: boolean;
   let error: Error;
@@ -95,8 +95,7 @@
   }
 </script>
 
-<MarketplaceHeader  {runtimeDapp} {routable} />
-<TopNav />
+<TopNav {runtimeDapp} {routable} />
 
 <div class="p-2 mt-6 bg-light-lightest">
   {#if isLoading}
