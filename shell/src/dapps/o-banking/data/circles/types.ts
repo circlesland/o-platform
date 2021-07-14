@@ -1,3 +1,5 @@
+import {Tag} from "../api/types";
+
 export type Token = {
   _id: string;
   tokenAddress: string;
@@ -30,8 +32,13 @@ export type Transfer = {
     displayName: string;
     avatarUrl: string;
   };
+  tags?: Tag[],
+  transactionHash?: string;
+  gasUsed?: string;
+  cumulativeGasUsed?: string;
+  confirmations?: number;
+  transactionIndex?: number;
   amount: string;
-  children?: Transfer[];
 };
 
 export type TrustObject = {

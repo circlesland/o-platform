@@ -1,15 +1,17 @@
 <script lang="ts">
   import Time from "svelte-time";
-  import { mySafe } from "../stores/safe";
+  import {mySafe} from "../stores/safe";
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
-  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import { Transfer } from "../data/circles/types";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
+  import {Transfer} from "../data/circles/types";
 
   import Icons from "../../../shared/molecules/Icons.svelte";
-  import { push } from "svelte-spa-router";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import {push} from "svelte-spa-router";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import PaymentPath from "../../../shared/molecules/PaymentPath.svelte";
+  import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 
   export let params: {
     _id: string;
@@ -26,7 +28,7 @@
   let message: String;
   let amountInWei: string;
   let otherSafeAddress: string;
-
+  let path: any;
   let transactionId: string;
 
   $: {
@@ -36,46 +38,49 @@
 
     if (transfer) {
       displayableFromName = transfer.fromProfile
-        ? transfer.fromProfile.displayName
-        : transfer.from;
+              ? transfer.fromProfile.displayName
+              : transfer.from;
 
       displayName =
-        transfer.direction === "in"
-          ? transfer.fromProfile
-            ? transfer.fromProfile.displayName
-            : transfer.from
-          : transfer.toProfile
-          ? transfer.toProfile.displayName
-          : transfer.to;
+              transfer.direction === "in"
+                      ? transfer.fromProfile
+                      ? transfer.fromProfile.displayName
+                      : transfer.from
+                      : transfer.toProfile
+                      ? transfer.toProfile.displayName
+                      : transfer.to;
 
       pictureUrl =
-        transfer.direction === "in"
-          ? transfer.fromProfile
-            ? transfer.fromProfile.avatarUrl
-            : undefined
-          : transfer.toProfile
-          ? transfer.toProfile.avatarUrl
-          : undefined;
+              transfer.direction === "in"
+                      ? transfer.fromProfile
+                      ? transfer.fromProfile.avatarUrl
+                      : undefined
+                      : transfer.toProfile
+                      ? transfer.toProfile.avatarUrl
+                      : undefined;
 
       classes =
-        transfer.direction === "in"
-          ? "transactionpositive"
-          : "transactionnegative";
+              transfer.direction === "in"
+                      ? "transactionpositive"
+                      : "transactionnegative";
 
       displayableFromName =
-        displayableFromName === "0x0000000000000000000000000000000000000000"
-          ? "CirclesLand"
-          : displayableFromName;
+              displayableFromName === "0x0000000000000000000000000000000000000000"
+                      ? "CirclesLand"
+                      : displayableFromName;
 
-      message =
-        displayableFromName === "CirclesLand"
-          ? "Universal basic income"
-          : message;
+      const m = transfer.tags ? transfer.tags.find(o => o.typeId === "o-banking:transfer:message:1") : undefined;
+      const m2 = m ? m.value : "";
+      message = displayableFromName === "CirclesLand" ? "Universal basic income" : m2;
+
+      const p = transfer.tags ? transfer.tags.find(o => o.typeId === "o-banking:transfer:transitivePath:1") : undefined;
+      const p2 = p ? JSON.parse(p.value) : undefined;
+      path = p2;
 
       amountInWei = RpcGateway.get().utils.fromWei(transfer.amount, "ether");
 
       otherSafeAddress =
-        transfer.direction === "in" ? transfer.from : transfer.to;
+              transfer.direction === "in" ? transfer.from : transfer.to;
 
       if (!pictureUrl) {
         pictureUrl = AvataarGenerator.generate(otherSafeAddress);
@@ -159,7 +164,7 @@
 
         <div class="flex items-center w-full text-primarydark">
           <div class="text-xl text-left ">
-            {transfer.message ? transfer.message : "No Message"}
+            {message ? message : "No Message"}
           </div>
         </div>
       </div>
@@ -229,14 +234,25 @@
       </div>
     </section>
 
-    <section class="justify-center mt-4 mb-2">
-      <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-light-dark">Transaction Hash</div>
+    {#if transfer.transactionHash}
+      <section class="justify-center mt-4 mb-2">
+        <div class="flex flex-col w-full space-y-1">
+          <div class="text-left text-2xs text-light-dark">Transaction Hash</div>
 
-        <div class="flex items-center w-full text-primarydark">
-          <div class="text-left break-all">Hash</div>
+          <div class="flex items-center w-full text-primarydark">
+            <div class="text-left break-all">{(transfer.transactionHash ? transfer.transactionHash : "")}</div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    {/if}
+
+    {#if path}
+      <section class="justify-center mt-4 mb-2">
+        <div class="flex flex-col w-full space-y-1">
+          <div class="text-left text-2xs text-light-dark">Payment path</div>
+          <CirclesTransferGraph transfers={path.transfers}/>
+        </div>
+      </section>
+    {/if}
   {/if}
 </div>

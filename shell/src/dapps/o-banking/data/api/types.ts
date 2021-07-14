@@ -335,6 +335,7 @@ export type Query = {
   stats?: Maybe<Stats>;
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
+  transactions: Array<IndexedTransaction>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
 };
@@ -369,6 +370,11 @@ export type QueryTagsArgs = {
   query: QueryTagsInput;
 };
 
+
+export type QueryTransactionsArgs = {
+  query?: Maybe<QueryIndexedTransactionInput>;
+};
+
 export type QueryCitiesByGeonameIdInput = {
   geonameid: Array<Scalars['Int']>;
 };
@@ -384,14 +390,8 @@ export type QueryCitiesInput = {
 };
 
 export type QueryIndexedTransactionInput = {
-  fromAddress?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<QueryIndexedTransactionTagInput>>;
-  toAddress?: Maybe<Scalars['String']>;
-};
-
-export type QueryIndexedTransactionTagInput = {
-  typeId: Scalars['String'];
-  value?: Maybe<Scalars['String']>;
+  fromBlockNo?: Maybe<Scalars['Int']>;
+  toBlockNo?: Maybe<Scalars['Int']>;
 };
 
 export type QueryOfferInput = {
@@ -424,10 +424,8 @@ export type QueryUniqueProfileInput = {
 };
 
 export type RequestIndexTransactionInput = {
-  blockNumber: Scalars['Int'];
   tags?: Maybe<Array<CreateTagInput>>;
   transactionHash: Scalars['String'];
-  transactionIndex: Scalars['Int'];
 };
 
 export type RequestUpdateSafeInput = {
@@ -542,7 +540,7 @@ export type RequestIndexTransactionMutation = (
   { __typename?: 'Mutation' }
   & { requestIndexTransaction: (
     { __typename?: 'IndexTransactionRequest' }
-    & Pick<IndexTransactionRequest, 'blockNumber' | 'id' | 'transactionHash' | 'transactionIndex'>
+    & Pick<IndexTransactionRequest, 'id' | 'transactionHash'>
     & { tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'typeId' | 'value'>
@@ -584,19 +582,35 @@ export type ProfilesByIdsQuery = (
   )> }
 );
 
+export type TransactionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TransactionsQuery = (
+  { __typename?: 'Query' }
+  & { transactions: Array<(
+    { __typename?: 'IndexedTransaction' }
+    & Pick<IndexedTransaction, 'blockNumber' | 'transactionHash' | 'transactionIndex' | 'confirmations' | 'cumulativeGasUsed' | 'gasUsed'>
+    & { logs?: Maybe<Array<(
+      { __typename?: 'IndexTransactionLog' }
+      & Pick<IndexTransactionLog, 'data' | 'topics'>
+    )>>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>> }
+  )> }
+);
+
 
 export const RequestIndexTransactionDocument = gql`
     mutation requestIndexTransaction($data: RequestIndexTransactionInput!) {
   requestIndexTransaction(data: $data) {
-    blockNumber
     id
+    transactionHash
     tags {
       id
       typeId
       value
     }
-    transactionHash
-    transactionIndex
   }
 }
     `;
@@ -648,6 +662,27 @@ export const ProfilesByIdsDocument = gql`
   }
 }
     `;
+export const TransactionsDocument = gql`
+    query transactions {
+  transactions(query: {}) {
+    blockNumber
+    transactionHash
+    transactionIndex
+    confirmations
+    cumulativeGasUsed
+    gasUsed
+    logs {
+      data
+      topics
+    }
+    tags {
+      id
+      typeId
+      value
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -663,6 +698,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     profilesByIds(variables: ProfilesByIdsQueryVariables): Promise<ProfilesByIdsQuery> {
       return withWrapper(() => client.request<ProfilesByIdsQuery>(print(ProfilesByIdsDocument), variables));
+    },
+    transactions(variables?: TransactionsQueryVariables): Promise<TransactionsQuery> {
+      return withWrapper(() => client.request<TransactionsQuery>(print(TransactionsDocument), variables));
     }
   };
 }

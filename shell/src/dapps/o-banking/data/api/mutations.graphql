@@ -1,13 +1,11 @@
 mutation requestIndexTransaction($data:RequestIndexTransactionInput!) {
     requestIndexTransaction(data: $data) {
-        blockNumber
         id
+        transactionHash
         tags {
             id
             typeId
             value
         }
-        transactionHash
-        transactionIndex
     }
 }

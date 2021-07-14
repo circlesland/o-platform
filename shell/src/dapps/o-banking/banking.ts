@@ -6,7 +6,7 @@ import {BN} from "ethereumjs-util";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {Observable, Subscriber} from "rxjs";
 import {Erc20Token} from "@o-platform/o-circles/dist/token/erc20Token";
-import {Profile, ProfilesByCirclesAddressDocument} from "./data/api/types";
+import {IndexedTransaction, Profile, ProfilesByCirclesAddressDocument, TransactionsDocument} from "./data/api/types";
 import {getUBIService} from "./processes/getUBIService";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {GetUbiContextData} from "./processes/getUbi";
@@ -73,6 +73,10 @@ export class Banking {
             message: "Loading block timestamps ..",
             run: async () => this.augmentBlockTimes()
         }, {
+            id: "apiTransactions",
+            message: "Loading known transactions from the api ..",
+            run: async () => this.augmentWithApiTransactions()
+        }, {
             id: "augmentProfiles",
             message: "Loading profiles ..",
             run: async () => this.augmentProfiles()
@@ -109,6 +113,10 @@ export class Banking {
             id: "blockTimes",
             message: "Loading block timestamps ..",
             run: async () => this.augmentBlockTimes()
+        }, {
+            id: "apiTransactions",
+            message: "Loading known transactions from the api ..",
+            run: async () => this.augmentWithApiTransactions()
         }, {
             id: "augmentProfiles",
             message: "Loading profiles ..",
@@ -166,6 +174,10 @@ export class Banking {
             message: "Loading block timestamps ..",
             run: async () => this.augmentBlockTimes()
         }, {
+            id: "apiTransactions",
+            message: "Loading known transactions from the api ..",
+            run: async () => this.augmentWithApiTransactions()
+        }, {
             id: "augmentProfiles",
             message: "Loading profiles ..",
             run: async () => this.augmentProfiles()
@@ -209,7 +221,7 @@ export class Banking {
                 o.trusting.profile.avatarUrl = undefined;
             });
 
-        // Remove all data urls from the transactions
+        // Remove all data urls and path-tags from the transactions
         safeCopy.transfers?.rows?.forEach(transfer => {
             if (transfer.fromProfile?.avatarUrl?.startsWith("data:image")) {
                 //generatedAvatars[transfer.from] = transfer.fromProfile.avatarUrl;
@@ -218,6 +230,10 @@ export class Banking {
             if (transfer.toProfile?.avatarUrl?.startsWith("data:image")) {
                 //generatedAvatars[transfer.to] = transfer.toProfile.avatarUrl;
                 transfer.toProfile.avatarUrl = undefined;
+            }
+            if (transfer.tags) {
+                // Remove all tags but the messages
+                transfer.tags = transfer.tags.filter(o => o.typeId === "o-banking:transfer:message:1")
             }
         });
 
@@ -377,7 +393,6 @@ export class Banking {
     {
         const allKnownAddresses = this.allKnownSafeAddresses;
 
-
         const findCirclesGardenProfiles = new Promise<{
             safeAddress: string,
             displayName: string,
@@ -419,6 +434,53 @@ export class Banking {
         this.applyProfileMap(gardenMap);
         this.applyProfileMap(landMap);
         this.applyProfileMap(anonMap);
+    }
+
+    private async augmentWithApiTransactions()
+    {
+        const apiClient = await window.o.apiClient.client.subscribeToResult();
+        const result = await apiClient.query({
+            query: TransactionsDocument
+        });
+        const transactions:IndexedTransaction[] = result.data.transactions;
+        console.log("Api transactions:", transactions);
+
+        const hubTransferEvent = "0x8451019aab65b4193860ef723cb0d56b475a26a72b7bfc55c1dbd6121015285a";
+        const hubTransfers = transactions.map(o => {
+                return {
+                    hubTransferLogs: o.logs.filter(p => p.topics.indexOf(hubTransferEvent) > -1),
+                    transaction: o
+                };
+            })
+            .filter(o => o.hubTransferLogs.length > 0)
+            .map(o => {
+                const l = "0x000000000000000000000000".length;
+                return {
+                    transaction: o.transaction,
+                    from: "0x" + o.hubTransferLogs[0].topics[1].substr(l),
+                    to: "0x" + o.hubTransferLogs[0].topics[2].substr(l),
+                    value: RpcGateway.get().eth.abi.decodeParameter("uint256", o.hubTransferLogs[0].data)
+                }
+            })
+            .reduce((p,c) => {
+                p[`${c.transaction.blockNumber}${c.from}${c.to}`.toLowerCase()] = c;
+                return p;
+            }, {});
+
+        Object.values(this._safe.transfers.rows).forEach(o => {
+            const apiTransaction = hubTransfers[o._id.toLowerCase()];
+            if (!apiTransaction)
+                return;
+
+            o.tags = apiTransaction.transaction.tags;
+            o.transactionHash = apiTransaction.transaction.transactionHash;
+            o.gasUsed = apiTransaction.transaction.gasUsed
+            o.cumulativeGasUsed = apiTransaction.transaction.cumulativeGasUsed
+            o.confirmations = apiTransaction.transaction.confirmations
+            o.transactionIndex = apiTransaction.transaction.transactionIndex
+        });
+
+        console.log("Hub transfer api transactions:", hubTransfers);
     }
 
     private async augmentBlockTimes()

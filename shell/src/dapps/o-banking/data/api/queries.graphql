@@ -43,3 +43,23 @@ query profilesByIds($id:[Int!]!) {
         }
     }
 }
+
+query transactions {
+    transactions(query:{}) {
+        blockNumber
+        transactionHash
+        transactionIndex
+        confirmations
+        cumulativeGasUsed
+        gasUsed
+        logs {
+            data
+            topics
+        }
+        tags {
+            id
+            typeId
+            value
+        }
+    }
+}

@@ -42,8 +42,10 @@
     pictureUrl =
       displayName === "CirclesLand" ? "/images/common/circles.png" : pictureUrl;
 
+    const m = transfer.tags ? transfer.tags.find(o => o.typeId === "o-banking:transfer:message:1") : undefined;
+    const m2 = m ? m.value : "";
     message =
-      displayName === "CirclesLand" ? "Universal basic income" : message;
+      displayName === "CirclesLand" ? "Universal basic income" : m2;
 
     classes =
       transfer.direction === "in"

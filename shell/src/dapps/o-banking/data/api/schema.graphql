@@ -213,6 +213,7 @@ type Query {
     stats: Stats
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!
+    transactions(query: QueryIndexedTransactionInput): [IndexedTransaction!]!
     version: Version!
     whoami: String
 }
@@ -310,14 +311,8 @@ input QueryCitiesInput {
 }
 
 input QueryIndexedTransactionInput {
-    fromAddress: String
-    tags: [QueryIndexedTransactionTagInput!]
-    toAddress: String
-}
-
-input QueryIndexedTransactionTagInput {
-    typeId: String!
-    value: String
+    fromBlockNo: Int
+    toBlockNo: Int
 }
 
 input QueryOfferInput {
@@ -350,10 +345,8 @@ input QueryUniqueProfileInput {
 }
 
 input RequestIndexTransactionInput {
-    blockNumber: Int!
     tags: [CreateTagInput!]
     transactionHash: String!
-    transactionIndex: Int!
 }
 
 input RequestUpdateSafeInput {
