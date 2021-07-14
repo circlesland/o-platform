@@ -126,11 +126,34 @@ export class RpcGateway {
         );
     }
 
+    private static _lastGasPrice?: {
+        gasPriceInWei: BN,
+        time: number
+    };
+
     static async getGasPrice() {
-        const gasPrice = await this._web3?.eth.getGasPrice();
-        if (!gasPrice)
-            throw new Error(`Cannot determine the gasPrice (_web3 not set?)`)
-        return new BN(gasPrice);
+        const defaultGasPrice = 3;
+
+        if (this._lastGasPrice && this._lastGasPrice.time > Date.now() - 60 * 1000) {
+            return this._lastGasPrice.gasPriceInWei;
+        }
+
+        let gasPriceInWei:BN;
+        try {
+            const result = await fetch("https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle")
+            const resultJson = await result.json();
+            gasPriceInWei = new BN(RpcGateway.get().utils.toWei(resultJson.fast.toString(), "gwei"));
+        } catch (e) {
+            console.error(`Couldn't get the current gas price from the oracle. Using '${defaultGasPrice}' as hardcoded value:`, e);
+            gasPriceInWei = new BN(RpcGateway.get().utils.toWei(defaultGasPrice.toString(), "gwei"));
+        }
+
+        this._lastGasPrice = {
+            gasPriceInWei,
+            time: Date.now()
+        };
+
+        return gasPriceInWei;
     }
 
     static rotateProvider() {
