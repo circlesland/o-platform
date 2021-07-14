@@ -44,11 +44,10 @@
 
   $: {
   }
-
 </script>
 
 <StatsHeader {stats} />
-<div class="mx-4 -mt-6">
+<div class="mx-4 -mt-3">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">

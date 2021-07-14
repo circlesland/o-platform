@@ -269,30 +269,33 @@ const processDefinition = (processId: string) =>
 
       checkSafeAddress: {
         id: "checkSafeAddress",
-        always:[{
-          cond:(context) => !!context.data.profile.circlesAddress,
-          actions: (context) => {
-            window.o.publishEvent(<PlatformEvent>{
-              type: "shell.authenticated",
-              profile: context.data.profile,
-            });
-            if (context.data.privateKey) {
-              localStorage.setItem("circlesKey", context.data.privateKey);
-            }
+        always: [
+          {
+            cond: (context) => !!context.data.profile.circlesAddress,
+            actions: (context) => {
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.authenticated",
+                profile: context.data.profile,
+              });
+              if (context.data.privateKey) {
+                localStorage.setItem("circlesKey", context.data.privateKey);
+              }
+            },
+            target: "#success",
           },
-          target: "#success"
-        }, {
-          target: "#getInvite",
-          actions: (context) => {
-            window.o.publishEvent(<PlatformEvent>{
-              type: "shell.authenticated",
-              profile: context.data.profile,
-            });
-            if (context.data.privateKey) {
-              localStorage.setItem("circlesKey", context.data.privateKey);
-            }
+          {
+            target: "#getInvite",
+            actions: (context) => {
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.authenticated",
+                profile: context.data.profile,
+              });
+              if (context.data.privateKey) {
+                localStorage.setItem("circlesKey", context.data.privateKey);
+              }
+            },
           },
-        }]
+        ],
       },
 
       getInvite: prompt({
@@ -301,7 +304,7 @@ const processDefinition = (processId: string) =>
           const profileLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${context.data.profile.id}`;
           (<any>context.data).__getInviteHtml = `
           <section class="mb-8">
-      <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm">
+      <div class="w-full px-2 pb-4 -mt-3 bg-white rounded-sm">
         <div class="px-4 py-2 mr-4 -ml-3 text-center " />
         <div style="text-align: center">
           <p

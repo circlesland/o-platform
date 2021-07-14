@@ -5,11 +5,11 @@
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { me } from "../../../shared/stores/me";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   let inviteLink: string = "";
 
@@ -28,12 +28,11 @@
     });
     app.$destroy();
   };
-
 </script>
 
-<SimpleHeader {runtimeDapp} {routable}  />
+<SimpleHeader {runtimeDapp} {routable} />
 
-<div class="mx-4 -mt-6">
+<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts || !$mySafe.trustRelations.trusting || !$mySafe.trustRelations.trustedBy}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -57,9 +56,9 @@
     {#if Object.values($mySafe.trustRelations.mutualTrusts).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
         <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
+          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow"
         >
-          <div class="text-xs font-bold text-left  ">MUTUAL TRUST</div>
+          <div class="text-xs font-bold text-left ">MUTUAL TRUST</div>
         </div>
       </section>
       <!-- TODO: Possible actions: untrust, transfer money -->
@@ -73,9 +72,9 @@
     {#if Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
         <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
+          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow"
         >
-          <div class="text-xs font-bold text-left  ">TRUSTING</div>
+          <div class="text-xs font-bold text-left ">TRUSTING</div>
         </div>
       </section>
       {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting}
@@ -87,7 +86,7 @@
     {#if Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress !== $mySafe.safeAddress).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
         <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
+          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow"
         >
           <div class="text-xs font-bold text-left text-primary ">
             TRUSTED BY
@@ -103,7 +102,7 @@
     {#if Object.values($mySafe.trustRelations.untrusted).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
         <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
+          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow"
         >
           <div class="text-xs font-bold text-left text-error ">
             TRUST REMOVED

@@ -23,7 +23,7 @@
 <div
   class="flex flex-row items-stretch w-full h-24 text-white justify-items-stretch bg-primary-dark"
 >
-  <div class="self-center flex-grow h-24 -mt-6 text-center justify-self-center">
+  <div class="self-center flex-grow h-24 -mt-3 text-center justify-self-center">
     {#if percent}
       <div
         class="flex p-6 mt-6"

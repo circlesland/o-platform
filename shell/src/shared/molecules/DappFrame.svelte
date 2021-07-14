@@ -321,7 +321,7 @@
 <div class="flex flex-col text-base">
   <main class="z-30 flex-1 overflow-y-auto">
     <div
-      class="mainContent w-full mx-auto {layoutClasses}"
+      class="w-full mainContent "
       class:mb-16={(!_modal || !_modalIsOpen) &&
         dapp &&
         dapp.dappId !== "homepage:1"}

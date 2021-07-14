@@ -96,12 +96,11 @@
     });
     app.$destroy();
   };
-
 </script>
 
 <DashboardHeader showBackArrow={true} />
 
-<div class="mx-4 -mt-6">
+<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   <section class="flex items-center justify-center mb-2">
     <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
       <div class="text-xs font-bold text-left text-primary ">BECOME A HUB</div>
@@ -185,7 +184,7 @@
     </div>
   </section>
 
-  <section class="flex items-center justify-center mb-2  ">
+  <section class="flex items-center justify-center mb-2 ">
     <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
       <div class="text-xs font-bold text-left text-primary ">ALTERNATIVES</div>
       <div class="flex items-center w-full space-x-2 sm:space-x-6">

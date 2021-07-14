@@ -5,10 +5,10 @@
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { Subscription } from "rxjs";
   import { push } from "svelte-spa-router";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   let isLoading: boolean;
   let error: Error;
@@ -63,9 +63,9 @@
   }
 </script>
 
-<MarketplaceHeader  {runtimeDapp} {routable} />
+<MarketplaceHeader {runtimeDapp} {routable} />
 
-<div class="mx-4 -mt-6">
+<div class="mx-4 -mt-3">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">

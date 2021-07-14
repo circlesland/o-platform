@@ -110,7 +110,7 @@
   amount={transfer ? transfer.amount : 0}
   {classes}
 />
-<div class="px-6">
+<div class="px-6 pb-6">
   {#if transfer}
     <section class="flex items-center justify-center pt-10 pb-2 text-dark">
       <div class="flex flex-col w-full space-y-2 ">
@@ -257,7 +257,7 @@
       </section>
     {/if}
 
-    {#if path}
+    {#if false}
       <section class="justify-center mt-4 mb-2">
         <div class="flex flex-col w-full space-y-1">
           <div class="mb-1 text-left text-2xs text-dark-lightest">

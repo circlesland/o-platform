@@ -4,11 +4,11 @@
   import { BN } from "ethereumjs-util";
   import AssetCard from "../atoms/AssetCard.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   let xdai: { [x: string]: any } = {
     symbol: "xdai",
@@ -65,12 +65,11 @@
       };
     }
   }
-
 </script>
 
 <SimpleHeader {runtimeDapp} {routable} />
 
-<div class="mx-4 -mt-6">
+<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   <section class="justify-center mb-2">
     <div class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard">
       <div class="text-xs font-bold text-left text-info ">WHAT IS THIS?</div>

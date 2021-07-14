@@ -291,7 +291,7 @@
   </header>
   <div class="flex flex-col p-4">
     <div class="mt-4">
-      <div class="pb-16">
+      <div class="">
         {#if !profile.safeAddress && !isMe}
           <section class="justify-center mb-2 ">
             <div
@@ -332,7 +332,7 @@
         {#if !profile.safeAddress && isMe}
           <!-- Create safe  -->
           <section class="mb-8">
-            <div class="w-full px-2 pb-4 -mt-6 bg-white rounded-sm shadow">
+            <div class="w-full px-2 pb-4 -mt-3 bg-white rounded-sm shadow">
               <div class="px-4 py-2 mr-4 -ml-3 text-center " />
               <div style="text-align: center">
                 <p class="w-64 m-auto mt-2 text-2xl font-bold text-gradient">
@@ -564,7 +564,7 @@
     </div>
     {#if jumplist && !isMe}
       <div
-        class="absolute bottom-0 left-0 right-0 w-full p-5 mx-auto md:w-2/3 xl:w-1/2"
+        class="sticky bottom-0 left-0 right-0 w-full px-4 py-2 mt-2 bg-white rounded-xl"
       >
         {#await jumplist.items(params, runtimeDapp) then items}
           <DetailActionBar actions={items} />

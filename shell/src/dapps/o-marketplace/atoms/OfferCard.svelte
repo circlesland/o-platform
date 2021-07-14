@@ -292,3 +292,22 @@
     </div> -->
   </div>
 </section>
+
+<style>
+  /* Ensure image is always 16:9 Ratio */
+  .headerImageContainer {
+    max-width: none;
+  }
+
+  .image-wrapper {
+    position: relative;
+    padding-bottom: 56.2%;
+  }
+
+  .image-wrapper img {
+    position: absolute;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+</style>

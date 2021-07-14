@@ -4,7 +4,7 @@
   import { tryGetCurrentSafe } from "../init";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import Icons from "../../../shared/molecules/Icons.svelte";
-  import {push} from "svelte-spa-router";
+  import { push } from "svelte-spa-router";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -57,7 +57,7 @@
   }
 
   function loadDetailPage(path) {
-    push(`#/banking/profile/${path}`)
+    push(`#/banking/profile/${path}`);
   }
 
   function execTransfer(recipientAddress?: string) {
@@ -74,7 +74,7 @@
   on:click={() => loadDetailPage(safeAddress)}
 >
   <div
-    class="flex items-center w-full px-4 pt-4 space-x-2 bg-white rounded-sm shadow sm:space-x-6"
+    class="flex items-center w-full px-4 pt-4 space-x-2 bg-white rounded-lg shadow sm:space-x-6"
   >
     <div class="mr-2 -mt-3 text-center">
       <div class="avatar">
@@ -97,17 +97,17 @@
         </div>
       {/if}
       {#if trustedBy && trusting}
-        <div class="mb-4 text-xs text-left text-light-dark">
+        <div class="mb-4 text-xs text-left text-dark-lightest">
           <span class="inline ">Mutual trust</span>
         </div>
       {/if}
       {#if !(trustedBy && trusting) && trustedBy}
-        <div class="mb-4 text-xs text-left text-light-dark">
+        <div class="mb-4 text-xs text-left text-dark-lightest">
           <span class="inline">Is trusting you</span>
         </div>
       {/if}
       {#if !(trustedBy && trusting) && trusting}
-        <div class="mb-4 text-xs text-left text-light-dark">
+        <div class="mb-4 text-xs text-left text-dark-lightest">
           <span class="inline">Trusted by you</span>
         </div>
       {/if}

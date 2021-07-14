@@ -5,10 +5,10 @@
   import { onMount } from "svelte";
   import { UpsertProfileDocument, WhoamiDocument } from "../data/api/types";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   async function editProfile() {
     /*
@@ -89,32 +89,31 @@
     // TODO: Make call to upsertProfile shorter
     await editProfile();
   });
-
 </script>
 
-<PassportHeader {runtimeDapp} {routable}  />
+<PassportHeader {runtimeDapp} {routable} />
 
-<div class="mx-4 -mt-6">
-  <section class="flex items-center justify-center mb-2  ">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-primary text-xs  font-bold text-left">EMAIL</div>
-      <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
+<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+  <section class="flex items-center justify-center mb-2 ">
+    <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow">
+      <div class="text-xs font-bold text-left text-primary">EMAIL</div>
+      <div class="flex items-center w-full space-x-2 bg-white sm:space-x-6">
         <div class="mr-2 text-center">
           {email}
         </div>
       </div>
     </div>
   </section>
-  <section class="flex items-center justify-center mb-2  ">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-primary text-xs  font-bold text-left">NEWSLETTER</div>
-      <div class="bg-white w-full space-x-2 sm:space-x-6">
-        <div class="form-control w-full">
+  <section class="flex items-center justify-center mb-2 ">
+    <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow">
+      <div class="text-xs font-bold text-left text-primary">NEWSLETTER</div>
+      <div class="w-full space-x-2 bg-white sm:space-x-6">
+        <div class="w-full form-control">
           <label class="label" for="newsletter">
             <div
-              class="w-full flex items-stretch justify-items-stretch flex-row cursor-pointer space-x-10"
+              class="flex flex-row items-stretch w-full space-x-10 cursor-pointer justify-items-stretch"
             >
-              <div class="self-center flex-grow justify-self-start text-left">
+              <div class="self-center flex-grow text-left justify-self-start">
                 Receive Newsletter
               </div>
               <div class="self-center justify-self-end">

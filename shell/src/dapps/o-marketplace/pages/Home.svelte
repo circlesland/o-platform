@@ -1,5 +1,5 @@
 <script lang="ts">
-  import TopNav from "src/shared/atoms/TopNav.svelte";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import { Offer, OffersDocument, TagsDocument } from "../data/api/types";
   import OfferCard from "../atoms/OfferCard.svelte";
   import { onMount } from "svelte";
@@ -95,9 +95,9 @@
   }
 </script>
 
-<TopNav {runtimeDapp} {routable} />
+<SimpleHeader {runtimeDapp} {routable} />
 
-<div class="p-2 mt-6 bg-darkgrey">
+<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   {#if isLoading}
     <section class="flex items-center justify-center mx-4 mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -125,7 +125,7 @@
       </div>
     </section> -->
 
-    <div class="p-2 mt-4 mb-4">
+    <!-- <div class="p-2 mt-4 mb-4">
       <Swiper
         slidesPerView={4.1}
         spaceBetween={10}
@@ -136,20 +136,18 @@
         on:slideChange={() => console.log("slide change")}
         on:swiper={(e) => console.log(e.detail[0])}
       >
-        <!-- {#each Object.keys(citites) as city} -->
         {#each categories as category}
           <SwiperSlide>
             <div
               class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs"
               on:click={() => loadCategoryPage(category)}
             >
-              <!-- {city} -->
               {category.value}
             </div>
           </SwiperSlide>
         {/each}
       </Swiper>
-    </div>
+    </div> -->
 
     <div
       class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid svelte-hq9rde"

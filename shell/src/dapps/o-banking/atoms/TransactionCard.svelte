@@ -71,7 +71,7 @@
   class="flex items-center justify-center mb-2 "
 >
   <div
-    class="flex items-center w-full px-3 py-2 space-x-2 bg-white rounded-sm shadow sm:space-x-6"
+    class="flex items-center w-full px-3 py-2 space-x-2 bg-white rounded-lg shadow sm:space-x-6"
   >
     <div class="mr-2 text-center">
       <div class="avatar">

@@ -5,11 +5,11 @@
   import { onMount } from "svelte";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { Subscription } from "rxjs";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
   export let params: {
     category: number;
     categoryName: string;
@@ -64,9 +64,9 @@
   });
 </script>
 
-<MarketplaceHeader  {runtimeDapp} {routable} header={params.categoryName} />
+<MarketplaceHeader {runtimeDapp} {routable} header={params.categoryName} />
 
-<div class="mx-4 -mt-6">
+<div class="mx-4 -mt-3">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">

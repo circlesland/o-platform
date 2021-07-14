@@ -69,7 +69,7 @@
   });
 </script>
 
-<div class="">
+<div class="pb-6">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -166,20 +166,6 @@
                 </div>
               </div>
             {/if}
-            <div class="flex flex-row space-x-4">
-              <div>
-                <button class="btn btn-square btn-light">
-                  <Icons icon="star" />
-                </button>
-              </div>
-              <div class="flex-grow">
-                <button type="submit" class="relative btn btn-primary btn-block"
-                  >Buy now <div class="absolute mr-1 right-2">
-                    <Icons icon="cart" />
-                  </div></button
-                >
-              </div>
-            </div>
           </div>
 
           <!-- <div class="relative flex-grow text-left">
@@ -330,6 +316,24 @@
       <!-- 
       <CreatorCard profile={offer.createdBy} />
       <OfferCard {offer} allowEdit={true} /> -->
+      <div
+        class="sticky bottom-0 left-0 right-0 w-full px-4 py-2 mt-2 bg-white rounded-xl"
+      >
+        <div class="flex flex-row space-x-4">
+          <div>
+            <button class="btn btn-square btn-light">
+              <Icons icon="star" />
+            </button>
+          </div>
+          <div class="flex-grow">
+            <button type="submit" class="relative btn btn-primary btn-block"
+              >Buy now <div class="absolute mr-1 right-2">
+                <Icons icon="cart" />
+              </div></button
+            >
+          </div>
+        </div>
+      </div>
     {/each}
   {:else}
     <section class="flex items-center justify-center mb-2 ">
@@ -341,3 +345,22 @@
     </section>
   {/if}
 </div>
+
+<style>
+  /* Ensure image is always 16:9 Ratio */
+  .headerImageContainer {
+    max-width: none;
+  }
+
+  .image-wrapper {
+    position: relative;
+    padding-bottom: 56.2%;
+  }
+
+  .image-wrapper img {
+    position: absolute;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+</style>

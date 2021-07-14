@@ -13,6 +13,9 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
+  import "simplebar";
+  import "simplebar/dist/simplebar.css";
+
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
@@ -206,7 +209,7 @@
       <div
         class="w-full mt-10 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
       >
-        <div class="modalAsideScrollableContent rounded-t-xl">
+        <div data-simplebar class="modalAsideScrollableContent rounded-xl">
           <div class="w-full m-auto">
             {#if runningProcess}
               <div class="p-6">
@@ -234,14 +237,12 @@
                 {/each}
               </div>
             {:else if _page}
-              <div class="pb-6">
-                <svelte:component
-                  this={_page.component}
-                  params={_pageParams}
-                  runtimeDapp={_pageRuntimeDapp}
-                  routable={_pageRoutable}
-                />
-              </div>
+              <svelte:component
+                this={_page.component}
+                params={_pageParams}
+                runtimeDapp={_pageRuntimeDapp}
+                routable={_pageRoutable}
+              />
             {:else if jumplistItems}
               <div
                 class="flex flex-wrap items-center justify-center p-6 space-x-10"
@@ -312,12 +313,14 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: hidden;
   }
   .modalAsideScrollableContent {
     flex-grow: 1;
-    overflow: auto;
+    /* overflow: hidden; */
     min-height: 0;
   }
+
   /* Background Blurring for firefox and other non supportive browsers lies in App.svelte through the .blur class */
   @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
     aside {

@@ -40,7 +40,7 @@
 
 <PassportHeader {runtimeDapp} {routable} />
 
-<div class="flex flex-col p-4">
+<div class="flex flex-col mx-auto md:w-2/3 xl:w-1/2">
   <div class="mt-4">
     {#if profile && profile.circlesAddress}
       <section class="justify-center mb-2">

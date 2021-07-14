@@ -2,10 +2,10 @@
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import * as bip39 from "bip39";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   let showPhrase = !localStorage.getItem("circlesKey");
   // TODO: 0x123 is for testing without private key. Needs to be removed later.
@@ -30,16 +30,15 @@
   function show() {
     showPhrase = !showPhrase;
   }
-
 </script>
 
-<PassportHeader {runtimeDapp} {routable}  />
+<PassportHeader {runtimeDapp} {routable} />
 
-<div class="mx-4 mt-4">
-  <section class="flex items-center justify-center mb-1  -mt-10">
-    <div class="flex items-center bg-white shadow p-4 w-full rounded-sm">
+<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+  <section class="flex items-center justify-center mb-1 ">
+    <div class="flex items-center w-full p-4 bg-white rounded-lg shadow">
       <div class="flex flex-col items-start">
-        <h3 class="font-bold mr-2">My Secret Recovery Code</h3>
+        <h3 class="mr-2 font-bold">My Secret Recovery Code</h3>
       </div>
       <div class="flex justify-end flex-1 text-base-300">
         <svg
@@ -77,20 +76,20 @@
   <!-- {#if showPhrase} -->
   <section class="flex items-center justify-center mb-2 ">
     <div
-      class="flex items-center bg-white shadow p-4 w-full space-x-2 rounded-sm rounded-sm"
+      class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow"
     >
       <div class:blur={!showPhrase} class="flex flex-col items-start">
         <div id="clipboard">
           <input type="text" class="hidden" bind:value={name} />
           {name}
           <div
-            class="inline-block text-light cursor-pointertext-center text-xs relative -bottom-1"
+            class="relative inline-block text-xs text-light cursor-pointertext-center -bottom-1"
             on:click={copy}
             alt="Copy to Clipboard"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 stroke-current"
+              class="w-4 h-4 stroke-current"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -114,5 +113,4 @@
   .blur {
     filter: blur(5px);
   }
-
 </style>

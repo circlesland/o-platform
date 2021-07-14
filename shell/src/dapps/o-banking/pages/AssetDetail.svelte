@@ -8,11 +8,11 @@
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { me } from "../../../shared/stores/me";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
   export let params: {
     symbol: string;
   };
@@ -36,7 +36,7 @@
 
   let tokens: Token[];
   let presets = [10, 20, 50];
-  let symbol:string;
+  let symbol: string;
 
   $: {
     symbol = params.symbol;
@@ -82,12 +82,11 @@
           : 0
       );
   }
-
 </script>
 
 <SimpleHeader {runtimeDapp} {routable} showBackArrow={true} />
 
-<div class="mx-4 -mt-6">
+<div class="mx-4 -mt-3">
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">

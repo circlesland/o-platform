@@ -13,7 +13,6 @@
 
   $: me;
 
-
   let stopElement: HTMLDivElement;
   let firstElement: TransactionCard;
   let preparedRows: Transfer[] = [];
@@ -77,7 +76,7 @@
   balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"}
 />
 
-<div class="mx-4 -mt-6">
+<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   {#if $mySafe.ui && !$mySafe.ui.error && displayRows.length === 0}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
