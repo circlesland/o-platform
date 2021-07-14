@@ -146,13 +146,7 @@ const processDefinition = (processId: string) =>
                 txHashSubscription.unsubscribe();
               }
 
-              const transactionTags: CreateTagInput[] = [{
-                typeId: "o-banking:trust:status:1",
-                value: JSON.stringify({
-                  trustReceiver: context.data.trustReceiver,
-                  trustLimi: context.data.trustLimit
-                })
-              }];
+              const transactionTags: CreateTagInput[] = [];
               const trustMessage:string  = undefined; // TODO: Ask if the user wants to send a message together with the un/trust
               if (trustMessage) {
                 transactionTags.push({
