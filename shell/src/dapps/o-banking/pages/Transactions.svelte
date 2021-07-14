@@ -48,7 +48,7 @@
     if ($mySafe.transfers.rows.length != oldRowCount) {
       oldRowCount = $mySafe.transfers.rows.length;
       preparedRows = [];
-      let oldPage = currentPage;
+      let oldPage = currentPage == 0 ? 1 : currentPage;
       currentPage = 0;
       while (oldPage > 0) {
         loadMore();
@@ -78,7 +78,7 @@
 />
 
 <div class="mx-4 -mt-6">
-  {#if $mySafe.ui && $mySafe.ui.loadingPercent === 0 && displayRows.length === 0}
+  {#if $mySafe.ui && !$mySafe.ui.error && displayRows.length === 0}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
