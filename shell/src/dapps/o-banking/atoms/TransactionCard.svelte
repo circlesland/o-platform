@@ -91,14 +91,18 @@
     </div>
 
     <div class="flex flex-col flex-1 justify-items-end">
-      <div class="self-end text-{classes} text-lg sm:text-3xl">
+      <div
+        class="self-end text-lg sm:text-3xl"
+        class:text-success={classes == "transactionpositive"}
+        class:text-alert={classes == "transactionnegative"}
+      >
         <span>
           {Number.parseFloat(
             Web3.utils.fromWei(transfer.amount, "ether")
           ).toFixed(2)}
         </span>
       </div>
-      <div class="self-end text-xs text-light whitespace-nowrap">
+      <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
         {#if transfer.time}
           {#if dateOlderThanSevenDays(transfer.time)}
             <Time

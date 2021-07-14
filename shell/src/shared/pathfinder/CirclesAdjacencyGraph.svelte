@@ -3,11 +3,12 @@
   import { DataSet } from "vis-data";
   import { onMount } from "svelte";
 
-  import { fillUsernames} from "./userdb.js";
+  import { fillUsernames } from "./userdb.js";
   import { toAddress, getAdjacencies } from "./utility.js";
   import { createNodeContents } from "./visUtils.js";
 
   export let address: string;
+  export let maxHeight: string = "h-screen";
 
   // let usernameToExplore = '';
   let graph;
@@ -25,14 +26,19 @@
       exploreNode(params.nodes[0]);
     });
     if (address && address !== "0x00" && address.trim() !== "") {
-        exploreNode(address);
+      exploreNode(address);
     }
   });
 
   $: {
-      if (address && address !== "0x00" && address.trim() !== ""&& !initialized) {
-          exploreNode(address);
-      }
+    if (
+      address &&
+      address !== "0x00" &&
+      address.trim() !== "" &&
+      !initialized
+    ) {
+      exploreNode(address);
+    }
   }
 
   let small = function (node) {
@@ -40,7 +46,7 @@
     return node;
   };
 
-  async function exploreNode (username) {
+  async function exploreNode(username) {
     initialized = true;
     let adjacencies = await getAdjacencies(
       username.startsWith("0x") ? await toAddress(username) : username
@@ -75,4 +81,4 @@
 </script>
 
 <!-- TODO: Find a better fix for the graph-height. Problem is that this value must be known upon initialization. Also resize scenarios must be handled. -->
-<div bind:this={graph} class="w-full h-screen bg-white" />
+<div bind:this={graph} class="w-full bg-white {maxHeight}" />

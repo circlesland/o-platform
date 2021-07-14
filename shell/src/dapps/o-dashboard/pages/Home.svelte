@@ -63,7 +63,7 @@
     init();
   });
 
-  let mySafeAddress:string;
+  let mySafeAddress: string;
 
   $: {
     if ($me) {
@@ -73,13 +73,20 @@
 </script>
 
 <!-- <DashboardHeader /> -->
+
+{#if $me.circlesAddress}
+  <div class="relative" style="max-height: 400px">
+    <section class="mb-4">
+      <AdjacencyGraph
+        classes="grid w-full bg-white rounded-lg shadow"
+        address={$me.circlesAddress}
+        maxHeight="h-96"
+      />
+    </section>
+  </div>
+{/if}
 <div class="m-4">
-  {#if $me.circlesAddress}
-  <section class="mb-8">
-    <AdjacencyGraph classes="grid w-full bg-white rounded-lg shadow" address={$me.circlesAddress} />
-  </section>
-  {/if}
-  <section class="mb-8">
+  <section class="mb-4">
     <div
       class="grid w-full grid-cols-3 gap-4 p-4 text-xs bg-white rounded-lg shadow "
     >
@@ -100,7 +107,7 @@
 
   {#if showFundHint}
     <!-- Create safe  showFundHint-->
-    <section class="mt-4 mb-8">
+    <section class="mt-4 mb-4">
       <div class="w-full p-4 bg-white rounded-lg shadow">
         <div class="px-4 py-2 mr-4 -ml-3 text-center " />
         <div style="text-align: center">
@@ -140,24 +147,14 @@
       </div>
     </section>
   {:else if $mySafe}
-    <section class="mb-8" on:click={() => loadLink("/dashboard/become-a-hub")}>
-      <div
-        class="flex flex-row justify-center w-full p-4 bg-white rounded-lg shadow "
-      >
-        <div class="">
-          <Icons icon="networkmedium" />
-        </div>
-        <div class="self-center flex-grow font-bold text-center text-dark">
-          explore your trust network
-        </div>
-        <div class="text-primary">
-          <Icons icon="submitmedium" />
-        </div>
-      </div>
+    <section class="mb-4" on:click={() => loadLink("/dashboard/become-a-hub")}>
+      <button class="btn btn-primary btn-block">
+        Grow your trust network now
+      </button>
     </section>
 
     <!-- Create safe  -->
-    <!-- <section class="mb-8">
+    <!-- <section class="mb-4">
       <div class="w-full px-2 pb-8 -mt-6 bg-white rounded-lg shadow">
         <div class="px-4 py-2 mr-4 -ml-3 text-center " />
         <div class="text-center">
@@ -187,16 +184,16 @@
   {/if}
 
   <div
-    class="grid grid-cols-2 gap-6 text-base auto-rows-fr sm:grid-cols-3 dashboard-grid"
+    class="grid grid-cols-2 gap-4 text-base auto-rows-fr sm:grid-cols-3 dashboard-grid"
   >
     <!-- PASSPORT  -->
 
     <section
-            class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
-            on:click={() => loadLink("/passport/profile")}
+      class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
+      on:click={() => loadLink("/passport/profile")}
     >
       <div
-              class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+        class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
       >
         <div class="pt-2">
           <Icons icon="dashpassport" />
@@ -208,16 +205,16 @@
     <!-- CONTACTS  -->
 
     <section
-            class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
-            on:click={() => loadLink("/contacts")}
+      class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
+      on:click={() => loadLink("/contacts")}
     >
       <div
-              class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+        class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
       >
         <div class="pt-2">
           <Icons icon="dashpassport" />
         </div>
-        <div class="mt-4 text-xl font-bold text-secondary">friends</div>
+        <div class="mt-4 text-xl font-bold text-dark">friends</div>
       </div>
     </section>
 

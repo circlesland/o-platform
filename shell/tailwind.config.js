@@ -95,7 +95,7 @@ module.exports = {
         gradient2: "#0ad99c",
 
         transactionpositive: "#0BE09D",
-        transactionnegative: "#F47474",
+        transactionnegative: "#F14E47",
 
         lightgrey: "#D9E2EE",
 
