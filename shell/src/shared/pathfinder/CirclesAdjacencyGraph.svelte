@@ -67,6 +67,13 @@
           to: edge.trusts,
           // label: edge.percentage == 50 ? "" : edge.percentage + "%",
           arrows: "to",
+          color: {
+            color: "#F1E7DD",
+            highlight: "#F1E7DD",
+            hover: "#F1E7DD",
+            inherit: "from",
+            opacity: 1.0,
+          },
           font: { align: "top" },
         });
       }

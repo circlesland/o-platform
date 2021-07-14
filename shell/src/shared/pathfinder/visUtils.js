@@ -16,10 +16,10 @@ export let createNodeContents = function (id) {
 
   node["color"] = {
     border: "#0ad99c",
-    background: "#0ad99c",
+    background: "#ffffff",
   };
   node["font"] = {
-    color: "#001c6e",
+    color: "#0E2769",
   };
 
   return node;

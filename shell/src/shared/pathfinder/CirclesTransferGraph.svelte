@@ -100,9 +100,9 @@
         label: formatValue(step.value),
         arrows: "to",
         color: {
-          color: "#0ad99c",
-          highlight: "#0ad99c",
-          hover: "#0ad99c",
+          color: "#F1E7DD",
+          highlight: "#F1E7DD",
+          hover: "#F1E7DD",
           inherit: "from",
           opacity: 1.0,
         },
@@ -133,7 +133,6 @@
   $: {
     drawGraph(transfers);
   }
-
 </script>
 
 <main>
