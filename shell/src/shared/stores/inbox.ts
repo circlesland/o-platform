@@ -1,21 +1,24 @@
-import {readable} from "svelte/store";
+import {writable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {EventsDocument, Profile, ProfileEvent} from "../../dapps/o-contacts/data/api/types";
+import {AcknowledgeDocument, EventsDocument, Profile, ProfileEvent} from "../../dapps/o-contacts/data/api/types";
 
-async function queryEvents(set: (value: (ProfileEvent[] | null)) => void) {
+let events:ProfileEvent[] = [];
+async function queryEvents()
+{
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
         query: EventsDocument
     });
     if (result.errors) {
-        console.warn(result.errors);
-        set([]);
-        return;
+        console.error(result.errors);
+        return [];
     }
-    set(result.data.events);
+
+    return result.data.events;
 }
 
-export const inbox = readable<ProfileEvent[]|null>(null, function start(set) {
+
+const { subscribe, set, update } = writable<ProfileEvent[]|null>(null, function start(set) {
     set([]);
     const subscription = window.o.events.subscribe(async (event: PlatformEvent & {
         profile: Profile
@@ -27,14 +30,32 @@ export const inbox = readable<ProfileEvent[]|null>(null, function start(set) {
         }
         // TODO: The server must push new events to the client
         if (event.type == "shell.authenticated" && event.profile) {
-            await queryEvents(set);
+            events = await queryEvents();
         }
         if (event.type == "shell.refresh") {
-            await queryEvents(set);
+            events = await queryEvents();
         }
+        set(events);
     });
 
     return function stop() {
         subscription.unsubscribe();
     };
 });
+
+export const inbox = {
+    subscribe,
+    acknowledge: async (eventId:number) => {
+        console.log("Acking event:", eventId);
+        const apiClient = await window.o.apiClient.client.subscribeToResult();
+        await apiClient.mutate({
+            mutation: AcknowledgeDocument,
+            variables: {
+                eventId: eventId
+            }
+        });
+        const e = events.find(o => o.id == eventId);
+        events.splice(events.indexOf(e), 1);
+        update(() => events);
+    }
+};

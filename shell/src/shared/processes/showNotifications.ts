@@ -8,6 +8,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import {ProfileEvent} from "../../dapps/o-banking/data/api/types";
 import {AcknowledgeDocument} from "../../dapps/o-contacts/data/api/types";
 import HtmlViewer from "../../../../packages/o-editors/src/HtmlViewer.svelte";
+import {inbox} from "../stores/inbox";
 
 export type ShowNotificationsContextData = {
   events: ProfileEvent[]
@@ -87,14 +88,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         entry: () => console.log("acknowledge entry"),
         invoke: {
           src: async (context) => {
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
-            await apiClient.mutate({
-              mutation: AcknowledgeDocument,
-              variables: {
-                eventId: context.data.currentEvent.id
-              }
-            });
-            console.log("Acking event:", context.data.currentEvent);
+            await inbox.acknowledge(context.data.currentEvent.id);
           },
           onDone: "#fetchNext",
           onError: "#error",
@@ -112,7 +106,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         params: {
           html: () => `<p>All done.</p>`,
           submitButtonText: "Close",
-          hideNav: true,
+          hideNav: false,
         },
         navigation: {
           canGoBack: (context:any) => context.data.currentEventIndex > 0,

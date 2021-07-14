@@ -135,8 +135,14 @@
         component: Notification,
         props: {
           action: () => {
+            let item;
+            let s = inbox.subscribe(o => {
+              item = o;
+            });
+            s();
+
             window.o.runProcess(showNotifications, {
-              events: $inbox
+              events: JSON.parse(JSON.stringify(item))
             });
           }
         }
