@@ -1,27 +1,27 @@
 <script lang="ts">
-    import {onMount} from "svelte";
-    import {Routable} from "@o-platform/o-interfaces/dist/routable";
-    import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-    import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-    import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
-    import {dapps} from "../../loader";
-    import {arraysEqual} from "../functions/arraysEqual";
-    import {Link} from "@o-platform/o-interfaces/dist/routables/link";
-    import Modal2 from "./Modal2.svelte";
-    import {location, push} from 'svelte-spa-router'
-    import {getNavigationManifest} from "../functions/GetNavigationManifest.svelte";
-    import {ProcessContainerNavigation} from "./ProcessContainer.svelte";
-    import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
-    import NextNav from "./NextNav/NextNav.svelte";
-    import NotFound from "./../pages/NotFound.svelte";
-    import {ProcessStarted} from "@o-platform/o-process/dist/events/processStarted";
-    import {Generate} from "@o-platform/o-utils/dist/generate";
-    import {shellProcess} from "../processes/shellProcess";
-    import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-    import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
-    import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-    import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-    import {identify} from "../../dapps/o-passport/processes/identify/identify";
+  import { onMount } from "svelte";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
+  import { dapps } from "../../loader";
+  import { arraysEqual } from "../functions/arraysEqual";
+  import { Link } from "@o-platform/o-interfaces/dist/routables/link";
+  import Modal2 from "./Modal2.svelte";
+  import { location, push } from "svelte-spa-router";
+  import { getNavigationManifest } from "../functions/GetNavigationManifest.svelte";
+  import { ProcessContainerNavigation } from "./ProcessContainer.svelte";
+  import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
+  import NextNav from "./NextNav/NextNav.svelte";
+  import NotFound from "./../pages/NotFound.svelte";
+  import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
+  import { Generate } from "@o-platform/o-utils/dist/generate";
+  import { shellProcess } from "../processes/shellProcess";
+  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+  import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+  import { identify } from "../../dapps/o-passport/processes/identify/identify";
 
   export let params: {
     dappId: string;
@@ -55,22 +55,21 @@
   let mounted: boolean;
   let lastMainUrl: string;
 
-    // Counts how often a detail page was opened and is reset whenever a regular site was displayed.
-    // This is used to show/hide the back button when navigating in detail pages.
-    let detailStack = [];
+  // Counts how often a detail page was opened and is reset whenever a regular site was displayed.
+  // This is used to show/hide the back button when navigating in detail pages.
+  let detailStack = [];
 
+  let identityChecked: boolean = false;
 
-    let identityChecked:boolean = false;
-
-    onMount(async () => {
-        window.o.events.subscribe(async (event: PlatformEvent) => {
-            switch (event.type) {
-                case "shell.runProcess":
-                    const runProcessEvent = <RunProcess<any>>event;
-                    const runningProcess = await window.o.stateMachines.run(
-                        runProcessEvent.definition,
-                        runProcessEvent.contextModifier
-                    );
+  onMount(async () => {
+    window.o.events.subscribe(async (event: PlatformEvent) => {
+      switch (event.type) {
+        case "shell.runProcess":
+          const runProcessEvent = <RunProcess<any>>event;
+          const runningProcess = await window.o.stateMachines.run(
+            runProcessEvent.definition,
+            runProcessEvent.contextModifier
+          );
 
           // If not, send an event with the process id.
           const startedEvent = new ProcessStarted(runningProcess.id);
@@ -96,17 +95,18 @@
       const requestEvent: any = new RunProcess(shellProcess, true, modifier);
       requestEvent.id = Generate.randomHexString(8);
 
-        onParamsChanged();
-        mounted = true;
-
-        if (!identityChecked) {
-            window.o.runProcess(identify, {}, {});
-            identityChecked = true;
-        }
-    });
+      const processStarted: ProcessStarted =
+        await window.o.requestEvent<ProcessStarted>(requestEvent);
+      _modal.showProcess(processStarted.processId);
+    };
 
     onParamsChanged();
     mounted = true;
+
+    if (!identityChecked) {
+      window.o.runProcess(identify, {}, {});
+      identityChecked = true;
+    }
   });
 
   let lastParamsJson: string;
@@ -219,53 +219,11 @@
       };
     };
 
-        if (routable.type === "page" && (<Page<any, any>>routable).position !== "modal") {
-            if (_modalPage && _modalIsOpen) {
-                if (!_modal.closeModal()) {
-                    // TODO: This doesn't work as intended. (when in a process and user presses browser->back then strange URLs can arise).
-                    push(lastMainUrl);
-                    return;
-                }
-            }
-            _mainPage = <Page<any, any>>routable;
-            pageParams = newPageParams;
-            lastMainUrl = $location;
-            detailStack = [];
-        } else if (routable.type === "page" && (<Page<any, any>>routable).position === "modal") {
-            _modalPage = <Page<any, any>>routable;
-            if (_mainPage) {
-                if (detailStack.length > 1 && detailStack[detailStack.length - 2] == $location) {
-                    // We went back
-                    detailStack.pop();
-                } else {
-                    detailStack.push($location);
-                }
-            }
-            _modal.showPage(_modalPage, newPageParams, runtimeDapp, routable, detailStack.length);
-        } else if (routable.type === "trigger") {
-            _entryTrigger = <Trigger<any, any>>routable;
-            if (_entryTrigger.eventFactory) {
-                const triggerEvent = _entryTrigger.eventFactory(params, dapp);
-                if (!triggerEvent) {
-                    throw new Error(
-                        `The _entryTrigger.eventFactory didn't return an event.`
-                    );
-                }
-                window.o.publishEvent(triggerEvent);
-            }
-            if (_entryTrigger.action) {
-                _entryTrigger.action(params, dapp);
-            }
-        } else if (routable.type === "link") {
-            const link = <Link<any, any>>routable;
-            link.url(params, dapp);
-            window.history.back();
-            return;
-        } else {
-            throw new Error(
-                `Entry point type '${routable.type}' is not supported by the DappFrame.`
-            );
-        }
+    const findRouteResult = findRoute(params);
+    if (!findRouteResult.found) {
+      _mainPage = null;
+      return;
+    }
 
     routable = findRouteResult.routable;
     const newPageParams = findRouteResult.pageParams;
@@ -284,12 +242,30 @@
       _mainPage = <Page<any, any>>routable;
       pageParams = newPageParams;
       lastMainUrl = $location;
+      detailStack = [];
     } else if (
       routable.type === "page" &&
       (<Page<any, any>>routable).position === "modal"
     ) {
       _modalPage = <Page<any, any>>routable;
-      _modal.showPage(_modalPage, newPageParams, runtimeDapp, routable);
+      if (_mainPage) {
+        if (
+          detailStack.length > 1 &&
+          detailStack[detailStack.length - 2] == $location
+        ) {
+          // We went back
+          detailStack.pop();
+        } else {
+          detailStack.push($location);
+        }
+      }
+      _modal.showPage(
+        _modalPage,
+        newPageParams,
+        runtimeDapp,
+        routable,
+        detailStack.length
+      );
     } else if (routable.type === "trigger") {
       _entryTrigger = <Trigger<any, any>>routable;
       if (_entryTrigger.eventFactory) {
@@ -342,7 +318,7 @@
   }
 </script>
 
-<div class="flex flex-col text-dark">
+<div class="flex flex-col text-base">
   <main class="z-30 flex-1 overflow-y-auto">
     <div
       class="mainContent w-full mx-auto {layoutClasses}"
@@ -369,22 +345,22 @@
   <NextNav navigation={_navManifest} />
 {/if}
 <Modal2
-    {runtimeDapp}
-    {routable}
-    bind:this={_modal}
-    on:navigation={(event) => {
-      _processNavigation = event.detail;
-      _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
-    }}
-    on:modalOpen={(e) => {
-      _modalIsOpen = e.detail;
-      _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
+  {runtimeDapp}
+  {routable}
+  bind:this={_modal}
+  on:navigation={(event) => {
+    _processNavigation = event.detail;
+    _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
+  }}
+  on:modalOpen={(e) => {
+    _modalIsOpen = e.detail;
+    _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
 
-      if (!_modalIsOpen && _modalPage && lastMainUrl) {
-          push(lastMainUrl);
-          _modalPage = null;
-      }
-    }}
+    if (!_modalIsOpen && _modalPage && lastMainUrl) {
+      push(lastMainUrl);
+      _modalPage = null;
+    }
+  }}
 />
 
 <style>

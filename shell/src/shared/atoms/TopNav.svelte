@@ -1,14 +1,14 @@
 <script lang="ts">
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 </script>
 
 <div class="fixed top-0 left-0 z-10 w-full">
   <div
-    class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white navbar bg-secondary-dark "
+    class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white navbar bg-dark "
   >
     <div class="justify-self-start">
       <span class="text-lg uppercase ">

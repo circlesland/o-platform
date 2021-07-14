@@ -42,10 +42,11 @@
     pictureUrl =
       displayName === "CirclesLand" ? "/images/common/circles.png" : pictureUrl;
 
-    const m = transfer.tags ? transfer.tags.find(o => o.typeId === "o-banking:transfer:message:1") : undefined;
+    const m = transfer.tags
+      ? transfer.tags.find((o) => o.typeId === "o-banking:transfer:message:1")
+      : undefined;
     const m2 = m ? m.value : "";
-    message =
-      displayName === "CirclesLand" ? "Universal basic income" : m2;
+    message = displayName === "CirclesLand" ? "Universal basic income" : m2;
 
     classes =
       transfer.direction === "in"
@@ -86,7 +87,7 @@
           {displayName}
         </h2>
       </div>
-      <p class="text-xs text-light-dark">{message}</p>
+      <p class="text-xs text-dark-lightest">{message}</p>
     </div>
 
     <div class="flex flex-col flex-1 justify-items-end">
