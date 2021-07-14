@@ -31,17 +31,19 @@
   let _pageParams: { [x: string]: any };
   let _pageRuntimeDapp: RuntimeDapp<any>;
   let _pageRoutable: Routable;
+  let _pageDepth: number;
 
   export function getState(): {
     contentType?: "process" | "jumplist" | "page" | "navigation";
     isOpen: boolean;
+    depth?: number;
   } {
     if (runningProcess) {
       return { contentType: "process", isOpen: _isOpen };
     } else if (jumplistItems) {
       return { contentType: "jumplist", isOpen: _isOpen };
     } else if (_page) {
-      return { contentType: "page", isOpen: _isOpen };
+      return { contentType: "page", isOpen: _isOpen, depth: _pageDepth };
     } else if (navigation) {
       return { contentType: "navigation", isOpen: _isOpen };
     } else {
@@ -136,7 +138,8 @@
     page: Page<any, any>,
     pageParams: { [x: string]: any },
     runtimeDapp: RuntimeDapp<any>,
-    routable: Routable
+    routable: Routable,
+    depth: number
   ) {
     if (!closeModal()) {
       return;
@@ -145,6 +148,7 @@
     _pageParams = pageParams;
     _pageRuntimeDapp = runtimeDapp;
     _pageRoutable = routable;
+    _pageDepth = depth;
     if (_page) {
       _isOpen = true;
     }
@@ -169,6 +173,7 @@
       _pageParams = undefined;
       _pageRoutable = undefined;
       _pageRuntimeDapp = undefined;
+      _pageDepth = 0;
     }
 
     dispatch("navigation", null);

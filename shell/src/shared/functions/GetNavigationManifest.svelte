@@ -12,7 +12,7 @@ import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 export function getNavigationManifest(
     dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
-    modal: Modal2
+    modal: Modal2,
 ): NavigationManifest {
     if (modal) {
         const modalState = modal.getState();
@@ -35,7 +35,7 @@ function getModalNavigation(
         case "process":
             return getProcessNavigation(dappManifest, processNavigation, modal);
         case "page":
-            return getDetailNavigation(dappManifest, processNavigation, modal);
+            return getDetailNavigation(dappManifest, processNavigation, modal, modalState.depth > 1);
     }
     throw new Error(`Unknown modal state: ${modalState.contentType}.`);
 }
@@ -153,7 +153,8 @@ function getProcessNavigation(
 function getDetailNavigation(
     dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
-    modal: Modal2): NavigationManifest {
+    modal: Modal2,
+    showBack: boolean): NavigationManifest {
     const manifest = {
         navPill: {
             center: {
@@ -165,6 +166,15 @@ function getDetailNavigation(
             },
         },
     };
+    if (showBack) {
+        manifest.navPill.left = {
+            component: LinkComponent,
+            props: {
+                text: "Back",
+                action: () => history.back(),
+            },
+        };
+    }
     return manifest;
 }
 </script>

@@ -55,6 +55,11 @@
     let mounted: boolean;
     let lastMainUrl:string;
 
+    // Counts how often a detail page was opened and is reset whenever a regular site was displayed.
+    // This is used to show/hide the back button when navigating in detail pages.
+    let detailStack = [];
+
+
     let identityChecked:boolean = false;
 
     onMount(async () => {
@@ -221,9 +226,18 @@
             _mainPage = <Page<any, any>>routable;
             pageParams = newPageParams;
             lastMainUrl = $location;
+            detailStack = [];
         } else if (routable.type === "page" && (<Page<any, any>>routable).position === "modal") {
             _modalPage = <Page<any, any>>routable;
-            _modal.showPage(_modalPage, newPageParams, runtimeDapp, routable);
+            if (_mainPage) {
+                if (detailStack.length > 1 && detailStack[detailStack.length - 2] == $location) {
+                    // We went back
+                    detailStack.pop();
+                } else {
+                    detailStack.push($location);
+                }
+            }
+            _modal.showPage(_modalPage, newPageParams, runtimeDapp, routable, detailStack.length);
         } else if (routable.type === "trigger") {
             _entryTrigger = <Trigger<any, any>>routable;
             if (_entryTrigger.eventFactory) {
@@ -298,11 +312,12 @@
     }}
     on:modalOpen={(e) => {
       _modalIsOpen = e.detail;
+      _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
+
       if (!_modalIsOpen && _modalPage && lastMainUrl) {
           push(lastMainUrl);
           _modalPage = null;
       }
-      _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
     }}
 />
 <style>
