@@ -10,10 +10,11 @@ import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
-import {Profile} from "../data/api/types";
+import {CreateTagInput, Profile, RequestIndexTransactionDocument} from "../data/api/types";
 import {UpsertProfileDocument} from "../../o-passport/data/api/types";
 import {push} from "svelte-spa-router";
 import {Banking} from "../banking";
+import {Subscription} from "rxjs";
 
 export type HubSignupContextData = {
   privateKey:string;
@@ -167,6 +168,29 @@ createMachine<HubSignupContext, any>({
               context.data.privateKey,
               new GnosisSafeProxy(RpcGateway.get(), context.data.profile.circlesAddress)
           );
+
+          let txHashSubscription: Subscription;
+          txHashSubscription = hubSignupResult.observable.subscribe(async o => {
+            if (o.type != "transactionHash") {
+              return;
+            }
+            if (txHashSubscription) {
+              txHashSubscription.unsubscribe();
+            }
+
+            const transactionTags: CreateTagInput[] = [];
+            const api = await window.o.apiClient.client.subscribeToResult();
+            await api.mutate({
+              mutation: RequestIndexTransactionDocument,
+              variables: {
+                data: {
+                  tags: transactionTags,
+                  transactionHash: o.data
+                }
+              }
+            });
+          });
+
           const receipt = await hubSignupResult.toPromise();
           localStorage.removeItem("signsUpAtCircles");
           localStorage.setItem("hubSignup", new Date().toJSON());
