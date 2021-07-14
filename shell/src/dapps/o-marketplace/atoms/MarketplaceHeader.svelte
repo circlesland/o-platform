@@ -1,17 +1,17 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
   export let header: string = null;
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 </script>
 
 <TopNav {runtimeDapp} {routable} />
 
 <div
-  class="flex flex-col items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primarydark"
+  class="flex flex-col items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primary-dark"
   style="background-image: url(/images/common/nice-bg.jpg);"
 >
   <div class="self-center block text-center">

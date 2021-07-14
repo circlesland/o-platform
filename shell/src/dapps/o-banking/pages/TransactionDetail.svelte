@@ -105,7 +105,7 @@
 />
 <div class="px-6">
   {#if transfer}
-    <section class="flex items-center justify-center pt-10 pb-2 text-secondary">
+    <section class="flex items-center justify-center pt-10 pb-2 text-dark">
       <div class="flex flex-col w-full space-y-2 ">
         <div class="flex flex-row justify-center w-full space-x-2 sm:space-x-6">
           <div
@@ -129,7 +129,7 @@
             </div>
           </div>
 
-          <div class="self-center text-xl text-light">
+          <div class="self-center text-xl text-dark-lightest">
             <Icons icon="rightarrow" />
           </div>
           <div
@@ -160,9 +160,9 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-light-dark">Message</div>
+        <div class="text-left text-2xs text-dark-lightest">Message</div>
 
-        <div class="flex items-center w-full text-primarydark">
+        <div class="flex items-center w-full">
           <div class="text-xl text-left ">
             {message ? message : "No Message"}
           </div>
@@ -172,9 +172,9 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-light-dark">Amount</div>
+        <div class="text-left text-2xs text-dark-lightest">Amount</div>
 
-        <div class="flex items-center w-full text-primarydark">
+        <div class="flex items-center w-full">
           <div class="text-left ">
             {amountInWei}
             {amountInWei > 1 ? " Cirlces" : " Circle"}
@@ -185,9 +185,9 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-light-dark">Date</div>
+        <div class="text-left text-2xs text-dark-lightest">Date</div>
 
-        <div class="flex items-center w-full text-primarydark">
+        <div class="flex items-center w-full">
           <div class="text-left ">
             <Time
               timestamp={new Date(transfer.time * 1000)}
@@ -200,9 +200,9 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-light-dark">From</div>
+        <div class="text-left text-2xs text-dark-lightest">From</div>
 
-        <div class="flex items-center w-full text-primarydark">
+        <div class="flex items-center w-full">
           <div class="text-left break-all">
             {transfer.fromProfile ? `${transfer.from}` : ""}
           </div>
@@ -212,9 +212,9 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-light-dark">To</div>
+        <div class="text-left text-2xs text-dark-lightest">To</div>
 
-        <div class="flex items-center w-full text-primarydark">
+        <div class="flex items-center w-full">
           <div class="text-left break-all">
             {transfer.toProfile ? `${transfer.to}` : ""}
           </div>
@@ -224,9 +224,9 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-light-dark">Block</div>
+        <div class="text-left text-2xs text-dark-lightest">Block</div>
 
-        <div class="flex items-center w-full text-primarydark">
+        <div class="flex items-center w-full">
           <div class="text-left break-all">
             {transfer.firstBlock}
           </div>

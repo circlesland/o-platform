@@ -6,7 +6,7 @@
   console.log("ACTIONS: ", actions);
 </script>
 
-<div class="flex flex-row justify-between p-2 text-secondary">
+<div class="flex flex-row justify-between p-2 text-dark">
   {#each actions as action}
     <div
       on:click={() => {

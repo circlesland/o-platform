@@ -39,42 +39,42 @@ module.exports = {
         xl: "16px",
       },
       colors: {
-        DEFAULT: "#132B69",
-        base: "#132B69",
+        DEFAULT: "#0E2769",
+        base: "#0E2769",
         dark: {
-          DEFAULT: "#081B4B",
-          light: "#0F2662",
-          lighter: "#183276",
-          lightest: "#2C468A",
-          dark: "#041338",
+          DEFAULT: "#0E2769",
+          light: "#244396",
+          lighter: "#546FB7",
+          lightest: "#8597C6",
+          dark: "#081B4B",
         },
         light: {
-          DEFAULT: "#B1C6DF",
-          light: "#D0DDEC",
-          lighter: "#E3EBF6",
-          lightest: "#F4F6F9",
-          dark: "#8AA7C9",
+          DEFAULT: "#EDDFD2",
+          light: "#F1E7DD",
+          lighter: "#FBF6F1",
+          lightest: "#FEFCF9",
+          dark: "#DDCBBB",
         },
         primary: {
-          DEFAULT: "#0BE09D",
-          light: "#57F5A9",
-          lighter: "#99FBC6",
-          lightest: "#C5FFD8",
-          dark: "#14C892",
+          DEFAULT: "#33D8EF",
+          light: "#5AEBFF",
+          lighter: "#90F1FE",
+          lightest: "#C2FBFF",
+          dark: "#1DC7DE",
         },
         secondary: {
-          DEFAULT: "#003399",
-          light: "#386DD3",
-          lighter: "#70B2EF",
-          lightest: "#ABD1F4",
-          dark: "#132B69",
+          DEFAULT: "#CF1E64",
+          light: "#EA6197",
+          lighter: "#FEA0C8",
+          lightest: "#FDC1DA",
+          dark: "#AE114F",
         },
         alert: {
-          DEFAULT: "#FC4E43",
+          DEFAULT: "#F14E47",
           light: "#FF6D6D",
           lighter: "#FF9898",
           lightest: "#FFCACA",
-          dark: "#F63B2F",
+          dark: "#DD3A33",
         },
         success: {
           DEFAULT: "#0BE09D",
@@ -84,16 +84,14 @@ module.exports = {
           dark: "#14C892",
         },
         info: {
-          DEFAULT: "#FFC123",
+          DEFAULT: "#FAAD26",
           light: "#FFCA62",
           lighter: "#FFDE88",
           lightest: "#FFF6D7",
-          dark: "#F6B100",
+          dark: "#F29C05",
         },
 
-        darklight: "#0F2662",
-
-        gradient1: "#003399",
+        gradient1: "#1DD6A4",
         gradient2: "#0ad99c",
 
         transactionpositive: "#0BE09D",
@@ -101,13 +99,10 @@ module.exports = {
 
         lightgrey: "#D9E2EE",
 
-        primarydark: "#052D7C",
-
         warning: "#FF9900",
-        info: "#2094F3",
-        infobg: "#E8F4FE",
+
         error: "#b02d23",
-        success: "#48BB78",
+
         white: "#ffffff",
       },
       fontFamily: {

@@ -255,7 +255,7 @@
 {:else}
   <TopNav {runtimeDapp} {routable} />
   <header
-    class="grid overflow-hidden text-white bg-cover rounded-t-xl h-80 place-content-center bg-gradient-to-r from-primary to-secondary-light"
+    class="grid overflow-hidden text-white bg-cover rounded-t-xl h-80 place-content-center bg-gradient-to-r from-gradient1 to-primary"
   >
     <div
       class="flex flex-col items-center self-center w-full m-auto text-center text-white avatar justify-self-center"
@@ -297,7 +297,9 @@
             <div
               class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
             >
-              <div class="text-left text-2xs text-light-darktext-light-dark">
+              <div
+                class="text-left text-2xs text-dark-lightesttext-dark-lightest"
+              >
                 This citizen is waiting to be empowered by you.
               </div>
 
@@ -379,22 +381,22 @@
           <section class="mb-8">
             <div class="grid w-full grid-cols-3 gap-4 text-2xs ">
               <div class="flex flex-col items-center justify-items-center">
-                <div class="text-3xl font-medium text-secondary">5</div>
-                <div class="mt-4 text-light-dark">mutual friends</div>
+                <div class="text-3xl font-medium text-dark">5</div>
+                <div class="mt-4 text-dark-lightest">mutual friends</div>
               </div>
               <div class="flex flex-col items-center justify-items-center ">
-                <div class="text-3xl font-medium text-secondary">86</div>
-                <div class="mt-4 text-light-dark">leader rank</div>
+                <div class="text-3xl font-medium text-dark">86</div>
+                <div class="mt-4 text-dark-lightest">leader rank</div>
               </div>
               <div class="flex flex-col items-center justify-items-center ">
-                <div class="text-3xl font-medium text-secondary">230</div>
-                <div class="mt-4 text-light-dark">invited</div>
+                <div class="text-3xl font-medium text-dark">230</div>
+                <div class="mt-4 text-dark-lightest">invited</div>
               </div>
             </div>
           </section>
-          <section class="justify-center mb-2 text-primarydark">
+          <section class="justify-center mb-2 ">
             <div class="flex flex-col w-full p-2 space-y-1">
-              <div class="text-left text-2xs text-light-dark">Passion</div>
+              <div class="text-left text-2xs text-dark-lightest">Passion</div>
 
               <div class="flex items-center w-full text-xl">
                 {#if profile && profile.dream}
@@ -421,9 +423,9 @@
             </div>
           </section>
 
-          <section class="justify-center mb-2 text-primarydark">
+          <section class="justify-center mb-2 ">
             <div class="flex flex-col w-full p-2 space-y-1">
-              <div class="text-left text-2xs text-light-dark">Address</div>
+              <div class="text-left text-2xs text-dark-lightest">Address</div>
 
               <div class="flex items-center w-full">
                 <div class="inline-block break-all" id="clipboard">
@@ -463,9 +465,9 @@
         {/if}
 
         {#if !isMe && (profile.trusting || profile.trustedBy)}
-          <section class="justify-center mb-2 text-primarydark">
+          <section class="justify-center mb-2 ">
             <div class="flex flex-col w-full p-2 space-y-1">
-              <div class="text-left text-2xs text-light-dark">Trust</div>
+              <div class="text-left text-2xs text-dark-lightest">Trust</div>
 
               <div class="flex items-center w-full">
                 {#if profile.trusting && profile.trustedBy}
@@ -491,7 +493,7 @@
       <!-- {#if !isMe && profile.safeAddress}
         <section class="justify-center mb-2 ">
           <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
-            <div class="text-sm font-bold text-light-dark">TRANSFER</div>
+            <div class="text-sm font-bold text-dark-lightest">TRANSFER</div>
 
             <div class="flex items-center w-full space-x-2 sm:space-x-4">
               <button
@@ -504,7 +506,7 @@
         </section>
         <section class="justify-center mb-2 ">
           <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
-            <div class="text-sm font-bold text-light-dark">CHANGE TRUST</div>
+            <div class="text-sm font-bold text-dark-lightest">CHANGE TRUST</div>
             {#if profile.trusting && profile.trusting > 0}
               <div class="flex items-center w-full space-x-2 sm:space-x-4">
                 <button

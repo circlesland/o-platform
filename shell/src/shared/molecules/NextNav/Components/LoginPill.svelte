@@ -15,7 +15,7 @@
 </script>
 
 <div
-  class="h-12 col-start-2 py-3 bg-white rounded-full w-36 place-self-center text-primarydark "
+  class="h-12 col-start-2 py-3 bg-white rounded-full w-36 place-self-center text-primary-dark "
 >
   <div
     class="grid grid-cols-2 cursor-pointer justify-items-start "

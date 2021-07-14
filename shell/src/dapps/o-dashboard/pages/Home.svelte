@@ -84,16 +84,16 @@
       class="grid w-full grid-cols-3 gap-4 p-4 text-xs bg-white rounded-lg shadow "
     >
       <div class="flex flex-col items-center justify-items-center">
-        <div class="text-5xl font-bold text-secondary">5.</div>
-        <div class="mt-4 text-secondary-lighter">city rank</div>
+        <div class="text-5xl font-bold text-dark">5.</div>
+        <div class="mt-4 text-dark-lighter">city rank</div>
       </div>
       <div class="flex flex-col items-center justify-items-center ">
-        <div class="text-5xl font-bold text-secondary">86.</div>
-        <div class="mt-4 text-secondary-lighter">leader rank</div>
+        <div class="text-5xl font-bold text-dark">86.</div>
+        <div class="mt-4 text-dark-lighter">leader rank</div>
       </div>
       <div class="flex flex-col items-center justify-items-center ">
-        <div class="text-5xl font-bold text-secondary">0</div>
-        <div class="mt-4 text-secondary-lighter">my invites</div>
+        <div class="text-5xl font-bold text-dark">0</div>
+        <div class="mt-4 text-dark-lighter">my invites</div>
       </div>
     </div>
   </section>
@@ -104,7 +104,7 @@
       <div class="w-full p-4 bg-white rounded-lg shadow">
         <div class="px-4 py-2 mr-4 -ml-3 text-center " />
         <div style="text-align: center">
-          <p class="w-64 m-auto mt-2 text-2xl font-bold text-secondary">
+          <p class="w-64 m-auto mt-2 text-2xl font-bold text-dark">
             You're almost there.
           </p>
           <p class="mt-4 ">
@@ -147,7 +147,7 @@
         <div class="">
           <Icons icon="networkmedium" />
         </div>
-        <div class="self-center flex-grow font-bold text-center text-secondary">
+        <div class="self-center flex-grow font-bold text-center text-dark">
           explore your trust network
         </div>
         <div class="text-primary">
@@ -201,7 +201,7 @@
         <div class="pt-2">
           <Icons icon="dashpassport" />
         </div>
-        <div class="mt-4 text-xl font-bold text-secondary">passport</div>
+        <div class="mt-4 text-xl font-bold text-dark">passport</div>
       </div>
     </section>
 
@@ -247,7 +247,7 @@
           <div class="pt-2">
             <Icons icon="dashbanking" />
           </div>
-          <div class="mt-4 text-xl font-bold text-secondary">banking</div>
+          <div class="mt-4 text-xl font-bold text-dark">banking</div>
         </div>
       </section>
     {/if}
@@ -264,7 +264,7 @@
         <div class="pt-2">
           <Icons icon="dashmarket" />
         </div>
-        <div class="mt-4 text-xl font-bold text-secondary">market</div>
+        <div class="mt-4 text-xl font-bold text-dark">market</div>
       </div>
     </section>
 
@@ -280,7 +280,7 @@
         <div class="pt-2">
           <Icons icon="dashchat" />
         </div>
-        <div class="mt-4 text-xl font-bold text-secondary">chat</div>
+        <div class="mt-4 text-xl font-bold text-dark">chat</div>
       </div>
     </section>
   </div>

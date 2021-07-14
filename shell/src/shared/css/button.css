@@ -1,7 +1,7 @@
 
 .btn {
   @apply text-base;
-  @apply text-secondary;
+  @apply text-dark;
   @apply normal-case;
   @apply font-medium;
   @apply tracking-normal;
@@ -37,11 +37,11 @@
 
     /* brand colors */
     &-primary {
-        @apply bg-primary border-primary text-primary-content;
+        @apply text-base bg-primary border-primary;
 
         &:hover,
         &.btn-active {
-            @apply bg-primary-focus border-primary-focus;
+            @apply bg-primary-light border-primary-light;
         }
 
         &:focus-visible {
@@ -50,11 +50,11 @@
     }
 
     &-secondary {
-        @apply bg-secondary border-secondary text-secondary-content;
+        @apply text-base bg-secondary border-secondary;
 
         &:hover,
         &.btn-active {
-            @apply bg-secondary-focus border-secondary-focus;
+            @apply bg-secondary-light border-secondary-light;
         }
 
         &:focus-visible {
@@ -182,15 +182,15 @@
             @apply text-primary;
 
             &:hover {
-                @apply bg-primary-focus text-primary-content border-primary-focus;
+                @apply text-base bg-primary-focus border-primary-focus;
             }
         }
 
         &.btn-secondary {
-            @apply text-secondary;
+            @apply text-dark;
 
             &:hover {
-                @apply bg-secondary-focus text-secondary-content border-secondary-focus;
+                @apply text-base bg-secondary-light border-secondary-light;
             }
         }
 
@@ -236,7 +236,7 @@
 
     &>input[type="radio"]:checked.btn,
     &>.btn-active {
-        @apply bg-primary border-primary text-primary-content;
+        @apply text-base bg-primary border-primary;
 
         &:focus-visible {
             box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--p));

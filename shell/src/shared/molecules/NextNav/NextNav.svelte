@@ -7,7 +7,7 @@
 
 <footer
   id="nextnav"
-  class="fixed bottom-0 z-50 grid justify-center w-full h-20 grid-cols-3 pb-3 auto-cols-max place-content-center text-secondary"
+  class="fixed bottom-0 z-50 grid justify-center w-full h-20 grid-cols-3 pb-3 auto-cols-max place-content-center text-dark"
 >
   {#if navigation.leftSlot}
     <div
@@ -26,9 +26,7 @@
   {#if navigation.loginPill}
     <LoginPill />
   {:else}
-    <NavPill
-      props={navigation.navPill}
-    />
+    <NavPill props={navigation.navPill} />
   {/if}
 </footer>
 

@@ -67,7 +67,7 @@ body {
 }
 .btn {
 @apply text-base;
-@apply text-secondary;
+@apply text-dark;
 @apply normal-case;
 @apply font-medium;
 @apply tracking-normal;
@@ -88,16 +88,16 @@ line-height: 1rem;
 
 .btn-light {
   @apply bg-light-lighter;
-  @apply text-secondary;
+  @apply text-dark;
   border: none;
 }
 .btn-primary {
-  @apply text-secondary;
+  @apply text-dark;
   @apply normal-case;
 }
 .btn-light:hover {
   @apply bg-white;
-  @apply text-secondary;
+  @apply text-dark;
   border: 1px solid;
   @apply border-secondary;
 }
@@ -165,7 +165,7 @@ line-height: 1rem;
 }
 .label-text {
   @apply text-xl;
-  @apply text-secondary;
+  @apply text-dark;
   @apply font-bold;
   @apply text-center;
 }

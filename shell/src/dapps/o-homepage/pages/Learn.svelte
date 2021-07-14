@@ -1,7 +1,5 @@
 <script lang="ts">
-  import {
-    identify,
-  } from "../../o-passport/processes/identify/identify";
+  import { identify } from "../../o-passport/processes/identify/identify";
   import { me } from "../../../shared/stores/me";
 
   $: {
@@ -13,10 +11,9 @@
   function login() {
     window.o.runProcess(identify, { redirectTo: "/dashboard" });
   }
-
 </script>
 
-<div class="flex flex-col h-screen text-white bg-primarydark">
+<div class="flex flex-col h-screen text-white bg-primary-dark">
   <main class="z-30 flex-1 overflow-y-visible">
     <div class="flex flex-col text-center justify-items-center pt-11">
       <h1 class="font-bold ">You got us!</h1>

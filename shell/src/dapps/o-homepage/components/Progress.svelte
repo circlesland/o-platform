@@ -1,7 +1,5 @@
 <script lang="ts">
-  import {
-    identify
-  } from "../../o-passport/processes/identify/identify";
+  import { identify } from "../../o-passport/processes/identify/identify";
   import { me } from "../../../shared/stores/me";
   import { onMount } from "svelte";
   import { location } from "svelte-spa-router";
@@ -21,7 +19,6 @@
   async function login() {
     window.o.runProcess(identify, { redirectTo: "/dashboard" });
   }
-
 </script>
 
 <div
@@ -95,7 +92,7 @@
   <div class="flex overflow-hidden text-xs bg-gray-300 h-11">
     <div
       style="width:100%"
-      class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-primarydark"
+      class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-primary-dark"
     />
   </div>
 </div>
@@ -146,5 +143,4 @@
       inset -10px -24px 40px 0px #003399, inset 20px -10px 40px 0px #003399,
       inset -20px 10px 40px 0px #003399;
   } */
-
 </style>

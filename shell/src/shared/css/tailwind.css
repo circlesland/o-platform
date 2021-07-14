@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import "./fonts.css";
-
+@import "./button.css";
 
 .text-base {
     font-size: 1rem
@@ -35,11 +35,11 @@
 }
 
 :root {
-    --p: 162 91% 44%;
-    --pf: 162 91% 44%;
+    --p: 187 85% 57%;
+    --pf: 187 100% 68%;
     --pc: 0 0% 100%;
-    --s: 220 100% 29%;
-    --sf: 219 100% 28%;
+    --s: 336 75% 46%;
+    --sf: 336 77% 65%;
     --sc: 0 0% 100%;
     --a: 162 91% 44%;
     --af: 162 91% 44%;
@@ -77,8 +77,8 @@ body {
 }
 
 .btn {
-    @apply text-base;
-    @apply text-secondary;
+    @apply text-dark;
+    @apply text-dark;
     @apply normal-case;
     @apply font-medium;
     @apply tracking-normal;
@@ -87,7 +87,7 @@ body {
 }
 
 .btn-text {
-    @apply text-base;
+    @apply text-dark;
     @apply font-bold;
     @apply tracking-normal;
 }
@@ -99,20 +99,20 @@ body {
 
 .btn-light {
     @apply bg-light-lighter;
-    @apply text-secondary;
+    @apply text-dark;
     border: none;
 }
 
 .btn-primary {
-    @apply text-secondary;
+    @apply text-dark;
     @apply normal-case;
 }
 
 .btn-light:hover {
     @apply bg-white;
-    @apply text-secondary;
+    @apply text-dark;
     border: 1px solid;
-    @apply border-secondary;
+    @apply border-dark;
 }
 
 .btn-error {
@@ -179,7 +179,7 @@ body {
 
 .label-text {
     @apply text-xl;
-    @apply text-secondary;
+    @apply text-dark;
     @apply font-bold;
     @apply text-center;
 }
@@ -214,6 +214,7 @@ body {
 }
 
 .navbuttonicon {
+    @apply text-dark;
     margin-left: 0.15rem;
     margin-top: 0.15rem;
     @apply w-5;
@@ -221,6 +222,7 @@ body {
 }
 
 .processPill .navbuttonicon {
+    @apply text-dark;
     margin-left: 0.15rem;
     margin-top: 0.15rem;
     @apply w-3;

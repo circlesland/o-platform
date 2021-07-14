@@ -16,13 +16,18 @@
       avatarUrl = AvataarGenerator.default();
     }
   }
-
 </script>
 
-<TopNav {runtimeDapp} {routable} showHomeButton={false} showWebsiteButton={true} {showBackArrow} />
+<TopNav
+  {runtimeDapp}
+  {routable}
+  showHomeButton={false}
+  showWebsiteButton={true}
+  {showBackArrow}
+/>
 
 <div
-  class="flex flex-col items-stretch w-full text-white h-60 justify-items-stretch bg-primarydark"
+  class="flex flex-col items-stretch w-full text-white h-60 justify-items-stretch bg-primary-dark"
 >
   <div class="self-center text-center avatar justify-self-center">
     <div class="mb-4 rounded-full w-36 h-36">

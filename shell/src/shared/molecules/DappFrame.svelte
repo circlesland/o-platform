@@ -23,37 +23,37 @@
     import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
     import {identify} from "../../dapps/o-passport/processes/identify/identify";
 
-    export let params: {
-        dappId: string;
-        "1": string | null;
-        "2": string | null;
-        "3": string | null;
-        "4": string | null;
-        "5": string | null;
-        "6": string | null;
-    };
-    let pageParams:{[x:string]:any} = {};
+  export let params: {
+    dappId: string;
+    "1": string | null;
+    "2": string | null;
+    "3": string | null;
+    "4": string | null;
+    "5": string | null;
+    "6": string | null;
+  };
+  let pageParams: { [x: string]: any } = {};
 
-    let layoutClasses = "";
+  let layoutClasses = "";
 
-    let _mainPage: Page<any, any>;
-    let _modalPage: Page<any, any>;
+  let _mainPage: Page<any, any>;
+  let _modalPage: Page<any, any>;
 
-    let _entryTrigger: Trigger<any, any>;
+  let _entryTrigger: Trigger<any, any>;
 
-    let _modal: Modal2;
-    let _modalIsOpen = false;
+  let _modal: Modal2;
+  let _modalIsOpen = false;
 
-    let _processNavigation: ProcessContainerNavigation;
-    let _navManifest: NavigationManifest;
+  let _processNavigation: ProcessContainerNavigation;
+  let _navManifest: NavigationManifest;
 
-    let _runtimeDapps: {[dappId:string]:RuntimeDapp<any>} = {};
+  let _runtimeDapps: { [dappId: string]: RuntimeDapp<any> } = {};
 
-    let dapp: DappManifest<any>;
-    let runtimeDapp: RuntimeDapp<any>;
-    let routable: Routable;
-    let mounted: boolean;
-    let lastMainUrl:string;
+  let dapp: DappManifest<any>;
+  let runtimeDapp: RuntimeDapp<any>;
+  let routable: Routable;
+  let mounted: boolean;
+  let lastMainUrl: string;
 
     // Counts how often a detail page was opened and is reset whenever a regular site was displayed.
     // This is used to show/hide the back button when navigating in detail pages.
@@ -72,34 +72,29 @@
                         runProcessEvent.contextModifier
                     );
 
-                    // If not, send an event with the process id.
-                    const startedEvent = new ProcessStarted(runningProcess.id);
-                    startedEvent.responseToId = runProcessEvent.id;
-                    window.o.publishEvent(startedEvent);
-                    break;
-            }
-        });
+          // If not, send an event with the process id.
+          const startedEvent = new ProcessStarted(runningProcess.id);
+          startedEvent.responseToId = runProcessEvent.id;
+          window.o.publishEvent(startedEvent);
+          break;
+      }
+    });
 
-        window.o.runProcess = async function runProcess(
-            processDefinition: ProcessDefinition<any, any>,
-            contextData: { [x: string]: any },
-            dirtyFlags: { [x: string]: boolean } | undefined
-        ) {
-            const modifier = async (ctx) => {
-                ctx.childProcessDefinition = processDefinition;
-                ctx.childContext = {
-                    data: contextData,
-                    dirtyFlags: !dirtyFlags ? {} : dirtyFlags,
-                };
-                return ctx;
-            };
-            const requestEvent: any = new RunProcess(shellProcess, true, modifier);
-            requestEvent.id = Generate.randomHexString(8);
-
-            const processStarted: ProcessStarted =
-                await window.o.requestEvent<ProcessStarted>(requestEvent);
-            _modal.showProcess(processStarted.processId);
+    window.o.runProcess = async function runProcess(
+      processDefinition: ProcessDefinition<any, any>,
+      contextData: { [x: string]: any },
+      dirtyFlags: { [x: string]: boolean } | undefined
+    ) {
+      const modifier = async (ctx) => {
+        ctx.childProcessDefinition = processDefinition;
+        ctx.childContext = {
+          data: contextData,
+          dirtyFlags: !dirtyFlags ? {} : dirtyFlags,
         };
+        return ctx;
+      };
+      const requestEvent: any = new RunProcess(shellProcess, true, modifier);
+      requestEvent.id = Generate.randomHexString(8);
 
         onParamsChanged();
         mounted = true;
@@ -110,110 +105,119 @@
         }
     });
 
-    let lastParamsJson:string;
+    onParamsChanged();
+    mounted = true;
+  });
 
-    $: {
-        if (params && mounted && lastParamsJson != JSON.stringify(params)) {
-            onParamsChanged()
-            lastParamsJson = JSON.stringify(params);
-        }
-        layoutClasses =
-            (dapp && dapp.isFullWidth) ||
-            (_mainPage && _mainPage.isFullWidth)
-                ? ""
-                : "md:w-2/3 xl:w-1/2";
+  let lastParamsJson: string;
 
-        if (_modal && _modalIsOpen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "visible";
-        }
+  $: {
+    if (params && mounted && lastParamsJson != JSON.stringify(params)) {
+      onParamsChanged();
+      lastParamsJson = JSON.stringify(params);
+    }
+    layoutClasses =
+      (dapp && dapp.isFullWidth) || (_mainPage && _mainPage.isFullWidth)
+        ? ""
+        : "md:w-2/3 xl:w-1/2";
+
+    if (_modal && _modalIsOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "visible";
+    }
+  }
+
+  function onParamsChanged() {
+    let dappId: string;
+    if (!params.dappId) {
+      const defaultApp = dapps.find(
+        (o) => o.routeParts && o.routeParts.length == 0
+      );
+      if (defaultApp) {
+        dappId = defaultApp.dappId;
+      } else {
+        _mainPage = null;
+        return;
+      }
+      params.dappId = dappId;
+    } else {
+      dappId = params.dappId.endsWith(":1")
+        ? params.dappId
+        : params.dappId + ":1";
     }
 
-    function onParamsChanged() {
-        let dappId:string;
-        if (!params.dappId) {
-            const defaultApp = dapps.find(o => o.routeParts && o.routeParts.length == 0);
-            if (defaultApp) {
-                dappId = defaultApp.dappId;
-            } else {
-                _mainPage = null;
-                return;
+    dapp = dapps.find((o) => o.dappId == dappId);
+    if (!_runtimeDapps[dappId]) {
+      _runtimeDapps[dappId] = <RuntimeDapp<any>>{
+        ...dapp,
+        route: dapp,
+        state: {},
+      };
+      if (_runtimeDapps[dappId].initialize) {
+        _runtimeDapps[dappId].initialize([], runtimeDapp);
+      }
+    }
+
+    runtimeDapp = _runtimeDapps[dappId];
+
+    if (!dapp) {
+      _mainPage = null;
+      return;
+    }
+
+    const findRoute = (params: { [x: string]: string }) => {
+      const newPageParams = {};
+      let matchingRoute: Routable;
+
+      let routePartsFromParams = [];
+      if (params["1"]) routePartsFromParams.push(params["1"]);
+      if (params["2"]) routePartsFromParams.push(params["2"]);
+      if (params["3"]) routePartsFromParams.push(params["3"]);
+      if (params["4"]) routePartsFromParams.push(params["4"]);
+      if (params["5"]) routePartsFromParams.push(params["5"]);
+      if (params["6"]) routePartsFromParams.push(params["6"]);
+
+      let possibleRoutes = dapp.routables.filter(
+        (o) => o.routeParts.length == routePartsFromParams.length
+      );
+      console.log("Possible routes (same length):", possibleRoutes);
+
+      for (let route of possibleRoutes) {
+        const exactParts = route.routeParts
+          .filter((part) => part.startsWith("="))
+          .map((o) => o.replace("=", ""));
+        if (exactParts.length <= routePartsFromParams.length) {
+          // Could be a matching route
+          const overlapFromParams = routePartsFromParams.slice(
+            0,
+            exactParts.length
+          );
+          if (arraysEqual(exactParts, overlapFromParams)) {
+            matchingRoute = route;
+            console.log("Matching route:", route);
+
+            const remainingParamsSpec = route.routeParts
+              .slice(exactParts.length)
+              .map((o) => o.replace(":", "").replace("?", ""));
+            const remainingParams = routePartsFromParams.slice(
+              exactParts.length
+            );
+
+            for (let i = 0; i < remainingParamsSpec.length; i++) {
+              newPageParams[remainingParamsSpec[i]] = remainingParams[i];
             }
-            params.dappId = dappId;
-        } else {
-            dappId = params.dappId.endsWith(":1") ? params.dappId : params.dappId + ":1";
+            break;
+          }
         }
+      }
 
-        dapp = dapps.find(o => o.dappId == dappId);
-        if (!_runtimeDapps[dappId]) {
-            _runtimeDapps[dappId] = <RuntimeDapp<any>>{
-                ...dapp,
-                route: dapp,
-                state: {}
-            }
-            if (_runtimeDapps[dappId].initialize) {
-                _runtimeDapps[dappId].initialize([], runtimeDapp);
-            }
-        }
-
-        runtimeDapp = _runtimeDapps[dappId];
-
-        if (!dapp) {
-            _mainPage = null;
-            return;
-        }
-
-        const findRoute = (params:{[x:string]:string}) => {
-            const newPageParams = {};
-            let matchingRoute:Routable;
-
-            let routePartsFromParams = [];
-            if (params["1"]) routePartsFromParams.push(params["1"]);
-            if (params["2"]) routePartsFromParams.push(params["2"]);
-            if (params["3"]) routePartsFromParams.push(params["3"]);
-            if (params["4"]) routePartsFromParams.push(params["4"]);
-            if (params["5"]) routePartsFromParams.push(params["5"]);
-            if (params["6"]) routePartsFromParams.push(params["6"]);
-
-            let possibleRoutes = dapp.routables.filter(o => o.routeParts.length == routePartsFromParams.length);
-            console.log("Possible routes (same length):", possibleRoutes);
-
-            for (let route of possibleRoutes) {
-                const exactParts = route.routeParts.filter(part => part.startsWith("=")).map(o => o.replace("=", ""));
-                if (exactParts.length <= routePartsFromParams.length) {
-                    // Could be a matching route
-                    const overlapFromParams = routePartsFromParams.slice(0, exactParts.length);
-                    if (arraysEqual(exactParts, overlapFromParams)) {
-                        matchingRoute = route;
-                        console.log("Matching route:", route);
-
-                        const remainingParamsSpec = route.routeParts.slice(exactParts.length).map(o => o.replace(":", "").replace("?", ""));
-                        const remainingParams = routePartsFromParams.slice(exactParts.length);
-
-                        for (let i = 0; i < remainingParamsSpec.length; i++) {
-                            newPageParams[remainingParamsSpec[i]] = remainingParams[i];
-                        }
-                        break;
-                    }
-                }
-            }
-
-            return {
-                found: !!matchingRoute,
-                routable: matchingRoute,
-                pageParams: newPageParams
-            }
-        };
-
-        const findRouteResult = findRoute(params);
-        if (!findRouteResult.found) {
-            _mainPage = null;
-            return;
-        }
-
-        routable = findRouteResult.routable;
-        const newPageParams = findRouteResult.pageParams;
+      return {
+        found: !!matchingRoute,
+        routable: matchingRoute,
+        pageParams: newPageParams,
+      };
+    };
 
         if (routable.type === "page" && (<Page<any, any>>routable).position !== "modal") {
             if (_modalPage && _modalIsOpen) {
@@ -263,44 +267,106 @@
             );
         }
 
-        if (!_mainPage && dapp.defaultRoute) {
-            const defaultRoutable = findRoute({
-                "dappId": dapp.dappId,
-                "1": dapp.defaultRoute.length > 0 ? dapp.defaultRoute[0] : null,
-                "2": dapp.defaultRoute.length > 1 ? dapp.defaultRoute[1] : null,
-                "3": dapp.defaultRoute.length > 2 ? dapp.defaultRoute[2] : null,
-                "4": dapp.defaultRoute.length > 3 ? dapp.defaultRoute[3] : null,
-                "5": dapp.defaultRoute.length > 4 ? dapp.defaultRoute[4] : null,
-                "6": dapp.defaultRoute.length > 5 ? dapp.defaultRoute[5] : null,
-            });
-            if (defaultRoutable.found) {
-                _mainPage = <any>defaultRoutable.routable;
-                lastMainUrl = `/${dapp.dappId}/${defaultRoutable.routable.routeParts.map(o => o.replace("=", "")).join("/")}`;
-            }
-            pageParams = defaultRoutable.pageParams;
-        }
+    routable = findRouteResult.routable;
+    const newPageParams = findRouteResult.pageParams;
 
-        _navManifest = getNavigationManifest(runtimeDapp, _processNavigation, _modal);
+    if (
+      routable.type === "page" &&
+      (<Page<any, any>>routable).position !== "modal"
+    ) {
+      if (_modalPage && _modalIsOpen) {
+        if (!_modal.closeModal()) {
+          // TODO: This doesn't work as intended. (when in a process and user presses browser->back then strange URLs can arise).
+          push(lastMainUrl);
+          return;
+        }
+      }
+      _mainPage = <Page<any, any>>routable;
+      pageParams = newPageParams;
+      lastMainUrl = $location;
+    } else if (
+      routable.type === "page" &&
+      (<Page<any, any>>routable).position === "modal"
+    ) {
+      _modalPage = <Page<any, any>>routable;
+      _modal.showPage(_modalPage, newPageParams, runtimeDapp, routable);
+    } else if (routable.type === "trigger") {
+      _entryTrigger = <Trigger<any, any>>routable;
+      if (_entryTrigger.eventFactory) {
+        const triggerEvent = _entryTrigger.eventFactory(params, dapp);
+        if (!triggerEvent) {
+          throw new Error(
+            `The _entryTrigger.eventFactory didn't return an event.`
+          );
+        }
+        window.o.publishEvent(triggerEvent);
+      }
+      if (_entryTrigger.action) {
+        _entryTrigger.action(params, dapp);
+      }
+    } else if (routable.type === "link") {
+      const link = <Link<any, any>>routable;
+      link.url(params, dapp);
+      window.history.back();
+      return;
+    } else {
+      throw new Error(
+        `Entry point type '${routable.type}' is not supported by the DappFrame.`
+      );
     }
 
+    if (!_mainPage && dapp.defaultRoute) {
+      const defaultRoutable = findRoute({
+        dappId: dapp.dappId,
+        "1": dapp.defaultRoute.length > 0 ? dapp.defaultRoute[0] : null,
+        "2": dapp.defaultRoute.length > 1 ? dapp.defaultRoute[1] : null,
+        "3": dapp.defaultRoute.length > 2 ? dapp.defaultRoute[2] : null,
+        "4": dapp.defaultRoute.length > 3 ? dapp.defaultRoute[3] : null,
+        "5": dapp.defaultRoute.length > 4 ? dapp.defaultRoute[4] : null,
+        "6": dapp.defaultRoute.length > 5 ? dapp.defaultRoute[5] : null,
+      });
+      if (defaultRoutable.found) {
+        _mainPage = <any>defaultRoutable.routable;
+        lastMainUrl = `/${dapp.dappId}/${defaultRoutable.routable.routeParts
+          .map((o) => o.replace("=", ""))
+          .join("/")}`;
+      }
+      pageParams = defaultRoutable.pageParams;
+    }
+
+    _navManifest = getNavigationManifest(
+      runtimeDapp,
+      _processNavigation,
+      _modal
+    );
+  }
 </script>
-<div class="flex flex-col text-base">
-    <main class="z-30 flex-1 overflow-y-auto">
-        <div
-                class="mainContent w-full mx-auto {layoutClasses}"
-                class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== "homepage:1"}
-                class:blur={_modal && _modalIsOpen}>
-            {#if _mainPage}
-                <svelte:component this={_mainPage.component} params={pageParams} runtimeDapp={runtimeDapp} routable={routable} />
-            {:else}
-                <NotFound />
-            {/if}
-        </div>
-    </main>
+
+<div class="flex flex-col text-dark">
+  <main class="z-30 flex-1 overflow-y-auto">
+    <div
+      class="mainContent w-full mx-auto {layoutClasses}"
+      class:mb-16={(!_modal || !_modalIsOpen) &&
+        dapp &&
+        dapp.dappId !== "homepage:1"}
+      class:blur={_modal && _modalIsOpen}
+    >
+      {#if _mainPage}
+        <svelte:component
+          this={_mainPage.component}
+          params={pageParams}
+          {runtimeDapp}
+          {routable}
+        />
+      {:else}
+        <NotFound />
+      {/if}
+    </div>
+  </main>
 </div>
 
 {#if _navManifest}
-    <NextNav navigation={_navManifest} />
+  <NextNav navigation={_navManifest} />
 {/if}
 <Modal2
     {runtimeDapp}
@@ -320,51 +386,52 @@
       }
     }}
 />
+
 <style>
-    .tab:hover,
-    .tab:focus,
-    .tab:active {
-        @apply text-light;
-    }
+  .tab:hover,
+  .tab:focus,
+  .tab:active {
+    @apply text-light;
+  }
 
-    .tab:hover {
-        @apply text-base;
-    }
+  .tab:hover {
+    @apply text-base;
+  }
 
-    .isOpen {
-        background: transparent;
-        border: none;
-    }
+  .isOpen {
+    background: transparent;
+    border: none;
+  }
 
-    /* Background Blurring for firefox and other non supportive browsers */
-    @supports not (
+  /* Background Blurring for firefox and other non supportive browsers */
+  @supports not (
     (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
   ) {
-        .blur {
-            filter: blur(4px);
-            -webkit-transition: all 0.35s ease-in-out;
-            -moz-transition: all 0.35s ease-in-out;
-            transition: all 0.35s ease-in-out;
-        }
-
-        /* Firefox fix for sticky bottom prev-sibling height */
-        main {
-            padding-bottom: 4rem;
-        }
+    .blur {
+      filter: blur(4px);
+      -webkit-transition: all 0.35s ease-in-out;
+      -moz-transition: all 0.35s ease-in-out;
+      transition: all 0.35s ease-in-out;
     }
 
-    .joinnowbutton {
-        transform: translate(-50%, 0) !important;
-        animation: none !important;
+    /* Firefox fix for sticky bottom prev-sibling height */
+    main {
+      padding-bottom: 4rem;
     }
+  }
 
-    .joinnowbutton:active:focus,
-    .joinnowbutton:active:hover {
-        transform: translate(-50%, 0);
-        animation: none !important;
-    }
+  .joinnowbutton {
+    transform: translate(-50%, 0) !important;
+    animation: none !important;
+  }
 
-    /* .mainContent {
+  .joinnowbutton:active:focus,
+  .joinnowbutton:active:hover {
+    transform: translate(-50%, 0);
+    animation: none !important;
+  }
+
+  /* .mainContent {
       --tw-text-opacity: 1;
       background-image: linear-gradient(
         180deg,
