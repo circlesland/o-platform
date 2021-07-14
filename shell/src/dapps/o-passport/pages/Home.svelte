@@ -90,7 +90,7 @@
         <div class="mb-1 text-left text-2xs text-dark-lightest">Passion</div>
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
-          <div class="text-left">
+          <div class="text-2xl leading-tight text-left font-heading">
             {#if profile && profile.dream}
               {profile.dream}
             {:else}

@@ -85,7 +85,7 @@
       </button>
     </div>
     <div class="">
-      <h2 class="text-2xl">
+      <h2 class="text-4xl font-heading">
         {profile ? profile.firstName : ""}
         {profile && profile.lastName ? profile.lastName : ""}
         <button

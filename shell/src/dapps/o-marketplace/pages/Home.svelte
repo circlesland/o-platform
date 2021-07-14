@@ -97,7 +97,7 @@
 
 <TopNav {runtimeDapp} {routable} />
 
-<div class="p-2 mt-6 bg-light-lightest">
+<div class="p-2 mt-6 bg-darkgrey">
   {#if isLoading}
     <section class="flex items-center justify-center mx-4 mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">

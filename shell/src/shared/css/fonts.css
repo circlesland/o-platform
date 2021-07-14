@@ -178,3 +178,15 @@
     url('./../fonts/poppins-v15-latin-500italic.svg#Poppins') format('svg');
   /* Legacy iOS */
 }
+
+
+/* Ostrich Sans Heavy - latin */
+@font-face {
+  font-family: 'Ostrich Sans Heavy';
+  font-style: normal;
+  font-weight: 900;
+  src: url('./../fonts/OstrichSans-Heavy.woff');
+  /* IE9 Compat Modes */
+  src: local(''),
+    url('./../fonts/OstrichSans-Heavy.woff') format('woff');
+}

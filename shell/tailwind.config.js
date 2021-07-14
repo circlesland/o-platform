@@ -91,6 +91,8 @@ module.exports = {
           dark: "#F29C05",
         },
 
+        darkgrey: "#E2E7EB",
+
         gradient1: "#1DD6A4",
         gradient2: "#0ad99c",
 
@@ -107,6 +109,7 @@ module.exports = {
       },
       fontFamily: {
         primary: ["Poppins", "sans"],
+        heading: ["Ostrich Sans Heavy", "sans"],
         sans: ["Poppins", "sans"],
       },
     },

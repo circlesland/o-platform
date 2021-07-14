@@ -271,7 +271,7 @@
         />
       </div>
       {#if profile && profile.safeAddress}
-        <div class="mt-4 text-2xl uppercase">
+        <div class="mt-4 text-3xl tracking-wide uppercase font-heading">
           {profile
             ? profile.lastName
               ? `${profile.firstName} ${profile.lastName}`
@@ -398,7 +398,9 @@
             <div class="flex flex-col w-full p-2 space-y-1">
               <div class="text-left text-2xs text-dark-lightest">Passion</div>
 
-              <div class="flex items-center w-full text-xl">
+              <div
+                class="flex items-center w-full text-2xl leading-tight font-heading"
+              >
                 {#if profile && profile.dream}
                   {profile.dream}
                 {/if}

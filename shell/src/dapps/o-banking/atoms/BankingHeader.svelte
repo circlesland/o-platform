@@ -2,20 +2,19 @@
   import TopNav from "src/shared/atoms/TopNav.svelte";
   import PageHeader from "src/shared/atoms/PageHeader.svelte";
   import { mySafe } from "../stores/safe";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
   export let balance: string = "0";
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
-
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 </script>
 
 <TopNav {runtimeDapp} {routable} />
 
 <PageHeader heightClass="h-40">
   <div class="self-center block text-center">
-    <span class="inline-block text-5xl"
+    <span class="inline-block text-6xl tracking-wide font-heading"
       >{balance}
       <svg
         class="inline w-8 h-8 -mt-1 -ml-4"

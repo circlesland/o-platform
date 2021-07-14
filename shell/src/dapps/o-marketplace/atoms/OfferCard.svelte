@@ -81,7 +81,7 @@
           class="rounded-t-xl"
         />
         <div
-          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest"
+          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-2xl leading-tight rounded-l-full font-heading top-2 bg-light-lightest"
         >
           {offer.pricePerUnit} C / {offer.unitTag.value}
           <!-- <Time relative timestamp={offer.publishedAt} /> -->
@@ -106,7 +106,7 @@
         {offer.createdBy.lastName}
       </div>
     </div>
-    <div class="flex flex-col w-full px-6 mt-6 space-y-4 bg-white">
+    <div class="flex flex-col w-full px-4 mt-6 space-y-4 bg-white">
       <div class="flex flex-row flex-grow space-x-2">
         <div
           class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs"
@@ -120,7 +120,7 @@
           </a>
         </div>
       </div>
-      <div class="text-lg font-bold text-left uppercase">
+      <div class="text-4xl leading-tight text-left uppercase font-heading">
         {offer.title}
       </div>
 

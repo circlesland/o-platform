@@ -91,16 +91,16 @@
       class="grid w-full grid-cols-3 gap-4 p-4 text-xs bg-white rounded-lg shadow "
     >
       <div class="flex flex-col items-center justify-items-center">
-        <div class="text-5xl font-bold text-dark">5.</div>
-        <div class="mt-4 text-dark-lighter">city rank</div>
+        <div class="text-6xl leading-tight font-heading text-dark">5.</div>
+        <div class=" text-dark-lighter">city rank</div>
       </div>
       <div class="flex flex-col items-center justify-items-center ">
-        <div class="text-5xl font-bold text-dark">86.</div>
-        <div class="mt-4 text-dark-lighter">leader rank</div>
+        <div class="text-6xl leading-tight font-heading text-dark">86.</div>
+        <div class=" text-dark-lighter">leader rank</div>
       </div>
       <div class="flex flex-col items-center justify-items-center ">
-        <div class="text-5xl font-bold text-dark">0</div>
-        <div class="mt-4 text-dark-lighter">my invites</div>
+        <div class="text-6xl leading-tight font-heading text-dark">0</div>
+        <div class=" text-dark-lighter">my invites</div>
       </div>
     </div>
   </section>
@@ -198,7 +198,7 @@
         <div class="pt-2">
           <Icons icon="dashpassport" />
         </div>
-        <div class="mt-4 text-xl font-bold text-dark">passport</div>
+        <div class="mt-4 text-3xl font-heading text-dark">passport</div>
       </div>
     </section>
 
@@ -214,7 +214,7 @@
         <div class="pt-2">
           <Icons icon="dashpassport" />
         </div>
-        <div class="mt-4 text-xl font-bold text-dark">friends</div>
+        <div class="mt-4 text-3xl font-heading text-dark">friends</div>
       </div>
     </section>
 
@@ -229,7 +229,7 @@
           <div class="pt-2">
             <Icons icon="dashbanking" />
           </div>
-          <div class="mt-4 text-xl font-bold text-base-300">banking</div>
+          <div class="mt-4 text-3xl font-heading text-base-300">banking</div>
         </div>
       </section>
     {:else}
@@ -244,7 +244,7 @@
           <div class="pt-2">
             <Icons icon="dashbanking" />
           </div>
-          <div class="mt-4 text-xl font-bold text-dark">banking</div>
+          <div class="mt-4 text-3xl font-heading text-dark">banking</div>
         </div>
       </section>
     {/if}
@@ -261,7 +261,7 @@
         <div class="pt-2">
           <Icons icon="dashmarket" />
         </div>
-        <div class="mt-4 text-xl font-bold text-dark">market</div>
+        <div class="mt-4 text-3xl font-heading text-dark">market</div>
       </div>
     </section>
 
@@ -277,7 +277,7 @@
         <div class="pt-2">
           <Icons icon="dashchat" />
         </div>
-        <div class="mt-4 text-xl font-bold text-dark">chat</div>
+        <div class="mt-4 text-3xl font-heading text-dark">chat</div>
       </div>
     </section>
   </div>

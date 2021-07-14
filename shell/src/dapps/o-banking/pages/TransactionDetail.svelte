@@ -169,8 +169,8 @@
       <div class="flex flex-col w-full space-y-1">
         <div class="text-left text-2xs text-dark-lightest">Message</div>
 
-        <div class="flex items-center w-full">
-          <div class="text-xl text-left ">
+        <div class="flex items-center w-full ">
+          <div class="text-2xl leading-tight text-left font-heading">
             {message ? message : "No Message"}
           </div>
         </div>
