@@ -27,7 +27,7 @@ export let formatValue = function(value) {
 export let userInfo = async function(addresses) {
     const findCirclesGardenProfiles = new Promise(async (resolve) => {
         try {
-            resolve(await Banking.findCirclesGardenProfiles(allKnownAddresses));
+            resolve(await Banking.findCirclesGardenProfiles(addresses));
             return;
         } catch (e) {
             console.error(`Couldn't load the following profiles from api.circles.garden:`, resolve);
