@@ -1,5 +1,4 @@
 <script lang="ts">
-  import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import { me } from "../../../shared/stores/me";
   import { onMount } from "svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
@@ -7,6 +6,7 @@
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { push } from "svelte-spa-router";
   import Icons from "../../../shared/molecules/Icons.svelte";
+  import AdjacencyGraph from "../../../shared/pathfinder/CirclesAdjacencyGraph.svelte";
 
   const { mySafe } = require("src/dapps/o-banking/stores/safe");
 
@@ -63,6 +63,8 @@
     init();
   });
 
+  let mySafeAddress:string;
+
   $: {
     if ($me) {
       inviteLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${$me.id}`;
@@ -72,6 +74,11 @@
 
 <!-- <DashboardHeader /> -->
 <div class="m-4">
+  {#if $me.circlesAddress}
+  <section class="mb-8">
+    <AdjacencyGraph classes="grid w-full bg-white rounded-lg shadow" address={$me.circlesAddress} />
+  </section>
+  {/if}
   <section class="mb-8">
     <div
       class="grid w-full grid-cols-3 gap-4 p-4 text-xs bg-white rounded-lg shadow "
@@ -185,16 +192,32 @@
     <!-- PASSPORT  -->
 
     <section
-      class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
-      on:click={() => loadLink("/passport/profile")}
+            class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
+            on:click={() => loadLink("/passport/profile")}
     >
       <div
-        class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+              class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
       >
         <div class="pt-2">
           <Icons icon="dashpassport" />
         </div>
         <div class="mt-4 text-xl font-bold text-secondary">passport</div>
+      </div>
+    </section>
+
+    <!-- CONTACTS  -->
+
+    <section
+            class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
+            on:click={() => loadLink("/contacts")}
+    >
+      <div
+              class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+      >
+        <div class="pt-2">
+          <Icons icon="dashpassport" />
+        </div>
+        <div class="mt-4 text-xl font-bold text-secondary">friends</div>
       </div>
     </section>
 
