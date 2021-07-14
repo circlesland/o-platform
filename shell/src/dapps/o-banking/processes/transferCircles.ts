@@ -12,6 +12,7 @@ import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {requestPathToRecipient} from "../services/requestPathToRecipient";
 import {show} from "@o-platform/o-process/dist/actions/show";
 import {CreateTagInput, RequestIndexTransactionDocument} from "../data/api/types";
+import {Subscription} from "rxjs";
 
 export type TransferCirclesContextData = {
   safeAddress:string;
@@ -115,34 +116,42 @@ createMachine<TransferCirclesContext, any>({
               destinations,
               values
             );
+
+            let txHashSubscription: Subscription;
+            txHashSubscription = transferTroughResult.observable.subscribe(async o => {
+              if (o.type != "transactionHash") {
+                return;
+              }
+              if (txHashSubscription) {
+                txHashSubscription.unsubscribe();
+              }
+
+              const transactionTags: CreateTagInput[] = [{
+                typeId: "o-banking:transfer:transitivePath:1",
+                value: JSON.stringify(context.data.transitivePath)
+              }];
+              if (context.data.message) {
+                transactionTags.push({
+                  typeId: "o-banking:transfer:message:1",
+                  value: context.data.message
+                });
+              }
+
+              const api = await window.o.apiClient.client.subscribeToResult();
+              const indexedTransaction = await api.mutate({
+                mutation: RequestIndexTransactionDocument,
+                variables: {
+                  data: {
+                    tags: transactionTags,
+                    transactionHash: o.data
+                  }
+                }
+              });
+              console.log(indexedTransaction);
+            });
+
             const receipt = await transferTroughResult.toPromise();
             console.log(receipt);
-
-            const transactionTags: CreateTagInput[] = [{
-              typeId: "o-banking:transfer:transitivePath:1",
-              value: JSON.stringify(context.data.transitivePath)
-            }];
-            if (context.data.message) {
-              transactionTags.push({
-                typeId: "o-banking:transfer:message:1",
-                value: context.data.message
-              });
-            }
-
-            const api = await window.o.apiClient.client.subscribeToResult();
-            const indexedTransaction = await api.mutate({
-              mutation: RequestIndexTransactionDocument,
-              variables: {
-                data: {
-                  blockNumber: receipt.blockNumber,
-                  tags: transactionTags,
-                  transactionHash: receipt.transactionHash,
-                  transactionIndex: receipt.transactionIndex
-                }
-              }
-            });
-            console.log(indexedTransaction);
-
           } catch (e) {
             console.error(e);
             throw e;
