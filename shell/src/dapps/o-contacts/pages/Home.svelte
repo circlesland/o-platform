@@ -28,6 +28,10 @@
                         PROFILE_INCOMING_CIRCLES_TRANSACTION
                     {:else if event.type === "PROFILE_OUTGOING_CIRCLES_TRANSACTION"}
                         PROFILE_OUTGOING_CIRCLES_TRANSACTION
+                    {:else if event.type === "PROFILE_INCOMING_XDAI_TRANSACTION"}
+                        PROFILE_INCOMING_XDAI_TRANSACTION
+                    {:else if event.type === "PROFILE_OUTGOING_XDAI_TRANSACTION"}
+                        PROFILE_OUTGOING_XDAI_TRANSACTION
                     {:else if event.type === "PROFILE_INCOMING_TRUST"}
                         PROFILE_INCOMING_TRUST
                     {:else if event.type === "PROFILE_OUTGOING_TRUST"}

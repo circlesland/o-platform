@@ -84,10 +84,7 @@ const processDefinition = (processId: string) =>
               mutation: RequestIndexTransactionDocument,
               variables: {
                 data: {
-                  blockNumber: receipt.blockNumber,
-                  tags: transactionTags,
-                  transactionHash: receipt.transactionHash,
-                  transactionIndex: receipt.transactionIndex
+                  transactionHash: receipt.transactionHash
                 }
               }
             });
