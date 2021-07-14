@@ -73,13 +73,13 @@ export class Banking {
             message: "Loading block timestamps ..",
             run: async () => this.augmentBlockTimes()
         }, {
-            id: "apiTransactions",
-            message: "Loading known transactions from the api ..",
-            run: async () => this.augmentWithApiTransactions()
-        }, {
             id: "augmentProfiles",
             message: "Loading profiles ..",
             run: async () => this.augmentProfiles()
+        }, {
+            id: "apiTransactions",
+            message: "Loading known transactions from the api ..",
+            run: async () => this.augmentWithApiTransactions()
         }, {
             id: "cacheSafe",
             message: "Writing transactions to cache ..",
@@ -114,10 +114,6 @@ export class Banking {
             message: "Loading block timestamps ..",
             run: async () => this.augmentBlockTimes()
         }, {
-            id: "apiTransactions",
-            message: "Loading known transactions from the api ..",
-            run: async () => this.augmentWithApiTransactions()
-        }, {
             id: "augmentProfiles",
             message: "Loading profiles ..",
             run: async () => this.augmentProfiles()
@@ -148,6 +144,10 @@ export class Banking {
             message: "Loading past Circles transfers ..",
             run: async () => this.refreshHubTransfers()
         }, {
+            id: "apiTransactions",
+            message: "Loading known transactions from the api ..",
+            run: async () => this.augmentWithApiTransactions()
+        }, {
             id: "acceptedTokens",
             message: "Loading accepted Circles tokens ..",
             run: async () => this.refreshAcceptedTokens()
@@ -173,10 +173,6 @@ export class Banking {
             id: "blockTimes",
             message: "Loading block timestamps ..",
             run: async () => this.augmentBlockTimes()
-        }, {
-            id: "apiTransactions",
-            message: "Loading known transactions from the api ..",
-            run: async () => this.augmentWithApiTransactions()
         }, {
             id: "augmentProfiles",
             message: "Loading profiles ..",

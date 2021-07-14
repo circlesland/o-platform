@@ -13,6 +13,15 @@
 
   $: me;
 
+
+  let stopElement: HTMLDivElement;
+  let firstElement: TransactionCard;
+  let preparedRows: Transfer[] = [];
+  let displayRows: Transfer[] = [];
+
+  let scrollY;
+  let oldRowCount = 0;
+
   const pageSize = 30;
   let currentPage = 0;
   let eof = false;
@@ -30,27 +39,33 @@
     }
     const from = currentPage * pageSize;
     const to = from + pageSize;
-    displayRows = [...displayRows, ...$mySafe.transfers.rows.slice(from, to)];
+    preparedRows = [...preparedRows, ...$mySafe.transfers.rows.slice(from, to)];
     console.log("Next page ..");
     currentPage++;
   }
 
   $: {
-    if (displayRows.length == 0 && $mySafe.transfers.rows) {
+    if ($mySafe.transfers.rows.length != oldRowCount) {
+      oldRowCount = $mySafe.transfers.rows.length;
+      preparedRows = [];
+      let oldPage = currentPage;
+      currentPage = 0;
+      while (currentPage < oldPage) {
+        loadMore();
+      }
+      displayRows = preparedRows;
+    }
+    if (preparedRows.length == 0 && $mySafe.transfers.rows) {
       loadMore();
+      displayRows = preparedRows;
     } else {
       const stopElementY = stopElement ? stopElement.offsetTop : -1;
       if (stopElementY - window.innerHeight - scrollY < 50 && !eof) {
         loadMore();
+        displayRows = preparedRows;
       }
     }
   }
-
-  let stopElement: HTMLDivElement;
-  let firstElement: TransactionCard;
-  let displayRows: Transfer[] = [];
-
-  let scrollY;
 </script>
 
 <svelte:window bind:scrollY />

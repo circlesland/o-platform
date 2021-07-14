@@ -1,7 +1,3 @@
-import { DappManifest } from "./dappManifest";
-import { Routable } from "./routable";
-import { merge } from "rxjs";
-
 export interface NavigationProps {
   icon?: string;
   text?: string;
