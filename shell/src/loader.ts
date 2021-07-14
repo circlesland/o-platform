@@ -7,6 +7,7 @@ import {marketplace} from "./dapps/o-marketplace.manifest";
 import {trustnetwork} from "./dapps/o-trustnetwork.manifest";
 import {stats} from "./dapps/o-stats.manifest";
 import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import {contacts} from "./dapps/o-contacts.manifest";
 
 export const dapps: DappManifest<any>[] = [
     homepage,
@@ -16,5 +17,6 @@ export const dapps: DappManifest<any>[] = [
     miva,
     marketplace,
     trustnetwork,
-    stats
+    stats,
+    contacts
 ];

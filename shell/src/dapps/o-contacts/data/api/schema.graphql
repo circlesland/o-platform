@@ -1,0 +1,414 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+interface ICity {
+    country: String!
+    feature_code: String!
+    geonameid: Int!
+    latitude: Float!
+    longitude: Float!
+    name: String!
+    population: Int!
+}
+
+type City implements ICity {
+    country: String!
+    feature_code: String!
+    geonameid: Int!
+    latitude: Float!
+    longitude: Float!
+    name: String!
+    population: Int!
+}
+
+type CityStats implements ICity {
+    citizenCount: Int!
+    country: String!
+    feature_code: String!
+    geonameid: Int!
+    latitude: Float!
+    longitude: Float!
+    name: String!
+    population: Int!
+}
+
+type ConsumeDepositedChallengeResponse {
+    challenge: String
+    success: Boolean!
+}
+
+type CountryStats {
+    citizenCount: Int!
+    name: String!
+}
+
+type DelegateAuthInit {
+    appId: String!
+    challengeType: String
+    delegateAuthCode: String
+    errorMessage: String
+    success: Boolean!
+    validTo: String
+}
+
+type DepositChallengeResponse {
+    errorMessage: String
+    success: Boolean!
+}
+
+type ExchangeTokenResponse {
+    errorMessage: String
+    success: Boolean!
+}
+
+type Goal {
+    totalCitizens: Int!
+}
+
+type IndexTransactionLog {
+    address: String!
+    blockHash: String!
+    blockNumber: Int!
+    data: String
+    id: Int!
+    logIndex: Int!
+    removed: Boolean
+    topics: [String!]!
+    transactionHash: String!
+    transactionIndex: Int!
+}
+
+type IndexedTransaction {
+    blockHash: String!
+    blockNumber: Int!
+    confirmations: Int
+    contractAddress: String
+    cumulativeGasUsed: String!
+    from: String!
+    gasUsed: String!
+    id: Int!
+    logs: [IndexTransactionLog!]
+    logsBloom: String!
+    root: String
+    status: String
+    tags: [Tag!]
+    to: String!
+    transactionHash: String!
+    transactionIndex: Int!
+}
+
+type LockOfferResult {
+    lockedUntil: String
+    success: Boolean!
+}
+
+type LogoutResponse {
+    errorMessage: String
+    success: Boolean!
+}
+
+type Mutation {
+    authenticateAt(appId: String!): DelegateAuthInit!
+    consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
+    depositChallenge(jwt: String!): DepositChallengeResponse!
+    exchangeToken: ExchangeTokenResponse!
+    indexTransaction(data: IndexTransactionInput!): IndexedTransaction!
+    lockOffer(data: LockOfferInput!): LockOfferResult!
+    logout: LogoutResponse!
+    provePayment(data: PaymentProof!): ProvePaymentResult!
+    requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
+    unlistOffer(offerId: Int!): Boolean!
+    updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
+    upsertOffer(data: UpsertOfferInput!): Offer!
+    upsertProfile(data: UpsertProfileInput!): Profile!
+    upsertTag(data: UpsertTagInput!): Tag!
+}
+
+type Offer {
+    categoryTag: Tag
+    categoryTagId: Int!
+    city: City
+    createdBy: Profile
+    createdByProfileId: Int!
+    deliveryTermsTag: Tag
+    deliveryTermsTagId: Int!
+    description: String
+    geonameid: Int!
+    id: Int!
+    maxUnits: Int
+    pictureMimeType: String!
+    pictureUrl: String!
+    pricePerUnit: String!
+    publishedAt: String!
+    purchasedAt: String
+    title: String!
+    unitTag: Tag
+    unitTagId: Int!
+    unlistedAt: String
+}
+
+type Profile {
+    avatarCid: String
+    avatarMimeType: String
+    avatarUrl: String
+    circlesAddress: String
+    circlesSafeOwner: String
+    circlesTokenAddress: String
+    city: City
+    cityGeonameid: Int
+    country: String
+    dream: String
+    firstName: String!
+    id: Int!
+    lastName: String
+    newsletter: Boolean
+    offers: [Offer!]
+}
+
+type ProvePaymentResult {
+    success: Boolean!
+}
+
+type Purchase {
+    id: Int!
+    purchasedAt: String!
+    purchasedBy: Profile!
+    purchasedByProfileId: Int!
+    purchasedFrom: Profile!
+    purchasedFromProfileId: Int!
+    purchasedItem: Offer!
+    purchasedOfferId: Int!
+    status: PurchaseStatus!
+}
+
+type Query {
+    cities(query: QueryCitiesInput!): [City!]!
+    offers(query: QueryOfferInput!): [Offer!]!
+    profiles(query: QueryProfileInput!): [Profile!]!
+    search(query: SearchInput!): [Profile!]!
+    sessionInfo: SessionInfo!
+    stats: Stats
+    tagById(id: Int!): Tag
+    tags(query: QueryTagsInput!): [Tag!]!
+    version: Version!
+    whoami: String
+}
+
+type RequestUpdateSafeResponse {
+    challenge: String
+    errorMessage: String
+    success: Boolean!
+}
+
+type Server {
+    version: String!
+}
+
+type SessionInfo {
+    hasProfile: Boolean
+    isLoggedOn: Boolean!
+    profileId: Int
+}
+
+type Stats {
+    cities: [CityStats!]!
+    cityRank: Int
+    countries: [CountryStats!]!
+    currentGoal: Int!
+    currentGoalFrom: Int!
+    goals: [Goal!]!
+    inviteRank: Int!
+    nextGoalAt: Int!
+    totalCitizens: Int!
+}
+
+type Tag {
+    id: Int!
+    typeId: String!
+    value: String
+}
+
+type UpdateSafeResponse {
+    errorMessage: String
+    newSafeAddress: String
+    success: Boolean!
+}
+
+type Version {
+    major: Int!
+    minor: Int!
+    revision: Int!
+}
+
+enum CacheControlScope {
+    PRIVATE
+    PUBLIC
+}
+
+enum PurchaseStatus {
+    INVALID
+    ITEM_LOCKED
+    PAYMENT_PROVEN
+}
+
+input CreateTagInput {
+    typeId: String!
+    value: String
+}
+
+input DepositChallenge {
+    jwt: String!
+}
+
+input IndexTransactionInput {
+    blockHash: String!
+    blockNumber: Int!
+    confirmations: Int
+    contractAddress: String
+    cumulativeGasUsed: String!
+    from: String!
+    gasUsed: String!
+    logs: [IndexTransactionLogInput!]
+    logsBloom: String!
+    root: String
+    status: String
+    tags: [CreateTagInput!]
+    to: String!
+    transactionHash: String!
+    transactionIndex: Int!
+}
+
+input IndexTransactionLogInput {
+    address: String!
+    blockHash: String!
+    blockNumber: Int!
+    data: String
+    logIndex: Int!
+    removed: Boolean
+    topics: [String!]!
+    transactionHash: String!
+    transactionIndex: Int!
+}
+
+input LockOfferInput {
+    offerId: Int!
+}
+
+input PaymentProof {
+    destinations: [String!]!
+    forOfferId: Int!
+    sources: [String!]!
+    tokenOwners: [String!]!
+    values: [String!]!
+}
+
+input QueryCitiesByGeonameIdInput {
+    geonameid: [Int!]!
+}
+
+input QueryCitiesByNameInput {
+    languageCode: String
+    name_like: String!
+}
+
+input QueryCitiesInput {
+    byId: QueryCitiesByGeonameIdInput
+    byName: QueryCitiesByNameInput
+}
+
+input QueryIndexedTransactionInput {
+    fromAddress: String
+    tags: [QueryIndexedTransactionTagInput!]
+    toAddress: String
+}
+
+input QueryIndexedTransactionTagInput {
+    typeId: String!
+    value: String
+}
+
+input QueryOfferInput {
+    categoryTagId: Int
+    createdByProfileId: Int
+    id: Int
+    publishedAt_gt: String
+    publishedAt_lt: String
+}
+
+input QueryProfileInput {
+    circlesAddress: [String!]
+    country: String
+    firstName: String
+    id: [Int!]
+    lastName: String
+}
+
+input QueryPurchaseInput {
+    purchasedByProfileId: String!
+}
+
+input QueryTagsInput {
+    typeId_in: [String!]!
+    value_like: String
+}
+
+input QueryUniqueProfileInput {
+    id: Int!
+}
+
+input RequestUpdateSafeInput {
+    newSafeAddress: String!
+}
+
+input SearchInput {
+    searchString: String!
+}
+
+input UpdateSafeInput {
+    signature: String!
+}
+
+input UpsertOfferInput {
+    categoryTagId: Int!
+    deliveryTermsTagId: Int!
+    description: String
+    geonameid: Int!
+    id: Int
+    maxUnits: Int
+    pictureMimeType: String
+    pictureUrl: String
+    pricePerUnit: String!
+    title: String!
+    unitTagId: Int!
+}
+
+input UpsertProfileInput {
+    avatarCid: String
+    avatarMimeType: String
+    avatarUrl: String
+    circlesAddress: String
+    circlesSafeOwner: String
+    circlesTokenAddress: String
+    cityGeonameid: Int
+    country: String
+    dream: String
+    emailAddress: String
+    firstName: String!
+    id: Int
+    lastName: String
+    newsletter: Boolean
+}
+
+input UpsertTagInput {
+    id: Int
+    typeId: String!
+    value: String
+}
+
+
+"The `Upload` scalar type represents a file upload."
+scalar Upload
