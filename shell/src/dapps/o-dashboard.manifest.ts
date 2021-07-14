@@ -1,7 +1,5 @@
 import Home from "./o-dashboard/pages/Home.svelte";
 import CreateHub from "./o-dashboard/pages/CreateHub.svelte";
-import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
-import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { logout } from "./o-passport/processes/logout";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
@@ -19,17 +17,6 @@ const createHub: Page<any, DappState> = {
   component: CreateHub,
   title: "Become a hub",
   type: "page",
-  navigation: {
-    navPill: {
-      left: {
-        component: LinkComponent,
-        props: {
-          text: "Back",
-          action: () => history.back(),
-        },
-      },
-    },
-  },
 };
 
 export interface DappState {
@@ -61,14 +48,6 @@ export const dashboard: DappManifest<DappState> = {
           action: () => window.o.runProcess(logout, {}),
         },
       ];
-    },
-  },
-  navigation: {
-    navPill: {
-      center: {
-        component: ActionButtonComponent, // action|,
-        props: {}
-      },
     },
   },
 

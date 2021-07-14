@@ -4,12 +4,8 @@ import Keys from "./o-passport/pages/Keys.svelte";
 import Settings from "./o-passport/pages/Settings.svelte";
 import Login from "./o-passport/pages/Login.svelte";
 import { logout } from "./o-passport/processes/logout";
-import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
-import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
-import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import {push} from "svelte-spa-router";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -79,28 +75,6 @@ export const passport: DappManifest<DappState> = {
           action: () => window.o.runProcess(logout, {}),
         },
       ];
-    },
-  },
-  navigation: {
-    navPill: {
-      left: {
-        component: ListComponent,
-        props: {
-          icon: "list",
-          action: () => {}
-        },
-      },
-      right: {
-        component: LinkComponent,
-        props: {
-          icon: "home",
-          action: () => push("#/dashboard")
-        },
-      },
-      center: {
-        component: ActionButtonComponent, // action|
-        props: {},
-      },
     },
   },
   isEnabled: true,

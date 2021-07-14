@@ -106,18 +106,7 @@ export const profile: Page<any, BankingDappState> = {
   routeParts: ["=profile", ":id"],
   title: "Profile",
   component: ProfilePage,
-  jumplist: profileJumplist,
-  navigation: {
-    navPill: {
-      left: {
-        component: LinkComponent,
-        props: {
-          text: "Back",
-          action: () => history.back(),
-        },
-      },
-    },
-  },
+  jumplist: profileJumplist
 };
 
 const transactionDetail: Page<{ _id: string }, BankingDappState> = {
@@ -127,18 +116,7 @@ const transactionDetail: Page<{ _id: string }, BankingDappState> = {
   routeParts: ["=transactions", ":_id"],
   title: "Transaction",
   component: TransactionDetailPage,
-  jumplist: profileJumplist,
-  navigation: {
-    navPill: {
-      left: {
-        component: LinkComponent,
-        props: {
-          text: "Back",
-          action: () => history.back(),
-        },
-      },
-    },
-  },
+  jumplist: profileJumplist
 };
 const transactionSend: Trigger<
   { to: string; amount: string; message: string },

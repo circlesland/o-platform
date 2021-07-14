@@ -5,12 +5,8 @@ import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
 import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
-import ActionButtonComponent from "../shared/molecules/NextNav/Components/ActionButton.svelte";
-import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
-import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import {push} from "svelte-spa-router";
 
 const stream: Page<any, DappState> = {
   routeParts: ["=stream"],
@@ -25,34 +21,12 @@ const offerDetail: Page<any, DappState> = {
   component: OfferDetail,
   title: "Offer detail",
   type: "page",
-  navigation: {
-    navPill: {
-      left: {
-        component: LinkComponent,
-        props: {
-          text: "Back",
-          action: () => history.back(),
-        },
-      },
-    },
-  },
 };
 const categories: Page<any, DappState> = {
   routeParts: ["=categories"],
   component: Categories,
   title: "Categories",
   type: "page",
-  navigation: {
-    navPill: {
-      left: {
-        component: LinkComponent,
-        props: {
-          text: "Back",
-          action: () => history.back(),
-        },
-      },
-    },
-  },
 };
 const categoryDetail: Page<any, DappState> = {
   isSystem: true,
@@ -61,17 +35,6 @@ const categoryDetail: Page<any, DappState> = {
   component: CategoryDetail,
   title: "Category",
   type: "page",
-  navigation: {
-    navPill: {
-      left: {
-        component: LinkComponent,
-        props: {
-          text: "Back",
-          action: () => history.back(),
-        },
-      },
-    },
-  },
 };
 const favorites: Page<any, DappState> = {
   routeParts: ["=favorites"],
@@ -115,28 +78,6 @@ export const marketplace: DappManifest<DappState> = {
     ],
   },
   isEnabled: true,
-  navigation: {
-    navPill: {
-      left: {
-        component: ListComponent,
-        props: {
-          icon: "list",
-          action: () => {},
-        },
-      },
-      right: {
-        component: LinkComponent,
-        props: {
-          icon: "home",
-          action: () => push("#/dashboard")
-        },
-      },
-      center: {
-        component: ActionButtonComponent, // action|
-        props: { },
-      },
-    },
-  },
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
