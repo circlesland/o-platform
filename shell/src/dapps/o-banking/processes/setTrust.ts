@@ -12,6 +12,8 @@ import { HUB_ADDRESS } from "@o-platform/o-circles/dist/consts";
 import { BN } from "ethereumjs-util";
 import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
 import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
+import {Subscription} from "rxjs";
+import {CreateTagInput, RequestIndexTransactionDocument} from "../data/api/types";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -135,6 +137,42 @@ const processDefinition = (processId: string) =>
               new BN(context.data.trustLimit.toString())
             );
 
+            let txHashSubscription: Subscription;
+            txHashSubscription = execResult.observable.subscribe(async o => {
+              if (o.type != "transactionHash") {
+                return;
+              }
+              if (txHashSubscription) {
+                txHashSubscription.unsubscribe();
+              }
+
+              const transactionTags: CreateTagInput[] = [{
+                typeId: "o-banking:trust:status:1",
+                value: JSON.stringify({
+                  trustReceiver: context.data.trustReceiver,
+                  trustLimi: context.data.trustLimit
+                })
+              }];
+              const trustMessage:string  = undefined; // TODO: Ask if the user wants to send a message together with the un/trust
+              if (trustMessage) {
+                transactionTags.push({
+                  typeId: "o-banking:trust:message:1",
+                  value: trustMessage
+                });
+              }
+
+              const api = await window.o.apiClient.client.subscribeToResult();
+              const indexedTransaction = await api.mutate({
+                mutation: RequestIndexTransactionDocument,
+                variables: {
+                  data: {
+                    tags: transactionTags,
+                    transactionHash: o.data
+                  }
+                }
+              });
+              console.log(indexedTransaction);
+            });
             return execResult.toPromise();
           },
           onDone: "#showSuccess",
