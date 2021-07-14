@@ -75,5 +75,5 @@ export let computeFlow = async function(from, to, maxValue) {
 };
 
 export let getAdjacencies = async function(address) {
-    return await (await fetch(PathfinderAPI + '/adjacencies/' + address, {mode: 'cors'})).json();
+    return await (await fetch(`__PATHFINDER_ENDPOINT__/adjacencies/${address}`, {mode: 'cors'})).json();
 };

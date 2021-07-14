@@ -7,7 +7,7 @@
   import { toAddress, getAdjacencies } from "./utility.js";
   import { createNodeContents } from "./visUtils.js";
 
-  export let address: string = "";
+  export let address: string;
 
   // let usernameToExplore = '';
   let graph;
@@ -16,31 +16,42 @@
   let edges = new DataSet();
   let knownEdges = {};
 
+  let initialized = false;
+
   onMount(() => {
     var network = new Network(graph, { nodes: nodes, edges: edges }, {});
     network.on("click", (params) => {
       if (!params.nodes || params.nodes.length == 0) return;
       exploreNode(params.nodes[0]);
     });
-    exploreNode(address);
+    if (address && address !== "0x00" && address.trim() !== "") {
+        exploreNode(address);
+    }
   });
+
+  $: {
+      if (address && address !== "0x00" && address.trim() !== ""&& !initialized) {
+          exploreNode(address);
+      }
+  }
 
   let small = function (node) {
     node["size"] = 25;
     return node;
   };
 
-  let exploreNode = async function (username) {
+  async function exploreNode (username) {
+    initialized = true;
     let adjacencies = await getAdjacencies(
       username.startsWith("0x") ? await toAddress(username) : username
     );
     let addressesToQuery = {};
-    for (let edge of adjacencies) {
+    for (let edge of adjacencies.adjacencies) {
       addressesToQuery[edge.user] = true;
       addressesToQuery[edge.trusts] = true;
     }
     await fillUsernames(Object.keys(addressesToQuery));
-    for (let edge of adjacencies) {
+    for (let edge of adjacencies.adjacencies) {
       nodes.update(small(createNodeContents(edge.user)));
       nodes.update(small(createNodeContents(edge.trusts)));
       if (!knownEdges[edge.user + "," + edge.trusts]) {
@@ -54,7 +65,7 @@
         });
       }
     }
-  };
+  }
 
   let resetGraph = function () {
     nodes.clear();
