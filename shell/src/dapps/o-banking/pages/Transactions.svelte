@@ -50,19 +50,21 @@
       preparedRows = [];
       let oldPage = currentPage;
       currentPage = 0;
-      while (currentPage < oldPage) {
+      while (oldPage > 0) {
         loadMore();
+        oldPage--;
       }
       displayRows = preparedRows;
-    }
-    if (preparedRows.length == 0 && $mySafe.transfers.rows) {
-      loadMore();
-      displayRows = preparedRows;
     } else {
-      const stopElementY = stopElement ? stopElement.offsetTop : -1;
-      if (stopElementY - window.innerHeight - scrollY < 50 && !eof) {
+      if (preparedRows.length == 0 && $mySafe.transfers.rows) {
         loadMore();
         displayRows = preparedRows;
+      } else {
+        const stopElementY = stopElement ? stopElement.offsetTop : -1;
+        if (stopElementY - window.innerHeight - scrollY < 50 && !eof) {
+          loadMore();
+          displayRows = preparedRows;
+        }
       }
     }
   }
@@ -76,7 +78,7 @@
 />
 
 <div class="mx-4 -mt-6">
-  {#if $mySafe.ui && $mySafe.ui.loadingPercent === 0}
+  {#if $mySafe.ui && $mySafe.ui.loadingPercent === 0 && displayRows.length === 0}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
@@ -95,7 +97,7 @@
         </div>
       </div>
     </section>
-  {:else if $mySafe.transfers && $mySafe.transfers.rows}
+  {:else if displayRows.length > 0}
     {#each displayRows as transfer, i}
       {#if i === 0}
         <TransactionCard bind:this={firstElement} {transfer} message="" />
