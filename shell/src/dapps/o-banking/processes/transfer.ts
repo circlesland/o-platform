@@ -17,9 +17,9 @@ import { BN } from "ethereumjs-util";
 import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
-import {Profile} from "../data/api/types";
-import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
-import {SetTrustContext} from "./setTrust";
+import { Profile } from "../data/api/types";
+import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
+import { SetTrustContext } from "./setTrust";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -183,7 +183,7 @@ const processDefinition = (processId: string) =>
             });
             const p2 = await RpcGateway.trigger(async (web3) => {
               context.data.maxFlows["xdai"] = await web3.eth.getBalance(
-                  web3.utils.toChecksumAddress(context.data.safeAddress)
+                web3.utils.toChecksumAddress(context.data.safeAddress)
               );
             }, 1000);
 
@@ -251,12 +251,15 @@ const processDefinition = (processId: string) =>
               // No profile found
             }
           },
-          onDone: [{
-            cond: (context) => !!context.data.recipientProfile,
-            target: "#message"
-          }, {
-            target: "#prepareSummary"
-          }],
+          onDone: [
+            {
+              cond: (context) => !!context.data.recipientProfile,
+              target: "#message",
+            },
+            {
+              target: "#prepareSummary",
+            },
+          ],
           onError: "#error",
         },
       },
@@ -304,7 +307,9 @@ const processDefinition = (processId: string) =>
               context.data.summaryHtml = `<span>You are about to transfer</span>
                 <strong class='text-primary text-5xl block mt-2'>
                     ${context.data.tokens.amount}
-                    ${currencyLookup[context.data.tokens.currency.toUpperCase()]}</strong>
+                    ${
+                      currencyLookup[context.data.tokens.currency.toUpperCase()]
+                    }</strong>
                 <span class='block mt-2'>
                 to 
                 </span>
@@ -322,7 +327,11 @@ const processDefinition = (processId: string) =>
                   </h2>
                 </div>
                 <span class='block mt-2'>
-                ${context.data.message ? '<b>Purpose:</b><br/>' + context.data.message : ""}
+                ${
+                  context.data.message
+                    ? "<b>Purpose:</b><br/>" + context.data.message
+                    : ""
+                }
                 </span>
                 <strong class='text-primary block mt-4'>
                 Do you want to continue?
@@ -379,7 +388,7 @@ const processDefinition = (processId: string) =>
                 recipientAddress: context.data.recipientAddress,
                 amount: context.data.tokens.amount,
                 privateKey: localStorage.getItem("circlesKey"),
-                message: context.data.message
+                message: context.data.message,
               };
             },
             messages: {},
@@ -403,7 +412,7 @@ const processDefinition = (processId: string) =>
                 recipientAddress: context.data.recipientAddress,
                 amount: context.data.tokens.amount,
                 privateKey: localStorage.getItem("circlesKey"),
-                message: context.data.message
+                message: context.data.message,
               };
             },
             messages: {},
@@ -420,7 +429,7 @@ const processDefinition = (processId: string) =>
         params: {
           html: () => `<p>Transfer successful</p>`,
           submitButtonText: "Close",
-          hideNav: true,
+          hideNav: false,
         },
         navigation: {
           next: "#success",

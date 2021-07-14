@@ -179,7 +179,7 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-dark-lightest">Amount</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">Amount</div>
 
         <div class="flex items-center w-full">
           <div class="text-left ">
@@ -192,7 +192,7 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-dark-lightest">Date</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">Date</div>
 
         <div class="flex items-center w-full">
           <div class="text-left ">
@@ -207,7 +207,7 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-dark-lightest">From</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">From</div>
 
         <div class="flex items-center w-full">
           <div class="text-left break-all">
@@ -219,7 +219,7 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-dark-lightest">To</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">To</div>
 
         <div class="flex items-center w-full">
           <div class="text-left break-all">
@@ -231,7 +231,7 @@
 
     <section class="justify-center mt-4 mb-2">
       <div class="flex flex-col w-full space-y-1">
-        <div class="text-left text-2xs text-dark-lightest">Block</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">Block</div>
 
         <div class="flex items-center w-full">
           <div class="text-left break-all">
@@ -244,7 +244,7 @@
     {#if transfer.transactionHash}
       <section class="justify-center mt-4 mb-2">
         <div class="flex flex-col w-full space-y-1">
-          <div class="text-left text-2xs text-dark-lightest">
+          <div class="mb-1 text-left text-2xs text-dark-lightest">
             Transaction Hash
           </div>
 
@@ -260,7 +260,9 @@
     {#if path}
       <section class="justify-center mt-4 mb-2">
         <div class="flex flex-col w-full space-y-1">
-          <div class="text-left text-2xs text-dark-lightest">Payment path</div>
+          <div class="mb-1 text-left text-2xs text-dark-lightest">
+            Payment path
+          </div>
           <CirclesTransferGraph transfers={path.transfers} />
         </div>
       </section>

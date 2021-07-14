@@ -30,7 +30,7 @@
   onMount(() => inputField.focus());
 </script>
 
-<div class="p-4 form-control justify-self-center">
+<div class="form-control justify-self-center">
   <label class="self-center justify-center text-center label" for={fieldId}>
     <span class="label-text">{@html context.params.label}</span>
   </label>

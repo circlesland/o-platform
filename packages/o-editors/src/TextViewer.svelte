@@ -34,7 +34,7 @@
   };
 </script>
 
-<div class="p-4">
+<div>
   <label class="label" for={context.field}>
     <div class="label-text">{@html context.params.label}</div>
     {#if context.params.canCopy}

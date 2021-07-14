@@ -10,8 +10,8 @@
   import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 
   import { Link } from "@o-platform/o-interfaces/dist/routables/link";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -204,22 +204,25 @@
       on:click|self={closeModal}
     >
       <div
-        class="w-full pb-6 mt-10 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
+        class="w-full mt-10 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
       >
         <div class="modalAsideScrollableContent rounded-t-xl">
           <div class="w-full m-auto">
             {#if runningProcess}
-              <ProcessContainer
-                process={runningProcess}
-                on:navigation={(event) => dispatch("navigation", event.detail)}
-                on:stopped={() => {
-                  dispatch("stopped");
-                  runningProcess = null;
-                  closeModal("stopped");
-                }}
-              />
+              <div class="p-6">
+                <ProcessContainer
+                  process={runningProcess}
+                  on:navigation={(event) =>
+                    dispatch("navigation", event.detail)}
+                  on:stopped={() => {
+                    dispatch("stopped");
+                    runningProcess = null;
+                    closeModal("stopped");
+                  }}
+                />
+              </div>
             {:else if navigation}
-              <div class="flex flex-col p-4 space-y-6">
+              <div class="flex flex-col p-6 space-y-6">
                 {#each navigation as item}
                   <DappNavItem
                     segment={item.url}
@@ -231,15 +234,17 @@
                 {/each}
               </div>
             {:else if _page}
-              <svelte:component
-                this={_page.component}
-                params={_pageParams}
-                runtimeDapp={_pageRuntimeDapp}
-                routable={_pageRoutable}
-              />
+              <div class="pb-6">
+                <svelte:component
+                  this={_page.component}
+                  params={_pageParams}
+                  runtimeDapp={_pageRuntimeDapp}
+                  routable={_pageRoutable}
+                />
+              </div>
             {:else if jumplistItems}
               <div
-                class="flex flex-wrap items-center justify-center p-4 space-x-10"
+                class="flex flex-wrap items-center justify-center p-6 space-x-10"
               >
                 {#each jumplistItems as item}
                   <ActionListItem

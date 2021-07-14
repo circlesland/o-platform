@@ -425,7 +425,9 @@
 
           <section class="justify-center mb-2 ">
             <div class="flex flex-col w-full p-2 space-y-1">
-              <div class="text-left text-2xs text-dark-lightest">Address</div>
+              <div class="mb-1 text-left text-2xs text-dark-lightest">
+                Address
+              </div>
 
               <div class="flex items-center w-full">
                 <div class="inline-block break-all" id="clipboard">
@@ -467,7 +469,9 @@
         {#if !isMe && (profile.trusting || profile.trustedBy)}
           <section class="justify-center mb-2 ">
             <div class="flex flex-col w-full p-2 space-y-1">
-              <div class="text-left text-2xs text-dark-lightest">Trust</div>
+              <div class="mb-1 text-left text-2xs text-dark-lightest">
+                Trust
+              </div>
 
               <div class="flex items-center w-full">
                 {#if profile.trusting && profile.trustedBy}

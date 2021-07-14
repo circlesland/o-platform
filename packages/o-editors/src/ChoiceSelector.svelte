@@ -21,7 +21,7 @@
   }
 </script>
 
-<div class="p-4">
+<div>
   <p class="mb-4 label-text">
     {@html context.params.label}
   </p>

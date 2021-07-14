@@ -26,7 +26,7 @@
   onMount(() => inputField.focus());
 </script>
 
-<div class="p-4 mt-4 bordered">
+<div class="mt-4 bordered">
   <div class="form-control">
     {#if context.messages[context.field]}
       <div class="mt-2 mb-2 alert alert-error">

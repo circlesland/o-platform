@@ -1,19 +1,19 @@
 <script lang="ts">
-  import {upsertIdentityOnlyWhereDirty} from "../processes/upsertIdentity";
+  import { upsertIdentityOnlyWhereDirty } from "../processes/upsertIdentity";
 
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import { getCountryName } from "../../../shared/countries";
   import { me } from "../../../shared/stores/me";
   import { Profile } from "../data/api/types";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
   let name;
   let profile: Profile;
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
   $: name = profile ? profile.circlesAddress : "";
 
@@ -38,14 +38,14 @@
   }
 </script>
 
-<PassportHeader {runtimeDapp} {routable}  />
+<PassportHeader {runtimeDapp} {routable} />
 
 <div class="flex flex-col p-4">
   <div class="mt-4">
     {#if profile && profile.circlesAddress}
       <section class="justify-center mb-2">
         <div class="flex flex-col w-full p-2 space-y-1">
-          <div class="text-left text-2xs text-light-dark">Address</div>
+          <div class="mb-1 text-left text-2xs text-dark-lightest">Address</div>
 
           <div class="flex items-center w-full space-x-2 sm:space-x-4">
             <div class="text-left">
@@ -87,7 +87,7 @@
     {/if}
     <section class="justify-center mb-2">
       <div class="flex flex-col w-full p-2 space-y-1">
-        <div class="text-left text-2xs text-light-dark">Passion</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">Passion</div>
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
@@ -119,7 +119,7 @@
 
     <section class="justify-center mb-2">
       <div class="flex flex-col w-full p-2 space-y-1">
-        <div class="text-left text-2xs text-light-dark">City</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">City</div>
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">
@@ -150,7 +150,7 @@
 
     <section class="justify-center mb-2">
       <div class="flex flex-col w-full p-2 space-y-1">
-        <div class="text-left text-2xs text-light-dark">Country</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">Country</div>
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div class="text-left">

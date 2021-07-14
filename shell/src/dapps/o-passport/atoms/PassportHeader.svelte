@@ -14,11 +14,11 @@
   import TopNav from "src/shared/atoms/TopNav.svelte";
   import PageHeader from "src/shared/atoms/PageHeader.svelte";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
   let profile: Profile;
 
   export let params: {
@@ -69,7 +69,7 @@
         />
       </div>
       <button
-        class="relative self-start link link-primary text-primary text-2xs top-1 right-2"
+        class="relative self-start link link-primary text-secondary text-2xs top-1 right-2"
         on:click={() => editProfileField({ avatarUrl: true })}
       >
         <svg
@@ -89,7 +89,7 @@
         {profile ? profile.firstName : ""}
         {profile && profile.lastName ? profile.lastName : ""}
         <button
-          class="self-start -mt-2 -mr-3 link link-primary text-primary text-2xs"
+          class="self-start -mt-2 -mr-3 link link-primary text-secondary text-2xs"
           on:click={() => editProfileField({ firstName: true, lastName: true })}
         >
           <svg

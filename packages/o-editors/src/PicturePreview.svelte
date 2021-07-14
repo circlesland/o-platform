@@ -24,7 +24,7 @@
   }
 </script>
 
-<div class="p-4">
+<div>
   <label class="label" for={context.field}>
     <span class="label-text">{@html context.params.label}</span>
   </label>

@@ -152,7 +152,7 @@
   }
 </script>
 
-<div class="p-4">
+<div>
   <label
     class="block text-center label"
     for={normalizePromptField(context.field).name}

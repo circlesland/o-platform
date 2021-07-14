@@ -23,7 +23,7 @@
   }
 </script>
 
-<div class="p-4">
+<div>
   <div class="form-control justify-self-center">
     <label
       class="self-center justify-center text-center label"

@@ -18,7 +18,7 @@
   }
 </script>
 
-<div class="p-4">
+<div>
   {#if context.messages[context.field]}
     <div class="mt-2 mb-2 alert alert-error">
       <div class="flex-1">
