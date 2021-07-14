@@ -3,203 +3,135 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
+import NotificationViewer from "@o-platform/o-editors/src/NotificationViewer.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import {ProfileEvent} from "../../dapps/o-banking/data/api/types";
+import {AcknowledgeDocument} from "../../dapps/o-contacts/data/api/types";
+import HtmlViewer from "../../../../packages/o-editors/src/HtmlViewer.svelte";
 
 export type ShowNotificationsContextData = {
-  notifications
+  events: ProfileEvent[]
+  currentEventIndex: number;
+  currentEvent: ProfileEvent;
 };
 
 export type ShowNotificationsContext = ProcessContext<ShowNotificationsContextData>;
 
 const strings = {
 };
-/*
+
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
   createMachine<ShowNotificationsContext, any>({
     id: `${processId}:showNotifications`,
-    initial: "fetchNext",
+    initial: "init",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<ShowNotificationsContext, any>("error"),
-
-      fetchNext: {
+      init: {
+        entry:(context) => {
+          context.data.currentEventIndex = -1;
+          context.data.currentEvent = undefined;
+        },
+        always: "#fetchNext"
+      },
+      fetchPrevious: {
+        id: "fetchPrevious",
         invoke: {
-          src: async () => {}
+          src: async (context)=>
+          {
+            if (context.data.currentEventIndex < 1) {
+              return;
+            }
+            context.data.currentEventIndex--;
+            context.data.currentEvent = context.data.events[context.data.currentEventIndex];
+          },
+          onDone: "#show"
         }
       },
-      show: {
-        on: {
-          "markAsRead": {}
+      fetchNext: {
+        id: "fetchNext",
+        invoke: {
+          src: async (context)=>
+          {
+            if (context.data.currentEventIndex >= context.data.events.length) {
+              return;
+            }
+            context.data.currentEventIndex++
+            context.data.currentEvent = context.data.events[context.data.currentEventIndex];
+          },
+          onDone: [{
+            cond: (context) => context.data.currentEvent !== undefined,
+            target: "#show"
+          }, {
+            cond: (context) => context.data.currentEvent === undefined,
+            target: "#showSuccess"
+          }]
         }
       },
-      description: prompt<ShowNotificationsContext, any>({
-        field: "description",
-        onlyWhenDirty: skipIfNotDirty,
-        component: TextEditor,
-        params: {
-          label: strings.labelDescription,
-          placeholder: strings.placeholderDescription,
-          submitButtonText: strings.submitDescription,
-        },
+      show: prompt({
+        id: "show",
+        entry: () => console.log("show entry"),
+        component: NotificationViewer,
+        field: "currentEvent",
+        params: {},
         navigation: {
-          next: "#categoryTagId",
-          previous: "#title",
-          canSkip: () => true,
-          skip: "#categoryTagId",
+          canGoBack: (context:any) => context.data.currentEventIndex > 0,
+          canSkip: () => false,
+          next: "#acknowledge",
+          previous: "#fetchPrevious"
         },
       }),
-      categoryTagId: promptTag<ShowNotificationsContext, any>({
-        field: "categoryTagId",
-        onlyWhenDirty: skipIfNotDirty,
-        typeId: "o-marketplace:offer:category:1",
-        params: {
-          label: strings.labelCategory,
-          placeholder: strings.placeholderCategory,
-          submitButtonText: strings.submitCategory,
-        },
-        navigation: {
-          next: "#geonameid",
-          previous: "#description",
-        },
-      }),
-      geonameid: promptCity<ShowNotificationsContext, any>({
-        field: "geonameid",
-        onlyWhenDirty: skipIfNotDirty,
-        params: {
-          label: strings.labelCity,
-          placeholder: strings.placeholderCity,
-          submitButtonText: strings.submitCity,
-        },
-        navigation: {
-          next: "#unitTagId",
-          previous: "#categoryTagId",
-        },
-      }),
-      unitTagId: promptTag<ShowNotificationsContext, any>({
-        field: "unitTagId",
-        onlyWhenDirty: skipIfNotDirty,
-        typeId: "o-marketplace:offer:unit:1",
-        params: {
-          label: strings.labelUnit,
-          placeholder: strings.placeholderUnit,
-          submitButtonText: strings.submitUnit,
-        },
-        navigation: {
-          next: "#pricePerUnit",
-          previous: "#geonameid",
-        },
-      }),
-      pricePerUnit: prompt<ShowNotificationsContext, any>({
-        field: "pricePerUnit",
-        onlyWhenDirty: skipIfNotDirty,
-        component: TextEditor,
-        params: {
-          label: strings.labelPricePerUnit,
-          placeholder: strings.placeholderPricePerUnit,
-          submitButtonText: strings.submitPricePerUnit,
-        },
-        navigation: {
-          next: "#maxUnits",
-          previous: "#unitTagId",
-        },
-      }),
-      maxUnits: prompt<ShowNotificationsContext, any>({
-        field: "maxUnits",
-        onlyWhenDirty: skipIfNotDirty,
-        component: TextEditor,
-        params: {
-          label: strings.labelMaxUnits,
-          placeholder: strings.placeholderMaxUnits,
-          submitButtonText: strings.submitMaxUnits,
-        },
-        navigation: {
-          next: "#deliveryTermsTagId",
-          previous: "#pricePerUnit",
-        },
-      }),
-      deliveryTermsTagId: promptTag<ShowNotificationsContext, any>({
-        field: "deliveryTermsTagId",
-        onlyWhenDirty: skipIfNotDirty,
-        typeId: "o-marketplace:offer:deliveryTerms:1",
-        params: {
-          label: strings.labelDeliveryTerms,
-          placeholder: strings.placeholderDeliveryTerms,
-          submitButtonText: strings.submitDeliveryTerms,
-        },
-        navigation: {
-          next: "#pictureUrl",
-          previous: "#pricePerUnit",
-        },
-      }),
-      pictureUrl: promptFile<ShowNotificationsContext, any>({
-        field: "pictureUrl",
-        onlyWhenDirty: skipIfNotDirty,
-        uploaded: (context, event) => {
-          context.data.pictureUrl = event.data?.url;
-          context.data.pictureMimeType = event.data?.mimeType;
-        },
-        params: {
-          label: strings.labelPicture,
-          submitButtonText: strings.submitPicture,
-          cropShape: "rect",
-        },
-        navigation: {
-          next: "#upsertOffer",
-          previous: "#deliveryTermsTagId",
-        },
-      }),
-      upsertOffer: {
-        id: "upsertOffer",
-        entry: () => console.log("upsertOffer entry"),
+      acknowledge: {
+        id: "acknowledge",
+        entry: () => console.log("acknowledge entry"),
         invoke: {
           src: async (context) => {
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
-            const result = await apiClient.mutate({
-              mutation: ShowNotificationsDocument,
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            await apiClient.mutate({
+              mutation: AcknowledgeDocument,
               variables: {
-                id: context.data.id,
-                geonameid: context.data.geonameid,
-                categoryTagId: context.data.categoryTagId,
-                createdByProfileId: context.data.geonameid,
-                deliveryTermsTagId: context.data.deliveryTermsTagId,
-                description: context.data.description,
-                maxUnits: context.data.maxUnits
-                  ? Number.parseFloat(context.data.maxUnits?.toString() ?? "0")
-                  : undefined,
-                pictureUrl: context.data.pictureUrl,
-                pictureMimeType: context.data.pictureMimeType,
-                pricePerUnit: context.data.pricePerUnit,
-                title: context.data.title,
-                unitTagId: context.data.unitTagId,
-              },
+                eventId: context.data.currentEvent.id
+              }
             });
-            return result.data.upsertOffer;
+            console.log("Acking event:", context.data.currentEvent);
           },
-          onDone: "#success",
+          onDone: "#fetchNext",
           onError: "#error",
         },
       },
+      error: {
+        type: "final",
+        id: "error",
+        entry: (context) => console.error(`error entry`, context.data)
+      },
+      showSuccess: prompt({
+        id: "showSuccess",
+        field: "__",
+        component: HtmlViewer,
+        params: {
+          html: () => `<p>All done.</p>`,
+          submitButtonText: "Close",
+          hideNav: true,
+        },
+        navigation: {
+          canGoBack: (context:any) => context.data.currentEventIndex > 0,
+          canSkip: () => false,
+          next: "#success",
+          previous: "#fetchPrevious"
+        },
+      }),
       success: {
         type: "final",
         id: "success",
-        data: (context, event: any) => {
-          console.log(`enter: upsertOffer.success`, context.data);
-          window.o.publishEvent(<PlatformEvent>{
-            type: "shell.refresh",
-            appId: "marketplace:1",
-            offer: event.data,
-          });
-          return event.data;
+        data: (context, event: PlatformEvent) => {
+          return "yeah!";
         },
       },
     },
   });
 
-export const upsertOffer: ProcessDefinition<void, upsertOfferContextData> = {
-  name: "upsertOffer",
+export const showNotifications: ProcessDefinition<void, ShowNotificationsContext> = {
+  name: "showNotifications",
   stateMachine: <any>processDefinition,
 };
-*/

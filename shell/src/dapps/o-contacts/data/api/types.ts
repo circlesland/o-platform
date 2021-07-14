@@ -102,24 +102,6 @@ export type ICity = {
   population: Scalars['Int'];
 };
 
-export type IndexTransactionInput = {
-  blockHash: Scalars['String'];
-  blockNumber: Scalars['Int'];
-  confirmations?: Maybe<Scalars['Int']>;
-  contractAddress?: Maybe<Scalars['String']>;
-  cumulativeGasUsed: Scalars['String'];
-  from: Scalars['String'];
-  gasUsed: Scalars['String'];
-  logs?: Maybe<Array<IndexTransactionLogInput>>;
-  logsBloom: Scalars['String'];
-  root?: Maybe<Scalars['String']>;
-  status?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<CreateTagInput>>;
-  to: Scalars['String'];
-  transactionHash: Scalars['String'];
-  transactionIndex: Scalars['Int'];
-};
-
 export type IndexTransactionLog = {
   __typename?: 'IndexTransactionLog';
   address: Scalars['String'];
@@ -134,14 +116,14 @@ export type IndexTransactionLog = {
   transactionIndex: Scalars['Int'];
 };
 
-export type IndexTransactionLogInput = {
-  address: Scalars['String'];
-  blockHash: Scalars['String'];
+export type IndexTransactionRequest = {
+  __typename?: 'IndexTransactionRequest';
   blockNumber: Scalars['Int'];
-  data?: Maybe<Scalars['String']>;
-  logIndex: Scalars['Int'];
-  removed?: Maybe<Scalars['Boolean']>;
-  topics: Array<Scalars['String']>;
+  createdAt: Scalars['String'];
+  createdBy?: Maybe<Profile>;
+  createdByProfileId: Scalars['Int'];
+  id: Scalars['Int'];
+  tags?: Maybe<Array<Tag>>;
   transactionHash: Scalars['String'];
   transactionIndex: Scalars['Int'];
 };
@@ -184,20 +166,26 @@ export type LogoutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acknowledge: ProfileEvent;
   authenticateAt: DelegateAuthInit;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
-  indexTransaction: IndexedTransaction;
   lockOffer: LockOfferResult;
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
+  requestIndexTransaction: IndexTransactionRequest;
   requestUpdateSafe: RequestUpdateSafeResponse;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
   upsertOffer: Offer;
   upsertProfile: Profile;
   upsertTag: Tag;
+};
+
+
+export type MutationAcknowledgeArgs = {
+  eventId: Scalars['Int'];
 };
 
 
@@ -216,11 +204,6 @@ export type MutationDepositChallengeArgs = {
 };
 
 
-export type MutationIndexTransactionArgs = {
-  data: IndexTransactionInput;
-};
-
-
 export type MutationLockOfferArgs = {
   data: LockOfferInput;
 };
@@ -228,6 +211,11 @@ export type MutationLockOfferArgs = {
 
 export type MutationProvePaymentArgs = {
   data: PaymentProof;
+};
+
+
+export type MutationRequestIndexTransactionArgs = {
+  data: RequestIndexTransactionInput;
 };
 
 
@@ -311,6 +299,15 @@ export type Profile = {
   offers?: Maybe<Array<Offer>>;
 };
 
+export type ProfileEvent = {
+  __typename?: 'ProfileEvent';
+  createdAt: Scalars['String'];
+  data: Scalars['String'];
+  id: Scalars['Int'];
+  profileId: Scalars['Int'];
+  type: Scalars['String'];
+};
+
 export type ProvePaymentResult = {
   __typename?: 'ProvePaymentResult';
   success: Scalars['Boolean'];
@@ -338,6 +335,7 @@ export enum PurchaseStatus {
 export type Query = {
   __typename?: 'Query';
   cities: Array<City>;
+  events: Array<ProfileEvent>;
   offers: Array<Offer>;
   profiles: Array<Profile>;
   search: Array<Profile>;
@@ -345,6 +343,7 @@ export type Query = {
   stats?: Maybe<Stats>;
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
+  transactions: Array<IndexedTransaction>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
 };
@@ -379,6 +378,11 @@ export type QueryTagsArgs = {
   query: QueryTagsInput;
 };
 
+
+export type QueryTransactionsArgs = {
+  query?: Maybe<QueryIndexedTransactionInput>;
+};
+
 export type QueryCitiesByGeonameIdInput = {
   geonameid: Array<Scalars['Int']>;
 };
@@ -394,14 +398,8 @@ export type QueryCitiesInput = {
 };
 
 export type QueryIndexedTransactionInput = {
-  fromAddress?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<QueryIndexedTransactionTagInput>>;
-  toAddress?: Maybe<Scalars['String']>;
-};
-
-export type QueryIndexedTransactionTagInput = {
-  typeId: Scalars['String'];
-  value?: Maybe<Scalars['String']>;
+  fromBlockNo?: Maybe<Scalars['Int']>;
+  toBlockNo?: Maybe<Scalars['Int']>;
 };
 
 export type QueryOfferInput = {
@@ -431,6 +429,11 @@ export type QueryTagsInput = {
 
 export type QueryUniqueProfileInput = {
   id: Scalars['Int'];
+};
+
+export type RequestIndexTransactionInput = {
+  tags?: Maybe<Array<CreateTagInput>>;
+  transactionHash: Scalars['String'];
 };
 
 export type RequestUpdateSafeInput = {
@@ -536,313 +539,46 @@ export type Version = {
   revision: Scalars['Int'];
 };
 
-export type ExchangeTokenMutationVariables = Exact<{ [key: string]: never; }>;
+export type AcknowledgeMutationVariables = Exact<{
+  eventId: Scalars['Int'];
+}>;
 
 
-export type ExchangeTokenMutation = (
+export type AcknowledgeMutation = (
   { __typename?: 'Mutation' }
-  & { exchangeToken: (
-    { __typename?: 'ExchangeTokenResponse' }
-    & Pick<ExchangeTokenResponse, 'success' | 'errorMessage'>
+  & { acknowledge: (
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'id'>
   ) }
 );
 
-export type AuthenticateAtMutationVariables = Exact<{
-  appId: Scalars['String'];
-}>;
+export type EventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AuthenticateAtMutation = (
-  { __typename?: 'Mutation' }
-  & { authenticateAt: (
-    { __typename?: 'DelegateAuthInit' }
-    & Pick<DelegateAuthInit, 'appId' | 'success' | 'errorMessage' | 'challengeType' | 'delegateAuthCode' | 'validTo'>
-  ) }
-);
-
-export type ConsumeDepositedChallengeMutationVariables = Exact<{
-  delegateAuthCode: Scalars['String'];
-}>;
-
-
-export type ConsumeDepositedChallengeMutation = (
-  { __typename?: 'Mutation' }
-  & { consumeDepositedChallenge: (
-    { __typename?: 'ConsumeDepositedChallengeResponse' }
-    & Pick<ConsumeDepositedChallengeResponse, 'success' | 'challenge'>
-  ) }
-);
-
-export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LogoutMutation = (
-  { __typename?: 'Mutation' }
-  & { logout: (
-    { __typename?: 'LogoutResponse' }
-    & Pick<LogoutResponse, 'success'>
-  ) }
-);
-
-export type UpsertProfileMutationVariables = Exact<{
-  id?: Maybe<Scalars['Int']>;
-  firstName: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  dream?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  avatarUrl?: Maybe<Scalars['String']>;
-  avatarCid?: Maybe<Scalars['String']>;
-  avatarMimeType?: Maybe<Scalars['String']>;
-  circlesAddress?: Maybe<Scalars['String']>;
-  circlesSafeOwner?: Maybe<Scalars['String']>;
-  newsletter?: Maybe<Scalars['Boolean']>;
-  cityGeonameid?: Maybe<Scalars['Int']>;
-}>;
-
-
-export type UpsertProfileMutation = (
-  { __typename?: 'Mutation' }
-  & { upsertProfile: (
-    { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'circlesAddress' | 'circlesSafeOwner' | 'newsletter' | 'cityGeonameid'>
-    & { city?: Maybe<(
-      { __typename?: 'City' }
-      & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
-    )> }
-  ) }
-);
-
-export type SessionInfoQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SessionInfoQuery = (
+export type EventsQuery = (
   { __typename?: 'Query' }
-  & { sessionInfo: (
-    { __typename?: 'SessionInfo' }
-    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId'>
-  ) }
-);
-
-export type WhoamiQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type WhoamiQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'whoami'>
-);
-
-export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MyProfileQuery = (
-  { __typename?: 'Query' }
-  & { profiles: Array<(
-    { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'cityGeonameid'>
-    & { city?: Maybe<(
-      { __typename?: 'City' }
-      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
-    )> }
-  )> }
-);
-
-export type ProfilesQueryVariables = Exact<{
-  id: Array<Scalars['Int']> | Scalars['Int'];
-}>;
-
-
-export type ProfilesQuery = (
-  { __typename?: 'Query' }
-  & { profiles: Array<(
-    { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
-    & { city?: Maybe<(
-      { __typename?: 'City' }
-      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
-    )> }
-  )> }
-);
-
-export type CitiesByNameQueryVariables = Exact<{
-  name: Scalars['String'];
-  languageCode?: Maybe<Scalars['String']>;
-}>;
-
-
-export type CitiesByNameQuery = (
-  { __typename?: 'Query' }
-  & { cities: Array<(
-    { __typename?: 'City' }
-    & Pick<City, 'geonameid' | 'name' | 'country' | 'population' | 'latitude' | 'longitude' | 'feature_code'>
-  )> }
-);
-
-export type CitiesByIdQueryVariables = Exact<{
-  ids: Array<Scalars['Int']> | Scalars['Int'];
-}>;
-
-
-export type CitiesByIdQuery = (
-  { __typename?: 'Query' }
-  & { cities: Array<(
-    { __typename?: 'City' }
-    & Pick<City, 'geonameid' | 'name' | 'country' | 'population' | 'latitude' | 'longitude' | 'feature_code'>
+  & { events: Array<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'id' | 'type' | 'createdAt' | 'profileId' | 'data'>
   )> }
 );
 
 
-export const ExchangeTokenDocument = gql`
-    mutation exchangeToken {
-  exchangeToken {
-    success
-    errorMessage
-  }
-}
-    `;
-export const AuthenticateAtDocument = gql`
-    mutation authenticateAt($appId: String!) {
-  authenticateAt(appId: $appId) {
-    appId
-    success
-    errorMessage
-    challengeType
-    delegateAuthCode
-    validTo
-  }
-}
-    `;
-export const ConsumeDepositedChallengeDocument = gql`
-    mutation consumeDepositedChallenge($delegateAuthCode: String!) {
-  consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
-    success
-    challenge
-  }
-}
-    `;
-export const LogoutDocument = gql`
-    mutation logout {
-  logout {
-    success
-  }
-}
-    `;
-export const UpsertProfileDocument = gql`
-    mutation upsertProfile($id: Int, $firstName: String!, $lastName: String, $dream: String, $country: String, $avatarUrl: String, $avatarCid: String, $avatarMimeType: String, $circlesAddress: String, $circlesSafeOwner: String, $newsletter: Boolean, $cityGeonameid: Int) {
-  upsertProfile(
-    data: {id: $id, firstName: $firstName, lastName: $lastName, dream: $dream, country: $country, avatarUrl: $avatarUrl, avatarCid: $avatarCid, avatarMimeType: $avatarMimeType, circlesAddress: $circlesAddress, circlesSafeOwner: $circlesSafeOwner, newsletter: $newsletter, cityGeonameid: $cityGeonameid}
-  ) {
+export const AcknowledgeDocument = gql`
+    mutation acknowledge($eventId: Int!) {
+  acknowledge(eventId: $eventId) {
     id
-    firstName
-    lastName
-    dream
-    country
-    avatarUrl
-    avatarCid
-    avatarMimeType
-    circlesAddress
-    circlesSafeOwner
-    newsletter
-    cityGeonameid
-    city {
-      geonameid
-      country
-      name
-      latitude
-      longitude
-      population
-      feature_code
-    }
   }
 }
     `;
-export const SessionInfoDocument = gql`
-    query sessionInfo {
-  sessionInfo {
-    isLoggedOn
-    hasProfile
+export const EventsDocument = gql`
+    query events {
+  events {
+    id
+    type
+    createdAt
     profileId
-  }
-}
-    `;
-export const WhoamiDocument = gql`
-    query whoami {
-  whoami
-}
-    `;
-export const MyProfileDocument = gql`
-    query myProfile {
-  profiles(query: {}) {
-    id
-    circlesAddress
-    circlesSafeOwner
-    firstName
-    lastName
-    dream
-    country
-    avatarUrl
-    avatarCid
-    avatarMimeType
-    newsletter
-    cityGeonameid
-    city {
-      geonameid
-      name
-      country
-      latitude
-      longitude
-      population
-    }
-  }
-}
-    `;
-export const ProfilesDocument = gql`
-    query profiles($id: [Int!]!) {
-  profiles(query: {id: $id}) {
-    id
-    circlesAddress
-    circlesSafeOwner
-    firstName
-    lastName
-    dream
-    country
-    avatarUrl
-    avatarCid
-    avatarMimeType
-    cityGeonameid
-    city {
-      geonameid
-      name
-      country
-      latitude
-      longitude
-      population
-    }
-  }
-}
-    `;
-export const CitiesByNameDocument = gql`
-    query citiesByName($name: String!, $languageCode: String) {
-  cities(query: {byName: {name_like: $name, languageCode: $languageCode}}) {
-    geonameid
-    name
-    country
-    population
-    latitude
-    longitude
-    feature_code
-  }
-}
-    `;
-export const CitiesByIdDocument = gql`
-    query citiesById($ids: [Int!]!) {
-  cities(query: {byId: {geonameid: $ids}}) {
-    geonameid
-    name
-    country
-    population
-    latitude
-    longitude
-    feature_code
+    data
   }
 }
     `;
@@ -853,38 +589,11 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    exchangeToken(variables?: ExchangeTokenMutationVariables): Promise<ExchangeTokenMutation> {
-      return withWrapper(() => client.request<ExchangeTokenMutation>(print(ExchangeTokenDocument), variables));
+    acknowledge(variables: AcknowledgeMutationVariables): Promise<AcknowledgeMutation> {
+      return withWrapper(() => client.request<AcknowledgeMutation>(print(AcknowledgeDocument), variables));
     },
-    authenticateAt(variables: AuthenticateAtMutationVariables): Promise<AuthenticateAtMutation> {
-      return withWrapper(() => client.request<AuthenticateAtMutation>(print(AuthenticateAtDocument), variables));
-    },
-    consumeDepositedChallenge(variables: ConsumeDepositedChallengeMutationVariables): Promise<ConsumeDepositedChallengeMutation> {
-      return withWrapper(() => client.request<ConsumeDepositedChallengeMutation>(print(ConsumeDepositedChallengeDocument), variables));
-    },
-    logout(variables?: LogoutMutationVariables): Promise<LogoutMutation> {
-      return withWrapper(() => client.request<LogoutMutation>(print(LogoutDocument), variables));
-    },
-    upsertProfile(variables: UpsertProfileMutationVariables): Promise<UpsertProfileMutation> {
-      return withWrapper(() => client.request<UpsertProfileMutation>(print(UpsertProfileDocument), variables));
-    },
-    sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
-      return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));
-    },
-    whoami(variables?: WhoamiQueryVariables): Promise<WhoamiQuery> {
-      return withWrapper(() => client.request<WhoamiQuery>(print(WhoamiDocument), variables));
-    },
-    myProfile(variables?: MyProfileQueryVariables): Promise<MyProfileQuery> {
-      return withWrapper(() => client.request<MyProfileQuery>(print(MyProfileDocument), variables));
-    },
-    profiles(variables: ProfilesQueryVariables): Promise<ProfilesQuery> {
-      return withWrapper(() => client.request<ProfilesQuery>(print(ProfilesDocument), variables));
-    },
-    citiesByName(variables: CitiesByNameQueryVariables): Promise<CitiesByNameQuery> {
-      return withWrapper(() => client.request<CitiesByNameQuery>(print(CitiesByNameDocument), variables));
-    },
-    citiesById(variables: CitiesByIdQueryVariables): Promise<CitiesByIdQuery> {
-      return withWrapper(() => client.request<CitiesByIdQuery>(print(CitiesByIdDocument), variables));
+    events(variables?: EventsQueryVariables): Promise<EventsQuery> {
+      return withWrapper(() => client.request<EventsQuery>(print(EventsDocument), variables));
     }
   };
 }

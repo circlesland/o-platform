@@ -1,0 +1,9 @@
+query events {
+    events {
+        id
+        type
+        createdAt
+        profileId
+        data
+    }
+}

@@ -13,6 +13,7 @@
   import { ProcessContainerNavigation } from "./ProcessContainer.svelte";
   import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
   import NextNav from "./NextNav/NextNav.svelte";
+  import Notification from "./NextNav/Components/Notification.svelte";
   import NotFound from "./../pages/NotFound.svelte";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
   import { Generate } from "@o-platform/o-utils/dist/generate";
@@ -22,6 +23,8 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { identify } from "../../dapps/o-passport/processes/identify/identify";
+  import {inbox} from "../stores/inbox";
+  import {showNotifications} from "../processes/showNotifications";
 
   export let params: {
     dappId: string;
@@ -125,6 +128,19 @@
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "visible";
+    }
+
+    if ($inbox.length && _navManifest && _navManifest.navPill && _modal.getState().contentType !== "process") {
+      _navManifest.navPill.left = {
+        component: Notification,
+        props: {
+          action: () => {
+            window.o.runProcess(showNotifications, {
+              events: $inbox
+            });
+          }
+        }
+      };
     }
   }
 
@@ -310,11 +326,18 @@
       pageParams = defaultRoutable.pageParams;
     }
 
-    _navManifest = getNavigationManifest(
-      runtimeDapp,
-      _processNavigation,
-      _modal
+    _navManifest = generateNavManifest();
+  }
+
+  function generateNavManifest() {
+    console.log("generateNavManifest");
+    const navManifest = getNavigationManifest(
+            runtimeDapp,
+            _processNavigation,
+            _modal
     );
+
+    return navManifest;
   }
 </script>
 
@@ -350,11 +373,11 @@
   bind:this={_modal}
   on:navigation={(event) => {
     _processNavigation = event.detail;
-    _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
+    _navManifest = generateNavManifest();
   }}
   on:modalOpen={(e) => {
     _modalIsOpen = e.detail;
-    _navManifest = getNavigationManifest(dapp, _processNavigation, _modal);
+    _navManifest = generateNavManifest();
 
     if (!_modalIsOpen && _modalPage && lastMainUrl) {
       push(lastMainUrl);

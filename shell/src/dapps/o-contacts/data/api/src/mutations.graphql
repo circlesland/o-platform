@@ -1,0 +1,5 @@
+mutation acknowledge($eventId:Int!) {
+    acknowledge(eventId: $eventId) {
+        id
+    }
+}

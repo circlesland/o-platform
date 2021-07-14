@@ -28,16 +28,24 @@ function getModalNavigation(
     processNavigation: ProcessContainerNavigation,
     modal: Modal2): NavigationManifest {
     const modalState = modal.getState();
+    let navigationManifest: NavigationManifest;
     switch (modalState.contentType) {
         case "jumplist":
         case "navigation":
-            return getListNavigation(dappManifest, processNavigation, modal);
+            navigationManifest = getListNavigation(dappManifest, processNavigation, modal);
+            break;
         case "process":
-            return getProcessNavigation(dappManifest, processNavigation, modal);
+            navigationManifest =  getProcessNavigation(dappManifest, processNavigation, modal);
+            break;
         case "page":
-            return getDetailNavigation(dappManifest, processNavigation, modal, modalState.depth > 1);
+            navigationManifest =  getDetailNavigation(dappManifest, processNavigation, modal, modalState.depth > 1);
+            break;
     }
-    throw new Error(`Unknown modal state: ${modalState.contentType}.`);
+    if (!navigationManifest) {
+        throw new Error(`Unknown modal state: ${modalState.contentType}.`);
+    }
+
+    return navigationManifest;
 }
 
 function getNoSessionNavigation(

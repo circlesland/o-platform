@@ -82,6 +82,17 @@ type IndexTransactionLog {
     transactionIndex: Int!
 }
 
+type IndexTransactionRequest {
+    blockNumber: Int!
+    createdAt: String!
+    createdBy: Profile
+    createdByProfileId: Int!
+    id: Int!
+    tags: [Tag!]
+    transactionHash: String!
+    transactionIndex: Int!
+}
+
 type IndexedTransaction {
     blockHash: String!
     blockNumber: Int!
@@ -112,14 +123,15 @@ type LogoutResponse {
 }
 
 type Mutation {
+    acknowledge(eventId: Int!): ProfileEvent!
     authenticateAt(appId: String!): DelegateAuthInit!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
-    indexTransaction(data: IndexTransactionInput!): IndexedTransaction!
     lockOffer(data: LockOfferInput!): LockOfferResult!
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
+    requestIndexTransaction(data: RequestIndexTransactionInput!): IndexTransactionRequest!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
@@ -169,6 +181,14 @@ type Profile {
     offers: [Offer!]
 }
 
+type ProfileEvent {
+    createdAt: String!
+    data: String!
+    id: Int!
+    profileId: Int!
+    type: String!
+}
+
 type ProvePaymentResult {
     success: Boolean!
 }
@@ -187,6 +207,7 @@ type Purchase {
 
 type Query {
     cities(query: QueryCitiesInput!): [City!]!
+    events: [ProfileEvent!]!
     offers(query: QueryOfferInput!): [Offer!]!
     profiles(query: QueryProfileInput!): [Profile!]!
     search(query: SearchInput!): [Profile!]!
@@ -194,6 +215,7 @@ type Query {
     stats: Stats
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!
+    transactions(query: QueryIndexedTransactionInput): [IndexedTransaction!]!
     version: Version!
     whoami: String
 }
@@ -264,36 +286,6 @@ input DepositChallenge {
     jwt: String!
 }
 
-input IndexTransactionInput {
-    blockHash: String!
-    blockNumber: Int!
-    confirmations: Int
-    contractAddress: String
-    cumulativeGasUsed: String!
-    from: String!
-    gasUsed: String!
-    logs: [IndexTransactionLogInput!]
-    logsBloom: String!
-    root: String
-    status: String
-    tags: [CreateTagInput!]
-    to: String!
-    transactionHash: String!
-    transactionIndex: Int!
-}
-
-input IndexTransactionLogInput {
-    address: String!
-    blockHash: String!
-    blockNumber: Int!
-    data: String
-    logIndex: Int!
-    removed: Boolean
-    topics: [String!]!
-    transactionHash: String!
-    transactionIndex: Int!
-}
-
 input LockOfferInput {
     offerId: Int!
 }
@@ -321,14 +313,8 @@ input QueryCitiesInput {
 }
 
 input QueryIndexedTransactionInput {
-    fromAddress: String
-    tags: [QueryIndexedTransactionTagInput!]
-    toAddress: String
-}
-
-input QueryIndexedTransactionTagInput {
-    typeId: String!
-    value: String
+    fromBlockNo: Int
+    toBlockNo: Int
 }
 
 input QueryOfferInput {
@@ -358,6 +344,11 @@ input QueryTagsInput {
 
 input QueryUniqueProfileInput {
     id: Int!
+}
+
+input RequestIndexTransactionInput {
+    tags: [CreateTagInput!]
+    transactionHash: String!
 }
 
 input RequestUpdateSafeInput {
