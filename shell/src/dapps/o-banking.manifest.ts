@@ -10,16 +10,16 @@ import { init, tryGetCurrentSafe } from "./o-banking/init";
 import { me } from "../shared/stores/me";
 import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
 import { Profile } from "./o-banking/data/api/types";
-import LinkComponent from "../shared/molecules/NextNav/Components/Link.svelte";
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {loadProfileByProfileId} from "./o-banking/data/loadProfileByProfileId";
-import {mySafe} from "./o-banking/stores/safe";
-import {Unsubscriber} from "svelte/store";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { loadProfileByProfileId } from "./o-banking/data/loadProfileByProfileId";
+import { mySafe } from "./o-banking/stores/safe";
+import { Unsubscriber } from "svelte/store";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
@@ -27,6 +27,15 @@ const transactions: Page<any, BankingDappState> = {
   title: "Transactions",
   icon: "transactions",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "list",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 const profileJumplist: Jumplist<any, BankingDappState> = {
@@ -46,28 +55,32 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
       }
       return undefined;
     };
-    const getTrustState = () => new Promise<number|undefined>((resolve, reject) => {
-      let safeSub:Unsubscriber = undefined;
-      safeSub = mySafe.subscribe(safe => {
-        if (!safe || !safe.trustRelations) {
-          resolve(undefined);
-          return;
-        }
-        if (safeSub)
-          safeSub();
+    const getTrustState = () =>
+      new Promise<number | undefined>((resolve, reject) => {
+        let safeSub: Unsubscriber = undefined;
+        safeSub = mySafe.subscribe((safe) => {
+          if (!safe || !safe.trustRelations) {
+            resolve(undefined);
+            return;
+          }
+          if (safeSub) safeSub();
 
-        const trustingSafe = Object.entries(safe.trustRelations.trusting).find(o => o[0] === recipientSafeAddress);
-        if (!trustingSafe) {
-          resolve(undefined);
-          return;
-        }
+          const trustingSafe = Object.entries(
+            safe.trustRelations.trusting
+          ).find((o) => o[0] === recipientSafeAddress);
+          if (!trustingSafe) {
+            resolve(undefined);
+            return;
+          }
 
-        resolve(trustingSafe[1].limit);
+          resolve(trustingSafe[1].limit);
+        });
       });
-    });
 
-    const recipientSafeAddress = params.id ? await getRecipientAddress() : undefined;
-    const trustState = params.id ?  await getTrustState() : 0;
+    const recipientSafeAddress = params.id
+      ? await getRecipientAddress()
+      : undefined;
+    const trustState = params.id ? await getTrustState() : 0;
 
     return [
       {
@@ -89,7 +102,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
         action: async () => {
           window.o.runProcess(setTrust, {
             trustLimit: trustState ? 0 : 100,
-            trustReceiver:  recipientSafeAddress,
+            trustReceiver: recipientSafeAddress,
             safeAddress: tryGetCurrentSafe().safeAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });
@@ -106,7 +119,7 @@ export const profile: Page<any, BankingDappState> = {
   routeParts: ["=profile", ":id"],
   title: "Profile",
   component: ProfilePage,
-  jumplist: profileJumplist
+  jumplist: profileJumplist,
 };
 
 const transactionDetail: Page<{ _id: string }, BankingDappState> = {
@@ -116,7 +129,7 @@ const transactionDetail: Page<{ _id: string }, BankingDappState> = {
   routeParts: ["=transactions", ":_id"],
   title: "Transaction",
   component: TransactionDetailPage,
-  jumplist: profileJumplist
+  jumplist: profileJumplist,
 };
 const transactionSend: Trigger<
   { to: string; amount: string; message: string },
@@ -213,6 +226,7 @@ export const banking: DappManifest<BankingDappState> = {
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   jumplist: profileJumplist,
+
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     const myProfileResult = await new Promise<Profile>((resolve) => {

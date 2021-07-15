@@ -3,6 +3,7 @@
   import LoginPill from "./Components/LoginPill.svelte";
 
   export let navigation: any;
+  console.log("NAVIGATION: ", navigation);
 </script>
 
 <footer
@@ -12,7 +13,6 @@
   {#if navigation.leftSlot}
     <div
       class="w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full cursor-pointer"
-      class:hidden={isOpen}
       on:click={navigation.leftSlot.props.action}
     >
       <svelte:component
