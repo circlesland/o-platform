@@ -1,7 +1,7 @@
 <script lang="ts">
   import Time from "svelte-time";
   import { mySafe } from "../stores/safe";
-  import TopNav from "src/shared/atoms/TopNav.svelte";
+
   import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";

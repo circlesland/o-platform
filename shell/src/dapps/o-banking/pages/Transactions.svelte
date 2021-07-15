@@ -2,6 +2,7 @@
   import BankingHeader from "../atoms/BankingHeader.svelte";
   import { transfer } from "../processes/transfer";
   import TransactionCard from "../atoms/TransactionCard.svelte";
+  import TopNav from "src/shared/atoms/TopNav.svelte";
   import { mySafe } from "../stores/safe";
   import { me } from "../../../shared/stores/me";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
@@ -70,6 +71,7 @@
 </script>
 
 <svelte:window bind:scrollY />
+<TopNav {runtimeDapp} {routable} />
 <BankingHeader
   {runtimeDapp}
   {routable}
