@@ -67,6 +67,15 @@
     return sevendaysago > unixTime * 1000;
   }
   console.log("OFFER: ", offer);
+
+  function truncateString(str, num) {
+    if (str.length > num) {
+      let subStr = str.substring(0, num);
+      return subStr + "...";
+    } else {
+      return str;
+    }
+  }
 </script>
 
 <section class="flex items-start bg-white shadow-lg rounded-xl">
@@ -126,7 +135,7 @@
 
       {#if offer.description}
         <div class="text-sm text-dark-lightest">
-          {offer.description}
+          {truncateString(offer.description, 70)}
         </div>
       {/if}
       <div class="flex flex-row space-x-4">

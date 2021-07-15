@@ -11,18 +11,22 @@
 
   let maxSize: number = 10000000;
   let crop = { x: 0, y: 0 };
-  let cropData = {
-    detail: { pixels: { x: 0, y: 0, width: 300, height: 300 } },
-  };
+
   let zoom = 1;
   let aspect = 1 / 1;
+  let aspectWidth = 337;
+  let aspectHeight = 337;
   let cropShape = "round";
   let cropCanvas;
   let resizeCanvas;
   let ctx;
   let image;
   let uploadFile;
-
+  let cropData = {
+    detail: {
+      pixels: { x: 0, y: 0, width: aspectWidth, height: aspectHeight },
+    },
+  };
   $: uploadMessage = "";
 
   let files = {
@@ -102,10 +106,10 @@
           detail.detail.pixels.height
         );
 
-        resizeCanvas.width = 512;
-        resizeCanvas.height = 512;
+        resizeCanvas.width = aspectWidth;
+        resizeCanvas.height = aspectHeight;
         const resizeCanvasCtx = resizeCanvas.getContext("2d");
-        resizeCanvasCtx.drawImage(cropCanvas, 0, 0, 512, 512);
+        resizeCanvasCtx.drawImage(cropCanvas, 0, 0, aspectWidth, aspectHeight);
 
         resizeCanvas.toBlob(
           (blob) => {
@@ -137,6 +141,7 @@
     if (context.params.cropShape && context.params.cropShape == "rect") {
       cropShape = context.params.cropShape;
       aspect = 16 / 9;
+      aspectWidth = 600;
     }
   }
 
@@ -164,15 +169,15 @@
       style="display:none"
       bind:this={cropCanvas}
       id="cropCanvas"
-      width="300"
-      height="300"
+      width={aspectWidth}
+      height={aspectHeight}
     />
     <canvas
       style="display:none"
       bind:this={resizeCanvas}
       id="resizeCanvas"
-      width="300"
-      height="300"
+      width={aspectWidth}
+      height={aspectHeight}
     />
     {#if uploadFile}
       <div class="relative" style="top: -30px;">

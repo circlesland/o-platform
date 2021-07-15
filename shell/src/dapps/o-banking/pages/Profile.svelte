@@ -19,7 +19,6 @@
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-  import TopNav from "../../../shared/atoms/TopNav.svelte";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
@@ -253,7 +252,6 @@
 {#if isLoading}
   <LoadingIndicator />
 {:else}
-  <TopNav {runtimeDapp} {routable} />
   <header
     class="grid overflow-hidden text-white bg-cover rounded-t-xl h-80 place-content-center bg-gradient-to-r from-gradient1 to-primary"
   >
@@ -378,7 +376,7 @@
         {/if}
 
         {#if profile && profile.safeAddress}
-          <section class="mb-8">
+          <!-- <section class="mb-8">
             <div class="grid w-full grid-cols-3 gap-4 text-2xs ">
               <div class="flex flex-col items-center justify-items-center">
                 <div class="text-3xl font-medium text-dark">5</div>
@@ -393,7 +391,7 @@
                 <div class="mt-4 text-dark-lightest">invited</div>
               </div>
             </div>
-          </section>
+          </section> -->
           <section class="justify-center mb-2 ">
             <div class="flex flex-col w-full p-2 space-y-1">
               <div class="text-left text-2xs text-dark-lightest">Passion</div>

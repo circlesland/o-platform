@@ -23,8 +23,8 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { identify } from "../../dapps/o-passport/processes/identify/identify";
-  import {inbox} from "../stores/inbox";
-  import {showNotifications} from "../processes/showNotifications";
+  import { inbox } from "../stores/inbox";
+  import { showNotifications } from "../processes/showNotifications";
 
   export let params: {
     dappId: string;
@@ -130,22 +130,27 @@
       document.body.style.overflow = "visible";
     }
 
-    if ($inbox.length && _navManifest && _navManifest.navPill && _modal.getState().contentType !== "process") {
+    if (
+      $inbox.length &&
+      _navManifest &&
+      _navManifest.navPill &&
+      _modal.getState().contentType !== "process"
+    ) {
       _navManifest.navPill.left = {
         component: Notification,
         props: {
           action: () => {
             let item;
-            let s = inbox.subscribe(o => {
+            let s = inbox.subscribe((o) => {
               item = o;
             });
             s();
 
             window.o.runProcess(showNotifications, {
-              events: JSON.parse(JSON.stringify(item))
+              events: JSON.parse(JSON.stringify(item)),
             });
-          }
-        }
+          },
+        },
       };
     }
   }
@@ -338,9 +343,9 @@
   function generateNavManifest() {
     console.log("generateNavManifest");
     const navManifest = getNavigationManifest(
-            runtimeDapp,
-            _processNavigation,
-            _modal
+      runtimeDapp,
+      _processNavigation,
+      _modal
     );
 
     return navManifest;
@@ -350,7 +355,7 @@
 <div class="flex flex-col text-base">
   <main class="z-30 flex-1 overflow-y-auto">
     <div
-      class="w-full mainContent "
+      class="absolute top-0 w-full mainContent"
       class:mb-16={(!_modal || !_modalIsOpen) &&
         dapp &&
         dapp.dappId !== "homepage:1"}
@@ -437,12 +442,12 @@
   }
 
   /* .mainContent {
-      --tw-text-opacity: 1;
-      background-image: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 1) 0%,
-        rgba(253, 254, 255, 1) 85%,
-        rgba(13, 43, 102, 0) 100%
-      );
-    } */
+    --tw-text-opacity: 1;
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(253, 254, 255, 1) 85%,
+      rgba(13, 43, 102, 0) 100%
+    );
+  } */
 </style>

@@ -207,7 +207,7 @@
       on:click|self={closeModal}
     >
       <div
-        class="w-full mt-10 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
+        class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
       >
         <div data-simplebar class="modalAsideScrollableContent rounded-xl">
           <div class="w-full m-auto">
