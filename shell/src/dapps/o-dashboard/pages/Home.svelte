@@ -74,7 +74,7 @@
 
 <!-- <DashboardHeader /> -->
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  {#if $me.circlesAddress}
+  {#if $me && $me.circlesAddress}
     <div class="relative" style="max-height: 400px">
       <section class="mb-4">
         <AdjacencyGraph
