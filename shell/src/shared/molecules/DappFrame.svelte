@@ -138,10 +138,11 @@
         ? ""
         : "md:w-2/3 xl:w-1/2";
 
+    // TODO: ADD ASIDE MENU CHECK
     if (_modal && _modalIsOpen) {
       document.body.style.overflow = "hidden";
     } else {
-      // document.body.style.overflow = "visible";
+      document.body.style.overflow = "visible";
     }
 
     if (
