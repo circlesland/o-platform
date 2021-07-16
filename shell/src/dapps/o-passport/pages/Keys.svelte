@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PassportHeader from "../atoms/PassportHeader.svelte";
+  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import * as bip39 from "bip39";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
@@ -32,11 +32,11 @@
   }
 </script>
 
-<PassportHeader {runtimeDapp} {routable} />
+<SimpleHeader {runtimeDapp} {routable} />
 
-<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
-  <section class="flex items-center justify-center mb-1 ">
-    <div class="flex items-center w-full p-4 bg-white rounded-lg shadow">
+<div class="mx-auto md:w-2/3 xl:w-1/2">
+  <section class="flex items-center justify-center mx-4 mb-1">
+    <div class="flex items-center w-full p-4 -mt-2 bg-white rounded-lg shadow">
       <div class="flex flex-col items-start">
         <h3 class="mr-2 font-bold">My Secret Recovery Code</h3>
       </div>
@@ -74,7 +74,7 @@
     </div>
   </section>
   <!-- {#if showPhrase} -->
-  <section class="flex items-center justify-center mb-2 ">
+  <section class="flex items-center justify-center mx-4 mb-2">
     <div
       class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow"
     >

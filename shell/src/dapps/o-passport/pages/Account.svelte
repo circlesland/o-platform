@@ -1,6 +1,6 @@
 <script lang="ts">
   import { me } from "../../../shared/stores/me";
-  import PassportHeader from "../atoms/PassportHeader.svelte";
+  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
@@ -21,11 +21,11 @@
   }
 </script>
 
-<PassportHeader {runtimeDapp} {routable} />
+<SimpleHeader {runtimeDapp} {routable} />
 
-<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
-  <div class="mx-4 mt-4">
-    <section class="flex items-center justify-center mb-2 -mt-10">
+<div class="mx-auto md:w-2/3 xl:w-1/2">
+  <div class="mx-4">
+    <section class="flex items-center justify-center mb-2 -mt-2">
       <div
         class="flex items-center w-full px-4 space-x-2 bg-white rounded-lg shadow"
       >

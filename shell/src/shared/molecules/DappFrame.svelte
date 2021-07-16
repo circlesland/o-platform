@@ -25,6 +25,20 @@
   import { identify } from "../../dapps/o-passport/processes/identify/identify";
   import { inbox } from "../stores/inbox";
   import { showNotifications } from "../processes/showNotifications";
+  import { Swiper, SwiperSlide } from "swiper/svelte";
+  import AsideMenuLeft from "./AsideMenuLeft.svelte";
+
+  // Import Swiper styles
+  import "swiper/swiper-bundle.css";
+
+  import "swiper/components/navigation/navigation.min.css";
+  import "swiper/components/pagination/pagination.min.css";
+
+  // import Swiper core and required modules
+  import SwiperCore, { Pagination, Navigation } from "swiper/core";
+
+  // install Swiper modules
+  SwiperCore.use([Navigation, Pagination]);
 
   export let params: {
     dappId: string;
@@ -127,7 +141,7 @@
     if (_modal && _modalIsOpen) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "visible";
+      // document.body.style.overflow = "visible";
     }
 
     if (
@@ -352,28 +366,27 @@
   }
 </script>
 
-<div class="flex flex-col text-base">
-  <main class="z-30 flex-1 overflow-y-auto">
-    <div
-      class="absolute top-0 w-full mainContent"
-      class:mb-16={(!_modal || !_modalIsOpen) &&
-        dapp &&
-        dapp.dappId !== "homepage:1"}
-      class:blur={_modal && _modalIsOpen}
-    >
-      {#if _mainPage}
-        <svelte:component
-          this={_mainPage.component}
-          params={pageParams}
-          {runtimeDapp}
-          {routable}
-        />
-      {:else}
-        <NotFound />
-      {/if}
-    </div>
-  </main>
-</div>
+<AsideMenuLeft />
+<main class="z-30 flex-1 overflow-y-auto">
+  <div
+    class="absolute top-0 w-full mainContent"
+    class:mb-16={(!_modal || !_modalIsOpen) &&
+      dapp &&
+      dapp.dappId !== "homepage:1"}
+    class:blur={_modal && _modalIsOpen}
+  >
+    {#if _mainPage}
+      <svelte:component
+        this={_mainPage.component}
+        params={pageParams}
+        {runtimeDapp}
+        {routable}
+      />
+    {:else}
+      <NotFound />
+    {/if}
+  </div>
+</main>
 
 {#if _navManifest}
   <NextNav navigation={_navManifest} />
@@ -450,4 +463,36 @@
       rgba(13, 43, 102, 0) 100%
     );
   } */
+
+  .swiper-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+
+    /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+  }
+
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 </style>

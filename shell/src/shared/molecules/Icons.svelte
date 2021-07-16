@@ -1235,6 +1235,7 @@ EwAAAABJRU5ErkJggg==" />
 <path d="M1.66669 10.5H20.3334M20.3334 10.5L11 1.1665M20.3334 10.5L11 19.8332" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
+
     dashpassport: `
 <svg width="42" height="48" viewBox="0 0 42 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M41.0615 46.5V41.5C41.0615 38.8478 40.008 36.3043 38.1326 34.4289C36.2572 32.5536 33.7137 31.5 31.0615 31.5H11.0615C8.40936 31.5 5.86582 32.5536 3.99046 34.4289C2.11509 36.3043 1.06152 38.8478 1.06152 41.5V46.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1260,6 +1261,11 @@ EwAAAABJRU5ErkJggg==" />
 <svg class='w-4 h-4 m-auto' viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M1 8.00012H15M15 8.00012L7.99998 1M15 8.00012L7.99998 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
+    buttonleftarrow: `
+<svg class='w-4 h-4 m-auto' viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 8H1M1 8L8 14.9999M1 8L8 0.999878" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
     star: `
 <svg class='w-6 h-6 m-auto' viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M11 1L14.09 7.26L21 8.27L16 13.14L17.18 20.02L11 16.77L4.82 20.02L6 13.14L1 8.27L7.91 7.26L11 1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

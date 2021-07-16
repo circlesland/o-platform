@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PassportHeader from "../atoms/PassportHeader.svelte";
+  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
   import { me } from "../../../shared/stores/me";
   import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
   import { onMount } from "svelte";
@@ -91,10 +91,10 @@
   });
 </script>
 
-<PassportHeader {runtimeDapp} {routable} />
+<SimpleHeader {runtimeDapp} {routable} />
 
-<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
-  <section class="flex items-center justify-center mb-2 ">
+<div class="mx-auto md:w-2/3 xl:w-1/2">
+  <section class="flex items-center justify-center mx-4 mb-2 -mt-2">
     <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow">
       <div class="text-xs font-bold text-left text-primary">EMAIL</div>
       <div class="flex items-center w-full space-x-2 bg-white sm:space-x-6">
@@ -104,7 +104,7 @@
       </div>
     </div>
   </section>
-  <section class="flex items-center justify-center mb-2 ">
+  <section class="flex items-center justify-center mx-4 mb-2">
     <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow">
       <div class="text-xs font-bold text-left text-primary">NEWSLETTER</div>
       <div class="w-full space-x-2 bg-white sm:space-x-6">
