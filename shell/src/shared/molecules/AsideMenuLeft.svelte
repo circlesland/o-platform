@@ -1,8 +1,8 @@
 <script lang="ts">
   import Icons from "./Icons.svelte";
-  let isSidebarOpen: boolean = false;
+  let isLeftSidebarOpen: boolean = false;
   $: {
-    if (isSidebarOpen) {
+    if (isLeftSidebarOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "visible";
@@ -10,7 +10,7 @@
   }
 </script>
 
-<aside class="flex" class:hidden={!isSidebarOpen}>
+<aside class="flex sideBarLeft" class:hidden={!isLeftSidebarOpen}>
   <div class="">
     <!-- Sidebar -->
     <div class="fixed inset-y-0 z-10 flex w-72 sidebar">
@@ -60,14 +60,14 @@
   </div>
   <div
     class="absolute z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full cursor-pointer bottom-4 left-72"
-    on:click={() => (isSidebarOpen = false)}
+    on:click={() => (isLeftSidebarOpen = false)}
   >
     <Icons icon="buttonleftarrow" />
   </div>
 </aside>
 
 <style>
-  aside {
+  .sideBarLeft {
     z-index: 99;
     background-color: rgba(177, 192, 200, 0.4);
     position: absolute;
@@ -84,7 +84,7 @@
     height: 100%;
     width: 100%;
   }
-  .sidebar {
+  .sideBarLeft .sidebar {
     --tw-shadow: 0 25px 50px 82px rgba(0, 0, 0, 0.45);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
       var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);

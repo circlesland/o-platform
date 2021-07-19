@@ -27,6 +27,7 @@
   import { showNotifications } from "../processes/showNotifications";
   import { Swiper, SwiperSlide } from "swiper/svelte";
   import AsideMenuLeft from "./AsideMenuLeft.svelte";
+  import AsideMenuRight from "./AsideMenuRight.svelte";
 
   // Import Swiper styles
   import "swiper/swiper-bundle.css";
@@ -388,7 +389,7 @@
     {/if}
   </div>
 </main>
-
+<AsideMenuRight />
 {#if _navManifest}
   <NextNav navigation={_navManifest} />
 {/if}
