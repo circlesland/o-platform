@@ -3,7 +3,7 @@
   import UAParser from "ua-parser-js";
   import { createEventDispatcher } from "svelte";
 
-  let isLeftSidebarOpen: boolean = true;
+  let isLeftSidebarOpen: boolean = false;
 
   const uaParser = new UAParser();
   const dispatch = createEventDispatcher();
@@ -95,7 +95,7 @@
 {:else}
 
   <aside
-    class="z-50 top-10 fixed flex flex-col flex-1 flex-shrink-0 w-64 h-screen text-white bg-dark"
+    class="z-50 top-11 fixed flex flex-col flex-1 flex-shrink-0 w-64 h-screen text-white bg-dark"
     class:hidden={!isLeftSidebarOpen}
   >
 

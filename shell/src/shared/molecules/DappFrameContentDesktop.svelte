@@ -403,8 +403,9 @@
   <main
     class="relative z-30 w-full overflow-auto"
   >
+  // TODO: PADDING LEFT AND RIGHT WHEN SIDEBARS OPEN
     <div
-      class="w-full mainContent pl-64"
+      class="w-full mainContent pr-64"
       class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== 'homepage:1'}
       class:blur={_modal && _modalIsOpen}
     >
