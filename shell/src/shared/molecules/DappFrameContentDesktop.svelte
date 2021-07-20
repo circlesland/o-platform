@@ -79,6 +79,7 @@
 
   let _processNavigation: ProcessContainerNavigation;
   let _navManifest: NavigationManifest;
+  let _asideMenuLeft: AsideMenuLeft;
 
   let _runtimeDapps: { [dappId: string]: RuntimeDapp<any> } = {};
 
@@ -150,6 +151,11 @@
       onParamsChanged();
       lastParamsJson = JSON.stringify(params);
     }
+
+    if (_asideMenuLeft && dapp) {
+      _asideMenuLeft.showNavigation(dapp);
+    }
+
     layoutClasses =
       (dapp && dapp.isFullWidth) || (_mainPage && _mainPage.isFullWidth)
         ? ""
@@ -399,7 +405,9 @@
 <div
   class="absolute flex flex-row overflow-auto"
 >
-  <AsideMenuLeft on:isLeftSideBarOpen={handleLeftSideBarOpen} />
+  {#if runtimeDapp}
+    <AsideMenuLeft runtimeDapp={runtimeDapp} bind:this={_asideMenuLeft} on:isLeftSideBarOpen={handleLeftSideBarOpen} />
+  {/if}
   <main
     class="relative z-30 w-full overflow-auto"
   >

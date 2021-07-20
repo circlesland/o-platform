@@ -6,8 +6,10 @@
   import { push } from "svelte-spa-router";
 
   import { ProcessContainerNavigation } from "../molecules/ProcessContainer.svelte";
-  import Modal2 from "../molecules/Modal2.svelte";
+  import Modal2, {runtimeDapp} from "../molecules/Modal2.svelte";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import {Link} from "@o-platform/o-interfaces/dist/routables/link";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 
   export function getNavigationManifest(
     dappManifest: DappManifest<any>,
@@ -70,6 +72,41 @@
     return {
       loginPill: true,
     };
+  }
+
+  export function getRouteList(dapp: DappManifest<any>, runtimeDapp:RuntimeDapp<any>) : {
+      icon?: string;
+      title: string;
+      url: string;
+      extern: boolean;
+  }[] {
+      const routables = dapp.routables.filter(
+          (o) => (o.type === "page" || o.type === "link") && !o.isSystem
+      );
+      return routables.map((o) => {
+          if (o.type == "page") {
+              return {
+                  title: o.title,
+                  icon: o.icon,
+                  url:
+                      runtimeDapp.routeParts
+                          .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
+                          .join("/") +
+                      "/" +
+                      o.routeParts
+                          .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
+                          .join("/"),
+                  extern: false,
+              };
+          } else {
+              return {
+                  title: o.title,
+                  icon: o.icon,
+                  url: (<Link<any, any>>o).url({}, runtimeDapp),
+                  extern: (<Link<any, any>>o).openInNewTab,
+              };
+          }
+      });
   }
 
   function getRegularNavigation(
