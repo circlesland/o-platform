@@ -56,9 +56,10 @@
   };
 
   let isLeftSideBarOpen = false;
+  let isRightSideBarOpen = false;
 
   $: {
-    if (isLeftSideBarOpen) {
+    if (isLeftSideBarOpen || isRightSideBarOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "visible";
@@ -400,10 +401,17 @@
       isLeftSideBarOpen = false;
     }
   }
+    function handleRightSideBarOpen(event) {
+    if (event.detail.state == true) {
+      isRightSideBarOpen = true;
+    } else {
+      isRightSideBarOpen = false;
+    }
+  }
 </script>
 
 <div
-  class="absolute flex flex-row overflow-auto"
+  class="absolute w-full flex flex-row overflow-auto"
 >
   {#if runtimeDapp}
     <AsideMenuLeft runtimeDapp={runtimeDapp} bind:this={_asideMenuLeft} on:isLeftSideBarOpen={handleLeftSideBarOpen} />
@@ -411,8 +419,11 @@
   <main
     class="relative z-30 w-full overflow-auto"
   >
+  // TODO: PADDING LEFT AND RIGHT WHEN SIDEBARS OPEN
     <div
-      class="w-full mainContent pl-64"
+      class="w-full mainContent pr-64"
+      class:pl-64={isLeftSideBarOpen}
+      class:pr-64={isRightSideBarOpen}
       class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== 'homepage:1'}
       class:blur={_modal && _modalIsOpen}
     >
@@ -428,7 +439,7 @@
       {/if}
     </div>
   </main>
-  <AsideMenuRight />
+  <AsideMenuRight on:isRightSideBarOpen={handleRightSideBarOpen}/>
 </div>
 {#if _navManifest}
   <NextNav navigation={_navManifest} />

@@ -39,7 +39,7 @@
     background-image: linear-gradient(
       180deg,
       rgba(149, 183, 202, 0) 0%,
-      rgba(13, 43, 102, 0.5) 100%
+      rgba(13, 43, 102, 0.3) 100%
     );
   }
 </style>

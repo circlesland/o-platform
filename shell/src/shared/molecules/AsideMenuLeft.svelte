@@ -7,7 +7,7 @@
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 
   export let runtimeDapp: RuntimeDapp<any>;
-  let isLeftSidebarOpen: boolean = true;
+  let isLeftSidebarOpen: boolean = false;
   let navigation: {
             icon?: string;
             title: string;
