@@ -30,7 +30,8 @@
 
 <div
   on:click={setSegment}
-  class="flex-grow text-xs text-center cursor-pointer "
+  class="flex-grow flex flex-col items-center text-xs text-center cursor-pointer
+  "
 >
   <div class="text-center">
     <Icons {icon} />

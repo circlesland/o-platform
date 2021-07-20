@@ -3,7 +3,8 @@
 </script>
 
 <header
-  class="grid place-content-center text-white bg-cover mt-5 {heightClass} overflow-hidden bg-gradient-to-r from-gradient1 to-primary"
+  class="grid place-content-center text-white bg-cover mt-11 {heightClass}
+  overflow-hidden bg-gradient-to-r from-gradient1 to-primary"
 >
   <slot />
 </header>
