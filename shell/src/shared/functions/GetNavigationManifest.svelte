@@ -32,7 +32,7 @@
           component: LinkComponent,
           props: {
               text: "Hello",
-              action: () => alert("do something")
+              action: () => leftSidebar.showNavigation(dappManifest)
           }
       };
 

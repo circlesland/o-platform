@@ -389,7 +389,8 @@
       runtimeDapp,
       _processNavigation,
       _modal,
-            _asideMenuLeft,null
+      _asideMenuLeft,
+      null
     );
 
     return navManifest;
@@ -420,7 +421,7 @@
   <main
     class="relative z-30 w-full overflow-auto"
   >
-
+  // TODO: PADDING LEFT AND RIGHT WHEN SIDEBARS OPEN
     <div
       class="w-full mainContent pr-64"
       class:pl-64={isLeftSideBarOpen}
