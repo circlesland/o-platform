@@ -42,7 +42,7 @@
       </div>
     {/if}
   </div>
-  <div class="flex flex-row justify-center mt-2">
+  <!-- <div class="flex flex-row justify-center mt-2">
     <nav class="carousel">
       {#each navigateablePages as page, i}
         <input
@@ -55,7 +55,7 @@
         <label for="carousel-item-{i}" class="mx-1">{page.title} {i}</label>
       {/each}
     </nav>
-  </div>
+  </div> -->
 </div>
 
 <style>
