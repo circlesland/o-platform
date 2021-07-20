@@ -55,16 +55,8 @@
     "6": string | null;
   };
 
-  let isLeftSideBarOpen = false;
-  let isRightSideBarOpen = false;
-
-  $: {
-    if (isLeftSideBarOpen || isRightSideBarOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "visible";
-    }
-  }
+  let isLeftSideBarOpen: boolean = false;
+  let isRightSideBarOpen: boolean = false;
 
   let pageParams: { [x: string]: any } = {};
 
@@ -151,10 +143,6 @@
     if (params && mounted && lastParamsJson != JSON.stringify(params)) {
       onParamsChanged();
       lastParamsJson = JSON.stringify(params);
-    }
-
-    if (_asideMenuLeft && dapp) {
-      _asideMenuLeft.showNavigation(dapp);
     }
 
     layoutClasses =
@@ -403,7 +391,7 @@
       isLeftSideBarOpen = false;
     }
   }
-    function handleRightSideBarOpen(event) {
+  function handleRightSideBarOpen(event) {
     if (event.detail.state == true) {
       isRightSideBarOpen = true;
     } else {
@@ -412,23 +400,24 @@
   }
 </script>
 
-<div
-  class="absolute w-full flex flex-row overflow-auto"
->
+<div class="absolute w-full flex flex-row overflow-auto">
   {#if runtimeDapp}
-    <AsideMenuLeft runtimeDapp={runtimeDapp} bind:this={_asideMenuLeft} on:isLeftSideBarOpen={handleLeftSideBarOpen} />
+    <AsideMenuLeft
+      {runtimeDapp}
+      bind:this={_asideMenuLeft}
+      on:openLeftSidebar={handleLeftSideBarOpen}
+    />
   {/if}
-  <main
-    class="relative z-30 w-full overflow-auto"
-  >
-  // TODO: PADDING LEFT AND RIGHT WHEN SIDEBARS OPEN
+  <main class="relative z-30 w-full overflow-auto">
+
     <div
-      class="w-full mainContent pr-64"
+      class="w-full mainContent"
       class:pl-64={isLeftSideBarOpen}
       class:pr-64={isRightSideBarOpen}
       class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== 'homepage:1'}
       class:blur={_modal && _modalIsOpen}
     >
+
       {#if _mainPage}
         <svelte:component
           this={_mainPage.component}
@@ -441,7 +430,7 @@
       {/if}
     </div>
   </main>
-  <AsideMenuRight on:isRightSideBarOpen={handleRightSideBarOpen}/>
+  <AsideMenuRight on:isRightSideBarOpen={handleRightSideBarOpen} />
 </div>
 {#if _navManifest}
   <NextNav navigation={_navManifest} />

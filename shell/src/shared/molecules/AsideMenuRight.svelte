@@ -23,7 +23,6 @@
   
   $: {
     if (isRightSidebarOpen) {
-      document.body.style.overflow = "hidden";
       dispatch("isRightSidebarOpen", {
         state: true,
       });
@@ -31,7 +30,6 @@
         visible = true;
       }, 150);
     } else {
-      document.body.style.overflow = "visible";
       dispatch("isLeftSidebarOpen", {
         state: false,
       });

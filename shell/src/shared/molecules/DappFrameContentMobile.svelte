@@ -137,9 +137,6 @@
       lastParamsJson = JSON.stringify(params);
     }
 
-    if (_asideMenuLeft && dapp) {
-      _asideMenuLeft.showNavigation(dapp);
-    }
 
     layoutClasses =
       (dapp && dapp.isFullWidth) || (_mainPage && _mainPage.isFullWidth)

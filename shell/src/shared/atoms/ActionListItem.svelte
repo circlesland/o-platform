@@ -32,6 +32,8 @@
   on:click={setSegment}
   class="flex-grow text-xs text-center cursor-pointer "
 >
-  <Icons {icon} />
+  <div class="text-center">
+    <Icons {icon} />
+  </div>
   <span class="block mt-2">{title}</span>
 </div>

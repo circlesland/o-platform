@@ -31,7 +31,7 @@
       nm.leftSlot = {
           component: LinkComponent,
           props: {
-              text: "Hello",
+              icon: "list",
               action: () => leftSidebar.showNavigation(dappManifest)
           }
       };
