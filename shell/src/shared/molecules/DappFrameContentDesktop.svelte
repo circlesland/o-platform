@@ -397,18 +397,14 @@
 </script>
 
 <div
-  class="flex flex-row"
-  class:overflow-hidden={isLeftSideBarOpen}
-  class:overflow-auto={!isLeftSideBarOpen}
+  class="absolute flex flex-row overflow-auto"
 >
   <AsideMenuLeft on:isLeftSideBarOpen={handleLeftSideBarOpen} />
   <main
-    class="relative z-30 w-full"
-    class:overflow-hidden={isLeftSideBarOpen}
-    class:overflow-auto={!isLeftSideBarOpen}
+    class="relative z-30 w-full overflow-auto"
   >
     <div
-      class="w-full mainContent"
+      class="w-full mainContent pl-64"
       class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== 'homepage:1'}
       class:blur={_modal && _modalIsOpen}
     >

@@ -8,9 +8,6 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import { Transfer } from "../data/circles/types";
-  import "simplebar";
-  import { SvelteSimplebar } from "svelte-simplebar";
-  import SimpleBar from "simplebar";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -28,10 +25,8 @@
   const pageSize = 30;
   let currentPage = 0;
   let eof = false;
-  let scrollContent;
 
   function loadMore() {
-    console.log("LOADING MORE RESULTS");
     if ($mySafe.transfers.rows.length == 0) return;
 
     const maxPageSize =
@@ -42,15 +37,11 @@
       // EOF
       eof = true;
     }
-    // console.log("PAGESIZE: ", pageSize);
-    // console.log("MAXPAGESIZE: ", maxPageSize);
     const from = currentPage * pageSize;
     const to = from + pageSize;
     preparedRows = [...preparedRows, ...$mySafe.transfers.rows.slice(from, to)];
-    console.log("Next page .. ", currentPage);
+    console.log("Next page ..");
     currentPage++;
-    displayRows = preparedRows;
-    scrollContent.recalculate();
   }
 
   $: {
@@ -63,120 +54,88 @@
         loadMore();
         oldPage--;
       }
-      // displayRows = preparedRows;
+      displayRows = preparedRows;
     } else {
+      console.log("Y ", scrollY);
       if (preparedRows.length == 0 && $mySafe.transfers.rows) {
         loadMore();
         displayRows = preparedRows;
+      } else {
+        const stopElementY = stopElement ? stopElement.offsetTop : -1;
+        if (stopElementY - window.innerHeight - scrollY < 50 && !eof) {
+          loadMore();
+          displayRows = preparedRows;
+        }
       }
     }
   }
-
-  const initBar = (bar) => {
-    scrollContent = bar;
-
-    bar.getScrollElement().onscroll = (event) => {
-      // console.log("svelteBar Scroll", event);
-      // console.log(
-      //   "svelteBar load more?",
-      //   event.target.scrollTop >= event.target.clientHeight
-      // );
-      // console.log("svelteBar ScrollTop", event.target.scrollTop);
-      // console.log("svelteBar clientHeight", event.target.clientHeight);
-      // console.log(
-      //   "STOPELEMENT: ",
-      //   stopElement.offsetTop + stopElement.parentElement.offsetTop
-      // );
-
-      if (
-        event.target.scrollTop >=
-        stopElement.offsetTop + stopElement.parentElement.offsetTop - 1000
-      ) {
-        console.log("Loading more..");
-        loadMore();
-        // dontLoadMore = true;
-        // console.log("Recalcing..");
-        // bar.recalculate();
-      }
-    };
-    // bar.recalculate();
-  };
 </script>
 
-<div class="h-screen" id="scroller">
-  <SvelteSimplebar init={initBar} scroll={initBar}>
-    <BankingHeader
-      {runtimeDapp}
-      {routable}
-      balance={$mySafe && $mySafe.balance ? $mySafe.balance : '0'}
-    />
+<svelte:window bind:scrollY />
 
-    <div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
-      {#if $mySafe.ui && !$mySafe.ui.error && displayRows.length === 0}
-        <section class="flex items-center justify-center mb-2 ">
-          <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-            <div class="flex flex-col items-start">
-              <div>Loading Transactions...</div>
-            </div>
-          </div>
-        </section>
-      {:else if $mySafe.ui && $mySafe.ui.error}
-        <section class="flex items-center justify-center mb-2 ">
-          <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-            <div class="flex flex-col items-start">
-              <div>
-                <b>An error occurred while loading the recent activities:</b>
-                <br />
-                {$mySafe.ui.error.message}
-              </div>
-            </div>
-          </div>
-        </section>
-      {:else if displayRows.length > 0}
-        {#each displayRows as transfer, i}
-          {#if i === 0}
-            <TransactionCard bind:this={firstElement} {transfer} message="" />
-          {:else}
-            <TransactionCard {transfer} message="" />
-          {/if}
-        {/each}
-        <div bind:this={stopElement}>Stop</div>
-      {:else}
-        <section class="flex items-center justify-center mb-2 ">
-          <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-            <div class="flex flex-col items-start">
-              <div>
-                <span>No recent activities</span>
-              </div>
-            </div>
-          </div>
-        </section>
-      {/if}
-      <section class="justify-center mb-4">
-        <div
-          class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard"
-        >
-          <div class="text-xs font-bold text-left text-info ">
-            WHAT IS THIS?
-          </div>
+<BankingHeader
+  {runtimeDapp}
+  {routable}
+  balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"}
+/>
 
-          <div class="text-sm md:text-base">
-            This is your Circles banking account and you just got your first 50
-            Circles as a welcome gift.
-            <br />
-            <br />
-            From today on you will unconditionally receive 8 more Circles every
-            day in the form of your personal universal basic income.
-            <br />
-            <br />
-
-            <b>
-              Have a look around and explore the navigation buttons below, to
-              learn more about how Circles works in detail.
-            </b>
+<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+  {#if $mySafe.ui && !$mySafe.ui.error && displayRows.length === 0}
+    <section class="flex items-center justify-center mb-2 ">
+      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
+        <div class="flex flex-col items-start">
+          <div>Loading Transactions...</div>
+        </div>
+      </div>
+    </section>
+  {:else if $mySafe.ui && $mySafe.ui.error}
+    <section class="flex items-center justify-center mb-2 ">
+      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
+        <div class="flex flex-col items-start">
+          <div>
+            <b>An error occurred while loading the recent activities:</b>
+            <br />{$mySafe.ui.error.message}
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  {:else if displayRows.length > 0}
+    {#each displayRows as transfer, i}
+      {#if i === 0}
+        <TransactionCard bind:this={firstElement} {transfer} message="" />
+      {:else}
+        <TransactionCard {transfer} message="" />
+      {/if}
+    {/each}
+    <div bind:this={stopElement}>Stop</div>
+  {:else}
+    <section class="flex items-center justify-center mb-2 ">
+      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
+        <div class="flex flex-col items-start">
+          <div>
+            <span>No recent activities</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  {/if}
+  <section class="justify-center mb-4">
+    <div class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard">
+      <div class="text-xs font-bold text-left text-info ">WHAT IS THIS?</div>
+
+      <div class="text-sm md:text-base">
+        This is your Circles banking account and you just got your first 50
+        Circles as a welcome gift.
+        <br /><br />
+        From today on you will unconditionally receive 8 more Circles every day in
+        the form of your personal universal basic income.
+        <br /><br />
+
+        <b
+          >Have a look around and explore the navigation buttons below, to learn
+          more about how Circles works in detail.</b
+        >
+      </div>
     </div>
-  </SvelteSimplebar>
+  </section>
 </div>
