@@ -2,8 +2,10 @@
   import Icons from "./Icons.svelte";
   import { fly } from "svelte/transition";
   import UAParser from "ua-parser-js";
+  import { createEventDispatcher } from "svelte";
 
   const uaParser = new UAParser();
+  const dispatch = createEventDispatcher();
 
   let isRightSidebarOpen: boolean = false;
 
@@ -22,11 +24,17 @@
   $: {
     if (isRightSidebarOpen) {
       document.body.style.overflow = "hidden";
+      dispatch("isRightSidebarOpen", {
+        state: true,
+      });
       setTimeout(() => {
         visible = true;
       }, 150);
     } else {
       document.body.style.overflow = "visible";
+      dispatch("isLeftSidebarOpen", {
+        state: false,
+      });
       visible = false;
     }
   }
