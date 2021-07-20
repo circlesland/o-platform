@@ -54,20 +54,24 @@
         <div class="z-10 flex flex-col flex-1 text-white bg-dark">
           <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
           <div class="relative flex-shrink-0 w-64 p-4 pt-4 space-y-4">
-            <!-- {#each navigation as navItem}
-              <a href={navItem.url} class="flex items-center space-x-2">
-                <Icons icon={navItem.icon} />
-                <span>{navItem.title}</span>
-              </a>
-            {/each} -->
-
+            {#if navigation}
+              {#each navigation as navItem}
+                <a
+                  href="/#/{navItem.url}"
+                  class="flex content-center justify-start space-x-2"
+                  on:click={() => (isLeftSidebarOpen = false)}
+                >
+                  <Icons icon={navItem.icon} />
+                  <div>{navItem.title}</div>
+                </a>
+              {/each}
+            {/if}
           </div>
         </div>
       </div>
     </div>
     <div
-      class="absolute z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-3
-      ml-4 bg-white rounded-full cursor-pointer bottom-4 left-72"
+      class="absolute z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full cursor-pointer bottom-4 left-72"
       on:click={() => (isLeftSidebarOpen = false)}
     >
       <Icons icon="buttonleftarrow" />
@@ -76,8 +80,7 @@
 {:else}
 
   <aside
-    class="z-50 top-10 fixed flex flex-col flex-1 flex-shrink-0 w-64 h-screen
-    text-white bg-dark"
+    class="fixed z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen text-white top-10 bg-dark"
     class:hidden={!isLeftSidebarOpen}
   >
 
@@ -85,8 +88,9 @@
       {#if navigation}
         {#each navigation as navItem}
           <a
-            href={navItem.url}
+            href="/#/{navItem.url}"
             class="flex content-center justify-start space-x-2"
+            on:click={() => (isLeftSidebarOpen = false)}
           >
             <Icons icon={navItem.icon} />
             <div>{navItem.title}</div>
