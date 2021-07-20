@@ -26,7 +26,7 @@
   import { inbox } from "../stores/inbox";
   import { showNotifications } from "../processes/showNotifications";
   import { Swiper, SwiperSlide } from "swiper/svelte";
-  import AsideMenuLeft from "./AsideMenuLeft.svelte";
+  import AsideMenuLeft, {showNavigation} from "./AsideMenuLeft.svelte";
   import AsideMenuRight from "./AsideMenuRight.svelte";
 
   // Import Swiper styles
@@ -62,6 +62,7 @@
 
   let _modal: Modal2;
   let _modalIsOpen = false;
+  let _asideMenuLeft: AsideMenuLeft;
 
   let _processNavigation: ProcessContainerNavigation;
   let _navManifest: NavigationManifest;
@@ -135,6 +136,11 @@
       onParamsChanged();
       lastParamsJson = JSON.stringify(params);
     }
+
+    if (_asideMenuLeft && dapp) {
+      _asideMenuLeft.showNavigation(dapp);
+    }
+
     layoutClasses =
       (dapp && dapp.isFullWidth) || (_mainPage && _mainPage.isFullWidth)
         ? ""
@@ -369,8 +375,9 @@
   }
 </script>
 
-<AsideMenuLeft />
-
+{#if runtimeDapp}
+<AsideMenuLeft runtimeDapp={runtimeDapp} bind:this={_asideMenuLeft} />
+{/if}
 <main class="z-30 flex-1 overflow-y-auto">
   <div
     class="absolute top-0 w-full mainContent"

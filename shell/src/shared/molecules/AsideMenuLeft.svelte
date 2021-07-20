@@ -1,9 +1,20 @@
 <script lang="ts">
   import Icons from "./Icons.svelte";
   import UAParser from "ua-parser-js";
+  import { getRouteList } from "./../functions/GetNavigationManifest.svelte";
   import { createEventDispatcher } from "svelte";
+  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 
+  export let runtimeDapp: RuntimeDapp<any>;
   let isLeftSidebarOpen: boolean = false;
+  let navigation: {
+            icon?: string;
+            title: string;
+            url: string;
+            extern: boolean;
+          }[]
+          | undefined;
 
   const uaParser = new UAParser();
   const dispatch = createEventDispatcher();
@@ -31,11 +42,15 @@
       });
     }
   }
-</script>
 
+  export function showNavigation(dapp: DappManifest<any>) {
+    navigation = getRouteList(dapp, runtimeDapp);
+  }
+</script>
 {#if isMobile}
   <aside class="flex sideBarLeft" class:hidden={!isLeftSidebarOpen}>
     <div class="">
+      <pre>{JSON.stringify(navigation, null, 2)}</pre>
       <!-- Sidebar -->
       <div class="fixed inset-y-0 z-10 flex w-72 sidebar">
         <!-- Sidebar content -->
@@ -95,9 +110,10 @@
 {:else}
 
   <aside
-    class="z-50 top-11 fixed flex flex-col flex-1 flex-shrink-0 w-64 h-screen text-white bg-dark"
+    class="z-50 top-10 fixed flex flex-col flex-1 flex-shrink-0 w-64 h-screen text-white bg-dark"
     class:hidden={!isLeftSidebarOpen}
   >
+    <pre>{JSON.stringify(navigation, null, 2)}</pre>
 
     <div class="relative flex-shrink-0 w-64 p-4 pt-16 space-y-4">
 
