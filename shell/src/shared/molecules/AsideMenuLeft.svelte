@@ -53,7 +53,7 @@
         <!-- Sidebar content -->
         <div class="z-10 flex flex-col flex-1 text-white bg-dark">
           <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
-          <div class="relative flex-shrink-0 w-64 p-4 pt-16 space-y-4">
+          <div class="relative flex-shrink-0 w-64 p-4 pt-4 space-y-4">
             <!-- {#each navigation as navItem}
               <a href={navItem.url} class="flex items-center space-x-2">
                 <Icons icon={navItem.icon} />
