@@ -388,7 +388,8 @@
     const navManifest = getNavigationManifest(
       runtimeDapp,
       _processNavigation,
-      _modal
+      _modal,
+            _asideMenuLeft,null
     );
 
     return navManifest;

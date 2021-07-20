@@ -3,6 +3,8 @@
   import ListComponent from "../molecules/NextNav/Components/List.svelte";
   import ActionButtonComponent from "../molecules/NextNav/Components/ActionButton.svelte";
   import LinkComponent from "../molecules/NextNav/Components/Link.svelte";
+  import AsideMenuLeft from "../molecules/AsideMenuLeft.svelte";
+  import AsideMenuRight from "../molecules/AsideMenuRight.svelte";
   import { push } from "svelte-spa-router";
 
   import { ProcessContainerNavigation } from "../molecules/ProcessContainer.svelte";
@@ -14,15 +16,27 @@
   export function getNavigationManifest(
     dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
-    modal: Modal2
+    modal: Modal2,
+    leftSidebar: AsideMenuLeft,
+    rightSidebar: AsideMenuRight
   ): NavigationManifest {
+    let nm:NavigationManifest;
     if (modal) {
       const modalState = modal.getState();
       if (modalState.isOpen) {
-        return getModalNavigation(dappManifest, processNavigation, modal);
+          nm = getModalNavigation(dappManifest, processNavigation, modal);
       }
     }
-    return getRegularNavigation(dappManifest, processNavigation, modal);
+      nm = getRegularNavigation(dappManifest, processNavigation, modal);
+      nm.leftSlot = {
+          component: LinkComponent,
+          props: {
+              text: "Hello",
+              action: () => alert("do something")
+          }
+      };
+
+    return nm;
   }
 
   function getModalNavigation(
