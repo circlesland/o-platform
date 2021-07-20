@@ -5,7 +5,9 @@
   export let navigation: any;
   export let width: string = "w-full";
 
-  console.log("NAVIGATION: ", navigation);
+  $: {
+    console.log("NAVIGATION: ", navigation);
+  }
 </script>
 
 <footer

@@ -372,7 +372,6 @@
   }
 
   function generateNavManifest() {
-    console.log("generateNavManifest");
     const navManifest = getNavigationManifest(
       runtimeDapp,
       _processNavigation,
@@ -380,6 +379,7 @@
       _asideMenuLeft,
       null
     );
+    console.log("generateNavManifest: ", navManifest);
 
     return navManifest;
   }
