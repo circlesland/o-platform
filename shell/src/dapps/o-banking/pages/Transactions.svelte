@@ -56,7 +56,6 @@
       }
       displayRows = preparedRows;
     } else {
-      console.log("Y ", scrollY);
       if (preparedRows.length == 0 && $mySafe.transfers.rows) {
         loadMore();
         displayRows = preparedRows;
@@ -76,7 +75,7 @@
 <BankingHeader
   {runtimeDapp}
   {routable}
-  balance={$mySafe && $mySafe.balance ? $mySafe.balance : "0"}
+  balance={$mySafe && $mySafe.balance ? $mySafe.balance : '0'}
 />
 
 <div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
@@ -94,7 +93,8 @@
         <div class="flex flex-col items-start">
           <div>
             <b>An error occurred while loading the recent activities:</b>
-            <br />{$mySafe.ui.error.message}
+            <br />
+            {$mySafe.ui.error.message}
           </div>
         </div>
       </div>
@@ -126,15 +126,17 @@
       <div class="text-sm md:text-base">
         This is your Circles banking account and you just got your first 50
         Circles as a welcome gift.
-        <br /><br />
-        From today on you will unconditionally receive 8 more Circles every day in
-        the form of your personal universal basic income.
-        <br /><br />
+        <br />
+        <br />
+        From today on you will unconditionally receive 8 more Circles every day
+        in the form of your personal universal basic income.
+        <br />
+        <br />
 
-        <b
-          >Have a look around and explore the navigation buttons below, to learn
-          more about how Circles works in detail.</b
-        >
+        <b>
+          Have a look around and explore the navigation buttons below, to learn
+          more about how Circles works in detail.
+        </b>
       </div>
     </div>
   </section>

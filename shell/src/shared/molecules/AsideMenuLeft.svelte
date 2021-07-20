@@ -53,7 +53,7 @@
         <!-- Sidebar content -->
         <div class="z-10 flex flex-col flex-1 text-white bg-dark">
           <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
-          <div class="relative flex-shrink-0 w-64 p-4 pt-4 space-y-4">
+          <div class="relative flex-shrink-0 w-64 p-6 pt-4 pb-8 space-y-6">
             {#if navigation}
               {#each navigation as navItem}
                 <a
@@ -71,7 +71,7 @@
       </div>
     </div>
     <div
-      class="absolute z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-3 ml-4 bg-white rounded-full cursor-pointer bottom-4 left-72"
+      class="absolute z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
       on:click={() => (isLeftSidebarOpen = false)}
     >
       <Icons icon="buttonleftarrow" />
@@ -84,7 +84,7 @@
     class:hidden={!isLeftSidebarOpen}
   >
 
-    <div class="relative flex-shrink-0 w-64 p-4 pt-16 space-y-4 text-left">
+    <div class="relative flex-shrink-0 w-64 p-4 pt-16 space-y-6 text-left">
       {#if navigation}
         {#each navigation as navItem}
           <a
