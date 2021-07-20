@@ -1,9 +1,12 @@
 <script lang="ts">
   import Icons from "./Icons.svelte";
   import UAParser from "ua-parser-js";
+  import { createEventDispatcher } from "svelte";
 
   let isLeftSidebarOpen: boolean = false;
+
   const uaParser = new UAParser();
+  const dispatch = createEventDispatcher();
 
   let detectedDevice = uaParser.getDevice();
   let isMobile = true;
@@ -17,8 +20,15 @@
   $: {
     if (isLeftSidebarOpen) {
       document.body.style.overflow = "hidden";
+
+      dispatch("isLeftSidebarOpen", {
+        state: true,
+      });
     } else {
       document.body.style.overflow = "visible";
+      dispatch("isLeftSidebarOpen", {
+        state: false,
+      });
     }
   }
 </script>

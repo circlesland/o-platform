@@ -55,10 +55,10 @@
     "6": string | null;
   };
 
-  let isLeftMenuOpen = true;
+  let isLeftSideBarOpen = false;
 
   $: {
-    if (isLeftMenuOpen) {
+    if (isLeftSideBarOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "visible";
@@ -386,11 +386,27 @@
 
     return navManifest;
   }
+
+  function handleLeftSideBarOpen(event) {
+    if (event.detail.state == true) {
+      isLeftSideBarOpen = true;
+    } else {
+      isLeftSideBarOpen = false;
+    }
+  }
 </script>
 
-<div class="flex flex-row overflow-hidden">
-  <AsideMenuLeft />
-  <main class="relative z-30 w-full overflow-hidden">
+<div
+  class="flex flex-row"
+  class:overflow-hidden={isLeftSideBarOpen}
+  class:overflow-auto={!isLeftSideBarOpen}
+>
+  <AsideMenuLeft on:isLeftSideBarOpen={handleLeftSideBarOpen} />
+  <main
+    class="relative z-30 w-full"
+    class:overflow-hidden={isLeftSideBarOpen}
+    class:overflow-auto={!isLeftSideBarOpen}
+  >
     <div
       class="w-full mainContent"
       class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== 'homepage:1'}
