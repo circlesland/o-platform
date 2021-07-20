@@ -2,6 +2,7 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import { push } from "svelte-spa-router";
+  import Icons from "../molecules/Icons.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -27,10 +28,11 @@
 
 <div class="fixed top-0 left-0 z-10 w-full">
   <div
-    class="grid w-full grid-cols-3 p-2 pl-4 mx-auto text-white navbar bg-dark "
+    class="grid w-full grid-cols-3 p-2 mx-auto text-white navbar bg-dark "
   >
     <div class="justify-self-start">
-      <span class="text-lg uppercase ">
+      <Icons icon="circles"/>
+      <span class="ml-2 text-lg uppercase ">
         {runtimeDapp.title}
       </span>
     </div>

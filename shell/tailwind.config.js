@@ -39,14 +39,14 @@ module.exports = {
         xl: "16px",
       },
       colors: {
-        DEFAULT: "#0E2769",
-        base: "#0E2769",
+        DEFAULT: "#0A2262",
+        base: "#0A2262",
         dark: {
-          DEFAULT: "#0E2769",
-          light: "#244396",
-          lighter: "#546FB7",
+          DEFAULT: "#0A2262",
+          light: "#153587",
+          lighter: "#4562AF",
           lightest: "#8597C6",
-          dark: "#081B4B",
+          dark: "#081B4A",
         },
         light: {
           DEFAULT: "#EDDFD2",
@@ -56,11 +56,11 @@ module.exports = {
           dark: "#DDCBBB",
         },
         primary: {
-          DEFAULT: "#33D8EF",
-          light: "#5AEBFF",
-          lighter: "#90F1FE",
+          DEFAULT: "#41C7F1",
+          light: "#58DBF8",
+          lighter: "#91EDFA",
           lightest: "#C2FBFF",
-          dark: "#1DC7DE",
+          dark: "#2BADEB",
         },
         secondary: {
           DEFAULT: "#CF1E64",
