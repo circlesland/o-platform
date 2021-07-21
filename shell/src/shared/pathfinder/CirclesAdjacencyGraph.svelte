@@ -41,7 +41,7 @@
     }
   }
 
-  let small = function (node) {
+  let small = function(node) {
     node["size"] = 25;
     return node;
   };
@@ -80,7 +80,7 @@
     }
   }
 
-  let resetGraph = function () {
+  let resetGraph = function() {
     nodes.clear();
     edges.clear();
     knownEdges = {};
@@ -88,4 +88,4 @@
 </script>
 
 <!-- TODO: Find a better fix for the graph-height. Problem is that this value must be known upon initialization. Also resize scenarios must be handled. -->
-<div bind:this={graph} class="w-full bg-white {maxHeight}" />
+<div bind:this={graph} class="w-full {maxHeight}" />

@@ -27,8 +27,8 @@
       return;
     }
 
-    accountAddress =
-      RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
+    accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk)
+      .address;
 
     if (localStorage.getItem("isCreatingSafe")) {
       showFundHint = true;
@@ -73,18 +73,19 @@
 </script>
 
 <!-- <DashboardHeader /> -->
+{#if $me && $me.circlesAddress}
+  <div class="relative w-full" style="max-height: 400px">
+    <section class="mb-4 bg-white">
+      <AdjacencyGraph
+        classes="grid w-full bg-white rounded-lg shadow"
+        address={$me.circlesAddress}
+        maxHeight="h-96"
+      />
+    </section>
+  </div>
+{/if}
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  {#if $me && $me.circlesAddress}
-    <div class="relative" style="max-height: 400px">
-      <section class="mb-4">
-        <AdjacencyGraph
-          classes="grid w-full bg-white rounded-lg shadow"
-          address={$me.circlesAddress}
-          maxHeight="h-96"
-        />
-      </section>
-    </div>
-  {/if}
+
   <div class="m-4">
     <section class="mb-4">
       <div
@@ -121,26 +122,29 @@
             <div class="mt-4 mb-4 text-xs break-all" id="clipboard">
               <input type="text" class="hidden" bind:value={inviteLink} />
               <div class="inline-block text-2xl">
-                <button class="btn btn-primary" on:click={copy}
-                  >Copy Invite Link</button
-                >
+                <button class="btn btn-primary" on:click={copy}>
+                  Copy Invite Link
+                </button>
               </div>
 
-              <div class="block mt-2 text-sm text-light ">
-                {inviteLink}
-              </div>
+              <div class="block mt-2 text-sm text-light ">{inviteLink}</div>
             </div>
             <p class="text">
-              If you don't know anybody who has Circles yet, ask nicely in our <a
+              If you don't know anybody who has Circles yet, ask nicely in our
+              <a
                 href="https://discord.gg/4DBbRCMnFZ"
                 target="_blank"
-                class="btn-link">Discord</a
-              > if someone can invite you.
+                class="btn-link"
+              >
+                Discord
+              </a>
+              if someone can invite you.
             </p>
             <p class="pb-4 mt-4 text-xs">
-              alternatively, <a href="#/dashboard/become-a-hub" class="btn-link"
-                >become an invite hub</a
-              >
+              alternatively,
+              <a href="#/dashboard/become-a-hub" class="btn-link">
+                become an invite hub
+              </a>
             </p>
             <div class="mr-1 text-primary" />
           </div>
@@ -149,7 +153,7 @@
     {:else if $mySafe}
       <section
         class="mb-4"
-        on:click={() => loadLink("/dashboard/become-a-hub")}
+        on:click={() => loadLink('/dashboard/become-a-hub')}
       >
         <button class="btn btn-primary btn-block">
           Grow your trust network now
@@ -193,7 +197,7 @@
 
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
-        on:click={() => loadLink("/passport/profile")}
+        on:click={() => loadLink('/passport/profile')}
       >
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
@@ -209,7 +213,7 @@
 
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
-        on:click={() => loadLink("/contacts")}
+        on:click={() => loadLink('/contacts')}
       >
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
@@ -238,8 +242,7 @@
       {:else}
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow dashboard-card cursor-pointerbg-white"
-          on:click={() =>
-            loadLink(showFundHint ? "/dashboard" : "/banking/transactions")}
+          on:click={() => loadLink(showFundHint ? '/dashboard' : '/banking/transactions')}
         >
           <div
             class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
@@ -256,7 +259,7 @@
 
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card"
-        on:click={() => loadLink("/marketplace/stream")}
+        on:click={() => loadLink('/marketplace/stream')}
       >
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
@@ -272,7 +275,7 @@
 
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow cursor-pointer dashboard-card "
-        on:click={() => loadLink("https://discord.gg/4DBbRCMnFZ", true)}
+        on:click={() => loadLink('https://discord.gg/4DBbRCMnFZ', true)}
       >
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
