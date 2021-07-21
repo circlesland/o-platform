@@ -127,7 +127,6 @@
     align-items: flex-start;
     justify-content: center;
     overflow-y: hidden;
-    @apply pb-20;
 
     flex-direction: column;
     height: 100%;
