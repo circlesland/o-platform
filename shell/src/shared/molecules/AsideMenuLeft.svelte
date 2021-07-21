@@ -21,6 +21,7 @@
 
   let x = -500;
   let visible = false;
+  let animationSpeed: number = 220;
 
   const uaParser = new UAParser();
   const dispatch = createEventDispatcher();
@@ -32,6 +33,7 @@
     isMobile = false;
   } else {
     isMobile = true;
+    animationSpeed = 50;
   }
 
   export function showNavigation(dapp: DappManifest<any>) {
@@ -50,7 +52,7 @@
           state: true,
         });
         isLeftSidebarOpen = true;
-      }, 220);
+      }, animationSpeed);
       visible = true;
     }
   }
@@ -62,7 +64,7 @@
           state: false,
         });
         isLeftSidebarOpen = false;
-      }, 220);
+      }, animationSpeed);
 
       visible = false;
     }
@@ -82,7 +84,7 @@
         <div
           class="fixed inset-y-0 z-10 flex w-72 sidebar"
           in:fly|local={{ x, delay: 50 }}
-          out:fly|local={{ x: x, duration: 1420 }}
+          out:fly|local={{ x: x, duration: 120 }}
         >
           <!-- Sidebar content -->
 
