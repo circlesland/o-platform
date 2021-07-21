@@ -131,7 +131,11 @@
       out:fly|local={{ x: x, duration: 1420 }}
     >
 
-      <div class="relative flex-shrink-0 w-64 p-4 pt-16 space-y-6 text-left">
+      <div
+        class="relative flex-shrink-0 w-64 h-screen p-4 pt-16 space-y-6 text-left"
+        use:clickOutside
+        on:click_outside={handleClickOutside}
+      >
         {#if navigation}
           {#each navigation as navItem}
             <a
