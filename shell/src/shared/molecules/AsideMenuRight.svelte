@@ -2,10 +2,23 @@
   import Icons from "./Icons.svelte";
   import { fly } from "svelte/transition";
   import UAParser from "ua-parser-js";
+  import { getRouteList } from "./../functions/GetNavigationManifest.svelte";
   import { createEventDispatcher } from "svelte";
+  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 
   const uaParser = new UAParser();
   const dispatch = createEventDispatcher();
+
+  export let runtimeDapp: RuntimeDapp<any>;
+  let navigation:
+    | {
+        icon?: string;
+        title: string;
+        url: string;
+        extern: boolean;
+      }[]
+    | undefined;
 
   let isRightSidebarOpen: boolean = false;
 
@@ -20,7 +33,7 @@
 
   let x = 500;
   let visible = false;
-  
+
   $: {
     if (isRightSidebarOpen) {
       dispatch("isRightSidebarOpen", {
@@ -30,7 +43,7 @@
         visible = true;
       }, 150);
     } else {
-      dispatch("isLeftSidebarOpen", {
+      dispatch("isRightSidebarOpen", {
         state: false,
       });
       visible = false;
@@ -42,6 +55,21 @@
     setTimeout(() => {
       isRightSidebarOpen = false;
     }, 150);
+  }
+
+  export function showNavigation(dapp: DappManifest<any>) {
+    navigation = getRouteList(dapp, runtimeDapp);
+    if (isRightSidebarOpen) {
+      isRightSidebarOpen = false;
+      dispatch("openLeftSidebar", {
+        state: false,
+      });
+    } else {
+      isRightSidebarOpen = true;
+      dispatch("openLeftSidebar", {
+        state: true,
+      });
+    }
   }
 </script>
 
@@ -110,9 +138,9 @@
       <Icons icon="buttonrightarrow" />
     </div>
   </aside>
-  {:else}
+{:else}
   <aside
-    class="z-50 top-11 fixed flex flex-col flex-1 flex-shrink-0 w-64 h-screen text-white bg-white right-0"
+    class="fixed right-0 z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen text-white bg-white top-11"
     class:hidden={!isRightSidebarOpen}
   >
 
