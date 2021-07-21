@@ -26,7 +26,7 @@
   import { inbox } from "../stores/inbox";
   import { showNotifications } from "../processes/showNotifications";
   import { Swiper, SwiperSlide } from "swiper/svelte";
-  import AsideMenuLeft, {showNavigation} from "./AsideMenuLeft.svelte";
+  import AsideMenuLeft, { showNavigation } from "./AsideMenuLeft.svelte";
   import AsideMenuRight from "./AsideMenuRight.svelte";
 
   // Import Swiper styles
@@ -75,6 +75,8 @@
   let mounted: boolean;
   let lastMainUrl: string;
 
+  let isLeftSideBarOpen: boolean = false;
+
   // Counts how often a detail page was opened and is reset whenever a regular site was displayed.
   // This is used to show/hide the back button when navigating in detail pages.
   let detailStack = [];
@@ -115,8 +117,9 @@
       const requestEvent: any = new RunProcess(shellProcess, true, modifier);
       requestEvent.id = Generate.randomHexString(8);
 
-      const processStarted: ProcessStarted =
-        await window.o.requestEvent<ProcessStarted>(requestEvent);
+      const processStarted: ProcessStarted = await window.o.requestEvent<
+        ProcessStarted
+      >(requestEvent);
       _modal.showProcess(processStarted.processId);
     };
 
@@ -136,7 +139,6 @@
       onParamsChanged();
       lastParamsJson = JSON.stringify(params);
     }
-
 
     layoutClasses =
       (dapp && dapp.isFullWidth) || (_mainPage && _mainPage.isFullWidth)
@@ -350,7 +352,9 @@
       });
       if (defaultRoutable.found) {
         _mainPage = <any>defaultRoutable.routable;
-        lastMainUrl = `/${dapp.dappId}/${defaultRoutable.routable.routeParts
+        lastMainUrl = `/${
+          dapp.dappId
+        }/${defaultRoutable.routable.routeParts
           .map((o) => o.replace("=", ""))
           .join("/")}`;
       }
@@ -372,17 +376,28 @@
 
     return navManifest;
   }
+
+  function handleLeftSideBarOpen(event) {
+    isLeftSideBarOpen = event.detail.state;
+    if (event.detail.state == true) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "visible";
+    }
+  }
 </script>
 
 {#if runtimeDapp}
-<AsideMenuLeft runtimeDapp={runtimeDapp} bind:this={_asideMenuLeft} />
+  <AsideMenuLeft
+    {runtimeDapp}
+    bind:this={_asideMenuLeft}
+    on:openLeftSidebar={handleLeftSideBarOpen}
+  />
 {/if}
 <main class="z-30 flex-1 overflow-y-auto">
   <div
     class="absolute top-0 w-full mainContent"
-    class:mb-16={(!_modal || !_modalIsOpen) &&
-      dapp &&
-      dapp.dappId !== "homepage:1"}
+    class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== 'homepage:1'}
     class:blur={_modal && _modalIsOpen}
   >
     {#if _mainPage}
@@ -414,7 +429,6 @@
   on:modalOpen={(e) => {
     _modalIsOpen = e.detail;
     _navManifest = generateNavManifest();
-
     if (!_modalIsOpen && _modalPage && lastMainUrl) {
       push(lastMainUrl);
       _modalPage = null;

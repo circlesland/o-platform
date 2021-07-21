@@ -385,22 +385,14 @@
   }
 
   function handleLeftSideBarOpen(event) {
-    if (event.detail.state == true) {
-      isLeftSideBarOpen = true;
-    } else {
-      isLeftSideBarOpen = false;
-    }
+    isLeftSideBarOpen = event.detail.state;
   }
   function handleRightSideBarOpen(event) {
-    if (event.detail.state == true) {
-      isRightSideBarOpen = true;
-    } else {
-      isRightSideBarOpen = false;
-    }
+    isRightSideBarOpen = event.detail.state;
   }
 </script>
 
-<div class="absolute w-full flex flex-row overflow-auto">
+<div class="absolute flex flex-row w-full overflow-auto">
   {#if runtimeDapp}
     <AsideMenuLeft
       {runtimeDapp}

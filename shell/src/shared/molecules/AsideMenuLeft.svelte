@@ -43,6 +43,13 @@
       });
     }
   }
+
+  function handleCloseSideBar() {
+    isLeftSidebarOpen = false;
+    dispatch("openLeftSidebar", {
+      state: false,
+    });
+  }
 </script>
 
 {#if isMobile}
@@ -71,8 +78,8 @@
       </div>
     </div>
     <div
-      class="absolute z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
-      on:click={() => (isLeftSidebarOpen = false)}
+      class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
+      on:click={() => handleCloseSideBar()}
     >
       <Icons icon="buttonleftarrow" />
     </div>
