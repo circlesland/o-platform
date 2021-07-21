@@ -58,6 +58,7 @@
   }
 
   function handleCloseSideBar() {
+    console.log("YEAH");
     if (isLeftSidebarOpen) {
       setTimeout(() => {
         dispatch("openLeftSidebar", {
@@ -100,7 +101,7 @@
                   <a
                     href="/#/{navItem.url}"
                     class="flex content-center justify-start space-x-2"
-                    on:click={() => (isLeftSidebarOpen = false)}
+                    on:click={() => handleCloseSideBar()}
                   >
                     <Icons icon={navItem.icon} />
                     <div>{navItem.title}</div>
@@ -136,7 +137,7 @@
             <a
               href="/#/{navItem.url}"
               class="flex content-center justify-start space-x-2"
-              on:click={() => (isLeftSidebarOpen = false)}
+              on:click={() => handleCloseSideBar()}
             >
               <Icons icon={navItem.icon} />
               <div>{navItem.title}</div>
