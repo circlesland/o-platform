@@ -1,7 +1,7 @@
 import Transactions from "./o-banking/pages/Transactions.svelte";
 import Assets from "./o-banking/pages/Assets.svelte";
 import Trusts from "./o-banking/pages/Trusts.svelte";
-import Graph from "./o-banking/pages/Graph.svelte";
+
 import ProfilePage from "./o-banking/pages/Profile.svelte";
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
 import { setTrust } from "./o-banking/processes/setTrust";
@@ -189,13 +189,7 @@ const findMySafe: Page<any, BankingDappState> = {
   title: "FindMySafe",
   type: "page",
 };
-const graph: Page<any, BankingDappState> = {
-  routeParts: ["=network"],
-  component: Graph,
-  title: "Network",
-  icon: "network",
-  type: "page",
-};
+
 
 export interface DappState {
   // put state here
@@ -252,7 +246,6 @@ export const banking: DappManifest<BankingDappState> = {
     assets,
     assetDetail,
     trustDetail,
-    graph,
     sendInvite,
     profile,
     findMySafe,

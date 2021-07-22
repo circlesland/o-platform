@@ -78,7 +78,7 @@
 <TopNav {runtimeDapp} {routable} />
 
 <!-- <DashboardHeader /> -->
-{#if $me && $me.circlesAddress}
+<!-- {#if $me && $me.circlesAddress}
   <div class="relative w-full mt-12" style="max-height: 400px">
     <section class="mb-4 bg-white shadow-md">
       <AdjacencyGraph address={$me.circlesAddress} maxHeight="h-96" />
@@ -86,8 +86,8 @@
   </div>
 {:else}
   <div class="mt-16" />
-{/if}
-<div class="mx-auto md:w-2/3 xl:w-1/2">
+{/if} -->
+<div class="mx-auto md:w-2/3 xl:w-1/2 mt-16">
 
   <div class="m-4">
 
@@ -176,12 +176,14 @@
     {/if}
 
     <div
-      class="grid grid-cols-2 gap-4 text-base auto-rows-fr sm:grid-cols-3 dashboard-grid"
+      class="grid grid-cols-2 gap-4 text-base auto-rows-fr sm:grid-cols-3
+      dashboard-grid"
     >
       <!-- PASSPORT  -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        class="flex items-center justify-center bg-white rounded-lg shadow-md
+        cursor-pointer dashboard-card"
         on:click={() => loadLink('/passport/profile')}
       >
         <div
@@ -197,8 +199,9 @@
       <!-- CONTACTS  -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click={() => loadLink('/contacts')}
+        class="flex items-center justify-center bg-white rounded-lg shadow-md
+        cursor-pointer dashboard-card"
+        on:click={() => loadLink('/friends')}
       >
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
@@ -206,17 +209,19 @@
           <div class="pt-2 text-primary">
             <Icons icon="dashpassport" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">contacts</div>
+          <div class="mt-4 text-3xl font-heading text-dark">friends</div>
         </div>
       </section>
 
       <!-- BANKING -->
       {#if showFundHint || disableBanking}
         <section
-          class="flex items-center justify-center bg-white rounded-lg shadow-md dashboard-card text-base-300 "
+          class="flex items-center justify-center bg-white rounded-lg shadow-md
+          dashboard-card text-base-300 "
         >
           <div
-            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+            class="flex flex-col items-center w-full p-4 pt-6
+            justify-items-center"
           >
             <div class="pt-2 text-primary-lightest">
               <Icons icon="dashbanking" />
@@ -226,11 +231,13 @@
         </section>
       {:else}
         <section
-          class="flex items-center justify-center bg-white rounded-lg shadow-md dashboard-card cursor-pointerbg-white"
+          class="flex items-center justify-center bg-white rounded-lg shadow-md
+          dashboard-card cursor-pointerbg-white"
           on:click={() => loadLink(showFundHint ? '/dashboard' : '/banking/transactions')}
         >
           <div
-            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
+            class="flex flex-col items-center w-full p-4 pt-6
+            justify-items-center"
           >
             <div class="pt-2 text-primary">
               <Icons icon="dashbanking" />
@@ -243,7 +250,8 @@
       <!-- Market -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        class="flex items-center justify-center bg-white rounded-lg shadow-md
+        cursor-pointer dashboard-card"
         on:click={() => loadLink('/marketplace/stream')}
       >
         <div
@@ -259,7 +267,8 @@
       <!-- Chat -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "
+        class="flex items-center justify-center bg-white rounded-lg shadow-md
+        cursor-pointer dashboard-card "
         on:click={() => loadLink('https://discord.gg/4DBbRCMnFZ', true)}
       >
         <div
