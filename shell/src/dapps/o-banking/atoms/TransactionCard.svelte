@@ -11,7 +11,8 @@
   let pictureUrl: string;
   let otherSafeAddress: string;
   let displayName: string;
-  let classes: String;
+  let classes: string;
+  let amount: string;
 
   $: {
     displayName =
@@ -53,6 +54,13 @@
       transfer.direction === "in"
         ? "transactionpositive"
         : "transactionnegative";
+
+    amount = Number.parseFloat(
+      Web3.utils.fromWei(transfer.amount, "ether")
+    ).toFixed(2);
+    if (classes == "transactionnegative") {
+      amount = "-" + amount;
+    }
   }
 
   let now = new Date();
@@ -84,7 +92,7 @@
       <div class="truncateThis">
         <h2 class="text-base">{displayName}</h2>
       </div>
-      <p class="text-xs text-dark-lightest">{message}</p>
+      <p class="mt-1 text-xs text-dark-lightest">{message}</p>
     </div>
 
     <div class="flex flex-col flex-1 justify-items-end">
@@ -93,9 +101,7 @@
         class:text-success={classes == 'transactionpositive'}
         class:text-alert={classes == 'transactionnegative'}
       >
-        <span>
-          {Number.parseFloat(Web3.utils.fromWei(transfer.amount, 'ether')).toFixed(2)}
-        </span>
+        <span>{amount}</span>
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
         {#if transfer.time}
