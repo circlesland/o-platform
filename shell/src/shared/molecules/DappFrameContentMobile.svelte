@@ -599,7 +599,7 @@
   /* All styling takes place on the label element */
   nav.carousel label {
     @apply inline-block;
-    @apply bg-light;
+    @apply bg-dark;
     @apply overflow-hidden;
     @apply rounded-full;
     @apply w-2;
@@ -608,12 +608,12 @@
     /* box-shadow: inset 0 1px 1px 0 #999; */
   }
   nav.carousel label:hover {
-    @apply bg-light;
+    @apply bg-dark;
     @apply cursor-pointer;
     /* box-shadow: inset 0 1px 1px 0 #777; */
   }
   nav.carousel input:checked + label {
-    @apply bg-dark;
+    @apply bg-light;
     /* box-shadow: inset 0 0 1px 1px #087dc0; */
   }
 </style>
