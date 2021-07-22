@@ -79,13 +79,9 @@
 
 <!-- <DashboardHeader /> -->
 {#if $me && $me.circlesAddress}
-  <div class="relative w-full" style="max-height: 400px">
+  <div class="relative w-full mt-12" style="max-height: 400px">
     <section class="mb-4 bg-white shadow-md">
-      <AdjacencyGraph
-        classes="grid w-full bg-white rounded-lg shadow"
-        address={$me.circlesAddress}
-        maxHeight="h-96"
-      />
+      <AdjacencyGraph address={$me.circlesAddress} maxHeight="h-96" />
     </section>
   </div>
 {:else}
