@@ -6,7 +6,7 @@ const index: Page<any, DappState> = {
   isSystem: true,
   routeParts: [],
   component: Home,
-  title: "Friends",
+  title: "Contacts",
   type: "page",
 };
 
@@ -19,7 +19,7 @@ export const contacts: DappManifest<DappState> = {
   dappId: "contacts:1",
   isSingleton: true,
   icon: "group",
-  title: "Friends",
+  title: "Contacts",
   routeParts: ["=contacts"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
@@ -31,5 +31,5 @@ export const contacts: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index]
+  routables: [index],
 };
