@@ -448,7 +448,23 @@
     />
   {/if}
   <main class="relative z-30 w-full overflow-auto">
-
+    <nav class="absolute grid w-full grid-cols-3 carousel top-11">
+      {#if navigateablePages}
+        <div class="col-start-2 place-self-center">
+          {#each navigateablePages as page, i}
+            <input
+              id="carousel-item-{i}"
+              type="radio"
+              name="carousel-dots"
+              class="hidden"
+              checked={routable.routeParts == page.routeParts}
+              on:click={() => openPage(page)}
+            />
+            <label for="carousel-item-{i}" class="mx-1">{page.title} {i}</label>
+          {/each}
+        </div>
+      {/if}
+    </nav>
     {#if previousPage}
       <div
         class="fixed cursor-pointer top-1/2 left-2"
@@ -592,5 +608,35 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  nav.carousel:hover {
+    @apply cursor-default;
+  }
+
+  /* Hide the radio button */
+  nav.carousel input[type="radio"] {
+    display: none;
+  }
+
+  /* All styling takes place on the label element */
+  nav.carousel label {
+    @apply inline-block;
+    @apply bg-light;
+    @apply overflow-hidden;
+    @apply rounded-full;
+    @apply w-2;
+    @apply h-2;
+    text-indent: -999px;
+    /* box-shadow: inset 0 1px 1px 0 #999; */
+  }
+  nav.carousel label:hover {
+    @apply bg-light;
+    @apply cursor-pointer;
+    /* box-shadow: inset 0 1px 1px 0 #777; */
+  }
+  nav.carousel input:checked + label {
+    @apply bg-dark;
+    /* box-shadow: inset 0 0 1px 1px #087dc0; */
   }
 </style>
