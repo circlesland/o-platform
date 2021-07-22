@@ -88,4 +88,4 @@
 </script>
 
 <!-- TODO: Find a better fix for the graph-height. Problem is that this value must be known upon initialization. Also resize scenarios must be handled. -->
-<div bind:this={graph} class="w-full {maxHeight}" />
+<div bind:this={graph} class="w-auto mx-6 {maxHeight}" />

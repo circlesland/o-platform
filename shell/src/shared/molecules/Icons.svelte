@@ -1292,6 +1292,14 @@ EwAAAABJRU5ErkJggg==" />
 <path d="M26.25 20L45 32.5L26.25 45V20Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
+    simplearrowright: `
+<svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 13L7 7L1 1" stroke="#8597C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+    simplearrowleft: `
+<svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7 13L1 7L7 1" stroke="#8597C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
   };
 
   export let icon: string = null;

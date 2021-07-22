@@ -6,54 +6,27 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
-
-  let navigateablePages = runtimeDapp.routables.filter((o) => !o.isSystem);
-  console.log("PAGES: ", navigateablePages);
-
-  // Yeaahh, this is NOT exactly the most beautiful way of doing this
-  // Let's see if we can store a 'self link' in each routable...
-
-  function openPage(route) {
-    let link =
-      runtimeDapp.routeParts
-        .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
-        .join("/") +
-      "/" +
-      route.routeParts
-        .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
-        .join("/");
-    push(`#/${link}`);
-  }
+  console.log("ROUTABLE: ", routable);
 </script>
 
 <div class="fixed top-0 left-0 z-10 w-full">
   <div class="grid w-full grid-cols-3 p-2 mx-auto text-white navbar bg-dark ">
-    <div class="justify-self-start">
-      <img src="/logos/circles.png" class="w-8 h-8" />
-      <span class="ml-2 text-2xl font-heading uppercase text-light">
+    <div
+      class="justify-self-start"
+      class:col-span-2={runtimeDapp.title == 'Circles Land'}
+    >
+      <img src="/logos/circles.png" class="w-8 h-8" alt="Circles Land" />
+      <span class="ml-2 text-2xl uppercase font-heading text-light">
         {runtimeDapp.title}
       </span>
     </div>
-    {#if routable.title != routable.title}
+    {#if routable.title != runtimeDapp.title}
       <div class="justify-self-center">
-        <span class="text-sm ">{routable.title}</span>
+        <span class="text-md">{routable.title}</span>
       </div>
     {/if}
   </div>
-  <!-- <div class="flex flex-row justify-center mt-2">
-    <nav class="carousel">
-      {#each navigateablePages as page, i}
-        <input
-          id="carousel-item-{i}"
-          type="radio"
-          name="carousel-dots"
-          checked={routable.title == page.title}
-          on:click={() => openPage(page)}
-        />
-        <label for="carousel-item-{i}" class="mx-1">{page.title} {i}</label>
-      {/each}
-    </nav>
-  </div> -->
+
 </div>
 
 <style>

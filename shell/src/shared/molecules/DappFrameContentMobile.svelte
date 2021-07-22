@@ -25,9 +25,9 @@
   import { identify } from "../../dapps/o-passport/processes/identify/identify";
   import { inbox } from "../stores/inbox";
   import { showNotifications } from "../processes/showNotifications";
-  import { Swiper, SwiperSlide } from "swiper/svelte";
   import AsideMenuLeft, { showNavigation } from "./AsideMenuLeft.svelte";
   import AsideMenuRight from "./AsideMenuRight.svelte";
+  import Icons from "./Icons.svelte";
 
   // Import Swiper styles
   import "swiper/swiper-bundle.css";
@@ -82,6 +82,9 @@
   let detailStack = [];
 
   let identityChecked: boolean = false;
+  let navigateablePages: any;
+  let previousPage: any;
+  let nextPage: any;
 
   onMount(async () => {
     window.o.events.subscribe(async (event: PlatformEvent) => {
@@ -174,6 +177,31 @@
           },
         },
       };
+    }
+    if (runtimeDapp) {
+      navigateablePages = runtimeDapp.routables.filter((o) => !o.isSystem);
+      nextPage = navigateablePages[
+        navigateablePages.findIndex(
+          (x) => x.routeParts === routable.routeParts
+        ) + 1
+      ]
+        ? navigateablePages[
+            navigateablePages.findIndex(
+              (x) => x.routeParts === routable.routeParts
+            ) + 1
+          ]
+        : null;
+      previousPage = navigateablePages[
+        navigateablePages.findIndex(
+          (x) => x.routeParts === routable.routeParts
+        ) - 1
+      ]
+        ? navigateablePages[
+            navigateablePages.findIndex(
+              (x) => x.routeParts === routable.routeParts
+            ) - 1
+          ]
+        : null;
     }
   }
 
@@ -364,6 +392,18 @@
     _navManifest = generateNavManifest();
   }
 
+  function openPage(route) {
+    let link =
+      runtimeDapp.routeParts
+        .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
+        .join("/") +
+      "/" +
+      route.routeParts
+        .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
+        .join("/");
+    push(`#/${link}`);
+  }
+
   function generateNavManifest() {
     console.log("generateNavManifest");
     const navManifest = getNavigationManifest(
@@ -395,6 +435,22 @@
   />
 {/if}
 <main class="z-30 flex-1 overflow-y-auto">
+  {#if previousPage}
+    <div
+      class="fixed z-50 cursor-pointer top-1/2 left-1"
+      on:click={() => openPage(previousPage)}
+    >
+      <Icons icon="simplearrowleft" />
+    </div>
+  {/if}
+  {#if nextPage}
+    <div
+      class="fixed z-50 cursor-pointer top-1/2 right-1"
+      on:click={() => openPage(nextPage)}
+    >
+      <Icons icon="simplearrowright" />
+    </div>
+  {/if}
   <div
     class="absolute top-0 w-full mainContent"
     class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== 'homepage:1'}

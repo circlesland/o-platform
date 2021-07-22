@@ -25,7 +25,7 @@
   import { identify } from "../../dapps/o-passport/processes/identify/identify";
   import { inbox } from "../stores/inbox";
   import { showNotifications } from "../processes/showNotifications";
-  import { Swiper, SwiperSlide } from "swiper/svelte";
+
   import AsideMenuLeft from "./AsideMenuLeft.svelte";
   import AsideMenuRight from "./AsideMenuRight.svelte";
   import Icons from "./Icons.svelte";
@@ -82,11 +82,27 @@
   let mounted: boolean;
   let lastMainUrl: string;
 
+  function openPage(route) {
+    let link =
+      runtimeDapp.routeParts
+        .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
+        .join("/") +
+      "/" +
+      route.routeParts
+        .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
+        .join("/");
+    push(`#/${link}`);
+  }
+
   // Counts how often a detail page was opened and is reset whenever a regular site was displayed.
   // This is used to show/hide the back button when navigating in detail pages.
   let detailStack = [];
 
   let identityChecked: boolean = false;
+
+  let navigateablePages: any;
+  let previousPage: any;
+  let nextPage: any;
 
   onMount(async () => {
     window.o.events.subscribe(async (event: PlatformEvent) => {
@@ -181,6 +197,32 @@
           },
         },
       };
+    }
+
+    if (runtimeDapp) {
+      navigateablePages = runtimeDapp.routables.filter((o) => !o.isSystem);
+      nextPage = navigateablePages[
+        navigateablePages.findIndex(
+          (x) => x.routeParts === routable.routeParts
+        ) + 1
+      ]
+        ? navigateablePages[
+            navigateablePages.findIndex(
+              (x) => x.routeParts === routable.routeParts
+            ) + 1
+          ]
+        : null;
+      previousPage = navigateablePages[
+        navigateablePages.findIndex(
+          (x) => x.routeParts === routable.routeParts
+        ) - 1
+      ]
+        ? navigateablePages[
+            navigateablePages.findIndex(
+              (x) => x.routeParts === routable.routeParts
+            ) - 1
+          ]
+        : null;
     }
   }
 
@@ -407,6 +449,22 @@
   {/if}
   <main class="relative z-30 w-full overflow-auto">
 
+    {#if previousPage}
+      <div
+        class="fixed cursor-pointer top-1/2 left-2"
+        on:click={() => openPage(previousPage)}
+      >
+        <Icons icon="simplearrowleft" />
+      </div>
+    {/if}
+    {#if nextPage}
+      <div
+        class="fixed cursor-pointer top-1/2 right-2"
+        on:click={() => openPage(nextPage)}
+      >
+        <Icons icon="simplearrowright" />
+      </div>
+    {/if}
     <div
       class="w-full mainContent"
       class:pl-64={isLeftSideBarOpen}
