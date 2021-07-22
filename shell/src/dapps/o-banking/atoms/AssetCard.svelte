@@ -1,5 +1,6 @@
 <script lang="ts">
-  import {push} from "svelte-spa-router";
+  import { push } from "svelte-spa-router";
+  import Card from "src/shared/atoms/Card.svelte";
 
   export let symbol: string;
   export let title: string;
@@ -11,14 +12,13 @@
   $: {
     pictureUrl = symbol;
   }
-
 </script>
 
 <section
   class="flex items-center justify-center mb-2 "
   on:click={() => push(`#/banking/assets/${symbol}`)}
 >
-  <div class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
+  <Card>
     <div class="flex items-center w-full space-x-2 bg-white sm:space-x-6">
       <div class="mr-2 text-center">
         <div class="avatar">
@@ -31,19 +31,16 @@
       <div class="relative flex-grow text-left truncate">
         <div class="max-w-full cursor-pointer truncateThis">
           <h2 class="text-2xl truncate sm:text-3xl ">
-            {title}
-            {variety > 1 ? " (" + variety + ")" : ""}
+            {title} {variety > 1 ? ' (' + variety + ')' : ''}
           </h2>
         </div>
       </div>
 
       <div class="flex flex-col flex-1 justify-items-end">
         <div class="self-end text-2xl text-primary sm:text-3xl">
-          <span>
-            {Number.parseFloat(balance).toFixed(2)}
-          </span>
+          <span>{Number.parseFloat(balance).toFixed(2)}</span>
         </div>
       </div>
     </div>
-  </div>
+  </Card>
 </section>

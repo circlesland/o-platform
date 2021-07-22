@@ -78,14 +78,12 @@
   }
 </script>
 
-<section class="flex items-start bg-white shadow-lg rounded-xl">
+<section class="flex items-start bg-white shadow rounded-xl">
   <div class="flex flex-col w-full ">
     <header class=" rounded-t-xl headerImageContainer">
       <div class="relative rounded-t-xl image-wrapper">
         <img
-          src={offer.pictureUrl
-            ? offer.pictureUrl
-            : "/images/market/circles-no-image.jpg"}
+          src={offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}
           alt=""
           class="rounded-t-xl"
         />
@@ -103,17 +101,12 @@
       <div class="avatar">
         <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
           <img
-            src={offer.createdBy.avatarUrl
-              ? offer.createdBy.avatarUrl
-              : "/images/market/city.png"}
+            src={offer.createdBy.avatarUrl ? offer.createdBy.avatarUrl : '/images/market/city.png'}
             alt="user-icon"
           />
         </div>
       </div>
-      <div>
-        {offer.createdBy.firstName}
-        {offer.createdBy.lastName}
-      </div>
+      <div>{offer.createdBy.firstName} {offer.createdBy.lastName}</div>
     </div>
     <div class="flex flex-col w-full px-4 mt-6 space-y-4 bg-white">
       <div class="flex flex-row flex-grow space-x-2">
@@ -121,8 +114,7 @@
           class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs"
         >
           <a
-            href="#/marketplace/categories/{offer.categoryTagId}/{offer
-              .categoryTag.value}"
+            href="#/marketplace/categories/{offer.categoryTagId}/{offer.categoryTag.value}"
             alt={offer.categoryTag.value}
           >
             {offer.categoryTag.value}
@@ -149,10 +141,12 @@
             type="submit"
             class="relative btn btn-primary btn-block"
             on:click|once={() => loadDetailPage()}
-            >Show detail <div class="absolute mr-1 right-2">
-              <Icons icon="eye" />
-            </div></button
           >
+            Show detail
+            <div class="absolute mr-1 right-2">
+              <Icons icon="eye" />
+            </div>
+          </button>
         </div>
       </div>
     </div>

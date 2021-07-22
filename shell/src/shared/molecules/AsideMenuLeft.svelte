@@ -101,6 +101,7 @@
                   <a
                     href="/#/{navItem.url}"
                     class="flex content-center justify-start space-x-2"
+                    target={navItem.extern ? '_blank' : '_self'}
                     on:click={() => handleCloseSideBar()}
                   >
                     <Icons icon={navItem.icon} />
@@ -142,6 +143,7 @@
               href="/#/{navItem.url}"
               class="flex content-center justify-start space-x-2"
               on:click={() => handleCloseSideBar()}
+              target={navItem.extern ? '_blank' : '_self'}
             >
               <Icons icon={navItem.icon} />
               <div>{navItem.title}</div>

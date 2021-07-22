@@ -135,6 +135,9 @@ export const homepage: DappManifest<DappState> = {
   isEnabled: true,
   hideFooter: false,
   isFullWidth: true,
+  navigation: {
+    loginPill: true,
+  },
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {

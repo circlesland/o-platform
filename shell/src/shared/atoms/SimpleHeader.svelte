@@ -10,4 +10,4 @@
 
 <TopNav {runtimeDapp} {routable} />
 
-<PageHeader heightClass="h-12" />
+<PageHeader heightClass="h-8 mt-12" />

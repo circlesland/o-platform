@@ -55,17 +55,13 @@
 
 <TopNav {runtimeDapp} {routable} />
 
-<PageHeader heightClass="h-72">
+<PageHeader heightClass="h-80">
   <div class="self-center block mt-4 text-center">
     <div class="avatar">
       <div class="mb-4 rounded-full ring ring-white w-36 h-36">
         <img
           src={avatarUrl}
-          alt={profile
-            ? profile.lastName
-              ? `${profile.firstName} ${profile.lastName}`
-              : profile.firstName
-            : "avatar"}
+          alt={profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}
         />
       </div>
       <button
@@ -79,15 +75,17 @@
           fill="currentColor"
         >
           <path
-            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+            d="M13.586 3.586a2 2 0 112.828
+            2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3
+            14.172V17h2.828l8.38-8.379-2.83-2.828z"
           />
         </svg>
       </button>
     </div>
     <div class="">
       <h2 class="text-4xl font-heading">
-        {profile ? profile.firstName : ""}
-        {profile && profile.lastName ? profile.lastName : ""}
+        {profile ? profile.firstName : ''}
+        {profile && profile.lastName ? profile.lastName : ''}
         <button
           class="self-start -mt-2 -mr-3 link link-primary text-secondary text-2xs"
           on:click={() => editProfileField({ firstName: true, lastName: true })}
@@ -99,7 +97,9 @@
             fill="currentColor"
           >
             <path
-              d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+              d="M13.586 3.586a2 2 0 112.828
+              2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3
+              14.172V17h2.828l8.38-8.379-2.83-2.828z"
             />
           </svg>
         </button>

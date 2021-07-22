@@ -3,6 +3,7 @@
   import Web3 from "web3";
   import { Transfer } from "../data/circles/types";
   import { push } from "svelte-spa-router";
+  import Card from "src/shared/atoms/Card.svelte";
 
   export let transfer: Transfer;
   export let message: String;
@@ -70,10 +71,7 @@
   on:click={() => loadDetailPage(transfer._id)}
   class="flex items-center justify-center mb-3 "
 >
-  <div
-    class="flex items-center w-full px-3 py-2 space-x-2 bg-white rounded-lg
-    shadow sm:space-x-6"
-  >
+  <Card>
     <div class="mr-2 text-center">
       <div class="avatar">
         <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
@@ -116,5 +114,5 @@
         {/if}
       </div>
     </div>
-  </div>
+  </Card>
 </section>

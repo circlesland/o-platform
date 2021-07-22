@@ -1,6 +1,7 @@
 <script lang="ts">
   import { me } from "../../../shared/stores/me";
   import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+  import Card from "src/shared/atoms/Card.svelte";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
@@ -24,29 +25,23 @@
 <SimpleHeader {runtimeDapp} {routable} />
 
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  <div class="mx-4">
-    <section class="flex items-center justify-center mb-2 -mt-2">
-      <div
-        class="flex items-center w-full px-4 space-x-2 bg-white rounded-lg shadow"
-      >
+  <div class="mx-4 -mt-2">
+    <section class="flex items-center justify-center mb-2">
+      <Card>
         <div class="py-2 pt-4 mr-2 text-center">
           <div class="avatar">
             <div class="m-auto rounded-full w-14 h-14">
               <img
                 src={avatarUrl}
-                alt={$me
-                  ? $me.lastName
-                    ? `${$me.firstName} ${$me.lastName}`
-                    : $me.firstName
-                  : "avatar"}
+                alt={$me ? ($me.lastName ? `${$me.firstName} ${$me.lastName}` : $me.firstName) : 'avatar'}
               />
             </div>
           </div>
         </div>
         <div class="flex flex-col items-start">
           <h2 class="mr-2 font-bold">
-            {$me ? $me.firstName : "Martin"}
-            {$me && $me.lastName ? $me.lastName : ""}
+            {$me ? $me.firstName : 'Martin'}
+            {$me && $me.lastName ? $me.lastName : ''}
           </h2>
         </div>
         <div class="flex justify-end flex-1 text-base-300">
@@ -66,7 +61,7 @@
           </svg> -->
           <h3 class="ml-2 mr-2 font-bold">UBI</h3>
         </div>
-      </div>
+      </Card>
     </section>
   </div>
 </div>

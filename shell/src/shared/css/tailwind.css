@@ -294,8 +294,21 @@ button:focus {
   @apply rounded-xl;
 }
 
+.shadow-sm {
+  filter: drop-shadow(0px 0px 3px #ebecf2);
+  --tw-shadow: none;
+  box-shadow: 0px 0px 3px #E2E3E8;
+  
+}
+
 .shadow-md {
   filter: drop-shadow(0px 0px 16px #ebecf2);
   --tw-shadow: none;
-  box-shadow: none;
+  box-shadow: 0px 0px 16px #E2E3E8;
+}
+
+.shadow-lg {
+  filter: drop-shadow(0px 0px 24px #ebecf2);
+  --tw-shadow: none;
+  box-shadow: 0px 0px 24px #E2E3E8;
 }

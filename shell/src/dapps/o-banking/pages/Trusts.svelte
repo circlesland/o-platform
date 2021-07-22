@@ -7,6 +7,7 @@
   import { me } from "../../../shared/stores/me";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import Card from "src/shared/atoms/Card.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -32,7 +33,7 @@
 
 <SimpleHeader {runtimeDapp} {routable} />
 
-<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   {#if !$mySafe.trustRelations || !$mySafe.trustRelations.mutualTrusts || !$mySafe.trustRelations.trusting || !$mySafe.trustRelations.trustedBy}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -47,7 +48,8 @@
         <div class="flex flex-col items-start">
           <div>
             <b>An error occurred while loading the recent activities:</b>
-            <br />{$mySafe.ui.error.message}
+            <br />
+            {$mySafe.ui.error.message}
           </div>
         </div>
       </div>
@@ -55,11 +57,9 @@
   {:else}
     {#if Object.values($mySafe.trustRelations.mutualTrusts).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
-        <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow"
-        >
+        <Card>
           <div class="text-xs font-bold text-left ">MUTUAL TRUST</div>
-        </div>
+        </Card>
       </section>
       <!-- TODO: Possible actions: untrust, transfer money -->
       {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust}
@@ -71,11 +71,9 @@
     {/if}
     {#if Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
-        <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow"
-        >
+        <Card>
           <div class="text-xs font-bold text-left ">TRUSTING</div>
-        </div>
+        </Card>
       </section>
       {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting}
         <!-- TODO: Possible actions: untrust -->
@@ -85,13 +83,11 @@
 
     {#if Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress !== $mySafe.safeAddress).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
-        <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow"
-        >
+        <Card>
           <div class="text-xs font-bold text-left text-primary ">
             TRUSTED BY
           </div>
-        </div>
+        </Card>
       </section>
       <!-- TODO: Possible actions: trust, transfer money -->
       {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress !== $mySafe.safeAddress) as trustedBy}
@@ -101,13 +97,11 @@
 
     {#if Object.values($mySafe.trustRelations.untrusted).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
-        <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-lg shadow"
-        >
+        <Card>
           <div class="text-xs font-bold text-left text-error ">
             TRUST REMOVED
           </div>
-        </div>
+        </Card>
       </section>
       <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
       {#each Object.values($mySafe.trustRelations.untrusted) as untrusted}
@@ -130,23 +124,28 @@
       <div class="text-sm">
         In CirclesLand everyone has their own personalized Circles money. You
         have "YOU" Circles and your friend Bob has "BOB" Circles.
-        <br /><br />
-        To be able to transfer Circles to someone you first need to get trusted by
-        others. When you want to receive money you have to trust them back.
-        <br /><br />
+        <br />
+        <br />
+        To be able to transfer Circles to someone you first need to get trusted
+        by others. When you want to receive money you have to trust them back.
+        <br />
+        <br />
         To transact with a stranger the network will calculate the flow of money
         for you, based on your direct trust connections.
-        <br /><br />
-        The better you are connected the more useable your Circles become. Keep in
-        mind to always only connect yourself with people you trust and know in person.
-        To connect yourself, send your "trust link" to other citizens you know in
-        person.
+        <br />
+        <br />
+        The better you are connected the more useable your Circles become. Keep
+        in mind to always only connect yourself with people you trust and know
+        in person. To connect yourself, send your "trust link" to other citizens
+        you know in person.
         <a
           href="https://blog.circles.land/whitepaper/"
           alt="CirclesLand Whitepaper"
           target="_blank"
-          class="btn-link">Learn more</a
+          class="btn-link"
         >
+          Learn more
+        </a>
       </div>
       <div class="mx-auto mt-6 btn btn-primary" id="clipboard" on:click={copy}>
         <input type="text" class="hidden" bind:value={inviteLink} />

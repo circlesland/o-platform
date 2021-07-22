@@ -5,6 +5,7 @@
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import Icons from "../../../shared/molecules/Icons.svelte";
   import { push } from "svelte-spa-router";
+  import Card from "src/shared/atoms/Card.svelte";
 
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
@@ -70,51 +71,32 @@
 </script>
 
 <section
-  class="flex items-center justify-center mb-2 "
+  class="flex items-center justify-center mb-2"
   on:click={() => loadDetailPage(safeAddress)}
 >
-  <div
-    class="flex items-center w-full px-4 pt-4 space-x-2 bg-white rounded-lg shadow sm:space-x-6"
-  >
-    <div class="mr-2 -mt-3 text-center">
+  <Card>
+    <div class="mr-2 text-center">
       <div class="avatar">
-        <div class="w-12 h-12 m-auto rounded-full sm:w-12 sm:h-12">
+        <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
           <img src={pictureUrl} alt={displayName} />
         </div>
       </div>
     </div>
 
     <div class="relative flex-grow text-left truncate">
-      <div class="max-w-full cursor-pointer truncateThis">
-        <h2 class="text-base">
-          {displayName}
-        </h2>
+      <div class="truncateThis">
+        <h2 class="text-base">{displayName}</h2>
       </div>
-
-      {#if untrusted}
-        <div class="mb-4 text-xs text-left text-alert-dark">
-          <span class="inline ">Not trusted</span>
-        </div>
-      {/if}
-      {#if trustedBy && trusting}
-        <div class="mb-4 text-xs text-left text-dark-lightest">
-          <span class="inline ">Mutual trust</span>
-        </div>
-      {/if}
-      {#if !(trustedBy && trusting) && trustedBy}
-        <div class="mb-4 text-xs text-left text-dark-lightest">
-          <span class="inline">Is trusting you</span>
-        </div>
-      {/if}
-      {#if !(trustedBy && trusting) && trusting}
-        <div class="mb-4 text-xs text-left text-dark-lightest">
-          <span class="inline">Trusted by you</span>
-        </div>
-      {/if}
+      <p class="text-xs text-dark-lightest">
+        {#if untrusted}Not trusted{/if}
+        {#if trustedBy && trusting}Mutual trust{/if}
+        {#if !(trustedBy && trusting) && trustedBy}Is trusting you{/if}
+        {#if !(trustedBy && trusting) && trusting}Trusted by you{/if}
+      </p>
     </div>
 
-    <div class="flex flex-col self-start flex-1 mt-2 justify-items-end">
-      <div class="flex flex-col self-end space-y-2 text-2xl sm:text-3xl ">
+    <div class="flex flex-col flex-1 justify-items-end">
+      <div class="self-end text-lg sm:text-3xl">
         <button
           on:click={(e) => {
             execTransfer(safeAddress);
@@ -127,5 +109,5 @@
         </button>
       </div>
     </div>
-  </div>
+  </Card>
 </section>

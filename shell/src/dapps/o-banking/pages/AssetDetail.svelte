@@ -84,9 +84,7 @@
   }
 </script>
 
-<SimpleHeader {runtimeDapp} {routable} showBackArrow={true} />
-
-<div class="mx-4 -mt-3">
+<div class="mx-4 mt-4">
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -95,7 +93,7 @@
         </div>
       </div>
     </section>
-  {:else if symbol == "xdai"}
+  {:else if symbol == 'xdai'}
     <section class="justify-center mb-4">
       <div
         class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard"
@@ -103,18 +101,29 @@
         <div class="text-xs font-bold text-left text-info ">WHAT IS THIS?</div>
 
         <div class="text-sm md:text-base">
-          Your xDAI is distributed between two accounts. <br /><br />
+          Your xDAI is distributed between two accounts.
+          <br />
+          <br />
           On the safeowner account you have xDai to pay your transaction fees.
           <br />
           0,25xDAI gives you 1000+ transactions.
-          <br /><br />On the safe account you store your invite credits, that
-          you can use to onboard other people.<br />
+          <br />
+          <br />
+          On the safe account you store your invite credits, that you can use to
+          onboard other people.
+          <br />
           For each invite your need a minimum of 0,10xDAI..
         </div>
       </div>
     </section>
 
-    {#each [accountxDai, safexDai].sort( (a, b) => (parseFloat(a.balance) > parseFloat(b.balance) ? -1 : parseFloat(a.balance) < parseFloat(b.balance) ? 1 : 0) ) as token}
+    {#each [accountxDai, safexDai].sort((a, b) =>
+      parseFloat(a.balance) > parseFloat(b.balance)
+        ? -1
+        : parseFloat(a.balance) < parseFloat(b.balance)
+        ? 1
+        : 0
+    ) as token}
       <XdaiAssetCard
         address={token.address}
         title={token.title}
@@ -147,8 +156,8 @@
                   <div
                     class="flex-row items-center space-x-4 cursor-pointer card-body"
                   >
-                    <label for="input" class="flex-0"
-                      ><div
+                    <label for="input" class="flex-0">
+                      <div
                         class="text-sm font-bold tracking-wider text-center sm:text-lg"
                       >
                         {Math.floor(preset / INVITE_VALUE)} INVITES

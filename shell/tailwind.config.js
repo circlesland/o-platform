@@ -95,7 +95,9 @@ module.exports = {
         background: "#F5F8FF",
 
         gradient1: "#1DD6A4",
-        gradient2: "#0ad99c",
+        gradient2: "#41C7F1",
+        // gradient1: "#003399",
+        // gradient2: "#1ED6A4",
 
         transactionpositive: "#0BE09D",
         transactionnegative: "#F14E47",

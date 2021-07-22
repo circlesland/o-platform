@@ -1,5 +1,6 @@
 <script lang="ts">
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+  import Card from "src/shared/atoms/Card.svelte";
   import { mySafe } from "../stores/safe";
   import { BN } from "ethereumjs-util";
   import AssetCard from "../atoms/AssetCard.svelte";
@@ -69,29 +70,33 @@
 
 <SimpleHeader {runtimeDapp} {routable} />
 
-<div class="mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   <section class="justify-center mb-2">
-    <div class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard">
+    <div class="flex flex-col w-full p-4 space-y-2 rounded-lg shadow infocard">
       <div class="text-xs font-bold text-left text-info ">WHAT IS THIS?</div>
 
       <div class="text-sm md:text-base">
         Since everyone has their own personalized Circles money, you will always
         only be able to receive and hold Circles of those you directly trust.
-        <br /><br />To see which personalized Circles you are currently holding,
-        click onto the Circles Card.
-        <br /><br />xDai is the currency that is used to invite others and pay
-        transaction fees.
+        <br />
+        <br />
+        To see which personalized Circles you are currently holding, click onto
+        the Circles Card.
+        <br />
+        <br />
+        xDai is the currency that is used to invite others and pay transaction
+        fees.
       </div>
     </div>
   </section>
 
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
     <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
+      <Card>
         <div class="flex flex-col items-start">
           <div>Loading Tokens...</div>
         </div>
-      </div>
+      </Card>
     </section>
   {:else}
     {#each [circles, xdai] as token}
