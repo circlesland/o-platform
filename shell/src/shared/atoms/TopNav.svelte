@@ -27,20 +27,16 @@
 </script>
 
 <div class="fixed top-0 left-0 z-10 w-full">
-  <div
-    class="grid w-full grid-cols-3 p-2 mx-auto text-white navbar bg-dark "
-  >
+  <div class="grid w-full grid-cols-3 p-2 mx-auto text-white navbar bg-dark ">
     <div class="justify-self-start">
-      <Icons icon="circles"/>
-      <span class="ml-2 text-lg uppercase ">
+      <img src="/logos/circles.png" class="w-8 h-8" />
+      <span class="ml-2 text-2xl font-heading uppercase text-light">
         {runtimeDapp.title}
       </span>
     </div>
     {#if routable.title != routable.title}
       <div class="justify-self-center">
-        <span class="text-sm ">
-          {routable.title}
-        </span>
+        <span class="text-sm ">{routable.title}</span>
       </div>
     {/if}
   </div>

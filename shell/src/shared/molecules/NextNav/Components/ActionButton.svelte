@@ -2,7 +2,7 @@
   export let icon: string;
 </script>
 
-{#if icon == "close"}
+{#if icon == 'close'}
   <img
     src="/logos/close.svg"
     alt="circlesLand"
@@ -10,7 +10,7 @@
   />
 {:else}
   <img
-    src="/logos/logo.svg"
+    src="/logos/circles.png"
     alt="circlesLand"
     class="bg-white rounded-full navlogo"
   />

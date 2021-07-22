@@ -1286,6 +1286,12 @@ EwAAAABJRU5ErkJggg==" />
 <path d="M1.33325 10.3333L7.99992 17L14.6666 10.3333M1.33325 1L7.99992 7.66667L14.6666 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
+    playbutton: `
+<svg class='w-14 h-14' viewBox="0 0 65 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M32.5 63.75C49.7589 63.75 63.75 49.7589 63.75 32.5C63.75 15.2411 49.7589 1.25 32.5 1.25C15.2411 1.25 1.25 15.2411 1.25 32.5C1.25 49.7589 15.2411 63.75 32.5 63.75Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26.25 20L45 32.5L26.25 45V20Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
   };
 
   export let icon: string = null;

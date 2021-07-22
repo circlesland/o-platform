@@ -1,6 +1,6 @@
 <div class="loading-spinner">
   <img
-    src="/images/common/circles.png"
+    src="/logos/circles.png"
     alt="loading..."
     class="w-20 h-20 mb-6 rotate"
   />
@@ -19,5 +19,4 @@
       transform: rotate(359deg);
     }
   }
-
 </style>

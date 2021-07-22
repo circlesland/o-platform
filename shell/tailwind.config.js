@@ -92,6 +92,7 @@ module.exports = {
         },
 
         darkgrey: "#E2E7EB",
+        background: "#F5F8FF",
 
         gradient1: "#1DD6A4",
         gradient2: "#0ad99c",

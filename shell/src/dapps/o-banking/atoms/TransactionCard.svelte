@@ -68,10 +68,11 @@
 
 <section
   on:click={() => loadDetailPage(transfer._id)}
-  class="flex items-center justify-center mb-2 "
+  class="flex items-center justify-center mb-3 "
 >
   <div
-    class="flex items-center w-full px-3 py-2 space-x-2 bg-white rounded-lg shadow sm:space-x-6"
+    class="flex items-center w-full px-3 py-2 space-x-2 bg-white rounded-lg
+    shadow sm:space-x-6"
   >
     <div class="mr-2 text-center">
       <div class="avatar">
@@ -83,9 +84,7 @@
 
     <div class="relative flex-grow text-left truncate">
       <div class="truncateThis">
-        <h2 class="text-base">
-          {displayName}
-        </h2>
+        <h2 class="text-base">{displayName}</h2>
       </div>
       <p class="text-xs text-dark-lightest">{message}</p>
     </div>
@@ -93,13 +92,11 @@
     <div class="flex flex-col flex-1 justify-items-end">
       <div
         class="self-end text-lg sm:text-3xl"
-        class:text-success={classes == "transactionpositive"}
-        class:text-alert={classes == "transactionnegative"}
+        class:text-success={classes == 'transactionpositive'}
+        class:text-alert={classes == 'transactionnegative'}
       >
         <span>
-          {Number.parseFloat(
-            Web3.utils.fromWei(transfer.amount, "ether")
-          ).toFixed(2)}
+          {Number.parseFloat(Web3.utils.fromWei(transfer.amount, 'ether')).toFixed(2)}
         </span>
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
