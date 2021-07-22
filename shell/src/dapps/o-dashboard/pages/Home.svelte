@@ -88,6 +88,8 @@
       />
     </section>
   </div>
+{:else}
+  <div class="mt-16" />
 {/if}
 <div class="mx-auto md:w-2/3 xl:w-1/2">
 
@@ -220,7 +222,7 @@
           <div
             class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
           >
-            <div class="pt-2 text-primary">
+            <div class="pt-2 text-primary-lightest">
               <Icons icon="dashbanking" />
             </div>
             <div class="mt-4 text-3xl font-heading text-base-300">banking</div>
