@@ -10,7 +10,7 @@
 </script>
 
 <div class="fixed top-0 left-0 z-10 w-full">
-  <div class="grid w-full grid-cols-3 p-2 mx-auto text-white navbar bg-dark ">
+  <div class="grid w-full grid-cols-3 p-2 mx-auto text-white navbar bg-dark-dark">
     <div
       class="justify-self-start"
       class:col-span-2={runtimeDapp.title == 'Circles Land'}

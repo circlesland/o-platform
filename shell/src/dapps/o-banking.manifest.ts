@@ -1,7 +1,6 @@
 import Transactions from "./o-banking/pages/Transactions.svelte";
 import Assets from "./o-banking/pages/Assets.svelte";
 import Trusts from "./o-banking/pages/Trusts.svelte";
-
 import ProfilePage from "./o-banking/pages/Profile.svelte";
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
 import { setTrust } from "./o-banking/processes/setTrust";

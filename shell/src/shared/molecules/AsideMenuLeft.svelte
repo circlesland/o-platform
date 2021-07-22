@@ -99,7 +99,7 @@
               {#if navigation}
                 {#each navigation as navItem}
                   <a
-                    href="/#/{navItem.url}"
+                    href={navItem.extern ? navItem.url : '/#/' + navItem.url}
                     class="flex content-center justify-start space-x-2"
                     target={navItem.extern ? '_blank' : '_self'}
                     on:click={() => handleCloseSideBar()}
@@ -116,7 +116,8 @@
       {/if}
     </div>
     <div
-      class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
+      class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4
+      ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
       on:click={() => handleCloseSideBar()}
     >
       <Icons icon="buttonleftarrow" />
@@ -127,20 +128,22 @@
 
   {#if visible}
     <aside
-      class="fixed z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen text-white top-10 bg-dark"
+      class="fixed z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen
+      text-white top-10 bg-dark"
       in:fly|local={{ x, delay: 50 }}
       out:fly|local={{ x: x, duration: 1420 }}
     >
 
       <div
-        class="relative flex-shrink-0 w-64 h-screen p-4 pt-16 space-y-6 text-left"
+        class="relative flex-shrink-0 w-64 h-screen p-4 pt-16 space-y-6
+        text-left"
         use:clickOutside
         on:click_outside={handleClickOutside}
       >
         {#if navigation}
           {#each navigation as navItem}
             <a
-              href="/#/{navItem.url}"
+              href={navItem.extern ? navItem.url : '/#/' + navItem.url}
               class="flex content-center justify-start space-x-2"
               on:click={() => handleCloseSideBar()}
               target={navItem.extern ? '_blank' : '_self'}
