@@ -7,9 +7,11 @@
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { clickOutside } from "src/shared/functions/clickOutside.ts";
+  import { run } from "svelte/internal";
 
   export let runtimeDapp: RuntimeDapp<any>;
-  let isLeftSidebarOpen: boolean = false;
+  export let isLeftSidebarOpen: boolean = false;
+
   let navigation:
     | {
         icon?: string;
@@ -36,31 +38,39 @@
     animationSpeed = 50;
   }
 
+  $: {
+    if (!isMobile) {
+      showNavigation(runtimeDapp);
+    }
+  }
   export function showNavigation(dapp: DappManifest<any>) {
     navigation = getRouteList(dapp, runtimeDapp);
-    if (isLeftSidebarOpen) {
-      dispatch("openLeftSidebar", {
-        state: false,
-      });
-      isLeftSidebarOpen = false;
-      visible = false;
-    } else {
-      dispatch("openLeftSidebar", {
-        state: true,
-      });
-      isLeftSidebarOpen = true;
-      visible = true;
+    if (isMobile) {
+      if (isLeftSidebarOpen) {
+        dispatch("openLeftSidebar", {
+          state: false,
+        });
+        isLeftSidebarOpen = false;
+        visible = false;
+      } else {
+        dispatch("openLeftSidebar", {
+          state: true,
+        });
+        isLeftSidebarOpen = true;
+        visible = true;
+      }
     }
   }
 
   function handleCloseSideBar() {
-    console.log("YEAH");
-    if (isLeftSidebarOpen) {
-      dispatch("openLeftSidebar", {
-        state: false,
-      });
-      isLeftSidebarOpen = false;
-      visible = false;
+    if (isMobile) {
+      if (isLeftSidebarOpen) {
+        dispatch("openLeftSidebar", {
+          state: false,
+        });
+        isLeftSidebarOpen = false;
+        visible = false;
+      }
     }
   }
 
@@ -109,8 +119,7 @@
 
     </div>
     <div
-      class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4
-      ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
+      class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
       on:click={() => handleCloseSideBar()}
     >
       <Icons icon="buttonleftarrow" />
@@ -119,34 +128,39 @@
 
 {:else}
 
-  {#if visible}
-    <aside
-      class="fixed z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen
-      text-white top-12 bg-dark"
-    >
+  <aside class="z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen mt-12">
 
-      <div
-        class="relative flex-shrink-0 w-64 h-screen p-4 pt-4 space-y-6 text-left"
-        use:clickOutside
-        on:click_outside={handleClickOutside}
-      >
-        {#if navigation}
-          {#each navigation as navItem}
-            <a
-              href={navItem.extern ? navItem.url : '/#/' + navItem.url}
-              class="flex content-center justify-start space-x-2"
-              on:click={() => handleCloseSideBar()}
-              target={navItem.extern ? '_blank' : '_self'}
-            >
-              <Icons icon={navItem.icon} />
-              <div>{navItem.title}</div>
-            </a>
-          {/each}
-        {/if}
+    <div class="">
+      <!-- Sidebar -->
+
+      <div class="fixed inset-y-0 z-10 flex w-72 sidebar">
+        <!-- Sidebar content -->
+
+        <div class="z-10 flex flex-col flex-1 ">
+          <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
+          <div class="relative flex-shrink-0 w-64 p-6 pt-4 pb-20 space-y-6">
+            {#if navigation}
+              {#each navigation as navItem}
+                <a
+                  href={navItem.extern ? navItem.url : '/#/' + navItem.url}
+                  class="flex content-center justify-start space-x-2"
+                  target={navItem.extern ? '_blank' : '_self'}
+                  on:click={() => handleCloseSideBar()}
+                >
+                  <Icons icon={navItem.icon} />
+                  <div>{navItem.title}</div>
+                </a>
+              {/each}
+            {/if}
+          </div>
+        </div>
 
       </div>
-    </aside>
-  {/if}
+
+    </div>
+
+  </aside>
+
 {/if}
 
 <style>
