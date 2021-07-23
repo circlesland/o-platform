@@ -101,6 +101,7 @@
   let navigateablePages: any;
   let previousPage: any;
   let nextPage: any;
+  let currentPage: any;
 
   onMount(async () => {
     window.o.events.subscribe(async (event: PlatformEvent) => {
@@ -204,6 +205,12 @@
 
     if (runtimeDapp) {
       navigateablePages = runtimeDapp.routables.filter((o) => !o.isSystem);
+      currentPage =
+        navigateablePages[
+          navigateablePages.findIndex(
+            (x) => x.routeParts === routable.routeParts
+          )
+        ];
       nextPage = navigateablePages[
         navigateablePages.findIndex(
           (x) => x.routeParts === routable.routeParts

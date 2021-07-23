@@ -99,12 +99,15 @@
     title: string;
     url: string;
     extern: boolean;
+    isActive: boolean;
   }[] {
     const routables = dapp.routables.filter(
       (o) => (o.type === "page" || o.type === "link") && !o.isSystem
     );
     return routables.map((o) => {
       if (o.type == "page") {
+        console.log("THIS IS O: ", o);
+        console.log("THIS IS O runtime: ", dapp);
         return {
           title: o.title,
           icon: o.icon,
@@ -117,6 +120,7 @@
               .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
               .join("/"),
           extern: false,
+          isActive: o.title === runtimeDapp.title,
         };
       } else {
         return {
@@ -124,6 +128,7 @@
           icon: o.icon,
           url: (<Link<any, any>>o).url({}, runtimeDapp),
           extern: (<Link<any, any>>o).openInNewTab,
+          isActive: false,
         };
       }
     });

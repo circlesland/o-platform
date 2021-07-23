@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icons from "./Icons.svelte";
+  import LinkPill from "../atoms/LinkPill.svelte";
   import UAParser from "ua-parser-js";
   import { fly } from "svelte/transition";
   import { getRouteList } from "./../functions/GetNavigationManifest.svelte";
@@ -18,6 +19,7 @@
         title: string;
         url: string;
         extern: boolean;
+        isActive: boolean;
       }[]
     | undefined;
 
@@ -41,24 +43,24 @@
   $: {
     if (!isMobile) {
       showNavigation(runtimeDapp);
+      isLeftSidebarOpen = true;
     }
   }
   export function showNavigation(dapp: DappManifest<any>) {
     navigation = getRouteList(dapp, runtimeDapp);
-    if (isMobile) {
-      if (isLeftSidebarOpen) {
-        dispatch("openLeftSidebar", {
-          state: false,
-        });
-        isLeftSidebarOpen = false;
-        visible = false;
-      } else {
-        dispatch("openLeftSidebar", {
-          state: true,
-        });
-        isLeftSidebarOpen = true;
-        visible = true;
-      }
+
+    if (isLeftSidebarOpen) {
+      dispatch("openLeftSidebar", {
+        state: false,
+      });
+      isLeftSidebarOpen = false;
+      visible = false;
+    } else {
+      dispatch("openLeftSidebar", {
+        state: true,
+      });
+      isLeftSidebarOpen = true;
+      visible = true;
     }
   }
 
@@ -128,7 +130,10 @@
 
 {:else}
 
-  <aside class="z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen mt-12">
+  <aside
+    class="z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen mt-12"
+    class:hidden={!isLeftSidebarOpen}
+  >
 
     <div class="">
       <!-- Sidebar -->
@@ -138,18 +143,12 @@
 
         <div class="z-10 flex flex-col flex-1 ">
           <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
-          <div class="relative flex-shrink-0 w-64 p-6 pt-4 pb-20 space-y-6">
+          <div class="relative flex-shrink-0 w-64 p-6 pt-4 pb-20 space-y-2">
             {#if navigation}
               {#each navigation as navItem}
-                <a
-                  href={navItem.extern ? navItem.url : '/#/' + navItem.url}
-                  class="flex content-center justify-start space-x-2"
-                  target={navItem.extern ? '_blank' : '_self'}
-                  on:click={() => handleCloseSideBar()}
-                >
-                  <Icons icon={navItem.icon} />
-                  <div>{navItem.title}</div>
-                </a>
+                <LinkPill
+                  props={{ icon: navItem.icon, text: navItem.title, link: navItem.url, isActive: navItem.isActive }}
+                />
               {/each}
             {/if}
           </div>
