@@ -1,30 +1,63 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import UAParser from "ua-parser-js";
   import Icons from "src/shared/molecules/Icons.svelte";
 
   let parser = new UAParser();
-  let player;
-  let mobile = parser.getResult().device["type"] == "mobile";
+  let player: any;
+  let isFullscreen: boolean = false;
+  let isMobile: boolean = parser.getResult().device["type"] == "mobile";
   $: player = document.querySelector("vm-player");
 
   onMount(() => {
     window.player = document.querySelector("vm-player");
     player = document.querySelector("vm-player");
 
-    // Listening to an event.
-    // if (mobile) {
     player.addEventListener("vmPlay", (event) => {
-      player.enterFullscreen();
+      document.getElementById("video-overlay").style.display = "none";
     });
-    player.addEventListener("vmPlaybackEnded", (event) => {
-      player.exitFullscreen();
+
+    player.addEventListener("vmPausedChange", (event) => {
+      if (event.detail == true) {
+        player.exitFullscreen();
+      }
+      document.getElementById("video-overlay").style.display = "block";
     });
-    // }
+
+    document.addEventListener("fullscreenchange", (event) => {
+      // document.fullscreenElement will point to the element that
+      // is in fullscreen mode if there is one. If there isn't one,
+      // the value of the property is null.
+      if (document.fullscreenElement) {
+        isFullscreen = true;
+        document.getElementById("video-overlay").style.display = "none";
+      } else {
+        document.getElementById("video-overlay").style.display = "block";
+        isFullscreen = false;
+        player.pause();
+      }
+    });
+    document.addEventListener("webkitfullscreenchange", function(event) {
+      // The event object doesn't carry information about the fullscreen state of the browser,
+      // but it is possible to retrieve it through the fullscreen API
+      if (document.fullscreenElement) {
+        isFullscreen = true;
+        document.getElementById("video-overlay").style.display = "none";
+      } else {
+        document.getElementById("video-overlay").style.display = "block";
+        isFullscreen = false;
+
+        player.pause();
+      }
+    });
   });
+
   function playVideo() {
-    player.play();
-    document.getElementById("video-overlay").style.display = "none";
+    player.enterFullscreen();
+    // This is weird, but safari won't play if it at the same time toggles into fullscreen mode.
+    setTimeout(function() {
+      player.play();
+    }, 300);
   }
 </script>
 
@@ -48,9 +81,7 @@
     </h2>
     <button class="flex-grow" on:click={() => playVideo()}>
       <div class="inline-flex mt-2">
-
         <Icons icon="playbutton" />
-
       </div>
       <div class="pt-0 text-lg text-center text-white sm:pt-2">play video</div>
     </button>
@@ -58,23 +89,17 @@
 </div>
 <div
   id="container"
-  class="z-10 w-full h-screen max-w-full min-w-full min-h-full"
+  class="z-50 w-full h-screen max-w-full min-w-full min-h-full"
 >
   <vm-player class="h-screen">
-    <vm-vimeo
-      video-id="548283844"
-      class="h-screen"
-      cross-origin="true"
-      poster="/images/homepage/circles-home.jpg"
-    />
+    <vm-vimeo video-id="548283844" class="h-screen" cross-origin="true" />
     <!--  -->
 
-    <vm-default-ui no-controls>
+    <vm-default-ui>
       <vm-click-to-play />
       <!-- We setup the default controls and pass in any options.  -->
-      <vm-default-controls hide-on-mouse-leave active-duration="2000" />
+      <vm-default-controls />
     </vm-default-ui>
-
   </vm-player>
 </div>
 
@@ -82,9 +107,5 @@
   #container {
     width: 100%;
     max-width: 960px;
-  }
-  .video-overlay {
-    /* --tw-bg-opacity: 0.5;
-    background-color: rgba(30, 58, 138, var(--tw-bg-opacity)); */
   }
 </style>

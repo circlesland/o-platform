@@ -30,9 +30,6 @@
   import AsideMenuRight from "./AsideMenuRight.svelte";
   import Icons from "./Icons.svelte";
 
-  import "simplebar";
-  import "simplebar/dist/simplebar.css";
-
   // Import Swiper styles
   import "swiper/swiper-bundle.css";
 
@@ -172,7 +169,12 @@
       document.body.style.overflow = "hidden";
     } else {
       // isLeftMenuOpen = true;
-      document.body.style.overflow = "visible";
+      // ATTENTION! THIS IS A HACK!
+      if (routable && routable.title == "Circles Land") {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "visible";
+      }
     }
 
     if (
@@ -431,7 +433,12 @@
     if (event.detail.state == true) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "visible";
+      // ATTENTION! THIS IS A HACK!
+      if (routable && routable.title == "Circles Land") {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "visible";
+      }
     }
   }
   function handleRightSideBarOpen(event) {

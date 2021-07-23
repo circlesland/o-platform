@@ -8,16 +8,11 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
-
-  // TODO: GRAB MODAL CLOSE AND HIDE OVERFLOW
-  onMount(() => {
-    document.body.style.overflow = "hidden";
-  });
 </script>
 
-<div class="overflow-hidden flex flex-col ">
+<div class="flex flex-col overflow-hidden ">
 
-  <main class="overflow-hidden h-screen">
+  <main class="h-screen overflow-hidden">
     <TopNav {runtimeDapp} {routable} />
     <div class="mt-11">
       <VideoHeader />
