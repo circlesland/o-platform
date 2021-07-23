@@ -105,9 +105,11 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-row justify-between p-2 text-dark">
+        <div
+          class="flex flex-row p-2 space-x-2 justify-items-stretch text-dark"
+        >
           <div
-            class="flex flex-col items-center content-center self-start px-6 py-4 space-y-1 rounded-lg cursor-pointer bg-light-lighter"
+            class="flex flex-col items-center content-center self-start flex-grow h-16 px-6 py-4 space-y-1 rounded-lg cursor-pointer bg-light-lighter"
           >
             <div>
               <Icons icon="trust" />
@@ -115,7 +117,7 @@
             <div class="text-2xs">trust</div>
           </div>
           <div
-            class="flex flex-col items-center content-center self-start px-6 py-4 space-y-1 rounded-lg cursor-pointer bg-light-lighter"
+            class="flex flex-col items-center content-center self-start flex-grow h-16 px-6 py-4 space-y-1 rounded-lg cursor-pointer bg-light-lighter"
           >
             <div>
               <Icons icon="chat" />
@@ -123,7 +125,7 @@
             <div class="text-2xs">chat</div>
           </div>
           <div
-            class="flex flex-col items-center content-center self-start px-6 py-4 space-y-1 rounded-lg cursor-pointer bg-light-lighter"
+            class="flex flex-col items-center content-center self-start flex-grow h-16 px-6 py-4 space-y-1 rounded-lg cursor-pointer bg-light-lighter"
           >
             <div>
               <Icons icon="sendmoney" />

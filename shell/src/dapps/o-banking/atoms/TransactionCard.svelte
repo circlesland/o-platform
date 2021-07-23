@@ -97,7 +97,7 @@
 
     <div class="flex flex-col flex-1 justify-items-end">
       <div
-        class="self-end text-lg sm:text-3xl"
+        class="self-end "
         class:text-success={classes == 'transactionpositive'}
         class:text-alert={classes == 'transactionnegative'}
       >
