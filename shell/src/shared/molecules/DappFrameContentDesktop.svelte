@@ -438,16 +438,6 @@
 
   function handleLeftSideBarOpen(event) {
     isLeftSideBarOpen = event.detail.state;
-    if (event.detail.state == true) {
-      document.body.style.overflow = "hidden";
-    } else {
-      // ATTENTION! THIS IS A HACK!
-      if (routable && routable.title == "Circles Land") {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "visible";
-      }
-    }
   }
   function handleRightSideBarOpen(event) {
     isRightSideBarOpen = event.detail.state;

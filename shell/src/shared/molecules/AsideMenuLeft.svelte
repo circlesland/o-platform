@@ -8,7 +8,7 @@
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { clickOutside } from "src/shared/functions/clickOutside.ts";
-  import { run } from "svelte/internal";
+
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
   export let routable: Routable;
@@ -67,14 +67,12 @@
   }
 
   function handleCloseSideBar() {
-    if (isMobile) {
-      if (isLeftSidebarOpen) {
-        dispatch("openLeftSidebar", {
-          state: false,
-        });
-        isLeftSidebarOpen = false;
-        visible = false;
-      }
+    if (isLeftSidebarOpen) {
+      dispatch("openLeftSidebar", {
+        state: false,
+      });
+      isLeftSidebarOpen = false;
+      visible = false;
     }
   }
 
@@ -145,7 +143,7 @@
 
         <div class="z-10 flex flex-col flex-1 ">
           <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
-          <div class="relative flex-shrink-0 w-64 p-6 pt-4 pb-20 space-y-2">
+          <div class="relative flex-shrink-0 w-64 p-4 pt-4 pb-20 space-y-2">
             {#if navigation}
               {#each navigation as navItem}
                 <LinkPill
