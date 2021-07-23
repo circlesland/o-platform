@@ -3,7 +3,7 @@
   import ListComponent from "../molecules/NextNav/Components/List.svelte";
   import ActionButtonComponent from "../molecules/NextNav/Components/ActionButton.svelte";
   import LinkComponent from "../molecules/NextNav/Components/Link.svelte";
-  import AsideMenuLeft from "../molecules/AsideMenuLeft.svelte";
+  import AsideMenuLeft, {handleCloseSideBar} from "../molecules/AsideMenuLeft.svelte";
   import AsideMenuRight from "../molecules/AsideMenuRight.svelte";
   import { push } from "svelte-spa-router";
 
@@ -31,13 +31,24 @@
     } else {
       nm = getRegularNavigation(dappManifest, processNavigation, modal);
     }
-    nm.leftSlot = {
-      component: LinkComponent,
-      props: {
-        icon: "list",
-        action: () => leftSidebar.showNavigation(dappManifest),
-      },
-    };
+
+      if (leftSidebar?.isOpen()) {
+          nm.leftSlot = {
+              component: LinkComponent,
+              props: {
+                  icon: "back",
+                  action: () => leftSidebar.showNavigation(dappManifest),
+              },
+          };
+      } else {
+          nm.leftSlot = {
+              component: LinkComponent,
+              props: {
+                  icon: "list",
+                  action: () => leftSidebar.showNavigation(dappManifest),
+              },
+          };
+      }
 
     return nm;
   }

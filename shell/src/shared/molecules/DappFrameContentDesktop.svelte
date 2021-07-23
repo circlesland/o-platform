@@ -440,6 +440,7 @@
         document.body.style.overflow = "visible";
       }
     }
+    _navManifest = generateNavManifest();
   }
   function handleRightSideBarOpen(event) {
     isRightSideBarOpen = event.detail.state;

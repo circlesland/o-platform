@@ -9,7 +9,7 @@
   import { clickOutside } from "src/shared/functions/clickOutside.ts";
 
   export let runtimeDapp: RuntimeDapp<any>;
-  let isLeftSidebarOpen: boolean = false;
+  export let isLeftSidebarOpen: boolean = false;
   let navigation:
     | {
         icon?: string;
@@ -29,6 +29,9 @@
   let detectedDevice = uaParser.getDevice();
   let isMobile = true;
 
+  // same as "isLeftSidebarOpen" but set immediately instead of "after the animation"
+  let _isOpenImmediate = false;
+
   if (detectedDevice && detectedDevice.type != "mobile") {
     isMobile = false;
   } else {
@@ -44,9 +47,11 @@
           state: false,
         });
       }, 120);
+      _isOpenImmediate = false;
       isLeftSidebarOpen = false;
       visible = false;
     } else {
+      _isOpenImmediate = true;
       setTimeout(() => {
         dispatch("openLeftSidebar", {
           state: true,
@@ -57,7 +62,11 @@
     }
   }
 
-  function handleCloseSideBar() {
+  export function isOpen() {
+    return _isOpenImmediate;
+  }
+
+  export function handleCloseSideBar() {
     console.log("YEAH");
     if (isLeftSidebarOpen) {
       setTimeout(() => {
