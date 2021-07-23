@@ -153,7 +153,12 @@
     if (_modal && _modalIsOpen) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "visible";
+      // ATTENTION! THIS IS A HACK!
+      if (routable && routable.title == "Circles Land") {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "visible";
+      }
     }
 
     if (
@@ -423,7 +428,12 @@
     if (event.detail.state == true) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "visible";
+      // ATTENTION! THIS IS A HACK!
+      if (routable && routable.title == "Circles Land") {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "visible";
+      }
     }
   }
 </script>
