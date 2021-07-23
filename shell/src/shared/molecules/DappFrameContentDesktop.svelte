@@ -30,9 +30,6 @@
   import AsideMenuRight from "./AsideMenuRight.svelte";
   import Icons from "./Icons.svelte";
 
-  import "simplebar";
-  import "simplebar/dist/simplebar.css";
-
   // Import Swiper styles
   import "swiper/swiper-bundle.css";
 
