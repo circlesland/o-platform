@@ -18,6 +18,7 @@
   <div
     class="flex flex-row px-4 py-2 space-x-2 rounded-full shadow-sm"
     class:bg-dark={props.isActive}
+    class:text-white={props.isActive}
     class:bg-white={!props.isActive}
   >
     {#if props.icon}

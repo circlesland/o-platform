@@ -12,13 +12,15 @@
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { Link } from "@o-platform/o-interfaces/dist/routables/link";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
   export function getNavigationManifest(
     dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
     modal: Modal2,
     leftSidebar: AsideMenuLeft,
-    rightSidebar: AsideMenuRight
+    rightSidebar: AsideMenuRight,
+    routable: Routable
   ): NavigationManifest {
     let nm: NavigationManifest;
     if (modal) {
@@ -35,7 +37,7 @@
       component: LinkComponent,
       props: {
         icon: "list",
-        action: () => leftSidebar.showNavigation(dappManifest),
+        action: () => leftSidebar.showNavigation(dappManifest, routable),
       },
     };
 
@@ -93,7 +95,8 @@
 
   export function getRouteList(
     dapp: DappManifest<any>,
-    runtimeDapp: RuntimeDapp<any>
+    runtimeDapp: RuntimeDapp<any>,
+    routable: Routable
   ): {
     icon?: string;
     title: string;
@@ -106,8 +109,6 @@
     );
     return routables.map((o) => {
       if (o.type == "page") {
-        console.log("THIS IS O: ", o);
-        console.log("THIS IS O runtime: ", dapp);
         return {
           title: o.title,
           icon: o.icon,
@@ -120,7 +121,7 @@
               .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
               .join("/"),
           extern: false,
-          isActive: o.title === runtimeDapp.title,
+          isActive: o.routeParts === routable.routeParts,
         };
       } else {
         return {

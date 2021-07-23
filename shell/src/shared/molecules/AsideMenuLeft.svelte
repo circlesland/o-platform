@@ -9,7 +9,9 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { clickOutside } from "src/shared/functions/clickOutside.ts";
   import { run } from "svelte/internal";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
+  export let routable: Routable;
   export let runtimeDapp: RuntimeDapp<any>;
   export let isLeftSidebarOpen: boolean = false;
 
@@ -42,12 +44,12 @@
 
   $: {
     if (!isMobile) {
-      showNavigation(runtimeDapp);
+      showNavigation(runtimeDapp, routable);
       isLeftSidebarOpen = true;
     }
   }
-  export function showNavigation(dapp: DappManifest<any>) {
-    navigation = getRouteList(dapp, runtimeDapp);
+  export function showNavigation(dapp: DappManifest<any>, routable: Routable) {
+    navigation = getRouteList(dapp, runtimeDapp, routable);
 
     if (isLeftSidebarOpen) {
       dispatch("openLeftSidebar", {

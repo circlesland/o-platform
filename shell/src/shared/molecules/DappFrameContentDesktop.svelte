@@ -499,6 +499,7 @@
         {#if runtimeDapp}
           <AsideMenuLeft
             {runtimeDapp}
+            {routable}
             bind:this={_asideMenuLeft}
             on:openLeftSidebar={handleLeftSideBarOpen}
             isLeftSidebarOpen={true}
