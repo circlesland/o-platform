@@ -39,20 +39,16 @@
   export function showNavigation(dapp: DappManifest<any>) {
     navigation = getRouteList(dapp, runtimeDapp);
     if (isLeftSidebarOpen) {
-      setTimeout(() => {
-        dispatch("openLeftSidebar", {
-          state: false,
-        });
-      }, 120);
+      dispatch("openLeftSidebar", {
+        state: false,
+      });
       isLeftSidebarOpen = false;
       visible = false;
     } else {
-      setTimeout(() => {
-        dispatch("openLeftSidebar", {
-          state: true,
-        });
-        isLeftSidebarOpen = true;
-      }, animationSpeed);
+      dispatch("openLeftSidebar", {
+        state: true,
+      });
+      isLeftSidebarOpen = true;
       visible = true;
     }
   }
@@ -60,13 +56,10 @@
   function handleCloseSideBar() {
     console.log("YEAH");
     if (isLeftSidebarOpen) {
-      setTimeout(() => {
-        dispatch("openLeftSidebar", {
-          state: false,
-        });
-        isLeftSidebarOpen = false;
-      }, animationSpeed);
-
+      dispatch("openLeftSidebar", {
+        state: false,
+      });
+      isLeftSidebarOpen = false;
       visible = false;
     }
   }
@@ -81,39 +74,39 @@
   <aside class="flex sideBarLeft" class:hidden={!isLeftSidebarOpen}>
     <div class="">
       <!-- Sidebar -->
-      {#if visible}
+
+      <div
+        class="fixed inset-y-0 z-10 flex w-72 sidebar"
+        in:fly|local={{ x, delay: 50 }}
+        out:fly|local={{ x: x, duration: 120 }}
+      >
+        <!-- Sidebar content -->
+
         <div
-          class="fixed inset-y-0 z-10 flex w-72 sidebar"
-          in:fly|local={{ x, delay: 50 }}
-          out:fly|local={{ x: x, duration: 120 }}
+          class="z-10 flex flex-col flex-1 text-white bg-dark"
+          use:clickOutside
+          on:click_outside={handleClickOutside}
         >
-          <!-- Sidebar content -->
-
-          <div
-            class="z-10 flex flex-col flex-1 text-white bg-dark"
-            use:clickOutside
-            on:click_outside={handleClickOutside}
-          >
-            <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
-            <div class="relative flex-shrink-0 w-64 p-6 pt-4 pb-8 space-y-6">
-              {#if navigation}
-                {#each navigation as navItem}
-                  <a
-                    href={navItem.extern ? navItem.url : '/#/' + navItem.url}
-                    class="flex content-center justify-start space-x-2"
-                    target={navItem.extern ? '_blank' : '_self'}
-                    on:click={() => handleCloseSideBar()}
-                  >
-                    <Icons icon={navItem.icon} />
-                    <div>{navItem.title}</div>
-                  </a>
-                {/each}
-              {/if}
-            </div>
+          <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
+          <div class="relative flex-shrink-0 w-64 p-6 pt-4 pb-8 space-y-6">
+            {#if navigation}
+              {#each navigation as navItem}
+                <a
+                  href={navItem.extern ? navItem.url : '/#/' + navItem.url}
+                  class="flex content-center justify-start space-x-2"
+                  target={navItem.extern ? '_blank' : '_self'}
+                  on:click={() => handleCloseSideBar()}
+                >
+                  <Icons icon={navItem.icon} />
+                  <div>{navItem.title}</div>
+                </a>
+              {/each}
+            {/if}
           </div>
-
         </div>
-      {/if}
+
+      </div>
+
     </div>
     <div
       class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4
@@ -129,14 +122,11 @@
   {#if visible}
     <aside
       class="fixed z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen
-      text-white top-10 bg-dark"
-      in:fly|local={{ x, delay: 50 }}
-      out:fly|local={{ x: x, duration: 1420 }}
+      text-white top-12 bg-dark"
     >
 
       <div
-        class="relative flex-shrink-0 w-64 h-screen p-4 pt-16 space-y-6
-        text-left"
+        class="relative flex-shrink-0 w-64 h-screen p-4 pt-4 space-y-6 text-left"
         use:clickOutside
         on:click_outside={handleClickOutside}
       >

@@ -10,7 +10,7 @@
   />
 {:else}
   <img
-    src="/logos/circles.png"
+    src="/logos/actionbutton.svg"
     alt="circlesLand"
     class="bg-white rounded-full navlogo"
   />
