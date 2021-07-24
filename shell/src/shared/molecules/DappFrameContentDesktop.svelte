@@ -25,6 +25,7 @@
   import { identify } from "../../dapps/o-passport/processes/identify/identify";
   import { inbox } from "../stores/inbox";
   import { showNotifications } from "../processes/showNotifications";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 
   import AsideMenuLeft from "./AsideMenuLeft.svelte";
   import AsideMenuRight from "./AsideMenuRight.svelte";
@@ -100,6 +101,7 @@
   let navigateablePages: any;
   let previousPage: any;
   let nextPage: any;
+  let currentPage: any;
 
   onMount(async () => {
     window.o.events.subscribe(async (event: PlatformEvent) => {
@@ -203,6 +205,12 @@
 
     if (runtimeDapp) {
       navigateablePages = runtimeDapp.routables.filter((o) => !o.isSystem);
+      currentPage =
+        navigateablePages[
+          navigateablePages.findIndex(
+            (x) => x.routeParts === routable.routeParts
+          )
+        ];
       nextPage = navigateablePages[
         navigateablePages.findIndex(
           (x) => x.routeParts === routable.routeParts
@@ -430,17 +438,6 @@
 
   function handleLeftSideBarOpen(event) {
     isLeftSideBarOpen = event.detail.state;
-    if (event.detail.state == true) {
-      document.body.style.overflow = "hidden";
-    } else {
-      // ATTENTION! THIS IS A HACK!
-      if (routable && routable.title == "Circles Land") {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "visible";
-      }
-    }
-    _navManifest = generateNavManifest();
   }
   function handleRightSideBarOpen(event) {
     isRightSideBarOpen = event.detail.state;
@@ -448,13 +445,7 @@
 </script>
 
 <div class="absolute flex flex-row w-full overflow-auto">
-  {#if runtimeDapp}
-    <AsideMenuLeft
-      {runtimeDapp}
-      bind:this={_asideMenuLeft}
-      on:openLeftSidebar={handleLeftSideBarOpen}
-    />
-  {/if}
+
   <main class="relative z-30 w-full overflow-auto">
     <nav class="absolute grid w-full grid-cols-3 carousel top-11">
       {#if navigateablePages}
@@ -490,26 +481,39 @@
       </div>
     {/if}
     <div
-      class="w-full mainContent"
-      class:pl-64={isLeftSideBarOpen}
-      class:pr-64={isRightSideBarOpen}
+      class="flex flex-row w-full mainContent"
       class:mb-16={(!_modal || !_modalIsOpen) && dapp && dapp.dappId !== 'homepage:1'}
       class:blur={_modal && _modalIsOpen}
     >
-
-      {#if _mainPage}
-        <svelte:component
-          this={_mainPage.component}
-          params={pageParams}
-          {runtimeDapp}
-          {routable}
-        />
-      {:else}
-        <NotFound />
-      {/if}
+      <div class="fixed">
+        {#if runtimeDapp}
+          <AsideMenuLeft
+            {runtimeDapp}
+            {routable}
+            bind:this={_asideMenuLeft}
+            on:openLeftSidebar={handleLeftSideBarOpen}
+            isLeftSidebarOpen={true}
+          />
+        {/if}
+      </div>
+      <div class="flex-grow">
+        {#if _mainPage}
+          <svelte:component
+            this={_mainPage.component}
+            params={pageParams}
+            {runtimeDapp}
+            {routable}
+          />
+        {:else}
+          <NotFound />
+        {/if}
+      </div>
+      <div>
+        <AsideMenuRight on:isRightSideBarOpen={handleRightSideBarOpen} />
+      </div>
     </div>
   </main>
-  <AsideMenuRight on:isRightSideBarOpen={handleRightSideBarOpen} />
+
 </div>
 {#if _navManifest}
   <NextNav navigation={_navManifest} />

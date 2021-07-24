@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icons from "./Icons.svelte";
+  import LinkPill from "../atoms/LinkPill.svelte";
   import UAParser from "ua-parser-js";
   import { fly } from "svelte/transition";
   import { getRouteList } from "./../functions/GetNavigationManifest.svelte";
@@ -8,14 +9,19 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { clickOutside } from "src/shared/functions/clickOutside.ts";
 
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+
+  export let routable: Routable;
   export let runtimeDapp: RuntimeDapp<any>;
   export let isLeftSidebarOpen: boolean = false;
+
   let navigation:
     | {
         icon?: string;
         title: string;
         url: string;
         extern: boolean;
+        isActive: boolean;
       }[]
     | undefined;
 
@@ -29,9 +35,6 @@
   let detectedDevice = uaParser.getDevice();
   let isMobile = true;
 
-  // same as "isLeftSidebarOpen" but set immediately instead of "after the animation"
-  let _isOpenImmediate = false;
-
   if (detectedDevice && detectedDevice.type != "mobile") {
     isMobile = false;
   } else {
@@ -39,43 +42,36 @@
     animationSpeed = 50;
   }
 
-  export function showNavigation(dapp: DappManifest<any>) {
-    navigation = getRouteList(dapp, runtimeDapp);
+  $: {
+    if (!isMobile) {
+      showNavigation(runtimeDapp, routable);
+      isLeftSidebarOpen = true;
+    }
+  }
+  export function showNavigation(dapp: DappManifest<any>, routable: Routable) {
+    navigation = getRouteList(dapp, runtimeDapp, routable);
+
     if (isLeftSidebarOpen) {
-      setTimeout(() => {
-        dispatch("openLeftSidebar", {
-          state: false,
-        });
-      }, 120);
-      _isOpenImmediate = false;
+      dispatch("openLeftSidebar", {
+        state: false,
+      });
       isLeftSidebarOpen = false;
       visible = false;
     } else {
-      _isOpenImmediate = true;
-      setTimeout(() => {
-        dispatch("openLeftSidebar", {
-          state: true,
-        });
-        isLeftSidebarOpen = true;
-      }, animationSpeed);
+      dispatch("openLeftSidebar", {
+        state: true,
+      });
+      isLeftSidebarOpen = true;
       visible = true;
     }
   }
 
-  export function isOpen() {
-    return _isOpenImmediate;
-  }
-
-  export function handleCloseSideBar() {
-    console.log("YEAH");
+  function handleCloseSideBar() {
     if (isLeftSidebarOpen) {
-      setTimeout(() => {
-        dispatch("openLeftSidebar", {
-          state: false,
-        });
-        isLeftSidebarOpen = false;
-      }, animationSpeed);
-
+      dispatch("openLeftSidebar", {
+        state: false,
+      });
+      isLeftSidebarOpen = false;
       visible = false;
     }
   }
@@ -90,43 +86,42 @@
   <aside class="flex sideBarLeft" class:hidden={!isLeftSidebarOpen}>
     <div class="">
       <!-- Sidebar -->
-      {#if visible}
+
+      <div
+        class="fixed inset-y-0 z-10 flex w-72 sidebar"
+        in:fly|local={{ x, delay: 50 }}
+        out:fly|local={{ x: x, duration: 120 }}
+      >
+        <!-- Sidebar content -->
+
         <div
-          class="fixed inset-y-0 z-10 flex w-72 sidebar"
-          in:fly|local={{ x, delay: 50 }}
-          out:fly|local={{ x: x, duration: 120 }}
+          class="z-10 flex flex-col flex-1 text-white bg-dark"
+          use:clickOutside
+          on:click_outside={handleClickOutside}
         >
-          <!-- Sidebar content -->
-
-          <div
-            class="z-10 flex flex-col flex-1 text-white bg-dark"
-            use:clickOutside
-            on:click_outside={handleClickOutside}
-          >
-            <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
-            <div class="relative flex-shrink-0 w-64 p-6 pt-4 pb-8 space-y-6">
-              {#if navigation}
-                {#each navigation as navItem}
-                  <a
-                    href={navItem.extern ? navItem.url : '/#/' + navItem.url}
-                    class="flex content-center justify-start space-x-2"
-                    target={navItem.extern ? '_blank' : '_self'}
-                    on:click={() => handleCloseSideBar()}
-                  >
-                    <Icons icon={navItem.icon} />
-                    <div>{navItem.title}</div>
-                  </a>
-                {/each}
-              {/if}
-            </div>
+          <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
+          <div class="relative flex-shrink-0 w-64 p-6 pt-4 pb-8 space-y-6">
+            {#if navigation}
+              {#each navigation as navItem}
+                <a
+                  href={navItem.extern ? navItem.url : '/#/' + navItem.url}
+                  class="flex content-center justify-start space-x-2"
+                  target={navItem.extern ? '_blank' : '_self'}
+                  on:click={() => handleCloseSideBar()}
+                >
+                  <Icons icon={navItem.icon} />
+                  <div>{navItem.title}</div>
+                </a>
+              {/each}
+            {/if}
           </div>
-
         </div>
-      {/if}
+
+      </div>
+
     </div>
     <div
-      class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4
-      ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
+      class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
       on:click={() => handleCloseSideBar()}
     >
       <Icons icon="buttonleftarrow" />
@@ -135,37 +130,36 @@
 
 {:else}
 
-  {#if visible}
-    <aside
-      class="fixed z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen
-      text-white top-10 bg-dark"
-      in:fly|local={{ x, delay: 50 }}
-      out:fly|local={{ x: x, duration: 1420 }}
-    >
+  <aside
+    class="z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen mt-12"
+    class:hidden={!isLeftSidebarOpen}
+  >
 
-      <div
-        class="relative flex-shrink-0 w-64 h-screen p-4 pt-16 space-y-6
-        text-left"
-        use:clickOutside
-        on:click_outside={handleClickOutside}
-      >
-        {#if navigation}
-          {#each navigation as navItem}
-            <a
-              href={navItem.extern ? navItem.url : '/#/' + navItem.url}
-              class="flex content-center justify-start space-x-2"
-              on:click={() => handleCloseSideBar()}
-              target={navItem.extern ? '_blank' : '_self'}
-            >
-              <Icons icon={navItem.icon} />
-              <div>{navItem.title}</div>
-            </a>
-          {/each}
-        {/if}
+    <div class="">
+      <!-- Sidebar -->
+
+      <div class="fixed inset-y-0 z-10 flex w-72 sidebar">
+        <!-- Sidebar content -->
+
+        <div class="z-10 flex flex-col flex-1 ">
+          <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
+          <div class="relative flex-shrink-0 w-64 p-4 pt-4 pb-20 space-y-2">
+            {#if navigation}
+              {#each navigation as navItem}
+                <LinkPill
+                  props={{ icon: navItem.icon, text: navItem.title, link: navItem.url, isActive: navItem.isActive }}
+                />
+              {/each}
+            {/if}
+          </div>
+        </div>
 
       </div>
-    </aside>
-  {/if}
+
+    </div>
+
+  </aside>
+
 {/if}
 
 <style>

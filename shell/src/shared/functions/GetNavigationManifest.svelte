@@ -3,7 +3,7 @@
   import ListComponent from "../molecules/NextNav/Components/List.svelte";
   import ActionButtonComponent from "../molecules/NextNav/Components/ActionButton.svelte";
   import LinkComponent from "../molecules/NextNav/Components/Link.svelte";
-  import AsideMenuLeft, {handleCloseSideBar} from "../molecules/AsideMenuLeft.svelte";
+  import AsideMenuLeft from "../molecules/AsideMenuLeft.svelte";
   import AsideMenuRight from "../molecules/AsideMenuRight.svelte";
   import { push } from "svelte-spa-router";
 
@@ -12,13 +12,15 @@
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { Link } from "@o-platform/o-interfaces/dist/routables/link";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
   export function getNavigationManifest(
     dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
     modal: Modal2,
     leftSidebar: AsideMenuLeft,
-    rightSidebar: AsideMenuRight
+    rightSidebar: AsideMenuRight,
+    routable: Routable
   ): NavigationManifest {
     let nm: NavigationManifest;
     if (modal) {
@@ -31,24 +33,13 @@
     } else {
       nm = getRegularNavigation(dappManifest, processNavigation, modal);
     }
-
-      if (leftSidebar?.isOpen()) {
-          nm.leftSlot = {
-              component: LinkComponent,
-              props: {
-                  icon: "back",
-                  action: () => leftSidebar.showNavigation(dappManifest),
-              },
-          };
-      } else {
-          nm.leftSlot = {
-              component: LinkComponent,
-              props: {
-                  icon: "list",
-                  action: () => leftSidebar.showNavigation(dappManifest),
-              },
-          };
-      }
+    nm.leftSlot = {
+      component: LinkComponent,
+      props: {
+        icon: "list",
+        action: () => leftSidebar.showNavigation(dappManifest, routable),
+      },
+    };
 
     return nm;
   }
@@ -104,12 +95,14 @@
 
   export function getRouteList(
     dapp: DappManifest<any>,
-    runtimeDapp: RuntimeDapp<any>
+    runtimeDapp: RuntimeDapp<any>,
+    routable: Routable
   ): {
     icon?: string;
     title: string;
     url: string;
     extern: boolean;
+    isActive: boolean;
   }[] {
     const routables = dapp.routables.filter(
       (o) => (o.type === "page" || o.type === "link") && !o.isSystem
@@ -128,6 +121,7 @@
               .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
               .join("/"),
           extern: false,
+          isActive: o.routeParts === routable.routeParts,
         };
       } else {
         return {
@@ -135,6 +129,7 @@
           icon: o.icon,
           url: (<Link<any, any>>o).url({}, runtimeDapp),
           extern: (<Link<any, any>>o).openInNewTab,
+          isActive: false,
         };
       }
     });
