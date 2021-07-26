@@ -3,7 +3,7 @@ import Assets from "./o-banking/pages/Assets.svelte";
 import Trusts from "./o-banking/pages/Trusts.svelte";
 import ProfilePage from "./o-banking/pages/Profile.svelte";
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
-import { setTrust } from "./o-banking/processes/setTrust";
+
 import { transfer } from "./o-banking/processes/transfer";
 import { init, tryGetCurrentSafe } from "./o-banking/init";
 import { me } from "../shared/stores/me";
@@ -17,8 +17,6 @@ import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { loadProfileByProfileId } from "./o-banking/data/loadProfileByProfileId";
-import { mySafe } from "./o-banking/stores/safe";
-import { Unsubscriber } from "svelte/store";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
@@ -54,32 +52,10 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
       }
       return undefined;
     };
-    const getTrustState = () =>
-      new Promise<number | undefined>((resolve, reject) => {
-        let safeSub: Unsubscriber = undefined;
-        safeSub = mySafe.subscribe((safe) => {
-          if (!safe || !safe.trustRelations) {
-            resolve(undefined);
-            return;
-          }
-          if (safeSub) safeSub();
-
-          const trustingSafe = Object.entries(
-            safe.trustRelations.trusting
-          ).find((o) => o[0] === recipientSafeAddress);
-          if (!trustingSafe) {
-            resolve(undefined);
-            return;
-          }
-
-          resolve(trustingSafe[1].limit);
-        });
-      });
 
     const recipientSafeAddress = params.id
       ? await getRecipientAddress()
       : undefined;
-    const trustState = params.id ? await getTrustState() : 0;
 
     return [
       {
@@ -90,19 +66,6 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
           window.o.runProcess(transfer, {
             safeAddress: tryGetCurrentSafe().safeAddress,
             recipientAddress: recipientSafeAddress,
-            privateKey: localStorage.getItem("circlesKey"),
-          });
-        },
-      },
-      {
-        key: "setTrust",
-        icon: "trust",
-        title: trustState ? "Untrust" : "Trust",
-        action: async () => {
-          window.o.runProcess(setTrust, {
-            trustLimit: trustState ? 0 : 100,
-            trustReceiver: recipientSafeAddress,
-            safeAddress: tryGetCurrentSafe().safeAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });
         },
@@ -188,7 +151,6 @@ const findMySafe: Page<any, BankingDappState> = {
   title: "FindMySafe",
   type: "page",
 };
-
 
 export interface DappState {
   // put state here

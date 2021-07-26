@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="">
-      <h2 class="text-2xl">{header ? header : "Marketplace"}</h2>
+      <h2 class="text-2xl">{header ? header : 'Marketplace'}</h2>
     </div>
   </div>
 </div>

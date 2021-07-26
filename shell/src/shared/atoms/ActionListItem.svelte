@@ -13,6 +13,7 @@
   export let clickOnly: boolean = false;
   const current = getContext("nav");
 
+
   function setSegment() {
     if (clickOnly) {
       dispatch("navigate");

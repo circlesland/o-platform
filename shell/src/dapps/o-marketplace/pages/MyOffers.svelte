@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import { Offer, OffersDocument } from "../data/api/types";
   import OfferCard from "../atoms/OfferCard.svelte";
   import { onMount } from "svelte";
@@ -8,6 +8,7 @@
   import { me } from "../../../shared/stores/me";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -61,9 +62,9 @@
   });
 </script>
 
-<MarketplaceHeader {runtimeDapp} {routable} />
+<SimpleHeader {runtimeDapp} {routable} />
 
-<div class="mx-4 -mt-3">
+<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -83,15 +84,8 @@
       </div>
     </section>
   {:else if offers.length}
-    <section class="flex items-center justify-center mb-1 ">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div class="text-xs font-bold text-left  ">My offers</div>
-      </div>
-    </section>
     {#each offers as offer}
-      <OfferCard {offer} />
+      <TransactionItemCard {offer} />
     {/each}
   {:else}
     <section class="flex items-center justify-center mb-2 ">
