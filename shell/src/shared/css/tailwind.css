@@ -317,3 +317,19 @@ button:focus {
   --tw-shadow: none;
   box-shadow: 0px 0px 24px #E2E3E8;
 }
+
+.mobile-view {
+  display: none;
+}
+.desktop-view {
+  display: block;
+}
+@media (max-width: 960px) {
+  .mobile-view {
+    display: block;
+  }
+    .desktop-view {
+      display: none;
+    }
+}
+
