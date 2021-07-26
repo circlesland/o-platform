@@ -1,10 +1,9 @@
-import {createMachine, send, sendParent} from "xstate";
+import {actions, assign, createMachine, send, sendParent, spawn} from "xstate";
+import Test from "../views/Text.svelte";
+import {promptMachine} from "../components/dialog";
 
 export type GetInvitedContext = {
-    profileId: number;
-    email: string;
-    acceptedToSVersion: string;
-    subscribedToNewsletter: boolean;
+    _prompt: any;
 }
 
 export type GetInvitedEvent = {
@@ -16,15 +15,27 @@ export type GetInvitedEvent = {
 export const getInvitedMachine = createMachine<GetInvitedContext, GetInvitedEvent>({
     initial: "getInvited",
     context: {
-        profileId: null,
-        email: null,
-        acceptedToSVersion: null,
-        subscribedToNewsletter: null
+        _prompt: null
     },
     states: {
         getInvited: {
-            invoke: {src: "promptGetInvited"},
-            activities: "waitForInvitation",
+            entry: assign({
+                _prompt: () => spawn(promptMachine.withContext({
+                    component: Test,
+                    params: {
+                        text: "Get invited!"
+                    },
+                    canSkip: false,
+                    canGoBack: false,
+                    canCancel: false,
+                    canSubmit: false,
+                    _shellInterface: null
+                }))
+            }),
+            always: "waitForInvitation"
+        },
+        waitForInvitation: {
+            invoke: {src: "waitForInvitation"},
             on: {
                 GOT_INVITED: {
                     target: "success"
@@ -33,23 +44,18 @@ export const getInvitedMachine = createMachine<GetInvitedContext, GetInvitedEven
         },
         success: {
             type: "final",
-            entry: sendParent({type: "GOT_INVITED"})
+            entry: [
+                actions.stop(ctx => ctx._prompt),
+                sendParent({type: "GOT_INVITED"})
+            ]
         }
     }
 }, {
     services: {
-        promptGetInvited: async (context, event) => {}
-    },
-    activities: {
-        waitForInvitation: () => {
+        waitForInvitation: (ctx) => (callback) => {
             // TODO: Subscribe to the profile's event stream and wait for an invitation
-            const interval = setInterval(() => {
-                console.log('Waiting for invitation ..');
-                send({type: "GOT_INVITED"});
-            }, 1000);
-
-            // Return a function that stops the beeping activity
-            return () => clearInterval(interval);
+            console.log("waitForInvitation")
+            // callback({type: "GOT_INVITED"});
         }
     }
 });

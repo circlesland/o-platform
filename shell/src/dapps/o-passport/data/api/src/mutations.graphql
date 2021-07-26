@@ -46,6 +46,7 @@ mutation upsertProfile(
     $circlesSafeOwner: String
     $newsletter: Boolean
     $cityGeonameid: Int
+    $status: String!
 ) {
     upsertProfile(
         data: {
@@ -61,6 +62,7 @@ mutation upsertProfile(
             circlesSafeOwner: $circlesSafeOwner
             newsletter: $newsletter
             cityGeonameid: $cityGeonameid
+            status: $status
         }
     ) {
         id
@@ -84,5 +86,6 @@ mutation upsertProfile(
             population
             feature_code
         }
+        status
     }
 }
