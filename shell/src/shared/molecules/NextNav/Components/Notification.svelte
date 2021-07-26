@@ -1,7 +1,11 @@
 <script lang="ts">
   import Icons from "./../../Icons.svelte";
-  import {inbox} from "../../../stores/inbox";
+  import { inbox } from "../../../stores/inbox";
 </script>
 
-<!--<Icons icon="list" />--> ({$inbox.length})
-
+<div class="relative text-secondary">
+  <Icons icon="notificationbubble" />
+  <div class="absolute top-0 w-full text-center text-white font-heading">
+    {$inbox.length}
+  </div>
+</div>
