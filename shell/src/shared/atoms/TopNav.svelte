@@ -31,7 +31,7 @@
       <div class="self-center text-center avatar ">
         <div class="w-8 h-8 rounded-full ring ring-primary">
           <img
-            src="https://images.unsplash.com/photo-1493962333801-c5f3664c14f3?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzN8fGhvdHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
+            src="https://images.unsplash.com/photo-1596215143762-aedbf154e539?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDl8dG93SlpGc2twR2d8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
             alt="alt"
           />
         </div>
