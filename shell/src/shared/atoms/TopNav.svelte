@@ -16,14 +16,14 @@
   >
     <div
       class="justify-self-start"
-      class:col-span-2={runtimeDapp.title == 'Circles Land'}
+      class:col-span-2={runtimeDapp ? runtimeDapp.title == 'Circles Land' : false}
     >
       <img src="/logos/circles.png" class="w-8 h-8" alt="Circles Land" />
       <span class="ml-2 text-2xl uppercase font-heading text-light">
-        {runtimeDapp.title}
+        {runtimeDapp ? runtimeDapp.title : "<<No text>>"}
       </span>
     </div>
-    {#if routable.title != runtimeDapp.title}
+    {#if routable && runtimeDapp && routable.title != runtimeDapp.title}
       <div class="justify-self-center">
         <span class="text-md">{routable.title}</span>
       </div>

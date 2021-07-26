@@ -1,6 +1,4 @@
-<aside
-        class="z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen mt-12"
->
+<aside class="z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen mt-12">
     <div class="">
         <!-- Sidebar -->
         <div class="fixed inset-y-0 z-10 flex w-72 sidebar">

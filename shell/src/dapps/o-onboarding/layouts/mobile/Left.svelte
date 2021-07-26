@@ -1,6 +1,8 @@
 <script lang="ts">
     import {fly} from "svelte/transition";
     import Icons from "../../../../shared/molecules/Icons.svelte";
+
+    let x = -500;
 </script>
 <aside class="flex sideBarLeft">
     <div class="">

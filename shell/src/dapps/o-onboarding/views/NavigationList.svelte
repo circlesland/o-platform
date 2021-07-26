@@ -35,7 +35,7 @@
         {/if}
     </div>
 </div>
-{#if isMobile()}
+{#if !isMobile()}
     <div
             class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
             on:click={() => eventDispatcher("clickedClose")}
