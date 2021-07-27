@@ -1,9 +1,10 @@
 <script lang="ts">
-  import Time from "svelte-time";
   import Web3 from "web3";
   import { Transfer } from "../data/circles/types";
   import { push } from "svelte-spa-router";
-  import Card from "src/shared/atoms/Card.svelte";
+
+  import Date from "../../../shared/atoms/Date.svelte";
+  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 
   export let transfer: Transfer;
   export let message: String;
@@ -63,41 +64,26 @@
     }
   }
 
-  let now = new Date();
-  let sevendaysago = now.setDate(now.getDate() - 7);
-
-  function dateOlderThanSevenDays(unixTime: number) {
-    return sevendaysago > unixTime * 1000;
-  }
-
   function loadDetailPage(path) {
     push(`#/banking/transactions/${path}`);
   }
 </script>
 
-<section
-  on:click={() => loadDetailPage(transfer._id)}
-  class="flex items-center justify-center mb-3 "
->
-  <Card>
-    <div class="mr-2 text-center">
+<div on:click={() => loadDetailPage(transfer._id)}>
+  <ItemCard
+    params={{ edgeless: false, imageUrl: pictureUrl, title: displayName, subTitle: message, action: loadDetailPage(transfer._id) }}
+  >
+
+    <div slot="itemCardStart">
       <div class="avatar">
         <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
           <img src={pictureUrl} alt={otherSafeAddress} />
         </div>
       </div>
     </div>
-
-    <div class="relative flex-grow text-left truncate">
-      <div class="truncateThis">
-        <h2 class="text-base">{displayName}</h2>
-      </div>
-      <p class="mt-1 text-xs text-dark-lightest">{message}</p>
-    </div>
-
-    <div class="flex flex-col flex-1 justify-items-end">
+    <div slot="itemCardEnd">
       <div
-        class="self-end "
+        class="self-end text-right"
         class:text-success={classes == 'transactionpositive'}
         class:text-alert={classes == 'transactionnegative'}
       >
@@ -105,20 +91,9 @@
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
         {#if transfer.time}
-          {#if dateOlderThanSevenDays(transfer.time)}
-            <Time
-              timestamp={new Date(transfer.time * 1000)}
-              format="D. MMMM YYYY"
-            />
-          {:else}
-            <Time
-              relative
-              timestamp={new Date(transfer.time * 1000)}
-              live={true}
-            />
-          {/if}
+          <Date time={transfer.time} />
         {/if}
       </div>
     </div>
-  </Card>
-</section>
+  </ItemCard>
+</div>

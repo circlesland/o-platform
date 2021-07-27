@@ -9,6 +9,7 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
+  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
