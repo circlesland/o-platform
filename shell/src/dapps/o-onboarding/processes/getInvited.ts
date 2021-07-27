@@ -1,6 +1,4 @@
 import {actions, assign, createMachine, send, sendParent, spawn} from "xstate";
-import Test from "../views/Text.svelte";
-import {promptMachine} from "../components/dialog";
 
 export type GetInvitedContext = {
     _prompt: any;
@@ -19,7 +17,7 @@ export const getInvitedMachine = createMachine<GetInvitedContext, GetInvitedEven
     },
     states: {
         getInvited: {
-            entry: assign({
+            /*entry: assign({
                 _prompt: () => spawn(promptMachine.withContext({
                     component: Test,
                     params: {
@@ -31,7 +29,7 @@ export const getInvitedMachine = createMachine<GetInvitedContext, GetInvitedEven
                     canSubmit: false,
                     _shellInterface: null
                 }))
-            }),
+            }),*/
             always: "waitForInvitation"
         },
         waitForInvitation: {

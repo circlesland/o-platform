@@ -4,7 +4,6 @@ import {Process} from "@o-platform/o-process/dist/interfaces/process";
 import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {ApiConnection} from "./shared/apiConnection";
-import {PromptContext, PromptEvent} from "./dapps/o-onboarding/components/dialog";
 
 export interface IShell {
   depositedEvent?: PlatformEvent; // TODO: Hack. This field should be checked by a freshly initializing dapp. The value must be cleared whenever a dapp was loaded (success or error).
@@ -14,9 +13,6 @@ export interface IShell {
   apiClient?: ApiConnection,
   theGraphClient?: ApiConnection,
   lastError?: any;
-  modal: {
-    prompt: (context:PromptEvent, callback:(event:PromptEvent)=>void)=>void
-  },
   dialog: {
     open: (position: any, component: any, params: any) => Promise<void>,
     close: () => Promise<void>

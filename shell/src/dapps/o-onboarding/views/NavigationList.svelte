@@ -4,12 +4,7 @@
     import {createEventDispatcher} from "svelte";
     import {isMobile} from "../../../shared/functions/isMobile";
 
-    const navigation = [
-        {extern:true, url:"https://circles.land", icon: "home", title: "Link 1"},
-        {extern:true, url:"https://circles.land", icon: "home", title: "Link 2"},
-        {extern:true, url:"https://circles.land", icon: "home", title: "Link 3"},
-        {extern:true, url:"https://circles.land", icon: "home", title: "Link 4"}
-    ];
+    export let items = [];
 
     const eventDispatcher = createEventDispatcher();
 </script>
@@ -20,8 +15,8 @@
 >
     <nav class="flex flex-col flex-1 w-64 p-4 mt-4" />
     <div class="relative flex-shrink-0 w-64 p-6 pt-4 pb-8 space-y-6">
-        {#if navigation}
-            {#each navigation as navItem}
+        {#if items}
+            {#each items as navItem}
                 <a
                         href={navItem.extern ? navItem.url : '/#/' + navItem.url}
                         class="flex content-center justify-start space-x-2"

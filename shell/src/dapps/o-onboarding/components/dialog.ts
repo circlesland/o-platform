@@ -1,127 +1,227 @@
-import {assign, createMachine, send, sendParent, spawn} from "xstate";
+import {actions, assign, createMachine, send, sendParent, spawn} from "xstate";
+import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+import {Routable} from "@o-platform/o-interfaces/dist/routable";
+import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+import {dialogBackStackMachine} from "./dialogBackStack";
+import {Content, RuntimeContent} from "../layouts/layout";
+import ProcessContainer from "../../../shared/molecules/ProcessContainer.svelte";
 
-export type PromptContext = {
-    component: any
-    params: {[x:string]:any},
-    canSkip: boolean,
-    canGoBack: boolean,
-    canCancel: boolean,
-    canSubmit: boolean,
-    _shellInterface: any
+export type DialogStateContext = {
+    _backStack: any,
+    backStackSize: number;
+    content?: Content,
+
+    currentRoutable?: Routable
 }
 
-export type PromptEvent = {
-    type: "SHOW",
-    prompt: {
-        component: any
-        params: { [x: string]: any },
-        canSkip: boolean,
-        canGoBack: boolean,
-        canCancel: boolean,
-        canSubmit: boolean
-    }
+export type SHOW_PAGE = {
+    type: "SHOW_PAGE",
+    runtimeDapp: RuntimeDapp<any>,
+    page: Page<any, any>,
+    pageParams: { [x: string]: any },
+    routable: Routable
+};
+
+export type DialogStateEvent = SHOW_PAGE | {
+    type: "SHOW_PROCESS"
+    processId: string
 } | {
-    type: "BACK"
+    type: "SHOW_JUMPLIST",
+    runtimeDapp: RuntimeDapp<any>,
+    params: {[x:string]: any},
+    currentRoutable?: Routable
 } | {
-    type: "SKIP"
+    type: "SHOW_NAVIGATION",
+    runtimeDapp: RuntimeDapp<any>,
+    currentRoutable?: Routable
 } | {
-    type: "SUBMIT"
+    type: "CLOSE"
 } | {
-    type: "CANCEL"
+    type: "CLOSED"
 } | {
-    type: "CHANGED"
+    type: "ERROR",
+    error: Error
 } | {
-    type: "SUBMITTED",
-    value: any
+    type: "PUSH",
+    content: SHOW_PAGE
+} | {
+    type: "PUSHED",
+    content: SHOW_PAGE,
+    size: number
+} | {
+    type: "POP"
+} | {
+    type: "POPPED",
+    content: SHOW_PAGE,
+    size: number
+} | {
+    type: "CONTENT_CHANGED",
+    content: RuntimeContent
 }
 
-const shellInterface = (callback, receive) => {
-    receive(event => window.o.modal.prompt(event, callback));
-    return () => {/* Put cleanup logic here */}
-}
-
-export const promptMachine = createMachine<PromptContext, PromptEvent>({
-    initial: "show",
+export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>({
+    initial: "closed",
     context: {
-        component: null,
-        params: null,
-        canSkip: null,
-        canGoBack: null,
-        canCancel: null,
-        canSubmit: null,
-        _shellInterface: null
+        _backStack: null,
+        backStackSize: 0
+    },
+    on: {
+        PUSHED: {
+            actions: ["assignBackStackSizeToContext"]
+        },
     },
     states: {
-        show: {
-            entry: [
-                (ctx) => console.log("promptMachine.show. Context:", ctx),
-                assign({
-                    _shellInterface: () => spawn(shellInterface)
-                })
-            ],
-            always: "unchanged"
-        },
-        unchanged: {
-            entry: [
-                (ctx) => console.log("promptMachine.unchanged. Context:", ctx),
-                send((ctx) => {return {type: "SHOW", prompt: {...ctx}}}, {to: (ctx) => ctx._shellInterface})
-            ],
+        closed: {
+            entry: () => console.log("closed.entry"),
             on: {
-                CHANGED: {
-                    actions: (ctx) => console.log("promptMachine.unchanged.CHANGED. Context:", ctx),
-                    target: "changed"
+                SHOW_PAGE: {
+                    actions: ["startBackStack", "showPage"],
+                    target: "page"
                 },
-                BACK: {
-                    cond: (ctx) => ctx.canGoBack,
-                    actions: (ctx) => console.log("promptMachine.unchanged.BACK. Context:", ctx)
+                SHOW_PROCESS: {
+                    target: "process"
                 },
-                SKIP: {
-                    cond: (ctx) => ctx.canSkip,
-                    actions: (ctx) => console.log("promptMachine.unchanged.SKIP. Context:", ctx)
+                SHOW_JUMPLIST: {
+                    target: "jumplist"
                 },
-                CANCEL: {
-                    cond: (ctx) => ctx.canCancel,
-                    actions: (ctx) => console.log("promptMachine.unchanged.CANCEL. Context:", ctx)
-                },
-                SUBMIT: {
-                    cond: (ctx) => ctx.canSubmit,
-                    actions: (ctx) => console.log("promptMachine.unchanged.SUBMIT. Context:", ctx)
+                SHOW_NAVIGATION: {
+                    target: "navigation"
                 }
             }
         },
-        changed: {
-            entry: (ctx) => console.log("promptMachine.changed. Context:", ctx),
+        page: {
+            id: "page",
+            entry: [() => console.log("page.entry"), "push"],
             on: {
-                CHANGED: {
-                    actions: (ctx) => console.log("promptMachine.changed.CHANGED. Context:", ctx),
-                    target: "changed"
+                SHOW_PAGE: {
+                    actions: ["showPage", "sendContentChanged"],
+                    target: "page"
                 },
-                BACK: {
-                    cond: (ctx) => ctx.canGoBack,
-                    actions: (ctx) => console.log("promptMachine.unchanged.BACK. Context:", ctx)
+                CLOSE: [{
+                    cond: (ctx) => ctx.backStackSize > 0,
+                    actions: "pop",
+                    target: ".popped"
+                }, {
+                    cond: (ctx) => ctx.backStackSize == 0,
+                    target: "closing"
+                }]
+            },
+            states: {
+                popped: {
+                    entry: () => console.log("page.popped.entry"),
+                    on: {
+                        POPPED: {
+                            actions: ["assignBackStackSizeToContext", "showPage"]
+                        },
+                        SHOW_PAGE: {
+                            actions: ["showPage", "sendContentChanged"],
+                            target: "#page"
+                        },
+                        CLOSE: [{
+                            cond: (ctx) => ctx.backStackSize > 0,
+                            actions: "pop"
+                        }, {
+                            cond: (ctx) => ctx.backStackSize == 0,
+                            target: "closing"
+                        }]
+                    }
                 },
-                SKIP: {
-                    cond: (ctx) => ctx.canSkip,
-                    actions: (ctx) => console.log("promptMachine.unchanged.SKIP. Context:", ctx)
-                },
-                CANCEL: {
-                    cond: (ctx) => ctx.canCancel,
-                    actions: (ctx) => console.log("promptMachine.unchanged.CANCEL. Context:", ctx)
-                },
-                SUBMIT: {
-                    cond: (ctx) => ctx.canSubmit,
-                    actions: (ctx) => console.log("promptMachine.unchanged.SUBMIT. Context:", ctx)
+                closing: {
+                    entry: () => console.log("page.closing.entry"),
+                    type: "final"
                 }
+            },
+            onDone: "closing"
+        },
+        process: {
+            entry: () => console.log("process.entry"),
+            on: {
+
             }
         },
-        waiting: {
-            entry: (ctx) => console.log("promptMachine.waiting. Context:", ctx)
+        jumplist: { },
+        navigation: { },
+        closing: {
+            always: [{
+                cond: (ctx) => !!ctx._backStack,
+                actions: ["stopBackStack"]
+            }, {
+                actions: "reset",
+                target: "closed"
+            }]
+        },
+        error: {
+            type: "final"
         }
     }
 }, {
-    services: {
-        dialog: (ctx) => (callback) => {
+    actions: {
+        startBackStack: assign({
+            _backStack: () => spawn(dialogBackStackMachine)
+        }),
+        reset: assign({
+            content: (ctx) => undefined,
+            currentRoutable: (ctx) => undefined,
+            backStackSize: (ctx) => 0,
+            _backStack: (ctx) => undefined
+        }),
+        stopBackStack: actions.stop((ctx) => ctx._backStack),
+        assignBackStackSizeToContext: assign({
+            backStackSize: (context, event) => {
+                switch (event.type) {
+                    case "PUSHED":
+                    case "POPPED":
+                        return event.size;
+                }
+                throw new Error(`Expected one of PUSHED, POPPED but got ${event.type}`);
+            }
+        }),
+        assignCurrentRoutableToContext: assign({
+            currentRoutable: (context, event) => {
+                switch (event.type) {
+                    case "SHOW_JUMPLIST":
+                    case "SHOW_NAVIGATION":
+                        return event.currentRoutable;
+                }
+                throw new Error(`Expected one of SHOW_JUMPLIST, SHOW_NAVIGATION but got ${event.type}`);
+            }
+        }),
+        showPage: assign({
+            content: (ctx, event) => {
+                if (event.type !== "SHOW_PAGE")
+                    throw new Error(`Expected a SHOW_PAGE event but got ${event.type}.`);
 
-        }
-    }
+                // All other properties of the "Page" in the event must
+                // have been handled by now. The dialog only cares about the component and params.
+                return <RuntimeContent>{
+                    component:  event.page.component,
+                    params: event.pageParams,
+                    routable: event.routable,
+                    runtimeDapp: event.runtimeDapp
+                };
+            }
+        }),
+        showProcess: assign({
+            content: (ctx, event) => {
+                if (event.type !== "SHOW_PROCESS")
+                    throw new Error(`Expected a SHOW_PROCESS event but got ${event.type}.`)
+
+                const runningProcess = window.o.stateMachines.findById(event.processId);
+                return <RuntimeContent>{
+                    component: <any>ProcessContainer,
+                    params: {
+                        process: runningProcess
+                    }
+                };
+            }
+        }),
+        sendContentChanged: sendParent((ctx) => {
+            return {type: "CONTENT_CHANGED", content: ctx.content}
+        }),
+        push: send((ctx) => {return {type: "PUSH", content: ctx.content}},
+            {to: (ctx) => ctx._backStack}),
+        pop: send((ctx) => {return {type: "POP", content: ctx.content}},
+            {to: (ctx) => ctx._backStack}),
+    },
+    services: { }
 });

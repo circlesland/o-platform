@@ -1,20 +1,14 @@
 <script lang="ts">
     import LeftDesktop from "./desktop/Left.svelte";
-    import Home from "../../o-homepage/pages/Home.svelte";
     import LeftMobile from "./mobile/Left.svelte";
     import RightDesktop from "./desktop/Right.svelte";
     import RightMobile from "./mobile/Right.svelte";
-    import Text from "../views/Text.svelte";
-    import NavigationList from "../views/NavigationList.svelte";
-    import FilterList from "../views/FilterList.svelte";
     import Center from "./Center.svelte";
     import NextNav from "../../../shared/molecules/NextNav/NextNav.svelte";
     import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
-    import ListComponent from "../../../shared/molecules/NextNav/Components/List.svelte";
     import ActionButtonComponent from "../../../shared/molecules/NextNav/Components/ActionButton.svelte";
-    import LinkComponent from "../../../shared/molecules/NextNav/Components/Link.svelte";
     import {isMobile} from "../../../shared/functions/isMobile";
-    import {Layout} from "./layout";
+    import {RuntimeLayout} from "./layout";
 
     // Import Swiper styles
     import "swiper/swiper-bundle.css";
@@ -25,76 +19,32 @@
     // import Swiper core and required modules
     import SwiperCore, {Pagination, Navigation} from "swiper/core";
     import Pager from "../views/Pager.svelte";
+    import NotFound from "../../../shared/pages/NotFound.svelte";
 
     // install Swiper modules
     SwiperCore.use([Navigation, Pagination]);
 
     let dapp = "homepage:!";
 
-    let layout: Layout = {
-        main: {
-            component: Home,
-            params: {}
-        },
-        dialogs: {
-            left: {
-                isOpen: false,
-                component: NavigationList,
-                params: {}
-            },
-            center: {
-                isOpen: false,
-                component: Text,
-                params: {text: "CENTER"}
-            },
-            right: {
-                isOpen: false,
-                component: FilterList,
-                params: {}
-            }
-        }
-    }
+    export let layout: RuntimeLayout;
 
-    let navigation: NavigationManifest = {
+    export let navigation: NavigationManifest = {
         navPill: {
-            left: {
-                component: ListComponent,
-                props: {
-                    icon: "list",
-                    action: () => {
-                        layout.dialogs.left.isOpen = !layout.dialogs.left.isOpen;
-                    },
-                },
-            },
             center: {
                 component: ActionButtonComponent,
                 props: {
                     icon: "logo",
                     action: () => {
+                        if (!layout)
+                            return;
                         layout.dialogs.center.isOpen = !layout.dialogs.center.isOpen;
                     }
                 },
             },
-            right: {
-                component: LinkComponent,
-                props: {
-                    icon: "home",
-                    action: () => {
-                        alert("Home sweet home")
-                    },
-                },
-            },
-        },
-        leftSlot: {
-            component: LinkComponent,
-            props: {
-                icon: "list",
-                action: () => layout.dialogs.left.isOpen = !layout.dialogs.left.isOpen
-            },
         }
     };
 
-    const sliderPages = [/*{
+    export const sliderPages = [/*{
         title: "Item 1"
     },{
         title: "Item 2"
@@ -102,7 +52,7 @@
 </script>
 
 {#if isMobile()}
-    {#if layout.dialogs.left.isOpen}
+    {#if layout.dialogs && layout.dialogs.left && layout.dialogs.left.isOpen}
         <LeftMobile on:click={() => layout.dialogs.left.isOpen = false}>
             <svelte:component this={layout.dialogs.left.component}
                               {...(layout.dialogs.left.params ? layout.dialogs.left.params : {})}
@@ -115,17 +65,19 @@
         {#if sliderPages.length > 0}
             <Pager pages={sliderPages} />
         {/if}
-        <div
-                class="absolute top-0 w-full mainContent"
-                class:mb-16={!layout.dialogs.center.isOpen && dapp === "homepage:1"}
-                class:blur={layout.dialogs.center.isOpen}
-        >
-            <svelte:component this={layout.main.component}
-                              {...(layout.main.params ? layout.main.params : {})} />
-        </div>
+        {#if layout.main}
+            <div
+                    class="absolute top-0 w-full mainContent"
+                    class:mb-16={!layout.dialogs.center.isOpen && dapp === "homepage:1"}
+                    class:blur={layout.dialogs.center.isOpen}
+            >
+                <svelte:component this={layout.main.component}
+                                  {...(layout.main.params ? layout.main.params : {})} />
+            </div>
+        {/if}
     </main>
 
-    {#if layout.dialogs.right.isOpen}
+    {#if layout.dialogs && layout.dialogs.right && layout.dialogs.right.isOpen}
         <RightMobile on:click={() => layout.dialogs.right.isOpen = false}>
             <svelte:component this={layout.dialogs.right.component}
                               {...(layout.dialogs.right.params ? layout.dialogs.right.params : {})}
@@ -146,7 +98,7 @@
                     class:blur={layout.dialogs.center.isOpen}
             >
                 <div class="fixed">
-                    {#if layout.dialogs.left.isOpen}
+                    {#if layout.dialogs && layout.dialogs.left && layout.dialogs.left.isOpen}
                         <LeftDesktop>
                             <svelte:component this={layout.dialogs.left.component}
                                               {...(layout.dialogs.left.params ? layout.dialogs.left.params : {})}
@@ -157,11 +109,15 @@
                     {/if}
                 </div>
                 <div class="flex-grow">
-                    <svelte:component this={layout.main.component}
-                                      {...(layout.main.params ? layout.main.params : {})} />
+                    {#if layout.main && layout.main.component}
+                        <svelte:component this={layout.main.component}
+                                          {...(layout.main.params ? layout.main.params : {})} />
+                    {:else}
+                        <NotFound />
+                    {/if}
                 </div>
                 <div>
-                    {#if layout.dialogs.right.isOpen}
+                    {#if layout.dialogs && layout.dialogs.right && layout.dialogs.right.isOpen}
                         <RightDesktop>
                             <svelte:component this={layout.dialogs.right.component}
                                               {...(layout.dialogs.right.params ? layout.dialogs.right.params : {})}
@@ -179,7 +135,7 @@
 
 <NextNav navigation={navigation} />
 
-{#if layout.dialogs.center.isOpen}
+{#if layout.dialogs && layout.dialogs.center && layout.dialogs.center.isOpen}
     <Center blur="true">
         <svelte:component this={layout.dialogs.center.component} {...(layout.dialogs.center.params ? layout.dialogs.center.params : {})} />
     </Center>

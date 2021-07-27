@@ -4,22 +4,18 @@
   import { CancelRequest } from "@o-platform/o-process/dist/events/cancel";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import DappNavItem from "./../atoms/DappsNavItem.svelte";
-  import { getRouteList } from "./../functions/GetNavigationManifest.svelte";
   import ActionListItem from "./../atoms/ActionListItem.svelte";
   import ProcessContainer from "./ProcessContainer.svelte";
   import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
   import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 
-  import { Link } from "@o-platform/o-interfaces/dist/routables/link";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
   import "simplebar";
   import "simplebar/dist/simplebar.css";
   import {PromptEvent} from "../../dapps/o-onboarding/components/dialog";
-  import {dialogMachine, DialogStateEvent} from "./DappFrame/dialogState";
-  import {interpret} from "xstate";
-  import {initMachine} from "../../dapps/o-onboarding/processes/init";
+  import {getRouteList} from "../functions/getRouteList";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -60,31 +56,6 @@
 
   const dispatch = createEventDispatcher();
 
-
-  const modalService = interpret(dialogMachine)
-          .onEvent(event => console.log(event))
-          .onTransition((state) => console.log(state.value))
-          .start();
-
-  window.o.modal.prompt = (event: DialogStateEvent, callback: (event: PromptEvent) => void) => {
-
-    // This handler can be called multiple times by running processes.
-    // It is called whenever a dialogMachine sent an event to it's "shellInterface".
-    // This function can reply with zero to multiple events by invoking the passed callback.
-
-    modalService.send(<any>event);
-
-
-    console.log("shell.modal.prompt called. Received:", event);
-/*
-    callback({type: "BACK"});
-    callback({type: "SKIP"});
-    callback({type: "CANCEL"});
-    callback({type: "SUBMIT"});
-    callback({type: "CHANGED"});
-*/
-
-  };
 
   $: {
     dispatch("modalOpen", _isOpen);
@@ -127,7 +98,7 @@
     if (!closeModal()) {
       return;
     }
-    navigation = getRouteList(dapp, runtimeDapp);
+    navigation = getRouteList(dapp, runtimeDapp, routable);
     _isOpen = true;
   }
 
