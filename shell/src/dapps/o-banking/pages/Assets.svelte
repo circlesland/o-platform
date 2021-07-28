@@ -17,6 +17,7 @@
     title: "xDAI",
     balance: "0",
     variety: 1,
+    description: "1 xDai  ~ 1 USD",
   };
   /*
   let safexDai = {
@@ -32,6 +33,7 @@
     title: "Circles",
     balance: "0",
     variety: 1,
+    description: "1 Circle = 1€",
   };
   $: {
     if ($mySafe && $mySafe.accountxDai) {
@@ -41,6 +43,7 @@
         title: "xDAI",
         balance: "ß",
         variety: 1,
+        description: "1 xDai  ~ 1 USD",
       };
       xdai.balance =
         parseFloat(
@@ -63,6 +66,7 @@
         variety: Object.values($mySafe.acceptedTokens.tokens).filter((o) =>
           new BN(o.balance).gt(new BN("0"))
         ).length,
+        description: "1 Circle = 1€",
       };
     }
   }
@@ -71,24 +75,6 @@
 <SimpleHeader {runtimeDapp} {routable} />
 
 <div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
-  <section class="justify-center mb-2">
-    <div class="flex flex-col w-full p-4 space-y-2 rounded-lg shadow infocard">
-      <div class="text-xs font-bold text-left text-info ">WHAT IS THIS?</div>
-
-      <div class="text-sm md:text-base">
-        Since everyone has their own personalized Circles money, you will always
-        only be able to receive and hold Circles of those you directly trust.
-        <br />
-        <br />
-        To see which personalized Circles you are currently holding, click onto
-        the Circles Card.
-        <br />
-        <br />
-        xDai is the currency that is used to invite others and pay transaction
-        fees.
-      </div>
-    </div>
-  </section>
 
   {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
     <section class="flex items-center justify-center mb-2 ">
@@ -105,6 +91,7 @@
         title={token.title}
         balance={token.balance}
         variety={token.variety}
+        description={token.description}
       />
     {/each}
   {/if}
