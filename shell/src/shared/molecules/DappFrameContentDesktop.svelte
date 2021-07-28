@@ -96,7 +96,7 @@
   // This is used to show/hide the back button when navigating in detail pages.
   let detailStack = [];
 
-  let identityChecked: boolean = false;
+  let identityChecked: boolean = true;
 
   let navigateablePages: any;
   let previousPage: any;
