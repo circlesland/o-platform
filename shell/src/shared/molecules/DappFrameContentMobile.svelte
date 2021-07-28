@@ -130,6 +130,18 @@
     onParamsChanged();
     mounted = true;
 
+
+    let publicUrls = {
+      "/": true,
+      "/fullnode": true,
+      "/citizens": true,
+      "/countries": true,
+      "/banking/find-my-safe": true,
+      "/milestones": true,
+    };
+
+
+
     if (!identityChecked) {
       window.o.runProcess(identify, {}, {});
       identityChecked = true;

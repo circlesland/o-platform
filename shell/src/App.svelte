@@ -198,16 +198,6 @@
   import DappFrame from "src/shared/molecules/DappFrame.svelte";
   import NotFound from "src/shared/pages/NotFound.svelte";
 
-  /*
-  let publicUrls = {
-    "/": true,
-    "/miva": true,
-    "/citizens": true,
-    "/countries": true,
-    "/banking/find-my-safe": true,
-    "/milestones": true,
-  };
-   */
   let _routes = {
     "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
     "*": NotFound,

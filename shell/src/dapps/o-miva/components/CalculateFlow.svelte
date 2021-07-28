@@ -5,6 +5,7 @@
   import { formatValue } from "../../../shared/pathfinder/utility.js";
 
   let maxValue = "0";
+  let message = "";
   let transfers = [];
 </script>
 
@@ -26,7 +27,7 @@
         Full Node
       </h2>
       <div class="mt-8">
-        <TransfersFinder bind:maxValue bind:transfers />
+        <TransfersFinder bind:maxValue bind:transfers bind:message />
       </div>
     </div>
   </div>
@@ -77,6 +78,10 @@
         </div>
       </div>
     </h3>
-    <TransferGraph {transfers} />
+    {#if message === ""}
+      <TransferGraph {transfers} />
+    {:else}
+      <h1>{message}</h1>
+    {/if}
   </div>
 </div>

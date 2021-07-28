@@ -73,8 +73,15 @@ export let computeFlow = async function(from, to, maxValue) {
         {method: 'POST', body: JSON.stringify({"from": from, "to": to, "value": maxValue})}
     )).json();*/
 
-    return await (await fetch(PathfinderAPI + `/flow/${from}/${to}/${maxValue}`)).json();
+    const result = await fetch(PathfinderAPI + `/flow/${from}/${to}/${maxValue}`);
+    if (result.status === 503) {
+        throw new TemporarilyNotAvailable("The service is temporarily not available. Please try again in ~ 20 seconds.");
+    }
+    return await result.json();
 };
+
+export class TemporarilyNotAvailable extends Error {
+}
 
 export let getAdjacencies = async function(address) {
     return await (await fetch(`__PATHFINDER_ENDPOINT__/adjacencies/${address}`, {mode: 'cors'})).json();
