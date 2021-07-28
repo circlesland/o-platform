@@ -5,8 +5,8 @@
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import Icons from "../../../shared/molecules/Icons.svelte";
   import { push } from "svelte-spa-router";
-  import Card from "src/shared/atoms/Card.svelte";
 
+  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
   export let untrusted: TrustObject;
@@ -14,6 +14,7 @@
   let pictureUrl: string;
   let displayName: string;
   let safeAddress: string;
+  let message: string;
 
   let id: String;
 
@@ -26,6 +27,7 @@
       pictureUrl = untrusted.profile ? untrusted.profile.avatarUrl : undefined;
       safeAddress = untrusted.safeAddress;
       id = untrusted._id;
+      message = "Not trusted";
     } else if (trustedBy && trusting) {
       // <!-- TODO: Possible actions: untrust, transfer money -->
       displayName = trustedBy.profile
@@ -34,6 +36,7 @@
       pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
       safeAddress = trusting.safeAddress;
       id = trustedBy._id;
+      message = "Mutual trust";
     } else if (trustedBy) {
       // <!-- TODO: Possible actions: trust, transfer money -->
       displayName = trustedBy.profile
@@ -42,6 +45,7 @@
       pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
       safeAddress = trustedBy.safeAddress;
       id = trustedBy._id;
+      message = "Is trusting you";
     } else if (trusting) {
       // <!-- TODO: Possible actions: untrust -->
       displayName = trusting.profile
@@ -50,6 +54,7 @@
       pictureUrl = trusting.profile ? trusting.profile.avatarUrl : undefined;
       safeAddress = trusting.safeAddress;
       id = trusting._id;
+      message = "Trusted by you";
     }
 
     if (!pictureUrl) {
@@ -70,32 +75,18 @@
   }
 </script>
 
-<section
-  class="flex items-center justify-center mb-2"
-  on:click={() => loadDetailPage(safeAddress)}
->
-  <Card>
-    <div class="mr-2 text-center">
+<div on:click={() => loadDetailPage(safeAddress)}>
+  <ItemCard
+    params={{ edgeless: false, imageUrl: pictureUrl, title: displayName, subTitle: message, truncateMain: true }}
+  >
+    <div slot="itemCardStart">
       <div class="avatar">
         <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
           <img src={pictureUrl} alt={displayName} />
         </div>
       </div>
     </div>
-
-    <div class="relative flex-grow text-left truncate">
-      <div class="truncateThis">
-        <h2 class="text-base">{displayName}</h2>
-      </div>
-      <p class="text-xs text-dark-lightest">
-        {#if untrusted}Not trusted{/if}
-        {#if trustedBy && trusting}Mutual trust{/if}
-        {#if !(trustedBy && trusting) && trustedBy}Is trusting you{/if}
-        {#if !(trustedBy && trusting) && trusting}Trusted by you{/if}
-      </p>
-    </div>
-
-    <div class="flex flex-col flex-1 justify-items-end">
+    <div slot="itemCardEnd">
       <div class="self-end text-lg sm:text-3xl">
         <button
           on:click={(e) => {
@@ -109,5 +100,5 @@
         </button>
       </div>
     </div>
-  </Card>
-</section>
+  </ItemCard>
+</div>
