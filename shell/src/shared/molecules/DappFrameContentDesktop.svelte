@@ -515,7 +515,7 @@
   </main>
 
 </div>
-{#if _navManifest}
+{#if _navManifest && dapp.dappId !== 'fullnode:1'}
   <NextNav navigation={_navManifest} />
 {/if}
 <Modal2
