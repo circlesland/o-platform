@@ -54,7 +54,7 @@
       }
     );
 
-    network.on("afterDrawing", function () {
+    network.on("afterDrawing", function() {
       // TODO dimensions of graph?
       let x = window.innerWidth * 0.4;
       if (firstNode !== -1) {
@@ -69,7 +69,7 @@
     });
   });
 
-  let retrieveUserAndTokenInfo = async function (steps) {
+  let retrieveUserAndTokenInfo = async function(steps) {
     let tokens = [];
     for (let step of steps) {
       addresses.push(step.from);
@@ -80,11 +80,11 @@
     await fillTokens(tokens);
   };
 
-  let drawGraph = async function (steps) {
+  let drawGraph = async function(steps) {
     await retrieveUserAndTokenInfo(steps);
     nodes.clear();
     edges.clear();
-    let createNode = function (id) {
+    let createNode = function(id) {
       nodes.update(createNodeContents(id));
     };
     for (let step of steps) {
@@ -136,5 +136,9 @@
 </script>
 
 <main>
-  <div bind:this={graph} style="width: 100%; height: 400px;" class="bg-white" />
+  <div
+    bind:this={graph}
+    style="width: 100%; height: 400px;"
+    class="bg-background"
+  />
 </main>
