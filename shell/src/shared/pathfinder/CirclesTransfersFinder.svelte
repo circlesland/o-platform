@@ -22,7 +22,7 @@
       transfers = flow.transfers;
       message = "";
     } catch (e) {
-      message = e.message;
+      message = e.message ? e.message : "Error";
     }
   };
 </script>
