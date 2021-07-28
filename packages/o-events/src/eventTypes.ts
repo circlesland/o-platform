@@ -17,7 +17,14 @@ export type PlatformEventTypes =
     | "shell.dappLoading"
     | "shell.dappLoaded"
     | "shell.modalChanged"
+    | "shell.navigation.leftButton.click"
+    | "shell.navigation.rightButton.click"
+    | "shell.navigation.actionButton.left.click"
+    | "shell.navigation.actionButton.main.click"
+    | "shell.navigation.actionButton.right.click"
+
     | "circles.web3providerChanged"
+
     | "process.ready"
     | "process.nop"
     | "process.back"
@@ -32,6 +39,7 @@ export type PlatformEventTypes =
     | "process.error"
     | "process.success"
     | "process.repeat"
+    | "process.stopped"
     | "blockchain"
     | "signal.begin"
     | "signal.progress"
@@ -42,17 +50,4 @@ export type PlatformEventTypes =
     // IPC
     | "process.ipc.bubble" // used with 'sendParent' to bubble events up to the top
     | "process.ipc.sinker" // used with 'send' to sink down a result for a previously bubbled event
-
-    //
-    // USER-INTERACTION:
-
-    // SELECTION:
-    | "shell.interaction.selection.start"
-    | "shell.interaction.selection.items.toggleSelected"
-    | "shell.interaction.selection.cancel"
-    | "shell.interaction.selection.finish"
-
-    // MANIPULATION:
-    | "shell.interaction.mutation.add"
-    | "shell.interaction.mutation.selection.delete"
 

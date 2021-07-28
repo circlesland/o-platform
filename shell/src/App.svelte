@@ -18,12 +18,14 @@
     import {ApiConnection} from "./shared/apiConnection";
     import {getProcessContext} from "./main";
     import {PromptContext, PromptEvent} from "./dapps/o-onboarding/components/dialog";
+    import {Stopped} from "@o-platform/o-process/dist/events/stopped";
 
     const runningProcesses: {
         [id: string]: Process;
     } = {};
 
     const shell: IShell = {
+
         stateMachines: {
             findById(processId: string) {
                 return runningProcesses[processId];
@@ -88,6 +90,7 @@
                     });
 
                     delete runningProcesses[processId];
+                    window.o.publishEvent(new Stopped(processId))
                 });
 
                 function isProcessEvent(
@@ -163,13 +166,6 @@
 
                 window.o.publishEvent(requestEvent);
             });
-        },
-        modal: {
-            prompt: null
-        },
-        dialog: {
-            close: null,
-            open: null
         }
     };
 

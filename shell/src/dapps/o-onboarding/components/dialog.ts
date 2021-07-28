@@ -39,6 +39,8 @@ export type DialogStateEvent = SHOW_PAGE | {
 } | {
     type: "CLOSED"
 } | {
+    type: "OPENED"
+} | {
     type: "ERROR",
     error: Error
 } | {
@@ -67,12 +69,12 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
     },
     on: {
         PUSHED: {
-            actions: ["assignBackStackSizeToContext"]
+            actions: ["assignBackStackSizeToContext", "sendContentChanged"]
         },
     },
     states: {
         closed: {
-            entry: () => console.log("closed.entry"),
+            entry: send({type: "CLOSED"}),
             on: {
                 SHOW_PAGE: {
                     actions: ["startBackStack", "showPage"],
@@ -91,10 +93,11 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
         },
         page: {
             id: "page",
-            entry: [() => console.log("page.entry"), "push"],
+            entry: ["push",
+                "sendOpened"],
             on: {
                 SHOW_PAGE: {
-                    actions: ["showPage", "sendContentChanged"],
+                    actions: ["showPage"],
                     target: "page"
                 },
                 CLOSE: [{
@@ -114,7 +117,7 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
                             actions: ["assignBackStackSizeToContext", "showPage"]
                         },
                         SHOW_PAGE: {
-                            actions: ["showPage", "sendContentChanged"],
+                            actions: ["showPage"],
                             target: "#page"
                         },
                         CLOSE: [{
@@ -134,9 +137,16 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
             onDone: "closing"
         },
         process: {
-            entry: () => console.log("process.entry"),
+            entry: [
+                "showProcess",
+                () => console.log("process.entry"),
+                "sendContentChanged",
+                "sendOpened"
+            ],
             on: {
-
+                CLOSE: {
+                    target: "closing"
+                }
             }
         },
         jumplist: { },
@@ -215,8 +225,11 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
                 };
             }
         }),
-        sendContentChanged: sendParent((ctx) => {
+        sendContentChanged: send((ctx) => {
             return {type: "CONTENT_CHANGED", content: ctx.content}
+        }),
+        sendOpened: send((ctx) => {
+            return {type: "OPENED"}
         }),
         push: send((ctx) => {return {type: "PUSH", content: ctx.content}},
             {to: (ctx) => ctx._backStack}),

@@ -13,10 +13,6 @@ export interface IShell {
   apiClient?: ApiConnection,
   theGraphClient?: ApiConnection,
   lastError?: any;
-  dialog: {
-    open: (position: any, component: any, params: any) => Promise<void>,
-    close: () => Promise<void>
-  }
   events?: Subject<PlatformEvent>,
   publishEvent?: (event: PlatformEvent) => void,
   requestEvent?: <TResult extends PlatformEvent>(event: PlatformEvent) => Promise<TResult>,
