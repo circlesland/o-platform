@@ -3,7 +3,7 @@
 
   let transferFrom;
   let transferTo = "0xb235B56b91eccb9DbdF811D7b5C45c363AcaE98D";
-  let transferMaxValue;
+  let transferMaxValue = "9999999999999999999999999999";
 
   export let transfers = [];
   export let maxValue = 0;
@@ -12,7 +12,7 @@
     let flow = await computeFlow(
       await toAddress(transferFrom),
       await toAddress(transferTo),
-      transferMaxValue - 0
+      transferMaxValue
     );
     maxValue = flow.flow;
     transfers = flow.transfers;
