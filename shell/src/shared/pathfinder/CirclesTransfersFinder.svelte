@@ -22,8 +22,8 @@
 <main class="w-full">
   <input
     bind:value={transferFrom}
-    placeholder="enter your circles safe address here"
-    class="w-full px-4 py-2 mb-6 text-2xl border border-gray-200 rounded-lg shadow-xl"
+    placeholder="enter circles safe address "
+    class="w-full mb-4 input input-lg input-bordered"
   />
 
   <button class="btn btn-block btn-primary" on:click={compute}>Show now</button>
