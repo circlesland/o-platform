@@ -51,7 +51,12 @@
       <div class:truncateThis={params.truncateMain}>
         <h2 class="text-base">{params.title}</h2>
       </div>
-      <p class="mt-1 text-xs text-dark-lightest">{params.subTitle}</p>
+      <p
+        class="mt-1 text-xs text-dark-lightest"
+        class:truncateThis={params.truncateMain}
+      >
+        {params.subTitle}
+      </p>
     </div>
     <slot name="itemCardEnd">
       <div class="w-16 h-16 px-3 py-2 rounded-r-lg title status bg-success">

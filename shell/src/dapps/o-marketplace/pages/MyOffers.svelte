@@ -40,6 +40,7 @@
     }
     isLoading = false;
     offers = result.data.offers;
+    offers.splice(4);
   }
 
   onMount(async () => {
