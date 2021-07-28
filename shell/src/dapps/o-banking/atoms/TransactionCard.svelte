@@ -71,7 +71,7 @@
 
 <div on:click={() => loadDetailPage(transfer._id)}>
   <ItemCard
-    params={{ edgeless: false, imageUrl: pictureUrl, title: displayName, subTitle: message, action: loadDetailPage(transfer._id) }}
+    params={{ edgeless: false, imageUrl: pictureUrl, title: displayName, subTitle: message }}
   >
 
     <div slot="itemCardStart">

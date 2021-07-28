@@ -14,6 +14,7 @@
     action: null,
   };
 
+  // TODO: find a better way for this.
   function cardAction() {
     if (params.action) {
       params.action();
