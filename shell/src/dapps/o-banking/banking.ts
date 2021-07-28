@@ -563,8 +563,8 @@ export class Banking {
         {
             const begin = batchSize * i;
             const end = (batchSize * (i + 1)) - 1 > safeAddresses.length
-                ? safeAddresses.length - 1
-                : (batchSize * (i + 1)) - 1
+                ? safeAddresses.length
+                : (batchSize * (i + 1))
 
             const batch = safeAddresses.slice(begin, end);
             const query = batch.reduce((p, c) => p + `address[]=${RpcGateway.get().utils.toChecksumAddress(c)}&`, "");
