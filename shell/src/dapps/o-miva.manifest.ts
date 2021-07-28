@@ -4,9 +4,9 @@ import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 
 const index: Page<any, DappState> = {
   isSystem: true,
-  routeParts: [""],
+  routeParts: [],
   component: Home,
-  title: "miva",
+  title: "fullnode",
   type: "page",
 };
 
@@ -14,14 +14,14 @@ export interface DappState {
   // put state here
 }
 
-export const miva: DappManifest<DappState> = {
+export const fullnode: DappManifest<DappState> = {
   type: "dapp",
-  dappId: "miva:1",
+  dappId: "fullnode:1",
   isSingleton: true,
   isHidden: true,
-  icon: "miva",
-  title: "Miva",
-  routeParts: ["=miva"],
+  icon: "fullnode",
+  title: "fullnode",
+  routeParts: ["=fullnode"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
