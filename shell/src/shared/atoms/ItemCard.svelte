@@ -12,6 +12,9 @@
     edgeless: null,
     shadow: null,
     action: null,
+    endTextBig: null,
+    endTextBigClass: "text-success",
+    endTextSmall: null,
   };
 
   // TODO: find a better way for this.
@@ -33,14 +36,16 @@
     class:p-3={!params.edgeless}
   >
     <slot name="itemCardStart">
-      <div
-        class="relative w-16 h-16 overflow-hidden rounded-l-lg image-wrapper"
-      >
-        <img
-          src={params.imageUrl ? params.imageUrl : '/images/market/circles-no-image.jpg'}
-          alt={params.imageAlt ? params.imageAlt : params.title}
-          class="absolute object-cover w-20 h-16 rounded-l-lg"
-        />
+      <div>
+        <div class="avatar">
+          <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
+            <img
+              src={params.imageUrl}
+              alt={params.imageAlt ? params.imageAlt : params.title}
+            />
+          </div>
+        </div>
+
       </div>
     </slot>
 
@@ -59,12 +64,15 @@
       </p>
     </div>
     <slot name="itemCardEnd">
-      <div class="w-16 h-16 px-3 py-2 rounded-r-lg title status bg-success">
-        <div class="mt-1 overflow-hidden text-center">
-          <div class="px-2">
-            <Icons icon="home" />
-          </div>
-          <span class="block mt-1 text-3xs">sending</span>
+      <div>
+        <div
+          class="self-end text-right {params.endTextBigClass}"
+          class:text-success={!params.endTextBigClass}
+        >
+          <span>{params.endTextBig}</span>
+        </div>
+        <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
+          <span>{params.endTextSmall}</span>
         </div>
       </div>
     </slot>

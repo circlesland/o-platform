@@ -71,16 +71,9 @@
 
 <div on:click={() => loadDetailPage(transfer._id)}>
   <ItemCard
-    params={{ edgeless: false, imageUrl: pictureUrl, title: displayName, subTitle: message, truncateMain: true }}
+    params={{ edgeless: false, imageUrl: pictureUrl, imageAlt: otherSafeAddress, title: displayName, subTitle: message, truncateMain: true }}
   >
 
-    <div slot="itemCardStart">
-      <div class="avatar">
-        <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
-          <img src={pictureUrl} alt={otherSafeAddress} />
-        </div>
-      </div>
-    </div>
     <div slot="itemCardEnd">
       <div
         class="self-end text-right"
