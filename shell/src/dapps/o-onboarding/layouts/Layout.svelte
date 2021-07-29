@@ -1,22 +1,3 @@
-<style>
-  /* Background Blurring for firefox and other non supportive browsers */
-  @supports not (
-    (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
-  ) {
-    .blur {
-      filter: blur(4px);
-      -webkit-transition: all 0.35s ease-in-out;
-      -moz-transition: all 0.35s ease-in-out;
-      transition: all 0.35s ease-in-out;
-    }
-
-    /* Firefox fix for sticky bottom prev-sibling height */
-    main {
-      padding-bottom: 4rem;
-    }
-  }
-</style>
-
 <script lang="ts">
   import LeftDesktop from "./desktop/Left.svelte";
   import LeftMobile from "./mobile/Left.svelte";
@@ -117,7 +98,9 @@
   {/if}
 
   {#if layout.dialogs.center && layout.dialogs.center.isOpen}
-    <Center blur="true">
+    <Center
+      blur="true"
+      on:clickedOutside="{() => (layout.dialogs.center.isOpen = false)}">
       <svelte:component
         this="{layout.dialogs.center.component}"
         {...layout.dialogs.center.params ? layout.dialogs.center.params : {}} />
@@ -137,3 +120,22 @@
     }
   </style>
 {/if}
+
+<style>
+  /* Background Blurring for firefox and other non supportive browsers */
+  @supports not (
+    (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
+  ) {
+    .blur {
+      filter: blur(4px);
+      -webkit-transition: all 0.35s ease-in-out;
+      -moz-transition: all 0.35s ease-in-out;
+      transition: all 0.35s ease-in-out;
+    }
+
+    /* Firefox fix for sticky bottom prev-sibling height */
+    main {
+      padding-bottom: 4rem;
+    }
+  }
+</style>
