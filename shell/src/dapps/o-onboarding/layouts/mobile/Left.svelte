@@ -1,7 +1,10 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
   import Icons from "../../../../shared/molecules/Icons.svelte";
+  import { createEventDispatcher } from "svelte";
+  import { clickOutside } from "src/shared/functions/clickOutside";
 
+  const eventDispatcher = createEventDispatcher();
   let x = -500;
 </script>
 
@@ -10,9 +13,10 @@
     <!-- Sidebar -->
     <div
       class="fixed inset-y-0 z-10 flex w-72 mobileSidebarInner bg-dark-dark"
-      in:fly|local={{ x, delay: 50 }}
-      out:fly|local={{ x: x, duration: 120 }}
-    >
+      in:fly|local="{{ x, delay: 50 }}"
+      out:fly|local="{{ x: x, duration: 120 }}"
+      use:clickOutside
+      on:click_outside="{() => eventDispatcher('clickedOutside')}">
       <!-- Sidebar content -->
       <slot />
     </div>
