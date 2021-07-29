@@ -4,37 +4,55 @@ import {Routable} from "@o-platform/o-interfaces/dist/routable";
 import {Page} from "@o-platform/o-interfaces/dist/routables/page";
 import {dialogBackStackMachine} from "./dialogBackStack";
 import {Content, RuntimeContent} from "../layouts/layout";
+import NavigationList from "../views/NavigationList.svelte";
 import ProcessContainer from "../../../shared/molecules/ProcessContainer.svelte";
+import {getRouteList} from "../../../shared/functions/getRouteList";
 
 export type DialogStateContext = {
-    _backStack: any,
-    backStackSize: number;
-    content?: Content,
+    _backStack: any;
+    backStackSize?: number;
+    position: string;
+    content?: Content;
 
-    currentRoutable?: Routable
+    currentRoutable?: Routable;
 }
 
 export type SHOW_PAGE = {
     type: "SHOW_PAGE",
     runtimeDapp: RuntimeDapp<any>,
     page: Page<any, any>,
-    pageParams: { [x: string]: any },
+    params: { [x: string]: any },
     routable: Routable
 };
 
-export type DialogStateEvent = SHOW_PAGE | {
-    type: "SHOW_PROCESS"
-    processId: string
-} | {
+export type SHOW_NAVIGATION = {
+    type: "SHOW_NAVIGATION",
+    runtimeDapp: RuntimeDapp<any>,
+    currentRoutable?: Routable
+}
+
+export type SHOW_JUMPLIST = {
     type: "SHOW_JUMPLIST",
     runtimeDapp: RuntimeDapp<any>,
     params: {[x:string]: any},
     currentRoutable?: Routable
-} | {
-    type: "SHOW_NAVIGATION",
-    runtimeDapp: RuntimeDapp<any>,
-    currentRoutable?: Routable
-} | {
+}
+
+export type SHOW_PROCESS = {
+    type: "SHOW_PROCESS"
+    processId: string
+}
+
+export type CONTENT_CHANGED = {
+    type: "CONTENT_CHANGED",
+    position: string,
+    content: RuntimeContent
+};
+
+export type DialogStateEvent = SHOW_PAGE |
+    SHOW_PROCESS |
+    SHOW_NAVIGATION |
+    SHOW_JUMPLIST | {
     type: "CLOSE"
 } | {
     type: "CLOSED"
@@ -56,16 +74,14 @@ export type DialogStateEvent = SHOW_PAGE | {
     type: "POPPED",
     content: SHOW_PAGE,
     size: number
-} | {
-    type: "CONTENT_CHANGED",
-    content: RuntimeContent
-}
+} | CONTENT_CHANGED;
 
 export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>({
     initial: "closed",
     context: {
         _backStack: null,
-        backStackSize: 0
+        backStackSize: 0,
+        position: null
     },
     on: {
         PUSHED: {
@@ -74,7 +90,7 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
     },
     states: {
         closed: {
-            entry: send({type: "CLOSED"}),
+            entry: [(ctx) => console.log(`Dialog '${ctx.position}' started.`), "sendClosed"],
             on: {
                 SHOW_PAGE: {
                     actions: ["startBackStack", "showPage"],
@@ -86,15 +102,14 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
                 SHOW_JUMPLIST: {
                     target: "jumplist"
                 },
-                SHOW_NAVIGATION: {
+                SHOW_NAVIGATION: [{
                     target: "navigation"
-                }
+                }]
             }
         },
         page: {
             id: "page",
-            entry: ["push",
-                "sendOpened"],
+            entry: ["push", "sendOpened"],
             on: {
                 SHOW_PAGE: {
                     actions: ["showPage"],
@@ -109,7 +124,9 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
                     target: "closing"
                 }]
             },
+            initial: "open",
             states: {
+                open: {},
                 popped: {
                     entry: () => console.log("page.popped.entry"),
                     on: {
@@ -130,7 +147,6 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
                     }
                 },
                 closing: {
-                    entry: () => console.log("page.closing.entry"),
                     type: "final"
                 }
             },
@@ -139,7 +155,6 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
         process: {
             entry: [
                 "showProcess",
-                () => console.log("process.entry"),
                 "sendContentChanged",
                 "sendOpened"
             ],
@@ -150,10 +165,24 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
             }
         },
         jumplist: { },
-        navigation: { },
+        navigation: {
+            entry: [
+                "showNavigation",
+                "sendContentChanged",
+                "sendOpened"
+            ],
+            on: {
+                SHOW_NAVIGATION: [{
+                    target: "navigation"
+                }],
+                CLOSE: {
+                    target: "closing"
+                }
+            }
+        },
         closing: {
             always: [{
-                cond: (ctx) => !!ctx._backStack,
+                cond: "hasBackStack",
                 actions: ["stopBackStack"]
             }, {
                 actions: "reset",
@@ -165,6 +194,9 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
         }
     }
 }, {
+    guards: {
+        hasBackStack: (ctx) => !!ctx._backStack
+    },
     actions: {
         startBackStack: assign({
             _backStack: () => spawn(dialogBackStackMachine)
@@ -205,7 +237,7 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
                 // have been handled by now. The dialog only cares about the component and params.
                 return <RuntimeContent>{
                     component:  event.page.component,
-                    params: event.pageParams,
+                    params: event.params,
                     routable: event.routable,
                     runtimeDapp: event.runtimeDapp
                 };
@@ -225,16 +257,35 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
                 };
             }
         }),
-        sendContentChanged: send((ctx) => {
-            return {type: "CONTENT_CHANGED", content: ctx.content}
+        showNavigation: assign({
+            content: (ctx, event) => {
+                if (event.type !== "SHOW_NAVIGATION")
+                    throw new Error(`Expected a SHOW_PROCESS event but got ${event.type}.`)
+
+                var routeList = getRouteList(event.runtimeDapp, event.runtimeDapp, event.currentRoutable);
+                return <RuntimeContent>{
+                    component: <any>NavigationList,
+                    params: {
+                        navigation: routeList
+                    }
+                };
+            }
         }),
-        sendOpened: send((ctx) => {
-            return {type: "OPENED"}
+        sendContentChanged: sendParent((ctx) => {
+            return {type: "CONTENT_CHANGED", content: ctx.content, position: ctx.position}
         }),
-        push: send((ctx) => {return {type: "PUSH", content: ctx.content}},
-            {to: (ctx) => ctx._backStack}),
-        pop: send((ctx) => {return {type: "POP", content: ctx.content}},
-            {to: (ctx) => ctx._backStack}),
+        sendOpened: sendParent((ctx) => {
+            return {type: "OPENED", position: ctx.position }
+        }),
+        sendClosed: sendParent((ctx) => {
+            return {type: "CLOSED", position: ctx.position }
+        }),
+        push: send((ctx) => {
+            return {type: "PUSH", content: ctx.content}
+        }, {to: (ctx) => ctx._backStack}),
+        pop: send((ctx) => {
+            return {type: "POP", content: ctx.content}
+            },{to: (ctx) => ctx._backStack}),
     },
     services: { }
 });

@@ -1316,6 +1316,10 @@ EwAAAABJRU5ErkJggg==" />
 <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M7 13L1 7L7 1" stroke="#8597C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
+    notificationbubble: `
+<svg class='w-${size} h-${size}' viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0.812498 12.8223C0.807659 14.6871 1.24131 16.5268 2.07812 18.1913C3.07032 20.186 4.72563 21.8939 6.61324 23.0667C8.88237 24.4766 10.2804 24.9116 12.0625 25.1875C13.8446 25.4634 15.5195 25.6562 18.1562 25.6562C21.2522 25.6562 24.7187 24.25 24.7187 24.25C24.7187 24.25 22.8232 24.045 22.4336 22.0062C22.1513 20.5294 23.4531 18.1913 23.4531 18.1913C24.2899 16.5268 24.7235 14.6871 24.7187 12.8223C24.7179 10.5924 24.0991 8.40673 22.9318 6.51018C21.7644 4.61362 20.0946 3.08106 18.1093 2.08416C16.4526 1.24338 14.6217 0.807678 12.7656 0.81254H12.0625C9.13137 0.975013 6.3629 2.21805 4.28714 4.30364C2.21138 6.38924 0.974205 9.17083 0.812498 12.1158V12.8223Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
   };
 
   export let icon: string = null;

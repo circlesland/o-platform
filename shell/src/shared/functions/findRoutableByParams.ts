@@ -2,16 +2,18 @@ import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 import {Routable} from "@o-platform/o-interfaces/dist/routable";
 import {arraysEqual} from "./arraysEqual";
 
+export type FindRouteResult = {
+    found: boolean,
+    routable: Routable,
+    params:  { [x: string]: string }
+};
+
 /**
  * Tries to find a routable in the dappManifest that matches with the names and count of the supplied params.
  * @param dappManifest
  * @param params
  */
-export function findRoutableByParams(dappManifest:DappManifest<any>, params: { [x: string]: string }) : {
-    found: boolean,
-    routable: Routable,
-    pageParams:  { [x: string]: string }
-} {
+export function findRoutableByParams(dappManifest:DappManifest<any>, params: { [x: string]: string }) : FindRouteResult {
     const newPageParams = {};
     let matchingRoute: Routable;
 
@@ -61,6 +63,6 @@ export function findRoutableByParams(dappManifest:DappManifest<any>, params: { [
     return {
         found: !!matchingRoute,
         routable: matchingRoute,
-        pageParams: newPageParams,
+        params: newPageParams,
     };
 }

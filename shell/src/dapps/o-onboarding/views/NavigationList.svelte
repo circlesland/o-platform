@@ -5,7 +5,7 @@
   import { isMobile } from "../../../shared/functions/isMobile";
   import LinkPill from "src/shared/atoms/LinkPill.svelte";
 
-  const navigation = [
+  export let navigation = [
     {
       extern: true,
       url: "https://circles.land",

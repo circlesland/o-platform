@@ -31,10 +31,6 @@
     }
   };
 
-  $: {
-    console.log("Layout - Layout changed:", layout);
-  }
-
   const sliderPages = [
     /*{
     export const sliderPages = [/*{

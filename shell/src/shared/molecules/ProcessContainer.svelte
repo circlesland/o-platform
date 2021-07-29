@@ -33,6 +33,9 @@
    * A channel to an already running process.
    */
   export let process: Process;
+  export let props: {
+    process: Process
+  }
   let interceptedProcess: Process;
 
   let inEventSubscription: Subscription;
@@ -53,6 +56,9 @@
   const dispatch = createEventDispatcher();
 
   $: {
+    if (!process && props && props.process) {
+      process = props.process;
+    }
     if (process) {
       // Give a modified version of the process to the <Prompt>.
       // This will catch the answer to the cancel-question

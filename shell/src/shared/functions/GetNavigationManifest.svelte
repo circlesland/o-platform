@@ -3,6 +3,8 @@
   import ListComponent from "../molecules/NextNav/Components/List.svelte";
   import ActionButtonComponent from "../molecules/NextNav/Components/ActionButton.svelte";
   import LinkComponent from "../molecules/NextNav/Components/Link.svelte";
+  import AsideMenuLeft from "../molecules/AsideMenuLeft.svelte";
+  import AsideMenuRight from "../molecules/AsideMenuRight.svelte";
   import { push } from "svelte-spa-router";
 
   import { ProcessContainerNavigation } from "../molecules/ProcessContainer.svelte";
@@ -16,6 +18,8 @@
     dappManifest: DappManifest<any>,
     processNavigation: ProcessContainerNavigation,
     modal: Modal2,
+    leftSidebar: AsideMenuLeft,
+    rightSidebar: AsideMenuRight,
     routable: Routable
   ): NavigationManifest {
     let nm: NavigationManifest;
@@ -87,6 +91,48 @@
     return {
       loginPill: true,
     };
+  }
+
+  export function getRouteList(
+    dapp: DappManifest<any>,
+    runtimeDapp: RuntimeDapp<any>,
+    routable: Routable
+  ): {
+    icon?: string;
+    title: string;
+    url: string;
+    extern: boolean;
+    isActive: boolean;
+  }[] {
+    const routables = dapp.routables.filter(
+      (o) => (o.type === "page" || o.type === "link") && !o.isSystem
+    );
+    return routables.map((o) => {
+      if (o.type == "page") {
+        return {
+          title: o.title,
+          icon: o.icon,
+          url:
+            runtimeDapp.routeParts
+              .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
+              .join("/") +
+            "/" +
+            o.routeParts
+              .map((o) => (o.startsWith("=") ? o.replace("=", "") : o))
+              .join("/"),
+          extern: false,
+          isActive: o.routeParts === routable.routeParts,
+        };
+      } else {
+        return {
+          title: o.title,
+          icon: o.icon,
+          url: (<Link<any, any>>o).url({}, runtimeDapp),
+          extern: (<Link<any, any>>o).openInNewTab,
+          isActive: false,
+        };
+      }
+    });
   }
 
   function getRegularNavigation(

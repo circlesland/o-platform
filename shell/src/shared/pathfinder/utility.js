@@ -68,10 +68,12 @@ export let tokenOwner = async function(token) {
 };
 
 export let computeFlow = async function(from, to, maxValue) {
-    return await (await fetch(
+    /*return await (await fetch(
         PathfinderAPI + '/flow',
         {method: 'POST', body: JSON.stringify({"from": from, "to": to, "value": maxValue})}
-    )).json();
+    )).json();*/
+
+    return await (await fetch(PathfinderAPI + `/flow/${from}/${to}/${maxValue}`)).json();
 };
 
 export let getAdjacencies = async function(address) {

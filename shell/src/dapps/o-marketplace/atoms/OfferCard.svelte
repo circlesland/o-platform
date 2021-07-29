@@ -6,6 +6,7 @@
   import Icons from "../../../shared/molecules/Icons.svelte";
   import { me } from "../../../shared/stores/me";
   import { upsertOffer } from "../processes/upsertOffer";
+  import { truncateString } from "../../../shared/functions/truncateString";
   import Time from "svelte-time";
 
   export let offer: Offer = <any>{
@@ -65,16 +66,6 @@
 
   function dateOlderThanSevenDays(unixTime: number) {
     return sevendaysago > unixTime * 1000;
-  }
-  console.log("OFFER: ", offer);
-
-  function truncateString(str, num) {
-    if (str.length > num) {
-      let subStr = str.substring(0, num);
-      return subStr + "...";
-    } else {
-      return str;
-    }
   }
 </script>
 

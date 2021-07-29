@@ -60,6 +60,7 @@
                 let lastInEvent: AnyEventObject;
 
                 service.onTransition((state1, event) => {
+                    console.log(`Shellprocess state: ${state1.value}, event: ${event.type}`)
                     if (event.type == "error.platform" || event.type == "xstate.error") {
                         console.error(
                             `An error occurred during the execution of process '${definition.name}'::`,
