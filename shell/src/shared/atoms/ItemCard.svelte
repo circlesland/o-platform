@@ -26,23 +26,20 @@
 </script>
 
 <section
-  on:click|once={() => cardAction()}
-  class="flex items-center justify-center mb-3 "
->
+  on:click="{() => cardAction()}"
+  class="flex items-center justify-center mb-3 ">
 
   <div
     class="flex items-center w-full space-x-2 bg-white rounded-lg"
-    class:shadow-sm={params.shadow}
-    class:p-3={!params.edgeless}
-  >
+    class:shadow-sm="{params.shadow}"
+    class:p-3="{!params.edgeless}">
     <slot name="itemCardStart">
       <div>
         <div class="avatar">
           <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
             <img
-              src={params.imageUrl}
-              alt={params.imageAlt ? params.imageAlt : params.title}
-            />
+              src="{params.imageUrl}"
+              alt="{params.imageAlt ? params.imageAlt : params.title}" />
           </div>
         </div>
 
@@ -51,15 +48,13 @@
 
     <div
       class="relative flex-grow px-3 py-2 text-left title"
-      class:truncate={params.truncateMain}
-    >
-      <div class:truncateThis={params.truncateMain}>
+      class:truncate="{params.truncateMain}">
+      <div class:truncateThis="{params.truncateMain}">
         <h2 class="text-base">{params.title}</h2>
       </div>
       <p
         class="mt-1 text-xs text-dark-lightest"
-        class:truncateThis={params.truncateMain}
-      >
+        class:truncateThis="{params.truncateMain}">
         {params.subTitle}
       </p>
     </div>
@@ -67,8 +62,7 @@
       <div>
         <div
           class="self-end text-right {params.endTextBigClass}"
-          class:text-success={!params.endTextBigClass}
-        >
+          class:text-success="{!params.endTextBigClass}">
           <span>{params.endTextBig}</span>
         </div>
         <div class="self-end text-xs text-dark-lightest whitespace-nowrap">

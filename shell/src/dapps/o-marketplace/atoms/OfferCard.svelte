@@ -74,27 +74,23 @@
     <header class=" rounded-t-xl headerImageContainer">
       <div class="relative rounded-t-xl image-wrapper">
         <img
-          src={offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}
+          src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
           alt=""
-          class="rounded-t-xl"
-        />
+          class="rounded-t-xl" />
         <div
-          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-2xl leading-tight rounded-l-full font-heading top-2 bg-light-lightest"
-        >
+          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-2xl leading-tight rounded-l-full font-heading top-2 bg-light-lightest">
           {offer.pricePerUnit} C / {offer.unitTag.value}
           <!-- <Time relative timestamp={offer.publishedAt} /> -->
         </div>
       </div>
     </header>
     <div
-      class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter"
-    >
+      class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
       <div class="avatar">
         <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
           <img
-            src={offer.createdBy.avatarUrl ? offer.createdBy.avatarUrl : '/images/market/city.png'}
-            alt="user-icon"
-          />
+            src="{offer.createdBy.avatarUrl ? offer.createdBy.avatarUrl : '/images/market/city.png'}"
+            alt="user-icon" />
         </div>
       </div>
       <div>{offer.createdBy.firstName} {offer.createdBy.lastName}</div>
@@ -102,12 +98,10 @@
     <div class="flex flex-col w-full px-4 mt-6 space-y-4 bg-white">
       <div class="flex flex-row flex-grow space-x-2">
         <div
-          class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs"
-        >
+          class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
           <a
             href="#/marketplace/categories/{offer.categoryTagId}/{offer.categoryTag.value}"
-            alt={offer.categoryTag.value}
-          >
+            alt="{offer.categoryTag.value}">
             {offer.categoryTag.value}
           </a>
         </div>
@@ -131,8 +125,7 @@
           <button
             type="submit"
             class="relative btn btn-primary btn-block"
-            on:click|once={() => loadDetailPage()}
-          >
+            on:click="{() => loadDetailPage()}">
             Show detail
             <div class="absolute mr-1 right-2">
               <Icons icon="eye" />
