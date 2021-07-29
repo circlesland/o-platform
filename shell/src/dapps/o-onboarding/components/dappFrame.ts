@@ -138,7 +138,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             entry: () => console.log("showPage"),
             always: [{
                 cond: "routableIsMainContent",
-                actions: "showRoutableAsMainContent",
+                actions: ["showRoutableAsMainContent", send({type: "CLOSE"}, {to: (ctx) => ctx._centerDialog})],
                 target: "ready"
             }, {
                 cond: "routableIsModalContent",

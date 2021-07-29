@@ -61,19 +61,6 @@ export type DialogStateEvent = SHOW_PAGE |
 } | {
     type: "ERROR",
     error: Error
-} | {
-    type: "PUSH",
-    content: SHOW_PAGE
-} | {
-    type: "PUSHED",
-    content: SHOW_PAGE,
-    size: number
-} | {
-    type: "POP"
-} | {
-    type: "POPPED",
-    content: SHOW_PAGE,
-    size: number
 } | CONTENT_CHANGED;
 
 export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>({
@@ -83,17 +70,12 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
         backStackSize: 0,
         position: null
     },
-    on: {
-        PUSHED: {
-            actions: ["assignBackStackSizeToContext", "sendContentChanged"]
-        },
-    },
     states: {
         closed: {
             entry: [(ctx) => console.log(`Dialog '${ctx.position}' started.`), "sendClosed"],
             on: {
                 SHOW_PAGE: {
-                    actions: ["startBackStack", "showPage"],
+                    actions: ["showPage"],
                     target: "page"
                 },
                 SHOW_PROCESS: {
@@ -109,48 +91,16 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
         },
         page: {
             id: "page",
-            entry: ["push", "sendOpened"],
+            entry: ["sendOpened", "sendContentChanged"],
             on: {
                 SHOW_PAGE: {
                     actions: ["showPage"],
                     target: "page"
                 },
                 CLOSE: [{
-                    cond: (ctx) => ctx.backStackSize > 0,
-                    actions: "pop",
-                    target: ".popped"
-                }, {
-                    cond: (ctx) => ctx.backStackSize == 0,
                     target: "closing"
                 }]
-            },
-            initial: "open",
-            states: {
-                open: {},
-                popped: {
-                    entry: () => console.log("page.popped.entry"),
-                    on: {
-                        POPPED: {
-                            actions: ["assignBackStackSizeToContext", "showPage"]
-                        },
-                        SHOW_PAGE: {
-                            actions: ["showPage"],
-                            target: "#page"
-                        },
-                        CLOSE: [{
-                            cond: (ctx) => ctx.backStackSize > 0,
-                            actions: "pop"
-                        }, {
-                            cond: (ctx) => ctx.backStackSize == 0,
-                            target: "closing"
-                        }]
-                    }
-                },
-                closing: {
-                    type: "final"
-                }
-            },
-            onDone: "closing"
+            }
         },
         process: {
             entry: [
@@ -208,16 +158,6 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
             _backStack: (ctx) => undefined
         }),
         stopBackStack: actions.stop((ctx) => ctx._backStack),
-        assignBackStackSizeToContext: assign({
-            backStackSize: (context, event) => {
-                switch (event.type) {
-                    case "PUSHED":
-                    case "POPPED":
-                        return event.size;
-                }
-                throw new Error(`Expected one of PUSHED, POPPED but got ${event.type}`);
-            }
-        }),
         assignCurrentRoutableToContext: assign({
             currentRoutable: (context, event) => {
                 switch (event.type) {
@@ -279,13 +219,6 @@ export const dialogMachine = createMachine<DialogStateContext, DialogStateEvent>
         }),
         sendClosed: sendParent((ctx) => {
             return {type: "CLOSED", position: ctx.position }
-        }),
-        push: send((ctx) => {
-            return {type: "PUSH", content: ctx.content}
-        }, {to: (ctx) => ctx._backStack}),
-        pop: send((ctx) => {
-            return {type: "POP", content: ctx.content}
-            },{to: (ctx) => ctx._backStack}),
-    },
-    services: { }
+        })
+    }
 });

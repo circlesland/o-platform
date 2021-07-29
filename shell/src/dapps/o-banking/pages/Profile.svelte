@@ -22,22 +22,23 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let params: {
-    id?: String;
-  };
+  export let id: string;
+
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
+  /*
   let jumplist: Jumplist<any, any> | undefined;
-
+  */
   onMount(() => {
+    /*
     if (routable.type === "page") {
       jumplist = (<Page<any, any>>routable).jumplist;
     } else {
       jumplist = undefined;
     }
-
+     */
     shellEventSubscription = window.o.events.subscribe(
       async (event: PlatformEvent) => {
         if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
@@ -48,7 +49,7 @@
       }
     );
 
-    if (params.id) {
+    if (id) {
       isLoading = true;
       console.log("LOADPRO IF CONTEXT");
       loadProfile();
@@ -56,7 +57,7 @@
   });
 
   $: {
-    if (params) {
+    if (id) {
       isLoading = true;
       console.log("LOADPRO NOCHMAL");
       loadProfile();
@@ -98,21 +99,21 @@
 
   async function loadProfile() {
     console.log("LOADING PROFILE!!!");
-    if (!params || !params.id) {
+    if (!id) {
       console.warn(
         `No profile specified ('id' must contain safeAddress or profileId)`
       );
       return;
     }
 
-    if (Number.parseInt(params.id) && !params.id.startsWith("0x")) {
-      const profile = await loadProfileByProfileId(Number.parseInt(params.id));
+    if (Number.parseInt(id) && !id.startsWith("0x")) {
+      const profile = await loadProfileByProfileId(Number.parseInt(id));
       setProfile(profile);
-    } else if (RpcGateway.get().utils.isAddress(params.id)) {
-      const profile = await loadProfileBySafeAddress(params.id);
+    } else if (RpcGateway.get().utils.isAddress(id)) {
+      const profile = await loadProfileBySafeAddress(id);
       setProfile(profile);
     } else {
-      throw new Error(`params.id isn't an integer nor an eth address.`);
+      throw new Error(`id isn't an integer nor an eth address.`);
     }
     isMe = profile.id == ($me ? $me.id : 0);
     isLoading = false;
@@ -560,14 +561,16 @@
         </section>
       {/if} -->
     </div>
+    <!--
     {#if jumplist && !isMe}
       <div
         class="sticky bottom-0 left-0 right-0 w-full px-4 py-2 mt-2 bg-white rounded-xl"
       >
-        {#await jumplist.items(params, runtimeDapp) then items}
+        {#await jumplist.items({id:id}, runtimeDapp) then items}
           <DetailActionBar actions={items} />
         {/await}
       </div>
     {/if}
+    -->
   </div>
 {/if}
