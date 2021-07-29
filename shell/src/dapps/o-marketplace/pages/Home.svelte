@@ -150,8 +150,7 @@
     </div> -->
 
     <div
-      class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid"
-    >
+      class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
       {#each offers as offer}
         <OfferCard {offer} />
       {/each}
@@ -202,7 +201,7 @@
     display: none;
   }
 
-  .marketplace-grid > *:first-child {
+  :global(.marketplace-grid > *:first-child) {
     grid-row: 1 / 1;
     grid-column: 1 / 1;
   }

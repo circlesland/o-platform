@@ -1,13 +1,5 @@
-<div class="loading-spinner">
-  <img
-    src="/logos/circles.png"
-    alt="loading..."
-    class="w-20 h-20 mb-6 rotate"
-  />
-</div>
-
 <style>
-  .rotate {
+  /* .rotate {
     animation: rotation 1s infinite linear;
   }
 
@@ -16,7 +8,14 @@
       transform: rotate(0deg);
     }
     to {
-      transform: rotate(359deg);
+      transform: rotate(360deg);
     }
-  }
+  } */
 </style>
+
+<div class="loading-spinner">
+  <img
+    src="/logos/circles.png"
+    alt="loading..."
+    class="w-20 h-20 mb-6 rotate" />
+</div>
