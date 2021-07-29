@@ -19,19 +19,17 @@
   let offers: Offer[] = [];
   let shellEventSubscription: Subscription;
 
-  export let params: {
-    id: number;
-  };
+  export let   id: number;
 
   async function load() {
-    if (isLoading || !params || !params.id) return;
+    if (isLoading  || !id) return;
 
     isLoading = true;
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
       query: OffersDocument,
       variables: {
-        id: parseInt(params.id.toString()),
+        id: parseInt(id.toString()),
       },
     });
     if (result.errors && result.errors.length) {

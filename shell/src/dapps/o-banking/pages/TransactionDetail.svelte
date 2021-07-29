@@ -14,9 +14,7 @@
   import PaymentPath from "../../../shared/molecules/PaymentPath.svelte";
   import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 
-  export let params: {
-    _id: string;
-  };
+  export let _id: string;
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -33,7 +31,7 @@
   let transactionId: string;
 
   $: {
-    transactionId = params._id;
+    transactionId = _id;
 
     transfer = $mySafe.transfers.rows.find((o) => o._id == transactionId);
 

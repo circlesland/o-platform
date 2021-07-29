@@ -13,9 +13,8 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
-  export let params: {
-    symbol: string;
-  };
+
+  export let symbol: string;
 
   let accountxDai = {
     symbol: "xdai",
@@ -36,10 +35,9 @@
 
   let tokens: Token[];
   let presets = [10, 20, 50];
-  let symbol: string;
 
   $: {
-    symbol = params.symbol;
+    symbol = symbol;
 
     if (symbol == "xdai" && $mySafe && $mySafe.accountxDai) {
       accountxDai = {

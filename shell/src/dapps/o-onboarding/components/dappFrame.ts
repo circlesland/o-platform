@@ -293,13 +293,15 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
         }),
         setModalIsOpen: assign({
             layout: (ctx, event) => {
-                console.log("setModalContent")
+                console.log("setModalIsOpen", event)
                 if (event.type != "OPENED" && event.type != "CLOSED")
                     throw new Error(`Expected one of OPENED, CLOSED events but got ${event.type}.`);
                 if (event.position !== "center")
                     throw new Error(`Expected one of OPENED, CLOSED events with position "center" but got ${event.position}.`);
 
-                return <RuntimeLayout>{
+                console.log("setModalIsOpen->currentLayout:", ctx.layout);
+
+                const newLayut = <RuntimeLayout>{
                     ...ctx.layout,
                     dialogs: {
                         ...ctx.layout.dialogs,
@@ -309,29 +311,34 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                         }
                     }
                 };
+
+                console.log("setModalIsOpen->newLayout:", newLayut);
+
+                return newLayut;
             }
         }),
         setModalContent:assign({
             layout: (ctx, event) => {
-                console.log("setModalContent")
+                console.log("setModalContent", event)
+
                 if (event.type != "CONTENT_CHANGED")
                     throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
                 if (event.position !== "center")
                     throw new Error(`Expected a CONTENT_CHANGED event with position "center" but got ${event.position}.`);
 
-                return <RuntimeLayout>{
+                console.log("setModalContent->currentLayout:", ctx.layout);
+                const newLayout = <RuntimeLayout>{
                     ...ctx.layout,
                     dialogs: {
                         ...ctx.layout.dialogs,
                         center:{
                             ...ctx.layout.dialogs.center,
-                            ...event.content,
-                            runtimeDapp: ctx.runtimeDapp,
-                            routable: ctx.routable.routable,
-                            params: {params: (<any>ctx.routable).type === "page" ? ctx.routable.params : event.content.params}
+                            ...event.content
                         }
                     }
                 };
+                console.log("setModalContent->newLayout:", newLayout);
+                return newLayout;
             }
         }),
         showRoutableAsMainContent: (ctx) => {
