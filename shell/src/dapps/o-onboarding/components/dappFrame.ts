@@ -89,7 +89,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             actions: ["setMainContent", "sendLayoutChanged"]
         }, {
             cond: (ctx, event) => event.position === "center",
-            actions: ["setModalContent", "sendLayoutChanged"]
+            actions: ["setCenterContent", "sendLayoutChanged"]
         }, {
             cond: (ctx, event) => event.position === "left",
             actions: ["setLeftContent", "sendLayoutChanged"]
@@ -100,6 +100,9 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
         },{
             cond: (ctx, event) => event.position === "right",
             actions: ["setRightNav", "sendNavigationChanged"]
+        },{
+            cond: (ctx, event) => event.position === "center",
+            actions: ["setCenterNav", "sendNavigationChanged"]
         }],
         CLOSED: {
             cond: (ctx, event) => event.position === "center",
@@ -403,16 +406,16 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                 return newLayut;
             }
         }),
-        setModalContent: assign({
+        setCenterContent: assign({
             layout: (ctx, event) => {
-                console.log("setModalContent", event)
+                console.log("setCenterContent", event)
 
                 if (event.type != "CONTENT_CHANGED")
                     throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
                 if (event.position !== "center")
                     throw new Error(`Expected a CONTENT_CHANGED event with position "center" but got ${event.position}.`);
 
-                console.log("setModalContent->currentLayout:", ctx.layout);
+                console.log("setCenterContent->currentLayout:", ctx.layout);
                 const newLayout = <RuntimeLayout>{
                     ...ctx.layout,
                     dialogs: {
@@ -423,7 +426,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                         }
                     }
                 };
-                console.log("setModalContent->newLayout:", newLayout);
+                console.log("setCenterContent->newLayout:", newLayout);
                 return newLayout;
             }
         }),
@@ -434,7 +437,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                 if (event.type != "CONTENT_CHANGED")
                     throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
                 if (event.position !== "left")
-                    throw new Error(`Expected a CONTENT_CHANGED event with position "center" but got ${event.position}.`);
+                    throw new Error(`Expected a CONTENT_CHANGED event with position "left" but got ${event.position}.`);
 
                 console.log("setLeftContent->currentLayout:", ctx.layout);
                 const newLayout = <RuntimeLayout>{
@@ -449,6 +452,31 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                     }
                 };
                 console.log("setLeftContent->newLayout:", newLayout);
+                return newLayout;
+            }
+        }),
+        setRightContent: assign({
+            layout: (ctx, event) => {
+                console.log("setRightContent", event)
+
+                if (event.type != "CONTENT_CHANGED")
+                    throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
+                if (event.position !== "right")
+                    throw new Error(`Expected a CONTENT_CHANGED event with position "right" but got ${event.position}.`);
+
+                console.log("setRightContent->currentLayout:", ctx.layout);
+                const newLayout = <RuntimeLayout>{
+                    ...ctx.layout,
+                    dialogs: {
+                        ...ctx.layout.dialogs,
+                        right: {
+                            ...ctx.layout.dialogs.right,
+                            ...event.content,
+                            isOpen: ctx._rightNavButton.state.value && ctx._rightNavButton.state.value.visible === "on"
+                        }
+                    }
+                };
+                console.log("setRightContent->newLayout:", newLayout);
                 return newLayout;
             }
         }),
@@ -477,6 +505,22 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                 const newNav:NavigationManifest = {
                     ...ctx.navigation,
                     rightSlot: event.element
+                };
+                return newNav;
+            }
+        }),
+        setCenterNav: assign({
+            navigation: (ctx, event) => {
+                if (event.type != "ELEMENT_CHANGED")
+                    throw new Error(`Expected a ELEMENT_CHANGED event but got ${event.type}.`);
+                if (event.position !== "center")
+                    throw new Error(`Expected a ELEMENT_CHANGED event with position "center" but got ${event.position}.`);
+
+                const newNav:NavigationManifest = {
+                    ...ctx.navigation,
+                    navPill: {
+                        center: event.element
+                    }
                 };
                 return newNav;
             }
