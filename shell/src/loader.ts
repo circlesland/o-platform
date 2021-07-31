@@ -9,4 +9,14 @@ import { stats } from "./dapps/o-stats.manifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { contacts } from "./dapps/o-contacts.manifest";
 
-export const dapps: DappManifest<any>[] = [fullnode];
+export const dapps: DappManifest<any>[] = [
+  homepage,
+  passport,
+  banking,
+  dashboard,
+  fullnode,
+  marketplace,
+  trustnetwork,
+  stats,
+  contacts,
+];
