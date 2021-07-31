@@ -50,7 +50,7 @@
   </div>
 </div>
 <div
-  class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer mobile-view bottom-6 left-72"
+  class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer mobile-view bottom-6 left-72 lg:hidden"
   on:click="{() => eventDispatcher('clickedClose')}">
   <Icons icon="buttonleftarrow" />
 </div>
