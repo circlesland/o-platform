@@ -11,6 +11,8 @@ import {RuntimeLayout} from "../layouts/layout";
 import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
 import {ELEMENT_CHANGED, navigationToggleButton} from "./navigationToggleButton";
 import NavigationList from "../views/NavigationList.svelte";
+import FilterList from "../views/FilterList.svelte";
+import QuickActions from "../views/QuickActions.svelte";
 
 export type DappFrameStateContext = {
     _mainDialog: any;
@@ -119,6 +121,11 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             actions: [send({type: "TOGGLE"}, {to: (ctx) => ctx._leftNavButton})]
         }, {
             cond: (ctx, event) => {
+                return event.position === "center"
+            },
+            actions: [send({type: "TOGGLE"}, {to: (ctx) => ctx._centerNav})]
+        }, {
+            cond: (ctx, event) => {
                 return event.position === "right"
             },
             actions: [send({type: "TOGGLE"}, {to: (ctx) => ctx._rightNavButton})]
@@ -131,10 +138,11 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                 return {
                     type: "SHOW_PAGE",
                     page: {
-                        component: NavigationList,
-                        routable: ctx.routable,
-                        runtimeDapp: ctx.runtimeDapp
-                    }
+                        component: NavigationList
+                    },
+                    params: {},
+                    routable: ctx.routable,
+                    runtimeDapp: ctx.runtimeDapp
                 }
             }, {
                 to: (ctx) => ctx._leftDialog
@@ -143,12 +151,36 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             cond: (ctx, event) => {
                 return event.position === "center"
             },
-            actions: []
+            actions: [send((ctx) => {
+                return {
+                    type: "SHOW_PAGE",
+                    page: {
+                        component: QuickActions
+                    },
+                    params: {},
+                    routable: ctx.routable,
+                    runtimeDapp: ctx.runtimeDapp
+                }
+            }, {
+                to: (ctx) => ctx._centerDialog
+            })]
         },{
             cond: (ctx, event) => {
                 return event.position === "right"
             },
-            actions: []
+            actions: [send((ctx) => {
+                return {
+                    type: "SHOW_PAGE",
+                    page: {
+                        component: FilterList
+                    },
+                    params: {},
+                    routable: ctx.routable,
+                    runtimeDapp: ctx.runtimeDapp
+                }
+            }, {
+                to: (ctx) => ctx._rightDialog
+            })]
         },]
     },
     states: {
@@ -168,7 +200,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                     }),
                     _centerNav: () => spawn(navigationToggleButton.withContext({
                         position: "center",
-                        icons: {off: "logo", on: "close"}
+                        icons: {off: "actionButton", on: "close"}
                     }), {
                         sync: true
                     }),
@@ -422,7 +454,8 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                         ...ctx.layout.dialogs,
                         center: {
                             ...ctx.layout.dialogs.center,
-                            ...event.content
+                            ...event.content,
+                            isOpen: ctx._centerNav.state.value && ctx._centerNav.state.value.visible === "on"
                         }
                     }
                 };
