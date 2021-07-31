@@ -1,8 +1,14 @@
 <script lang="ts">
-  import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  export let runtimeDapp:RuntimeDapp<any>;
-  export let routable:Routable;
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import SimpleItemCard from "../atoms/SimpleItemCard.svelte";
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 </script>
-<MarketplaceHeader  {runtimeDapp} {routable} />
+
+<SimpleHeader {runtimeDapp} {routable} />
+
+<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+  <SimpleItemCard />
+</div>
