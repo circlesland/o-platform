@@ -224,8 +224,8 @@ body {
 
 .processPill .navbuttonicon {
   @apply text-dark;
-  margin-left: 0.15rem;
-  margin-top: 0.15rem;
+  /* margin-left: 0.15rem;
+  margin-top: 0.15rem; */
   @apply w-3;
   @apply h-3;
 }

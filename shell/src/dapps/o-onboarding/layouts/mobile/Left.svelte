@@ -8,7 +8,7 @@
   let x = -500;
 </script>
 
-<aside class="flex mobileSideBarLeft mobile-view">
+<aside class="flex mobileSideBarLeft mobile-view lg:hidden">
   <div class="">
     <!-- Sidebar -->
     <div
@@ -25,6 +25,9 @@
 </aside>
 
 <style>
+  /* .mobile-view {
+
+  } */
   .mobileSideBarLeft {
     z-index: 99;
     background-color: rgba(177, 192, 200, 0.4);

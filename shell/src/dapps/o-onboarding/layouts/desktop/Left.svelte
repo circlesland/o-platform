@@ -6,7 +6,7 @@
 </script>
 
 <aside
-  class="z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen mt-12 desktop-view">
+  class="z-50 flex-col flex-1 flex-shrink-0 hidden w-64 h-screen mt-12 desktop-view lg:flex">
   <div class="">
     <!-- Sidebar -->
     <div
