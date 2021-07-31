@@ -5,6 +5,7 @@ import LinkComponent from "../../../shared/molecules/NextNav/Components/Link.sve
 export type ToggleButtonContext = {
     isHidden?: boolean;
     element?: NavigationElement;
+    button: any;
     position: string;
     icons: { on: string, off: string }
 };
@@ -35,6 +36,7 @@ export const navigationToggleButton = createMachine<ToggleButtonContext, ToggleB
     context: {
         position: null,
         isHidden: null,
+        button: LinkComponent,
         element: {
             component: LinkComponent,
             props: {
@@ -90,7 +92,7 @@ export const navigationToggleButton = createMachine<ToggleButtonContext, ToggleB
         setOnNavigationElement: assign({
             element: (ctx, event) => {
                 return {
-                    component: LinkComponent,
+                    component: ctx.button,
                     props: {
                         icon: ctx.icons.on,
                         action: () => window.o.publishEvent(<any>{
@@ -103,7 +105,7 @@ export const navigationToggleButton = createMachine<ToggleButtonContext, ToggleB
         setOffNavigationElement: assign({
             element: (ctx, event) => {
                 return {
-                    component: LinkComponent,
+                    component: ctx.button,
                     props: {
                         icon: ctx.icons.off,
                         action: () => window.o.publishEvent(<any>{

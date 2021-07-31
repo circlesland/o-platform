@@ -13,6 +13,8 @@ import {ELEMENT_CHANGED, navigationToggleButton} from "./navigationToggleButton"
 import NavigationList from "../views/NavigationList.svelte";
 import FilterList from "../views/FilterList.svelte";
 import QuickActions from "../views/QuickActions.svelte";
+import LinkComponent from "../../../shared/molecules/NextNav/Components/Link.svelte";
+import ActionButton from "../../../shared/molecules/NextNav/Components/ActionButton.svelte";
 
 export type DappFrameStateContext = {
     _mainDialog: any;
@@ -194,19 +196,22 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                     _rightDialog: () => spawn(dialogMachine.withContext({position: "right", _backStack: null})),
                     _leftNavButton: () => spawn(navigationToggleButton.withContext({
                         position: "left",
-                        icons: {off: "list", on: "buttonleftarrow"}
+                        icons: {off: "list", on: "buttonleftarrow"},
+                        button: LinkComponent
                     }), {
                         sync: true
                     }),
                     _centerNav: () => spawn(navigationToggleButton.withContext({
                         position: "center",
-                        icons: {off: "actionButton", on: "close"}
+                        icons: {off: "actionButton", on: "close"},
+                        button: ActionButton
                     }), {
                         sync: true
                     }),
                     _rightNavButton: () => spawn(navigationToggleButton.withContext({
                         position: "right",
-                        icons: {off: "list", on: "buttonrightarrow"}
+                        icons: {off: "list", on: "buttonrightarrow"},
+                        button: LinkComponent
                     }), {
                         sync: true
                     })
@@ -219,7 +224,16 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             }
         },
         loadRuntimeDapp: {
-            entry: () => console.log("loadRuntimeDapp"),
+            entry: [() => console.log("loadRuntimeDapp"),/*
+                ctx => {
+                    if (!isMobile()) {
+                        send({
+                            type: "TOGGLE"
+                        }, {
+                            to: ctx._leftNavButton
+                        })
+                    }
+                }*/],
             invoke: {
                 src: "findAndSetRuntimeDapp",
                 onDone: [{
@@ -422,7 +436,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
 
                 console.log("setModalIsOpen->currentLayout:", ctx.layout);
 
-                const newLayut = <RuntimeLayout>{
+                const newLayout = <RuntimeLayout>{
                     ...ctx.layout,
                     dialogs: {
                         ...ctx.layout.dialogs,
@@ -433,9 +447,9 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                     }
                 };
 
-                console.log("setModalIsOpen->newLayout:", newLayut);
+                console.log("setModalIsOpen->newLayout:", newLayout);
 
-                return newLayut;
+                return newLayout;
             }
         }),
         setCenterContent: assign({

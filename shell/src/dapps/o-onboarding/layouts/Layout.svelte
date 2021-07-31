@@ -106,7 +106,7 @@
   {#if layout.dialogs.center && layout.dialogs.center.isOpen}
     <Center
       blur="true"
-      on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'center'})}>
+      on:clickedOutside={() => {} }>
       <svelte:component
         this="{layout.dialogs.center.component}"
         {...layout.dialogs.center.params ? layout.dialogs.center.params : {}} />
