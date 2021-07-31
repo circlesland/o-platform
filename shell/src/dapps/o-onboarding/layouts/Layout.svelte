@@ -55,22 +55,25 @@
         class:blur="{layout.dialogs.center && layout.dialogs.center.isOpen}">
         <div class="fixed z-50">
           {#if layout.dialogs.left && layout.dialogs.left.isOpen}
-            <LeftMobile on:click="{() => (layout.dialogs.left.isOpen = false)}">
-              <svelte:component
-                this="{layout.dialogs.left.component}"
-                {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
-                on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'left'})}
-                on:clickedItem={() => eventDispatcher('clickedItem', {position: 'left'})}
-                on:clickedClose={() => eventDispatcher('clickedClose', {position: 'left'})} />
-            </LeftMobile>
-            <LeftDesktop>
-              <svelte:component
-                this="{layout.dialogs.left.component}"
-                {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
-                on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'left'})}
-                on:clickedItem={() => eventDispatcher('clickedItem', {position: 'left'})}
-                on:clickedClose={() => eventDispatcher('clickedClose', {position: 'left'})} />
-            </LeftDesktop>
+            {#if isMobile()}
+              <LeftMobile on:click="{() => (layout.dialogs.left.isOpen = false)}">
+                <svelte:component
+                  this="{layout.dialogs.left.component}"
+                  {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
+                  on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'left'})}
+                  on:clickedItem={() => eventDispatcher('clickedItem', {position: 'left'})}
+                  on:clickedClose={() => eventDispatcher('clickedClose', {position: 'left'})} />
+              </LeftMobile>
+            {:else}
+              <LeftDesktop>
+                <svelte:component
+                  this="{layout.dialogs.left.component}"
+                  {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
+                  on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'left'})}
+                  on:clickedItem={() => eventDispatcher('clickedItem', {position: 'left'})}
+                  on:clickedClose={() => eventDispatcher('clickedClose', {position: 'left'})} />
+              </LeftDesktop>
+            {/if}
           {/if}
         </div>
         <div class="flex-grow">

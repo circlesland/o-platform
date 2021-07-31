@@ -11,6 +11,8 @@ import {RuntimeLayout} from "../layouts/layout";
 import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
 import {ELEMENT_CHANGED, navigationToggleButton} from "./navigationToggleButton";
 import NavigationList from "../views/NavigationList.svelte";
+import FilterList from "../views/FilterList.svelte";
+import QuickActions from "../views/QuickActions.svelte";
 
 export type DappFrameStateContext = {
     _mainDialog: any;
@@ -89,7 +91,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             actions: ["setMainContent", "sendLayoutChanged"]
         }, {
             cond: (ctx, event) => event.position === "center",
-            actions: ["setModalContent", "sendLayoutChanged"]
+            actions: ["setCenterContent", "sendLayoutChanged"]
         }, {
             cond: (ctx, event) => event.position === "left",
             actions: ["setLeftContent", "sendLayoutChanged"]
@@ -100,6 +102,9 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
         },{
             cond: (ctx, event) => event.position === "right",
             actions: ["setRightNav", "sendNavigationChanged"]
+        },{
+            cond: (ctx, event) => event.position === "center",
+            actions: ["setCenterNav", "sendNavigationChanged"]
         }],
         CLOSED: {
             cond: (ctx, event) => event.position === "center",
@@ -116,6 +121,11 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             actions: [send({type: "TOGGLE"}, {to: (ctx) => ctx._leftNavButton})]
         }, {
             cond: (ctx, event) => {
+                return event.position === "center"
+            },
+            actions: [send({type: "TOGGLE"}, {to: (ctx) => ctx._centerNav})]
+        }, {
+            cond: (ctx, event) => {
                 return event.position === "right"
             },
             actions: [send({type: "TOGGLE"}, {to: (ctx) => ctx._rightNavButton})]
@@ -128,10 +138,11 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                 return {
                     type: "SHOW_PAGE",
                     page: {
-                        component: NavigationList,
-                        routable: ctx.routable,
-                        runtimeDapp: ctx.runtimeDapp
-                    }
+                        component: NavigationList
+                    },
+                    params: {},
+                    routable: ctx.routable,
+                    runtimeDapp: ctx.runtimeDapp
                 }
             }, {
                 to: (ctx) => ctx._leftDialog
@@ -140,12 +151,36 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             cond: (ctx, event) => {
                 return event.position === "center"
             },
-            actions: []
+            actions: [send((ctx) => {
+                return {
+                    type: "SHOW_PAGE",
+                    page: {
+                        component: QuickActions
+                    },
+                    params: {},
+                    routable: ctx.routable,
+                    runtimeDapp: ctx.runtimeDapp
+                }
+            }, {
+                to: (ctx) => ctx._centerDialog
+            })]
         },{
             cond: (ctx, event) => {
                 return event.position === "right"
             },
-            actions: []
+            actions: [send((ctx) => {
+                return {
+                    type: "SHOW_PAGE",
+                    page: {
+                        component: FilterList
+                    },
+                    params: {},
+                    routable: ctx.routable,
+                    runtimeDapp: ctx.runtimeDapp
+                }
+            }, {
+                to: (ctx) => ctx._rightDialog
+            })]
         },]
     },
     states: {
@@ -165,7 +200,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                     }),
                     _centerNav: () => spawn(navigationToggleButton.withContext({
                         position: "center",
-                        icons: {off: "logo", on: "close"}
+                        icons: {off: "actionButton", on: "close"}
                     }), {
                         sync: true
                     }),
@@ -403,27 +438,28 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                 return newLayut;
             }
         }),
-        setModalContent: assign({
+        setCenterContent: assign({
             layout: (ctx, event) => {
-                console.log("setModalContent", event)
+                console.log("setCenterContent", event)
 
                 if (event.type != "CONTENT_CHANGED")
                     throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
                 if (event.position !== "center")
                     throw new Error(`Expected a CONTENT_CHANGED event with position "center" but got ${event.position}.`);
 
-                console.log("setModalContent->currentLayout:", ctx.layout);
+                console.log("setCenterContent->currentLayout:", ctx.layout);
                 const newLayout = <RuntimeLayout>{
                     ...ctx.layout,
                     dialogs: {
                         ...ctx.layout.dialogs,
                         center: {
                             ...ctx.layout.dialogs.center,
-                            ...event.content
+                            ...event.content,
+                            isOpen: ctx._centerNav.state.value && ctx._centerNav.state.value.visible === "on"
                         }
                     }
                 };
-                console.log("setModalContent->newLayout:", newLayout);
+                console.log("setCenterContent->newLayout:", newLayout);
                 return newLayout;
             }
         }),
@@ -434,7 +470,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                 if (event.type != "CONTENT_CHANGED")
                     throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
                 if (event.position !== "left")
-                    throw new Error(`Expected a CONTENT_CHANGED event with position "center" but got ${event.position}.`);
+                    throw new Error(`Expected a CONTENT_CHANGED event with position "left" but got ${event.position}.`);
 
                 console.log("setLeftContent->currentLayout:", ctx.layout);
                 const newLayout = <RuntimeLayout>{
@@ -449,6 +485,31 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                     }
                 };
                 console.log("setLeftContent->newLayout:", newLayout);
+                return newLayout;
+            }
+        }),
+        setRightContent: assign({
+            layout: (ctx, event) => {
+                console.log("setRightContent", event)
+
+                if (event.type != "CONTENT_CHANGED")
+                    throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
+                if (event.position !== "right")
+                    throw new Error(`Expected a CONTENT_CHANGED event with position "right" but got ${event.position}.`);
+
+                console.log("setRightContent->currentLayout:", ctx.layout);
+                const newLayout = <RuntimeLayout>{
+                    ...ctx.layout,
+                    dialogs: {
+                        ...ctx.layout.dialogs,
+                        right: {
+                            ...ctx.layout.dialogs.right,
+                            ...event.content,
+                            isOpen: ctx._rightNavButton.state.value && ctx._rightNavButton.state.value.visible === "on"
+                        }
+                    }
+                };
+                console.log("setRightContent->newLayout:", newLayout);
                 return newLayout;
             }
         }),
@@ -477,6 +538,22 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
                 const newNav:NavigationManifest = {
                     ...ctx.navigation,
                     rightSlot: event.element
+                };
+                return newNav;
+            }
+        }),
+        setCenterNav: assign({
+            navigation: (ctx, event) => {
+                if (event.type != "ELEMENT_CHANGED")
+                    throw new Error(`Expected a ELEMENT_CHANGED event but got ${event.type}.`);
+                if (event.position !== "center")
+                    throw new Error(`Expected a ELEMENT_CHANGED event with position "center" but got ${event.position}.`);
+
+                const newNav:NavigationManifest = {
+                    ...ctx.navigation,
+                    navPill: {
+                        center: event.element
+                    }
                 };
                 return newNav;
             }

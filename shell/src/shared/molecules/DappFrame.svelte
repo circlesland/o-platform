@@ -17,7 +17,6 @@
   import SwiperCore, {Pagination, Navigation} from "swiper/core";
   import Layout from "../../dapps/o-onboarding/layouts/Layout.svelte";
   import {RuntimeLayout} from "../../dapps/o-onboarding/layouts/layout";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
   import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
   import LinkComponent from "./NextNav/Components/Link.svelte";
   import ListComponent from "./NextNav/Components/List.svelte";
@@ -176,7 +175,7 @@
   }
 
   function clickedOutside(e:any) {
-      switch (e.position) {
+      switch (e.detail.position) {
           case "left":
               dappFrameState.send({type: "NAVIGATION_CLICK", position: "left"});
               break;
@@ -194,6 +193,4 @@
 <Layout layout={layout}
         navigation={navigation}
         sliderPages={[]}
-        on:clickedOutside={clickedOutside}
-        on:clickedItem={clickedOutside}
-        on:clickedClose={clickedOutside} />
+        on:clickedOutside={clickedOutside} />
