@@ -8,6 +8,7 @@ import {
   prompt,
   PromptField,
 } from "@o-platform/o-process/dist/states/prompt";
+import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
 import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
@@ -71,6 +72,20 @@ export function promptFile<
   spec.id = spec.id ? spec.id : field.name;
   const generatedId = Generate.randomHexString(4);
   const id = (x: string) => `${spec.id}/${generatedId}/${x}`;
+  let viewParams = {
+    title: "Profile Image",
+    description: "Show the World who you are",
+    placeholder: "Upload Image",
+    mainComponent: PicturePreview,
+    submitButtonText: "Upload Image",
+  };
+  let viewParamsUpload = {
+    title: "Profile Image?",
+    description: "Show the World who you are",
+    placeholder: "Upload Image",
+    mainComponent: PictureEditor,
+    submitButtonText: "Save Image",
+  };
   const editDataFieldConfig: StateNodeConfig<TContext, StateSchema, TEvent> = {
     id: spec.id,
     initial: "checkPreviewFile",
@@ -95,8 +110,9 @@ export function promptFile<
         entry: () => console.log(`previewFile entry`),
         field: spec.field,
         onlyWhenDirty: spec.onlyWhenDirty,
-        component: PicturePreview,
+        component: EditorView,
         params: {
+          view: viewParams,
           label: spec.params?.label ?? strings.labelFile,
           submitButtonText: spec.params.submitButtonText,
         },
@@ -143,8 +159,9 @@ export function promptFile<
           },
         },
         onlyWhenDirty: spec.onlyWhenDirty,
-        component: PictureEditor,
+        component: EditorView,
         params: {
+          view: viewParamsUpload,
           label: spec.params?.label ?? strings.labelFile,
           submitButtonText: "Save Image",
           cropShape: spec.params?.cropShape ?? null,

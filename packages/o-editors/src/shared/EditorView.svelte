@@ -1,11 +1,13 @@
 <script lang="ts">
 import NavSteps from "src/shared/molecules/NavSteps.svelte";
 import { EditorContext } from "./../editorContext";
-import TextEditor from "./../TextEditor.svelte";
 
 export let context: EditorContext;
 
 let _context: EditorContext;
+let titleColorClass = context.params.view.titleColor
+  ? context.params.view.titleColor
+  : "";
 $: {
   _context = context;
 }
@@ -13,7 +15,7 @@ $: {
 console.log("Params: ", context);
 </script>
 
-<section class="flex flex-col items-center justify-center space-y-4">
+<section class="flex flex-col items-center justify-center p-6 space-y-4">
   <slot name="EditorSteps">
     <div>
       <NavSteps steps="{[0, 0, 0]}" />
@@ -21,18 +23,20 @@ console.log("Params: ", context);
   </slot>
   <slot name="EditorTitle">
     <div class="w-full text-center">
-      <h1 class="uppercase font-heading">{context.params.title}</h1>
+      <h1 class="uppercase font-heading {titleColorClass} text-3xl">
+        {context.params.view.title}
+      </h1>
     </div>
   </slot>
   <slot name="EditorDescription">
     <div class="w-full text-center">
-      <span class="text-dark-lightest">{context.params.description}</span>
+      <span class="text-dark-lightest">{context.params.view.description}</span>
     </div>
   </slot>
   <div class="w-full">
     <slot name="EditorMainComponent">
       <svelte:component
-        this="{context.params.mainComponent}"
+        this="{context.params.view.mainComponent}"
         context="{context}" />
     </slot>
   </div>

@@ -48,6 +48,15 @@ const editorContent = {
     mainComponent: TextEditor,
     submitButtonText: "Save",
   },
+  dream: {
+    title: "Share your passion",
+    description:
+      "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
+    placeholder: "Your passion",
+    mainComponent: TextareaEditor,
+    submitButtonText: "Start growing",
+    maxLength: "150",
+  },
   city: {
     title: "Vote for your City?",
     description:
@@ -91,7 +100,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         field: "firstName",
         onlyWhenDirty: skipIfNotDirty,
         component: EditorView,
-        params: editorContent.firstName,
+        params: { view: editorContent.firstName },
         dataSchema: yup.string().required("Please enter your first name."),
         navigation: {
           next: "#lastName",
@@ -101,7 +110,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         field: "lastName",
         onlyWhenDirty: skipIfNotDirty,
         component: EditorView,
-        params: editorContent.lastName,
+        params: { view: editorContent.lastName },
         navigation: {
           next: "#country",
           previous: "#firstName",
@@ -126,13 +135,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       dream: prompt<UpsertIdentityContext, any>({
         field: "dream",
         onlyWhenDirty: skipIfNotDirty,
-        component: TextareaEditor,
-        params: {
-          label: strings.labeldream,
-          placeholder: strings.placeholderDream,
-          submitButtonText: "Start growing",
-          maxLength: "150",
-        },
+        component: EditorView,
+        params: { view: editorContent.dream },
         dataSchema: yup
           .string()
           .nullable()
@@ -255,5 +259,5 @@ export const upsertIdentityOnlyWhereDirty = {
   id: upsertIdentity.id,
   name: upsertIdentity.name,
   stateMachine: (processId?: string) =>
-      (<any>upsertIdentity).stateMachine(processId, true),
+    (<any>upsertIdentity).stateMachine(processId, true),
 };

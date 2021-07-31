@@ -1,57 +1,52 @@
 <script lang="ts">
-  import { EditorContext } from "./editorContext";
-  import ProcessNavigation from "./ProcessNavigation.svelte";
-  import { Continue } from "@o-platform/o-process/dist/events/continue";
-  import { onMount } from "svelte";
+import { EditorContext } from "./editorContext";
+import ProcessNavigation from "./ProcessNavigation.svelte";
+import { Continue } from "@o-platform/o-process/dist/events/continue";
+import { onMount } from "svelte";
 
-  export let context: EditorContext;
+export let context: EditorContext;
 
-  let initialData: any;
-  onMount(() => {
-    initialData = context.data[context.field];
-  });
+let initialData: any;
+onMount(() => {
+  initialData = context.data[context.field];
+});
 
-  function submit() {
-    const answer = new Continue();
-    answer.data = context.data;
-    context.process.sendAnswer(answer);
+function submit() {
+  const answer = new Continue();
+  answer.data = context.data;
+  context.process.sendAnswer(answer);
+}
+
+function onkeydown(e: KeyboardEvent) {
+  if (e.key == "Enter") {
+    submit();
   }
-
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Enter") {
-      submit();
-    }
-  }
+}
 </script>
 
 <div>
-  <label class="label" for={context.field}>
-    <span class="label-text">{@html context.params.label}</span>
-  </label>
   <div class="flex flex-col w-full h-full">
     <button
       class="self-end text-primary"
-      on:click={() => {
+      on:click="{() => {
         context.dirtyFlags[context.field] = true;
         context.editorDirtyFlags[context.field] = true;
         context.data[context.field] = null;
         submit();
-      }}>Clear</button
-    >
+      }}">Clear</button>
     <div class="text-center">
       <div class="avatar">
         <div class="w-48 rounded-full w-92 h-92">
           <img
             class="m-auto"
             id="cropCanvas"
-            src={context.data[context.field]}
+            src="{context.data[context.field]}"
             height="300"
-            alt="avatar"
-          />
+            alt="avatar" />
         </div>
       </div>
     </div>
   </div>
   <br />
-  <ProcessNavigation on:buttonClick={submit} {context} />
+  <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
 </div>
