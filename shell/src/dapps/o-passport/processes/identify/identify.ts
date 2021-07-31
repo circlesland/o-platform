@@ -237,6 +237,7 @@ const processDefinition = (processId: string) =>
                       localStorage.getItem("circlesKey")
                     ).address
                   : undefined,
+                status: ""
               },
             });
             context.data.profile = result.data.upsertProfile;

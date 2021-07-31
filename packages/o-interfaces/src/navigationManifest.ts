@@ -6,6 +6,7 @@ export interface NavigationProps {
 
 export interface NavigationElement {
   isActive?: boolean;
+  isVisible?: boolean;
   component: any;
   props: NavigationProps;
 }

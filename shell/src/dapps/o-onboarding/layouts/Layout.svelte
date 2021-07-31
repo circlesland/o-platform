@@ -11,8 +11,11 @@
   import Pager from "../views/Pager.svelte";
   import "simplebar";
   import "simplebar/dist/simplebar.css";
+  import {createEventDispatcher} from "svelte";
 
   let dapp = "homepage:!";
+
+  const eventDispatcher = createEventDispatcher();
 
   export let layout: RuntimeLayout;
   export let navigation: NavigationManifest = {
@@ -56,17 +59,17 @@
               <svelte:component
                 this="{layout.dialogs.left.component}"
                 {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
-                on:clickedOutside="{() => (layout.dialogs.left.isOpen = false)}"
-                on:clickedItem="{() => (layout.dialogs.left.isOpen = false)}"
-                on:clickedClose="{() => (layout.dialogs.left.isOpen = false)}" />
+                on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'left'})}
+                on:clickedItem={() => eventDispatcher('clickedItem', {position: 'left'})}
+                on:clickedClose={() => eventDispatcher('clickedClose', {position: 'left'})} />
             </LeftMobile>
             <LeftDesktop>
               <svelte:component
                 this="{layout.dialogs.left.component}"
                 {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
-                on:clickedOutside="{() => (layout.dialogs.left.isOpen = false)}"
-                on:clickedItem="{() => (layout.dialogs.left.isOpen = false)}"
-                on:clickedClose="{() => (layout.dialogs.left.isOpen = false)}" />
+                on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'left'})}
+                on:clickedItem={() => eventDispatcher('clickedItem', {position: 'left'})}
+                on:clickedClose={() => eventDispatcher('clickedClose', {position: 'left'})} />
             </LeftDesktop>
           {/if}
         </div>
@@ -83,9 +86,9 @@
               <svelte:component
                 this="{layout.dialogs.right.component}"
                 {...layout.dialogs.right.params ? layout.dialogs.right.params : {}}
-                on:clickedOutside="{() => (layout.dialogs.right.isOpen = false)}"
-                on:clickedItem="{() => (layout.dialogs.right.isOpen = false)}"
-                on:clickedClose="{() => (layout.dialogs.right.isOpen = false)}" />
+                on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'right'})}
+                on:clickedItem={() => eventDispatcher('clickedItem', {position: 'right'})}
+                on:clickedClose={() => eventDispatcher('clickedClose', {position: 'right'})} />
             </RightDesktop>
           {/if}
         </div>
@@ -100,7 +103,7 @@
   {#if layout.dialogs.center && layout.dialogs.center.isOpen}
     <Center
       blur="true"
-      on:clickedOutside="{() => (layout.dialogs.center.isOpen = false)}">
+      on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'center'})}>
       <svelte:component
         this="{layout.dialogs.center.component}"
         {...layout.dialogs.center.params ? layout.dialogs.center.params : {}} />

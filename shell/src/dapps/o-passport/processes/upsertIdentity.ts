@@ -216,6 +216,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 avatarUrl: context.data.avatarUrl,
                 avatarMimeType: context.data.avatarMimeType,
                 cityGeonameid: context.data.cityGeonameid,
+                status: ""
               },
             });
             return result.data.upsertProfile;

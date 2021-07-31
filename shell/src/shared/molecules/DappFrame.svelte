@@ -58,6 +58,9 @@
           component: LinkComponent,
           props: {
               icon: "list",
+              action: () => {
+                  clickedOutside({position: "left"})
+              },
           },
       },
       navPill: {
@@ -74,6 +77,7 @@
               props: {
                   icon: "logo",
                   action: () => {
+                      clickedOutside({position: "center"})
                   }
               },
           },
@@ -89,13 +93,43 @@
   };
 
   onMount(async () => {
-      window.o.events.subscribe(handleShellEvent);
+      window.o.events.subscribe(async event => {
+          switch (event.type) {
+              case "shell.runProcess":
+                  const runProcessEvent = <RunProcess<any>>event;
+                  const runningProcess = await window.o.stateMachines.run(
+                      runProcessEvent.definition,
+                      runProcessEvent.contextModifier
+                  );
+
+                  // If not, send an event with the process id.
+                  const startedEvent = new ProcessStarted(runningProcess.id);
+                  startedEvent.responseToId = runProcessEvent.id;
+                  window.o.publishEvent(startedEvent);
+                  break;
+              case "shell.navigation.left.click":
+                  dappFrameState.send({type: "NAVIGATION_CLICK", position: "left"});
+                  break;
+              case "shell.navigation.center.click":
+                  dappFrameState.send({type: "NAVIGATION_CLICK", position: "center"});
+                  break;
+              case "shell.navigation.right.click":
+                  dappFrameState.send({type: "NAVIGATION_CLICK", position: "right"});
+                  break;
+              case "process.stopped":
+                  dappFrameState.send({type: "PROCESS_STOPPED"});
+                  break;
+          }
+      });
       dappFrameState = interpret(dappFrame)
           .onEvent(event => {
               console.log("dappFrameState event:", event);
-            if (event.type === "LAYOUT_CHANGED") {
-                layout = (<any>event).layout;
-            }
+              if (event.type === "LAYOUT_CHANGED") {
+                  layout = (<any>event).layout;
+              }
+              if (event.type === "NAVIGATION_CHANGED") {
+                  navigation = (<any>event).navigation;
+              }
           })
           .onTransition(state => {console.log("dappFrameState state:", state.value)})
           .start();
@@ -141,26 +175,25 @@
       }
   }
 
-  async function handleShellEvent(event: PlatformEvent) {
-      switch (event.type) {
-          case "shell.runProcess":
-              const runProcessEvent = <RunProcess<any>>event;
-              const runningProcess = await window.o.stateMachines.run(
-                  runProcessEvent.definition,
-                  runProcessEvent.contextModifier
-              );
-
-              // If not, send an event with the process id.
-              const startedEvent = new ProcessStarted(runningProcess.id);
-              startedEvent.responseToId = runProcessEvent.id;
-              window.o.publishEvent(startedEvent);
+  function clickedOutside(e:any) {
+      switch (e.position) {
+          case "left":
+              dappFrameState.send({type: "NAVIGATION_CLICK", position: "left"});
               break;
-          case "process.stopped":
-              dappFrameState.send({type: "PROCESS_STOPPED"});
+          case "center":
+              dappFrameState.send({type: "NAVIGATION_CLICK", position: "center"});
+              break;
+          case "right":
+              dappFrameState.send({type: "NAVIGATION_CLICK", position: "right"});
               break;
       }
   }
 
 </script>
 
-<Layout layout={layout} navigation={navigation} sliderPages={[]} />
+<Layout layout={layout}
+        navigation={navigation}
+        sliderPages={[]}
+        on:clickedOutside={clickedOutside}
+        on:clickedItem={clickedOutside}
+        on:clickedClose={clickedOutside} />

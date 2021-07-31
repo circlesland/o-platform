@@ -17,11 +17,11 @@ export type PlatformEventTypes =
     | "shell.dappLoading"
     | "shell.dappLoaded"
     | "shell.modalChanged"
-    | "shell.navigation.leftButton.click"
-    | "shell.navigation.rightButton.click"
-    | "shell.navigation.actionButton.left.click"
-    | "shell.navigation.actionButton.main.click"
-    | "shell.navigation.actionButton.right.click"
+    | "shell.navigation.left.click"
+    | "shell.navigation.right.click"
+    | "shell.navigation.center.left.click"
+    | "shell.navigation.center.main.click"
+    | "shell.navigation.center.right.click"
 
     | "circles.web3providerChanged"
 
