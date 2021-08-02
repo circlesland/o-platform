@@ -56,7 +56,7 @@
         <div class="fixed z-50">
           {#if layout.dialogs.left && layout.dialogs.left.isOpen}
             {#if isMobile()}
-              <LeftMobile on:click="{() => (layout.dialogs.left.isOpen = false)}">
+              <LeftMobile>
                 <svelte:component
                   this="{layout.dialogs.left.component}"
                   {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
@@ -106,7 +106,7 @@
   {#if layout.dialogs.center && layout.dialogs.center.isOpen}
     <Center
       blur="true"
-      on:clickedOutside={() => {} }>
+      on:clickedOutside>
       <svelte:component
         this="{layout.dialogs.center.component}"
         {...layout.dialogs.center.params ? layout.dialogs.center.params : {}} />

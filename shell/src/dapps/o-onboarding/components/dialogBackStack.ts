@@ -1,23 +1,23 @@
 import {assign, createMachine, sendParent} from "xstate";
-import {SHOW_PAGE} from "./dialog";
+import {SET_CONTENT} from "./dialog";
 
 export type DialogBackStackContext = {
-    stack: SHOW_PAGE[],
-    poppedItem: SHOW_PAGE
+    stack: SET_CONTENT[],
+    poppedItem: SET_CONTENT
 }
 
 export type DialogBackStackEvent = {
     type: "PUSH",
-    content: SHOW_PAGE
+    content: SET_CONTENT
 } | {
     type: "PUSHED",
-    content: SHOW_PAGE,
+    content: SET_CONTENT,
     size: number
 } | {
     type: "POP"
 } | {
     type: "POPPED",
-    content: SHOW_PAGE,
+    content: SET_CONTENT,
     size: number
 }
 

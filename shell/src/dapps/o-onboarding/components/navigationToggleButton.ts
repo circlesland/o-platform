@@ -10,8 +10,8 @@ export type ToggleButtonContext = {
     icons: { on: string, off: string }
 };
 
-export type ELEMENT_CHANGED = {
-    type: "ELEMENT_CHANGED",
+export type NAV_ELEMENT_CHANGED = {
+    type: "NAV_ELEMENT_CHANGED",
     position: string;
     element: NavigationElement
 }
@@ -32,7 +32,7 @@ export type ToggleButtonEvent = {
     type: "SHOW"
 } | {
     type: "VISIBLE"
-} | ELEMENT_CHANGED;
+} | NAV_ELEMENT_CHANGED;
 
 export const navigationToggleButton = createMachine<ToggleButtonContext, ToggleButtonEvent>({
     context: {
@@ -125,7 +125,7 @@ export const navigationToggleButton = createMachine<ToggleButtonContext, ToggleB
         }),
         sendElementChanged: sendParent((ctx) => {
             return {
-                type: "ELEMENT_CHANGED",
+                type: "NAV_ELEMENT_CHANGED",
                 element: ctx.element,
                 position: ctx.position
             }

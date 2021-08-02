@@ -6,7 +6,7 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
-  // console.log("ROUTABLE: ", routable);
+  // console.log("ROUTABLE: ", nextRoutable);
   // console.log("runtimeDapp: ", runtimeDapp);
 </script>
 

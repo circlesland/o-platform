@@ -16,14 +16,21 @@
   // import Swiper core and required modules
   import SwiperCore, {Pagination, Navigation} from "swiper/core";
   import Layout from "../../dapps/o-onboarding/layouts/Layout.svelte";
+  import ProcessContainer from "../../shared/molecules/ProcessContainer.svelte";
+  import LinkComponent from "../../shared/molecules/NextNav/Components/Link.svelte";
+  import ListComponent from "../../shared/molecules/NextNav/Components/List.svelte";
+  import ActionButtonComponent from "../../shared/molecules/NextNav/Components/ActionButton.svelte";
   import {RuntimeLayout} from "../../dapps/o-onboarding/layouts/layout";
+  import NavigationList from "../../dapps/o-onboarding/views/NavigationList.svelte";
   import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
-  import LinkComponent from "./NextNav/Components/Link.svelte";
-  import ListComponent from "./NextNav/Components/List.svelte";
-  import ActionButtonComponent from "./NextNav/Components/ActionButton.svelte";
-  import {interpret, Interpreter} from "xstate";
-  import {dappFrame} from "../../dapps/o-onboarding/components/dappFrame";
-  import {SHOW_PROCESS} from "../../dapps/o-onboarding/components/dialog";
+  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {findDappById} from "../functions/findDappById";
+  import {RuntimeDapps} from "../../runtimeDapps";
+  import {findRoutableByParams} from "../functions/findRoutableByParams";
+  import {pop, push} from "svelte-spa-router";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {run} from "svelte/internal";
 
   // install Swiper modules
   SwiperCore.use([Navigation, Pagination]);
@@ -41,6 +48,7 @@
   let lastParamsJson: string = "";
   let identityChecked: boolean = false;
   let dappFrameState:  any;
+  let nextRoutable: Routable|undefined;
 
   let layout: RuntimeLayout = <RuntimeLayout>{
       main: undefined,
@@ -48,8 +56,7 @@
           left: undefined,
           center: undefined,
           right: undefined
-      },
-      a: null
+      }
   };
 
   let navigation: NavigationManifest = {
@@ -58,7 +65,26 @@
           props: {
               icon: "list",
               action: () => {
-                  clickedOutside({position: "left"})
+                  // TODO: Expand collapse nav
+                  navigation.leftSlot.props.icon =
+                      navigation.leftSlot.props.icon === "list"
+                          ? "simplearrowleft"
+                          : "list";
+
+                  if (navigation.leftSlot.props.icon === "list") {
+
+                  } else {
+                      // TODO: Open nav
+                      layout.dialogs.left = {
+                          isOpen: true,
+                          component: NavigationList,
+                          routable: null,
+                          runtimeDapp: null,
+                          params: {
+                          }
+                      }
+                  }
+                  // forwardNavEvent({position: "left"})
               },
           },
       },
@@ -76,7 +102,7 @@
               props: {
                   icon: "logo",
                   action: () => {
-                      clickedOutside({position: "center"})
+                      // forwardNavEvent({position: "center"})
                   }
               },
           },
@@ -85,6 +111,7 @@
               props: {
                   icon: "home",
                   action: () => {
+                      push("#/dashboard")
                   },
               },
           },
@@ -106,38 +133,11 @@
                   startedEvent.responseToId = runProcessEvent.id;
                   window.o.publishEvent(startedEvent);
                   break;
-              case "shell.navigation.left.click":
-                  console.log("shell.navigation.left.click")
-                  dappFrameState.send({type: "NAVIGATION_CLICK", position: "left"});
-                  break;
-              case "shell.navigation.center.click":
-                  console.log("shell.navigation.center.click")
-                  dappFrameState.send({type: "NAVIGATION_CLICK", position: "center"});
-                  break;
-              case "shell.navigation.right.click":
-                  console.log("shell.navigation.right.click")
-                  dappFrameState.send({type: "NAVIGATION_CLICK", position: "right"});
-                  break;
               case "process.stopped":
-                  dappFrameState.send({type: "PROCESS_STOPPED"});
+                  await hideCenter();
                   break;
           }
       });
-      dappFrameState = interpret(dappFrame)
-          .onEvent(event => {
-              // console.log("dappFrameState event:", event);
-              if (event.type === "LAYOUT_CHANGED") {
-                  console.log("LAYOUT CHANGED:", event)
-                  layout = (<any>event).layout;
-              }
-              if (event.type === "NAVIGATION_CHANGED") {
-                  navigation = (<any>event).navigation;
-              }
-          })
-          .onTransition(state => {
-              // console.log("dappFrameState state:", state.value)
-          })
-          .start();
 
       // Set the global "runProcess" function. This needs to be done here
       // because before the dialog wouldn't be ready.
@@ -154,14 +154,27 @@
               };
               return ctx;
           };
+
           const requestEvent: any = new RunProcess(shellProcess, true, modifier);
           requestEvent.id = Generate.randomHexString(8);
 
           const processStarted: ProcessStarted = await window.o.requestEvent<ProcessStarted>(requestEvent);
-          dappFrameState.send(<SHOW_PROCESS>{
-              type: "SHOW_PROCESS",
-              processId: processStarted.processId
-          });
+          const process = window.o.stateMachines.findById(processStarted.processId);
+
+          // TODO: Show process
+          layout = {
+              ...layout,
+              dialogs: {
+                  ...layout.dialogs,
+                  center: {
+                      component: ProcessContainer,
+                      params: {process},
+                      isOpen: true,
+                      runtimeDapp: null,
+                      routable: null
+                  }
+              }
+          }
       };
 
       if (!identityChecked) {
@@ -172,25 +185,173 @@
 
   $: {
       const paramsJson = JSON.stringify(params);
-      if (dappFrameState && lastParamsJson !== paramsJson) {
-          dappFrameState.send(<SHOW_PROCESS>{
-              type: "URL_CHANGED",
-              ...params
-          });
+      if (lastParamsJson !== paramsJson) {
+          handleUrlChanged();
+          lastParamsJson = paramsJson;
       }
   }
 
-  function clickedOutside(e:any) {
-      switch (e.detail.position) {
-          case "left":
-              dappFrameState.send({type: "NAVIGATION_CLICK", position: "left"});
-              break;
-          case "center":
-              dappFrameState.send({type: "NAVIGATION_CLICK", position: "center"});
-              break;
-          case "right":
-              dappFrameState.send({type: "NAVIGATION_CLICK", position: "right"});
-              break;
+  async function handleUrlChanged() {
+      const dapp = findDappById(params.dappId);
+      const runtimeDapp = dapp ? await RuntimeDapps.instance().getRuntimeDapp(dapp) : null;
+      if (!runtimeDapp)
+          throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
+
+      const findRouteResult = findRoutableByParams(runtimeDapp, params);
+      if (!findRouteResult.found) {
+          throw new Error(`Couldn't find a routable for params: \n${JSON.stringify(params, null, 2)}`);
+      }
+
+      nextRoutable = findRouteResult.routable;
+
+      if (findRouteResult.routable.type === "page") {
+          const page:Page<any,any> = <any>findRouteResult.routable;
+          if (page.position === "modal") {
+              showModalPage(runtimeDapp, page, findRouteResult.params);
+          } else {
+              await hideCenter();
+              showMainPage(runtimeDapp, page, findRouteResult.params);
+          }
+      }
+
+      setNav(runtimeDapp, nextRoutable, findRouteResult.params);
+  }
+
+  function showModalProcess(processId: string) {
+      const process = window.o.stateMachines.findById(processId);
+      layout = {
+          ...layout,
+          dialogs: {
+              ...layout.dialogs,
+              center: {
+                  component: ProcessContainer,
+                  params: {process},
+                  isOpen: true,
+                  runtimeDapp: null,
+                  routable: null
+              }
+          }
+      }
+
+      navigation.navPill.center = {
+          component: ActionButtonComponent,
+          props: {
+              icon: "close",
+              action: () => {
+                  // TODO: cancel process
+                  layout.dialogs.center.isOpen = false;
+              }
+          }
+      };
+  }
+
+  function setNav(runtimeDapp:RuntimeDapp<any>, routable:Routable, params:{[x:string]:any}) {
+      if (layout.dialogs.center && layout.dialogs.center.isOpen) {
+          navigation.leftSlot = null;
+          navigation.rightSlot = null;
+      } else {
+          navigation.leftSlot = {
+              component: LinkComponent,
+              props: {
+                  icon: "list",
+                  action: () => {
+                      // TODO: Expand collapse nav
+                      navigation.leftSlot.props.icon =
+                          navigation.leftSlot.props.icon === "list"
+                              ? "simplearrowleft"
+                              : "list";
+
+                      if (navigation.leftSlot.props.icon === "list") {
+                          // TODO: Close nav
+                          layout.dialogs.left = {
+                              isOpen: false,
+                              component: NavigationList,
+                              routable: null,
+                              runtimeDapp: null,
+                              params: {
+                              }
+                          }
+                      } else {
+                          // TODO: Open nav
+                          layout.dialogs.left = {
+                              isOpen: true,
+                              component: NavigationList,
+                              routable: null,
+                              runtimeDapp: null,
+                              params: {
+                              }
+                          }
+                      }
+                      // forwardNavEvent({position: "left"})
+                  },
+              },
+          };
+      }
+
+      if (runtimeDapp.navigation) {
+          if (runtimeDapp.navigation.leftSlot) {
+              navigation.leftSlot = runtimeDapp.navigation.leftSlot;
+          }
+          if (runtimeDapp.navigation.navPill) {
+              if (runtimeDapp.navigation.navPill.left) {
+
+              }
+              if (runtimeDapp.navigation.navPill.right) {
+
+              }
+              navigation.leftSlot = runtimeDapp.navigation.rightSlot;
+          }
+          if (runtimeDapp.navigation.rightSlot) {
+              navigation.leftSlot = runtimeDapp.navigation.rightSlot;
+          }
+      }
+  }
+
+  function showModalPage(runtimeDapp:RuntimeDapp<any>, routable:Page<any, any>, params:{[x:string]:any}) {
+      layout = {
+          ...layout,
+          dialogs: {
+              ...layout.dialogs,
+              center: {
+                  component: routable.component,
+                  params: params,
+                  isOpen: true,
+                  runtimeDapp: runtimeDapp,
+                  routable: routable
+              }
+          }
+      }
+  }
+
+  function showMainPage(runtimeDapp:RuntimeDapp<any>, routable:Page<any, any>, params:{[x:string]:any}) {
+      layout = {
+          ...layout,
+          main: {
+              component: routable.component,
+              params: params,
+              isOpen: true,
+              runtimeDapp: runtimeDapp,
+              routable: routable
+          }
+      }
+  }
+
+  async function hideCenter() {
+      if (layout.dialogs.center
+          && layout.dialogs.center.routable
+          && layout.dialogs.center.routable.type === "page"
+          && nextRoutable.type === "page"
+          && (<any>nextRoutable).position === "modal") {
+          await pop();
+          return;
+      } else {
+          layout = {
+              ...layout,
+              dialogs: {
+                  ...layout.dialogs,
+                  center: null
+              }
+          }
       }
   }
 
@@ -198,4 +359,5 @@
 
 <Layout layout={layout}
         navigation={navigation}
+        on:clickedOutside={() => { hideCenter() }}
         sliderPages={[]}/>

@@ -29,8 +29,8 @@
   */
   onMount(() => {
     /*
-    if (routable.type === "page") {
-      jumplist = (<Page<any, any>>routable).jumplist;
+    if (nextRoutable.type === "page") {
+      jumplist = (<Page<any, any>>nextRoutable).jumplist;
     } else {
       jumplist = undefined;
     }

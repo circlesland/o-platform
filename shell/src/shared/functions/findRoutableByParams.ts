@@ -9,7 +9,7 @@ export type FindRouteResult = {
 };
 
 /**
- * Tries to find a routable in the dappManifest that matches with the names and count of the supplied params.
+ * Tries to find a nextRoutable in the dappManifest that matches with the names and count of the supplied params.
  * @param dappManifest
  * @param params
  */
