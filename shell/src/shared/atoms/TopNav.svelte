@@ -6,8 +6,8 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
-  console.log("ROUTABLE: ", routable);
-  console.log("runtimeDapp: ", runtimeDapp);
+  // console.log("ROUTABLE: ", routable);
+  // console.log("runtimeDapp: ", runtimeDapp);
 </script>
 
 <div class="fixed top-0 left-0 z-10 w-full">

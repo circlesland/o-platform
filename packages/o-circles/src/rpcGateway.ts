@@ -203,7 +203,7 @@ export class RpcGateway {
         this._provider = providerInstance;
         this._web3.setProvider(this._provider);
 
-        console.log(`Set the RPC gateway to ${nextProvider}`)
+        // console.log(`Set the RPC gateway to ${nextProvider}`)
 
         const o: any = (<any>window).o;
         if (o) {

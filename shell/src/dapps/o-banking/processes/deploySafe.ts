@@ -195,7 +195,7 @@ createMachine<HubSignupContext, any>({
           localStorage.removeItem("signsUpAtCircles");
           localStorage.setItem("hubSignup", new Date().toJSON());
           localStorage.setItem("lastUBI", new Date().toJSON());
-          console.log("Signed up at hub:", receipt);
+          // console.log("Signed up at hub:", receipt);
         },
         onDone: "#success",
         onError: "#error"

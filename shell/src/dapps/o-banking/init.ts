@@ -73,9 +73,9 @@ export async function init() {
     unsubscribeMe();
   }
 
-  console.log(`banking:1 subscribes to $me ..`);
+  // console.log(`banking:1 subscribes to $me ..`);
   unsubscribeMe = me.subscribe(async (profileOrNull) => {
-    console.log(`banking:1 $me changed:`, profileOrNull);
+    // console.log(`banking:1 $me changed:`, profileOrNull);
     profile = profileOrNull;
     if (
       !bankingInstance &&
@@ -91,7 +91,7 @@ export async function init() {
       mountTrigger.trigger();
     }
   });
-  console.log(`banking:1 subscribed to $me`);
+  // console.log(`banking:1 subscribed to $me`);
 
   shellEventSubscription = window.o.events.subscribe(
     async (
@@ -145,7 +145,7 @@ function reportProgress(
       data: safe,
     };
 
-    console.log(`shell.refresh:`, refreshEvent);
+    // console.log(`shell.refresh:`, refreshEvent);
     window.o.publishEvent(refreshEvent);
   }
 
@@ -169,13 +169,13 @@ async function subscribeChainEvents(safe: Safe) {
   if (safe && RpcGateway.get().utils.isAddress(safe.safeAddress)) {
     blockChainEventsSubscription = Queries.tokenEvents(safe).subscribe(
       (event: any) => {
-        console.log("NEW TRANSFER EVENT:", event);
+        // console.log("NEW TRANSFER EVENT:", event);
         transferTrigger.trigger();
       }
     );
 
     (await Queries.trustEvents(safe)).subscribe((event: any) => {
-      console.log("NEW TRUST EVENT:", event);
+      // console.log("NEW TRUST EVENT:", event);
       /*
       returnValues: Result
       0: "0xf3acd805F1715C41a2A5DbEfb473cdB7890114EA"
@@ -189,10 +189,10 @@ async function subscribeChainEvents(safe: Safe) {
         event.returnValues?.user == safe.safeAddress &&
         event.returnValues?.canSendTo == safe.safeAddress
       ) {
-        console.log(
+       /* console.log(
           "Ignoring trust event because its only subject is the own safe:",
           event
-        );
+        );*/
         return;
       }
       trustTrigger.trigger();

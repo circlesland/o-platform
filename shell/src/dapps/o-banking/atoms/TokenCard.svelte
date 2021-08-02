@@ -23,7 +23,7 @@
       pictureUrl = AvataarGenerator.generate(token.tokenOwner);
     }
 
-    console.log("TOKEN: ", token);
+    // console.log("TOKEN: ", token);
   }
 
   function loadDetailPage(path) {

@@ -92,7 +92,7 @@ export function promptFile<
     states: {
       checkPreviewFile: {
         id: id("checkPreviewFile"),
-        entry: () => console.log(`checkPreviewFile entry`),
+        // entry: () => console.log(`checkPreviewFile entry`),
         always: [
           {
             cond: (context) => {
@@ -107,7 +107,7 @@ export function promptFile<
       },
       previewFile: prompt<TContext, any>({
         id: id("previewFile"),
-        entry: () => console.log(`previewFile entry`),
+        // entry: () => console.log(`previewFile entry`),
         field: spec.field,
         onlyWhenDirty: spec.onlyWhenDirty,
         component: EditorView,
@@ -126,7 +126,7 @@ export function promptFile<
       }),
       checkEditFile: {
         id: id("checkEditFile"),
-        entry: () => console.log(`checkEditFile entry`),
+        // entry: () => console.log(`checkEditFile entry`),
         always: [
           {
             cond: (context) => {
@@ -146,7 +146,7 @@ export function promptFile<
       },
       editFile: prompt<TContext, any>({
         id: id("editFile"),
-        entry: () => console.log(`editFile entry`),
+        // entry: () => console.log(`editFile entry`),
         field: {
           name: "file",
           get: () => {
@@ -154,7 +154,7 @@ export function promptFile<
             return file ?? {};
           },
           set: (o) => {
-            console.log("Setting 'file' to:", o);
+            // console.log("Setting 'file' to:", o);
             file = o;
           },
         },
@@ -175,7 +175,7 @@ export function promptFile<
       }),
       uploadOrSkip: {
         id: id("uploadOrSkip"),
-        entry: () => console.log(`uploadOrSkip entry`),
+        // entry: () => console.log(`uploadOrSkip entry`),
         always: [
           {
             cond: (context) => {
@@ -202,7 +202,7 @@ export function promptFile<
           ...(<any>ipc(id("uploadFile"))),
         },
         entry: () => {
-          console.log(`uploadFile entry`);
+          // console.log(`uploadFile entry`);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
             message: `Uploading your file ..`,

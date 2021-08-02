@@ -71,7 +71,7 @@
             answer.type == "process.continue" &&
             (<any>answer).data.___cancelRequest
           ) {
-            console.log("Cancel dialog answer:", answer);
+            // console.log("Cancel dialog answer:", answer);
             if ((<any>answer).data.___cancelRequest.key === "no") {
               prompt = beforeCancelPrompt;
               beforeCancelPrompt = null;
@@ -127,15 +127,16 @@
       inEventSubscription = process.inEvents.subscribe((next) => {
         if (!next.event) return;
 
-        console.log(
+        /*console.log(
           "ProcessContainer: In/Out -> to Process: ",
           JSON.stringify(next.event, null, 2)
         );
+         */
 
         if (next.event.type === "process.cancelRequest") {
           // modalWantsToClose:
           // TODO: Check the context's dirty flags and ask the user only if at least one dirty-flag is set
-          console.log("Received cancel request:", next.event);
+          // console.log("Received cancel request:", next.event);
           beforeCancelPrompt = prompt;
 
           if (
@@ -205,7 +206,7 @@
           prompt = null;
           process = null;
           waiting = false;
-          console.log("ProcessContainer.svelte: process stopped");
+          // console.log("ProcessContainer.svelte: process stopped");
           dispatch("stopped");
         }
 
@@ -237,10 +238,10 @@
         }
 
         try {
-          console.log(
+          /*console.log(
             "ProcessContainer: In/Out <- from Process: ",
             JSON.stringify(next.event, null, 2)
-          );
+          );*/
         } catch {}
 
         // If the event is an error event, then set the error property else clear it
@@ -261,10 +262,10 @@
         // was sent from the prompt to the process.
         // The loading spinner will be disabled with the next arriving 'prompt'.
         if (event.type === "process.prompt") {
-          console.log(
+          /* console.log(
             "ProcessContainer received 'process.prompt' event: ",
             next
-          );
+          );*/
           prompt = <PromptEvent>{
             ...event,
             editorDirtyFlags: {},

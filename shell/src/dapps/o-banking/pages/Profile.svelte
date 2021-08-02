@@ -41,13 +41,13 @@
           return;
         }
         await loadProfile();
-        console.log("AWAIT LOADPRO");
+        // console.log("AWAIT LOADPRO");
       }
     );
 
     if (id) {
       isLoading = true;
-      console.log("LOADPRO IF CONTEXT");
+      // console.log("LOADPRO IF CONTEXT");
       loadProfile();
     }
   });
@@ -55,7 +55,7 @@
   $: {
     if (id) {
       isLoading = true;
-      console.log("LOADPRO NOCHMAL");
+      // console.log("LOADPRO NOCHMAL");
       loadProfile();
     }
     if ($me) {
@@ -94,7 +94,7 @@
   } = {};
 
   async function loadProfile() {
-    console.log("LOADING PROFILE!!!");
+    // console.log("LOADING PROFILE!!!");
     if (!id) {
       console.warn(
         `No profile specified ('id' must contain safeAddress or profileId)`
@@ -115,7 +115,7 @@
     isLoading = false;
     name = profile.safeAddress;
 
-    console.log("PROFILE: ", profile);
+    // console.log("PROFILE: ", profile);
   }
 
   function loadTrustRelation(

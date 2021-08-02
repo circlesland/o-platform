@@ -20,8 +20,10 @@ export type ToggleButtonEvent = {
     type: "TOGGLE"
 } | {
     type: "OFF"
+    position: string;
 } | {
     type: "ON"
+    position: string;
 } | {
     type: "HIDE"
 } | {
@@ -85,8 +87,14 @@ export const navigationToggleButton = createMachine<ToggleButtonContext, ToggleB
     }
 }, {
     actions: {
-        sendOn: sendParent({type: "ON"}),
-        sendOff: sendParent({type: "OFF"}),
+        sendOn: sendParent((ctx) => {
+            console.log("SENDING ON")
+            return { type: "ON", position: ctx.position }
+        }),
+        sendOff: sendParent((ctx) => {
+            console.log("SENDING OFF")
+            return { type: "OFF", position: ctx.position }
+        }),
         sendHidden: sendParent({type: "HIDDEN"}),
         sendVisible: sendParent({type: "VISIBLE"}),
         setOnNavigationElement: assign({

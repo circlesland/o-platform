@@ -107,12 +107,15 @@
                   window.o.publishEvent(startedEvent);
                   break;
               case "shell.navigation.left.click":
+                  console.log("shell.navigation.left.click")
                   dappFrameState.send({type: "NAVIGATION_CLICK", position: "left"});
                   break;
               case "shell.navigation.center.click":
+                  console.log("shell.navigation.center.click")
                   dappFrameState.send({type: "NAVIGATION_CLICK", position: "center"});
                   break;
               case "shell.navigation.right.click":
+                  console.log("shell.navigation.right.click")
                   dappFrameState.send({type: "NAVIGATION_CLICK", position: "right"});
                   break;
               case "process.stopped":
@@ -122,15 +125,18 @@
       });
       dappFrameState = interpret(dappFrame)
           .onEvent(event => {
-              console.log("dappFrameState event:", event);
+              // console.log("dappFrameState event:", event);
               if (event.type === "LAYOUT_CHANGED") {
+                  console.log("LAYOUT CHANGED:", event)
                   layout = (<any>event).layout;
               }
               if (event.type === "NAVIGATION_CHANGED") {
                   navigation = (<any>event).navigation;
               }
           })
-          .onTransition(state => {console.log("dappFrameState state:", state.value)})
+          .onTransition(state => {
+              // console.log("dappFrameState state:", state.value)
+          })
           .start();
 
       // Set the global "runProcess" function. This needs to be done here
@@ -192,5 +198,4 @@
 
 <Layout layout={layout}
         navigation={navigation}
-        sliderPages={[]}
-        on:clickedOutside={clickedOutside} />
+        sliderPages={[]}/>

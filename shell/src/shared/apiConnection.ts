@@ -51,7 +51,7 @@ export class ApiConnection
     };
 
     public connect() : ApolloClient<NormalizedCacheObject> {
-        console.log("apollo client is connecting to: ", this._apiEndpointUrl);
+        // console.log("apollo client is connecting to: ", this._apiEndpointUrl);
 
         const httpLink = new HttpLink({
             fetch: fetch,
@@ -65,7 +65,7 @@ export class ApiConnection
             defaultOptions: ApiConnection._defaultOptions
         });
 
-        console.log("apollo client is now connected to: ", this._apiEndpointUrl);
+        // console.log("apollo client is now connected to: ", this._apiEndpointUrl);
 
         return client;
     }

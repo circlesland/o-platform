@@ -29,7 +29,7 @@ export function findRoutableByParams(dappManifest:DappManifest<any>, params: { [
         (o) => o.routeParts.length == routePartsFromParams.length
     );
 
-    console.log("Possible routes (same length):", possibleRoutes);
+    // console.log("Possible routes (same length):", possibleRoutes);
 
     for (let route of possibleRoutes) {
         const exactParts = route.routeParts
@@ -42,7 +42,7 @@ export function findRoutableByParams(dappManifest:DappManifest<any>, params: { [
 
             if (arraysEqual(exactParts, overlapFromParams)) {
                 matchingRoute = route;
-                console.log("Matching route:", route);
+                // console.log("Matching route:", route);
 
                 const remainingParamsSpec = route.routeParts
                     .slice(exactParts.length)

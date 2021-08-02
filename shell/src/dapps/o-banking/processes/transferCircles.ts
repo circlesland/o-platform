@@ -147,11 +147,11 @@ createMachine<TransferCirclesContext, any>({
                   }
                 }
               });
-              console.log(indexedTransaction);
+              // console.log(indexedTransaction);
             });
 
             const receipt = await transferTroughResult.toPromise();
-            console.log(receipt);
+            // console.log(receipt);
           } catch (e) {
             console.error(e);
             throw e;

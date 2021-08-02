@@ -15,13 +15,13 @@ export const DetailActionFactory = (
   title: string
 ) => {
   const sayHello = () => {
-    console.log("hello Action! ", title);
+    // console.log("hello Action! ", title);
   };
   const getProps = () => {
-    console.log("hello Props! ", props);
+    // console.log("hello Props! ", props);
   };
   const executeAction = () => {
-    console.log("I am executing this now", action);
+    // console.log("I am executing this now", action);
     executeFunctionByName(action, window, props);
   };
   return { action, props, icon, title, sayHello, getProps, executeAction };

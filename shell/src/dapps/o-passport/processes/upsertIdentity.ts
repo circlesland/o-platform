@@ -233,7 +233,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         type: "final",
         id: "success",
         data: (context, event: any) => {
-          console.log(`enter: upsertIdentity.success`, context.data);
+          //console.log(`enter: upsertIdentity.success`, context.data);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.authenticated",
             profile: event.data,

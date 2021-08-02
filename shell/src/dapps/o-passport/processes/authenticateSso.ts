@@ -28,7 +28,7 @@ createMachine<AuthenticateSsoContext, any>({
 
     requestDelegateAuthCode: {
       id: "requestDelegateAuthCode",
-      entry: () => console.log(`Enter: authenticateSso.requestDelegateAuthCode`),
+      // entry: () => console.log(`Enter: authenticateSso.requestDelegateAuthCode`),
       invoke: {
         src: async (context) => {
           const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -63,7 +63,7 @@ createMachine<AuthenticateSsoContext, any>({
     },
     requestChallenge: {
       id: "requestChallenge",
-      entry: () => console.log(`Enter: authenticateSso.requestChallenge`),
+      // entry: () => console.log(`Enter: authenticateSso.requestChallenge`),
       invoke: {
         src: async (context) => {
           const authClient = await window.o.authClient.client.subscribeToResult();
@@ -96,7 +96,7 @@ createMachine<AuthenticateSsoContext, any>({
     },
     consumeChallenge: {
       id: "consumeChallenge",
-      entry: () => console.log(`Enter: authenticateSso.consumeChallenge`),
+      // entry: () => console.log(`Enter: authenticateSso.consumeChallenge`),
       invoke: {
         src: async (context) => {
           if(new Date(context.data.delegateAuthCodeValidTo) < new Date()){
@@ -132,7 +132,7 @@ createMachine<AuthenticateSsoContext, any>({
     // Exchange it for the actual token and redirect the user to the application.
     exchangeCodeForToken: {
       id: "exchangeCodeForToken",
-      entry: () => console.log(`Enter: authenticateSso.exchangeCodeForToken`),
+      // entry: () => console.log(`Enter: authenticateSso.exchangeCodeForToken`),
       invoke: {
         src: async (context) => {
           const authClient = await window.o.authClient.client.subscribeToResult();
@@ -168,7 +168,7 @@ createMachine<AuthenticateSsoContext, any>({
     },
     success: {
       id: "success",
-      entry: () => console.log(`Enter: authenticateSso.success`),
+      // entry: () => console.log(`Enter: authenticateSso.success`),
       type: "final",
       data: (context) => {
         return context.data;

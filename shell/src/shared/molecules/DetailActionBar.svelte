@@ -3,7 +3,7 @@
 
   export let actions: any;
 
-  console.log("ACTIONS: ", actions);
+  // console.log("ACTIONS: ", actions);
 </script>
 
 <div class="flex flex-row justify-between p-2 text-dark">

@@ -23,7 +23,7 @@
   }
 
   function edit(dirtyFlags: { [field: string]: boolean }) {
-    console.log("edit: dirtyFlags:", dirtyFlags);
+    // console.log("edit: dirtyFlags:", dirtyFlags);
 
     window.o.runProcess({
       id: upsertOffer.id,

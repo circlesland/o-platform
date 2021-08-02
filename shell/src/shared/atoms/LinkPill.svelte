@@ -7,7 +7,7 @@
     extern: boolean = false;
     isActive: boolean = false;
   };
-  console.log("PROPS", props);
+  // console.log("PROPS", props);
 </script>
 
 <a

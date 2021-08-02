@@ -1,5 +1,5 @@
 import {assign, createMachine, send, spawn} from "xstate";
-import {CONTENT_CHANGED, dialogMachine, SHOW_NAVIGATION, SHOW_PAGE, SHOW_PROCESS} from "./dialog";
+import {CONTENT_CHANGED, dialogMachine, SHOW_PAGE, SHOW_PROCESS} from "./dialog";
 import {isMobile} from "../../../shared/functions/isMobile";
 import NotFound from "../../../shared/pages/NotFound.svelte";
 import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
@@ -55,6 +55,12 @@ export type DappFrameStateEvent = {
     type: "CLOSED",
     position: string
 } | {
+    type: "ON",
+    position: string
+} | {
+    type: "OFF",
+    position: string
+} | {
     type: "OPENED",
     position: string
 } | ELEMENT_CHANGED | {
@@ -89,33 +95,37 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
     },
     on: {
         CONTENT_CHANGED: [{
-            cond: (ctx, event) => event.position === "main",
-            actions: ["setMainContent", "sendLayoutChanged"]
-        }, {
-            cond: (ctx, event) => event.position === "center",
-            actions: ["setCenterContent", "sendLayoutChanged"]
-        }, {
-            cond: (ctx, event) => event.position === "left",
-            actions: ["setLeftContent", "sendLayoutChanged"]
+            actions: ["setContent", "sendLayoutChanged"]
         }],
         ELEMENT_CHANGED: [{
             cond: (ctx, event) => event.position === "left",
-            actions: ["setLeftNav", "sendNavigationChanged"]
-        },{
-            cond: (ctx, event) => event.position === "right",
-            actions: ["setRightNav", "sendNavigationChanged"]
-        },{
-            cond: (ctx, event) => event.position === "center",
-            actions: ["setCenterNav", "sendNavigationChanged"]
+            actions: ["setNav", "sendNavigationChanged"]
         }],
         CLOSED: {
-            cond: (ctx, event) => event.position === "center",
-            actions: ["setModalIsOpen", "sendLayoutChanged"]
+            actions: ["setIsOpen", "sendLayoutChanged"]
         },
         OPENED: {
-            cond: (ctx, event) => event.position === "center",
-            actions: ["setModalIsOpen", "sendLayoutChanged"]
+            actions: ["setIsOpen", "sendLayoutChanged"]
         },
+        ON: {
+            // actions: send((ctx, event) => event)
+        },
+        OFF: [{
+            cond: (ctx, event) => {
+                return event.position === "left"
+            },
+            actions: [send({type: "CLOSE"}, {to: (ctx) => ctx._leftDialog})]
+        }, {
+            cond: (ctx, event) => {
+                return event.position === "center"
+            },
+            actions: [send({type: "CLOSE"}, {to: (ctx) => ctx._centerDialog})]
+        }, {
+            cond: (ctx, event) => {
+                return event.position === "right"
+            },
+            actions: [send({type: "CLOSE"}, {to: (ctx) => ctx._rightDialog})]
+        }],
         NAVIGATION_CLICK: [{
             cond: (ctx, event) => {
                 return event.position === "left"
@@ -188,12 +198,12 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
     states: {
         empty: {
             entry: [
-                () => console.log("Spawning dialog actors .."),
+                // () => console.log("Spawning dialog actors .."),
                 assign({
-                    _mainDialog: () => spawn(dialogMachine.withContext({position: "main", _backStack: null})),
-                    _leftDialog: () => spawn(dialogMachine.withContext({position: "left", _backStack: null})),
-                    _centerDialog: () => spawn(dialogMachine.withContext({position: "center", _backStack: null})),
-                    _rightDialog: () => spawn(dialogMachine.withContext({position: "right", _backStack: null})),
+                    _mainDialog: () => spawn(dialogMachine.withContext({position: "main"})),
+                    _leftDialog: () => spawn(dialogMachine.withContext({position: "left"})),
+                    _centerDialog: () => spawn(dialogMachine.withContext({position: "center"})),
+                    _rightDialog: () => spawn(dialogMachine.withContext({position: "right"})),
                     _leftNavButton: () => spawn(navigationToggleButton.withContext({
                         position: "left",
                         icons: {off: "list", on: "buttonleftarrow"},
@@ -224,7 +234,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             }
         },
         loadRuntimeDapp: {
-            entry: [() => console.log("loadRuntimeDapp"),/*
+            entry: [/*() => console.log("loadRuntimeDapp"),/*
                 ctx => {
                     if (!isMobile()) {
                         send({
@@ -260,7 +270,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             }
         },
         loadRoutable: {
-            entry: [() => console.log("loadRoutable"), "findAndSetRoutable"],
+            entry: [/*() => console.log("loadRoutable"),*/ "findAndSetRoutable"],
             always: [{
                 cond: "hasRoutable",
                 target: "showPage"
@@ -270,10 +280,10 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             }]
         },
         showPage: {
-            entry: () => console.log("showPage"),
+            // entry: () => console.log("showPage"),
             always: [{
                 cond: "routableIsMainContent",
-                actions: ["showRoutableAsMainContent", send({type: "CLOSE"}, {to: (ctx) => ctx._centerDialog})],
+                actions: "showRoutableAsMainContent",
                 target: "ready"
             }, {
                 cond: "routableIsModalContent",
@@ -335,14 +345,14 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
         hasRuntimeDapp: (ctx) => !!ctx.runtimeDapp,
         noRuntimeDapp: (ctx) => !ctx.runtimeDapp,
         hasRoutable: (ctx) => {
-            console.log("hasRoutable:", !!ctx.routable)
+            // console.log("hasRoutable:", !!ctx.routable)
             return !!ctx.routable
         },
         noRoutable: (ctx) => !ctx.routable
     },
     services: {
         findAndSetRuntimeDapp: async (ctx, event) => {
-            console.log("findAndSetRuntimeDapp:", event)
+            // console.log("findAndSetRuntimeDapp:", event)
             if (event.type !== "URL_CHANGED")
                 throw new Error(`Expected a URL_CHANGED event but got ${event.type}.`);
 
@@ -356,7 +366,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
     actions: {
         findAndSetRoutable: assign({
             routable: (ctx, event) => {
-                console.log("findAndSetRoutable:", event)
+                // console.log("findAndSetRoutable:", event)
                 if (event.type != "URL_CHANGED")
                     throw new Error(`Expected a URL_CHANGED event but got ${event.type}.`);
 
@@ -387,193 +397,97 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
         }, {
             to: ctx => ctx._mainDialog
         }),
-        openNavigation: send((ctx) => {
-            console.log("openNavigation")
-            if (!ctx.runtimeDapp)
-                throw new Error(`The "runtimeDapp" is not set on the context.`);
-            if (!ctx.routable)
-                throw new Error(`The "routable" is not set on the context.`);
-
-            return <SHOW_NAVIGATION>{
-                type: "SHOW_NAVIGATION",
-                runtimeDapp: ctx.runtimeDapp,
-                currentRoutable: ctx.routable.routable
-            }
-        }, {
-            to: (ctx) => ctx._leftDialog
-        }),
-        closeNavigation: send({
-            type: "CLOSE"
-        }, {
-            to: (ctx) => ctx._leftDialog
-        }),
-        setMainContent: assign({
+        setIsOpen: assign({
             layout: (ctx, event) => {
-                console.log("setMainContent")
-                if (event.type != "CONTENT_CHANGED")
-                    throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
-                if (event.position !== "main")
-                    throw new Error(`Expected a CONTENT_CHANGED event with position "main" but got ${event.position}.`);
-
-                return <RuntimeLayout>{
-                    ...ctx.layout,
-                    main: {
-                        ...event.content,
-                        runtimeDapp: ctx.runtimeDapp,
-                        routable: ctx.routable.routable,
-                        params: event.content.params
-                    }
-                };
-            }
-        }),
-        setModalIsOpen: assign({
-            layout: (ctx, event) => {
-                console.log("setModalIsOpen", event)
                 if (event.type != "OPENED" && event.type != "CLOSED")
                     throw new Error(`Expected one of OPENED, CLOSED events but got ${event.type}.`);
-                if (event.position !== "center")
-                    throw new Error(`Expected one of OPENED, CLOSED events with position "center" but got ${event.position}.`);
 
-                console.log("setModalIsOpen->currentLayout:", ctx.layout);
-
-                const newLayout = <RuntimeLayout>{
-                    ...ctx.layout,
-                    dialogs: {
-                        ...ctx.layout.dialogs,
-                        center: {
-                            ...ctx.layout.dialogs.center,
-                            isOpen: event.type === "OPENED"
-                        }
-                    }
+                const newLayout = {
+                    ...ctx.layout
                 };
 
-                console.log("setModalIsOpen->newLayout:", newLayout);
+                const isOpen = event.type === "OPENED";
+
+                if (event.position === "left" && newLayout.dialogs?.left) {
+                    console.log("SET IS_OPEN LEFT", isOpen)
+                    newLayout.dialogs.left.isOpen = isOpen;
+                } else if (event.position === "center" && newLayout.dialogs?.center) {
+                    console.log("SET IS_OPEN CENTER", event.type == "OPENED")
+                    newLayout.dialogs.center.isOpen = isOpen;
+                } else if (event.position === "right" && newLayout.dialogs?.right) {
+                    console.log("SET IS_OPEN RIGHT", event.type == "OPENED")
+                    newLayout.dialogs.right.isOpen = isOpen;
+                } else if (event.position === "main") {
+                    console.log("SET IS_OPEN MAIN", event.type == "OPENED")
+                }
 
                 return newLayout;
             }
         }),
-        setCenterContent: assign({
+        setContent: assign({
             layout: (ctx, event) => {
-                console.log("setCenterContent", event)
-
                 if (event.type != "CONTENT_CHANGED")
                     throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
-                if (event.position !== "center")
-                    throw new Error(`Expected a CONTENT_CHANGED event with position "center" but got ${event.position}.`);
 
-                console.log("setCenterContent->currentLayout:", ctx.layout);
-                const newLayout = <RuntimeLayout>{
-                    ...ctx.layout,
-                    dialogs: {
-                        ...ctx.layout.dialogs,
-                        center: {
-                            ...ctx.layout.dialogs.center,
-                            ...event.content,
-                            isOpen: ctx._centerNav.state.value && ctx._centerNav.state.value.visible === "on"
-                        }
-                    }
+                const newLayout:RuntimeLayout = {
+                    ...ctx.layout
                 };
-                console.log("setCenterContent->newLayout:", newLayout);
+
+                if (!newLayout.dialogs) {
+                    newLayout.dialogs = {};
+                }
+
+                if (event.position === "left") {
+                    console.log("SET LEFT CONTENT")
+                    newLayout.dialogs.left = {
+                        ...newLayout.dialogs.left,
+                        ...event.content
+                    };
+                } else if (event.position === "center") {
+                    console.log("SET CENTER CONTENT")
+                    newLayout.dialogs.center = {
+                        ...newLayout.dialogs.center,
+                        ...event.content
+                    };
+                } else if (event.position === "right") {
+                    console.log("SET RIGHT CONTENT")
+                    newLayout.dialogs.right = {
+                        ...newLayout.dialogs.right,
+                        ...event.content
+                    };
+                } else if (event.position === "main") {
+                    console.log("SET MAIN CONTENT")
+                    newLayout.main = {
+                        ...newLayout.main,
+                        ...event.content
+                    };
+                }
+
                 return newLayout;
             }
         }),
-        setLeftContent: assign({
-            layout: (ctx, event) => {
-                console.log("setLeftContent", event)
-
-                if (event.type != "CONTENT_CHANGED")
-                    throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
-                if (event.position !== "left")
-                    throw new Error(`Expected a CONTENT_CHANGED event with position "left" but got ${event.position}.`);
-
-                console.log("setLeftContent->currentLayout:", ctx.layout);
-                const newLayout = <RuntimeLayout>{
-                    ...ctx.layout,
-                    dialogs: {
-                        ...ctx.layout.dialogs,
-                        left: {
-                            ...ctx.layout.dialogs.left,
-                            ...event.content,
-                            isOpen: ctx._leftNavButton.state.value && ctx._leftNavButton.state.value.visible === "on"
-                        }
-                    }
-                };
-                console.log("setLeftContent->newLayout:", newLayout);
-                return newLayout;
-            }
-        }),
-        setRightContent: assign({
-            layout: (ctx, event) => {
-                console.log("setRightContent", event)
-
-                if (event.type != "CONTENT_CHANGED")
-                    throw new Error(`Expected a CONTENT_CHANGED event but got ${event.type}.`);
-                if (event.position !== "right")
-                    throw new Error(`Expected a CONTENT_CHANGED event with position "right" but got ${event.position}.`);
-
-                console.log("setRightContent->currentLayout:", ctx.layout);
-                const newLayout = <RuntimeLayout>{
-                    ...ctx.layout,
-                    dialogs: {
-                        ...ctx.layout.dialogs,
-                        right: {
-                            ...ctx.layout.dialogs.right,
-                            ...event.content,
-                            isOpen: ctx._rightNavButton.state.value && ctx._rightNavButton.state.value.visible === "on"
-                        }
-                    }
-                };
-                console.log("setRightContent->newLayout:", newLayout);
-                return newLayout;
-            }
-        }),
-        setLeftNav: assign({
+        setNav: assign({
             navigation: (ctx, event) => {
                 if (event.type != "ELEMENT_CHANGED")
                     throw new Error(`Expected a ELEMENT_CHANGED event but got ${event.type}.`);
-                if (event.position !== "left")
-                    throw new Error(`Expected a ELEMENT_CHANGED event with position "left" but got ${event.position}.`);
 
                 const newNav:NavigationManifest = {
-                    ...ctx.navigation,
-                    leftSlot: event.element
+                    ...ctx.navigation
                 };
 
-                return newNav;
-            }
-        }),
-        setRightNav: assign({
-            navigation: (ctx, event) => {
-                if (event.type != "ELEMENT_CHANGED")
-                    throw new Error(`Expected a ELEMENT_CHANGED event but got ${event.type}.`);
-                if (event.position !== "right")
-                    throw new Error(`Expected a ELEMENT_CHANGED event with position "right" but got ${event.position}.`);
+                if (event.position === "left") {
+                    newNav.leftSlot = event.element;
+                } else if (event.position === "center") {
+                    newNav.navPill.center = event.element;
+                } else if (event.position === "right") {
+                    newNav.rightSlot = event.element;
+                }
 
-                const newNav:NavigationManifest = {
-                    ...ctx.navigation,
-                    rightSlot: event.element
-                };
-                return newNav;
-            }
-        }),
-        setCenterNav: assign({
-            navigation: (ctx, event) => {
-                if (event.type != "ELEMENT_CHANGED")
-                    throw new Error(`Expected a ELEMENT_CHANGED event but got ${event.type}.`);
-                if (event.position !== "center")
-                    throw new Error(`Expected a ELEMENT_CHANGED event with position "center" but got ${event.position}.`);
-
-                const newNav:NavigationManifest = {
-                    ...ctx.navigation,
-                    navPill: {
-                        center: event.element
-                    }
-                };
                 return newNav;
             }
         }),
         showRoutableAsMainContent: (ctx) => {
-            console.log("showRoutableAsMainContent")
+            // console.log("showRoutableAsMainContent")
             if (!ctx.runtimeDapp)
                 throw new Error(`The "runtimeDapp" is not set on the context.`);
             if (!ctx.routable)
@@ -588,7 +502,7 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             });
         },
         showRoutableAsModalContent: send((ctx) => {
-            console.log("showRoutableAsModalContent")
+            // console.log("showRoutableAsModalContent")
             if (!ctx.runtimeDapp)
                 throw new Error(`The "runtimeDapp" is not set on the context.`);
             if (!ctx.routable)
@@ -605,14 +519,14 @@ export const dappFrame = createMachine<DappFrameStateContext, DappFrameStateEven
             to: (ctx) => ctx._centerDialog
         }),
         sendLayoutChanged: send((ctx) => {
-            console.log("sendLayoutChanged")
+            // console.log("sendLayoutChanged")
             return {
                 type: "LAYOUT_CHANGED",
                 layout: ctx.layout
             }
         }),
         sendNavigationChanged: send((ctx, event:any) => {
-            console.log("sendNavigationChanged")
+            // console.log("sendNavigationChanged")
             return {
                 type: "NAVIGATION_CHANGED",
                 navigation: ctx.navigation,
