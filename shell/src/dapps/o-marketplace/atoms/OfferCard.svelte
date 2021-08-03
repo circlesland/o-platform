@@ -69,7 +69,7 @@
   }
 </script>
 
-<section class="flex items-start bg-white shadow rounded-xl">
+<section class="flex items-start pb-2 bg-white shadow rounded-xl">
   <div class="flex flex-col w-full ">
     <header class=" rounded-t-xl headerImageContainer">
       <div class="relative rounded-t-xl image-wrapper">
@@ -95,7 +95,7 @@
       </div>
       <div>{offer.createdBy.firstName} {offer.createdBy.lastName}</div>
     </div>
-    <div class="flex flex-col w-full px-4 mt-6 space-y-4 bg-white">
+    <div class="flex flex-col w-full px-4 pb-2 mt-6 space-y-4 bg-white">
       <div class="flex flex-row flex-grow space-x-2">
         <div
           class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
@@ -106,15 +106,18 @@
           </a>
         </div>
       </div>
-      <div class="text-4xl leading-tight text-left uppercase font-heading">
-        {offer.title}
-      </div>
-
-      {#if offer.description}
-        <div class="text-sm text-dark-lightest">
-          {truncateString(offer.description, 70)}
+      <div class="h-32">
+        <div
+          class="text-4xl leading-tight text-left uppercase break-all font-heading">
+          {offer.title}
         </div>
-      {/if}
+
+        {#if offer.description}
+          <div class="text-sm text-dark-lightest">
+            {truncateString(offer.description, 70)}
+          </div>
+        {/if}
+      </div>
       <div class="flex flex-row space-x-4">
         <div>
           <button class="btn btn-square btn-light">

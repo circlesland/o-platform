@@ -47,6 +47,6 @@ function onkeydown(e: KeyboardEvent) {
       </div>
     </div>
   </div>
-  <br />
+
   <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
 </div>
