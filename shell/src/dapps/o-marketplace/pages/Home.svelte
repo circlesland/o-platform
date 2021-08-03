@@ -97,7 +97,7 @@
 
 <SimpleHeader {runtimeDapp} {routable} />
 
-<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+<div class="px-4 mx-auto -mt-3 lg:w-2/3 xl:w-1/2">
   {#if isLoading}
     <section class="flex items-center justify-center mx-4 mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
