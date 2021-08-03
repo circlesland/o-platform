@@ -47,13 +47,13 @@
     </slot>
 
     <div
-      class="relative flex-grow px-3 py-2 text-left title"
+      class="relative flex-grow h-12 px-3 py-2 text-left title"
       class:truncate="{params.truncateMain}">
       <div class:truncateThis="{params.truncateMain}">
         <h2 class="text-base">{params.title}</h2>
       </div>
       <p
-        class="mt-1 text-xs text-dark-lightest"
+        class="absolute h-4 mt-1 text-xs text-dark-lightest"
         class:truncateThis="{params.truncateMain}">
         {params.subTitle}
       </p>

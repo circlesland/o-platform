@@ -10,7 +10,7 @@
   // console.log("runtimeDapp: ", runtimeDapp);
 </script>
 
-<div class="fixed top-0 left-0 z-10 w-full">
+<div class="fixed top-0 left-0 z-20 w-full">
   <div
     class="grid w-full grid-cols-3 p-2 mx-auto text-white navbar bg-dark-dark justify-items-stretch">
     <div class="justify-self-start whitespace-nowrap">

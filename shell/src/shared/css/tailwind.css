@@ -163,6 +163,7 @@ body {
   @apply absolute;
   @apply left-0;
   @apply top-0;
+  @apply z-10;
   /* background: linear-gradient(transparent 150px, #ffcc33); */
   background: linear-gradient(
     to right,
