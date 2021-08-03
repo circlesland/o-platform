@@ -18,6 +18,27 @@ mutation authenticateAt(
     }
 }
 
+mutation claimInvitation ($code:String!) {
+    claimInvitation(code: $code) {
+        success
+        claimedInvitation {
+            createdAt
+            createdByProfileId
+            claimedAt
+            claimedByProfileId
+        }
+    }
+}
+
+mutation redeemClaimedInvitation {
+    redeemClaimedInvitation {
+        redeemRequest {
+            id
+        }
+        success
+    }
+}
+
 mutation consumeDepositedChallenge(
     $delegateAuthCode: String!
 ) {

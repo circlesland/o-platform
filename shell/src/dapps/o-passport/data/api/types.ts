@@ -356,6 +356,7 @@ export type Query = {
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
   events: Array<ProfileEvent>;
+  invitationTransaction?: Maybe<IndexedTransaction>;
   offers: Array<Offer>;
   profiles: Array<Profile>;
   search: Array<Profile>;
@@ -600,6 +601,38 @@ export type AuthenticateAtMutation = (
   ) }
 );
 
+export type ClaimInvitationMutationVariables = Exact<{
+  code: Scalars['String'];
+}>;
+
+
+export type ClaimInvitationMutation = (
+  { __typename?: 'Mutation' }
+  & { claimInvitation: (
+    { __typename?: 'ClaimInvitationResult' }
+    & Pick<ClaimInvitationResult, 'success'>
+    & { claimedInvitation?: Maybe<(
+      { __typename?: 'ClaimedInvitation' }
+      & Pick<ClaimedInvitation, 'createdAt' | 'createdByProfileId' | 'claimedAt' | 'claimedByProfileId'>
+    )> }
+  ) }
+);
+
+export type RedeemClaimedInvitationMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RedeemClaimedInvitationMutation = (
+  { __typename?: 'Mutation' }
+  & { redeemClaimedInvitation: (
+    { __typename?: 'RedeemClaimedInvitationResult' }
+    & Pick<RedeemClaimedInvitationResult, 'success'>
+    & { redeemRequest?: Maybe<(
+      { __typename?: 'RedeemInvitationRequest' }
+      & Pick<RedeemInvitationRequest, 'id'>
+    )> }
+  ) }
+);
+
 export type ConsumeDepositedChallengeMutationVariables = Exact<{
   delegateAuthCode: Scalars['String'];
 }>;
@@ -763,6 +796,29 @@ export const AuthenticateAtDocument = gql`
   }
 }
     `;
+export const ClaimInvitationDocument = gql`
+    mutation claimInvitation($code: String!) {
+  claimInvitation(code: $code) {
+    success
+    claimedInvitation {
+      createdAt
+      createdByProfileId
+      claimedAt
+      claimedByProfileId
+    }
+  }
+}
+    `;
+export const RedeemClaimedInvitationDocument = gql`
+    mutation redeemClaimedInvitation {
+  redeemClaimedInvitation {
+    redeemRequest {
+      id
+    }
+    success
+  }
+}
+    `;
 export const ConsumeDepositedChallengeDocument = gql`
     mutation consumeDepositedChallenge($delegateAuthCode: String!) {
   consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
@@ -921,6 +977,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     authenticateAt(variables: AuthenticateAtMutationVariables): Promise<AuthenticateAtMutation> {
       return withWrapper(() => client.request<AuthenticateAtMutation>(print(AuthenticateAtDocument), variables));
+    },
+    claimInvitation(variables: ClaimInvitationMutationVariables): Promise<ClaimInvitationMutation> {
+      return withWrapper(() => client.request<ClaimInvitationMutation>(print(ClaimInvitationDocument), variables));
+    },
+    redeemClaimedInvitation(variables?: RedeemClaimedInvitationMutationVariables): Promise<RedeemClaimedInvitationMutation> {
+      return withWrapper(() => client.request<RedeemClaimedInvitationMutation>(print(RedeemClaimedInvitationDocument), variables));
     },
     consumeDepositedChallenge(variables: ConsumeDepositedChallengeMutationVariables): Promise<ConsumeDepositedChallengeMutation> {
       return withWrapper(() => client.request<ConsumeDepositedChallengeMutation>(print(ConsumeDepositedChallengeDocument), variables));

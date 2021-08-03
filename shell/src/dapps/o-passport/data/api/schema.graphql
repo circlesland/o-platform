@@ -221,6 +221,7 @@ type Query {
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
     events: [ProfileEvent!]!
+    invitationTransaction: IndexedTransaction
     offers(query: QueryOfferInput!): [Offer!]!
     profiles(query: QueryProfileInput!): [Profile!]!
     search(query: SearchInput!): [Profile!]!

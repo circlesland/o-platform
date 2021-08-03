@@ -17,6 +17,18 @@ query profilesByName($searchString:String!) {
     }
 }
 
+query invitationTransaction {
+    invitationTransaction {
+        transactionHash
+    }
+}
+
+query safeFundingTransaction {
+    safeFundingTransaction {
+        transactionHash
+    }
+}
+
 query profileById($id:Int!) {
     profiles(query: {id: [$id]}) {
         id

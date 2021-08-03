@@ -36,6 +36,20 @@ type CityStats implements ICity {
     population: Int!
 }
 
+type ClaimInvitationResult {
+    claimedInvitation: ClaimedInvitation
+    success: Boolean!
+}
+
+type ClaimedInvitation {
+    claimedAt: String!
+    claimedBy: Profile
+    claimedByProfileId: Int!
+    createdAt: String!
+    createdBy: Profile
+    createdByProfileId: Int!
+}
+
 type ConsumeDepositedChallengeResponse {
     challenge: String
     success: Boolean!
@@ -71,13 +85,19 @@ type Goal {
 
 type IndexTransactionLog {
     address: String!
-    blockHash: String!
-    blockNumber: Int!
     data: String
     id: Int!
     logIndex: Int!
-    removed: Boolean
     topics: [String!]!
+}
+
+type IndexTransactionRequest {
+    blockNumber: Int!
+    createdAt: String!
+    createdBy: Profile
+    createdByProfileId: Int!
+    id: Int!
+    tags: [Tag!]
     transactionHash: String!
     transactionIndex: Int!
 }
@@ -112,14 +132,17 @@ type LogoutResponse {
 }
 
 type Mutation {
+    acknowledge(eventId: Int!): ProfileEvent!
     authenticateAt(appId: String!): DelegateAuthInit!
+    claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
-    indexTransaction(data: IndexTransactionInput!): IndexedTransaction!
     lockOffer(data: LockOfferInput!): LockOfferResult!
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
+    redeemClaimedInvitation: RedeemClaimedInvitationResult!
+    requestIndexTransaction(data: RequestIndexTransactionInput!): IndexTransactionRequest!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
@@ -167,6 +190,15 @@ type Profile {
     lastName: String
     newsletter: Boolean
     offers: [Offer!]
+    status: String
+}
+
+type ProfileEvent {
+    createdAt: String!
+    data: String!
+    id: Int!
+    profileId: Int!
+    type: String!
 }
 
 type ProvePaymentResult {
@@ -187,15 +219,29 @@ type Purchase {
 
 type Query {
     cities(query: QueryCitiesInput!): [City!]!
+    claimedInvitation: ClaimedInvitation
+    events: [ProfileEvent!]!
+    invitationTransaction: IndexedTransaction
     offers(query: QueryOfferInput!): [Offer!]!
     profiles(query: QueryProfileInput!): [Profile!]!
+    safeFundingTransaction: IndexedTransaction
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
     stats: Stats
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!
+    transactions(query: QueryIndexedTransactionInput): [IndexedTransaction!]!
     version: Version!
     whoami: String
+}
+
+type RedeemClaimedInvitationResult {
+    redeemRequest: RedeemInvitationRequest
+    success: Boolean!
+}
+
+type RedeemInvitationRequest {
+    id: Int!
 }
 
 type RequestUpdateSafeResponse {
@@ -224,6 +270,10 @@ type Stats {
     inviteRank: Int!
     nextGoalAt: Int!
     totalCitizens: Int!
+}
+
+type Subscriptions {
+    events: [ProfileEvent!]!
 }
 
 type Tag {
@@ -264,36 +314,6 @@ input DepositChallenge {
     jwt: String!
 }
 
-input IndexTransactionInput {
-    blockHash: String!
-    blockNumber: Int!
-    confirmations: Int
-    contractAddress: String
-    cumulativeGasUsed: String!
-    from: String!
-    gasUsed: String!
-    logs: [IndexTransactionLogInput!]
-    logsBloom: String!
-    root: String
-    status: String
-    tags: [CreateTagInput!]
-    to: String!
-    transactionHash: String!
-    transactionIndex: Int!
-}
-
-input IndexTransactionLogInput {
-    address: String!
-    blockHash: String!
-    blockNumber: Int!
-    data: String
-    logIndex: Int!
-    removed: Boolean
-    topics: [String!]!
-    transactionHash: String!
-    transactionIndex: Int!
-}
-
 input LockOfferInput {
     offerId: Int!
 }
@@ -321,14 +341,8 @@ input QueryCitiesInput {
 }
 
 input QueryIndexedTransactionInput {
-    fromAddress: String
-    tags: [QueryIndexedTransactionTagInput!]
-    toAddress: String
-}
-
-input QueryIndexedTransactionTagInput {
-    typeId: String!
-    value: String
+    fromBlockNo: Int
+    toBlockNo: Int
 }
 
 input QueryOfferInput {
@@ -358,6 +372,11 @@ input QueryTagsInput {
 
 input QueryUniqueProfileInput {
     id: Int!
+}
+
+input RequestIndexTransactionInput {
+    tags: [CreateTagInput!]
+    transactionHash: String!
 }
 
 input RequestUpdateSafeInput {
@@ -401,6 +420,7 @@ input UpsertProfileInput {
     id: Int
     lastName: String
     newsletter: Boolean
+    status: String!
 }
 
 input UpsertTagInput {

@@ -17,7 +17,7 @@
     import {shellEvents} from "./shared/shellEvents";
     import {ApiConnection} from "./shared/apiConnection";
     import {getProcessContext} from "./main";
-    import {PromptContext, PromptEvent} from "./dapps/o-onboarding/components/dialog";
+    // import {PromptContext, PromptEvent} from "./dapps/o-onboarding/components/dialog";
     import {Stopped} from "@o-platform/o-process/dist/events/stopped";
 
     const runningProcesses: {
@@ -192,6 +192,7 @@
     }
 
     window.o = shell;
+
 </script>
 
 <script lang="ts">
@@ -202,6 +203,8 @@
     import DappFrame from "src/shared/molecules/DappFrame.svelte";
     import NotFound from "src/shared/pages/NotFound.svelte";
     import Layout from "./dapps/o-onboarding/layouts/Layout.svelte";
+    import {interpret} from "xstate";
+    import {initMachine} from "./dapps/o-onboarding/processes/init";
 
     /*
     let publicUrls = {
@@ -213,6 +216,16 @@
       "/milestones": true,
     };
      */
+
+  var m = interpret(initMachine)
+      .onEvent(event => {
+          console.log("initMachine.event:", event);
+      })
+      .onTransition(state => {
+          console.log("initMachine.transition:", state);
+      })
+      .start();
+
     let _routes = {
         "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
         "*": NotFound,

@@ -27,10 +27,9 @@
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {findDappById} from "../functions/findDappById";
   import {RuntimeDapps} from "../../runtimeDapps";
-  import {findRoutableByParams} from "../functions/findRoutableByParams";
+  import {findRoutableByParams, FindRouteResult} from "../functions/findRoutableByParams";
   import {pop, push} from "svelte-spa-router";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {run} from "svelte/internal";
 
   // install Swiper modules
   SwiperCore.use([Navigation, Pagination]);
@@ -72,7 +71,15 @@
                           : "list";
 
                   if (navigation.leftSlot.props.icon === "list") {
-
+                      // TODO: Close nav
+                      layout.dialogs.left = {
+                          isOpen: false,
+                          component: NavigationList,
+                          routable: null,
+                          runtimeDapp: null,
+                          params: {
+                          }
+                      }
                   } else {
                       // TODO: Open nav
                       layout.dialogs.left = {
@@ -183,11 +190,39 @@
       }
   });
 
+  let startProcessing: boolean = true;
+
   $: {
-      const paramsJson = JSON.stringify(params);
-      if (lastParamsJson !== paramsJson) {
-          handleUrlChanged();
-          lastParamsJson = paramsJson;
+      if (startProcessing) {
+          const paramsJson = JSON.stringify(params);
+          if (lastParamsJson !== paramsJson) {
+              handleUrlChanged();
+              lastParamsJson = paramsJson;
+          }
+      }
+  }
+
+  function findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
+          // If no nextRoutable could be found then look for a default in the dapp
+      const defaultRoutable = findRoutableByParams(runtimeDapp, {
+          dappId: runtimeDapp.dappId,
+          "1": runtimeDapp.defaultRoute.length > 0 ? runtimeDapp.defaultRoute[0] : null,
+          "2": runtimeDapp.defaultRoute.length > 1 ? runtimeDapp.defaultRoute[1] : null,
+          "3": runtimeDapp.defaultRoute.length > 2 ? runtimeDapp.defaultRoute[2] : null,
+          "4": runtimeDapp.defaultRoute.length > 3 ? runtimeDapp.defaultRoute[3] : null,
+          "5": runtimeDapp.defaultRoute.length > 4 ? runtimeDapp.defaultRoute[4] : null,
+          "6": runtimeDapp.defaultRoute.length > 5 ? runtimeDapp.defaultRoute[5] : null,
+      });
+      if (defaultRoutable) {
+          return <FindRouteResult>{
+              routable: defaultRoutable.routable,
+              found: true,
+              params: defaultRoutable.params
+          };
+      } else {
+          return <FindRouteResult>{
+              found: false
+          };
       }
   }
 
@@ -207,6 +242,17 @@
       if (findRouteResult.routable.type === "page") {
           const page:Page<any,any> = <any>findRouteResult.routable;
           if (page.position === "modal") {
+              if (!layout.main) {
+                  // Check if the modal page was called directly. In this case the default main
+                  // page of the corresponding dapp must be loaded as well.
+                  const defaultRoute = findDefaultRoute(runtimeDapp);
+                  if (defaultRoute.found && defaultRoute.routable.type === "page") {
+                      showMainPage(runtimeDapp, <any>defaultRoute.routable, findRouteResult.params);
+                  } else {
+                      // TODO: 404
+                  }
+              }
+
               showModalPage(runtimeDapp, page, findRouteResult.params);
           } else {
               await hideCenter();
@@ -294,10 +340,8 @@
           }
           if (runtimeDapp.navigation.navPill) {
               if (runtimeDapp.navigation.navPill.left) {
-
               }
               if (runtimeDapp.navigation.navPill.right) {
-
               }
               navigation.leftSlot = runtimeDapp.navigation.rightSlot;
           }

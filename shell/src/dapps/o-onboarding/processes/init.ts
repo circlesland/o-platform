@@ -1,8 +1,9 @@
 import {assign, createMachine, send, spawn} from "xstate";
+import {actions} from "xstate";
 import {getSessionInfo, SessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
 import {BN} from "ethereumjs-util";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
-import {WhoamiDocument} from "../../o-passport/data/api/types";
+import {ClaimedInvitationDocument, WhoamiDocument} from "../../o-passport/data/api/types";
 import {loginMachine} from "./login";
 import {registerMachine} from "./register";
 import {getInvitedMachine} from "./getInvited";
@@ -11,6 +12,8 @@ import {connectOrCreateEoa} from "./connectOrCreateEoa";
 import {redeemInvitation} from "./redeemInvitation";
 import {fundSafeFromEoa} from "./fundSafeFromEoa";
 import {connectOrCreateSafe} from "./connectOrCreateSafe";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {InvitationTransactionDocument, SafeFundingTransactionDocument} from "../../../shared/api/data/types";
 
 export type Origin = "Created" | "Imported";
 
@@ -160,8 +163,19 @@ export type InitEvent = {
     type: "SAFE_CREATED"
 } | {
     type: "FUNDED"
+} | {
+    type: "REGISTRATION_ERROR",
+    error: Error
+} | {
+    type: "INVITATION_ERROR",
+    error: Error
+} | {
+    type: "PROFILE_ERROR",
+    error: Error
+} | {
+    type: "EOA_ERROR",
+    error: Error
 }
-
 
 export const initMachine = createMachine<InitContext, InitEvent>({
     id: `init`,
@@ -205,10 +219,14 @@ export const initMachine = createMachine<InitContext, InitEvent>({
                     })
                 },
                 LOGGED_IN: {
+                    actions: actions.stop(ctx => ctx._login),
                     target: "initial"
                 },
                 CANCELLED: {
-                    actions: send({type: "CANCEL"})
+                    actions: [
+                        actions.stop(ctx => ctx._login),
+                        send({type: "CANCEL"})
+                    ]
                 },
                 GOT_SESSION: {
                     actions: "assignSessionInfoToContext",
@@ -225,10 +243,24 @@ export const initMachine = createMachine<InitContext, InitEvent>({
                     })
                 },
                 REGISTERED: {
+                    actions: actions.stop(ctx => ctx._register),
                     target: "register"
                 },
                 CANCELLED: {
-                    actions: send({type: "CANCEL"})
+                    actions: [
+                        actions.stop(ctx => ctx._register),
+                        send({type: "CANCEL"})
+                    ],
+                },
+                REGISTRATION_ERROR: {
+                    actions: [
+                        (ctx, event) => {
+                            console.error(event);
+                            throw event.error;
+                        },
+                        actions.stop(ctx => ctx._register),
+                        send({type: "CANCEL"})
+                    ]
                 },
                 GOT_REGISTRATION: {
                     actions: "assignRegistrationToContext",
@@ -237,7 +269,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             }
         },
         invitation: {
-            invoke: {src: "loadInvitation"},
+            invoke: {src: "loadClaimedInvitation"},
             on: {
                 NO_INVITATION: {
                     actions: assign({
@@ -245,7 +277,18 @@ export const initMachine = createMachine<InitContext, InitEvent>({
                     })
                 },
                 GOT_INVITED: {
+                    actions: actions.stop(ctx => ctx._invitation),
                     target: "invitation"
+                },
+                INVITATION_ERROR: {
+                    actions: [
+                        (ctx, event) => {
+                            console.error(event);
+                            throw event.error;
+                        },
+                        actions.stop(ctx => ctx._invitation),
+                        send({type: "CANCEL"})
+                    ]
                 },
                 GOT_INVITATION: {
                     actions: "assignInvitationToContext",
@@ -262,9 +305,13 @@ export const initMachine = createMachine<InitContext, InitEvent>({
                     })
                 },
                 CANCELLED: {
-                    actions: send({type: "CANCEL"})
+                    actions: [
+                        actions.stop(ctx => ctx._profile),
+                        send({type: "CANCEL"})
+                    ]
                 },
                 PROFILE_CREATED: {
+                    actions: actions.stop(ctx => ctx._profile),
                     target: "profile"
                 },
                 GOT_PROFILE: {
@@ -294,12 +341,17 @@ export const initMachine = createMachine<InitContext, InitEvent>({
                     }),
                     on: {
                         CANCELLED: {
-                            actions: send({type: "CANCEL"})
+                            actions: [
+                                actions.stop(ctx => ctx._eoa),
+                                send({type: "CANCEL"})
+                            ]
                         },
                         EOA_CONNECTED: {
+                            actions: actions.stop(ctx => ctx._eoa),
                             target: "load"
                         },
                         EOA_CREATED: {
+                            actions: actions.stop(ctx => ctx._eoa),
                             target: "load"
                         }
                     }
@@ -322,10 +374,14 @@ export const initMachine = createMachine<InitContext, InitEvent>({
                     }),
                     on: {
                         REDEEMED: {
+                            actions: actions.stop(ctx => ctx._redeemInvitation),
                             target: "load"
                         },
                         CANCELLED: {
-                            actions: send({type: "CANCEL"})
+                            actions: [
+                                actions.stop(ctx => ctx._redeemInvitation),
+                                send({type: "CANCEL"})
+                            ]
                         }
                     }
                 },
@@ -418,81 +474,178 @@ export const initMachine = createMachine<InitContext, InitEvent>({
     }
 }, {
     services: {
-        loadSession: async () => {
-            try {
-                const sessionInfo = await getSessionInfo();
-                if (sessionInfo.isLoggedOn) {
-                    send({type: "GOT_SESSION", session: sessionInfo});
-                    return;
-                }
-            } catch (e) {
-                console.warn(`Couldn't determine the session state -> Assuming "NO_SESSION".`, e);
-            }
-            send({type: "NO_SESSION"});
+        loadSession: () => (callback) => {
+            getSessionInfo()
+                .then(sessionInfo => {
+                    if (sessionInfo.isLoggedOn) {
+                        callback(<any>{type: "GOT_SESSION", session: sessionInfo});
+                    } else {
+                        callback({type: "NO_SESSION"});
+                    }
+                })
+                .catch(e => {
+                    console.warn(`Couldn't determine the session state -> Assuming "NO_SESSION".`, e);
+                    callback({type: "NO_SESSION"});
+                });
         },
-        loadRegistration: async (ctx) => {
+        loadRegistration: (ctx) => (callback) => {
             if (!ctx.session) throw new Error(`ctx.session is not set`);
 
             if (!ctx.session.profileId) {
-                send({type: "NO_REGISTRATION"});
+                callback({type: "NO_REGISTRATION"});
                 return;
             }
 
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
-            const result = await apiClient.query({
-                query: WhoamiDocument,
-            });
-            if (result.errors) {
-                return;
-            }
+            let email:string;
 
-            const email = result.data.whoami;
-            const profile = await loadProfile(ctx.session.profileId);
-
-            send({
-                type: "GOT_REGISTRATION",
-                registration: {
-                    email: email,
-                    profileId: profile.id,
-                    acceptedToSVersion: "", // TODO: Important in the context?
-                    subscribedToNewsletter: profile.newsletter
-                }
-            });
+            window.o.apiClient.client.subscribeToResult()
+                .then(apiClient => {
+                    return apiClient.query({
+                        query: WhoamiDocument,
+                    })
+                })
+                .then(result => {
+                    if (result.errors) {
+                        callback({type: "REGISTRATION_ERROR", error: new Error(`Couldn't load the registration for the following reason: ${JSON.stringify(result.errors)}`)});
+                    } else {
+                        email = result.data.whoami;
+                        return loadProfile(ctx.session.profileId)
+                    }
+                })
+                .then(profile => {
+                    callback({
+                        type: "GOT_REGISTRATION",
+                        registration: {
+                            email: email,
+                            profileId: profile.id,
+                            acceptedToSVersion: "", // TODO: Important in the context?
+                            subscribedToNewsletter: profile.newsletter
+                        }
+                    });
+                })
+                .catch(e => {
+                    callback({type: "REGISTRATION_ERROR", error: e});
+                });
         },
-        loadInvitation: async (ctx) => {
+        loadClaimedInvitation: (ctx) => (callback) => {
             if (!ctx.registration) throw new Error(`ctx.registration is not set`);
 
-            send({type: "NO_INVITATION"});
-            // send({type: "GOT_INVITATION"});
+            callback({type: "NO_INVITATION"});
+            return;
+
+            window.o.apiClient.client.subscribeToResult()
+                .then(apiClient => {
+                    return apiClient.query({
+                        query: ClaimedInvitationDocument
+                    })
+                })
+                .then(result => {
+                    if (result.errors) {
+                        callback({
+                            type: "INVITATION_ERROR",
+                            error: new Error(`Couldn't load the registration for the following reason: ${JSON.stringify(result.errors)}`)
+                        });
+                        return;
+                    }
+                    if (!result.data.claimedInvitation) {
+                        callback({type: "NO_INVITATION"});
+                        return;
+                    }
+
+                    // TODO: Why is the any cast necessary for the "GOT_INVITATION" event?
+                    // callback({type: "NO_INVITATION"});
+                    callback(<InitEvent>{ type: "GOT_INVITATION", invitation: result.data.claimedInvitation });
+                })
+                .catch(e => {
+                    callback({
+                        type: "INVITATION_ERROR",
+                        error: e
+                    });
+                });
         },
-        loadProfile: async (ctx) => {
+        loadProfile: (ctx) => (callback) => {
             if (!ctx.invitation) throw new Error(`ctx.invitation is not set`);
 
-            send({type: "NO_PROFILE"});
-            // send({type: "GOT_PROFILE"});
+            loadProfile()
+                .then(profile => {
+                    if (profile) {
+                        callback({
+                            type: "GOT_PROFILE",
+                            profile: {
+                                id: profile.id,
+                                avatarUrl: profile.avatarUrl,
+                                lastName: profile.lastName,
+                                firstName: profile.firstName,
+                                cityId: profile.cityGeonameid,
+                                passion: profile.dream
+                            }
+                        })
+                    } else {
+                        callback({type: "NO_PROFILE"});
+                    }
+                })
+                .catch(e => {
+                    callback({type: "PROFILE_ERROR", error: e});
+                });
         },
-        loadEoa: async (ctx) => {
+        loadEoa: (ctx) => (callback) => {
             if (!ctx.profile) throw new Error(`ctx.profile is not set`);
 
-            send({type: "NO_EOA"});
-            // send({type: "GOT_EOA"});
+            const key = localStorage.getItem("circlesKey");
+            if (!key) {
+                callback({type: "NO_EOA"});
+                return;
+            }
+            try {
+                const eoa = RpcGateway.get().eth.accounts.privateKeyToAccount(key);
+                if (!eoa) {
+                    callback({type: "EOA_ERROR", error: new Error(`Couldn't derive the EOA address from the stored private key.`)});
+                    return;
+                }
+                callback({type: "GOT_EOA", eoa: {
+                        address: eoa.address,
+                        privateKey: key,
+                        origin: "Created",
+                        balance: new BN("0")
+                    }});
+            } catch (e) {
+                callback({type: "EOA_ERROR", error: e});
+            }
         },
         loadEoaInvitationTransaction: async (ctx) => {
             if (!ctx.eoa) throw new Error(`ctx.eoa is not set`);
 
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.query({
+                query: InvitationTransactionDocument
+            });
+
             // TODO: Find the transaction from the "invitation EOA" to the user's EOA (must be the only outgoing transaction from the invite-eoa)
-            // send({type: "GOT_REDEEMED"});
-            send({type: "NOT_REDEEMED"});
+            if (result.errors || !result.data) {
+                send({type: "NOT_REDEEMED"});
+            } else {
+                send({type: "GOT_REDEEMED", transaction: result.data.transaction});
+            }
         },
         loadSafeInvitationTransaction: async (ctx) => {
             if (!ctx.safe) throw new Error(`ctx.safe is not set`);
+
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.query({
+                query: SafeFundingTransactionDocument
+            });
+
             // TODO: Find the invitation transaction from the user's EOA to the safe (use IndexedTransactions from the API.)
-            // send({type: "GOT_SAFE_FUNDED"});
-            send({type: "SAFE_NOT_FUNDED"});
+            if(result.errors || !result.data) {
+                send({type: "SAFE_NOT_FUNDED"});
+            } else {
+                send({type: "GOT_SAFE_FUNDED", transaction: result.data.transaction});
+            }
         },
         loadUbi: async (ctx) => {
             if (!ctx.safe) throw new Error(`ctx.safe is not set`);
 
+            // TODO: Check if the user's safe is already signed up at the UBI hub
             send({type: "NO_UBI"});
             // send({type: "GOT_UBI"});
         },
