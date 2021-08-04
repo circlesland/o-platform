@@ -15,17 +15,18 @@
       on:click={props && props.left ? props.left.props.action : null}
     >
 
-      {($inbox).length}
-
-
-      {#if props && props.left}
-        <div class="self-center">
-          <svelte:component
-            this={props.left.component}
-            {...props.left.props}
-            on:menuButton
-          />
-        </div>
+      {#if ($inbox).length}
+       {($inbox).length}
+      {:else}
+        {#if props && props.left}
+          <div class="self-center">
+            <svelte:component
+              this={props.left.component}
+              {...props.left.props}
+              on:menuButton
+            />
+          </div>
+        {/if}
       {/if}
     </div>
 
