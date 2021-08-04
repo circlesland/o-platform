@@ -14,7 +14,7 @@ export type RedeemInvitationEvent = {
 }
 
 export const redeemInvitation = createMachine<RedeemInvitationContext, RedeemInvitationEvent>({
-    initial: "success",
+    initial: "start",
     context: {
         profileId: null,
         email: null,
@@ -22,6 +22,8 @@ export const redeemInvitation = createMachine<RedeemInvitationContext, RedeemInv
         subscribedToNewsletter: null
     },
     states: {
+        start: {
+        },
         success: {
             type: "final",
             entry: sendParent({type: "REDEEMED"})

@@ -1,36 +1,22 @@
-<script>
+<script lang="ts">
   import Icons from "../../../shared/molecules/Icons.svelte";
-  import { clickOutside } from "src/shared/functions/clickOutside.ts";
+  import { clickOutside } from "../../../shared/functions/clickOutside.ts";
   import { createEventDispatcher } from "svelte";
-  import { isMobile } from "../../../shared/functions/isMobile";
-  import LinkPill from "src/shared/atoms/LinkPill.svelte";
+  import LinkPill from "../../../shared/atoms/LinkPill.svelte";
+  import {getRouteList} from "../../../shared/functions/getRouteList";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 
-  export let navigation = [
-    {
-      extern: true,
-      url: "https://circles.land",
-      icon: "home",
-      title: "Link 1",
-    },
-    {
-      extern: true,
-      url: "https://circles.land",
-      icon: "home",
-      title: "Link 2",
-    },
-    {
-      extern: true,
-      url: "https://circles.land",
-      icon: "home",
-      title: "Link 3",
-    },
-    {
-      extern: true,
-      url: "https://circles.land",
-      icon: "home",
-      title: "Link 4",
-    },
-  ];
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: RuntimeDapp<any>;
+
+  let navigation = [];
+  $: {
+    if (runtimeDapp && routable) {
+      navigation = getRouteList(runtimeDapp, runtimeDapp, routable);
+    } else {
+      navigation = [];
+    }
+  }
 
   const eventDispatcher = createEventDispatcher();
 </script>

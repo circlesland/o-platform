@@ -175,6 +175,9 @@ export type InitEvent = {
 } | {
     type: "EOA_ERROR",
     error: Error
+} | {
+    type: "SAFE_ERROR",
+    error: Error
 }
 
 export const initMachine = createMachine<InitContext, InitEvent>({
@@ -530,8 +533,8 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         loadClaimedInvitation: (ctx) => (callback) => {
             if (!ctx.registration) throw new Error(`ctx.registration is not set`);
 
-            callback({type: "NO_INVITATION"});
-            return;
+            /*callback({type: "NO_INVITATION"});
+            return;*/
 
             window.o.apiClient.client.subscribeToResult()
                 .then(apiClient => {
@@ -602,45 +605,83 @@ export const initMachine = createMachine<InitContext, InitEvent>({
                     callback({type: "EOA_ERROR", error: new Error(`Couldn't derive the EOA address from the stored private key.`)});
                     return;
                 }
-                callback({type: "GOT_EOA", eoa: {
-                        address: eoa.address,
-                        privateKey: key,
-                        origin: "Created",
-                        balance: new BN("0")
-                    }});
+                RpcGateway.get().eth.getBalance(eoa.address).then(balance => {
+                    callback({type: "GOT_EOA", eoa: {
+                            address: eoa.address,
+                            privateKey: key,
+                            origin: "Created",
+                            balance: new BN(balance)
+                        }});
+                }).catch(e => {
+                    callback({type: "EOA_ERROR", error: e});
+                })
             } catch (e) {
                 callback({type: "EOA_ERROR", error: e});
             }
         },
-        loadEoaInvitationTransaction: async (ctx) => {
+        loadEoaInvitationTransaction: (ctx) => (callback) => {
             if (!ctx.eoa) throw new Error(`ctx.eoa is not set`);
 
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
-            const result = await apiClient.query({
-                query: InvitationTransactionDocument
-            });
-
-            // TODO: Find the transaction from the "invitation EOA" to the user's EOA (must be the only outgoing transaction from the invite-eoa)
-            if (result.errors || !result.data) {
-                send({type: "NOT_REDEEMED"});
-            } else {
-                send({type: "GOT_REDEEMED", transaction: result.data.transaction});
-            }
+            window.o.apiClient.client.subscribeToResult().then(apiClient => {
+                return apiClient.query({
+                    query: InvitationTransactionDocument
+                });
+            })
+            .then(result => {
+                // TODO: Find the transaction from the "invitation EOA" to the user's EOA (must be the only outgoing transaction from the invite-eoa)
+                if (result.errors || !result.data.transaction) {
+                    callback({type: "NOT_REDEEMED"});
+                } else {
+                    callback({type: "GOT_REDEEMED", transaction: result.data.transaction});
+                }
+            })
         },
-        loadSafeInvitationTransaction: async (ctx) => {
+        loadSafe: (ctx) => (callback) => {
+            loadProfile().then(result => {
+                if (!result.circlesAddress){
+                    callback({type: "NO_SAFE"});
+                } else {
+                    // TODO: Check if the safe is owned by the previously queried EOA.
+                    RpcGateway.get().eth.getBalance(result.circlesAddress).then(balance => {
+                        callback({
+                            type: "GOT_SAFE", safe: {
+                                address: result.circlesAddress,
+                                origin: "Created", // TODO: Find correct origin,
+                                balance: new BN(balance)
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        callback({
+                            type: "SAFE_ERROR",
+                            error: error
+                        })
+                    });
+                }
+            })
+            .catch(error => {
+                callback({
+                    type: "SAFE_ERROR",
+                    error: error
+                })
+            })
+        },
+        loadSafeInvitationTransaction: (ctx) => (callback) => {
             if (!ctx.safe) throw new Error(`ctx.safe is not set`);
 
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
-            const result = await apiClient.query({
-                query: SafeFundingTransactionDocument
+            window.o.apiClient.client.subscribeToResult().then(apiClient => {
+                return apiClient.query({
+                    query: SafeFundingTransactionDocument
+                });
+            })
+            .then(result => {
+                // TODO: Find the invitation transaction from the user's EOA to the safe (use IndexedTransactions from the API.)
+                if(result.errors || !result.data) {
+                    send({type: "SAFE_NOT_FUNDED"});
+                } else {
+                    send({type: "GOT_SAFE_FUNDED", transaction: result.data.transaction});
+                }
             });
-
-            // TODO: Find the invitation transaction from the user's EOA to the safe (use IndexedTransactions from the API.)
-            if(result.errors || !result.data) {
-                send({type: "SAFE_NOT_FUNDED"});
-            } else {
-                send({type: "GOT_SAFE_FUNDED", transaction: result.data.transaction});
-            }
         },
         loadUbi: async (ctx) => {
             if (!ctx.safe) throw new Error(`ctx.safe is not set`);
@@ -656,25 +697,44 @@ export const initMachine = createMachine<InitContext, InitEvent>({
     },
     actions: {
         assignSessionInfoToContext: assign( {
-            session: (ctx, event) => event.type == "GOT_SESSION" ? event.session : undefined
+            session: (ctx, event) => {
+                return event.type == "GOT_SESSION" ? event.session : undefined
+            }
         }),
         assignRegistrationToContext: assign( {
-            registration: (ctx, event) => event.type == "GOT_REGISTRATION" ? event.registration : undefined
+            registration: (ctx, event) => {
+                return event.type == "GOT_REGISTRATION" ? event.registration : undefined
+            }
+        }),
+        assignInvitationToContext: assign( {
+            invitation: (ctx, event) => {
+                return event.type == "GOT_INVITATION" ? event.invitation : undefined
+            }
         }),
         assignProfileToContext: assign( {
-            profile: (ctx, event) => event.type == "GOT_PROFILE" ? event.profile : undefined
+            profile: (ctx, event) => {
+                return event.type == "GOT_PROFILE" ? event.profile : undefined
+            }
         }),
         assignEoaToContext: assign( {
-            eoa: (ctx, event) => event.type == "GOT_EOA" ? event.eoa : undefined
+            eoa: (ctx, event) => {
+                return event.type == "GOT_EOA" ? event.eoa : undefined
+            }
         }),
         assignSafeToContext: assign( {
-            safe: (ctx, event) => event.type == "GOT_SAFE" ? event.safe : undefined
+            safe: (ctx, event) => {
+                return event.type == "GOT_SAFE" ? event.safe : undefined
+            }
         }),
         assignEoaInvitationTransactionToContext: assign( {
-            eoaInvitationTransaction: (ctx, event) => event.type == "GOT_REDEEMED" ? event.transaction : undefined
+            eoaInvitationTransaction: (ctx, event) => {
+                return event.type == "GOT_REDEEMED" ? event.transaction : undefined
+            }
         }),
         assignSafeInvitationTransactionToContext: assign( {
-            safeInvitationTransaction: (ctx, event) => event.type == "GOT_SAFE_FUNDED" ? event.transaction : undefined
+            safeInvitationTransaction: (ctx, event) => {
+                return event.type == "GOT_SAFE_FUNDED" ? event.transaction : undefined
+            }
         }),
         fundSafeFromEoa: () => {
             // TODO: Transfer the invitation amount minus 0.02 xDai from the user's EOA to the safe
@@ -684,6 +744,6 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         },
         assignUbiToContext: assign( {
             ubi: (ctx, event) => event.type == "GOT_UBI" ? event.ubi : undefined
-        }),
+        })
     }
 });

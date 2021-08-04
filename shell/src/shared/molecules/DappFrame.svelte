@@ -312,9 +312,11 @@
                           layout.dialogs.left = {
                               isOpen: false,
                               component: NavigationList,
-                              routable: null,
-                              runtimeDapp: null,
+                              routable: routable,
+                              runtimeDapp: runtimeDapp,
                               params: {
+                                  routable: routable,
+                                  runtimeDapp: runtimeDapp
                               }
                           }
                       } else {
@@ -322,9 +324,11 @@
                           layout.dialogs.left = {
                               isOpen: true,
                               component: NavigationList,
-                              routable: null,
-                              runtimeDapp: null,
+                              routable: routable,
+                              runtimeDapp: runtimeDapp,
                               params: {
+                                  routable: routable,
+                                  runtimeDapp: runtimeDapp
                               }
                           }
                       }
