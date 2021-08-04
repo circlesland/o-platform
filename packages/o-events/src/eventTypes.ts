@@ -17,6 +17,7 @@ export type PlatformEventTypes =
     | "shell.dappLoading"
     | "shell.dappLoaded"
     | "shell.modalChanged"
+    | "shell.routeChanged"
     | "shell.navigation.left.click"
     | "shell.navigation.right.click"
     | "shell.navigation.center.left.click"

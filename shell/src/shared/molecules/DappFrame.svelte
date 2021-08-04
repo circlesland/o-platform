@@ -128,9 +128,11 @@
                           layout.dialogs.left = {
                               isOpen: false,
                               component: NavigationList,
-                              routable: null,
-                              runtimeDapp: null,
+                              routable: routable,
+                              runtimeDapp: runtimeDapp,
                               params: {
+                                  routable: routable,
+                                  runtimeDapp: runtimeDapp,
                               }
                           }
                       } else {
@@ -138,9 +140,11 @@
                           layout.dialogs.left = {
                               isOpen: true,
                               component: NavigationList,
-                              routable: null,
-                              runtimeDapp: null,
+                              routable: routable,
+                              runtimeDapp: runtimeDapp,
                               params: {
+                                  routable: routable,
+                                  runtimeDapp: runtimeDapp,
                               }
                           }
                       }
@@ -287,7 +291,13 @@
           }
       }
 
-      setNav(runtimeDapp, routable, findRouteResult.params);
+      window.o.publishEvent({
+          type: "shell.routeChanged",
+          runtimeDapp: runtimeDapp,
+          routable: findRouteResult.routable
+      })
+
+      setNav(runtimeDapp, findRouteResult.routable, findRouteResult.params);
   }
 
   function showModalProcess(processId: string) {
@@ -301,7 +311,7 @@
   }
 
 
-  function setNav(runtimeDapp:RuntimeDapp<any>, routable:Routable, params:{[x:string]:any}) {
+  function setNav(runtimeDapp:RuntimeDapp<any>, currentRoutable:Routable, params:{[x:string]:any}) {
       if (layout.dialogs.center && layout.dialogs.center.isOpen) {
           navigation.leftSlot = null;
           navigation.rightSlot = null;
@@ -319,33 +329,46 @@
 
                       if (navigation.leftSlot.props.icon === "list") {
                           // TODO: Close nav
-                          layout.dialogs.left = {
-                              isOpen: false,
-                              component: NavigationList,
-                              routable: routable,
-                              runtimeDapp: runtimeDapp,
-                              params: {
-                                  routable: routable,
-                                  runtimeDapp: runtimeDapp
+                          layout = {
+                              ...layout,
+                              dialogs: {
+                                  ...layout.dialogs,
+                                  left: {
+                                      isOpen: false,
+                                      component: NavigationList,
+                                      routable: currentRoutable,
+                                      runtimeDapp: runtimeDapp,
+                                      params: {
+                                          routable: currentRoutable,
+                                          runtimeDapp: runtimeDapp
+                                      }
+                                  }
                               }
                           }
                       } else {
-                          // TODO: Open nav
-                          layout.dialogs.left = {
-                              isOpen: true,
-                              component: NavigationList,
-                              routable: routable,
-                              runtimeDapp: runtimeDapp,
-                              params: {
-                                  routable: routable,
-                                  runtimeDapp: runtimeDapp
+                          layout = {
+                              ...layout,
+                              dialogs: {
+                                  ...layout.dialogs,
+                                  left: {
+                                      isOpen: true,
+                                      component: NavigationList,
+                                      routable: currentRoutable,
+                                      runtimeDapp: runtimeDapp,
+                                      params: {
+                                          routable: currentRoutable,
+                                          runtimeDapp: runtimeDapp
+                                      }
+                                  }
                               }
                           }
                       }
                       // forwardNavEvent({position: "left"})
-                  },
-              },
+                  }
+              }
           };
+          console.log("SetNav leftSlot: ", navigation.leftSlot);
+          console.log("SetNav leftDialog: ", layout.dialogs.left);
       }
 
       if (runtimeDapp.navigation) {

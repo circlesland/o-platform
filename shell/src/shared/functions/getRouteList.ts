@@ -14,6 +14,7 @@ export function getRouteList(
     extern: boolean;
     isActive: boolean;
 }[] {
+    console.log("getRouteList.routable:", routable);
     const routables = dapp.routables.filter(
         (o) => (o.type === "page" || o.type === "link") && !o.isSystem
     );

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icons from "../../../shared/molecules/Icons.svelte";
   import { clickOutside } from "../../../shared/functions/clickOutside.ts";
-  import { createEventDispatcher } from "svelte";
+  import {createEventDispatcher, onMount} from "svelte";
   import LinkPill from "../../../shared/atoms/LinkPill.svelte";
   import {getRouteList} from "../../../shared/functions/getRouteList";
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
@@ -10,6 +10,18 @@
   export let routable: RuntimeDapp<any>;
 
   let navigation = [];
+
+
+  onMount(() => {
+    window.o.events.subscribe((event:any) => {
+      if (event.type !== "shell.routeChanged")
+        return;
+
+      runtimeDapp = event.runtimeDapp;
+      routable = event.routable;
+    })
+  });
+
   $: {
     if (runtimeDapp && routable) {
       navigation = getRouteList(runtimeDapp, runtimeDapp, routable);
