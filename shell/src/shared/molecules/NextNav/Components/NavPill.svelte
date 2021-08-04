@@ -1,5 +1,10 @@
 <script lang="ts">
+  import {inbox} from "../../../stores/inbox";
+
   export let props;
+
+
+
 </script>
 
 <div class="h-12 col-start-2 place-self-center">
@@ -9,6 +14,10 @@
       class:bg-white={props && props.left}
       on:click={props && props.left ? props.left.props.action : null}
     >
+
+      {($inbox).length}
+
+
       {#if props && props.left}
         <div class="self-center">
           <svelte:component
