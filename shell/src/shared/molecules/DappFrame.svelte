@@ -22,6 +22,7 @@
   import ActionButtonComponent from "../../shared/molecules/NextNav/Components/ActionButton.svelte";
   import {RuntimeLayout} from "../../dapps/o-onboarding/layouts/layout";
   import NavigationList from "../../dapps/o-onboarding/views/NavigationList.svelte";
+  import QuickActions from "../../dapps/o-onboarding/views/QuickActions.svelte";
   import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
   import {Page} from "@o-platform/o-interfaces/dist/routables/page";
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
@@ -30,6 +31,7 @@
   import {findRoutableByParams, FindRouteResult} from "../functions/findRoutableByParams";
   import {pop, push} from "svelte-spa-router";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 
   // install Swiper modules
   SwiperCore.use([Navigation, Pagination]);
@@ -49,6 +51,10 @@
   let dappFrameState:  any;
   let nextRoutable: Routable|undefined;
 
+  let dapp:DappManifest<any>;
+  let runtimeDapp: RuntimeDapp<any>;
+  let routable: Routable;
+
   let layout: RuntimeLayout = <RuntimeLayout>{
       main: undefined,
       dialogs:{
@@ -58,72 +64,7 @@
       }
   };
 
-  let navigation: NavigationManifest = {
-      leftSlot: {
-          component: LinkComponent,
-          props: {
-              icon: "list",
-              action: () => {
-                  // TODO: Expand collapse nav
-                  navigation.leftSlot.props.icon =
-                      navigation.leftSlot.props.icon === "list"
-                          ? "simplearrowleft"
-                          : "list";
-
-                  if (navigation.leftSlot.props.icon === "list") {
-                      // TODO: Close nav
-                      layout.dialogs.left = {
-                          isOpen: false,
-                          component: NavigationList,
-                          routable: null,
-                          runtimeDapp: null,
-                          params: {
-                          }
-                      }
-                  } else {
-                      // TODO: Open nav
-                      layout.dialogs.left = {
-                          isOpen: true,
-                          component: NavigationList,
-                          routable: null,
-                          runtimeDapp: null,
-                          params: {
-                          }
-                      }
-                  }
-                  // forwardNavEvent({position: "left"})
-              },
-          },
-      },
-      navPill: {
-          left: {
-              component: ListComponent,
-              props: {
-                  icon: "list",
-                  action: () => {
-                  },
-              },
-          },
-          center: {
-              component: ActionButtonComponent,
-              props: {
-                  icon: "logo",
-                  action: () => {
-                      // forwardNavEvent({position: "center"})
-                  }
-              },
-          },
-          right: {
-              component: LinkComponent,
-              props: {
-                  icon: "home",
-                  action: () => {
-                      push("#/dashboard")
-                  },
-              },
-          },
-      }
-  };
+  let navigation: NavigationManifest;
 
   onMount(async () => {
       window.o.events.subscribe(async event => {
@@ -184,10 +125,82 @@
           }
       };
 
+      navigation = {
+          leftSlot: {
+              component: LinkComponent,
+                  props: {
+                  icon: "list",
+                      action: () => {
+                      // TODO: Expand collapse nav
+                      navigation.leftSlot.props.icon =
+                          navigation.leftSlot.props.icon === "list"
+                              ? "simplearrowleft"
+                              : "list";
+
+                      if (navigation.leftSlot.props.icon === "list") {
+                          // TODO: Close nav
+                          layout.dialogs.left = {
+                              isOpen: false,
+                              component: NavigationList,
+                              routable: null,
+                              runtimeDapp: null,
+                              params: {
+                              }
+                          }
+                      } else {
+                          // TODO: Open nav
+                          layout.dialogs.left = {
+                              isOpen: true,
+                              component: NavigationList,
+                              routable: null,
+                              runtimeDapp: null,
+                              params: {
+                              }
+                          }
+                      }
+                      // forwardNavEvent({position: "left"})
+                  },
+              },
+          },
+          navPill: {
+              left: {
+                  component: ListComponent,
+                      props: {
+                      icon: "list",
+                          action: () => {
+                      },
+                  },
+              },
+              center: {
+                  component: ActionButtonComponent,
+                      props: {
+                      icon: "logo",
+                          action: () => {
+                          showModalPage(runtimeDapp, <Page<any, any>>{
+                              position: "modal",
+                              component: QuickActions
+                          }, {});
+                          // forwardNavEvent({position: "center"})
+                      }
+                  },
+              },
+              right: {
+                  component: LinkComponent,
+                      props: {
+                      icon: "home",
+                          action: () => {
+                          push("#/dashboard")
+                      },
+                  },
+              },
+          }
+      };
+
       if (!identityChecked) {
           window.o.runProcess(identify, {}, {});
           identityChecked = true;
       }
+
   });
 
   let startProcessing: boolean = true;
@@ -227,8 +240,8 @@
   }
 
   async function handleUrlChanged() {
-      const dapp = findDappById(params.dappId);
-      const runtimeDapp = dapp ? await RuntimeDapps.instance().getRuntimeDapp(dapp) : null;
+      dapp = findDappById(params.dappId);
+      runtimeDapp = dapp ? await RuntimeDapps.instance().getRuntimeDapp(dapp) : null;
       if (!runtimeDapp)
           throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
 
@@ -237,7 +250,7 @@
           throw new Error(`Couldn't find a routable for params: \n${JSON.stringify(params, null, 2)}`);
       }
 
-      nextRoutable = findRouteResult.routable;
+      routable = findRouteResult.routable;
 
       if (findRouteResult.routable.type === "page") {
           const page:Page<any,any> = <any>findRouteResult.routable;
@@ -260,7 +273,7 @@
           }
       }
 
-      setNav(runtimeDapp, nextRoutable, findRouteResult.params);
+      setNav(runtimeDapp, routable, findRouteResult.params);
   }
 
   function showModalProcess(processId: string) {

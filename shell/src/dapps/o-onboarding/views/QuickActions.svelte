@@ -1,36 +1,31 @@
 <script>
-  import Icons from "../../../shared/molecules/Icons.svelte";
   import { clickOutside } from "src/shared/functions/clickOutside.ts";
-  import { createEventDispatcher } from "svelte";
-  import { isMobile } from "../../../shared/functions/isMobile";
+  import {createEventDispatcher, onMount} from "svelte";
   import LinkPill from "src/shared/atoms/LinkPill.svelte";
+  import {dapps} from "../../../loader";
 
-  export let navigation = [
-    {
-      extern: true,
-      url: "https://circles.land",
-      icon: "home",
-      title: "Link 1",
-    },
-    {
-      extern: true,
-      url: "https://circles.land",
-      icon: "home",
-      title: "Link 2",
-    },
-    {
-      extern: true,
-      url: "https://circles.land",
-      icon: "home",
-      title: "Link 3",
-    },
-    {
-      extern: true,
-      url: "https://circles.land",
-      icon: "home",
-      title: "Link 4",
-    },
-  ];
+  let categories = [{
+    title: "",
+    items: [{
+      title: "",
+      action: () => {}
+    }]
+  }];
+
+  onMount(async () => {
+    categories = await Promise.all(dapps.filter(o => o.jumplist).map(async o => {
+      let items = await o.jumplist.items({}, o, o);
+      return {
+        title: o.title,
+        items: items.map(p => {
+          return {
+            title: p.title,
+            action: p.action
+          }
+        })
+      }
+    }));
+  });
 
   const eventDispatcher = createEventDispatcher();
 </script>
@@ -39,14 +34,19 @@
   class="z-10 flex flex-col flex-1"
   use:clickOutside
   on:click_outside="{() => eventDispatcher('clickedOutside')}">
-  <nav class="flex flex-col flex-1 p-4 mt-4 w-52"></nav>
+
   <div class="relative flex-shrink-0 p-4 pt-4 pb-20 space-y-2 w-52">
-    {#if navigation}
-      {#each navigation as navItem}
-        <LinkPill
-          props="{{ icon: navItem.icon, text: navItem.title, link: navItem.url, isActive: navItem.isActive }}" />
+    {#each categories as catergory}
+      <div>
+        {catergory.title}
+      </div>
+      <hr/>
+      {#each catergory.items as item}
+        <div on:click={() => item.action()}>
+          &gt; {item.title}
+        </div>
       {/each}
-    {/if}
+    {/each}
   </div>
 </div>
 
