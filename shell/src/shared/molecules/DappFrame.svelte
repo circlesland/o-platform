@@ -389,6 +389,7 @@
   }
 
   function showModalPage(runtimeDapp:RuntimeDapp<any>, routable:Page<any, any>, params:{[x:string]:any}) {
+      modalContent = "page";
       layout = {
           ...layout,
           dialogs: {
@@ -426,8 +427,8 @@
       if (layout.dialogs.center
           && layout.dialogs.center.routable
           && layout.dialogs.center.routable.type === "page"
-          && nextRoutable.type === "page"
-          && (<any>nextRoutable).position === "modal") {
+          && routable.type === "page"
+          && (<any>routable).position === "modal") {
           await pop();
           setQuickActionsForNavCenter();
           return;
