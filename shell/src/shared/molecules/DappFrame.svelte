@@ -386,7 +386,11 @@
           ...layout,
           main: {
               component: routable.component,
-              params: params,
+              params: {
+                  ...params,
+                  runtimeDapp: runtimeDapp,
+                  routable: routable
+              },
               isOpen: true,
               runtimeDapp: runtimeDapp,
               routable: routable
