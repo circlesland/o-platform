@@ -25,7 +25,9 @@
   {#if navigation.loginPill}
     <LoginPill />
   {:else}
-    <NavPill props="{navigation.navPill}" />
+    <NavPill on:actionButton={() => {
+      navigation.navPill.center.props.action()
+    }} props="{navigation.navPill}" />
   {/if}
 </footer>
 

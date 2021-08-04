@@ -1,7 +1,6 @@
 <script>
   import { clickOutside } from "src/shared/functions/clickOutside.ts";
   import {createEventDispatcher, onMount} from "svelte";
-  import LinkPill from "src/shared/atoms/LinkPill.svelte";
   import {dapps} from "../../../loader";
 
   let categories = [{

@@ -47,7 +47,9 @@ export function promptCirclesSafe<TContext extends ProcessContext<any>,TEvent ex
             label: spec.params.label,
             placeholder: spec.params.placeholder,
             submitButtonText: spec.params.submitButtonText,
-            getKey: (profile) => profile.circlesAddress,
+            getKey: (profile) => {
+                return profile.circlesAddress;
+            },
             keyProperty: "circlesAddress",
             itemTemplate: DropDownProfile,
             getLabel: (profile) =>  `${profile.firstName} ${profile.lastName ? profile.lastName : ""}`,

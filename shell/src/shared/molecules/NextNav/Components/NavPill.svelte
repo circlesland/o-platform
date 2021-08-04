@@ -22,7 +22,6 @@
 
     <div
       class="z-50 flex-shrink-0 w-16 col-start-2 mt-3 ml-1 cursor-pointer"
-      on:click={props.center.props.action}
     >
       {#if props && props.center}
       <svelte:component

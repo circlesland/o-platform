@@ -54,6 +54,7 @@
   let dapp:DappManifest<any>;
   let runtimeDapp: RuntimeDapp<any>;
   let routable: Routable;
+  let modalContent: "process" | "page" | "quickActions" | "none" = "none";
 
   let layout: RuntimeLayout = <RuntimeLayout>{
       main: undefined,
@@ -107,22 +108,7 @@
           requestEvent.id = Generate.randomHexString(8);
 
           const processStarted: ProcessStarted = await window.o.requestEvent<ProcessStarted>(requestEvent);
-          const process = window.o.stateMachines.findById(processStarted.processId);
-
-          // TODO: Show process
-          layout = {
-              ...layout,
-              dialogs: {
-                  ...layout.dialogs,
-                  center: {
-                      component: ProcessContainer,
-                      params: {process},
-                      isOpen: true,
-                      runtimeDapp: null,
-                      routable: null
-                  }
-              }
-          }
+          showModalProcess(processStarted.processId)
       };
 
       navigation = {
@@ -203,6 +189,34 @@
 
   });
 
+  function setCloseAsNavCenter() {
+      navigation.navPill.center = {
+          component: ActionButtonComponent,
+          props: {
+              icon: "close",
+              action: () => hideCenter()
+          }
+      };
+  }
+
+  function showQuickActions() {
+      setCloseAsNavCenter();
+      showModalPage(runtimeDapp, <Page<any, any>>{
+          position: "modal",
+          component: QuickActions
+      }, {});
+  }
+
+  function setQuickActionsForNavCenter() {
+      navigation.navPill.center = {
+          component: ActionButtonComponent,
+          props: {
+              icon: "logo",
+              action: () => showQuickActions()
+          },
+      };
+  }
+
   let startProcessing: boolean = true;
 
   $: {
@@ -277,32 +291,15 @@
   }
 
   function showModalProcess(processId: string) {
+      modalContent = "process";
       const process = window.o.stateMachines.findById(processId);
-      layout = {
-          ...layout,
-          dialogs: {
-              ...layout.dialogs,
-              center: {
-                  component: ProcessContainer,
-                  params: {process},
-                  isOpen: true,
-                  runtimeDapp: null,
-                  routable: null
-              }
-          }
-      }
+      showModalPage(runtimeDapp, <Page<any, any>>{
+          component: ProcessContainer
+      }, {process});
 
-      navigation.navPill.center = {
-          component: ActionButtonComponent,
-          props: {
-              icon: "close",
-              action: () => {
-                  // TODO: cancel process
-                  layout.dialogs.center.isOpen = false;
-              }
-          }
-      };
+      setCloseAsNavCenter();
   }
+
 
   function setNav(runtimeDapp:RuntimeDapp<any>, routable:Routable, params:{[x:string]:any}) {
       if (layout.dialogs.center && layout.dialogs.center.isOpen) {
@@ -398,12 +395,14 @@
   }
 
   async function hideCenter() {
+      modalContent = "none";
       if (layout.dialogs.center
           && layout.dialogs.center.routable
           && layout.dialogs.center.routable.type === "page"
           && nextRoutable.type === "page"
           && (<any>nextRoutable).position === "modal") {
           await pop();
+          setQuickActionsForNavCenter();
           return;
       } else {
           layout = {
@@ -413,6 +412,7 @@
                   center: null
               }
           }
+          setQuickActionsForNavCenter();
       }
   }
 
@@ -420,5 +420,9 @@
 
 <Layout layout={layout}
         navigation={navigation}
-        on:clickedOutside={() => { hideCenter() }}
+        on:clickedOutside={() => {
+            if (modalContent === "none")
+                return;
+            hideCenter();
+        }}
         sliderPages={[]}/>
