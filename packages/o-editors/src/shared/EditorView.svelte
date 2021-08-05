@@ -30,7 +30,8 @@ console.log("Params: ", context);
   </slot>
   <slot name="EditorDescription">
     <div class="w-full text-center">
-      <span class="text-dark-lightest">{context.params.view.description}</span>
+      <span class="text-dark-lightest"
+        >{@html context.params.view.description}</span>
     </div>
   </slot>
   <div class="w-full">

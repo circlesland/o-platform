@@ -11,8 +11,8 @@
   import Pager from "../views/Pager.svelte";
   import "simplebar";
   import "simplebar/dist/simplebar.css";
-  import {createEventDispatcher} from "svelte";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { createEventDispatcher } from "svelte";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 
   let dapp = "homepage:!";
 
@@ -43,6 +43,13 @@
         title: "Item 2"
     }*/
   ];
+  $: {
+    if (layout.dialogs.center && layout.dialogs.center.isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "inherit";
+    }
+  }
 </script>
 
 {#if layout}
@@ -62,18 +69,30 @@
                 <svelte:component
                   this="{layout.dialogs.left.component}"
                   {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
-                  on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'left'})}
-                  on:clickedItem={() => eventDispatcher('clickedItem', {position: 'left'})}
-                  on:clickedClose={() => eventDispatcher('clickedClose', {position: 'left'})} />
+                  on:clickedOutside="{() => eventDispatcher('clickedOutside', {
+                      position: 'left',
+                    })}"
+                  on:clickedItem="{() => eventDispatcher('clickedItem', {
+                      position: 'left',
+                    })}"
+                  on:clickedClose="{() => eventDispatcher('clickedClose', {
+                      position: 'left',
+                    })}" />
               </LeftMobile>
             {:else}
               <LeftDesktop>
                 <svelte:component
                   this="{layout.dialogs.left.component}"
                   {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
-                  on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'left'})}
-                  on:clickedItem={() => eventDispatcher('clickedItem', {position: 'left'})}
-                  on:clickedClose={() => eventDispatcher('clickedClose', {position: 'left'})} />
+                  on:clickedOutside="{() => eventDispatcher('clickedOutside', {
+                      position: 'left',
+                    })}"
+                  on:clickedItem="{() => eventDispatcher('clickedItem', {
+                      position: 'left',
+                    })}"
+                  on:clickedClose="{() => eventDispatcher('clickedClose', {
+                      position: 'left',
+                    })}" />
               </LeftDesktop>
             {/if}
           {/if}
@@ -91,9 +110,15 @@
               <svelte:component
                 this="{layout.dialogs.right.component}"
                 {...layout.dialogs.right.params ? layout.dialogs.right.params : {}}
-                on:clickedOutside={() => eventDispatcher('clickedOutside', {position: 'right'})}
-                on:clickedItem={() => eventDispatcher('clickedItem', {position: 'right'})}
-                on:clickedClose={() => eventDispatcher('clickedClose', {position: 'right'})} />
+                on:clickedOutside="{() => eventDispatcher('clickedOutside', {
+                    position: 'right',
+                  })}"
+                on:clickedItem="{() => eventDispatcher('clickedItem', {
+                    position: 'right',
+                  })}"
+                on:clickedClose="{() => eventDispatcher('clickedClose', {
+                    position: 'right',
+                  })}" />
             </RightDesktop>
           {/if}
         </div>
@@ -106,9 +131,7 @@
   {/if}
 
   {#if layout.dialogs.center && layout.dialogs.center.isOpen}
-    <Center
-      blur="true"
-      on:clickedOutside>
+    <Center blur="true" on:clickedOutside>
       <svelte:component
         this="{layout.dialogs.center.component}"
         {...layout.dialogs.center.params ? layout.dialogs.center.params : {}} />

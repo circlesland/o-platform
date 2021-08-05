@@ -2,7 +2,9 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.svelte";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
+import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
+import AcceptViewer from "@o-platform/o-editors/src/AcceptViewer.svelte";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
@@ -38,11 +40,38 @@ export type AuthenticateContext = ProcessContext<AuthenticateContextData>;
  */
 const strings = {
   labelLoginEmail:
-    "Welcome CirclesLand. <br/><span class='text-base text-light-dark font-normal block mt-3'>A pleasure you found your way here. Please provide your email address to Sign-In</span>",
+    "Welcome to CirclesLand. <br/><span class='text-base text-light-dark font-normal block mt-3'>A pleasure you found your way here. Please provide your email address to Sign-In</span>",
   labelVerificationCode: (email: string) =>
     `Please enter pin<br/><span class='text-base text-light-dark font-normal block mt-3'>We have send you a 6 digit login pin to your mail ${email}.</span><br/><span class='text-light-dark text-xs font-normal'> It may take a moment. Also check your spam folder</span>`,
   placeholder: "email",
 };
+
+const editorContent = {
+  email: {
+    title: "Welcome to CirclesLand",
+    description:
+      "A pleasure you found your way here. Please provide your email address to Sign-In.",
+    placeholder: "Email address",
+    mainComponent: EmailAddressEditor,
+    submitButtonText: "Sign-In",
+  },
+  terms_privacy: {
+    title: "Terms & Privacy",
+    description:
+      "CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/><span class='text-xs'>For details read our <a href='https://blog.circles.land/terms-of-service' class='text-primary' target='_blank' alt='privacy policy & terms of service'>privacy policy & terms of service</a></span>",
+    mainComponent: AcceptViewer,
+    submitButtonText: "I read and accept them",
+  },
+  verification: {
+    title: "Welcome to CirclesLand",
+    description:
+      "A pleasure you found your way here. Please provide your email address to Sign-In",
+    placeholder: "Email address",
+    mainComponent: EmailAddressEditor,
+    submitButtonText: "Sign-In",
+  },
+};
+
 async function sha256(str) {
   const strBuffer = new TextEncoder().encode(str);
   const hashBuffer = await crypto.subtle.digest("SHA-256", strBuffer);
@@ -79,12 +108,9 @@ const processDefinition = (processId: string) =>
       },
       loginEmail: prompt<AuthenticateContext, any>({
         field: "loginEmail",
-        component: EmailAddressEditor,
-        params: {
-          label: strings.labelLoginEmail,
-          placeholder: strings.placeholder,
-          submitButtonText: "Let me in",
-        },
+        component: EditorView,
+        params: { view: editorContent.email },
+
         dataSchema: yup
           .string()
           .required("Please provide your email address")
@@ -171,16 +197,9 @@ const processDefinition = (processId: string) =>
       // Ask the user to accept TOS
       acceptTos: prompt<AuthenticateContext, any>({
         field: "acceptTos",
+        component: EditorView,
+        params: { view: editorContent.terms_privacy },
 
-        component: HtmlViewer,
-        params: {
-          //  link: "",
-          //  linkLabel: "terms of service & privacy policy",
-          //submitButtonText: "",
-          submitButtonText: "I read and accept them",
-          html: (context) =>
-            `Terms & Privacy <br/> <span class='text-base text-light-dark font-normal block mt-3'>CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/></span><span class='text-light-dark text-xs font-normal'>For details read our <a class="text-primary" href="https://blog.circles.land/terms-of-service">privacy policy & terms of service</a></span>`,
-        },
         /*
         dataSchema: yup
           .boolean()

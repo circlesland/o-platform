@@ -6,7 +6,7 @@
 
 .text-base {
   font-size: 1rem /* 14px */;
-  line-height: 1rem /* 20px */;
+  line-height: 1.375 /* 22px */;
   @apply font-normal;
 }
 
