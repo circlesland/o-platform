@@ -34,9 +34,9 @@
   export let itemFilter = (label, filterText, option) =>
     label.toLowerCase().includes(filterText.toLowerCase());
   export let groupBy = undefined;
-  export let groupFilter = (groups) => groups;
+  export let groupFilter = groups => groups;
   export let isGroupHeaderSelectable = false;
-  export let getGroupHeaderLabel = (option) => {
+  export let getGroupHeaderLabel = option => {
     return option.label;
   };
   export let getOptionLabel = (option, filterText) => {
@@ -46,18 +46,18 @@
   export let loadOptions = undefined;
   export let hasError = false;
   export let containerStyles = "";
-  export let getSelectionLabel = (option) => {
+  export let getSelectionLabel = option => {
     if (option) return option.label;
   };
 
-  export let createGroupHeaderItem = (groupValue) => {
+  export let createGroupHeaderItem = groupValue => {
     return {
       value: groupValue,
       label: groupValue,
     };
   };
 
-  export let createItem = (filterText) => {
+  export let createItem = filterText => {
     return {
       value: filterText,
       label: filterText,
@@ -108,7 +108,7 @@
     getItemsHasInvoked = true;
     isWaiting = true;
 
-    let res = await loadOptions(filterText).catch((err) => {
+    let res = await loadOptions(filterText).catch(err => {
       console.warn("svelte-select loadOptions error :>> ", err);
       dispatch("error", { type: "loadOptions", details: err });
     });
@@ -145,7 +145,7 @@
       Array.isArray(selectedValue) &&
       selectedValue.length > 0
     ) {
-      selectedValue = selectedValue.map((item) =>
+      selectedValue = selectedValue.map(item =>
         typeof item === "string" ? { value: item, label: item } : item
       );
     }
@@ -194,11 +194,11 @@
       _items = JSON.parse(originalItemsClone);
     } else {
       _filteredItems = _items
-        ? _items.filter((item) => {
+        ? _items.filter(item => {
             let keepItem = true;
 
             if (isMulti && selectedValue) {
-              keepItem = !selectedValue.some((value) => {
+              keepItem = !selectedValue.some(value => {
                 return value[optionIdentifier] === item[optionIdentifier];
               });
             }
@@ -218,7 +218,7 @@
       const groupValues = [];
       const groups = {};
 
-      _filteredItems.forEach((item) => {
+      _filteredItems.forEach(item => {
         const groupValue = groupBy(item);
 
         if (!groupValues.includes(groupValue)) {
@@ -243,7 +243,7 @@
 
       const sortedGroupedItems = [];
 
-      groupFilter(groupValues).forEach((groupValue) => {
+      groupFilter(groupValues).forEach(groupValue => {
         sortedGroupedItems.push(...groups[groupValue]);
       });
 
@@ -327,7 +327,7 @@
         const itemToCreate = createItem(filterText);
         itemToCreate.isCreator = true;
 
-        const existingItemWithFilterValue = _filteredItems.find((item) => {
+        const existingItemWithFilterValue = _filteredItems.find(item => {
           return item[optionIdentifier] === itemToCreate[optionIdentifier];
         });
 
@@ -335,13 +335,11 @@
 
         if (selectedValue) {
           if (isMulti) {
-            existingSelectionWithFilterValue = selectedValue.find(
-              (selection) => {
-                return (
-                  selection[optionIdentifier] === itemToCreate[optionIdentifier]
-                );
-              }
-            );
+            existingSelectionWithFilterValue = selectedValue.find(selection => {
+              return (
+                selection[optionIdentifier] === itemToCreate[optionIdentifier]
+              );
+            });
           } else if (
             selectedValue[optionIdentifier] === itemToCreate[optionIdentifier]
           ) {
@@ -370,7 +368,7 @@
       const ids = [];
       const uniqueValues = [];
 
-      selectedValue.forEach((val) => {
+      selectedValue.forEach(val => {
         if (!ids.includes(val[optionIdentifier])) {
           ids.push(val[optionIdentifier]);
           uniqueValues.push(val);
@@ -388,21 +386,21 @@
     let matchTo = selection
       ? selection[optionIdentifier]
       : selectedValue[optionIdentifier];
-    return items.find((item) => item[optionIdentifier] === matchTo);
+    return items.find(item => item[optionIdentifier] === matchTo);
   }
 
   function updateSelectedValueDisplay(items) {
     if (
       !items ||
       items.length === 0 ||
-      items.some((item) => typeof item !== "object")
+      items.some(item => typeof item !== "object")
     )
       return;
     if (
       !selectedValue ||
       (isMulti
         ? selectedValue.some(
-            (selection) => !selection || !selection[optionIdentifier]
+            selection => !selection || !selection[optionIdentifier]
           )
         : !selectedValue[optionIdentifier])
     )
@@ -410,7 +408,7 @@
 
     if (Array.isArray(selectedValue)) {
       selectedValue = selectedValue.map(
-        (selection) => findItem(selection) || selection
+        selection => findItem(selection) || selection
       );
     } else {
       selectedValue = findItem() || selectedValue;
@@ -432,7 +430,7 @@
     if (selectedValue.length === 1) {
       selectedValue = undefined;
     } else {
-      selectedValue = selectedValue.filter((item) => {
+      selectedValue = selectedValue.filter(item => {
         return item !== itemToRemove;
       });
     }
@@ -623,7 +621,7 @@
       props: data,
     });
 
-    list.$on("itemSelected", (event) => {
+    list.$on("itemSelected", event => {
       const { detail } = event;
 
       if (detail) {
@@ -649,7 +647,7 @@
       }
     });
 
-    list.$on("itemCreated", (event) => {
+    list.$on("itemCreated", event => {
       const { detail } = event;
       if (isMulti) {
         selectedValue = selectedValue || [];
@@ -688,94 +686,91 @@
 </script>
 
 <svelte:window
-  on:click={handleWindowClick}
-  on:keydown={handleKeyDown}
-  on:resize={getPosition}
-/>
+  on:click="{handleWindowClick}"
+  on:keydown="{handleKeyDown}"
+  on:resize="{getPosition}" />
 
 <div
   class="selectContainer {containerClasses} flex-col"
   class:hasError
-  class:multiSelect={isMulti}
-  class:disabled={isDisabled}
-  class:focused={isFocused}
-  style={containerStyles}
-  on:click={handleClick}
-  bind:this={container}
->
+  class:multiSelect="{isMulti}"
+  class:disabled="{isDisabled}"
+  class:focused="{isFocused}"
+  style="{containerStyles}"
+  on:click="{handleClick}"
+  bind:this="{container}">
   {#if Icon}
-    <svelte:component this={Icon} {...iconProps} />
+    <svelte:component this="{Icon}" {...iconProps} />
   {/if}
 
   {#if isMulti && selectedValue && selectedValue.length > 0}
     <svelte:component
-      this={MultiSelection}
+      this="{MultiSelection}"
       {selectedValue}
       {getSelectionLabel}
       {activeSelectedValue}
       {isDisabled}
       {multiFullItemClearable}
-      on:multiItemClear={handleMultiItemClear}
-      on:focus={handleFocus}
-    />
+      on:multiItemClear="{handleMultiItemClear}"
+      on:focus="{handleFocus}" />
   {/if}
 
   {#if isDisabled}
     <input
       {..._inputAttributes}
-      bind:this={input}
-      on:focus={handleFocus}
-      bind:value={filterText}
-      placeholder={placeholderText}
-      style={inputStyles}
+      bind:this="{input}"
+      on:focus="{handleFocus}"
+      bind:value="{filterText}"
+      placeholder="{placeholderText}"
+      style="{inputStyles}"
       class="order-1"
-      disabled
-    />
+      disabled />
   {:else}
-    <div class="flex flex-row order-1 w-full mt-1 space-x-4 bg-white">
+    <div
+      class="sticky left-0 flex flex-row order-1 w-full h-20 py-2 mt-1 space-x-4 bg-white -bottom-1"
+      style="z-index: 99999999; box-shadow: 2px 2px 1px 10px rgba(255, 255, 255,
+      1);">
       <div class="flex-grow">
         <input
           type="text"
           name="searchTerm"
           {..._inputAttributes}
-          bind:this={input}
-          on:focus={handleFocus}
-          bind:value={filterText}
-          placeholder={placeholderText}
-          style={inputStyles}
-          class="order-1 input input-lg input-bordered"
-        />
+          bind:this="{input}"
+          on:focus="{handleFocus}"
+          bind:value="{filterText}"
+          placeholder="{selectedValue.name + ', ' + selectedValue.country}"
+          style="{inputStyles}"
+          class="order-1 input input-lg input-bordered" />
       </div>
       {#if inlineSubmit}
         <div>
           <button
             type="submit"
-            on:click={() => {
-              dispatch("buttonClick");
-            }}
-            class="btn btn-primary btn-square"
-            ><Icons icon="submitsmall" />
+            on:click="{() => {
+              dispatch('buttonClick');
+            }}"
+            class="btn btn-primary btn-square">
+            <Icons icon="submitsmall" />
           </button>
         </div>
       {/if}
     </div>
   {/if}
 
-  {#if !isMulti && showSelectedItem}
-    <div class="selectedItem" on:focus={handleFocus}>
+  <!-- {#if !isMulti && showSelectedItem}
+    <div class="selectedItem" on:focus="{handleFocus}">
       <svelte:component
-        this={Selection}
-        item={selectedValue}
-        {getSelectionLabel}
-      />
+        this="{Selection}"
+        item="{selectedValue}"
+        {getSelectionLabel} />
     </div>
-  {/if}
+  {/if} -->
 
-  {#if showSelectedItem && isClearable && !isDisabled && !isWaiting}
-    <div class="clearSelect" on:click|preventDefault={handleClear}>
-      <svelte:component this={ClearIcon} />
+  <!-- {#if showSelectedItem && isClearable && !isDisabled && !isWaiting}
+    <div class="clearSelect" on:click|preventDefault="{handleClear}">
+      <svelte:component this="{ClearIcon}" />
     </div>
-  {/if}
+  {/if} -->
 
   {#if showIndicator || (showChevron && !selectedValue) || (!isSearchable && !isDisabled && !isWaiting && ((showSelectedItem && !isClearable) || !showSelectedItem))}
     <div class="indicator">
@@ -785,11 +780,10 @@
         <svg width="100%" height="100%" viewBox="0 0 20 20" focusable="false">
           <path
             d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747
-            3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0
-            1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502
+            3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197
+            0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502
             0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0
-            0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
-          />
+            0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path>
         </svg>
       {/if}
     </div>
@@ -806,8 +800,7 @@
           fill="none"
           stroke="currentColor"
           stroke-width="5"
-          stroke-miterlimit="10"
-        />
+          stroke-miterlimit="10"></circle>
       </svg>
     </div>
   {/if}
