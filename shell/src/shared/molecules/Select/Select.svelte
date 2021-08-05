@@ -738,7 +738,7 @@
           bind:this="{input}"
           on:focus="{handleFocus}"
           bind:value="{filterText}"
-          placeholder="{selectedValue.name + ', ' + selectedValue.country}"
+          placeholder="{selectedValue ? selectedValue.name + ', ' + selectedValue.country : 'Enter name to find'}"
           style="{inputStyles}"
           class="order-1 input input-lg input-bordered" />
       </div>
