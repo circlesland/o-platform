@@ -14,15 +14,16 @@
 
   import "simplebar";
   import "simplebar/dist/simplebar.css";
-  import {PromptEvent} from "../../dapps/o-onboarding/components/dialog";
-  import {getRouteList} from "../functions/getRouteList";
+  import { PromptEvent } from "../../dapps/o-onboarding/components/dialog";
+  import { getRouteList } from "../functions/getRouteList";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
   let runningProcess: Process | undefined;
   let jumplistItems: JumplistItem[] | undefined;
-  let navigation: {
+  let navigation:
+    | {
         icon?: string;
         title: string;
         url: string;
@@ -56,7 +57,6 @@
 
   const dispatch = createEventDispatcher();
 
-
   $: {
     dispatch("modalOpen", _isOpen);
   }
@@ -71,7 +71,7 @@
 
     if (runtimeDapp.jumplist) {
       try {
-        (await runtimeDapp.jumplist.items(params, runtimeDapp)).forEach((o) => {
+        (await runtimeDapp.jumplist.items(params, runtimeDapp)).forEach(o => {
           combinedItems[o.key] = o;
         });
       } catch (e) {
@@ -82,7 +82,7 @@
       const pageJumplist = (<Page<any, any>>routable).jumplist;
       if (pageJumplist) {
         try {
-          (await pageJumplist.items(params, runtimeDapp)).forEach((o) => {
+          (await pageJumplist.items(params, runtimeDapp)).forEach(o => {
             combinedItems[o.key] = o;
           });
         } catch (e) {
@@ -159,7 +159,7 @@
     return true;
   }
 
-  const onKeyDown = (e) => {
+  const onKeyDown = e => {
     if (e.key !== "Escape") return;
 
     closeModal();
@@ -169,79 +169,68 @@
 {#if _isOpen}
   <aside
     id="modalAside"
-    on:keydown={onKeyDown}
+    on:keydown="{onKeyDown}"
     aria-labelledby="modal-heading"
     aria-modal="true"
-    tabIndex={-1}
+    tabIndex="{-1}"
     role="dialog"
-    on:click|self={closeModal}
-    class="z-40 pt-2 text-base overlay"
-  >
+    on:click|self="{closeModal}"
+    class="z-40 pt-2 text-base overlay">
     <div
       class="w-full p-2 mt-1 modalAsideContentContainer"
-      on:click|self={closeModal}
-    >
+      on:click|self="{closeModal}">
       <div
-        class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
-      >
+        class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2">
         <div data-simplebar class="modalAsideScrollableContent rounded-xl">
           <div class="w-full m-auto">
             {#if runningProcess}
               <div class="p-6">
                 <ProcessContainer
-                  process={runningProcess}
-                  on:navigation={(event) =>
-                    dispatch("navigation", event.detail)}
-                  on:stopped={() => {
-                    dispatch("stopped");
+                  process="{runningProcess}"
+                  on:navigation="{event => dispatch('navigation', event.detail)}"
+                  on:stopped="{() => {
+                    dispatch('stopped');
                     runningProcess = null;
-                    closeModal("stopped");
-                  }}
-                />
+                    closeModal('stopped');
+                  }}" />
               </div>
             {:else if navigation}
               <div class="flex flex-col p-6 space-y-6">
                 {#each navigation as item}
                   <DappNavItem
-                    segment={item.url}
-                    title={item.title}
-                    icon={item.icon}
-                    external={item.extern}
-                    on:navigate={closeModal}
-                  />
+                    segment="{item.url}"
+                    title="{item.title}"
+                    icon="{item.icon}"
+                    external="{item.extern}"
+                    on:navigate="{closeModal}" />
                 {/each}
               </div>
             {:else if _page}
               <svelte:component
-                this={_page.component}
-                params={_pageParams}
-                runtimeDapp={_pageRuntimeDapp}
-                routable={_pageRoutable}
-              />
+                this="{_page.component}"
+                params="{_pageParams}"
+                runtimeDapp="{_pageRuntimeDapp}"
+                routable="{_pageRoutable}" />
             {:else if jumplistItems}
               <div
-                class="flex flex-wrap items-center justify-center p-6 space-x-10"
-              >
+                class="flex flex-wrap items-center justify-center p-6 space-x-10">
                 {#each jumplistItems as item}
                   <ActionListItem
-                    clickOnly={true}
+                    clickOnly="{true}"
                     segment=""
-                    icon={item.icon}
-                    title={item.title}
-                    on:navigate={() => {
+                    icon="{item.icon}"
+                    title="{item.title}"
+                    on:navigate="{() => {
                       if (item.event) {
                         window.o.publishEvent(item.event);
                       }
                       if (item.action) {
                         item.action();
                       }
-                    }}
-                  />
+                    }}" />
                 {/each}
               </div>
-            {:else}
-              Nothing to show
-            {/if}
+            {:else}Nothing to show{/if}
           </div>
         </div>
       </div>

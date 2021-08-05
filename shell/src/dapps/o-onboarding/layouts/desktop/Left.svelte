@@ -17,7 +17,7 @@
       <!-- Sidebar content -->
       <div class="z-10 flex flex-col flex-1 ">
         <nav class="flex flex-col flex-1 w-64 p-4 mt-4"></nav>
-        <div class="relative flex-shrink-0 w-64 p-4 pt-4 pb-20 space-y-2">
+        <div class="relative flex-shrink-0 w-64 p-4 pt-4 pb-10 space-y-2">
           <slot />
         </div>
       </div>

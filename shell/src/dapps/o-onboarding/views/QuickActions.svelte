@@ -1,29 +1,39 @@
 <script>
   import { clickOutside } from "src/shared/functions/clickOutside.ts";
-  import {createEventDispatcher, onMount} from "svelte";
-  import {dapps} from "../../../loader";
+  import { createEventDispatcher, onMount } from "svelte";
+  import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
+  import { dapps } from "../../../loader";
 
-  let categories = [{
-    title: "",
-    items: [{
+  let categories = [
+    {
       title: "",
-      action: () => {}
-    }]
-  }];
+      items: [
+        {
+          title: "",
+          action: () => {},
+        },
+      ],
+    },
+  ];
 
   onMount(async () => {
-    categories = await Promise.all(dapps.filter(o => o.jumplist).map(async o => {
-      let items = await o.jumplist.items({}, o, o);
-      return {
-        title: o.title,
-        items: items.map(p => {
+    categories = await Promise.all(
+      dapps
+        .filter(o => o.jumplist)
+        .map(async o => {
+          let items = await o.jumplist.items({}, o, o);
           return {
-            title: p.title,
-            action: p.action
-          }
+            title: o.title,
+            items: items.map(p => {
+              return {
+                title: p.title,
+                icon: p.icon,
+                action: p.action,
+              };
+            }),
+          };
         })
-      }
-    }));
+    );
   });
 
   const eventDispatcher = createEventDispatcher();
@@ -34,17 +44,19 @@
   use:clickOutside
   on:click_outside="{() => eventDispatcher('clickedOutside')}">
 
-  <div class="relative flex-shrink-0 p-4 pt-4 pb-20 space-y-2 w-52">
+  <div class="relative flex-shrink-0 w-full p-4 space-y-2">
     {#each categories as catergory}
-      <div>
+      <div class="text-dark-lightest text-3xs sm:text-sm">
         {catergory.title}
       </div>
-      <hr/>
-      {#each catergory.items as item}
-        <div on:click={() => item.action()}>
-          &gt; {item.title}
-        </div>
-      {/each}
+      <div class="flex flex-row items-stretch space-x-4">
+        {#each catergory.items as item}
+          <ActionListItem
+            icon="{item.icon}"
+            title="{item.title}"
+            on:click="{() => item.action()}" />
+        {/each}
+      </div>
     {/each}
   </div>
 </div>

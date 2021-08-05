@@ -13,7 +13,6 @@
   export let clickOnly: boolean = false;
   const current = getContext("nav");
 
-
   function setSegment() {
     if (clickOnly) {
       dispatch("navigate");
@@ -30,11 +29,10 @@
 </script>
 
 <div
-  on:click={setSegment}
-  class="flex flex-col items-center flex-grow py-2 text-xs text-center rounded-lg cursor-pointer bg-light-lighter"
->
+  on:click="{setSegment}"
+  class="flex flex-col items-center flex-grow py-2 text-xs text-center rounded-lg cursor-pointer bg-light-lighter">
   <div class="text-center">
     <Icons {icon} />
   </div>
-  <span class="block mt-2 text-3xs">{title}</span>
+  <span class="block mt-2 text-3xs sm:text-sm">{title}</span>
 </div>
