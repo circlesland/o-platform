@@ -6,6 +6,7 @@ export type CurrencyTransferContext = EditorContext & {
     currencies: {
       value: string;
       label: string;
+      __typename: string;
     }[];
     [x: string]: any;
   };

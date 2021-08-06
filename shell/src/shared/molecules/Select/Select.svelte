@@ -150,6 +150,8 @@
         typeof item === "string" ? { value: item, label: item } : item
       );
     }
+
+    console.log("TRELAKJSD ", selectedValue);
     // This is some Hardcoded shit to display the currently selected Value into the placeholder of the input.
     // Since we have different types of results, we need to call different keys..
     if (selectedValue && selectedValue.__typename == "Profile") {
@@ -166,6 +168,8 @@
       }
     } else if (selectedValue && selectedValue.__typename == "Tag") {
       displayableSelectedValue = selectedValue.value;
+    } else if (selectedValue && selectedValue.__typename == "Currency") {
+      displayableSelectedValue = selectedValue.label;
     }
   }
 
@@ -625,7 +629,7 @@
 
     if (staticList) {
       Object.assign(target.style, {
-        "margin-top": "-4.4rem",
+        "margin-top": "-5rem",
         "margin-left": "0.95rem",
       });
     }
@@ -746,7 +750,7 @@
       disabled />
   {:else}
     <div
-      class="sticky left-0 flex flex-row order-1 w-full h-20 py-2 mt-1 space-x-4 bg-white -bottom-1"
+      class="sticky left-0 flex flex-row order-1 w-full h-20 py-2 space-x-4 bg-white -bottom-1"
       style="z-index: 99999999; box-shadow: 2px 2px 1px 10px rgba(255, 255, 255,
       1);">
       <div class="flex-grow">

@@ -59,13 +59,12 @@ const strings = {
 };
 
 const editorContent = {
-  recipient: {
-    title: "What is your first name?",
-    description:
-      "Welcome, you are finally a citizen of CirclesLand. Glad to have you here.",
-    placeholder: "First name",
-    mainComponent: TextareaEditor,
-    submitButtonText: "Save",
+  currency: {
+    title: "Please enter the Amount",
+    description: "",
+
+    mainComponent: CurrencyTransfer,
+    submitButtonText: "Submit",
   },
 };
 
@@ -140,17 +139,20 @@ const processDefinition = (processId: string) =>
       }),
       tokens: prompt<TransferContext, any>({
         field: "tokens",
-        component: CurrencyTransfer,
+        component: EditorView,
         params: {
+          view: editorContent.currency,
           label: strings.tokensLabel,
           currencies: [
             {
               value: "crc",
               label: strings.currencyCircles,
+              __typename: "Currency",
             },
             {
               value: "xdai",
               label: strings.currencyXdai,
+              __typename: "Currency",
             },
           ],
         },

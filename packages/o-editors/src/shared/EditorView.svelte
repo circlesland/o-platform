@@ -15,7 +15,7 @@ $: {
 console.log("Params: ", context);
 </script>
 
-<section class="flex flex-col items-center justify-center px-6 pt-6 space-y-4">
+<section class="flex flex-col items-center justify-center p-6 space-y-4">
   <slot name="EditorSteps">
     <div>
       <NavSteps steps="{[0, 0, 0]}" />
