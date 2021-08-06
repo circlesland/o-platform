@@ -9,8 +9,7 @@
   viewBox="0 0 350 350"
   enable-background="new 0 0 350 350"
   xml:space="preserve"
-  style="position: absolute; z-index: 99; left: 0.5rem; top: 0.95rem;"
->
+  style="position: absolute; z-index: 999999999; left: 0.5rem; top: 1rem;">
   <image
     id="image0"
     width="350"
@@ -1067,6 +1066,5 @@ lUoVVoVmaoV/PMWRGm8k6bgqJVq+G973QNQHeN0S+sZiAzTswSIb2IwHjmx4M3YclaJiooRBAcsF
 wCUa9BgYBYCCmQoyACyX6gotQPSYNq714jzcBxp9wFYW11AfFn0Q9wH0wXwDZN6rvNZhnw5PXONb
 gxvZsGbsNP4/cDcIGwD165YAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjEtMDYtMDdUMDg6NDQ6MjMr
 MDA6MDDrbewhAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIxLTA2LTA3VDA4OjQ0OjI0KzAwOjAwX5dq
-EwAAAABJRU5ErkJggg=="
-  />
+EwAAAABJRU5ErkJggg=="></image>
 </svg>

@@ -750,19 +750,22 @@
       disabled />
   {:else}
     <div
-      class="sticky left-0 flex flex-row order-1 w-full h-20 py-2 space-x-4 bg-white -bottom-1"
+      class="left-0 flex flex-row order-1 w-full py-2 space-x-4 bg-white -bottom-1"
       style="z-index: 99999999; box-shadow: 2px 2px 1px 10px rgba(255, 255, 255,
-      1);">
+      1);"
+      class:sticky="{staticList !== true}"
+      class:h-20="{staticList !== true}">
       <div class="flex-grow">
         <input
           type="text"
           name="searchTerm"
+          style="{inputStyles}
+          {staticList ? 'padding-left: 35px' : ''}"
           {..._inputAttributes}
           bind:this="{input}"
           on:focus="{handleFocus}"
           bind:value="{filterText}"
           placeholder="{displayableSelectedValue ? displayableSelectedValue : 'Enter name to find'}"
-          style="{inputStyles}"
           class="order-1 input input-lg input-bordered" />
       </div>
       {#if inlineSubmit}
