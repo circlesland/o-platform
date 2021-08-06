@@ -15,11 +15,11 @@
       on:click="{props && props.left ? props.left.props.action : null}">
 
       {#if $inbox.length}
-        <div class="relative text-secondary">
+        <div class="relative self-center text-secondary">
           <Icons icon="notificationbubble" />
           <div
             class="absolute top-0 w-full text-center text-white font-heading"
-            on:click="{() => window.o.runProcess(showNotifications, [])}">
+            on:click="{() => window.o.runProcess(showNotifications, {})}">
             {$inbox.length}
           </div>
         </div>
