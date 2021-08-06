@@ -19,7 +19,7 @@
           <Icons icon="notificationbubble" />
           <div
             class="absolute top-0 w-full text-center text-white font-heading"
-            on:click="{() => window.o.runProcess(showNotifications, {})}">
+            on:click="{() => window.o.runProcess(showNotifications, {events: ($inbox).map(o => o)})}">
             {$inbox.length}
           </div>
         </div>
