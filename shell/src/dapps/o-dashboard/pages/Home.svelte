@@ -9,6 +9,7 @@
   import AdjacencyGraph from "../../../shared/pathfinder/CirclesAdjacencyGraph.svelte";
 
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
+  import NumberEditor from "@o-platform/o-editors/src/NumberEditor.svelte";
 
   const { mySafe } = require("src/dapps/o-banking/stores/safe");
   export let runtimeDapp: RuntimeDapp<any>;
@@ -282,6 +283,7 @@
     grid-row: 1 / 1;
     grid-column: 1 / 1;
   }
+
   /* .dashboard-card {
     width: 100%;
     padding-bottom: 100%;

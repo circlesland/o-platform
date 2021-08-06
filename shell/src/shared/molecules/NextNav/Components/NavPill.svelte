@@ -1,58 +1,56 @@
 <script lang="ts">
-  import {inbox} from "../../../stores/inbox";
+  import { showNotifications } from "../../../processes/showNotifications";
+
+  import { inbox } from "../../../stores/inbox";
+  import Icons from "../../Icons.svelte";
 
   export let props;
-
-
-
 </script>
 
 <div class="h-12 col-start-2 place-self-center">
   <div class="flex flex-row">
     <div
       class="flex justify-center flex-shrink-0 w-20 h-12 -mr-4 rounded-l-full cursor-pointer"
-      class:bg-white={props && props.left}
-      on:click={props && props.left ? props.left.props.action : null}
-    >
+      class:bg-white="{props && props.left}"
+      on:click="{props && props.left ? props.left.props.action : null}">
 
-      {#if ($inbox).length}
-       {($inbox).length}
-      {:else}
-        {#if props && props.left}
-          <div class="self-center">
-            <svelte:component
-              this={props.left.component}
-              {...props.left.props}
-              on:menuButton
-            />
+      {#if $inbox.length}
+        <div class="relative text-secondary">
+          <Icons icon="notificationbubble" />
+          <div
+            class="absolute top-0 w-full text-center text-white font-heading"
+            on:click="{() => window.o.runProcess(showNotifications, [])}">
+            {$inbox.length}
           </div>
-        {/if}
+        </div>
+      {:else if props && props.left}
+        <div class="self-center">
+          <svelte:component
+            this="{props.left.component}"
+            {...props.left.props}
+            on:menuButton />
+        </div>
       {/if}
     </div>
 
-    <div
-      class="z-50 flex-shrink-0 w-16 col-start-2 mt-3 ml-1 cursor-pointer"
-    >
+    <div class="z-50 flex-shrink-0 w-16 col-start-2 mt-3 ml-1 cursor-pointer">
       {#if props && props.center}
-      <svelte:component
-        this={props.center.component}
-        {...props.center.props}
-        on:actionButton
-      />
+        <svelte:component
+          this="{props.center.component}"
+          {...props.center.props}
+          on:actionButton />
       {/if}
     </div>
 
     <div
       class="flex justify-center flex-shrink-0 w-20 h-12 -ml-4 rounded-r-full cursor-pointer "
-      class:bg-white={props && props.right}
-      on:click={props.right ? props.right.props.action : null}
-    >
+      class:bg-white="{props && props.right}"
+      on:click="{props.right ? props.right.props.action : null}">
       {#if props && props.right}
         <div class="self-center">
           <svelte:component
-            this={props.right.component}
-            {...props.right.props}
-          />
+            this="{props.right.component}"
+            {...props.right.props} />
         </div>
       {/if}
     </div>

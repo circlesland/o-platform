@@ -2,6 +2,7 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.svelte";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
+import NumberEditor from "@o-platform/o-editors/src/NumberEditor.svelte";
 import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import AcceptViewer from "@o-platform/o-editors/src/AcceptViewer.svelte";
@@ -15,6 +16,7 @@ import {
   VerifyDocument,
 } from "../../../../data/auth/types";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import TextareaEditor__SvelteComponent_ from "../../../../../../../../packages/o-editors/src/TextareaEditor.svelte";
 
 export type AuthenticateContextData = {
   appId?: string;
@@ -53,7 +55,7 @@ const editorContent = {
       "A pleasure you found your way here. Please provide your email address to Sign-In.",
     placeholder: "Email address",
     mainComponent: EmailAddressEditor,
-    submitButtonText: "Sign-In",
+    submitButtonText: "Let me in",
   },
   terms_privacy: {
     title: "Terms & Privacy",
@@ -68,8 +70,24 @@ const editorContent = {
       "A pleasure you found your way here. Please provide your email address to Sign-In",
     placeholder: "Email address",
     mainComponent: EmailAddressEditor,
-    submitButtonText: "Sign-In",
+    submitButtonText: "Let me in",
   },
+  code: {
+    title: "Please enter pin",
+    description:
+      "We have send you a 6 digit login pin to your mail.<br/><br/><span class='text-xs'>It may take a moment. Also check your spam folder.</span>",
+    placeholder: "Enter Pin",
+    mainComponent: NumberEditor,
+    submitButtonText: "Login",
+  },
+  // code: {
+  //   title: "Enter recovery code",
+  //   description:
+  //     "Please enter your secret recovery code to log in.",
+  //   placeholder: "Enter Code",
+  //   mainComponent: TextareaEditor,
+  //   submitButtonText: "Login",
+  // },
 };
 
 async function sha256(str) {
@@ -304,10 +322,11 @@ const processDefinition = (processId: string) =>
       // Wait for the user to enter the code he received in the login-email
       code: prompt<AuthenticateContext, any>({
         field: "code",
-        component: TextEditor,
+        component: EditorView,
         isSensitive: true,
         params: (context) => {
           return {
+            view: editorContent.code,
             label: strings.labelVerificationCode(context.data.loginEmail),
             submitButtonText: "Login",
           };

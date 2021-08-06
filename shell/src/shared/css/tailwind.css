@@ -196,6 +196,20 @@ body {
   border-color: hsla(var(--er, 14 100% 57%) / var(--tw-border-opacity));
 }
 
+.input-number {
+  @apply input-lg;
+  @apply text-4xl;
+  letter-spacing: 1.63rem;
+  background: transparent;
+  border: none;
+  line-height: none;
+  font-family: monospace;
+  padding-left: 0.6rem;
+  padding-right: 0;
+  height: 3rem;
+  width: 19rem;
+}
+
 .infocard {
   background-color: #d1ecf1;
   color: #0c5460;
