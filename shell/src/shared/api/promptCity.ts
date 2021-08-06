@@ -44,7 +44,7 @@ export function promptCity<
   };
 }) {
   const field = normalizePromptField(spec.field);
-  let viewParams = {
+  const viewParams = {
     title: "Vote for your City?",
     description:
       "Advance your city in the basic income ranking and push the political discorse in your area.",

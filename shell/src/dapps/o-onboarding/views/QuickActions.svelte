@@ -22,6 +22,7 @@
         .filter(o => o.jumplist)
         .map(async o => {
           let items = await o.jumplist.items({}, o, o);
+          console.log("ITEMS: ", items);
           return {
             title: o.title,
             items: items.map(p => {
@@ -60,7 +61,3 @@
     {/each}
   </div>
 </div>
-
-<style>
-
-</style>

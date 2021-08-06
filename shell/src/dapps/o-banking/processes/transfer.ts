@@ -3,6 +3,7 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
+import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import CurrencyTransfer from "@o-platform/o-editors/src/CurrencyTransfer.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
@@ -55,6 +56,17 @@ const strings = {
   currencyXdai: "xDai",
   summaryLabel: "Summary",
   messageLabel: "Purpose of transfer",
+};
+
+const editorContent = {
+  recipient: {
+    title: "What is your first name?",
+    description:
+      "Welcome, you are finally a citizen of CirclesLand. Glad to have you here.",
+    placeholder: "First name",
+    mainComponent: TextareaEditor,
+    submitButtonText: "Save",
+  },
 };
 
 const currencyLookup = {

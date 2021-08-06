@@ -97,6 +97,7 @@
   let prev_filterText;
   let prev_isFocused;
   let prev_filteredItems;
+  let displayableSelectedValue = null;
 
   async function resetFilter() {
     await tick();
@@ -148,6 +149,23 @@
       selectedValue = selectedValue.map(item =>
         typeof item === "string" ? { value: item, label: item } : item
       );
+    }
+    // This is some Hardcoded shit to display the currently selected Value into the placeholder of the input.
+    // Since we have different types of results, we need to call different keys..
+    if (selectedValue && selectedValue.__typename == "Profile") {
+      displayableSelectedValue = selectedValue.firstName;
+      if (selectedValue.lastName) {
+        displayableSelectedValue =
+          displayableSelectedValue + " " + selectedValue.lastName;
+      }
+    } else if (selectedValue && selectedValue.__typename == "City") {
+      displayableSelectedValue = selectedValue.name;
+      if (selectedValue.country) {
+        displayableSelectedValue =
+          displayableSelectedValue + ",  " + selectedValue.country;
+      }
+    } else if (selectedValue && selectedValue.__typename == "Tag") {
+      displayableSelectedValue = selectedValue.value;
     }
   }
 
@@ -389,6 +407,7 @@
     return items.find(item => item[optionIdentifier] === matchTo);
   }
 
+  // Updates the list of results //
   function updateSelectedValueDisplay(items) {
     if (
       !items ||
@@ -738,7 +757,7 @@
           bind:this="{input}"
           on:focus="{handleFocus}"
           bind:value="{filterText}"
-          placeholder="{selectedValue ? selectedValue.name + ', ' + selectedValue.country : 'Enter name to find'}"
+          placeholder="{displayableSelectedValue ? displayableSelectedValue : 'Enter name to find'}"
           style="{inputStyles}"
           class="order-1 input input-lg input-bordered" />
       </div>
