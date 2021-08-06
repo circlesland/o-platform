@@ -66,6 +66,24 @@ const editorContent = {
     mainComponent: CurrencyTransfer,
     submitButtonText: "Submit",
   },
+  message: {
+    title: "Transfer Message",
+    description: "",
+    mainComponent: TextareaEditor,
+    submitButtonText: "Submit",
+  },
+  confirm: {
+    title: "",
+    description: "",
+    mainComponent: HtmlViewer,
+    submitButtonText: "Send Money",
+  },
+  success: {
+    title: "Transfer successful",
+    description: "",
+    mainComponent: HtmlViewer,
+    submitButtonText: "Close",
+  },
 };
 
 const currencyLookup = {
@@ -279,8 +297,9 @@ const processDefinition = (processId: string) =>
       },
       message: prompt<TransferContext, any>({
         field: "message",
-        component: TextareaEditor,
+        component: EditorView,
         params: {
+          view: editorContent.message,
           label: strings.messageLabel,
           maxLength: "100",
         },
@@ -358,8 +377,9 @@ const processDefinition = (processId: string) =>
       },
       acceptSummary: prompt<TransferContext, any>({
         field: "acceptSummary",
-        component: HtmlViewer,
+        component: EditorView,
         params: {
+          view: editorContent.confirm,
           label: strings.summaryLabel,
           submitButtonText: "Send Money",
           html: (context) => context.data.summaryHtml,
@@ -439,9 +459,10 @@ const processDefinition = (processId: string) =>
       showSuccess: prompt({
         id: "showSuccess",
         field: "__",
-        component: HtmlViewer,
+        component: EditorView,
         params: {
-          html: () => `<p>Transfer successful</p>`,
+          view: editorContent.success,
+          html: () => "",
           submitButtonText: "Close",
           hideNav: false,
         },
