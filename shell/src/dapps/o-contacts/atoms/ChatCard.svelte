@@ -5,6 +5,7 @@
   export let name: string;
   export let time: string;
   export let text: string;
+  export let image: string;
   export let outgoing: boolean = true;
 </script>
 
@@ -12,9 +13,7 @@
   <div class="image" class:pl-2="{outgoing}">
     <div class="avatar">
       <div class="w-20 h-20 m-auto rounded-full">
-        <img
-          src="https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/jmnPVI+hYsO421vA/"
-          alt="user-icon" />
+        <img src="{image}" alt="user-icon" />
       </div>
     </div>
   </div>
@@ -25,24 +24,22 @@
         class:order-last="{outgoing}"
         class:text-right="{outgoing}"
         class:self-end="{outgoing}">
-        Martina Köppelfrau
+        {name}
       </div>
       <div
         class="text-sm text-dark-lightest"
         class:self-end="{!outgoing}"
         class:text-right="{!outgoing}"
         class:order-first="{outgoing}">
-        5min ago
+        {time}
       </div>
     </div>
     <div
-      class="w-full p-4 rounded-xl message"
+      class="w-full p-4 break-all rounded-xl message"
       class:bg-light-lighter="{outgoing}"
       class:bg-dark="{!outgoing}"
       class:text-white="{!outgoing}">
-      laskdjasd asdasd
-      <br />
-      aksdjakjsdhasd ajksdha
+      {text}
     </div>
   </div>
 </div>

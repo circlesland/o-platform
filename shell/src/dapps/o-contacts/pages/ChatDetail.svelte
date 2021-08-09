@@ -205,17 +205,20 @@
         outgoing="{false}"
         name="Martina Köppelfrau"
         time="5min ago"
+        image="https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/PP2WbUHmpaCg9Gk7/"
         text="alksj fna skfn aksjdn flkasbflkasbflkasnfkjan" />
 
       <ChatCard
         name="Jakob Lund"
         time="10mins ago"
+        image="https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/jmnPVI+hYsO421vA/"
         text="alksj fna skfn aksjdn flkasbflkasbflkasnfkjan skjfnas kfnaskjfnk
         asnfasfasfasfd alkjsdnf l" />
 
       <ChatCard
         name="Jakob Lund"
         time="15mins ago"
+        image="https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/jmnPVI+hYsO421vA/"
         text="alksj fna skfn aksjdn flkasbflkasbflkasnfkjan skjfnas kfnaskjfnk
         asnfasfasfasfd alkjsdnf l asdkjna
         lskfnjaslfnkaslökfnaslkfnlkasnfölaksflkasmflkasflknasklfnaslkfnaslkfnlkasfnlka
@@ -225,6 +228,7 @@
         outgoing="{false}"
         name="Martina Köppelfrau"
         time="30mins ago"
+        image="https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/PP2WbUHmpaCg9Gk7/"
         text="alksj fna skfn aksjdn flkasbflkasbflkasnfkjan" />
 
       <div class="flex flex-row order-1 w-full py-2 space-x-4 ">
