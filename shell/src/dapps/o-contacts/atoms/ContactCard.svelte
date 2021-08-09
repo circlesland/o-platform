@@ -1,54 +1,92 @@
 <script lang="ts">
-  // import Icons from "../../../shared/molecules/Icons.svelte";
-  export let imageUrl:string;
-  export let title:string;
-  export let text:string;
+  import { transfer } from "../../o-banking/processes/transfer";
+  import { TrustObject } from "../../o-banking/data/circles/types";
+  import { tryGetCurrentSafe } from "../../o-banking/init";
+  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import Icons from "../../../shared/molecules/Icons.svelte";
+  import { push } from "svelte-spa-router";
+
+  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+  export let trusting: TrustObject;
+  export let trustedBy: TrustObject;
+  export let untrusted: TrustObject;
+
+  let pictureUrl: string;
+  let displayName: string;
+  let safeAddress: string;
+  let message: string;
+
+  let id: String;
+
+  $: {
+    if (untrusted) {
+      // <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
+      displayName = untrusted.profile
+        ? untrusted.profile.displayName
+        : untrusted.safeAddress;
+      pictureUrl = untrusted.profile ? untrusted.profile.avatarUrl : undefined;
+      safeAddress = untrusted.safeAddress;
+      id = untrusted._id;
+      message = "Not trusted";
+    } else if (trustedBy && trusting) {
+      // <!-- TODO: Possible actions: untrust, transfer money -->
+      displayName = trustedBy.profile
+        ? trustedBy.profile.displayName
+        : trustedBy.safeAddress;
+      pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
+      safeAddress = trusting.safeAddress;
+      id = trustedBy._id;
+      message = "Mutual trust";
+    } else if (trustedBy) {
+      // <!-- TODO: Possible actions: trust, transfer money -->
+      displayName = trustedBy.profile
+        ? trustedBy.profile.displayName
+        : trustedBy.safeAddress;
+      pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
+      safeAddress = trustedBy.safeAddress;
+      id = trustedBy._id;
+      message = "Is trusting you";
+    } else if (trusting) {
+      // <!-- TODO: Possible actions: untrust -->
+      displayName = trusting.profile
+        ? trusting.profile.displayName
+        : trusting.safeAddress;
+      pictureUrl = trusting.profile ? trusting.profile.avatarUrl : undefined;
+      safeAddress = trusting.safeAddress;
+      id = trusting._id;
+      message = "Trusted by you";
+    }
+
+    if (!pictureUrl) {
+      pictureUrl = AvataarGenerator.generate(safeAddress);
+    }
+  }
+
+  function loadDetailPage(path) {
+    push(`#/friends/profile/${path}`);
+  }
+
+  function execTransfer(recipientAddress?: string) {
+    window.o.runProcess(transfer, {
+      recipientAddress,
+      safeAddress: tryGetCurrentSafe()?.safeAddress,
+      privateKey: localStorage.getItem("circlesKey"),
+    });
+  }
 </script>
 
-<section
-  class="flex items-center justify-center mb-2 "
-  on:click
->
-  <div
-    class="flex items-center w-full px-4 pt-4 space-x-2 bg-white rounded-sm shadow sm:space-x-6"
-  >
-    <div class="mr-2 -mt-3 text-center">
+<div on:click="{() => loadDetailPage(safeAddress)}">
+  <ItemCard
+    params="{{ edgeless: false, imageUrl: pictureUrl, title: displayName, subTitle: message, truncateMain: true }}">
+    <div slot="itemCardStart">
       <div class="avatar">
-        <div class="w-12 h-12 m-auto rounded-full sm:w-12 sm:h-12">
-          <img src={imageUrl} alt={title} />
+        <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
+          <img src="{pictureUrl}" alt="{displayName}" />
         </div>
       </div>
     </div>
-
-    <div class="relative flex-grow text-left truncate">
-      <div class="max-w-full cursor-pointer truncateThis">
-        <h2 class="text-base">
-          {title}
-        </h2>
-      </div>
-
-      {#if text}
-        <div class="mb-4 text-xs text-left text-alert-dark">
-          <span class="inline ">{text}</span>
-        </div>
-      {/if}
+    <div slot="itemCardEnd">
+      <div class="self-end text-lg sm:text-3xl"></div>
     </div>
-
-    <div class="flex flex-col self-start flex-1 mt-2 justify-items-end">
-      <div class="flex flex-col self-end space-y-2 text-2xl sm:text-3xl ">
-        <!--
-        <button
-          on:click={(e) => {
-            execTransfer(safeAddress);
-            e.stopPropagation();
-            return false;
-          }}
-          class="self-end text-base "
-        >
-          <Icons icon="sendmoney" />
-        </button>
-        -->
-      </div>
-    </div>
-  </div>
-</section>
+  </ItemCard>
+</div>

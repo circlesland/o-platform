@@ -63,7 +63,7 @@
   }
 
   function loadDetailPage(path) {
-    push(`#/banking/profile/${path}`);
+    push(`#/friends/profile/${path}`);
   }
 
   function execTransfer(recipientAddress?: string) {

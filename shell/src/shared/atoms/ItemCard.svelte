@@ -27,7 +27,7 @@
 
 <section
   on:click="{() => cardAction()}"
-  class="flex items-center justify-center mb-3 ">
+  class="flex items-center justify-center mb-3 cursor-pointer">
 
   <div
     class="flex items-center w-full space-x-2 bg-white rounded-lg"

@@ -237,7 +237,7 @@ const processDefinition = (processId: string) =>
                       localStorage.getItem("circlesKey")
                     ).address
                   : undefined,
-                status: ""
+                status: "",
               },
             });
             context.data.profile = result.data.upsertProfile;
@@ -302,7 +302,7 @@ const processDefinition = (processId: string) =>
       getInvite: prompt({
         id: "getInvite",
         entry: (context) => {
-          const profileLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${context.data.profile.id}`;
+          const profileLink = `${window.location.protocol}//${window.location.host}/#/friends/profile/${context.data.profile.id}`;
           (<any>context.data).__getInviteHtml = `
           <section class="mb-8">
       <div class="w-full px-2 pb-4 -mt-3 bg-white rounded-sm">

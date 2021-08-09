@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { transfer } from "../processes/transfer";
-  import { setTrust } from "../processes/setTrust";
-  import { mySafe } from "../stores/safe";
+  import { transfer } from "../../o-banking/processes/transfer";
+  import { setTrust } from "../../o-banking/processes/setTrust";
+  import { mySafe } from "../../o-banking/stores/safe";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { invite } from "../../o-passport/processes/invite/invite";
   import { getCountryName } from "../../../shared/countries";
@@ -9,13 +9,13 @@
   import { upsertIdentityOnlyWhereDirty } from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-  import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
-  import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
+  import { loadProfileBySafeAddress } from "../../o-banking/data/loadProfileBySafeAddress";
+  import { loadProfileByProfileId } from "../../o-banking/data/loadProfileByProfileId";
   import { onDestroy, onMount } from "svelte";
   import { Subscription } from "rxjs";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import { Profile } from "../data/api/types";
+  import { Profile } from "../../o-banking/data/api/types";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
@@ -59,7 +59,7 @@
       loadProfile();
     }
     if ($me) {
-      inviteLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${$me.id}`;
+      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/profile/${$me.id}`;
     }
   }
 

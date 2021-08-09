@@ -99,7 +99,7 @@
       return;
     }
 
-    push(`#/banking/profile/${id}`);
+    push(`#/friends/profile/${id}`);
   }
 </script>
 

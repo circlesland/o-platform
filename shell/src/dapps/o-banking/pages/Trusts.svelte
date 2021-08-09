@@ -16,7 +16,7 @@
 
   $: {
     if ($me) {
-      inviteLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${$me.id}`;
+      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/profile/${$me.id}`;
     }
   }
 

@@ -27,7 +27,7 @@
   }
 
   function loadDetailPage(path) {
-    push(`#/banking/profile/${path}`);
+    push(`#/friends/profile/${path}`);
   }
 </script>
 

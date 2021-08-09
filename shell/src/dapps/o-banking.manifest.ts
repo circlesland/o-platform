@@ -1,7 +1,7 @@
 import Transactions from "./o-banking/pages/Transactions.svelte";
 import Assets from "./o-banking/pages/Assets.svelte";
 import Trusts from "./o-banking/pages/Trusts.svelte";
-import ProfilePage from "./o-banking/pages/Profile.svelte";
+
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
 import { setTrust } from "./o-banking/processes/setTrust";
 import { transfer } from "./o-banking/processes/transfer";
@@ -111,16 +111,6 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
   },
 };
 
-export const profile: Page<any, BankingDappState> = {
-  type: "page",
-  isSystem: true,
-  position: "modal",
-  routeParts: ["=profile", ":id"],
-  title: "Profile",
-  component: ProfilePage,
-  jumplist: profileJumplist,
-};
-
 const transactionDetail: Page<{ _id: string }, BankingDappState> = {
   type: "page",
   isSystem: true,
@@ -158,13 +148,7 @@ const assetDetail: Page<{ symbol: string }, BankingDappState> = {
   title: "Asset",
   type: "page",
 };
-const trusts: Page<any, BankingDappState> = {
-  routeParts: ["=trusts"],
-  component: Trusts,
-  title: "Trusts",
-  icon: "trusts",
-  type: "page",
-};
+
 const sendInvite: Page<{ inviteAccountAddress: string }, BankingDappState> = {
   routeParts: ["=trusts", "=invite", ":inviteAccountAddress"],
   position: "modal",
@@ -173,14 +157,7 @@ const sendInvite: Page<{ inviteAccountAddress: string }, BankingDappState> = {
   title: "Trusts",
   type: "page",
 };
-const trustDetail: Page<{ id: string }, BankingDappState> = {
-  isSystem: true,
-  position: "modal",
-  routeParts: ["=trusts", ":id"],
-  component: ProfilePage,
-  title: "Trust",
-  type: "page",
-};
+
 const findMySafe: Page<any, BankingDappState> = {
   isSystem: true,
   routeParts: ["=find-my-safe"],
@@ -188,7 +165,6 @@ const findMySafe: Page<any, BankingDappState> = {
   title: "FindMySafe",
   type: "page",
 };
-
 
 export interface DappState {
   // put state here
@@ -241,12 +217,9 @@ export const banking: DappManifest<BankingDappState> = {
     transactions,
     transactionDetail,
     transactionSend,
-    trusts,
     assets,
     assetDetail,
-    trustDetail,
     sendInvite,
-    profile,
     findMySafe,
   ],
 };
