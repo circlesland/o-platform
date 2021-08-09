@@ -7,6 +7,7 @@
   import { push } from "svelte-spa-router";
   import Icons from "../../../shared/molecules/Icons.svelte";
   import AdjacencyGraph from "../../../shared/pathfinder/CirclesAdjacencyGraph.svelte";
+  import ChatCard from "../../o-contacts/atoms/ChatCard.svelte";
 
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import NumberEditor from "@o-platform/o-editors/src/NumberEditor.svelte";

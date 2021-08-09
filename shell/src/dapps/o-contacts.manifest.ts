@@ -1,6 +1,7 @@
 import Home from "./o-contacts/pages/Home.svelte";
 import Contacts from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
+import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
 import Chat from "./o-contacts/pages/Chat.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Profile } from "./o-banking/data/api/types";
@@ -124,6 +125,16 @@ export const profile: Page<any, ContactsDappState> = {
   jumplist: profileJumplist,
 };
 
+export const chatdetail: Page<any, ContactsDappState> = {
+  type: "page",
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=chat", ":id"],
+  title: "Chat",
+  component: ChatDetail,
+  jumplist: profileJumplist,
+};
+
 const contacts: Page<any, ContactsDappState> = {
   routeParts: ["=contacts"],
   component: Contacts,
@@ -167,5 +178,5 @@ export const friends: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, chat, contacts, profile],
+  routables: [index, chat, contacts, profile, chatdetail],
 };

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setClient } from "svelte-apollo";
-  import ContactCard from "../atoms/ContactCard.svelte";
+  import ChatListCard from "../atoms/ChatListCard.svelte";
   import { mySafe } from "../../o-banking/stores/safe";
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
@@ -58,7 +58,7 @@
     {#if Object.values($mySafe.trustRelations.mutualTrusts).length >= 1}
       <!-- TODO: Possible actions: untrust, transfer money -->
       {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust}
-        <ContactCard
+        <ChatListCard
           trusting="{mutualTrust.trusting}"
           trustedBy="{mutualTrust.trustedBy}" />
       {/each}
@@ -66,21 +66,21 @@
     {#if Object.values($mySafe.trustRelations.trusting).filter(o => !o.hide).length >= 1}
       {#each Object.values($mySafe.trustRelations.trusting).filter(o => !o.hide) as trusting}
         <!-- TODO: Possible actions: untrust -->
-        <ContactCard {trusting} />
+        <ChatListCard {trusting} />
       {/each}
     {/if}
 
     {#if Object.values($mySafe.trustRelations.trustedBy).filter(o => !o.hide && o.safeAddress !== $mySafe.safeAddress).length >= 1}
       <!-- TODO: Possible actions: trust, transfer money -->
       {#each Object.values($mySafe.trustRelations.trustedBy).filter(o => !o.hide && o.safeAddress !== $mySafe.safeAddress) as trustedBy}
-        <ContactCard {trustedBy} />
+        <ChatListCard {trustedBy} />
       {/each}
     {/if}
 
     {#if Object.values($mySafe.trustRelations.untrusted).length >= 1}
       <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
       {#each Object.values($mySafe.trustRelations.untrusted) as untrusted}
-        <ContactCard {untrusted} />
+        <ChatListCard {untrusted} />
       {/each}
     {/if}
   {/if}
