@@ -51,8 +51,8 @@
 
   let lastParamsJson: string = "";
   let identityChecked: boolean = false;
-  let dappFrameState:  any;
-  let nextRoutable: Routable|undefined;
+  let dappFrameState: any;
+  let nextRoutable: Routable | undefined;
 
   let dapp: DappManifest<any>;
   let runtimeDapp: RuntimeDapp<any>;
@@ -502,7 +502,6 @@
       setQuickActionsForNavCenter();
     }
   }
-
 </script>
 
 <Layout

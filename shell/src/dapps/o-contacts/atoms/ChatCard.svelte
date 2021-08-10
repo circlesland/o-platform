@@ -2,44 +2,48 @@
   import { push } from "svelte-spa-router";
   import Icons from "src/shared/molecules/Icons.svelte";
 
-  export let name: string;
-  export let time: string;
-  export let text: string;
-  export let image: string;
-  export let outgoing: boolean = true;
+  export let params = {
+    outgoing: <boolean>true,
+    name: <string>null,
+    time: <string>null,
+    text: <string>null,
+    image: <string>null,
+  };
 </script>
 
 <div class="flex flex-row w-full space-x-2">
-  <div class="image" class:pl-2="{outgoing}">
+  <div class="image" class:pl-2="{params.outgoing}">
     <div class="avatar">
-      <div class="w-20 h-20 m-auto rounded-full">
-        <img src="{image}" alt="user-icon" />
+      <div class="w-10 h-10 m-auto rounded-full sm:w-20 sm:h-20">
+        <img src="{params.image}" alt="user-icon" />
       </div>
     </div>
   </div>
-  <div class="flex flex-col flex-grow space-y-1" class:order-first="{outgoing}">
+  <div
+    class="flex flex-col flex-grow space-y-1"
+    class:order-first="{params.outgoing}">
     <div class="flex flex-row toprow">
       <div
         class="flex-grow text-sm text-dark-lightest"
-        class:order-last="{outgoing}"
-        class:text-right="{outgoing}"
-        class:self-end="{outgoing}">
-        {name}
+        class:order-last="{params.outgoing}"
+        class:text-right="{params.outgoing}"
+        class:self-end="{params.outgoing}">
+        {params.name}
       </div>
       <div
         class="text-sm text-dark-lightest"
-        class:self-end="{!outgoing}"
-        class:text-right="{!outgoing}"
-        class:order-first="{outgoing}">
-        {time}
+        class:self-end="{!params.outgoing}"
+        class:text-right="{!params.outgoing}"
+        class:order-first="{params.outgoing}">
+        {params.time}
       </div>
     </div>
     <div
       class="w-full p-4 break-all rounded-xl message"
-      class:bg-light-lighter="{outgoing}"
-      class:bg-dark="{!outgoing}"
-      class:text-white="{!outgoing}">
-      {text}
+      class:bg-light-lighter="{params.outgoing}"
+      class:bg-dark="{!params.outgoing}"
+      class:text-white="{!params.outgoing}">
+      {params.text}
     </div>
   </div>
 </div>

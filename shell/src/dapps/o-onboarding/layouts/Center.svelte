@@ -1,10 +1,27 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
   import { clickOutside } from "src/shared/functions/clickOutside";
+  import { SvelteSimplebar } from "svelte-simplebar";
 
   export let blur: boolean = false;
+  export let scrollToBottom: boolean = false;
+  let scrollContent;
 
   const eventDispatcher = createEventDispatcher();
+
+  const sub = window.o.events.subscribe(event => {
+    if (event.type == "shell.scrollToBottom") {
+      gotoBottom("modalScrollable");
+    }
+  });
+
+  function gotoBottom(id) {
+    scrollContent.getScrollElement().scrollTo(0, 100000);
+  }
+
+  const initBar = bar => {
+    scrollContent = bar;
+  };
 </script>
 
 <aside
@@ -20,10 +37,12 @@
       class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
       use:clickOutside
       on:click_outside="{() => eventDispatcher('clickedOutside')}">
-      <div data-simplebar class="modalAsideScrollableContent rounded-xl">
-        <div class="w-full m-auto">
-          <slot />
-        </div>
+      <div id="modalScrollable" class="modalAsideScrollableContent rounded-xl">
+        <SvelteSimplebar init="{initBar}">
+          <div class="w-full m-auto">
+            <slot />
+          </div>
+        </SvelteSimplebar>
       </div>
     </div>
   </div>
