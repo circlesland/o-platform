@@ -1,8 +1,8 @@
 import {createMachine} from "xstate";
 import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {FindRouteResult} from "../../../shared/functions/findRoutableByParams";
-import {RuntimeLayout} from "../layouts/layout";
 import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
+import {RuntimeLayout} from "../../../shared/layouts/layout";
 
 export type DappFrameStateContext = {
     runtimeDapp?: RuntimeDapp<any>;

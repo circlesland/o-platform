@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import Icons from "../../../../shared/molecules/Icons.svelte";
+  import Icons from "src/shared/molecules/Icons.svelte";
   import { createEventDispatcher } from "svelte";
   import { clickOutside } from "src/shared/functions/clickOutside";
 

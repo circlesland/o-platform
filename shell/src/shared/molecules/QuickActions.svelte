@@ -2,7 +2,7 @@
   import { clickOutside } from "src/shared/functions/clickOutside.ts";
   import { createEventDispatcher, onMount } from "svelte";
   import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
-  import { dapps } from "../../../loader";
+  import { dapps } from "src/loader";
 
   let categories = [
     {

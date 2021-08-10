@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {isMobile} from "../../../shared/functions/isMobile";
+    import {isMobile} from "src/shared/functions/isMobile";
 </script>
 {#if isMobile()}
     <div class="z-10 flex flex-col flex-1 text-white bg-dark">

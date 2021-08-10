@@ -1,19 +1,12 @@
 import {
-  actions,
   assign,
   createMachine,
-  send,
   sendParent,
-  spawn,
 } from "xstate";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-import { dialogBackStackMachine } from "./dialogBackStack";
-import { Content, RuntimeContent } from "../layouts/layout";
-import NavigationList from "../views/NavigationList.svelte";
-import ProcessContainer from "../../../shared/molecules/ProcessContainer.svelte";
-import { getRouteList } from "../../../shared/functions/getRouteList";
+import {Content, RuntimeContent} from "../../../shared/layouts/layout";
 
 export type DialogStateContext = {
   backStackSize?: number;

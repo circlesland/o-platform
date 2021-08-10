@@ -3,12 +3,12 @@
   import LeftMobile from "./mobile/Left.svelte";
   import RightDesktop from "./desktop/Right.svelte";
   import Center from "./Center.svelte";
-  import NextNav from "../../../shared/molecules/NextNav/NextNav.svelte";
+  import NextNav from "src/shared/molecules/NextNav/NextNav.svelte";
   import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
-  import ListComponent from "../../../shared/molecules/NextNav/Components/List.svelte";
-  import { isMobile } from "../../../shared/functions/isMobile";
+  import ListComponent from "src/shared/molecules/NextNav/Components/List.svelte";
+  import { isMobile } from "src/shared/functions/isMobile";
   import { RuntimeLayout } from "./layout";
-  import Pager from "../views/Pager.svelte";
+  import Pager from "src/shared/molecules/Pager.svelte";
   import "simplebar";
   import "simplebar/dist/simplebar.css";
   import { createEventDispatcher } from "svelte";

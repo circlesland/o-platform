@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { isMobile } from "../../../shared/functions/isMobile"
-  import Icons from "../../../shared/molecules/Icons.svelte"
+  import { isMobile } from "src/shared/functions/isMobile"
+  import Icons from "src/shared/molecules/Icons.svelte"
 
   export let pages: { title: string }[] = []
 

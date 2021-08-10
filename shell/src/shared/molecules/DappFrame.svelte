@@ -15,14 +15,14 @@
 
   // import Swiper core and required modules
   import SwiperCore, { Pagination, Navigation } from "swiper/core";
-  import Layout from "../../dapps/o-onboarding/layouts/Layout.svelte";
+  import Layout from "../../shared/layouts/Layout.svelte";
   import ProcessContainer from "../../shared/molecules/ProcessContainer.svelte";
   import LinkComponent from "../../shared/molecules/NextNav/Components/Link.svelte";
   import ListComponent from "../../shared/molecules/NextNav/Components/List.svelte";
   import ActionButtonComponent from "../../shared/molecules/NextNav/Components/ActionButton.svelte";
-  import { RuntimeLayout } from "../../dapps/o-onboarding/layouts/layout";
-  import NavigationList from "../../dapps/o-onboarding/views/NavigationList.svelte";
-  import QuickActions from "../../dapps/o-onboarding/views/QuickActions.svelte";
+  import { RuntimeLayout } from "../layouts/layout";
+  import NavigationList from "../../shared/molecules/NavigationList.svelte";
+  import QuickActions from "../../shared/molecules/QuickActions.svelte";
   import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";

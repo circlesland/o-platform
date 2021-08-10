@@ -1,4 +1,3 @@
-import Home from "./o-contacts/pages/Home.svelte";
 import Contacts from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
 import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";

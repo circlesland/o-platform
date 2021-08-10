@@ -202,7 +202,7 @@
     import {SvelteToast} from "./shared/molecules/Toast";
     import DappFrame from "src/shared/molecules/DappFrame.svelte";
     import NotFound from "src/shared/pages/NotFound.svelte";
-    import Layout from "./dapps/o-onboarding/layouts/Layout.svelte";
+    import Layout from "src/shared/layouts/Layout.svelte";
     import {interpret} from "xstate";
     import {initMachine} from "./dapps/o-onboarding/processes/init";
 
