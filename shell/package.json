@@ -49,6 +49,7 @@
     "svelte-simplebar": "^1.0.3"
   },
   "devDependencies": {
+    "elizabot": "^0.0.3",
     "@types/yup": "^0.29.11",
     "@graphql-codegen/cli": "^1.17.10",
     "@graphql-codegen/typescript": "^1.17.10",

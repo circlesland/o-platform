@@ -2,6 +2,7 @@
   import { onDestroy, onMount, setContext } from "svelte";
   import { Subscription } from "rxjs";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+  import ElizaBot from "elizabot";
 
   import { chatdata } from "../data/api/src/chatstore";
   import ChatCard from "../atoms/ChatCard.svelte";
@@ -31,27 +32,14 @@
     })
   );
 
-  let fakeanswer = {
-    outgoing: false,
-    name: "Martin Köppelmann",
-    time: "just now",
-    image:
-      "https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/PP2WbUHmpaCg9Gk7/",
-    text: "Hi Sam, glad you're writing! I just wanted to talk to you, too. ",
-  };
-  let fakeanswer2 = {
-    outgoing: false,
-    name: "Martin Köppelmann",
-    time: "just now",
-    image:
-      "https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/PP2WbUHmpaCg9Gk7/",
-    text: "But you first, go ahead...",
-  };
+  var eliza = new ElizaBot();
+  var initial = eliza.getInitial();
 
   function submitChat() {
     if (!chatmessage) {
       return;
     }
+
     addToChatData({
       outgoing: true,
       name: "Jakob Lund",
@@ -61,13 +49,16 @@
       text: chatmessage,
     });
 
-    chatmessage = null;
-
     setTimeout(async () => {
-      addToChatData(fakeanswer);
-      setTimeout(async () => {
-        addToChatData(fakeanswer2);
-      }, 1250);
+      addToChatData({
+        outgoing: false,
+        name: "Martin Köppelmann",
+        time: "just now",
+        image:
+          "https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/PP2WbUHmpaCg9Gk7/",
+        text: eliza.transform(chatmessage),
+      });
+      chatmessage = null;
     }, 850);
   }
 
@@ -80,7 +71,7 @@
 
 <!-- TODO: fix this after adding data: data-simplebar -->
 <div id="chatlist">
-  <header class="grid place-content-center ">
+  <header class="sticky top-0 z-50 grid w-full bg-white place-content-center">
     <div
       class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center">
 
