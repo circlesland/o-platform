@@ -55,7 +55,7 @@
         <h2 class="text-base">{params.title}</h2>
       </div>
       <p
-        class="absolute w-full h-4 mt-4 text-xs text-dark-lightest"
+        class="absolute w-full h-4 mt-5 text-xs text-dark-lightest"
         class:truncateThis="{params.truncateMain}">
         {params.subTitle}
       </p>

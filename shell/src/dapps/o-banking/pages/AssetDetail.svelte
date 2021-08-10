@@ -1,9 +1,8 @@
 <script lang="ts">
   import { Token } from "../data/circles/types";
-  import TokenCard from "../atoms/TokenCard.svelte";
-  import XdaiAssetCard from "../atoms/XdaiAssetCard.svelte";
+  import { push } from "svelte-spa-router";
   import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-
+  import Web3 from "web3";
   import { INVITE_VALUE } from "src/dapps/o-passport/processes/invite/invite";
   import { mySafe } from "../stores/safe";
   import { BN } from "ethereumjs-util";
@@ -76,6 +75,10 @@
           : 0
       );
   }
+
+  function loadDetailPage(path) {
+    push(`#/friends/profile/${path}`);
+  }
 </script>
 
 <div class="mx-4 mt-4">
@@ -117,21 +120,34 @@
         ? 1
         : 0
     ) as token}
-      <XdaiAssetCard
-        address="{token.address}"
-        title="{token.title}"
-        symbol="{token.symbol}"
-        balance="{token.balance}"
-        variety="{token.variety}"
-        colorClass="text-primary" />
+      <ItemCard
+        params="{{ edgeless: false, imageUrl: '/logos/xdai.png', title: token.title, subTitle: token.address, truncateMain: true, shadow: true }}">
+
+        <div slot="itemCardEnd">
+          <div class="self-end text-right text-success">
+            <span>{Number.parseFloat(token.balance).toFixed(2)}</span>
+          </div>
+
+        </div>
+      </ItemCard>
     {/each}
   {:else}
     {#each ($mySafe.token ? [$mySafe.token] : []).concat(tokens) as token}
       {#if token && token.balance > 0}
-        <TokenCard
-          {token}
-          label="HOLDING CIRCLES FROM"
-          colorClass="text-primary" />
+        <div on:click="{() => loadDetailPage(token.tokenOwner)}">
+          <ItemCard
+            params="{{ edgeless: false, imageUrl: token.ownerProfile ? token.ownerProfile.avatarUrl : '', title: token.ownerProfile ? token.ownerProfile.displayName : token.tokenOwner, subTitle: token.tokenOwner, truncateMain: true, shadow: true }}">
+
+            <div slot="itemCardEnd">
+              <div class="self-end text-right text-success">
+                <span>
+                  {Number.parseFloat(Web3.utils.fromWei(token.balance ? token.balance : '0', 'ether')).toFixed(2)}
+                </span>
+              </div>
+
+            </div>
+          </ItemCard>
+        </div>
       {/if}
     {/each}
   {/if}
