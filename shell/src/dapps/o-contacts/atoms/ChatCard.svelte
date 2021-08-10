@@ -4,6 +4,7 @@
 
   export let params = {
     outgoing: <boolean>true,
+    notification: <boolean>false,
     name: <string>null,
     time: <string>null,
     text: <string>null,
@@ -40,10 +41,11 @@
     </div>
     <div
       class="w-full p-4 break-all rounded-xl message"
-      class:bg-light-lighter="{params.outgoing}"
-      class:bg-dark="{!params.outgoing}"
-      class:text-white="{!params.outgoing}">
-      {params.text}
+      class:bg-light-lighter="{params.outgoing && !params.notification}"
+      class:bg-dark="{!params.outgoing && !params.notification}"
+      class:bg-success-lighter="{params.notification}"
+      class:text-white="{!params.outgoing && !params.notification}">
+      {@html params.text}
     </div>
   </div>
 </div>
