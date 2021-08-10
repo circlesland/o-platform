@@ -69,7 +69,6 @@
   }
 </script>
 
-<!-- TODO: fix this after adding data: data-simplebar -->
 <div id="chatlist">
   <header class="sticky top-0 z-50 grid w-full bg-white place-content-center">
     <div
@@ -82,6 +81,7 @@
     </div>
   </header>
 
+  <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
   <div class="flex flex-col p-6 space-y-8">
     {#each $chatdata as chat}
       <ChatCard params="{chat}" />
