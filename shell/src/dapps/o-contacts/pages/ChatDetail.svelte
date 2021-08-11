@@ -126,7 +126,7 @@
     {/each}
   </div>
   <div
-    class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white">
+    class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2">
     <div class="flex-grow">
       <!-- <input
         bind:this="{inputField}"
