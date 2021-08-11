@@ -43,9 +43,7 @@
       </div>
     </div> -->
     <div
-      class="relative w-full p-4 text-xs sm:text-sm rounded-xl message chatText"
-      class:pb-5="{!params.notification}"
-      class:pb-6="{params.notification}"
+      class="relative w-full p-4 pt-3 pb-6 text-xs sm:text-sm rounded-xl message chatText"
       class:bg-light-lighter="{params.outgoing && !params.notification}"
       class:bg-dark="{!params.outgoing && !params.notification}"
       class:bg-success-lighter="{params.notification}"

@@ -11,7 +11,7 @@
   <div class="">
     <!-- Sidebar -->
     <div
-      class="fixed inset-y-0 z-10 flex bg-white w-72 mobileSidebarInner"
+      class="fixed inset-y-0 z-10 flex bg-dark-dark w-72 mobileSidebarInner"
       in:fly|local="{{ x, delay: 50 }}"
       out:fly|local="{{ x: x, duration: 120 }}"
       use:clickOutside

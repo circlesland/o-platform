@@ -66,6 +66,9 @@ body {
   @apply text-base;
 }
 
+.textarea {
+  min-height: none !important;
+}
 .textarea:focus {
   box-shadow: none;
 }
