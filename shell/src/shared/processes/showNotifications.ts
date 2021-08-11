@@ -6,7 +6,7 @@ import { createMachine } from "xstate";
 import NotificationViewer from "@o-platform/o-editors/src/NotificationViewer.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { ProfileEvent } from "../../dapps/o-banking/data/api/types";
-import { AcknowledgeDocument } from "../../dapps/o-contacts/data/api/types";
+import { AcknowledgeDocument } from "../../dapps/o-chat/data/api/types";
 import HtmlViewer from "../../../../packages/o-editors/src/HtmlViewer.svelte";
 import { inbox } from "../stores/inbox";
 import EditorView from "../../../../packages/o-editors/src/shared/EditorView.svelte";

@@ -511,12 +511,25 @@
         });
     }
 
+    let lastModalPage:{
+        runtimeDapp: RuntimeDapp<any>,
+        routable: Page<any, any>,
+        params: { [x: string]: any }
+    };
+
     function showModalPage(
         runtimeDapp: RuntimeDapp<any>,
         routable: Page<any, any>,
         params: { [x: string]: any }
     ) {
         modalContent = "page";
+        if (routable.type == "page" && routable.component !== ProcessContainer) {
+            lastModalPage = {
+                runtimeDapp,
+                routable,
+                params
+            };
+        }
 
         layout = {
             ...layout,
@@ -572,7 +585,11 @@
             (<any>routable).position === "modal"
         ) {
             await pop();
+            lastModalPage = null;
             return;
+        } else if (lastModalPage) {
+            showModalPage(lastModalPage.runtimeDapp, lastModalPage.routable, lastModalPage.params);
+            lastModalPage = null;
         } else {
             layout = {
                 ...layout,

@@ -36,13 +36,13 @@ export const profile: Page<any, ContactsDappState> = {
   type: "page",
   isSystem: true,
   position: "modal",
-  routeParts: ["=profile", ":id"],
+  routeParts: [":id"],
   title: "Profile",
   component: ProfilePage,
 };
 
 const contacts: Page<any, ContactsDappState> = {
-  routeParts: ["=contacts"],
+  routeParts: [""],
   component: Contacts,
   title: "Contacts",
   icon: "friends",
@@ -56,7 +56,7 @@ export const friends: DappManifest<DappState> = {
   icon: "group",
   title: "Friends",
   routeParts: ["=friends"],
-  defaultRoute: ["contacts"],
+  defaultRoute: [],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,

@@ -1,10 +1,10 @@
-import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
-import Chat from "./o-contacts/pages/Chat.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Profile } from "./o-banking/data/api/types";
 import { me } from "../shared/stores/me";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { init} from "./o-banking/init";
+import ChatDetail from "./o-chat/pages/ChatDetail.svelte";
+import Chat from "./o-chat/pages/Chat.svelte";
 
 export interface DappState {
   // put state here
@@ -27,7 +27,7 @@ export const chatdetail: Page<any, ChatDappState> = {
   type: "page",
   isSystem: true,
   position: "modal",
-  routeParts: ["=chat", ":id"],
+  routeParts: [":id"],
   title: "Chat",
   component: ChatDetail,
 };

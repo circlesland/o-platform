@@ -1,6 +1,6 @@
 import {writable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {AcknowledgeDocument, EventsDocument, Profile, ProfileEvent} from "../../dapps/o-contacts/data/api/types";
+import {AcknowledgeDocument, EventsDocument, Profile, ProfileEvent} from "../../dapps/o-chat/data/api/types";
 
 let events:ProfileEvent[] = [];
 async function queryEvents()
