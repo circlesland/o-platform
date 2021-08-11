@@ -42,7 +42,7 @@ export const profile: Page<any, ContactsDappState> = {
 };
 
 const contacts: Page<any, ContactsDappState> = {
-  routeParts: [""],
+  routeParts: ["=list"],
   component: Contacts,
   title: "Contacts",
   icon: "friends",
