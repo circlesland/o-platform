@@ -17,9 +17,9 @@ console.log("Params: ", context);
 
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <slot name="EditorSteps">
-    <div>
+    <!-- <div>
       <NavSteps steps="{[0, 0, 0]}" />
-    </div>
+    </div> -->
   </slot>
   <slot name="EditorTitle">
     <div class="w-full text-center">

@@ -72,7 +72,7 @@ function onkeydown(e: KeyboardEvent) {
 
 {#if field}
   <div class="flex flex-col items-end form-control justify-self-center">
-    <div class="text-base themed">
+    <div class="h-12 text-base themed">
       <Select
         name="searchTerm"
         autoComplete="off"
