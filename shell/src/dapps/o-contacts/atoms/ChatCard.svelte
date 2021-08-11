@@ -25,14 +25,14 @@
     class:order-first="{params.outgoing}">
     <div class="flex flex-row toprow">
       <div
-        class="flex-grow text-sm text-dark-lightest"
+        class="flex-grow text-xs sm:text-sm text-dark-lightest"
         class:order-last="{params.outgoing}"
         class:text-right="{params.outgoing}"
         class:self-end="{params.outgoing}">
         {params.name}
       </div>
       <div
-        class="text-sm text-dark-lightest"
+        class="text-xs sm:text-sm text-dark-lightest"
         class:self-end="{!params.outgoing}"
         class:text-right="{!params.outgoing}"
         class:order-first="{params.outgoing}">
@@ -40,7 +40,7 @@
       </div>
     </div>
     <div
-      class="w-full p-4 text-sm rounded-xl message chatText"
+      class="w-full p-4 text-xs sm:text-sm rounded-xl message chatText"
       class:bg-light-lighter="{params.outgoing && !params.notification}"
       class:bg-dark="{!params.outgoing && !params.notification}"
       class:bg-success-lighter="{params.notification}"

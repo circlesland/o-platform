@@ -84,7 +84,7 @@
   </header>
 
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
-  <div class="flex flex-col p-6 space-y-8">
+  <div class="flex flex-col p-6 space-y-4 sm:space-y-8">
     {#each $chatdata as chat}
       <ChatCard params="{chat}" />
     {/each}
