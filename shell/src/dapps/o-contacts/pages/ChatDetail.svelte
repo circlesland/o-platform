@@ -74,10 +74,16 @@
 <div id="chatlist">
   <header class="sticky top-0 z-50 grid w-full bg-white place-content-center">
     <div
-      class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center">
-
-      <div class="mt-4 text-3xl tracking-wide uppercase font-heading">
-        Herr Meier
+      class="relative flex flex-col items-center self-center w-full m-auto text-center justify-self-center">
+      <div class="absolute avatar " style="left: -56px; top:9px">
+        <div class="w-8 h-8 m-auto rounded-full ">
+          <img
+            src="https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/PP2WbUHmpaCg9Gk7/"
+            alt="user-icon" />
+        </div>
+      </div>
+      <div class="mt-2 text-3xl tracking-wide uppercase font-heading">
+        Martin Köppelmann
       </div>
 
     </div>

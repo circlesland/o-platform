@@ -12,18 +12,21 @@
   };
 </script>
 
-<div class="flex flex-row w-full space-x-2">
-  <div class="image" class:pl-2="{params.outgoing}">
+<div
+  class="flex flex-row w-full space-x-2"
+  class:pr-12="{params.outgoing && !params.notification}"
+  class:pl-12="{!params.outgoing && !params.notification}">
+  <!-- <div class="image" class:pl-2="{params.outgoing}">
     <div class="avatar">
       <div class="w-10 h-10 m-auto rounded-full sm:w-20 sm:h-20">
         <img src="{params.image}" alt="user-icon" />
       </div>
     </div>
-  </div>
+  </div> -->
   <div
     class="flex flex-col flex-grow space-y-1"
     class:order-first="{params.outgoing}">
-    <div class="flex flex-row toprow">
+    <!-- <div class="flex flex-row toprow">
       <div
         class="flex-grow text-xs sm:text-sm text-dark-lightest"
         class:order-last="{params.outgoing}"
@@ -38,13 +41,19 @@
         class:order-first="{params.outgoing}">
         {params.time}
       </div>
-    </div>
+    </div> -->
     <div
-      class="w-full p-4 text-xs sm:text-sm rounded-xl message chatText"
+      class="relative w-full p-4 pb-6 text-xs sm:text-sm rounded-xl message chatText"
       class:bg-light-lighter="{params.outgoing && !params.notification}"
       class:bg-dark="{!params.outgoing && !params.notification}"
       class:bg-success-lighter="{params.notification}"
       class:text-white="{!params.outgoing && !params.notification}">
+      <div
+        class="absolute bottom-2 right-3 text-2xs"
+        class:text-light-dark="{params.outgoing && !params.notification}"
+        class:text-dark-lighter="{!params.outgoing && !params.notification}">
+        {params.time}
+      </div>
       {@html params.text}
     </div>
   </div>
