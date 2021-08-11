@@ -5,7 +5,6 @@
   import Center from "./Center.svelte";
   import NextNav from "src/shared/molecules/NextNav/NextNav.svelte";
   import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
-  import ListComponent from "src/shared/molecules/NextNav/Components/List.svelte";
   import { isMobile } from "src/shared/functions/isMobile";
   import { RuntimeLayout } from "./layout";
   import Pager from "src/shared/molecules/Pager.svelte";
@@ -20,20 +19,7 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let layout: RuntimeLayout;
-  export let navigation: NavigationManifest = {
-    navPill: {
-      left: {
-        component: ListComponent,
-        props: {
-          icon: "list",
-          action: () => {
-            if (!layout || !layout.dialogs) return;
-            layout.dialogs.left.isOpen = !layout.dialogs.left.isOpen;
-          },
-        },
-      },
-    },
-  };
+  export let navigation: NavigationManifest;
 
   const sliderPages = [
     /*{
@@ -44,6 +30,7 @@
     }*/
   ];
   $: {
+    console.log("LayoutChanged:", layout)
     if (layout.dialogs.center && layout.dialogs.center.isOpen) {
       document.body.style.overflow = "hidden";
     } else {

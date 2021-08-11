@@ -73,6 +73,12 @@
           ) {
             // console.log("Cancel dialog answer:", answer);
             if ((<any>answer).data.___cancelRequest.key === "no") {
+              if (beforeCancelPrompt.navigation.canGoBack) {
+                window.o.publishEvent({type: "process.canGoBack"})
+              }
+              if (beforeCancelPrompt.navigation.canSkip) {
+                window.o.publishEvent({type: "process.canSkip"})
+              }
               prompt = beforeCancelPrompt;
               beforeCancelPrompt = null;
               cancelDialogVisible = false;
@@ -84,6 +90,7 @@
               process.sendEvent(new Cancel());
             }
           } else {
+            window.o.publishEvent({type: "process.continued"})
             process.sendAnswer(answer);
           }
         },
@@ -141,6 +148,7 @@
 
           if (
             beforeCancelPrompt &&
+            beforeCancelPrompt.field !== "___cancelRequest" &&
             Object.values(beforeCancelPrompt.editorDirtyFlags).filter(
               (o) => o === true
             ).length == 0 &&
@@ -228,12 +236,19 @@
         if (event.type === "process.prompt") {
           const promptEvent = <PromptEvent<any>>event;
           if (promptEvent.navigation) {
-            dispatch("navigation", {
+            const nav = {
               ...promptEvent.navigation,
               skip:() => process.sendAnswer(new Skip()),
               back:() => process.sendAnswer(new Back()),
               cancel: () => process.sendAnswer(new CancelRequest())
-            });
+            };
+            dispatch("navigation", nav);
+            if (promptEvent.navigation.canGoBack) {
+              window.o.publishEvent({type: "process.canGoBack"})
+            }
+            if (promptEvent.navigation.canSkip) {
+              window.o.publishEvent({type: "process.canSkip"})
+            }
           }
         }
 
