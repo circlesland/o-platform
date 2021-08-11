@@ -11,7 +11,7 @@
   <div class="">
     <!-- Sidebar -->
     <div
-      class="fixed inset-y-0 z-10 flex w-72 mobileSidebarInner bg-dark-dark"
+      class="fixed inset-y-0 z-10 flex bg-white w-72 mobileSidebarInner"
       in:fly|local="{{ x, delay: 50 }}"
       out:fly|local="{{ x: x, duration: 120 }}"
       use:clickOutside
@@ -44,8 +44,8 @@
     width: 100%;
   }
   .mobileSideBarLeft .mobileSidebarInner {
-    --tw-shadow: 0 25px 50px 82px rgba(0, 0, 0, 0.45);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    --tw-shadow: 0 25px 50px 82px rgba(13, 43, 102, 0.45);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #95b7ca),
+      var(--tw-ring-shadow, 0 0 #95b7ca), var(--tw-shadow);
   }
 </style>

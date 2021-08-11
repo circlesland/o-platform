@@ -315,19 +315,19 @@ button:focus {
 }
 
 .shadow-sm {
-  filter: drop-shadow(0px 0px 3px #ebecf2);
+  filter: drop-shadow(0px 0px 3px #e2e3e8);
   --tw-shadow: none;
   box-shadow: 0px 0px 3px #e2e3e8;
 }
 
 .shadow-md {
-  filter: drop-shadow(0px 0px 16px #ebecf2);
+  filter: drop-shadow(0px 0px 8px #ebecf2);
   --tw-shadow: none;
-  box-shadow: 0px 0px 16px #e2e3e8;
+  box-shadow: 0px 0px 8px #ebecf2;
 }
 
 .shadow-lg {
   filter: drop-shadow(0px 0px 24px #ebecf2);
   --tw-shadow: none;
-  box-shadow: 0px 0px 24px #e2e3e8;
+  box-shadow: 0px 0px 24px #ebecf2;
 }

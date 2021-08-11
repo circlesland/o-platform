@@ -19,7 +19,6 @@
     ),
     truncateMain: false,
     edgeless: true,
-    shadow: true,
   };
 
   function loadDetailPage() {

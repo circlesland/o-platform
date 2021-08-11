@@ -112,6 +112,9 @@
         </div>
       </div>
     </section>
+    <div class="w-full mb-4 text-center">
+      <h1 class="uppercase font-heading">Xdai</h1>
+    </div>
 
     {#each [accountxDai, safexDai].sort((a, b) =>
       parseFloat(a.balance) > parseFloat(b.balance)
@@ -121,7 +124,7 @@
         : 0
     ) as token}
       <ItemCard
-        params="{{ edgeless: false, imageUrl: '/logos/xdai.png', title: token.title, subTitle: token.address, truncateMain: true, shadow: true }}">
+        params="{{ edgeless: false, imageUrl: '/logos/xdai.png', title: token.title, subTitle: token.address, truncateMain: true }}">
 
         <div slot="itemCardEnd">
           <div class="self-end text-right text-success">
@@ -132,11 +135,14 @@
       </ItemCard>
     {/each}
   {:else}
+    <div class="w-full mb-4 text-center">
+      <h1 class="uppercase font-heading">Individual Circles</h1>
+    </div>
     {#each ($mySafe.token ? [$mySafe.token] : []).concat(tokens) as token}
       {#if token && token.balance > 0}
         <div on:click="{() => loadDetailPage(token.tokenOwner)}">
           <ItemCard
-            params="{{ edgeless: false, imageUrl: token.ownerProfile ? token.ownerProfile.avatarUrl : '', title: token.ownerProfile ? token.ownerProfile.displayName : token.tokenOwner, subTitle: token.tokenOwner, truncateMain: true, shadow: true }}">
+            params="{{ edgeless: false, imageUrl: token.ownerProfile ? token.ownerProfile.avatarUrl : '', title: token.ownerProfile ? token.ownerProfile.displayName : token.tokenOwner, subTitle: token.tokenOwner, truncateMain: true, shadowMedium: true }}">
 
             <div slot="itemCardEnd">
               <div class="self-end text-right text-success">

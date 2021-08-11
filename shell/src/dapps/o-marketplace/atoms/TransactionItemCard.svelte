@@ -15,7 +15,6 @@
     subTitle: truncateString(offer.description, 60),
     truncateMain: true,
     edgeless: true,
-    shadow: true,
   };
 
   function loadDetailPage() {
@@ -23,17 +22,15 @@
   }
 </script>
 
-<div on:click={() => loadDetailPage()}>
+<div on:click="{() => loadDetailPage()}">
   <ItemCard {params}>
     <div slot="itemCardStart">
       <div
-        class="relative w-16 h-16 overflow-hidden rounded-l-lg image-wrapper"
-      >
+        class="relative w-16 h-16 overflow-hidden rounded-l-lg image-wrapper">
         <img
-          src={offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}
-          alt={offer.title}
-          class="absolute object-cover w-20 h-16 rounded-l-lg"
-        />
+          src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
+          alt="{offer.title}"
+          class="absolute object-cover w-20 h-16 rounded-l-lg" />
       </div>
     </div>
     <div slot="itemCardEnd">

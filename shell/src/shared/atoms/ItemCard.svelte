@@ -10,7 +10,8 @@
     subTitle: null,
     truncateMain: null,
     edgeless: null,
-    shadow: null,
+    shadowSmall: true,
+    shadowMedium: null,
     action: null,
     endTextBig: null,
     endTextBigClass: "text-success",
@@ -31,7 +32,8 @@
 
   <div
     class="flex items-center w-full space-x-2 bg-white rounded-lg"
-    class:shadow-sm="{params.shadow}"
+    class:shadow-sm="{!params.shadowMedium}"
+    class:shadow-md="{params.shadowMedium}"
     class:p-3="{!params.edgeless}">
     <slot name="itemCardStart">
       <div>
