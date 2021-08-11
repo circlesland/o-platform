@@ -4,6 +4,7 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
+import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { City, UpsertProfileDocument } from "../data/api/types";
@@ -29,6 +30,42 @@ export type UpsertIdentityContextData = {
 };
 
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
+
+const editorContent = {
+  firstName: {
+    title: "What is your first name?",
+    description:
+      "Welcome, you are finally a citizen of CirclesLand. Glad to have you here.",
+    placeholder: "First name",
+    mainComponent: TextEditor,
+    submitButtonText: "Save",
+  },
+  lastName: {
+    title: "What is your last name?",
+    description:
+      "Display your full name in your profile to become more trust worthy.",
+    placeholder: "Last name",
+    mainComponent: TextEditor,
+    submitButtonText: "Save",
+  },
+  dream: {
+    title: "Share your passion",
+    description:
+      "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
+    placeholder: "Your passion",
+    mainComponent: TextareaEditor,
+    submitButtonText: "Start growing",
+    maxLength: "150",
+  },
+  city: {
+    title: "Vote for your City?",
+    description:
+      "Advance your city in the basic income ranking and push the political discorse in your area.",
+    placeholder: "Last name",
+    mainComponent: TextEditor,
+    submitButtonText: "Submit vote",
+  },
+};
 
 const strings = {
   labelFirstName:
@@ -62,12 +99,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       firstName: prompt<UpsertIdentityContext, any>({
         field: "firstName",
         onlyWhenDirty: skipIfNotDirty,
-        component: TextEditor,
-        params: {
-          label: strings.labelFirstName,
-          placeholder: strings.placeholderFirstName,
-          submitButtonText: "Save first name",
-        },
+        component: EditorView,
+        params: { view: editorContent.firstName },
         dataSchema: yup.string().required("Please enter your first name."),
         navigation: {
           next: "#lastName",
@@ -76,12 +109,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       lastName: prompt<UpsertIdentityContext, any>({
         field: "lastName",
         onlyWhenDirty: skipIfNotDirty,
-        component: TextEditor,
-        params: {
-          label: strings.labelLastName,
-          placeholder: strings.placeholderLastName,
-          submitButtonText: "Save last name",
-        },
+        component: EditorView,
+        params: { view: editorContent.lastName },
         navigation: {
           next: "#country",
           previous: "#firstName",
@@ -106,13 +135,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       dream: prompt<UpsertIdentityContext, any>({
         field: "dream",
         onlyWhenDirty: skipIfNotDirty,
-        component: TextareaEditor,
-        params: {
-          label: strings.labeldream,
-          placeholder: strings.placeholderDream,
-          submitButtonText: "Start growing",
-          maxLength: "150",
-        },
+        component: EditorView,
+        params: { view: editorContent.dream },
         dataSchema: yup
           .string()
           .nullable()
@@ -196,6 +220,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 avatarUrl: context.data.avatarUrl,
                 avatarMimeType: context.data.avatarMimeType,
                 cityGeonameid: context.data.cityGeonameid,
+                status: ""
               },
             });
             return result.data.upsertProfile;
@@ -208,7 +233,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         type: "final",
         id: "success",
         data: (context, event: any) => {
-          console.log(`enter: upsertIdentity.success`, context.data);
+          //console.log(`enter: upsertIdentity.success`, context.data);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.authenticated",
             profile: event.data,
@@ -235,5 +260,5 @@ export const upsertIdentityOnlyWhereDirty = {
   id: upsertIdentity.id,
   name: upsertIdentity.name,
   stateMachine: (processId?: string) =>
-      (<any>upsertIdentity).stateMachine(processId, true),
+    (<any>upsertIdentity).stateMachine(processId, true),
 };

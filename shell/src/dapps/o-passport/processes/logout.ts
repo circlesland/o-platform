@@ -3,6 +3,7 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
+import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { LogoutDocument } from "../data/api/types";
@@ -21,11 +22,16 @@ export type LogoutContextData = {
 
 export type LogoutContext = ProcessContext<LogoutContextData>;
 
-const strings = {
-  labelCheckSeedPhrase:
-    "Please enter your Secret Recovery Code to logout. If you haven't stored your Secret Recovery Code at a safe place yet, do it now and come back again later to log-out.",
-};
+const editorContent = {
+  logout: {
+    title: "Log out",
+    description:
+      "Please enter your Secret Recovery Code to logout. If you haven't stored your Secret Recovery Code at a safe place yet, do it now and come back again later to log-out.",
 
+    mainComponent: TextareaEditor,
+    submitButtonText: "Log out",
+  },
+};
 const processDefinition = (processId: string) =>
   createMachine<LogoutContext, any>({
     id: `${processId}:logout`,
@@ -37,9 +43,9 @@ const processDefinition = (processId: string) =>
 
       checkSeedPhrase: prompt<LogoutContext, any>({
         field: "checkSeedPhrase",
-        component: TextareaEditor,
+        component: EditorView,
         params: {
-          label: strings.labelCheckSeedPhrase,
+          view: editorContent.logout,
         },
         navigation: {
           next: "#compareSeedPhrase",
@@ -64,8 +70,7 @@ const processDefinition = (processId: string) =>
                   : "<no private key>";
               const match = context.data.checkSeedPhrase.trim() == seedPhrase;
               if (!match) {
-                context.messages["checkSeedPhrase"] =
-                  "The codes don't match";
+                context.messages["checkSeedPhrase"] = "The codes don't match";
               }
               return match;
             },

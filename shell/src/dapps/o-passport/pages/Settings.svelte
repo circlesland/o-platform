@@ -61,6 +61,7 @@
         country: $me.country,
         dream: $me.dream,
         newsletter: receiveNewsletter,
+        status: ""
       },
     });
     if (result.errors) {

@@ -10,10 +10,9 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
-  export let params: {
-    category: number;
-    categoryName: string;
-  };
+
+  export let category: number;
+  export let categoryName: string;
 
   let isLoading: boolean;
   let error: Error;
@@ -21,14 +20,14 @@
   let shellEventSubscription: Subscription;
 
   async function load() {
-    if (isLoading || !params || !params.category) return;
+    if (isLoading || !category) return;
 
     isLoading = true;
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
       query: OffersDocument,
       variables: {
-        categoryTagId: parseInt(params.category.toString()),
+        categoryTagId: parseInt(category.toString()),
       },
     });
     if (result.errors && result.errors.length) {
@@ -64,7 +63,7 @@
   });
 </script>
 
-<MarketplaceHeader {runtimeDapp} {routable} header={params.categoryName} />
+<MarketplaceHeader {runtimeDapp} {routable} header={categoryName} />
 
 <div class="mx-4 -mt-3">
   {#if isLoading}

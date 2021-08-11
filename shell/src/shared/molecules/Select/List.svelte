@@ -8,6 +8,9 @@
     tick,
   } from "svelte";
 
+  import "simplebar";
+  import "simplebar/dist/simplebar.css";
+
   const dispatch = createEventDispatcher();
 
   export let container = undefined;
@@ -22,7 +25,7 @@
     if (option)
       return option.isCreator ? `Create \"${filterText}\"` : option.label;
   };
-  export let getGroupHeaderLabel = (option) => {
+  export let getGroupHeaderLabel = option => {
     return option.label;
   };
   export let itemHeight = 40;
@@ -44,7 +47,7 @@
   onMount(() => {
     if (items.length > 0 && !isMulti && selectedValue) {
       const _hoverItemIndex = items.findIndex(
-        (item) => item[optionIdentifier] === selectedValue[optionIdentifier]
+        item => item[optionIdentifier] === selectedValue[optionIdentifier]
       );
 
       if (_hoverItemIndex) {
@@ -77,7 +80,7 @@
     if (items !== prev_items && items.length > 0) {
       if (selectedValue) {
         const _hoverItemIndex = items.findIndex(
-          (item) => item[optionIdentifier] === selectedValue
+          item => item[optionIdentifier] === selectedValue
         );
         hoverItemIndex = _hoverItemIndex;
         activeItemIndex = _hoverItemIndex;
@@ -228,53 +231,48 @@
   function isItemHover(hoverItemIndex, item, itemIndex, items) {
     return hoverItemIndex === itemIndex || items.length === 1;
   }
-
 </script>
 
-<svelte:window on:keydown={handleKeyDown} />
+<svelte:window on:keydown="{handleKeyDown}" />
 
 {#if isVirtualList}
-  <div class="listContainer virtualList" bind:this={container}>
+  <div class="listContainer virtualList" bind:this="{container}">
     <VirtualList {items} {itemHeight} let:item let:i>
       <div
-        on:mouseover={() => handleHover(i)}
-        on:click={(event) => handleClick({ item, i, event })}
-        class="listItem"
-      >
+        on:mouseover="{() => handleHover(i)}"
+        on:click="{event => handleClick({ item, i, event })}"
+        class="listItem">
         <svelte:component
-          this={Item}
+          this="{Item}"
           {item}
           {filterText}
           {getOptionLabel}
-          isFirst={isItemFirst(i)}
-          isActive={isItemActive(item, selectedValue, optionIdentifier)}
-          isHover={isItemHover(hoverItemIndex, item, i, items)}
-        />
+          isFirst="{isItemFirst(i)}"
+          isActive="{isItemActive(item, selectedValue, optionIdentifier)}"
+          isHover="{isItemHover(hoverItemIndex, item, i, items)}" />
       </div>
     </VirtualList>
   </div>
 {/if}
 
 {#if !isVirtualList}
-  <div class="listContainer" bind:this={container}>
+  <div data-simplebar class="listContainer" bind:this="{container}">
     {#each items as item, i}
       {#if item.isGroupHeader && !item.isSelectable}
         <div class="listGroupTitle">{getGroupHeaderLabel(item)}</div>
       {:else}
         <div
-          on:mouseover={() => handleHover(i)}
-          on:click={(event) => handleClick({ item, i, event })}
-          class="listItem"
-        >
+          on:mouseover="{() => handleHover(i)}"
+          on:click="{event => handleClick({ item, i, event })}"
+          class="listItem">
           <svelte:component
-            this={Item}
+            this="{Item}"
             {item}
             {filterText}
             {getOptionLabel}
-            isFirst={isItemFirst(i)}
-            isActive={isItemActive(item, selectedValue, optionIdentifier)}
-            isHover={isItemHover(hoverItemIndex, item, i, items)}
-          />
+            isFirst="{isItemFirst(i)}"
+            isActive="{isItemActive(item, selectedValue, optionIdentifier)}"
+            isHover="{isItemHover(hoverItemIndex, item, i, items)}" />
         </div>
       {/if}
     {:else}
@@ -289,8 +287,8 @@
   .listContainer {
     box-shadow: var(--listShadow, 0 2px 3px 0 rgba(44, 62, 80, 0.24));
     border-radius: var(--listBorderRadius, 4px);
-    max-height: var(--listMaxHeight, 250px);
-    overflow-y: auto;
+    /* max-height: var(--listMaxHeight, 250px); */
+    /* overflow-y: auto; */
     background: var(--listBackground, #fff);
   }
 
@@ -323,5 +321,4 @@
     padding: var(--listEmptyPadding, 0 0);
     color: var(--listEmptyColor, #78848f);
   }
-
 </style>

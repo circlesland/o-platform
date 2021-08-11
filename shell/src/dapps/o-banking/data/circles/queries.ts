@@ -10,13 +10,13 @@ import {Safe, Token, Transfer, TrustObject} from "./types";
 export class Queries {
   static async addOwnToken(safe: Safe): Promise<Safe> {
     if (RpcGateway.get().utils.isAddress(safe.token?.tokenAddress ?? "")) {
-      console.log("skipping addOwnToken()")
+      // console.log("skipping addOwnToken()")
       return safe;
     }
     const checksumSafeAddress = RpcGateway.get().utils.toChecksumAddress(safe.safeAddress);
     const foundTokenOrNull = await new CirclesAccount(checksumSafeAddress).tryGetMyToken(!!safe.firstBlock ? safe.firstBlock : undefined);
     if (!foundTokenOrNull) {
-      console.log("The safe isn't yet signed-up at the circles hub")
+      // console.log("The safe isn't yet signed-up at the circles hub")
     } else {
       (<any>foundTokenOrNull).limit = 100;
     }
@@ -124,7 +124,7 @@ export class Queries {
     }));
 
     const startAt = !transfers.lastBlock ? startBlock : transfers.lastBlock + 1;
-    console.log("addHubTransfers() is starting at" + startAt)
+    // console.log("addHubTransfers() is starting at" + startAt)
     await new CirclesAccount(checksumSafeAddress).findHubTransfers(startAt).forEach(hubTransfer => {
       transfers.rows.push({
         _id: `${hubTransfer.blockNumber}${hubTransfer.returnValues.from}${hubTransfer.returnValues.to}`,
@@ -199,11 +199,11 @@ export class Queries {
       if (!token && tokenAddress === safe.token.tokenAddress) {
         token = {...safe.token, limit: 100, lastBlock: safe.token.firstBlock};
       }
-      console.log(`Direct transfers of token (${tokenAddress}) via web3 ..`);
+      // console.log(`Direct transfers of token (${tokenAddress}) via web3 ..`);
 
       const lastDirectTransferBlock = safe.transfers?.rows.filter(o => o.type === "direct").reduce<number>((p,c) => c.firstBlock > (p ?? 0) ? c.firstBlock : (p ?? 0), undefined)
       const startAt = !lastDirectTransferBlock ? (startBlock ?? token.firstBlock) : lastDirectTransferBlock + 1;
-      console.log("addDirectTransfers() is starting at" + startAt)
+      // console.log("addDirectTransfers() is starting at" + startAt)
       await new Erc20Token(RpcGateway.get(), tokenAddress)
         .findTransfers(checksumSafeAddress, startAt)
         .forEach(directTransfer => {
@@ -238,7 +238,7 @@ export class Queries {
           current:current
         });
       }
-      console.log(`Direct transfers of token (${tokenAddress}) via web3 .. Done`,);
+      // console.log(`Direct transfers of token (${tokenAddress}) via web3 .. Done`,);
     }
 
     transfers.rows = transfers.rows.sort((a, b) =>
@@ -261,7 +261,7 @@ export class Queries {
   static async addContacts(safe: Safe, startBlock?: number): Promise<Safe> {
     const checksumSafeAddress = RpcGateway.get().utils.toChecksumAddress(safe.safeAddress);
     const startAt = !safe.trustRelations?.lastBlock ? startBlock : safe.trustRelations.lastBlock + 1;
-    console.log("addContacts() is starting at" + startAt)
+    // console.log("addContacts() is starting at" + startAt)
     const trustEvents = await this.readTrustEvents(checksumSafeAddress, startAt);
     const sortedAsc = trustEvents.sort((a, b) =>
       a.blockNumber > b.blockNumber ? 1 : a.blockNumber < b.blockNumber ? -1 : 0);

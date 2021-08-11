@@ -27,7 +27,7 @@
   }
 
   function loadDetailPage() {
-    push(`#/banking/profile/${profile.id.toString()}`)
+    push(`#/friends/profile/${profile.id.toString()}`)
   }
 
 </script>

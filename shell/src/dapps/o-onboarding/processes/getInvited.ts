@@ -44,7 +44,7 @@ export const getInvitedMachine = createMachine<GetInvitedContext, GetInvitedEven
         waitForInvitation: () => {
             // TODO: Subscribe to the profile's event stream and wait for an invitation
             const interval = setInterval(() => {
-                console.log('Waiting for invitation ..');
+                // console.log('Waiting for invitation ..');
                 send({type: "GOT_INVITED"});
             }, 1000);
 

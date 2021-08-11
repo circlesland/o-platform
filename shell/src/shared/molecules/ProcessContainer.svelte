@@ -33,6 +33,9 @@
    * A channel to an already running process.
    */
   export let process: Process;
+  export let props: {
+    process: Process
+  }
   let interceptedProcess: Process;
 
   let inEventSubscription: Subscription;
@@ -53,6 +56,9 @@
   const dispatch = createEventDispatcher();
 
   $: {
+    if (!process && props && props.process) {
+      process = props.process;
+    }
     if (process) {
       // Give a modified version of the process to the <Prompt>.
       // This will catch the answer to the cancel-question
@@ -65,8 +71,14 @@
             answer.type == "process.continue" &&
             (<any>answer).data.___cancelRequest
           ) {
-            console.log("Cancel dialog answer:", answer);
+            // console.log("Cancel dialog answer:", answer);
             if ((<any>answer).data.___cancelRequest.key === "no") {
+              if (beforeCancelPrompt.navigation.canGoBack) {
+                window.o.publishEvent({type: "process.canGoBack"})
+              }
+              if (beforeCancelPrompt.navigation.canSkip) {
+                window.o.publishEvent({type: "process.canSkip"})
+              }
               prompt = beforeCancelPrompt;
               beforeCancelPrompt = null;
               cancelDialogVisible = false;
@@ -78,6 +90,7 @@
               process.sendEvent(new Cancel());
             }
           } else {
+            window.o.publishEvent({type: "process.continued"})
             process.sendAnswer(answer);
           }
         },
@@ -121,19 +134,21 @@
       inEventSubscription = process.inEvents.subscribe((next) => {
         if (!next.event) return;
 
-        console.log(
+        /*console.log(
           "ProcessContainer: In/Out -> to Process: ",
           JSON.stringify(next.event, null, 2)
         );
+         */
 
         if (next.event.type === "process.cancelRequest") {
           // modalWantsToClose:
           // TODO: Check the context's dirty flags and ask the user only if at least one dirty-flag is set
-          console.log("Received cancel request:", next.event);
+          // console.log("Received cancel request:", next.event);
           beforeCancelPrompt = prompt;
 
           if (
             beforeCancelPrompt &&
+            beforeCancelPrompt.field !== "___cancelRequest" &&
             Object.values(beforeCancelPrompt.editorDirtyFlags).filter(
               (o) => o === true
             ).length == 0 &&
@@ -199,7 +214,7 @@
           prompt = null;
           process = null;
           waiting = false;
-          console.log("ProcessContainer.svelte: process stopped");
+          // console.log("ProcessContainer.svelte: process stopped");
           dispatch("stopped");
         }
 
@@ -221,20 +236,27 @@
         if (event.type === "process.prompt") {
           const promptEvent = <PromptEvent<any>>event;
           if (promptEvent.navigation) {
-            dispatch("navigation", {
+            const nav = {
               ...promptEvent.navigation,
               skip:() => process.sendAnswer(new Skip()),
               back:() => process.sendAnswer(new Back()),
               cancel: () => process.sendAnswer(new CancelRequest())
-            });
+            };
+            dispatch("navigation", nav);
+            if (promptEvent.navigation.canGoBack) {
+              window.o.publishEvent({type: "process.canGoBack"})
+            }
+            if (promptEvent.navigation.canSkip) {
+              window.o.publishEvent({type: "process.canSkip"})
+            }
           }
         }
 
         try {
-          console.log(
+          /*console.log(
             "ProcessContainer: In/Out <- from Process: ",
             JSON.stringify(next.event, null, 2)
-          );
+          );*/
         } catch {}
 
         // If the event is an error event, then set the error property else clear it
@@ -255,10 +277,10 @@
         // was sent from the prompt to the process.
         // The loading spinner will be disabled with the next arriving 'prompt'.
         if (event.type === "process.prompt") {
-          console.log(
+          /* console.log(
             "ProcessContainer received 'process.prompt' event: ",
             next
-          );
+          );*/
           prompt = <PromptEvent>{
             ...event,
             editorDirtyFlags: {},

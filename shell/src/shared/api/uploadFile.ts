@@ -30,7 +30,7 @@ createMachine<UploadFileContext, any>({
 
     authenticateSso: {
       id: "authenticateSso",
-      entry: () => console.log(`enter: uploadFile.authenticateSso`),
+      // entry: () => console.log(`enter: uploadFile.authenticateSso`),
       on: {
         ...<any>ipc(`authenticateSso`)
       },
@@ -52,7 +52,7 @@ createMachine<UploadFileContext, any>({
     },
     upload: {
       id: "upload",
-      entry: () => console.log(`enter: uploadFile.upload`),
+      // entry: () => console.log(`enter: uploadFile.upload`),
       on: {
         ...<any>ipc(`upload`)
       },
@@ -86,7 +86,7 @@ createMachine<UploadFileContext, any>({
     },
     uploadError: {
       id: "uploadError",
-      entry: () => console.log(`Enter: uploadFile.error`),
+      // entry: () => console.log(`Enter: uploadFile.error`),
       type: "final",
       data: () => {
         return new Error("Couldn't upload the file");
@@ -94,7 +94,7 @@ createMachine<UploadFileContext, any>({
     },
     success: {
       id: "success",
-      entry: () => console.log(`Enter: uploadFile.success`),
+      // entry: () => console.log(`Enter: uploadFile.success`),
       type: "final",
       data: (context) => {
         return context.data;

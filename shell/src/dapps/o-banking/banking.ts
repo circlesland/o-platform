@@ -439,7 +439,7 @@ export class Banking {
             query: TransactionsDocument
         });
         const transactions:IndexedTransaction[] = result.data.transactions;
-        console.log("Api transactions:", transactions);
+        // console.log("Api transactions:", transactions);
 
         const hubTransferEvent = "0x8451019aab65b4193860ef723cb0d56b475a26a72b7bfc55c1dbd6121015285a";
         const hubTransfers = transactions.map(o => {
@@ -476,7 +476,7 @@ export class Banking {
             o.transactionIndex = apiTransaction.transaction.transactionIndex
         });
 
-        console.log("Hub transfer api transactions:", hubTransfers);
+        // console.log("Hub transfer api transactions:", hubTransfers);
     }
 
     private async augmentBlockTimes()
@@ -569,7 +569,7 @@ export class Banking {
             const batch = safeAddresses.slice(begin, end);
             const query = batch.reduce((p, c) => p + `address[]=${RpcGateway.get().utils.toChecksumAddress(c)}&`, "");
 
-            console.log(`Querying the following profiles from the circles garden api (Batch ${i + 1} of ${batches}. Batch size: ${batchSize}):`, query);
+            // console.log(`Querying the following profiles from the circles garden api (Batch ${i + 1} of ${batches}. Batch size: ${batchSize}):`, query);
 
             const result = await fetch(`__CIRCLES_GARDEN_API__?${query}`);
             const resultJson = await result.json();
@@ -828,11 +828,11 @@ export class Banking {
             return;
         }
 
-        console.log(`Executing ${currentAction.id ?? id} ..`)
+        // console.log(`Executing ${currentAction.id ?? id} ..`)
 
         currentAction.run()
             .then(result => {
-                console.log(`Executed ${currentAction.id ?? id}.`)
+                // console.log(`Executed ${currentAction.id ?? id}.`)
                 const nextAction = next(currentAction, result);
                 this.executeRecursive(
                     nextAction.id ?? id,
@@ -865,7 +865,7 @@ export class Banking {
 
             const execResult = await Web3Contract.sendSignedRawTransaction(signedRawTransaction);
             const receipt = await execResult.toPromise();
-            console.log(receipt);
+            // console.log(receipt);
         }
     }
 

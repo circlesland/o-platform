@@ -40,7 +40,7 @@
   }
 
   function edit(dirtyFlags: { [field: string]: boolean }) {
-    console.log("edit: dirtyFlags:", dirtyFlags);
+    // console.log("edit: dirtyFlags:", dirtyFlags);
     window.o.runProcess(
       {
         id: upsertOffer.id,
@@ -69,58 +69,55 @@
   }
 </script>
 
-<section class="flex items-start bg-white shadow rounded-xl">
+<section class="flex items-start pb-2 bg-white shadow rounded-xl">
   <div class="flex flex-col w-full ">
     <header class=" rounded-t-xl headerImageContainer">
       <div class="relative rounded-t-xl image-wrapper">
         <img
-          src={offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}
+          src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
           alt=""
-          class="rounded-t-xl"
-        />
+          class="rounded-t-xl" />
         <div
-          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-2xl leading-tight rounded-l-full font-heading top-2 bg-light-lightest"
-        >
+          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-2xl leading-tight rounded-l-full font-heading top-2 bg-light-lightest">
           {offer.pricePerUnit} C / {offer.unitTag.value}
           <!-- <Time relative timestamp={offer.publishedAt} /> -->
         </div>
       </div>
     </header>
     <div
-      class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter"
-    >
+      class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
       <div class="avatar">
         <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
           <img
-            src={offer.createdBy.avatarUrl ? offer.createdBy.avatarUrl : '/images/market/city.png'}
-            alt="user-icon"
-          />
+            src="{offer.createdBy.avatarUrl ? offer.createdBy.avatarUrl : '/images/market/city.png'}"
+            alt="user-icon" />
         </div>
       </div>
       <div>{offer.createdBy.firstName} {offer.createdBy.lastName}</div>
     </div>
-    <div class="flex flex-col w-full px-4 mt-6 space-y-4 bg-white">
+    <div class="flex flex-col w-full px-4 pb-2 mt-6 space-y-4 bg-white">
       <div class="flex flex-row flex-grow space-x-2">
         <div
-          class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs"
-        >
+          class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
           <a
             href="#/marketplace/categories/{offer.categoryTagId}/{offer.categoryTag.value}"
-            alt={offer.categoryTag.value}
-          >
+            alt="{offer.categoryTag.value}">
             {offer.categoryTag.value}
           </a>
         </div>
       </div>
-      <div class="text-4xl leading-tight text-left uppercase font-heading">
-        {offer.title}
-      </div>
-
-      {#if offer.description}
-        <div class="text-sm text-dark-lightest">
-          {truncateString(offer.description, 70)}
+      <div class="h-32">
+        <div
+          class="text-4xl leading-tight text-left uppercase break-all font-heading">
+          {offer.title}
         </div>
-      {/if}
+
+        {#if offer.description}
+          <div class="text-sm text-dark-lightest">
+            {truncateString(offer.description, 70)}
+          </div>
+        {/if}
+      </div>
       <div class="flex flex-row space-x-4">
         <div>
           <button class="btn btn-square btn-light">
@@ -131,8 +128,7 @@
           <button
             type="submit"
             class="relative btn btn-primary btn-block"
-            on:click|once={() => loadDetailPage()}
-          >
+            on:click="{() => loadDetailPage()}">
             Show detail
             <div class="absolute mr-1 right-2">
               <Icons icon="eye" />

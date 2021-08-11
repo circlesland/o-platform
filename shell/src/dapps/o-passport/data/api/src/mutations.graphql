@@ -18,6 +18,27 @@ mutation authenticateAt(
     }
 }
 
+mutation claimInvitation ($code:String!) {
+    claimInvitation(code: $code) {
+        success
+        claimedInvitation {
+            createdAt
+            createdByProfileId
+            claimedAt
+            claimedByProfileId
+        }
+    }
+}
+
+mutation redeemClaimedInvitation {
+    redeemClaimedInvitation {
+        redeemRequest {
+            id
+        }
+        success
+    }
+}
+
 mutation consumeDepositedChallenge(
     $delegateAuthCode: String!
 ) {
@@ -46,6 +67,7 @@ mutation upsertProfile(
     $circlesSafeOwner: String
     $newsletter: Boolean
     $cityGeonameid: Int
+    $status: String!
 ) {
     upsertProfile(
         data: {
@@ -61,6 +83,7 @@ mutation upsertProfile(
             circlesSafeOwner: $circlesSafeOwner
             newsletter: $newsletter
             cityGeonameid: $cityGeonameid
+            status: $status
         }
     ) {
         id
@@ -84,5 +107,6 @@ mutation upsertProfile(
             population
             feature_code
         }
+        status
     }
 }

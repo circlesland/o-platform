@@ -8,6 +8,7 @@ import {
   prompt,
   PromptField,
 } from "@o-platform/o-process/dist/states/prompt";
+import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import PictureEditor from "@o-platform/o-editors/src/PictureEditor.svelte";
 import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
@@ -71,13 +72,27 @@ export function promptFile<
   spec.id = spec.id ? spec.id : field.name;
   const generatedId = Generate.randomHexString(4);
   const id = (x: string) => `${spec.id}/${generatedId}/${x}`;
+  let viewParams = {
+    title: "Profile Image",
+    description: "Show the World who you are",
+    placeholder: "Upload Image",
+    mainComponent: PicturePreview,
+    submitButtonText: "Upload Image",
+  };
+  let viewParamsUpload = {
+    title: "Profile Image?",
+    description: "Show the World who you are",
+    placeholder: "Upload Image",
+    mainComponent: PictureEditor,
+    submitButtonText: "Save Image",
+  };
   const editDataFieldConfig: StateNodeConfig<TContext, StateSchema, TEvent> = {
     id: spec.id,
     initial: "checkPreviewFile",
     states: {
       checkPreviewFile: {
         id: id("checkPreviewFile"),
-        entry: () => console.log(`checkPreviewFile entry`),
+        // entry: () => console.log(`checkPreviewFile entry`),
         always: [
           {
             cond: (context) => {
@@ -92,11 +107,12 @@ export function promptFile<
       },
       previewFile: prompt<TContext, any>({
         id: id("previewFile"),
-        entry: () => console.log(`previewFile entry`),
+        // entry: () => console.log(`previewFile entry`),
         field: spec.field,
         onlyWhenDirty: spec.onlyWhenDirty,
-        component: PicturePreview,
+        component: EditorView,
         params: {
+          view: viewParams,
           label: spec.params?.label ?? strings.labelFile,
           submitButtonText: spec.params.submitButtonText,
         },
@@ -110,7 +126,7 @@ export function promptFile<
       }),
       checkEditFile: {
         id: id("checkEditFile"),
-        entry: () => console.log(`checkEditFile entry`),
+        // entry: () => console.log(`checkEditFile entry`),
         always: [
           {
             cond: (context) => {
@@ -130,7 +146,7 @@ export function promptFile<
       },
       editFile: prompt<TContext, any>({
         id: id("editFile"),
-        entry: () => console.log(`editFile entry`),
+        // entry: () => console.log(`editFile entry`),
         field: {
           name: "file",
           get: () => {
@@ -138,13 +154,14 @@ export function promptFile<
             return file ?? {};
           },
           set: (o) => {
-            console.log("Setting 'file' to:", o);
+            // console.log("Setting 'file' to:", o);
             file = o;
           },
         },
         onlyWhenDirty: spec.onlyWhenDirty,
-        component: PictureEditor,
+        component: EditorView,
         params: {
+          view: viewParamsUpload,
           label: spec.params?.label ?? strings.labelFile,
           submitButtonText: "Save Image",
           cropShape: spec.params?.cropShape ?? null,
@@ -158,7 +175,7 @@ export function promptFile<
       }),
       uploadOrSkip: {
         id: id("uploadOrSkip"),
-        entry: () => console.log(`uploadOrSkip entry`),
+        // entry: () => console.log(`uploadOrSkip entry`),
         always: [
           {
             cond: (context) => {
@@ -185,7 +202,7 @@ export function promptFile<
           ...(<any>ipc(id("uploadFile"))),
         },
         entry: () => {
-          console.log(`uploadFile entry`);
+          // console.log(`uploadFile entry`);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
             message: `Uploading your file ..`,

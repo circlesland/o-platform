@@ -1,21 +1,15 @@
 <script lang="ts">
   import { Token } from "../data/circles/types";
-  import TokenCard from "../atoms/TokenCard.svelte";
-  import XdaiAssetCard from "../atoms/XdaiAssetCard.svelte";
+  import { push } from "svelte-spa-router";
+  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+  import Web3 from "web3";
   import { INVITE_VALUE } from "src/dapps/o-passport/processes/invite/invite";
   import { mySafe } from "../stores/safe";
   import { BN } from "ethereumjs-util";
-  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { me } from "../../../shared/stores/me";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
-  export let params: {
-    symbol: string;
-  };
+  export let symbol: string;
 
   let accountxDai = {
     symbol: "xdai",
@@ -36,10 +30,9 @@
 
   let tokens: Token[];
   let presets = [10, 20, 50];
-  let symbol: string;
 
   $: {
-    symbol = params.symbol;
+    symbol = symbol;
 
     if (symbol == "xdai" && $mySafe && $mySafe.accountxDai) {
       accountxDai = {
@@ -73,7 +66,7 @@
     }
 
     tokens = Object.values($mySafe.acceptedTokens.tokens)
-      .filter((o) => new BN(o.balance).gt(new BN("0")))
+      .filter(o => new BN(o.balance).gt(new BN("0")))
       .sort((a, b) =>
         new BN(a.balance).gt(new BN(b.balance))
           ? -1
@@ -81,6 +74,10 @@
           ? 1
           : 0
       );
+  }
+
+  function loadDetailPage(path) {
+    push(`#/friends/profile/${path}`);
   }
 </script>
 
@@ -96,8 +93,7 @@
   {:else if symbol == 'xdai'}
     <section class="justify-center mb-4">
       <div
-        class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard"
-      >
+        class="flex flex-col w-full p-4 space-y-2 rounded-sm shadow infocard">
         <div class="text-xs font-bold text-left text-info ">WHAT IS THIS?</div>
 
         <div class="text-sm md:text-base">
@@ -124,64 +120,34 @@
         ? 1
         : 0
     ) as token}
-      <XdaiAssetCard
-        address={token.address}
-        title={token.title}
-        symbol={token.symbol}
-        balance={token.balance}
-        variety={token.variety}
-        colorClass="text-primary"
-      />
-    {/each}
-    <section class="flex items-center justify-center mt-4 mb-2">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div class="text-xs font-bold text-left text-primary ">
-          BUY MORE XDAI
-        </div>
-        <div
-          class="flex items-center justify-center w-full space-x-2 sm:space-x-6"
-        >
-          <div class="flex flex-row mt-4 space-x-4">
-            {#each presets as preset}
-              <a
-                href="https://buy.ramp.network/?userAddress={accountxDai.address}&swapAsset=XDAI&swapAmount={preset}000000000000000000"
-                target="_blank"
-                class="cursor-pointer"
-              >
-                <div
-                  class="text-white cursor-pointer card compact side bg-primary "
-                >
-                  <div
-                    class="flex-row items-center space-x-4 cursor-pointer card-body"
-                  >
-                    <label for="input" class="flex-0">
-                      <div
-                        class="text-sm font-bold tracking-wider text-center sm:text-lg"
-                      >
-                        {Math.floor(preset / INVITE_VALUE)} INVITES
-                      </div>
-                      <p class="text-xs text-center sm:text-l ">
-                        ({preset} xDai)
-                      </p>
-                    </label>
-                  </div>
-                </div>
-              </a>
-            {/each}
+      <ItemCard
+        params="{{ edgeless: false, imageUrl: '/logos/xdai.png', title: token.title, subTitle: token.address, truncateMain: true, shadow: true }}">
+
+        <div slot="itemCardEnd">
+          <div class="self-end text-right text-success">
+            <span>{Number.parseFloat(token.balance).toFixed(2)}</span>
           </div>
+
         </div>
-      </div>
-    </section>
+      </ItemCard>
+    {/each}
   {:else}
     {#each ($mySafe.token ? [$mySafe.token] : []).concat(tokens) as token}
       {#if token && token.balance > 0}
-        <TokenCard
-          {token}
-          label="HOLDING CIRCLES FROM"
-          colorClass="text-primary"
-        />
+        <div on:click="{() => loadDetailPage(token.tokenOwner)}">
+          <ItemCard
+            params="{{ edgeless: false, imageUrl: token.ownerProfile ? token.ownerProfile.avatarUrl : '', title: token.ownerProfile ? token.ownerProfile.displayName : token.tokenOwner, subTitle: token.tokenOwner, truncateMain: true, shadow: true }}">
+
+            <div slot="itemCardEnd">
+              <div class="self-end text-right text-success">
+                <span>
+                  {Number.parseFloat(Web3.utils.fromWei(token.balance ? token.balance : '0', 'ether')).toFixed(2)}
+                </span>
+              </div>
+
+            </div>
+          </ItemCard>
+        </div>
       {/if}
     {/each}
   {/if}

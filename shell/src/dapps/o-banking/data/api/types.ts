@@ -44,6 +44,22 @@ export type CityStats = ICity & {
   population: Scalars['Int'];
 };
 
+export type ClaimInvitationResult = {
+  __typename?: 'ClaimInvitationResult';
+  claimedInvitation?: Maybe<ClaimedInvitation>;
+  success: Scalars['Boolean'];
+};
+
+export type ClaimedInvitation = {
+  __typename?: 'ClaimedInvitation';
+  claimedAt: Scalars['String'];
+  claimedBy?: Maybe<Profile>;
+  claimedByProfileId: Scalars['Int'];
+  createdAt: Scalars['String'];
+  createdBy?: Maybe<Profile>;
+  createdByProfileId: Scalars['Int'];
+};
+
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
@@ -105,15 +121,10 @@ export type ICity = {
 export type IndexTransactionLog = {
   __typename?: 'IndexTransactionLog';
   address: Scalars['String'];
-  blockHash: Scalars['String'];
-  blockNumber: Scalars['Int'];
   data?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   logIndex: Scalars['Int'];
-  removed?: Maybe<Scalars['Boolean']>;
   topics: Array<Scalars['String']>;
-  transactionHash: Scalars['String'];
-  transactionIndex: Scalars['Int'];
 };
 
 export type IndexTransactionRequest = {
@@ -166,13 +177,16 @@ export type LogoutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acknowledge: ProfileEvent;
   authenticateAt: DelegateAuthInit;
+  claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   lockOffer: LockOfferResult;
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
+  redeemClaimedInvitation: RedeemClaimedInvitationResult;
   requestIndexTransaction: IndexTransactionRequest;
   requestUpdateSafe: RequestUpdateSafeResponse;
   unlistOffer: Scalars['Boolean'];
@@ -183,8 +197,18 @@ export type Mutation = {
 };
 
 
+export type MutationAcknowledgeArgs = {
+  eventId: Scalars['Int'];
+};
+
+
 export type MutationAuthenticateAtArgs = {
   appId: Scalars['String'];
+};
+
+
+export type MutationClaimInvitationArgs = {
+  code: Scalars['String'];
 };
 
 
@@ -291,9 +315,11 @@ export type Profile = {
   lastName?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
   offers?: Maybe<Array<Offer>>;
+  status?: Maybe<Scalars['String']>;
 };
 
 export type ProfileEvent = {
+  __typename?: 'ProfileEvent';
   createdAt: Scalars['String'];
   data: Scalars['String'];
   id: Scalars['Int'];
@@ -328,6 +354,9 @@ export enum PurchaseStatus {
 export type Query = {
   __typename?: 'Query';
   cities: Array<City>;
+  claimedInvitation?: Maybe<ClaimedInvitation>;
+  events: Array<ProfileEvent>;
+  invitationTransaction?: Maybe<IndexedTransaction>;
   offers: Array<Offer>;
   profiles: Array<Profile>;
   search: Array<Profile>;
@@ -423,6 +452,17 @@ export type QueryUniqueProfileInput = {
   id: Scalars['Int'];
 };
 
+export type RedeemClaimedInvitationResult = {
+  __typename?: 'RedeemClaimedInvitationResult';
+  redeemRequest?: Maybe<RedeemInvitationRequest>;
+  success: Scalars['Boolean'];
+};
+
+export type RedeemInvitationRequest = {
+  __typename?: 'RedeemInvitationRequest';
+  id: Scalars['Int'];
+};
+
 export type RequestIndexTransactionInput = {
   tags?: Maybe<Array<CreateTagInput>>;
   transactionHash: Scalars['String'];
@@ -466,6 +506,11 @@ export type Stats = {
   inviteRank: Scalars['Int'];
   nextGoalAt: Scalars['Int'];
   totalCitizens: Scalars['Int'];
+};
+
+export type Subscriptions = {
+  __typename?: 'Subscriptions';
+  events: Array<ProfileEvent>;
 };
 
 export type Tag = {
@@ -516,6 +561,7 @@ export type UpsertProfileInput = {
   id?: Maybe<Scalars['Int']>;
   lastName?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
+  status: Scalars['String'];
 };
 
 export type UpsertTagInput = {

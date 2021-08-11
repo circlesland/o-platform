@@ -4,10 +4,10 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import VideoHeader from "../components/VideoHeader.svelte";
-  import { onMount } from "svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
+
 </script>
 
 <div class="flex flex-col overflow-hidden ">

@@ -56,7 +56,7 @@
 
     network.on("afterDrawing", function() {
       // TODO dimensions of graph?
-      let x = window.innerWidth;
+      let x = window.innerWidth * 0.4;
       if (firstNode !== -1) {
         nodes.update({ id: firstNode, x: -x, y: 0 });
       }
@@ -138,7 +138,7 @@
 <main>
   <div
     bind:this={graph}
-    style="width: 100%; height: 600px;"
+    style="width: 100%; height: 400px;"
     class="bg-background"
   />
 </main>

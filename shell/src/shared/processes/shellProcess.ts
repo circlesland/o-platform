@@ -51,7 +51,7 @@ const processDefinition = () => {
           id: childProcessId,
           src: context => {
             const sm = context.childProcessDefinition.stateMachine(childProcessId);
-            console.log(`invoking child process: ${sm.id}`)
+            // console.log(`invoking child process: ${sm.id}`)
             return <any>sm; // TODO: Fix 'any'
           },
           data: (context) => {
@@ -109,7 +109,7 @@ const processDefinition = () => {
       },
       showError: {
         entry: [
-          (context, event) => console.log("ShellProcess encountered an error:", event),
+          // (context, event) => console.log("ShellProcess encountered an error:", event),
           <any>show({ // TODO: fix <any> cast
             component: Error,
             params: {},
@@ -130,17 +130,17 @@ const processDefinition = () => {
       },
       cancelled: {
         id: "cancelled",
-        entry: () => console.log("shellProcess: cancelled"),
+        // entry: () => console.log("shellProcess: cancelled"),
         type: 'final',
         data: () => false
       },
       finished: {
-        entry: () => console.log("shellProcess: finished"),
+        // entry: () => console.log("shellProcess: finished"),
         type: 'final',
         data: () => true// TODO: Don't discard the result
       },
       error: {
-        entry: () => console.log("shellProcess: error"),
+        // entry: () => console.log("shellProcess: error"),
         type: 'final',
         data: () => false// TODO: Don't discard the result
       }

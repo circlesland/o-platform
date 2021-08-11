@@ -46,7 +46,7 @@
       displayName === "CirclesLand" ? "/images/common/circles.png" : pictureUrl;
 
     const m = transfer.tags
-      ? transfer.tags.find((o) => o.typeId === "o-banking:transfer:message:1")
+      ? transfer.tags.find(o => o.typeId === "o-banking:transfer:message:1")
       : undefined;
     const m2 = m ? m.value : "";
     message = displayName === "CirclesLand" ? "Universal basic income" : m2;
@@ -69,22 +69,20 @@
   }
 </script>
 
-<div on:click={() => loadDetailPage(transfer._id)}>
+<div on:click="{() => loadDetailPage(transfer._id)}">
   <ItemCard
-    params={{ edgeless: false, imageUrl: pictureUrl, imageAlt: otherSafeAddress, title: displayName, subTitle: message, truncateMain: true }}
-  >
+    params="{{ edgeless: false, imageUrl: pictureUrl, imageAlt: otherSafeAddress, title: displayName, subTitle: message, truncateMain: true }}">
 
     <div slot="itemCardEnd">
       <div
         class="self-end text-right"
-        class:text-success={classes == 'transactionpositive'}
-        class:text-alert={classes == 'transactionnegative'}
-      >
+        class:text-success="{classes == 'transactionpositive'}"
+        class:text-alert="{classes == 'transactionnegative'}">
         <span>{amount}</span>
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
         {#if transfer.time}
-          <Date time={transfer.time} />
+          <Date time="{transfer.time}" />
         {/if}
       </div>
     </div>

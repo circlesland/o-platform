@@ -1,5 +1,5 @@
 export type PlatformEventTypes =
-    "shell.runProcess"
+    | "shell.runProcess"
     | "shell.runProcessInShell"
     | "shell.showModal"
     | "shell.openModal"
@@ -8,15 +8,23 @@ export type PlatformEventTypes =
     | "shell.done"
     | "shell.refresh"
     | "shell.navigateTo"
+    | "shell.home"
+    | "shell.contacts"
     | "shell.authenticated"
     | "shell.loggedOut"
     | "shell.gotProfile"
     | "shell.showNotification"
+    | "shell.scrollToBottom"
     | "shell.closeModal"
     | "shell.processStarted"
     | "shell.dappLoading"
     | "shell.dappLoaded"
     | "shell.modalChanged"
+    | "shell.routeChanged"
+    | "shell.openNavigation"
+    | "shell.closeNavigation"
+    | "shell.openFilters"
+    | "shell.closeFilters"
     | "circles.web3providerChanged"
     | "process.ready"
     | "process.nop"
@@ -24,7 +32,6 @@ export type PlatformEventTypes =
     | "process.skip"
     | "process.shellEvent"
     | "process.requestShellEvent"
-    | "process.continue"
     | "process.triggerSelf"
     | "process.cancel"
     | "process.cancelRequest"
@@ -32,6 +39,12 @@ export type PlatformEventTypes =
     | "process.error"
     | "process.success"
     | "process.repeat"
+    | "process.stopped"
+    | "process.canGoBack"
+    | "process.canSkip"
+    | "process.continue"
+    | "process.continued"
+
     | "blockchain"
     | "signal.begin"
     | "signal.progress"
@@ -41,18 +54,4 @@ export type PlatformEventTypes =
     //
     // IPC
     | "process.ipc.bubble" // used with 'sendParent' to bubble events up to the top
-    | "process.ipc.sinker" // used with 'send' to sink down a result for a previously bubbled event
-
-    //
-    // USER-INTERACTION:
-
-    // SELECTION:
-    | "shell.interaction.selection.start"
-    | "shell.interaction.selection.items.toggleSelected"
-    | "shell.interaction.selection.cancel"
-    | "shell.interaction.selection.finish"
-
-    // MANIPULATION:
-    | "shell.interaction.mutation.add"
-    | "shell.interaction.mutation.selection.delete"
-
+    | "process.ipc.sinker"; // used with 'send' to sink down a result for a previously bubbled event

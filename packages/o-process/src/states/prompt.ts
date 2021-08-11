@@ -83,7 +83,7 @@ export function prompt<
       // If the spec contains an 'entry' action execute it now
       entry: {
         entry: (context:TContext, event:TEvent) => {
-          console.log(`entry: ${spec.id} ${spec.field}`)
+          // console.log(`entry: ${spec.id} ${spec.field}`)
           if (spec.entry) {
             spec.entry(context, event);
           }

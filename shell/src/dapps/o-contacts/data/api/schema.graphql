@@ -36,6 +36,20 @@ type CityStats implements ICity {
     population: Int!
 }
 
+type ClaimInvitationResult {
+    claimedInvitation: ClaimedInvitation
+    success: Boolean!
+}
+
+type ClaimedInvitation {
+    claimedAt: String!
+    claimedBy: Profile
+    claimedByProfileId: Int!
+    createdAt: String!
+    createdBy: Profile
+    createdByProfileId: Int!
+}
+
 type ConsumeDepositedChallengeResponse {
     challenge: String
     success: Boolean!
@@ -71,15 +85,10 @@ type Goal {
 
 type IndexTransactionLog {
     address: String!
-    blockHash: String!
-    blockNumber: Int!
     data: String
     id: Int!
     logIndex: Int!
-    removed: Boolean
     topics: [String!]!
-    transactionHash: String!
-    transactionIndex: Int!
 }
 
 type IndexTransactionRequest {
@@ -125,12 +134,14 @@ type LogoutResponse {
 type Mutation {
     acknowledge(eventId: Int!): ProfileEvent!
     authenticateAt(appId: String!): DelegateAuthInit!
+    claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
     lockOffer(data: LockOfferInput!): LockOfferResult!
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
+    redeemClaimedInvitation: RedeemClaimedInvitationResult!
     requestIndexTransaction(data: RequestIndexTransactionInput!): IndexTransactionRequest!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     unlistOffer(offerId: Int!): Boolean!
@@ -179,6 +190,7 @@ type Profile {
     lastName: String
     newsletter: Boolean
     offers: [Offer!]
+    status: String
 }
 
 type ProfileEvent {
@@ -207,7 +219,9 @@ type Purchase {
 
 type Query {
     cities(query: QueryCitiesInput!): [City!]!
+    claimedInvitation: ClaimedInvitation
     events: [ProfileEvent!]!
+    invitationTransaction: IndexedTransaction
     offers(query: QueryOfferInput!): [Offer!]!
     profiles(query: QueryProfileInput!): [Profile!]!
     search(query: SearchInput!): [Profile!]!
@@ -218,6 +232,15 @@ type Query {
     transactions(query: QueryIndexedTransactionInput): [IndexedTransaction!]!
     version: Version!
     whoami: String
+}
+
+type RedeemClaimedInvitationResult {
+    redeemRequest: RedeemInvitationRequest
+    success: Boolean!
+}
+
+type RedeemInvitationRequest {
+    id: Int!
 }
 
 type RequestUpdateSafeResponse {
@@ -246,6 +269,10 @@ type Stats {
     inviteRank: Int!
     nextGoalAt: Int!
     totalCitizens: Int!
+}
+
+type Subscriptions {
+    events: [ProfileEvent!]!
 }
 
 type Tag {
@@ -392,6 +419,7 @@ input UpsertProfileInput {
     id: Int
     lastName: String
     newsletter: Boolean
+    status: String!
 }
 
 input UpsertTagInput {

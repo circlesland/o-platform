@@ -2,7 +2,7 @@
   "name": "root",
   "private": false,
   "engines": {
-    "node": "16.1.0"
+    "node": "^16.1.0"
   },
   "devDependencies": {
     "daisyui": "^0.25.0",

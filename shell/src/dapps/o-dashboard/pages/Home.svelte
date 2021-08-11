@@ -7,7 +7,10 @@
   import { push } from "svelte-spa-router";
   import Icons from "../../../shared/molecules/Icons.svelte";
   import AdjacencyGraph from "../../../shared/pathfinder/CirclesAdjacencyGraph.svelte";
-  import TopNav from "src/shared/atoms/TopNav.svelte";
+  import ChatCard from "../../o-contacts/atoms/ChatCard.svelte";
+
+  import DashboardHeader from "../atoms/DashboardHeader.svelte";
+  import NumberEditor from "@o-platform/o-editors/src/NumberEditor.svelte";
 
   const { mySafe } = require("src/dapps/o-banking/stores/safe");
   export let runtimeDapp: RuntimeDapp<any>;
@@ -59,7 +62,7 @@
     }
   }
 
-  const sub = window.o.events.subscribe((event) => {
+  const sub = window.o.events.subscribe(event => {
     if (event.type !== "shell.refresh") {
       return;
     }
@@ -70,14 +73,12 @@
 
   $: {
     if ($me) {
-      inviteLink = `${window.location.protocol}//${window.location.host}/#/banking/profile/${$me.id}`;
+      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/profile/${$me.id}`;
     }
   }
 </script>
 
-<TopNav {runtimeDapp} {routable} />
-
-<!-- <DashboardHeader /> -->
+<DashboardHeader {runtimeDapp} {routable} />
 <!-- {#if $me && $me.circlesAddress}
   <div class="relative w-full mt-12" style="max-height: 400px">
     <section class="mb-4 bg-white shadow-md">
@@ -87,15 +88,100 @@
 {:else}
   <div class="mt-16" />
 {/if} -->
-<div class="mx-auto md:w-2/3 xl:w-1/2 mt-16">
+<div class="mx-auto md:w-2/3 xl:w-1/2">
 
   <div class="m-4">
+
+    <div
+      class="grid grid-cols-2 gap-4 text-base auto-rows-fr lg:grid-cols-3 dashboard-grid">
+      <!-- PASSPORT  -->
+
+      <section
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        on:click="{() => loadLink('/passport/profile')}">
+        <div
+          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          <div class="pt-2 text-primary">
+            <Icons icon="dashpassport" />
+          </div>
+          <div class="mt-4 text-3xl font-heading text-dark">passport</div>
+        </div>
+      </section>
+
+      <!-- CONTACTS  -->
+
+      <section
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        on:click="{() => loadLink('/friends')}">
+        <div
+          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          <div class="pt-2 text-primary">
+            <Icons icon="dashfriends" />
+          </div>
+          <div class="mt-4 text-3xl font-heading text-dark">friends</div>
+        </div>
+      </section>
+
+      <!-- BANKING -->
+      {#if showFundHint || disableBanking}
+        <section
+          class="flex items-center justify-center bg-white rounded-lg shadow-md dashboard-card text-base-300 ">
+          <div
+            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            <div class="pt-2 text-primary-lightest">
+              <Icons icon="dashbanking" />
+            </div>
+            <div class="mt-4 text-3xl font-heading text-base-300">banking</div>
+          </div>
+        </section>
+      {:else}
+        <section
+          class="flex items-center justify-center bg-white rounded-lg shadow-md dashboard-card cursor-pointerbg-white"
+          on:click="{() => loadLink(showFundHint ? '/dashboard' : '/banking/transactions')}">
+          <div
+            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            <div class="pt-2 text-primary">
+              <Icons icon="dashbanking" />
+            </div>
+            <div class="mt-4 text-3xl font-heading text-dark">banking</div>
+          </div>
+        </section>
+      {/if}
+
+      <!-- Market -->
+
+      <section
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        on:click="{() => loadLink('/marketplace/stream')}">
+        <div
+          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          <div class="pt-2 text-primary">
+            <Icons icon="dashmarket" />
+          </div>
+          <div class="mt-4 text-3xl font-heading text-dark">market</div>
+        </div>
+      </section>
+
+      <!-- Chat -->
+
+      <!-- <section
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "
+        on:click="{() => loadLink('https://discord.gg/4DBbRCMnFZ', true)}">
+        <div
+          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          <div class="pt-2 text-primary">
+            <Icons icon="dashchat" />
+          </div>
+          <div class="mt-4 text-3xl font-heading text-dark">chat</div>
+        </div>
+      </section> -->
+    </div>
 
     {#if showFundHint}
       <!-- Create safe  showFundHint-->
       <section class="mt-4 mb-4">
         <div class="w-full p-4 bg-white rounded-lg shadow">
-          <div class="px-4 py-2 mr-4 -ml-3 text-center " />
+          <div class="px-4 py-2 mr-4 -ml-3 text-center "></div>
           <div style="text-align: center">
             <p class="w-64 m-auto mt-2 text-2xl font-bold text-dark">
               You're almost there.
@@ -105,9 +191,9 @@
               CirclesLand citizen.
             </p>
             <div class="mt-4 mb-4 text-xs break-all" id="clipboard">
-              <input type="text" class="hidden" bind:value={inviteLink} />
+              <input type="text" class="hidden" bind:value="{inviteLink}" />
               <div class="inline-block text-2xl">
-                <button class="btn btn-primary" on:click={copy}>
+                <button class="btn btn-primary" on:click="{copy}">
                   Copy Invite Link
                 </button>
               </div>
@@ -119,8 +205,7 @@
               <a
                 href="https://discord.gg/4DBbRCMnFZ"
                 target="_blank"
-                class="btn-link"
-              >
+                class="btn-link">
                 Discord
               </a>
               if someone can invite you.
@@ -131,15 +216,14 @@
                 become an invite hub
               </a>
             </p>
-            <div class="mr-1 text-primary" />
+            <div class="mr-1 text-primary"></div>
           </div>
         </div>
       </section>
     {:else if $mySafe}
       <section
-        class="mb-4"
-        on:click={() => loadLink('/dashboard/become-a-hub')}
-      >
+        class="mt-4"
+        on:click="{() => loadLink('/dashboard/become-a-hub')}">
         <button class="btn btn-primary btn-block">
           Grow your trust network now
         </button>
@@ -174,113 +258,6 @@
       </div>
     </section> -->
     {/if}
-
-    <div
-      class="grid grid-cols-2 gap-4 text-base auto-rows-fr sm:grid-cols-3
-      dashboard-grid"
-    >
-      <!-- PASSPORT  -->
-
-      <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md
-        cursor-pointer dashboard-card"
-        on:click={() => loadLink('/passport/profile')}
-      >
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
-        >
-          <div class="pt-2 text-primary">
-            <Icons icon="dashpassport" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">passport</div>
-        </div>
-      </section>
-
-      <!-- CONTACTS  -->
-
-      <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md
-        cursor-pointer dashboard-card"
-        on:click={() => loadLink('/friends')}
-      >
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
-        >
-          <div class="pt-2 text-primary">
-            <Icons icon="dashpassport" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">friends</div>
-        </div>
-      </section>
-
-      <!-- BANKING -->
-      {#if showFundHint || disableBanking}
-        <section
-          class="flex items-center justify-center bg-white rounded-lg shadow-md
-          dashboard-card text-base-300 "
-        >
-          <div
-            class="flex flex-col items-center w-full p-4 pt-6
-            justify-items-center"
-          >
-            <div class="pt-2 text-primary-lightest">
-              <Icons icon="dashbanking" />
-            </div>
-            <div class="mt-4 text-3xl font-heading text-base-300">banking</div>
-          </div>
-        </section>
-      {:else}
-        <section
-          class="flex items-center justify-center bg-white rounded-lg shadow-md
-          dashboard-card cursor-pointerbg-white"
-          on:click={() => loadLink(showFundHint ? '/dashboard' : '/banking/transactions')}
-        >
-          <div
-            class="flex flex-col items-center w-full p-4 pt-6
-            justify-items-center"
-          >
-            <div class="pt-2 text-primary">
-              <Icons icon="dashbanking" />
-            </div>
-            <div class="mt-4 text-3xl font-heading text-dark">banking</div>
-          </div>
-        </section>
-      {/if}
-
-      <!-- Market -->
-
-      <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md
-        cursor-pointer dashboard-card"
-        on:click={() => loadLink('/marketplace/stream')}
-      >
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
-        >
-          <div class="pt-2 text-primary">
-            <Icons icon="dashmarket" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">market</div>
-        </div>
-      </section>
-
-      <!-- Chat -->
-
-      <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md
-        cursor-pointer dashboard-card "
-        on:click={() => loadLink('https://discord.gg/4DBbRCMnFZ', true)}
-      >
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center"
-        >
-          <div class="pt-2 text-primary">
-            <Icons icon="dashchat" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">chat</div>
-        </div>
-      </section>
-    </div>
   </div>
 </div>
 
@@ -307,6 +284,7 @@
     grid-row: 1 / 1;
     grid-column: 1 / 1;
   }
+
   /* .dashboard-card {
     width: 100%;
     padding-bottom: 100%;

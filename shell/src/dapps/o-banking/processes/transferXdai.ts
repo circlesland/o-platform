@@ -88,7 +88,7 @@ const processDefinition = (processId: string) =>
                 }
               }
             });
-            console.log(indexedTransaction);
+            // console.log(indexedTransaction);
 
             return receipt;
           },

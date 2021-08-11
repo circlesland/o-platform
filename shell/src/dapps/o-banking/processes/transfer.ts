@@ -3,6 +3,7 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
+import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import CurrencyTransfer from "@o-platform/o-editors/src/CurrencyTransfer.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
@@ -55,6 +56,34 @@ const strings = {
   currencyXdai: "xDai",
   summaryLabel: "Summary",
   messageLabel: "Purpose of transfer",
+};
+
+const editorContent = {
+  currency: {
+    title: "Please enter the Amount",
+    description: "",
+
+    mainComponent: CurrencyTransfer,
+    submitButtonText: "Submit",
+  },
+  message: {
+    title: "Transfer Message",
+    description: "",
+    mainComponent: TextareaEditor,
+    submitButtonText: "Submit",
+  },
+  confirm: {
+    title: "",
+    description: "",
+    mainComponent: HtmlViewer,
+    submitButtonText: "Send Money",
+  },
+  success: {
+    title: "Transfer successful",
+    description: "",
+    mainComponent: HtmlViewer,
+    submitButtonText: "Close",
+  },
 };
 
 const currencyLookup = {
@@ -128,17 +157,20 @@ const processDefinition = (processId: string) =>
       }),
       tokens: prompt<TransferContext, any>({
         field: "tokens",
-        component: CurrencyTransfer,
+        component: EditorView,
         params: {
+          view: editorContent.currency,
           label: strings.tokensLabel,
           currencies: [
             {
               value: "crc",
               label: strings.currencyCircles,
+              __typename: "Currency",
             },
             {
               value: "xdai",
               label: strings.currencyXdai,
+              __typename: "Currency",
             },
           ],
         },
@@ -265,8 +297,9 @@ const processDefinition = (processId: string) =>
       },
       message: prompt<TransferContext, any>({
         field: "message",
-        component: TextareaEditor,
+        component: EditorView,
         params: {
+          view: editorContent.message,
           label: strings.messageLabel,
           maxLength: "100",
         },
@@ -344,8 +377,9 @@ const processDefinition = (processId: string) =>
       },
       acceptSummary: prompt<TransferContext, any>({
         field: "acceptSummary",
-        component: HtmlViewer,
+        component: EditorView,
         params: {
+          view: editorContent.confirm,
           label: strings.summaryLabel,
           submitButtonText: "Send Money",
           html: (context) => context.data.summaryHtml,
@@ -425,9 +459,10 @@ const processDefinition = (processId: string) =>
       showSuccess: prompt({
         id: "showSuccess",
         field: "__",
-        component: HtmlViewer,
+        component: EditorView,
         params: {
-          html: () => `<p>Transfer successful</p>`,
+          view: editorContent.success,
+          html: () => "",
           submitButtonText: "Close",
           hideNav: false,
         },

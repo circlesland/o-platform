@@ -6,7 +6,7 @@
 
 .text-base {
   font-size: 1rem /* 14px */;
-  line-height: 1rem /* 20px */;
+  line-height: 1.375 /* 22px */;
   @apply font-normal;
 }
 
@@ -163,6 +163,7 @@ body {
   @apply absolute;
   @apply left-0;
   @apply top-0;
+  @apply z-10;
   /* background: linear-gradient(transparent 150px, #ffcc33); */
   background: linear-gradient(
     to right,
@@ -195,6 +196,20 @@ body {
   border-color: hsla(var(--er, 14 100% 57%) / var(--tw-border-opacity));
 }
 
+.input-number {
+  @apply input-lg;
+  @apply text-4xl;
+  letter-spacing: 1.63rem;
+  background: transparent;
+  border: none;
+  line-height: none;
+  font-family: monospace;
+  padding-left: 0.6rem;
+  padding-right: 0;
+  height: 3rem;
+  width: 19rem;
+}
+
 .infocard {
   background-color: #d1ecf1;
   color: #0c5460;
@@ -216,16 +231,16 @@ body {
 
 .navbuttonicon {
   @apply text-dark;
-  margin-left: 0.15rem;
-  margin-top: 0.15rem;
+  /* margin-left: 0.15rem;
+  margin-top: 0.15rem; */
   @apply w-5;
   @apply h-5;
 }
 
 .processPill .navbuttonicon {
   @apply text-dark;
-  margin-left: 0.15rem;
-  margin-top: 0.15rem;
+  /* margin-left: 0.15rem;
+  margin-top: 0.15rem; */
   @apply w-3;
   @apply h-3;
 }
@@ -302,18 +317,17 @@ button:focus {
 .shadow-sm {
   filter: drop-shadow(0px 0px 3px #ebecf2);
   --tw-shadow: none;
-  box-shadow: 0px 0px 3px #E2E3E8;
-  
+  box-shadow: 0px 0px 3px #e2e3e8;
 }
 
 .shadow-md {
   filter: drop-shadow(0px 0px 16px #ebecf2);
   --tw-shadow: none;
-  box-shadow: 0px 0px 16px #E2E3E8;
+  box-shadow: 0px 0px 16px #e2e3e8;
 }
 
 .shadow-lg {
   filter: drop-shadow(0px 0px 24px #ebecf2);
   --tw-shadow: none;
-  box-shadow: 0px 0px 24px #E2E3E8;
+  box-shadow: 0px 0px 24px #e2e3e8;
 }

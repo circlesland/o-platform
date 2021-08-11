@@ -26,7 +26,7 @@ const processDefinition = (processId: string) =>
       // else we ask the user for the e-mail address and send a challenge.
       authenticate: {
         entry: (ctx) => {
-          console.log(`enter: acquireSession.authenticate`, ctx.data);
+          // console.log(`enter: acquireSession.authenticate`, ctx.data);
           localStorage.removeItem("me");
         },
         on: {
@@ -51,7 +51,7 @@ const processDefinition = (processId: string) =>
       },
       exchangeTokenForSession: {
         id: "exchangeTokenForSession",
-        entry: (ctx) => console.log(`enter: acquireSession.exchangeTokenForSession`, ctx.data),
+        // entry: (ctx) => console.log(`enter: acquireSession.exchangeTokenForSession`, ctx.data),
         on: {
           ...<any>ipc(`exchangeTokenForSession`)
         },

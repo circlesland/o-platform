@@ -1,3 +1,22 @@
+<style>
+  /* Ensure image is always 16:9 Ratio */
+  .headerImageContainer {
+    max-width: none;
+  }
+
+  .image-wrapper {
+    position: relative;
+    padding-bottom: 56.2%;
+  }
+
+  .image-wrapper img {
+    position: absolute;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
 <script lang="ts">
   import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
   import { Offer, OffersDocument } from "../data/api/types";
@@ -11,27 +30,22 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
-
   let isLoading: boolean;
   let error: Error;
   let offers: Offer[] = [];
   let shellEventSubscription: Subscription;
 
-  export let params: {
-    id: number;
-  };
+  export let id: number;
 
   async function load() {
-    if (isLoading || !params || !params.id) return;
+    if (isLoading || !id) return;
 
     isLoading = true;
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
       query: OffersDocument,
       variables: {
-        id: parseInt(params.id.toString()),
+        id: parseInt(id.toString()),
       },
     });
     if (result.errors && result.errors.length) {
@@ -95,48 +109,34 @@
           <header class=" rounded-t-xl headerImageContainer">
             <div class="relative rounded-t-xl image-wrapper">
               <img
-                src={offer.pictureUrl
-                  ? offer.pictureUrl
-                  : "/images/market/circles-no-image.jpg"}
+                src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
                 alt=""
-                class="w-full rounded-t-xl"
-              />
+                class="w-full rounded-t-xl" />
               <div
-                class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest"
-              >
+                class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest">
                 {offer.pricePerUnit} C / {offer.unitTag.value}
                 <!-- <Time relative timestamp={offer.publishedAt} /> -->
               </div>
             </div>
           </header>
           <div
-            class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter"
-          >
+            class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
             <div class="avatar">
               <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
                 <img
-                  src={offer.createdBy.avatarUrl
-                    ? offer.createdBy.avatarUrl
-                    : "/images/market/city.png"}
-                  alt="user-icon"
-                />
+                  src="{offer.createdBy.avatarUrl ? offer.createdBy.avatarUrl : '/images/market/city.png'}"
+                  alt="user-icon" />
               </div>
             </div>
-            <div>
-              {offer.createdBy.firstName}
-              {offer.createdBy.lastName}
-            </div>
+            <div>{offer.createdBy.firstName} {offer.createdBy.lastName}</div>
           </div>
           <div class="flex flex-col w-full px-6 mt-6 space-y-4 bg-white">
             <div class="flex flex-row flex-grow space-x-2">
               <div
-                class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs"
-              >
+                class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
                 <a
-                  href="#/marketplace/categories/{offer.categoryTagId}/{offer
-                    .categoryTag.value}"
-                  alt={offer.categoryTag.value}
-                >
+                  href="#/marketplace/categories/{offer.categoryTagId}/{offer.categoryTag.value}"
+                  alt="{offer.categoryTag.value}">
                   {offer.categoryTag.value}
                 </a>
               </div>
@@ -146,9 +146,7 @@
             </div>
 
             {#if offer.description}
-              <div class="text-sm text-dark-lightest">
-                {offer.description}
-              </div>
+              <div class="text-sm text-dark-lightest">{offer.description}</div>
             {/if}
             {#if offer.deliveryTermsTag}
               <div class="flex flex-col space-y-1">
@@ -161,9 +159,7 @@
             {#if offer.city}
               <div class="flex flex-col space-y-1">
                 <div class="text-2xs">Location</div>
-                <div class="text-sm text-dark-lightest">
-                  {offer.city.name}
-                </div>
+                <div class="text-sm text-dark-lightest">{offer.city.name}</div>
               </div>
             {/if}
           </div>
@@ -317,8 +313,7 @@
       <CreatorCard profile={offer.createdBy} />
       <OfferCard {offer} allowEdit={true} /> -->
       <div
-        class="sticky bottom-0 left-0 right-0 w-full px-4 py-2 mt-2 bg-white rounded-xl"
-      >
+        class="sticky bottom-0 left-0 right-0 w-full px-4 py-2 mt-2 bg-white rounded-xl">
         <div class="flex flex-row space-x-4">
           <div>
             <button class="btn btn-square btn-light">
@@ -326,11 +321,12 @@
             </button>
           </div>
           <div class="flex-grow">
-            <button type="submit" class="relative btn btn-primary btn-block"
-              >Buy now <div class="absolute mr-1 right-2">
+            <button type="submit" class="relative btn btn-primary btn-block">
+              Buy now
+              <div class="absolute mr-1 right-2">
                 <Icons icon="cart" />
-              </div></button
-            >
+              </div>
+            </button>
           </div>
         </div>
       </div>
@@ -345,22 +341,3 @@
     </section>
   {/if}
 </div>
-
-<style>
-  /* Ensure image is always 16:9 Ratio */
-  .headerImageContainer {
-    max-width: none;
-  }
-
-  .image-wrapper {
-    position: relative;
-    padding-bottom: 56.2%;
-  }
-
-  .image-wrapper img {
-    position: absolute;
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-  }
-</style>

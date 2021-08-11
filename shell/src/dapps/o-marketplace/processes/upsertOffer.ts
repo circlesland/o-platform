@@ -214,7 +214,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       upsertOffer: {
         id: "upsertOffer",
-        entry: () => console.log("upsertOffer entry"),
+        // entry: () => console.log("upsertOffer entry"),
         invoke: {
           src: async (context) => {
             const apiClient =
@@ -248,7 +248,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         type: "final",
         id: "success",
         data: (context, event: any) => {
-          console.log(`enter: upsertOffer.success`, context.data);
+          // console.log(`enter: upsertOffer.success`, context.data);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.refresh",
             appId: "marketplace:1",

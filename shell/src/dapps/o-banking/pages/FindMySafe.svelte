@@ -58,7 +58,7 @@
         const accAddr = acc.address;
 
         const mySafe = await findSafeDeployments(accAddr);
-        console.log(mySafe);
+        // console.log(mySafe);
     }
 </script>
 Use this page to recover your safe address from your seedphrase.<br/>

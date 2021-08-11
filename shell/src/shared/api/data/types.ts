@@ -44,6 +44,22 @@ export type CityStats = ICity & {
   population: Scalars['Int'];
 };
 
+export type ClaimInvitationResult = {
+  __typename?: 'ClaimInvitationResult';
+  claimedInvitation?: Maybe<ClaimedInvitation>;
+  success: Scalars['Boolean'];
+};
+
+export type ClaimedInvitation = {
+  __typename?: 'ClaimedInvitation';
+  claimedAt: Scalars['String'];
+  claimedBy?: Maybe<Profile>;
+  claimedByProfileId: Scalars['Int'];
+  createdAt: Scalars['String'];
+  createdBy?: Maybe<Profile>;
+  createdByProfileId: Scalars['Int'];
+};
+
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
@@ -102,46 +118,23 @@ export type ICity = {
   population: Scalars['Int'];
 };
 
-export type IndexTransactionInput = {
-  blockHash: Scalars['String'];
-  blockNumber: Scalars['Int'];
-  confirmations?: Maybe<Scalars['Int']>;
-  contractAddress?: Maybe<Scalars['String']>;
-  cumulativeGasUsed: Scalars['String'];
-  from: Scalars['String'];
-  gasUsed: Scalars['String'];
-  logs?: Maybe<Array<IndexTransactionLogInput>>;
-  logsBloom: Scalars['String'];
-  root?: Maybe<Scalars['String']>;
-  status?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<CreateTagInput>>;
-  to: Scalars['String'];
-  transactionHash: Scalars['String'];
-  transactionIndex: Scalars['Int'];
-};
-
 export type IndexTransactionLog = {
   __typename?: 'IndexTransactionLog';
   address: Scalars['String'];
-  blockHash: Scalars['String'];
-  blockNumber: Scalars['Int'];
   data?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   logIndex: Scalars['Int'];
-  removed?: Maybe<Scalars['Boolean']>;
   topics: Array<Scalars['String']>;
-  transactionHash: Scalars['String'];
-  transactionIndex: Scalars['Int'];
 };
 
-export type IndexTransactionLogInput = {
-  address: Scalars['String'];
-  blockHash: Scalars['String'];
+export type IndexTransactionRequest = {
+  __typename?: 'IndexTransactionRequest';
   blockNumber: Scalars['Int'];
-  data?: Maybe<Scalars['String']>;
-  logIndex: Scalars['Int'];
-  removed?: Maybe<Scalars['Boolean']>;
-  topics: Array<Scalars['String']>;
+  createdAt: Scalars['String'];
+  createdBy?: Maybe<Profile>;
+  createdByProfileId: Scalars['Int'];
+  id: Scalars['Int'];
+  tags?: Maybe<Array<Tag>>;
   transactionHash: Scalars['String'];
   transactionIndex: Scalars['Int'];
 };
@@ -184,14 +177,17 @@ export type LogoutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acknowledge: ProfileEvent;
   authenticateAt: DelegateAuthInit;
+  claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
-  indexTransaction: IndexedTransaction;
   lockOffer: LockOfferResult;
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
+  redeemClaimedInvitation: RedeemClaimedInvitationResult;
+  requestIndexTransaction: IndexTransactionRequest;
   requestUpdateSafe: RequestUpdateSafeResponse;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
@@ -201,8 +197,18 @@ export type Mutation = {
 };
 
 
+export type MutationAcknowledgeArgs = {
+  eventId: Scalars['Int'];
+};
+
+
 export type MutationAuthenticateAtArgs = {
   appId: Scalars['String'];
+};
+
+
+export type MutationClaimInvitationArgs = {
+  code: Scalars['String'];
 };
 
 
@@ -216,11 +222,6 @@ export type MutationDepositChallengeArgs = {
 };
 
 
-export type MutationIndexTransactionArgs = {
-  data: IndexTransactionInput;
-};
-
-
 export type MutationLockOfferArgs = {
   data: LockOfferInput;
 };
@@ -228,6 +229,11 @@ export type MutationLockOfferArgs = {
 
 export type MutationProvePaymentArgs = {
   data: PaymentProof;
+};
+
+
+export type MutationRequestIndexTransactionArgs = {
+  data: RequestIndexTransactionInput;
 };
 
 
@@ -309,6 +315,16 @@ export type Profile = {
   lastName?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
   offers?: Maybe<Array<Offer>>;
+  status?: Maybe<Scalars['String']>;
+};
+
+export type ProfileEvent = {
+  __typename?: 'ProfileEvent';
+  createdAt: Scalars['String'];
+  data: Scalars['String'];
+  id: Scalars['Int'];
+  profileId: Scalars['Int'];
+  type: Scalars['String'];
 };
 
 export type ProvePaymentResult = {
@@ -338,13 +354,18 @@ export enum PurchaseStatus {
 export type Query = {
   __typename?: 'Query';
   cities: Array<City>;
+  claimedInvitation?: Maybe<ClaimedInvitation>;
+  events: Array<ProfileEvent>;
+  invitationTransaction?: Maybe<IndexedTransaction>;
   offers: Array<Offer>;
   profiles: Array<Profile>;
+  safeFundingTransaction?: Maybe<IndexedTransaction>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
   stats?: Maybe<Stats>;
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
+  transactions: Array<IndexedTransaction>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
 };
@@ -379,6 +400,11 @@ export type QueryTagsArgs = {
   query: QueryTagsInput;
 };
 
+
+export type QueryTransactionsArgs = {
+  query?: Maybe<QueryIndexedTransactionInput>;
+};
+
 export type QueryCitiesByGeonameIdInput = {
   geonameid: Array<Scalars['Int']>;
 };
@@ -394,14 +420,8 @@ export type QueryCitiesInput = {
 };
 
 export type QueryIndexedTransactionInput = {
-  fromAddress?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<QueryIndexedTransactionTagInput>>;
-  toAddress?: Maybe<Scalars['String']>;
-};
-
-export type QueryIndexedTransactionTagInput = {
-  typeId: Scalars['String'];
-  value?: Maybe<Scalars['String']>;
+  fromBlockNo?: Maybe<Scalars['Int']>;
+  toBlockNo?: Maybe<Scalars['Int']>;
 };
 
 export type QueryOfferInput = {
@@ -431,6 +451,22 @@ export type QueryTagsInput = {
 
 export type QueryUniqueProfileInput = {
   id: Scalars['Int'];
+};
+
+export type RedeemClaimedInvitationResult = {
+  __typename?: 'RedeemClaimedInvitationResult';
+  redeemRequest?: Maybe<RedeemInvitationRequest>;
+  success: Scalars['Boolean'];
+};
+
+export type RedeemInvitationRequest = {
+  __typename?: 'RedeemInvitationRequest';
+  id: Scalars['Int'];
+};
+
+export type RequestIndexTransactionInput = {
+  tags?: Maybe<Array<CreateTagInput>>;
+  transactionHash: Scalars['String'];
 };
 
 export type RequestUpdateSafeInput = {
@@ -471,6 +507,11 @@ export type Stats = {
   inviteRank: Scalars['Int'];
   nextGoalAt: Scalars['Int'];
   totalCitizens: Scalars['Int'];
+};
+
+export type Subscriptions = {
+  __typename?: 'Subscriptions';
+  events: Array<ProfileEvent>;
 };
 
 export type Tag = {
@@ -521,6 +562,7 @@ export type UpsertProfileInput = {
   id?: Maybe<Scalars['Int']>;
   lastName?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
+  status: Scalars['String'];
 };
 
 export type UpsertTagInput = {
@@ -550,6 +592,28 @@ export type ProfilesByNameQuery = (
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
     )> }
+  )> }
+);
+
+export type InvitationTransactionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InvitationTransactionQuery = (
+  { __typename?: 'Query' }
+  & { invitationTransaction?: Maybe<(
+    { __typename?: 'IndexedTransaction' }
+    & Pick<IndexedTransaction, 'transactionHash'>
+  )> }
+);
+
+export type SafeFundingTransactionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SafeFundingTransactionQuery = (
+  { __typename?: 'Query' }
+  & { safeFundingTransaction?: Maybe<(
+    { __typename?: 'IndexedTransaction' }
+    & Pick<IndexedTransaction, 'transactionHash'>
   )> }
 );
 
@@ -680,6 +744,20 @@ export const ProfilesByNameDocument = gql`
   }
 }
     `;
+export const InvitationTransactionDocument = gql`
+    query invitationTransaction {
+  invitationTransaction {
+    transactionHash
+  }
+}
+    `;
+export const SafeFundingTransactionDocument = gql`
+    query safeFundingTransaction {
+  safeFundingTransaction {
+    transactionHash
+  }
+}
+    `;
 export const ProfileByIdDocument = gql`
     query profileById($id: Int!) {
   profiles(query: {id: [$id]}) {
@@ -797,6 +875,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     profilesByName(variables: ProfilesByNameQueryVariables): Promise<ProfilesByNameQuery> {
       return withWrapper(() => client.request<ProfilesByNameQuery>(print(ProfilesByNameDocument), variables));
+    },
+    invitationTransaction(variables?: InvitationTransactionQueryVariables): Promise<InvitationTransactionQuery> {
+      return withWrapper(() => client.request<InvitationTransactionQuery>(print(InvitationTransactionDocument), variables));
+    },
+    safeFundingTransaction(variables?: SafeFundingTransactionQueryVariables): Promise<SafeFundingTransactionQuery> {
+      return withWrapper(() => client.request<SafeFundingTransactionQuery>(print(SafeFundingTransactionDocument), variables));
     },
     profileById(variables: ProfileByIdQueryVariables): Promise<ProfileByIdQuery> {
       return withWrapper(() => client.request<ProfileByIdQuery>(print(ProfileByIdDocument), variables));

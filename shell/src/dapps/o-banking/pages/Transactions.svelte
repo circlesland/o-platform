@@ -40,7 +40,7 @@
     const from = currentPage * pageSize;
     const to = from + pageSize;
     preparedRows = [...preparedRows, ...$mySafe.transfers.rows.slice(from, to)];
-    console.log("Next page ..");
+    // console.log("Next page ..");
     currentPage++;
   }
 

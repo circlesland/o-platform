@@ -13,7 +13,7 @@ export async function requestPathToRecipient (context:{data:{safeAddress:string;
         `__PATHFINDER_ENDPOINT__/flow/${context.data.safeAddress}/${context.data.recipientAddress}/${circlesValueInWei.toString()}`);
     const result = await response.json();
 
-    console.log("Transitive path is: ", result);
+    // console.log("Transitive path is: ", result);
 
     return <TransitivePath>result;
 }
