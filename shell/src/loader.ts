@@ -7,6 +7,7 @@ import { trustnetwork } from "./dapps/o-trustnetwork.manifest";
 import { stats } from "./dapps/o-stats.manifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { friends } from "./dapps/o-contacts.manifest";
+import { chat } from "./dapps/o-chat.manifest";
 
 export const dapps: DappManifest<any>[] = [
   homepage,
@@ -16,5 +17,6 @@ export const dapps: DappManifest<any>[] = [
   marketplace,
   trustnetwork,
   stats,
+  chat,
   friends,
 ];

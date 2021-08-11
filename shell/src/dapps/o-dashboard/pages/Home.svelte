@@ -164,9 +164,9 @@
 
       <!-- Chat -->
 
-      <!-- <section
+      <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "
-        on:click="{() => loadLink('https://discord.gg/4DBbRCMnFZ', true)}">
+        on:click="{() => loadLink('/chat')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
@@ -174,7 +174,7 @@
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">chat</div>
         </div>
-      </section> -->
+      </section>
     </div>
 
     {#if showFundHint}

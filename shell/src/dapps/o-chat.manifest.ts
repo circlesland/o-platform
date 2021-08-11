@@ -1,25 +1,16 @@
-import Contacts from "./o-contacts/pages/Contacts.svelte";
-import ProfilePage from "./o-contacts/pages/Profile.svelte";
+import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
+import Chat from "./o-contacts/pages/Chat.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Profile } from "./o-banking/data/api/types";
 import { me } from "../shared/stores/me";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { init} from "./o-banking/init";
-import Graph from "./o-contacts/pages/Graph.svelte";
 
 export interface DappState {
   // put state here
 }
 
-const index: Page<any, DappState> = {
-  routeParts: [],
-  component: Graph,
-  title: "Network",
-  icon: "network",
-  type: "page",
-};
-
-export class ContactsDappState {
+export class ChatDappState {
   /**
    * The currently displayed profile (e.g. in the profile detail)
    */
@@ -32,31 +23,31 @@ export class ContactsDappState {
   trusted?: boolean;
 }
 
-export const profile: Page<any, ContactsDappState> = {
+export const chatdetail: Page<any, ChatDappState> = {
   type: "page",
   isSystem: true,
   position: "modal",
-  routeParts: ["=profile", ":id"],
-  title: "Profile",
-  component: ProfilePage,
+  routeParts: ["=chat", ":id"],
+  title: "Chat",
+  component: ChatDetail,
 };
 
-const contacts: Page<any, ContactsDappState> = {
-  routeParts: ["=contacts"],
-  component: Contacts,
-  title: "Contacts",
-  icon: "friends",
+const index: Page<any, ChatDappState> = {
+  routeParts: [],
+  component: Chat,
+  title: "Chat",
+  icon: "chat",
   type: "page",
 };
 
-export const friends: DappManifest<DappState> = {
+export const chat: DappManifest<DappState> = {
   type: "dapp",
-  dappId: "friends:1",
+  dappId: "chat:1",
   isSingleton: true,
   icon: "group",
-  title: "Friends",
-  routeParts: ["=friends"],
-  defaultRoute: ["contacts"],
+  title: "Chat",
+  routeParts: ["=chat"],
+  defaultRoute: [],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
@@ -73,9 +64,9 @@ export const friends: DappManifest<DappState> = {
     }
 
     return {
-      initialRoutable: index,
+      initialRoutable: chat,
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, contacts, profile],
+  routables: [index, chatdetail],
 };
