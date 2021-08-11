@@ -40,7 +40,7 @@
       </div>
     </div>
     <div
-      class="w-full p-4 break-all rounded-xl message"
+      class="w-full p-4 text-sm rounded-xl message chatText"
       class:bg-light-lighter="{params.outgoing && !params.notification}"
       class:bg-dark="{!params.outgoing && !params.notification}"
       class:bg-success-lighter="{params.notification}"
@@ -49,3 +49,16 @@
     </div>
   </div>
 </div>
+
+<style>
+  .chatText {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+</style>

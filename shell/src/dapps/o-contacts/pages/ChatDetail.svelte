@@ -39,6 +39,7 @@
     if (!chatmessage) {
       return;
     }
+    let elizamesssage = eliza.transform(chatmessage);
 
     addToChatData({
       outgoing: true,
@@ -49,6 +50,8 @@
       text: chatmessage,
     });
 
+    chatmessage = null;
+
     setTimeout(async () => {
       addToChatData({
         outgoing: false,
@@ -56,9 +59,8 @@
         time: "just now",
         image:
           "https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/PP2WbUHmpaCg9Gk7/",
-        text: eliza.transform(chatmessage),
+        text: elizamesssage,
       });
-      chatmessage = null;
     }, 850);
   }
 
