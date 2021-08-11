@@ -25,12 +25,40 @@
     el.focus();
   }
 
-  onMount(() =>
+  var autoExpand = function() {
+    var el = this;
+    setTimeout(function() {
+      el.style.cssText = "height:auto; padding:0 padding-top: 2px;";
+      el.style.cssText = "height:" + el.scrollHeight + "px";
+    }, 0);
+  };
+
+  var resetAutoExpand = function() {
+    var el = this;
+    setTimeout(function() {
+      el.style.cssText = "height:auto; padding:0 padding-top: 2px;";
+    }, 0);
+  };
+
+  onMount(() => {
     window.o.publishEvent(<any>{
       type: "shell.scrollToBottom",
       scrollNow: true,
-    })
-  );
+    });
+    let textarea = document.querySelector("textarea");
+    textarea.addEventListener("input", autoExpand);
+    // let detectedDevice = uaParser.getDevice();
+    // if (length > 17) {
+    //   textarea.dispatchEvent(new Event("input"));
+    // }
+    // if (detectedDevice && detectedDevice.type) {
+    //   if (detectedDevice.type != "mobile") {
+    //     inputField.focus();
+    //   }
+    // } else {
+    //   inputField.focus();
+    // }
+  });
 
   var eliza = new ElizaBot();
   var initial = eliza.getInitial();
@@ -51,6 +79,8 @@
     });
 
     chatmessage = null;
+    let textarea = document.querySelector("textarea");
+    textarea.style.cssText = "height:auto; padding:0 padding-top: 2px;";
 
     setTimeout(async () => {
       addToChatData({
@@ -98,7 +128,7 @@
   <div
     class="sticky bottom-0 flex flex-row order-1 w-full p-6 pt-2 space-x-4 bg-white ">
     <div class="flex-grow">
-      <input
+      <!-- <input
         bind:this="{inputField}"
         on:keydown="{onkeydown}"
         bind:value="{chatmessage}"
@@ -110,12 +140,21 @@
         spellcheck="false"
         placeholder="message content"
         class="order-1 w-full input input-bordered text-dark"
-        style="" />
+        style="" /> -->
+      <textarea
+        name="searchTerm"
+        rows="1"
+        type="text"
+        placeholder="Your Message"
+        class="w-full overflow-hidden resize-none textarea textarea-bordered"
+        bind:this="{inputField}"
+        bind:value="{chatmessage}"
+        use:init></textarea>
     </div>
-    <div>
+    <div class="flex flex-row content-end">
       <button
         type="submit"
-        class="btn btn-primary btn-square"
+        class="self-end mb-2 btn btn-primary btn-square"
         on:click="{() => submitChat()}">
         <svg
           class="w-6"
