@@ -54,14 +54,6 @@ const externalWhitepaper: Link<any, DappState> = {
 
 const index: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["=index"],
-  component: Home,
-  title: "Circles Land",
-  icon: "home",
-  type: "page",
-};
-const defaultIndex: Page<any, DappState> = {
-  isSystem: true,
   routeParts: [],
   component: Home,
   title: "Circles Land",
@@ -130,7 +122,6 @@ export const homepage: DappManifest<DappState> = {
   icon: "home",
   title: "Circles Land",
   routeParts: [],
-  defaultRoute: ["index"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: false,
@@ -146,7 +137,6 @@ export const homepage: DappManifest<DappState> = {
     };
   },
   routables: [
-    defaultIndex,
     index,
     citizens,
     countries,

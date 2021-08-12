@@ -1,8 +1,7 @@
 <script context="module" lang="ts">
-  import {PromptNavigation} from "@o-platform/o-process/dist/events/prompt";
+  import { PromptNavigation } from "@o-platform/o-process/dist/events/prompt";
 
-  export interface ProcessContainerNavigation extends PromptNavigation
-  {
+  export interface ProcessContainerNavigation extends PromptNavigation {
     canSkip: boolean;
     canGoBack: boolean;
     canSubmit: boolean;
@@ -11,13 +10,17 @@
     cancel: () => void;
   }
 </script>
+
 <script lang="ts">
   import { faTimes } from "@fortawesome/free-solid-svg-icons";
   import Prompt from "./Prompt.svelte";
   import { createEventDispatcher } from "svelte";
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { ShellEvent } from "@o-platform/o-process/dist/events/shellEvent";
-  import {Cancel, CancelRequest} from "@o-platform/o-process/dist/events/cancel";
+  import {
+    Cancel,
+    CancelRequest,
+  } from "@o-platform/o-process/dist/events/cancel";
   import { Prompt as PromptEvent } from "@o-platform/o-process/dist/events/prompt";
   import { Subscription } from "rxjs";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -26,16 +29,17 @@
   import Error from "../atoms/Error.svelte";
   import LoadingIndicator from "../atoms/LoadingIndicator.svelte";
   import ChoiceSelector from "../../../../packages/o-editors/src/ChoiceSelector.svelte";
-  import {Skip} from "@o-platform/o-process/dist/events/skip";
-  import {Back} from "@o-platform/o-process/dist/events/back";
+  import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
+  import { Skip } from "@o-platform/o-process/dist/events/skip";
+  import { Back } from "@o-platform/o-process/dist/events/back";
 
   /**
    * A channel to an already running process.
    */
   export let process: Process;
   export let props: {
-    process: Process
-  }
+    process: Process;
+  };
   let interceptedProcess: Process;
 
   let inEventSubscription: Subscription;
@@ -54,6 +58,14 @@
   let cancelDialogVisible: boolean;
 
   const dispatch = createEventDispatcher();
+
+  const editorContent = {
+    cancel: {
+      title: "Do you really want to cancel?",
+      description: "",
+      mainComponent: ChoiceSelector,
+    },
+  };
 
   $: {
     if (!process && props && props.process) {
@@ -74,10 +86,10 @@
             // console.log("Cancel dialog answer:", answer);
             if ((<any>answer).data.___cancelRequest.key === "no") {
               if (beforeCancelPrompt.navigation.canGoBack) {
-                window.o.publishEvent({type: "process.canGoBack"})
+                window.o.publishEvent({ type: "process.canGoBack" });
               }
               if (beforeCancelPrompt.navigation.canSkip) {
-                window.o.publishEvent({type: "process.canSkip"})
+                window.o.publishEvent({ type: "process.canSkip" });
               }
               prompt = beforeCancelPrompt;
               beforeCancelPrompt = null;
@@ -90,7 +102,7 @@
               process.sendEvent(new Cancel());
             }
           } else {
-            window.o.publishEvent({type: "process.continued"})
+            window.o.publishEvent({ type: "process.continued" });
             process.sendAnswer(answer);
           }
         },
@@ -130,8 +142,8 @@
   }
 
   function subscribeToProcess() {
-    ensureProcess((process) => {
-      inEventSubscription = process.inEvents.subscribe((next) => {
+    ensureProcess(process => {
+      inEventSubscription = process.inEvents.subscribe(next => {
         if (!next.event) return;
 
         /*console.log(
@@ -150,11 +162,10 @@
             beforeCancelPrompt &&
             beforeCancelPrompt.field !== "___cancelRequest" &&
             Object.values(beforeCancelPrompt.editorDirtyFlags).filter(
-              (o) => o === true
+              o => o === true
             ).length == 0 &&
-            Object.values(beforeCancelPrompt.dirtyFlags).filter(
-              (o) => o === true
-            ).length == 0
+            Object.values(beforeCancelPrompt.dirtyFlags).filter(o => o === true)
+              .length == 0
           ) {
             // No changes yet, just cancel
             process.sendEvent(new Cancel());
@@ -165,13 +176,14 @@
           const p = <Prompt>{
             type: "process.prompt",
             field: "___cancelRequest",
-            component: ChoiceSelector,
+            component: EditorView,
             data: {
               ___cancelRequest: undefined,
             },
             dirtyFlags: {},
             messages: {},
             params: {
+              view: editorContent.cancel,
               label: "Do you really want to cancel?",
               choices: [
                 {
@@ -209,7 +221,7 @@
         }
       });
 
-      outEventSubscription = process.events.subscribe((next) => {
+      outEventSubscription = process.events.subscribe(next => {
         if (next.stopped) {
           prompt = null;
           process = null;
@@ -238,16 +250,16 @@
           if (promptEvent.navigation) {
             const nav = {
               ...promptEvent.navigation,
-              skip:() => process.sendAnswer(new Skip()),
-              back:() => process.sendAnswer(new Back()),
-              cancel: () => process.sendAnswer(new CancelRequest())
+              skip: () => process.sendAnswer(new Skip()),
+              back: () => process.sendAnswer(new Back()),
+              cancel: () => process.sendAnswer(new CancelRequest()),
             };
             dispatch("navigation", nav);
             if (promptEvent.navigation.canGoBack) {
-              window.o.publishEvent({type: "process.canGoBack"})
+              window.o.publishEvent({ type: "process.canGoBack" });
             }
             if (promptEvent.navigation.canSkip) {
-              window.o.publishEvent({type: "process.canSkip"})
+              window.o.publishEvent({ type: "process.canSkip" });
             }
           }
         }
@@ -303,7 +315,7 @@
         "Can only sink events in response to a previously bubbled event."
       );
     }
-    ensureProcess((p) => {
+    ensureProcess(p => {
       p.sendEvent(<Sinker>{
         type: "process.ipc.sinker",
         levels: lastBubble.levels,
@@ -329,10 +341,10 @@
   </div>
 {:else if error}
   <div class="p-4">
-    <Error data={{ error }} />
+    <Error data="{{ error }}" />
   </div>
 {:else if interceptedProcess && prompt}
-  <Prompt process={interceptedProcess} {prompt} bubble={lastBubble} />
+  <Prompt process="{interceptedProcess}" {prompt} bubble="{lastBubble}" />
 {:else}
   <!-- TODO: This could be both: Undefined state or loading .. -->
   <div class="p-4">

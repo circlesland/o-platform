@@ -8,6 +8,7 @@
     link: string;
     extern: boolean;
     isActive: boolean;
+    isSmall: boolean;
   };
   // console.log("PROPS", props);
   let iconsize: number = 4;
@@ -30,8 +31,10 @@
     class:bg-white="{!props.isActive && !isMobile()}"
     class:text-light="{!props.isActive && isMobile()}"
     class:shadow-sm="{!isMobile()}"
-    class:text-lg="{isMobile()}"
-    class:text-2xl="{props.isActive && isMobile()}">
+    class:text-lg="{isMobile() && !props.isSmall}"
+    class:text-2xl="{props.isActive && isMobile() && !props.isSmall}"
+    class:text-2xs="{props.isSmall && !isMobile()}"
+    class:text-sm="{props.isSmall && isMobile()}">
     {#if props.icon}
       <Icons icon="{props.icon}" size="{iconsize}" />
     {/if}
