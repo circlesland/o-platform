@@ -89,6 +89,19 @@
         currentNavArgs = navArgs;
     }
 
+    /**
+     * This function is called only one time after the first route.
+     */
+    function init() {
+        if (!isMobile()) {
+            onOpenNavigation();
+            setNav({
+                ...currentNavArgs,
+                leftIsOpen:true
+            });
+        }
+    }
+
     function onOpenNavigation() {
         layout = {
             ...layout,
@@ -349,10 +362,6 @@
 
             const processStarted: ProcessStarted = await window.o.requestEvent<ProcessStarted>(requestEvent);
             showModalProcess(processStarted.processId);
-
-            if (!isMobile()) {
-                onOpenNavigation();
-            }
         };
 
         setNav({
@@ -435,6 +444,8 @@
         }
     }
 
+    let firstUrlChangedCall = true;
+
     async function handleUrlChanged() {
         const navArgs = <GenerateNavManifestArgs>{};
 
@@ -493,6 +504,11 @@
 
         if (!navigation) {
             navigation = generateNavManifest(navArgs, null);
+        }
+
+        if (firstUrlChangedCall) {
+            firstUrlChangedCall = false;
+            init();
         }
     }
 
