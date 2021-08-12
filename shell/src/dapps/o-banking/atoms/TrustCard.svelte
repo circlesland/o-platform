@@ -63,7 +63,7 @@
   }
 
   function loadDetailPage(path) {
-    push(`#/friends/profile/${path}`);
+    push(`#/friends/${path}`);
   }
 
   function execTransfer(recipientAddress?: string) {
@@ -75,27 +75,25 @@
   }
 </script>
 
-<div on:click={() => loadDetailPage(safeAddress)}>
+<div on:click="{() => loadDetailPage(safeAddress)}">
   <ItemCard
-    params={{ edgeless: false, imageUrl: pictureUrl, title: displayName, subTitle: message, truncateMain: true }}
-  >
+    params="{{ edgeless: false, imageUrl: pictureUrl, title: displayName, subTitle: message, truncateMain: true }}">
     <div slot="itemCardStart">
       <div class="avatar">
         <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
-          <img src={pictureUrl} alt={displayName} />
+          <img src="{pictureUrl}" alt="{displayName}" />
         </div>
       </div>
     </div>
     <div slot="itemCardEnd">
       <div class="self-end text-lg sm:text-3xl">
         <button
-          on:click={(e) => {
+          on:click="{e => {
             execTransfer(safeAddress);
             e.stopPropagation();
             return false;
-          }}
-          class="self-end text-base "
-        >
+          }}"
+          class="self-end text-base ">
           <Icons icon="sendmoney" />
         </button>
       </div>

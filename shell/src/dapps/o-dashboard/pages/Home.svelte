@@ -73,7 +73,7 @@
 
   $: {
     if ($me) {
-      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/profile/${$me.id}`;
+      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/${$me.id}`;
     }
   }
 </script>
@@ -93,11 +93,13 @@
   <div class="m-4">
 
     <div
-      class="grid grid-cols-2 gap-4 text-base auto-rows-fr lg:grid-cols-3 dashboard-grid">
+      class="grid grid-cols-2 gap-4 text-base auto-rows-fr lg:grid-cols-3
+      dashboard-grid">
       <!-- PASSPORT  -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        class="flex items-center justify-center bg-white rounded-lg shadow-md
+        cursor-pointer dashboard-card"
         on:click="{() => loadLink('/passport/profile')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
@@ -111,7 +113,8 @@
       <!-- CONTACTS  -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        class="flex items-center justify-center bg-white rounded-lg shadow-md
+        cursor-pointer dashboard-card"
         on:click="{() => loadLink('/friends')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
@@ -125,9 +128,11 @@
       <!-- BANKING -->
       {#if showFundHint || disableBanking}
         <section
-          class="flex items-center justify-center bg-white rounded-lg shadow-md dashboard-card text-base-300 ">
+          class="flex items-center justify-center bg-white rounded-lg shadow-md
+          dashboard-card text-base-300 ">
           <div
-            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            class="flex flex-col items-center w-full p-4 pt-6
+            justify-items-center">
             <div class="pt-2 text-primary-lightest">
               <Icons icon="dashbanking" />
             </div>
@@ -136,10 +141,12 @@
         </section>
       {:else}
         <section
-          class="flex items-center justify-center bg-white rounded-lg shadow-md dashboard-card cursor-pointerbg-white"
+          class="flex items-center justify-center bg-white rounded-lg shadow-md
+          dashboard-card cursor-pointerbg-white"
           on:click="{() => loadLink(showFundHint ? '/dashboard' : '/banking/transactions')}">
           <div
-            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            class="flex flex-col items-center w-full p-4 pt-6
+            justify-items-center">
             <div class="pt-2 text-primary">
               <Icons icon="dashbanking" />
             </div>
@@ -151,7 +158,8 @@
       <!-- Market -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        class="flex items-center justify-center bg-white rounded-lg shadow-md
+        cursor-pointer dashboard-card"
         on:click="{() => loadLink('/marketplace/stream')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
@@ -165,7 +173,8 @@
       <!-- Chat -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "
+        class="flex items-center justify-center bg-white rounded-lg shadow-md
+        cursor-pointer dashboard-card "
         on:click="{() => loadLink('/chat')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">

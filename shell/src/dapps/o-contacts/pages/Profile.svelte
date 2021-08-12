@@ -60,7 +60,7 @@
       loadProfile();
     }
     if ($me) {
-      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/profile/${$me.id}`;
+      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/${$me.id}`;
     }
   }
 
@@ -260,7 +260,8 @@
         <h1 class="text-3xl uppercase font-heading">PROFILE</h1>
       </div>
       <div
-        class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
+        class="flex flex-col items-center self-center w-full m-auto text-center
+        justify-self-center ">
         <div class="avatar rounded-corners-gradient-borders">
           <div class="m-auto bg-white rounded-full w-36 h-36">
             <img
@@ -288,7 +289,8 @@
           {#if !profile.safeAddress && !isMe}
             <section class="justify-center mb-2 ">
               <div
-                class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
+                class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm
+                shadow">
                 <div
                   class="text-left text-2xs text-dark-lightesttext-dark-lightest">
                   This citizen is waiting to be empowered by you.

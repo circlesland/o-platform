@@ -34,9 +34,7 @@
   class:blur_aside="{blur}">
   <div class="w-full p-2 mt-1 modalAsideContentContainer">
     <div
-      class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
-      use:clickOutside
-      on:click_outside="{() => eventDispatcher('clickedOutside')}">
+      class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2">
       <div id="modalScrollable" class="modalAsideScrollableContent rounded-xl">
         <SvelteSimplebar init="{initBar}">
           <div class="w-full m-auto">

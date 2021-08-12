@@ -77,7 +77,7 @@
   }
 
   function loadDetailPage(path) {
-    push(`#/friends/profile/${path}`);
+    push(`#/friends/${path}`);
   }
 </script>
 

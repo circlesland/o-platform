@@ -48,11 +48,13 @@
     {/if}
   </div>
 </div>
-<div
-  class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer mobile-view bottom-6 left-72 lg:hidden"
-  on:click="{() => window.o.publishEvent({ type: 'shell.closeNavigation' })}">
-  <Icons icon="buttonleftarrow" />
-</div>
+{#if isMobile()}
+  <div
+    class="fixed z-50 flex justify-center flex-shrink-0 w-12 h-12 px-3 py-4 ml-4 bg-white rounded-full cursor-pointer bottom-6 left-72"
+    on:click="{() => window.o.publishEvent({ type: 'shell.closeNavigation' })}">
+    <Icons icon="buttonleftarrow" />
+  </div>
+{/if}
 
 <style>
 

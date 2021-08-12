@@ -5,8 +5,7 @@
   const eventDispatcher = createEventDispatcher();
 </script>
 
-<aside
-  class="z-50 flex-col flex-1 flex-shrink-0 hidden w-64 h-screen mt-12 desktop-view lg:flex">
+<aside class="z-50 flex flex-col flex-1 flex-shrink-0 w-64 h-screen mt-12">
   <div class="">
     <!-- Sidebar -->
     <div

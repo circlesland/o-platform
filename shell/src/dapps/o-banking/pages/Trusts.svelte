@@ -16,7 +16,7 @@
 
   $: {
     if ($me) {
-      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/profile/${$me.id}`;
+      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/${$me.id}`;
     }
   }
 
@@ -64,24 +64,23 @@
       <!-- TODO: Possible actions: untrust, transfer money -->
       {#each Object.values($mySafe.trustRelations.mutualTrusts) as mutualTrust}
         <TrustCard
-          trusting={mutualTrust.trusting}
-          trustedBy={mutualTrust.trustedBy}
-        />
+          trusting="{mutualTrust.trusting}"
+          trustedBy="{mutualTrust.trustedBy}" />
       {/each}
     {/if}
-    {#if Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide).length >= 1}
+    {#if Object.values($mySafe.trustRelations.trusting).filter(o => !o.hide).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
         <Card>
           <div class="text-xs font-bold text-left ">TRUSTING</div>
         </Card>
       </section>
-      {#each Object.values($mySafe.trustRelations.trusting).filter((o) => !o.hide) as trusting}
+      {#each Object.values($mySafe.trustRelations.trusting).filter(o => !o.hide) as trusting}
         <!-- TODO: Possible actions: untrust -->
         <TrustCard {trusting} />
       {/each}
     {/if}
 
-    {#if Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress !== $mySafe.safeAddress).length >= 1}
+    {#if Object.values($mySafe.trustRelations.trustedBy).filter(o => !o.hide && o.safeAddress !== $mySafe.safeAddress).length >= 1}
       <section class="flex items-center justify-center mb-1 ">
         <Card>
           <div class="text-xs font-bold text-left text-primary ">
@@ -90,7 +89,7 @@
         </Card>
       </section>
       <!-- TODO: Possible actions: trust, transfer money -->
-      {#each Object.values($mySafe.trustRelations.trustedBy).filter((o) => !o.hide && o.safeAddress !== $mySafe.safeAddress) as trustedBy}
+      {#each Object.values($mySafe.trustRelations.trustedBy).filter(o => !o.hide && o.safeAddress !== $mySafe.safeAddress) as trustedBy}
         <TrustCard {trustedBy} />
       {/each}
     {/if}
@@ -117,8 +116,7 @@
       <img
         class="w-full"
         src="/images/common/explaintrust.png"
-        alt="Trust Explained"
-      />
+        alt="Trust Explained" />
     </div>
     <div class="flex flex-col w-full p-4 space-y-2 shadow infocard">
       <div class="text-sm">
@@ -142,13 +140,15 @@
           href="https://blog.circles.land/whitepaper/"
           alt="CirclesLand Whitepaper"
           target="_blank"
-          class="btn-link"
-        >
+          class="btn-link">
           Learn more
         </a>
       </div>
-      <div class="mx-auto mt-6 btn btn-primary" id="clipboard" on:click={copy}>
-        <input type="text" class="hidden" bind:value={inviteLink} />
+      <div
+        class="mx-auto mt-6 btn btn-primary"
+        id="clipboard"
+        on:click="{copy}">
+        <input type="text" class="hidden" bind:value="{inviteLink}" />
         <span>Copy trust link</span>
       </div>
     </div>

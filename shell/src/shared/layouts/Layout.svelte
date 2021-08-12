@@ -30,7 +30,7 @@
     }*/
   ];
   $: {
-    console.log("LayoutChanged:", layout)
+    console.log("LayoutChanged:", layout);
     if (layout.dialogs.center && layout.dialogs.center.isOpen) {
       document.body.style.overflow = "hidden";
     } else {

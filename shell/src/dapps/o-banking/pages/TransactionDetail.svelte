@@ -33,7 +33,7 @@
   $: {
     transactionId = _id;
 
-    transfer = $mySafe.transfers.rows.find((o) => o._id == transactionId);
+    transfer = $mySafe.transfers.rows.find(o => o._id == transactionId);
 
     if (transfer) {
       displayableFromName = transfer.fromProfile
@@ -69,7 +69,7 @@
           : displayableFromName;
 
       const m = transfer.tags
-        ? transfer.tags.find((o) => o.typeId === "o-banking:transfer:message:1")
+        ? transfer.tags.find(o => o.typeId === "o-banking:transfer:message:1")
         : undefined;
       const m2 = m ? m.value : "";
       message =
@@ -77,7 +77,7 @@
 
       const p = transfer.tags
         ? transfer.tags.find(
-            (o) => o.typeId === "o-banking:transfer:transitivePath:1"
+            o => o.typeId === "o-banking:transfer:transitivePath:1"
           )
         : undefined;
       const p2 = p ? JSON.parse(p.value) : undefined;
@@ -99,16 +99,15 @@
       return;
     }
 
-    push(`#/friends/profile/${id}`);
+    push(`#/friends/${id}`);
   }
 </script>
 
 <BankingDetailHeader
   {runtimeDapp}
   {routable}
-  amount={transfer ? transfer.amount : 0}
-  {classes}
-/>
+  amount="{transfer ? transfer.amount : 0}"
+  {classes} />
 <div class="px-6 pb-6">
   {#if transfer}
     <section class="flex items-center justify-center pt-10 pb-2 text-dark">
@@ -116,23 +115,15 @@
         <div class="flex flex-row justify-center w-full space-x-2 sm:space-x-6">
           <div
             class="flex flex-col cursor-pointer"
-            on:click={() => openDetail(transfer.from)}
-          >
+            on:click="{() => openDetail(transfer.from)}">
             <div class="avatar">
               <div class="w-24 h-24 m-auto rounded-full">
                 <img
-                  alt={displayableFromName}
-                  src={transfer.fromProfile && transfer.fromProfile.avatarUrl
-                    ? transfer.fromProfile.avatarUrl
-                    : transfer.from.startsWith("0x000")
-                    ? "/images/common/circles.png"
-                    : pictureUrl}
-                />
+                  alt="{displayableFromName}"
+                  src="{transfer.fromProfile && transfer.fromProfile.avatarUrl ? transfer.fromProfile.avatarUrl : transfer.from.startsWith('0x000') ? '/images/common/circles.png' : pictureUrl}" />
               </div>
             </div>
-            <div class="block mt-2 text-center">
-              {displayableFromName}
-            </div>
+            <div class="block mt-2 text-center">{displayableFromName}</div>
           </div>
 
           <div class="self-center text-xl text-dark-lightest">
@@ -140,24 +131,16 @@
           </div>
           <div
             class="flex flex-col cursor-pointer"
-            on:click={() => openDetail(transfer.to)}
-          >
+            on:click="{() => openDetail(transfer.to)}">
             <div class="avatar">
               <div class="w-24 h-24 m-auto rounded-full">
                 <img
-                  alt={transfer.toProfile
-                    ? transfer.toProfile.displayName
-                    : transfer.to}
-                  src={transfer.toProfile && transfer.toProfile.avatarUrl
-                    ? transfer.toProfile.avatarUrl
-                    : pictureUrl}
-                />
+                  alt="{transfer.toProfile ? transfer.toProfile.displayName : transfer.to}"
+                  src="{transfer.toProfile && transfer.toProfile.avatarUrl ? transfer.toProfile.avatarUrl : pictureUrl}" />
               </div>
             </div>
             <div class="block mt-2 text-center">
-              {transfer.toProfile
-                ? transfer.toProfile.displayName
-                : transfer.to}
+              {transfer.toProfile ? transfer.toProfile.displayName : transfer.to}
             </div>
           </div>
         </div>
@@ -170,7 +153,7 @@
 
         <div class="flex items-center w-full ">
           <div class="text-2xl leading-tight text-left font-heading">
-            {message ? message : "No Message"}
+            {message ? message : 'No Message'}
           </div>
         </div>
       </div>
@@ -182,8 +165,7 @@
 
         <div class="flex items-center w-full">
           <div class="text-left ">
-            {amountInWei}
-            {amountInWei > 1 ? " Cirlces" : " Circle"}
+            {amountInWei} {amountInWei > 1 ? ' Cirlces' : ' Circle'}
           </div>
         </div>
       </div>
@@ -196,9 +178,8 @@
         <div class="flex items-center w-full">
           <div class="text-left ">
             <Time
-              timestamp={new Date(transfer.time * 1000)}
-              format="D. MMMM YYYY HH:mm"
-            />
+              timestamp="{new Date(transfer.time * 1000)}"
+              format="D. MMMM YYYY HH:mm" />
           </div>
         </div>
       </div>
@@ -210,7 +191,7 @@
 
         <div class="flex items-center w-full">
           <div class="text-left break-all">
-            {transfer.fromProfile ? `${transfer.from}` : ""}
+            {transfer.fromProfile ? `${transfer.from}` : ''}
           </div>
         </div>
       </div>
@@ -222,7 +203,7 @@
 
         <div class="flex items-center w-full">
           <div class="text-left break-all">
-            {transfer.toProfile ? `${transfer.to}` : ""}
+            {transfer.toProfile ? `${transfer.to}` : ''}
           </div>
         </div>
       </div>
@@ -233,9 +214,7 @@
         <div class="mb-1 text-left text-2xs text-dark-lightest">Block</div>
 
         <div class="flex items-center w-full">
-          <div class="text-left break-all">
-            {transfer.firstBlock}
-          </div>
+          <div class="text-left break-all">{transfer.firstBlock}</div>
         </div>
       </div>
     </section>
@@ -249,7 +228,7 @@
 
           <div class="flex items-center w-full text-primarydark">
             <div class="text-left break-all">
-              {transfer.transactionHash ? transfer.transactionHash : ""}
+              {transfer.transactionHash ? transfer.transactionHash : ''}
             </div>
           </div>
         </div>
@@ -262,7 +241,7 @@
           <div class="mb-1 text-left text-2xs text-dark-lightest">
             Payment path
           </div>
-          <CirclesTransferGraph transfers={path.transfers} />
+          <CirclesTransferGraph transfers="{path.transfers}" />
         </div>
       </section>
     {/if}
