@@ -36,6 +36,7 @@
 
     import NavigationList from "../../shared/molecules/NavigationList.svelte";
     import {Process} from "@o-platform/o-process/dist/interfaces/process";
+    import {isMobile} from "../functions/isMobile";
 
     // install Swiper modules
     SwiperCore.use([Navigation, Pagination]);
@@ -348,6 +349,10 @@
 
             const processStarted: ProcessStarted = await window.o.requestEvent<ProcessStarted>(requestEvent);
             showModalProcess(processStarted.processId);
+
+            if (!isMobile()) {
+                onOpenNavigation();
+            }
         };
 
         setNav({
