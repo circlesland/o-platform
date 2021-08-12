@@ -21,12 +21,13 @@
   import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import QuickActions from "src/shared/molecules/QuickActions.svelte";
 
   export let id: string;
 
-  /*
   let jumplist: Jumplist<any, any> | undefined;
-  */
+  let runtimeDapp: RuntimeDapp<any>;
+
   onMount(() => {
     /*
     if (nextRoutable.type === "page") {
@@ -563,17 +564,18 @@
         </section>
       {/if} -->
       </div>
-      <!--
-    {#if jumplist && !isMe}
-      <div
-        class="sticky bottom-0 left-0 right-0 w-full px-4 py-2 mt-2 bg-white rounded-xl"
-      >
-        {#await jumplist.items({id:id}, runtimeDapp) then items}
-          <DetailActionBar actions={items} />
-        {/await}
-      </div>
-    {/if}
-    -->
+
+      <!-- {#if jumplist && !isMe}
+        <div
+          class="sticky bottom-0 left-0 right-0 w-full px-4 py-2 mt-2 bg-white rounded-xl">
+          {#await jumplist.items({ id: id }, runtimeDapp)}
+            <p>loading</p>
+
+          {:then items}
+            <DetailActionBar actions="{items}" />
+          {/await}
+        </div>
+      {/if} -->
     </div>
   </div>
 {/if}
