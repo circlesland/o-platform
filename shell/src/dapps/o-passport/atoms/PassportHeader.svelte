@@ -16,6 +16,7 @@
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import { getCountryName } from "../../../shared/countries";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -55,55 +56,32 @@
 
 <TopNav {runtimeDapp} {routable} />
 
-<PageHeader heightClass="h-80">
-  <div class="self-center block mt-4 text-center">
+<PageHeader heightClass="h-72">
+  <div class="self-center block mt-2 text-center">
     <div class="avatar">
-      <div class="mb-4 rounded-full ring ring-white w-36 h-36">
+      <div
+        class="mb-4 rounded-full ring ring-white w-36 h-36"
+        on:click="{() => editProfileField({ avatarUrl: true })}">
         <img
-          src={avatarUrl}
-          alt={profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}
-        />
+          src="{avatarUrl}"
+          alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
       </div>
-      <button
-        class="relative self-start link link-primary text-secondary text-2xs top-1 right-2"
-        on:click={() => editProfileField({ avatarUrl: true })}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="relative top-0 right-0 w-3 h-3"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            d="M13.586 3.586a2 2 0 112.828
-            2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3
-            14.172V17h2.828l8.38-8.379-2.83-2.828z"
-          />
-        </svg>
-      </button>
+
     </div>
-    <div class="">
+    <div
+      on:click="{() => editProfileField({ firstName: true, lastName: true })}">
       <h2 class="text-4xl font-heading">
         {profile ? profile.firstName : ''}
         {profile && profile.lastName ? profile.lastName : ''}
-        <button
-          class="self-start -mt-2 -mr-3 link link-primary text-secondary text-2xs"
-          on:click={() => editProfileField({ firstName: true, lastName: true })}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="relative top-0 right-0 w-3 h-3"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              d="M13.586 3.586a2 2 0 112.828
-              2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3
-              14.172V17h2.828l8.38-8.379-2.83-2.828z"
-            />
-          </svg>
-        </button>
       </h2>
     </div>
   </div>
+  {#if profile && profile.city}
+    <div
+      class="mt-1 text-sm"
+      on:click="{() => editProfileField({ cityGeonameid: true })}">
+      {profile.city ? profile.city.name : ''}
+      {profile.city ? ', ' + profile.city.country : ', ' + getCountryName(profile)}
+    </div>
+  {/if}
 </PageHeader>
