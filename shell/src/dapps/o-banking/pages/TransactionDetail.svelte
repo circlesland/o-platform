@@ -179,21 +179,19 @@
       </div>
       <div class="text-dark-lightest">{message ? message : 'No Message'}</div>
 
-      <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">
-          Payment Path
-        </div>
-
-        <div class="flex items-center w-full">
-          {#if path}
+      {#if path && path.transfers}
+        <div class="flex flex-col w-full space-y-1">
+          <div class="mb-1 text-left text-2xs text-dark-lightest">
+            Payment Path
+          </div>
+          <div class="flex items-center w-full">
             <CirclesTransferGraph
               transfers="{path.transfers}"
-              height="100px"
+              height="70px"
               onWhiteBackground="{true}" />
-          {/if}
+          </div>
         </div>
-      </div>
-
+      {/if}
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">Date</div>
 
