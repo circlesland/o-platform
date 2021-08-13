@@ -41,16 +41,15 @@
       <div class="flex flex-col items-start">
         <h3 class="mr-2 font-bold">My Secret Recovery Code</h3>
       </div>
-      <div class="flex justify-end flex-1 text-base-300">
+      <div class="flex justify-end flex-1 text-primary">
         <svg
           class="h-6"
           fill="none"
-          on:click={show}
-          class:hidden={showPhrase}
-          class:block={!showPhrase}
+          on:click="{show}"
+          class:hidden="{showPhrase}"
+          class:block="{!showPhrase}"
           xmlns="http://www.w3.org/2000/svg"
-          viewbox="0 0 576 512"
-        >
+          viewbox="0 0 576 512">
           <path
             fill="currentColor"
             d="M572.52 241.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48
@@ -58,19 +57,17 @@
             448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288
             400a144 144 0 1 1 144-144 143.93 143.93 0 0 1-144 144zm0-240a95.31
             95.31 0 0 0-25.31 3.79 47.85 47.85 0 0 1-66.9 66.9A95.78 95.78 0 1 0
-            288 160z"
-          />
+            288 160z"></path>
         </svg>
 
         <svg
           class="h-6"
           fill="none"
-          on:click={show}
-          block={showPhrase}
-          class:hidden={!showPhrase}
+          on:click="{show}"
+          block="{showPhrase}"
+          class:hidden="{!showPhrase}"
           xmlns="http://www.w3.org/2000/svg"
-          viewbox="0 0 640 512"
-        >
+          viewbox="0 0 640 512">
           <path
             fill="currentColor"
             d="M320 400c-75.85 0-137.25-58.71-142.9-133.11L72.2 185.82c-13.79
@@ -84,8 +81,7 @@
             0-2.82-22.45zm-183.72-142l-39.3-30.38A94.75 94.75 0 0 0 416
             256a94.76 94.76 0 0 0-121.31-92.21A47.65 47.65 0 0 1 304 192a46.64
             46.64 0 0 1-1.54 10l-73.61-56.89A142.31 142.31 0 0 1 320 112a143.92
-            143.92 0 0 1 144 144c0 21.63-5.29 41.79-13.9 60.11z"
-          />
+            143.92 0 0 1 144 144c0 21.63-5.29 41.79-13.9 60.11z"></path>
         </svg>
       </div>
     </Card>
@@ -93,30 +89,27 @@
   <!-- {#if showPhrase} -->
   <section class="flex items-center justify-center mx-4 mb-2">
     <Card>
-      <div class:blur={!showPhrase} class="flex flex-col items-start">
+      <div class:blur="{!showPhrase}" class="flex flex-col items-start">
         <div id="clipboard">
-          <input type="text" class="hidden" bind:value={name} />
+          <input type="text" class="hidden" bind:value="{name}" />
           {name}
           <div
-            class="relative inline-block text-xs text-light cursor-pointertext-center -bottom-1"
-            on:click={copy}
-            alt="Copy to Clipboard"
-          >
+            class="relative inline-block text-xs text-primary cursor-pointertext-center -bottom-1"
+            on:click="{copy}"
+            alt="Copy to Clipboard">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="w-4 h-4 stroke-current"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
+              stroke="currentColor">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0
                 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0
-                012 2"
-              />
+                012 2"></path>
             </svg>
           </div>
         </div>

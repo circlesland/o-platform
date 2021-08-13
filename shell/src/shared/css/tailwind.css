@@ -212,6 +212,11 @@ body {
   height: 3rem;
   width: 19rem;
 }
+@supports (-webkit-touch-callout: none) {
+  .input-number {
+    letter-spacing: 2.15rem;
+  }
+}
 
 .infocard {
   background-color: #d1ecf1;
