@@ -35,6 +35,8 @@
 
     transfer = $mySafe.transfers.rows.find(o => o._id == transactionId);
 
+    console.log("TRANSFER: ", transfer);
+
     if (transfer) {
       displayableFromName = transfer.fromProfile
         ? transfer.fromProfile.displayName
@@ -183,8 +185,12 @@
         </div>
 
         <div class="flex items-center w-full">
-          <!-- <CirclesTransferGraph transfers="{[transfer]}" /> -->
-          Coming soon...
+          {#if path}
+            <CirclesTransferGraph
+              transfers="{path.transfers}"
+              height="100px"
+              onWhiteBackground="{true}" />
+          {/if}
         </div>
       </div>
 
@@ -252,14 +258,6 @@
         </div>
       {/if}
 
-      {#if false}
-        <div class="flex flex-col w-full space-y-1">
-          <div class="mb-1 text-left text-2xs text-dark-lightest">
-            Payment path
-          </div>
-          <CirclesTransferGraph transfers="{path.transfers}" />
-        </div>
-      {/if}
     </div>
   {/if}
 </div>

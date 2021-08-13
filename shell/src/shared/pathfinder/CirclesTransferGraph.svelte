@@ -8,7 +8,8 @@
   import { fillUsernames, fillTokens, tokenDB } from "./userdb.js";
 
   export let transfers = [];
-
+  export let height = "400px";
+  export let onWhiteBackground = false;
   let graph;
   let nodes = new DataSet();
   let edges = new DataSet();
@@ -137,8 +138,7 @@
 
 <main>
   <div
-    bind:this={graph}
-    style="width: 100%; height: 400px;"
-    class="bg-background"
-  />
+    bind:this="{graph}"
+    style="width: 100%; height: {height};"
+    class:bg-background="{!onWhiteBackground}"></div>
 </main>
