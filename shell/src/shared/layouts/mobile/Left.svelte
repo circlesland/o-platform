@@ -31,7 +31,7 @@
     z-index: 99;
     background-color: rgba(177, 192, 200, 0.4);
     position: absolute;
-    top: 0;
+    top: 48px;
     left: 0;
     bottom: 0;
 
@@ -44,6 +44,7 @@
     width: 100%;
   }
   .mobileSideBarLeft .mobileSidebarInner {
+    top: 48px;
     --tw-shadow: 0 25px 50px 82px rgba(13, 43, 102, 0.45);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #95b7ca),
       var(--tw-ring-shadow, 0 0 #95b7ca), var(--tw-shadow);

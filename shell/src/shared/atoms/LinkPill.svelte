@@ -23,7 +23,12 @@
 <a
   href="{props.extern ? props.link : '/#/' + props.link}"
   class="flex content-center justify-start space-x-2"
-  target="{props.extern ? '_blank' : '_self'}">
+  target="{props.extern ? '_blank' : '_self'}"
+  on:click="{() => {
+    if (isMobile()) {
+      window.o.publishEvent({ type: 'shell.closeNavigation' });
+    }
+  }}">
   <div
     class="flex flex-row items-center px-4 py-2 space-x-2 rounded-full"
     class:bg-dark="{props.isActive && !isMobile()}"
