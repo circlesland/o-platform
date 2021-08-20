@@ -3,7 +3,9 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
+import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
+import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import * as yup from "yup";
 import { UpsertOfferDocument } from "../data/api/types";
@@ -67,6 +69,25 @@ const strings = {
   submitPicture: "submitPicture",
 };
 
+const editorContent = {
+  title: {
+    title: "Title",
+    description:
+      "Enter the title of what you are selling. keep it short & sweet.",
+    placeholder: "Title",
+    mainComponent: TextEditor,
+    submitButtonText: "Next",
+  },
+  description: {
+    title: "Description",
+    description:
+      "Describe your item in detail. Make it sound sexy. Try to make it fit into 500 Characters.",
+    placeholder: "Item description",
+    mainComponent: TextareaEditor,
+    submitButtonText: "Next",
+  },
+};
+
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
   createMachine<UpsertOfferContext, any>({
     id: `${processId}:upsertOffer`,
@@ -79,11 +100,12 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       title: prompt<UpsertOfferContext, any>({
         field: "title",
         onlyWhenDirty: skipIfNotDirty,
-        component: TextEditor,
+        component: EditorView,
         params: {
+          view: editorContent.title,
           label: strings.labelTitle,
-          placeholder: strings.placeholderTitle,
-          submitButtonText: strings.submitTitle,
+          placeholder: editorContent.title.placeholder,
+          submitButtonText: editorContent.title.submitButtonText,
         },
         dataSchema: yup
           .string()
@@ -95,11 +117,12 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       description: prompt<UpsertOfferContext, any>({
         field: "description",
         onlyWhenDirty: skipIfNotDirty,
-        component: TextEditor,
+        component: EditorView,
         params: {
+          view: editorContent.description,
           label: strings.labelDescription,
-          placeholder: strings.placeholderDescription,
-          submitButtonText: strings.submitDescription,
+          placeholder: editorContent.description.placeholder,
+          submitButtonText: editorContent.description.submitButtonText,
           showResultsOnLoad: true,
         },
         navigation: {

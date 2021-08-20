@@ -38,7 +38,7 @@ $: {
     </div>
 
     <div class="relative flex-grow text-left truncate">
-      <div class="max-w-full -mt-1 leading-8 cursor-pointer truncateThis">
+      <div class="max-w-full -mt-1 leading-8 cursor-pointer ">
         {`${item.firstName} ${item.lastName ? item.lastName : ""}`}
       </div>
     </div>
