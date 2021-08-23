@@ -2,7 +2,7 @@
   import { Network } from "vis-network";
   import { DataSet } from "vis-data";
   import { onMount } from "svelte";
-
+  import { push } from "svelte-spa-router";
   import { fillUsernames } from "./userdb.js";
   import { toAddress, getAdjacencies } from "./utility.js";
   import { createNodeContents } from "./visUtils.js";
@@ -19,11 +19,53 @@
 
   let initialized = false;
 
+  const options = {
+    physics: {
+      enabled: true,
+
+      forceAtlas2Based: {
+        gravitationalConstant: -26,
+        centralGravity: 0.005,
+        springLength: 130,
+        springConstant: 0.08,
+        avoidOverlap: 0,
+      },
+      maxVelocity: 66,
+      solver: "forceAtlas2Based",
+      timestep: 0.35,
+      stabilization: {
+        iterations: 150,
+      },
+    },
+  };
+
+  function loadDetailPage(path) {
+    push(`#/friends/${path}`);
+  }
+
   onMount(() => {
-    var network = new Network(graph, { nodes: nodes, edges: edges }, {});
-    network.on("click", (params) => {
+    var network = new Network(graph, { nodes: nodes, edges: edges }, options);
+    network.on("doubleClick", params => {
       if (!params.nodes || params.nodes.length == 0) return;
       exploreNode(params.nodes[0]);
+    });
+    network.on("click", params => {
+      if (!params.nodes || params.nodes.length == 0) return;
+      exploreNode(params.nodes[0]);
+      // console.log("DES ISSE: ", params.nodes[0]);
+      // const tooltip = document.getElementById("tooltip");
+      // if (tooltip) {
+      //   tooltip.remove();
+      // }
+      // // loadDetailPage(params.nodes[0]);
+      // console.log("this", params);
+      // console.log("pointer", params.pointer.canvas);
+      // const child = document.createElement("span");
+      // child.setAttribute("id", "tooltip");
+      // child.textContent = "child";
+      // child.style.cssText = `position:absolute;top:${params.pointer.DOM.y}px;left:${params.pointer.DOM.x}px;width:200px;height:80px;border-radius:8px;background:#fff;border:1px  solid #ddd;-moz-box-shadow: 0px 0px 8px  #fff;display:block;`;
+
+      // graph.appendChild(child);
     });
     if (address && address !== "0x00" && address.trim() !== "") {
       exploreNode(address);
@@ -51,6 +93,7 @@
     let adjacencies = await getAdjacencies(
       username.startsWith("0x") ? await toAddress(username) : username
     );
+    console.log("ADJACENCIES: ", adjacencies);
     let addressesToQuery = {};
     for (let edge of adjacencies.adjacencies) {
       addressesToQuery[edge.user] = true;
@@ -68,9 +111,9 @@
           // label: edge.percentage == 50 ? "" : edge.percentage + "%",
           arrows: "to",
           color: {
-            color: "#F1E7DD",
-            highlight: "#F1E7DD",
-            hover: "#F1E7DD",
+            color: "#8597C6",
+            highlight: "#8597C6",
+            hover: "#8597C6",
             inherit: "from",
             opacity: 1.0,
           },
@@ -78,6 +121,8 @@
         });
       }
     }
+    console.log("NODES: ", nodes);
+    console.log("Edges: ", edges);
   }
 
   let resetGraph = function() {
@@ -88,4 +133,4 @@
 </script>
 
 <!-- TODO: Find a better fix for the graph-height. Problem is that this value must be known upon initialization. Also resize scenarios must be handled. -->
-<div bind:this={graph} class="w-auto mx-6 {maxHeight}" />
+<div bind:this="{graph}" class="w-auto mx-6 {maxHeight}"></div>
