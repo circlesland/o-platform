@@ -164,25 +164,6 @@ const processDefinition = (processId: string) =>
           next: "#tokens",
         },
       }),
-      recipientSafeAddress: prompt<TransferContext, any>({
-        field: "tokens",
-        component: TextEditor,
-        params: {
-          view: editorContent.recipientSafeAddress,
-          placeholder: editorContent.recipientSafeAddress.placeholder,
-          submitButtonText: "Check send limit",
-        },
-        dataSchema: yup.object().shape({
-          amount: yup
-            .string()
-            .typeError("Please enter a valid Recipient address.")
-            .required("Please enter a valid Recipient address."),
-        }),
-        navigation: {
-          next: "#findMaxFlow",
-          previous: "#recipientAddress",
-        },
-      }),
       tokens: prompt<TransferContext, any>({
         field: "tokens",
         component: CurrencyTransfer,
