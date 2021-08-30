@@ -60,7 +60,7 @@
   <div class="self-center block mt-2 text-center">
     <div class="avatar">
       <div
-        class="mb-4 rounded-full ring ring-white w-36 h-36"
+        class="mb-4 rounded-full cursor-pointer ring ring-white w-36 h-36"
         on:click="{() => editProfileField({ avatarUrl: true })}">
         <img
           src="{avatarUrl}"
@@ -70,7 +70,7 @@
     </div>
     <div
       on:click="{() => editProfileField({ firstName: true, lastName: true })}">
-      <h2 class="text-4xl font-heading">
+      <h2 class="text-4xl cursor-pointer font-heading">
         {profile ? profile.firstName : ''}
         {profile && profile.lastName ? profile.lastName : ''}
       </h2>
@@ -78,7 +78,7 @@
   </div>
   {#if profile && profile.city}
     <div
-      class="mt-1 text-sm"
+      class="mt-1 text-sm text-center cursor-pointer"
       on:click="{() => editProfileField({ cityGeonameid: true })}">
       {profile.city ? profile.city.name : ''}
       {profile.city ? ', ' + profile.city.country : ', ' + getCountryName(profile)}

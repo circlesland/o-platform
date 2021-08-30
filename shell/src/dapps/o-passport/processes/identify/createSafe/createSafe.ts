@@ -1,6 +1,6 @@
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { prompt} from "@o-platform/o-process/dist/states/prompt";
+import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
@@ -24,9 +24,22 @@ export type CreateSafeContext = ProcessContext<CreateSafeContextData>;
 const strings = {
   choiceConnect: "Connect",
   choiceCreate: "Create",
-  labelExportSeedphrase:
-    "Your Secret Recovery Code is the only key which can open your safe. It is your full responsibility to save and protect this code like a password. " +
-      "If you loose or forget it, all your funds are lost forever.<br/><strong class='text-primary block mt-3'>Secret Recovery Code</strong>",
+  labelExportSeedphrase: `Your Secret Recovery Code is the
+<span class="text-alert-dark">only key</span>
+which can access your safe. It is your
+<span class="text-alert-dark">full responsibility</span>
+to
+<span class="text-alert-dark">protect</span>
+this code like a
+<span class="text-alert-dark">password</span>
+.
+<br />
+<br />
+<span class="text-xs">
+  If you loose it or forget it, all your
+  <span class="text-alert-dark">money is lost forever</span>
+  .
+</span>`,
   buttonExportSeedphrase: "I stored it securely",
   // labelCheckSeedphrase: (context: CreateSafeContext) => `Please enter the ${context.data.checkWordIndex == 0 ? (context.data.checkWordIndex + 1).toString() + "st" : (context.data.checkWordIndex + 1).toString() + "nd"} word of your seedphrase:`,
   labelCheckSeedphrase: `Keep in mind, everyone who knows your Secret Recovery Code can access all your funds! Did you store your Secret Recovery Code in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your Secret Recovery Code</strong>`,
@@ -92,7 +105,9 @@ const processDefinition = (processId: string) =>
           hideCharacterCount: true,
           submitButtonText: strings.buttonCheckSeedphrase,
         },
-        dataSchema: yup.string().required("Please enter your Secret Recovery Code."),
+        dataSchema: yup
+          .string()
+          .required("Please enter your Secret Recovery Code."),
         navigation: {
           next: "#verifyCheckSeedPhrase",
           previous: "#backupSeedphrase",
