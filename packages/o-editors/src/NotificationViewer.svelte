@@ -9,6 +9,7 @@ const strings = {
   PROFILE_OUTGOING_TRUST_REVOKED: "Trust revoked",
   PROFILE_OUTGOING_TRUST: "Trusted",
   PROFILE_INCOMING_UBI: "Received new income",
+  PROFILE_OUTGOING_CIRCLES_TRANSACTION: "Sent money",
 };
 function submit() {
   const answer = new Continue();

@@ -1,13 +1,25 @@
 <script lang="ts">
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import { Profile } from "src/dapps/o-passport/data/api/types";
+  import { me } from "../stores/me";
   import { push } from "svelte-spa-router";
   import Icons from "../molecules/Icons.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
-  // console.log("ROUTABLE: ", nextRoutable);
-  // console.log("runtimeDapp: ", runtimeDapp);
+
+  let profile: Profile;
+
+  $: name = profile ? profile.circlesAddress : "";
+
+  $: {
+    if ($me) {
+      profile = $me;
+    } else {
+      profile = undefined;
+    }
+  }
 </script>
 
 <div class="fixed top-0 left-0 z-50 w-full">
@@ -27,13 +39,20 @@
     </div>
 
     <div class="col-start-3 pr-1 place-self-end justify-self-end">
-      <div class="self-center text-center avatar ">
-        <div class="w-8 h-8 rounded-full ring ring-primary">
-          <img
-            src="https://images.unsplash.com/photo-1596215143762-aedbf154e539?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDl8dG93SlpGc2twR2d8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
-            alt="alt" />
+      <div
+        class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
+        <div
+          class="avatar rounded-corners-gradient-borders"
+          style="padding: 2px;">
+          <div class="w-8 h-8 m-auto bg-white rounded-full">
+            <img
+              src="{profile && profile.avatarUrl ? profile.avatarUrl : ''}"
+              alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
+          </div>
         </div>
+
       </div>
+
     </div>
   </div>
 

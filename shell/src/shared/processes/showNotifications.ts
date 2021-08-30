@@ -89,6 +89,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
               description: "",
               mainComponent: NotificationViewer,
             },
+            submitButtonText: "OK",
           };
         },
         navigation: {
