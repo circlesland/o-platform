@@ -4,7 +4,6 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
-import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { City, UpsertProfileDocument } from "../data/api/types";
@@ -37,7 +36,6 @@ const editorContent = {
     description:
       "Welcome, you are finally a citizen of CirclesLand. Glad to have you here.",
     placeholder: "First name",
-    mainComponent: TextEditor,
     submitButtonText: "Save",
   },
   lastName: {
@@ -45,7 +43,6 @@ const editorContent = {
     description:
       "Display your full name in your profile to become more trust worthy.",
     placeholder: "Last name",
-    mainComponent: TextEditor,
     submitButtonText: "Save",
   },
   dream: {
@@ -53,7 +50,6 @@ const editorContent = {
     description:
       "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
     placeholder: "Your passion",
-    mainComponent: TextareaEditor,
     submitButtonText: "Start growing",
     maxLength: "150",
   },
@@ -62,7 +58,6 @@ const editorContent = {
     description:
       "Advance your city in the basic income ranking and push the political discorse in your area.",
     placeholder: "Last name",
-    mainComponent: TextEditor,
     submitButtonText: "Submit vote",
   },
   imageView: {
@@ -112,8 +107,12 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       firstName: prompt<UpsertIdentityContext, any>({
         field: "firstName",
         onlyWhenDirty: skipIfNotDirty,
-        component: EditorView,
-        params: { view: editorContent.firstName },
+        component: TextEditor,
+        params: {
+          view: editorContent.firstName,
+          placeholder: editorContent.firstName.placeholder,
+          submitButtonText: editorContent.firstName.submitButtonText,
+        },
         dataSchema: yup.string().required("Please enter your first name."),
         navigation: {
           next: "#lastName",
@@ -122,8 +121,12 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       lastName: prompt<UpsertIdentityContext, any>({
         field: "lastName",
         onlyWhenDirty: skipIfNotDirty,
-        component: EditorView,
-        params: { view: editorContent.lastName },
+        component: TextEditor,
+        params: {
+          view: editorContent.lastName,
+          placeholder: editorContent.lastName.placeholder,
+          submitButtonText: editorContent.lastName.submitButtonText,
+        },
         navigation: {
           next: "#country",
           previous: "#firstName",
@@ -135,10 +138,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         field: "cityGeonameid",
         onlyWhenDirty: skipIfNotDirty,
         params: {
-          view: viewParams,
-          label: strings.labelCity,
-          placeholder: strings.placeholderCity,
-          submitButtonText: "Submit vote",
+          view: editorContent.imageView,
+          placeholder: editorContent.imageView.placeholder,
+          submitButtonText: editorContent.imageView.submitButtonText,
         },
         navigation: {
           next: "#dream",
@@ -149,7 +151,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       dream: prompt<UpsertIdentityContext, any>({
         field: "dream",
         onlyWhenDirty: skipIfNotDirty,
-        component: EditorView,
+        component: TextareaEditor,
         params: { view: editorContent.dream },
         dataSchema: yup
           .string()
