@@ -65,6 +65,12 @@ const editorContent = {
     mainComponent: TextEditor,
     submitButtonText: "Submit vote",
   },
+  imageView: {
+    title: "Profile Image",
+    description: "Show the World who you are",
+    placeholder: "Upload Image",
+    submitButtonText: "Upload Image",
+  },
 };
 
 const strings = {
@@ -87,6 +93,13 @@ const strings = {
     "Newsletter<br/><span class='text-base text-light-dark font-normal block mt-3'>Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?</span>",
 };
 
+const viewParams = {
+  title: "Vote for your City?",
+  description:
+    "Advance your city in the basic income ranking and push the political discorse in your area.",
+  placeholder: "Last name",
+  submitButtonText: "Submit vote",
+};
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
@@ -122,6 +135,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         field: "cityGeonameid",
         onlyWhenDirty: skipIfNotDirty,
         params: {
+          view: viewParams,
           label: strings.labelCity,
           placeholder: strings.placeholderCity,
           submitButtonText: "Submit vote",
@@ -156,7 +170,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           context.data.avatarMimeType = event.data?.mimeType;
         },
         params: {
-          label: strings.labelAvatar,
+          view: editorContent.imageView,
           submitButtonText: "Save",
         },
         navigation: {
@@ -220,7 +234,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
                 avatarUrl: context.data.avatarUrl,
                 avatarMimeType: context.data.avatarMimeType,
                 cityGeonameid: context.data.cityGeonameid,
-                status: ""
+                status: "",
               },
             });
             return result.data.upsertProfile;

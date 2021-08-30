@@ -63,7 +63,6 @@
     cancel: {
       title: "Do you really want to cancel?",
       description: "",
-      mainComponent: ChoiceSelector,
     },
   };
 
@@ -176,7 +175,7 @@
           const p = <Prompt>{
             type: "process.prompt",
             field: "___cancelRequest",
-            component: EditorView,
+            component: ChoiceSelector,
             data: {
               ___cancelRequest: undefined,
             },
@@ -184,7 +183,6 @@
             messages: {},
             params: {
               view: editorContent.cancel,
-              label: "Do you really want to cancel?",
               choices: [
                 {
                   key: "yes",

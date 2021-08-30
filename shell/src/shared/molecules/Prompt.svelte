@@ -1,12 +1,13 @@
 <script lang="ts">
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { Prompt } from "@o-platform/o-process/dist/events/prompt";
-  import {Schema} from "yup";
-  import {PromptField} from "@o-platform/o-process/dist/states/prompt";
-  import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
+  import { Schema } from "yup";
+  import { PromptField } from "@o-platform/o-process/dist/states/prompt";
+  import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 
   export let process: Process;
   export let prompt: Prompt<ProcessContext<any>>;
+
   let componentContext: {
     field: PromptField<ProcessContext<any>>;
     data: { [x: string]: any };
@@ -15,7 +16,7 @@
     params: { [x: string]: any };
     messages: { [x: string]: any };
     dataSchema: Schema<any, any>;
-    isSensitive?:boolean;
+    isSensitive?: boolean;
     process: Process;
     canGoBack: boolean;
     canSkip: boolean;
@@ -36,7 +37,7 @@
         canSkip: prompt.navigation.canSkip,
         dataSchema: prompt.dataSchema,
         editorDirtyFlags: prompt.editorDirtyFlags,
-        isSensitive: prompt.isSensitive
+        isSensitive: prompt.isSensitive,
       };
     } else {
       componentContext = null;
@@ -45,8 +46,39 @@
 </script>
 
 {#if componentContext}
-  <svelte:component this={prompt.component} context={componentContext} />
+  <section class="flex flex-col items-center justify-center p-6 space-y-4">
+    <slot name="EditorSteps">
+      <!-- <div>
+      <NavSteps steps="{[0, 0, 0]}" />
+    </div> -->
+    </slot>
+    <slot name="EditorTitle">
+      <div class="w-full text-center">
+        <h1 class="text-3xl uppercase font-heading">
+          {prompt.params.view ? prompt.params.view.title : ''}
+        </h1>
+      </div>
+    </slot>
+    <slot name="EditorDescription">
+      <div class="w-full text-center">
+        <span class="text-dark-lightest">
+          {@html prompt.params.view ? prompt.params.view.description : ''}
+        </span>
+      </div>
+    </slot>
+    <div class="w-full">
+      <slot name="EditorMainComponent">
+        <svelte:component
+          this="{prompt.component}"
+          context="{componentContext}" />
+      </slot>
+    </div>
+    <!-- <slot name="EditorActionButtons">
+    <div class="w-full">BUTTONS</div>
+  </slot> -->
+  </section>
 {:else}
   Hmm... Nothing to display here. Seems like the 'prompt' attribute of the
-  Prompt.svelte component is not set.<br />
+  Prompt.svelte component is not set.
+  <br />
 {/if}

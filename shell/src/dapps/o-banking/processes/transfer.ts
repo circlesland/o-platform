@@ -59,29 +59,30 @@ const strings = {
 };
 
 const editorContent = {
+  recipient: {
+    title: "Select the recipient you want to send money to",
+    description: "",
+    placeholder: "Recipient",
+    submitButtonText: "Enter Name",
+  },
   currency: {
     title: "Please enter the Amount",
     description: "",
-
-    mainComponent: CurrencyTransfer,
     submitButtonText: "Submit",
   },
   message: {
     title: "Transfer Message",
     description: "",
-    mainComponent: TextareaEditor,
     submitButtonText: "Submit",
   },
   confirm: {
-    title: "",
+    title: "Confirm",
     description: "",
-    mainComponent: HtmlViewer,
     submitButtonText: "Send Money",
   },
   success: {
     title: "Transfer successful",
     description: "",
-    mainComponent: HtmlViewer,
     submitButtonText: "Close",
   },
 };
@@ -147,8 +148,8 @@ const processDefinition = (processId: string) =>
         field: "recipientAddress",
         onlyWhenDirty: false,
         params: {
-          label: strings.labelRecipientAddress,
-          placeholder: "Recipient",
+          view: editorContent.recipient,
+          placeholder: editorContent.recipient.placeholder,
           submitButtonText: "Check send limit",
         },
         navigation: {
@@ -157,10 +158,9 @@ const processDefinition = (processId: string) =>
       }),
       tokens: prompt<TransferContext, any>({
         field: "tokens",
-        component: EditorView,
+        component: CurrencyTransfer,
         params: {
           view: editorContent.currency,
-          label: strings.tokensLabel,
           currencies: [
             {
               value: "crc",
@@ -297,10 +297,9 @@ const processDefinition = (processId: string) =>
       },
       message: prompt<TransferContext, any>({
         field: "message",
-        component: EditorView,
+        component: TextareaEditor,
         params: {
           view: editorContent.message,
-          label: strings.messageLabel,
           maxLength: "100",
         },
         navigation: {
@@ -377,11 +376,10 @@ const processDefinition = (processId: string) =>
       },
       acceptSummary: prompt<TransferContext, any>({
         field: "acceptSummary",
-        component: EditorView,
+        component: HtmlViewer,
         params: {
           view: editorContent.confirm,
-          label: strings.summaryLabel,
-          submitButtonText: "Send Money",
+          submitButtonText: editorContent.confirm.submitButtonText,
           html: (context) => context.data.summaryHtml,
         },
         navigation: {
@@ -459,11 +457,11 @@ const processDefinition = (processId: string) =>
       showSuccess: prompt({
         id: "showSuccess",
         field: "__",
-        component: EditorView,
+        component: HtmlViewer,
         params: {
           view: editorContent.success,
           html: () => "",
-          submitButtonText: "Close",
+          submitButtonText: editorContent.success.submitButtonText,
           hideNav: false,
         },
         navigation: {

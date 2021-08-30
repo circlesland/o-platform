@@ -11,6 +11,7 @@ import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelect
 import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { AvataarGenerator } from "../avataarGenerator";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/EditorViewContext";
 import {
   Profile,
   ProfileBySafeAddressDocument,
@@ -25,7 +26,7 @@ export function promptCirclesSafe<
   onlyWhenDirty?: boolean;
   id?: string;
   params: {
-    label: string;
+    view: EditorViewContext;
     placeholder: string;
     submitButtonText: string;
     [x: string]: any;
@@ -46,22 +47,15 @@ export function promptCirclesSafe<
   };
 }) {
   const field = normalizePromptField(spec.field);
-  const viewParams = {
-    title: "Select the recipient you want to send money to",
-    description: "",
-    placeholder: "Enter Name",
-    mainComponent: DropdownSelectEditor,
-    submitButtonText: "",
-  };
+
   return prompt<TContext, any>({
     id: spec.id ?? field.name,
     field: spec.field,
     onlyWhenDirty: spec.onlyWhenDirty,
-    component: EditorView,
+    component: DropdownSelectEditor,
     params: <DropdownSelectorParams<TContext, Profile, string>>{
-      view: viewParams,
-      label: spec.params.label,
-      placeholder: spec.params.placeholder,
+      view: spec.params.view,
+      placeholder: spec.params.view.placeholder,
       submitButtonText: spec.params.submitButtonText,
       getKey: (profile) => {
         return profile.circlesAddress;

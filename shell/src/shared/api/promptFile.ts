@@ -14,10 +14,7 @@ import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import { Generate } from "@o-platform/o-utils/dist/generate";
 import { StateNodeConfig } from "xstate/lib/types";
-
-const strings = {
-  labelFile: `Please select a file to upload`,
-};
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/EditorViewContext";
 
 type UploadPictureSpec<TContext extends ProcessContext<any>> = {
   id?: string;
@@ -34,7 +31,7 @@ type UploadPictureSpec<TContext extends ProcessContext<any>> = {
     }
   ) => void;
   params?: {
-    label: string;
+    view: EditorViewContext;
     submitButtonText: string;
     cropShape?: string;
   };
@@ -72,20 +69,7 @@ export function promptFile<
   spec.id = spec.id ? spec.id : field.name;
   const generatedId = Generate.randomHexString(4);
   const id = (x: string) => `${spec.id}/${generatedId}/${x}`;
-  let viewParams = {
-    title: "Profile Image",
-    description: "Show the World who you are",
-    placeholder: "Upload Image",
-    mainComponent: PicturePreview,
-    submitButtonText: "Upload Image",
-  };
-  let viewParamsUpload = {
-    title: "Profile Image?",
-    description: "Show the World who you are",
-    placeholder: "Upload Image",
-    mainComponent: PictureEditor,
-    submitButtonText: "Save Image",
-  };
+
   const editDataFieldConfig: StateNodeConfig<TContext, StateSchema, TEvent> = {
     id: spec.id,
     initial: "checkPreviewFile",
@@ -110,10 +94,9 @@ export function promptFile<
         // entry: () => console.log(`previewFile entry`),
         field: spec.field,
         onlyWhenDirty: spec.onlyWhenDirty,
-        component: EditorView,
+        component: PicturePreview,
         params: {
-          view: viewParams,
-          label: spec.params?.label ?? strings.labelFile,
+          view: spec.params.view,
           submitButtonText: spec.params.submitButtonText,
         },
         navigation: {
@@ -159,10 +142,9 @@ export function promptFile<
           },
         },
         onlyWhenDirty: spec.onlyWhenDirty,
-        component: EditorView,
+        component: PictureEditor,
         params: {
-          view: viewParamsUpload,
-          label: spec.params?.label ?? strings.labelFile,
+          view: spec.params.view,
           submitButtonText: "Save Image",
           cropShape: spec.params?.cropShape ?? null,
         },

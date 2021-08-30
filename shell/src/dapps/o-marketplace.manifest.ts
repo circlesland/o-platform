@@ -16,7 +16,7 @@ const stream: Page<any, DappState> = {
 };
 const offerDetail: Page<any, DappState> = {
   isSystem: true,
-  position: "modal",
+  position: "main",
   routeParts: ["=offer", ":id"],
   component: OfferDetail,
   title: "Offer detail",
@@ -68,7 +68,7 @@ export const marketplace: DappManifest<DappState> = {
     title: "Actions",
     isSystem: false,
     routeParts: ["=actions"],
-    items: async  () => [
+    items: async () => [
       {
         key: "createOffer",
         title: "Create offer",

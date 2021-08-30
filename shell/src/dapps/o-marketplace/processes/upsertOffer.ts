@@ -31,42 +31,9 @@ export type upsertOfferContextData = {
 
 export type UpsertOfferContext = ProcessContext<upsertOfferContextData>;
 
+// TODO: VALIDATION STRINGS! global etc...
 const strings = {
-  labelTitle: "labelTitle",
-  placeholderTitle: "placeholderTitle",
-  submitTitle: "submitTitle",
   submitTitle_validation_missing: "submitTitle_validation_missing",
-
-  labelDescription: "labelDescription",
-  placeholderDescription: "placeholderDescription",
-  submitDescription: "submitDescription",
-
-  labelCategory: "labelCategory",
-  placeholderCategory: "placeholderCategory",
-  submitCategory: "submitCategory",
-
-  labelCity: "labelCity",
-  placeholderCity: "placeholderCity",
-  submitCity: "submitCity",
-
-  labelUnit: "labelUnit",
-  placeholderUnit: "placeholderUnit",
-  submitUnit: "submitUnit",
-
-  labelPricePerUnit: "labelPricePerUnit",
-  placeholderPricePerUnit: "placeholderPricePerUnit",
-  submitPricePerUnit: "submitPricePerUnit",
-
-  labelMaxUnits: "labelMaxUnits",
-  placeholderMaxUnits: "placeholderMaxUnits",
-  submitMaxUnits: "submitMaxUnits",
-
-  labelDeliveryTerms: "labelDeliveryTerms",
-  placeholderDeliveryTerms: "placeholderDeliveryTerms",
-  submitDeliveryTerms: "submitDeliveryTerms",
-
-  labelPicture: "labelPicture",
-  submitPicture: "submitPicture",
 };
 
 const editorContent = {
@@ -75,7 +42,6 @@ const editorContent = {
     description:
       "Enter the title of what you are selling. keep it short & sweet.",
     placeholder: "Title",
-    mainComponent: TextEditor,
     submitButtonText: "Next",
   },
   description: {
@@ -83,8 +49,51 @@ const editorContent = {
     description:
       "Describe your item in detail. Make it sound sexy. Try to make it fit into 500 Characters.",
     placeholder: "Item description",
-    mainComponent: TextareaEditor,
     submitButtonText: "Next",
+  },
+  offerlocation: {
+    title: "Item location",
+    description: "Select the City from which this item is being sold.",
+    placeholder: "City",
+    submitButtonText: "Next",
+  },
+  offerCategory: {
+    title: "Select a Category",
+    description: "Choose a category for your listing so it's easier to find.",
+    placeholder: "Category",
+    submitButtonText: "Next",
+  },
+  offerUnit: {
+    title: "Select a Unit",
+    description:
+      "Choose a unit for your listing so it's easy to understand the amount.",
+    placeholder: "Unit",
+    submitButtonText: "Next",
+  },
+  offerPrice: {
+    title: "Price",
+    description: "Please enter the amount of circles your want for your item.",
+    placeholder: "Price",
+    submitButtonText: "Next",
+  },
+  offerUnitAmount: {
+    title: "Amount",
+    description: "Please enter how many of these items you are selling.",
+    placeholder: "e.g. 1",
+    submitButtonText: "Next",
+  },
+  offerDelivery: {
+    title: "Delivery",
+    description: "Please choose the delivery method for your offer.",
+    placeholder: "",
+    submitButtonText: "Next",
+  },
+  offerImage: {
+    title: "Add a Picture",
+    description:
+      "Adding a Picture to your offer increases the change of being sold by 90%",
+    placeholder: "",
+    submitButtonText: "Publish Offer",
   },
 };
 
@@ -100,10 +109,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       title: prompt<UpsertOfferContext, any>({
         field: "title",
         onlyWhenDirty: skipIfNotDirty,
-        component: EditorView,
+        component: TextEditor,
         params: {
           view: editorContent.title,
-          label: strings.labelTitle,
           placeholder: editorContent.title.placeholder,
           submitButtonText: editorContent.title.submitButtonText,
         },
@@ -117,10 +125,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       description: prompt<UpsertOfferContext, any>({
         field: "description",
         onlyWhenDirty: skipIfNotDirty,
-        component: EditorView,
+        component: TextareaEditor,
         params: {
           view: editorContent.description,
-          label: strings.labelDescription,
           placeholder: editorContent.description.placeholder,
           submitButtonText: editorContent.description.submitButtonText,
           showResultsOnLoad: true,
@@ -137,9 +144,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         onlyWhenDirty: skipIfNotDirty,
         typeId: "o-marketplace:offer:category:1",
         params: {
-          label: strings.labelCategory,
-          placeholder: strings.placeholderCategory,
-          submitButtonText: strings.submitCategory,
+          view: editorContent.offerCategory,
+          placeholder: editorContent.offerCategory.placeholder,
+          submitButtonText: editorContent.offerCategory.submitButtonText,
           showResultsOnLoad: true,
         },
         navigation: {
@@ -151,9 +158,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         field: "geonameid",
         onlyWhenDirty: skipIfNotDirty,
         params: {
-          label: strings.labelCity,
-          placeholder: strings.placeholderCity,
-          submitButtonText: strings.submitCity,
+          view: editorContent.offerlocation,
+          placeholder: editorContent.offerlocation.placeholder,
+          submitButtonText: editorContent.offerlocation.submitButtonText,
         },
         navigation: {
           next: "#unitTagId",
@@ -165,9 +172,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         onlyWhenDirty: skipIfNotDirty,
         typeId: "o-marketplace:offer:unit:1",
         params: {
-          label: strings.labelUnit,
-          placeholder: strings.placeholderUnit,
-          submitButtonText: strings.submitUnit,
+          view: editorContent.offerUnit,
+          placeholder: editorContent.offerUnit.placeholder,
+          submitButtonText: editorContent.offerUnit.submitButtonText,
           showResultsOnLoad: true,
         },
         navigation: {
@@ -180,9 +187,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
-          label: strings.labelPricePerUnit,
-          placeholder: strings.placeholderPricePerUnit,
-          submitButtonText: strings.submitPricePerUnit,
+          view: editorContent.offerPrice,
+          placeholder: editorContent.offerPrice.placeholder,
+          submitButtonText: editorContent.offerPrice.submitButtonText,
         },
         navigation: {
           next: "#maxUnits",
@@ -194,9 +201,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
-          label: strings.labelMaxUnits,
-          placeholder: strings.placeholderMaxUnits,
-          submitButtonText: strings.submitMaxUnits,
+          view: editorContent.offerUnitAmount,
+          placeholder: editorContent.offerUnitAmount.placeholder,
+          submitButtonText: editorContent.offerUnitAmount.submitButtonText,
         },
         navigation: {
           next: "#deliveryTermsTagId",
@@ -208,9 +215,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         onlyWhenDirty: skipIfNotDirty,
         typeId: "o-marketplace:offer:deliveryTerms:1",
         params: {
-          label: strings.labelDeliveryTerms,
-          placeholder: strings.placeholderDeliveryTerms,
-          submitButtonText: strings.submitDeliveryTerms,
+          view: editorContent.offerDelivery,
+          placeholder: editorContent.offerDelivery.placeholder,
+          submitButtonText: editorContent.offerDelivery.submitButtonText,
           showResultsOnLoad: true,
         },
         navigation: {
@@ -226,8 +233,8 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           context.data.pictureMimeType = event.data?.mimeType;
         },
         params: {
-          label: strings.labelPicture,
-          submitButtonText: strings.submitPicture,
+          view: editorContent.offerImage,
+          submitButtonText: editorContent.offerImage.submitButtonText,
           cropShape: "rect",
         },
         navigation: {

@@ -6,7 +6,6 @@ export type DropdownSelectorParams<
   TOption,
   TKey
 > = {
-  label: string;
   placeholder: string;
   keyProperty?: string;
   getLabel: (option: TOption) => string;

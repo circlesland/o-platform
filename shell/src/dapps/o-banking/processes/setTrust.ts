@@ -3,7 +3,6 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import TextEditor from "@o-platform/o-editors/src//TextEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
@@ -11,9 +10,12 @@ import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
 import { HUB_ADDRESS } from "@o-platform/o-circles/dist/consts";
 import { BN } from "ethereumjs-util";
 import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
-import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
-import {Subscription} from "rxjs";
-import {CreateTagInput, RequestIndexTransactionDocument} from "../data/api/types";
+import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
+import { Subscription } from "rxjs";
+import {
+  CreateTagInput,
+  RequestIndexTransactionDocument,
+} from "../data/api/types";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -32,9 +34,34 @@ export type SetTrustContext = ProcessContext<SetTrustContextData>;
 /**
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
-const strings = {
-  labelTrustReceiver: "Enter the address of the account that you want to trust",
-  labelTrustLimit: "Enter the trust limit (0-100)",
+
+const editorContent = {
+  recipient: {
+    title: "Select the person you want to trust",
+    description: "",
+    placeholder: "Select",
+    submitButtonText: "Set trust",
+  },
+  limit: {
+    title: "Please enter the Amount",
+    description: "",
+    submitButtonText: "Submit",
+  },
+  message: {
+    title: "Transfer Message",
+    description: "",
+    submitButtonText: "Submit",
+  },
+  confirm: {
+    title: "Confirm",
+    description: "",
+    submitButtonText: "Confirm",
+  },
+  success: {
+    title: "Trust successful",
+    description: "",
+    submitButtonText: "Close",
+  },
 };
 
 const processDefinition = (processId: string) =>
@@ -62,9 +89,9 @@ const processDefinition = (processId: string) =>
         field: "trustReceiver",
         onlyWhenDirty: false,
         params: {
-          label: strings.labelTrustReceiver,
-          placeholder: "Person to trust",
-          submitButtonText: "Set trust",
+          view: editorContent.recipient,
+          placeholder: editorContent.recipient.placeholder,
+          submitButtonText: editorContent.recipient.submitButtonText,
         },
         navigation: {
           next: "#checkTrustLimit",
@@ -90,21 +117,11 @@ const processDefinition = (processId: string) =>
             target: "#setTrust",
           },
           {
-            target: "#trustLimit",
+            target: "#trustReceiver",
           },
         ],
       },
-      trustLimit: prompt<SetTrustContext, any>({
-        field: "trustLimit",
-        component: TextEditor,
-        params: {
-          label: strings.labelTrustLimit,
-        },
-        navigation: {
-          previous: "#checkTrustReceiver",
-          next: "#setTrust",
-        },
-      }),
+
       // The code was either manually entered or pre-configured at launch.
       // Exchange it for the actual token and redirect the user to the application.
       setTrust: {
@@ -138,7 +155,7 @@ const processDefinition = (processId: string) =>
             );
 
             let txHashSubscription: Subscription;
-            txHashSubscription = execResult.observable.subscribe(async o => {
+            txHashSubscription = execResult.observable.subscribe(async (o) => {
               if (o.type != "transactionHash") {
                 return;
               }
@@ -147,11 +164,11 @@ const processDefinition = (processId: string) =>
               }
 
               const transactionTags: CreateTagInput[] = [];
-              const trustMessage:string  = undefined; // TODO: Ask if the user wants to send a message together with the un/trust
+              const trustMessage: string = undefined; // TODO: Ask if the user wants to send a message together with the un/trust
               if (trustMessage) {
                 transactionTags.push({
                   typeId: "o-banking:trust:message:1",
-                  value: trustMessage
+                  value: trustMessage,
                 });
               }
 
@@ -161,9 +178,9 @@ const processDefinition = (processId: string) =>
                 variables: {
                   data: {
                     tags: transactionTags,
-                    transactionHash: o.data
-                  }
-                }
+                    transactionHash: o.data,
+                  },
+                },
               });
               // console.log(indexedTransaction);
             });
@@ -178,9 +195,10 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
+          view: editorContent.success,
           html: () => `<p>Trust changed</p>`,
-          submitButtonText: "Close",
-          hideNav: true,
+          submitButtonText: editorContent.success.submitButtonText,
+          hideNav: false,
         },
         navigation: {
           next: "#success",

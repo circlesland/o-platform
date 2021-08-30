@@ -1,31 +1,34 @@
-import {actions, StateSchema, StatesConfig} from "xstate";
+import { actions, StateSchema, StatesConfig } from "xstate";
 import { ProcessContext } from "../interfaces/processContext";
 import { show } from "../actions/show";
 import { Continue } from "../events/continue";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/EditorViewContext";
 const { assign } = actions;
 
 export type DynamicPromptField<TContext extends ProcessContext<any>> = {
-  name: string,
-  get:(context:TContext)=>any,
-  set:(o:any, context:TContext)=>void
+  name: string;
+  get: (context: TContext) => any;
+  set: (o: any, context: TContext) => void;
 };
 
-export type PromptField<TContext extends ProcessContext<any>>
-    = string | DynamicPromptField<TContext>
+export type PromptField<TContext extends ProcessContext<any>> =
+  | string
+  | DynamicPromptField<TContext>;
 
-export function normalizePromptField<TContext extends ProcessContext<any>>(field:PromptField<TContext>)
-    : DynamicPromptField<TContext> {
+export function normalizePromptField<TContext extends ProcessContext<any>>(
+  field: PromptField<TContext>
+): DynamicPromptField<TContext> {
   if (typeof field == "string") {
     return {
       name: field,
-      get: (context:TContext) => {
+      get: (context: TContext) => {
         return context.data[field];
       },
-      set:(o:any, context:TContext) => {
+      set: (o: any, context: TContext) => {
         context.data[field] = o;
-      }
-    }
+      },
+    };
   } else {
     return <DynamicPromptField<TContext>>field;
   }
@@ -40,7 +43,7 @@ export function normalizePromptField<TContext extends ProcessContext<any>>(field
  */
 export type PromptSpec<TContext extends ProcessContext<any>, TEvent> = {
   id?: string;
-  entry?: (context:TContext, event:TEvent) => void;
+  entry?: (context: TContext, event: TEvent) => void;
   field: PromptField<TContext>;
   component: any;
   isSensitive?: boolean;
@@ -48,7 +51,7 @@ export type PromptSpec<TContext extends ProcessContext<any>, TEvent> = {
    * If set to 'true' every prompt will automatically submit its present data
    * and go to the next step if it's dirty flag is not set.
    */
-  onlyWhenDirty?:boolean;
+  onlyWhenDirty?: boolean;
   navigation?: {
     // If you want to allow the user to go one step back then specify here where he came from
     previous?: string;
@@ -63,15 +66,16 @@ export type PromptSpec<TContext extends ProcessContext<any>, TEvent> = {
       event: { type: string; [x: string]: any }
     ) => boolean;
   };
-  params: { [x: string]: any }|((context:TContext)=>{[x: string]: any});
-  dataSchema?: any // ((context:TContext, event:TEvent) => any)|any;
+  params: { [x: string]: any } | ((context: TContext) => { [x: string]: any });
+  dataSchema?: any; // ((context:TContext, event:TEvent) => any)|any;
 };
 
 export function prompt<
   TContext extends ProcessContext<any>,
   TEvent extends PlatformEvent
 >(spec: PromptSpec<TContext, TEvent>) {
-  let canGoBack:(context: ProcessContext<any>, event: any)=>boolean = () => !!spec.navigation?.previous;
+  let canGoBack: (context: ProcessContext<any>, event: any) => boolean = () =>
+    !!spec.navigation?.previous;
   if (canGoBack && spec.navigation?.canGoBack) {
     canGoBack = spec.navigation.canGoBack;
   }
@@ -82,37 +86,43 @@ export function prompt<
     states: {
       // If the spec contains an 'entry' action execute it now
       entry: {
-        entry: (context:TContext, event:TEvent) => {
+        entry: (context: TContext, event: TEvent) => {
           // console.log(`entry: ${spec.id} ${spec.field}`)
           if (spec.entry) {
             spec.entry(context, event);
           }
         },
-        always: "checkSkip"
+        always: "checkSkip",
       },
       checkSkip: {
         entry: () => console.log(`checkSkip: ${spec.id} ${spec.field}`),
         invoke: {
-          src: async (context:TContext) => {
+          src: async (context: TContext) => {
             // Emit 'context.data' as event.
             // 'validate' and 'submit' get their value from this event
             // in the case that 'checkSkip' == true.
             return context.data;
           },
-          onDone: [{
-            cond: (context:TContext) => {
-              const skip = spec.onlyWhenDirty && !context.dirtyFlags[field.name];
-              if (skip){
-                console.log(`checkSkip: ${spec.id} ${spec.field} - skipping because '${spec.field}' is not dirty and 'onlyWhenDirty' == true.`);
-              }
-              return skip;
+          onDone: [
+            {
+              cond: (context: TContext) => {
+                const skip =
+                  spec.onlyWhenDirty && !context.dirtyFlags[field.name];
+                if (skip) {
+                  console.log(
+                    `checkSkip: ${spec.id} ${spec.field} - skipping because '${spec.field}' is not dirty and 'onlyWhenDirty' == true.`
+                  );
+                }
+                return skip;
+              },
+              target: "validate",
             },
-            target: "validate"
-          }, {
-            target: "show"
-          }],
-          onError: "#error"
-        }
+            {
+              target: "show",
+            },
+          ],
+          onError: "#error",
+        },
       },
       show: {
         entry: [
@@ -133,12 +143,15 @@ export function prompt<
         ],
         on: {
           "process.back": "back",
-          "process.continue": [{
-            cond: () => !spec.dataSchema,
-            target: "submit"
-          }, {
-            target: "validate"
-          }],
+          "process.continue": [
+            {
+              cond: () => !spec.dataSchema,
+              target: "submit",
+            },
+            {
+              target: "validate",
+            },
+          ],
           "process.skip": "skip",
         },
       },
@@ -183,9 +196,9 @@ export function prompt<
             const data = event.data;
             if (!data) {
               throw new Error(
-                  `Couldn't read the 'data' property of the received Continue event: ${JSON.stringify(
-                      event
-                  )}`
+                `Couldn't read the 'data' property of the received Continue event: ${JSON.stringify(
+                  event
+                )}`
               );
             }
             if (spec.dataSchema) {
@@ -193,7 +206,9 @@ export function prompt<
               const valueToValidate = data[field.name];
 
               try {
-                await spec.dataSchema.validate(valueToValidate, {abortEarly: false})
+                await spec.dataSchema.validate(valueToValidate, {
+                  abortEarly: false,
+                });
               } catch (e) {
                 if (e.errors) {
                   context.messages[field.name] = e.errors;
@@ -205,16 +220,19 @@ export function prompt<
 
             return event.data;
           },
-          onDone: [{
-            cond: (context:TContext) => {
-              return !context.messages[field.name];
+          onDone: [
+            {
+              cond: (context: TContext) => {
+                return !context.messages[field.name];
+              },
+              target: "submit",
             },
-            target: "submit"
-          }, {
-            target: "show"
-          }],
-          onError: "#error"
-        }
+            {
+              target: "show",
+            },
+          ],
+          onError: "#error",
+        },
       },
       submit: {
         entry: [

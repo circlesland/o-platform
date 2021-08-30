@@ -8,22 +8,13 @@ import {
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import DropDownTag from "@o-platform/o-editors/src/dropdownItems/DropDownTag.svelte";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
-import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/EditorViewContext";
 import {
   Tag,
   TagByIdDocument,
   TagsDocument,
 } from "../../dapps/o-marketplace/data/api/types";
 
-const editorContent = {
-  category: {
-    title: "Select a category",
-    description: "Choose a category for your item.",
-    placeholder: "Category",
-    mainComponent: DropdownSelectEditor,
-    submitButtonText: "Next",
-  },
-};
 export function promptTag<
   TContext extends ProcessContext<any>,
   TEvent extends PlatformEvent
@@ -33,7 +24,7 @@ export function promptTag<
   typeId: string;
   id?: string;
   params: {
-    label: string;
+    view: EditorViewContext;
     placeholder: string;
     submitButtonText: string;
     [x: string]: any;
@@ -58,12 +49,11 @@ export function promptTag<
     id: spec.id ?? field.name,
     field: spec.field,
     onlyWhenDirty: spec.onlyWhenDirty,
-    component: EditorView,
+    component: DropdownSelectEditor,
     params: <DropdownSelectorParams<TContext, Tag, number>>{
-      view: editorContent.category,
-      label: spec.params.label,
-      placeholder: editorContent.category.placeholder,
-      submitButtonText: editorContent.category.submitButtonText,
+      view: spec.params.view,
+      placeholder: spec.params.view.placeholder,
+      submitButtonText: spec.params.view.submitButtonText,
       showResultsOnLoad: spec.params.showResultsOnLoad,
       getKey: (tag) => tag.id,
       itemTemplate: DropDownTag,

@@ -13,7 +13,7 @@ import {
   City,
 } from "../../dapps/o-passport/data/api/types";
 import DropDownCity from "@o-platform/o-editors/src/dropdownItems/DropDownCity.svelte";
-import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/EditorViewContext";
 
 export function promptCity<
   TContext extends ProcessContext<any>,
@@ -23,7 +23,7 @@ export function promptCity<
   field: PromptField<TContext>;
   onlyWhenDirty?: boolean;
   params: {
-    label: string;
+    view: EditorViewContext;
     placeholder: string;
     submitButtonText: string;
     [x: string]: any;
@@ -49,19 +49,18 @@ export function promptCity<
     description:
       "Advance your city in the basic income ranking and push the political discorse in your area.",
     placeholder: "Last name",
-    mainComponent: DropdownSelectEditor,
+
     submitButtonText: "Submit vote",
   };
   return prompt<TContext, any>({
     id: spec.id ?? field.name,
     field: spec.field,
     onlyWhenDirty: spec.onlyWhenDirty,
-    component: EditorView,
+    component: DropdownSelectEditor,
     params: <DropdownSelectorParams<TContext, City, number>>{
-      label: spec.params.label,
+      view: spec.params.view,
       placeholder: spec.params.placeholder,
       submitButtonText: spec.params.submitButtonText,
-      view: viewParams,
       itemTemplate: DropDownCity,
       getKey: (o) => o.geonameid,
       getLabel: (o) => `${o.name} (${o.country})`,
