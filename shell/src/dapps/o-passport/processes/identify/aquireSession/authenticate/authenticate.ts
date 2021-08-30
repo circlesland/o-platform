@@ -3,7 +3,6 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.svelte";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import NumberEditor from "@o-platform/o-editors/src/NumberEditor.svelte";
-import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import AcceptViewer from "@o-platform/o-editors/src/AcceptViewer.svelte";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
@@ -54,14 +53,12 @@ const editorContent = {
     description:
       "A pleasure you found your way here. Please provide your email address to Sign-In.",
     placeholder: "Email address",
-    mainComponent: EmailAddressEditor,
     submitButtonText: "Let me in",
   },
   terms_privacy: {
     title: "Terms & Privacy",
     description:
       "CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/><span class='text-xs'>For details read our <a href='https://blog.circles.land/terms-of-service' class='text-primary' target='_blank' alt='privacy policy & terms of service'>privacy policy & terms of service</a></span>",
-    mainComponent: AcceptViewer,
     submitButtonText: "I read and accept them",
   },
   verification: {
@@ -69,7 +66,6 @@ const editorContent = {
     description:
       "A pleasure you found your way here. Please provide your email address to Sign-In",
     placeholder: "Email address",
-    mainComponent: EmailAddressEditor,
     submitButtonText: "Let me in",
   },
   code: {
@@ -77,7 +73,6 @@ const editorContent = {
     description:
       "We have send you a 6 digit login pin to your mail.<br/><br/><span class='text-xs'>It may take a moment. Also check your spam folder.</span>",
     placeholder: "Enter Pin",
-    mainComponent: NumberEditor,
     submitButtonText: "Login",
   },
   // code: {
@@ -126,8 +121,12 @@ const processDefinition = (processId: string) =>
       },
       loginEmail: prompt<AuthenticateContext, any>({
         field: "loginEmail",
-        component: EditorView,
-        params: { view: editorContent.email },
+        component: EmailAddressEditor,
+        params: {
+          view: editorContent.email,
+          placeholder: editorContent.email.placeholder,
+          submitButtonText: editorContent.email.submitButtonText,
+        },
 
         dataSchema: yup
           .string()
@@ -215,7 +214,7 @@ const processDefinition = (processId: string) =>
       // Ask the user to accept TOS
       acceptTos: prompt<AuthenticateContext, any>({
         field: "acceptTos",
-        component: EditorView,
+        component: AcceptViewer,
         params: { view: editorContent.terms_privacy },
 
         /*
@@ -322,7 +321,7 @@ const processDefinition = (processId: string) =>
       // Wait for the user to enter the code he received in the login-email
       code: prompt<AuthenticateContext, any>({
         field: "code",
-        component: EditorView,
+        component: NumberEditor,
         isSensitive: true,
         params: (context) => {
           return {

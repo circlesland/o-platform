@@ -36,10 +36,18 @@ export type IdentifyContextData = {
 };
 
 const strings = {
-  choiceLabel:
-    "In the circles world, instead of bank account numbers (IBAN’s) you have 'safe addresses' to identify your account number. <br/><br/><span class='text-primary'>Do you want to create a new safe account or connect your existing safe from circles.garden?<span>",
   choiceYesLabel: "Connect",
   choiceNoLabel: "Create New",
+};
+
+const editorContent = {
+  connectOrCreate: {
+    title: "Connect or Create?",
+    description:
+      "Do you already have a circles Safe address or would you like to create one?",
+    placeholder: "",
+    submitButtonText: "",
+  },
 };
 
 export type IdentifyContext = ProcessContext<IdentifyContextData>;
@@ -143,7 +151,7 @@ const processDefinition = (processId: string) =>
 
       connectOrCreate: promptChoice({
         id: "connectOrCreate",
-        promptLabel: strings.choiceLabel,
+        params: { view: editorContent.connectOrCreate },
         options: [
           {
             key: "connect",

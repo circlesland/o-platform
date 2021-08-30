@@ -46,6 +46,39 @@ this code like a
   buttonCheckSeedphrase: "Really, I did it!",
 };
 
+const editorContent = {
+  seedphrase: {
+    title: `READ CAREFULLY<br/>Secret Recovery Code`,
+    titleClass: "text-alert-dark",
+    description: `Your Secret Recovery Code is the
+<span class="text-alert-dark">only key</span>
+which can access your safe. It is your
+<span class="text-alert-dark">full responsibility</span>
+to
+<span class="text-alert-dark">protect</span>
+this code like a
+<span class="text-alert-dark">password</span>
+.
+<br />
+<br />
+<span class="text-xs">
+  If you loose it or forget it, all your
+  <span class="text-alert-dark">money is lost forever</span>
+  .
+</span>`,
+    submitButtonText: "Next",
+  },
+  seedphraseCheck: {
+    title: `SAFE Code SECURELY`,
+    titleClass: "text-alert-dark",
+    description: `
+    Keep in mind, <span class="text-alert-dark">everyone who knows</span> your Secret Recovery Code can <span class="text-alert-dark">access all you money</span>.
+    <br />
+    <br />
+    <span class="text-xs">Please save your Secret Recovery Code in your notes <span class="text-alert-dark">(not secure)</span>, a password manager <span class="text-alert-dark">(secure)</span> or write it down on a paper and put it in your safe <span class="text-alert-dark">(most secure)</span>.`,
+    submitButtonText: "I stored my Code securly",
+  },
+};
 function randomIntFromInterval(min, max) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -84,9 +117,9 @@ const processDefinition = (processId: string) =>
         field: "seedPhrase",
         component: TextViewer,
         params: {
-          label: strings.labelExportSeedphrase,
+          view: editorContent.seedphrase,
           isReadonly: true,
-          submitButtonText: strings.buttonExportSeedphrase,
+          submitButtonText: editorContent.seedphrase.submitButtonText,
           hideCharacterCount: true,
           canCopy: true,
         },
@@ -101,9 +134,9 @@ const processDefinition = (processId: string) =>
         field: "checkSeedPhrase",
         component: TextareaEditor,
         params: {
-          label: strings.labelCheckSeedphrase,
+          view: editorContent.seedphraseCheck,
           hideCharacterCount: true,
-          submitButtonText: strings.buttonCheckSeedphrase,
+          submitButtonText: editorContent.seedphraseCheck.submitButtonText,
         },
         dataSchema: yup
           .string()

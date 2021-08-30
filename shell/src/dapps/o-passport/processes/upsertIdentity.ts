@@ -66,6 +66,13 @@ const editorContent = {
     placeholder: "Upload Image",
     submitButtonText: "Upload Image",
   },
+  newsletter: {
+    title: "Newsletter",
+    description:
+      "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
+    placeholder: "",
+    submitButtonText: "",
+  },
 };
 
 const strings = {
@@ -138,9 +145,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         field: "cityGeonameid",
         onlyWhenDirty: skipIfNotDirty,
         params: {
-          view: editorContent.imageView,
-          placeholder: editorContent.imageView.placeholder,
-          submitButtonText: editorContent.imageView.submitButtonText,
+          view: editorContent.city,
+          placeholder: editorContent.city.placeholder,
+          submitButtonText: editorContent.city.submitButtonText,
         },
         navigation: {
           next: "#dream",
@@ -183,7 +190,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       newsletter: promptChoice<UpsertIdentityContext, any>({
         id: "newsletter",
-        promptLabel: strings.labelNewsletter,
+        params: { view: editorContent.newsletter },
         onlyWhenDirty: skipIfNotDirty,
         options: [
           {

@@ -11,6 +11,7 @@ import { transferXdai } from "./transferXdai";
 import { transferCircles } from "./transferCircles";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
+import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
@@ -21,6 +22,7 @@ import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import { Profile } from "../data/api/types";
 import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { SetTrustContext } from "./setTrust";
+import TextEditor__SvelteComponent_ from "../../../../../packages/o-editors/src/TextEditor.svelte";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -64,6 +66,12 @@ const editorContent = {
     description: "",
     placeholder: "Recipient",
     submitButtonText: "Enter Name",
+  },
+  recipientSafeAddress: {
+    title: "Enter the recipients safe address",
+    description: "Here you can enter the recipients safe address directly.",
+    placeholder: "Safe Address",
+    submitButtonText: "Next",
   },
   currency: {
     title: "Please enter the Amount",
@@ -154,6 +162,25 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#tokens",
+        },
+      }),
+      recipientSafeAddress: prompt<TransferContext, any>({
+        field: "tokens",
+        component: TextEditor,
+        params: {
+          view: editorContent.recipientSafeAddress,
+          placeholder: editorContent.recipientSafeAddress.placeholder,
+          submitButtonText: "Check send limit",
+        },
+        dataSchema: yup.object().shape({
+          amount: yup
+            .string()
+            .typeError("Please enter a valid Recipient address.")
+            .required("Please enter a valid Recipient address."),
+        }),
+        navigation: {
+          next: "#findMaxFlow",
+          previous: "#recipientAddress",
         },
       }),
       tokens: prompt<TransferContext, any>({

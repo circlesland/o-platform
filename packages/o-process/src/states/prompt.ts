@@ -3,7 +3,7 @@ import { ProcessContext } from "../interfaces/processContext";
 import { show } from "../actions/show";
 import { Continue } from "../events/continue";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { EditorViewContext } from "@o-platform/o-editors/src/shared/EditorViewContext";
+
 const { assign } = actions;
 
 export type DynamicPromptField<TContext extends ProcessContext<any>> = {

@@ -54,8 +54,9 @@
     </slot>
     <slot name="EditorTitle">
       <div class="w-full text-center">
-        <h1 class="text-3xl uppercase font-heading">
-          {prompt.params.view ? prompt.params.view.title : ''}
+        <h1
+          class="text-3xl uppercase font-heading {prompt.params.view ? prompt.params.view.titleClass : ''}">
+          {@html prompt.params.view ? prompt.params.view.title : ''}
         </h1>
       </div>
     </slot>
