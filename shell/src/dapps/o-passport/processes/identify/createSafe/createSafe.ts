@@ -25,19 +25,19 @@ const strings = {
   choiceConnect: "Connect",
   choiceCreate: "Create",
   labelExportSeedphrase: `Your Secret Recovery Code is the
-<span class="text-alert-dark">only key</span>
+<span class="text-alert">only key</span>
 which can access your safe. It is your
-<span class="text-alert-dark">full responsibility</span>
+<span class="text-alert">full responsibility</span>
 to
-<span class="text-alert-dark">protect</span>
+<span class="text-alert">protect</span>
 this code like a
-<span class="text-alert-dark">password</span>
+<span class="text-alert">password</span>
 .
 <br />
 <br />
 <span class="text-xs">
   If you loose it or forget it, all your
-  <span class="text-alert-dark">money is lost forever</span>
+  <span class="text-alert">money is lost forever</span>
   .
 </span>`,
   buttonExportSeedphrase: "I stored it securely",
@@ -49,33 +49,33 @@ this code like a
 const editorContent = {
   seedphrase: {
     title: `READ CAREFULLY<br/>Secret Recovery Code`,
-    titleClass: "text-alert-dark",
+    titleClass: "text-alert",
     description: `Your Secret Recovery Code is the
-<span class="text-alert-dark">only key</span>
+<span class="text-alert">only key</span>
 which can access your safe. It is your
-<span class="text-alert-dark">full responsibility</span>
+<span class="text-alert">full responsibility</span>
 to
-<span class="text-alert-dark">protect</span>
+<span class="text-alert">protect</span>
 this code like a
-<span class="text-alert-dark">password</span>
+<span class="text-alert">password</span>
 .
 <br />
 <br />
 <span class="text-xs">
   If you loose it or forget it, all your
-  <span class="text-alert-dark">money is lost forever</span>
+  <span class="text-alert">money is lost forever</span>
   .
 </span>`,
     submitButtonText: "Next",
   },
   seedphraseCheck: {
     title: `SAFE Code SECURELY`,
-    titleClass: "text-alert-dark",
+    titleClass: "text-alert",
     description: `
-    Keep in mind, <span class="text-alert-dark">everyone who knows</span> your Secret Recovery Code can <span class="text-alert-dark">access all you money</span>.
+    Keep in mind, <span class="text-alert">everyone who knows</span> your Secret Recovery Code can <span class="text-alert">access all you money</span>.
     <br />
     <br />
-    <span class="text-xs">Please save your Secret Recovery Code in your notes <span class="text-alert-dark">(not secure)</span>, a password manager <span class="text-alert-dark">(secure)</span> or write it down on a paper and put it in your safe <span class="text-alert-dark">(most secure)</span>.`,
+    <span class="text-xs">Please save your Secret Recovery Code in your notes <span class="text-alert">(not secure)</span>, a password manager <span class="text-alert">(secure)</span> or write it down on a paper and put it in your safe <span class="text-alert">(most secure)</span>.`,
     submitButtonText: "I stored my Code securly",
   },
 };
