@@ -8,6 +8,7 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
+  export let headerString: string = null;
 
   let profile: Profile;
 
@@ -33,7 +34,9 @@
     </div>
 
     <div class="justify-self-center">
-      {#if (routable ? routable.title : '<<No dapp>>') != (runtimeDapp ? runtimeDapp.title : '<<No dapp>>')}
+      {#if headerString}
+        <span class="text-md">{headerString}</span>
+      {:else if (routable ? routable.title : '<<No dapp>>') != (runtimeDapp ? runtimeDapp.title : '<<No dapp>>')}
         <span class="text-md">{routable.title}</span>
       {/if}
     </div>

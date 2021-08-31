@@ -1,22 +1,3 @@
-<style>
-  /* Ensure image is always 16:9 Ratio */
-  .headerImageContainer {
-    max-width: none;
-  }
-
-  .image-wrapper {
-    position: relative;
-    padding-bottom: 56.2%;
-  }
-
-  .image-wrapper img {
-    position: absolute;
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-  }
-</style>
-
 <script lang="ts">
   import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
   import { Offer, OffersDocument } from "../data/api/types";
@@ -341,3 +322,23 @@
     </section>
   {/if}
 </div>
+
+<style>
+  /* Ensure image is always 16:9 Ratio */
+  .headerImageContainer {
+    max-width: none;
+  }
+
+  .image-wrapper {
+    position: relative;
+    /* padding-bottom: 56.2%;b 16:9 */
+    padding-bottom: 75%; /* 4:3 */
+  }
+
+  .image-wrapper img {
+    position: absolute;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+</style>

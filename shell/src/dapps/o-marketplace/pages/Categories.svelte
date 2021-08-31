@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import { TagsDocument } from "../data/api/types";
   import { onMount } from "svelte";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -7,6 +7,7 @@
   import { push } from "svelte-spa-router";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
@@ -63,9 +64,9 @@
   }
 </script>
 
-<MarketplaceHeader {runtimeDapp} {routable} />
+<SimpleHeader {runtimeDapp} {routable} />
 
-<div class="mx-4 -mt-3">
+<div class="px-4 mx-auto -mt-3 lg:w-2/3 xl:w-1/2">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -85,26 +86,22 @@
       </div>
     </section>
   {:else if categories.length}
-    <section class="flex items-center justify-center mb-1 ">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div class="text-xs font-bold text-left ">Categories</div>
-      </div>
-    </section>
     {#each categories as category}
-      <section
-        class="flex items-center justify-center mb-1 "
-        on:click={() => loadCategoryPage(category.id)}
-      >
-        <div
-          class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-        >
-          <div class="text-xs font-bold text-left ">
-            {category.value}
+      <div on:click="{() => loadCategoryPage(category)}">
+        <ItemCard
+          params="{{ edgeless: false, imageUrl: `/images/market/circles-no-image.jpg`, title: category.value }}">
+
+          <div
+            slot="itemCardText"
+            class="relative flex-grow h-8 px-3 py-1 text-left title">
+            <div class="absolute w-full h-4">
+              <h2 class="text-base">{category.value}</h2>
+            </div>
+
           </div>
-        </div>
-      </section>
+          <div slot="itemCardEnd"></div>
+        </ItemCard>
+      </div>
     {/each}
   {:else}
     <section class="flex items-center justify-center mb-2 ">

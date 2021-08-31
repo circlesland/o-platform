@@ -47,21 +47,22 @@
 
       </div>
     </slot>
-
-    <div
-      class="relative flex-grow h-12 px-3 py-1 text-left title"
-      class:truncate="{params.truncateMain}">
+    <slot name="itemCardText">
       <div
-        class="absolute w-full h-4 mb-4 "
-        class:truncateThis="{params.truncateMain}">
-        <h2 class="text-base">{params.title}</h2>
+        class="relative flex-grow h-12 px-3 py-1 text-left title"
+        class:truncate="{params.truncateMain}">
+        <div
+          class="absolute w-full h-4 mb-4 "
+          class:truncateThis="{params.truncateMain}">
+          <h2 class="text-base">{params.title}</h2>
+        </div>
+        <p
+          class="absolute w-full h-4 mt-6 text-xs text-dark-lightest"
+          class:truncateThis="{params.truncateMain}">
+          {params.subTitle}
+        </p>
       </div>
-      <p
-        class="absolute w-full h-4 mt-6 text-xs text-dark-lightest"
-        class:truncateThis="{params.truncateMain}">
-        {params.subTitle}
-      </p>
-    </div>
+    </slot>
     <slot name="itemCardEnd">
       <div>
         <div

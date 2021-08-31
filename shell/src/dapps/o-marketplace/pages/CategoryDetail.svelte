@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import { Offer, OffersDocument } from "../data/api/types";
   import OfferCard from "../atoms/OfferCard.svelte";
   import { onMount } from "svelte";
@@ -63,7 +63,7 @@
   });
 </script>
 
-<MarketplaceHeader {runtimeDapp} {routable} header="{categoryName}" />
+<SimpleHeader {runtimeDapp} {routable} headerString="{categoryName}" />
 
 <div class="px-4 mx-auto -mt-3 lg:w-2/3 xl:w-1/2">
   {#if isLoading}

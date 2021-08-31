@@ -140,8 +140,9 @@ $: {
   }
   if (context.params.cropShape && context.params.cropShape == "rect") {
     cropShape = context.params.cropShape;
-    aspect = 16 / 9;
+    aspect = 4 / 3;
     aspectWidth = 600;
+    aspectHeight = 450;
   }
 }
 

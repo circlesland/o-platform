@@ -6,8 +6,9 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
+  export let headerString: string = null;
 </script>
 
-<TopNav {runtimeDapp} {routable} />
+<TopNav {runtimeDapp} {routable} {headerString} />
 
 <PageHeader heightClass="h-8 mt-12" />
