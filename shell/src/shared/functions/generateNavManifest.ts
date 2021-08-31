@@ -150,9 +150,6 @@ export function generateNavManifest(
         };
       }
       if (args.canSkip) {
-        if (!args.canGoBack) {
-          newManifest.navPill.left = null;
-        }
         newManifest.navPill.right = {
           component: ListComponent,
           props: {
