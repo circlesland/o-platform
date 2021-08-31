@@ -150,7 +150,10 @@ export function generateNavManifest(
         };
       }
       if (args.canSkip) {
-        newManifest.navPill.left = {
+        if (!args.canGoBack) {
+          newManifest.navPill.left = null;
+        }
+        newManifest.navPill.right = {
           component: ListComponent,
           props: {
             icon: "simplearrowright",
