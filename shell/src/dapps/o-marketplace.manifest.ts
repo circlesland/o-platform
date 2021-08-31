@@ -16,7 +16,7 @@ const stream: Page<any, DappState> = {
 };
 const offerDetail: Page<any, DappState> = {
   isSystem: true,
-  position: "main",
+  position: "modal",
   routeParts: ["=offer", ":id"],
   component: OfferDetail,
   title: "Offer detail",
@@ -31,7 +31,7 @@ const categories: Page<any, DappState> = {
 const categoryDetail: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["=categories", ":category", ":categoryName"],
-  position: "modal",
+  position: "main",
   component: CategoryDetail,
   title: "Category",
   type: "page",

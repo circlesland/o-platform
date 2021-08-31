@@ -63,9 +63,9 @@
   });
 </script>
 
-<MarketplaceHeader {runtimeDapp} {routable} header={categoryName} />
+<MarketplaceHeader {runtimeDapp} {routable} header="{categoryName}" />
 
-<div class="mx-4 -mt-3">
+<div class="px-4 mx-auto -mt-3 lg:w-2/3 xl:w-1/2">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -86,8 +86,7 @@
     </section>
   {:else if offers.length}
     <div
-      class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid svelte-hq9rde"
-    >
+      class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid svelte-hq9rde">
       {#each offers as offer}
         <OfferCard {offer} />
       {/each}
