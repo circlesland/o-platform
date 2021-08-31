@@ -51,7 +51,18 @@ onMount(() => inputField.focus());
       </div>
     </div>
   {/if}
-  <div class="relative h-20 m-auto w-72">
+  <input
+    on:keydown="{onkeydown}"
+    id="{fieldId}"
+    name="{fieldId}"
+    autocomplete="{fieldId}"
+    type="text"
+    maxlength="6"
+    class="m-auto text-4xl top-2 input input-lg input-bordered input-number w-80"
+    bind:value="{_context.data[context.field]}"
+    bind:this="{inputField}"
+    on:change="{() => (context.editorDirtyFlags[context.field] = true)}" />
+  <!-- <div class="relative h-20 m-auto w-72">
     <div class="absolute h-20 pt-2">
       <div
         class="relative flex flex-row w-full h-16 space-x-2 overflow-hidden bg-transparent">
@@ -74,6 +85,6 @@ onMount(() => inputField.focus());
         bind:this="{inputField}"
         on:change="{() => (context.editorDirtyFlags[context.field] = true)}" />
     </div>
-  </div>
+  </div> -->
 </div>
 <ProcessNavigation on:buttonClick="{submitHandler}" context="{context}" />

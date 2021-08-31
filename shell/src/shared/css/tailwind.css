@@ -200,23 +200,24 @@ body {
 }
 
 .input-number {
-  @apply input-lg;
   @apply text-4xl;
   letter-spacing: 1.63rem;
-  background: transparent;
-  border: none;
-  line-height: none;
+  /* background: transparent; */
+  /* border: none; */
+  --tw-border-opacity: 0.2;
+  border: 1px solid rgba(31, 41, 55, 0.2);
+  /* line-height: none; */
   font-family: monospace;
   padding-left: 0.6rem;
   padding-right: 0;
   height: 3rem;
   width: 19rem;
 }
-@supports (-webkit-touch-callout: none) {
+/* @supports (-webkit-touch-callout: none) {
   .input-number {
     letter-spacing: 2.15rem;
   }
-}
+} */
 
 .infocard {
   background-color: #d1ecf1;
