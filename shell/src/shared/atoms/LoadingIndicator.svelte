@@ -33,7 +33,7 @@
 <div class="flex flex-col items-center justify-center">
   <LoadingSpinner />
   {#if progressIndicator}
-    <div class="text-sm text-center text-primary foont-primary">
+    <div class="mt-4 text-sm text-center text-primary">
       {progressIndicator.message}
     </div>
   {/if}

@@ -8,7 +8,7 @@
   <div>
     <LoadingSpinner />
     {#if data.text}
-      <div class="text-sm text-center text-primary font-primary">
+      <div class="mt-4 text-sm text-center text-primary font-primary">
         {data.text}
       </div>
     {/if}
