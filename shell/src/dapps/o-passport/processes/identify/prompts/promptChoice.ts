@@ -2,7 +2,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
-import { EditorViewContext } from "@o-platform/o-editors/src/shared/EditorViewContext";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 
 export type PromptChoiceSpec<
   TContext extends ProcessContext<any>,
