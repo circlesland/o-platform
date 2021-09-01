@@ -750,9 +750,9 @@
       disabled />
   {:else}
     <div
-      class="left-0 flex flex-row order-1 w-full space-x-4 bg-white -bottom-1"
-      style="z-index: 99999999; box-shadow: 2px 2px 1px 10px rgba(255, 255, 255,
-      1);"
+      class="bottom-0 left-0 flex flex-row order-1 w-full space-x-4 bg-white"
+      style="height: 70px; z-index: 99999999; box-shadow: 2px 2px 1px 10px
+      rgba(255, 255, 255, 1);"
       class:sticky="{staticList !== true}"
       class:h-12="{staticList !== true}">
       <div class="flex-grow">

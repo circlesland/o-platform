@@ -4,6 +4,7 @@
   import { Schema } from "yup";
   import { PromptField } from "@o-platform/o-process/dist/states/prompt";
   import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
+  import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 
   export let process: Process;
   export let prompt: Prompt<ProcessContext<any>>;
@@ -46,7 +47,9 @@
 </script>
 
 {#if componentContext}
-  <section class="flex flex-col items-center justify-center p-6 space-y-4">
+  <section
+    class="flex flex-col items-center justify-center p-6 space-y-4"
+    class:pb-0="{prompt.component === DropdownSelectEditor}">
     <slot name="EditorSteps">
       <!-- <div>
       <NavSteps steps="{[0, 0, 0]}" />
