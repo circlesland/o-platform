@@ -136,7 +136,7 @@
   }
 </script>
 
-<main>
+<main class="w-full">
   <div
     bind:this="{graph}"
     style="width: 100%; height: {height};"
