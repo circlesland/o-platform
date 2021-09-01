@@ -3,6 +3,8 @@ import { EditorContext } from "./editorContext";
 import ProcessNavigation from "./ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import CopyClipBoard from "../../../shell/src/shared/atoms/CopyClipboard.svelte";
+import { ChoiceSelectorContext } from "./choiceSelectorContext";
+import ChoiceSelector from "./ChoiceSelector.svelte";
 export let context: EditorContext;
 
 let _context: EditorContext;
@@ -43,25 +45,6 @@ const copy = () => {
           type="text"
           class="hidden"
           bind:value="{_context.data[context.field]}" />
-        <div
-          class="relative flex text-xs text-center cursor-pointer text-primary -bottom-1"
-          on:click="{copy}"
-          alt="Copy to Clipboard">
-          Copy to Clipboard
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="ml-2 h-5 w-5 stroke-current transform group-hover:rotate-[-4deg] transition"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-            ></path>
-          </svg>
-        </div>
       </div>
     {/if}
   </label>
@@ -70,5 +53,16 @@ const copy = () => {
     {_context.data[context.field]}
   </div>
 
-  <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+  {#if context.params.canCopy}
+    <div class="flex flex-row w-full space-x-4">
+      <div class="mt-6">
+        <button on:click="{copy}" class="h-auto btn-block btn btn-light">
+          Copy Code
+        </button>
+      </div>
+      <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+    </div>
+  {:else}
+    <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+  {/if}
 </div>
