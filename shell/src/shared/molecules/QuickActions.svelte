@@ -45,7 +45,7 @@
   use:clickOutside
   on:click_outside="{() => eventDispatcher('clickedOutside')}">
 
-  <div class="relative flex-shrink-0 w-full p-4 space-y-2">
+  <div class="relative flex-shrink-0 w-full p-6 space-y-2">
     {#each categories as catergory}
       <div class="text-dark-lightest text-3xs sm:text-sm">
         {catergory.title}
