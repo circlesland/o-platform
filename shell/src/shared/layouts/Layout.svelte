@@ -31,7 +31,10 @@
   ];
   $: {
     console.log("LayoutChanged:", layout);
-    if (layout.dialogs.center && layout.dialogs.center.isOpen) {
+    if (
+      (layout.dialogs.center && layout.dialogs.center.isOpen) ||
+      (isMobile() && layout.dialogs.left && layout.dialogs.left.isOpen)
+    ) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "inherit";
