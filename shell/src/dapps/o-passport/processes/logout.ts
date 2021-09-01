@@ -9,6 +9,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { LogoutDocument } from "../data/api/types";
 import { push } from "svelte-spa-router";
 import * as bip39 from "bip39";
+import * as yup from "yup";
 
 export type LogoutContextData = {
   loginEmail: string;
@@ -27,8 +28,6 @@ const editorContent = {
     title: "Log out",
     description:
       "Please enter your Secret Recovery Code to logout. If you haven't stored your Secret Recovery Code at a safe place yet, do it now and come back again later to log-out.",
-
-    mainComponent: TextareaEditor,
     submitButtonText: "Log out",
   },
 };
@@ -43,10 +42,13 @@ const processDefinition = (processId: string) =>
 
       checkSeedPhrase: prompt<LogoutContext, any>({
         field: "checkSeedPhrase",
-        component: EditorView,
+        component: TextareaEditor,
         params: {
           view: editorContent.logout,
         },
+        dataSchema: yup
+          .string()
+          .required("Please enter Secret Recovery Code to logout."),
         navigation: {
           next: "#compareSeedPhrase",
         },
