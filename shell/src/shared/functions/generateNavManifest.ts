@@ -109,7 +109,7 @@ export function generateNavManifest(
     if (args.leftIsOpen) {
       // Remove right too
       delete newManifest.rightSlot;
-      newManifest.leftSlot.props.icon = "simplearrowleft";
+      newManifest.leftSlot.props.icon = "listopen";
       newManifest.leftSlot.props.action = () =>
         window.o.publishEvent({ type: "shell.closeNavigation" });
       if (isMobile()) {
