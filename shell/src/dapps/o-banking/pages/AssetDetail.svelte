@@ -41,7 +41,7 @@
         address: RpcGateway.get().eth.accounts.privateKeyToAccount(
           localStorage.getItem("circlesKey")
         ).address,
-        title: "Safe owner",
+        title: "Owner",
         balance: parseFloat(
           RpcGateway.get()
             .utils.fromWei($mySafe.accountxDai, "ether")
