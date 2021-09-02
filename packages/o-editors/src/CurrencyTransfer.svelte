@@ -112,7 +112,7 @@ function onkeydown(e: KeyboardEvent) {
         name="price"
         id="price"
         class="block w-full pl-12 input input-bordered"
-        placeholder="0.00 (Max: {maxAmount})"
+        placeholder="0.00"
         autocomplete="off"
         bind:value="{amount}"
         on:change="{() => (context.editorDirtyFlags[context.field] = true)}"

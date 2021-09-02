@@ -11,7 +11,7 @@ import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelect
 import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { AvataarGenerator } from "../avataarGenerator";
-import { EditorViewContext } from "@o-platform/o-editors/src/shared/EditorViewContext";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import {
   Profile,
   ProfileBySafeAddressDocument,

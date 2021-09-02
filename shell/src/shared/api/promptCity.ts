@@ -13,7 +13,7 @@ import {
   City,
 } from "../../dapps/o-passport/data/api/types";
 import DropDownCity from "@o-platform/o-editors/src/dropdownItems/DropDownCity.svelte";
-import { EditorViewContext } from "@o-platform/o-editors/src/shared/EditorViewContext";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 
 export function promptCity<
   TContext extends ProcessContext<any>,

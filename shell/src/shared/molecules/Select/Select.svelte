@@ -765,7 +765,7 @@
           bind:this="{input}"
           on:focus="{handleFocus}"
           bind:value="{filterText}"
-          placeholder="{displayableSelectedValue ? displayableSelectedValue : 'Enter name to find'}"
+          placeholder="{displayableSelectedValue ? displayableSelectedValue : ''}"
           class="order-1 input input-lg input-bordered" />
       </div>
       {#if inlineSubmit}
