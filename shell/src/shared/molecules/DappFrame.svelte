@@ -180,6 +180,21 @@
     });
   }
 
+  function onRequestCloseModal() {
+    if (!runningProcess) {
+      onCloseModal();
+      return;
+    }
+    const process: Process = window.o.stateMachines.findById(
+      runningProcess.processId
+    );
+    if (!process) {
+      onCloseModal();
+    }
+    onProcessContinued();
+    process.sendEvent({ type: "process.cancelRequest" });
+  }
+
   function onProcessCancelRequest() {
     if (!runningProcess) {
       return;
@@ -328,6 +343,10 @@
           break;
         case "process.cancelRequest":
           onProcessCancelRequest();
+          console.log(event);
+          break;
+        case "shell.requestCloseModal":
+          await onRequestCloseModal();
           console.log(event);
           break;
         case "shell.closeModal":

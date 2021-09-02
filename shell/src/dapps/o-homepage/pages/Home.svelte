@@ -7,7 +7,6 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
-
 </script>
 
 <div class="flex flex-col overflow-hidden ">

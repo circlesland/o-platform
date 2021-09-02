@@ -32,9 +32,13 @@
   role="dialog"
   class="z-40 pt-2 text-base overlay"
   class:blur_aside="{blur}">
-  <div class="w-full p-2 mt-1 modalAsideContentContainer">
+  <div id="modalAsideContentContainer" class="w-full p-2 mt-1 modalAsideContentContainer">
     <div
-      class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2">
+      class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
+      use:clickOutside
+      on:click_outside="{() => eventDispatcher('clickedOutside', {
+          position: 'left',
+        })}">
       <div id="modalScrollable" class="modalAsideScrollableContent rounded-xl">
         <SvelteSimplebar init="{initBar}">
           <div class="w-full m-auto">

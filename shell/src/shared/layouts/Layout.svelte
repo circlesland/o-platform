@@ -40,6 +40,13 @@
       document.body.style.overflow = "inherit";
     }
   }
+
+  function handleClickOutside(event) {
+    event.preventDefault();
+    window.o.publishEvent({
+      type: "shell.requestCloseModal",
+    });
+  }
 </script>
 
 {#if layout}
@@ -121,7 +128,7 @@
   {/if}
 
   {#if layout.dialogs.center && layout.dialogs.center.isOpen}
-    <Center blur="true" on:clickedOutside>
+    <Center blur="true" on:clickedOutside="{handleClickOutside}">
       <svelte:component
         this="{layout.dialogs.center.component}"
         {...layout.dialogs.center.params ? layout.dialogs.center.params : {}} />

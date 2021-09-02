@@ -13,18 +13,18 @@
     window.player = document.querySelector("vm-player");
     player = document.querySelector("vm-player");
 
-    player.addEventListener("vmPlay", (event) => {
+    player.addEventListener("vmPlay", event => {
       document.getElementById("video-overlay").style.display = "none";
     });
 
-    player.addEventListener("vmPausedChange", (event) => {
+    player.addEventListener("vmPausedChange", event => {
       if (event.detail == true) {
         player.exitFullscreen();
       }
       document.getElementById("video-overlay").style.display = "block";
     });
 
-    document.addEventListener("fullscreenchange", (event) => {
+    document.addEventListener("fullscreenchange", event => {
       // document.fullscreenElement will point to the element that
       // is in fullscreen mode if there is one. If there isn't one,
       // the value of the property is null.
@@ -67,19 +67,17 @@
   style=" background-position: center; background:
   url('/images/homepage/circles-home.jpg') no-repeat center center fixed;
   -webkit-background-size: cover; -moz-background-size: cover;
-  -o-background-size: cover; background-size: cover; "
->
+  -o-background-size: cover; background-size: cover; ">
   <div
     class="absolute z-30 flex flex-col items-stretch content-center w-full h-full min-h-full text-center video-overlay "
-    on:click={() => playVideo()}
-  >
-    <h1 class="px-5 text-4xl font-heading text-primary md:text-6xl mt-11">
+    on:click="{() => playVideo()}">
+    <h1 class="px-5 text-4xl text-white font-heading md:text-6xl mt-11">
       BE FREE
     </h1>
     <h2 class="flex-grow px-5 pt-4 text-xl font-thin text-white sm:text-3xl ">
       Together we build the universal basic income economy today
     </h2>
-    <button class="flex-grow" on:click={() => playVideo()}>
+    <button class="flex-grow" on:click="{() => playVideo()}">
       <div class="inline-flex mt-2">
         <Icons icon="playbutton" />
       </div>
@@ -89,16 +87,18 @@
 </div>
 <div
   id="container"
-  class="z-50 w-full h-screen max-w-full min-w-full min-h-full"
->
+  class="z-50 w-full h-screen max-w-full min-w-full min-h-full">
   <vm-player class="h-screen">
-    <vm-vimeo video-id="548283844" class="h-screen" cross-origin="true" />
+    <vm-vimeo
+      video-id="548283844"
+      class="h-screen"
+      cross-origin="true"></vm-vimeo>
     <!--  -->
 
     <vm-default-ui>
-      <vm-click-to-play />
+      <vm-click-to-play></vm-click-to-play>
       <!-- We setup the default controls and pass in any options.  -->
-      <vm-default-controls />
+      <vm-default-controls></vm-default-controls>
     </vm-default-ui>
   </vm-player>
 </div>

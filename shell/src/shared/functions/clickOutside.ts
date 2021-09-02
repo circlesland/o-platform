@@ -1,7 +1,13 @@
 /** Dispatch event on click outside of node */
 export function clickOutside(node) {
   const handleClick = (event) => {
-    if (node && !node.contains(event.target) && !event.defaultPrevented) {
+    if (
+      event.target.id &&
+      event.target.id == "modalAsideContentContainer" &&
+      node &&
+      !node.contains(event.target) &&
+      !event.defaultPrevented
+    ) {
       node.dispatchEvent(new CustomEvent("click_outside", node));
       // event.preventDefault();
       // return false;
