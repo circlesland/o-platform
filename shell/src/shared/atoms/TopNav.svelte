@@ -42,20 +42,21 @@
     </div>
 
     <div class="col-start-3 pr-1 place-self-end justify-self-end">
-      <div
-        class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
+      {#if profile}
         <div
-          class="avatar rounded-corners-gradient-borders"
-          style="padding: 2px;">
-          <div class="w-8 h-8 m-auto bg-white rounded-full">
-            <img
-              src="{profile && profile.avatarUrl ? profile.avatarUrl : ''}"
-              alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
+          class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
+          <div
+            class="avatar rounded-corners-gradient-borders"
+            style="padding: 2px;">
+            <div class="w-8 h-8 m-auto bg-white rounded-full">
+              <img
+                src="{profile && profile.avatarUrl ? profile.avatarUrl : ''}"
+                alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
+            </div>
           </div>
+
         </div>
-
-      </div>
-
+      {/if}
     </div>
   </div>
 
