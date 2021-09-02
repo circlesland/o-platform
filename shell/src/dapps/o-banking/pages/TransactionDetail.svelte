@@ -96,12 +96,11 @@
     }
   }
 
-  function openDetail(id: string) {
-    if (id.startsWith("0x000")) {
+  function openDetail(transfer: Transfer) {
+    if (transfer.from.startsWith("0x000")) {
       return;
     }
-
-    push(`#/friends/${id}`);
+    push(`#/friends/${otherSafeAddress}`);
   }
 </script>
 
@@ -157,7 +156,9 @@
           </svg>
         </span>
       </div>
-      <div class="avatar rounded-corners-gradient-borders">
+      <div
+        class="cursor-pointer avatar rounded-corners-gradient-borders"
+        on:click="{() => openDetail(transfer)}">
         <div class="m-auto bg-white rounded-full w-36 h-36">
           {#if transfer.direction === 'in'}
             <img

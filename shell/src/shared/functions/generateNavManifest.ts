@@ -163,6 +163,8 @@ export function generateNavManifest(
       }
     } else {
       newManifest.navPill.center = generateCloseButton(false);
+      newManifest.navPill.left = null;
+      newManifest.navPill.right = null;
     }
   }
 

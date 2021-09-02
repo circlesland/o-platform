@@ -14,24 +14,26 @@
       class:bg-white="{props && props.left}"
       on:click="{props && props.left ? props.left.props.action : null}">
 
-      {#if $inbox.length}
-        <div class="relative self-center text-secondary">
-          <Icons icon="notificationbubble" />
-          <div
-            class="absolute top-0 w-full text-center text-white font-heading"
-            on:click="{() => window.o.runProcess(showNotifications, {
-                events: $inbox.map(o => o),
-              })}">
-            {$inbox.length}
+      {#if props && props.left}
+        {#if $inbox.length}
+          <div class="relative self-center text-secondary">
+            <Icons icon="notificationbubble" />
+            <div
+              class="absolute top-0 w-full text-center text-white font-heading"
+              on:click="{() => window.o.runProcess(showNotifications, {
+                  events: $inbox.map(o => o),
+                })}">
+              {$inbox.length}
+            </div>
           </div>
-        </div>
-      {:else if props && props.left}
-        <div class="self-center">
-          <svelte:component
-            this="{props.left.component}"
-            {...props.left.props}
-            on:menuButton />
-        </div>
+        {:else}
+          <div class="self-center">
+            <svelte:component
+              this="{props.left.component}"
+              {...props.left.props}
+              on:menuButton />
+          </div>
+        {/if}
       {/if}
     </div>
 
