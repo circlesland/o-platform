@@ -402,7 +402,7 @@
       notificationCount: $inbox.length,
     });
 
-    if (!identityChecked) {
+    if (!identityChecked && !dapp.noAuthentication) {
       window.o.runProcess(identify, {}, {});
       identityChecked = true;
     }

@@ -117,6 +117,7 @@ export interface DappState {
 export const homepage: DappManifest<DappState> = {
   type: "dapp",
   dappId: "homepage:1",
+  noAuthentication: true,
   isSingleton: true,
   isHidden: true,
   icon: "home",
