@@ -323,7 +323,7 @@ const processDefinition = (processId: string) =>
             const lastName = context.data.recipientProfile.lastName
               ? context.data.recipientProfile.lastName
               : "";
-            const to = context.data.recipientProfile
+            const to = context.data.recipientProfile.firstName
               ? context.data.recipientProfile.firstName + " " + lastName
               : context.data.recipientAddress;
 
