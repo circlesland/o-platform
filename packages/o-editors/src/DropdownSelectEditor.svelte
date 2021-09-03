@@ -18,7 +18,6 @@ import { DropdownSelectorContext } from "./DropdownSelectEditorContext";
  */
 
 export let context: DropdownSelectorContext<any, any>;
-export let allowAlternativeInput: boolean = false;
 
 $: selected = {};
 
@@ -51,6 +50,7 @@ onMount(async () => {
       }, 1);
     }
   }
+  console.log("CONTEXT: ", context);
 });
 
 function handleSelect(event) {
@@ -140,14 +140,16 @@ function toggleInputView() {
           bind:filterText
           on:buttonClick="{submitHandler}" />
       {/if}
-      <div
-        class="absolute text-xs text-right cursor-pointer text-primary left-16"
-        style="z-index: 999999999999; right: 5.5rem; bottom: 0.2rem;"
-        on:click="{toggleInputView}">
-        {showSafeAddressInput
-          ? "Click to search for Circles Profile"
-          : "Click to enter Circles Safe Address"}
-      </div>
+      {#if context.params.allowAlternativeInput}
+        <div
+          class="absolute text-xs text-right cursor-pointer text-primary left-16"
+          style="z-index: 999999999999; right: 5.5rem; bottom: 0.2rem;"
+          on:click="{toggleInputView}">
+          {showSafeAddressInput
+            ? "Click to search for Circles Profile"
+            : "Click to enter Circles Safe Address"}
+        </div>
+      {/if}
     </div>
     {#if context.messages[context.field]}
       <label class="text-right label" for="form-error">

@@ -54,6 +54,7 @@ export function promptCirclesSafe<
     onlyWhenDirty: spec.onlyWhenDirty,
     component: DropdownSelectEditor,
     params: <DropdownSelectorParams<TContext, Profile, string>>{
+      allowAlternativeInput: true,
       view: spec.params.view,
       placeholder: spec.params.view.placeholder,
       submitButtonText: spec.params.submitButtonText,
