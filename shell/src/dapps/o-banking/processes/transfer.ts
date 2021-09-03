@@ -417,6 +417,12 @@ const processDefinition = (processId: string) =>
         on: <any>{
           ...ipc("callCirclesTransfer"),
         },
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Sending Circles ..`,
+          });
+        },
         invoke: {
           src: transferCircles.stateMachine(
             `${processId}:transfer:transferCircles`
