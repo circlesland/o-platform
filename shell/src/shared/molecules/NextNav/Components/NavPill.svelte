@@ -15,7 +15,7 @@
       on:click="{props && props.left ? props.left.props.action : null}">
 
       {#if props && props.left}
-        {#if $inbox.length}
+        {#if $inbox.length && props.center.props.icon !== 'close'}
           <div class="relative self-center text-secondary">
             <Icons icon="notificationbubble" />
             <div
