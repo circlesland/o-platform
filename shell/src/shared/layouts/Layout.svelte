@@ -47,8 +47,15 @@
       type: "shell.requestCloseModal",
     });
   }
+
+  function onkeydown(e: KeyboardEvent) {
+    if (e.key == "Escape") {
+      window.o.publishEvent({ type: "process.cancelRequest" });
+    }
+  }
 </script>
 
+<svelte:window on:keydown="{onkeydown}" />
 {#if layout}
   <div class="absolute flex flex-row w-full overflow-auto">
     <main class="relative z-30 w-full overflow-auto">
