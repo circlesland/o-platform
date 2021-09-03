@@ -28,7 +28,6 @@ function onkeydown(e: KeyboardEvent) {
     submitHandler();
   }
 }
-onMount(() => inputField.focus());
 </script>
 
 <div class="form-control justify-self-center">

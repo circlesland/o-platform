@@ -18,7 +18,6 @@ let amount: string =
 let maxAmount: string = "0";
 let selected = context.data.tokens ? context.data.tokens.currency : "crc";
 let selectedCurrency = context.params.currencies.find((o) => o.value === "crc");
-onMount(() => inputField.focus());
 
 $: selectedCurrency = context.data.tokens
   ? context.data.tokens.currency

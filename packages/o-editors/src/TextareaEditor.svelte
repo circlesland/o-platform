@@ -52,13 +52,13 @@ onMount(() => {
   if (length > 17) {
     textarea.dispatchEvent(new Event("input"));
   }
-  if (detectedDevice && detectedDevice.type) {
-    if (detectedDevice.type != "mobile") {
-      inputField.focus();
-    }
-  } else {
-    inputField.focus();
-  }
+  // if (detectedDevice && detectedDevice.type) {
+  //   if (detectedDevice.type != "mobile") {
+  //     inputField.focus();
+  //   }
+  // } else {
+  //   inputField.focus();
+  // }
 });
 
 const copy = () => {
