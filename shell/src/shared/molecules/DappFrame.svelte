@@ -465,7 +465,9 @@
       return <FindRouteResult>{
         routable: defaultRoutable.routable,
         found: true,
-        params: defaultRoutable.params,
+        params: {
+          ...defaultRoutable.params
+        },
       };
     } else {
       return <FindRouteResult>{
@@ -588,7 +590,11 @@
         ...layout.dialogs,
         center: {
           component: routable.component,
-          params: params,
+          params: {
+            ...params,
+            jumplist: runtimeDapp.jumplist,
+            runtimeDapp: runtimeDapp
+          },
           isOpen: true,
           runtimeDapp: runtimeDapp,
           routable: routable,
