@@ -47,17 +47,13 @@ export type CreateInvitationEoaContextData = {
 export type CreateInvitationEoaContext =
   ProcessContext<CreateInvitationEoaContextData>;
 
-/**
- * In case you want to translate the flow later, it's nice to have the strings at one place.
- */
-const strings = {
-  labelRecipientAddress: "Select the recipient you want to send money to",
-  tokensLabel: "Please enter the amount",
-  currencyCircles: "CRC",
-  currencyXdai: "xDai",
-  summaryLabel: "Summary",
-  messageLabel: "Purpose of transfer",
-};
+// /**
+//  * This is the context on which the process will work.
+//  * The actual fields are defined above in the 'AuthenticateContextData' type.
+//  * The 'AuthenticateContextData' type is also the return value of the process (see bottom for the signature).
+//  */
+// export type CreateInvitationEoaContext =
+//   ProcessContext<CreateInvitationEoaContextData>;
 
 const editorContent = {
   recipient: {
@@ -88,41 +84,49 @@ const editorContent = {
   },
 };
 
-const currencyLookup = {
-  CRC: "Circles",
-  XDAI: "xDai",
-};
+//     mainComponent: CurrencyCreateInvitationEoa,
+//     submitButtonText: "Submit",
+//   },
+//   message: {
+//     title: "CreateInvitationEoa Message",
+//     description: "",
+//     mainComponent: TextareaEditor,
+//     submitButtonText: "Submit",
+//   },
+//   confirm: {
+//     title: "",
+//     description: "",
+//     mainComponent: HtmlViewer,
+//     submitButtonText: "Send Money",
+//   },
+//   success: {
+//     title: "CreateInvitationEoa successful",
+//     description: "",
+//     mainComponent: HtmlViewer,
+//     submitButtonText: "Close",
+//   },
+// };
 
-const processDefinition = (processId: string) =>
-  createMachine<CreateInvitationEoaContext, any>({
-    id: `${processId}:transfer`,
-    initial: "checkIsPreFilled",
-    states: {
-      // Include a default 'error' state that propagates the error by re-throwing it in an action.
-      // TODO: Check if this works as intended
-      ...fatalError<CreateInvitationEoaContext, any>("error"),
+// const currencyLookup = {
+//   CRC: "Circles",
+//   XDAI: "xDai",
+// };
 
-      checkIsPreFilled: {
-        id: "checkIsPreFilled",
-        always: [
-          {
-            cond: (context) => {
-              const web3 = RpcGateway.get();
+// const processDefinition = (processId: string) =>
+//   createMachine<CreateInvitationEoaContext, any>({
+//     id: `${processId}:transfer`,
+//     initial: "checkIsPreFilled",
+//     states: {
+//       // Include a default 'error' state that propagates the error by re-throwing it in an action.
+//       // TODO: Check if this works as intended
+//       ...fatalError<CreateInvitationEoaContext, any>("error"),
 
-              const hasSender = web3.utils.isAddress(context.data.safeAddress);
-              const hasRecipient = web3.utils.isAddress(
-                context.data.recipientAddress
-              );
-              const amount = new BN(
-                !context.data.tokens?.amount
-                  ? "0"
-                  : web3.utils.toWei(
-                      context.data.tokens?.amount?.toString(),
-                      "ether"
-                    )
-              );
-              const hasAmount = amount.gt(new BN("0"));
-              const isXdai = context.data.tokens?.currency == "xdai";
+//       checkIsPreFilled: {
+//         id: "checkIsPreFilled",
+//         always: [
+//           {
+//             cond: (context) => {
+//               const web3 = RpcGateway.get();
 
               return hasSender && hasRecipient && hasAmount && isXdai;
             },
@@ -323,19 +327,110 @@ const processDefinition = (processId: string) =>
               ? context.data.recipientProfile.firstName + " " + lastName
               : context.data.recipientAddress;
 
-            let toAvatarUrl = context.data.recipientProfile
-              ? context.data.recipientProfile.avatarUrl
-              : null;
+//             await Promise.all([p1, p2]);
+//           },
+//           onDone: "#checkAmount",
+//           onError: "#error",
+//         },
+//       },
+//       checkAmount: {
+//         id: "checkAmount",
+//         always: [
+//           {
+//             cond: (context, event) => {
+//               const maxFlowInWei = new BN(
+//                 context.data.maxFlows[
+//                   context.data.tokens.currency.toLowerCase()
+//                 ]
+//               );
+//               const amountInWei = new BN(
+//                 RpcGateway.get().utils.toWei(
+//                   context.data.tokens.amount,
+//                   "ether"
+//                 )
+//               );
+//               return maxFlowInWei.gte(amountInWei);
+//             },
+//             target: "#loadRecipientProfile",
+//           },
+//           {
+//             actions: (context) => {
+//               const formattedAmount = parseFloat(
+//                 context.data.tokens.amount
+//               ).toFixed(2);
+//               const formattedMax = parseFloat(
+//                 RpcGateway.get().utils.fromWei(
+//                   context.data.maxFlows[
+//                     context.data.tokens.currency.toLowerCase()
+//                   ].toString(),
+//                   "ether"
+//                 )
+//               ).toFixed(2);
+//               context.messages[
+//                 "tokens"
+//               ] = `The chosen amount (${formattedAmount}) exceeds the maximum transferable amount of (${formattedMax}).`;
+//             },
+//             target: "#tokens",
+//           },
+//         ],
+//       },
+//       loadRecipientProfile: {
+//         id: "loadRecipientProfile",
+//         invoke: {
+//           src: async (context) => {
+//             if (context.data.recipientProfileId) {
+//               // Use the profile id to get the profile but send to the context.data.recipientAddress
+//               context.data.recipientProfile = await loadProfileByProfileId(
+//                 context.data.recipientProfileId
+//               );
+//             } else if (context.data.recipientAddress) {
+//               context.data.recipientProfile = await loadProfileBySafeAddress(
+//                 context.data.recipientAddress
+//               );
+//             } else {
+//               // No profile found
+//             }
+//           },
+//           onDone: [
+//             {
+//               cond: (context) => !!context.data.recipientProfile,
+//               target: "#message",
+//             },
+//             {
+//               target: "#prepareSummary",
+//             },
+//           ],
+//           onError: "#error",
+//         },
+//       },
+//       message: prompt<CreateInvitationEoaContext, any>({
+//         field: "message",
+//         component: EditorView,
+//         params: {
+//           view: editorContent.message,
+//           label: strings.messageLabel,
+//           maxLength: "100",
+//         },
+//         navigation: {
+//           previous: "#tokens",
+//           next: "#prepareSummary",
+//           canSkip: () => true,
+//         },
+//       }),
+//       prepareSummary: {
+//         id: "prepareSummary",
+//         invoke: {
+//           src: async (context) => {
+//             const lastName = context.data.recipientProfile.lastName
+//               ? context.data.recipientProfile.lastName
+//               : "";
+//             const to = context.data.recipientProfile
+//               ? context.data.recipientProfile.firstName + " " + lastName
+//               : context.data.recipientAddress;
 
-            if (context.data.tokens?.currency?.toLowerCase() != "xdai") {
-              toAvatarUrl = toAvatarUrl
-                ? toAvatarUrl
-                : AvataarGenerator.generate(context.data.recipientAddress);
-            } else {
-              toAvatarUrl = toAvatarUrl
-                ? toAvatarUrl
-                : AvataarGenerator.default();
-            }
+//             let toAvatarUrl = context.data.recipientProfile
+//               ? context.data.recipientProfile.avatarUrl
+//               : null;
 
             if (!context.data.tokens) {
               throw new Error(`No currency or amount selected`);
@@ -483,7 +578,153 @@ const processDefinition = (processId: string) =>
     },
   });
 
-export const transfer: ProcessDefinition<void, CreateInvitationEoaContext> = {
-  name: "transfer",
-  stateMachine: <any>processDefinition,
-};
+//             if (!context.data.tokens) {
+//               throw new Error(`No currency or amount selected`);
+//             } else {
+//               context.data.summaryHtml = `<span>You are about to transfer</span>
+//                 <strong class='text-primary text-5xl block mt-2'>
+//                     ${context.data.tokens.amount}
+//                     ${
+//                       currencyLookup[context.data.tokens.currency.toUpperCase()]
+//                     }</strong>
+//                 <span class='block mt-2'>
+//                 to
+//                 </span>
+//                 <div class="avatar self-center justify-self-center text-center mt-4">
+//                   <div class="w-36 h-36 rounded-full mb-4">
+//                     <img
+//                       src=${toAvatarUrl}
+//                       alt=${to}
+//                     />
+//                   </div>
+//                 </div>
+//                 <div class="self-center flex-grow justify-self-start text-center">
+//                   <h2>
+//                     ${to}
+//                   </h2>
+//                 </div>
+//                 <span class='block mt-2'>
+//                 ${
+//                   context.data.message
+//                     ? "<b>Purpose:</b><br/>" + context.data.message
+//                     : ""
+//                 }
+//                 </span>
+//                 <strong class='text-primary block mt-4'>
+//                 Do you want to continue?
+//                 </strong>`;
+//             }
+//           },
+//           onDone: "#acceptSummary",
+//           onError: "#error",
+//         },
+//       },
+//       acceptSummary: prompt<CreateInvitationEoaContext, any>({
+//         field: "acceptSummary",
+//         component: EditorView,
+//         params: {
+//           view: editorContent.confirm,
+//           label: strings.summaryLabel,
+//           submitButtonText: "Send Money",
+//           html: (context) => context.data.summaryHtml,
+//         },
+//         navigation: {
+//           previous: "#message",
+//           next: "#checkChoice",
+//         },
+//       }),
+//       checkChoice: {
+//         id: "checkChoice",
+//         always: [
+//           {
+//             cond: (context) => {
+//               return context.data.tokens.currency.toLowerCase() == "crc";
+//             },
+//             target: "callCirclesCreateInvitationEoa",
+//           },
+//           {
+//             cond: (context) => {
+//               return context.data.tokens.currency.toLowerCase() == "xdai";
+//             },
+//             target: "callXdaiCreateInvitationEoa",
+//           },
+//         ],
+//       },
+//       callCirclesCreateInvitationEoa: {
+//         id: "callCirclesCreateInvitationEoa",
+//         on: <any>{
+//           ...ipc("callCirclesCreateInvitationEoa"),
+//         },
+//         invoke: {
+//           src: transferCircles.stateMachine(
+//             `${processId}:transfer:transferCircles`
+//           ),
+//           data: {
+//             data: (context, event) => {
+//               return {
+//                 safeAddress: context.data.safeAddress,
+//                 recipientAddress: context.data.recipientAddress,
+//                 amount: context.data.tokens.amount,
+//                 privateKey: localStorage.getItem("circlesKey"),
+//                 message: context.data.message,
+//               };
+//             },
+//             messages: {},
+//             dirtyFlags: {},
+//           },
+//           onDone: "#showSuccess",
+//           onError: "#error",
+//         },
+//       },
+//       callXdaiCreateInvitationEoa: {
+//         id: "callXdaiCreateInvitationEoa",
+//         on: <any>{
+//           ...ipc("callXdaiCreateInvitationEoa"),
+//         },
+//         invoke: {
+//           src: transferXdai.stateMachine(`${processId}:transfer:transferXdai`),
+//           data: {
+//             data: (context, event) => {
+//               return {
+//                 safeAddress: context.data.safeAddress,
+//                 recipientAddress: context.data.recipientAddress,
+//                 amount: context.data.tokens.amount,
+//                 privateKey: localStorage.getItem("circlesKey"),
+//                 message: context.data.message,
+//               };
+//             },
+//             messages: {},
+//             dirtyFlags: {},
+//           },
+//           onDone: "#showSuccess",
+//           onError: "#error",
+//         },
+//       },
+//       showSuccess: prompt({
+//         id: "showSuccess",
+//         field: "__",
+//         component: EditorView,
+//         params: {
+//           view: editorContent.success,
+//           html: () => "",
+//           submitButtonText: "Close",
+//           hideNav: false,
+//         },
+//         navigation: {
+//           next: "#success",
+//         },
+//       }),
+//       success: {
+//         id: "success",
+//         type: "final",
+//         data: (context, event: PlatformEvent) => {
+//           return "yeah!";
+//         },
+//       },
+//     },
+//   });
+
+// export const transfer: ProcessDefinition<void, CreateInvitationEoaContext> = {
+//   name: "transfer",
+//   stateMachine: <any>processDefinition,
+// };
