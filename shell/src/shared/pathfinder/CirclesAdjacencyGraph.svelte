@@ -20,6 +20,9 @@
   let initialized = false;
 
   const options = {
+    smooth: {
+      enabled: false,
+    },
     physics: {
       enabled: true,
 
