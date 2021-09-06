@@ -24,7 +24,7 @@ import { SetTrustContext } from "./setTrust";
 
 export type CreateInvitationEoaContextData = {
   safeAddress: string;
-  recipientAddress?: string; 
+  recipientAddress?: string;
   recipientProfileId?: number;
   recipientProfile?: Profile;
   message?: string;
@@ -44,7 +44,8 @@ export type CreateInvitationEoaContextData = {
  * The actual fields are defined above in the 'AuthenticateContextData' type.
  * The 'AuthenticateContextData' type is also the return value of the process (see bottom for the signature).
  */
-export type CreateInvitationEoaContext = ProcessContext<CreateInvitationEoaContextData>;
+export type CreateInvitationEoaContext =
+  ProcessContext<CreateInvitationEoaContextData>;
 
 /**
  * In case you want to translate the flow later, it's nice to have the strings at one place.
@@ -59,29 +60,30 @@ const strings = {
 };
 
 const editorContent = {
+  recipient: {
+    title: "Select the recipient you want to send money to",
+    description: "",
+    placeholder: "Recipient",
+    submitButtonText: "Enter Name",
+  },
   currency: {
     title: "Please enter the Amount",
     description: "",
-
-    mainComponent: CurrencyCreateInvitationEoa,
     submitButtonText: "Submit",
   },
   message: {
     title: "CreateInvitationEoa Message",
     description: "",
-    mainComponent: TextareaEditor,
     submitButtonText: "Submit",
   },
   confirm: {
     title: "",
     description: "",
-    mainComponent: HtmlViewer,
     submitButtonText: "Send Money",
   },
   success: {
     title: "CreateInvitationEoa successful",
     description: "",
-    mainComponent: HtmlViewer,
     submitButtonText: "Close",
   },
 };
@@ -147,6 +149,7 @@ const processDefinition = (processId: string) =>
         field: "recipientAddress",
         onlyWhenDirty: false,
         params: {
+          view: editorContent.recipient,
           label: strings.labelRecipientAddress,
           placeholder: "Recipient",
           submitButtonText: "Check send limit",
@@ -157,7 +160,7 @@ const processDefinition = (processId: string) =>
       }),
       tokens: prompt<CreateInvitationEoaContext, any>({
         field: "tokens",
-        component: EditorView,
+        component: CurrencyCreateInvitationEoa,
         params: {
           view: editorContent.currency,
           label: strings.tokensLabel,
@@ -297,7 +300,7 @@ const processDefinition = (processId: string) =>
       },
       message: prompt<CreateInvitationEoaContext, any>({
         field: "message",
-        component: EditorView,
+        component: TextareaEditor,
         params: {
           view: editorContent.message,
           label: strings.messageLabel,
@@ -377,7 +380,7 @@ const processDefinition = (processId: string) =>
       },
       acceptSummary: prompt<CreateInvitationEoaContext, any>({
         field: "acceptSummary",
-        component: EditorView,
+        component: HtmlViewer,
         params: {
           view: editorContent.confirm,
           label: strings.summaryLabel,
@@ -459,7 +462,7 @@ const processDefinition = (processId: string) =>
       showSuccess: prompt({
         id: "showSuccess",
         field: "__",
-        component: EditorView,
+        component: HtmlViewer,
         params: {
           view: editorContent.success,
           html: () => "",
