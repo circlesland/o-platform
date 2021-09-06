@@ -20,8 +20,10 @@
   let initialized = false;
 
   const options = {
-    smooth: {
-      enabled: false,
+    edges: {
+      smooth: {
+        enabled: false,
+      },
     },
     physics: {
       enabled: true,
