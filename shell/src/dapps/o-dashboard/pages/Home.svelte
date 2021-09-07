@@ -6,11 +6,13 @@
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { push } from "svelte-spa-router";
   import Icons from "../../../shared/molecules/Icons.svelte";
+  import InfoCard from "../../../shared/atoms/InfoCard.svelte";
   import AdjacencyGraph from "../../../shared/pathfinder/CirclesAdjacencyGraph.svelte";
   import ChatCard from "../../o-contacts/atoms/ChatCard.svelte";
 
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import NumberEditor from "@o-platform/o-editors/src/NumberEditor.svelte";
+  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 
   const { mySafe } = require("src/dapps/o-banking/stores/safe");
   export let runtimeDapp: RuntimeDapp<any>;
@@ -89,17 +91,70 @@
   <div class="mt-16" />
 {/if} -->
 <div class="mx-auto md:w-2/3 xl:w-1/2">
+  <!-- 
+  <div class="flex flex-col w-full px-4 py-12 space-y-4">
+    <InfoCard
+      params="{{ headerClass: 'bg-primary', headerText: 'invite 3 pending' }}">
+      <div slot="infoCardContent" class="w-full p-2">
+        <ItemCard
+          params="{{ edgeless: true, inline: true, title: 'Jakob', subTitle: 'https://circles.land/#/328e9zef09hje0fhjewf', truncateMain: true, noShadow: true }}">
+
+          <div slot="itemCardEnd">
+            <div class="self-end mr-2 text-lg sm:text-3xl">
+              <button
+                on:click="{e => {
+                  console.log('ALKSDJASd');
+                }}"
+                class="self-end text-base btn btn-square btn-primary ">
+                <Icons icon="copy" />
+              </button>
+            </div>
+          </div>
+        </ItemCard>
+      </div>
+    </InfoCard>
+
+    <InfoCard
+      params="{{ headerText: 'invite 2 unlocked', headerClass: 'bg-success' }}">
+      <div slot="infoCardContent" class="w-full p-2">
+        <ItemCard
+          params="{{ imageUrl: 'https://images.unsplash.com/photo-1630904519797-7e2992b13afe?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw3NHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60', edgeless: true, inline: true, title: 'EMPOWERED ELA LOUIS', subTitle: '2 days ago', truncateMain: true, noShadow: true }}">
+
+          <div slot="itemCardEnd">
+            <div class="self-end mr-2 text-lg sm:text-3xl">
+              <button
+                on:click="{e => {
+                  console.log('ALKSDJASd');
+                }}"
+                class="self-end text-base btn btn-square btn-primary ">
+                <Icons icon="copy" />
+              </button>
+            </div>
+          </div>
+        </ItemCard>
+      </div>
+    </InfoCard>
+
+    <InfoCard
+      params="{{ headerText: 'invite 1 unlocked', headerClass: 'bg-success' }}">
+      <div slot="infoCardContent" class="w-full p-2">
+        <ItemCard
+          params="{{ imageUrl: 'https://images.unsplash.com/photo-1630644964646-6cc8ac5b47ea?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5NHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60', edgeless: true, inline: true, title: 'EMPOWERED Hans-Peter Jacobs', subTitle: '1 day ago', truncateMain: true, noShadow: true }}">
+
+          <div slot="itemCardEnd"></div>
+        </ItemCard>
+      </div>
+    </InfoCard>
+  </div> -->
 
   <div class="m-4">
 
     <div
-      class="grid grid-cols-2 gap-4 text-base auto-rows-fr lg:grid-cols-3
-      dashboard-grid">
+      class="grid grid-cols-2 gap-4 text-base auto-rows-fr lg:grid-cols-3 dashboard-grid">
       <!-- PASSPORT  -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md
-        cursor-pointer dashboard-card"
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/passport/profile')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
@@ -113,8 +168,7 @@
       <!-- CONTACTS  -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md
-        cursor-pointer dashboard-card"
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/friends')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
@@ -128,11 +182,9 @@
       <!-- BANKING -->
       {#if showFundHint || disableBanking}
         <section
-          class="flex items-center justify-center bg-white rounded-lg shadow-md
-          dashboard-card text-base-300 ">
+          class="flex items-center justify-center bg-white rounded-lg shadow-md dashboard-card text-base-300 ">
           <div
-            class="flex flex-col items-center w-full p-4 pt-6
-            justify-items-center">
+            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary-lightest">
               <Icons icon="dashbanking" />
             </div>
@@ -141,12 +193,10 @@
         </section>
       {:else}
         <section
-          class="flex items-center justify-center bg-white rounded-lg shadow-md
-          dashboard-card cursor-pointerbg-white"
+          class="flex items-center justify-center bg-white rounded-lg shadow-md dashboard-card cursor-pointerbg-white"
           on:click="{() => loadLink(showFundHint ? '/dashboard' : '/banking/transactions')}">
           <div
-            class="flex flex-col items-center w-full p-4 pt-6
-            justify-items-center">
+            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
               <Icons icon="dashbanking" />
             </div>
@@ -158,8 +208,7 @@
       <!-- Market -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md
-        cursor-pointer dashboard-card"
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/marketplace/stream')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
@@ -173,8 +222,7 @@
       <!-- Chat -->
 
       <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md
-        cursor-pointer dashboard-card "
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "
         on:click="{() => loadLink('/chat')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
