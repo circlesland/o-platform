@@ -21,7 +21,7 @@ $: {
 }
 
 let inputField: any;
-let maxlength: string = context.params.maxLength
+let maxlength: string = context.params.view.maxLength
   ? context.params.maxLength
   : "500";
 
@@ -128,7 +128,7 @@ const copy = () => {
     rows="1"
     id="{context.field}"
     type="text"
-    placeholder="{context.params.placeholder}"
+    placeholder="{context.params.view.placeholder}"
     class="overflow-hidden textarea textarea-bordered"
     class:input-error="{context.messages[context.field]}"
     bind:value="{_context.data[context.field]}"

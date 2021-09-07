@@ -24,8 +24,6 @@ export function promptCity<
   onlyWhenDirty?: boolean;
   params: {
     view: EditorViewContext;
-    placeholder: string;
-    submitButtonText: string;
     [x: string]: any;
   };
   navigation?: {
@@ -44,14 +42,7 @@ export function promptCity<
   };
 }) {
   const field = normalizePromptField(spec.field);
-  const viewParams = {
-    title: "Vote for your City?",
-    description:
-      "Advance your city in the basic income ranking and push the political discorse in your area.",
-    placeholder: "Last name",
 
-    submitButtonText: "Submit vote",
-  };
   return prompt<TContext, any>({
     id: spec.id ?? field.name,
     field: spec.field,
@@ -59,8 +50,8 @@ export function promptCity<
     component: DropdownSelectEditor,
     params: <DropdownSelectorParams<TContext, City, number>>{
       view: spec.params.view,
-      placeholder: spec.params.placeholder,
-      submitButtonText: spec.params.submitButtonText,
+      placeholder: spec.params.view.placeholder,
+      submitButtonText: spec.params.view.submitButtonText,
       itemTemplate: DropDownCity,
       getKey: (o) => o.geonameid,
       getLabel: (o) => `${o.name} (${o.country})`,

@@ -29,8 +29,8 @@ $: {
           */
           }}"
           class="relative btn btn-primary btn-block"
-          >{context.params.submitButtonText
-            ? context.params.submitButtonText
+          >{context.params.view.submitButtonText
+            ? context.params.view.submitButtonText
             : "Submit"}
           <div class="absolute right-2">
             <Icons icon="buttonrightarrow" />

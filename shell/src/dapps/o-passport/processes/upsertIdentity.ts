@@ -5,6 +5,7 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { City, UpsertProfileDocument } from "../data/api/types";
 import * as yup from "yup";
@@ -30,7 +31,7 @@ export type UpsertIdentityContextData = {
 
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
 
-const editorContent = {
+const editorContent: { [x: string]: EditorViewContext } = {
   firstName: {
     title: "What is your first name?",
     description:
@@ -75,33 +76,6 @@ const editorContent = {
   },
 };
 
-const strings = {
-  labelFirstName:
-    "What is your first name?<br/><span class='text-base text-light-dark font-normal block mt-3'>Welcome, you are finally a citizen of CirclesLand. Glad to have you here.</span>",
-  labelLastName:
-    "What is your last name?<br/><span class='text-base text-light-dark font-normal block mt-3'>Display your full name in your profile to become more trust worthy.</span>",
-  labelAvatar:
-    "Profile Image<br/><span class='text-base text-light-dark font-normal block mt-3'>Show the world who you are to become more recognizeable.</span>",
-  labelCity:
-    "Vote for your City<br/><span class='text-base text-light-dark font-normal block mt-3'>Advance your city in the basic income ranking and push the political discorse in your area.</span>",
-  labeldream:
-    "Share your passion<br/><span class='text-base text-light-dark font-normal block mt-3'>What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?</span>",
-
-  placeholderFirstName: "First name",
-  placeholderLastName: "Last name",
-  placeholderCity: "Select a city",
-  placeholderDream: "Your passion.",
-  labelNewsletter:
-    "Newsletter<br/><span class='text-base text-light-dark font-normal block mt-3'>Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?</span>",
-};
-
-const viewParams = {
-  title: "Vote for your City?",
-  description:
-    "Advance your city in the basic income ranking and push the political discorse in your area.",
-  placeholder: "Last name",
-  submitButtonText: "Submit vote",
-};
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
@@ -117,8 +91,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         component: TextEditor,
         params: {
           view: editorContent.firstName,
-          placeholder: editorContent.firstName.placeholder,
-          submitButtonText: editorContent.firstName.submitButtonText,
         },
         dataSchema: yup.string().required("Please enter your first name."),
         navigation: {
@@ -131,8 +103,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         component: TextEditor,
         params: {
           view: editorContent.lastName,
-          placeholder: editorContent.lastName.placeholder,
-          submitButtonText: editorContent.lastName.submitButtonText,
         },
         navigation: {
           next: "#country",
@@ -146,8 +116,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         onlyWhenDirty: skipIfNotDirty,
         params: {
           view: editorContent.city,
-          placeholder: editorContent.city.placeholder,
-          submitButtonText: editorContent.city.submitButtonText,
         },
         navigation: {
           next: "#dream",
@@ -180,7 +148,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
         params: {
           view: editorContent.imageView,
-          submitButtonText: "Save",
         },
         navigation: {
           next: "#newsletter",

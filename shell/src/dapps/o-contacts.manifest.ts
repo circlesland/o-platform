@@ -4,15 +4,15 @@ import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Profile } from "./o-banking/data/api/types";
 import { me } from "../shared/stores/me";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import {init, tryGetCurrentSafe} from "./o-banking/init";
+import { init, tryGetCurrentSafe } from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
-import {loadProfileByProfileId} from "./o-banking/data/loadProfileByProfileId";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
-import {Unsubscriber} from "svelte/store";
-import {mySafe} from "./o-banking/stores/safe";
-import {transfer} from "./o-banking/processes/transfer";
-import {setTrust} from "./o-banking/processes/setTrust";
+import { loadProfileByProfileId } from "./o-banking/data/loadProfileByProfileId";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { Unsubscriber } from "svelte/store";
+import { mySafe } from "./o-banking/stores/safe";
+import { transfer } from "./o-banking/processes/transfer";
+import { setTrust } from "./o-banking/processes/setTrust";
 
 export interface DappState {
   // put state here
@@ -20,9 +20,9 @@ export interface DappState {
 
 const index: Page<any, DappState> = {
   routeParts: [],
-  component: Graph,
-  title: "Network",
-  icon: "network",
+  component: Contacts,
+  title: "Contacts",
+  icon: "friends",
   type: "page",
 };
 
@@ -122,13 +122,13 @@ export const profile: Page<any, ContactsDappState> = {
   component: ProfilePage,
 };
 
-const contacts: Page<any, ContactsDappState> = {
-  routeParts: ["=list"],
-  component: Contacts,
-  title: "Contacts",
-  icon: "friends",
-  type: "page",
-};
+// const contacts: Page<any, ContactsDappState> = {
+//   routeParts: ["=list"],
+//   component: Contacts,
+//   title: "Contacts",
+//   icon: "friends",
+//   type: "page",
+// };
 
 export const friends: DappManifest<DappState> = {
   type: "dapp",
@@ -159,5 +159,5 @@ export const friends: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, contacts, profile],
+  routables: [index, profile],
 };

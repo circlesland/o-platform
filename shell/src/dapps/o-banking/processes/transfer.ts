@@ -3,7 +3,6 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import CurrencyTransfer from "@o-platform/o-editors/src/CurrencyTransfer.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
@@ -11,7 +10,7 @@ import { transferXdai } from "./transferXdai";
 import { transferCircles } from "./transferCircles";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
-import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
@@ -22,7 +21,6 @@ import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import { Profile } from "../data/api/types";
 import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { SetTrustContext } from "./setTrust";
-import TextEditor__SvelteComponent_ from "../../../../../packages/o-editors/src/TextEditor.svelte";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -60,7 +58,7 @@ const strings = {
   messageLabel: "Purpose of transfer",
 };
 
-const editorContent = {
+const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
     title: "Select the recipient you want to send money to",
     description: "",

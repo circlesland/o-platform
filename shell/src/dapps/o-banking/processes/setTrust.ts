@@ -9,6 +9,7 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
 import { HUB_ADDRESS } from "@o-platform/o-circles/dist/consts";
 import { BN } from "ethereumjs-util";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
 import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { Subscription } from "rxjs";
@@ -35,7 +36,7 @@ export type SetTrustContext = ProcessContext<SetTrustContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 
-const editorContent = {
+const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
     title: "Select the person you want to trust",
     description: "",

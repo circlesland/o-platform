@@ -8,7 +8,6 @@ import {
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import DropDownProfile from "@o-platform/o-editors/src/dropdownItems/DropDownProfile.svelte";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
-import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { AvataarGenerator } from "../avataarGenerator";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
@@ -56,8 +55,6 @@ export function promptCirclesSafe<
     params: <DropdownSelectorParams<TContext, Profile, string>>{
       allowAlternativeInput: true,
       view: spec.params.view,
-      placeholder: spec.params.view.placeholder,
-      submitButtonText: spec.params.submitButtonText,
       getKey: (profile) => {
         return profile.circlesAddress;
       },

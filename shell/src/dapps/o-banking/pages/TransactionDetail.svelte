@@ -2,21 +2,15 @@
   import Time from "svelte-time";
   import { mySafe } from "../stores/safe";
 
-  import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { Transfer } from "../data/circles/types";
   import Web3 from "web3";
-  import Icons from "../../../shared/molecules/Icons.svelte";
   import { push } from "svelte-spa-router";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+
   import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 
   export let _id: string;
-
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
 
   let transfer: Transfer;
   let pictureUrl: string;

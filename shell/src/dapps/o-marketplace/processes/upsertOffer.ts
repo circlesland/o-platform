@@ -3,7 +3,7 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -36,7 +36,7 @@ const strings = {
   submitTitle_validation_missing: "submitTitle_validation_missing",
 };
 
-const editorContent = {
+const editorContent: { [x: string]: EditorViewContext } = {
   title: {
     title: "Title",
     description:
@@ -112,8 +112,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         component: TextEditor,
         params: {
           view: editorContent.title,
-          placeholder: editorContent.title.placeholder,
-          submitButtonText: editorContent.title.submitButtonText,
         },
         dataSchema: yup
           .string()
@@ -128,8 +126,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         component: TextareaEditor,
         params: {
           view: editorContent.description,
-          placeholder: editorContent.description.placeholder,
-          submitButtonText: editorContent.description.submitButtonText,
           showResultsOnLoad: true,
         },
         navigation: {
@@ -145,8 +141,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         typeId: "o-marketplace:offer:category:1",
         params: {
           view: editorContent.offerCategory,
-          placeholder: editorContent.offerCategory.placeholder,
-          submitButtonText: editorContent.offerCategory.submitButtonText,
           showResultsOnLoad: true,
         },
         navigation: {
@@ -159,8 +153,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         onlyWhenDirty: skipIfNotDirty,
         params: {
           view: editorContent.offerlocation,
-          placeholder: editorContent.offerlocation.placeholder,
-          submitButtonText: editorContent.offerlocation.submitButtonText,
         },
         navigation: {
           next: "#unitTagId",
@@ -173,8 +165,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         typeId: "o-marketplace:offer:unit:1",
         params: {
           view: editorContent.offerUnit,
-          placeholder: editorContent.offerUnit.placeholder,
-          submitButtonText: editorContent.offerUnit.submitButtonText,
           showResultsOnLoad: true,
         },
         navigation: {
@@ -188,8 +178,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         component: TextEditor,
         params: {
           view: editorContent.offerPrice,
-          placeholder: editorContent.offerPrice.placeholder,
-          submitButtonText: editorContent.offerPrice.submitButtonText,
         },
         navigation: {
           next: "#maxUnits",
@@ -202,8 +190,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         component: TextEditor,
         params: {
           view: editorContent.offerUnitAmount,
-          placeholder: editorContent.offerUnitAmount.placeholder,
-          submitButtonText: editorContent.offerUnitAmount.submitButtonText,
         },
         navigation: {
           next: "#deliveryTermsTagId",
@@ -216,8 +202,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         typeId: "o-marketplace:offer:deliveryTerms:1",
         params: {
           view: editorContent.offerDelivery,
-          placeholder: editorContent.offerDelivery.placeholder,
-          submitButtonText: editorContent.offerDelivery.submitButtonText,
           showResultsOnLoad: true,
         },
         navigation: {
@@ -234,7 +218,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         },
         params: {
           view: editorContent.offerImage,
-          submitButtonText: editorContent.offerImage.submitButtonText,
           cropShape: "rect",
         },
         navigation: {

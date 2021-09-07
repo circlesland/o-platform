@@ -32,7 +32,6 @@ type UploadPictureSpec<TContext extends ProcessContext<any>> = {
   ) => void;
   params?: {
     view: EditorViewContext;
-    submitButtonText: string;
     cropShape?: string;
   };
   navigation: {
@@ -97,7 +96,7 @@ export function promptFile<
         component: PicturePreview,
         params: {
           view: spec.params.view,
-          submitButtonText: spec.params.submitButtonText,
+          submitButtonText: spec.params.view.submitButtonText,
         },
         navigation: {
           next: `#${id("checkEditFile")}`,

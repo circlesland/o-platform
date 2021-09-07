@@ -239,6 +239,7 @@
   <div class="listContainer virtualList" bind:this="{container}">
     <VirtualList {items} {itemHeight} let:item let:i>
       <div
+        on:focus="{() => handleHover(i)}"
         on:mouseover="{() => handleHover(i)}"
         on:click="{event => handleClick({ item, i, event })}"
         class="listItem">
@@ -262,6 +263,7 @@
         <div class="listGroupTitle">{getGroupHeaderLabel(item)}</div>
       {:else}
         <div
+          on:focus="{() => handleHover(i)}"
           on:mouseover="{() => handleHover(i)}"
           on:click="{event => handleClick({ item, i, event })}"
           class="listItem">

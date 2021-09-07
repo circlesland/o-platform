@@ -25,8 +25,6 @@ export function promptTag<
   id?: string;
   params: {
     view: EditorViewContext;
-    placeholder: string;
-    submitButtonText: string;
     [x: string]: any;
   };
   navigation?: {

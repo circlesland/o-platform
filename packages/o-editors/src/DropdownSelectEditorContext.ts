@@ -1,12 +1,13 @@
 import { EditorContext } from "./editorContext";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
+import { EditorViewContext } from "./shared/editorViewContext";
 
 export type DropdownSelectorParams<
   TContext extends ProcessContext<any>,
   TOption,
   TKey
 > = {
-  placeholder: string;
+  view?: EditorViewContext;
   keyProperty?: string;
   getLabel: (option: TOption) => string;
   getKey: (option: TOption) => TKey;
