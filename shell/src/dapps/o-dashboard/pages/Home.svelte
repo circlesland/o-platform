@@ -91,66 +91,14 @@
   <div class="mt-16" />
 {/if} -->
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  <!-- 
-  <div class="flex flex-col w-full px-4 py-12 space-y-4">
-    <InfoCard
-      params="{{ headerClass: 'bg-primary', headerText: 'invite 3 pending' }}">
-      <div slot="infoCardContent" class="w-full p-2">
-        <ItemCard
-          params="{{ edgeless: true, inline: true, title: 'Jakob', subTitle: 'https://circles.land/#/328e9zef09hje0fhjewf', truncateMain: true, noShadow: true }}">
-
-          <div slot="itemCardEnd">
-            <div class="self-end mr-2 text-lg sm:text-3xl">
-              <button
-                on:click="{e => {
-                  console.log('ALKSDJASd');
-                }}"
-                class="self-end text-base btn btn-square btn-primary ">
-                <Icons icon="copy" />
-              </button>
-            </div>
-          </div>
-        </ItemCard>
-      </div>
-    </InfoCard>
-
-    <InfoCard
-      params="{{ headerText: 'invite 2 unlocked', headerClass: 'bg-success' }}">
-      <div slot="infoCardContent" class="w-full p-2">
-        <ItemCard
-          params="{{ imageUrl: 'https://images.unsplash.com/photo-1630904519797-7e2992b13afe?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw3NHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60', edgeless: true, inline: true, title: 'EMPOWERED ELA LOUIS', subTitle: '2 days ago', truncateMain: true, noShadow: true }}">
-
-          <div slot="itemCardEnd">
-            <div class="self-end mr-2 text-lg sm:text-3xl">
-              <button
-                on:click="{e => {
-                  console.log('ALKSDJASd');
-                }}"
-                class="self-end text-base btn btn-square btn-primary ">
-                <Icons icon="copy" />
-              </button>
-            </div>
-          </div>
-        </ItemCard>
-      </div>
-    </InfoCard>
-
-    <InfoCard
-      params="{{ headerText: 'invite 1 unlocked', headerClass: 'bg-success' }}">
-      <div slot="infoCardContent" class="w-full p-2">
-        <ItemCard
-          params="{{ imageUrl: 'https://images.unsplash.com/photo-1630644964646-6cc8ac5b47ea?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5NHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60', edgeless: true, inline: true, title: 'EMPOWERED Hans-Peter Jacobs', subTitle: '1 day ago', truncateMain: true, noShadow: true }}">
-
-          <div slot="itemCardEnd"></div>
-        </ItemCard>
-      </div>
-    </InfoCard>
-  </div> -->
 
   <div class="m-4">
-
+    <section class="mb-4" on:click="{() => loadLink('/dashboard/invites')}">
+      <button class="btn btn-primary btn-block">Create Invites</button>
+    </section>
     <div
       class="grid grid-cols-2 gap-4 text-base auto-rows-fr lg:grid-cols-3 dashboard-grid">
+
       <!-- PASSPORT  -->
 
       <section
@@ -234,87 +182,6 @@
       </section>
     </div>
 
-    {#if showFundHint}
-      <!-- Create safe  showFundHint-->
-      <section class="mt-4 mb-4">
-        <div class="w-full p-4 bg-white rounded-lg shadow">
-          <div class="px-4 py-2 mr-4 -ml-3 text-center "></div>
-          <div style="text-align: center">
-            <p class="w-64 m-auto mt-2 text-2xl font-bold text-dark">
-              You're almost there.
-            </p>
-            <p class="mt-4 ">
-              To unlock your Circles basic income, you need to get invited by a
-              CirclesLand citizen.
-            </p>
-            <div class="mt-4 mb-4 text-xs break-all" id="clipboard">
-              <input type="text" class="hidden" bind:value="{inviteLink}" />
-              <div class="inline-block text-2xl">
-                <button class="btn btn-primary" on:click="{copy}">
-                  Copy Invite Link
-                </button>
-              </div>
-
-              <div class="block mt-2 text-sm text-light ">{inviteLink}</div>
-            </div>
-            <p class="text">
-              If you don't know anybody who has Circles yet, ask nicely in our
-              <a
-                href="https://discord.gg/4DBbRCMnFZ"
-                target="_blank"
-                class="btn-link">
-                Discord
-              </a>
-              if someone can invite you.
-            </p>
-            <p class="pb-4 mt-4 text-xs">
-              alternatively,
-              <a href="#/dashboard/become-a-hub" class="btn-link">
-                become an invite hub
-              </a>
-            </p>
-            <div class="mr-1 text-primary"></div>
-          </div>
-        </div>
-      </section>
-    {:else if $mySafe}
-      <section
-        class="mt-4"
-        on:click="{() => loadLink('/dashboard/become-a-hub')}">
-        <button class="btn btn-primary btn-block">
-          Grow your trust network now
-        </button>
-      </section>
-
-      <!-- Create safe  -->
-      <!-- <section class="mb-4">
-      <div class="w-full px-2 pb-8 -mt-3 bg-white rounded-lg shadow">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center " />
-        <div class="text-center">
-          <p class="w-full m-auto mt-2 text-2xl font-bold text-gradient">
-            Grow the basic income economy!
-          </p>
-          <p class="mt-4 text-lg ">
-            xxxxxxx/1.000.000.000 Progress
-          </p>
-          <div class="w-full px-2 m-auto">
-            <progress
-              class="h-1 progress progress-accent "
-              value={12}
-              max="100"
-            />
-          </div> 
-          <p class="mt-4 text">
-            Help your family, friends and others to get onboard by <a
-              href="/#/dashboard/become-a-hub"
-              class="btn-link">becoming an invite hub</a
-            >
-          </p>
-          <div class="mr-1 text-primary" />
-        </div>
-      </div>
-    </section> -->
-    {/if}
   </div>
 </div>
 

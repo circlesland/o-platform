@@ -1,5 +1,5 @@
 import Home from "./o-dashboard/pages/Home.svelte";
-import CreateHub from "./o-dashboard/pages/CreateHub.svelte";
+import Invites from "./o-dashboard/pages/Invites.svelte";
 import { logout } from "./o-passport/processes/logout";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
@@ -11,11 +11,12 @@ const index: Page<any, DappState> = {
   title: "Dashboard",
   type: "page",
 };
-const createHub: Page<any, DappState> = {
+const invites: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["=become-a-hub"],
-  component: CreateHub,
-  title: "Become a hub",
+  routeParts: ["=invites"],
+  component: Invites,
+  title: "Invites",
+  position: "modal",
   type: "page",
 };
 
@@ -42,5 +43,5 @@ export const dashboard: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, createHub],
+  routables: [index, invites],
 };
