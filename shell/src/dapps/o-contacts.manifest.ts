@@ -122,13 +122,13 @@ export const profile: Page<any, ContactsDappState> = {
   component: ProfilePage,
 };
 
-// const contacts: Page<any, ContactsDappState> = {
-//   routeParts: ["=list"],
-//   component: Contacts,
-//   title: "Contacts",
-//   icon: "friends",
-//   type: "page",
-// };
+const graph: Page<any, ContactsDappState> = {
+  routeParts: ["=graph"],
+  component: Graph,
+  title: "Network",
+  icon: "network",
+  type: "page",
+};
 
 export const friends: DappManifest<DappState> = {
   type: "dapp",
@@ -159,5 +159,5 @@ export const friends: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, profile],
+  routables: [index, graph, profile],
 };
