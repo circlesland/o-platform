@@ -56,9 +56,9 @@ const editorContent: { [x: string]: EditorViewContext } = {
     maxLength: "150",
   },
   city: {
-    title: "Vote for your City?",
+    title: "Vote for your City",
     description:
-      "Advance your city in the basic income ranking and push the political discorse in your area.",
+      "Advance your city in the basic income ranking and push the political discourse in your area.",
     placeholder: "Last name",
     submitButtonText: "Submit vote",
   },

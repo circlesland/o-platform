@@ -198,6 +198,7 @@ body {
 .input {
   @apply text-lg;
   @apply text-dark-lightest;
+  @apply border-dark-lightest;
 }
 
 .input-error {

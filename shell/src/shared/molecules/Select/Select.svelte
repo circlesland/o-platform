@@ -859,7 +859,9 @@
     /* caret-color: transparent; */
     @apply input;
     @apply input-bordered;
+    @apply border-dark-lightest;
     @apply text-lg;
+    @apply text-dark;
   }
 
   .selectContainer input::placeholder {
