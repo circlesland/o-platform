@@ -3,6 +3,7 @@
 schema {
     query: Query
     mutation: Mutation
+    subscription: Subscription
 }
 
 interface ICity {
@@ -14,6 +15,13 @@ interface ICity {
     name: String!
     population: Int!
 }
+
+interface IEventPayload {
+    id: Int!
+    transaction_id: Int!
+}
+
+union EventPayload = CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer
 
 type City implements ICity {
     country: String!
@@ -60,6 +68,63 @@ type CountryStats {
     name: String!
 }
 
+type CrcHubTransfer implements IEventPayload {
+    flow: String!
+    from: String!
+    id: Int!
+    to: String!
+    transaction_id: Int!
+    transfers: [CrcTokenTransfer!]!
+}
+
+type CrcMinting implements IEventPayload {
+    from: String!
+    id: Int!
+    to: String!
+    token: String!
+    transaction_id: Int!
+    value: String!
+}
+
+type CrcSignup implements IEventPayload {
+    id: Int!
+    token: String!
+    transaction_id: Int!
+    user: String!
+}
+
+type CrcTokenTransfer implements IEventPayload {
+    from: String!
+    id: Int!
+    to: String!
+    token: String!
+    transaction_id: Int!
+    value: String!
+}
+
+type CrcTrust implements IEventPayload {
+    address: String!
+    can_send_to: String!
+    id: Int!
+    limit: Int!
+    transaction_id: Int!
+}
+
+type CreateInvitationResult {
+    error: String!
+    success: Boolean!
+}
+
+type CreatedInvitation {
+    claimedAt: String
+    claimedBy: Profile
+    claimedByProfileId: Int
+    code: String!
+    createdAt: String!
+    createdBy: Profile
+    createdByProfileId: Int!
+}
+
 type DelegateAuthInit {
     appId: String!
     challengeType: String
@@ -74,51 +139,30 @@ type DepositChallengeResponse {
     success: Boolean!
 }
 
+type EthTransfer implements IEventPayload {
+    from: String!
+    id: Int!
+    to: String!
+    transaction_id: Int!
+    value: String!
+}
+
 type ExchangeTokenResponse {
     errorMessage: String
     success: Boolean!
 }
 
+type GnosisSafeEthTransfer implements IEventPayload {
+    from: String!
+    id: Int!
+    initiator: String!
+    to: String!
+    transaction_id: Int!
+    value: String!
+}
+
 type Goal {
     totalCitizens: Int!
-}
-
-type IndexTransactionLog {
-    address: String!
-    data: String
-    id: Int!
-    logIndex: Int!
-    topics: [String!]!
-}
-
-type IndexTransactionRequest {
-    blockNumber: Int!
-    createdAt: String!
-    createdBy: Profile
-    createdByProfileId: Int!
-    id: Int!
-    tags: [Tag!]
-    transactionHash: String!
-    transactionIndex: Int!
-}
-
-type IndexedTransaction {
-    blockHash: String!
-    blockNumber: Int!
-    confirmations: Int
-    contractAddress: String
-    cumulativeGasUsed: String!
-    from: String!
-    gasUsed: String!
-    id: Int!
-    logs: [IndexTransactionLog!]
-    logsBloom: String!
-    root: String
-    status: String
-    tags: [Tag!]
-    to: String!
-    transactionHash: String!
-    transactionIndex: Int!
 }
 
 type LockOfferResult {
@@ -132,17 +176,17 @@ type LogoutResponse {
 }
 
 type Mutation {
-    acknowledge(eventId: Int!): ProfileEvent!
+    acknowledge(eventPayloadId: Int!): ProfileEvent!
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
+    createInvitation(for: String!): CreateInvitationResult!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
     lockOffer(data: LockOfferInput!): LockOfferResult!
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
-    requestIndexTransaction(data: RequestIndexTransactionInput!): IndexTransactionRequest!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
@@ -194,11 +238,16 @@ type Profile {
 }
 
 type ProfileEvent {
-    createdAt: String!
-    data: String!
+    block_number: Int!
+    direction: String!
     id: Int!
-    profileId: Int!
+    payload: EventPayload
+    safe_address: String!
+    timestamp: String!
+    transaction_hash: String!
+    transaction_index: Int!
     type: String!
+    value: String!
 }
 
 type ProvePaymentResult {
@@ -220,17 +269,17 @@ type Purchase {
 type Query {
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
-    events: [ProfileEvent!]!
-    invitationTransaction: IndexedTransaction
+    events(safeAddress: String!): [ProfileEvent!]!
+    invitationTransaction: ProfileEvent
+    myInvitations: [CreatedInvitation!]!
     offers(query: QueryOfferInput!): [Offer!]!
     profiles(query: QueryProfileInput!): [Profile!]!
-    safeFundingTransaction: IndexedTransaction
+    safeFundingTransaction: ProfileEvent
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
     stats: Stats
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!
-    transactions(query: QueryIndexedTransactionInput): [IndexedTransaction!]!
     version: Version!
     whoami: String
 }
@@ -272,7 +321,7 @@ type Stats {
     totalCitizens: Int!
 }
 
-type Subscriptions {
+type Subscription {
     events: [ProfileEvent!]!
 }
 
@@ -292,11 +341,6 @@ type Version {
     major: Int!
     minor: Int!
     revision: Int!
-}
-
-enum CacheControlScope {
-    PRIVATE
-    PUBLIC
 }
 
 enum PurchaseStatus {
@@ -340,11 +384,6 @@ input QueryCitiesInput {
     byName: QueryCitiesByNameInput
 }
 
-input QueryIndexedTransactionInput {
-    fromBlockNo: Int
-    toBlockNo: Int
-}
-
 input QueryOfferInput {
     categoryTagId: Int
     createdByProfileId: Int
@@ -372,11 +411,6 @@ input QueryTagsInput {
 
 input QueryUniqueProfileInput {
     id: Int!
-}
-
-input RequestIndexTransactionInput {
-    tags: [CreateTagInput!]
-    transactionHash: String!
 }
 
 input RequestUpdateSafeInput {
@@ -428,7 +462,3 @@ input UpsertTagInput {
     typeId: String!
     value: String
 }
-
-
-"The `Upload` scalar type represents a file upload."
-scalar Upload

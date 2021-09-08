@@ -48,10 +48,22 @@ echo "* auth"
 cd ../auth
 npx graphql-codegen
 
+# cd ../../../../../..
+# echo "Generating graphql types for dapps/o-contacts"
+# echo "* api"
+# cd shell/src/dapps/o-contacts/data/api
+# npx graphql-codegen
+
 cd ../../../../../..
-echo "Generating graphql types for dapps/o-contacts"
+echo "Generating graphql types for dapps/o-chat"
 echo "* api"
-cd shell/src/dapps/o-contacts/data/api
+cd shell/src/dapps/o-chat/data/api
+npx graphql-codegen
+
+cd ../../../../../..
+echo "Generating graphql types for dapps/o-marketplace"
+echo "* api"
+cd shell/src/dapps/o-marketplace/data/api
 npx graphql-codegen
 
 cd ../../../../../..
@@ -61,7 +73,3 @@ cd shell/src/dapps/o-banking/data/api
 npx graphql-codegen
 
 cd ../../../../../..
-echo "Generating graphql types for dapps/o-marketplace"
-echo "* api"
-cd shell/src/dapps/o-marketplace/data/api
-npx graphql-codegen

@@ -44,22 +44,72 @@ query profilesByIds($id:[Int!]!) {
     }
 }
 
-query transactions {
-    transactions(query:{}) {
-        blockNumber
-        transactionHash
-        transactionIndex
-        confirmations
-        cumulativeGasUsed
-        gasUsed
-        logs {
-            data
-            topics
-        }
-        tags {
-            id
-            typeId
-            value
+query invitationTransaction {
+    invitationTransaction {
+        transaction_hash
+    }
+}
+
+query safeFundingTransaction {
+    safeFundingTransaction {
+        transaction_hash
+    }
+}
+
+query safeTimeline($safeAddress:String!) {
+    # Write your query or mutation here
+    events(safeAddress:$safeAddress) {
+        timestamp
+        type
+        safe_address
+        transaction_hash
+        transaction_index
+        block_number
+        direction
+        payload {
+            ... on CrcSignup {
+                user
+                token
+            }
+            ... on CrcTrust {
+                address
+                can_send_to
+                limit
+            }
+            ... on CrcTokenTransfer {
+                token
+                from
+                to
+                value
+            }
+            ... on CrcHubTransfer {
+                from
+                to
+                flow
+                transfers {
+                    token
+                    from
+                    to
+                    value
+                }
+            }
+            ... on CrcMinting {
+                token
+                from
+                to
+                value
+            }
+            ... on EthTransfer {
+                from
+                to
+                value
+            }
+            ... on GnosisSafeEthTransfer {
+                initiator
+                from
+                to
+                value
+            }
         }
     }
 }

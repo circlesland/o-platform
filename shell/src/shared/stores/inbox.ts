@@ -1,13 +1,13 @@
 import {writable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {AcknowledgeDocument, EventsDocument, Profile, ProfileEvent} from "../../dapps/o-chat/data/api/types";
+import {AcknowledgeDocument, Profile, ProfileEvent} from "../../dapps/o-chat/data/api/types";
 
 let events:ProfileEvent[] = [];
 async function queryEvents()
 {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
-        query: EventsDocument
+        query: SafeTimelineDocument
     });
     if (result.errors) {
         console.error(result.errors);

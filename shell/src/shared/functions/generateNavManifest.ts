@@ -1,12 +1,12 @@
 import LinkComponent from "../molecules/NextNav/Components/Link.svelte";
 import ListComponent from "../molecules/NextNav/Components/List.svelte";
-import { isMobile } from "src/shared/functions/isMobile";
 import ActionButtonComponent from "../molecules/NextNav/Components/ActionButton.svelte";
 import {
   NavigationElement,
   NavigationManifest,
 } from "@o-platform/o-interfaces/dist/navigationManifest";
 import { Prompt } from "@o-platform/o-process/dist/events/prompt";
+import {isMobile} from "./isMobile";
 
 export type GenerateNavManifestArgs = {
   leftIsOpen: boolean;
@@ -36,7 +36,7 @@ const homeNavManifest = () => {
   };
 };
 
-const defaultNavManifest = () => {
+const defaultNavManifest : () => NavigationManifest  = () => {
   return {
     leftSlot: {
       component: LinkComponent,

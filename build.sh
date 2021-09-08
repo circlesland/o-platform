@@ -67,6 +67,12 @@ cd shell/src/dapps/o-marketplace/data/api
 npx graphql-codegen
 
 cd ../../../../../..
+echo "Generating graphql types for dapps/o-banking"
+echo "* api"
+cd shell/src/dapps/o-banking/data/api
+npx graphql-codegen
+
+cd ../../../../../..
 
 echo "Building 'shell' with dapps .."
 cd shell || exit

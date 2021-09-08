@@ -19,13 +19,13 @@ query profilesByName($searchString:String!) {
 
 query invitationTransaction {
     invitationTransaction {
-        transactionHash
+        transaction_hash
     }
 }
 
 query safeFundingTransaction {
     safeFundingTransaction {
-        transactionHash
+        transaction_hash
     }
 }
 
