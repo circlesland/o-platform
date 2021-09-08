@@ -4,6 +4,7 @@ import Keys from "./o-passport/pages/Keys.svelte";
 import Settings from "./o-passport/pages/Settings.svelte";
 import Login from "./o-passport/pages/Login.svelte";
 import { logout } from "./o-passport/processes/logout";
+import { homer } from "./o-passport/processes/homer";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
@@ -73,6 +74,12 @@ export const passport: DappManifest<DappState> = {
           title: "Logout",
           icon: "logout",
           action: () => window.o.runProcess(logout, {}),
+        },
+        {
+          key: "homer",
+          title: "Dont' click me",
+          icon: "homer",
+          action: () => window.o.runProcess(homer, {}),
         },
       ];
     },
