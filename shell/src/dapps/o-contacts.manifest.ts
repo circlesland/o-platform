@@ -98,7 +98,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       },
       {
         key: "setTrust",
-        icon: "trust",
+        icon: trustState ? "untrust" : "trust",
         title: trustState ? "Untrust" : "Trust",
         action: async () => {
           window.o.runProcess(setTrust, {

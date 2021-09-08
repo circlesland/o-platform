@@ -18,14 +18,24 @@
   import { Profile } from "../../o-banking/data/api/types";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import QuickActions from "src/shared/molecules/QuickActions.svelte";
 
   export let id: string;
   export let jumplist: Jumplist<any, any> | undefined;
-  export let runtimeDapp:RuntimeDapp<any>;
+
+  let runtimeDapp: RuntimeDapp<any>;
 
   onMount(() => {
-
+    /*
+    if (nextRoutable.type === "page") {
+      jumplist = (<Page<any, any>>nextRoutable).jumplist;
+    } else {
+      jumplist = undefined;
+    }
+     */
     shellEventSubscription = window.o.events.subscribe(
       async (event: PlatformEvent) => {
         if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
@@ -557,11 +567,12 @@
 
       {#if jumplist && !isMe}
         <div
-          class="sticky bottom-0 left-0 right-0 w-full px-4 py-2 mt-2 bg-white rounded-xl">
+          class="sticky bottom-0 left-0 right-0 w-full  py-2 mt-2 bg-white rounded-xl">
           {#await jumplist.items({ id: id }, runtimeDapp)}
             <p>loading</p>
 
           {:then items}
+
             <DetailActionBar actions="{items}" />
           {/await}
         </div>

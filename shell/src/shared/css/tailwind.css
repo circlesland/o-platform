@@ -201,6 +201,10 @@ body {
   @apply border-dark-lightest;
 }
 
+.textarea {
+  @apply border-dark-lightest;
+}
+
 .input-error {
   --tw-border-opacity: 1 !important;
   border-color: hsla(var(--er, 14 100% 57%) / var(--tw-border-opacity));
