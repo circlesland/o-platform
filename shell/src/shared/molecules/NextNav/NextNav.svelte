@@ -23,15 +23,24 @@
       </div>
     {/if}
 
-    {#if navigation.loginPill}
-      <LoginPill />
-    {:else}
-      <NavPill
-        on:actionButton="{() => {
-          navigation.navPill.center.props.action();
-        }}"
-        props="{navigation.navPill}" />
-    {/if}
+    <NavPill
+      on:actionButton="{() => {
+        navigation.navPill.center.props.action();
+      }}"
+      props="{navigation.navPill}" />
+
+  </footer>
+{/if}
+{#if navigation.loginPill}
+  <footer
+    id="nextnav"
+    class="fixed bottom-0 right-0 z-50 grid justify-center {width} h-20
+    grid-cols-3 pb-3 auto-cols-max place-content-center text-dark">
+    <LoginPill
+      on:actionButton="{() => {
+        navigation.loginPill.props.action();
+      }}"
+      props="{navigation.loginPill}" />
   </footer>
 {/if}
 
