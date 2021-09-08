@@ -46,7 +46,8 @@ export function findRoutableByParams(dappManifest:DappManifest<any>, params: { [
 
                 const remainingParamsSpec = route.routeParts
                     .slice(exactParts.length)
-                    .map((o) => o.replace(":", "").replace("?", ""));
+                    .map((o) => o.replace(":", "")
+                                        .replace("?", ""));
 
                 const remainingParams = routePartsFromParams.slice(
                     exactParts.length
@@ -55,6 +56,7 @@ export function findRoutableByParams(dappManifest:DappManifest<any>, params: { [
                 for (let i = 0; i < remainingParamsSpec.length; i++) {
                     newPageParams[remainingParamsSpec[i]] = remainingParams[i];
                 }
+
                 break;
             }
         }

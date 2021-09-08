@@ -1,5 +1,4 @@
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {SessionInfoDocument} from "../../../data/api/types";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
