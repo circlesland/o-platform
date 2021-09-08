@@ -1,10 +1,7 @@
 <script lang="ts">
-  import { Token } from "../data/circles/types";
   import { push } from "svelte-spa-router";
   import ItemCard from "../../../shared/atoms/ItemCard.svelte";
   import Web3 from "web3";
-  import { INVITE_VALUE } from "src/dapps/o-passport/processes/invite/invite";
-  import { mySafe } from "../stores/safe";
   import { BN } from "ethereumjs-util";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { me } from "../../../shared/stores/me";

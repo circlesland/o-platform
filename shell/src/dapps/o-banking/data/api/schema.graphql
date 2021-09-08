@@ -71,16 +71,20 @@ type CountryStats {
 type CrcHubTransfer implements IEventPayload {
     flow: String!
     from: String!
+    from_profile: Profile
     id: Int!
     to: String!
+    to_profile: Profile
     transaction_id: Int!
     transfers: [CrcTokenTransfer!]!
 }
 
 type CrcMinting implements IEventPayload {
     from: String!
+    from_profile: Profile
     id: Int!
     to: String!
+    to_profile: Profile
     token: String!
     transaction_id: Int!
     value: String!
@@ -91,12 +95,15 @@ type CrcSignup implements IEventPayload {
     token: String!
     transaction_id: Int!
     user: String!
+    user_profile: Profile
 }
 
 type CrcTokenTransfer implements IEventPayload {
     from: String!
+    from_profile: Profile
     id: Int!
     to: String!
+    to_profile: Profile
     token: String!
     transaction_id: Int!
     value: String!
@@ -104,7 +111,9 @@ type CrcTokenTransfer implements IEventPayload {
 
 type CrcTrust implements IEventPayload {
     address: String!
+    address_profile: Profile
     can_send_to: String!
+    can_send_to_profile: Profile
     id: Int!
     limit: Int!
     transaction_id: Int!
@@ -141,8 +150,10 @@ type DepositChallengeResponse {
 
 type EthTransfer implements IEventPayload {
     from: String!
+    from_profile: Profile
     id: Int!
     to: String!
+    to_profile: Profile
     transaction_id: Int!
     value: String!
 }
@@ -154,9 +165,11 @@ type ExchangeTokenResponse {
 
 type GnosisSafeEthTransfer implements IEventPayload {
     from: String!
+    from_profile: Profile
     id: Int!
     initiator: String!
     to: String!
+    to_profile: Profile
     transaction_id: Int!
     value: String!
 }
@@ -176,7 +189,7 @@ type LogoutResponse {
 }
 
 type Mutation {
-    acknowledge(eventPayloadId: Int!): ProfileEvent!
+    acknowledge(eventId: Int!): ProfileEvent!
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
@@ -243,6 +256,7 @@ type ProfileEvent {
     id: Int!
     payload: EventPayload
     safe_address: String!
+    safe_address_profile: Profile
     timestamp: String!
     transaction_hash: String!
     transaction_index: Int!
@@ -269,7 +283,8 @@ type Purchase {
 type Query {
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
-    events(safeAddress: String!): [ProfileEvent!]!
+    eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
+    events(safeAddress: String!, types: [String!]): [ProfileEvent!]!
     invitationTransaction: ProfileEvent
     myInvitations: [CreatedInvitation!]!
     offers(query: QueryOfferInput!): [Offer!]!

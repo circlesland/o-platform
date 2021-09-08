@@ -3,11 +3,11 @@
   import { transfer } from "../processes/transfer";
   import TransactionCard from "../atoms/TransactionCard.svelte";
   import TopNav from "src/shared/atoms/TopNav.svelte";
-  import { mySafe } from "../stores/safe";
   import { me } from "../../../shared/stores/me";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import { Transfer } from "../data/circles/types";
+  import {onMount} from "svelte";
+  import {ProfileEvent, TransactionTimelineDocument} from "../data/api/types";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -16,8 +16,6 @@
 
   let stopElement: HTMLDivElement;
   let firstElement: TransactionCard;
-  let preparedRows: Transfer[] = [];
-  let displayRows: Transfer[] = [];
 
   let scrollY;
   let oldRowCount = 0;
@@ -26,25 +24,25 @@
   let currentPage = 0;
   let eof = false;
 
-  function loadMore() {
-    if ($mySafe.transfers.rows.length == 0) return;
+  let entries: ProfileEvent[] = [];
+  let error:string;
 
-    const maxPageSize =
-      $mySafe.transfers.rows.length >= pageSize
-        ? pageSize
-        : $mySafe.transfers.rows.length;
-    if (maxPageSize < pageSize) {
-      // EOF
-      eof = true;
+  onMount(async () => {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const timeline = await apiClient.query({
+      query: TransactionTimelineDocument,
+      variables: {
+        safeAddress: "0xde374ece6fa50e781e81aac78e811b33d16912c7" //this.safeAddress
+      }
+    });
+    if (timeline.errors) {
+      error = `Couldn't load the transaction history for the following reasons: ${timeline.errors.join("\n")}`;
     }
-    const from = currentPage * pageSize;
-    const to = from + pageSize;
-    preparedRows = [...preparedRows, ...$mySafe.transfers.rows.slice(from, to)];
-    // console.log("Next page ..");
-    currentPage++;
-  }
+    entries = timeline.data.events.reverse();
+  });
 
   $: {
+    /*
     if ($mySafe.transfers.rows.length != oldRowCount) {
       oldRowCount = $mySafe.transfers.rows.length;
       preparedRows = [];
@@ -67,6 +65,7 @@
         }
       }
     }
+     */
   }
 </script>
 
@@ -75,11 +74,11 @@
 <BankingHeader
   {runtimeDapp}
   {routable}
-  balance={$mySafe && $mySafe.balance ? $mySafe.balance : '0'}
+  balance="0"
 />
 
 <div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
-  {#if $mySafe.ui && !$mySafe.ui.error && displayRows.length === 0}
+  {#if !error && entries.length === 0}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
@@ -87,20 +86,20 @@
         </div>
       </div>
     </section>
-  {:else if $mySafe.ui && $mySafe.ui.error}
+  {:else if error}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
             <b>An error occurred while loading the recent activities:</b>
             <br />
-            {$mySafe.ui.error.message}
+            {error}
           </div>
         </div>
       </div>
     </section>
-  {:else if displayRows.length > 0}
-    {#each displayRows as transfer, i}
+  {:else if entries.length > 0}
+    {#each entries as transfer, i}
       {#if i === 0}
         <TransactionCard bind:this={firstElement} {transfer} message="" />
       {:else}

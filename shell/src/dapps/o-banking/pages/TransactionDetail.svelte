@@ -1,18 +1,21 @@
 <script lang="ts">
   import Time from "svelte-time";
-  import { mySafe } from "../stores/safe";
 
-  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import { Transfer } from "../data/circles/types";
   import Web3 from "web3";
   import { push } from "svelte-spa-router";
+  import {
+    CrcHubTransfer,
+    CrcMinting, Profile,
+    ProfileEvent,
+    TransactionByHashDocument
+  } from "../data/api/types";
 
   import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+  import {onMount} from "svelte";
 
-  export let _id: string;
+  export let transactionHash: string;
 
-  let transfer: Transfer;
+  let transfer: ProfileEvent;
   let pictureUrl: string;
   let displayName: string;
   let displayableFromName: string;
@@ -23,78 +26,93 @@
   let otherSafeAddress: string;
   let path: any;
   let transactionId: string;
+  let error:string;
+  let value:string;
+  let fromProfile: Profile;
+  let toProfile: Profile;
+  let from:string;
+  let to:string;
 
-  $: {
-    transactionId = _id;
-
-    transfer = $mySafe.transfers.rows.find(o => o._id == transactionId);
-
-    console.log("TRANSFER: ", transfer);
-
-    if (transfer) {
-      displayableFromName = transfer.fromProfile
-        ? transfer.fromProfile.displayName
-        : transfer.from;
-
-      displayableToName = transfer.toProfile
-        ? transfer.toProfile.displayName
-        : transfer.to;
-      displayName =
-        transfer.direction === "in"
-          ? transfer.fromProfile
-            ? transfer.fromProfile.displayName
-            : transfer.from
-          : transfer.toProfile
-          ? transfer.toProfile.displayName
-          : transfer.to;
-
-      pictureUrl =
-        transfer.direction === "in"
-          ? transfer.fromProfile
-            ? transfer.fromProfile.avatarUrl
-            : undefined
-          : transfer.toProfile
-          ? transfer.toProfile.avatarUrl
-          : undefined;
-
-      classes = transfer.direction === "in" ? "text-success" : "text-alert";
-
-      displayableFromName =
-        displayableFromName === "0x0000000000000000000000000000000000000000"
-          ? "CirclesLand"
-          : displayableFromName;
-
-      const m = transfer.tags
-        ? transfer.tags.find(o => o.typeId === "o-banking:transfer:message:1")
-        : undefined;
-      const m2 = m ? m.value : "";
-      message =
-        displayableFromName === "CirclesLand" ? "Universal basic income" : m2;
-
-      const p = transfer.tags
-        ? transfer.tags.find(
-            o => o.typeId === "o-banking:transfer:transitivePath:1"
-          )
-        : undefined;
-      const p2 = p ? JSON.parse(p.value) : undefined;
-      path = p2;
-
-      amountInWei = RpcGateway.get().utils.fromWei(transfer.amount, "ether");
-
-      otherSafeAddress =
-        transfer.direction === "in" ? transfer.from : transfer.to;
-
-      if (!pictureUrl) {
-        pictureUrl = AvataarGenerator.generate(otherSafeAddress);
+  onMount(async () => {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const timeline = await apiClient.query({
+      query: TransactionByHashDocument,
+      variables: {
+        safeAddress: "0xde374ece6fa50e781e81aac78e811b33d16912c7",
+        transactionHash
       }
+    });
+    if (timeline.errors) {
+      throw new Error(`Couldn't load the transaction history for the following reasons: ${timeline.errors.join("\n")}`);
     }
-  }
+    if (timeline.data.eventByTransactionHash.length > 0) {
+      transfer = timeline.data.eventByTransactionHash[0];
+    }
 
-  function openDetail(transfer: Transfer) {
-    if (transfer.from.startsWith("0x000")) {
-      return;
+    if (transfer && transfer.type == "crc_minting" && transfer.payload) {
+      let minting = transfer.payload as CrcMinting;
+      if (minting) {
+        displayName = "Circles Land";
+      }
+      from = minting.from;
+      to = minting.to;
+      fromProfile = <any>{
+        firstName: "Circles",
+        lastName: "Land"
+      };
+      toProfile = minting.to_profile;
     }
-    push(`#/friends/${otherSafeAddress}`);
+    if (transfer && transfer.type == "crc_hub_transfer" && transfer.payload) {
+      let hubTransfer = transfer.payload as CrcHubTransfer;
+      if (hubTransfer) {
+        displayName = transfer.direction === "in"
+                ? (hubTransfer.from_profile
+                        ? hubTransfer.from_profile.firstName + hubTransfer.from_profile.lastName ?? ""
+                        : hubTransfer.from)
+                : (hubTransfer.to_profile
+                        ? hubTransfer.to_profile.firstName + hubTransfer.to_profile.lastName ?? ""
+                        : hubTransfer.to);
+
+        pictureUrl = transfer.direction === "in"
+                ? (hubTransfer.from_profile
+                        ? hubTransfer.from_profile.avatarUrl
+                        : undefined)
+                : (hubTransfer.to_profile
+                        ? hubTransfer.to_profile.avatarUrl
+                        : undefined);
+
+        if (transfer.direction === "in") {
+          pictureUrl = hubTransfer.from_profile && hubTransfer.from_profile.avatarUrl ? hubTransfer.from_profile.avatarUrl : hubTransfer.from.startsWith('0x000') ? '/images/common/circles.png' : pictureUrl
+        } else {
+          pictureUrl =  hubTransfer.to_profile && hubTransfer.to_profile.avatarUrl ? hubTransfer.to_profile.avatarUrl : pictureUrl;
+        }
+        from = hubTransfer.from;
+        to = hubTransfer.to;
+        fromProfile = hubTransfer.from_profile;
+        toProfile = hubTransfer.to_profile;
+      }
+
+      otherSafeAddress = transfer.direction === "in" ? hubTransfer.from : hubTransfer.to;
+    }
+    if (transfer) {
+      value = Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.value.toString() : '0', 'ether')).toFixed(2)
+      amountInWei = transfer ? transfer.value.toString() : "0";
+    }
+
+    pictureUrl = displayName === "Circles Land" ? "/images/common/circles.png" : pictureUrl;
+    message = displayName === "Circles Land" ? "Universal basic income" : ">>Transaction message<<";
+
+
+  });
+
+  function openDetail(transfer: ProfileEvent) {
+    if (transfer.type == "crc_hub_transfer") {
+      const hubTransfer = <CrcHubTransfer>transfer.payload;
+      if (hubTransfer.from.startsWith("0x00000")) {
+        return;
+      }
+      push(`#/friends/${hubTransfer.from}`);
+    }
   }
 </script>
 
@@ -105,6 +123,9 @@
   amount="{transfer ? transfer.amount : 0}"
   {classes} /> -->
 <div class="p-5">
+  <pre>
+    {JSON.stringify(transfer, null, 2)}
+  </pre>
   {#if transfer}
     <div
       class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
@@ -116,9 +137,9 @@
       <div>
         <span class="inline-block text-6xl font-heading {classes}">
           {#if transfer.direction === 'in'}
-            +{Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.amount : '0', 'ether')).toFixed(2)}
+            +{value}
           {:else}
-            -{Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.amount : '0', 'ether')).toFixed(2)}
+            -{value}
           {/if}
 
           <svg
@@ -154,22 +175,16 @@
         class="cursor-pointer avatar rounded-corners-gradient-borders"
         on:click="{() => openDetail(transfer)}">
         <div class="m-auto bg-white rounded-full w-36 h-36">
-          {#if transfer.direction === 'in'}
             <img
               alt="{displayableFromName}"
-              src="{transfer.fromProfile && transfer.fromProfile.avatarUrl ? transfer.fromProfile.avatarUrl : transfer.from.startsWith('0x000') ? '/images/common/circles.png' : pictureUrl}" />
-          {:else}
-            <img
-              alt="{transfer.toProfile ? transfer.toProfile.displayName : transfer.to}"
-              src="{transfer.toProfile && transfer.toProfile.avatarUrl ? transfer.toProfile.avatarUrl : pictureUrl}" />
-          {/if}
+              src={pictureUrl} />
         </div>
       </div>
       <div>
         {#if transfer.direction === 'in'}
-          <span class="mt-4 text-xl">from {displayableFromName}</span>
+          <span class="mt-4 text-xl">from {fromProfile.firstName + " " + fromProfile.lastName}</span>
         {:else}
-          <span class="mt-4 text-xl">to {displayableToName}</span>
+          <span class="mt-4 text-xl">to {toProfile.firstName + " " + toProfile.lastName}</span>
         {/if}
       </div>
       <div class="text-dark-lightest">{message ? message : 'No Message'}</div>
@@ -193,7 +208,7 @@
         <div class="flex items-center w-full">
           <div class="text-left ">
             <Time
-              timestamp="{new Date(transfer.time * 1000)}"
+              timestamp="{new Date(Number.parseInt(transfer.timestamp))}"
               format="D. MMMM YYYY HH:mm" />
           </div>
         </div>
@@ -214,7 +229,7 @@
 
         <div class="flex items-center w-full">
           <div class="text-left break-all">
-            {transfer.fromProfile ? `${transfer.from}` : 'Circlesland'}
+            {from}
           </div>
         </div>
       </div>
@@ -224,7 +239,7 @@
 
         <div class="flex items-center w-full">
           <div class="text-left break-all">
-            {transfer.toProfile ? `${transfer.to}` : ''}
+            {to}
           </div>
         </div>
       </div>
@@ -233,23 +248,21 @@
         <div class="mb-1 text-left text-2xs text-dark-lightest">Block</div>
 
         <div class="flex items-center w-full">
-          <div class="text-left break-all">{transfer.firstBlock}</div>
+          <div class="text-left break-all">{transfer.block_number}</div>
         </div>
       </div>
 
-      {#if transfer.transactionHash}
-        <div class="flex flex-col w-full space-y-1">
-          <div class="mb-1 text-left text-2xs text-dark-lightest">
-            Transaction Hash
-          </div>
+      <div class="flex flex-col w-full space-y-1">
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          Transaction Hash
+        </div>
 
-          <div class="flex items-center w-full text-primarydark">
-            <div class="text-left break-all">
-              {transfer.transactionHash ? transfer.transactionHash : ''}
-            </div>
+        <div class="flex items-center w-full text-primarydark">
+          <div class="text-left break-all">
+            {transfer.transaction_hash ? transfer.transaction_hash : ''}
           </div>
         </div>
-      {/if}
+      </div>
 
     </div>
   {/if}

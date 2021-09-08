@@ -11,7 +11,7 @@ import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {requestPathToRecipient} from "../services/requestPathToRecipient";
 import {show} from "@o-platform/o-process/dist/actions/show";
-import {CreateTagInput, RequestIndexTransactionDocument} from "../data/api/types";
+import {CreateTagInput} from "../data/api/types";
 import {Subscription} from "rxjs";
 
 export type TransferCirclesContextData = {
@@ -136,17 +136,6 @@ createMachine<TransferCirclesContext, any>({
                   value: context.data.message
                 });
               }
-
-              const api = await window.o.apiClient.client.subscribeToResult();
-              const indexedTransaction = await api.mutate({
-                mutation: RequestIndexTransactionDocument,
-                variables: {
-                  data: {
-                    tags: transactionTags,
-                    transactionHash: o.data
-                  }
-                }
-              });
               // console.log(indexedTransaction);
             });
 

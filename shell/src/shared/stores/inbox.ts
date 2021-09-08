@@ -1,13 +1,18 @@
 import {writable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {AcknowledgeDocument, Profile, ProfileEvent} from "../../dapps/o-chat/data/api/types";
+// import {SafeTimelineDocument} from "../../dapps/o-banking/data/api/types";
 
 let events:ProfileEvent[] = [];
 async function queryEvents()
 {
+    /*
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
-        query: SafeTimelineDocument
+        query: SafeTimelineDocument,
+        variables: {
+            safeAddress: null
+        }
     });
     if (result.errors) {
         console.error(result.errors);
@@ -15,6 +20,8 @@ async function queryEvents()
     }
 
     return result.data.events;
+     */
+    return [];
 }
 
 

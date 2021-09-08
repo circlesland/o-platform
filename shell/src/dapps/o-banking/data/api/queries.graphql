@@ -56,58 +56,155 @@ query safeFundingTransaction {
     }
 }
 
-query safeTimeline($safeAddress:String!) {
-    # Write your query or mutation here
-    events(safeAddress:$safeAddress) {
+query transactionTimeline($safeAddress:String!) {
+    events(safeAddress: $safeAddress, types: ["crc_hub_transfer", "crc_minting"]) {
         timestamp
         type
+        value
         safe_address
+        safe_address_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+        }
         transaction_hash
         transaction_index
         block_number
         direction
         payload {
-            ... on CrcSignup {
-                user
-                token
-            }
-            ... on CrcTrust {
-                address
-                can_send_to
-                limit
-            }
-            ... on CrcTokenTransfer {
-                token
-                from
-                to
-                value
-            }
             ... on CrcHubTransfer {
+                id
                 from
+                from_profile{
+                    id
+                    firstName
+                    lastName
+                    avatarUrl
+                }
                 to
+                to_profile{
+                    id
+                    firstName
+                    lastName
+                    avatarUrl
+                }
                 flow
                 transfers {
                     token
                     from
+                    from_profile{
+                        id
+                        firstName
+                        lastName
+                        avatarUrl
+                    }
                     to
+                    to_profile{
+                        id
+                        firstName
+                        lastName
+                        avatarUrl
+                    }
                     value
                 }
             }
             ... on CrcMinting {
+                id
                 token
                 from
+                from_profile {
+                    id
+                    firstName
+                    lastName
+                    avatarUrl
+                }
                 to
+                to_profile{
+                    id
+                    firstName
+                    lastName
+                    avatarUrl
+                }
                 value
             }
-            ... on EthTransfer {
+        }
+    }
+}
+
+query transactionByHash($safeAddress:String! $transactionHash:String!) {
+    eventByTransactionHash(
+        safeAddress: $safeAddress
+        transactionHash: $transactionHash
+        types: ["crc_hub_transfer", "crc_minting"]) {
+        timestamp
+        type
+        value
+        safe_address
+        safe_address_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+        }
+        transaction_hash
+        transaction_index
+        block_number
+        direction
+        payload {
+            ... on CrcHubTransfer {
+                id
                 from
+                from_profile{
+                    id
+                    firstName
+                    lastName
+                    avatarUrl
+                }
                 to
-                value
+                to_profile{
+                    id
+                    firstName
+                    lastName
+                    avatarUrl
+                }
+                flow
+                transfers {
+                    token
+                    from
+                    from_profile{
+                        id
+                        firstName
+                        lastName
+                        avatarUrl
+                    }
+                    to
+                    to_profile{
+                        id
+                        firstName
+                        lastName
+                        avatarUrl
+                    }
+                    value
+                }
             }
-            ... on GnosisSafeEthTransfer {
-                initiator
+            ... on CrcMinting {
+                id
+                token
                 from
+                from_profile {
+                    id
+                    firstName
+                    lastName
+                    avatarUrl
+                }
                 to
+                to_profile{
+                    id
+                    firstName
+                    lastName
+                    avatarUrl
+                }
                 value
             }
         }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
   import PageHeader from "src/shared/atoms/PageHeader.svelte";
-  import { mySafe } from "../stores/safe";
+  // import { mySafe } from "../stores/safe";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
@@ -50,19 +50,23 @@
   <div
     class="self-end m-auto mt-2 space-y-2 text-center text-base-300 max-w-max"
   >
+    <!--
     {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ''}
       <small class="block whitespace-nowrap">
         {$mySafe.transfers && $mySafe.transfers.rows ? $mySafe.transfers.rows.length : ''}
         transactions
       </small>
     {/if}
+    -->
     <small class="block whitespace-nowrap">
-      {$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ''}
+      <!--{$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ''}-->
     </small>
+    <!--
     <progress
       class="progress progress-accent transaction-update-progress"
       value={$mySafe.ui.loadingPercent ? $mySafe.ui.loadingPercent : 0}
       max="100"
     />
+    -->
   </div>
 </PageHeader>

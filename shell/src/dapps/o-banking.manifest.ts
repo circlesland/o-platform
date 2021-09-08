@@ -5,7 +5,7 @@ import Trusts from "./o-banking/pages/Trusts.svelte";
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
 
 import { transfer } from "./o-banking/processes/transfer";
-import { init, tryGetCurrentSafe } from "./o-banking/init";
+import { init } from "./o-banking/init";
 import { me } from "../shared/stores/me";
 import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
 import { Profile } from "./o-banking/data/api/types";
@@ -64,7 +64,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
         title: "Send Money",
         action: async () => {
           window.o.runProcess(transfer, {
-            safeAddress: tryGetCurrentSafe().safeAddress,
+            safeAddress: "",
             recipientAddress: recipientSafeAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });
@@ -74,11 +74,11 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
   },
 };
 
-const transactionDetail: Page<{ _id: string }, BankingDappState> = {
+const transactionDetail: Page<{ transactionHash: string }, BankingDappState> = {
   type: "page",
   isSystem: true,
   position: "modal",
-  routeParts: ["=transactions", ":_id"],
+  routeParts: ["=transactions", ":transactionHash"],
   title: "Transaction",
   component: TransactionDetailPage,
   jumplist: profileJumplist,

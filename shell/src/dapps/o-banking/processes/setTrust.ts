@@ -14,8 +14,7 @@ import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
 import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { Subscription } from "rxjs";
 import {
-  CreateTagInput,
-  RequestIndexTransactionDocument,
+  CreateTagInput
 } from "../data/api/types";
 
 export type SetTrustContextData = {
@@ -172,18 +171,6 @@ const processDefinition = (processId: string) =>
                   value: trustMessage,
                 });
               }
-
-              const api = await window.o.apiClient.client.subscribeToResult();
-              const indexedTransaction = await api.mutate({
-                mutation: RequestIndexTransactionDocument,
-                variables: {
-                  data: {
-                    tags: transactionTags,
-                    transactionHash: o.data,
-                  },
-                },
-              });
-              // console.log(indexedTransaction);
             });
             return execResult.toPromise();
           },

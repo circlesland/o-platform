@@ -10,7 +10,7 @@ import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
-import {CreateTagInput, Profile, RequestIndexTransactionDocument} from "../data/api/types";
+import {CreateTagInput, Profile} from "../data/api/types";
 import {UpsertProfileDocument} from "../../o-passport/data/api/types";
 import {push} from "svelte-spa-router";
 import {Banking} from "../banking";
@@ -145,7 +145,7 @@ createMachine<HubSignupContext, any>({
       invoke: {
         src: async (context) => {
           // Transfer all xdai to the safe except INITIAL_ACCOUNT_XDAI
-          await Banking.transferAllAccountXdaiToSafe(context.data.profile.circlesAddress, context.data.privateKey);
+          // await Banking.transferAllAccountXdaiToSafe(context.data.profile.circlesAddress, context.data.privateKey);
           localStorage.removeItem("fundsSafe");
           localStorage.setItem("signsUpAtCircles", "true");
         },
@@ -178,17 +178,6 @@ createMachine<HubSignupContext, any>({
               txHashSubscription.unsubscribe();
             }
 
-            const transactionTags: CreateTagInput[] = [];
-            const api = await window.o.apiClient.client.subscribeToResult();
-            await api.mutate({
-              mutation: RequestIndexTransactionDocument,
-              variables: {
-                data: {
-                  tags: transactionTags,
-                  transactionHash: o.data
-                }
-              }
-            });
           });
 
           const receipt = await hubSignupResult.toPromise();

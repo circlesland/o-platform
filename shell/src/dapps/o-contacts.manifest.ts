@@ -4,13 +4,11 @@ import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Profile } from "./o-banking/data/api/types";
 import { me } from "../shared/stores/me";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { init, tryGetCurrentSafe } from "./o-banking/init";
+import { init } from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
 import { loadProfileByProfileId } from "./o-banking/data/loadProfileByProfileId";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
-import { Unsubscriber } from "svelte/store";
-import { mySafe } from "./o-banking/stores/safe";
 import { transfer } from "./o-banking/processes/transfer";
 import { setTrust } from "./o-banking/processes/setTrust";
 
@@ -56,32 +54,10 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       }
       return undefined;
     };
-    const getTrustState = () =>
-      new Promise<number | undefined>((resolve, reject) => {
-        let safeSub: Unsubscriber = undefined;
-        safeSub = mySafe.subscribe((safe) => {
-          if (!safe || !safe.trustRelations) {
-            resolve(undefined);
-            return;
-          }
-          if (safeSub) safeSub();
-
-          const trustingSafe = Object.entries(
-            safe.trustRelations.trusting
-          ).find((o) => o[0] === recipientSafeAddress);
-          if (!trustingSafe) {
-            resolve(undefined);
-            return;
-          }
-
-          resolve(trustingSafe[1].limit);
-        });
-      });
 
     const recipientSafeAddress = params.id
       ? await getRecipientAddress()
       : undefined;
-    const trustState = params.id ? await getTrustState() : 0;
 
     return [
       {
@@ -90,7 +66,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         title: "Send Money",
         action: async () => {
           window.o.runProcess(transfer, {
-            safeAddress: tryGetCurrentSafe().safeAddress,
+            safeAddress: "",
             recipientAddress: recipientSafeAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });
@@ -99,12 +75,12 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       {
         key: "setTrust",
         icon: "trust",
-        title: trustState ? "Untrust" : "Trust",
+        title: "Untrust/Trust",
         action: async () => {
           window.o.runProcess(setTrust, {
-            trustLimit: trustState ? 0 : 100,
+            trustLimit: 123,
             trustReceiver: recipientSafeAddress,
-            safeAddress: tryGetCurrentSafe().safeAddress,
+            safeAddress: "",
             privateKey: localStorage.getItem("circlesKey"),
           });
         },

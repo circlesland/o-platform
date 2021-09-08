@@ -6,7 +6,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { BN } from "ethereumjs-util";
-import {CreateTagInput, RequestIndexTransactionDocument} from "../data/api/types";
+import {CreateTagInput} from "../data/api/types";
 
 export type TransferXdaiContextData = {
   safeAddress: string;
@@ -78,18 +78,6 @@ const processDefinition = (processId: string) =>
                 value: context.data.message
               });
             }
-
-            const api = await window.o.apiClient.client.subscribeToResult();
-            const indexedTransaction = await api.mutate({
-              mutation: RequestIndexTransactionDocument,
-              variables: {
-                data: {
-                  transactionHash: receipt.transactionHash
-                }
-              }
-            });
-            // console.log(indexedTransaction);
-
             return receipt;
           },
           onDone: "#success",

@@ -1,16 +1,17 @@
 <script lang="ts">
   import { transfer } from "../../o-banking/processes/transfer";
-  import { TrustObject } from "../../o-banking/data/circles/types";
-  import { tryGetCurrentSafe } from "../../o-banking/init";
+  // import { TrustObject } from "../../o-banking/data/circles/types";
+  // import { tryGetCurrentSafe } from "../../o-banking/init";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import Icons from "../../../shared/molecules/Icons.svelte";
   import { push } from "svelte-spa-router";
 
   import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+  /*
   export let trusting: TrustObject;
   export let trustedBy: TrustObject;
   export let untrusted: TrustObject;
-
+  */
   let pictureUrl: string;
   let displayName: string;
   let safeAddress: string;
@@ -19,6 +20,7 @@
   let id: String;
 
   $: {
+    /*
     if (untrusted) {
       // <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
       displayName = untrusted.profile
@@ -60,6 +62,7 @@
     if (!pictureUrl) {
       pictureUrl = AvataarGenerator.generate(safeAddress);
     }
+     */
   }
 
   function loadDetailPage(path) {
@@ -67,11 +70,13 @@
   }
 
   function execTransfer(recipientAddress?: string) {
+    /*
     window.o.runProcess(transfer, {
       recipientAddress,
       safeAddress: tryGetCurrentSafe()?.safeAddress,
       privateKey: localStorage.getItem("circlesKey"),
     });
+     */
   }
 </script>
 

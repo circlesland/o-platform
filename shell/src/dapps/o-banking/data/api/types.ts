@@ -69,8 +69,10 @@ export type CrcHubTransfer = IEventPayload & {
   __typename?: 'CrcHubTransfer';
   flow: Scalars['String'];
   from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   transaction_id: Scalars['Int'];
   transfers: Array<CrcTokenTransfer>;
 };
@@ -78,8 +80,10 @@ export type CrcHubTransfer = IEventPayload & {
 export type CrcMinting = IEventPayload & {
   __typename?: 'CrcMinting';
   from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   token: Scalars['String'];
   transaction_id: Scalars['Int'];
   value: Scalars['String'];
@@ -91,13 +95,16 @@ export type CrcSignup = IEventPayload & {
   token: Scalars['String'];
   transaction_id: Scalars['Int'];
   user: Scalars['String'];
+  user_profile?: Maybe<Profile>;
 };
 
 export type CrcTokenTransfer = IEventPayload & {
   __typename?: 'CrcTokenTransfer';
   from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   token: Scalars['String'];
   transaction_id: Scalars['Int'];
   value: Scalars['String'];
@@ -106,7 +113,9 @@ export type CrcTokenTransfer = IEventPayload & {
 export type CrcTrust = IEventPayload & {
   __typename?: 'CrcTrust';
   address: Scalars['String'];
+  address_profile?: Maybe<Profile>;
   can_send_to: Scalars['String'];
+  can_send_to_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   limit: Scalars['Int'];
   transaction_id: Scalars['Int'];
@@ -157,8 +166,10 @@ export type DepositChallengeResponse = {
 export type EthTransfer = IEventPayload & {
   __typename?: 'EthTransfer';
   from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   transaction_id: Scalars['Int'];
   value: Scalars['String'];
 };
@@ -174,9 +185,11 @@ export type ExchangeTokenResponse = {
 export type GnosisSafeEthTransfer = IEventPayload & {
   __typename?: 'GnosisSafeEthTransfer';
   from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   initiator: Scalars['String'];
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   transaction_id: Scalars['Int'];
   value: Scalars['String'];
 };
@@ -240,7 +253,7 @@ export type Mutation = {
 
 
 export type MutationAcknowledgeArgs = {
-  eventPayloadId: Scalars['Int'];
+  eventId: Scalars['Int'];
 };
 
 
@@ -367,6 +380,7 @@ export type ProfileEvent = {
   id: Scalars['Int'];
   payload?: Maybe<EventPayload>;
   safe_address: Scalars['String'];
+  safe_address_profile?: Maybe<Profile>;
   timestamp: Scalars['String'];
   transaction_hash: Scalars['String'];
   transaction_index: Scalars['Int'];
@@ -402,6 +416,7 @@ export type Query = {
   __typename?: 'Query';
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
+  eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
   myInvitations: Array<CreatedInvitation>;
@@ -423,8 +438,16 @@ export type QueryCitiesArgs = {
 };
 
 
+export type QueryEventByTransactionHashArgs = {
+  safeAddress: Scalars['String'];
+  transactionHash: Scalars['String'];
+  types?: Maybe<Array<Scalars['String']>>;
+};
+
+
 export type QueryEventsArgs = {
   safeAddress: Scalars['String'];
+  types?: Maybe<Array<Scalars['String']>>;
 };
 
 
@@ -670,42 +693,98 @@ export type SafeFundingTransactionQuery = (
   )> }
 );
 
-export type SafeTimelineQueryVariables = Exact<{
+export type TransactionTimelineQueryVariables = Exact<{
   safeAddress: Scalars['String'];
 }>;
 
 
-export type SafeTimelineQuery = (
+export type TransactionTimelineQuery = (
   { __typename?: 'Query' }
   & { events: Array<(
     { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'timestamp' | 'type' | 'safe_address' | 'transaction_hash' | 'transaction_index' | 'block_number' | 'direction'>
-    & { payload?: Maybe<(
+    & Pick<ProfileEvent, 'timestamp' | 'type' | 'value' | 'safe_address' | 'transaction_hash' | 'transaction_index' | 'block_number' | 'direction'>
+    & { safe_address_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )>, payload?: Maybe<(
       { __typename?: 'CrcHubTransfer' }
-      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
-      & { transfers: Array<(
+      & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      )>, transfers: Array<(
         { __typename?: 'CrcTokenTransfer' }
         & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        )> }
       )> }
     ) | (
       { __typename?: 'CrcMinting' }
-      & Pick<CrcMinting, 'token' | 'from' | 'to' | 'value'>
+      & Pick<CrcMinting, 'id' | 'token' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      )> }
+    ) | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' }> }
+  )> }
+);
+
+export type TransactionByHashQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+  transactionHash: Scalars['String'];
+}>;
+
+
+export type TransactionByHashQuery = (
+  { __typename?: 'Query' }
+  & { eventByTransactionHash: Array<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'timestamp' | 'type' | 'value' | 'safe_address' | 'transaction_hash' | 'transaction_index' | 'block_number' | 'direction'>
+    & { safe_address_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )>, payload?: Maybe<(
+      { __typename?: 'CrcHubTransfer' }
+      & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      )>, transfers: Array<(
+        { __typename?: 'CrcTokenTransfer' }
+        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        )> }
+      )> }
     ) | (
-      { __typename?: 'CrcSignup' }
-      & Pick<CrcSignup, 'user' | 'token'>
-    ) | (
-      { __typename?: 'CrcTokenTransfer' }
-      & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
-    ) | (
-      { __typename?: 'CrcTrust' }
-      & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
-    ) | (
-      { __typename?: 'EthTransfer' }
-      & Pick<EthTransfer, 'from' | 'to' | 'value'>
-    ) | (
-      { __typename?: 'GnosisSafeEthTransfer' }
-      & Pick<GnosisSafeEthTransfer, 'initiator' | 'from' | 'to' | 'value'>
-    )> }
+      { __typename?: 'CrcMinting' }
+      & Pick<CrcMinting, 'id' | 'token' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      )> }
+    ) | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' }> }
   )> }
 );
 
@@ -772,58 +851,158 @@ export const SafeFundingTransactionDocument = gql`
   }
 }
     `;
-export const SafeTimelineDocument = gql`
-    query safeTimeline($safeAddress: String!) {
-  events(safeAddress: $safeAddress) {
+export const TransactionTimelineDocument = gql`
+    query transactionTimeline($safeAddress: String!) {
+  events(safeAddress: $safeAddress, types: ["crc_hub_transfer", "crc_minting"]) {
     timestamp
     type
+    value
     safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+    }
     transaction_hash
     transaction_index
     block_number
     direction
     payload {
-      ... on CrcSignup {
-        user
-        token
-      }
-      ... on CrcTrust {
-        address
-        can_send_to
-        limit
-      }
-      ... on CrcTokenTransfer {
-        token
-        from
-        to
-        value
-      }
       ... on CrcHubTransfer {
+        id
         from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+        }
         to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+        }
         flow
         transfers {
           token
           from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+          }
           to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+          }
           value
         }
       }
       ... on CrcMinting {
+        id
         token
         from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+        }
         to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+        }
         value
       }
-      ... on EthTransfer {
+    }
+  }
+}
+    `;
+export const TransactionByHashDocument = gql`
+    query transactionByHash($safeAddress: String!, $transactionHash: String!) {
+  eventByTransactionHash(
+    safeAddress: $safeAddress
+    transactionHash: $transactionHash
+    types: ["crc_hub_transfer", "crc_minting"]
+  ) {
+    timestamp
+    type
+    value
+    safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+    }
+    transaction_hash
+    transaction_index
+    block_number
+    direction
+    payload {
+      ... on CrcHubTransfer {
+        id
         from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+        }
         to
-        value
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+          }
+          value
+        }
       }
-      ... on GnosisSafeEthTransfer {
-        initiator
+      ... on CrcMinting {
+        id
+        token
         from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+        }
         to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+        }
         value
       }
     }
@@ -849,8 +1028,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     safeFundingTransaction(variables?: SafeFundingTransactionQueryVariables): Promise<SafeFundingTransactionQuery> {
       return withWrapper(() => client.request<SafeFundingTransactionQuery>(print(SafeFundingTransactionDocument), variables));
     },
-    safeTimeline(variables: SafeTimelineQueryVariables): Promise<SafeTimelineQuery> {
-      return withWrapper(() => client.request<SafeTimelineQuery>(print(SafeTimelineDocument), variables));
+    transactionTimeline(variables: TransactionTimelineQueryVariables): Promise<TransactionTimelineQuery> {
+      return withWrapper(() => client.request<TransactionTimelineQuery>(print(TransactionTimelineDocument), variables));
+    },
+    transactionByHash(variables: TransactionByHashQueryVariables): Promise<TransactionByHashQuery> {
+      return withWrapper(() => client.request<TransactionByHashQuery>(print(TransactionByHashDocument), variables));
     }
   };
 }
