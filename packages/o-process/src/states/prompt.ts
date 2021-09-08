@@ -74,11 +74,16 @@ export function prompt<
   TContext extends ProcessContext<any>,
   TEvent extends PlatformEvent
 >(spec: PromptSpec<TContext, TEvent>) {
+
+  // Default 'canGoBack' (true when there are previous steps)
   let canGoBack: (context: ProcessContext<any>, event: any) => boolean = () =>
     !!spec.navigation?.previous;
+
+  // When 'canGoBack' is externally specified then use the external function
   if (canGoBack && spec.navigation?.canGoBack) {
     canGoBack = spec.navigation.canGoBack;
   }
+
   const field = normalizePromptField(spec.field);
   const editDataFieldConfig: StatesConfig<TContext, StateSchema, TEvent> = {
     id: spec.id ?? spec.field,

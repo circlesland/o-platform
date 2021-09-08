@@ -39,7 +39,7 @@ onMount(async () => {
   field = normalizePromptField(context.field);
   const currentKey = field.get(context);
   if (currentKey) {
-    selected = await context.params.choices.byKey(currentKey);
+    selected = await context.params.choices.byKey(currentKey, context);
   } else {
     selected = undefined;
     if (context.params.showResultsOnLoad) {

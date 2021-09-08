@@ -9,6 +9,8 @@ import Learn from "./o-homepage/pages/Learn.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
+import {runShellProcess} from "../shared/processes/shellProcess";
+import {onboardingMenu} from "./o-onboarding/processes/onboardingMenu";
 
 const externalChat: Link<any, DappState> = {
   type: "link",
