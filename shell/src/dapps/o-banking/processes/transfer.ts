@@ -473,7 +473,6 @@ const processDefinition = (processId: string) =>
         params: {
           view: editorContent.success,
           html: () => "",
-          submitButtonText: editorContent.success.submitButtonText,
           hideNav: false,
         },
         navigation: {
