@@ -19,5 +19,5 @@ export interface NavigationManifest {
     right?: NavigationElement;
     center?: NavigationElement;
   };
-  loginPill?: boolean;
+  loginPill?: NavigationElement;
 }

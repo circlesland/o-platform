@@ -96,13 +96,10 @@
    * This function is called only one time after the first route.
    */
   function init() {
-    if (!isMobile()) {
-      //   setNav({
-      //     ...currentNavArgs,
-      //     leftIsOpen: true,
-      //   });
-      onOpenNavigation();
-    }
+    // setNav({
+    //   ...currentNavArgs,
+    //   showLogin: dapp.dappId == "homepage:1",
+    // });
   }
 
   function onOpenNavigation() {
@@ -400,6 +397,7 @@
       rightIsOpen: false,
       leftIsOpen: false,
       notificationCount: $inbox.length,
+      showLogin: dapp.dappId == "homepage:1" ? true : false,
     });
 
     if (!identityChecked && !dapp.noAuthentication) {
@@ -466,7 +464,7 @@
         routable: defaultRoutable.routable,
         found: true,
         params: {
-          ...defaultRoutable.params
+          ...defaultRoutable.params,
         },
       };
     } else {
@@ -593,7 +591,7 @@
           params: {
             ...params,
             jumplist: runtimeDapp.jumplist,
-            runtimeDapp: runtimeDapp
+            runtimeDapp: runtimeDapp,
           },
           isOpen: true,
           runtimeDapp: runtimeDapp,
@@ -608,6 +606,7 @@
       leftIsOpen: false,
       notificationCount: $inbox.length,
       rightIsOpen: false,
+      showLogin: dapp.dappId == "homepage:1",
     });
   }
 
@@ -630,6 +629,11 @@
         routable: routable,
       },
     };
+
+    setNav({
+      ...currentNavArgs,
+      showLogin: dapp.dappId == "homepage:1",
+    });
   }
 
   async function hideCenter() {
