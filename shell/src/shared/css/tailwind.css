@@ -105,6 +105,12 @@ body {
   border: none;
 }
 
+.btn-dark {
+  @apply bg-dark;
+  @apply text-white;
+  border: none;
+}
+
 .btn-primary {
   @apply text-dark;
   @apply normal-case;

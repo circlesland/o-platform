@@ -11,6 +11,7 @@ import { City, UpsertProfileDocument } from "../data/api/types";
 import * as yup from "yup";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { promptChoice } from "./identify/prompts/promptChoice";
+import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptCity } from "../../../shared/api/promptCity";
 
@@ -157,6 +158,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       newsletter: promptChoice<UpsertIdentityContext, any>({
         id: "newsletter",
+        component: ChoiceSelector,
         params: { view: editorContent.newsletter },
         onlyWhenDirty: skipIfNotDirty,
         options: [
