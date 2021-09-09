@@ -15,7 +15,6 @@
   let displayName: string;
   let safeAddress: string;
   let message: string;
-
   let id: String;
 
   $: {
@@ -64,14 +63,6 @@
 
   function loadDetailPage(path) {
     push(`#/chat/${path}`);
-  }
-
-  function execTransfer(recipientAddress?: string) {
-    window.o.runProcess(transfer, {
-      recipientAddress,
-      safeAddress: tryGetCurrentSafe()?.safeAddress,
-      privateKey: localStorage.getItem("circlesKey"),
-    });
   }
 </script>
 
