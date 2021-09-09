@@ -18,10 +18,10 @@
         }
       }}"
       class="flex flex-col items-center flex-grow py-2 text-xs text-center rounded-lg cursor-pointer bg-light-lighter">
-      <div>
+      <div class="{action.colorClass}">
         <Icons icon="{action.icon}" />
       </div>
-      <div class="text-2xs">{action.title}</div>
+      <div class="text-2xs {action.colorClass}">{action.title}</div>
     </div>
   {/each}
 </div>
