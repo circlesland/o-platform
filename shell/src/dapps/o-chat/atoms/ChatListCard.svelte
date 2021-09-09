@@ -86,7 +86,10 @@
       </div>
     </div>
     <div slot="itemCardEnd">
-      <div class="self-end text-lg sm:text-3xl"></div>
+      <div class="self-end h-6 text-right"></div>
+      <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
+        <span>5 min ago</span>
+      </div>
     </div>
   </ItemCard>
 </div>
