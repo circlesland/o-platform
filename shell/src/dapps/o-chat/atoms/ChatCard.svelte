@@ -4,7 +4,6 @@
 
   export let params = {
     outgoing: <boolean>true,
-    notification: <boolean>false,
     name: <string>null,
     time: <string>null,
     text: <string>null,
@@ -14,8 +13,8 @@
 
 <div
   class="flex flex-row w-full space-x-2"
-  class:pr-12="{params.outgoing && !params.notification}"
-  class:pl-12="{!params.outgoing && !params.notification}">
+  class:pr-12="{params.outgoing}"
+  class:pl-12="{!params.outgoing}">
   <!-- <div class="image" class:pl-2="{params.outgoing}">
     <div class="avatar">
       <div class="w-10 h-10 m-auto rounded-full sm:w-20 sm:h-20">
@@ -44,14 +43,13 @@
     </div> -->
     <div
       class="relative w-full p-4 pt-3 pb-6 text-xs sm:text-sm rounded-xl message chatText"
-      class:bg-light-lighter="{params.outgoing && !params.notification}"
-      class:bg-dark="{!params.outgoing && !params.notification}"
-      class:bg-success-lighter="{params.notification}"
-      class:text-white="{!params.outgoing && !params.notification}">
+      class:bg-light-lighter="{params.outgoing}"
+      class:bg-dark="{!params.outgoing}"
+      class:text-white="{!params.outgoing}">
       <div
         class="absolute bottom-2 right-3 text-2xs"
-        class:text-light-dark="{params.outgoing && !params.notification}"
-        class:text-dark-lighter="{!params.outgoing && !params.notification}">
+        class:text-light-dark="{params.outgoing}"
+        class:text-dark-lighter="{!params.outgoing}">
         {params.time}
       </div>
       {@html params.text}

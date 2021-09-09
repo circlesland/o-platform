@@ -6,6 +6,7 @@
 
   import { chatdata } from "../data/api/src/chatstore";
   import ChatCard from "../atoms/ChatCard.svelte";
+  import NotificationCard from "../atoms/NotificationCard.svelte";
   import "simplebar";
   import "simplebar/dist/simplebar.css";
 
@@ -121,8 +122,13 @@
 
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
   <div class="flex flex-col p-2 pb-0 space-y-4 sm:p-6 sm:space-y-8">
+
     {#each $chatdata as chat}
-      <ChatCard params="{chat}" />
+      {#if chat.notification}
+        <NotificationCard params="{chat.notificationParams}" />
+      {:else}
+        <ChatCard params="{chat}" />
+      {/if}
     {/each}
   </div>
   <div

@@ -64,7 +64,7 @@
   });
 </script>
 
-<div class="pb-6">
+<div class="pb-4">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -91,7 +91,8 @@
             <div class="relative rounded-t-xl image-wrapper">
               <img
                 src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
-                alt=""
+                alt="
+                "
                 class="w-full rounded-t-xl" />
               <div
                 class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest">
@@ -294,11 +295,16 @@
       <CreatorCard profile={offer.createdBy} />
       <OfferCard {offer} allowEdit={true} /> -->
       <div
-        class="sticky bottom-0 left-0 right-0 w-full px-4 py-2 mt-2 bg-white rounded-xl">
+        class="sticky bottom-0 left-0 right-0 w-full px-4 mt-2 bg-white rounded-xl">
         <div class="flex flex-row space-x-4">
           <div>
             <button class="btn btn-square btn-light">
               <Icons icon="star" />
+            </button>
+          </div>
+          <div>
+            <button class="btn btn-square btn-light">
+              <Icons icon="chat" />
             </button>
           </div>
           <div class="flex-grow">

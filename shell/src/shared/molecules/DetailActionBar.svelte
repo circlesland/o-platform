@@ -21,7 +21,9 @@
       <div class="{action.colorClass}">
         <Icons icon="{action.icon}" />
       </div>
-      <div class="text-2xs {action.colorClass}">{action.title}</div>
+      <div class="block mt-2 text-3xs sm:text-sm {action.colorClass}">
+        {action.title}
+      </div>
     </div>
   {/each}
 </div>
