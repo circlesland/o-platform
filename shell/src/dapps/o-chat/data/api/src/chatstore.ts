@@ -2,18 +2,6 @@ import { writable } from "svelte/store";
 
 export const chatdata = writable([
   {
-    outgoing: false,
-    notification: true,
-    notificationParams: {
-      title: "Martin sent you 12,2 circles",
-      text: "Message: Danke für den Fisch",
-      notificationType: "transfer_in",
-      time: "5 seconds ago",
-      actions: [{ title: "view Transaction", icon: "sendmoney" }],
-    },
-  },
-  {
-    outgoing: false,
     notification: true,
     notificationParams: {
       title: "Martin sent you 12,2 circles",
@@ -25,7 +13,6 @@ export const chatdata = writable([
   },
 
   {
-    outgoing: false,
     notification: true,
     notificationParams: {
       title: "You sent Martin 1 circle",
@@ -37,7 +24,6 @@ export const chatdata = writable([
   },
 
   {
-    outgoing: false,
     notification: true,
     notificationParams: {
       title: "Martin invited you",
@@ -49,7 +35,6 @@ export const chatdata = writable([
   },
 
   {
-    outgoing: false,
     notification: true,
     notificationParams: {
       title: "Martin untrusted you",
@@ -61,7 +46,6 @@ export const chatdata = writable([
   },
 
   {
-    outgoing: false,
     notification: true,
     notificationParams: {
       title: "Martin trusted you",
@@ -73,7 +57,6 @@ export const chatdata = writable([
   },
 
   {
-    outgoing: false,
     notification: true,
     notificationParams: {
       title: "You untrusted Martin",
