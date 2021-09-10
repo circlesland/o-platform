@@ -11,13 +11,11 @@
   import "simplebar";
   import "simplebar/dist/simplebar.css";
   import { createEventDispatcher } from "svelte";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 
   let dapp = "homepage:!";
 
   const eventDispatcher = createEventDispatcher();
 
-  export let runtimeDapp: RuntimeDapp<any>;
   export let layout: RuntimeLayout;
   export let navigation: NavigationManifest;
 

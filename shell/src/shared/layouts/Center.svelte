@@ -4,7 +4,7 @@
   import { SvelteSimplebar } from "svelte-simplebar";
 
   export let blur: boolean = false;
-  export let scrollToBottom: boolean = false;
+
   let scrollContent;
 
   const eventDispatcher = createEventDispatcher();

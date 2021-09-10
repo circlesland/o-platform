@@ -19,7 +19,7 @@
   export let container = undefined;
   export let input = undefined;
   export let Item = ItemComponent;
-  export let Selection = SelectionComponent;
+  // export let Selection = SelectionComponent;
   export let MultiSelection = MultiSelectionComponent;
   export let isMulti = false;
   export let multiFullItemClearable = false;
@@ -86,7 +86,7 @@
   export let containerClasses = "";
   export let staticList = false;
   export let indicatorSvg = undefined;
-  export let ClearIcon = DefaultClearIcon;
+  // export let ClearIcon = DefaultClearIcon;
 
   let target;
   let activeSelectedValue;
