@@ -14,7 +14,7 @@ $: {
 </script>
 
 <div
-  class="flex flex-col flex-grow space-x-0 space-y-4 md:space-x-4 md:space-y-0 md:flex-row"
+  class="sticky bottom-0 left-0 right-0 flex flex-col flex-grow w-full py-2 mt-2 space-x-0 space-y-4 bg-white md:space-x-4 md:space-y-0 md:flex-row"
   class:mt-6="{type != 'small'}">
   <div class="flex-1">
     {#if !context.params.hideNav}
