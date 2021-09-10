@@ -21,7 +21,7 @@ $: {
 }
 
 let inputField: any;
-let maxlength: string = context.params.view.maxLength
+let maxlength: string = context.params.view?.maxLength
   ? context.params.maxLength
   : "500";
 

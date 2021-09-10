@@ -46,9 +46,12 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         isSensitive: true,
         params: {
-          label: strings.labelSeedPhrase,
-          placeholder: strings.placeholderSeedPhrase,
-          submitButtonText: "Store on this device",
+          view: {
+            title: "Enter your secret recovery code",
+            description: strings.labelSeedPhrase,
+            placeholder: strings.placeholderSeedPhrase,
+            submitButtonText: "Store on this device",
+          }
         },
         navigation: {
           next: "#checkSeedphrase",
