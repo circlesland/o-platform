@@ -8,10 +8,11 @@ import { createMachine } from "xstate";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import * as bip39 from "bip39";
-import {Account} from "web3-core";
+import { Account } from "web3-core";
 import gql from "graphql-tag";
-import {DropdownSelectorParams} from "@o-platform/o-editors/src/DropdownSelectEditorContext";
+import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import DropDownString from "@o-platform/o-editors/src/dropdownItems/DropDownString.svelte";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 
 export type ConnectSafeContextData = {
   safeAddress?: string;
@@ -24,12 +25,16 @@ export type ConnectSafeContextData = {
 
 export type ConnectSafeContext = ProcessContext<ConnectSafeContextData>;
 
-const strings = {
-  labelSafeAddress: `Please copy and paste in your "Profile Address", which you can find on the <a class="text-primary" href="https://circles.garden/settings" target="_blank">settings page</a> of your circles.garden Wallet`,
-  placeholderSafeAddress: "your safe address",
-  labelSeedPhrase:
-    "Your Secret Recovery Code is always only stored locally on your device. You can also copy and paste it from <a href='https://circles.garden/seedphrase' class='btn-link' target='_blank'>circles.garden/seedphrase</a>.<br/>To connect this device,<br/><span class='text-primary'>Please enter your seedphrase</span>.",
-  placeholderSeedPhrase: "Seedphrase",
+const editorContent: { [x: string]: EditorViewContext } = {
+  seedPhrase: {
+    title: "CONNECT RECOVERY CODE",
+    description: `Please enter your 24 secret recovery code (seedphrase) 
+      <br />
+      <br />
+      <span class="text-xs">Your secret recovery code will be stored only in your device</span>`,
+    placeholder: "Recovery Code",
+    submitButtonText: "Connect recovery code",
+  },
 };
 
 const processDefinition = (processId: string) =>
@@ -46,9 +51,7 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         isSensitive: true,
         params: {
-          label: strings.labelSeedPhrase,
-          placeholder: strings.placeholderSeedPhrase,
-          submitButtonText: "Store on this device",
+          view: editorContent.seedPhrase,
         },
         navigation: {
           next: "#checkSeedphrase",
@@ -64,45 +67,59 @@ const processDefinition = (processId: string) =>
             let account: Account;
 
             try {
-              keyFromMnemonic = "0x" + bip39.mnemonicToEntropy(context.data.seedPhrase);
+              keyFromMnemonic =
+                "0x" + bip39.mnemonicToEntropy(context.data.seedPhrase);
             } catch (e) {
-              context.messages["seedPhrase"] = `The seedphrase cannot be converted to a private key. Please double check it.`;
+              context.messages[
+                "seedPhrase"
+              ] = `The seedphrase cannot be converted to a private key. Please double check it.`;
               throw e;
             }
 
             try {
-              account = RpcGateway.get().eth.accounts.privateKeyToAccount(keyFromMnemonic);
+              account =
+                RpcGateway.get().eth.accounts.privateKeyToAccount(
+                  keyFromMnemonic
+                );
             } catch (e) {
-              context.messages["seedPhrase"] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
+              context.messages[
+                "seedPhrase"
+              ] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
               throw e;
             }
 
             if (!context.data.safeAddress) {
               // If the flow was initialized without safe-address ..
-              const graph = await window.o.theGraphClient.client.subscribeToResult();
+              const graph =
+                await window.o.theGraphClient.client.subscribeToResult();
               const foundSafes = await graph.query({
-                query: gql`query user($id:String!) {
-                  user(id: $id) {
-                    id
-                    safeAddresses
+                query: gql`
+                  query user($id: String!) {
+                    user(id: $id) {
+                      id
+                      safeAddresses
+                    }
                   }
-                }`,
+                `,
                 variables: {
-                  id: account.address.toLowerCase()
-                }
+                  id: account.address.toLowerCase(),
+                },
               });
 
               if (foundSafes.errors && foundSafes.errors.length) {
-                const msg = `An error occurred while we tried to find your safe: ${JSON.stringify(foundSafes.errors)}`;
+                const msg = `An error occurred while we tried to find your safe: ${JSON.stringify(
+                  foundSafes.errors
+                )}`;
                 context.messages["seedPhrase"] = msg;
-                throw new Error(msg)
+                throw new Error(msg);
               }
 
-              context.data.foundSafeAddresses = foundSafes.data.user?.safeAddresses ?? [];
+              context.data.foundSafeAddresses =
+                foundSafes.data.user?.safeAddresses ?? [];
               if (!context.data.foundSafeAddresses.length) {
                 const msg = `We couldn't find a safe for your account ${account.address}`;
                 context.messages["seedPhrase"] = msg;
-                throw new Error(msg)
+                throw new Error(msg);
               }
             }
 
@@ -111,44 +128,54 @@ const processDefinition = (processId: string) =>
             context.data.accountAddress = account.address;
             context.data.privateKey = keyFromMnemonic;
           },
-          onDone: [{
-            cond: (context) => (context.messages["seedPhrase"]?.trim() ?? "") !== "",
-            target: "#seedPhrase"
-          }, {
-            cond: (context) => context.data.foundSafeAddresses?.length > 1,
-            target: "#safeAddress"
-          }, {
-            cond: (context) => context.data.foundSafeAddresses?.length == 1,
-            actions: (context) => context.data.safeAddress = context.data.foundSafeAddresses[0],
-            target: "#checkSafeAddress"
-          }, {
-            target: "#checkSafeAddress"
-          }],
-          onError: "#seedPhrase"
-        }
+          onDone: [
+            {
+              cond: (context) =>
+                (context.messages["seedPhrase"]?.trim() ?? "") !== "",
+              target: "#seedPhrase",
+            },
+            {
+              cond: (context) => context.data.foundSafeAddresses?.length > 1,
+              target: "#safeAddress",
+            },
+            {
+              cond: (context) => context.data.foundSafeAddresses?.length == 1,
+              actions: (context) =>
+                (context.data.safeAddress = context.data.foundSafeAddresses[0]),
+              target: "#checkSafeAddress",
+            },
+            {
+              target: "#checkSafeAddress",
+            },
+          ],
+          onError: "#seedPhrase",
+        },
       },
       safeAddress: prompt({
         field: "safeAddress",
         component: DropdownSelectEditor,
         params: <DropdownSelectorParams<ConnectSafeContext, string, string>>{
-          label: "We found multiple safes for your account. Please select the one you want to connect.",
+          label:
+            "We found multiple safes for your account. Please select the one you want to connect.",
           placeholder: "Click to select a safe",
           submitButtonText: "Connect",
           itemTemplate: DropDownString,
-          getKey: (safeAddress:any) => safeAddress.value,
-          getLabel: (safeAddress:any) => safeAddress.label,
+          getKey: (safeAddress: any) => safeAddress.value,
+          getLabel: (safeAddress: any) => safeAddress.label,
           choices: {
             byKey: async (key: string, context) => {
-              return context.data.foundSafeAddresses.find(o => o == key);
+              return context.data.foundSafeAddresses.find((o) => o == key);
             },
-            find: async (filter: string|undefined, context) => {
-              return context.data.foundSafeAddresses.filter(o => o.toLowerCase().startsWith(filter?.toLowerCase() ?? ""));
+            find: async (filter: string | undefined, context) => {
+              return context.data.foundSafeAddresses.filter((o) =>
+                o.toLowerCase().startsWith(filter?.toLowerCase() ?? "")
+              );
             },
           },
         },
         navigation: {
           next: "#checkSafeAddress",
-        }
+        },
       }),
       checkSafeAddress: {
         id: "checkSafeAddress",
@@ -162,8 +189,8 @@ const processDefinition = (processId: string) =>
               );*/
               await RpcGateway.trigger(async (web3) => {
                 const safeProxy = new GnosisSafeProxy(
-                    web3,
-                    context.data.safeAddress
+                  web3,
+                  context.data.safeAddress
                 );
                 context.data.safeOwners = await safeProxy.getOwners();
                 /*console.log(
@@ -176,8 +203,8 @@ const processDefinition = (processId: string) =>
                 throw e;
               }
               context.messages[
-                  "safeAddress"
-                  ] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Is the address right?`;
+                "safeAddress"
+              ] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Is the address right?`;
               /* console.log(
                   `Checking if safe ${context.data.safeAddress} exists .. Safe doesn't exist.`,
                   e

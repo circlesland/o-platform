@@ -22,7 +22,7 @@ $: {
 
 let inputField: any;
 let maxlength: string = context.params.view.maxLength
-  ? context.params.maxLength
+  ? context.params.view.maxLength
   : "500";
 
 const submitHandler = () => {
