@@ -36,8 +36,14 @@
       (isMobile() && layout.dialogs.left && layout.dialogs.left.isOpen)
     ) {
       document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.height = "100%";
+      document.body.style.width = "100%";
     } else {
       document.body.style.overflow = "inherit";
+      document.body.style.position = "inherit";
+      document.body.style.height = "inherit";
+      document.body.style.width = "inherit";
     }
   }
 
