@@ -1,6 +1,6 @@
 <script>
 export let item = undefined;
-export let itemType = "string";
+export const itemType = "string";
 export let isActive = false;
 export let isFirst = false;
 export let isHover = false;
@@ -30,9 +30,12 @@ $: {
   <div
     class="flex items-center w-full px-3 pt-1 space-x-2 sm:space-x-6 item-body ">
     <div class="text-center">
-      <div class="avatar">
+      <div class="inline-flex">
         <div class="w-10 h-10 m-auto rounded-full">
-          <img src="{'/images/common/bottle.png'}" alt="user-icon" />
+          <img
+            class="rounded-full"
+            src="{'/images/common/bottle.png'}"
+            alt="user-icon" />
         </div>
       </div>
     </div>

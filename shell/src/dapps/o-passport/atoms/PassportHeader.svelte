@@ -58,11 +58,12 @@
 
 <PageHeader heightClass="h-72">
   <div class="self-center block mt-2 text-center">
-    <div class="avatar">
+    <div class="inline-flex">
       <div
         class="mb-4 rounded-full cursor-pointer ring ring-white w-36 h-36"
         on:click="{() => editProfileField({ avatarUrl: true })}">
         <img
+          class="rounded-full"
           src="{avatarUrl}"
           alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
       </div>

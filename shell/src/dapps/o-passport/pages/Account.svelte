@@ -29,12 +29,12 @@
     <section class="flex items-center justify-center mb-2">
       <Card>
         <div class="py-2 pt-4 mr-2 text-center">
-          <div class="avatar">
+          <div class="inline-flex">
             <div class="m-auto rounded-full w-14 h-14">
               <img
-                src={avatarUrl}
-                alt={$me ? ($me.lastName ? `${$me.firstName} ${$me.lastName}` : $me.firstName) : 'avatar'}
-              />
+                class="rounded-full"
+                src="{avatarUrl}"
+                alt="{$me ? ($me.lastName ? `${$me.firstName} ${$me.lastName}` : $me.firstName) : 'avatar'}" />
             </div>
           </div>
         </div>

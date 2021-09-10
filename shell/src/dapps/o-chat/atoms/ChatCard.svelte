@@ -16,9 +16,9 @@
   class:pr-12="{params.outgoing}"
   class:pl-12="{!params.outgoing}">
   <!-- <div class="image" class:pl-2="{params.outgoing}">
-    <div class="avatar">
+    <div class="inline-flex">
       <div class="w-10 h-10 m-auto rounded-full sm:w-20 sm:h-20">
-        <img src="{params.image}" alt="user-icon" />
+        <img class="rounded-full" src="{params.image}" alt="user-icon" />
       </div>
     </div>
   </div> -->

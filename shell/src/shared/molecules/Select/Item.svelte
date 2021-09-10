@@ -1,6 +1,6 @@
 <script>
   export let isActive = false;
-  export let itemType = "default";
+  export const itemType = "default";
   export let isFirst = false;
   export let isHover = false;
   export let getOptionLabel = undefined;

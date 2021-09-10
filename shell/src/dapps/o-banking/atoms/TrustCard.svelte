@@ -40,9 +40,9 @@
       truncateMain: true
     }}">
     <div slot="itemCardStart">
-      <div class="avatar">
+      <div class="inline-flex">
         <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
-          <img src="{pictureUrl}" alt="{displayName}" />
+          <img class="rounded-full" src="{pictureUrl}" alt="{displayName}" />
         </div>
       </div>
     </div>

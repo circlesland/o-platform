@@ -41,9 +41,10 @@
     <slot name="itemCardStart">
       {#if params.imageUrl}
         <div>
-          <div class="avatar">
+          <div class="inline-flex">
             <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
               <img
+                class="rounded-full"
                 src="{params.imageUrl}"
                 alt="{params.imageAlt ? params.imageAlt : params.title}" />
             </div>

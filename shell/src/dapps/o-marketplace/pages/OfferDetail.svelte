@@ -103,9 +103,10 @@
           </header>
           <div
             class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
-            <div class="avatar">
+            <div class="inline-flex">
               <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
                 <img
+                  class="rounded-full"
                   src="{offer.createdBy.avatarUrl ? offer.createdBy.avatarUrl : '/images/market/city.png'}"
                   alt="user-icon" />
               </div>

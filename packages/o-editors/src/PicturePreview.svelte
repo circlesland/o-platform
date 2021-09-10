@@ -35,10 +35,10 @@ function onkeydown(e: KeyboardEvent) {
         submit();
       }}">Clear</button>
     <div class="text-center">
-      <div class="avatar">
+      <div class="inline-flex">
         <div class="w-48 rounded-full w-92 h-92">
           <img
-            class="m-auto"
+            class="m-auto rounded-full"
             id="cropCanvas"
             src="{context.data[context.field]}"
             height="300"
