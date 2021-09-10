@@ -9,7 +9,7 @@ import { ProfileEvent } from "../../dapps/o-banking/data/api/types";
 import { AcknowledgeDocument } from "../../dapps/o-chat/data/api/types";
 import HtmlViewer from "../../../../packages/o-editors/src/HtmlViewer.svelte";
 import { inbox } from "../stores/inbox";
-import EditorView from "../../../../packages/o-editors/src/shared/EditorView.svelte";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 
 export type ShowNotificationsContextData = {
   events: ProfileEvent[];
@@ -24,6 +24,16 @@ const strings = {
 };
 export type ShowNotificationsContext =
   ProcessContext<ShowNotificationsContextData>;
+
+const editorContent: { [x: string]: EditorViewContext } = {
+  showNotifications: {
+    title: "What is your first name?",
+    description:
+      "Welcome, you are finally a citizen of CirclesLand. Glad to have you here.",
+    placeholder: "First name",
+    submitButtonText: "Save",
+  },
+};
 
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
   createMachine<ShowNotificationsContext, any>({
@@ -80,16 +90,16 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       show: prompt({
         id: "show",
         entry: () => console.log("show entry"),
-        component: EditorView,
+        component: NotificationViewer,
         field: "currentEvent",
         params: (context: any) => {
           return {
             view: {
               title: strings[context.data.currentEvent.type],
               description: "",
-              mainComponent: NotificationViewer,
+              placeholder: "",
+              submitButtonText: "OK",
             },
-            submitButtonText: "OK",
           };
         },
         navigation: {

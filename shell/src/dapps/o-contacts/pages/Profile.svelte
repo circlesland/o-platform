@@ -270,7 +270,7 @@
         </div>
 
         {#if profile && profile.safeAddress}
-          <div class="mt-4 text-3xl uppercase ">
+          <div class="mt-4 text-3xl">
             {profile.displayName ? profile.displayName : profile.safeAddress}
           </div>
         {/if}

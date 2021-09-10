@@ -392,3 +392,7 @@ button:focus {
   background-origin: border-box;
   background-clip: padding-box, border-box;
 }
+
+.keyboard-open #nextnav {
+  display: none;
+}

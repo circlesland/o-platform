@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
   import { Generate } from "@o-platform/o-utils/dist/generate";
-  import {shellProcess} from "../processes/shellProcess";
+  import { shellProcess } from "../processes/shellProcess";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
   import { identify } from "../../dapps/o-passport/processes/identify/identify";
@@ -40,8 +40,11 @@
   import NavigationList from "../../shared/molecules/NavigationList.svelte";
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { isMobile } from "../functions/isMobile";
-  import {onboardingMenu} from "../../dapps/o-onboarding/processes/onboardingMenu";
-  import {fromCirclesLand, FromCirclesLandContextData} from "../../dapps/o-onboarding/processes/fromCirclesLand";
+  import { onboardingMenu } from "../../dapps/o-onboarding/processes/onboardingMenu";
+  import {
+    fromCirclesLand,
+    FromCirclesLandContextData,
+  } from "../../dapps/o-onboarding/processes/fromCirclesLand";
 
   // install Swiper modules
   SwiperCore.use([Navigation, Pagination]);
@@ -302,8 +305,22 @@
     process.sendAnswer({ type: "process.skip" });
   }
 
+  function onInputFocused() {
+    if (isMobile()) {
+      document.body.classList.add("keyboard-open");
+    }
+    return;
+  }
+  function onInputBlurred() {
+    if (isMobile()) {
+      document.body.classList.remove("keyboard-open");
+    }
+    return;
+  }
+
   onMount(async () => {
     window.o.events.subscribe(async event => {
+      console.log("EVENT!!!!11elf ", event);
       switch (event.type) {
         case "process.continued":
           onProcessContinued();
@@ -339,6 +356,12 @@
         case "shell.home":
           onHome();
           console.log(event);
+          break;
+        case "shell.inputFocused":
+          onInputFocused();
+          break;
+        case "shell.inputBlurred":
+          onInputBlurred();
           break;
         case "process.cancelRequest":
           onProcessCancelRequest();
