@@ -133,6 +133,8 @@ const copy = () => {
     class:input-error="{context.messages[context.field]}"
     bind:value="{_context.data[context.field]}"
     bind:this="{inputField}"
+    on:focus
+    on:blur
     on:change="{validateFormatting}"></textarea>
   {#if !context.params.hideCharacterCount}
     <p class="relative right-0 text-right text-2xs top-2">

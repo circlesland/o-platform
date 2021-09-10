@@ -45,6 +45,9 @@
       componentContext = null;
     }
   }
+
+  const onFocus = () => window.o.publishEvent({ type: "shell.inputFocused" });
+  const onBlur = () => window.o.publishEvent({ type: "shell.inputBlurred" });
 </script>
 
 {#if componentContext}
@@ -76,7 +79,9 @@
       <slot name="EditorMainComponent">
         <svelte:component
           this="{prompt.component}"
-          context="{componentContext}" />
+          context="{componentContext}"
+          on:focus="{onFocus}"
+          on:blur="{onBlur}" />
       </slot>
     </div>
     <!-- <slot name="EditorActionButtons">

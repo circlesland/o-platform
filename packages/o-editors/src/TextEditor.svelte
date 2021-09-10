@@ -23,9 +23,6 @@ const submitHandler = () => {
   context.process.sendAnswer(answer);
 };
 
-const onFocus = () => window.o.publishEvent({ type: "shell.inputFocused" });
-const onBlur = () => window.o.publishEvent({ type: "shell.inputBlurred" });
-
 function onkeydown(e: KeyboardEvent) {
   if (e.key == "Enter") {
     submitHandler();
@@ -65,8 +62,8 @@ function onkeydown(e: KeyboardEvent) {
     class:input-error="{context.messages[context.field]}"
     bind:value="{_context.data[context.field]}"
     bind:this="{inputField}"
-    on:focus="{onFocus}"
-    on:blur="{onBlur}"
+    on:focus
+    on:blur
     on:change="{() => (context.editorDirtyFlags[context.field] = true)}" />
 
   <ProcessNavigation on:buttonClick="{submitHandler}" context="{context}" />
