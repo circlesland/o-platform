@@ -107,7 +107,7 @@
     padding-bottom: 0;
   }
   :global(.keyboard-open .modalAsideContentContainer) {
-    margin-bottom: 2rem;
+    margin-bottom: 0rem;
   }
 
   /* Background Blurring for firefox and other non supportive browsers lies in App.svelte through the .blur class */
