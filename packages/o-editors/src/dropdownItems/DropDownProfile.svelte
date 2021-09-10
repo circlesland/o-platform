@@ -30,9 +30,10 @@ $: {
   <div
     class="flex items-center w-full px-3 pt-1 space-x-2 sm:space-x-6 item-body ">
     <div class="text-center">
-      <div class="avatar">
+      <div class="inline-flex">
         <div class="w-10 h-10 m-auto rounded-full">
           <img
+            class="rounded-full"
             src="{item.avatarUrl ? item.avatarUrl : '/images/market/city.png'}"
             alt="user-icon" />
         </div>

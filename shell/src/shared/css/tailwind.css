@@ -4,6 +4,13 @@
 @import "./fonts.css";
 @import "./button.css";
 
+.avatar,
+.avatar *,
+.avatar::before,
+.avatar::after {
+  --tw-transform: none;
+  transform: none;
+}
 .text-base {
   font-size: 1rem /* 14px */;
   line-height: 1.375 /* 22px */;

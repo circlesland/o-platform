@@ -200,59 +200,54 @@
       dream: "poajsdhf öanskd fkandsf asdffn askdfn alksdfadf",
     },
   ];
-
 </script>
 
-<div class="p-4 m-4 uppercase  ">Most recent citizens</div>
-<div class="pb-12 pt-6 m-auto mt-6 text-center">
+<div class="p-4 m-4 uppercase ">Most recent citizens</div>
+<div class="pt-6 pb-12 m-auto mt-6 text-center">
   <a
     href="/#/citizens"
-    aria-label=""
-    class="text-xl font-semibold  transition-colors duration-200 text-primary hover:"
-  >
+    aria-label="
+    "
+    class="text-xl font-semibold transition-colors duration-200 text-primary hover:">
     Show more citizens
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">
       <path
-        d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"
-      />
+        d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"></path>
     </svg>
   </a>
 </div>
 {#each citizens as c}
   <div class="p-4 m-4 bg-white rounded-lg">
     <div class="flex flex-row">
-      <div class="avatar">
-        <div class="rounded-full w-16 h-16 ">
-          <img src={c.image} alt="" />
+      <div class="inline-flex">
+        <div class="w-16 h-16 rounded-full ">
+          <img class="rounded-full" src="{c.image}" alt=" " />
         </div>
       </div>
 
       <div class="flex flex-col py-2 ml-4">
-        <p class="text-lg font-semibold  ">
-          {c.name}
-        </p>
+        <p class="text-lg font-semibold ">{c.name}</p>
         <p class="text-sm text-left text-primary">
           citizen {c.position} from {c.country}
         </p>
       </div>
     </div>
     <div class="pt-2 text-sm text-gray-500 ">
-      my passion is ... {c.dream} ... and I will accept every month 240 Circles pursuing
-      it
+      my passion is ... {c.dream} ... and I will accept every month 240 Circles
+      pursuing it
     </div>
   </div>
 {/each}
-<div class="pb-12 pt-6 m-auto mt-6 text-center">
+<div class="pt-6 pb-12 m-auto mt-6 text-center">
   <a
     href="/#/citizens"
-    aria-label=""
-    class="flex items-center w-full py-12 mx-auto mt-6 text-xl font-semibold text-center transition-colors duration-200 text-primary hover:"
-  >
+    aria-label="
+    "
+    class="flex items-center w-full py-12 mx-auto mt-6 text-xl font-semibold text-center transition-colors duration-200 text-primary hover:">
     Show more citizens
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">
       <path
-        d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"
-      />
+        d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"></path>
     </svg>
   </a>
 </div>

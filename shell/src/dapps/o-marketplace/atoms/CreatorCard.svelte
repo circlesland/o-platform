@@ -35,12 +35,11 @@
   class="flex items-center justify-center mb-2 "
   on:click="{() => loadDetailPage()}">
   <div
-    class="flex items-center w-full px-4 pt-5 space-x-2 bg-white rounded-sm
-    shadow sm:space-x-6">
+    class="flex items-center w-full px-4 pt-5 space-x-2 bg-white rounded-sm shadow sm:space-x-6">
     <div class="mr-2 -mt-3 text-center">
-      <div class="avatar">
+      <div class="inline-flex">
         <div class="w-12 h-12 m-auto rounded-full sm:w-12 sm:h-12">
-          <img src="{pictureUrl}" alt="{displayName}" />
+          <img class="rounded-full" src="{pictureUrl}" alt="{displayName}" />
         </div>
       </div>
     </div>

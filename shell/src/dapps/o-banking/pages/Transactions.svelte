@@ -75,8 +75,7 @@
 <BankingHeader
   {runtimeDapp}
   {routable}
-  balance={$mySafe && $mySafe.balance ? $mySafe.balance : '0'}
-/>
+  balance="{$mySafe && $mySafe.balance ? $mySafe.balance : '0'}" />
 
 <div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   {#if $mySafe.ui && !$mySafe.ui.error && displayRows.length === 0}
@@ -102,12 +101,12 @@
   {:else if displayRows.length > 0}
     {#each displayRows as transfer, i}
       {#if i === 0}
-        <TransactionCard bind:this={firstElement} {transfer} message="" />
+        <TransactionCard bind:this="{firstElement}" {transfer} message=" " />
       {:else}
-        <TransactionCard {transfer} message="" />
+        <TransactionCard {transfer} message=" " />
       {/if}
     {/each}
-    <div bind:this={stopElement}>Stop</div>
+    <div bind:this="{stopElement}">Stop</div>
   {:else}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">

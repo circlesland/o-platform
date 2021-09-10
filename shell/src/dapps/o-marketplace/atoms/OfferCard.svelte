@@ -75,7 +75,8 @@
       <div class="relative rounded-t-xl image-wrapper">
         <img
           src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
-          alt=""
+          alt="
+          "
           class="rounded-t-xl" />
         <div
           class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-2xl leading-tight rounded-l-full font-heading top-2 bg-light-lightest">
@@ -86,9 +87,10 @@
     </header>
     <div
       class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
-      <div class="avatar">
+      <div class="inline-flex">
         <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
           <img
+            class="rounded-full"
             src="{offer.createdBy.avatarUrl ? offer.createdBy.avatarUrl : '/images/market/city.png'}"
             alt="user-icon" />
         </div>
