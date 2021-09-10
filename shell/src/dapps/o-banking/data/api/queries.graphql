@@ -56,6 +56,53 @@ query safeFundingTransaction {
     }
 }
 
+query balance($safeAddress:String!) {
+    balance(safeAddress: $safeAddress)
+}
+
+query trustRelations($safeAddress:String!) {
+    trustRelations(safeAddress: $safeAddress) {
+        safeAddress
+        safeAddressProfile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+        }
+        direction
+        otherSafeAddress
+        otherSafeAddressProfile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+        }
+    }
+}
+
+query contacts($safeAddress:String!) {
+    contacts(safeAddress: $safeAddress) {
+        contactAddress
+        contactAddressProfile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+        }
+        safeAddress
+        safeAddressProfile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+        }
+    }
+}
+
 query transactionTimeline($safeAddress:String!) {
     events(safeAddress: $safeAddress, types: ["crc_hub_transfer", "crc_minting"]) {
         timestamp
@@ -67,6 +114,7 @@ query transactionTimeline($safeAddress:String!) {
             firstName
             lastName
             avatarUrl
+            circlesAddress
         }
         transaction_hash
         transaction_index
@@ -81,6 +129,7 @@ query transactionTimeline($safeAddress:String!) {
                     firstName
                     lastName
                     avatarUrl
+                    circlesAddress
                 }
                 to
                 to_profile{
@@ -88,6 +137,7 @@ query transactionTimeline($safeAddress:String!) {
                     firstName
                     lastName
                     avatarUrl
+                    circlesAddress
                 }
                 flow
                 transfers {
@@ -98,6 +148,7 @@ query transactionTimeline($safeAddress:String!) {
                         firstName
                         lastName
                         avatarUrl
+                        circlesAddress
                     }
                     to
                     to_profile{
@@ -105,6 +156,7 @@ query transactionTimeline($safeAddress:String!) {
                         firstName
                         lastName
                         avatarUrl
+                        circlesAddress
                     }
                     value
                 }
@@ -118,6 +170,7 @@ query transactionTimeline($safeAddress:String!) {
                     firstName
                     lastName
                     avatarUrl
+                    circlesAddress
                 }
                 to
                 to_profile{
@@ -125,6 +178,7 @@ query transactionTimeline($safeAddress:String!) {
                     firstName
                     lastName
                     avatarUrl
+                    circlesAddress
                 }
                 value
             }
@@ -146,6 +200,7 @@ query transactionByHash($safeAddress:String! $transactionHash:String!) {
             firstName
             lastName
             avatarUrl
+            circlesAddress
         }
         transaction_hash
         transaction_index
@@ -160,6 +215,7 @@ query transactionByHash($safeAddress:String! $transactionHash:String!) {
                     firstName
                     lastName
                     avatarUrl
+                    circlesAddress
                 }
                 to
                 to_profile{
@@ -167,6 +223,7 @@ query transactionByHash($safeAddress:String! $transactionHash:String!) {
                     firstName
                     lastName
                     avatarUrl
+                    circlesAddress
                 }
                 flow
                 transfers {
@@ -177,6 +234,7 @@ query transactionByHash($safeAddress:String! $transactionHash:String!) {
                         firstName
                         lastName
                         avatarUrl
+                        circlesAddress
                     }
                     to
                     to_profile{
@@ -184,6 +242,7 @@ query transactionByHash($safeAddress:String! $transactionHash:String!) {
                         firstName
                         lastName
                         avatarUrl
+                        circlesAddress
                     }
                     value
                 }
@@ -197,6 +256,7 @@ query transactionByHash($safeAddress:String! $transactionHash:String!) {
                     firstName
                     lastName
                     avatarUrl
+                    circlesAddress
                 }
                 to
                 to_profile{
@@ -204,6 +264,7 @@ query transactionByHash($safeAddress:String! $transactionHash:String!) {
                     firstName
                     lastName
                     avatarUrl
+                    circlesAddress
                 }
                 value
             }

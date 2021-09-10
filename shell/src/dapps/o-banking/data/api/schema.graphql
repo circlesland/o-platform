@@ -63,6 +63,13 @@ type ConsumeDepositedChallengeResponse {
     success: Boolean!
 }
 
+type Contact {
+    contactAddress: String!
+    contactAddressProfile: Profile
+    safeAddress: String!
+    safeAddressProfile: Profile
+}
+
 type CountryStats {
     citizenCount: Int!
     name: String!
@@ -281,8 +288,10 @@ type Purchase {
 }
 
 type Query {
+    balance(safeAddress: String!): String!
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
+    contacts(safeAddress: String!): [Contact!]!
     eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
     events(safeAddress: String!, types: [String!]): [ProfileEvent!]!
     invitationTransaction: ProfileEvent
@@ -295,6 +304,7 @@ type Query {
     stats: Stats
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!
+    trustRelations(safeAddress: String!): [TrustRelation!]!
     version: Version!
     whoami: String
 }
@@ -346,6 +356,14 @@ type Tag {
     value: String
 }
 
+type TrustRelation {
+    direction: TrustDirection!
+    otherSafeAddress: String!
+    otherSafeAddressProfile: Profile
+    safeAddress: String!
+    safeAddressProfile: Profile
+}
+
 type UpdateSafeResponse {
     errorMessage: String
     newSafeAddress: String
@@ -362,6 +380,12 @@ enum PurchaseStatus {
     INVALID
     ITEM_LOCKED
     PAYMENT_PROVEN
+}
+
+enum TrustDirection {
+    IN
+    MUTUAL
+    OUT
 }
 
 input CreateTagInput {

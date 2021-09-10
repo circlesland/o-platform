@@ -3,7 +3,7 @@ import {getUBIService} from "./processes/getUBIService";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {GetUbiContextData} from "./processes/getUbi";
 import {AvataarGenerator} from "../../shared/avataarGenerator";
-import {ProfileEvent, TransactionTimelineDocument} from "./data/api/types";
+import {Profile, ProfileEvent, ProfilesByCirclesAddressDocument, TransactionTimelineDocument} from "./data/api/types";
 
 export class Banking {
     safeAddress: string;
@@ -80,5 +80,29 @@ export class Banking {
         }
 
         return circlesGardenProfiles;
+    }
+
+    static async findCirclesLandProfiles(safeAddresses: string[]) : Promise<Profile & {
+        displayName: string
+        safeAddress: string
+    }[]>
+    {
+        const apiClient = await window.o.apiClient.client.subscribeToResult();
+        const result = await apiClient.query({
+            query: ProfilesByCirclesAddressDocument,
+            variables: {
+                circlesAddresses: safeAddresses.map(o => o.toLowerCase())
+            }
+        });
+
+        return (result.data ?? []).profiles.map(p => {
+            return {
+                ...p,
+                circlesAddress : RpcGateway.get().utils.toChecksumAddress(p.circlesAddress),
+                safeAddress : RpcGateway.get().utils.toChecksumAddress(p.circlesAddress),
+                displayName: `${p.firstName}${!!p.lastName ? " " + p.lastName : ""}`,
+                avatarUrl: p.avatarUrl ? p.avatarUrl : AvataarGenerator.generate(p.circlesAddress)
+            };
+        });
     }
 }

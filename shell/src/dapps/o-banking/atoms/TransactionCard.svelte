@@ -4,67 +4,67 @@
 
   import Date from "../../../shared/atoms/Date.svelte";
   import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-  import {CrcHubTransfer, CrcMinting, ProfileEvent} from "../data/api/types";
+  import {CrcHubTransfer, CrcMinting, Profile, ProfileEvent, TransactionByHashDocument} from "../data/api/types";
+  import {onMount} from "svelte";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
+  // import {transactionHash} from "../pages/TransactionDetail.svelte";
 
   export let transfer: ProfileEvent;
-  export let message: String;
 
-  let pictureUrl: string;
-  let otherSafeAddress: string;
-  let displayName: string;
-  let classes: string;
-  let amount: string;
+  let path: any;
+  let fromProfile: Profile = <any>{};
+  let toProfile: Profile = <any>{};
+  let error:string;
 
-  $: {
-    if (transfer && transfer.type == "crc_minting" && transfer.payload) {
-      let minting = transfer.payload as CrcMinting;
-      if (minting) {
-        displayName = "Circles Land";
+  onMount(async () => {
+    if (transfer && transfer.payload?.__typename == "CrcMinting") {
+      const minting = transfer.payload as CrcMinting;
+      fromProfile = minting.from_profile ?? {
+        id: 0,
+        firstName: "Circles Land",
+        lastName: "",
+        avatarUrl: "/images/common/circles.png",
+        circlesAddress: minting.from,
       }
-
-      amount = Number.parseFloat(
-              Web3.utils.fromWei(minting.value.toString(), "ether")
-      ).toFixed(2);
-    }
-    if (transfer && transfer.type == "crc_hub_transfer" && transfer.payload) {
-      let hubTransfer = transfer.payload as CrcHubTransfer;
-      if (hubTransfer) {
-        displayName = transfer.direction === "in"
-                ? (hubTransfer.from_profile
-                        ? hubTransfer.from_profile.firstName + hubTransfer.from_profile.lastName ?? ""
-                        : hubTransfer.from)
-                : (hubTransfer.to_profile
-                        ? hubTransfer.to_profile.firstName + hubTransfer.to_profile.lastName ?? ""
-                        : hubTransfer.to);
-
-        pictureUrl = transfer.direction === "in"
-                        ? (hubTransfer.from_profile
-                            ? hubTransfer.from_profile.avatarUrl
-                            : undefined)
-                        : (hubTransfer.to_profile
-                            ? hubTransfer.to_profile.avatarUrl
-                            : undefined);
+      if (!fromProfile.avatarUrl) {
+        fromProfile.avatarUrl = AvataarGenerator.generate(minting.from);
       }
-
-      amount = Number.parseFloat(
-              Web3.utils.fromWei(hubTransfer.flow.toString(), "ether")
-      ).toFixed(2);
-
-      otherSafeAddress = transfer.direction === "in" ? hubTransfer.from : hubTransfer.to;
+      toProfile = minting.to_profile ?? {
+        id: 0,
+        firstName: minting.to.substr(0, 24) + '...',
+        lastName: "",
+        circlesAddress: minting.to
+      }
+      if (!toProfile.avatarUrl) {
+        toProfile.avatarUrl = AvataarGenerator.generate(minting.to);
+      }
     }
 
-    pictureUrl = displayName === "Circles Land" ? "/images/common/circles.png" : pictureUrl;
-    message = displayName === "Circles Land" ? "Universal basic income" : ">>Transaction message<<";
-
-    classes =
-      transfer.direction === "in"
-        ? "transactionpositive"
-        : "transactionnegative";
-
-    if (classes == "transactionnegative") {
-      amount = "-" + amount;
+    if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
+      const hubTransfer = transfer.payload as CrcHubTransfer;
+      fromProfile = hubTransfer.from_profile ?? {
+        id: 0,
+        firstName: hubTransfer.from.substr(0, 24) + '...',
+        lastName: "",
+        circlesAddress: hubTransfer.from,
+      }
+      if (!fromProfile.avatarUrl) {
+        fromProfile.avatarUrl = AvataarGenerator.generate(hubTransfer.from);
+      }
+      toProfile = hubTransfer.to_profile ?? {
+        id: 0,
+        firstName: hubTransfer.to.substr(0, 24) + '...',
+        lastName: "",
+        circlesAddress: hubTransfer.to
+      }
+      if (!toProfile.avatarUrl) {
+        toProfile.avatarUrl = AvataarGenerator.generate(hubTransfer.to);
+      }
+      path = {
+        transfers: hubTransfer.transfers
+      };
     }
-  }
+  });
 
   function loadDetailPage(path) {
     push(`#/banking/transactions/${path}`);
@@ -73,14 +73,22 @@
 
 <div on:click="{() => loadDetailPage(transfer.transaction_hash)}">
   <ItemCard
-    params="{{ edgeless: false, imageUrl: pictureUrl, imageAlt: otherSafeAddress, title: displayName, subTitle: message, truncateMain: true }}">
+    params="{{
+      edgeless: false,
+      imageUrl: transfer.direction === 'in' ? fromProfile.avatarUrl : toProfile.avatarUrl,
+      imageAlt: transfer.direction === 'in' ? fromProfile.circlesAddress : toProfile.circlesAddress,
+      title: transfer.direction === 'in'
+        ? fromProfile.firstName + ' ' + fromProfile.lastName
+        : toProfile.firstName + ' ' + toProfile.lastName,
+      subTitle: '<<No message>>',
+      truncateMain: true }}">
 
     <div slot="itemCardEnd">
       <div
         class="self-end text-right"
-        class:text-success="{classes == 'transactionpositive'}"
-        class:text-alert="{classes == 'transactionnegative'}">
-        <span>{amount}</span>
+        class:text-success="{transfer.direction === 'in'}"
+        class:text-alert="{transfer.direction === 'out'}">
+        <span>{Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.value.toString() : '0', 'ether')).toFixed(2)}</span>
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
         {#if transfer.timestamp}

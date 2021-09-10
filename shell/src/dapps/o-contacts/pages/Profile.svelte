@@ -25,7 +25,6 @@
   export let runtimeDapp:RuntimeDapp<any>;
 
   onMount(() => {
-
     shellEventSubscription = window.o.events.subscribe(
       async (event: PlatformEvent) => {
         if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {

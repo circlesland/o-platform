@@ -32,7 +32,7 @@
     const timeline = await apiClient.query({
       query: TransactionTimelineDocument,
       variables: {
-        safeAddress: "0xde374ece6fa50e781e81aac78e811b33d16912c7" //this.safeAddress
+        safeAddress: $me.circlesAddress //this.safeAddress
       }
     });
     if (timeline.errors) {
@@ -40,33 +40,6 @@
     }
     entries = timeline.data.events.reverse();
   });
-
-  $: {
-    /*
-    if ($mySafe.transfers.rows.length != oldRowCount) {
-      oldRowCount = $mySafe.transfers.rows.length;
-      preparedRows = [];
-      let oldPage = currentPage == 0 ? 1 : currentPage;
-      currentPage = 0;
-      while (oldPage > 0) {
-        loadMore();
-        oldPage--;
-      }
-      displayRows = preparedRows;
-    } else {
-      if (preparedRows.length == 0 && $mySafe.transfers.rows) {
-        loadMore();
-        displayRows = preparedRows;
-      } else {
-        const stopElementY = stopElement ? stopElement.offsetTop : -1;
-        if (stopElementY - window.innerHeight - scrollY < 50 && !eof) {
-          loadMore();
-          displayRows = preparedRows;
-        }
-      }
-    }
-     */
-  }
 </script>
 
 <svelte:window bind:scrollY />

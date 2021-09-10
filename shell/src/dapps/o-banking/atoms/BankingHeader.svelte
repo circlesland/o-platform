@@ -4,10 +4,32 @@
   // import { mySafe } from "../stores/safe";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import {BalanceDocument} from "../data/api/types";
+  import {onMount} from "svelte";
+  //import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  //import {context} from "../../../../../packages/o-editors/src/CurrencyTransfer.svelte";
+  import Web3 from "web3";
+  import {me} from "../../../shared/stores/me";
+
 
   export let balance: string = "0";
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
+
+  onMount(async () => {
+    const safeAddress = $me.circlesAddress;
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const balanceResult = await apiClient.query({
+      query: BalanceDocument,
+      variables: {
+        safeAddress
+      }
+    });
+    if (balanceResult.errors?.length > 0) {
+      throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
+    }
+    balance = Number.parseFloat(Web3.utils.fromWei(balanceResult.data.balance, 'ether')).toFixed(2)
+  })
 </script>
 
 <TopNav {runtimeDapp} {routable} />

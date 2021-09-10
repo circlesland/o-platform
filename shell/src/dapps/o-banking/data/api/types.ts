@@ -59,6 +59,14 @@ export type ConsumeDepositedChallengeResponse = {
   success: Scalars['Boolean'];
 };
 
+export type Contact = {
+  __typename?: 'Contact';
+  contactAddress: Scalars['String'];
+  contactAddressProfile?: Maybe<Profile>;
+  safeAddress: Scalars['String'];
+  safeAddressProfile?: Maybe<Profile>;
+};
+
 export type CountryStats = {
   __typename?: 'CountryStats';
   citizenCount: Scalars['Int'];
@@ -414,8 +422,10 @@ export enum PurchaseStatus {
 
 export type Query = {
   __typename?: 'Query';
+  balance: Scalars['String'];
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
+  contacts: Array<Contact>;
   eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
@@ -428,13 +438,24 @@ export type Query = {
   stats?: Maybe<Stats>;
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
+  trustRelations: Array<TrustRelation>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
 };
 
 
+export type QueryBalanceArgs = {
+  safeAddress: Scalars['String'];
+};
+
+
 export type QueryCitiesArgs = {
   query: QueryCitiesInput;
+};
+
+
+export type QueryContactsArgs = {
+  safeAddress: Scalars['String'];
 };
 
 
@@ -473,6 +494,11 @@ export type QueryTagByIdArgs = {
 
 export type QueryTagsArgs = {
   query: QueryTagsInput;
+};
+
+
+export type QueryTrustRelationsArgs = {
+  safeAddress: Scalars['String'];
 };
 
 export type QueryCitiesByGeonameIdInput = {
@@ -579,6 +605,21 @@ export type Tag = {
   id: Scalars['Int'];
   typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
+};
+
+export enum TrustDirection {
+  In = 'IN',
+  Mutual = 'MUTUAL',
+  Out = 'OUT'
+}
+
+export type TrustRelation = {
+  __typename?: 'TrustRelation';
+  direction: TrustDirection;
+  otherSafeAddress: Scalars['String'];
+  otherSafeAddressProfile?: Maybe<Profile>;
+  safeAddress: Scalars['String'];
+  safeAddressProfile?: Maybe<Profile>;
 };
 
 export type UpdateSafeInput = {
@@ -693,6 +734,56 @@ export type SafeFundingTransactionQuery = (
   )> }
 );
 
+export type BalanceQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type BalanceQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'balance'>
+);
+
+export type TrustRelationsQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type TrustRelationsQuery = (
+  { __typename?: 'Query' }
+  & { trustRelations: Array<(
+    { __typename?: 'TrustRelation' }
+    & Pick<TrustRelation, 'safeAddress' | 'direction' | 'otherSafeAddress'>
+    & { safeAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )>, otherSafeAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )> }
+  )> }
+);
+
+export type ContactsQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type ContactsQuery = (
+  { __typename?: 'Query' }
+  & { contacts: Array<(
+    { __typename?: 'Contact' }
+    & Pick<Contact, 'contactAddress' | 'safeAddress'>
+    & { contactAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )>, safeAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )> }
+  )> }
+);
+
 export type TransactionTimelineQueryVariables = Exact<{
   safeAddress: Scalars['String'];
 }>;
@@ -705,25 +796,25 @@ export type TransactionTimelineQuery = (
     & Pick<ProfileEvent, 'timestamp' | 'type' | 'value' | 'safe_address' | 'transaction_hash' | 'transaction_index' | 'block_number' | 'direction'>
     & { safe_address_profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
     )>, payload?: Maybe<(
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, transfers: Array<(
         { __typename?: 'CrcTokenTransfer' }
         & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
         & { from_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )>, to_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
       )> }
     ) | (
@@ -731,10 +822,10 @@ export type TransactionTimelineQuery = (
       & Pick<CrcMinting, 'id' | 'token' | 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )> }
     ) | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' }> }
   )> }
@@ -753,25 +844,25 @@ export type TransactionByHashQuery = (
     & Pick<ProfileEvent, 'timestamp' | 'type' | 'value' | 'safe_address' | 'transaction_hash' | 'transaction_index' | 'block_number' | 'direction'>
     & { safe_address_profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
     )>, payload?: Maybe<(
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, transfers: Array<(
         { __typename?: 'CrcTokenTransfer' }
         & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
         & { from_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )>, to_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
       )> }
     ) | (
@@ -779,10 +870,10 @@ export type TransactionByHashQuery = (
       & Pick<CrcMinting, 'id' | 'token' | 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )> }
     ) | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' }> }
   )> }
@@ -851,6 +942,56 @@ export const SafeFundingTransactionDocument = gql`
   }
 }
     `;
+export const BalanceDocument = gql`
+    query balance($safeAddress: String!) {
+  balance(safeAddress: $safeAddress)
+}
+    `;
+export const TrustRelationsDocument = gql`
+    query trustRelations($safeAddress: String!) {
+  trustRelations(safeAddress: $safeAddress) {
+    safeAddress
+    safeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    direction
+    otherSafeAddress
+    otherSafeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+  }
+}
+    `;
+export const ContactsDocument = gql`
+    query contacts($safeAddress: String!) {
+  contacts(safeAddress: $safeAddress) {
+    contactAddress
+    contactAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    safeAddress
+    safeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+  }
+}
+    `;
 export const TransactionTimelineDocument = gql`
     query transactionTimeline($safeAddress: String!) {
   events(safeAddress: $safeAddress, types: ["crc_hub_transfer", "crc_minting"]) {
@@ -863,6 +1004,7 @@ export const TransactionTimelineDocument = gql`
       firstName
       lastName
       avatarUrl
+      circlesAddress
     }
     transaction_hash
     transaction_index
@@ -877,6 +1019,7 @@ export const TransactionTimelineDocument = gql`
           firstName
           lastName
           avatarUrl
+          circlesAddress
         }
         to
         to_profile {
@@ -884,6 +1027,7 @@ export const TransactionTimelineDocument = gql`
           firstName
           lastName
           avatarUrl
+          circlesAddress
         }
         flow
         transfers {
@@ -894,6 +1038,7 @@ export const TransactionTimelineDocument = gql`
             firstName
             lastName
             avatarUrl
+            circlesAddress
           }
           to
           to_profile {
@@ -901,6 +1046,7 @@ export const TransactionTimelineDocument = gql`
             firstName
             lastName
             avatarUrl
+            circlesAddress
           }
           value
         }
@@ -914,6 +1060,7 @@ export const TransactionTimelineDocument = gql`
           firstName
           lastName
           avatarUrl
+          circlesAddress
         }
         to
         to_profile {
@@ -921,6 +1068,7 @@ export const TransactionTimelineDocument = gql`
           firstName
           lastName
           avatarUrl
+          circlesAddress
         }
         value
       }
@@ -944,6 +1092,7 @@ export const TransactionByHashDocument = gql`
       firstName
       lastName
       avatarUrl
+      circlesAddress
     }
     transaction_hash
     transaction_index
@@ -958,6 +1107,7 @@ export const TransactionByHashDocument = gql`
           firstName
           lastName
           avatarUrl
+          circlesAddress
         }
         to
         to_profile {
@@ -965,6 +1115,7 @@ export const TransactionByHashDocument = gql`
           firstName
           lastName
           avatarUrl
+          circlesAddress
         }
         flow
         transfers {
@@ -975,6 +1126,7 @@ export const TransactionByHashDocument = gql`
             firstName
             lastName
             avatarUrl
+            circlesAddress
           }
           to
           to_profile {
@@ -982,6 +1134,7 @@ export const TransactionByHashDocument = gql`
             firstName
             lastName
             avatarUrl
+            circlesAddress
           }
           value
         }
@@ -995,6 +1148,7 @@ export const TransactionByHashDocument = gql`
           firstName
           lastName
           avatarUrl
+          circlesAddress
         }
         to
         to_profile {
@@ -1002,6 +1156,7 @@ export const TransactionByHashDocument = gql`
           firstName
           lastName
           avatarUrl
+          circlesAddress
         }
         value
       }
@@ -1027,6 +1182,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     safeFundingTransaction(variables?: SafeFundingTransactionQueryVariables): Promise<SafeFundingTransactionQuery> {
       return withWrapper(() => client.request<SafeFundingTransactionQuery>(print(SafeFundingTransactionDocument), variables));
+    },
+    balance(variables: BalanceQueryVariables): Promise<BalanceQuery> {
+      return withWrapper(() => client.request<BalanceQuery>(print(BalanceDocument), variables));
+    },
+    trustRelations(variables: TrustRelationsQueryVariables): Promise<TrustRelationsQuery> {
+      return withWrapper(() => client.request<TrustRelationsQuery>(print(TrustRelationsDocument), variables));
+    },
+    contacts(variables: ContactsQueryVariables): Promise<ContactsQuery> {
+      return withWrapper(() => client.request<ContactsQuery>(print(ContactsDocument), variables));
     },
     transactionTimeline(variables: TransactionTimelineQueryVariables): Promise<TransactionTimelineQuery> {
       return withWrapper(() => client.request<TransactionTimelineQuery>(print(TransactionTimelineDocument), variables));

@@ -12,97 +12,83 @@
 
   import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
   import {onMount} from "svelte";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
+  import {me} from "../../../shared/stores/me";
 
   export let transactionHash: string;
 
   let transfer: ProfileEvent;
-  let pictureUrl: string;
-  let displayName: string;
-  let displayableFromName: string;
-  let displayableToName: string;
   let classes: string;
-  let message: String;
-  let amountInWei: string;
-  let otherSafeAddress: string;
   let path: any;
-  let transactionId: string;
-  let error:string;
-  let value:string;
   let fromProfile: Profile;
   let toProfile: Profile;
-  let from:string;
-  let to:string;
+  let error:string;
 
   onMount(async () => {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const timeline = await apiClient.query({
       query: TransactionByHashDocument,
       variables: {
-        safeAddress: "0xde374ece6fa50e781e81aac78e811b33d16912c7",
+        safeAddress: $me.circlesAddress,
         transactionHash
       }
     });
+
     if (timeline.errors) {
       throw new Error(`Couldn't load the transaction history for the following reasons: ${timeline.errors.join("\n")}`);
     }
+
     if (timeline.data.eventByTransactionHash.length > 0) {
       transfer = timeline.data.eventByTransactionHash[0];
     }
 
-    if (transfer && transfer.type == "crc_minting" && transfer.payload) {
-      let minting = transfer.payload as CrcMinting;
-      if (minting) {
-        displayName = "Circles Land";
+    if (transfer && transfer.payload?.__typename == "CrcMinting") {
+      const minting = transfer.payload as CrcMinting;
+      fromProfile = minting.from_profile ?? {
+        id: 0,
+        firstName: "Circles Land",
+        lastName: "",
+        avatarUrl: "/images/common/circles.png",
+        circlesAddress: minting.from,
       }
-      from = minting.from;
-      to = minting.to;
-      fromProfile = <any>{
-        firstName: "Circles",
-        lastName: "Land"
+      if (!fromProfile.avatarUrl) {
+        fromProfile.avatarUrl = AvataarGenerator.generate(minting.from);
+      }
+      toProfile = minting.to_profile ?? {
+        id: 0,
+        firstName: minting.to,
+        lastName: "",
+        circlesAddress: minting.to
+      }
+      if (!toProfile.avatarUrl) {
+        toProfile.avatarUrl = AvataarGenerator.generate(minting.to);
+      }
+    }
+
+    if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
+      const hubTransfer = transfer.payload as CrcHubTransfer;
+      fromProfile = hubTransfer.from_profile ?? {
+        id: 0,
+        firstName: hubTransfer.from,
+        lastName: "",
+        circlesAddress: hubTransfer.from,
+      }
+      if (!fromProfile.avatarUrl) {
+        fromProfile.avatarUrl = AvataarGenerator.generate(hubTransfer.from);
+      }
+      toProfile = hubTransfer.to_profile ?? {
+        id: 0,
+        firstName: hubTransfer.to,
+        lastName: "",
+        circlesAddress: hubTransfer.to
+      }
+      if (!toProfile.avatarUrl) {
+        toProfile.avatarUrl = AvataarGenerator.generate(hubTransfer.to);
+      }
+      path = {
+        transfers: hubTransfer.transfers
       };
-      toProfile = minting.to_profile;
     }
-    if (transfer && transfer.type == "crc_hub_transfer" && transfer.payload) {
-      let hubTransfer = transfer.payload as CrcHubTransfer;
-      if (hubTransfer) {
-        displayName = transfer.direction === "in"
-                ? (hubTransfer.from_profile
-                        ? hubTransfer.from_profile.firstName + hubTransfer.from_profile.lastName ?? ""
-                        : hubTransfer.from)
-                : (hubTransfer.to_profile
-                        ? hubTransfer.to_profile.firstName + hubTransfer.to_profile.lastName ?? ""
-                        : hubTransfer.to);
-
-        pictureUrl = transfer.direction === "in"
-                ? (hubTransfer.from_profile
-                        ? hubTransfer.from_profile.avatarUrl
-                        : undefined)
-                : (hubTransfer.to_profile
-                        ? hubTransfer.to_profile.avatarUrl
-                        : undefined);
-
-        if (transfer.direction === "in") {
-          pictureUrl = hubTransfer.from_profile && hubTransfer.from_profile.avatarUrl ? hubTransfer.from_profile.avatarUrl : hubTransfer.from.startsWith('0x000') ? '/images/common/circles.png' : pictureUrl
-        } else {
-          pictureUrl =  hubTransfer.to_profile && hubTransfer.to_profile.avatarUrl ? hubTransfer.to_profile.avatarUrl : pictureUrl;
-        }
-        from = hubTransfer.from;
-        to = hubTransfer.to;
-        fromProfile = hubTransfer.from_profile;
-        toProfile = hubTransfer.to_profile;
-      }
-
-      otherSafeAddress = transfer.direction === "in" ? hubTransfer.from : hubTransfer.to;
-    }
-    if (transfer) {
-      value = Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.value.toString() : '0', 'ether')).toFixed(2)
-      amountInWei = transfer ? transfer.value.toString() : "0";
-    }
-
-    pictureUrl = displayName === "Circles Land" ? "/images/common/circles.png" : pictureUrl;
-    message = displayName === "Circles Land" ? "Universal basic income" : ">>Transaction message<<";
-
-
   });
 
   function openDetail(transfer: ProfileEvent) {
@@ -123,9 +109,9 @@
   amount="{transfer ? transfer.amount : 0}"
   {classes} /> -->
 <div class="p-5">
-  <pre>
+  <!--<pre>
     {JSON.stringify(transfer, null, 2)}
-  </pre>
+  </pre>-->
   {#if transfer}
     <div
       class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
@@ -137,9 +123,9 @@
       <div>
         <span class="inline-block text-6xl font-heading {classes}">
           {#if transfer.direction === 'in'}
-            +{value}
+            +{Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.value.toString() : '0', 'ether')).toFixed(2)}
           {:else}
-            -{value}
+            -{Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.value.toString() : '0', 'ether')).toFixed(2)}
           {/if}
 
           <svg
@@ -175,9 +161,13 @@
         class="cursor-pointer avatar rounded-corners-gradient-borders"
         on:click="{() => openDetail(transfer)}">
         <div class="m-auto bg-white rounded-full w-36 h-36">
-            <img
-              alt="{displayableFromName}"
-              src={pictureUrl} />
+          {#if transfer.direction === 'in'}
+            <img alt="{fromProfile.firstName + ' ' + fromProfile.lastName}"
+                 src={fromProfile.avatarUrl} />
+          {:else}
+            <img alt="{toProfile.firstName + ' ' + toProfile.lastName}"
+                 src={toProfile.avatarUrl} />
+          {/if}
         </div>
       </div>
       <div>
@@ -187,7 +177,7 @@
           <span class="mt-4 text-xl">to {toProfile.firstName + " " + toProfile.lastName}</span>
         {/if}
       </div>
-      <div class="text-dark-lightest">{message ? message : 'No Message'}</div>
+      <div class="text-dark-lightest">{'No Message'}</div>
 
       {#if path && path.transfers}
         <div class="flex flex-col w-full space-y-1">
@@ -219,7 +209,7 @@
 
         <div class="flex items-center w-full">
           <div class="text-left ">
-            {amountInWei} {amountInWei > 1 ? ' Cirlces' : ' Circle'}
+            {Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.value.toString() : '0', 'ether')).toFixed(2)}  Circles
           </div>
         </div>
       </div>
@@ -229,7 +219,7 @@
 
         <div class="flex items-center w-full">
           <div class="text-left break-all">
-            {from}
+            {fromProfile.circlesAddress}
           </div>
         </div>
       </div>
@@ -239,7 +229,7 @@
 
         <div class="flex items-center w-full">
           <div class="text-left break-all">
-            {to}
+            {toProfile.circlesAddress}
           </div>
         </div>
       </div>
