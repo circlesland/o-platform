@@ -32,7 +32,9 @@
   role="dialog"
   class="z-40 pt-2 text-base overlay"
   class:blur_aside="{blur}">
-  <div id="modalAsideContentContainer" class="w-full p-2 mt-1 modalAsideContentContainer">
+  <div
+    id="modalAsideContentContainer"
+    class="w-full p-2 mt-1 modalAsideContentContainer">
     <div
       class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
       use:clickOutside
@@ -67,7 +69,7 @@
     align-items: flex-end;
     justify-content: center;
     overflow-y: hidden;
-    @apply pb-20;
+
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -99,6 +101,13 @@
     flex-grow: 1;
     /* overflow: hidden; */
     min-height: 0;
+  }
+
+  :global(.keyboard-open #modalAside) {
+    padding-bottom: 0;
+  }
+  :global(.keyboard-open .modalAsideContentContainer) {
+    margin-bottom: 2rem;
   }
 
   /* Background Blurring for firefox and other non supportive browsers lies in App.svelte through the .blur class */

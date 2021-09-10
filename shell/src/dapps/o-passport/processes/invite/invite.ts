@@ -3,6 +3,7 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { promptChoice } from "../identify/prompts/promptChoice";
+import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transfer } from "../../../o-banking/processes/transfer";
 import { loadProfile } from "../identify/services/loadProfile";
@@ -56,6 +57,7 @@ const processDefinition = (processId: string) =>
 
       amount: promptChoice({
         id: "amount",
+        component: ChoiceSelector,
         params: { view: editorContent.amount },
         options: [
           {

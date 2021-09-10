@@ -62,6 +62,8 @@ function onkeydown(e: KeyboardEvent) {
     class:input-error="{context.messages[context.field]}"
     bind:value="{_context.data[context.field]}"
     bind:this="{inputField}"
+    on:focus
+    on:blur
     on:change="{() => (context.editorDirtyFlags[context.field] = true)}" />
 
   <ProcessNavigation on:buttonClick="{submitHandler}" context="{context}" />

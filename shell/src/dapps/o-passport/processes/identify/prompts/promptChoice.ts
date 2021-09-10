@@ -1,8 +1,8 @@
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
+import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 
 export type PromptChoiceSpec<
   TContext extends ProcessContext<any>,
@@ -13,11 +13,13 @@ export type PromptChoiceSpec<
   params: {
     view: EditorViewContext;
   };
+  component: any;
   options: {
     key: string;
     label: string;
     action?: (context: TContext, event: TEvent) => void;
     target: string;
+    class?: string;
   }[];
   onlyWhenDirty?: boolean;
   navigation?: {
@@ -47,7 +49,7 @@ export function promptChoice<
       promptChoice: prompt<ProcessContext<any>, any>({
         entry: spec.entry,
         field: spec.id,
-        component: ChoiceSelector,
+        component: spec.component ?? ChoiceSelector,
         onlyWhenDirty: spec.onlyWhenDirty,
         params: {
           view: spec.params.view,

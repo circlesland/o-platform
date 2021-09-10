@@ -5,6 +5,7 @@
   import { PromptField } from "@o-platform/o-process/dist/states/prompt";
   import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
   import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
+  import NavSteps from "./NavSteps.svelte";
 
   export let process: Process;
   export let prompt: Prompt<ProcessContext<any>>;
@@ -44,6 +45,9 @@
       componentContext = null;
     }
   }
+
+  const onFocus = () => window.o.publishEvent({ type: "shell.inputFocused" });
+  const onBlur = () => window.o.publishEvent({ type: "shell.inputBlurred" });
 </script>
 
 {#if componentContext}
@@ -52,8 +56,9 @@
     class:pb-0="{prompt.component === DropdownSelectEditor}">
     <slot name="EditorSteps">
       <!-- <div>
-      <NavSteps steps="{[0, 0, 0]}" />
-    </div> -->
+        TODO: Once we know the steps and the current step position, we can activate this.
+        <NavSteps steps="{[{active: false}}, {active: true}, {active: false}]}" />
+      </div> -->
     </slot>
     <slot name="EditorTitle">
       <div class="w-full text-center">
@@ -74,7 +79,9 @@
       <slot name="EditorMainComponent">
         <svelte:component
           this="{prompt.component}"
-          context="{componentContext}" />
+          context="{componentContext}"
+          on:focus="{onFocus}"
+          on:blur="{onBlur}" />
       </slot>
     </div>
     <!-- <slot name="EditorActionButtons">

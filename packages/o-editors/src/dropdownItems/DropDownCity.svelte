@@ -10,7 +10,9 @@ $: {
   const classes = [];
 
   if (isActive) {
-    classes.push("active");
+    classes.push("active border-primary");
+  } else {
+    classes.push("border-light-lightest");
   }
   if (isFirst) {
     classes.push("first");
@@ -23,7 +25,7 @@ $: {
 </script>
 
 <section
-  class="flex mb-2 mr-1 items-center justify-center  border rounded-lg border-light-lightest shadow-sm customItem  {itemClasses}">
+  class="flex mb-4 mr-1 items-center justify-center  border rounded-lg shadow-sm customItem  {itemClasses}">
   <div class="flex items-center w-full p-0 space-x-2 sm:space-x-6 item-body ">
     <div class="relative flex-grow p-3 text-left truncate">
       <div class="max-w-full -mt-1 leading-8 cursor-pointer truncateThis">

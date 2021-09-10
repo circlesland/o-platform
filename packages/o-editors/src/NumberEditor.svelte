@@ -60,6 +60,8 @@ function onkeydown(e: KeyboardEvent) {
     class="m-auto text-4xl top-2 input input-lg input-bordered input-number w-80"
     bind:value="{_context.data[context.field]}"
     bind:this="{inputField}"
+    on:focus
+    on:blur
     on:change="{() => (context.editorDirtyFlags[context.field] = true)}" />
   <!-- <div class="relative h-20 m-auto w-72">
     <div class="absolute h-20 pt-2">

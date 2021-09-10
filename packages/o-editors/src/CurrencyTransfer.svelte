@@ -114,6 +114,8 @@ function onkeydown(e: KeyboardEvent) {
         placeholder="0.00"
         autocomplete="off"
         bind:value="{amount}"
+        on:focus
+        on:blur
         on:change="{() => (context.editorDirtyFlags[context.field] = true)}"
         bind:this="{inputField}"
         on:keydown="{onkeydown}" />

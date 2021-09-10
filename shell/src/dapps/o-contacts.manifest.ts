@@ -66,7 +66,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         title: "Send Money",
         action: async () => {
           window.o.runProcess(transfer, {
-            safeAddress: "",
+            safeAddress: $me.circlesAddress,
             recipientAddress: recipientSafeAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });

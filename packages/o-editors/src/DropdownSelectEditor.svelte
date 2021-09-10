@@ -105,6 +105,8 @@ function toggleInputView() {
             class="flex-grow h-12 input input-lg input-bordered"
             class:input-error="{context.messages[context.field]}"
             bind:value="{_context.data[context.field]}"
+            on:focus
+            on:blur
             on:change="{() =>
               (context.editorDirtyFlags[context.field] = true)}" />
           <div>
@@ -138,6 +140,8 @@ function toggleInputView() {
           on:select="{handleSelect}"
           bind:this="{selectComponent}"
           bind:filterText
+          on:focus
+          on:blur
           on:buttonClick="{submitHandler}" />
       {/if}
       {#if context.params.allowAlternativeInput}

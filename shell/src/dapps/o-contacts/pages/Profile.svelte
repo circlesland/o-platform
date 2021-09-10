@@ -18,7 +18,10 @@
   import { Profile } from "../../o-banking/data/api/types";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import QuickActions from "src/shared/molecules/QuickActions.svelte";
 
   export let id: string;
   export let jumplist: Jumplist<any, any> | undefined;
@@ -259,7 +262,7 @@
         </div>
 
         {#if profile && profile.safeAddress}
-          <div class="mt-4 text-3xl uppercase ">
+          <div class="mt-4 text-3xl">
             {profile.displayName ? profile.displayName : profile.safeAddress}
           </div>
         {/if}
@@ -556,7 +559,7 @@
 
       {#if jumplist && !isMe}
         <div
-          class="sticky bottom-0 left-0 right-0 w-full px-4 py-2 mt-2 bg-white rounded-xl">
+          class="sticky bottom-0 left-0 right-0 w-full  py-2 mt-2 bg-white rounded-xl">
           {#await jumplist.items({ id: id }, runtimeDapp)}
             <p>loading</p>
 

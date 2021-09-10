@@ -9,6 +9,7 @@ import { upsertIdentity } from "../upsertIdentity";
 import { loadProfile } from "./services/loadProfile";
 import { getSessionInfo } from "./services/getSessionInfo";
 import { promptChoice } from "./prompts/promptChoice";
+import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { acquireSession } from "./aquireSession/acquireSession";
 import { connectSafe } from "./connectSafe/connectSafe";
 import { createSafe } from "./createSafe/createSafe";
@@ -151,6 +152,7 @@ const processDefinition = (processId: string) =>
 
       connectOrCreate: promptChoice({
         id: "connectOrCreate",
+        component: ChoiceSelector,
         params: { view: editorContent.connectOrCreate },
         options: [
           {

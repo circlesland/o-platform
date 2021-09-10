@@ -743,6 +743,8 @@
       {..._inputAttributes}
       bind:this="{input}"
       on:focus="{handleFocus}"
+      on:focus
+      on:blur
       bind:value="{filterText}"
       placeholder="{placeholderText}"
       style="{inputStyles}"
@@ -763,6 +765,8 @@
           {staticList ? 'padding-left: 35px' : ''}"
           {..._inputAttributes}
           bind:this="{input}"
+          on:focus
+          on:blur
           on:focus="{handleFocus}"
           bind:value="{filterText}"
           placeholder="{displayableSelectedValue ? displayableSelectedValue : ''}"
@@ -859,7 +863,9 @@
     /* caret-color: transparent; */
     @apply input;
     @apply input-bordered;
+    @apply border-dark-lightest;
     @apply text-lg;
+    @apply text-dark;
   }
 
   .selectContainer input::placeholder {

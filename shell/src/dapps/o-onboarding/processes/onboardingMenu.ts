@@ -1,10 +1,11 @@
-import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
-import {createMachine} from "xstate";
-import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
-import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
-import {promptChoice} from "../../o-passport/processes/identify/prompts/promptChoice";
-import {fromCirclesLand} from "./fromCirclesLand";
-import {identify} from "../../o-passport/processes/identify/identify";
+import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
+import { createMachine } from "xstate";
+import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
+import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
+import { promptChoice } from "../../o-passport/processes/identify/prompts/promptChoice";
+import ButtonStackSelector from "@o-platform/o-editors/src/ButtonStackSelector.svelte";
+import { fromCirclesLand } from "./fromCirclesLand";
+import { identify } from "../../o-passport/processes/identify/identify";
 
 export type OnboardingMenuContextData = {
   chooseFlow?: {
@@ -26,6 +27,7 @@ const processDefinition = (processId: string) =>
 
       chooseFlow: promptChoice({
         id: "chooseFlow",
+        component: ButtonStackSelector,
         entry: () => console.log("chooseFlow"),
         params: {
           view: {
@@ -33,24 +35,27 @@ const processDefinition = (processId: string) =>
             description: "Hello World",
             placeholder: "",
             submitButtonText: "",
-          }
+          },
         },
         options: [
           {
             key: "signup",
             label: "Signup",
             target: "#signup",
+            class: "btn-info",
           },
           {
             key: "login",
             label: "Login",
             target: "#login",
+            class: "btn-primary",
           },
           {
             key: "fromCirclesLand",
-            label: "fromCirclesLand",
+            label: "from CirclesLand",
             target: "#fromCirclesLand",
-          }
+            class: "btn-dark",
+          },
         ],
       }),
 
@@ -59,22 +64,22 @@ const processDefinition = (processId: string) =>
         type: "final",
         entry: () => {
           window.o.runProcess(identify, {});
-        }
+        },
       },
       login: {
         id: "login",
         type: "final",
         entry: () => {
           window.o.runProcess(identify, {});
-        }
+        },
       },
       fromCirclesLand: {
         id: "fromCirclesLand",
         type: "final",
         entry: () => {
           window.o.runProcess(fromCirclesLand, {});
-        }
-      }
+        },
+      },
     },
   });
 

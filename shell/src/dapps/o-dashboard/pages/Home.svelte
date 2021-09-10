@@ -92,7 +92,7 @@
 {/if} -->
 <div class="mx-auto md:w-2/3 xl:w-1/2">
 
-  <div class="m-4">
+  <div class="m-4 mb-20">
     <section class="mb-4" on:click="{() => loadLink('/dashboard/invites')}">
       <button class="btn btn-primary btn-block">Create Invites</button>
     </section>

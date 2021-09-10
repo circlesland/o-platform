@@ -53,6 +53,8 @@ function onkeydown(e: KeyboardEvent) {
       class="input input-lg input-bordered"
       class:input-error="{context.messages[context.field]}"
       bind:value="{_context.data[context.field]}"
+      on:focus
+      on:blur
       on:change="{() => (context.editorDirtyFlags[context.field] = true)}" />
   </div>
 

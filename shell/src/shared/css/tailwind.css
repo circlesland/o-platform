@@ -105,6 +105,12 @@ body {
   border: none;
 }
 
+.btn-dark {
+  @apply bg-dark;
+  @apply text-white;
+  border: none;
+}
+
 .btn-primary {
   @apply text-dark;
   @apply normal-case;
@@ -192,6 +198,11 @@ body {
 .input {
   @apply text-lg;
   @apply text-dark-lightest;
+  @apply border-dark-lightest;
+}
+
+.textarea {
+  @apply border-dark-lightest;
 }
 
 .input-error {
@@ -380,4 +391,8 @@ button:focus {
 
   background-origin: border-box;
   background-clip: padding-box, border-box;
+}
+
+.keyboard-open #nextnav {
+  display: none;
 }

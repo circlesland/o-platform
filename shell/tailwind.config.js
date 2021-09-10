@@ -10,6 +10,7 @@ module.exports = {
   mode: "jit",
   purge: [
     "./src/**/*.svelte",
+    "../packages/o-editors/src/**/*.svelte",
     "./public/**/*.html",
     "./../packages/**/*.svelte",
     "./src/**/*.{js,jsx,ts,tsx,vue}",
@@ -23,6 +24,7 @@ module.exports = {
 
   theme: {
     extend: {
+      borderColor: ["dark-lightest"],
       typography: {
         "text-base": {
           css: {
@@ -90,7 +92,7 @@ module.exports = {
           lightest: "#FFF6D7",
           dark: "#F29C05",
         },
-
+        borderColor: "#8597C6",
         darkgrey: "#E2E7EB",
         background: "#F5F8FF",
 

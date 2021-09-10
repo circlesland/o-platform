@@ -26,6 +26,8 @@ export type PlatformEventTypes =
   | "shell.openFilters"
   | "shell.closeFilters"
   | "shell.requestCloseModal"
+  | "shell.inputFocused"
+  | "shell.inputBlurred"
   | "circles.web3providerChanged"
   | "process.ready"
   | "process.nop"

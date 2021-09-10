@@ -1,28 +1,23 @@
 <script lang="ts">
-  import Icons from "./Icons.svelte";
-
+  import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
   export let actions: any;
 
-  // console.log("ACTIONS: ", actions);
+  function handleClick(action) {
+    if (action.event) {
+      window.o.publishEvent(action.event);
+    }
+    if (action.action) {
+      action.action();
+    }
+  }
 </script>
 
-<div class="flex flex-row justify-between p-2 text-dark">
+<div class="flex flex-row justify-between space-x-4 text-dark">
   {#each actions as action}
-    <div
-      on:click={() => {
-        if (action.event) {
-          window.o.publishEvent(action.event);
-        }
-        if (action.action) {
-          action.action();
-        }
-      }}
-      class="flex flex-col items-center content-center self-start px-6 py-4 space-y-1 rounded-lg cursor-pointer bg-light-lighter"
-    >
-      <div>
-        <Icons icon={action.icon} />
-      </div>
-      <div class="text-2xs">{action.title}</div>
-    </div>
+    <ActionListItem
+      icon="{action.icon}"
+      title="{action.title}"
+      colorClass="{action.colorClass}"
+      on:click="{() => handleClick(action)}" />
   {/each}
 </div>
