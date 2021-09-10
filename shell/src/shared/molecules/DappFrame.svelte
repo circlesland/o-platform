@@ -320,7 +320,6 @@
 
   onMount(async () => {
     window.o.events.subscribe(async event => {
-      console.log("EVENT!!!!11elf ", event);
       switch (event.type) {
         case "process.continued":
           onProcessContinued();
