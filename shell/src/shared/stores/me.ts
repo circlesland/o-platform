@@ -2,7 +2,7 @@ import {readable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {runShellProcess} from "../processes/shellProcess";
 import {identify, IdentifyContextData} from "../../dapps/o-passport/processes/identify/identify";
-import {Profile} from "../../dapps/o-passport/data/api/types";
+import {Profile} from "../api/data/types";
 
 export const me = readable<Profile|null>(null, function start(set) {
   const subscription = window.o.events.subscribe((event: PlatformEvent & {

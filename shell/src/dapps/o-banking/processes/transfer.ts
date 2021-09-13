@@ -15,12 +15,12 @@ import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { BN } from "ethereumjs-util";
-import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
-import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import { Profile } from "../data/api/types";
 import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { SetTrustContext } from "./setTrust";
+import {loadProfileByProfileId} from "../../../shared/api/loadProfileByProfileId";
+import {loadProfileBySafeAddress} from "../../../shared/api/loadProfileBySafeAddress";
 
 export type TransferContextData = {
   safeAddress: string;

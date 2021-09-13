@@ -1,14 +1,59 @@
 <script lang="ts">
-  import { onDestroy, onMount, setContext } from "svelte";
-  import { Subscription } from "rxjs";
-  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+  import { onMount} from "svelte";
   import ElizaBot from "elizabot";
 
   import { chatdata } from "../data/api/src/chatstore";
   import ChatCard from "../atoms/ChatCard.svelte";
-  import NotificationCard from "../atoms/NotificationCard.svelte";
   import "simplebar";
   import "simplebar/dist/simplebar.css";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {
+    ChatHistoryDocument,
+    ProfileBySafeAddressDocument
+  } from "../../../shared/api/data/types";
+  import {me} from "../../../shared/stores/me";
+  import {Profile, ProfileEvent} from "../data/api/types";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
+
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
+  export let id: string;
+
+  let error: string | undefined = undefined;
+  let chatHistory: ProfileEvent[] = [];
+
+  let contactProfile: Profile;
+
+  onMount(async () => {
+    const safeAddress = $me.circlesAddress;
+    const contactSafeAddress = id;
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const chatHistoryResultPromise = apiClient.query({
+      query: ChatHistoryDocument,
+      variables: {
+        safeAddress,
+        contactSafeAddress
+      }
+    });
+    const contactResultPromise = apiClient.query({
+      query: ProfileBySafeAddressDocument,
+      variables: {
+        safeAddress: id
+      }
+    });
+
+    const apiResults = await Promise.all([chatHistoryResultPromise, contactResultPromise]);
+    const chatHistoryResult = apiResults[0];
+    const contactProfileResult = apiResults[1];
+    if (apiResults.filter(o => o.errors?.length > 0).length > 0) {
+      error = `Couldn't read the chatHistory or the profile of safe ${safeAddress}`;
+      return;
+    }
+    chatHistory = chatHistoryResult.data.chatHistory;
+    contactProfile = contactProfileResult.data.profiles.length > 0 ?contactProfileResult.data.profiles[0]: null;
+  });
 
   let inputField: any;
   let chatmessage: string;
@@ -106,15 +151,21 @@
   <header class="sticky top-0 z-50 grid w-full bg-white place-content-center">
     <div
       class="relative flex flex-col items-center self-center w-full m-auto text-center justify-self-center">
+      <!--
       <div class="absolute avatar " style="left: -56px; top:9px">
         <div class="w-8 h-8 m-auto rounded-full ">
-          <img
-            src="https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/PP2WbUHmpaCg9Gk7/"
-            alt="user-icon" />
+
+          {#if contactProfile}
+            <img
+                    src={contactProfile.avatarUrl ? contactProfile.avatarUrl : AvataarGenerator.generate(contactProfile.circlesAddress)}
+                    alt="user-icon" />
+          {/if}
         </div>
-      </div>
+      </div>-->
       <div class="mt-2 text-3xl tracking-wide uppercase font-heading">
-        Martin Köppelmann
+        {#if contactProfile}
+          {contactProfile.firstName} {contactProfile.lastName}
+        {/if}
       </div>
 
     </div>
@@ -122,12 +173,121 @@
 
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
   <div class="flex flex-col p-2 pb-0 space-y-4 sm:p-6 sm:space-y-8">
-
-    {#each $chatdata as chat}
-      {#if chat.notification}
-        <NotificationCard params="{chat.notificationParams}" />
-      {:else}
-        <ChatCard params="{chat}" />
+    {#each chatHistory as chat}
+      {#if chat.type === "crc_trust" && chat.payload.limit == 0 && chat.safe_address === $me.circlesAddress}
+        <ChatCard params={{
+          outgoing: chat.safeAddress === $me.circlesAddress,
+          name: chat.safe_address_profile.firstName,
+          time: chat.timestamp / 1000,
+          content: {
+            notificationType: "trust_removed",
+            time: chat.timestamp / 1000,
+            title:`You untrusted ${chat.payload.address_profile.firstName}`,
+            actions:[]
+          },
+          image: chat.safe_address_profile.avatarUrl ? chat.safe_address_profile.avatarUrl : AvataarGenerator.generate(chat.safe_address),
+        }} />
+        <!--
+        <NotificationCard params={{
+          notificationType: "trust_removed",
+          title:`You untrusted ${chat.payload.address_profile.firstName}`,
+          actions:[]
+        }} />-->
+      {:else if chat.type === "crc_trust" && chat.payload.limit > 0 && chat.safe_address === $me.circlesAddress}
+        <ChatCard params={{
+          outgoing: chat.safeAddress === $me.circlesAddress,
+          name: chat.safe_address_profile.firstName,
+          time: chat.timestamp / 1000,
+          content: {
+            notificationType: "trust_added",
+            time: chat.timestamp / 1000,
+            title: `You trusted ${chat.payload.address_profile.firstName}`,
+            actions:[]
+          },
+          image: chat.safe_address_profile.avatarUrl ? chat.safe_address_profile.avatarUrl : AvataarGenerator.generate(chat.safe_address),
+        }} />
+        <!--
+        <NotificationCard params={{
+          notificationType: "trust_added",
+          title: `You trusted ${chat.payload.address_profile.firstName}`,
+          actions:[]
+        }} />-->
+      {:else if chat.type === "crc_trust" && chat.payload.limit == 0 && chat.safe_address !== $me.circlesAddress}
+        <ChatCard params={{
+          outgoing: chat.safeAddress !== $me.circlesAddress,
+          name: chat.payload.can_send_to_profile.firstName,
+          time: chat.timestamp / 1000,
+          content: {
+            notificationType: "trust_removed",
+            time: chat.timestamp / 1000,
+            title: `${chat.payload.can_send_to_profile.firstName} untrusted you`,
+            actions:[]
+          },
+          image: chat.payload.can_send_to_profile.avatarUrl ? chat.payload.can_send_to_profile.avatarUrl : AvataarGenerator.generate(chat.safe_address),
+        }} />
+        <!--
+        <NotificationCard params={{
+          notificationType: "trust_removed",
+          title: `${chat.payload.can_send_to_profile.firstName} untrusted you`,
+          actions:[]
+        }} />-->
+      {:else if chat.type === "crc_trust" && chat.payload.limit > 0 && chat.safe_address !== $me.circlesAddress}
+        <ChatCard params={{
+          outgoing: chat.safeAddress !== $me.circlesAddress,
+          name: chat.payload.can_send_to_profile.firstName,
+          time: chat.timestamp / 1000,
+          content: {
+            notificationType: "trust_added",
+            time: chat.timestamp / 1000,
+            title: `${chat.payload.can_send_to_profile.firstName} trusted you`,
+            actions:[]
+          },
+          image: chat.payload.can_send_to_profile.avatarUrl ? chat.payload.can_send_to_profile.avatarUrl : AvataarGenerator.generate(chat.safe_address),
+        }} />
+        <!--
+        <NotificationCard params={{
+          notificationType: "trust_added",
+          title: `${chat.payload.can_send_to_profile.firstName} trusted you`,
+          actions:[]
+        }} />-->
+      {:else if chat.type === "crc_hub_transfer" && chat.safe_address === $me.circlesAddress}
+        <ChatCard params={{
+          outgoing: chat.safeAddress === $me.circlesAddress,
+          name: chat.payload.to_profile.firstName,
+          time: chat.timestamp / 1000,
+          content: {
+            notificationType: "transfer_out",
+            time: chat.timestamp / 1000,
+            title: `You sent ${RpcGateway.get().utils.fromWei(chat.value, "ether")} CRC to ${chat.payload.to_profile.firstName}`,
+            actions:[]
+          },
+          image: chat.payload.from_profile.avatarUrl ? chat.payload.from_profile.avatarUrl : AvataarGenerator.generate(chat.safe_address),
+        }} />
+        <!--
+        <NotificationCard params={{
+          notificationType: "transfer_out",
+          title: `You sent ${RpcGateway.get().utils.fromWei(chat.value, "ether")} CRC to ${chat.payload.to_profile.firstName}`,
+          actions:[]
+        }} />-->
+      {:else if chat.type === "crc_hub_transfer" && chat.safe_address !== $me.circlesAddress}
+        <ChatCard params={{
+          outgoing: chat.safeAddress !== $me.circlesAddress,
+          name: chat.payload.to_profile.firstName,
+          time: chat.timestamp / 1000,
+          content: {
+            notificationType: "transfer_in",
+            time: chat.timestamp / 1000,
+            title: `${chat.payload.from_profile.firstName} sent you ${RpcGateway.get().utils.fromWei(chat.value, "ether")} CRC`,
+            actions:[]
+          },
+          image: chat.payload.from_profile.avatarUrl ? chat.payload.from_profile.avatarUrl : AvataarGenerator.generate(chat.safe_address),
+        }} />
+        <!--
+        <NotificationCard params={{
+          notificationType: "transfer_in",
+          title: `${chat.payload.from_profile.firstName} sent you ${RpcGateway.get().utils.fromWei(chat.value, "ether")} CRC`,
+          actions:[]
+        }} />-->
       {/if}
     {/each}
   </div>

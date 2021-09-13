@@ -6,10 +6,10 @@ import { createMachine } from "xstate";
 
 import SingleButtonEditor from "@o-platform/o-editors/src/SingleButtonEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { LogoutDocument } from "../data/api/types";
 import { push } from "svelte-spa-router";
 import * as bip39 from "bip39";
 import * as yup from "yup";
+import {LogoutDocument} from "../../../shared/api/data/types";
 
 export type LogoutContextData = {
   loginEmail: string;

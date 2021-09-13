@@ -8,7 +8,7 @@ import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transfer } from "../../../o-banking/processes/transfer";
 import { loadProfile } from "../identify/services/loadProfile";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Profile } from "../../data/api/types";
+import {Profile} from "../../../../shared/api/data/types";
 
 export type InviteContextData = {
   safeAddress?: string;

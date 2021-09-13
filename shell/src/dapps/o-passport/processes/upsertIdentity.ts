@@ -7,13 +7,13 @@ import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { City, UpsertProfileDocument } from "../data/api/types";
 import * as yup from "yup";
-import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { promptChoice } from "./identify/prompts/promptChoice";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptCity } from "../../../shared/api/promptCity";
+import {City, UpsertProfileDocument} from "../../../shared/api/data/types";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export type UpsertIdentityContextData = {
   id?: number;

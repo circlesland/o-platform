@@ -1,6 +1,6 @@
 import {createMachine, send, sendParent} from "xstate";
 import {LoginWithEmailDocument, VerifyDocument} from "../../o-passport/data/auth/types";
-import {ExchangeTokenDocument, SessionInfoDocument} from "../../o-passport/data/api/types";
+import {ExchangeTokenDocument} from "../../../shared/api/data/types";
 
 export type LoginContext = {
     appId: string;

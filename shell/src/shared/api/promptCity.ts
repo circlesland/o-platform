@@ -7,13 +7,9 @@ import {
 } from "@o-platform/o-process/dist/states/prompt";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
-import {
-  CitiesByIdDocument,
-  CitiesByNameDocument,
-  City,
-} from "../../dapps/o-passport/data/api/types";
 import DropDownCity from "@o-platform/o-editors/src/dropdownItems/DropDownCity.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
+import {CitiesByIdDocument, CitiesByNameDocument, City} from "./data/types";
 
 export function promptCity<
   TContext extends ProcessContext<any>,

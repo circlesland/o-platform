@@ -16,7 +16,7 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import { loadProfileByProfileId } from "./o-banking/data/loadProfileByProfileId";
+import {loadProfileByProfileId} from "../shared/api/loadProfileByProfileId";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],

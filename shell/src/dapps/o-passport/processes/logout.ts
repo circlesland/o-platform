@@ -6,10 +6,10 @@ import { createMachine } from "xstate";
 import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { LogoutDocument } from "../data/api/types";
 import { push } from "svelte-spa-router";
 import * as bip39 from "bip39";
 import * as yup from "yup";
+import {LogoutDocument} from "../../../shared/api/data/types";
 
 export type LogoutContextData = {
   loginEmail: string;

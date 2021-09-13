@@ -21,6 +21,22 @@
     } else if (contact) {
       profile = contact.contactAddressProfile;
     }
+
+    if (!profile && contact) {
+      profile = {
+        id:0,
+        firstName: contact.contactAddress,
+        lastName: "",
+        circlesAddress: contact.contactAddress,
+      }
+    }
+
+    if (profile && !profile.lastName) {
+      profile.lastName = "";
+    }
+    if (profile && !profile.avatarUrl) {
+      profile.avatarUrl = AvataarGenerator.generate(contact.contactAddress);
+    }
   });
 
   function loadDetailPage(path) {
@@ -39,12 +55,12 @@
 </script>
 
 {#if profile}
-<div on:click="{() => loadDetailPage(trustRelation.otherSafeAddress)}">
+<div on:click="{() => loadDetailPage(profile.circlesAddress)}">
   {#if !trustRelation}
     <ItemCard params="{{
       edgeless: false,
       imageUrl: profile.avatarUrl,
-      title: profile.firstName + ' ' + profile.lastName,
+      title: profile.firstName + (profile.lastName ? ' ' +profile.lastName : ''),
       subTitle: '',
       truncateMain: true
     }}">
@@ -52,7 +68,7 @@
         <div class="inline-flex">
           <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
             <img class="rounded-full"  src="{profile.avatarUrl}"
-                 alt="{profile.firstName + ' ' + profile.lastName}" />
+                 alt="{profile.firstName + (profile.lastName ? ' ' +profile.lastName : '')}" />
           </div>
         </div>
       </div>
@@ -64,7 +80,7 @@
     <ItemCard params="{{
       edgeless: false,
       imageUrl: profile.avatarUrl,
-      title: profile.firstName + ' ' + profile.lastName,
+      title: profile.firstName + (profile.lastName ? ' ' +profile.lastName : ''),
       subTitle: '',
       truncateMain: true
     }}">
@@ -72,7 +88,7 @@
         <div class="inline-flex">
           <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
             <img class="rounded-full"  src="{profile.avatarUrl}"
-                 alt="{profile.firstName + ' ' + profile.lastName}" />
+                 alt="{profile.firstName + (profile.lastName ? ' ' +profile.lastName : '')}" />
           </div>
         </div>
       </div>
@@ -84,7 +100,7 @@
     <ItemCard params="{{
       edgeless: false,
       imageUrl: profile.avatarUrl,
-      title: profile.firstName + ' ' + profile.lastName,
+      title: profile.firstName + (profile.lastName ? ' ' +profile.lastName : ''),
       subTitle: '',
       truncateMain: true
     }}">
@@ -92,7 +108,7 @@
         <div class="inline-flex">
           <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
             <img  class="rounded-full"  src="{profile.avatarUrl}"
-                 alt="{profile.firstName + ' ' + profile.lastName}" />
+                 alt="{profile.firstName + (profile.lastName ? ' ' +profile.lastName : '')}" />
           </div>
         </div>
       </div>
@@ -104,7 +120,7 @@
     <ItemCard params="{{
       edgeless: false,
       imageUrl: profile.avatarUrl,
-      title: profile.firstName + ' ' + profile.lastName,
+      title: profile.firstName + (profile.lastName ? ' ' +profile.lastName : ''),
       subTitle: '',
       truncateMain: true
     }}">
@@ -112,7 +128,7 @@
         <div class="inline-flex">
           <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
             <img class="rounded-full" src="{profile.avatarUrl}"
-                 alt="{profile.firstName + ' ' + profile.lastName}" />
+                 alt="{profile.firstName + (profile.lastName ? ' ' +profile.lastName : '')}" />
           </div>
         </div>
       </div>
@@ -122,3 +138,4 @@
     </ItemCard>
   {/if}
 </div>
+{/if}

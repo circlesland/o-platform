@@ -9,8 +9,6 @@
   import { upsertIdentityOnlyWhereDirty } from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-  import { loadProfileBySafeAddress } from "../../o-banking/data/loadProfileBySafeAddress";
-  import { loadProfileByProfileId } from "../../o-banking/data/loadProfileByProfileId";
   import { onDestroy, onMount } from "svelte";
   import { Subscription } from "rxjs";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -22,6 +20,8 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import QuickActions from "src/shared/molecules/QuickActions.svelte";
+  import {loadProfileByProfileId} from "../../../shared/api/loadProfileByProfileId";
+  import {loadProfileBySafeAddress} from "../../../shared/api/loadProfileBySafeAddress";
 
   export let id: string;
   export let jumplist: Jumplist<any, any> | undefined;
@@ -111,43 +111,8 @@
     // console.log("PROFILE: ", profile);
   }
 
-  function loadTrustRelation(
-    safeAddress: string
-  ): {
-    trusting?: number;
-    trustedBy?: number;
-  } {
-    safeAddress = RpcGateway.get().utils.toChecksumAddress(safeAddress);
-    if (!$mySafe.trustRelations) {
-      return {
-        trusting: undefined,
-        trustedBy: undefined,
-      };
-    }
-
-    const trust: {
-      trusting?: number;
-      trustedBy?: number;
-    } = {};
-
-    const trusting = $mySafe.trustRelations.trusting[safeAddress];
-    if (trusting) {
-      trust.trusting = trusting.limit;
-    }
-
-    const trustedBy = $mySafe.trustRelations.trustedBy[safeAddress];
-    if (trustedBy) {
-      trust.trustedBy = trustedBy.limit;
-    }
-
-    return trust;
-  }
-
   function setProfile(apiProfile: Profile) {
-    const trust = apiProfile.circlesAddress
-      ? loadTrustRelation(apiProfile.circlesAddress)
-      : undefined;
-
+    const trust = undefined
     isEditable = $me && $me.id === apiProfile.id;
 
     if (!apiProfile.avatarUrl) {
@@ -169,8 +134,8 @@
       displayName: `${apiProfile.firstName} ${
         apiProfile.lastName ? apiProfile.lastName : ""
       }`,
-      trusting: trust ? trust.trusting : undefined,
-      trustedBy: trust ? trust.trustedBy : undefined,
+      trusting: undefined,
+      trustedBy: undefined,
       cityGeonameid: apiProfile.cityGeonameid,
       city: apiProfile.city,
     };

@@ -1,4 +1,4 @@
-import {MyProfileDocument, Profile, ProfilesDocument} from "../../../data/api/types";
+import {MyProfileDocument, Profile, ProfilesDocument} from "../../../../../shared/api/data/types";
 
 export const loadProfile = async (profileId?:number) => {
   const apiClient = await window.o.apiClient.client.subscribeToResult();

@@ -11,10 +11,9 @@ import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
 import {CreateTagInput, Profile} from "../data/api/types";
-import {UpsertProfileDocument} from "../../o-passport/data/api/types";
 import {push} from "svelte-spa-router";
-import {Banking} from "../banking";
 import {Subscription} from "rxjs";
+import {UpsertProfileDocument} from "../../../shared/api/data/types";
 
 export type HubSignupContextData = {
   privateKey:string;

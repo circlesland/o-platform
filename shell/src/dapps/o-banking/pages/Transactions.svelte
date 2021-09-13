@@ -38,7 +38,7 @@
     if (timeline.errors) {
       error = `Couldn't load the transaction history for the following reasons: ${timeline.errors.join("\n")}`;
     }
-    entries = timeline.data.events.reverse();
+    entries = timeline.data.events;
   });
 </script>
 

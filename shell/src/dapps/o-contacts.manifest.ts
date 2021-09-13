@@ -6,11 +6,11 @@ import { me } from "../shared/stores/me";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { init } from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
-import { loadProfileByProfileId } from "./o-banking/data/loadProfileByProfileId";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { transfer } from "./o-banking/processes/transfer";
 import { setTrust } from "./o-banking/processes/setTrust";
+import {loadProfileByProfileId} from "../shared/api/loadProfileByProfileId";
 
 export interface DappState {
   // put state here

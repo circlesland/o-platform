@@ -41,11 +41,11 @@ npx graphql-codegen
 
 cd ../../../../..
 echo "Generating graphql types for dapps/o-passport"
-echo "* api"
-cd shell/src/dapps/o-passport/data/api
-npx graphql-codegen
+#echo "* api"
+#cd shell/src/dapps/o-passport/data/api
+#npx graphql-codegen
 echo "* auth"
-cd ../auth
+cd shell/src/dapps/o-passport/data/auth
 npx graphql-codegen
 
 # cd ../../../../../..

@@ -1,5 +1,5 @@
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {Profile, ProfilesByCirclesAddressDocument} from "./api/types";
+import {Profile, ProfilesByCirclesAddressDocument} from "./data/types";
+import {RpcGateway} from "../../../../packages/o-circles/dist/rpcGateway";
 
 export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Profile> {
     // 1. Try to find a profile via the api

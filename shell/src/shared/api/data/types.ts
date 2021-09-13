@@ -59,6 +59,15 @@ export type ConsumeDepositedChallengeResponse = {
   success: Scalars['Boolean'];
 };
 
+export type Contact = {
+  __typename?: 'Contact';
+  contactAddress: Scalars['String'];
+  contactAddressProfile?: Maybe<Profile>;
+  lastContactAt?: Maybe<Scalars['String']>;
+  safeAddress: Scalars['String'];
+  safeAddressProfile?: Maybe<Profile>;
+};
+
 export type CountryStats = {
   __typename?: 'CountryStats';
   citizenCount: Scalars['Int'];
@@ -69,8 +78,10 @@ export type CrcHubTransfer = IEventPayload & {
   __typename?: 'CrcHubTransfer';
   flow: Scalars['String'];
   from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   transaction_id: Scalars['Int'];
   transfers: Array<CrcTokenTransfer>;
 };
@@ -78,8 +89,10 @@ export type CrcHubTransfer = IEventPayload & {
 export type CrcMinting = IEventPayload & {
   __typename?: 'CrcMinting';
   from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   token: Scalars['String'];
   transaction_id: Scalars['Int'];
   value: Scalars['String'];
@@ -91,13 +104,16 @@ export type CrcSignup = IEventPayload & {
   token: Scalars['String'];
   transaction_id: Scalars['Int'];
   user: Scalars['String'];
+  user_profile?: Maybe<Profile>;
 };
 
 export type CrcTokenTransfer = IEventPayload & {
   __typename?: 'CrcTokenTransfer';
   from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   token: Scalars['String'];
   transaction_id: Scalars['Int'];
   value: Scalars['String'];
@@ -106,7 +122,9 @@ export type CrcTokenTransfer = IEventPayload & {
 export type CrcTrust = IEventPayload & {
   __typename?: 'CrcTrust';
   address: Scalars['String'];
+  address_profile?: Maybe<Profile>;
   can_send_to: Scalars['String'];
+  can_send_to_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   limit: Scalars['Int'];
   transaction_id: Scalars['Int'];
@@ -157,8 +175,10 @@ export type DepositChallengeResponse = {
 export type EthTransfer = IEventPayload & {
   __typename?: 'EthTransfer';
   from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   transaction_id: Scalars['Int'];
   value: Scalars['String'];
 };
@@ -174,9 +194,11 @@ export type ExchangeTokenResponse = {
 export type GnosisSafeEthTransfer = IEventPayload & {
   __typename?: 'GnosisSafeEthTransfer';
   from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
   id: Scalars['Int'];
   initiator: Scalars['String'];
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   transaction_id: Scalars['Int'];
   value: Scalars['String'];
 };
@@ -240,7 +262,7 @@ export type Mutation = {
 
 
 export type MutationAcknowledgeArgs = {
-  eventPayloadId: Scalars['Int'];
+  eventId: Scalars['Int'];
 };
 
 
@@ -367,6 +389,7 @@ export type ProfileEvent = {
   id: Scalars['Int'];
   payload?: Maybe<EventPayload>;
   safe_address: Scalars['String'];
+  safe_address_profile?: Maybe<Profile>;
   timestamp: Scalars['String'];
   transaction_hash: Scalars['String'];
   transaction_index: Scalars['Int'];
@@ -400,8 +423,12 @@ export enum PurchaseStatus {
 
 export type Query = {
   __typename?: 'Query';
+  balance: Scalars['String'];
+  chatHistory: Array<ProfileEvent>;
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
+  contacts: Array<Contact>;
+  eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
   myInvitations: Array<CreatedInvitation>;
@@ -413,8 +440,20 @@ export type Query = {
   stats?: Maybe<Stats>;
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
+  trustRelations: Array<TrustRelation>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryBalanceArgs = {
+  safeAddress: Scalars['String'];
+};
+
+
+export type QueryChatHistoryArgs = {
+  contactSafeAddress: Scalars['String'];
+  safeAddress: Scalars['String'];
 };
 
 
@@ -423,8 +462,23 @@ export type QueryCitiesArgs = {
 };
 
 
-export type QueryEventsArgs = {
+export type QueryContactsArgs = {
   safeAddress: Scalars['String'];
+};
+
+
+export type QueryEventByTransactionHashArgs = {
+  safeAddress: Scalars['String'];
+  transactionHash: Scalars['String'];
+  types?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryEventsArgs = {
+  fromBlock?: Maybe<Scalars['Int']>;
+  safeAddress: Scalars['String'];
+  toBlock?: Maybe<Scalars['Int']>;
+  types?: Maybe<Array<Scalars['String']>>;
 };
 
 
@@ -450,6 +504,11 @@ export type QueryTagByIdArgs = {
 
 export type QueryTagsArgs = {
   query: QueryTagsInput;
+};
+
+
+export type QueryTrustRelationsArgs = {
+  safeAddress: Scalars['String'];
 };
 
 export type QueryCitiesByGeonameIdInput = {
@@ -558,6 +617,21 @@ export type Tag = {
   value?: Maybe<Scalars['String']>;
 };
 
+export enum TrustDirection {
+  In = 'IN',
+  Mutual = 'MUTUAL',
+  Out = 'OUT'
+}
+
+export type TrustRelation = {
+  __typename?: 'TrustRelation';
+  direction: TrustDirection;
+  otherSafeAddress: Scalars['String'];
+  otherSafeAddressProfile?: Maybe<Profile>;
+  safeAddress: Scalars['String'];
+  safeAddressProfile?: Maybe<Profile>;
+};
+
 export type UpdateSafeInput = {
   signature: Scalars['String'];
 };
@@ -614,6 +688,204 @@ export type Version = {
   revision: Scalars['Int'];
 };
 
+export type ExchangeTokenMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ExchangeTokenMutation = (
+  { __typename?: 'Mutation' }
+  & { exchangeToken: (
+    { __typename?: 'ExchangeTokenResponse' }
+    & Pick<ExchangeTokenResponse, 'success' | 'errorMessage'>
+  ) }
+);
+
+export type AuthenticateAtMutationVariables = Exact<{
+  appId: Scalars['String'];
+}>;
+
+
+export type AuthenticateAtMutation = (
+  { __typename?: 'Mutation' }
+  & { authenticateAt: (
+    { __typename?: 'DelegateAuthInit' }
+    & Pick<DelegateAuthInit, 'appId' | 'success' | 'errorMessage' | 'challengeType' | 'delegateAuthCode' | 'validTo'>
+  ) }
+);
+
+export type ClaimInvitationMutationVariables = Exact<{
+  code: Scalars['String'];
+}>;
+
+
+export type ClaimInvitationMutation = (
+  { __typename?: 'Mutation' }
+  & { claimInvitation: (
+    { __typename?: 'ClaimInvitationResult' }
+    & Pick<ClaimInvitationResult, 'success'>
+    & { claimedInvitation?: Maybe<(
+      { __typename?: 'ClaimedInvitation' }
+      & Pick<ClaimedInvitation, 'createdAt' | 'createdByProfileId' | 'claimedAt' | 'claimedByProfileId'>
+    )> }
+  ) }
+);
+
+export type RedeemClaimedInvitationMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RedeemClaimedInvitationMutation = (
+  { __typename?: 'Mutation' }
+  & { redeemClaimedInvitation: (
+    { __typename?: 'RedeemClaimedInvitationResult' }
+    & Pick<RedeemClaimedInvitationResult, 'success'>
+    & { redeemRequest?: Maybe<(
+      { __typename?: 'RedeemInvitationRequest' }
+      & Pick<RedeemInvitationRequest, 'id'>
+    )> }
+  ) }
+);
+
+export type ConsumeDepositedChallengeMutationVariables = Exact<{
+  delegateAuthCode: Scalars['String'];
+}>;
+
+
+export type ConsumeDepositedChallengeMutation = (
+  { __typename?: 'Mutation' }
+  & { consumeDepositedChallenge: (
+    { __typename?: 'ConsumeDepositedChallengeResponse' }
+    & Pick<ConsumeDepositedChallengeResponse, 'success' | 'challenge'>
+  ) }
+);
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = (
+  { __typename?: 'Mutation' }
+  & { logout: (
+    { __typename?: 'LogoutResponse' }
+    & Pick<LogoutResponse, 'success'>
+  ) }
+);
+
+export type UpsertProfileMutationVariables = Exact<{
+  id?: Maybe<Scalars['Int']>;
+  firstName: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  dream?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  avatarCid?: Maybe<Scalars['String']>;
+  avatarMimeType?: Maybe<Scalars['String']>;
+  circlesAddress?: Maybe<Scalars['String']>;
+  circlesSafeOwner?: Maybe<Scalars['String']>;
+  newsletter?: Maybe<Scalars['Boolean']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
+  status: Scalars['String'];
+}>;
+
+
+export type UpsertProfileMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertProfile: (
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'circlesAddress' | 'circlesSafeOwner' | 'newsletter' | 'cityGeonameid' | 'status'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
+    )> }
+  ) }
+);
+
+export type SessionInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SessionInfoQuery = (
+  { __typename?: 'Query' }
+  & { sessionInfo: (
+    { __typename?: 'SessionInfo' }
+    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId'>
+  ) }
+);
+
+export type WhoamiQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type WhoamiQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'whoami'>
+);
+
+export type ClaimedInvitationQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ClaimedInvitationQuery = (
+  { __typename?: 'Query' }
+  & { claimedInvitation?: Maybe<(
+    { __typename?: 'ClaimedInvitation' }
+    & Pick<ClaimedInvitation, 'createdAt' | 'createdByProfileId' | 'claimedAt' | 'claimedByProfileId'>
+  )> }
+);
+
+export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyProfileQuery = (
+  { __typename?: 'Query' }
+  & { profiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'cityGeonameid'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+    )> }
+  )> }
+);
+
+export type ProfilesQueryVariables = Exact<{
+  id: Array<Scalars['Int']> | Scalars['Int'];
+}>;
+
+
+export type ProfilesQuery = (
+  { __typename?: 'Query' }
+  & { profiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+    )> }
+  )> }
+);
+
+export type CitiesByNameQueryVariables = Exact<{
+  name: Scalars['String'];
+  languageCode?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CitiesByNameQuery = (
+  { __typename?: 'Query' }
+  & { cities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, 'geonameid' | 'name' | 'country' | 'population' | 'latitude' | 'longitude' | 'feature_code'>
+  )> }
+);
+
+export type CitiesByIdQueryVariables = Exact<{
+  ids: Array<Scalars['Int']> | Scalars['Int'];
+}>;
+
+
+export type CitiesByIdQuery = (
+  { __typename?: 'Query' }
+  & { cities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, 'geonameid' | 'name' | 'country' | 'population' | 'latitude' | 'longitude' | 'feature_code'>
+  )> }
+);
+
 export type ProfilesByNameQueryVariables = Exact<{
   searchString: Scalars['String'];
 }>;
@@ -627,6 +899,148 @@ export type ProfilesByNameQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
+    )> }
+  )> }
+);
+
+export type ProfilesByCirclesAddressQueryVariables = Exact<{
+  circlesAddresses: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type ProfilesByCirclesAddressQuery = (
+  { __typename?: 'Query' }
+  & { profiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+    )> }
+  )> }
+);
+
+export type ProfilesByIdsQueryVariables = Exact<{
+  id: Array<Scalars['Int']> | Scalars['Int'];
+}>;
+
+
+export type ProfilesByIdsQuery = (
+  { __typename?: 'Query' }
+  & { profiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+    )> }
+  )> }
+);
+
+export type TrustRelationsQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type TrustRelationsQuery = (
+  { __typename?: 'Query' }
+  & { trustRelations: Array<(
+    { __typename?: 'TrustRelation' }
+    & Pick<TrustRelation, 'safeAddress' | 'direction' | 'otherSafeAddress'>
+    & { safeAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )>, otherSafeAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )> }
+  )> }
+);
+
+export type ContactsQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type ContactsQuery = (
+  { __typename?: 'Query' }
+  & { contacts: Array<(
+    { __typename?: 'Contact' }
+    & Pick<Contact, 'contactAddress' | 'safeAddress' | 'lastContactAt'>
+    & { contactAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )>, safeAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )> }
+  )> }
+);
+
+export type ChatHistoryQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+  contactSafeAddress: Scalars['String'];
+}>;
+
+
+export type ChatHistoryQuery = (
+  { __typename?: 'Query' }
+  & { chatHistory: Array<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+    & { safe_address_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )>, payload?: Maybe<(
+      { __typename?: 'CrcHubTransfer' }
+      & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, transfers: Array<(
+        { __typename?: 'CrcTokenTransfer' }
+        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      )> }
+    ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
+      { __typename?: 'CrcTrust' }
+      & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
+      & { address_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, can_send_to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    ) | (
+      { __typename?: 'EthTransfer' }
+      & Pick<EthTransfer, 'id' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    ) | (
+      { __typename?: 'GnosisSafeEthTransfer' }
+      & Pick<GnosisSafeEthTransfer, 'id' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
     )> }
   )> }
 );
@@ -714,33 +1128,6 @@ export type TagByIdQuery = (
   )> }
 );
 
-export type CitiesByNameQueryVariables = Exact<{
-  name: Scalars['String'];
-  languageCode?: Maybe<Scalars['String']>;
-}>;
-
-
-export type CitiesByNameQuery = (
-  { __typename?: 'Query' }
-  & { cities: Array<(
-    { __typename?: 'City' }
-    & Pick<City, 'geonameid' | 'name' | 'country' | 'population' | 'latitude' | 'longitude' | 'feature_code'>
-  )> }
-);
-
-export type CitiesByIdQueryVariables = Exact<{
-  ids: Array<Scalars['Int']> | Scalars['Int'];
-}>;
-
-
-export type CitiesByIdQuery = (
-  { __typename?: 'Query' }
-  & { cities: Array<(
-    { __typename?: 'City' }
-    & Pick<City, 'geonameid' | 'name' | 'country' | 'population' | 'latitude' | 'longitude' | 'feature_code'>
-  )> }
-);
-
 export type StatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -760,6 +1147,195 @@ export type StatsQuery = (
 );
 
 
+export const ExchangeTokenDocument = gql`
+    mutation exchangeToken {
+  exchangeToken {
+    success
+    errorMessage
+  }
+}
+    `;
+export const AuthenticateAtDocument = gql`
+    mutation authenticateAt($appId: String!) {
+  authenticateAt(appId: $appId) {
+    appId
+    success
+    errorMessage
+    challengeType
+    delegateAuthCode
+    validTo
+  }
+}
+    `;
+export const ClaimInvitationDocument = gql`
+    mutation claimInvitation($code: String!) {
+  claimInvitation(code: $code) {
+    success
+    claimedInvitation {
+      createdAt
+      createdByProfileId
+      claimedAt
+      claimedByProfileId
+    }
+  }
+}
+    `;
+export const RedeemClaimedInvitationDocument = gql`
+    mutation redeemClaimedInvitation {
+  redeemClaimedInvitation {
+    redeemRequest {
+      id
+    }
+    success
+  }
+}
+    `;
+export const ConsumeDepositedChallengeDocument = gql`
+    mutation consumeDepositedChallenge($delegateAuthCode: String!) {
+  consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
+    success
+    challenge
+  }
+}
+    `;
+export const LogoutDocument = gql`
+    mutation logout {
+  logout {
+    success
+  }
+}
+    `;
+export const UpsertProfileDocument = gql`
+    mutation upsertProfile($id: Int, $firstName: String!, $lastName: String, $dream: String, $country: String, $avatarUrl: String, $avatarCid: String, $avatarMimeType: String, $circlesAddress: String, $circlesSafeOwner: String, $newsletter: Boolean, $cityGeonameid: Int, $status: String!) {
+  upsertProfile(
+    data: {id: $id, firstName: $firstName, lastName: $lastName, dream: $dream, country: $country, avatarUrl: $avatarUrl, avatarCid: $avatarCid, avatarMimeType: $avatarMimeType, circlesAddress: $circlesAddress, circlesSafeOwner: $circlesSafeOwner, newsletter: $newsletter, cityGeonameid: $cityGeonameid, status: $status}
+  ) {
+    id
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    circlesAddress
+    circlesSafeOwner
+    newsletter
+    cityGeonameid
+    city {
+      geonameid
+      country
+      name
+      latitude
+      longitude
+      population
+      feature_code
+    }
+    status
+  }
+}
+    `;
+export const SessionInfoDocument = gql`
+    query sessionInfo {
+  sessionInfo {
+    isLoggedOn
+    hasProfile
+    profileId
+  }
+}
+    `;
+export const WhoamiDocument = gql`
+    query whoami {
+  whoami
+}
+    `;
+export const ClaimedInvitationDocument = gql`
+    query claimedInvitation {
+  claimedInvitation {
+    createdAt
+    createdByProfileId
+    claimedAt
+    claimedByProfileId
+  }
+}
+    `;
+export const MyProfileDocument = gql`
+    query myProfile {
+  profiles(query: {}) {
+    id
+    circlesAddress
+    circlesSafeOwner
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    newsletter
+    cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+  }
+}
+    `;
+export const ProfilesDocument = gql`
+    query profiles($id: [Int!]!) {
+  profiles(query: {id: $id}) {
+    id
+    circlesAddress
+    circlesSafeOwner
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+  }
+}
+    `;
+export const CitiesByNameDocument = gql`
+    query citiesByName($name: String!, $languageCode: String) {
+  cities(query: {byName: {name_like: $name, languageCode: $languageCode}}) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+    `;
+export const CitiesByIdDocument = gql`
+    query citiesById($ids: [Int!]!) {
+  cities(query: {byId: {geonameid: $ids}}) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+    `;
 export const ProfilesByNameDocument = gql`
     query profilesByName($searchString: String!) {
   search(query: {searchString: $searchString}) {
@@ -776,6 +1352,223 @@ export const ProfilesByNameDocument = gql`
       geonameid
       country
       name
+    }
+  }
+}
+    `;
+export const ProfilesByCirclesAddressDocument = gql`
+    query profilesByCirclesAddress($circlesAddresses: [String!]!) {
+  profiles(query: {circlesAddress: $circlesAddresses}) {
+    id
+    circlesAddress
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+  }
+}
+    `;
+export const ProfilesByIdsDocument = gql`
+    query profilesByIds($id: [Int!]!) {
+  profiles(query: {id: $id}) {
+    id
+    circlesAddress
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+  }
+}
+    `;
+export const TrustRelationsDocument = gql`
+    query trustRelations($safeAddress: String!) {
+  trustRelations(safeAddress: $safeAddress) {
+    safeAddress
+    safeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    direction
+    otherSafeAddress
+    otherSafeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+  }
+}
+    `;
+export const ContactsDocument = gql`
+    query contacts($safeAddress: String!) {
+  contacts(safeAddress: $safeAddress) {
+    contactAddress
+    contactAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    safeAddress
+    safeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    lastContactAt
+  }
+}
+    `;
+export const ChatHistoryDocument = gql`
+    query chatHistory($safeAddress: String!, $contactSafeAddress: String!) {
+  chatHistory(safeAddress: $safeAddress, contactSafeAddress: $contactSafeAddress) {
+    block_number
+    direction
+    id
+    safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    timestamp
+    transaction_hash
+    transaction_index
+    type
+    value
+    payload {
+      ... on CrcHubTransfer {
+        id
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+      }
+      ... on EthTransfer {
+        id
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
+      ... on GnosisSafeEthTransfer {
+        id
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
+      ... on CrcTrust {
+        address
+        address_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        can_send_to
+        can_send_to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        limit
+      }
     }
   }
 }
@@ -852,32 +1645,6 @@ export const TagByIdDocument = gql`
   }
 }
     `;
-export const CitiesByNameDocument = gql`
-    query citiesByName($name: String!, $languageCode: String) {
-  cities(query: {byName: {name_like: $name, languageCode: $languageCode}}) {
-    geonameid
-    name
-    country
-    population
-    latitude
-    longitude
-    feature_code
-  }
-}
-    `;
-export const CitiesByIdDocument = gql`
-    query citiesById($ids: [Int!]!) {
-  cities(query: {byId: {geonameid: $ids}}) {
-    geonameid
-    name
-    country
-    population
-    latitude
-    longitude
-    feature_code
-  }
-}
-    `;
 export const StatsDocument = gql`
     query stats {
   stats {
@@ -909,8 +1676,65 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    exchangeToken(variables?: ExchangeTokenMutationVariables): Promise<ExchangeTokenMutation> {
+      return withWrapper(() => client.request<ExchangeTokenMutation>(print(ExchangeTokenDocument), variables));
+    },
+    authenticateAt(variables: AuthenticateAtMutationVariables): Promise<AuthenticateAtMutation> {
+      return withWrapper(() => client.request<AuthenticateAtMutation>(print(AuthenticateAtDocument), variables));
+    },
+    claimInvitation(variables: ClaimInvitationMutationVariables): Promise<ClaimInvitationMutation> {
+      return withWrapper(() => client.request<ClaimInvitationMutation>(print(ClaimInvitationDocument), variables));
+    },
+    redeemClaimedInvitation(variables?: RedeemClaimedInvitationMutationVariables): Promise<RedeemClaimedInvitationMutation> {
+      return withWrapper(() => client.request<RedeemClaimedInvitationMutation>(print(RedeemClaimedInvitationDocument), variables));
+    },
+    consumeDepositedChallenge(variables: ConsumeDepositedChallengeMutationVariables): Promise<ConsumeDepositedChallengeMutation> {
+      return withWrapper(() => client.request<ConsumeDepositedChallengeMutation>(print(ConsumeDepositedChallengeDocument), variables));
+    },
+    logout(variables?: LogoutMutationVariables): Promise<LogoutMutation> {
+      return withWrapper(() => client.request<LogoutMutation>(print(LogoutDocument), variables));
+    },
+    upsertProfile(variables: UpsertProfileMutationVariables): Promise<UpsertProfileMutation> {
+      return withWrapper(() => client.request<UpsertProfileMutation>(print(UpsertProfileDocument), variables));
+    },
+    sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
+      return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));
+    },
+    whoami(variables?: WhoamiQueryVariables): Promise<WhoamiQuery> {
+      return withWrapper(() => client.request<WhoamiQuery>(print(WhoamiDocument), variables));
+    },
+    claimedInvitation(variables?: ClaimedInvitationQueryVariables): Promise<ClaimedInvitationQuery> {
+      return withWrapper(() => client.request<ClaimedInvitationQuery>(print(ClaimedInvitationDocument), variables));
+    },
+    myProfile(variables?: MyProfileQueryVariables): Promise<MyProfileQuery> {
+      return withWrapper(() => client.request<MyProfileQuery>(print(MyProfileDocument), variables));
+    },
+    profiles(variables: ProfilesQueryVariables): Promise<ProfilesQuery> {
+      return withWrapper(() => client.request<ProfilesQuery>(print(ProfilesDocument), variables));
+    },
+    citiesByName(variables: CitiesByNameQueryVariables): Promise<CitiesByNameQuery> {
+      return withWrapper(() => client.request<CitiesByNameQuery>(print(CitiesByNameDocument), variables));
+    },
+    citiesById(variables: CitiesByIdQueryVariables): Promise<CitiesByIdQuery> {
+      return withWrapper(() => client.request<CitiesByIdQuery>(print(CitiesByIdDocument), variables));
+    },
     profilesByName(variables: ProfilesByNameQueryVariables): Promise<ProfilesByNameQuery> {
       return withWrapper(() => client.request<ProfilesByNameQuery>(print(ProfilesByNameDocument), variables));
+    },
+    profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
+      return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));
+    },
+    profilesByIds(variables: ProfilesByIdsQueryVariables): Promise<ProfilesByIdsQuery> {
+      return withWrapper(() => client.request<ProfilesByIdsQuery>(print(ProfilesByIdsDocument), variables));
+    },
+    trustRelations(variables: TrustRelationsQueryVariables): Promise<TrustRelationsQuery> {
+      return withWrapper(() => client.request<TrustRelationsQuery>(print(TrustRelationsDocument), variables));
+    },
+    contacts(variables: ContactsQueryVariables): Promise<ContactsQuery> {
+      return withWrapper(() => client.request<ContactsQuery>(print(ContactsDocument), variables));
+    },
+    chatHistory(variables: ChatHistoryQueryVariables): Promise<ChatHistoryQuery> {
+      return withWrapper(() => client.request<ChatHistoryQuery>(print(ChatHistoryDocument), variables));
     },
     invitationTransaction(variables?: InvitationTransactionQueryVariables): Promise<InvitationTransactionQuery> {
       return withWrapper(() => client.request<InvitationTransactionQuery>(print(InvitationTransactionDocument), variables));
@@ -929,12 +1753,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     tagById(variables: TagByIdQueryVariables): Promise<TagByIdQuery> {
       return withWrapper(() => client.request<TagByIdQuery>(print(TagByIdDocument), variables));
-    },
-    citiesByName(variables: CitiesByNameQueryVariables): Promise<CitiesByNameQuery> {
-      return withWrapper(() => client.request<CitiesByNameQuery>(print(CitiesByNameDocument), variables));
-    },
-    citiesById(variables: CitiesByIdQueryVariables): Promise<CitiesByIdQuery> {
-      return withWrapper(() => client.request<CitiesByIdQuery>(print(CitiesByIdDocument), variables));
     },
     stats(variables?: StatsQueryVariables): Promise<StatsQuery> {
       return withWrapper(() => client.request<StatsQuery>(print(StatsDocument), variables));

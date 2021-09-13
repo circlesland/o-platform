@@ -3,7 +3,8 @@ import {getUBIService} from "./processes/getUBIService";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {GetUbiContextData} from "./processes/getUbi";
 import {AvataarGenerator} from "../../shared/avataarGenerator";
-import {Profile, ProfileEvent, ProfilesByCirclesAddressDocument, TransactionTimelineDocument} from "./data/api/types";
+import {Profile, ProfileEvent, TransactionTimelineDocument} from "./data/api/types";
+import {ProfilesByCirclesAddressDocument} from "../../shared/api/data/types";
 
 export class Banking {
     safeAddress: string;

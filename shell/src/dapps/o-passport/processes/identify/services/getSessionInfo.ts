@@ -1,4 +1,4 @@
-import {SessionInfoDocument} from "../../../data/api/types";
+import {SessionInfoDocument} from "../../../../../shared/api/data/types";
 
 export type SessionInfo = {
   isLoggedOn: boolean;

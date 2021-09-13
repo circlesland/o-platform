@@ -1,75 +1,43 @@
 <script lang="ts">
-  import { transfer } from "../../o-banking/processes/transfer";
-  import { TrustObject } from "../../o-banking/data/circles/types";
-  import { tryGetCurrentSafe } from "../../o-banking/init";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import { push } from "svelte-spa-router";
+  import {transfer} from "../../o-banking/processes/transfer";
+  import {AvataarGenerator} from "../../../shared/avataarGenerator";
+  import {push} from "svelte-spa-router";
 
   import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-  export let trusting: TrustObject;
-  export let trustedBy: TrustObject;
-  export let untrusted: TrustObject;
+  import {Contact} from "../../../shared/api/data/types";
+  import {onMount} from "svelte";
+  import Date from "../../../shared/atoms/Date.svelte";
+
+  export let contact: Contact;
 
   let pictureUrl: string;
   let displayName: string;
   let safeAddress: string;
   let message: string;
 
-  let id: String;
-
-  $: {
-    if (untrusted) {
-      // <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
-      displayName = untrusted.profile
-        ? untrusted.profile.displayName
-        : untrusted.safeAddress;
-      pictureUrl = untrusted.profile ? untrusted.profile.avatarUrl : undefined;
-      safeAddress = untrusted.safeAddress;
-      id = untrusted._id;
-      message = "Not trusted";
-    } else if (trustedBy && trusting) {
-      // <!-- TODO: Possible actions: untrust, transfer money -->
-      displayName = trustedBy.profile
-        ? trustedBy.profile.displayName
-        : trustedBy.safeAddress;
-      pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
-      safeAddress = trusting.safeAddress;
-      id = trustedBy._id;
-      message = "Mutual trust";
-    } else if (trustedBy) {
-      // <!-- TODO: Possible actions: trust, transfer money -->
-      displayName = trustedBy.profile
-        ? trustedBy.profile.displayName
-        : trustedBy.safeAddress;
-      pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
-      safeAddress = trustedBy.safeAddress;
-      id = trustedBy._id;
-      message = "Is trusting you";
-    } else if (trusting) {
-      // <!-- TODO: Possible actions: untrust -->
-      displayName = trusting.profile
-        ? trusting.profile.displayName
-        : trusting.safeAddress;
-      pictureUrl = trusting.profile ? trusting.profile.avatarUrl : undefined;
-      safeAddress = trusting.safeAddress;
-      id = trusting._id;
-      message = "Trusted by you";
-    }
-
-    if (!pictureUrl) {
-      pictureUrl = AvataarGenerator.generate(safeAddress);
-    }
-  }
+  onMount(() => {
+    const contactProfile = contact.contactAddressProfile;
+    displayName = contactProfile.firstName
+            + (contactProfile.lastName
+                    ? " " + contactProfile.lastName
+                    : "");
+    pictureUrl = contactProfile.avatarUrl
+            ? contactProfile.avatarUrl
+            : (contactProfile.circlesAddress
+                    ? AvataarGenerator.generate(contactProfile.circlesAddress)
+                    : null);
+    safeAddress = contactProfile.circlesAddress;
+    message = `Text text text ...`;
+  });
 
   function loadDetailPage(path) {
-    push(`#/friends/chat/${path}`);
+    push(`#/chat/${path}`);
   }
 
   function execTransfer(recipientAddress?: string) {
     window.o.runProcess(transfer, {
       recipientAddress,
-      safeAddress: tryGetCurrentSafe()?.safeAddress,
+      safeAddress: safeAddress,
       privateKey: localStorage.getItem("circlesKey"),
     });
   }
@@ -86,7 +54,14 @@
       </div>
     </div>
     <div slot="itemCardEnd">
-      <div class="self-end text-lg sm:text-3xl"></div>
+      <div class="self-end text-right">
+        <span>&nbsp;</span>
+      </div>
+      <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
+        {#if contact.lastContactAt}
+          <Date time="{contact.lastContactAt / 1000}" />
+        {/if}
+      </div>
     </div>
   </ItemCard>
 </div>

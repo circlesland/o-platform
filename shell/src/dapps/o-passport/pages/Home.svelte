@@ -3,11 +3,10 @@
 
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
-  import { getCountryName } from "../../../shared/countries";
   import { me } from "../../../shared/stores/me";
-  import { Profile } from "../data/api/types";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import {Profile} from "../../../shared/api/data/types";
 
   let name;
   let profile: Profile;
@@ -15,7 +14,7 @@
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
-  $: name = profile ? profile.circlesAddress : "";
+  $: name = profile?.circlesAddress ? profile.circlesAddress : "";
 
   $: {
     if ($me) {

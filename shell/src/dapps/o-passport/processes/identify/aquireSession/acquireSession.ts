@@ -4,7 +4,7 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 import {authenticate} from "./authenticate/authenticate";
-import {ExchangeTokenDocument} from "../../../data/api/types";
+import {ExchangeTokenDocument} from "../../../../../shared/api/data/types";
 
 export type AcquireSessionContextData = {
   appId?: string;

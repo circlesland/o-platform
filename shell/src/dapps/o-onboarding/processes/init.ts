@@ -3,7 +3,6 @@ import {actions} from "xstate";
 import {getSessionInfo, SessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
 import {BN} from "ethereumjs-util";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
-import {ClaimedInvitationDocument, WhoamiDocument} from "../../o-passport/data/api/types";
 import {loginMachine} from "./login";
 import {registerMachine} from "./register";
 import {getInvitedMachine} from "./getInvited";
@@ -12,8 +11,13 @@ import {connectOrCreateEoa} from "./connectOrCreateEoa";
 import {redeemInvitation} from "./redeemInvitation";
 import {fundSafeFromEoa} from "./fundSafeFromEoa";
 import {connectOrCreateSafe} from "./connectOrCreateSafe";
+import {
+    ClaimedInvitationDocument,
+    InvitationTransactionDocument,
+    SafeFundingTransactionDocument,
+    WhoamiDocument
+} from "../../../shared/api/data/types";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {InvitationTransactionDocument, SafeFundingTransactionDocument} from "../../../shared/api/data/types";
 
 export type Origin = "Created" | "Imported";
 

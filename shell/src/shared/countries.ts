@@ -1,4 +1,4 @@
-import {Profile} from "../dapps/o-passport/data/api/types";
+import {Profile} from "./api/data/types";
 
 export let countries = [
   { label: "Albania", value: "AL" },

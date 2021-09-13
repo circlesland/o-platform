@@ -4,10 +4,10 @@
   import { me } from "../../../shared/stores/me";
   import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
   import { onMount } from "svelte";
-  import { UpsertProfileDocument, WhoamiDocument } from "../data/api/types";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import {UpsertProfileDocument, WhoamiDocument} from "../../../shared/api/data/types";
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 

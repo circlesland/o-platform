@@ -1,11 +1,12 @@
 <script lang="ts">
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+  import Date from "../../../shared/atoms/Date.svelte";
 
   export let params = {
     title: <string>null,
     text: <string>null,
     notificationType: <string>null,
-    time: <string>null,
+    time: <number>null,
     actions: <any>[],
   };
 </script>
@@ -19,7 +20,9 @@
       class:bg-primary-dark="{params.notificationType == 'transfer_out'}"
       class:bg-primary-lighter="{params.notificationType == 'trust_added'}"
       class:bg-alert-lightest="{params.notificationType == 'trust_removed'}">
-      <div class="absolute bottom-2 right-3 text-2xs">{params.time}</div>
+      <div class="absolute bottom-2 right-3 text-2xs">
+        <Date time={params.time}/>
+      </div>
 
       <div>
         <h1 class="uppercase">{params.title}</h1>

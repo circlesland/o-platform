@@ -1,10 +1,10 @@
 <script lang="ts">
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import { Profile } from "src/dapps/o-passport/data/api/types";
   import { me } from "../stores/me";
   import { push } from "svelte-spa-router";
   import Icons from "../molecules/Icons.svelte";
+  import {Profile} from "../api/data/types";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -12,7 +12,7 @@
 
   let profile: Profile;
 
-  $: name = profile ? profile.circlesAddress : "";
+  $: name = profile?.circlesAddress ? profile.circlesAddress : "";
 
   $: {
     if ($me) {

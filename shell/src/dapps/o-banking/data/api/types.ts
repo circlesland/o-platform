@@ -678,62 +678,6 @@ export type Version = {
   revision: Scalars['Int'];
 };
 
-export type ProfilesByCirclesAddressQueryVariables = Exact<{
-  circlesAddresses: Array<Scalars['String']> | Scalars['String'];
-}>;
-
-
-export type ProfilesByCirclesAddressQuery = (
-  { __typename?: 'Query' }
-  & { profiles: Array<(
-    { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
-    & { city?: Maybe<(
-      { __typename?: 'City' }
-      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
-    )> }
-  )> }
-);
-
-export type ProfilesByIdsQueryVariables = Exact<{
-  id: Array<Scalars['Int']> | Scalars['Int'];
-}>;
-
-
-export type ProfilesByIdsQuery = (
-  { __typename?: 'Query' }
-  & { profiles: Array<(
-    { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
-    & { city?: Maybe<(
-      { __typename?: 'City' }
-      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
-    )> }
-  )> }
-);
-
-export type InvitationTransactionQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type InvitationTransactionQuery = (
-  { __typename?: 'Query' }
-  & { invitationTransaction?: Maybe<(
-    { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'transaction_hash'>
-  )> }
-);
-
-export type SafeFundingTransactionQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SafeFundingTransactionQuery = (
-  { __typename?: 'Query' }
-  & { safeFundingTransaction?: Maybe<(
-    { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'transaction_hash'>
-  )> }
-);
-
 export type BalanceQueryVariables = Exact<{
   safeAddress: Scalars['String'];
 }>;
@@ -742,46 +686,6 @@ export type BalanceQueryVariables = Exact<{
 export type BalanceQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'balance'>
-);
-
-export type TrustRelationsQueryVariables = Exact<{
-  safeAddress: Scalars['String'];
-}>;
-
-
-export type TrustRelationsQuery = (
-  { __typename?: 'Query' }
-  & { trustRelations: Array<(
-    { __typename?: 'TrustRelation' }
-    & Pick<TrustRelation, 'safeAddress' | 'direction' | 'otherSafeAddress'>
-    & { safeAddressProfile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, otherSafeAddressProfile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )> }
-  )> }
-);
-
-export type ContactsQueryVariables = Exact<{
-  safeAddress: Scalars['String'];
-}>;
-
-
-export type ContactsQuery = (
-  { __typename?: 'Query' }
-  & { contacts: Array<(
-    { __typename?: 'Contact' }
-    & Pick<Contact, 'contactAddress' | 'safeAddress'>
-    & { contactAddressProfile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, safeAddressProfile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )> }
-  )> }
 );
 
 export type TransactionTimelineQueryVariables = Exact<{
@@ -880,116 +784,9 @@ export type TransactionByHashQuery = (
 );
 
 
-export const ProfilesByCirclesAddressDocument = gql`
-    query profilesByCirclesAddress($circlesAddresses: [String!]!) {
-  profiles(query: {circlesAddress: $circlesAddresses}) {
-    id
-    circlesAddress
-    firstName
-    lastName
-    dream
-    country
-    avatarUrl
-    avatarCid
-    avatarMimeType
-    cityGeonameid
-    city {
-      geonameid
-      name
-      country
-      latitude
-      longitude
-      population
-    }
-  }
-}
-    `;
-export const ProfilesByIdsDocument = gql`
-    query profilesByIds($id: [Int!]!) {
-  profiles(query: {id: $id}) {
-    id
-    circlesAddress
-    firstName
-    lastName
-    dream
-    country
-    avatarUrl
-    avatarCid
-    avatarMimeType
-    cityGeonameid
-    city {
-      geonameid
-      name
-      country
-      latitude
-      longitude
-      population
-    }
-  }
-}
-    `;
-export const InvitationTransactionDocument = gql`
-    query invitationTransaction {
-  invitationTransaction {
-    transaction_hash
-  }
-}
-    `;
-export const SafeFundingTransactionDocument = gql`
-    query safeFundingTransaction {
-  safeFundingTransaction {
-    transaction_hash
-  }
-}
-    `;
 export const BalanceDocument = gql`
     query balance($safeAddress: String!) {
   balance(safeAddress: $safeAddress)
-}
-    `;
-export const TrustRelationsDocument = gql`
-    query trustRelations($safeAddress: String!) {
-  trustRelations(safeAddress: $safeAddress) {
-    safeAddress
-    safeAddressProfile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    direction
-    otherSafeAddress
-    otherSafeAddressProfile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-  }
-}
-    `;
-export const ContactsDocument = gql`
-    query contacts($safeAddress: String!) {
-  contacts(safeAddress: $safeAddress) {
-    contactAddress
-    contactAddressProfile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    safeAddress
-    safeAddressProfile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-  }
 }
     `;
 export const TransactionTimelineDocument = gql`
@@ -1171,26 +968,8 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
-      return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));
-    },
-    profilesByIds(variables: ProfilesByIdsQueryVariables): Promise<ProfilesByIdsQuery> {
-      return withWrapper(() => client.request<ProfilesByIdsQuery>(print(ProfilesByIdsDocument), variables));
-    },
-    invitationTransaction(variables?: InvitationTransactionQueryVariables): Promise<InvitationTransactionQuery> {
-      return withWrapper(() => client.request<InvitationTransactionQuery>(print(InvitationTransactionDocument), variables));
-    },
-    safeFundingTransaction(variables?: SafeFundingTransactionQueryVariables): Promise<SafeFundingTransactionQuery> {
-      return withWrapper(() => client.request<SafeFundingTransactionQuery>(print(SafeFundingTransactionDocument), variables));
-    },
     balance(variables: BalanceQueryVariables): Promise<BalanceQuery> {
       return withWrapper(() => client.request<BalanceQuery>(print(BalanceDocument), variables));
-    },
-    trustRelations(variables: TrustRelationsQueryVariables): Promise<TrustRelationsQuery> {
-      return withWrapper(() => client.request<TrustRelationsQuery>(print(TrustRelationsDocument), variables));
-    },
-    contacts(variables: ContactsQueryVariables): Promise<ContactsQuery> {
-      return withWrapper(() => client.request<ContactsQuery>(print(ContactsDocument), variables));
     },
     transactionTimeline(variables: TransactionTimelineQueryVariables): Promise<TransactionTimelineQuery> {
       return withWrapper(() => client.request<TransactionTimelineQuery>(print(TransactionTimelineDocument), variables));
