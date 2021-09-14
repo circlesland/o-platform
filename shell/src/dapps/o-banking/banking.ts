@@ -4,7 +4,11 @@ import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processConte
 import {GetUbiContextData} from "./processes/getUbi";
 import {AvataarGenerator} from "../../shared/avataarGenerator";
 import {Profile, ProfileEvent, TransactionTimelineDocument} from "./data/api/types";
-import {ProfilesByCirclesAddressDocument} from "../../shared/api/data/types";
+import {
+    ProfileBySafeAddressDocument,
+    ProfilesByCirclesAddressDocument,
+    ProfilesDocument
+} from "../../shared/api/data/types";
 
 export class Banking {
     safeAddress: string;
@@ -96,7 +100,7 @@ export class Banking {
             }
         });
 
-        return (result.data ?? []).profiles.map(p => {
+        return (result.data ?? []).profilesBySafeAddress.map(p => {
             return {
                 ...p,
                 circlesAddress : RpcGateway.get().utils.toChecksumAddress(p.circlesAddress),

@@ -1,13 +1,13 @@
-import {Profile, ProfilesByCirclesAddressDocument} from "./data/types";
+import {Profile, ProfileBySafeAddressDocument, ProfilesByCirclesAddressDocument} from "./data/types";
 import {RpcGateway} from "../../../../packages/o-circles/dist/rpcGateway";
 
 export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Profile> {
     // 1. Try to find a profile via the api
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
-        query: ProfilesByCirclesAddressDocument,
+        query: ProfileBySafeAddressDocument,
         variables: {
-            circlesAddresses: [safeAddress],
+            safeAddress: safeAddress.toLowerCase(),
         },
     });
     if (result.errors) {
@@ -19,47 +19,14 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Pr
     }
 
     const profile =
-        result.data.profiles && result.data.profiles.length
-            ? result.data.profiles[0]
+        result.data.profilesBySafeAddress.length == 1
+            ? result.data.profilesBySafeAddress[0]
             : undefined;
 
     if (profile) {
-        return {
-            ...profile,
-            circlesAddress: RpcGateway.get().utils.toChecksumAddress(profile.circlesAddress)
-        };
+        return profile;
     }
 
-    // 2. Try to find a profile via circles garden
-    const requestUrl = `https://api.circles.garden/api/users/?address[]=${safeAddress}`;
-    try {
-        const gardenResult = await fetch(requestUrl);
-        if (gardenResult && gardenResult.status == 200) {
-            const resultJson = await gardenResult.json();
-            const profile =
-                resultJson.data && resultJson.data.length
-                    ? resultJson.data[0]
-                    : undefined;
-
-            if (!profile) {
-                return {
-                    id: 0,
-                    circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
-                    firstName: ""
-                }
-            }
-            return {
-                id: profile.id,
-                circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
-                firstName: profile ? profile.username : "",
-                avatarUrl: profile ? profile.avatarUrl : undefined
-            };
-        }
-    } catch (e) {
-        console.error(`Couldn't load the profile metadata from api.circles.garden. RequestUrl: ${requestUrl}`);
-    }
-
-    // 3. No profile found
     return {
         id: 0,
         circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),

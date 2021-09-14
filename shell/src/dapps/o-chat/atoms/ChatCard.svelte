@@ -1,14 +1,40 @@
 <script lang="ts">
   import Date from "../../../shared/atoms/Date.svelte";
   import NotificationCard from "./NotificationCard.svelte";
+  import {push} from "svelte-spa-router";
 
-  export let params = {
-    outgoing: <boolean>true,
-    name: <string>null,
-    time: <number>null,
-    content: <string>null,
-    image: <string>null,
+  export let params : {
+    safeAddress:string,
+    outgoing: boolean,
+    name: string,
+    time: number,
+    content: string|{
+      title: string,
+      text: string,
+      notificationType: string,
+      time: number,
+      actions: {
+        icon: string,
+        title: string,
+        colorClass: string,
+        action: () => void
+      }[],
+    },
+    image: string
+  } = {
+    safeAddress:null,
+    outgoing: true,
+    name: null,
+    time: null,
+    content: null,
+    image: null,
   };
+
+  function goToProfile(path?:string) {
+    if (!path)
+      return;
+    push(`#/friends/${path}`);
+  }
 </script>
 
 <div
@@ -17,9 +43,11 @@
   class:pl-12="{!params.outgoing}">
   <div class="image" class:pl-2="{params.outgoing}">
     <div class="inline-flex">
-      <div class="w-10 h-10 m-auto rounded-full sm:w-20 sm:h-20">
-        <img class="rounded-full" src="{params.image}" alt="user-icon" />
-      </div>
+      <a on:click={() => goToProfile(params.safeAddress)}>
+        <div class="w-10 h-10 m-auto rounded-full sm:w-20 sm:h-20">
+          <img class="rounded-full" src="{params.image}" alt="user-icon" />
+        </div>
+      </a>
     </div>
   </div>
     <div

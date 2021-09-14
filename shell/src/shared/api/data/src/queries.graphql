@@ -20,7 +20,7 @@ query claimedInvitation {
 }
 
 query myProfile {
-    profiles(query:{}) {
+    myProfile {
         id
         circlesAddress
         circlesSafeOwner
@@ -45,7 +45,7 @@ query myProfile {
 }
 
 query profiles($id:[Int!]!) {
-    profiles(query:{id: $id}) {
+    profilesById(ids: $id) {
         id
         circlesAddress
         circlesSafeOwner
@@ -112,7 +112,7 @@ query profilesByName($searchString:String!) {
 }
 
 query profilesByCirclesAddress($circlesAddresses:[String!]!) {
-    profiles(query:{circlesAddress:$circlesAddresses}) {
+    profilesBySafeAddress(safeAddresses: $circlesAddresses) {
         id
         circlesAddress
         firstName
@@ -135,7 +135,7 @@ query profilesByCirclesAddress($circlesAddresses:[String!]!) {
 }
 
 query profilesByIds($id:[Int!]!) {
-    profiles(query:{id:$id}) {
+    profilesById(ids:$id) {
         id
         circlesAddress
         firstName
@@ -198,6 +198,32 @@ query contacts($safeAddress:String!) {
             circlesAddress
         }
         lastContactAt
+        youTrust
+        trustsYou
+    }
+}
+
+query contact($safeAddress:String! $contactAddress:String!) {
+    contact(safeAddress: $safeAddress contactAddress: $contactAddress) {
+        contactAddress
+        contactAddressProfile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+        }
+        safeAddress
+        safeAddressProfile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+        }
+        lastContactAt
+        youTrust
+        trustsYou
     }
 }
 
@@ -336,7 +362,7 @@ query safeFundingTransaction {
 }
 
 query profileById($id:Int!) {
-    profiles(query: {id: [$id]}) {
+    profilesById(ids: [$id]) {
         id
         circlesSafeOwner
         circlesAddress
@@ -355,7 +381,7 @@ query profileById($id:Int!) {
 }
 
 query profileBySafeAddress($safeAddress:String!) {
-    profiles(query: {circlesAddress: [$safeAddress]}) {
+    profilesBySafeAddress(safeAddresses: [$safeAddress]) {
         id
         circlesSafeOwner
         circlesAddress

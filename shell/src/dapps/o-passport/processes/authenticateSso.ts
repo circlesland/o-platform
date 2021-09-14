@@ -2,7 +2,8 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import gql from "graphql-tag";
+import {AuthenticateAtDocument, ConsumeDepositedChallengeDocument} from "../../../shared/api/data/types";
+import {ChallengeDocument, VerifyDocument} from "../data/auth/types";
 
 export type AuthenticateSsoContextData = {
   appId:string,
@@ -33,20 +34,7 @@ createMachine<AuthenticateSsoContext, any>({
         src: async (context) => {
           const apiClient = await window.o.apiClient.client.subscribeToResult();
           const result = await apiClient.mutate({
-            mutation: gql`
-              mutation authenticateAt(
-                $appId: String!
-              ) {
-                authenticateAt(appId: $appId) {
-                  appId
-                  success
-                  errorMessage
-                  challengeType
-                  delegateAuthCode
-                  validTo
-                }
-              }
-            `,
+            mutation: AuthenticateAtDocument,
             variables: {
               appId: context.data.appId
             },
@@ -68,18 +56,7 @@ createMachine<AuthenticateSsoContext, any>({
         src: async (context) => {
           const authClient = await window.o.authClient.client.subscribeToResult();
           const result = await authClient.mutate({
-            mutation: gql`
-              mutation challenge(
-                $byAppId: String!
-                $forAppId: String!
-                $subject: String!
-              ) {
-                challenge(byAppId: $byAppId, forAppId: $forAppId challengeType: "delegated" subject:$subject) {
-                  success
-                  errorMessage
-                }
-              }
-            `,
+            mutation: ChallengeDocument,
             variables: {
               byAppId: "__APP_ID__",
               forAppId: context.data.appId,
@@ -105,16 +82,7 @@ createMachine<AuthenticateSsoContext, any>({
 
           const apiClient = await window.o.apiClient.client.subscribeToResult();
           const result = await apiClient.mutate({
-            mutation: gql`
-              mutation consumeDepositedChallenge(
-                $delegateAuthCode: String!
-              ) {
-                consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
-                  success
-                  challenge
-                }
-              }
-            `,
+            mutation: ConsumeDepositedChallengeDocument,
             variables: {
               delegateAuthCode: context.data.delegateAuthCode
             }
@@ -137,16 +105,7 @@ createMachine<AuthenticateSsoContext, any>({
         src: async (context) => {
           const authClient = await window.o.authClient.client.subscribeToResult();
           const result = await authClient.mutate({
-            mutation: gql`
-              mutation verify($oneTimeToken: String!) {
-                verify(oneTimeToken: $oneTimeToken) {
-                  success
-                  errorMessage
-                  jwt
-                  exchangeTokenUrl
-                }
-              }
-            `,
+            mutation: VerifyDocument,
             variables: {
               oneTimeToken: context.data.challenge
             }

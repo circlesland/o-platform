@@ -11,17 +11,15 @@ export const loadProfile = async (profileId?:number) => {
       }
     });
 
-    profile = profiles.data.profiles && profiles.data.profiles.length > 0
-      ? profiles.data.profiles[0]
+    profile = profiles.data.profilesById && profiles.data.profilesById.length > 0
+      ? profiles.data.profilesById[0]
       : undefined;
   } else {
     const result = await apiClient.query({
       query: MyProfileDocument
     });
 
-    profile = result.data.profiles && result.data.profiles.length > 0
-      ? result.data.profiles[0]
-      : undefined;
+    profile = result.data.myProfile;
   }
 
   return profile ? {

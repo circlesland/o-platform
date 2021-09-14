@@ -69,6 +69,8 @@ type Contact {
     lastContactAt: String
     safeAddress: String!
     safeAddressProfile: Profile
+    trustsYou: Int
+    youTrust: Int
 }
 
 type CountryStats {
@@ -128,7 +130,7 @@ type CrcTrust implements IEventPayload {
 }
 
 type CreateInvitationResult {
-    error: String!
+    error: String
     success: Boolean!
 }
 
@@ -209,6 +211,7 @@ type Mutation {
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
+    sendMessage(content: String!, toSafeAddress: String!, type: String!): SendMessageResult
     unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
     upsertOffer(data: UpsertOfferInput!): Offer!
@@ -293,13 +296,16 @@ type Query {
     chatHistory(contactSafeAddress: String!, safeAddress: String!): [ProfileEvent!]!
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
+    contact(contactAddress: String!, safeAddress: String!): Contact
     contacts(safeAddress: String!): [Contact!]!
     eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
     events(fromBlock: Int, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
     invitationTransaction: ProfileEvent
     myInvitations: [CreatedInvitation!]!
+    myProfile: Profile
     offers(query: QueryOfferInput!): [Offer!]!
-    profiles(query: QueryProfileInput!): [Profile!]!
+    profilesById(ids: [Int!]!): [Profile!]!
+    profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
     safeFundingTransaction: ProfileEvent
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
@@ -323,6 +329,12 @@ type RedeemInvitationRequest {
 type RequestUpdateSafeResponse {
     challenge: String
     errorMessage: String
+    success: Boolean!
+}
+
+type SendMessageResult {
+    error: String
+    event: ProfileEvent
     success: Boolean!
 }
 

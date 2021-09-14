@@ -66,6 +66,8 @@ export type Contact = {
   lastContactAt?: Maybe<Scalars['String']>;
   safeAddress: Scalars['String'];
   safeAddressProfile?: Maybe<Profile>;
+  trustsYou?: Maybe<Scalars['Int']>;
+  youTrust?: Maybe<Scalars['Int']>;
 };
 
 export type CountryStats = {
@@ -132,7 +134,7 @@ export type CrcTrust = IEventPayload & {
 
 export type CreateInvitationResult = {
   __typename?: 'CreateInvitationResult';
-  error: Scalars['String'];
+  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
 
@@ -253,6 +255,7 @@ export type Mutation = {
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
   requestUpdateSafe: RequestUpdateSafeResponse;
+  sendMessage?: Maybe<SendMessageResult>;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
   upsertOffer: Offer;
@@ -303,6 +306,13 @@ export type MutationProvePaymentArgs = {
 
 export type MutationRequestUpdateSafeArgs = {
   data: RequestUpdateSafeInput;
+};
+
+
+export type MutationSendMessageArgs = {
+  content: Scalars['String'];
+  toSafeAddress: Scalars['String'];
+  type: Scalars['String'];
 };
 
 
@@ -427,13 +437,16 @@ export type Query = {
   chatHistory: Array<ProfileEvent>;
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
+  contact?: Maybe<Contact>;
   contacts: Array<Contact>;
   eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
   myInvitations: Array<CreatedInvitation>;
+  myProfile?: Maybe<Profile>;
   offers: Array<Offer>;
-  profiles: Array<Profile>;
+  profilesById: Array<Profile>;
+  profilesBySafeAddress: Array<Profile>;
   safeFundingTransaction?: Maybe<ProfileEvent>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
@@ -462,6 +475,12 @@ export type QueryCitiesArgs = {
 };
 
 
+export type QueryContactArgs = {
+  contactAddress: Scalars['String'];
+  safeAddress: Scalars['String'];
+};
+
+
 export type QueryContactsArgs = {
   safeAddress: Scalars['String'];
 };
@@ -487,8 +506,13 @@ export type QueryOffersArgs = {
 };
 
 
-export type QueryProfilesArgs = {
-  query: QueryProfileInput;
+export type QueryProfilesByIdArgs = {
+  ids: Array<Scalars['Int']>;
+};
+
+
+export type QueryProfilesBySafeAddressArgs = {
+  safeAddresses: Array<Scalars['String']>;
 };
 
 
@@ -578,6 +602,13 @@ export type RequestUpdateSafeResponse = {
 
 export type SearchInput = {
   searchString: Scalars['String'];
+};
+
+export type SendMessageResult = {
+  __typename?: 'SendMessageResult';
+  error?: Maybe<Scalars['String']>;
+  event?: Maybe<ProfileEvent>;
+  success: Scalars['Boolean'];
 };
 
 export type Server = {
@@ -832,7 +863,7 @@ export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MyProfileQuery = (
   { __typename?: 'Query' }
-  & { profiles: Array<(
+  & { myProfile?: Maybe<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'cityGeonameid'>
     & { city?: Maybe<(
@@ -849,7 +880,7 @@ export type ProfilesQueryVariables = Exact<{
 
 export type ProfilesQuery = (
   { __typename?: 'Query' }
-  & { profiles: Array<(
+  & { profilesById: Array<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
     & { city?: Maybe<(
@@ -910,7 +941,7 @@ export type ProfilesByCirclesAddressQueryVariables = Exact<{
 
 export type ProfilesByCirclesAddressQuery = (
   { __typename?: 'Query' }
-  & { profiles: Array<(
+  & { profilesBySafeAddress: Array<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
     & { city?: Maybe<(
@@ -927,7 +958,7 @@ export type ProfilesByIdsQueryVariables = Exact<{
 
 export type ProfilesByIdsQuery = (
   { __typename?: 'Query' }
-  & { profiles: Array<(
+  & { profilesById: Array<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
     & { city?: Maybe<(
@@ -966,7 +997,28 @@ export type ContactsQuery = (
   { __typename?: 'Query' }
   & { contacts: Array<(
     { __typename?: 'Contact' }
-    & Pick<Contact, 'contactAddress' | 'safeAddress' | 'lastContactAt'>
+    & Pick<Contact, 'contactAddress' | 'safeAddress' | 'lastContactAt' | 'youTrust' | 'trustsYou'>
+    & { contactAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )>, safeAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )> }
+  )> }
+);
+
+export type ContactQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+  contactAddress: Scalars['String'];
+}>;
+
+
+export type ContactQuery = (
+  { __typename?: 'Query' }
+  & { contact?: Maybe<(
+    { __typename?: 'Contact' }
+    & Pick<Contact, 'contactAddress' | 'safeAddress' | 'lastContactAt' | 'youTrust' | 'trustsYou'>
     & { contactAddressProfile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1074,7 +1126,7 @@ export type ProfileByIdQueryVariables = Exact<{
 
 export type ProfileByIdQuery = (
   { __typename?: 'Query' }
-  & { profiles: Array<(
+  & { profilesById: Array<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName' | 'dream' | 'country' | 'cityGeonameid'>
     & { city?: Maybe<(
@@ -1091,7 +1143,7 @@ export type ProfileBySafeAddressQueryVariables = Exact<{
 
 export type ProfileBySafeAddressQuery = (
   { __typename?: 'Query' }
-  & { profiles: Array<(
+  & { profilesBySafeAddress: Array<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName' | 'dream' | 'country' | 'cityGeonameid'>
     & { city?: Maybe<(
@@ -1261,7 +1313,7 @@ export const ClaimedInvitationDocument = gql`
     `;
 export const MyProfileDocument = gql`
     query myProfile {
-  profiles(query: {}) {
+  myProfile {
     id
     circlesAddress
     circlesSafeOwner
@@ -1287,7 +1339,7 @@ export const MyProfileDocument = gql`
     `;
 export const ProfilesDocument = gql`
     query profiles($id: [Int!]!) {
-  profiles(query: {id: $id}) {
+  profilesById(ids: $id) {
     id
     circlesAddress
     circlesSafeOwner
@@ -1358,7 +1410,7 @@ export const ProfilesByNameDocument = gql`
     `;
 export const ProfilesByCirclesAddressDocument = gql`
     query profilesByCirclesAddress($circlesAddresses: [String!]!) {
-  profiles(query: {circlesAddress: $circlesAddresses}) {
+  profilesBySafeAddress(safeAddresses: $circlesAddresses) {
     id
     circlesAddress
     firstName
@@ -1382,7 +1434,7 @@ export const ProfilesByCirclesAddressDocument = gql`
     `;
 export const ProfilesByIdsDocument = gql`
     query profilesByIds($id: [Int!]!) {
-  profiles(query: {id: $id}) {
+  profilesById(ids: $id) {
     id
     circlesAddress
     firstName
@@ -1447,6 +1499,33 @@ export const ContactsDocument = gql`
       circlesAddress
     }
     lastContactAt
+    youTrust
+    trustsYou
+  }
+}
+    `;
+export const ContactDocument = gql`
+    query contact($safeAddress: String!, $contactAddress: String!) {
+  contact(safeAddress: $safeAddress, contactAddress: $contactAddress) {
+    contactAddress
+    contactAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    safeAddress
+    safeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    lastContactAt
+    youTrust
+    trustsYou
   }
 }
     `;
@@ -1589,7 +1668,7 @@ export const SafeFundingTransactionDocument = gql`
     `;
 export const ProfileByIdDocument = gql`
     query profileById($id: Int!) {
-  profiles(query: {id: [$id]}) {
+  profilesById(ids: [$id]) {
     id
     circlesSafeOwner
     circlesAddress
@@ -1609,7 +1688,7 @@ export const ProfileByIdDocument = gql`
     `;
 export const ProfileBySafeAddressDocument = gql`
     query profileBySafeAddress($safeAddress: String!) {
-  profiles(query: {circlesAddress: [$safeAddress]}) {
+  profilesBySafeAddress(safeAddresses: [$safeAddress]) {
     id
     circlesSafeOwner
     circlesAddress
@@ -1732,6 +1811,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     contacts(variables: ContactsQueryVariables): Promise<ContactsQuery> {
       return withWrapper(() => client.request<ContactsQuery>(print(ContactsDocument), variables));
+    },
+    contact(variables: ContactQueryVariables): Promise<ContactQuery> {
+      return withWrapper(() => client.request<ContactQuery>(print(ContactDocument), variables));
     },
     chatHistory(variables: ChatHistoryQueryVariables): Promise<ChatHistoryQuery> {
       return withWrapper(() => client.request<ChatHistoryQuery>(print(ChatHistoryDocument), variables));

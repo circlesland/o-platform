@@ -1,6 +1,11 @@
 <script lang="ts">
   import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
-  export let actions: any;
+  export let actions: {
+    icon: string,
+    title: string,
+    colorClass: string,
+    action: () => void
+  }[];
 
   function handleClick(action) {
     if (action.event) {

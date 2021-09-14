@@ -7,7 +7,12 @@
     text: <string>null,
     notificationType: <string>null,
     time: <number>null,
-    actions: <any>[],
+    actions: <{
+      icon: string,
+      title: string,
+      colorClass: string,
+      action: () => void
+    }>[],
   };
 </script>
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { push } from "svelte-spa-router";
-  import gql from "graphql-tag";
+  import {ExchangeTokenDocument} from "../../../shared/api/data/types";
 
   export let params:{
     jwt?:string
@@ -10,16 +10,9 @@
   onMount(async () => {
     if (params.jwt)
     {
-      const client = await window.o.apiClient.client.subscribeToResult();
-      await client.mutate({
-        mutation: gql`
-                mutation exchangeToken {
-                  exchangeToken {
-                    success
-                    errorMessage
-                  }
-                }`,
-        
+      const apiClient = await window.o.apiClient.client.subscribeToResult();
+      await apiClient.mutate({
+        mutation: ExchangeTokenDocument
       });
 
       push("/#/dashboard");
