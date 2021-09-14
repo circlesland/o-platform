@@ -5,8 +5,6 @@
   import { Stats, StatsDocument } from "../../../shared/api/data/types";
   import StatsField from "../atoms/StatsField.svelte";
 
-  const { mySafe } = require("src/dapps/o-banking/stores/safe");
-
   $: me;
   let isLoading: boolean = true;
   let error: Error;

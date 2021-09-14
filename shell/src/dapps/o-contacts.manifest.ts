@@ -11,6 +11,7 @@ import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { transfer } from "./o-banking/processes/transfer";
 import { setTrust } from "./o-banking/processes/setTrust";
 import {loadProfileByProfileId} from "../shared/api/loadProfileByProfileId";
+import {push} from "svelte-spa-router";
 
 export interface DappState {
   // put state here
@@ -83,8 +84,16 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             safeAddress: "",
             privateKey: localStorage.getItem("circlesKey"),
           });
-        },
+        }
       },
+      {
+        key: "chat",
+        icon: "chat",
+        title: "Chat",
+        action: async () => {
+          push("#/chat/" + recipientSafeAddress);
+        },
+      }
     ];
   },
 };

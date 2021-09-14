@@ -11,10 +11,6 @@
   import ChatCard from "../../o-contacts/atoms/ChatCard.svelte";
 
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
-  import NumberEditor from "@o-platform/o-editors/src/NumberEditor.svelte";
-  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-
-  const { mySafe } = require("src/dapps/o-banking/stores/safe");
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 

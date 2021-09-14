@@ -3,8 +3,6 @@
   import {onMount} from "svelte";
   import StatsHeader from "../atoms/StatsHeader.svelte";
 
-  const {mySafe} = require("src/dapps/o-banking/stores/safe");
-
   $: me;
 
   const init = async () => {

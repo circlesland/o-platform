@@ -14,6 +14,14 @@ export type Scalars = {
   Float: number;
 };
 
+export type AssetBalance = {
+  __typename?: 'AssetBalance';
+  token_address: Scalars['String'];
+  token_balance: Scalars['String'];
+  token_owner_address: Scalars['String'];
+  token_owner_profile?: Maybe<Profile>;
+};
+
 export type City = ICity & {
   __typename?: 'City';
   country: Scalars['String'];
@@ -442,6 +450,7 @@ export enum PurchaseStatus {
 export type Query = {
   __typename?: 'Query';
   balance: Scalars['String'];
+  balancesByAsset: Array<AssetBalance>;
   chatHistory: Array<ProfileEvent>;
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
@@ -469,6 +478,11 @@ export type Query = {
 
 
 export type QueryBalanceArgs = {
+  safeAddress: Scalars['String'];
+};
+
+
+export type QueryBalancesByAssetArgs = {
   safeAddress: Scalars['String'];
 };
 

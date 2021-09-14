@@ -14,6 +14,14 @@ export type Scalars = {
   Float: number;
 };
 
+export type AssetBalance = {
+  __typename?: 'AssetBalance';
+  token_address: Scalars['String'];
+  token_balance: Scalars['String'];
+  token_owner_address: Scalars['String'];
+  token_owner_profile?: Maybe<Profile>;
+};
+
 export type City = ICity & {
   __typename?: 'City';
   country: Scalars['String'];
@@ -53,6 +61,14 @@ export type ClaimedInvitation = {
   createdByProfileId: Scalars['Int'];
 };
 
+export type CommonTrust = {
+  __typename?: 'CommonTrust';
+  profile?: Maybe<Profile>;
+  safeAddress1: Scalars['String'];
+  safeAddress2: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
@@ -63,8 +79,11 @@ export type Contact = {
   __typename?: 'Contact';
   contactAddress: Scalars['String'];
   contactAddressProfile?: Maybe<Profile>;
+  lastContactAt?: Maybe<Scalars['String']>;
   safeAddress: Scalars['String'];
   safeAddressProfile?: Maybe<Profile>;
+  trustsYou?: Maybe<Scalars['Int']>;
+  youTrust?: Maybe<Scalars['Int']>;
 };
 
 export type CountryStats = {
@@ -131,7 +150,7 @@ export type CrcTrust = IEventPayload & {
 
 export type CreateInvitationResult = {
   __typename?: 'CreateInvitationResult';
-  error: Scalars['String'];
+  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
 
@@ -252,6 +271,7 @@ export type Mutation = {
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
   requestUpdateSafe: RequestUpdateSafeResponse;
+  sendMessage?: Maybe<SendMessageResult>;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
   upsertOffer: Offer;
@@ -302,6 +322,13 @@ export type MutationProvePaymentArgs = {
 
 export type MutationRequestUpdateSafeArgs = {
   data: RequestUpdateSafeInput;
+};
+
+
+export type MutationSendMessageArgs = {
+  content: Scalars['String'];
+  toSafeAddress: Scalars['String'];
+  type: Scalars['String'];
 };
 
 
@@ -423,15 +450,21 @@ export enum PurchaseStatus {
 export type Query = {
   __typename?: 'Query';
   balance: Scalars['String'];
+  balancesByAsset: Array<AssetBalance>;
+  chatHistory: Array<ProfileEvent>;
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
+  commonTrust: Array<CommonTrust>;
+  contact?: Maybe<Contact>;
   contacts: Array<Contact>;
   eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
   myInvitations: Array<CreatedInvitation>;
+  myProfile?: Maybe<Profile>;
   offers: Array<Offer>;
-  profiles: Array<Profile>;
+  profilesById: Array<Profile>;
+  profilesBySafeAddress: Array<Profile>;
   safeFundingTransaction?: Maybe<ProfileEvent>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
@@ -449,8 +482,31 @@ export type QueryBalanceArgs = {
 };
 
 
+export type QueryBalancesByAssetArgs = {
+  safeAddress: Scalars['String'];
+};
+
+
+export type QueryChatHistoryArgs = {
+  contactSafeAddress: Scalars['String'];
+  safeAddress: Scalars['String'];
+};
+
+
 export type QueryCitiesArgs = {
   query: QueryCitiesInput;
+};
+
+
+export type QueryCommonTrustArgs = {
+  safeAddress1: Scalars['String'];
+  safeAddress2: Scalars['String'];
+};
+
+
+export type QueryContactArgs = {
+  contactAddress: Scalars['String'];
+  safeAddress: Scalars['String'];
 };
 
 
@@ -467,7 +523,9 @@ export type QueryEventByTransactionHashArgs = {
 
 
 export type QueryEventsArgs = {
+  fromBlock?: Maybe<Scalars['Int']>;
   safeAddress: Scalars['String'];
+  toBlock?: Maybe<Scalars['Int']>;
   types?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -477,8 +535,13 @@ export type QueryOffersArgs = {
 };
 
 
-export type QueryProfilesArgs = {
-  query: QueryProfileInput;
+export type QueryProfilesByIdArgs = {
+  ids: Array<Scalars['Int']>;
+};
+
+
+export type QueryProfilesBySafeAddressArgs = {
+  safeAddresses: Array<Scalars['String']>;
 };
 
 
@@ -568,6 +631,13 @@ export type RequestUpdateSafeResponse = {
 
 export type SearchInput = {
   searchString: Scalars['String'];
+};
+
+export type SendMessageResult = {
+  __typename?: 'SendMessageResult';
+  error?: Maybe<Scalars['String']>;
+  event?: Maybe<ProfileEvent>;
+  success: Scalars['Boolean'];
 };
 
 export type Server = {
@@ -688,6 +758,23 @@ export type BalanceQuery = (
   & Pick<Query, 'balance'>
 );
 
+export type BalancesByAssetQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type BalancesByAssetQuery = (
+  { __typename?: 'Query' }
+  & { balancesByAsset: Array<(
+    { __typename?: 'AssetBalance' }
+    & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
+    & { token_owner_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )> }
+  )> }
+);
+
 export type TransactionTimelineQueryVariables = Exact<{
   safeAddress: Scalars['String'];
 }>;
@@ -787,6 +874,21 @@ export type TransactionByHashQuery = (
 export const BalanceDocument = gql`
     query balance($safeAddress: String!) {
   balance(safeAddress: $safeAddress)
+}
+    `;
+export const BalancesByAssetDocument = gql`
+    query balancesByAsset($safeAddress: String!) {
+  balancesByAsset(safeAddress: $safeAddress) {
+    token_address
+    token_owner_address
+    token_owner_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+    }
+    token_balance
+  }
 }
     `;
 export const TransactionTimelineDocument = gql`
@@ -970,6 +1072,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     balance(variables: BalanceQueryVariables): Promise<BalanceQuery> {
       return withWrapper(() => client.request<BalanceQuery>(print(BalanceDocument), variables));
+    },
+    balancesByAsset(variables: BalancesByAssetQueryVariables): Promise<BalancesByAssetQuery> {
+      return withWrapper(() => client.request<BalancesByAssetQuery>(print(BalancesByAssetDocument), variables));
     },
     transactionTimeline(variables: TransactionTimelineQueryVariables): Promise<TransactionTimelineQuery> {
       return withWrapper(() => client.request<TransactionTimelineQuery>(print(TransactionTimelineDocument), variables));

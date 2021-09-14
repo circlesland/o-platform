@@ -1,6 +1,8 @@
 import Transactions from "./o-banking/pages/Transactions.svelte";
 import Assets from "./o-banking/pages/Assets.svelte";
 import Trusts from "./o-banking/pages/Trusts.svelte";
+import CrcDetail from "./o-banking/pages/CrcDetail.svelte";
+import XDaiDetail from "./o-banking/pages/XDaiDetail.svelte";
 
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
 
@@ -14,7 +16,6 @@ import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
-import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import {loadProfileByProfileId} from "../shared/api/loadProfileByProfileId";
 
@@ -103,11 +104,19 @@ const assets: Page<any, BankingDappState> = {
   icon: "assets",
   type: "page",
 };
-const assetDetail: Page<{ symbol: string }, BankingDappState> = {
+const crcDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
   position: "modal",
-  routeParts: ["=assets", ":symbol"],
-  component: AssetDetail,
+  routeParts: ["=assets", "=crc"],
+  component: CrcDetail,
+  title: "Asset",
+  type: "page",
+};
+const xdaiDetail: Page<{ symbol: string }, BankingDappState> = {
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=assets", "=xdai"],
+  component: XDaiDetail,
   title: "Asset",
   type: "page",
 };
@@ -181,7 +190,8 @@ export const banking: DappManifest<BankingDappState> = {
     transactionDetail,
     transactionSend,
     assets,
-    assetDetail,
+    crcDetail,
+    xdaiDetail,
     sendInvite,
     findMySafe,
   ],

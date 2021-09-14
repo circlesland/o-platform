@@ -41,6 +41,13 @@
       privateKey: localStorage.getItem("circlesKey"),
     });
   }
+
+  function goToProfile(e, path?:string) {
+    if (!path)
+      return;
+    e.stopPropagation();
+    push(`#/friends/${path}`);
+  }
 </script>
 
 <div on:click="{() => loadDetailPage(safeAddress)}">
@@ -49,7 +56,9 @@
     <div slot="itemCardStart">
       <div class="inline-flex">
         <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
+          <a on:click={(e) => goToProfile(e, safeAddress)}>
           <img class="rounded-full" src="{pictureUrl}" alt="{displayName}" />
+          </a>
         </div>
       </div>
     </div>

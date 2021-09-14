@@ -30,9 +30,10 @@
     image: null,
   };
 
-  function goToProfile(path?:string) {
+  function goToProfile(e, path?:string) {
     if (!path)
       return;
+    e.stopPropagation();
     push(`#/friends/${path}`);
   }
 </script>
@@ -43,7 +44,7 @@
   class:pl-12="{!params.outgoing}">
   <div class="image" class:pl-2="{params.outgoing}">
     <div class="inline-flex">
-      <a on:click={() => goToProfile(params.safeAddress)}>
+      <a on:click={(e) => goToProfile(e, params.safeAddress)}>
         <div class="w-10 h-10 m-auto rounded-full sm:w-20 sm:h-20">
           <img class="rounded-full" src="{params.image}" alt="user-icon" />
         </div>

@@ -1,13 +1,10 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
   import PageHeader from "src/shared/atoms/PageHeader.svelte";
-  // import { mySafe } from "../stores/safe";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import {BalanceDocument} from "../data/api/types";
   import {onMount} from "svelte";
-  //import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-  //import {context} from "../../../../../packages/o-editors/src/CurrencyTransfer.svelte";
   import Web3 from "web3";
   import {me} from "../../../shared/stores/me";
 

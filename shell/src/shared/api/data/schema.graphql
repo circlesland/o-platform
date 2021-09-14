@@ -23,6 +23,13 @@ interface IEventPayload {
 
 union EventPayload = CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer
 
+type AssetBalance {
+    token_address: String!
+    token_balance: String!
+    token_owner_address: String!
+    token_owner_profile: Profile
+}
+
 type City implements ICity {
     country: String!
     feature_code: String!
@@ -300,6 +307,7 @@ type Purchase {
 
 type Query {
     balance(safeAddress: String!): String!
+    balancesByAsset(safeAddress: String!): [AssetBalance!]!
     chatHistory(contactSafeAddress: String!, safeAddress: String!): [ProfileEvent!]!
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation

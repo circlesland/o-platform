@@ -2,6 +2,20 @@ query balance($safeAddress:String!) {
     balance(safeAddress: $safeAddress)
 }
 
+query balancesByAsset($safeAddress:String!) {
+    balancesByAsset(safeAddress: $safeAddress) {
+        token_address
+        token_owner_address
+        token_owner_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+        }
+        token_balance
+    }
+}
+
 query transactionTimeline($safeAddress:String!) {
     events(safeAddress: $safeAddress, types: ["crc_hub_transfer", "crc_minting"]) {
         timestamp

@@ -120,23 +120,26 @@
       );
     }
 
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.query({
-      query: CommonTrustDocument,
-      variables: {
-        safeAddress1: $me.circlesAddress.toLowerCase(),
-        safeAddress2: apiProfile.circlesAddress.toLowerCase(),
-      },
-    });
-    if (result.errors) {
-      throw new Error(
-              `Couldn't load a profile with safeAddress '${apiProfile.circlesAddress}': ${JSON.stringify(
-                      result.errors
-              )}`
-      );
+    if ($me.circlesAddress !== apiProfile.circlesAddress) {
+      const apiClient = await window.o.apiClient.client.subscribeToResult();
+      const result = await apiClient.query({
+        query: CommonTrustDocument,
+        variables: {
+          safeAddress1: $me.circlesAddress.toLowerCase(),
+          safeAddress2: apiProfile.circlesAddress.toLowerCase(),
+        },
+      });
+      if (result.errors) {
+        throw new Error(
+                `Couldn't load a profile with safeAddress '${apiProfile.circlesAddress}': ${JSON.stringify(
+                        result.errors
+                )}`
+        );
+      }
+      commonTrusts = result.data.commonTrust.filter(o => o.profile);
+    } else {
+      commonTrusts = [];
     }
-    commonTrusts = result.data.commonTrust;
-    console.log("Common trusts:", commonTrusts);
 
     profile = {
       id: apiProfile.id,
@@ -370,21 +373,23 @@
                 <div class="text-left text-2xs text-dark-lightest">Common friends</div>
                 <div class="flex flex-wrap content-start">
                 {#each commonTrusts as commonTrust}
-                  {#if commonTrust.profile.avatarUrl}
-                  <img
-                      class="rounded-full"
-                      style="max-width: 24px; max-height:24px; display: inline;"
-                      src="{commonTrust.profile.avatarUrl}"
-                      alt="user-icon" />
-                  {:else}
+                  <a on:click={push(`#/friends/${commonTrust.profile.circlesAddress}`)}>
+                    {#if commonTrust.profile.avatarUrl}
                     <img
-                        on:click={() => push()}
                         class="rounded-full"
                         style="max-width: 24px; max-height:24px; display: inline;"
-                        src={AvataarGenerator.generate(commonTrust.profile.circlesAddress)}
-                        alt={`${commonTrust.profile.firstName} ${commonTrust.profile.lastName ? commonTrust.profile.lastName : ''}`}
-                        title={`${commonTrust.profile.firstName} ${commonTrust.profile.lastName ? commonTrust.profile.lastName : ''}`}/>
-                  {/if}
+                        src="{commonTrust.profile.avatarUrl}"
+                        alt="user-icon" />
+                    {:else}
+                      <img
+                          on:click={() => push()}
+                          class="rounded-full"
+                          style="max-width: 24px; max-height:24px; display: inline;"
+                          src={AvataarGenerator.generate(commonTrust.profile.circlesAddress)}
+                          alt={`${commonTrust.profile.firstName} ${commonTrust.profile.lastName ? commonTrust.profile.lastName : ''}`}
+                          title={`${commonTrust.profile.firstName} ${commonTrust.profile.lastName ? commonTrust.profile.lastName : ''}`}/>
+                    {/if}
+                  </a>
                 {/each}
                 </div>
               </div>
