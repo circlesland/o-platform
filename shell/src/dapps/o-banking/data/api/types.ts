@@ -271,7 +271,8 @@ export type Mutation = {
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
   requestUpdateSafe: RequestUpdateSafeResponse;
-  sendMessage?: Maybe<SendMessageResult>;
+  sendMessage: SendMessageResult;
+  tagTransaction: TagTransactionResult;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
   upsertOffer: Offer;
@@ -329,6 +330,12 @@ export type MutationSendMessageArgs = {
   content: Scalars['String'];
   toSafeAddress: Scalars['String'];
   type: Scalars['String'];
+};
+
+
+export type MutationTagTransactionArgs = {
+  tag: CreateTagInput;
+  transactionHash: Scalars['String'];
 };
 
 
@@ -416,6 +423,7 @@ export type ProfileEvent = {
   payload?: Maybe<EventPayload>;
   safe_address: Scalars['String'];
   safe_address_profile?: Maybe<Profile>;
+  tags?: Maybe<Array<Tag>>;
   timestamp: Scalars['String'];
   transaction_hash: Scalars['String'];
   transaction_index: Scalars['Int'];
@@ -677,6 +685,13 @@ export type Tag = {
   value?: Maybe<Scalars['String']>;
 };
 
+export type TagTransactionResult = {
+  __typename?: 'TagTransactionResult';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+  tag?: Maybe<Tag>;
+};
+
 export enum TrustDirection {
   In = 'IN',
   Mutual = 'MUTUAL',
@@ -788,7 +803,10 @@ export type TransactionTimelineQuery = (
     & { safe_address_profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, payload?: Maybe<(
+    )>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>>, payload?: Maybe<(
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
@@ -836,7 +854,10 @@ export type TransactionByHashQuery = (
     & { safe_address_profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, payload?: Maybe<(
+    )>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>>, payload?: Maybe<(
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
@@ -909,6 +930,11 @@ export const TransactionTimelineDocument = gql`
     transaction_index
     block_number
     direction
+    tags {
+      id
+      typeId
+      value
+    }
     payload {
       ... on CrcHubTransfer {
         id
@@ -997,6 +1023,11 @@ export const TransactionByHashDocument = gql`
     transaction_index
     block_number
     direction
+    tags {
+      id
+      typeId
+      value
+    }
     payload {
       ... on CrcHubTransfer {
         id

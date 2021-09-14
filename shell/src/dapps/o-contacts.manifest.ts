@@ -60,6 +60,11 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       ? await getRecipientAddress()
       : undefined;
 
+    let circlesAddress;
+    me.subscribe(o => {
+      circlesAddress = o.circlesAddress
+    });
+
     return [
       {
         key: "transfer",
@@ -67,7 +72,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         title: "Send Money",
         action: async () => {
           window.o.runProcess(transfer, {
-            safeAddress: "",
+            safeAddress: circlesAddress,
             recipientAddress: recipientSafeAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });

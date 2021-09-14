@@ -54,6 +54,18 @@ mutation logout {
     }
 }
 
+mutation tagTransaction($transactionHash:String! $tag: CreateTagInput!) {
+    tagTransaction(transactionHash: $transactionHash, tag: $tag) {
+        success
+        error
+        tag {
+            id
+            typeId
+            value
+        }
+    }
+}
+
 mutation upsertProfile(
     $id: Int
     $firstName: String!

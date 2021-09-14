@@ -225,7 +225,8 @@ type Mutation {
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
-    sendMessage(content: String!, toSafeAddress: String!, type: String!): SendMessageResult
+    sendMessage(content: String!, toSafeAddress: String!, type: String!): SendMessageResult!
+    tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
     unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
     upsertOffer(data: UpsertOfferInput!): Offer!
@@ -282,6 +283,7 @@ type ProfileEvent {
     payload: EventPayload
     safe_address: String!
     safe_address_profile: Profile
+    tags: [Tag!]
     timestamp: String!
     transaction_hash: String!
     transaction_index: Int!
@@ -384,6 +386,12 @@ type Tag {
     id: Int!
     typeId: String!
     value: String
+}
+
+type TagTransactionResult {
+    error: String
+    success: Boolean!
+    tag: Tag
 }
 
 type TrustRelation {

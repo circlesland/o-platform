@@ -245,6 +245,11 @@ query chatHistory($safeAddress:String! $contactSafeAddress:String!) {
         transaction_index
         type
         value
+        tags {
+            id
+            typeId
+            value
+        }
         payload {
             ... on CrcHubTransfer {
                 id

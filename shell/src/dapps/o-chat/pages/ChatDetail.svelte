@@ -274,6 +274,11 @@
         break;
     }
 
+    let text = chat.tags?.find(o => o.typeId === "o-banking:transfer:message:1")?.value;
+    if (!text) {
+      text = "";
+    }
+
     return {
       safeAddress: chat.safe_address,
       outgoing: outgoing,
@@ -283,7 +288,8 @@
         notificationType: notificationType,
         time: chat.timestamp / 1000,
         title: title,
-        actions: actions
+        actions: actions,
+        text: text
       },
       image: chat.safe_address_profile.avatarUrl
         ? chat.safe_address_profile.avatarUrl

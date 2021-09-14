@@ -271,7 +271,8 @@ export type Mutation = {
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
   requestUpdateSafe: RequestUpdateSafeResponse;
-  sendMessage?: Maybe<SendMessageResult>;
+  sendMessage: SendMessageResult;
+  tagTransaction: TagTransactionResult;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
   upsertOffer: Offer;
@@ -329,6 +330,12 @@ export type MutationSendMessageArgs = {
   content: Scalars['String'];
   toSafeAddress: Scalars['String'];
   type: Scalars['String'];
+};
+
+
+export type MutationTagTransactionArgs = {
+  tag: CreateTagInput;
+  transactionHash: Scalars['String'];
 };
 
 
@@ -416,6 +423,7 @@ export type ProfileEvent = {
   payload?: Maybe<EventPayload>;
   safe_address: Scalars['String'];
   safe_address_profile?: Maybe<Profile>;
+  tags?: Maybe<Array<Tag>>;
   timestamp: Scalars['String'];
   transaction_hash: Scalars['String'];
   transaction_index: Scalars['Int'];
@@ -677,6 +685,13 @@ export type Tag = {
   value?: Maybe<Scalars['String']>;
 };
 
+export type TagTransactionResult = {
+  __typename?: 'TagTransactionResult';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+  tag?: Maybe<Tag>;
+};
+
 export enum TrustDirection {
   In = 'IN',
   Mutual = 'MUTUAL',
@@ -825,6 +840,24 @@ export type LogoutMutation = (
   & { logout: (
     { __typename?: 'LogoutResponse' }
     & Pick<LogoutResponse, 'success'>
+  ) }
+);
+
+export type TagTransactionMutationVariables = Exact<{
+  transactionHash: Scalars['String'];
+  tag: CreateTagInput;
+}>;
+
+
+export type TagTransactionMutation = (
+  { __typename?: 'Mutation' }
+  & { tagTransaction: (
+    { __typename?: 'TagTransactionResult' }
+    & Pick<TagTransactionResult, 'success' | 'error'>
+    & { tag?: Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )> }
   ) }
 );
 
@@ -1072,7 +1105,10 @@ export type ChatHistoryQuery = (
     & { safe_address_profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, payload?: Maybe<(
+    )>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>>, payload?: Maybe<(
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
@@ -1301,6 +1337,19 @@ export const LogoutDocument = gql`
     mutation logout {
   logout {
     success
+  }
+}
+    `;
+export const TagTransactionDocument = gql`
+    mutation tagTransaction($transactionHash: String!, $tag: CreateTagInput!) {
+  tagTransaction(transactionHash: $transactionHash, tag: $tag) {
+    success
+    error
+    tag {
+      id
+      typeId
+      value
+    }
   }
 }
     `;
@@ -1595,6 +1644,11 @@ export const ChatHistoryDocument = gql`
     transaction_index
     type
     value
+    tags {
+      id
+      typeId
+      value
+    }
     payload {
       ... on CrcHubTransfer {
         id
@@ -1835,6 +1889,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     logout(variables?: LogoutMutationVariables): Promise<LogoutMutation> {
       return withWrapper(() => client.request<LogoutMutation>(print(LogoutDocument), variables));
+    },
+    tagTransaction(variables: TagTransactionMutationVariables): Promise<TagTransactionMutation> {
+      return withWrapper(() => client.request<TagTransactionMutation>(print(TagTransactionDocument), variables));
     },
     upsertProfile(variables: UpsertProfileMutationVariables): Promise<UpsertProfileMutation> {
       return withWrapper(() => client.request<UpsertProfileMutation>(print(UpsertProfileDocument), variables));

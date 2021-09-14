@@ -94,10 +94,17 @@
   function openDetail(transfer: ProfileEvent) {
     if (transfer.type == "crc_hub_transfer") {
       const hubTransfer = <CrcHubTransfer>transfer.payload;
-      if (hubTransfer.from.startsWith("0x00000")) {
-        return;
+      if (transfer.direction == "in") {
+        if (hubTransfer.from.startsWith("0x00000")) {
+          return;
+        }
+        push(`#/friends/${hubTransfer.from}`);
+      } else {
+        if (hubTransfer.to.startsWith("0x00000")) {
+          return;
+        }
+        push(`#/friends/${hubTransfer.to}`);
       }
-      push(`#/friends/${hubTransfer.from}`);
     }
   }
 </script>

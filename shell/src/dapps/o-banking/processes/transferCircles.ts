@@ -1,7 +1,7 @@
-import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
-import { createMachine } from "xstate";
+import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
+import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
+import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
+import {createMachine} from "xstate";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {BN} from "ethereumjs-util";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
@@ -13,14 +13,15 @@ import {requestPathToRecipient} from "../services/requestPathToRecipient";
 import {show} from "@o-platform/o-process/dist/actions/show";
 import {CreateTagInput} from "../data/api/types";
 import {Subscription} from "rxjs";
+import {TagTransactionDocument} from "../../../shared/api/data/types";
 
 export type TransferCirclesContextData = {
-  safeAddress:string;
-  recipientAddress:string;
-  message:string;
-  amount:string;
-  privateKey:string;
-  transitivePath?:TransitivePath;
+  safeAddress: string;
+  recipientAddress: string;
+  message: string;
+  amount: string;
+  privateKey: string;
+  transitivePath?: TransitivePath;
   pathToRecipient?: {
     tokenOwners: string[];
     sources: string[];
@@ -47,118 +48,121 @@ const strings = {
 export type TransitivePath = {
   flow: string,
   transfers: [{
-    from:string,
-    to:string,
-    token:string,
-    tokenOwner:string,
+    from: string,
+    to: string,
+    token: string,
+    tokenOwner: string,
     value: string
   }]
 }
 
 const processDefinition = (processId: string) =>
-createMachine<TransferCirclesContext, any>({
-  id: `${processId}:transferCircles`,
-  initial: "requestPathToRecipient",
-  states: {
-    // Include a default 'error' state that propagates the error by re-throwing it in an action.
-    // TODO: Check if this works as intended
-    ...fatalError<TransferCirclesContext, any>("error"),
+  createMachine<TransferCirclesContext, any>({
+    id: `${processId}:transferCircles`,
+    initial: "requestPathToRecipient",
+    states: {
+      // Include a default 'error' state that propagates the error by re-throwing it in an action.
+      // TODO: Check if this works as intended
+      ...fatalError<TransferCirclesContext, any>("error"),
 
-    requestPathToRecipient: {
-      id: "requestPathToRecipient",
-      invoke: {
-        src: async (context) => {
-          context.data.transitivePath = await requestPathToRecipient(context);
-        },
-        onDone:  "#transferCircles",
-        onError: "#error"
-      }
-    },
-    transferCircles: {
-      id: "transferCircles",
-      entry: <any>show({
-        field: "__",
-        component: PaymentPath,
-        params: (context) => {
-          return {
-            hideNav: true,
-            label: "Transferring Circles ..",
-            transfers: context.data.transitivePath.transfers
-          }
-        },
-        navigation: {
-          canGoBack: () => false,
-          canSkip: () => false,
+      requestPathToRecipient: {
+        id: "requestPathToRecipient",
+        invoke: {
+          src: async (context) => {
+            context.data.transitivePath = await requestPathToRecipient(context);
+          },
+          onDone: "#transferCircles",
+          onError: "#error"
         }
-      }),
-      invoke: {
-        src: async (context) => {
-          const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
-
-          try {
-            const tokenOwners = [];
-            const sources = [];
-            const destinations = [];
-            const values = [];
-
-            context.data.transitivePath.transfers.forEach(transfer => {
-              tokenOwners.push(transfer.tokenOwner);
-              sources.push(transfer.from);
-              destinations.push(transfer.to);
-              values.push(new BN(transfer.value));
-            });
-
-            const transferTroughResult = await new CirclesHub(RpcGateway.get(), HUB_ADDRESS).transferTrough(
-              context.data.privateKey,
-              gnosisSafeProxy,
-              tokenOwners,
-              sources,
-              destinations,
-              values
-            );
-
-            let txHashSubscription: Subscription;
-            txHashSubscription = transferTroughResult.observable.subscribe(async o => {
-              if (o.type != "transactionHash") {
-                return;
-              }
-              if (txHashSubscription) {
-                txHashSubscription.unsubscribe();
-              }
-
-              const transactionTags: CreateTagInput[] = [{
-                typeId: "o-banking:transfer:transitivePath:1",
-                value: JSON.stringify(context.data.transitivePath)
-              }];
-              if (context.data.message) {
-                transactionTags.push({
-                  typeId: "o-banking:transfer:message:1",
-                  value: context.data.message
-                });
-              }
-              // console.log(indexedTransaction);
-            });
-
-            const receipt = await transferTroughResult.toPromise();
-            // console.log(receipt);
-          } catch (e) {
-            console.error(e);
-            throw e;
-          }
-        },
-        onDone: "#success",
-        onError: "#error",
       },
-    },
-    success: {
-      id: 'success',
-      type: 'final',
-      data: (context, event: PlatformEvent) => {
-        return "yeah!";
+      transferCircles: {
+        id: "transferCircles",
+        entry: <any>show({
+          field: "__",
+          component: PaymentPath,
+          params: (context) => {
+            return {
+              hideNav: true,
+              label: "Transferring Circles ..",
+              transfers: context.data.transitivePath.transfers
+            }
+          },
+          navigation: {
+            canGoBack: () => false,
+            canSkip: () => false,
+          }
+        }),
+        invoke: {
+          src: async (context) => {
+            const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
+
+            try {
+              const tokenOwners = [];
+              const sources = [];
+              const destinations = [];
+              const values = [];
+
+              context.data.transitivePath.transfers.forEach(transfer => {
+                tokenOwners.push(transfer.tokenOwner);
+                sources.push(transfer.from);
+                destinations.push(transfer.to);
+                values.push(new BN(transfer.value));
+              });
+
+              const transferTroughResult = await new CirclesHub(RpcGateway.get(), HUB_ADDRESS).transferTrough(
+                context.data.privateKey,
+                gnosisSafeProxy,
+                tokenOwners,
+                sources,
+                destinations,
+                values
+              );
+
+              let txHashSubscription: Subscription;
+              txHashSubscription = transferTroughResult.observable.subscribe(async o => {
+                if (o.type != "transactionHash") {
+                  return;
+                }
+                if (txHashSubscription) {
+                  txHashSubscription.unsubscribe();
+                }
+
+                if (!context.data.message) {
+                  return;
+                }
+
+                const api = await window.o.apiClient.client.subscribeToResult();
+                await api.mutate({
+                  mutation: TagTransactionDocument,
+                  variables: {
+                    tag: {
+                      typeId: "o-banking:transfer:message:1",
+                      value: context.data.message
+                    },
+                    transactionHash: o.data
+                  }
+                });
+              });
+
+              await transferTroughResult.toPromise();
+            } catch (e) {
+              console.error(e);
+              throw e;
+            }
+          },
+          onDone: "#success",
+          onError: "#error",
+        },
+      },
+      success: {
+        id: 'success',
+        type: 'final',
+        data: (context, event: PlatformEvent) => {
+          return "yeah!";
+        }
       }
-    }
-  },
-});
+    },
+  });
 
 export const transferCircles: ProcessDefinition<void, TransferCirclesContextData> = {
   name: "transferCircles",

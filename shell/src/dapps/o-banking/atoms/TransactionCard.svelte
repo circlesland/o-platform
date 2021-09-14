@@ -15,6 +15,7 @@
   let fromProfile: Profile = <any>{};
   let toProfile: Profile = <any>{};
   let error:string;
+  let message:string|undefined = undefined;
 
   onMount(async () => {
     if (transfer && transfer.payload?.__typename == "CrcMinting") {
@@ -64,6 +65,10 @@
         transfers: hubTransfer.transfers
       };
     }
+
+    if (transfer) {
+      message = transfer.tags?.find(o => o.typeId === "o-banking:transfer:message:1")?.value
+    }
   });
 
   function loadDetailPage(path) {
@@ -80,7 +85,7 @@
       title: transfer.direction === 'in'
         ? fromProfile.firstName + ' ' + fromProfile.lastName
         : toProfile.firstName + ' ' + toProfile.lastName,
-      subTitle: '<<No message>>',
+      subTitle: message ? message : '',
       truncateMain: true }}">
 
     <div slot="itemCardEnd">
