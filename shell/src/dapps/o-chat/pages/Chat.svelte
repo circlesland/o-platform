@@ -16,17 +16,17 @@
   onMount(async () => {
     const safeAddress = $me.circlesAddress;
     const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const trustResult = await apiClient.query({
+    const contactsResult = await apiClient.query({
       query: ContactsDocument,
       variables: {
         safeAddress
       }
     });
-    if (trustResult.errors?.length > 0) {
-      error = `Couldn't read the contacts of safe ${safeAddress}: \n${trustResult.errors.map(o => o.message).join("\n")}`;
+    if (contactsResult.errors?.length > 0) {
+      error = `Couldn't read the contacts of safe ${safeAddress}: \n${contactsResult.errors.map(o => o.message).join("\n")}`;
       return;
     }
-    contacts = trustResult.data.contacts;
+    contacts = contactsResult.data.contacts;
   });
 </script>
 
@@ -37,7 +37,7 @@
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>Loading contacts...</div>
+          <div>Loading conversations...</div>
         </div>
       </div>
     </section>

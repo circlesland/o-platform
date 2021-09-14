@@ -1,7 +1,6 @@
 <script lang="ts">
   import { transfer } from "../../o-banking/processes/transfer";
   import { setTrust } from "../../o-banking/processes/setTrust";
-  import { mySafe } from "../../o-banking/stores/safe";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { invite } from "../../o-passport/processes/invite/invite";
   import { getCountryName } from "../../../shared/countries";
@@ -16,12 +15,11 @@
   import { Profile } from "../../o-banking/data/api/types";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
-  import { Page } from "@o-platform/o-interfaces/dist/routables/page";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import QuickActions from "src/shared/molecules/QuickActions.svelte";
   import {loadProfileByProfileId} from "../../../shared/api/loadProfileByProfileId";
   import {loadProfileBySafeAddress} from "../../../shared/api/loadProfileBySafeAddress";
+  import {CommonTrust, CommonTrustDocument} from "../../../shared/api/data/types";
+  import {push} from "svelte-spa-router";
 
   export let id: string;
   export let jumplist: Jumplist<any, any> | undefined;
@@ -65,6 +63,7 @@
   let isMe: boolean = false;
   let name: string;
 
+  let commonTrusts: CommonTrust[] = [];
   let profile: {
     id?: number;
     dream?: string;
@@ -97,10 +96,10 @@
 
     if (Number.parseInt(id) && !id.startsWith("0x")) {
       const profile = await loadProfileByProfileId(Number.parseInt(id));
-      setProfile(profile);
+      await setProfile(profile);
     } else if (RpcGateway.get().utils.isAddress(id)) {
       const profile = await loadProfileBySafeAddress(id);
-      setProfile(profile);
+      await setProfile(profile);
     } else {
       throw new Error(`id isn't an integer nor an eth address.`);
     }
@@ -111,7 +110,7 @@
     // console.log("PROFILE: ", profile);
   }
 
-  function setProfile(apiProfile: Profile) {
+  async function setProfile(apiProfile: Profile) {
     const trust = undefined
     isEditable = $me && $me.id === apiProfile.id;
 
@@ -120,6 +119,24 @@
         apiProfile.circlesAddress
       );
     }
+
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const result = await apiClient.query({
+      query: CommonTrustDocument,
+      variables: {
+        safeAddress1: $me.circlesAddress.toLowerCase(),
+        safeAddress2: apiProfile.circlesAddress.toLowerCase(),
+      },
+    });
+    if (result.errors) {
+      throw new Error(
+              `Couldn't load a profile with safeAddress '${apiProfile.circlesAddress}': ${JSON.stringify(
+                      result.errors
+              )}`
+      );
+    }
+    commonTrusts = result.data.commonTrust;
+    console.log("Common trusts:", commonTrusts);
 
     profile = {
       id: apiProfile.id,
@@ -144,20 +161,20 @@
   }
 
   function execTransfer() {
-    if (!profile || !$mySafe.safeAddress || isMe) return;
+    if (!profile || !$me.circlesAddress || isMe) return;
 
     window.o.runProcess(transfer, {
-      safeAddress: $mySafe.safeAddress,
+      safeAddress: $me.circlesAddress,
       recipientAddress: profile.safeAddress,
       recipientProfileId: profile.id,
     });
   }
 
   function execTrust() {
-    if (!profile || !$mySafe.safeAddress || isMe) return;
+    if (!profile || !$me.circlesAddress || isMe) return;
 
     window.o.runProcess(setTrust, {
-      safeAddress: $mySafe.safeAddress,
+      safeAddress: $me.circlesAddress,
       trustLimit: 100,
       trustReceiver: profile.safeAddress,
       privateKey: localStorage.getItem("circlesKey"),
@@ -165,10 +182,10 @@
   }
 
   function execUntrust() {
-    if (!profile || !$mySafe.safeAddress || isMe) return;
+    if (!profile || !$me.circlesAddress || isMe) return;
 
     window.o.runProcess(setTrust, {
-      safeAddress: $mySafe.safeAddress,
+      safeAddress: $me.circlesAddress,
       trustLimit: 0,
       trustReceiver: profile.safeAddress,
       privateKey: localStorage.getItem("circlesKey"),
@@ -176,10 +193,10 @@
   }
 
   function execInvite() {
-    if (!profile || !$mySafe.safeAddress || !profile.id || isMe) return;
+    if (!profile || !$me.circlesAddress || !profile.id || isMe) return;
 
     window.o.runProcess(invite, {
-      safeAddress: $mySafe.safeAddress,
+      safeAddress: $me.circlesAddress,
       inviteProfileId: profile.id,
     });
   }
@@ -348,6 +365,30 @@
               </div>
             </div>
           </section> -->
+            <section class="justify-center mb-2 ">
+              <div class="flex flex-col w-full pt-2 space-y-1">
+                <div class="text-left text-2xs text-dark-lightest">Common friends</div>
+                <div class="flex flex-wrap content-start">
+                {#each commonTrusts as commonTrust}
+                  {#if commonTrust.profile.avatarUrl}
+                  <img
+                      class="rounded-full"
+                      style="max-width: 24px; max-height:24px; display: inline;"
+                      src="{commonTrust.profile.avatarUrl}"
+                      alt="user-icon" />
+                  {:else}
+                    <img
+                        on:click={() => push()}
+                        class="rounded-full"
+                        style="max-width: 24px; max-height:24px; display: inline;"
+                        src={AvataarGenerator.generate(commonTrust.profile.circlesAddress)}
+                        alt={`${commonTrust.profile.firstName} ${commonTrust.profile.lastName ? commonTrust.profile.lastName : ''}`}
+                        title={`${commonTrust.profile.firstName} ${commonTrust.profile.lastName ? commonTrust.profile.lastName : ''}`}/>
+                  {/if}
+                {/each}
+                </div>
+              </div>
+            </section>
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="text-left text-2xs text-dark-lightest">Passion</div>

@@ -464,3 +464,19 @@ query stats {
         }
     }
 }
+
+query commonTrust($safeAddress1:String! $safeAddress2:String!) {
+    commonTrust(safeAddress1:$safeAddress1
+        safeAddress2: $safeAddress2) {
+        type
+        safeAddress1
+        safeAddress2
+        profile{
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+        }
+    }
+}

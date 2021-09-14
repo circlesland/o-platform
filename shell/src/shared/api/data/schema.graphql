@@ -58,6 +58,13 @@ type ClaimedInvitation {
     createdByProfileId: Int!
 }
 
+type CommonTrust {
+    profile: Profile
+    safeAddress1: String!
+    safeAddress2: String!
+    type: String!
+}
+
 type ConsumeDepositedChallengeResponse {
     challenge: String
     success: Boolean!
@@ -296,6 +303,7 @@ type Query {
     chatHistory(contactSafeAddress: String!, safeAddress: String!): [ProfileEvent!]!
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
+    commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
     contact(contactAddress: String!, safeAddress: String!): Contact
     contacts(safeAddress: String!): [Contact!]!
     eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!

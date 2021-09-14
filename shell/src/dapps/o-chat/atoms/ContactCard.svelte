@@ -13,10 +13,10 @@
   export let untrusted: TrustObject;
    */
 
-  let pictureUrl: string;
-  let displayName: string;
-  let safeAddress: string;
-  let message: string;
+  export let pictureUrl: string;
+  export let displayName: string;
+  export let safeAddress: string;
+  export let message: string;
 
   let id: String;
 

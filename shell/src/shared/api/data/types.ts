@@ -53,6 +53,14 @@ export type ClaimedInvitation = {
   createdByProfileId: Scalars['Int'];
 };
 
+export type CommonTrust = {
+  __typename?: 'CommonTrust';
+  profile?: Maybe<Profile>;
+  safeAddress1: Scalars['String'];
+  safeAddress2: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
@@ -437,6 +445,7 @@ export type Query = {
   chatHistory: Array<ProfileEvent>;
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
+  commonTrust: Array<CommonTrust>;
   contact?: Maybe<Contact>;
   contacts: Array<Contact>;
   eventByTransactionHash: Array<ProfileEvent>;
@@ -472,6 +481,12 @@ export type QueryChatHistoryArgs = {
 
 export type QueryCitiesArgs = {
   query: QueryCitiesInput;
+};
+
+
+export type QueryCommonTrustArgs = {
+  safeAddress1: Scalars['String'];
+  safeAddress2: Scalars['String'];
 };
 
 
@@ -1198,6 +1213,24 @@ export type StatsQuery = (
   )> }
 );
 
+export type CommonTrustQueryVariables = Exact<{
+  safeAddress1: Scalars['String'];
+  safeAddress2: Scalars['String'];
+}>;
+
+
+export type CommonTrustQuery = (
+  { __typename?: 'Query' }
+  & { commonTrust: Array<(
+    { __typename?: 'CommonTrust' }
+    & Pick<CommonTrust, 'type' | 'safeAddress1' | 'safeAddress2'>
+    & { profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )> }
+  )> }
+);
+
 
 export const ExchangeTokenDocument = gql`
     mutation exchangeToken {
@@ -1748,6 +1781,22 @@ export const StatsDocument = gql`
   }
 }
     `;
+export const CommonTrustDocument = gql`
+    query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
+  commonTrust(safeAddress1: $safeAddress1, safeAddress2: $safeAddress2) {
+    type
+    safeAddress1
+    safeAddress2
+    profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -1838,6 +1887,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     stats(variables?: StatsQueryVariables): Promise<StatsQuery> {
       return withWrapper(() => client.request<StatsQuery>(print(StatsDocument), variables));
+    },
+    commonTrust(variables: CommonTrustQueryVariables): Promise<CommonTrustQuery> {
+      return withWrapper(() => client.request<CommonTrustQuery>(print(CommonTrustDocument), variables));
     }
   };
 }
