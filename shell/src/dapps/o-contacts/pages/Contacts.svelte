@@ -31,21 +31,21 @@
       .filter(o => {
         return o.contactAddressProfile && (o.trustsYou || o.youTrust);
       })
-      .sort((a,b) => {
-          if (!a.contactAddressProfile && !b.contactAddressProfile) {
-            return 0;
-          }
-          if (a.contactAddressProfile && !b.contactAddressProfile) {
-            return 1;
-          }
-          if (!a.contactAddressProfile && b.contactAddressProfile) {
-            return -1;
-          }
+      .sort((a, b) => {
+        if (!a.contactAddressProfile && !b.contactAddressProfile) {
+          return 0;
+        }
+        if (a.contactAddressProfile && !b.contactAddressProfile) {
+          return 1;
+        }
+        if (!a.contactAddressProfile && b.contactAddressProfile) {
+          return -1;
+        }
 
-          const displayName_a = `${a.contactAddressProfile.firstName} ${a.contactAddressProfile.lastName}`;
-          const displayName_b = `${b.contactAddressProfile.firstName} ${b.contactAddressProfile.lastName}`;
-          return displayName_a.localeCompare(displayName_b);
-    });
+        const displayName_a = `${a.contactAddressProfile.firstName} ${a.contactAddressProfile.lastName}`;
+        const displayName_b = `${b.contactAddressProfile.firstName} ${b.contactAddressProfile.lastName}`;
+        return displayName_a.localeCompare(displayName_b);
+      });
   });
 </script>
 
@@ -76,12 +76,7 @@
         <!-- TODO: Possible actions: trust, transfer money -->
         {#each contacts.filter(o => !!o.contactAddressProfile) as contact}
             <!--<ChatListCard contact={contact} />-->
-            <ContactCard
-               pictureUrl={contact.contactAddressProfile.avatarUrl ? contact.contactAddressProfile.avatarUrl : AvataarGenerator.generate(contact.contactAddress)}
-               displayName={`${contact.contactAddressProfile.firstName} ${contact.contactAddressProfile.lastName ? contact.contactAddressProfile.lastName : ''}`}
-               safeAddress={contact.contactAddress}
-               message=""
-            }}/>
+            <ContactCard contact={contact}/>
         {/each}
     {/if}
 </div>

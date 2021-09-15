@@ -80,9 +80,9 @@
     cityGeonameid?: number;
     city: any;
     // The incoming trust limit
-    trustedBy?: number;
+    trustsYou?: any;
     // The outgoing trust limit
-    trusting?: number;
+    youTrust?: any;
   } = {};
 
   async function loadProfile() {
@@ -158,6 +158,8 @@
       trustedBy: undefined,
       cityGeonameid: apiProfile.cityGeonameid,
       city: apiProfile.city,
+      trustsYou: apiProfile.trustsYou ?? 0,
+      youTrust: apiProfile.youTrust ?? 0
     };
 
     console.log("PROFILE: ", profile);
@@ -368,6 +370,22 @@
               </div>
             </div>
           </section> -->
+            {#if profile.youTrust || profile.trustsYou}
+            <section class="justify-center mb-2 ">
+              <div class="flex flex-col w-full pt-2 space-y-1">
+                <div class="text-left text-2xs text-dark-lightest">Trust</div>
+                <div class="flex flex-wrap content-start">
+                  {#if profile.youTrust > 0 && profile.trustsYou > 0}
+                    mututal trust
+                  {:else if !profile.youTrust && profile.trustsYou > 0}
+                    is trusting you
+                  {:else if profile.youTrust > 0 && !profile.trustsYou}
+                    you are trusting
+                  {/if}
+                </div>
+              </div>
+            </section>
+            {/if}
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="text-left text-2xs text-dark-lightest">Common friends</div>

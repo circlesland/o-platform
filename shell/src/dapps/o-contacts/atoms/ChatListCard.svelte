@@ -27,7 +27,17 @@
                     ? AvataarGenerator.generate(contactProfile.circlesAddress)
                     : null);
     safeAddress = contactProfile.circlesAddress;
-    message = `Text text text ...`;
+    message = "";
+    if (contact.trustsYou > 0 && contact.youTrust > 0) {
+      message += "mutual trust | ";
+    } else if (!contact.trustsYou && contact.youTrust > 0) {
+      message += "trusted by you | ";
+    } else if (contact.trustsYou > 0 && !contact.youTrust) {
+      message += "is trusting you | ";
+    } else {
+      message += "not trusted | "
+    }
+    message += contact.lastEvent ? contact.lastEvent.payload.__typename : "";
   });
 
   function loadDetailPage(path) {
@@ -52,7 +62,17 @@
 
 <div on:click="{() => loadDetailPage(safeAddress)}">
   <ItemCard
-    params="{{ edgeless: false, imageUrl: pictureUrl, title: displayName, subTitle: message, truncateMain: true }}">
+    params="{{
+      edgeless: false,
+      imageUrl: pictureUrl,
+      title: displayName,
+      subTitle: message,
+      truncateMain: true,
+      imageAction: (e) => {
+        push(`#/friends/${contact.contactAddress}`);
+        e.stopPropagation();
+      },
+    }}">
     <div slot="itemCardStart">
       <div class="inline-flex">
         <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">

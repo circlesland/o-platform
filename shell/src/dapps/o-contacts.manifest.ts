@@ -81,12 +81,25 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       {
         key: "setTrust",
         icon: "trust",
-        title: "Untrust/Trust",
+        title: "Trust",
         action: async () => {
           window.o.runProcess(setTrust, {
-            trustLimit: 123,
+            trustLimit: 100,
             trustReceiver: recipientSafeAddress,
-            safeAddress: "",
+            safeAddress: circlesAddress,
+            privateKey: localStorage.getItem("circlesKey"),
+          });
+        }
+      },
+      {
+        key: "setTrust",
+        icon: "untrust",
+        title: "Untrust",
+        action: async () => {
+          window.o.runProcess(setTrust, {
+            trustLimit: 0,
+            trustReceiver: recipientSafeAddress,
+            safeAddress: circlesAddress,
             privateKey: localStorage.getItem("circlesKey"),
           });
         }

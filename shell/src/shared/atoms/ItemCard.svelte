@@ -15,6 +15,7 @@
     shadowMedium: null,
     noShadow: false,
     action: null,
+    imageAction: null,
     endTextBig: null,
     endTextBigClass: "text-success",
     endTextSmall: null,
@@ -43,10 +44,12 @@
         <div>
           <div class="inline-flex">
             <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
+              <a on:click={(e) => {if (params.imageAction) params.imageAction(e)}}>
               <img
                 class="rounded-full"
                 src="{params.imageUrl}"
                 alt="{params.imageAlt ? params.imageAlt : params.title}" />
+              </a>
             </div>
           </div>
 

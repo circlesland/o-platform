@@ -82,6 +82,13 @@
       edgeless: false,
       imageUrl: transfer.direction === 'in' ? fromProfile.avatarUrl : toProfile.avatarUrl,
       imageAlt: transfer.direction === 'in' ? fromProfile.circlesAddress : toProfile.circlesAddress,
+      imageAction: (e) => {
+        const target = transfer.direction === 'in'
+          ? fromProfile.circlesAddress
+          : toProfile.circlesAddress;
+        push(`#/friends/${target}`);
+        e.stopPropagation();
+      },
       title: transfer.direction === 'in'
         ? fromProfile.firstName + ' ' + fromProfile.lastName
         : toProfile.firstName + ' ' + toProfile.lastName,

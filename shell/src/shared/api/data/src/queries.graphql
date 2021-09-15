@@ -198,6 +198,30 @@ query contacts($safeAddress:String!) {
             circlesAddress
         }
         lastContactAt
+        lastEvent {
+            block_number
+            direction
+            id
+            safe_address
+            timestamp
+            transaction_hash
+            transaction_index
+            type
+            value
+            payload {
+                ... on CrcHubTransfer {
+                    id
+                    from
+                    to
+                    flow
+                }
+                ... on CrcTrust {
+                    address
+                    can_send_to
+                    limit
+                }
+            }
+        }
         youTrust
         trustsYou
     }
@@ -401,6 +425,32 @@ query profileBySafeAddress($safeAddress:String!) {
             country
             name
         }
+        lastEvent {
+            block_number
+            direction
+            id
+            safe_address
+            timestamp
+            transaction_hash
+            transaction_index
+            type
+            value
+            payload {
+                ... on CrcHubTransfer {
+                    id
+                    from
+                    to
+                    flow
+                }
+                ... on CrcTrust {
+                    address
+                    can_send_to
+                    limit
+                }
+            }
+        }
+        youTrust
+        trustsYou
     }
 }
 

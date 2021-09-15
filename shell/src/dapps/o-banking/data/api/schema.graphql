@@ -81,6 +81,7 @@ type Contact {
     contactAddress: String!
     contactAddressProfile: Profile
     lastContactAt: String
+    lastEvent: ProfileEvent
     safeAddress: String!
     safeAddressProfile: Profile
     trustsYou: Int
@@ -270,10 +271,13 @@ type Profile {
     dream: String
     firstName: String!
     id: Int!
+    lastEvent: ProfileEvent
     lastName: String
     newsletter: Boolean
     offers: [Offer!]
     status: String
+    trustsYou: Int
+    youTrust: Int
 }
 
 type ProfileEvent {

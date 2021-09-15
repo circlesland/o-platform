@@ -80,6 +80,7 @@ export type Contact = {
   contactAddress: Scalars['String'];
   contactAddressProfile?: Maybe<Profile>;
   lastContactAt?: Maybe<Scalars['String']>;
+  lastEvent?: Maybe<ProfileEvent>;
   safeAddress: Scalars['String'];
   safeAddressProfile?: Maybe<Profile>;
   trustsYou?: Maybe<Scalars['Int']>;
@@ -409,10 +410,13 @@ export type Profile = {
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['Int'];
+  lastEvent?: Maybe<ProfileEvent>;
   lastName?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
   offers?: Maybe<Array<Offer>>;
   status?: Maybe<Scalars['String']>;
+  trustsYou?: Maybe<Scalars['Int']>;
+  youTrust?: Maybe<Scalars['Int']>;
 };
 
 export type ProfileEvent = {

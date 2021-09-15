@@ -1,70 +1,35 @@
 <script lang="ts">
-  import { transfer } from "../../o-banking/processes/transfer";
-  // import { TrustObject } from "../../o-banking/data/circles/types";
-  // import { tryGetCurrentSafe } from "../../o-banking/init";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import Icons from "../../../shared/molecules/Icons.svelte";
   import { push } from "svelte-spa-router";
 
   import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-  /*
-  export let trusting: TrustObject;
-  export let trustedBy: TrustObject;
-  export let untrusted: TrustObject;
-   */
+  import {Contact} from "../../../shared/api/data/types";
+  import {onMount} from "svelte";
 
-  export let pictureUrl: string;
-  export let displayName: string;
-  export let safeAddress: string;
-  export let message: string;
+  export let contact:Contact;
 
-  let id: String;
+  let pictureUrl: string;
+  let displayName: string;
+  let safeAddress: string;
+  let message: string;
 
-  $: {
-    /*
-    if (untrusted) {
-      // <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
-      displayName = untrusted.profile
-        ? untrusted.profile.displayName
-        : untrusted.safeAddress;
-      pictureUrl = untrusted.profile ? untrusted.profile.avatarUrl : undefined;
-      safeAddress = untrusted.safeAddress;
-      id = untrusted._id;
-      message = "Not trusted";
-    } else if (trustedBy && trusting) {
-      // <!-- TODO: Possible actions: untrust, transfer money -->
-      displayName = trustedBy.profile
-        ? trustedBy.profile.displayName
-        : trustedBy.safeAddress;
-      pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
-      safeAddress = trusting.safeAddress;
-      id = trustedBy._id;
-      message = "Mutual trust";
-    } else if (trustedBy) {
-      // <!-- TODO: Possible actions: trust, transfer money -->
-      displayName = trustedBy.profile
-        ? trustedBy.profile.displayName
-        : trustedBy.safeAddress;
-      pictureUrl = trustedBy.profile ? trustedBy.profile.avatarUrl : undefined;
-      safeAddress = trustedBy.safeAddress;
-      id = trustedBy._id;
-      message = "Is trusting you";
-    } else if (trusting) {
-      // <!-- TODO: Possible actions: untrust -->
-      displayName = trusting.profile
-        ? trusting.profile.displayName
-        : trusting.safeAddress;
-      pictureUrl = trusting.profile ? trusting.profile.avatarUrl : undefined;
-      safeAddress = trusting.safeAddress;
-      id = trusting._id;
-      message = "Trusted by you";
+  onMount(() => {
+    pictureUrl= contact.contactAddressProfile.avatarUrl ? contact.contactAddressProfile.avatarUrl : AvataarGenerator.generate(contact.contactAddress);
+    displayName=`${contact.contactAddressProfile.firstName} ${contact.contactAddressProfile.lastName ? contact.contactAddressProfile.lastName : ''}`
+    safeAddress=contact.contactAddress;
+    message = "";
+    if (contact.trustsYou > 0 && contact.youTrust > 0) {
+      message += "mutual trust";
+    } else if (!contact.trustsYou && contact.youTrust > 0) {
+      message += "trusted by you";
+    } else if (contact.trustsYou > 0 && !contact.youTrust) {
+      message += "is trusting you";
+    } else {
+      message += "not trusted"
     }
+  })
 
-    if (!pictureUrl) {
-      pictureUrl = AvataarGenerator.generate(safeAddress);
-    }
-     */
-  }
 
   function loadDetailPage(path) {
     push(`#/friends/${path}`);

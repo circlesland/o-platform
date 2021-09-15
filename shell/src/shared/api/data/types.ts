@@ -80,6 +80,7 @@ export type Contact = {
   contactAddress: Scalars['String'];
   contactAddressProfile?: Maybe<Profile>;
   lastContactAt?: Maybe<Scalars['String']>;
+  lastEvent?: Maybe<ProfileEvent>;
   safeAddress: Scalars['String'];
   safeAddressProfile?: Maybe<Profile>;
   trustsYou?: Maybe<Scalars['Int']>;
@@ -409,10 +410,13 @@ export type Profile = {
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['Int'];
+  lastEvent?: Maybe<ProfileEvent>;
   lastName?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
   offers?: Maybe<Array<Offer>>;
   status?: Maybe<Scalars['String']>;
+  trustsYou?: Maybe<Scalars['Int']>;
+  youTrust?: Maybe<Scalars['Int']>;
 };
 
 export type ProfileEvent = {
@@ -1066,6 +1070,16 @@ export type ContactsQuery = (
     )>, safeAddressProfile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )>, lastEvent?: Maybe<(
+      { __typename?: 'ProfileEvent' }
+      & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+      & { payload?: Maybe<(
+        { __typename?: 'CrcHubTransfer' }
+        & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+      ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
+        { __typename?: 'CrcTrust' }
+        & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
+      ) | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' }> }
     )> }
   )> }
 );
@@ -1210,10 +1224,20 @@ export type ProfileBySafeAddressQuery = (
   { __typename?: 'Query' }
   & { profilesBySafeAddress: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName' | 'dream' | 'country' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName' | 'dream' | 'country' | 'cityGeonameid' | 'youTrust' | 'trustsYou'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
+    )>, lastEvent?: Maybe<(
+      { __typename?: 'ProfileEvent' }
+      & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+      & { payload?: Maybe<(
+        { __typename?: 'CrcHubTransfer' }
+        & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+      ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
+        { __typename?: 'CrcTrust' }
+        & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
+      ) | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' }> }
     )> }
   )> }
 );
@@ -1595,6 +1619,30 @@ export const ContactsDocument = gql`
       circlesAddress
     }
     lastContactAt
+    lastEvent {
+      block_number
+      direction
+      id
+      safe_address
+      timestamp
+      transaction_hash
+      transaction_index
+      type
+      value
+      payload {
+        ... on CrcHubTransfer {
+          id
+          from
+          to
+          flow
+        }
+        ... on CrcTrust {
+          address
+          can_send_to
+          limit
+        }
+      }
+    }
     youTrust
     trustsYou
   }
@@ -1804,6 +1852,32 @@ export const ProfileBySafeAddressDocument = gql`
       country
       name
     }
+    lastEvent {
+      block_number
+      direction
+      id
+      safe_address
+      timestamp
+      transaction_hash
+      transaction_index
+      type
+      value
+      payload {
+        ... on CrcHubTransfer {
+          id
+          from
+          to
+          flow
+        }
+        ... on CrcTrust {
+          address
+          can_send_to
+          limit
+        }
+      }
+    }
+    youTrust
+    trustsYou
   }
 }
     `;
