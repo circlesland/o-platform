@@ -61,7 +61,7 @@ export class ApiConnection
 
         const client = new ApolloClient({
             link: httpLink,
-            cache: new InMemoryCache(),
+            cache: new InMemoryCache({}),
             defaultOptions: ApiConnection._defaultOptions
         });
 

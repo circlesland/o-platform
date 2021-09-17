@@ -22,6 +22,17 @@ export type AssetBalance = {
   token_owner_profile?: Maybe<Profile>;
 };
 
+export type ChatMessage = IEventPayload & {
+  __typename?: 'ChatMessage';
+  from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
+  id: Scalars['Int'];
+  text: Scalars['String'];
+  to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
+  transaction_id?: Maybe<Scalars['Int']>;
+};
+
 export type City = ICity & {
   __typename?: 'City';
   country: Scalars['String'];
@@ -202,7 +213,7 @@ export type EthTransfer = IEventPayload & {
   value: Scalars['String'];
 };
 
-export type EventPayload = CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer;
+export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer;
 
 export type ExchangeTokenResponse = {
   __typename?: 'ExchangeTokenResponse';
@@ -239,7 +250,7 @@ export type ICity = {
 
 export type IEventPayload = {
   id: Scalars['Int'];
-  transaction_id: Scalars['Int'];
+  transaction_id?: Maybe<Scalars['Int']>;
 };
 
 export type LockOfferInput = {
@@ -260,7 +271,7 @@ export type LogoutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  acknowledge: ProfileEvent;
+  acknowledge: Scalars['Boolean'];
   authenticateAt: DelegateAuthInit;
   claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
@@ -283,7 +294,7 @@ export type Mutation = {
 
 
 export type MutationAcknowledgeArgs = {
-  eventId: Scalars['Int'];
+  until: Scalars['String'];
 };
 
 
@@ -330,7 +341,6 @@ export type MutationRequestUpdateSafeArgs = {
 export type MutationSendMessageArgs = {
   content: Scalars['String'];
   toSafeAddress: Scalars['String'];
-  type: Scalars['String'];
 };
 
 
@@ -421,7 +431,7 @@ export type Profile = {
 
 export type ProfileEvent = {
   __typename?: 'ProfileEvent';
-  block_number: Scalars['Int'];
+  block_number?: Maybe<Scalars['Int']>;
   direction: Scalars['String'];
   id: Scalars['Int'];
   payload?: Maybe<EventPayload>;
@@ -429,10 +439,10 @@ export type ProfileEvent = {
   safe_address_profile?: Maybe<Profile>;
   tags?: Maybe<Array<Tag>>;
   timestamp: Scalars['String'];
-  transaction_hash: Scalars['String'];
-  transaction_index: Scalars['Int'];
+  transaction_hash?: Maybe<Scalars['String']>;
+  transaction_index?: Maybe<Scalars['Int']>;
   type: Scalars['String'];
-  value: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 export type ProvePaymentResult = {
@@ -471,6 +481,7 @@ export type Query = {
   contacts: Array<Contact>;
   eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
+  inbox: Array<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
@@ -808,6 +819,101 @@ export type ClaimInvitationMutation = (
   ) }
 );
 
+export type AcknowledgeMutationVariables = Exact<{
+  until: Scalars['String'];
+}>;
+
+
+export type AcknowledgeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'acknowledge'>
+);
+
+export type SendMessageMutationVariables = Exact<{
+  toSafeAddress: Scalars['String'];
+  content: Scalars['String'];
+}>;
+
+
+export type SendMessageMutation = (
+  { __typename?: 'Mutation' }
+  & { sendMessage: (
+    { __typename?: 'SendMessageResult' }
+    & Pick<SendMessageResult, 'success' | 'error'>
+    & { event?: Maybe<(
+      { __typename?: 'ProfileEvent' }
+      & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+      & { safe_address_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, tags?: Maybe<Array<(
+        { __typename?: 'Tag' }
+        & Pick<Tag, 'id' | 'typeId' | 'value'>
+      )>>, payload?: Maybe<(
+        { __typename?: 'ChatMessage' }
+        & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      ) | (
+        { __typename?: 'CrcHubTransfer' }
+        & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, transfers: Array<(
+          { __typename?: 'CrcTokenTransfer' }
+          & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
+          & { from_profile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          )>, to_profile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          )> }
+        )> }
+      ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
+        { __typename?: 'CrcTrust' }
+        & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
+        & { address_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, can_send_to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      ) | (
+        { __typename?: 'EthTransfer' }
+        & Pick<EthTransfer, 'id' | 'from' | 'to' | 'value'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      ) | (
+        { __typename?: 'GnosisSafeEthTransfer' }
+        & Pick<GnosisSafeEthTransfer, 'id' | 'from' | 'to' | 'value'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      )> }
+    )> }
+  ) }
+);
+
 export type RedeemClaimedInvitationMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1073,7 +1179,7 @@ export type ContactsQuery = (
     )>, lastEvent?: Maybe<(
       { __typename?: 'ProfileEvent' }
       & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
-      & { payload?: Maybe<(
+      & { payload?: Maybe<{ __typename?: 'ChatMessage' } | (
         { __typename?: 'CrcHubTransfer' }
         & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
       ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
@@ -1123,6 +1229,94 @@ export type ChatHistoryQuery = (
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'typeId' | 'value'>
     )>>, payload?: Maybe<(
+      { __typename?: 'ChatMessage' }
+      & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    ) | (
+      { __typename?: 'CrcHubTransfer' }
+      & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, transfers: Array<(
+        { __typename?: 'CrcTokenTransfer' }
+        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      )> }
+    ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
+      { __typename?: 'CrcTrust' }
+      & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
+      & { address_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, can_send_to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    ) | (
+      { __typename?: 'EthTransfer' }
+      & Pick<EthTransfer, 'id' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    ) | (
+      { __typename?: 'GnosisSafeEthTransfer' }
+      & Pick<GnosisSafeEthTransfer, 'id' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    )> }
+  )> }
+);
+
+export type InboxQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InboxQuery = (
+  { __typename?: 'Query' }
+  & { inbox: Array<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+    & { safe_address_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>>, payload?: Maybe<(
+      { __typename?: 'ChatMessage' }
+      & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    ) | (
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
@@ -1231,7 +1425,7 @@ export type ProfileBySafeAddressQuery = (
     )>, lastEvent?: Maybe<(
       { __typename?: 'ProfileEvent' }
       & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
-      & { payload?: Maybe<(
+      & { payload?: Maybe<{ __typename?: 'ChatMessage' } | (
         { __typename?: 'CrcHubTransfer' }
         & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
       ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
@@ -1335,6 +1529,163 @@ export const ClaimInvitationDocument = gql`
       createdByProfileId
       claimedAt
       claimedByProfileId
+    }
+  }
+}
+    `;
+export const AcknowledgeDocument = gql`
+    mutation acknowledge($until: String!) {
+  acknowledge(until: $until)
+}
+    `;
+export const SendMessageDocument = gql`
+    mutation sendMessage($toSafeAddress: String!, $content: String!) {
+  sendMessage(toSafeAddress: $toSafeAddress, content: $content) {
+    success
+    error
+    event {
+      block_number
+      direction
+      id
+      safe_address
+      safe_address_profile {
+        id
+        firstName
+        lastName
+        avatarUrl
+        circlesAddress
+      }
+      timestamp
+      transaction_hash
+      transaction_index
+      type
+      value
+      tags {
+        id
+        typeId
+        value
+      }
+      payload {
+        ... on ChatMessage {
+          id
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          text
+        }
+        ... on CrcHubTransfer {
+          id
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          flow
+          transfers {
+            token
+            from
+            from_profile {
+              id
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+            }
+            to
+            to_profile {
+              id
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+            }
+            value
+          }
+        }
+        ... on EthTransfer {
+          id
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+        ... on GnosisSafeEthTransfer {
+          id
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+        ... on CrcTrust {
+          address
+          address_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          can_send_to
+          can_send_to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          limit
+        }
+      }
     }
   }
 }
@@ -1698,6 +2049,174 @@ export const ChatHistoryDocument = gql`
       value
     }
     payload {
+      ... on ChatMessage {
+        id
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        text
+      }
+      ... on CrcHubTransfer {
+        id
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+      }
+      ... on EthTransfer {
+        id
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
+      ... on GnosisSafeEthTransfer {
+        id
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
+      ... on CrcTrust {
+        address
+        address_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        can_send_to
+        can_send_to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        limit
+      }
+    }
+  }
+}
+    `;
+export const InboxDocument = gql`
+    query inbox {
+  inbox {
+    block_number
+    direction
+    id
+    safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    timestamp
+    transaction_hash
+    transaction_index
+    type
+    value
+    tags {
+      id
+      typeId
+      value
+    }
+    payload {
+      ... on ChatMessage {
+        id
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        text
+      }
       ... on CrcHubTransfer {
         id
         from
@@ -1955,6 +2474,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     claimInvitation(variables: ClaimInvitationMutationVariables): Promise<ClaimInvitationMutation> {
       return withWrapper(() => client.request<ClaimInvitationMutation>(print(ClaimInvitationDocument), variables));
     },
+    acknowledge(variables: AcknowledgeMutationVariables): Promise<AcknowledgeMutation> {
+      return withWrapper(() => client.request<AcknowledgeMutation>(print(AcknowledgeDocument), variables));
+    },
+    sendMessage(variables: SendMessageMutationVariables): Promise<SendMessageMutation> {
+      return withWrapper(() => client.request<SendMessageMutation>(print(SendMessageDocument), variables));
+    },
     redeemClaimedInvitation(variables?: RedeemClaimedInvitationMutationVariables): Promise<RedeemClaimedInvitationMutation> {
       return withWrapper(() => client.request<RedeemClaimedInvitationMutation>(print(RedeemClaimedInvitationDocument), variables));
     },
@@ -2011,6 +2536,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     chatHistory(variables: ChatHistoryQueryVariables): Promise<ChatHistoryQuery> {
       return withWrapper(() => client.request<ChatHistoryQuery>(print(ChatHistoryDocument), variables));
+    },
+    inbox(variables?: InboxQueryVariables): Promise<InboxQuery> {
+      return withWrapper(() => client.request<InboxQuery>(print(InboxDocument), variables));
     },
     invitationTransaction(variables?: InvitationTransactionQueryVariables): Promise<InvitationTransactionQuery> {
       return withWrapper(() => client.request<InvitationTransactionQuery>(print(InvitationTransactionDocument), variables));

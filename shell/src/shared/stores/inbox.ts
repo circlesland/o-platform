@@ -1,27 +1,20 @@
 import {writable} from "svelte/store";
+import {AcknowledgeDocument, InboxDocument, Profile, ProfileEvent} from "../api/data/types";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {AcknowledgeDocument, Profile, ProfileEvent} from "../../dapps/o-chat/data/api/types";
-// import {SafeTimelineDocument} from "../../dapps/o-banking/data/api/types";
 
 let events:ProfileEvent[] = [];
 async function queryEvents()
 {
-    /*
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
-        query: SafeTimelineDocument,
-        variables: {
-            safeAddress: null
-        }
+        query: InboxDocument
     });
     if (result.errors) {
         console.error(result.errors);
         return [];
     }
 
-    return result.data.events;
-     */
-    return [];
+    return result.data.inbox;
 }
 
 
@@ -52,16 +45,16 @@ const { subscribe, set, update } = writable<ProfileEvent[]|null>(null, function 
 
 export const inbox = {
     subscribe,
-    acknowledge: async (eventId:number) => {
+    acknowledge: async (event:ProfileEvent) => {
         // console.log("Acking event:", eventId);
         const apiClient = await window.o.apiClient.client.subscribeToResult();
         await apiClient.mutate({
             mutation: AcknowledgeDocument,
             variables: {
-                eventId: eventId
+                until: new Date(event.timestamp).toJSON()
             }
         });
-        const e = events.find(o => o.id == eventId);
+        const e = events.find(o => o.timestamp == event.timestamp);
         events.splice(events.indexOf(e), 1);
         update(() => events);
     }

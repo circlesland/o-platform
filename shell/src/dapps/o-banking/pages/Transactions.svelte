@@ -32,7 +32,8 @@
     const timeline = await apiClient.query({
       query: TransactionTimelineDocument,
       variables: {
-        safeAddress: $me.circlesAddress //this.safeAddress
+        safeAddress: $me.circlesAddress, //this.safeAddress,
+        // fromBlock: 16471696
       }
     });
     if (timeline.errors) {

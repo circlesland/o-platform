@@ -12,6 +12,7 @@ import { transfer } from "./o-banking/processes/transfer";
 import { setTrust } from "./o-banking/processes/setTrust";
 import {loadProfileByProfileId} from "../shared/api/loadProfileByProfileId";
 import {push} from "svelte-spa-router";
+import {loadProfileBySafeAddress} from "../shared/api/loadProfileBySafeAddress";
 
 export interface DappState {
   // put state here
@@ -44,75 +45,85 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
   isSystem: false,
   routeParts: ["=actions"],
   items: async (params, runtimeDapp) => {
-    const getRecipientAddress = async () => {
+    const getRecipientProfile = async () => {
       if (RpcGateway.get().utils.isAddress(params.id)) {
-        return params.id;
+        const profile = await loadProfileBySafeAddress(params.id);
+        if (profile) {
+          return profile;
+        }
       } else if (Number.isInteger(params.id)) {
         const profile = await loadProfileByProfileId(parseInt(params.id));
         if (profile) {
-          return profile.circlesAddress;
+          return profile;
         }
       }
       return undefined;
     };
 
-    const recipientSafeAddress = params.id
-      ? await getRecipientAddress()
+    const recipientProfile = params.id
+      ? await getRecipientProfile()
       : undefined;
 
-    let circlesAddress;
+    let mySafeAddress;
     me.subscribe(o => {
-      circlesAddress = o.circlesAddress
+      mySafeAddress = o.circlesAddress
     });
 
-    return [
-      {
-        key: "transfer",
-        icon: "sendmoney",
-        title: "Send Money",
-        action: async () => {
-          window.o.runProcess(transfer, {
-            safeAddress: circlesAddress,
-            recipientAddress: recipientSafeAddress,
-            privateKey: localStorage.getItem("circlesKey"),
-          });
+    let actions = [];
+    if (recipientProfile?.circlesAddress) {
+      actions = actions.concat([
+        {
+          key: "transfer",
+          icon: "sendmoney",
+          title: "Send Money",
+          action: async () => {
+            window.o.runProcess(transfer, {
+              safeAddress: mySafeAddress,
+              recipientAddress: recipientProfile.circlesAddress,
+              privateKey: localStorage.getItem("circlesKey"),
+            });
+          },
         },
-      },
-      {
-        key: "setTrust",
-        icon: "trust",
-        title: "Trust",
-        action: async () => {
-          window.o.runProcess(setTrust, {
-            trustLimit: 100,
-            trustReceiver: recipientSafeAddress,
-            safeAddress: circlesAddress,
-            privateKey: localStorage.getItem("circlesKey"),
-          });
+        !recipientProfile.youTrust
+          ? {
+          key: "setTrust",
+          icon: "trust",
+          title: "Trust",
+          action: async () => {
+            window.o.runProcess(setTrust, {
+              trustLimit: 100,
+              trustReceiver: recipientProfile.circlesAddress,
+              safeAddress: mySafeAddress,
+              privateKey: localStorage.getItem("circlesKey"),
+            });
+          }
         }
-      },
-      {
-        key: "setTrust",
-        icon: "untrust",
-        title: "Untrust",
-        action: async () => {
-          window.o.runProcess(setTrust, {
-            trustLimit: 0,
-            trustReceiver: recipientSafeAddress,
-            safeAddress: circlesAddress,
-            privateKey: localStorage.getItem("circlesKey"),
-          });
-        }
-      },
-      {
+        : {
+          key: "setTrust",
+          icon: "untrust",
+          title: "Untrust",
+          action: async () => {
+            window.o.runProcess(setTrust, {
+              trustLimit: 0,
+              trustReceiver: recipientProfile.circlesAddress,
+              safeAddress: mySafeAddress,
+              privateKey: localStorage.getItem("circlesKey"),
+            });
+          }
+        }]);
+    }
+    if (recipientProfile.id) {
+      actions = actions.concat({
         key: "chat",
         icon: "chat",
         title: "Chat",
         action: async () => {
-          push("#/chat/" + recipientSafeAddress);
-        },
-      }
-    ];
+          push("#/chat/" + recipientProfile.circlesAddress);
+        }
+      });
+    }
+
+    return actions;
   },
 };
 

@@ -5,11 +5,10 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import NotificationViewer from "@o-platform/o-editors/src/NotificationViewer.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { ProfileEvent } from "../../dapps/o-banking/data/api/types";
-import { AcknowledgeDocument } from "../../dapps/o-chat/data/api/types";
 import HtmlViewer from "../../../../packages/o-editors/src/HtmlViewer.svelte";
 import { inbox } from "../stores/inbox";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
+import {ProfileEvent} from "../api/data/types";
 
 export type ShowNotificationsContextData = {
   events: ProfileEvent[];
@@ -114,7 +113,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         entry: () => console.log("acknowledge entry"),
         invoke: {
           src: async (context) => {
-            await inbox.acknowledge(context.data.currentEvent.id);
+            await inbox.acknowledge(context.data.currentEvent);
           },
           onDone: "#fetchNext",
           onError: "#error",

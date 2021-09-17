@@ -22,6 +22,17 @@ export type AssetBalance = {
   token_owner_profile?: Maybe<Profile>;
 };
 
+export type ChatMessage = IEventPayload & {
+  __typename?: 'ChatMessage';
+  from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
+  id: Scalars['Int'];
+  text: Scalars['String'];
+  to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
+  transaction_id?: Maybe<Scalars['Int']>;
+};
+
 export type City = ICity & {
   __typename?: 'City';
   country: Scalars['String'];
@@ -202,7 +213,7 @@ export type EthTransfer = IEventPayload & {
   value: Scalars['String'];
 };
 
-export type EventPayload = CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer;
+export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer;
 
 export type ExchangeTokenResponse = {
   __typename?: 'ExchangeTokenResponse';
@@ -239,7 +250,7 @@ export type ICity = {
 
 export type IEventPayload = {
   id: Scalars['Int'];
-  transaction_id: Scalars['Int'];
+  transaction_id?: Maybe<Scalars['Int']>;
 };
 
 export type LockOfferInput = {
@@ -421,7 +432,7 @@ export type Profile = {
 
 export type ProfileEvent = {
   __typename?: 'ProfileEvent';
-  block_number: Scalars['Int'];
+  block_number?: Maybe<Scalars['Int']>;
   direction: Scalars['String'];
   id: Scalars['Int'];
   payload?: Maybe<EventPayload>;
@@ -429,10 +440,10 @@ export type ProfileEvent = {
   safe_address_profile?: Maybe<Profile>;
   tags?: Maybe<Array<Tag>>;
   timestamp: Scalars['String'];
-  transaction_hash: Scalars['String'];
-  transaction_index: Scalars['Int'];
+  transaction_hash?: Maybe<Scalars['String']>;
+  transaction_index?: Maybe<Scalars['Int']>;
   type: Scalars['String'];
-  value: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 export type ProvePaymentResult = {
@@ -810,7 +821,7 @@ export type TransactionTimelineQuery = (
     )>, tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'typeId' | 'value'>
-    )>>, payload?: Maybe<(
+    )>>, payload?: Maybe<{ __typename?: 'ChatMessage' } | (
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
@@ -861,7 +872,7 @@ export type TransactionByHashQuery = (
     )>, tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'typeId' | 'value'>
-    )>>, payload?: Maybe<(
+    )>>, payload?: Maybe<{ __typename?: 'ChatMessage' } | (
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(

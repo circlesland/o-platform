@@ -9,7 +9,7 @@
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
   import {
-    ChatHistoryDocument, Contact, ContactDocument
+    ChatHistoryDocument, ChatMessage, Contact, ContactDocument, SendMessageDocument
   } from "../../../shared/api/data/types";
   import {me} from "../../../shared/stores/me";
   import {ProfileEvent} from "../data/api/types";
@@ -66,8 +66,19 @@
   let inputField: any;
   let chatmessage: string;
 
-  const addToChatData = chatdetails => {
-    $chatdata = [...$chatdata, chatdetails];
+  const sendMessage = async text => {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const result = await apiClient.mutate({
+      mutation: SendMessageDocument,
+      variables: {
+        toSafeAddress: id,
+        content: text
+      }
+    });
+
+    if (result.data?.sendMessage?.success) {
+      chatHistory = [...chatHistory, result.data.sendMessage.event];
+    }
 
     window.o.publishEvent(<any>{
       type: "shell.scrollToBottom",
@@ -114,38 +125,16 @@
     // }
   });
 
-  var eliza = new ElizaBot();
-  var initial = eliza.getInitial();
-
-  function submitChat() {
+  async function submitChat() {
     if (!chatmessage) {
       return;
     }
-    let elizamesssage = eliza.transform(chatmessage);
 
-    addToChatData({
-      outgoing: true,
-      name: "Jakob Lund",
-      time: "just now",
-      image:
-        "https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/jmnPVI+hYsO421vA/",
-      text: chatmessage,
-    });
+    sendMessage(chatmessage);
 
     chatmessage = null;
     let textarea = document.querySelector("textarea");
     textarea.style.cssText = "height:auto; padding:0 padding-top: 2px;";
-
-    setTimeout(async () => {
-      addToChatData({
-        outgoing: false,
-        name: "Martin Köppelmann",
-        time: "just now",
-        image:
-          "https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/PP2WbUHmpaCg9Gk7/",
-        text: elizamesssage,
-      });
-    }, 850);
   }
 
   function onkeydown(e: KeyboardEvent) {
@@ -166,6 +155,12 @@
     }[] = [];
 
     switch (chat.type) {
+      case "chat_message":
+        notificationType = "chat_message";
+        title = `${chat.payload.text}`;
+        outgoing = chat.payload.from !== $me.circlesAddress.toLowerCase();
+        chat.safe_address_profile = chat.payload.from_profile;
+        break;
       case "crc_trust":
         if (chat.payload.limit == 0 && chat.safe_address == $me.circlesAddress) {
           notificationType = "trust_removed";
@@ -293,7 +288,9 @@
       },
       image: chat.safe_address_profile.avatarUrl
         ? chat.safe_address_profile.avatarUrl
-        : AvataarGenerator.generate(chat.safe_address),
+        : AvataarGenerator.generate(chat.safe_address_profile.circlesAddress
+          ? chat.safe_address_profile.circlesAddress
+          : chat.safe_address)
     };
   }
 </script>
@@ -340,8 +337,7 @@
             <ChatCard params={buildCardModel(chat)}/>
         {/each}
     </div>
-    <div
-            class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2">
+    <div class:hidden={!contactProfile || !contactProfile.contactAddressProfile || !contactProfile.contactAddressProfile.id} class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2">
         <div class="flex-grow">
             <!-- <input
               bind:this="{inputField}"

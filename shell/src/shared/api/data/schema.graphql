@@ -18,16 +18,26 @@ interface ICity {
 
 interface IEventPayload {
     id: Int!
-    transaction_id: Int!
+    transaction_id: Int
 }
 
-union EventPayload = CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer
+union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer
 
 type AssetBalance {
     token_address: String!
     token_balance: String!
     token_owner_address: String!
     token_owner_profile: Profile
+}
+
+type ChatMessage implements IEventPayload {
+    from: String!
+    from_profile: Profile
+    id: Int!
+    text: String!
+    to: String!
+    to_profile: Profile
+    transaction_id: Int
 }
 
 type City implements ICity {
@@ -214,7 +224,7 @@ type LogoutResponse {
 }
 
 type Mutation {
-    acknowledge(eventId: Int!): ProfileEvent!
+    acknowledge(until: String!): Boolean!
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
@@ -226,7 +236,7 @@ type Mutation {
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
-    sendMessage(content: String!, toSafeAddress: String!, type: String!): SendMessageResult!
+    sendMessage(content: String!, toSafeAddress: String!): SendMessageResult!
     tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
     unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
@@ -281,7 +291,7 @@ type Profile {
 }
 
 type ProfileEvent {
-    block_number: Int!
+    block_number: Int
     direction: String!
     id: Int!
     payload: EventPayload
@@ -289,10 +299,10 @@ type ProfileEvent {
     safe_address_profile: Profile
     tags: [Tag!]
     timestamp: String!
-    transaction_hash: String!
-    transaction_index: Int!
+    transaction_hash: String
+    transaction_index: Int
     type: String!
-    value: String!
+    value: String
 }
 
 type ProvePaymentResult {
@@ -322,6 +332,7 @@ type Query {
     contacts(safeAddress: String!): [Contact!]!
     eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
     events(fromBlock: Int, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
+    inbox: [ProfileEvent!]!
     invitationTransaction: ProfileEvent
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
