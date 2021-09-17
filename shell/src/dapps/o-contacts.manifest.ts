@@ -112,7 +112,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           }
         }]);
     }
-    if (recipientProfile.id) {
+    if (recipientProfile?.id) {
       actions = actions.concat({
         key: "chat",
         icon: "chat",
