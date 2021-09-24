@@ -19,6 +19,36 @@ query claimedInvitation {
     }
 }
 
+query invitationTransaction {
+    invitationTransaction {
+        transaction_hash
+    }
+}
+
+query safeFundingTransaction {
+    safeFundingTransaction {
+        transaction_hash
+    }
+}
+
+query myInvitations {
+    myInvitations {
+        createdAt
+        claimedAt
+        claimedBy {
+            circlesAddress
+            circlesSafeOwner
+            firstName
+            lastName
+            avatarUrl
+        }
+        name
+        address
+        balance
+        code
+    }
+}
+
 query myProfile {
     myProfile {
         id
@@ -542,18 +572,6 @@ query inbox {
                 limit
             }
         }
-    }
-}
-
-query invitationTransaction {
-    invitationTransaction {
-        transaction_hash
-    }
-}
-
-query safeFundingTransaction {
-    safeFundingTransaction {
-        transaction_hash
     }
 }
 

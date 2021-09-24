@@ -162,6 +162,7 @@ export type CrcTrust = IEventPayload & {
 
 export type CreateInvitationResult = {
   __typename?: 'CreateInvitationResult';
+  createdInviteEoas: Array<CreatedInvitation>;
   error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
@@ -173,6 +174,8 @@ export type CreateTagInput = {
 
 export type CreatedInvitation = {
   __typename?: 'CreatedInvitation';
+  address: Scalars['String'];
+  balance: Scalars['String'];
   claimedAt?: Maybe<Scalars['String']>;
   claimedBy?: Maybe<Profile>;
   claimedByProfileId?: Maybe<Scalars['Int']>;
@@ -180,6 +183,14 @@ export type CreatedInvitation = {
   createdAt: Scalars['String'];
   createdBy?: Maybe<Profile>;
   createdByProfileId: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type CreatedInviteEoa = {
+  __typename?: 'CreatedInviteEoa';
+  address: Scalars['String'];
+  fee: Scalars['String'];
+  for: Scalars['String'];
 };
 
 export type DelegateAuthInit = {
@@ -275,7 +286,7 @@ export type Mutation = {
   authenticateAt: DelegateAuthInit;
   claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
-  createInvitation: CreateInvitationResult;
+  createInvitations: CreateInvitationResult;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   lockOffer: LockOfferResult;
@@ -313,8 +324,8 @@ export type MutationConsumeDepositedChallengeArgs = {
 };
 
 
-export type MutationCreateInvitationArgs = {
-  for: Scalars['String'];
+export type MutationCreateInvitationsArgs = {
+  for: Array<Scalars['String']>;
 };
 
 
@@ -632,13 +643,9 @@ export type QueryUniqueProfileInput = {
 
 export type RedeemClaimedInvitationResult = {
   __typename?: 'RedeemClaimedInvitationResult';
-  redeemRequest?: Maybe<RedeemInvitationRequest>;
+  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
-};
-
-export type RedeemInvitationRequest = {
-  __typename?: 'RedeemInvitationRequest';
-  id: Scalars['Int'];
+  transactionHash?: Maybe<Scalars['String']>;
 };
 
 export type RequestUpdateSafeInput = {
@@ -921,10 +928,23 @@ export type RedeemClaimedInvitationMutation = (
   { __typename?: 'Mutation' }
   & { redeemClaimedInvitation: (
     { __typename?: 'RedeemClaimedInvitationResult' }
-    & Pick<RedeemClaimedInvitationResult, 'success'>
-    & { redeemRequest?: Maybe<(
-      { __typename?: 'RedeemInvitationRequest' }
-      & Pick<RedeemInvitationRequest, 'id'>
+    & Pick<RedeemClaimedInvitationResult, 'success' | 'error' | 'transactionHash'>
+  ) }
+);
+
+export type CreateInvitationsMutationVariables = Exact<{
+  for: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type CreateInvitationsMutation = (
+  { __typename?: 'Mutation' }
+  & { createInvitations: (
+    { __typename?: 'CreateInvitationResult' }
+    & Pick<CreateInvitationResult, 'success' | 'error'>
+    & { createdInviteEoas: Array<(
+      { __typename?: 'CreatedInvitation' }
+      & Pick<CreatedInvitation, 'name' | 'address'>
     )> }
   ) }
 );
@@ -1027,6 +1047,43 @@ export type ClaimedInvitationQuery = (
   & { claimedInvitation?: Maybe<(
     { __typename?: 'ClaimedInvitation' }
     & Pick<ClaimedInvitation, 'createdAt' | 'createdByProfileId' | 'claimedAt' | 'claimedByProfileId'>
+  )> }
+);
+
+export type InvitationTransactionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InvitationTransactionQuery = (
+  { __typename?: 'Query' }
+  & { invitationTransaction?: Maybe<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'transaction_hash'>
+  )> }
+);
+
+export type SafeFundingTransactionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SafeFundingTransactionQuery = (
+  { __typename?: 'Query' }
+  & { safeFundingTransaction?: Maybe<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'transaction_hash'>
+  )> }
+);
+
+export type MyInvitationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyInvitationsQuery = (
+  { __typename?: 'Query' }
+  & { myInvitations: Array<(
+    { __typename?: 'CreatedInvitation' }
+    & Pick<CreatedInvitation, 'createdAt' | 'claimedAt' | 'name' | 'address' | 'balance' | 'code'>
+    & { claimedBy?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )> }
   )> }
 );
 
@@ -1370,28 +1427,6 @@ export type InboxQuery = (
   )> }
 );
 
-export type InvitationTransactionQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type InvitationTransactionQuery = (
-  { __typename?: 'Query' }
-  & { invitationTransaction?: Maybe<(
-    { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'transaction_hash'>
-  )> }
-);
-
-export type SafeFundingTransactionQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SafeFundingTransactionQuery = (
-  { __typename?: 'Query' }
-  & { safeFundingTransaction?: Maybe<(
-    { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'transaction_hash'>
-  )> }
-);
-
 export type ProfileByIdQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -1693,10 +1728,21 @@ export const SendMessageDocument = gql`
 export const RedeemClaimedInvitationDocument = gql`
     mutation redeemClaimedInvitation {
   redeemClaimedInvitation {
-    redeemRequest {
-      id
-    }
     success
+    error
+    transactionHash
+  }
+}
+    `;
+export const CreateInvitationsDocument = gql`
+    mutation createInvitations($for: [String!]!) {
+  createInvitations(for: $for) {
+    success
+    error
+    createdInviteEoas {
+      name
+      address
+    }
   }
 }
     `;
@@ -1779,6 +1825,39 @@ export const ClaimedInvitationDocument = gql`
     createdByProfileId
     claimedAt
     claimedByProfileId
+  }
+}
+    `;
+export const InvitationTransactionDocument = gql`
+    query invitationTransaction {
+  invitationTransaction {
+    transaction_hash
+  }
+}
+    `;
+export const SafeFundingTransactionDocument = gql`
+    query safeFundingTransaction {
+  safeFundingTransaction {
+    transaction_hash
+  }
+}
+    `;
+export const MyInvitationsDocument = gql`
+    query myInvitations {
+  myInvitations {
+    createdAt
+    claimedAt
+    claimedBy {
+      circlesAddress
+      circlesSafeOwner
+      firstName
+      lastName
+      avatarUrl
+    }
+    name
+    address
+    balance
+    code
   }
 }
     `;
@@ -2320,20 +2399,6 @@ export const InboxDocument = gql`
   }
 }
     `;
-export const InvitationTransactionDocument = gql`
-    query invitationTransaction {
-  invitationTransaction {
-    transaction_hash
-  }
-}
-    `;
-export const SafeFundingTransactionDocument = gql`
-    query safeFundingTransaction {
-  safeFundingTransaction {
-    transaction_hash
-  }
-}
-    `;
 export const ProfileByIdDocument = gql`
     query profileById($id: Int!) {
   profilesById(ids: [$id]) {
@@ -2483,6 +2548,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     redeemClaimedInvitation(variables?: RedeemClaimedInvitationMutationVariables): Promise<RedeemClaimedInvitationMutation> {
       return withWrapper(() => client.request<RedeemClaimedInvitationMutation>(print(RedeemClaimedInvitationDocument), variables));
     },
+    createInvitations(variables: CreateInvitationsMutationVariables): Promise<CreateInvitationsMutation> {
+      return withWrapper(() => client.request<CreateInvitationsMutation>(print(CreateInvitationsDocument), variables));
+    },
     consumeDepositedChallenge(variables: ConsumeDepositedChallengeMutationVariables): Promise<ConsumeDepositedChallengeMutation> {
       return withWrapper(() => client.request<ConsumeDepositedChallengeMutation>(print(ConsumeDepositedChallengeDocument), variables));
     },
@@ -2503,6 +2571,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     claimedInvitation(variables?: ClaimedInvitationQueryVariables): Promise<ClaimedInvitationQuery> {
       return withWrapper(() => client.request<ClaimedInvitationQuery>(print(ClaimedInvitationDocument), variables));
+    },
+    invitationTransaction(variables?: InvitationTransactionQueryVariables): Promise<InvitationTransactionQuery> {
+      return withWrapper(() => client.request<InvitationTransactionQuery>(print(InvitationTransactionDocument), variables));
+    },
+    safeFundingTransaction(variables?: SafeFundingTransactionQueryVariables): Promise<SafeFundingTransactionQuery> {
+      return withWrapper(() => client.request<SafeFundingTransactionQuery>(print(SafeFundingTransactionDocument), variables));
+    },
+    myInvitations(variables?: MyInvitationsQueryVariables): Promise<MyInvitationsQuery> {
+      return withWrapper(() => client.request<MyInvitationsQuery>(print(MyInvitationsDocument), variables));
     },
     myProfile(variables?: MyProfileQueryVariables): Promise<MyProfileQuery> {
       return withWrapper(() => client.request<MyProfileQuery>(print(MyProfileDocument), variables));
@@ -2539,12 +2616,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     inbox(variables?: InboxQueryVariables): Promise<InboxQuery> {
       return withWrapper(() => client.request<InboxQuery>(print(InboxDocument), variables));
-    },
-    invitationTransaction(variables?: InvitationTransactionQueryVariables): Promise<InvitationTransactionQuery> {
-      return withWrapper(() => client.request<InvitationTransactionQuery>(print(InvitationTransactionDocument), variables));
-    },
-    safeFundingTransaction(variables?: SafeFundingTransactionQueryVariables): Promise<SafeFundingTransactionQuery> {
-      return withWrapper(() => client.request<SafeFundingTransactionQuery>(print(SafeFundingTransactionDocument), variables));
     },
     profileById(variables: ProfileByIdQueryVariables): Promise<ProfileByIdQuery> {
       return withWrapper(() => client.request<ProfileByIdQuery>(print(ProfileByIdDocument), variables));

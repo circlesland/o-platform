@@ -9,6 +9,7 @@ import {ExchangeTokenDocument} from "../../../../../shared/api/data/types";
 export type AcquireSessionContextData = {
   appId?: string;
   code?: string;
+  successAction?: (data:AcquireSessionContextData) => void;
 };
 
 export type AcquireSessionContext = ProcessContext<AcquireSessionContextData>;
@@ -80,6 +81,11 @@ const processDefinition = (processId: string) =>
       },
       success: {
         id: "success",
+        entry: (context) => {
+          if (context.data.successAction) {
+            context.data.successAction(context.data);
+          }
+        },
         type: "final"
       },
     },

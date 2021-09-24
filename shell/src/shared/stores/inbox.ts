@@ -46,7 +46,6 @@ const { subscribe, set, update } = writable<ProfileEvent[]|null>(null, function 
 export const inbox = {
     subscribe,
     acknowledge: async (event:ProfileEvent) => {
-        // console.log("Acking event:", eventId);
         const apiClient = await window.o.apiClient.client.subscribeToResult();
         await apiClient.mutate({
             mutation: AcknowledgeDocument,

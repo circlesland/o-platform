@@ -187,10 +187,20 @@ mutation sendMessage ($toSafeAddress:String! $content: String!) {
 
 mutation redeemClaimedInvitation {
     redeemClaimedInvitation {
-        redeemRequest {
-            id
-        }
         success
+        error
+        transactionHash
+    }
+}
+
+mutation createInvitations ($for:[String!]!) {
+    createInvitations(for: $for) {
+        success
+        error
+        createdInviteEoas {
+            name
+            address
+        }
     }
 }
 

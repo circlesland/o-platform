@@ -188,6 +188,7 @@
   declare global {
     interface Window {
       o: IShell;
+      runInitMachine: () => void;
     }
   }
 
@@ -205,14 +206,18 @@
   import {interpret} from "xstate";
   import {initMachine} from "./dapps/o-onboarding/processes/init";
 
-  var m = interpret(initMachine)
-    .onEvent(event => {
-      console.log("initMachine.event:", event);
-    })
-    .onTransition(state => {
-      console.log("initMachine.transition:", state);
-    })
-    .start();
+  window.runInitMachine = () => {
+    var m = interpret(initMachine)
+      .onEvent(event => {
+        console.log("initMachine.event:", event);
+      })
+      .onTransition(state => {
+        console.log("initMachine.transition:", state);
+      })
+      .start();
+  }
+
+  window.runInitMachine();
 
   let _routes = {
     "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,

@@ -28,6 +28,7 @@ export type UpsertIdentityContextData = {
   city?: City;
   avatarUrl?: string;
   avatarMimeType?: string;
+  successAction?: (data:UpsertIdentityContextData) => void;
 };
 
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
@@ -151,11 +152,12 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           view: editorContent.imageView,
         },
         navigation: {
-          next: "#newsletter",
+          next: "#upsertIdentity",
           previous: "#dream",
           canSkip: () => true,
         },
       }),
+      /*
       newsletter: promptChoice<UpsertIdentityContext, any>({
         id: "newsletter",
         component: ChoiceSelector,
@@ -185,10 +187,17 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           skip: "#upsertIdentity",
         },
       }),
+       */
       upsertIdentity: {
         id: "upsertIdentity",
         invoke: {
           src: async (context) => {
+
+            if (!context.data.circlesSafeOwner
+              && localStorage.getItem("circlesKey")) {
+              localStorage.removeItem("circlesKey");
+            }
+
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();
             const safeOwnerAddress =
@@ -224,6 +233,11 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       success: {
         type: "final",
         id: "success",
+        entry: (context) => {
+          if (context.data.successAction) {
+            context.data.successAction(context.data);
+          }
+        },
         data: (context, event: any) => {
           //console.log(`enter: upsertIdentity.success`, context.data);
           window.o.publishEvent(<PlatformEvent>{
@@ -236,10 +250,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
     },
   });
 
-// A ProcessDefinition always has a input and an output value (the generic parameters).
-// Depending on how 'void' is placed, it can mimic either a function or procedure.
-// Here it simply returns all the data that was collected in the process (AuthenticateContextData)
-// if no error occurs in the promise.
+
 export const upsertIdentity: ProcessDefinition<
   void,
   UpsertIdentityContextData

@@ -14,6 +14,7 @@ export type CreateSafeContextData = {
   seedPhrase?: string;
   checkSeedPhrase?: string;
   checkWordIndex?: number;
+  successAction:(data:CreateSafeContextData) => void
 };
 
 export type CreateSafeContext = ProcessContext<CreateSafeContextData>;
@@ -175,6 +176,11 @@ const processDefinition = (processId: string) =>
       success: {
         id: "success",
         type: "final",
+        entry: (context) => {
+          if (context.data.successAction) {
+            context.data.successAction(context.data)
+          }
+        }
       },
     },
   });

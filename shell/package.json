@@ -14,6 +14,7 @@
     "tailwind:watch": "cross-env TAILWIND_MODE=watch cross-env NODE_ENV=development postcss src/shared/css/tailwind.css -o public/bundle.css -w"
   },
   "dependencies": {
+    "@toruslabs/openlogin": "^0.10.2",
     "@o-platform/o-editors": "0.1.0",
     "@o-platform/o-utils": "0.1.0",
     "@o-platform/o-events": "0.1.0",

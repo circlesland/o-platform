@@ -1,4 +1,5 @@
 import {createMachine, send, sendParent} from "xstate";
+import {promptGetInvited} from "./invitation/promptGetInvited";
 
 export type GetInvitedContext = {
     profileId: number;
@@ -38,7 +39,9 @@ export const getInvitedMachine = createMachine<GetInvitedContext, GetInvitedEven
     }
 }, {
     services: {
-        promptGetInvited: async (context, event) => {}
+        promptGetInvited: async (context, event) => {
+            await window.o.runProcess(promptGetInvited, {});
+        }
     },
     activities: {
         waitForInvitation: () => {

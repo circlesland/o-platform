@@ -18,6 +18,12 @@ import {
     WhoamiDocument
 } from "../../../shared/api/data/types";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
+import {upsertRegistration} from "./registration/promptRegistration";
+import {acquireSession} from "../../o-passport/processes/identify/aquireSession/acquireSession";
+import {promptConnectOrCreate} from "./connectOrCreate/promptConnectOrCreate";
+import {promptRedeemInvitation} from "./invitation/promptRedeemInvitation";
+import {promptGetInvited} from "./invitation/promptGetInvited";
 
 export type Origin = "Created" | "Imported";
 
@@ -48,6 +54,7 @@ export type ProfileData = {
     cityId: number;
     passion?: string;
     avatarUrl?: string;
+    circlesSafeOwner?: string;
 }
 
 export type EoaData = {
@@ -221,9 +228,16 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             invoke: {src: "loadSession"},
             on: {
                 NO_SESSION: {
-                    actions: assign({
-                        _login: () => spawn(loginMachine)
-                    })
+                    actions: [
+                        () => window.o.runProcess(acquireSession, {
+                            successAction: (data) => {
+                                (<any>window).runInitMachine();
+                            }
+                        }),
+                        /*assign({
+                            _register: () => spawn(loginMachine)
+                        })*/
+                    ]
                 },
                 LOGGED_IN: {
                     actions: actions.stop(ctx => ctx._login),
@@ -245,9 +259,16 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             invoke: {src: "loadRegistration"},
             on: {
                 NO_REGISTRATION: {
-                    actions: assign({
-                        _register: () => spawn(registerMachine)
-                    })
+                    actions: [
+                        () => window.o.runProcess(upsertRegistration, {
+                            successAction: (data) => {
+                                (<any>window).runInitMachine();
+                            }
+                        }),
+                        /*assign({
+                            _register: () => spawn(registerMachine)
+                        })*/
+                    ]
                 },
                 REGISTERED: {
                     actions: actions.stop(ctx => ctx._register),
@@ -279,9 +300,16 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             invoke: {src: "loadClaimedInvitation"},
             on: {
                 NO_INVITATION: {
-                    actions: assign({
-                        _invitation: () => spawn(getInvitedMachine)
-                    })
+                  actions: [
+                    /*assign({
+                      _invitation: () => spawn(getInvitedMachine)
+                    }),*/
+                    () => {
+                      window.o.runProcess(promptGetInvited, {
+                        successAction: () => (<any>window).runInitMachine()
+                      });
+                    }
+                  ]
                 },
                 GOT_INVITED: {
                     actions: actions.stop(ctx => ctx._invitation),
@@ -307,9 +335,17 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             invoke: {src: "loadProfile"},
             on: {
                 NO_PROFILE: {
-                    actions: assign({
-                        _profile: () => spawn(createProfileMachine)
-                    })
+                    actions: [
+                        (context) => window.o.runProcess(upsertIdentity, {
+                            id: context.registration.profileId,
+                            successAction: (data) => {
+                                (<any>window).runInitMachine();
+                            }
+                        }),
+                        /*assign({
+                            _register: () => spawn(createProfileMachine)
+                        })*/
+                    ]
                 },
                 CANCELLED: {
                     actions: [
@@ -343,9 +379,14 @@ export const initMachine = createMachine<InitContext, InitEvent>({
                     }
                 },
                 connectOrCreate: {
-                    entry: assign({
-                        _eoa: () => spawn(connectOrCreateEoa)
-                    }),
+                    entry: [
+                        /*assign({
+                            _eoa: () => spawn(connectOrCreateEoa)
+                        }),*/
+                        () => {
+                            window.o.runProcess(promptConnectOrCreate, {});
+                        }
+                    ],
                     on: {
                         CANCELLED: {
                             actions: [
@@ -376,9 +417,16 @@ export const initMachine = createMachine<InitContext, InitEvent>({
                     }
                 },
                 redeemInvitation: {
-                    entry: assign({
+                    entry: [
+                      /*assign({
                         _redeemInvitation: () => spawn(redeemInvitation)
-                    }),
+                      }),*/
+                      () => {
+                          window.o.runProcess(promptRedeemInvitation, {
+
+                          });
+                      }
+                    ],
                     on: {
                         REDEEMED: {
                             actions: actions.stop(ctx => ctx._redeemInvitation),
@@ -575,7 +623,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
 
             loadProfile()
                 .then(profile => {
-                    if (profile) {
+                    if (profile.firstName.trim() !== "") {
                         callback({
                             type: "GOT_PROFILE",
                             profile: {
@@ -584,7 +632,8 @@ export const initMachine = createMachine<InitContext, InitEvent>({
                                 lastName: profile.lastName,
                                 firstName: profile.firstName,
                                 cityId: profile.cityGeonameid,
-                                passion: profile.dream
+                                passion: profile.dream,
+                                circlesSafeOwner: profile.circlesSafeOwner
                             }
                         })
                     } else {
@@ -599,7 +648,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             if (!ctx.profile) throw new Error(`ctx.profile is not set`);
 
             const key = localStorage.getItem("circlesKey");
-            if (!key) {
+            if (!key || !ctx.profile.circlesSafeOwner) {
                 callback({type: "NO_EOA"});
                 return;
             }
