@@ -41,7 +41,6 @@ mutation sendMessage ($toSafeAddress:String! $content: String!) {
         event {
             block_number
             direction
-            id
             safe_address
             safe_address_profile {
                 id
@@ -62,7 +61,6 @@ mutation sendMessage ($toSafeAddress:String! $content: String!) {
             }
             payload {
                 ... on ChatMessage {
-                    id
                     from
                     from_profile{
                         id
@@ -82,7 +80,6 @@ mutation sendMessage ($toSafeAddress:String! $content: String!) {
                     text
                 }
                 ... on CrcHubTransfer {
-                    id
                     from
                     from_profile{
                         id
@@ -122,7 +119,6 @@ mutation sendMessage ($toSafeAddress:String! $content: String!) {
                     }
                 }
                 ... on EthTransfer {
-                    id
                     from
                     from_profile {
                         id
@@ -142,7 +138,6 @@ mutation sendMessage ($toSafeAddress:String! $content: String!) {
                     value
                 }
                 ... on GnosisSafeEthTransfer {
-                    id
                     from
                     from_profile {
                         id

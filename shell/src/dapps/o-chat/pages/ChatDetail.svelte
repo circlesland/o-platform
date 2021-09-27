@@ -2,22 +2,19 @@
   import {onMount} from "svelte";
   import ElizaBot from "elizabot";
 
-  import {chatdata} from "../data/api/src/chatstore";
   import ChatCard from "../atoms/ChatCard.svelte";
   import "simplebar";
   import "simplebar/dist/simplebar.css";
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
   import {
-    ChatHistoryDocument, ChatMessage, Contact, ContactDocument, SendMessageDocument
+    ChatHistoryDocument, Contact, ContactDocument, ProfileEvent, SendMessageDocument
   } from "../../../shared/api/data/types";
   import {me} from "../../../shared/stores/me";
-  import {ProfileEvent} from "../data/api/types";
   import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
   import {AvataarGenerator} from "../../../shared/avataarGenerator";
   import {setTrust} from "../../o-banking/processes/setTrust";
   import {transfer} from "../../o-banking/processes/transfer";
-  import {retry} from "rxjs/operators";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;

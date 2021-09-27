@@ -26,11 +26,10 @@ export type ChatMessage = IEventPayload & {
   __typename?: 'ChatMessage';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   text: Scalars['String'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_id?: Maybe<Scalars['Int']>;
+  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type City = ICity & {
@@ -109,10 +108,9 @@ export type CrcHubTransfer = IEventPayload & {
   flow: Scalars['String'];
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   transfers: Array<CrcTokenTransfer>;
 };
 
@@ -120,19 +118,17 @@ export type CrcMinting = IEventPayload & {
   __typename?: 'CrcMinting';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
   token: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
 export type CrcSignup = IEventPayload & {
   __typename?: 'CrcSignup';
-  id: Scalars['Int'];
   token: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   user: Scalars['String'];
   user_profile?: Maybe<Profile>;
 };
@@ -141,11 +137,10 @@ export type CrcTokenTransfer = IEventPayload & {
   __typename?: 'CrcTokenTransfer';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
   token: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
@@ -155,13 +150,13 @@ export type CrcTrust = IEventPayload & {
   address_profile?: Maybe<Profile>;
   can_send_to: Scalars['String'];
   can_send_to_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   limit: Scalars['Int'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
 };
 
 export type CreateInvitationResult = {
   __typename?: 'CreateInvitationResult';
+  createdInviteEoas: Array<CreatedInvitation>;
   error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
@@ -173,6 +168,8 @@ export type CreateTagInput = {
 
 export type CreatedInvitation = {
   __typename?: 'CreatedInvitation';
+  address: Scalars['String'];
+  balance: Scalars['String'];
   claimedAt?: Maybe<Scalars['String']>;
   claimedBy?: Maybe<Profile>;
   claimedByProfileId?: Maybe<Scalars['Int']>;
@@ -180,6 +177,14 @@ export type CreatedInvitation = {
   createdAt: Scalars['String'];
   createdBy?: Maybe<Profile>;
   createdByProfileId: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type CreatedInviteEoa = {
+  __typename?: 'CreatedInviteEoa';
+  address: Scalars['String'];
+  fee: Scalars['String'];
+  for: Scalars['String'];
 };
 
 export type DelegateAuthInit = {
@@ -206,10 +211,9 @@ export type EthTransfer = IEventPayload & {
   __typename?: 'EthTransfer';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
@@ -225,11 +229,10 @@ export type GnosisSafeEthTransfer = IEventPayload & {
   __typename?: 'GnosisSafeEthTransfer';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   initiator: Scalars['String'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
@@ -249,8 +252,7 @@ export type ICity = {
 };
 
 export type IEventPayload = {
-  id: Scalars['Int'];
-  transaction_id?: Maybe<Scalars['Int']>;
+  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type LockOfferInput = {
@@ -271,11 +273,11 @@ export type LogoutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  acknowledge: ProfileEvent;
+  acknowledge: Scalars['Boolean'];
   authenticateAt: DelegateAuthInit;
   claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
-  createInvitation: CreateInvitationResult;
+  createInvitations: CreateInvitationResult;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   lockOffer: LockOfferResult;
@@ -294,7 +296,7 @@ export type Mutation = {
 
 
 export type MutationAcknowledgeArgs = {
-  eventId: Scalars['Int'];
+  until: Scalars['String'];
 };
 
 
@@ -313,8 +315,8 @@ export type MutationConsumeDepositedChallengeArgs = {
 };
 
 
-export type MutationCreateInvitationArgs = {
-  for: Scalars['String'];
+export type MutationCreateInvitationsArgs = {
+  for: Array<Scalars['String']>;
 };
 
 
@@ -341,7 +343,6 @@ export type MutationRequestUpdateSafeArgs = {
 export type MutationSendMessageArgs = {
   content: Scalars['String'];
   toSafeAddress: Scalars['String'];
-  type: Scalars['String'];
 };
 
 
@@ -434,7 +435,6 @@ export type ProfileEvent = {
   __typename?: 'ProfileEvent';
   block_number?: Maybe<Scalars['Int']>;
   direction: Scalars['String'];
-  id: Scalars['Int'];
   payload?: Maybe<EventPayload>;
   safe_address: Scalars['String'];
   safe_address_profile?: Maybe<Profile>;
@@ -482,6 +482,7 @@ export type Query = {
   contacts: Array<Contact>;
   eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
+  inbox: Array<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
@@ -632,13 +633,9 @@ export type QueryUniqueProfileInput = {
 
 export type RedeemClaimedInvitationResult = {
   __typename?: 'RedeemClaimedInvitationResult';
-  redeemRequest?: Maybe<RedeemInvitationRequest>;
+  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
-};
-
-export type RedeemInvitationRequest = {
-  __typename?: 'RedeemInvitationRequest';
-  id: Scalars['Int'];
+  transactionHash?: Maybe<Scalars['String']>;
 };
 
 export type RequestUpdateSafeInput = {
@@ -823,7 +820,7 @@ export type TransactionTimelineQuery = (
       & Pick<Tag, 'id' | 'typeId' | 'value'>
     )>>, payload?: Maybe<{ __typename?: 'ChatMessage' } | (
       { __typename?: 'CrcHubTransfer' }
-      & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -843,7 +840,7 @@ export type TransactionTimelineQuery = (
       )> }
     ) | (
       { __typename?: 'CrcMinting' }
-      & Pick<CrcMinting, 'id' | 'token' | 'from' | 'to' | 'value'>
+      & Pick<CrcMinting, 'token' | 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -874,7 +871,7 @@ export type TransactionByHashQuery = (
       & Pick<Tag, 'id' | 'typeId' | 'value'>
     )>>, payload?: Maybe<{ __typename?: 'ChatMessage' } | (
       { __typename?: 'CrcHubTransfer' }
-      & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -894,7 +891,7 @@ export type TransactionByHashQuery = (
       )> }
     ) | (
       { __typename?: 'CrcMinting' }
-      & Pick<CrcMinting, 'id' | 'token' | 'from' | 'to' | 'value'>
+      & Pick<CrcMinting, 'token' | 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -952,7 +949,6 @@ export const TransactionTimelineDocument = gql`
     }
     payload {
       ... on CrcHubTransfer {
-        id
         from
         from_profile {
           id
@@ -992,7 +988,6 @@ export const TransactionTimelineDocument = gql`
         }
       }
       ... on CrcMinting {
-        id
         token
         from
         from_profile {
@@ -1045,7 +1040,6 @@ export const TransactionByHashDocument = gql`
     }
     payload {
       ... on CrcHubTransfer {
-        id
         from
         from_profile {
           id
@@ -1085,7 +1079,6 @@ export const TransactionByHashDocument = gql`
         }
       }
       ... on CrcMinting {
-        id
         token
         from
         from_profile {

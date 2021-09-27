@@ -17,8 +17,7 @@ interface ICity {
 }
 
 interface IEventPayload {
-    id: Int!
-    transaction_id: Int
+    transaction_hash: String
 }
 
 union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer
@@ -33,11 +32,10 @@ type AssetBalance {
 type ChatMessage implements IEventPayload {
     from: String!
     from_profile: Profile
-    id: Int!
     text: String!
     to: String!
     to_profile: Profile
-    transaction_id: Int
+    transaction_hash: String
 }
 
 type City implements ICity {
@@ -107,28 +105,25 @@ type CrcHubTransfer implements IEventPayload {
     flow: String!
     from: String!
     from_profile: Profile
-    id: Int!
     to: String!
     to_profile: Profile
-    transaction_id: Int!
+    transaction_hash: String!
     transfers: [CrcTokenTransfer!]!
 }
 
 type CrcMinting implements IEventPayload {
     from: String!
     from_profile: Profile
-    id: Int!
     to: String!
     to_profile: Profile
     token: String!
-    transaction_id: Int!
+    transaction_hash: String!
     value: String!
 }
 
 type CrcSignup implements IEventPayload {
-    id: Int!
     token: String!
-    transaction_id: Int!
+    transaction_hash: String!
     user: String!
     user_profile: Profile
 }
@@ -136,11 +131,10 @@ type CrcSignup implements IEventPayload {
 type CrcTokenTransfer implements IEventPayload {
     from: String!
     from_profile: Profile
-    id: Int!
     to: String!
     to_profile: Profile
     token: String!
-    transaction_id: Int!
+    transaction_hash: String!
     value: String!
 }
 
@@ -149,9 +143,8 @@ type CrcTrust implements IEventPayload {
     address_profile: Profile
     can_send_to: String!
     can_send_to_profile: Profile
-    id: Int!
     limit: Int!
-    transaction_id: Int!
+    transaction_hash: String!
 }
 
 type CreateInvitationResult {
@@ -196,10 +189,9 @@ type DepositChallengeResponse {
 type EthTransfer implements IEventPayload {
     from: String!
     from_profile: Profile
-    id: Int!
     to: String!
     to_profile: Profile
-    transaction_id: Int!
+    transaction_hash: String!
     value: String!
 }
 
@@ -211,11 +203,10 @@ type ExchangeTokenResponse {
 type GnosisSafeEthTransfer implements IEventPayload {
     from: String!
     from_profile: Profile
-    id: Int!
     initiator: String!
     to: String!
     to_profile: Profile
-    transaction_id: Int!
+    transaction_hash: String!
     value: String!
 }
 
@@ -303,7 +294,6 @@ type Profile {
 type ProfileEvent {
     block_number: Int
     direction: String!
-    id: Int!
     payload: EventPayload
     safe_address: String!
     safe_address_profile: Profile

@@ -14,6 +14,24 @@ export type Scalars = {
   Float: number;
 };
 
+export type AssetBalance = {
+  __typename?: 'AssetBalance';
+  token_address: Scalars['String'];
+  token_balance: Scalars['String'];
+  token_owner_address: Scalars['String'];
+  token_owner_profile?: Maybe<Profile>;
+};
+
+export type ChatMessage = IEventPayload & {
+  __typename?: 'ChatMessage';
+  from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
+  text: Scalars['String'];
+  to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
+  transaction_hash?: Maybe<Scalars['String']>;
+};
+
 export type City = ICity & {
   __typename?: 'City';
   country: Scalars['String'];
@@ -53,10 +71,30 @@ export type ClaimedInvitation = {
   createdByProfileId: Scalars['Int'];
 };
 
+export type CommonTrust = {
+  __typename?: 'CommonTrust';
+  profile?: Maybe<Profile>;
+  safeAddress1: Scalars['String'];
+  safeAddress2: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export type ConsumeDepositedChallengeResponse = {
   __typename?: 'ConsumeDepositedChallengeResponse';
   challenge?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type Contact = {
+  __typename?: 'Contact';
+  contactAddress: Scalars['String'];
+  contactAddressProfile?: Maybe<Profile>;
+  lastContactAt?: Maybe<Scalars['String']>;
+  lastEvent?: Maybe<ProfileEvent>;
+  safeAddress: Scalars['String'];
+  safeAddressProfile?: Maybe<Profile>;
+  trustsYou?: Maybe<Scalars['Int']>;
+  youTrust?: Maybe<Scalars['Int']>;
 };
 
 export type CountryStats = {
@@ -69,52 +107,57 @@ export type CrcHubTransfer = IEventPayload & {
   __typename?: 'CrcHubTransfer';
   flow: Scalars['String'];
   from: Scalars['String'];
-  id: Scalars['Int'];
+  from_profile?: Maybe<Profile>;
   to: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  to_profile?: Maybe<Profile>;
+  transaction_hash: Scalars['String'];
   transfers: Array<CrcTokenTransfer>;
 };
 
 export type CrcMinting = IEventPayload & {
   __typename?: 'CrcMinting';
   from: Scalars['String'];
-  id: Scalars['Int'];
+  from_profile?: Maybe<Profile>;
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   token: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
 export type CrcSignup = IEventPayload & {
   __typename?: 'CrcSignup';
-  id: Scalars['Int'];
   token: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   user: Scalars['String'];
+  user_profile?: Maybe<Profile>;
 };
 
 export type CrcTokenTransfer = IEventPayload & {
   __typename?: 'CrcTokenTransfer';
   from: Scalars['String'];
-  id: Scalars['Int'];
+  from_profile?: Maybe<Profile>;
   to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
   token: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
 export type CrcTrust = IEventPayload & {
   __typename?: 'CrcTrust';
   address: Scalars['String'];
+  address_profile?: Maybe<Profile>;
   can_send_to: Scalars['String'];
-  id: Scalars['Int'];
+  can_send_to_profile?: Maybe<Profile>;
   limit: Scalars['Int'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
 };
 
 export type CreateInvitationResult = {
   __typename?: 'CreateInvitationResult';
-  error: Scalars['String'];
+  createdInviteEoas: Array<CreatedInvitation>;
+  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
 
@@ -125,6 +168,8 @@ export type CreateTagInput = {
 
 export type CreatedInvitation = {
   __typename?: 'CreatedInvitation';
+  address: Scalars['String'];
+  balance: Scalars['String'];
   claimedAt?: Maybe<Scalars['String']>;
   claimedBy?: Maybe<Profile>;
   claimedByProfileId?: Maybe<Scalars['Int']>;
@@ -132,6 +177,14 @@ export type CreatedInvitation = {
   createdAt: Scalars['String'];
   createdBy?: Maybe<Profile>;
   createdByProfileId: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type CreatedInviteEoa = {
+  __typename?: 'CreatedInviteEoa';
+  address: Scalars['String'];
+  fee: Scalars['String'];
+  for: Scalars['String'];
 };
 
 export type DelegateAuthInit = {
@@ -157,13 +210,14 @@ export type DepositChallengeResponse = {
 export type EthTransfer = IEventPayload & {
   __typename?: 'EthTransfer';
   from: Scalars['String'];
-  id: Scalars['Int'];
+  from_profile?: Maybe<Profile>;
   to: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  to_profile?: Maybe<Profile>;
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
-export type EventPayload = CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer;
+export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer;
 
 export type ExchangeTokenResponse = {
   __typename?: 'ExchangeTokenResponse';
@@ -174,10 +228,11 @@ export type ExchangeTokenResponse = {
 export type GnosisSafeEthTransfer = IEventPayload & {
   __typename?: 'GnosisSafeEthTransfer';
   from: Scalars['String'];
-  id: Scalars['Int'];
+  from_profile?: Maybe<Profile>;
   initiator: Scalars['String'];
   to: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  to_profile?: Maybe<Profile>;
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
@@ -197,8 +252,7 @@ export type ICity = {
 };
 
 export type IEventPayload = {
-  id: Scalars['Int'];
-  transaction_id: Scalars['Int'];
+  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type LockOfferInput = {
@@ -219,11 +273,11 @@ export type LogoutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  acknowledge: ProfileEvent;
+  acknowledge: Scalars['Boolean'];
   authenticateAt: DelegateAuthInit;
   claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
-  createInvitation: CreateInvitationResult;
+  createInvitations: CreateInvitationResult;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   lockOffer: LockOfferResult;
@@ -231,6 +285,8 @@ export type Mutation = {
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
   requestUpdateSafe: RequestUpdateSafeResponse;
+  sendMessage: SendMessageResult;
+  tagTransaction: TagTransactionResult;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
   upsertOffer: Offer;
@@ -240,7 +296,7 @@ export type Mutation = {
 
 
 export type MutationAcknowledgeArgs = {
-  eventPayloadId: Scalars['Int'];
+  until: Scalars['String'];
 };
 
 
@@ -259,8 +315,8 @@ export type MutationConsumeDepositedChallengeArgs = {
 };
 
 
-export type MutationCreateInvitationArgs = {
-  for: Scalars['String'];
+export type MutationCreateInvitationsArgs = {
+  for: Array<Scalars['String']>;
 };
 
 
@@ -281,6 +337,18 @@ export type MutationProvePaymentArgs = {
 
 export type MutationRequestUpdateSafeArgs = {
   data: RequestUpdateSafeInput;
+};
+
+
+export type MutationSendMessageArgs = {
+  content: Scalars['String'];
+  toSafeAddress: Scalars['String'];
+};
+
+
+export type MutationTagTransactionArgs = {
+  tag: CreateTagInput;
+  transactionHash: Scalars['String'];
 };
 
 
@@ -354,24 +422,28 @@ export type Profile = {
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['Int'];
+  lastEvent?: Maybe<ProfileEvent>;
   lastName?: Maybe<Scalars['String']>;
   newsletter?: Maybe<Scalars['Boolean']>;
   offers?: Maybe<Array<Offer>>;
   status?: Maybe<Scalars['String']>;
+  trustsYou?: Maybe<Scalars['Int']>;
+  youTrust?: Maybe<Scalars['Int']>;
 };
 
 export type ProfileEvent = {
   __typename?: 'ProfileEvent';
-  block_number: Scalars['Int'];
+  block_number?: Maybe<Scalars['Int']>;
   direction: Scalars['String'];
-  id: Scalars['Int'];
   payload?: Maybe<EventPayload>;
   safe_address: Scalars['String'];
+  safe_address_profile?: Maybe<Profile>;
+  tags?: Maybe<Array<Tag>>;
   timestamp: Scalars['String'];
-  transaction_hash: Scalars['String'];
-  transaction_index: Scalars['Int'];
+  transaction_hash?: Maybe<Scalars['String']>;
+  transaction_index?: Maybe<Scalars['Int']>;
   type: Scalars['String'];
-  value: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 export type ProvePaymentResult = {
@@ -400,21 +472,48 @@ export enum PurchaseStatus {
 
 export type Query = {
   __typename?: 'Query';
+  balance: Scalars['String'];
+  balancesByAsset: Array<AssetBalance>;
+  chatHistory: Array<ProfileEvent>;
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
+  commonTrust: Array<CommonTrust>;
+  contact?: Maybe<Contact>;
+  contacts: Array<Contact>;
+  eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
+  inbox: Array<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
   myInvitations: Array<CreatedInvitation>;
+  myProfile?: Maybe<Profile>;
   offers: Array<Offer>;
-  profiles: Array<Profile>;
+  profilesById: Array<Profile>;
+  profilesBySafeAddress: Array<Profile>;
   safeFundingTransaction?: Maybe<ProfileEvent>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
   stats?: Maybe<Stats>;
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
+  trustRelations: Array<TrustRelation>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryBalanceArgs = {
+  safeAddress: Scalars['String'];
+};
+
+
+export type QueryBalancesByAssetArgs = {
+  safeAddress: Scalars['String'];
+};
+
+
+export type QueryChatHistoryArgs = {
+  contactSafeAddress: Scalars['String'];
+  safeAddress: Scalars['String'];
 };
 
 
@@ -423,8 +522,35 @@ export type QueryCitiesArgs = {
 };
 
 
-export type QueryEventsArgs = {
+export type QueryCommonTrustArgs = {
+  safeAddress1: Scalars['String'];
+  safeAddress2: Scalars['String'];
+};
+
+
+export type QueryContactArgs = {
+  contactAddress: Scalars['String'];
   safeAddress: Scalars['String'];
+};
+
+
+export type QueryContactsArgs = {
+  safeAddress: Scalars['String'];
+};
+
+
+export type QueryEventByTransactionHashArgs = {
+  safeAddress: Scalars['String'];
+  transactionHash: Scalars['String'];
+  types?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryEventsArgs = {
+  fromBlock?: Maybe<Scalars['Int']>;
+  safeAddress: Scalars['String'];
+  toBlock?: Maybe<Scalars['Int']>;
+  types?: Maybe<Array<Scalars['String']>>;
 };
 
 
@@ -433,8 +559,13 @@ export type QueryOffersArgs = {
 };
 
 
-export type QueryProfilesArgs = {
-  query: QueryProfileInput;
+export type QueryProfilesByIdArgs = {
+  ids: Array<Scalars['Int']>;
+};
+
+
+export type QueryProfilesBySafeAddressArgs = {
+  safeAddresses: Array<Scalars['String']>;
 };
 
 
@@ -450,6 +581,11 @@ export type QueryTagByIdArgs = {
 
 export type QueryTagsArgs = {
   query: QueryTagsInput;
+};
+
+
+export type QueryTrustRelationsArgs = {
+  safeAddress: Scalars['String'];
 };
 
 export type QueryCitiesByGeonameIdInput = {
@@ -497,13 +633,9 @@ export type QueryUniqueProfileInput = {
 
 export type RedeemClaimedInvitationResult = {
   __typename?: 'RedeemClaimedInvitationResult';
-  redeemRequest?: Maybe<RedeemInvitationRequest>;
+  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
-};
-
-export type RedeemInvitationRequest = {
-  __typename?: 'RedeemInvitationRequest';
-  id: Scalars['Int'];
+  transactionHash?: Maybe<Scalars['String']>;
 };
 
 export type RequestUpdateSafeInput = {
@@ -519,6 +651,13 @@ export type RequestUpdateSafeResponse = {
 
 export type SearchInput = {
   searchString: Scalars['String'];
+};
+
+export type SendMessageResult = {
+  __typename?: 'SendMessageResult';
+  error?: Maybe<Scalars['String']>;
+  event?: Maybe<ProfileEvent>;
+  success: Scalars['Boolean'];
 };
 
 export type Server = {
@@ -556,6 +695,28 @@ export type Tag = {
   id: Scalars['Int'];
   typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
+};
+
+export type TagTransactionResult = {
+  __typename?: 'TagTransactionResult';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+  tag?: Maybe<Tag>;
+};
+
+export enum TrustDirection {
+  In = 'IN',
+  Mutual = 'MUTUAL',
+  Out = 'OUT'
+}
+
+export type TrustRelation = {
+  __typename?: 'TrustRelation';
+  direction: TrustDirection;
+  otherSafeAddress: Scalars['String'];
+  otherSafeAddressProfile?: Maybe<Profile>;
+  safeAddress: Scalars['String'];
+  safeAddressProfile?: Maybe<Profile>;
 };
 
 export type UpdateSafeInput = {

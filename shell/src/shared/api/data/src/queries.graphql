@@ -231,7 +231,6 @@ query contacts($safeAddress:String!) {
         lastEvent {
             block_number
             direction
-            id
             safe_address
             timestamp
             transaction_hash
@@ -240,7 +239,6 @@ query contacts($safeAddress:String!) {
             value
             payload {
                 ... on CrcHubTransfer {
-                    id
                     from
                     to
                     flow
@@ -285,7 +283,6 @@ query chatHistory($safeAddress:String! $contactSafeAddress:String!) {
     chatHistory(safeAddress: $safeAddress contactSafeAddress: $contactSafeAddress) {
         block_number
         direction
-        id
         safe_address
         safe_address_profile {
             id
@@ -306,7 +303,6 @@ query chatHistory($safeAddress:String! $contactSafeAddress:String!) {
         }
         payload {
             ... on ChatMessage {
-                id
                 from
                 from_profile{
                     id
@@ -326,7 +322,6 @@ query chatHistory($safeAddress:String! $contactSafeAddress:String!) {
                 text
             }
             ... on CrcHubTransfer {
-                id
                 from
                 from_profile{
                     id
@@ -366,7 +361,6 @@ query chatHistory($safeAddress:String! $contactSafeAddress:String!) {
                 }
             }
             ... on EthTransfer {
-                id
                 from
                 from_profile {
                     id
@@ -386,7 +380,6 @@ query chatHistory($safeAddress:String! $contactSafeAddress:String!) {
                 value
             }
             ... on GnosisSafeEthTransfer {
-                id
                 from
                 from_profile {
                     id
@@ -432,7 +425,6 @@ query inbox {
     inbox {
         block_number
         direction
-        id
         safe_address
         safe_address_profile {
             id
@@ -453,7 +445,6 @@ query inbox {
         }
         payload {
             ... on ChatMessage {
-                id
                 from
                 from_profile{
                     id
@@ -473,7 +464,6 @@ query inbox {
                 text
             }
             ... on CrcHubTransfer {
-                id
                 from
                 from_profile{
                     id
@@ -513,7 +503,6 @@ query inbox {
                 }
             }
             ... on EthTransfer {
-                id
                 from
                 from_profile {
                     id
@@ -533,7 +522,6 @@ query inbox {
                 value
             }
             ... on GnosisSafeEthTransfer {
-                id
                 from
                 from_profile {
                     id
@@ -613,7 +601,6 @@ query profileBySafeAddress($safeAddress:String!) {
         lastEvent {
             block_number
             direction
-            id
             safe_address
             timestamp
             transaction_hash
@@ -622,7 +609,6 @@ query profileBySafeAddress($safeAddress:String!) {
             value
             payload {
                 ... on CrcHubTransfer {
-                    id
                     from
                     to
                     flow

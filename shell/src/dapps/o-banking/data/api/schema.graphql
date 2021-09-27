@@ -17,8 +17,7 @@ interface ICity {
 }
 
 interface IEventPayload {
-    id: Int!
-    transaction_id: Int
+    transaction_hash: String
 }
 
 union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer
@@ -33,11 +32,10 @@ type AssetBalance {
 type ChatMessage implements IEventPayload {
     from: String!
     from_profile: Profile
-    id: Int!
     text: String!
     to: String!
     to_profile: Profile
-    transaction_id: Int
+    transaction_hash: String
 }
 
 type City implements ICity {
@@ -107,28 +105,25 @@ type CrcHubTransfer implements IEventPayload {
     flow: String!
     from: String!
     from_profile: Profile
-    id: Int!
     to: String!
     to_profile: Profile
-    transaction_id: Int!
+    transaction_hash: String!
     transfers: [CrcTokenTransfer!]!
 }
 
 type CrcMinting implements IEventPayload {
     from: String!
     from_profile: Profile
-    id: Int!
     to: String!
     to_profile: Profile
     token: String!
-    transaction_id: Int!
+    transaction_hash: String!
     value: String!
 }
 
 type CrcSignup implements IEventPayload {
-    id: Int!
     token: String!
-    transaction_id: Int!
+    transaction_hash: String!
     user: String!
     user_profile: Profile
 }
@@ -136,11 +131,10 @@ type CrcSignup implements IEventPayload {
 type CrcTokenTransfer implements IEventPayload {
     from: String!
     from_profile: Profile
-    id: Int!
     to: String!
     to_profile: Profile
     token: String!
-    transaction_id: Int!
+    transaction_hash: String!
     value: String!
 }
 
@@ -149,17 +143,19 @@ type CrcTrust implements IEventPayload {
     address_profile: Profile
     can_send_to: String!
     can_send_to_profile: Profile
-    id: Int!
     limit: Int!
-    transaction_id: Int!
+    transaction_hash: String!
 }
 
 type CreateInvitationResult {
+    createdInviteEoas: [CreatedInvitation!]!
     error: String
     success: Boolean!
 }
 
 type CreatedInvitation {
+    address: String!
+    balance: String!
     claimedAt: String
     claimedBy: Profile
     claimedByProfileId: Int
@@ -167,6 +163,13 @@ type CreatedInvitation {
     createdAt: String!
     createdBy: Profile
     createdByProfileId: Int!
+    name: String!
+}
+
+type CreatedInviteEoa {
+    address: String!
+    fee: String!
+    for: String!
 }
 
 type DelegateAuthInit {
@@ -186,10 +189,9 @@ type DepositChallengeResponse {
 type EthTransfer implements IEventPayload {
     from: String!
     from_profile: Profile
-    id: Int!
     to: String!
     to_profile: Profile
-    transaction_id: Int!
+    transaction_hash: String!
     value: String!
 }
 
@@ -201,11 +203,10 @@ type ExchangeTokenResponse {
 type GnosisSafeEthTransfer implements IEventPayload {
     from: String!
     from_profile: Profile
-    id: Int!
     initiator: String!
     to: String!
     to_profile: Profile
-    transaction_id: Int!
+    transaction_hash: String!
     value: String!
 }
 
@@ -224,11 +225,11 @@ type LogoutResponse {
 }
 
 type Mutation {
-    acknowledge(eventId: Int!): ProfileEvent!
+    acknowledge(until: String!): Boolean!
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
-    createInvitation(for: String!): CreateInvitationResult!
+    createInvitations(for: [String!]!): CreateInvitationResult!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
     lockOffer(data: LockOfferInput!): LockOfferResult!
@@ -236,7 +237,7 @@ type Mutation {
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
-    sendMessage(content: String!, toSafeAddress: String!, type: String!): SendMessageResult!
+    sendMessage(content: String!, toSafeAddress: String!): SendMessageResult!
     tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
     unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
@@ -293,7 +294,6 @@ type Profile {
 type ProfileEvent {
     block_number: Int
     direction: String!
-    id: Int!
     payload: EventPayload
     safe_address: String!
     safe_address_profile: Profile
@@ -332,6 +332,7 @@ type Query {
     contacts(safeAddress: String!): [Contact!]!
     eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
     events(fromBlock: Int, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
+    inbox: [ProfileEvent!]!
     invitationTransaction: ProfileEvent
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
@@ -350,12 +351,9 @@ type Query {
 }
 
 type RedeemClaimedInvitationResult {
-    redeemRequest: RedeemInvitationRequest
+    error: String
     success: Boolean!
-}
-
-type RedeemInvitationRequest {
-    id: Int!
+    transactionHash: String
 }
 
 type RequestUpdateSafeResponse {

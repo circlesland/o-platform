@@ -40,7 +40,6 @@ query transactionTimeline($safeAddress:String!) {
         }
         payload {
             ... on CrcHubTransfer {
-                id
                 from
                 from_profile{
                     id
@@ -80,7 +79,6 @@ query transactionTimeline($safeAddress:String!) {
                 }
             }
             ... on CrcMinting {
-                id
                 token
                 from
                 from_profile {
@@ -131,7 +129,6 @@ query transactionByHash($safeAddress:String! $transactionHash:String!) {
         }
         payload {
             ... on CrcHubTransfer {
-                id
                 from
                 from_profile{
                     id
@@ -171,7 +168,6 @@ query transactionByHash($safeAddress:String! $transactionHash:String!) {
                 }
             }
             ... on CrcMinting {
-                id
                 token
                 from
                 from_profile {

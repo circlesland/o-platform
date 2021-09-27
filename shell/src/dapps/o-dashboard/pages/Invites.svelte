@@ -3,8 +3,7 @@
   import InfoCard from "../../../shared/atoms/InfoCard.svelte";
   import Icons from "../../../shared/molecules/Icons.svelte";
   import {createInvite} from "../../o-onboarding/processes/createInvite/createInvite";
-  import {MyInvitationsDocument} from "../../../shared/api/data/types";
-  import {CreatedInvitation} from "../../o-chat/data/api/types";
+  import {CreatedInvitation, MyInvitationsDocument} from "../../../shared/api/data/types";
 
   let myInvitations:CreatedInvitation[] = [];
 

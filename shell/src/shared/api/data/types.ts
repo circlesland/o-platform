@@ -26,11 +26,10 @@ export type ChatMessage = IEventPayload & {
   __typename?: 'ChatMessage';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   text: Scalars['String'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_id?: Maybe<Scalars['Int']>;
+  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type City = ICity & {
@@ -109,10 +108,9 @@ export type CrcHubTransfer = IEventPayload & {
   flow: Scalars['String'];
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   transfers: Array<CrcTokenTransfer>;
 };
 
@@ -120,19 +118,17 @@ export type CrcMinting = IEventPayload & {
   __typename?: 'CrcMinting';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
   token: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
 export type CrcSignup = IEventPayload & {
   __typename?: 'CrcSignup';
-  id: Scalars['Int'];
   token: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   user: Scalars['String'];
   user_profile?: Maybe<Profile>;
 };
@@ -141,11 +137,10 @@ export type CrcTokenTransfer = IEventPayload & {
   __typename?: 'CrcTokenTransfer';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
   token: Scalars['String'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
@@ -155,9 +150,8 @@ export type CrcTrust = IEventPayload & {
   address_profile?: Maybe<Profile>;
   can_send_to: Scalars['String'];
   can_send_to_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   limit: Scalars['Int'];
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
 };
 
 export type CreateInvitationResult = {
@@ -217,10 +211,9 @@ export type EthTransfer = IEventPayload & {
   __typename?: 'EthTransfer';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
@@ -236,11 +229,10 @@ export type GnosisSafeEthTransfer = IEventPayload & {
   __typename?: 'GnosisSafeEthTransfer';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
   initiator: Scalars['String'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_id: Scalars['Int'];
+  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
@@ -260,8 +252,7 @@ export type ICity = {
 };
 
 export type IEventPayload = {
-  id: Scalars['Int'];
-  transaction_id?: Maybe<Scalars['Int']>;
+  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type LockOfferInput = {
@@ -444,7 +435,6 @@ export type ProfileEvent = {
   __typename?: 'ProfileEvent';
   block_number?: Maybe<Scalars['Int']>;
   direction: Scalars['String'];
-  id: Scalars['Int'];
   payload?: Maybe<EventPayload>;
   safe_address: Scalars['String'];
   safe_address_profile?: Maybe<Profile>;
@@ -849,7 +839,7 @@ export type SendMessageMutation = (
     & Pick<SendMessageResult, 'success' | 'error'>
     & { event?: Maybe<(
       { __typename?: 'ProfileEvent' }
-      & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+      & Pick<ProfileEvent, 'block_number' | 'direction' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
       & { safe_address_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -858,7 +848,7 @@ export type SendMessageMutation = (
         & Pick<Tag, 'id' | 'typeId' | 'value'>
       )>>, payload?: Maybe<(
         { __typename?: 'ChatMessage' }
-        & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
+        & Pick<ChatMessage, 'from' | 'to' | 'text'>
         & { from_profile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -868,7 +858,7 @@ export type SendMessageMutation = (
         )> }
       ) | (
         { __typename?: 'CrcHubTransfer' }
-        & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+        & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
         & { from_profile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -898,7 +888,7 @@ export type SendMessageMutation = (
         )> }
       ) | (
         { __typename?: 'EthTransfer' }
-        & Pick<EthTransfer, 'id' | 'from' | 'to' | 'value'>
+        & Pick<EthTransfer, 'from' | 'to' | 'value'>
         & { from_profile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -908,7 +898,7 @@ export type SendMessageMutation = (
         )> }
       ) | (
         { __typename?: 'GnosisSafeEthTransfer' }
-        & Pick<GnosisSafeEthTransfer, 'id' | 'from' | 'to' | 'value'>
+        & Pick<GnosisSafeEthTransfer, 'from' | 'to' | 'value'>
         & { from_profile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1235,10 +1225,10 @@ export type ContactsQuery = (
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
     )>, lastEvent?: Maybe<(
       { __typename?: 'ProfileEvent' }
-      & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+      & Pick<ProfileEvent, 'block_number' | 'direction' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
       & { payload?: Maybe<{ __typename?: 'ChatMessage' } | (
         { __typename?: 'CrcHubTransfer' }
-        & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+        & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
       ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
         { __typename?: 'CrcTrust' }
         & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
@@ -1278,7 +1268,7 @@ export type ChatHistoryQuery = (
   { __typename?: 'Query' }
   & { chatHistory: Array<(
     { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+    & Pick<ProfileEvent, 'block_number' | 'direction' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
     & { safe_address_profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1287,7 +1277,7 @@ export type ChatHistoryQuery = (
       & Pick<Tag, 'id' | 'typeId' | 'value'>
     )>>, payload?: Maybe<(
       { __typename?: 'ChatMessage' }
-      & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
+      & Pick<ChatMessage, 'from' | 'to' | 'text'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1297,7 +1287,7 @@ export type ChatHistoryQuery = (
       )> }
     ) | (
       { __typename?: 'CrcHubTransfer' }
-      & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1327,7 +1317,7 @@ export type ChatHistoryQuery = (
       )> }
     ) | (
       { __typename?: 'EthTransfer' }
-      & Pick<EthTransfer, 'id' | 'from' | 'to' | 'value'>
+      & Pick<EthTransfer, 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1337,7 +1327,7 @@ export type ChatHistoryQuery = (
       )> }
     ) | (
       { __typename?: 'GnosisSafeEthTransfer' }
-      & Pick<GnosisSafeEthTransfer, 'id' | 'from' | 'to' | 'value'>
+      & Pick<GnosisSafeEthTransfer, 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1356,7 +1346,7 @@ export type InboxQuery = (
   { __typename?: 'Query' }
   & { inbox: Array<(
     { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+    & Pick<ProfileEvent, 'block_number' | 'direction' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
     & { safe_address_profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1365,7 +1355,7 @@ export type InboxQuery = (
       & Pick<Tag, 'id' | 'typeId' | 'value'>
     )>>, payload?: Maybe<(
       { __typename?: 'ChatMessage' }
-      & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
+      & Pick<ChatMessage, 'from' | 'to' | 'text'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1375,7 +1365,7 @@ export type InboxQuery = (
       )> }
     ) | (
       { __typename?: 'CrcHubTransfer' }
-      & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1405,7 +1395,7 @@ export type InboxQuery = (
       )> }
     ) | (
       { __typename?: 'EthTransfer' }
-      & Pick<EthTransfer, 'id' | 'from' | 'to' | 'value'>
+      & Pick<EthTransfer, 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1415,7 +1405,7 @@ export type InboxQuery = (
       )> }
     ) | (
       { __typename?: 'GnosisSafeEthTransfer' }
-      & Pick<GnosisSafeEthTransfer, 'id' | 'from' | 'to' | 'value'>
+      & Pick<GnosisSafeEthTransfer, 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1459,10 +1449,10 @@ export type ProfileBySafeAddressQuery = (
       & Pick<City, 'geonameid' | 'country' | 'name'>
     )>, lastEvent?: Maybe<(
       { __typename?: 'ProfileEvent' }
-      & Pick<ProfileEvent, 'block_number' | 'direction' | 'id' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+      & Pick<ProfileEvent, 'block_number' | 'direction' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
       & { payload?: Maybe<{ __typename?: 'ChatMessage' } | (
         { __typename?: 'CrcHubTransfer' }
-        & Pick<CrcHubTransfer, 'id' | 'from' | 'to' | 'flow'>
+        & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
       ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
         { __typename?: 'CrcTrust' }
         & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
@@ -1581,7 +1571,6 @@ export const SendMessageDocument = gql`
     event {
       block_number
       direction
-      id
       safe_address
       safe_address_profile {
         id
@@ -1602,7 +1591,6 @@ export const SendMessageDocument = gql`
       }
       payload {
         ... on ChatMessage {
-          id
           from
           from_profile {
             id
@@ -1622,7 +1610,6 @@ export const SendMessageDocument = gql`
           text
         }
         ... on CrcHubTransfer {
-          id
           from
           from_profile {
             id
@@ -1662,7 +1649,6 @@ export const SendMessageDocument = gql`
           }
         }
         ... on EthTransfer {
-          id
           from
           from_profile {
             id
@@ -1682,7 +1668,6 @@ export const SendMessageDocument = gql`
           value
         }
         ... on GnosisSafeEthTransfer {
-          id
           from
           from_profile {
             id
@@ -2052,7 +2037,6 @@ export const ContactsDocument = gql`
     lastEvent {
       block_number
       direction
-      id
       safe_address
       timestamp
       transaction_hash
@@ -2061,7 +2045,6 @@ export const ContactsDocument = gql`
       value
       payload {
         ... on CrcHubTransfer {
-          id
           from
           to
           flow
@@ -2108,7 +2091,6 @@ export const ChatHistoryDocument = gql`
   chatHistory(safeAddress: $safeAddress, contactSafeAddress: $contactSafeAddress) {
     block_number
     direction
-    id
     safe_address
     safe_address_profile {
       id
@@ -2129,7 +2111,6 @@ export const ChatHistoryDocument = gql`
     }
     payload {
       ... on ChatMessage {
-        id
         from
         from_profile {
           id
@@ -2149,7 +2130,6 @@ export const ChatHistoryDocument = gql`
         text
       }
       ... on CrcHubTransfer {
-        id
         from
         from_profile {
           id
@@ -2189,7 +2169,6 @@ export const ChatHistoryDocument = gql`
         }
       }
       ... on EthTransfer {
-        id
         from
         from_profile {
           id
@@ -2209,7 +2188,6 @@ export const ChatHistoryDocument = gql`
         value
       }
       ... on GnosisSafeEthTransfer {
-        id
         from
         from_profile {
           id
@@ -2256,7 +2234,6 @@ export const InboxDocument = gql`
   inbox {
     block_number
     direction
-    id
     safe_address
     safe_address_profile {
       id
@@ -2277,7 +2254,6 @@ export const InboxDocument = gql`
     }
     payload {
       ... on ChatMessage {
-        id
         from
         from_profile {
           id
@@ -2297,7 +2273,6 @@ export const InboxDocument = gql`
         text
       }
       ... on CrcHubTransfer {
-        id
         from
         from_profile {
           id
@@ -2337,7 +2312,6 @@ export const InboxDocument = gql`
         }
       }
       ... on EthTransfer {
-        id
         from
         from_profile {
           id
@@ -2357,7 +2331,6 @@ export const InboxDocument = gql`
         value
       }
       ... on GnosisSafeEthTransfer {
-        id
         from
         from_profile {
           id
@@ -2439,7 +2412,6 @@ export const ProfileBySafeAddressDocument = gql`
     lastEvent {
       block_number
       direction
-      id
       safe_address
       timestamp
       transaction_hash
@@ -2448,7 +2420,6 @@ export const ProfileBySafeAddressDocument = gql`
       value
       payload {
         ... on CrcHubTransfer {
-          id
           from
           to
           flow
