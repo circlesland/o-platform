@@ -6,12 +6,11 @@
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import { push } from "svelte-spa-router";
   import Icons from "../../../shared/molecules/Icons.svelte";
-  import OpenLogin, {LOGIN_PROVIDER} from "@toruslabs/openlogin";
-
+  import OpenLogin, { LOGIN_PROVIDER } from "@toruslabs/openlogin";
 
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
@@ -73,7 +72,8 @@
     // https://docs.tor.us/key-infrastructure/technical-architecture
 
     const openlogin = new OpenLogin({
-      clientId: "BI3cr1l8ztZhkaRFFsh2cY77o6H74JHP0KaigRdh30Y53YDpMatb9QDiPh14zl176ciAUMbi7JlmjNe5MPLwzAE",
+      clientId:
+        "BI3cr1l8ztZhkaRFFsh2cY77o6H74JHP0KaigRdh30Y53YDpMatb9QDiPh14zl176ciAUMbi7JlmjNe5MPLwzAE",
       network: "mainnet",
       // redirectUrl: "http://localhost:5000/#/banking/transactions", // your app url where user will be redirected
       uxMode: "popup", // default is redirect , popup mode is also supported,
@@ -88,9 +88,9 @@
       loginProvider: "email_passwordless"
       */
     });
-    console.log(privateKey)
+    console.log(privateKey);
     const userInfo = await openlogin.getUserInfo();
-    console.log(userInfo)
+    console.log(userInfo);
   }
 
   let mySafeAddress: string;
@@ -206,16 +206,10 @@
 
     <!-- Tor.us -->
 
-    <section
-            class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-            on:click="{() => torus('/marketplace/stream')}">
-      <div
-              class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-        <div class="pt-2 text-primary">
-          <Icons icon="dashmarket" />
-        </div>
-        <div class="mt-4 text-3xl font-heading text-dark">market</div>
-      </div>
+    <section class="mt-4" on:click="{() => torus('/marketplace/stream')}">
+      <button class="btn btn-primary btn-block">
+        Don't bore us, get to the Tor.us
+      </button>
     </section>
 
   </div>
