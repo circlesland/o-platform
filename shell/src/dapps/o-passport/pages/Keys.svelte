@@ -9,6 +9,7 @@
   import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
   import {me} from "../../../shared/stores/me";
   import {onMount} from "svelte";
+  import OpenLogin, {awaitReq} from "@toruslabs/openlogin";
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
@@ -30,6 +31,19 @@
         isValid: false,
         isThisDevice: true
       };
+    }
+
+    const encryptedKeysJson = localStorage.getItem("encryptedKeys");
+    if (encryptedKeysJson) {
+      const encryptedKeysArr:any[] = JSON.parse(encryptedKeysJson);
+      encryptedKeysArr.forEach(k => {
+          safeOwners[k.name] = {
+          name: k.name,
+          key: null,
+          isValid: false,
+          isThisDevice: true
+        };
+      });
     }
 
     const owners = await safeProxy.getOwners();
@@ -78,7 +92,7 @@
 
   let addOwnerAddress:string = "";
 
-  async function addOwner() {
+  async function addOwner(addOwnerAddress:string) {
     try {
       await safeProxy.addOwnerWithThreshold(
               localStorage.getItem("circlesKey"),
@@ -98,13 +112,112 @@
       console.error(e);
     }
   }
+
+  async function keyFromPassphrase(passphrase: string) {
+    const passphraseBytes = Buffer.from(passphrase, "utf-8");
+    const derivedKey = await crypto.subtle.digest({name: "SHA-256"}, passphraseBytes);
+    const subtleKey = await crypto.subtle.importKey(
+            "raw",
+            derivedKey,
+            {name: "AES-CBC"},
+            false,
+            ["encrypt", "decrypt"]);
+    return subtleKey;
+  }
+
+  async function encryptWithPassphrase(passphrase:string, clearTextHexKey:string) : Promise<{
+    iv:  Uint8Array,
+    base64CypherText: string
+  }> {
+    const subtleKey = await keyFromPassphrase(passphrase);
+    const keyBytes = Buffer.from(clearTextHexKey, "hex");
+    const iv = crypto.getRandomValues(new Uint8Array(16));
+    const cypherText = await crypto.subtle.encrypt(
+            {name: "AES-CBC", iv},
+            subtleKey,
+            keyBytes);
+
+    return {
+      iv,
+      base64CypherText: Buffer.from(cypherText).toString("base64")
+    };
+  }
+
+  async function decryptWithPassphrase(passphrase: string, base64CypherText:{
+    iv:  Uint8Array,
+    base64CypherText: string
+  }) : Promise<string> {
+    const subtleKey = await keyFromPassphrase(passphrase);
+    const base64CypherTextBytes = Buffer.from(base64CypherText.base64CypherText, "base64");
+    const clearTextBytes = await crypto.subtle.decrypt({name: "AES-CBC", iv: base64CypherText.iv}, subtleKey, base64CypherTextBytes);
+    return Buffer.from(clearTextBytes).toString("hex");
+  }
+
+  let newKeyPassphrase: string;
+
+  async function addKey(newKeyName: string, newKeyHex: string, newKeyPassphrase: string) {
+    const web3 = RpcGateway.get();
+    const accFromKey = web3.eth.accounts.privateKeyToAccount(newKeyHex);
+    const encryptedKey = await encryptWithPassphrase(newKeyPassphrase, newKeyHex);
+
+    if (newKeyName?.trim() === "") {
+      newKeyName = accFromKey.address;
+    }
+
+    const keyObj = {
+      name: newKeyName,
+      ...encryptedKey
+    };
+
+    const existingKeysJson = localStorage.getItem("encryptedKeys");
+    const existingKeysArr = existingKeysJson ? JSON.parse(existingKeysJson) : [];
+
+    existingKeysArr.push(keyObj);
+
+    await addOwner(accFromKey.address);
+
+    localStorage.setItem("encryptedKeys", JSON.stringify(existingKeysArr));
+  }
+
+
+  async function addTorusKey(newKeyPassphrase:string) {
+    if (newKeyPassphrase.trim().length < 6) {
+      alert("Password must be at least six characters long");
+      return;
+    }
+    // Add more devices:
+    // https://docs.tor.us/key-infrastructure/technical-architecture
+    const openlogin = new OpenLogin({
+      clientId: "BI3cr1l8ztZhkaRFFsh2cY77o6H74JHP0KaigRdh30Y53YDpMatb9QDiPh14zl176ciAUMbi7JlmjNe5MPLwzAE",
+      network: "mainnet",
+      // redirectUrl: "http://localhost:5000/#/banking/transactions", // your app url where user will be redirected
+      uxMode: "popup", // default is redirect , popup mode is also supported,
+    });
+    await openlogin.init();
+    const privateKey = await openlogin.login({
+      loginProvider: "google",
+      /*
+      loginProvider: "github",
+      loginProvider: "apple",
+      loginProvider: "wechat",
+      loginProvider: "email_passwordless"
+      */
+    });
+
+    const userInfo = await openlogin.getUserInfo();
+    console.log(userInfo);
+    await addKey(userInfo.email, privateKey.privKey, newKeyPassphrase);
+  }
 </script>
 
 <SimpleHeader {runtimeDapp} {routable} />
 
 <div class="mx-auto -mt-2 md:w-2/3 xl:w-1/2">
-  <input type="text" bind:value={addOwnerAddress} />
-  <button on:click={() => addOwner()}>Add owner</button>
+  <fieldset>
+    <legend>Add owner (Tor.us)</legend>
+    <input type="password" bind:value={newKeyPassphrase} /><br/>
+    <button on:click={() => addTorusKey(newKeyPassphrase)}>Add Torus key</button>
+  </fieldset>
   {#each keys as key}
     <section class="flex items-center justify-center mx-4 mb-2">
       <Card>
@@ -117,6 +230,9 @@
           </div>
           {#if !key.isThisDevice}
             <button on:click={() => removeOwner(key.address)}>Remove</button>
+          {/if}
+          {#if !key.isThisDevice}
+            <button on:click={() => removeOwner(key.address)}>Unlock</button>
           {/if}
         </div>
       </Card>
