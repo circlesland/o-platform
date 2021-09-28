@@ -4,12 +4,9 @@ import {EMPTY_DATA, GNOSIS_SAFE_ABI, ZERO_ADDRESS} from "../consts";
 import {BN} from "ethereumjs-util";
 const EthLibAccount = require('eth-lib/lib/account');
 import {ExecResult, Web3Contract} from "../web3Contract";
-import type {TransactionReceipt} from "web3-core";
 import {SafeTransaction} from "../model/safeTransaction";
 import {SafeOps} from "../model/safeOps";
 import {RpcGateway} from "../rpcGateway";
-import {PromiEvent} from "web3-core";
-import {Observable} from "rxjs";
 
 export class GnosisSafeProxy extends Web3Contract
 {
@@ -46,6 +43,44 @@ export class GnosisSafeProxy extends Web3Contract
     return await this.contract.methods.getOwners().call();
   }
 
+  async addOwnerWithThreshold(privateKey:string, owner:string, threshold: number) {
+    const txData = await this.contract.methods.addOwnerWithThreshold(owner, new BN(threshold.toString())).encodeABI();
+    const receipt = await this.execTransaction(
+      privateKey,
+      {
+        to: this.address,
+        data: txData,
+        value: new BN("0"),
+        refundReceiver: ZERO_ADDRESS,
+        gasToken: ZERO_ADDRESS,
+        operation: SafeOps.CALL
+      });
+
+    receipt.observable.subscribe(o => {
+      console.log(o);
+    });
+  }
+
+  async removeOwner(privateKey:string, address:string) {
+    const prevOwner = RpcGateway.get().eth.accounts.privateKeyToAccount(privateKey).address;
+    const sentinel = "0x0000000000000000000000000000000000000001";
+    const txData = await this.contract.methods.removeOwner(sentinel,  address, new BN("1")).encodeABI();
+    const receipt = await this.execTransaction(
+      privateKey,
+      {
+        to: this.address,
+        data: txData,
+        value: new BN("0"),
+        refundReceiver: ZERO_ADDRESS,
+        gasToken: ZERO_ADDRESS,
+        operation: SafeOps.CALL
+      });
+
+    receipt.observable.subscribe(o => {
+      console.log(o);
+    });
+  }
+
   async getNonce(): Promise<number>
   {
     return parseInt(await this.contract.methods.nonce().call());
@@ -69,15 +104,15 @@ export class GnosisSafeProxy extends Web3Contract
   {
     this.validateSafeTransaction(safeTransaction);
 
-    const estimatedBaseGas = dontEstimate
+    const estimatedBaseGas = (dontEstimate
       ? new BN(this.web3.utils.toWei("1000000", "wei"))
       : (await this.estimateBaseGasCosts(safeTransaction, 1))
-        .add(new BN(this.web3.utils.toWei("100000", "wei")));
+        .add(new BN(this.web3.utils.toWei("100000", "wei"))));
 
-    const estimatedSafeTxGas = dontEstimate
+    const estimatedSafeTxGas = (dontEstimate
       ? new BN(this.web3.utils.toWei("1000000", "wei"))
       : (await this.estimateSafeTxGasCosts(safeTransaction))
-        .add(new BN(this.web3.utils.toWei("100000", "wei")));
+        .add(new BN(this.web3.utils.toWei("100000", "wei"))));
 
     const nonce = await this.getNonce();
 
@@ -92,9 +127,13 @@ export class GnosisSafeProxy extends Web3Contract
       refundReceiver: safeTransaction.refundReceiver,
       nonce: nonce
     };
+    console.log("executableTransaction:", executableTransaction);
 
     const transactionHash = await this.getTransactionHash(executableTransaction);
     const signatures = GnosisSafeProxy.signTransactionHash(this.web3, privateKey, transactionHash);
+
+    const gasPrice = await RpcGateway.getGasPrice();
+    console.log("Gas price:", gasPrice.toString())
 
     const gasEstimationResult = await this.contract.methods.execTransaction(
       executableTransaction.to,
@@ -103,10 +142,11 @@ export class GnosisSafeProxy extends Web3Contract
       executableTransaction.operation,
       executableTransaction.safeTxGas,
       executableTransaction.baseGas,
-      await RpcGateway.getGasPrice(),
+      gasPrice,
       executableTransaction.gasToken,
       executableTransaction.refundReceiver,
       signatures.signature).estimateGas();
+    // console.log("EstimateGas:", gasPrice.toString())
 
     const gasEstimate = new BN(gasEstimationResult).add(estimatedBaseGas).add(estimatedSafeTxGas);
     console.log("gasEstimate:", gasEstimate.toNumber());
@@ -114,8 +154,9 @@ export class GnosisSafeProxy extends Web3Contract
     const execTransactionData = await this.toAbiMessage(executableTransaction, signatures.signature);
     console.log("execTransactionData:", execTransactionData);
 
+    const acc = RpcGateway.get().eth.accounts.privateKeyToAccount(privateKey);
     const signedTransactionData = await Web3Contract.signRawTransaction(
-      (await this.getOwners())[0],
+      acc.address,
       privateKey,
       this.address,
       execTransactionData,

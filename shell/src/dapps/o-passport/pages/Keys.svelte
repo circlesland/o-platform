@@ -5,11 +5,55 @@
   import * as bip39 from "bip39";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  import {me} from "../../../shared/stores/me";
+  import {onMount} from "svelte";
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
   let showPhrase = !localStorage.getItem("circlesKey");
   // TODO: 0x123 is for testing without private key. Needs to be removed later.
+
+  let safeOwners: {[address:string]:{name:string | null, key:string | null, isValid:boolean, isThisDevice:boolean}} = {};
+  let safeProxy = new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress);
+
+  let keys: {address:string, name:string|null, key:string|null, isValid: boolean, isThisDevice:boolean}[] = [];
+
+  onMount(async () => {
+    const key = localStorage.getItem("circlesKey");
+    if (key) {
+      const localAccount = RpcGateway.get().eth.accounts.privateKeyToAccount(key);
+      safeOwners[localAccount.address] = {
+        name: "This device",
+        key: localAccount.privateKey,
+        isValid: false,
+        isThisDevice: true
+      };
+    }
+
+    const owners = await safeProxy.getOwners();
+    owners.forEach(o => {
+      if (safeOwners[o]) {
+        safeOwners[o].isValid = true;
+      } else {
+        safeOwners[o] = {
+          name: null,
+          key: null,
+          isValid: true,
+          isThisDevice: false
+        };
+      }
+    });
+
+    keys = Object.keys(safeOwners).map(k =>{
+      return {
+        ... safeOwners[k],
+        address: k
+      }
+    });
+  });
+
   let name =
     localStorage.getItem("circlesKey") &&
     localStorage.getItem("circlesKey") != "0x123"
@@ -31,11 +75,54 @@
   function show() {
     showPhrase = !showPhrase;
   }
+
+  let addOwnerAddress:string = "";
+
+  async function addOwner() {
+    try {
+      await safeProxy.addOwnerWithThreshold(
+              localStorage.getItem("circlesKey"),
+              addOwnerAddress.toLowerCase(),
+              1);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function removeOwner(address:string) {
+    try {
+      await safeProxy.removeOwner(
+              localStorage.getItem("circlesKey"),
+              address.toLowerCase());
+    } catch (e) {
+      console.error(e);
+    }
+  }
 </script>
 
 <SimpleHeader {runtimeDapp} {routable} />
 
 <div class="mx-auto -mt-2 md:w-2/3 xl:w-1/2">
+  <input type="text" bind:value={addOwnerAddress} />
+  <button on:click={() => addOwner()}>Add owner</button>
+  {#each keys as key}
+    <section class="flex items-center justify-center mx-4 mb-2">
+      <Card>
+        <div class="flex flex-col items-start">
+          <div>
+            Address: {key.address}<br/>
+            Name: {key.name}<br/>
+            Key: {key.key !== null}<br/>
+            IsValid: {key.isValid}
+          </div>
+          {#if !key.isThisDevice}
+            <button on:click={() => removeOwner(key.address)}>Remove</button>
+          {/if}
+        </div>
+      </Card>
+    </section>
+  {/each}
+
   <section class="flex items-center justify-center mx-4 mb-1">
     <Card>
       <div class="flex flex-col items-start">
