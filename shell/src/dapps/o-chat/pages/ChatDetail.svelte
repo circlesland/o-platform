@@ -1,20 +1,26 @@
 <script lang="ts">
-  import {onMount} from "svelte";
+  import { onMount } from "svelte";
   import ElizaBot from "elizabot";
 
   import ChatCard from "../atoms/ChatCard.svelte";
+  import NotificationCard from "../atoms/NotificationCard.svelte";
   import "simplebar";
   import "simplebar/dist/simplebar.css";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import {
-    ChatHistoryDocument, Contact, ContactDocument, ProfileEvent, SendMessageDocument
+    ChatHistoryDocument,
+    Contact,
+    ContactDocument,
+    ProfileEvent,
+    SendMessageDocument,
   } from "../../../shared/api/data/types";
-  import {me} from "../../../shared/stores/me";
-  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-  import {AvataarGenerator} from "../../../shared/avataarGenerator";
-  import {setTrust} from "../../o-banking/processes/setTrust";
-  import {transfer} from "../../o-banking/processes/transfer";
+  import { me } from "../../../shared/stores/me";
+  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import { setTrust } from "../../o-banking/processes/setTrust";
+  import { transfer } from "../../o-banking/processes/transfer";
+  import { push } from "svelte-spa-router";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -33,18 +39,21 @@
       query: ChatHistoryDocument,
       variables: {
         safeAddress,
-        contactSafeAddress
-      }
+        contactSafeAddress,
+      },
     });
     const contactProfileResultPromise = apiClient.query({
       query: ContactDocument,
       variables: {
         safeAddress: $me.circlesAddress.toLowerCase(),
         contactAddress: id,
-      }
+      },
     });
 
-    const apiResults = await Promise.all([chatHistoryResultPromise, contactProfileResultPromise]);
+    const apiResults = await Promise.all([
+      chatHistoryResultPromise,
+      contactProfileResultPromise,
+    ]);
     const chatHistoryResult = apiResults[0];
     const contactProfileResult = apiResults[1];
     if (apiResults.filter(o => o.errors?.length > 0).length > 0) {
@@ -52,7 +61,11 @@
       return;
     }
     chatHistory = chatHistoryResult.data.chatHistory;
-    contactProfile = contactProfileResult.data.contact ? contactProfileResult.data.contact : null;
+    contactProfile = contactProfileResult.data.contact
+      ? contactProfileResult.data.contact
+      : null;
+
+    console.log("PRFILE: ", contactProfile);
 
     window.o.publishEvent(<any>{
       type: "shell.scrollToBottom",
@@ -69,8 +82,8 @@
       mutation: SendMessageDocument,
       variables: {
         toSafeAddress: id,
-        content: text
-      }
+        content: text,
+      },
     });
 
     if (result.data?.sendMessage?.success) {
@@ -87,17 +100,17 @@
     el.focus();
   }
 
-  var autoExpand = function () {
+  var autoExpand = function() {
     var el = this;
-    setTimeout(function () {
+    setTimeout(function() {
       el.style.cssText = "height:auto; padding:0 padding-top: 2px;";
       el.style.cssText = "height:" + el.scrollHeight + "px";
     }, 0);
   };
 
-  var resetAutoExpand = function () {
+  var resetAutoExpand = function() {
     var el = this;
-    setTimeout(function () {
+    setTimeout(function() {
       el.style.cssText = "height:auto; padding:0 padding-top: 2px;";
     }, 0);
   };
@@ -139,16 +152,22 @@
       submitChat();
     }
   }
+  function goToProfile(e, path?: string) {
+    if (!path) return;
+    e.stopPropagation();
+    push(`#/friends/${path}`);
+  }
 
   function buildCardModel(chat) {
+    console.log("CHAT: ", chat);
     let notificationType: string = null;
     let title: string = null;
     let outgoing: boolean = chat.safeAddress === $me.circlesAddress;
     let actions: {
-      title: string,
-      icon: string,
-      colorClass: string,
-      action: () => void
+      title: string;
+      icon: string;
+      colorClass: string;
+      action: () => void;
     }[] = [];
 
     switch (chat.type) {
@@ -159,98 +178,139 @@
         chat.safe_address_profile = chat.payload.from_profile;
         break;
       case "crc_trust":
-        if (chat.payload.limit == 0 && chat.safe_address == $me.circlesAddress) {
+        if (
+          chat.payload.limit == 0 &&
+          chat.safe_address == $me.circlesAddress
+        ) {
           notificationType = "trust_removed";
           title = `You untrusted ${chat.payload.address_profile.firstName}`;
           actions = !contactProfile.youTrust
-            ? [{
-              title: `Trust ${chat.payload.address_profile.firstName}`,
-              icon: "",
-              colorClass: "",
-              action: () => {
-                window.o.runProcess(setTrust, {
-                  trustLimit: 100,
-                  trustReceiver: chat.payload.address,
-                  safeAddress: $me.circlesAddress,
-                  privateKey: localStorage.getItem("circlesKey"),
-                });
-              }
-            }]
-            : []
-        } else if (chat.payload.limit > 0 && chat.safe_address === $me.circlesAddress) {
+            ? [
+                {
+                  title: `Trust ${chat.payload.address_profile.firstName}`,
+                  icon: "",
+                  colorClass: "",
+                  action: () => {
+                    window.o.runProcess(setTrust, {
+                      trustLimit: 100,
+                      trustReceiver: chat.payload.address,
+                      safeAddress: $me.circlesAddress,
+                      privateKey: localStorage.getItem("circlesKey"),
+                    });
+                  },
+                },
+              ]
+            : [];
+        } else if (
+          chat.payload.limit > 0 &&
+          chat.safe_address === $me.circlesAddress
+        ) {
           notificationType = "trust_added";
           title = `You trusted ${chat.payload.address_profile.firstName}`;
-          actions = contactProfile.youTrust > 0 ? [{
-              title: `Untrust ${chat.payload.address_profile.firstName}`,
-              icon: "",
-              colorClass: "",
-              action: () => {
-                window.o.runProcess(setTrust, {
-                  trustLimit: 0,
-                  trustReceiver: chat.payload.address,
-                  safeAddress: $me.circlesAddress,
-                  privateKey: localStorage.getItem("circlesKey"),
-                });
-              }
-            }]
-            : [];
-        } else if (chat.payload.limit === 0 && chat.safe_address !== $me.circlesAddress) {
+          actions =
+            contactProfile.youTrust > 0
+              ? [
+                  {
+                    title: `Untrust ${chat.payload.address_profile.firstName}`,
+                    icon: "",
+                    colorClass: "",
+                    action: () => {
+                      window.o.runProcess(setTrust, {
+                        trustLimit: 0,
+                        trustReceiver: chat.payload.address,
+                        safeAddress: $me.circlesAddress,
+                        privateKey: localStorage.getItem("circlesKey"),
+                      });
+                    },
+                  },
+                ]
+              : [];
+        } else if (
+          chat.payload.limit === 0 &&
+          chat.safe_address !== $me.circlesAddress
+        ) {
           notificationType = "trust_removed";
           title = `${chat.payload.can_send_to_profile.firstName} untrusted you`;
           outgoing = chat.safeAddress !== $me.circlesAddress;
-        } else if (chat.payload.limit > 0 && chat.safe_address !== $me.circlesAddress) {
+        } else if (
+          chat.payload.limit > 0 &&
+          chat.safe_address !== $me.circlesAddress
+        ) {
           notificationType = "trust_added";
           title = `${chat.payload.can_send_to_profile.firstName} trusted you`;
           outgoing = chat.safeAddress !== $me.circlesAddress;
-          actions = (!contactProfile.youTrust ? [{
-            title: `Trust ${chat.payload.can_send_to_profile.firstName}`,
-            icon: "",
-            colorClass: "",
-            action: () => {
-              window.o.runProcess(setTrust, {
-                trustLimit: 100,
-                trustReceiver: chat.payload.can_send_to,
-                safeAddress: $me.circlesAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              });
-            }
-          }] : []).concat(contactProfile.trustsYou ? [{
-            title: `Send Circles to ${chat.payload.can_send_to_profile.firstName}`,
-            icon: "",
-            colorClass: "",
-            action: () => {
-              window.o.runProcess(transfer, {
-                safeAddress: $me.circlesAddress,
-                recipientAddress: chat.payload.can_send_to,
-                privateKey: localStorage.getItem("circlesKey"),
-              });
-            }
-          }] : []);
+          actions = (!contactProfile.youTrust
+            ? [
+                {
+                  title: `Trust ${chat.payload.can_send_to_profile.firstName}`,
+                  icon: "",
+                  colorClass: "",
+                  action: () => {
+                    window.o.runProcess(setTrust, {
+                      trustLimit: 100,
+                      trustReceiver: chat.payload.can_send_to,
+                      safeAddress: $me.circlesAddress,
+                      privateKey: localStorage.getItem("circlesKey"),
+                    });
+                  },
+                },
+              ]
+            : []
+          ).concat(
+            contactProfile.trustsYou
+              ? [
+                  {
+                    title: `Send Circles to ${chat.payload.can_send_to_profile.firstName}`,
+                    icon: "",
+                    colorClass: "",
+                    action: () => {
+                      window.o.runProcess(transfer, {
+                        safeAddress: $me.circlesAddress,
+                        recipientAddress: chat.payload.can_send_to,
+                        privateKey: localStorage.getItem("circlesKey"),
+                      });
+                    },
+                  },
+                ]
+              : []
+          );
         }
         break;
       case "crc_hub_transfer":
         if (chat.safe_address === $me.circlesAddress) {
           notificationType = "transfer_out";
-          title = `You sent ${RpcGateway.get().utils.fromWei(chat.value, "ether")} CRC to ${chat.payload.to_profile.firstName}`,
-          actions = [];
+          (title = `You sent ${RpcGateway.get().utils.fromWei(
+            chat.value,
+            "ether"
+          )} CRC to ${chat.payload.to_profile.firstName}`),
+            (actions = []);
         } else if (chat.safe_address !== $me.circlesAddress) {
           outgoing = chat.safeAddress !== $me.circlesAddress;
           notificationType = "transfer_in";
-          title = `${chat.payload.from_profile.firstName} sent you ${RpcGateway.get().utils.fromWei(chat.value, "ether")} CRC`
-          actions = (!contactProfile.youTrust ? [{
-              title: `Trust ${chat.payload.from_profile.firstName}`,
-              icon: "",
-              colorClass: "",
-              action: () => {
-                window.o.runProcess(setTrust, {
-                  trustLimit: 100,
-                  trustReceiver: chat.payload.from,
-                  safeAddress: $me.circlesAddress,
-                  privateKey: localStorage.getItem("circlesKey"),
-                });
-              }
-            }]
-            : []).concat({
+          title = `${
+            chat.payload.from_profile.firstName
+          } sent you ${RpcGateway.get().utils.fromWei(
+            chat.value,
+            "ether"
+          )} CRC`;
+          actions = (!contactProfile.youTrust
+            ? [
+                {
+                  title: `Trust ${chat.payload.from_profile.firstName}`,
+                  icon: "",
+                  colorClass: "",
+                  action: () => {
+                    window.o.runProcess(setTrust, {
+                      trustLimit: 100,
+                      trustReceiver: chat.payload.from,
+                      safeAddress: $me.circlesAddress,
+                      privateKey: localStorage.getItem("circlesKey"),
+                    });
+                  },
+                },
+              ]
+            : []
+          ).concat({
             title: `Send Circles to ${chat.payload.from_profile.firstName}`,
             icon: "",
             colorClass: "",
@@ -260,13 +320,14 @@
                 recipientAddress: chat.payload.from,
                 privateKey: localStorage.getItem("circlesKey"),
               });
-            }
+            },
           });
         }
         break;
     }
 
-    let text = chat.tags?.find(o => o.typeId === "o-banking:transfer:message:1")?.value;
+    let text = chat.tags?.find(o => o.typeId === "o-banking:transfer:message:1")
+      ?.value;
     if (!text) {
       text = "";
     }
@@ -281,62 +342,73 @@
         time: chat.timestamp / 1000,
         title: title,
         actions: actions,
-        text: text
+        text: text,
       },
       image: chat.safe_address_profile.avatarUrl
         ? chat.safe_address_profile.avatarUrl
-        : AvataarGenerator.generate(chat.safe_address_profile.circlesAddress
-          ? chat.safe_address_profile.circlesAddress
-          : chat.safe_address)
+        : AvataarGenerator.generate(
+            chat.safe_address_profile.circlesAddress
+              ? chat.safe_address_profile.circlesAddress
+              : chat.safe_address
+          ),
     };
   }
 </script>
 
 <div id="chatlist">
-    <header class="sticky top-0 z-50 grid w-full bg-white place-content-center">
-        <div
-                class="relative flex flex-col items-center self-center w-full m-auto text-center justify-self-center">
-            <!--
-            <div class="absolute avatar " style="left: -56px; top:9px">
-              <div class="w-8 h-8 m-auto rounded-full ">
+  <header class="sticky top-0 z-50 grid w-full bg-white place-content-center">
+    <div
+      class="relative flex flex-col items-center self-center w-full m-auto text-center justify-self-center">
 
-                {#if contactProfile}
-                  <img
-                          src={contactProfile.avatarUrl ? contactProfile.avatarUrl : AvataarGenerator.generate(contactProfile.circlesAddress)}
-                          alt="user-icon" />
-                {/if}
-              </div>
-            </div>-->
-            <div class="mt-2 text-3xl tracking-wide uppercase font-heading">
-                {#if contactProfile}
-                    {#if contactProfile.contactAddressProfile}
-                        {contactProfile.contactAddressProfile.firstName} {contactProfile.contactAddressProfile.lastName}
-                    {/if}
-                {/if}
-            </div>
+      <div class="absolute avatar " style="left: -56px; top:9px">
+        <div class="w-12 h-12 m-auto rounded-full ">
 
-            {#if contactProfile}
-                {#if contactProfile.youTrust > 0 && contactProfile.trustsYou > 0}
-                    Mutual trust
-                {:else if contactProfile.youTrust > 0 && !contactProfile.trustsYou}
-                    You trust {contactProfile.contactAddressProfile.firstName}
-                {:else if contactProfile.trustsYou > 0}
-                    {contactProfile.contactAddressProfile.firstName} trusts you
-                {/if}
-            {/if}
-
+          {#if contactProfile}
+            <img
+              src="{contactProfile.contactAddressProfile.avatarUrl ? contactProfile.contactAddressProfile.avatarUrl : AvataarGenerator.generate(contactProfile.contactAddressProfile.circlesAddress)}"
+              alt="user-icon" />
+          {/if}
         </div>
-    </header>
+      </div>
+      <div class="mt-2 text-3xl tracking-wide uppercase font-heading">
+        {#if contactProfile}
+          {#if contactProfile.contactAddressProfile}
+            {contactProfile.contactAddressProfile.firstName}
+            {contactProfile.contactAddressProfile.lastName}
+          {/if}
+        {/if}
+      </div>
 
-    <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
-    <div class="flex flex-col p-2 pb-0 space-y-4 sm:p-6 sm:space-y-8">
-        {#each chatHistory as chat}
-            <ChatCard params={buildCardModel(chat)}/>
-        {/each}
+      {#if contactProfile}
+        <div class="pb-2 text-xs">
+          {#if contactProfile.youTrust > 0 && contactProfile.trustsYou > 0}
+            Mutual trust
+          {:else if contactProfile.youTrust > 0 && !contactProfile.trustsYou}
+            You trust {contactProfile.contactAddressProfile.firstName}
+          {:else if contactProfile.trustsYou > 0}
+            {contactProfile.contactAddressProfile.firstName} trusts you
+          {/if}
+        </div>
+      {/if}
+
     </div>
-    <div class:hidden={!contactProfile || !contactProfile.contactAddressProfile || !contactProfile.contactAddressProfile.id} class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2">
-        <div class="flex-grow">
-            <!-- <input
+  </header>
+
+  <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
+  <div class="flex flex-col p-2 pb-0 space-y-4 sm:p-6 sm:space-y-8">
+    {#each chatHistory as chat}
+      {#if chat.type === 'chat_message'}
+        <ChatCard params="{buildCardModel(chat)}" />
+      {:else}
+        <NotificationCard params="{buildCardModel(chat)}" />
+      {/if}
+    {/each}
+  </div>
+  <div
+    class:hidden="{!contactProfile || !contactProfile.contactAddressProfile || !contactProfile.contactAddressProfile.id}"
+    class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2">
+    <div class="flex-grow">
+      <!-- <input
               bind:this="{inputField}"
               on:keydown="{onkeydown}"
               bind:value="{chatmessage}"
@@ -349,37 +421,37 @@
               placeholder="message content"
               class="order-1 w-full input input-bordered text-dark"
               style="" /> -->
-            <textarea
-                    name="searchTerm"
-                    rows="1"
-                    type="text"
-                    placeholder="Your Message"
-                    class="w-full overflow-hidden resize-none textarea textarea-bordered"
-                    bind:this="{inputField}"
-                    bind:value="{chatmessage}"
-                    use:init></textarea>
-        </div>
-        <div class="flex flex-row content-end">
-            <button
-                    type="submit"
-                    class="self-end mb-2 btn btn-primary btn-square"
-                    on:click="{() => submitChat()}">
-                <svg
-                        class="w-6"
-                        viewBox="0 0 23 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                    <path
-                            d="M11.5 15L15.5 11M15.5 11L11.5 7M15.5 11H7.5M21.5 11C21.5 16.5228
+      <textarea
+        name="searchTerm"
+        rows="1"
+        type="text"
+        placeholder="Your Message"
+        class="w-full overflow-hidden resize-none textarea textarea-bordered"
+        bind:this="{inputField}"
+        bind:value="{chatmessage}"
+        use:init></textarea>
+    </div>
+    <div class="flex flex-row content-end">
+      <button
+        type="submit"
+        class="self-end mb-2 btn btn-primary btn-square"
+        on:click="{() => submitChat()}">
+        <svg
+          class="w-6"
+          viewBox="0 0 23 22"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M11.5 15L15.5 11M15.5 11L11.5 7M15.5 11H7.5M21.5 11C21.5 16.5228
             17.0228 21 11.5 21C5.97715 21 1.5 16.5228 1.5 11C1.5 5.47715 5.97715
             1 11.5 1C17.0228 1 21.5 5.47715 21.5 11Z"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                </svg>
-            </button>
-        </div>
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </button>
     </div>
+  </div>
 
 </div>
