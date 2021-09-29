@@ -171,10 +171,5 @@
       -moz-transition: all 0.35s ease-in-out;
       transition: all 0.35s ease-in-out;
     }
-
-    /* Firefox fix for sticky bottom prev-sibling height */
-    main {
-      padding-bottom: 4rem;
-    }
   }
 </style>
