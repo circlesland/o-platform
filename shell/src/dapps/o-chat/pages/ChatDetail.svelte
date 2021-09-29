@@ -133,25 +133,6 @@
     // }
   });
 
-  function pasteIntoInput(el, text) {
-    el.focus();
-    if (
-      typeof el.selectionStart == "number" &&
-      typeof el.selectionEnd == "number"
-    ) {
-      var val = el.value;
-      var selStart = el.selectionStart;
-      el.value = val.slice(0, selStart) + text + val.slice(el.selectionEnd);
-      el.selectionEnd = el.selectionStart = selStart + text.length;
-    } else if (typeof document.selection != "undefined") {
-      var textRange = document.selection.createRange();
-      textRange.text = text;
-      textRange.collapse(false);
-      textRange.select();
-      console.log("TEXTRANGE: ", textRange);
-    }
-  }
-
   async function submitChat() {
     if (!chatmessage) {
       return;
@@ -167,13 +148,6 @@
   function onkeydown(e: KeyboardEvent) {
     if (e.key == "Enter" && !e.shiftKey) {
       submitChat();
-    }
-    if (e.key == "Enter" && e.shiftKey) {
-      alert("YES");
-      if (e.type == "keypress") {
-        pasteIntoInput(this, "\n");
-      }
-      e.preventDefault();
     }
   }
   function goToProfile(e, path?: string) {
