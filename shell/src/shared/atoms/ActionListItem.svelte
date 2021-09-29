@@ -8,8 +8,8 @@
 
 <div
   on:click
-  class="flex flex-col items-center flex-grow py-2 text-xs text-center
-  rounded-lg cursor-pointer {colorClass} bg-light-lighter">
+  class="flex flex-col items-center flex-grow p-2 text-xs text-center rounded-lg
+  cursor-pointer {colorClass} bg-light-lighter">
   <div class="text-center">
     <Icons {icon} />
   </div>

@@ -8,7 +8,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import HtmlViewer from "../../../../packages/o-editors/src/HtmlViewer.svelte";
 import { inbox } from "../stores/inbox";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
-import {ProfileEvent} from "../api/data/types";
+import { ProfileEvent } from "../api/data/types";
 
 export type ShowNotificationsContextData = {
   events: ProfileEvent[];
@@ -27,10 +27,9 @@ export type ShowNotificationsContext =
 const editorContent: { [x: string]: EditorViewContext } = {
   showNotifications: {
     title: "What is your first name?",
-    description:
-      "Welcome, you are finally a citizen of CirclesLand. Glad to have you here.",
-    placeholder: "First name",
-    submitButtonText: "Save",
+    description: "",
+    placeholder: "",
+    submitButtonText: "OK",
   },
 };
 
@@ -94,7 +93,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         params: (context: any) => {
           return {
             view: {
-              title: strings[context.data.currentEvent.type],
+              title: context.data.currentEvent.type,
               description: "",
               placeholder: "",
               submitButtonText: "OK",

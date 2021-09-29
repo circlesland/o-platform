@@ -89,20 +89,20 @@
 <path d="M8.42696 10.6667L14.4944 6L8.42696 1.33333V10.6667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M1.01123 10.6667L7.07865 6L1.01123 1.33333V10.6667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
-    logout: `<svg class='w-5 h-5' viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    logout: `<svg class='w-${size} h-${size}' viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M9 25H3.66667C2.95942 25 2.28115 24.719 1.78105 24.219C1.28095 23.7189 1 23.0406 1 22.3333V3.66667C1 2.95942 1.28095 2.28115 1.78105 1.78105C2.28115 1.28095 2.95942 1 3.66667 1H9M18.3333 19.6667L25 13M25 13L18.3333 6.33333M25 13H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
-    trust: `<svg class='w-5 h-5' viewBox="0 0 23 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+    trust: `<svg class='w-${size} h-${size}' viewBox="0 0 23 21" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M20.5066 2.83363C19.9959 2.32263 19.3894 1.91727 18.722 1.64071C18.0545 1.36415 17.3391 1.2218 16.6166 1.2218C15.8941 1.2218 15.1787 1.36415 14.5113 1.64071C13.8438 1.91727 13.2374 2.32263 12.7266 2.83363L11.6666 3.89363L10.6066 2.83363C9.57493 1.80194 8.17566 1.22234 6.71662 1.22234C5.25759 1.22234 3.85832 1.80194 2.82662 2.83363C1.79493 3.86532 1.21533 5.26459 1.21533 6.72363C1.21533 8.18266 1.79493 9.58194 2.82662 10.6136L3.88662 11.6736L11.6666 19.4536L19.4466 11.6736L20.5066 10.6136C21.0176 10.1029 21.423 9.49644 21.6995 8.82898C21.9761 8.16152 22.1185 7.44611 22.1185 6.72363C22.1185 6.00114 21.9761 5.28573 21.6995 4.61827C21.423 3.95081 21.0176 3.34438 20.5066 2.83363V2.83363Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
-    untrust: `<svg class='w-5 h-5' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    untrust: `<svg class='w-${size} h-${size}' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M19.69 14C19.8911 13.3522 19.9955 12.6783 20 12V5L12 2L8.84 3.18M4.73 4.73L4 5V12C4 18 12 22 12 22C14.117 20.8829 16.0197 19.4001 17.62 17.62M1 1L23 23" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
-    sendmoney: `<svg class='w-5 h-5' viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    sendmoney: `<svg class='w-${size} h-${size}' viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M21 1.22363L10 12.2236M21 1.22363L14 21.2236L10 12.2236M21 1.22363L1 8.22363L10 12.2236" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
-    createoffer: `<svg class='w-5 h-5' viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    createoffer: `<svg class='w-${size} h-${size}' viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M11 1.66663V20.3333M1.66669 11H20.3334" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
     network: `<svg class='w-${size} h-${size}' viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">

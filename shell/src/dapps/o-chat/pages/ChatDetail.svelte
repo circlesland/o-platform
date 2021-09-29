@@ -1,7 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import ElizaBot from "elizabot";
-
   import ChatCard from "../atoms/ChatCard.svelte";
   import NotificationCard from "../atoms/NotificationCard.svelte";
   import "simplebar";
@@ -120,8 +118,8 @@
       type: "shell.scrollToBottom",
       scrollNow: true,
     });
-    let textarea = document.querySelector("textarea");
-    textarea.addEventListener("input", autoExpand);
+    // let textarea = document.querySelector("textarea");
+    // textarea.addEventListener("input", autoExpand);
     // let detectedDevice = uaParser.getDevice();
     // if (length > 17) {
     //   textarea.dispatchEvent(new Event("input"));
@@ -135,6 +133,25 @@
     // }
   });
 
+  function pasteIntoInput(el, text) {
+    el.focus();
+    if (
+      typeof el.selectionStart == "number" &&
+      typeof el.selectionEnd == "number"
+    ) {
+      var val = el.value;
+      var selStart = el.selectionStart;
+      el.value = val.slice(0, selStart) + text + val.slice(el.selectionEnd);
+      el.selectionEnd = el.selectionStart = selStart + text.length;
+    } else if (typeof document.selection != "undefined") {
+      var textRange = document.selection.createRange();
+      textRange.text = text;
+      textRange.collapse(false);
+      textRange.select();
+      console.log("TEXTRANGE: ", textRange);
+    }
+  }
+
   async function submitChat() {
     if (!chatmessage) {
       return;
@@ -143,13 +160,20 @@
     sendMessage(chatmessage);
 
     chatmessage = null;
-    let textarea = document.querySelector("textarea");
-    textarea.style.cssText = "height:auto; padding:0 padding-top: 2px;";
+    // let textarea = document.querySelector("textarea");
+    // textarea.style.cssText = "height:auto; padding:0 padding-top: 2px;";
   }
 
   function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Enter") {
+    if (e.key == "Enter" && !e.shiftKey) {
       submitChat();
+    }
+    if (e.key == "Enter" && e.shiftKey) {
+      alert("YES");
+      if (e.type == "keypress") {
+        pasteIntoInput(this, "\n");
+      }
+      e.preventDefault();
     }
   }
   function goToProfile(e, path?: string) {
@@ -162,6 +186,7 @@
     console.log("CHAT: ", chat);
     let notificationType: string = null;
     let title: string = null;
+    let icon: string = null;
     let outgoing: boolean = chat.safeAddress === $me.circlesAddress;
     let actions: {
       title: string;
@@ -184,11 +209,12 @@
         ) {
           notificationType = "trust_removed";
           title = `You untrusted ${chat.payload.address_profile.firstName}`;
+          icon = "untrust";
           actions = !contactProfile.youTrust
             ? [
                 {
                   title: `Trust ${chat.payload.address_profile.firstName}`,
-                  icon: "",
+                  icon: "trust",
                   colorClass: "",
                   action: () => {
                     window.o.runProcess(setTrust, {
@@ -207,12 +233,13 @@
         ) {
           notificationType = "trust_added";
           title = `You trusted ${chat.payload.address_profile.firstName}`;
+          icon = "trust";
           actions =
             contactProfile.youTrust > 0
               ? [
                   {
                     title: `Untrust ${chat.payload.address_profile.firstName}`,
-                    icon: "",
+                    icon: "untrust",
                     colorClass: "",
                     action: () => {
                       window.o.runProcess(setTrust, {
@@ -231,6 +258,7 @@
         ) {
           notificationType = "trust_removed";
           title = `${chat.payload.can_send_to_profile.firstName} untrusted you`;
+          icon = "untrust";
           outgoing = chat.safeAddress !== $me.circlesAddress;
         } else if (
           chat.payload.limit > 0 &&
@@ -238,12 +266,13 @@
         ) {
           notificationType = "trust_added";
           title = `${chat.payload.can_send_to_profile.firstName} trusted you`;
+          icon = "trust";
           outgoing = chat.safeAddress !== $me.circlesAddress;
           actions = (!contactProfile.youTrust
             ? [
                 {
                   title: `Trust ${chat.payload.can_send_to_profile.firstName}`,
-                  icon: "",
+                  icon: "trust",
                   colorClass: "",
                   action: () => {
                     window.o.runProcess(setTrust, {
@@ -261,7 +290,7 @@
               ? [
                   {
                     title: `Send Circles to ${chat.payload.can_send_to_profile.firstName}`,
-                    icon: "",
+                    icon: "sendmoney",
                     colorClass: "",
                     action: () => {
                       window.o.runProcess(transfer, {
@@ -279,6 +308,7 @@
       case "crc_hub_transfer":
         if (chat.safe_address === $me.circlesAddress) {
           notificationType = "transfer_out";
+          icon = "sendmoney";
           (title = `You sent ${RpcGateway.get().utils.fromWei(
             chat.value,
             "ether"
@@ -287,6 +317,7 @@
         } else if (chat.safe_address !== $me.circlesAddress) {
           outgoing = chat.safeAddress !== $me.circlesAddress;
           notificationType = "transfer_in";
+          icon = "sendmoney";
           title = `${
             chat.payload.from_profile.firstName
           } sent you ${RpcGateway.get().utils.fromWei(
@@ -297,7 +328,7 @@
             ? [
                 {
                   title: `Trust ${chat.payload.from_profile.firstName}`,
-                  icon: "",
+                  icon: "trust",
                   colorClass: "",
                   action: () => {
                     window.o.runProcess(setTrust, {
@@ -312,7 +343,7 @@
             : []
           ).concat({
             title: `Send Circles to ${chat.payload.from_profile.firstName}`,
-            icon: "",
+            icon: "sendmoney",
             colorClass: "",
             action: () => {
               window.o.runProcess(transfer, {
@@ -341,6 +372,7 @@
         notificationType: notificationType,
         time: chat.timestamp / 1000,
         title: title,
+        icon: icon,
         actions: actions,
         text: text,
       },
@@ -395,7 +427,7 @@
   </header>
 
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
-  <div class="flex flex-col p-2 pb-0 space-y-4 sm:p-6 sm:space-y-8">
+  <div class="flex flex-col pb-0 space-y-4 sm:space-y-8">
     {#each chatHistory as chat}
       {#if chat.type === 'chat_message'}
         <ChatCard params="{buildCardModel(chat)}" />
@@ -408,20 +440,20 @@
     class:hidden="{!contactProfile || !contactProfile.contactAddressProfile || !contactProfile.contactAddressProfile.id}"
     class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2">
     <div class="flex-grow">
-      <!-- <input
-              bind:this="{inputField}"
-              on:keydown="{onkeydown}"
-              bind:value="{chatmessage}"
-              use:init
-              type="text"
-              name="searchTerm"
-              autocomplete="off"
-              autocorrect="off"
-              spellcheck="false"
-              placeholder="message content"
-              class="order-1 w-full input input-bordered text-dark"
-              style="" /> -->
-      <textarea
+      <input
+        bind:this="{inputField}"
+        on:keydown="{onkeydown}"
+        bind:value="{chatmessage}"
+        use:init
+        type="text"
+        name="searchTerm"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+        placeholder="Your Message"
+        class="order-1 w-full input input-bordered" />
+      <!-- <textarea
+        on:keydown="{onkeydown}"
         name="searchTerm"
         rows="1"
         type="text"
@@ -429,7 +461,7 @@
         class="w-full overflow-hidden resize-none textarea textarea-bordered"
         bind:this="{inputField}"
         bind:value="{chatmessage}"
-        use:init></textarea>
+        use:init></textarea> -->
     </div>
     <div class="flex flex-row content-end">
       <button

@@ -1,11 +1,11 @@
 <script lang="ts">
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-  import {me} from "../../../shared/stores/me";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {onMount} from "svelte";
-  import {Contact, ContactsDocument} from "../../../shared/api/data/types";
-  import ChatListCard from "../../o-contacts/atoms/ChatListCard.svelte";
+  import { me } from "../../../shared/stores/me";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import { onMount } from "svelte";
+  import { Contact, ContactsDocument } from "../../../shared/api/data/types";
+  import ChatListCard from "../atoms/ChatListCard.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -19,11 +19,13 @@
     const contactsResult = await apiClient.query({
       query: ContactsDocument,
       variables: {
-        safeAddress
-      }
+        safeAddress,
+      },
     });
     if (contactsResult.errors?.length > 0) {
-      error = `Couldn't read the contacts of safe ${safeAddress}: \n${contactsResult.errors.map(o => o.message).join("\n")}`;
+      error = `Couldn't read the contacts of safe ${safeAddress}: \n${contactsResult.errors
+        .map(o => o.message)
+        .join("\n")}`;
       return;
     }
     contacts = contactsResult.data.contacts;
@@ -56,7 +58,7 @@
   {:else}
     <!-- TODO: Possible actions: trust, transfer money -->
     {#each contacts.filter(o => !!o.contactAddressProfile) as contact}
-      <ChatListCard contact={contact} />
+      <ChatListCard {contact} />
     {/each}
   {/if}
 </div>
