@@ -1,708 +1,757 @@
 query sessionInfo {
-    sessionInfo {
-        isLoggedOn
-        hasProfile
-        profileId
-    }
+  sessionInfo {
+    isLoggedOn
+    hasProfile
+    profileId
+  }
 }
 
 query whoami {
-    whoami
+  whoami
 }
 
 query claimedInvitation {
-    claimedInvitation {
-        createdAt
-        createdByProfileId
-        claimedAt
-        claimedByProfileId
-    }
+  claimedInvitation {
+    createdAt
+    createdByProfileId
+    claimedAt
+    claimedByProfileId
+  }
 }
 
 query invitationTransaction {
-    invitationTransaction {
-        transaction_hash
-    }
+  invitationTransaction {
+    transaction_hash
+  }
 }
 
 query safeFundingTransaction {
-    safeFundingTransaction {
-        transaction_hash
-    }
+  safeFundingTransaction {
+    transaction_hash
+  }
 }
 
 query myInvitations {
-    myInvitations {
-        createdAt
-        claimedAt
-        claimedBy {
-            circlesAddress
-            circlesSafeOwner
-            firstName
-            lastName
-            avatarUrl
-        }
-        name
-        address
-        balance
-        code
+  myInvitations {
+    createdAt
+    claimedAt
+    claimedBy {
+      circlesAddress
+      circlesSafeOwner
+      firstName
+      lastName
+      avatarUrl
     }
+    name
+    address
+    balance
+    code
+  }
 }
 
 query myProfile {
-    myProfile {
-        id
-        circlesAddress
-        circlesSafeOwner
-        firstName
-        lastName
-        dream
-        country
-        avatarUrl
-        avatarCid
-        avatarMimeType
-        newsletter
-        cityGeonameid
-        city {
-            geonameid
-            name
-            country
-            latitude
-            longitude
-            population
+  myProfile {
+    id
+    circlesAddress
+    circlesSafeOwner
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    newsletter
+    cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+  }
+}
+
+query profiles($id: [Int!]!) {
+  profilesById(ids: $id) {
+    id
+    circlesAddress
+    circlesSafeOwner
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+  }
+}
+
+query citiesByName($name: String!, $languageCode: String) {
+  cities(query: { byName: { name_like: $name, languageCode: $languageCode } }) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+
+query citiesById($ids: [Int!]!) {
+  cities(query: { byId: { geonameid: $ids } }) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+
+query profilesByName($searchString: String!) {
+  search(query: { searchString: $searchString }) {
+    id
+    circlesSafeOwner
+    circlesAddress
+    avatarUrl
+    firstName
+    lastName
+    dream
+    country
+    cityGeonameid
+    city {
+      geonameid
+      country
+      name
+    }
+  }
+}
+
+query profilesByCirclesAddress($circlesAddresses: [String!]!) {
+  profilesBySafeAddress(safeAddresses: $circlesAddresses) {
+    id
+    circlesAddress
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+  }
+}
+
+query profilesByIds($id: [Int!]!) {
+  profilesById(ids: $id) {
+    id
+    circlesAddress
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+  }
+}
+
+query trustRelations($safeAddress: String!) {
+  trustRelations(safeAddress: $safeAddress) {
+    safeAddress
+    safeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    direction
+    otherSafeAddress
+    otherSafeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+  }
+}
+
+query contacts($safeAddress: String!) {
+  contacts(safeAddress: $safeAddress) {
+    contactAddress
+    contactAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    safeAddress
+    safeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    lastContactAt
+    lastEvent {
+      block_number
+      direction
+      safe_address
+      timestamp
+      transaction_hash
+      transaction_index
+      type
+      value
+      payload {
+        ... on CrcHubTransfer {
+          from
+          to
+          flow
         }
-    }
-}
-
-query profiles($id:[Int!]!) {
-    profilesById(ids: $id) {
-        id
-        circlesAddress
-        circlesSafeOwner
-        firstName
-        lastName
-        dream
-        country
-        avatarUrl
-        avatarCid
-        avatarMimeType
-        cityGeonameid
-        city {
-            geonameid
-            name
-            country
-            latitude
-            longitude
-            population
+        ... on CrcTrust {
+          address
+          can_send_to
+          limit
         }
+      }
     }
+    youTrust
+    trustsYou
+  }
 }
 
-query citiesByName ($name:String! $languageCode: String) {
-    cities(query: {byName: {name_like: $name, languageCode: $languageCode}}) {
-        geonameid
-        name
-        country
-        population
-        latitude
-        longitude
-        feature_code
+query contact($safeAddress: String!, $contactAddress: String!) {
+  contact(safeAddress: $safeAddress, contactAddress: $contactAddress) {
+    contactAddress
+    contactAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
     }
+    safeAddress
+    safeAddressProfile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    lastContactAt
+    youTrust
+    trustsYou
+  }
 }
 
-query citiesById ($ids: [Int!]!) {
-    cities(query: {byId: {geonameid: $ids}}) {
-        geonameid
-        name
-        country
-        population
-        latitude
-        longitude
-        feature_code
+query chatHistory($safeAddress: String!, $contactSafeAddress: String!) {
+  chatHistory(
+    safeAddress: $safeAddress
+    contactSafeAddress: $contactSafeAddress
+  ) {
+    block_number
+    direction
+    safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
     }
-}
-
-query profilesByName($searchString:String!) {
-    search(query: {searchString: $searchString}) {
-        id
-        circlesSafeOwner
-        circlesAddress
-        avatarUrl
-        firstName
-        lastName
-        dream
-        country
-        cityGeonameid
-        city {
-            geonameid
-            country
-            name
+    timestamp
+    transaction_hash
+    transaction_index
+    type
+    value
+    tags {
+      id
+      typeId
+      value
+    }
+    payload {
+      ... on ChatMessage {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
         }
-    }
-}
-
-query profilesByCirclesAddress($circlesAddresses:[String!]!) {
-    profilesBySafeAddress(safeAddresses: $circlesAddresses) {
-        id
-        circlesAddress
-        firstName
-        lastName
-        dream
-        country
-        avatarUrl
-        avatarCid
-        avatarMimeType
-        cityGeonameid
-        city {
-            geonameid
-            name
-            country
-            latitude
-            longitude
-            population
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
         }
-    }
-}
-
-query profilesByIds($id:[Int!]!) {
-    profilesById(ids:$id) {
-        id
-        circlesAddress
-        firstName
-        lastName
-        dream
-        country
-        avatarUrl
-        avatarCid
-        avatarMimeType
-        cityGeonameid
-        city {
-            geonameid
-            name
-            country
-            latitude
-            longitude
-            population
+        text
+      }
+      ... on CrcHubTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
         }
-    }
-}
-
-query trustRelations($safeAddress:String!) {
-    trustRelations(safeAddress: $safeAddress) {
-        safeAddress
-        safeAddressProfile {
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
             id
             firstName
             lastName
             avatarUrl
             circlesAddress
-        }
-        direction
-        otherSafeAddress
-        otherSafeAddressProfile {
+          }
+          to
+          to_profile {
             id
             firstName
             lastName
             avatarUrl
             circlesAddress
+          }
+          value
         }
-    }
-}
-
-query contacts($safeAddress:String!) {
-    contacts(safeAddress: $safeAddress) {
-        contactAddress
-        contactAddressProfile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
+      }
+      ... on EthTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
         }
-        safeAddress
-        safeAddressProfile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
         }
-        lastContactAt
-        lastEvent {
-            block_number
-            direction
-            safe_address
-            timestamp
-            transaction_hash
-            transaction_index
-            type
-            value
-            payload {
-                ... on CrcHubTransfer {
-                    from
-                    to
-                    flow
-                }
-                ... on CrcTrust {
-                    address
-                    can_send_to
-                    limit
-                }
-            }
-        }
-        youTrust
-        trustsYou
-    }
-}
-
-query contact($safeAddress:String! $contactAddress:String!) {
-    contact(safeAddress: $safeAddress contactAddress: $contactAddress) {
-        contactAddress
-        contactAddressProfile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-        }
-        safeAddress
-        safeAddressProfile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-        }
-        lastContactAt
-        youTrust
-        trustsYou
-    }
-}
-
-query chatHistory($safeAddress:String! $contactSafeAddress:String!) {
-    chatHistory(safeAddress: $safeAddress contactSafeAddress: $contactSafeAddress) {
-        block_number
-        direction
-        safe_address
-        safe_address_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-        }
-        timestamp
-        transaction_hash
-        transaction_index
-        type
         value
-        tags {
-            id
-            typeId
-            value
+      }
+      ... on GnosisSafeEthTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
         }
-        payload {
-            ... on ChatMessage {
-                from
-                from_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                text
-            }
-            ... on CrcHubTransfer {
-                from
-                from_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                flow
-                transfers {
-                    token
-                    from
-                    from_profile{
-                        id
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                    }
-                    to
-                    to_profile{
-                        id
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                    }
-                    value
-                }
-            }
-            ... on EthTransfer {
-                from
-                from_profile {
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                value
-            }
-            ... on GnosisSafeEthTransfer {
-                from
-                from_profile {
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                value
-            }
-            ... on CrcTrust {
-                address
-                address_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                can_send_to
-                can_send_to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                limit
-            }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
         }
+        value
+      }
+      ... on CrcTrust {
+        address
+        address_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        can_send_to
+        can_send_to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        limit
+      }
     }
+  }
 }
 
 query inbox {
-    inbox {
-        block_number
-        direction
-        safe_address
-        safe_address_profile {
+  inbox {
+    block_number
+    direction
+    safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    timestamp
+    transaction_hash
+    transaction_index
+    type
+    value
+    tags {
+      id
+      typeId
+      value
+    }
+    payload {
+      ... on ChatMessage {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          dream
+          city {
+            name
+            country
+          }
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          dream
+          city {
+            name
+            country
+          }
+        }
+        text
+      }
+      ... on CrcHubTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          dream
+          city {
+            name
+            country
+          }
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          dream
+          city {
+            name
+            country
+          }
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
             id
             firstName
             lastName
             avatarUrl
             circlesAddress
-        }
-        timestamp
-        transaction_hash
-        transaction_index
-        type
-        value
-        tags {
+          }
+          to
+          to_profile {
             id
-            typeId
-            value
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
         }
-        payload {
-            ... on ChatMessage {
-                from
-                from_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                text
-            }
-            ... on CrcHubTransfer {
-                from
-                from_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                flow
-                transfers {
-                    token
-                    from
-                    from_profile{
-                        id
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                    }
-                    to
-                    to_profile{
-                        id
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                    }
-                    value
-                }
-            }
-            ... on EthTransfer {
-                from
-                from_profile {
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                value
-            }
-            ... on GnosisSafeEthTransfer {
-                from
-                from_profile {
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                value
-            }
-            ... on CrcTrust {
-                address
-                address_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                can_send_to
-                can_send_to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                limit
-            }
-        }
-    }
-}
-
-query profileById($id:Int!) {
-    profilesById(ids: [$id]) {
-        id
-        circlesSafeOwner
-        circlesAddress
-        avatarUrl
-        firstName
-        lastName
-        dream
-        country
-        cityGeonameid
-        city {
-            geonameid
-            country
+      }
+      ... on EthTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          dream
+          city {
             name
-        }
-    }
-}
-
-query profileBySafeAddress($safeAddress:String!) {
-    profilesBySafeAddress(safeAddresses: [$safeAddress]) {
-        id
-        circlesSafeOwner
-        circlesAddress
-        avatarUrl
-        firstName
-        lastName
-        dream
-        country
-        cityGeonameid
-        city {
-            geonameid
             country
+          }
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          dream
+          city {
             name
+            country
+          }
         }
-        lastEvent {
-            block_number
-            direction
-            safe_address
-            timestamp
-            transaction_hash
-            transaction_index
-            type
-            value
-            payload {
-                ... on CrcHubTransfer {
-                    from
-                    to
-                    flow
-                }
-                ... on CrcTrust {
-                    address
-                    can_send_to
-                    limit
-                }
-            }
+        value
+      }
+      ... on GnosisSafeEthTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
-        youTrust
-        trustsYou
-    }
-}
-
-query tags($typeId_in:[String!]! $value_like:String) {
-    tags(query: {
-        typeId_in: $typeId_in
-        value_like: $value_like
-    }) {
-        id
-        typeId
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          dream
+          city {
+            name
+            country
+          }
+        }
         value
+      }
+      ... on CrcTrust {
+        address
+        address_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          dream
+          city {
+            name
+            country
+          }
+        }
+        can_send_to
+        can_send_to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          dream
+          city {
+            name
+            country
+          }
+        }
+        limit
+      }
     }
+  }
 }
 
-query tagById($id:Int!) {
-    tagById(id:$id) {
-        id
-        typeId
-        value
+query profileById($id: Int!) {
+  profilesById(ids: [$id]) {
+    id
+    circlesSafeOwner
+    circlesAddress
+    avatarUrl
+    firstName
+    lastName
+    dream
+    country
+    cityGeonameid
+    city {
+      geonameid
+      country
+      name
     }
+  }
 }
 
-query citiesByName ($name:String! $languageCode: String) {
-    cities(query: {byName: {name_like: $name, languageCode: $languageCode}}) {
-        geonameid
-        name
-        country
-        population
-        latitude
-        longitude
-        feature_code
+query profileBySafeAddress($safeAddress: String!) {
+  profilesBySafeAddress(safeAddresses: [$safeAddress]) {
+    id
+    circlesSafeOwner
+    circlesAddress
+    avatarUrl
+    firstName
+    lastName
+    dream
+    country
+    cityGeonameid
+    city {
+      geonameid
+      country
+      name
     }
+    lastEvent {
+      block_number
+      direction
+      safe_address
+      timestamp
+      transaction_hash
+      transaction_index
+      type
+      value
+      payload {
+        ... on CrcHubTransfer {
+          from
+          to
+          flow
+        }
+        ... on CrcTrust {
+          address
+          can_send_to
+          limit
+        }
+      }
+    }
+    youTrust
+    trustsYou
+  }
 }
 
-query citiesById ($ids: [Int!]!) {
-    cities(query: {byId: {geonameid: $ids}}) {
-        geonameid
-        name
-        country
-        population
-        latitude
-        longitude
-        feature_code
-    }
+query tags($typeId_in: [String!]!, $value_like: String) {
+  tags(query: { typeId_in: $typeId_in, value_like: $value_like }) {
+    id
+    typeId
+    value
+  }
+}
+
+query tagById($id: Int!) {
+  tagById(id: $id) {
+    id
+    typeId
+    value
+  }
+}
+
+query citiesByName($name: String!, $languageCode: String) {
+  cities(query: { byName: { name_like: $name, languageCode: $languageCode } }) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+
+query citiesById($ids: [Int!]!) {
+  cities(query: { byId: { geonameid: $ids } }) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
 }
 
 query stats {
-    stats {
-        cityRank
-        inviteRank
-        currentGoal
-        totalCitizens
-        currentGoalFrom
-        nextGoalAt
-        cities {
-            geonameid
-            latitude
-            longitude
-            name
-            citizenCount
-            population
-        }
-        countries {
-            citizenCount
-            name
-        }
+  stats {
+    cityRank
+    inviteRank
+    currentGoal
+    totalCitizens
+    currentGoalFrom
+    nextGoalAt
+    cities {
+      geonameid
+      latitude
+      longitude
+      name
+      citizenCount
+      population
     }
+    countries {
+      citizenCount
+      name
+    }
+  }
 }
 
-query commonTrust($safeAddress1:String! $safeAddress2:String!) {
-    commonTrust(safeAddress1:$safeAddress1
-        safeAddress2: $safeAddress2) {
-        type
-        safeAddress1
-        safeAddress2
-        profile{
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-        }
+query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
+  commonTrust(safeAddress1: $safeAddress1, safeAddress2: $safeAddress2) {
+    type
+    safeAddress1
+    safeAddress2
+    profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
     }
+  }
 }

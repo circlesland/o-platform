@@ -20,6 +20,7 @@ export type PromptChoiceSpec<
     action?: (context: TContext, event: TEvent) => void;
     target: string;
     class?: string;
+    icon?: string;
   }[];
   onlyWhenDirty?: boolean;
   navigation?: {

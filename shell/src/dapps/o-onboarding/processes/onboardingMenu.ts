@@ -39,42 +39,45 @@ const processDefinition = (processId: string) =>
         },
         options: [
           {
-            key: "signup",
-            label: "Signup",
-            target: "#signup",
-            class: "btn-info",
+            key: "google",
+            label: "Sign in with Google",
+            target: "#google",
+            class: "btn-light",
+            icon: "google",
           },
           {
-            key: "login",
-            label: "Login",
-            target: "#login",
+            key: "apple",
+            label: "Sign in with Apple",
+            target: "#apple",
+            class: "btn-light",
+            icon: "apple",
+          },
+          {
+            key: "email",
+            label: "Sign in with Email",
+            target: "#email",
             class: "btn-primary",
-          },
-          {
-            key: "fromCirclesLand",
-            label: "from CirclesLand",
-            target: "#fromCirclesLand",
-            class: "btn-dark",
+            icon: "email",
           },
         ],
       }),
 
-      signup: {
-        id: "signup",
+      google: {
+        id: "google",
         type: "final",
         entry: () => {
           window.o.runProcess(identify, {});
         },
       },
-      login: {
-        id: "login",
+      apple: {
+        id: "apple",
         type: "final",
         entry: () => {
           window.o.runProcess(identify, {});
         },
       },
-      fromCirclesLand: {
-        id: "fromCirclesLand",
+      email: {
+        id: "email",
         type: "final",
         entry: () => {
           window.o.runProcess(fromCirclesLand, {});
