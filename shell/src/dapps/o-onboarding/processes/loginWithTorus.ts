@@ -310,7 +310,8 @@ const processDefinition = (processId: string) =>
           }
         },
         data: (context, event) => {
-          return context.data.accountAddress;
+          delete context.data.privateKey;
+          return context.data;
         }
       }
     }

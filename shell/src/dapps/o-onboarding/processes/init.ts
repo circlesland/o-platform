@@ -22,6 +22,8 @@ import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {KeyManager} from "../../o-passport/data/keyManager";
+import {unlockKey} from "./unlockKey/unlockKey";
 
 export type Origin = "Created" | "Imported";
 
@@ -123,6 +125,8 @@ export type InitEvent = {
   profile: ProfileData
 } | {
   type: "NO_EOA"
+} | {
+  type: "LOCKED_EOA"
 } | {
   type: "GOT_EOA",
   eoa: EoaData
@@ -369,6 +373,9 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         load: {
           invoke: {src: "loadEoa"},
           on: {
+            LOCKED_EOA: {
+              target: "tryUnlockEoa"
+            },
             NO_EOA: {
               target: "connectOrCreate"
             },
@@ -377,6 +384,16 @@ export const initMachine = createMachine<InitContext, InitEvent>({
               target: "checkInvitation"
             }
           }
+        },
+        tryUnlockEoa: {
+          entry: [
+            /*assign({
+                _eoa: () => spawn(connectOrCreateEoa)
+            }),*/
+            () => {
+              window.o.runProcess(unlockKey, {});
+            }
+          ]
         },
         connectOrCreate: {
           entry: [
@@ -689,10 +706,18 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           callback({type: "PROFILE_ERROR", error: e});
         });
     },
-    loadEoa: (ctx) => (callback) => {
+    loadEoa: (ctx) => async (callback) => {
       if (!ctx.profile) throw new Error(`ctx.profile is not set`);
 
+      const keyManager = new KeyManager(null);
+      await keyManager.load();
+
       const key = sessionStorage.getItem("circlesKey");
+      if (keyManager.torusKeyAddress && !key) {
+        callback({type: "LOCKED_EOA"});
+        return;
+      }
+
       if (!key || !ctx.profile.circlesSafeOwner) {
         callback({type: "NO_EOA"});
         return;
