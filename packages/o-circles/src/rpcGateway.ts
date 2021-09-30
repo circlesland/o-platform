@@ -142,7 +142,7 @@ export class RpcGateway {
         try {
             const result = await fetch("https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle")
             const resultJson = await result.json();
-            gasPriceInWei = new BN(RpcGateway.get().utils.toWei(resultJson.fast.toString(), "gwei"));
+            gasPriceInWei = new BN(RpcGateway.get().utils.toWei((resultJson.fast).toString(), "gwei"));
         } catch (e) {
             console.error(`Couldn't get the current gas price from the oracle. Using '${defaultGasPrice}' as hardcoded value:`, e);
             gasPriceInWei = new BN(RpcGateway.get().utils.toWei(defaultGasPrice.toString(), "gwei"));

@@ -20,7 +20,7 @@ export function hasKey<
       validate: {
         always:[{
           cond: () => {
-            const key = localStorage.getItem("circlesKey");
+            const key = sessionStorage.getItem("circlesKey");
             if (!key)
               return false;
 

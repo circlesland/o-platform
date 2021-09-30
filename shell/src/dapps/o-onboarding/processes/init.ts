@@ -647,7 +647,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         loadEoa: (ctx) => (callback) => {
             if (!ctx.profile) throw new Error(`ctx.profile is not set`);
 
-            const key = localStorage.getItem("circlesKey");
+            const key = sessionStorage.getItem("circlesKey");
             if (!key || !ctx.profile.circlesSafeOwner) {
                 callback({type: "NO_EOA"});
                 return;

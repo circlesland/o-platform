@@ -56,13 +56,10 @@ export class GnosisSafeProxy extends Web3Contract
         operation: SafeOps.CALL
       });
 
-    receipt.observable.subscribe(o => {
-      console.log(o);
-    });
+    return receipt.toPromise();
   }
 
   async removeOwner(privateKey:string, address:string) {
-    const prevOwner = RpcGateway.get().eth.accounts.privateKeyToAccount(privateKey).address;
     const sentinel = "0x0000000000000000000000000000000000000001";
     const txData = await this.contract.methods.removeOwner(sentinel,  address, new BN("1")).encodeABI();
     const receipt = await this.execTransaction(
@@ -76,9 +73,7 @@ export class GnosisSafeProxy extends Web3Contract
         operation: SafeOps.CALL
       });
 
-    receipt.observable.subscribe(o => {
-      console.log(o);
-    });
+    return receipt.toPromise();
   }
 
   async getNonce(): Promise<number>

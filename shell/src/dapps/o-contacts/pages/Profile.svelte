@@ -182,7 +182,7 @@
       safeAddress: $me.circlesAddress,
       trustLimit: 100,
       trustReceiver: profile.safeAddress,
-      privateKey: localStorage.getItem("circlesKey"),
+      privateKey: sessionStorage.getItem("circlesKey"),
     });
   }
 
@@ -193,7 +193,7 @@
       safeAddress: $me.circlesAddress,
       trustLimit: 0,
       trustReceiver: profile.safeAddress,
-      privateKey: localStorage.getItem("circlesKey"),
+      privateKey: sessionStorage.getItem("circlesKey"),
     });
   }
 

@@ -4,7 +4,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import {identify, IdentifyContextData} from "../processes/identify/identify";
+  import {identify, IdentifyContextData} from "../processes/identify/identify2";
 
   export let params: {
     code: string;

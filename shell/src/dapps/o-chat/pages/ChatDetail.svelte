@@ -195,7 +195,7 @@
                       trustLimit: 100,
                       trustReceiver: chat.payload.address,
                       safeAddress: $me.circlesAddress,
-                      privateKey: localStorage.getItem("circlesKey"),
+                      privateKey: sessionStorage.getItem("circlesKey"),
                     });
                   },
                 },
@@ -220,7 +220,7 @@
                         trustLimit: 0,
                         trustReceiver: chat.payload.address,
                         safeAddress: $me.circlesAddress,
-                        privateKey: localStorage.getItem("circlesKey"),
+                        privateKey: sessionStorage.getItem("circlesKey"),
                       });
                     },
                   },
@@ -253,7 +253,7 @@
                       trustLimit: 100,
                       trustReceiver: chat.payload.can_send_to,
                       safeAddress: $me.circlesAddress,
-                      privateKey: localStorage.getItem("circlesKey"),
+                      privateKey: sessionStorage.getItem("circlesKey"),
                     });
                   },
                 },
@@ -270,7 +270,7 @@
                       window.o.runProcess(transfer, {
                         safeAddress: $me.circlesAddress,
                         recipientAddress: chat.payload.can_send_to,
-                        privateKey: localStorage.getItem("circlesKey"),
+                        privateKey: sessionStorage.getItem("circlesKey"),
                       });
                     },
                   },
@@ -309,7 +309,7 @@
                       trustLimit: 100,
                       trustReceiver: chat.payload.from,
                       safeAddress: $me.circlesAddress,
-                      privateKey: localStorage.getItem("circlesKey"),
+                      privateKey: sessionStorage.getItem("circlesKey"),
                     });
                   },
                 },
@@ -323,7 +323,7 @@
               window.o.runProcess(transfer, {
                 safeAddress: $me.circlesAddress,
                 recipientAddress: chat.payload.from,
-                privateKey: localStorage.getItem("circlesKey"),
+                privateKey: sessionStorage.getItem("circlesKey"),
               });
             },
           });

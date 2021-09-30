@@ -72,7 +72,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
           window.o.runProcess(transfer, {
             safeAddress: circlesAddress,
             recipientAddress: recipientSafeAddress,
-            privateKey: localStorage.getItem("circlesKey"),
+            privateKey: sessionStorage.getItem("circlesKey"),
           });
         },
       },

@@ -14,7 +14,7 @@ import DropdownSelectEditor from "../../../../../packages/o-editors/src/Dropdown
 import {DropdownSelectorParams} from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import DropDownString from "../../../../../packages/o-editors/src/dropdownItems/DropDownString.svelte";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
-import {ConnectSafeContext} from "../../o-passport/processes/identify/connectSafe/connectSafe";
+import {ConnectSafeContext} from "../../o-passport/processes/identify/connectSafe/connectSafe2";
 import {BN} from "ethereumjs-util";
 import {runShellProcess} from "../../../shared/processes/shellProcess";
 import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";

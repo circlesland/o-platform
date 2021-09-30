@@ -1,5 +1,4 @@
-export const empty=true;
-/*import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
+import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
@@ -374,6 +373,15 @@ const processDefinition = (processId: string) =>
         id: "success",
         entry: (context) => {
           console.log(`enter: identify.success`, context.data);
+          /*
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.authenticated",
+            profile: context.data.profile,
+          });
+          if (context.data.privateKey) {
+            localStorage.setItem("circlesKey", context.data.privateKey);
+          }
+           */
 
           if (context.data.redirectTo) {
             setTimeout(async () => {
@@ -400,4 +408,3 @@ export const identify: ProcessDefinition<void, IdentifyContextData> = {
   name: "identify",
   stateMachine: <any>processDefinition,
 };
-*/

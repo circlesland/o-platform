@@ -105,7 +105,7 @@ const processDefinition = (processId: string) =>
             successAction: async (data) => {
               const myProfile = await loadProfile();
               const apiClient = await window.o.apiClient.client.subscribeToResult();
-              const privateKey = localStorage.getItem("circlesKey")
+              const privateKey = sessionStorage.getItem("circlesKey")
               const account = RpcGateway.get().eth.accounts.privateKeyToAccount(privateKey);
               const result = await apiClient.mutate({
                 mutation: UpsertProfileDocument,

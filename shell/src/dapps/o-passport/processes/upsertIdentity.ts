@@ -194,7 +194,7 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
           src: async (context) => {
 
             if (!context.data.circlesSafeOwner
-              && localStorage.getItem("circlesKey")) {
+              && sessionStorage.getItem("circlesKey")) {
               localStorage.removeItem("circlesKey");
             }
 
@@ -202,9 +202,9 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
               await window.o.apiClient.client.subscribeToResult();
             const safeOwnerAddress =
               context.data.circlesSafeOwner ??
-              (localStorage.getItem("circlesKey")
+              (sessionStorage.getItem("circlesKey")
                 ? RpcGateway.get().eth.accounts.privateKeyToAccount(
-                    localStorage.getItem("circlesKey")
+                    sessionStorage.getItem("circlesKey")
                   ).address
                 : undefined);
             const result = await apiClient.mutate({

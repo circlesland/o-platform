@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { identify } from "../../o-passport/processes/identify/identify";
+  import { identify } from "../../o-passport/processes/identify/identify2";
   import { me } from "../../../shared/stores/me";
 
   $: {

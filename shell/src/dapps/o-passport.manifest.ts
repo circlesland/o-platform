@@ -7,7 +7,7 @@ import { logout } from "./o-passport/processes/logout";
 import { homer } from "./o-passport/processes/homer";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import {onboardingMenu} from "./o-onboarding/processes/onboardingMenu";
+import {loginWithTorus} from "./o-onboarding/processes/loginWithTorus";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -86,7 +86,7 @@ export const passport: DappManifest<DappState> = {
           key: "bart",
           title: "Eat my shorts",
           icon: "bart",
-          action: () => window.o.runProcess(onboardingMenu, {})
+          action: () => window.o.runProcess(loginWithTorus, {})
         }
       ];
     },

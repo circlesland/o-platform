@@ -69,9 +69,9 @@ const editorContent = {
     submitButtonText: "Let me in",
   },
   code: {
-    title: "Please enter pin",
+    title: "Please enter encryptingPin",
     description:
-      "We have send you a 6 digit login pin to your mail.<br/><br/><span class='text-xs'>It may take a moment. Also check your spam folder.</span>",
+      "We have send you a 6 digit login encryptingPin to your mail.<br/><br/><span class='text-xs'>It may take a moment. Also check your spam folder.</span>",
     placeholder: "Enter Pin",
     submitButtonText: "Login",
   },

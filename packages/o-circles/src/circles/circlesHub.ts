@@ -121,7 +121,7 @@ export class CirclesHub extends Web3Contract {
     // TODO: Check the send limit for each edge with the hub contract
     /*
     const sendLimit = await this.contract.methods
-      .checkSendLimit(safeProxy.address, safeProxy.address, to)
+      .checkSendLimit(_safeProxy.address, _safeProxy.address, to)
       .call();
 
     if (new BN(sendLimit).lt(amount))

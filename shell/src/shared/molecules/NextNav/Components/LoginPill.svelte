@@ -2,7 +2,7 @@
   import {
     identify,
     IdentifyContextData,
-  } from "../../../../dapps/o-passport/processes/identify/identify";
+  } from "../../../../dapps/o-passport/processes/identify/identify2";
 
   export let props;
 

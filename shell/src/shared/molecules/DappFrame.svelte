@@ -5,7 +5,7 @@
   import { shellProcess } from "../processes/shellProcess";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-  import { identify } from "../../dapps/o-passport/processes/identify/identify";
+  import { identify } from "../../dapps/o-passport/processes/identify/identify2";
 
   // Import Swiper styles
   import "swiper/swiper-bundle.css";
@@ -40,7 +40,7 @@
   import NavigationList from "../../shared/molecules/NavigationList.svelte";
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { isMobile } from "../functions/isMobile";
-  import { onboardingMenu } from "../../dapps/o-onboarding/processes/onboardingMenu";
+
   import {
     fromCirclesLand,
     FromCirclesLandContextData,

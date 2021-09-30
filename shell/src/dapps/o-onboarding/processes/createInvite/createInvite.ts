@@ -3,20 +3,11 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { push } from "svelte-spa-router";
 import * as yup from "yup";
 import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {
-  ClaimInvitationDocument, CreateInvitationsDocument, UpsertProfileDocument
+  CreateInvitationsDocument
 } from "../../../../shared/api/data/types";
-import {promptChoice} from "../../../o-passport/processes/identify/prompts/promptChoice";
-import ChoiceSelector from "../../../../../../packages/o-editors/src/ChoiceSelector.svelte";
-import {UpsertRegistrationContext} from "../registration/promptRegistration";
-import {createSafe} from "../../../o-passport/processes/identify/createSafe/createSafe";
-import {loadProfile} from "../../../o-passport/processes/identify/services/loadProfile";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import TextEditor from "../../../../../../packages/o-editors/src/TextEditor.svelte";
 import {UpsertIdentityContext} from "../../../o-passport/processes/upsertIdentity";
 

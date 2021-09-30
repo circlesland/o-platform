@@ -25,7 +25,7 @@
   let inviteLink: string = "";
 
   const init = async () => {
-    const pk = localStorage.getItem("circlesKey");
+    const pk = sessionStorage.getItem("circlesKey");
     if (!pk || localStorage.getItem("isCreatingSafe") !== "true") {
       disableBanking = !pk;
       return;
@@ -67,31 +67,6 @@
     init();
   });
 
-  async function torus() {
-    // Add more devices:
-    // https://docs.tor.us/key-infrastructure/technical-architecture
-
-    const openlogin = new OpenLogin({
-      clientId:
-        "BI3cr1l8ztZhkaRFFsh2cY77o6H74JHP0KaigRdh30Y53YDpMatb9QDiPh14zl176ciAUMbi7JlmjNe5MPLwzAE",
-      network: "mainnet",
-      // redirectUrl: "http://localhost:5000/#/banking/transactions", // your app url where user will be redirected
-      uxMode: "popup", // default is redirect , popup mode is also supported,
-    });
-    await openlogin.init();
-    const privateKey = await openlogin.login({
-      loginProvider: "google",
-      /*
-      loginProvider: "github",
-      loginProvider: "apple",
-      loginProvider: "wechat",
-      loginProvider: "email_passwordless"
-      */
-    });
-    console.log(privateKey);
-    const userInfo = await openlogin.getUserInfo();
-    console.log(userInfo);
-  }
 
   let mySafeAddress: string;
 
