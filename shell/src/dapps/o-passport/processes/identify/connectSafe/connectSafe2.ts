@@ -14,11 +14,8 @@ import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelect
 import DropDownString from "@o-platform/o-editors/src/dropdownItems/DropDownString.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import {AddressEoaMap, Eoa, KeyManager} from "../../../data/keyManager";
-import {promptChoice} from "../prompts/promptChoice";
-import ButtonStackSelector from "../../../../../../../packages/o-editors/src/ButtonStackSelector.svelte";
 import NumberEditor from "../../../../../../../packages/o-editors/src/NumberEditor.svelte";
 import * as yup from "yup";
-import {AuthenticateContext} from "../aquireSession/authenticate/authenticate";
 
 export type ConnectSafeContextData = {
   safeAddress?: string;

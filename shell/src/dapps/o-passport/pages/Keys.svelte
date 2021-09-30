@@ -31,7 +31,7 @@
     sessionStorage.getItem("circlesKey") &&
     sessionStorage.getItem("circlesKey") != "0x123"
       ? bip39.entropyToMnemonic(
-          localStorage
+            sessionStorage
             .getItem("circlesKey")
             .substr(2, sessionStorage.getItem("circlesKey").length - 2)
         )

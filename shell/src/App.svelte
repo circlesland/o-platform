@@ -205,11 +205,8 @@
   import NotFound from "src/shared/pages/NotFound.svelte";
   import {interpret} from "xstate";
   import {initMachine} from "./dapps/o-onboarding/processes/init";
-  import {runShellProcess} from "./shared/processes/shellProcess";
-  import {identify, IdentifyContextData} from "./dapps/o-passport/processes/identify/identify2";
 
   window.runInitMachine = () => {
-    /*
     var m = interpret(initMachine)
       .onEvent(event => {
         console.log("initMachine.event:", event);
@@ -218,7 +215,6 @@
         console.log("initMachine.transition:", state);
       })
       .start();
-     */
   }
   window.runInitMachine();
 

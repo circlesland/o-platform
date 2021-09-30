@@ -3,7 +3,7 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
-import {authenticate} from "./authenticate/authenticate";
+import {authenticate} from "./authenticate/authenticate2";
 import {ExchangeTokenDocument} from "../../../../../shared/api/data/types";
 
 export type AcquireSessionContextData = {
@@ -45,35 +45,6 @@ const processDefinition = (processId: string) =>
             },
             dirtyFlags:{},
             messages:{},
-          },
-          onDone: "#exchangeTokenForSession",
-          onError: "#error"
-        }
-      },
-      exchangeTokenForSession: {
-        id: "exchangeTokenForSession",
-        // entry: (ctx) => console.log(`enter: acquireSession.exchangeTokenForSession`, ctx.data),
-        on: {
-          ...<any>ipc(`exchangeTokenForSession`)
-        },
-        invoke: {
-          id: "exchangeTokenForSession",
-          src: async (context, event) => {
-            const client = await window.o.apiClient.client.subscribeToResult();
-            const exchangeResult = await client.mutate({
-              mutation: ExchangeTokenDocument,
-              context: {
-                headers: {
-                  "Authorization": event.data
-                }
-              }
-            });
-            if (exchangeResult.errors && exchangeResult.errors.length > 0) {
-              exchangeResult.errors.forEach(o => console.error(o));
-            }
-            if (!exchangeResult.data?.exchangeToken?.success) {
-              throw new Error(`Couldn't exchange the jwt for a session.`);
-            }
           },
           onDone: "#success",
           onError: "#error"

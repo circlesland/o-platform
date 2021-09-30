@@ -10,7 +10,7 @@ import { loadProfile } from "./services/loadProfile";
 import { getSessionInfo } from "./services/getSessionInfo";
 import { promptChoice } from "./prompts/promptChoice";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
-import { acquireSession } from "./aquireSession/acquireSession";
+import { acquireSession } from "./aquireSession/acquireSession2";
 import { connectSafe } from "./connectSafe/connectSafe2";
 import { createSafe } from "./createSafe/createSafe";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";

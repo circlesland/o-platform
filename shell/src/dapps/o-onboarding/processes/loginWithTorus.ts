@@ -308,6 +308,9 @@ const processDefinition = (processId: string) =>
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
+        },
+        data: (context, event) => {
+          return context.data.accountAddress;
         }
       }
     }

@@ -425,7 +425,7 @@
     });
 
     if (!identityChecked && !dapp.noAuthentication) {
-      window.o.runProcess(identify, {}, {});
+      //window.o.runProcess(identify, {}, {});
       identityChecked = true;
     }
   });

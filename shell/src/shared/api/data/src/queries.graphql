@@ -31,6 +31,17 @@ query safeFundingTransaction {
     }
 }
 
+query hubSignupTransaction {
+    hubSignupTransaction {
+        transaction_hash
+        payload {
+            ... on CrcSignup {
+                token
+            }
+        }
+    }
+}
+
 query myInvitations {
     myInvitations {
         createdAt

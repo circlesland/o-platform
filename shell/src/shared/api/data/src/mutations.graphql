@@ -5,6 +5,17 @@ mutation exchangeToken {
     }
 }
 
+mutation requestSessionChallenge($address:String!) {
+    requestSessionChallenge(address: $address)
+}
+
+mutation verifySessionChallenge($challenge:String! $signature:String!) {
+    verifySessionChallenge(challenge: $challenge signature: $signature) {
+        success
+        errorMessage
+    }
+}
+
 mutation authenticateAt(
     $appId: String!
 ) {

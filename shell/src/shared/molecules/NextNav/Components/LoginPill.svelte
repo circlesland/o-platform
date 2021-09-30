@@ -7,9 +7,9 @@
   export let props;
 
   async function login() {
-    window.o.runProcess(identify, <IdentifyContextData>{
+    /*window.o.runProcess(identify, <IdentifyContextData>{
       redirectTo: "/dashboard",
-    });
+    });*/
   }
 
   console.log("PROPS ", props);

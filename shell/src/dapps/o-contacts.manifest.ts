@@ -122,6 +122,21 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         }
       });
     }
+    if (!recipientProfile) {
+      actions = actions.concat({
+        key: "setTrust",
+        icon: "trust",
+        title: "Trust",
+        action: async () => {
+          window.o.runProcess(setTrust, {
+            trustLimit: 100,
+            safeAddress: mySafeAddress,
+            privateKey: sessionStorage.getItem("circlesKey"),
+          });
+        }
+      })
+    }
+
 
     return actions;
   },
