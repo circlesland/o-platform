@@ -388,7 +388,7 @@
             {/if}
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
-                <div class="text-left text-2xs text-dark-lightest">Common friends</div>
+                <div class="text-left text-2xs text-dark-lightest">Mutual Friends</div>
                 <div class="flex flex-wrap content-start">
                 {#each commonTrusts as commonTrust}
                   <a on:click={push(`#/friends/${commonTrust.profile.circlesAddress}`)}>
