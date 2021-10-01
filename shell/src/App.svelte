@@ -199,7 +199,7 @@
 <script lang="ts">
   import "./shared/css/tailwind.css";
 
-  import Router from "svelte-spa-router";
+  import Router, {push} from "svelte-spa-router";
   import {SvelteToast} from "./shared/molecules/Toast";
   import DappFrame from "src/shared/molecules/DappFrame.svelte";
   import NotFound from "src/shared/pages/NotFound.svelte";
@@ -209,6 +209,10 @@
   window.runInitMachine = () => {
     var m = interpret(initMachine)
       .onEvent(event => {
+        if (event.type === "COMPLETE") {
+          push("#/dashboard");
+          return;
+        }
         console.log("initMachine.event:", event);
       })
       .onTransition(state => {
@@ -216,7 +220,7 @@
       })
       .start();
   }
-  window.runInitMachine();
+  // window.runInitMachine();
 
   let _routes = {
     "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,

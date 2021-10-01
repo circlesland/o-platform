@@ -10,8 +10,12 @@ import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svel
 import {
   ClaimInvitationDocument
 } from "../../../../shared/api/data/types";
+import {loadProfile} from "../../../o-passport/processes/identify/services/loadProfile";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {BN} from "ethereumjs-util";
 
 export type PromptGetInvitedData = {
+  needsInvitation: boolean;
   inviteCode: string;
   successAction?:(data:PromptGetInvitedData) => void;
 };
@@ -46,6 +50,25 @@ const processDefinition = (processId: string) =>
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<PromptGetInvitedContext, any>("error"),
+      /*
+      checkEoaBalance: {
+        id: "checkEoaBalance",
+        invoke: {
+          src: async (context) => {
+            const myProfile = await loadProfile();
+            const eoaBalance = await RpcGateway.get().eth.getBalance(myProfile.circlesSafeOwner);
+            context.data.needsInvitation = new BN(eoaBalance).lt(new BN("1"));
+          },
+          onDone: [{
+            cond: (context) => !context.data.needsInvitation,
+            target: "#success"
+          },{
+            cond: (context) => context.data.needsInvitation,
+            target: "#info"
+          }]
+        }
+      },
+      */
 
       info: prompt({
         id: "info",

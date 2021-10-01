@@ -3,9 +3,8 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
-import {authenticate, AuthenticateContext} from "./authenticate/authenticate2";
+import {AuthenticateContext} from "./authenticate/authenticate2";
 import {
-  ExchangeTokenDocument,
   RequestSessionChallengeDocument,
   VerifySessionChallengeDocument
 } from "../../../../../shared/api/data/types";

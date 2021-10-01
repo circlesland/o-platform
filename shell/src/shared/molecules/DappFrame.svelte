@@ -45,6 +45,7 @@
     fromCirclesLand,
     FromCirclesLandContextData,
   } from "../../dapps/o-onboarding/processes/fromCirclesLand";
+  import {me} from "../stores/me";
 
   // install Swiper modules
   SwiperCore.use([Navigation, Pagination]);
@@ -148,7 +149,7 @@
   }
 
   function onOpenContacts() {
-    push("#/friends/chat");
+    push("#/chat");
   }
 
   function onOpenModal() {
@@ -501,6 +502,7 @@
   let firstUrlChangedCall = true;
 
   async function handleUrlChanged() {
+
     const navArgs = <GenerateNavManifestArgs>{};
 
     dapp = findDappById(params.dappId);
@@ -563,6 +565,12 @@
     if (firstUrlChangedCall) {
       firstUrlChangedCall = false;
       init();
+    }
+
+    // If the user is not logged-on return to the homepage
+    if (!$me) {
+      await push("/");
+      return;
     }
   }
 
@@ -696,3 +704,4 @@
   {navigation}
   on:clickedOutside="{() => {}}"
   sliderPages="{[]}" />
+

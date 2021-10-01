@@ -4,7 +4,6 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { promptChoice } from "../../o-passport/processes/identify/prompts/promptChoice";
 import ButtonStackSelector from "@o-platform/o-editors/src/ButtonStackSelector.svelte";
-import OpenLogin from "@toruslabs/openlogin";
 import NumberEditor from "../../../../../packages/o-editors/src/NumberEditor.svelte";
 import * as yup from "yup";
 import {prompt} from "@o-platform/o-process/dist/states/prompt";
@@ -14,6 +13,7 @@ import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte"
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {show} from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
+import {getOpenLogin} from "../../../shared/openLogin";
 
 export type LoginWithTorusContextData = {
   chooseFlow?: {
@@ -48,17 +48,12 @@ const processDefinition = (processId: string) =>
             if (accAddress) {
               context.data.accountAddress = accAddress;
             } else {
-              (<any>context).openLogin = new OpenLogin({
-                clientId: "BI3cr1l8ztZhkaRFFsh2cY77o6H74JHP0KaigRdh30Y53YDpMatb9QDiPh14zl176ciAUMbi7JlmjNe5MPLwzAE",
-                network: "mainnet",
-                // redirectUrl: "http://localhost:5000/#/banking/transactions", // your app url where user will be redirected
-                uxMode: "popup", // default is redirect , popup mode is also supported,
-              });
-              await (<any>context).openLogin.init();
+              // Init open login
+              await getOpenLogin();
             }
           },
           onDone: [{
-            cond: (context) => (<any>context).openLogin !== undefined,
+            cond: (context) => context.data.accountAddress === undefined,
             target:"chooseFlow"
           },{
             cond: (context) => context.data.accountAddress !== undefined,
@@ -110,7 +105,7 @@ const processDefinition = (processId: string) =>
         id: "google",
         invoke: {
           src: async (context) => {
-            const openLogin: OpenLogin = (<any>context).openLogin;
+            const openLogin = await getOpenLogin();
             const privateKey = await openLogin.login({
               loginProvider: "google"
             });
@@ -129,7 +124,7 @@ const processDefinition = (processId: string) =>
         id: "apple",
         invoke: {
           src: async (context) => {
-            const openLogin: OpenLogin = (<any>context).openLogin;
+            const openLogin = await getOpenLogin();
             const privateKey = await openLogin.login({
               loginProvider: "apple"
             });
@@ -148,7 +143,7 @@ const processDefinition = (processId: string) =>
         id: "github",
         invoke: {
           src: async (context) => {
-            const openLogin: OpenLogin = (<any>context).openLogin;
+            const openLogin = await getOpenLogin();
             const privateKey = await openLogin.login({
               loginProvider: "github"
             });
@@ -167,7 +162,7 @@ const processDefinition = (processId: string) =>
         id: "email",
         invoke: {
           src: async (context) => {
-            const openLogin: OpenLogin = (<any>context).openLogin;
+            const openLogin = await getOpenLogin();
             const privateKey = await openLogin.login({
               loginProvider: "email_passwordless",
             });

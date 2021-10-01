@@ -10,18 +10,17 @@ import {
 import {promptChoice} from "../../../o-passport/processes/identify/prompts/promptChoice";
 import ChoiceSelector from "../../../../../../packages/o-editors/src/ChoiceSelector.svelte";
 import {UpsertRegistrationContext} from "../registration/promptRegistration";
-import {createSafe} from "../../../o-passport/processes/identify/createSafe/createSafe";
 import {loadProfile} from "../../../o-passport/processes/identify/services/loadProfile";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {GnosisSafeProxyFactory} from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
 import {GNOSIS_SAFE_ADDRESS, PROXY_FACTORY_ADDRESS} from "@o-platform/o-circles/dist/consts";
-import {async} from "rxjs";
 
-export type LogoutContextData = {
+export type PromptConnectOrCreateContextData = {
   connectOrCreate: string;
+  successAction?: (data:PromptConnectOrCreateContextData) => void
 };
 
-export type PromptConnectOrCreateContext = ProcessContext<LogoutContextData>;
+export type PromptConnectOrCreateContext = ProcessContext<PromptConnectOrCreateContextData>;
 
 const editorContent = {
   info: {
@@ -124,17 +123,35 @@ const processDefinition = (processId: string) =>
             if (result.errors) {
               throw new Error(`Couldn't update the profile with the generated eoa: ${JSON.stringify(result.errors)}`);
             }
-            (<any>window).runInitMachine();
-          }
+          },
+          onDone: "success"
         }
       },
       importSafe: {
-        id: "importSafe"
+        id: "importSafe",
+        invoke: {
+          src: async (context) => {
+            const myProfile = await loadProfile();
+
+            const privateKey = sessionStorage.getItem("circlesKey");
+            if (!privateKey) {
+              throw new Error(`The private key is not unlocked.`);
+            }
+          }
+        }
       },
       importCirclesGarden: {
         id: "importCirclesGarden"
+      },
+      success: {
+        type: "final",
+        entry: (context) => {
+          if (context.data.successAction) {
+            context.data.successAction(context.data);
+          }
+        }
       }
-    },
+    }
   });
 
 export const promptConnectOrCreate: ProcessDefinition<void, PromptConnectOrCreateContext> = {

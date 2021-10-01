@@ -1,9 +1,8 @@
 import {assign, createMachine, send} from "xstate";
 import {actions} from "xstate";
-import {getSessionInfo, SessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
+import {getSessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
 import {BN} from "ethereumjs-util";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
-import {redeemInvitation} from "./redeemInvitation";
 import {
   ClaimedInvitationDocument, HubSignupTransactionDocument,
   InvitationTransactionDocument,
@@ -24,205 +23,22 @@ import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {KeyManager} from "../../o-passport/data/keyManager";
 import {unlockKey} from "./unlockKey/unlockKey";
-
-export type Origin = "Created" | "Imported";
-
-export type RegistrationData = {
-  profileId: number;
-  email: string;
-  acceptedToSVersion: string;
-  subscribedToNewsletter: boolean;
-}
-
-export type InvitationData = {
-  id: string
-  createdByProfileId: number
-  createdAt: string,
-  redeemedAt?: string,
-  redeemedTo?: string
-}
-
-export type InvitationTransaction = {
-  txHash: string
-  value: BN
-}
-
-export type ProfileData = {
-  id: number;
-  firstName: string;
-  lastName?: string;
-  cityId: number;
-  passion?: string;
-  avatarUrl?: string;
-  circlesSafeOwner?: string;
-}
-
-export type EoaData = {
-  privateKey: string;
-  address: string;
-  origin: Origin;
-  balance: BN;
-}
-
-export type SafeData = {
-  address: string;
-  origin: Origin;
-  balance?: BN;
-}
-
-export type UbiData = {
-  tokenAddress: string;
-}
-
-export type InitContext = {
-  session?: SessionInfo;
-  _login: any;
-
-  registration?: RegistrationData;
-  _register: any;
-
-  invitation?: InvitationData;
-  _invitation: any;
-
-  profile?: ProfileData;
-  _profile: any;
-
-  eoa?: EoaData;
-  _eoa: any;
-  _redeemInvitation: any;
-  eoaInvitationTransaction?: InvitationTransaction;
-
-  safe?: SafeData;
-  _safe: any;
-  _fundSafeFromEoa: any;
-  safeInvitationTransaction?: InvitationTransaction;
-
-  ubi?: UbiData
-  _ubi: any;
-};
-
-export type InitEvent = {
-  type: "CANCEL"
-} | {
-  type: "NO_SESSION"
-} | {
-  type: "GOT_SESSION",
-  session: SessionInfo
-} | {
-  type: "NO_REGISTRATION"
-} | {
-  type: "GOT_REGISTRATION",
-  registration: RegistrationData
-} | {
-  type: "NO_INVITATION"
-} | {
-  type: "GOT_INVITATION",
-  invitation: InvitationData
-} | {
-  type: "NO_PROFILE"
-} | {
-  type: "GOT_PROFILE",
-  profile: ProfileData
-} | {
-  type: "NO_EOA"
-} | {
-  type: "LOCKED_EOA"
-} | {
-  type: "GOT_EOA",
-  eoa: EoaData
-} | {
-  type: "NOT_REDEEMED"
-} | {
-  type: "GOT_REDEEMED",
-  transaction: InvitationTransaction
-} | {
-  type: "NO_SAFE"
-} | {
-  type: "GOT_SAFE",
-  safe: SafeData
-} | {
-  type: "SAFE_NOT_FUNDED"
-} | {
-  type: "GOT_SAFE_FUNDED",
-  transaction: InvitationTransaction
-} | {
-  type: "NO_UBI"
-} | {
-  type: "GOT_UBI",
-  ubi: UbiData
-} | {
-  type: "UBI_ERROR"
-} | {
-  type: "LOGGED_IN"
-} | {
-  type: "CANCELLED"
-} | {
-  type: "REGISTERED"
-} | {
-  type: "GOT_INVITED"
-} | {
-  type: "PROFILE_CREATED"
-} | {
-  type: "INVITATION_USED"
-} | {
-  type: "INVITATION_UNUSED"
-} | {
-  type: "EOA_CREATED"
-} | {
-  type: "EOA_CONNECTED"
-} | {
-  type: "REDEEMED"
-} | {
-  type: "SAFE_CONNECTED"
-} | {
-  type: "SAFE_CREATED"
-} | {
-  type: "FUNDED"
-} | {
-  type: "REGISTRATION_ERROR",
-  error: Error
-} | {
-  type: "INVITATION_ERROR",
-  error: Error
-} | {
-  type: "PROFILE_ERROR",
-  error: Error
-} | {
-  type: "EOA_ERROR",
-  error: Error
-} | {
-  type: "SAFE_ERROR",
-  error: Error
-}
+import {InitEvent, UbiData} from "./initEvent";
+import {InitContext} from "./initContext";
 
 export const initMachine = createMachine<InitContext, InitEvent>({
   id: `init`,
   initial: "initial",
   context: {
     session: null,
-    _login: null,
-
     registration: null,
-    _register: null,
-
     invitation: null,
-    _invitation: null,
-
     profile: null,
-    _profile: null,
-
     eoa: null,
-    _eoa: null,
-    _redeemInvitation: null,
     eoaInvitationTransaction: null,
-
     safe: null,
-    _safe: null,
-    _fundSafeFromEoa: null,
     safeInvitationTransaction: null,
-
-    ubi: null,
-    _ubi: null
+    ubi: null
   },
   on: {
     CANCEL: "cancelled"
@@ -232,24 +48,13 @@ export const initMachine = createMachine<InitContext, InitEvent>({
       invoke: {src: "loadSession"},
       on: {
         NO_SESSION: {
-          actions: [
-            () => window.o.runProcess(acquireSession, {
-              successAction: (data) => {
-                (<any>window).runInitMachine();
-              }
-            }),
-            /*assign({
-                _register: () => spawn(loginMachine)
-            })*/
-          ]
+          actions: "acquireSessionAndRestart"
         },
         LOGGED_IN: {
-          actions: actions.stop(ctx => ctx._login),
           target: "initial"
         },
         CANCELLED: {
           actions: [
-            actions.stop(ctx => ctx._login),
             send({type: "CANCEL"})
           ]
         },
@@ -263,24 +68,13 @@ export const initMachine = createMachine<InitContext, InitEvent>({
       invoke: {src: "loadRegistration"},
       on: {
         NO_REGISTRATION: {
-          actions: [
-            () => window.o.runProcess(upsertRegistration, {
-              successAction: (data) => {
-                (<any>window).runInitMachine();
-              }
-            }),
-            /*assign({
-                _register: () => spawn(registerMachine)
-            })*/
-          ]
+          actions: "upsertRegistrationAndRestart"
         },
         REGISTERED: {
-          actions: actions.stop(ctx => ctx._register),
           target: "register"
         },
         CANCELLED: {
           actions: [
-            actions.stop(ctx => ctx._register),
             send({type: "CANCEL"})
           ],
         },
@@ -290,7 +84,6 @@ export const initMachine = createMachine<InitContext, InitEvent>({
               console.error(event);
               throw event.error;
             },
-            actions.stop(ctx => ctx._register),
             send({type: "CANCEL"})
           ]
         },
@@ -304,19 +97,12 @@ export const initMachine = createMachine<InitContext, InitEvent>({
       invoke: {src: "loadClaimedInvitation"},
       on: {
         NO_INVITATION: {
-          actions: [
-            /*assign({
-              _invitation: () => spawn(getInvitedMachine)
-            }),*/
-            () => {
-              window.o.runProcess(promptGetInvited, {
-                successAction: () => (<any>window).runInitMachine()
-              });
-            }
-          ]
+          actions: "promptGetInvitedAndRestart"
+        },
+        NO_INVITATION_NECESSARY: {
+          target: "profile"
         },
         GOT_INVITED: {
-          actions: actions.stop(ctx => ctx._invitation),
           target: "invitation"
         },
         INVITATION_ERROR: {
@@ -325,44 +111,11 @@ export const initMachine = createMachine<InitContext, InitEvent>({
               console.error(event);
               throw event.error;
             },
-            actions.stop(ctx => ctx._invitation),
             send({type: "CANCEL"})
           ]
         },
         GOT_INVITATION: {
           actions: "assignInvitationToContext",
-          target: "profile"
-        }
-      }
-    },
-    profile: {
-      invoke: {src: "loadProfile"},
-      on: {
-        NO_PROFILE: {
-          actions: [
-            (context) => window.o.runProcess(upsertIdentity, {
-              id: context.registration.profileId,
-              successAction: (data) => {
-                (<any>window).runInitMachine();
-              }
-            }),
-            /*assign({
-                _register: () => spawn(createProfileMachine)
-            })*/
-          ]
-        },
-        CANCELLED: {
-          actions: [
-            actions.stop(ctx => ctx._profile),
-            send({type: "CANCEL"})
-          ]
-        },
-        PROFILE_CREATED: {
-          actions: actions.stop(ctx => ctx._profile),
-          target: "profile"
-        },
-        GOT_PROFILE: {
-          actions: "assignProfileToContext",
           target: "eoa"
         }
       }
@@ -386,37 +139,20 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           }
         },
         tryUnlockEoa: {
-          entry: [
-            /*assign({
-                _eoa: () => spawn(connectOrCreateEoa)
-            }),*/
-            () => {
-              window.o.runProcess(unlockKey, {});
-            }
-          ]
+          entry: "unlockEoaAndRestart"
         },
         connectOrCreate: {
-          entry: [
-            /*assign({
-                _eoa: () => spawn(connectOrCreateEoa)
-            }),*/
-            () => {
-              window.o.runProcess(promptConnectOrCreate, {});
-            }
-          ],
+          entry: "promptConnectOrCreateAndRestart",
           on: {
             CANCELLED: {
               actions: [
-                actions.stop(ctx => ctx._eoa),
                 send({type: "CANCEL"})
               ]
             },
             EOA_CONNECTED: {
-              actions: actions.stop(ctx => ctx._eoa),
               target: "load"
             },
             EOA_CREATED: {
-              actions: actions.stop(ctx => ctx._eoa),
               target: "load"
             }
           }
@@ -434,22 +170,13 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           }
         },
         redeemInvitation: {
-          entry: [
-            /*assign({
-              _redeemInvitation: () => spawn(redeemInvitation)
-            }),*/
-            () => {
-              window.o.runProcess(promptRedeemInvitation, {});
-            }
-          ],
+          entry: "promptRedeemInvitationAndRestart",
           on: {
             REDEEMED: {
-              actions: actions.stop(ctx => ctx._redeemInvitation),
               target: "load"
             },
             CANCELLED: {
               actions: [
-                actions.stop(ctx => ctx._redeemInvitation),
                 send({type: "CANCEL"})
               ]
             }
@@ -478,9 +205,6 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         },
         connectOrCreate: {
           entry: [
-            /*assign({
-                _safe: () => spawn(connectOrCreateSafe)
-            }),*/
             () => {
               window.o.runProcess(promptConnectOrCreate, {});
             }
@@ -510,22 +234,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           }
         },
         fundSafeFromEoa: {
-          entry: [
-            /*assign({
-                _fundSafeFromEoa: () => spawn(fundSafeFromEoa)
-            }),*/
-            () => {
-              loadProfile().then(profile => {
-                window.o.runProcess(fundSafeFromEoa, {
-                  successAction: (data) => {
-                    (<any>window).runInitMachine();
-                  },
-                  safeAddress: profile.circlesAddress,
-                  eoaAddress: profile.circlesSafeOwner
-                });
-              });
-            }
-          ],
+          entry: "fundSafeFromEoaAndRestart",
           on: {
             FUNDED: {
               target: "load"
@@ -540,6 +249,26 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         }
       },
       onDone: "ubi"
+    },
+    profile: {
+      invoke: {src: "loadProfile"},
+      on: {
+        NO_PROFILE: {
+          actions: "upsertIdentityAndRestart"
+        },
+        CANCELLED: {
+          actions: [
+            send({type: "CANCEL"})
+          ]
+        },
+        PROFILE_CREATED: {
+          target: "profile"
+        },
+        GOT_PROFILE: {
+          actions: "assignProfileToContext",
+          target: "eoa"
+        }
+      }
     },
     ubi: {
       invoke: {src: "loadUbi"},
@@ -570,12 +299,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
     },
     finalize: {
       invoke: {
-        src: async (context) => {
-          window.o.publishEvent(<PlatformEvent>{
-            type: "shell.authenticated",
-            profile: await loadProfile()
-          });
-        },
+        src: "sendAuthenticatedEvent",
         onDone: "success"
       }
     },
@@ -583,6 +307,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
       type: "final"
     },
     success: {
+      entry: send({type: "COMPLETE"}),
       type: "final"
     }
   }
@@ -656,7 +381,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             query: ClaimedInvitationDocument
           })
         })
-        .then(result => {
+        .then(async result => {
           if (result.errors) {
             callback({
               type: "INVITATION_ERROR",
@@ -665,7 +390,16 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             return;
           }
           if (!result.data.claimedInvitation) {
-            callback({type: "NO_INVITATION"});
+
+            // Maybe the user already has enough xDai to complete the process
+            // if so we'll emit NO_INVITATION_NECESSARY
+            const myProfile = await loadProfile();
+            const eoaBalance = await RpcGateway.get().eth.getBalance(myProfile.circlesSafeOwner);
+            if (new BN(eoaBalance).lt(new BN(RpcGateway.get().utils.toWei("0.1", "ether")))) {
+              callback({type: "NO_INVITATION"});
+            } else {
+              callback({type: "NO_INVITATION_NECESSARY"});
+            }
             return;
           }
 
@@ -757,7 +491,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
       })
         .then(result => {
           // TODO: Find the transaction from the "invitation EOA" to the user's EOA (must be the only outgoing transaction from the invite-eoa)
-          if (result.errors || !result.data.invitationTransaction.transaction_hash) {
+          if (result.errors || !result.data?.invitationTransaction?.transaction_hash) {
             callback({type: "NOT_REDEEMED"});
           } else {
             callback({type: "GOT_REDEEMED", transaction: result.data.invitationTransaction.transaction_hash});
@@ -842,9 +576,70 @@ export const initMachine = createMachine<InitContext, InitEvent>({
     validateInvitation: async (context, event) => {
       send({type: "INVITATION_USED"});
       // send({type: "INVITATION_UNUSED"});
+    },
+    sendAuthenticatedEvent: async (context) => {
+      window.o.publishEvent(<PlatformEvent>{
+        type: "shell.authenticated",
+        profile: await loadProfile()
+      });
     }
   },
   actions: {
+    acquireSessionAndRestart: () => {
+      window.o.runProcess(acquireSession, {
+        successAction: (data) => {
+          (<any>window).runInitMachine();
+        }
+      })
+    },
+    upsertRegistrationAndRestart: () => {
+      window.o.runProcess(upsertRegistration, {
+        successAction: (data) => {
+          (<any>window).runInitMachine();
+        }
+      })
+    },
+    promptGetInvitedAndRestart: () => {
+      window.o.runProcess(promptGetInvited, {
+        successAction: (data) => {
+          (<any>window).runInitMachine();
+        }
+      })
+    },
+    upsertIdentityAndRestart: (context) => {
+      window.o.runProcess(upsertIdentity, {
+        id: context.registration.profileId,
+        successAction: (data) => {
+          (<any>window).runInitMachine();
+        }
+      })
+    },
+    unlockEoaAndRestart: (context) => {
+      window.o.runProcess(unlockKey, {
+        successAction: (data) => {
+          (<any>window).runInitMachine();
+        }});
+    },
+    promptConnectOrCreateAndRestart: (context) => {
+      window.o.runProcess(promptConnectOrCreate, {
+        successAction: (data) => {
+          (<any>window).runInitMachine();
+        }});
+    },
+    promptRedeemInvitationAndRestart: () => {
+      window.o.runProcess(promptRedeemInvitation, {});
+    },
+    fundSafeFromEoaAndRestart: () => {
+      loadProfile().then(profile => {
+        window.o.runProcess(fundSafeFromEoa, {
+          successAction: (data) => {
+            (<any>window).runInitMachine();
+          },
+          safeAddress: profile.circlesAddress,
+          eoaAddress: profile.circlesSafeOwner
+        });
+      });
+    },
     assignSessionInfoToContext: assign({
       session: (ctx, event) => {
         return event.type == "GOT_SESSION" ? event.session : undefined

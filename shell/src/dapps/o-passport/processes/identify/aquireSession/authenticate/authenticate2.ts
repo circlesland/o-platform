@@ -1,21 +1,10 @@
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.svelte";
-import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
-import NumberEditor from "@o-platform/o-editors/src/NumberEditor.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
-import AcceptViewer from "@o-platform/o-editors/src/AcceptViewer.svelte";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import * as yup from "yup";
-import {
-  LoginWithEmailDocument,
-  TosDocument,
-  VerifyDocument,
-} from "../../../../data/auth/types";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import TextareaEditor__SvelteComponent_ from "../../../../../../../../packages/o-editors/src/TextareaEditor.svelte";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 import {loginWithTorus} from "../../../../../o-onboarding/processes/loginWithTorus";
 import {RequestSessionChallengeDocument, VerifySessionChallengeDocument} from "../../../../../../shared/api/data/types";
