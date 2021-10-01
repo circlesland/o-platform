@@ -20,6 +20,7 @@ export type ShowNotificationsContextData = {
 const strings = {
   crc_hub_transfer: "Received",
   crc_trust: "New incoming trust",
+  crc_untrust: "Trust removed",
   chat_message: "New incoming Chat Message",
   crc_minting: "Received new Basic Income",
 };
@@ -93,12 +94,17 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         component: NotificationViewer,
         field: "currentEvent",
         params: (context: any) => {
+          let title =
+            context.data.currentEvent.type == "crc_trust" &&
+            context.data.currentEvent.payload.limit == 0
+              ? "crc_untrust"
+              : context.data.currentEvent.type;
           return {
             view: {
-              title: strings[context.data.currentEvent.type],
+              title: strings[title],
               description: "",
               placeholder: "",
-              submitButtonText: "OK",
+              submitButtonText: "Next",
             },
             push: (target) => push(target),
           };
