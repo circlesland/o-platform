@@ -5,11 +5,22 @@ import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelt
 export let eventData: any;
 </script>
 
-<NotificationProfile profile="{eventData.profile}" showPassion="{false}" />
+<NotificationProfile
+  profile="{eventData.profile}"
+  targetCirclesAddress="{eventData.targetCirclesAddress}"
+  showPassion="{false}" />
 
 {#if eventData.limit == 0}
   <div class="text-center text-dark-lightest">
-    {eventData.profile.firstName} has removed their trust to you.
+    {eventData.profile
+      ? eventData.profile.firstName
+      : eventData.targetCirclesAddress} has removed their trust to you.
+  </div>
+{:else}
+  <div class="text-center text-dark-lightest">
+    {eventData.profile
+      ? eventData.profile.firstName
+      : eventData.targetCirclesAddress} is trusting you now.
   </div>
 {/if}
 

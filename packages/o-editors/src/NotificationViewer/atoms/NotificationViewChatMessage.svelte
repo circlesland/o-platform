@@ -7,7 +7,9 @@ import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelt
 export let eventData: any;
 </script>
 
-<NotificationProfile profile="{eventData.profile}" />
+<NotificationProfile
+  profile="{eventData.profile}"
+  targetCirclesAddress="{eventData.targetCirclesAddress}" />
 
 <ChatCard params="{eventData}" />
 

@@ -33,10 +33,12 @@ function buildDataModel(data) {
   console.log("DATA: ", data);
   let notificationType: string = null;
   let title: string = null;
+
   let type: string = data.type;
   let icon: string = null;
   let limit: number = null;
   let value: string = null;
+  let targetCirclesAddress: string = data.payload.from;
 
   let profile: any;
   let actions: {
@@ -84,6 +86,7 @@ function buildDataModel(data) {
 
     case "crc_trust":
       profile = data.payload.can_send_to_profile;
+      targetCirclesAddress = data.payload.can_send_to;
       limit = data.payload.limit;
 
       if (data.payload.limit == 0) {
@@ -96,13 +99,21 @@ function buildDataModel(data) {
             colorClass: "",
             action: () => {
               context.params.push(
-                `#/friends/${data.payload.can_send_to_profile.circlesAddress}`
+                `#/friends/${
+                  data.payload.can_send_to_profile
+                    ? data.payload.can_send_to_profile.circlesAddress
+                    : data.payload.from
+                }`
               );
               // submit(); TODO: ADD BACK IN TO MARK EVENT AS READ
             },
           },
           {
-            title: `Untrust ${data.payload.can_send_to_profile.firstName}`,
+            title: `Untrust ${
+              data.payload.can_send_to_profile
+                ? data.payload.can_send_to_profile.firstName
+                : data.payload.can_send_to
+            }`,
             icon: "untrust",
             colorClass: "",
             action: () => {
@@ -126,13 +137,21 @@ function buildDataModel(data) {
             colorClass: "",
             action: () => {
               context.params.push(
-                `#/friends/${data.payload.can_send_to_profile.circlesAddress}`
+                `#/friends/${
+                  data.payload.can_send_to_profile
+                    ? data.payload.can_send_to_profile.circlesAddress
+                    : data.payload.can_send_to
+                }`
               );
               // submit(); TODO: ADD BACK IN TO MARK EVENT AS READ
             },
           },
           {
-            title: `Trust ${data.payload.can_send_to_profile.firstName}`,
+            title: `Trust ${
+              data.payload.can_send_to_profile
+                ? data.payload.can_send_to_profile.firstName
+                : data.payload.can_send_to
+            }`,
             icon: "trust",
             colorClass: "",
             action: () => {
@@ -166,7 +185,11 @@ function buildDataModel(data) {
           },
         },
         {
-          title: `Send Circles to ${data.payload.from_profile.firstName}`,
+          title: `Send Circles to ${
+            data.payload.from_profile
+              ? data.payload.from_profile.firstName
+              : data.payload.from
+          }`,
           icon: "sendmoney",
           colorClass: "",
           action: () => {
@@ -190,20 +213,18 @@ function buildDataModel(data) {
 
   return {
     safeAddress: data.safe_address,
+    targetCirclesAddress: targetCirclesAddress,
     type: type,
-    profile: profile,
+    profile: profile ? profile : null,
     time: data.timestamp / 1000,
     fullWidth: true,
     value: value,
     limit: limit,
-    content: {
-      notificationType: notificationType,
-      time: data.timestamp / 1000,
-      title: title,
-      icon: icon,
-      actions: actions,
-      text: text,
-    },
+    notificationType: notificationType,
+    title: title,
+    icon: icon,
+    actions: actions,
+    text: text,
   };
 }
 eventData = buildDataModel(data);
@@ -232,13 +253,13 @@ function handleClick(action) {
     </div>
   {/if}
 
-  {#if eventData.content.actions.length > 0}
+  {#if eventData.actions.length > 0}
     <div class="flex flex-row items-center content-center w-full space-x-4">
       <div class="mt-6">
         <button
-          on:click="{() => handleClick(eventData.content.actions[0])}"
+          on:click="{() => handleClick(eventData.actions[0])}"
           class="h-auto btn-block btn btn-light whitespace-nowrap">
-          {eventData.content.actions[0].title}
+          {eventData.actions[0].title}
         </button>
       </div>
       <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
