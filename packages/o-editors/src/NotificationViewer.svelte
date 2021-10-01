@@ -4,10 +4,8 @@ import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { NotificationViewerContext } from "./notificationViewerContext";
 import Icons from "src/shared/molecules/Icons.svelte";
 import NotificationProfile from "./NotificationViewer/atoms/NotificationProfile.svelte";
-import DetailActionBar from "src/shared/molecules/DetailActionBar.svelte";
 import ChatCard from "src/dapps/o-chat/atoms/ChatCard.svelte";
 import { me } from "src/shared/stores/me";
-import Web3 from "web3";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 
 export let context: NotificationViewerContext;
@@ -21,21 +19,13 @@ const strings = {
   PROFILE_OUTGOING_CIRCLES_TRANSACTION: "Sent money",
 };
 
-// TYPES: "chat_message", "crc_trust", "crc_hub_transfer", "crc_minting"
-
 function submit() {
   const answer = new Continue();
   answer.data = context.data;
   context.process.sendAnswer(answer);
 }
 
-function onkeydown(e: KeyboardEvent) {
-  if (e.key == "Enter") {
-    submit();
-  }
-}
-
-function buildCardModel(data) {
+function buildDataModel(data) {
   console.log("DATA: ", data);
   let notificationType: string = null;
   let title: string = null;
@@ -207,7 +197,7 @@ function buildCardModel(data) {
     },
   };
 }
-eventData = buildCardModel(data);
+eventData = buildDataModel(data);
 console.log("eventData: ", eventData);
 
 function handleClick(action) {

@@ -1,19 +1,18 @@
 <script lang="ts">
   import Time from "svelte-time";
-
-  import Web3 from "web3";
   import { push } from "svelte-spa-router";
   import {
     CrcHubTransfer,
-    CrcMinting, Profile,
+    CrcMinting,
+    Profile,
     ProfileEvent,
-    TransactionByHashDocument
+    TransactionByHashDocument,
   } from "../data/api/types";
-
   import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-  import {onMount} from "svelte";
-  import {AvataarGenerator} from "../../../shared/avataarGenerator";
-  import {me} from "../../../shared/stores/me";
+  import { onMount } from "svelte";
+  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import { me } from "../../../shared/stores/me";
+  import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 
   export let transactionHash: string;
 
@@ -22,7 +21,7 @@
   let path: any;
   let fromProfile: Profile;
   let toProfile: Profile;
-  let error:string;
+  let error: string;
 
   onMount(async () => {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -30,12 +29,16 @@
       query: TransactionByHashDocument,
       variables: {
         safeAddress: $me.circlesAddress,
-        transactionHash
-      }
+        transactionHash,
+      },
     });
 
     if (timeline.errors) {
-      throw new Error(`Couldn't load the transaction history for the following reasons: ${timeline.errors.join("\n")}`);
+      throw new Error(
+        `Couldn't load the transaction history for the following reasons: ${timeline.errors.join(
+          "\n"
+        )}`
+      );
     }
 
     if (timeline.data.eventByTransactionHash.length > 0) {
@@ -50,7 +53,7 @@
         lastName: "",
         avatarUrl: "/images/common/circles.png",
         circlesAddress: minting.from,
-      }
+      };
       if (!fromProfile.avatarUrl) {
         fromProfile.avatarUrl = AvataarGenerator.generate(minting.from);
       }
@@ -58,8 +61,8 @@
         id: 0,
         firstName: minting.to,
         lastName: "",
-        circlesAddress: minting.to
-      }
+        circlesAddress: minting.to,
+      };
       if (!toProfile.avatarUrl) {
         toProfile.avatarUrl = AvataarGenerator.generate(minting.to);
       }
@@ -72,7 +75,7 @@
         firstName: hubTransfer.from,
         lastName: "",
         circlesAddress: hubTransfer.from,
-      }
+      };
       if (!fromProfile.avatarUrl) {
         fromProfile.avatarUrl = AvataarGenerator.generate(hubTransfer.from);
       }
@@ -80,13 +83,13 @@
         id: 0,
         firstName: hubTransfer.to,
         lastName: "",
-        circlesAddress: hubTransfer.to
-      }
+        circlesAddress: hubTransfer.to,
+      };
       if (!toProfile.avatarUrl) {
         toProfile.avatarUrl = AvataarGenerator.generate(hubTransfer.to);
       }
       path = {
-        transfers: hubTransfer.transfers
+        transfers: hubTransfer.transfers,
       };
     }
   });
@@ -130,9 +133,9 @@
       <div>
         <span class="inline-block text-6xl font-heading {classes}">
           {#if transfer.direction === 'in'}
-            +{Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.value.toString() : '0', 'ether')).toFixed(2)}
+            +{displayCirclesAmount(transfer ? transfer.value.toString() : '0')}
           {:else}
-            -{Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.value.toString() : '0', 'ether')).toFixed(2)}
+            -{displayCirclesAmount(transfer ? transfer.value.toString() : '0')}
           {/if}
 
           <svg
@@ -169,19 +172,25 @@
         on:click="{() => openDetail(transfer)}">
         <div class="m-auto bg-white rounded-full w-36 h-36">
           {#if transfer.direction === 'in'}
-            <img alt="{fromProfile.firstName + ' ' + fromProfile.lastName}"
-                 src={fromProfile.avatarUrl} />
+            <img
+              alt="{fromProfile.firstName + ' ' + fromProfile.lastName}"
+              src="{fromProfile.avatarUrl}" />
           {:else}
-            <img alt="{toProfile.firstName + ' ' + toProfile.lastName}"
-                 src={toProfile.avatarUrl} />
+            <img
+              alt="{toProfile.firstName + ' ' + toProfile.lastName}"
+              src="{toProfile.avatarUrl}" />
           {/if}
         </div>
       </div>
       <div>
         {#if transfer.direction === 'in'}
-          <span class="mt-4 text-xl">from {fromProfile.firstName + " " + fromProfile.lastName}</span>
+          <span class="mt-4 text-xl">
+            from {fromProfile.firstName + ' ' + fromProfile.lastName}
+          </span>
         {:else}
-          <span class="mt-4 text-xl">to {toProfile.firstName + " " + toProfile.lastName}</span>
+          <span class="mt-4 text-xl">
+            to {toProfile.firstName + ' ' + toProfile.lastName}
+          </span>
         {/if}
       </div>
       <div class="text-dark-lightest">{'No Message'}</div>
@@ -216,7 +225,8 @@
 
         <div class="flex items-center w-full">
           <div class="text-left ">
-            {Number.parseFloat(Web3.utils.fromWei(transfer ? transfer.value.toString() : '0', 'ether')).toFixed(2)}  Circles
+            {displayCirclesAmount(transfer ? transfer.value.toString() : '0')}
+            Circles
           </div>
         </div>
       </div>
@@ -225,9 +235,7 @@
         <div class="mb-1 text-left text-2xs text-dark-lightest">From</div>
 
         <div class="flex items-center w-full">
-          <div class="text-left break-all">
-            {fromProfile.circlesAddress}
-          </div>
+          <div class="text-left break-all">{fromProfile.circlesAddress}</div>
         </div>
       </div>
 
@@ -235,9 +243,7 @@
         <div class="mb-1 text-left text-2xs text-dark-lightest">To</div>
 
         <div class="flex items-center w-full">
-          <div class="text-left break-all">
-            {toProfile.circlesAddress}
-          </div>
+          <div class="text-left break-all">{toProfile.circlesAddress}</div>
         </div>
       </div>
 

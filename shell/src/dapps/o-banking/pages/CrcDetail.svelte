@@ -4,9 +4,9 @@
   import { me } from "../../../shared/stores/me";
   import { BalancesByAssetDocument, AssetBalance } from "../data/api/types";
   import Card from "../../../shared/atoms/Card.svelte";
-  import Web3 from "web3";
   import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { push } from "svelte-spa-router";
+  import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 
   let loading = true;
   let balances: AssetBalance[] = [];
@@ -50,7 +50,7 @@
             <div slot="itemCardEnd">
               <div class="self-end text-right text-success">
                 <span>
-                  {Number.parseFloat(Web3.utils.fromWei(token.token_balance ? token.token_balance : '0', 'ether')).toFixed(2)}
+                  {displayCirclesAmount(token.token_balance ? token.token_balance : '0')}
                 </span>
               </div>
 
