@@ -235,7 +235,12 @@ function handleClick(action) {
       {#if context.data[context.field].type == "chat_message"}
         <ChatCard params="{eventData}" />
       {/if}
-      {#if context.data[context.field].type == "crc_trust"}
+      {#if context.data[context.field].type == "crc_trust" && context.data[context.field].payload.limit == 0}
+        <div class="text-center text-dark-lightest">
+          {eventData.profile.firstName} has removed their trust to you.
+        </div>
+      {/if}
+      {#if context.data[context.field].type == "crc_trust" && context.data[context.field].payload.limit != 0}
         {#if eventData.profile.dream}
           <div>
             <div class="text-left text-2xs text-dark-lightest">Passion</div>
@@ -306,7 +311,7 @@ function handleClick(action) {
         <!-- <DetailActionBar actions="{eventData.content.actions}" /> -->
       </div>
       <pre>
-      {JSON.stringify(context.data[context.field], null, 2)}
+      <!-- {JSON.stringify(context.data[context.field], null, 2)} -->
     </pre>
     </div>
   {/if}
