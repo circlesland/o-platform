@@ -3,11 +3,10 @@
   import PageHeader from "src/shared/atoms/PageHeader.svelte";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import {BalanceDocument} from "../data/api/types";
-  import {onMount} from "svelte";
-  import Web3 from "web3";
-  import {me} from "../../../shared/stores/me";
-
+  import { BalanceDocument } from "../data/api/types";
+  import { onMount } from "svelte";
+  import { me } from "../../../shared/stores/me";
+  import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 
   export let balance: string = "0";
   export let runtimeDapp: RuntimeDapp<any>;
@@ -19,14 +18,14 @@
     const balanceResult = await apiClient.query({
       query: BalanceDocument,
       variables: {
-        safeAddress
-      }
+        safeAddress,
+      },
     });
     if (balanceResult.errors?.length > 0) {
       throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
     }
-    balance = Number.parseFloat(Web3.utils.fromWei(balanceResult.data.balance, 'ether')).toFixed(2)
-  })
+    balance = displayCirclesAmount(balanceResult.data.balance);
+  });
 </script>
 
 <TopNav {runtimeDapp} {routable} />
@@ -39,8 +38,7 @@
         class="inline w-8 h-8 mt-2 -ml-3"
         viewBox="0 0 229 255"
         fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+        xmlns="http://www.w3.org/2000/svg">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
@@ -54,21 +52,18 @@
           94.4328C198.51 94.4328 213.944 78.9988 213.944 59.9601C213.944 48.1884
           208.043 37.7949 199.039 31.5755C177.899 11.9794 149.599 0 118.5
           0C53.0543 0 0 53.0543 0 118.5C0 183.946 53.0543 237 118.5 237Z"
-          fill="white"
-        />
+          fill="white"></path>
         <ellipse
           cx="118.979"
           cy="118.739"
           rx="26.5727"
           ry="26.3333"
-          fill="white"
-        />
+          fill="white"></ellipse>
       </svg>
     </span>
   </div>
   <div
-    class="self-end m-auto mt-2 space-y-2 text-center text-base-300 max-w-max"
-  >
+    class="self-end m-auto mt-2 space-y-2 text-center text-base-300 max-w-max">
     <!--
     {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ''}
       <small class="block whitespace-nowrap">

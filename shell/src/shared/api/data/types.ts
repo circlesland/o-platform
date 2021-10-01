@@ -1417,20 +1417,36 @@ export type InboxQuery = (
       & Pick<ChatMessage, 'from' | 'to' | 'text'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'name' | 'country'>
+        )> }
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'name' | 'country'>
+        )> }
       )> }
     ) | (
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'name' | 'country'>
+        )> }
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'name' | 'country'>
+        )> }
       )>, transfers: Array<(
         { __typename?: 'CrcTokenTransfer' }
         & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
@@ -1447,30 +1463,54 @@ export type InboxQuery = (
       & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
       & { address_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'name' | 'country'>
+        )> }
       )>, can_send_to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'name' | 'country'>
+        )> }
       )> }
     ) | (
       { __typename?: 'EthTransfer' }
       & Pick<EthTransfer, 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'name' | 'country'>
+        )> }
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'name' | 'country'>
+        )> }
       )> }
     ) | (
       { __typename?: 'GnosisSafeEthTransfer' }
       & Pick<GnosisSafeEthTransfer, 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'name' | 'country'>
+        )> }
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'name' | 'country'>
+        )> }
       )> }
     )> }
   )> }
@@ -2345,6 +2385,11 @@ export const InboxDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
         to
         to_profile {
@@ -2353,6 +2398,11 @@ export const InboxDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
         text
       }
@@ -2364,6 +2414,11 @@ export const InboxDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
         to
         to_profile {
@@ -2372,6 +2427,11 @@ export const InboxDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
         flow
         transfers {
@@ -2403,6 +2463,11 @@ export const InboxDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
         to
         to_profile {
@@ -2411,6 +2476,11 @@ export const InboxDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
         value
       }
@@ -2422,6 +2492,11 @@ export const InboxDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
         to
         to_profile {
@@ -2430,6 +2505,11 @@ export const InboxDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
         value
       }
@@ -2441,6 +2521,11 @@ export const InboxDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
         can_send_to
         can_send_to_profile {
@@ -2449,6 +2534,11 @@ export const InboxDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          dream
+          city {
+            name
+            country
+          }
         }
         limit
       }

@@ -14,8 +14,8 @@
 
 {#if time}
   {#if dateOlderThanSevenDays(time)}
-    <Time timestamp={new Date(time * 1000)} format="D. MMMM YYYY" />
+    <Time timestamp="{new Date(time * 1000)}" format="D. MMMM YYYY" />
   {:else}
-    <Time relative timestamp={new Date(time * 1000)} live={true} />
+    <Time relative timestamp="{new Date(time * 1000)}" live="{true}" />
   {/if}
 {/if}

@@ -1,27 +1,17 @@
 <script lang="ts">
   import DetailHeader from "src/shared/atoms/DetailHeader.svelte";
-  import Web3 from "web3";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-
+  import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
   export let amount;
   export let classes: String;
 </script>
 
 <DetailHeader heightClass="h-40">
   <div class="self-center block text-center">
-    <!-- {#if classes == "transactionpositive"}
-      <span class="block ">Received</span>
-    {:else if classes == "transactionnegative"}
-      <span class="block ">Sent</span>
-    {:else}
-      <span class="block text-base">Transfer</span>
-    {/if} -->
     <span class="inline-block text-6xl ">
       {#if classes == 'transactionpositive'}
-        +{Number.parseFloat(Web3.utils.fromWei(amount ? amount : '0', 'ether')).toFixed(2)}
+        +{displayCirclesAmount(amount ? amount : '0')}
       {:else if classes == 'transactionnegative'}
-        -{Number.parseFloat(Web3.utils.fromWei(amount ? amount : '0', 'ether')).toFixed(2)}
+        -{displayCirclesAmount(amount ? amount : '0')}
       {/if}
 
       <svg

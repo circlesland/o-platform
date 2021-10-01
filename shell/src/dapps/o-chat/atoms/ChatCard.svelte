@@ -8,6 +8,7 @@
     outgoing: boolean;
     name: string;
     time: number;
+    fullWidth?: boolean;
     content: {
       title: string;
       text: string;
@@ -31,8 +32,10 @@
   };
 </script>
 
-<div class="px-2 sm:px-6">
-  <div class:pr-12="{params.outgoing}" class:pl-12="{!params.outgoing}">
+<div class:px-2="{!params.fullWidth}" class:sm:px-6="{!params.fullWidth}">
+  <div
+    class:pr-12="{params.outgoing && !params.fullWidth}"
+    class:pl-12="{!params.outgoing && !params.fullWidth}">
 
     <div
       class="flex flex-col flex-grow space-y-1"

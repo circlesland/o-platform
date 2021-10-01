@@ -2,6 +2,8 @@
 import { ChoiceSelectorContext } from "./choiceSelectorContext";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { onMount } from "svelte";
+import Icons from "../../../shell/src/shared/molecules/Icons.svelte";
+import ChoiceSelector from "./ChoiceSelector.svelte";
 
 export let context: ChoiceSelectorContext;
 
@@ -47,6 +49,9 @@ function submit(selected: { key: string; label: string }) {
         <button
           on:click="{() => submit(choice)}"
           class="btn btn-block {choice.class}">
+          {#if choice.icon}
+            <Icons icon="{choice.icon}" />
+          {/if}
           {choice.label}
         </button>
       </div>

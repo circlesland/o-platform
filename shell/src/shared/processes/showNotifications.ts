@@ -9,6 +9,7 @@ import HtmlViewer from "../../../../packages/o-editors/src/HtmlViewer.svelte";
 import { inbox } from "../stores/inbox";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import { ProfileEvent } from "../api/data/types";
+import { push } from "svelte-spa-router";
 
 export type ShowNotificationsContextData = {
   events: ProfileEvent[];
@@ -17,9 +18,11 @@ export type ShowNotificationsContextData = {
 };
 
 const strings = {
-  PROFILE_OUTGOING_TRUST_REVOKED: "Trust revoked",
-  PROFILE_OUTGOING_TRUST: "Trusted",
-  PROFILE_INCOMING_UBI: "Received new income",
+  crc_hub_transfer: "Received",
+  crc_trust: "New incoming trust",
+  crc_untrust: "Trust removed",
+  chat_message: "New incoming Chat Message",
+  crc_minting: "Received new Basic Income",
 };
 export type ShowNotificationsContext =
   ProcessContext<ShowNotificationsContextData>;
@@ -91,13 +94,19 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         component: NotificationViewer,
         field: "currentEvent",
         params: (context: any) => {
+          let title =
+            context.data.currentEvent.type == "crc_trust" &&
+            context.data.currentEvent.payload.limit == 0
+              ? "crc_untrust"
+              : context.data.currentEvent.type;
           return {
             view: {
-              title: context.data.currentEvent.type,
+              title: strings[title],
               description: "",
               placeholder: "",
-              submitButtonText: "OK",
+              submitButtonText: "Next",
             },
+            push: (target) => push(target),
           };
         },
         navigation: {

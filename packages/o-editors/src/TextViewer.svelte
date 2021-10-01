@@ -3,8 +3,6 @@ import { EditorContext } from "./editorContext";
 import ProcessNavigation from "./ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import CopyClipBoard from "../../../shell/src/shared/atoms/CopyClipboard.svelte";
-import { ChoiceSelectorContext } from "./choiceSelectorContext";
-import ChoiceSelector from "./ChoiceSelector.svelte";
 export let context: EditorContext;
 
 let _context: EditorContext;
