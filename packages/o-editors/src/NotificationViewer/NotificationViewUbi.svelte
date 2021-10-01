@@ -8,3 +8,5 @@ export let eventData: any;
   +{displayCirclesAmount(eventData.value)}
   <Icons icon="circlessimple" size="10" />
 </div>
+
+<div class="mt-1 text-sm text-center text-dark-lightest">Ca-ching!</div>
