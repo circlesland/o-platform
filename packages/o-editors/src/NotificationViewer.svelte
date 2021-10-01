@@ -2,22 +2,26 @@
 import ProcessNavigation from "./ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { NotificationViewerContext } from "./notificationViewerContext";
-import Icons from "src/shared/molecules/Icons.svelte";
-import NotificationProfile from "./NotificationViewer/atoms/NotificationProfile.svelte";
-import ChatCard from "src/dapps/o-chat/atoms/ChatCard.svelte";
+
 import { me } from "src/shared/stores/me";
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+
+import NotificationViewChatMessage from "./NotificationViewer/atoms/NotificationViewChatMessage.svelte";
+import NotificationViewUbi from "./NotificationViewer/NotificationViewUbi.svelte";
+import NotificationViewTrust from "./NotificationViewer/atoms/NotificationViewTrust.svelte";
+import NotificationViewTransfer from "./NotificationViewer/atoms/NotificationViewTransfer.svelte";
+import NotificationViewMutualFriends from "./NotificationViewer/atoms/NotificationViewMutualFriends.svelte";
 
 export let context: NotificationViewerContext;
 
 let data: any = context.data[context.field];
 let eventData: any = null;
-const strings = {
-  PROFILE_OUTGOING_TRUST_REVOKED: "Trust revoked",
-  PROFILE_OUTGOING_TRUST: "Trusted",
-  PROFILE_INCOMING_UBI: "Received new income",
-  PROFILE_OUTGOING_CIRCLES_TRANSACTION: "Sent money",
-};
+
+const components = [
+  { type: "chat_message", component: NotificationViewChatMessage },
+  { type: "crc_minting", component: NotificationViewUbi },
+  { type: "crc_trust", component: NotificationViewTrust },
+  { type: "crc_hub_transfer", component: NotificationViewTransfer },
+];
 
 function submit() {
   const answer = new Continue();
@@ -29,8 +33,11 @@ function buildDataModel(data) {
   console.log("DATA: ", data);
   let notificationType: string = null;
   let title: string = null;
+  let type: string = data.type;
   let icon: string = null;
-  let outgoing: boolean = data.outgoing;
+  let limit: number = null;
+  let value: string = null;
+
   let profile: any;
   let actions: {
     title: string;
@@ -43,7 +50,6 @@ function buildDataModel(data) {
     case "chat_message":
       notificationType = "chat_message";
       title = `${data.payload.text}`;
-      data.safe_address_profile = data.payload.from_profile;
       profile = data.payload.from_profile;
       actions = [
         {
@@ -60,6 +66,7 @@ function buildDataModel(data) {
       break;
     case "crc_minting":
       notificationType = "crc_minting";
+      value = data.value;
       actions = [
         {
           title: "Show details",
@@ -76,8 +83,8 @@ function buildDataModel(data) {
       break;
 
     case "crc_trust":
-      data.safe_address_profile = data.payload.can_send_to_profile;
       profile = data.payload.can_send_to_profile;
+      limit = data.payload.limit;
 
       if (data.payload.limit == 0) {
         notificationType = "trust_removed";
@@ -142,7 +149,7 @@ function buildDataModel(data) {
       break;
     case "crc_hub_transfer":
       profile = data.payload.from_profile;
-
+      value = data.value;
       notificationType = "transfer_in";
       icon = "sendmoney";
 
@@ -183,10 +190,12 @@ function buildDataModel(data) {
 
   return {
     safeAddress: data.safe_address,
-    outgoing: outgoing,
+    type: type,
     profile: profile,
     time: data.timestamp / 1000,
     fullWidth: true,
+    value: value,
+    limit: limit,
     content: {
       notificationType: notificationType,
       time: data.timestamp / 1000,
@@ -211,95 +220,12 @@ function handleClick(action) {
 </script>
 
 <div>
-  {#if context.data[context.field]}
+  {#if eventData}
     <div class="flex flex-col space-y-4">
-      {#if context.data[context.field].type == "crc_hub_transfer" || context.data[context.field].type == "crc_minting"}
-        <div class="self-center text-6xl text-success font-heading">
-          +{displayCirclesAmount(context.data[context.field].value)}
-          <Icons icon="circlessimple" size="10" />
-        </div>
-      {/if}
-      {#if context.data[context.field].type != "crc_minting"}
-        <NotificationProfile profile="{eventData.profile}" />
-      {/if}
-      {#if context.data[context.field].type == "chat_message"}
-        <ChatCard params="{eventData}" />
-      {/if}
-      {#if context.data[context.field].type == "crc_trust" && context.data[context.field].payload.limit == 0}
-        <div class="text-center text-dark-lightest">
-          {eventData.profile.firstName} has removed their trust to you.
-        </div>
-      {/if}
-      {#if context.data[context.field].type == "crc_trust" && context.data[context.field].payload.limit != 0}
-        {#if eventData.profile.dream}
-          <div>
-            <div class="text-left text-2xs text-dark-lightest">Passion</div>
-            <div class="text-lg">
-              {eventData.profile.dream}
-            </div>
-          </div>
-        {/if}
-        {#if eventData.mutualFriends}
-          <div>
-            <div class="text-left text-2xs text-dark-lightest">
-              N Mutual Friends ( no data yet )
-            </div>
-            <div class="flex flex-row space-x-2">
-              <div
-                class="self-center mt-4 text-center avatar justify-self-center">
-                <div class="w-10 h-10 mb-4 rounded-full ring ring-white">
-                  <img
-                    src="https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/jmnPVI+hYsO421vA/"
-                    alt="avatar" />
-                </div>
-              </div>
-              <div
-                class="self-center mt-4 text-center avatar justify-self-center">
-                <div class="w-10 h-10 mb-4 rounded-full ring ring-white">
-                  <img
-                    src="https://images.unsplash.com/photo-1626387691044-2becaea05cc0?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
-                    alt="avatar" />
-                </div>
-              </div>
-              <div
-                class="self-center mt-4 text-center avatar justify-self-center">
-                <div class="w-10 h-10 mb-4 rounded-full ring ring-white">
-                  <img
-                    src="https://images.unsplash.com/photo-1586227740560-8cf2732c1531?ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwzN3x8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
-                    alt="avatar" />
-                </div>
-              </div>
-              <div
-                class="self-center mt-4 text-center avatar justify-self-center">
-                <div class="w-10 h-10 mb-4 rounded-full ring ring-white">
-                  <img
-                    src="https://images.unsplash.com/photo-1626688226927-33257a21236f?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzMXx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
-                    alt="avatar" />
-                </div>
-              </div>
-              <div
-                class="self-center mt-4 text-center avatar justify-self-center">
-                <div class="w-10 h-10 mb-4 rounded-full ring ring-white">
-                  <img
-                    src="https://images.unsplash.com/photo-1626899889787-192a770ba7e7?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0N3x8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
-                    alt="avatar" />
-                </div>
-              </div>
-              <div
-                class="self-center mt-4 text-center avatar justify-self-center">
-                <div class="w-10 h-10 mb-4 rounded-full ring ring-white">
-                  <img
-                    src="https://images.unsplash.com/photo-1621994781204-42a295781499?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0MXx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
-                    alt="avatar" />
-                </div>
-              </div>
-            </div>
-          </div>
-        {/if}
-      {/if}
-      <div>
-        <!-- <DetailActionBar actions="{eventData.content.actions}" /> -->
-      </div>
+      <svelte:component
+        this="{components.find((x) => x.type === eventData.type).component}"
+        eventData="{eventData}" />
+
       <pre>
       <!-- {JSON.stringify(context.data[context.field], null, 2)} -->
     </pre>

@@ -3,6 +3,7 @@ import Profile from "src/shared/api/data/types";
 import { AvataarGenerator } from "src/shared/avataarGenerator";
 
 export let profile: Profile;
+export let showPassion: boolean = true;
 
 console.log("Parammarama", profile);
 </script>
@@ -39,3 +40,12 @@ console.log("Parammarama", profile);
     </div>
   {/if}
 </div>
+
+{#if showPassion && profile.dream}
+  <div>
+    <div class="text-left text-2xs text-dark-lightest">Passion</div>
+    <div class="text-lg">
+      {profile.dream}
+    </div>
+  </div>
+{/if}

@@ -1,0 +1,16 @@
+<script lang="ts">
+import Icons from "src/shared/molecules/Icons.svelte";
+import NotificationProfile from "./NotificationProfile.svelte";
+import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
+export let eventData: any;
+</script>
+
+<NotificationProfile profile="{eventData.profile}" showPassion="{false}" />
+
+{#if eventData.limit == 0}
+  <div class="text-center text-dark-lightest">
+    {eventData.profile.firstName} has removed their trust to you.
+  </div>
+{/if}
+
+<NotificationViewMutualFriends eventData="{eventData}" />

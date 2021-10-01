@@ -1,6 +1,6 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+
 @import "./fonts.css";
 @import "./button.css";
 
@@ -403,3 +403,13 @@ button:focus {
 .keyboard-open #nextnav {
   display: none;
 }
+
+.tooltip {
+  @apply absolute invisible;
+}
+
+.has-tooltip:hover .tooltip {
+  @apply z-50 visible;
+}
+
+@tailwind utilities;
