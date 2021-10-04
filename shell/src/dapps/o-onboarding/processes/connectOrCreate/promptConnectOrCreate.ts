@@ -3,26 +3,25 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { push } from "svelte-spa-router";
-import * as yup from "yup";
 import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {
-  ClaimInvitationDocument, UpsertProfileDocument
+  UpsertProfileDocument
 } from "../../../../shared/api/data/types";
 import {promptChoice} from "../../../o-passport/processes/identify/prompts/promptChoice";
 import ChoiceSelector from "../../../../../../packages/o-editors/src/ChoiceSelector.svelte";
 import {UpsertRegistrationContext} from "../registration/promptRegistration";
-import {createSafe} from "../../../o-passport/processes/identify/createSafe/createSafe";
 import {loadProfile} from "../../../o-passport/processes/identify/services/loadProfile";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {GnosisSafeProxyFactory} from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
+import {GNOSIS_SAFE_ADDRESS, PROXY_FACTORY_ADDRESS} from "@o-platform/o-circles/dist/consts";
+import {connectSafe} from "../connectSafe";
 
-export type LogoutContextData = {
+export type PromptConnectOrCreateContextData = {
   connectOrCreate: string;
+  successAction?: (data:PromptConnectOrCreateContextData) => void
 };
 
-export type PromptConnectOrCreateContext = ProcessContext<LogoutContextData>;
+export type PromptConnectOrCreateContext = ProcessContext<PromptConnectOrCreateContextData>;
 
 const editorContent = {
   info: {
@@ -73,16 +72,16 @@ const processDefinition = (processId: string) =>
         params: { view: editorContent.connectOrCreate },
         options: [
           {
-            key: "newEoa",
+            key: "newSafe",
             label: "I'm new, create everything for me",
-            target: "#newEoa",
+            target: "#newSafe",
             action: (context) => {
             },
           },
           {
-            key: "importEoa",
-            label: "I already got a seedphrase",
-            target: "#importEoa",
+            key: "importSafe",
+            label: "I already have a safe",
+            target: "#importSafe",
             action: (context) => {
             },
           },
@@ -98,39 +97,68 @@ const processDefinition = (processId: string) =>
           canGoBack: () => false
         },
       }),
-      newEoa: {
-        id: "newEoa",
-        entry: (context) => {
-          window.o.runProcess(createSafe, {
-            successAction: async (data) => {
-              const myProfile = await loadProfile();
-              const apiClient = await window.o.apiClient.client.subscribeToResult();
-              const privateKey = localStorage.getItem("circlesKey")
-              const account = RpcGateway.get().eth.accounts.privateKeyToAccount(privateKey);
-              const result = await apiClient.mutate({
-                mutation: UpsertProfileDocument,
-                variables: {
-                  ...myProfile,
-                  status: "eoa",
-                  circlesSafeOwner: account.address
-                },
-              });
+      newSafe: {
+        id: "newSafe",
+        invoke: {
+          src: async (context) => {
+            const myProfile = await loadProfile();
 
-              if (result.errors) {
-                throw new Error(`Couldn't update the profile with the generated eoa: ${JSON.stringify(result.errors)}`);
-              }
-              (<any>window).runInitMachine();
+            const privateKey = sessionStorage.getItem("circlesKey");
+            if (!privateKey) {
+              throw new Error(`The private key is not unlocked.`);
             }
-          });
+
+            const proxyFactory = new GnosisSafeProxyFactory(RpcGateway.get(), PROXY_FACTORY_ADDRESS, GNOSIS_SAFE_ADDRESS);
+            const safeProxy = await proxyFactory.deployNewSafeProxy(privateKey);
+
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.mutate({
+              mutation: UpsertProfileDocument,
+              variables: {
+                ...myProfile,
+                status: "eoa",
+                circlesAddress: safeProxy.address
+              },
+            });
+
+            if (result.errors) {
+              throw new Error(`Couldn't update the profile with the generated eoa: ${JSON.stringify(result.errors)}`);
+            }
+          },
+          onDone: "success"
         }
       },
-      importEoa: {
-        id: "importEoa"
+      importSafe: {
+        id: "importSafe",
+        invoke: {
+          src: async (context) => {
+            const myProfile = await loadProfile();
+
+            const privateKey = sessionStorage.getItem("circlesKey");
+            if (!privateKey) {
+              throw new Error(`The private key is not unlocked.`);
+            }
+
+            window.o.runProcess(connectSafe, {
+              successAction: (data) => {
+                (<any>window).runInitMachine();
+              }});
+          },
+          onDone: "success"
+        }
       },
       importCirclesGarden: {
         id: "importCirclesGarden"
+      },
+      success: {
+        type: "final",
+        entry: (context) => {
+          if (context.data.successAction) {
+            context.data.successAction(context.data);
+          }
+        }
       }
-    },
+    }
   });
 
 export const promptConnectOrCreate: ProcessDefinition<void, PromptConnectOrCreateContext> = {

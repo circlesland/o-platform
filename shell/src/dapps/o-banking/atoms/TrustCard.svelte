@@ -24,7 +24,7 @@
     window.o.runProcess(transfer, {
       recipientAddress,
       safeAddress: tryGetCurrentSafe()?.safeAddress,
-      privateKey: localStorage.getItem("circlesKey"),
+      privateKey: sessionStorage.getItem("circlesKey"),
     });
      */
   }

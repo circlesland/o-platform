@@ -1,5 +1,4 @@
-export const empty=true;
-/*import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
+import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
@@ -11,7 +10,7 @@ import { loadProfile } from "./services/loadProfile";
 import { getSessionInfo } from "./services/getSessionInfo";
 import { promptChoice } from "./prompts/promptChoice";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
-import { acquireSession } from "./aquireSession/acquireSession";
+import { acquireSession } from "./aquireSession/acquireSession2";
 import { connectSafe } from "./connectSafe/connectSafe2";
 import { createSafe } from "./createSafe/createSafe";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
@@ -374,6 +373,15 @@ const processDefinition = (processId: string) =>
         id: "success",
         entry: (context) => {
           console.log(`enter: identify.success`, context.data);
+          /*
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.authenticated",
+            profile: context.data.profile,
+          });
+          if (context.data.privateKey) {
+            localStorage.setItem("circlesKey", context.data.privateKey);
+          }
+           */
 
           if (context.data.redirectTo) {
             setTimeout(async () => {
@@ -400,4 +408,3 @@ export const identify: ProcessDefinition<void, IdentifyContextData> = {
   name: "identify",
   stateMachine: <any>processDefinition,
 };
-*/

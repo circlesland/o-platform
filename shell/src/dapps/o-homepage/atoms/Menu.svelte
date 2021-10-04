@@ -1,7 +1,7 @@
 <script lang="ts">
   import {
     identify,
-  } from "../../o-passport/processes/identify/identify";
+  } from "../../o-passport/processes/identify/identify2";
 
   async function login() {
     window.o.runProcess(identify, { redirectTo: "/dashboard" });

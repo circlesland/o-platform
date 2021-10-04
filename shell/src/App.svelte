@@ -199,16 +199,28 @@
 <script lang="ts">
   import "./shared/css/tailwind.css";
 
-  import Router from "svelte-spa-router";
+  import Router, {push} from "svelte-spa-router";
   import {SvelteToast} from "./shared/molecules/Toast";
   import DappFrame from "src/shared/molecules/DappFrame.svelte";
   import NotFound from "src/shared/pages/NotFound.svelte";
   import {interpret} from "xstate";
   import {initMachine} from "./dapps/o-onboarding/processes/init";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+
+  /*
+  RpcGateway.get().eth.getPendingTransactions().then(o => {
+    console.log("Pending tx:", JSON.stringify(o))
+  });
+   */
 
   window.runInitMachine = () => {
     var m = interpret(initMachine)
       .onEvent(event => {
+        console.log("InitMachine event:", event);
+        if (event.type === "COMPLETE") {
+          push("#/dashboard");
+          return;
+        }
         console.log("initMachine.event:", event);
       })
       .onTransition(state => {
@@ -216,8 +228,7 @@
       })
       .start();
   }
-
-  window.runInitMachine();
+  // window.runInitMachine();
 
   let _routes = {
     "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,

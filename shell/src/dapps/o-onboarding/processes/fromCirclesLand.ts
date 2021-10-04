@@ -1,9 +1,7 @@
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {createMachine} from "xstate";
 import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
-import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
 import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
-import {EoaData, SafeData} from "./init";
 import {prompt} from "@o-platform/o-process/dist/states/prompt";
 import TextareaEditor from "../../../../../packages/o-editors/src/TextareaEditor.svelte";
 import {Account} from "web3-core";
@@ -14,10 +12,10 @@ import DropdownSelectEditor from "../../../../../packages/o-editors/src/Dropdown
 import {DropdownSelectorParams} from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import DropDownString from "../../../../../packages/o-editors/src/dropdownItems/DropDownString.svelte";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
-import {ConnectSafeContext} from "../../o-passport/processes/identify/connectSafe/connectSafe";
+import {ConnectSafeContext} from "../../o-passport/processes/identify/connectSafe/connectSafe2";
 import {BN} from "ethereumjs-util";
-import {runShellProcess} from "../../../shared/processes/shellProcess";
 import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
+import {EoaData, SafeData} from "./initEvent";
 
 export type FromCirclesLandContextData = {
   seedPhrase?: string;

@@ -519,7 +519,7 @@ export const empty = true;
 //                 safeAddress: context.data.safeAddress,
 //                 recipientAddress: context.data.recipientAddress,
 //                 amount: context.data.tokens.amount,
-//                 privateKey: localStorage.getItem("circlesKey"),
+//                 privateKey: sessionStorage.getItem("circlesKey"),
 //                 message: context.data.message,
 //               };
 //             },
@@ -543,7 +543,7 @@ export const empty = true;
 //                 safeAddress: context.data.safeAddress,
 //                 recipientAddress: context.data.recipientAddress,
 //                 amount: context.data.tokens.amount,
-//                 privateKey: localStorage.getItem("circlesKey"),
+//                 privateKey: sessionStorage.getItem("circlesKey"),
 //                 message: context.data.message,
 //               };
 //             },
@@ -665,7 +665,7 @@ export const empty = true;
 // //                 safeAddress: context.data.safeAddress,
 // //                 recipientAddress: context.data.recipientAddress,
 // //                 amount: context.data.tokens.amount,
-// //                 privateKey: localStorage.getItem("circlesKey"),
+// //                 privateKey: sessionStorage.getItem("circlesKey"),
 // //                 message: context.data.message,
 // //               };
 // //             },
@@ -689,7 +689,7 @@ export const empty = true;
 // //                 safeAddress: context.data.safeAddress,
 // //                 recipientAddress: context.data.recipientAddress,
 // //                 amount: context.data.tokens.amount,
-// //                 privateKey: localStorage.getItem("circlesKey"),
+// //                 privateKey: sessionStorage.getItem("circlesKey"),
 // //                 message: context.data.message,
 // //               };
 // //             },

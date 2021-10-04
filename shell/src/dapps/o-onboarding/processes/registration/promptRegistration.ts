@@ -29,7 +29,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
 const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
   createMachine<UpsertRegistrationContext, any>({
     id: `${processId}:upsertRegistration`,
-    initial: "newsletter",
+    initial: "upsertRegistration",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended

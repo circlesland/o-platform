@@ -431,7 +431,7 @@ const processDefinition = (processId: string) =>
                 safeAddress: context.data.safeAddress,
                 recipientAddress: context.data.recipientAddress,
                 amount: context.data.tokens.amount,
-                privateKey: localStorage.getItem("circlesKey"),
+                privateKey: sessionStorage.getItem("circlesKey"),
                 message: context.data.message,
               };
             },
@@ -455,7 +455,7 @@ const processDefinition = (processId: string) =>
                 safeAddress: context.data.safeAddress,
                 recipientAddress: context.data.recipientAddress,
                 amount: context.data.tokens.amount,
-                privateKey: localStorage.getItem("circlesKey"),
+                privateKey: sessionStorage.getItem("circlesKey"),
                 message: context.data.message,
               };
             },

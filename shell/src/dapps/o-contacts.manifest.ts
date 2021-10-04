@@ -80,7 +80,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             window.o.runProcess(transfer, {
               safeAddress: mySafeAddress,
               recipientAddress: recipientProfile.circlesAddress,
-              privateKey: localStorage.getItem("circlesKey"),
+              privateKey: sessionStorage.getItem("circlesKey"),
             });
           },
         },
@@ -94,7 +94,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
               trustLimit: 100,
               trustReceiver: recipientProfile.circlesAddress,
               safeAddress: mySafeAddress,
-              privateKey: localStorage.getItem("circlesKey"),
+              privateKey: sessionStorage.getItem("circlesKey"),
             });
           }
         }
@@ -107,7 +107,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
               trustLimit: 0,
               trustReceiver: recipientProfile.circlesAddress,
               safeAddress: mySafeAddress,
-              privateKey: localStorage.getItem("circlesKey"),
+              privateKey: sessionStorage.getItem("circlesKey"),
             });
           }
         }]);
@@ -122,6 +122,21 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         }
       });
     }
+    if (!recipientProfile) {
+      actions = actions.concat({
+        key: "setTrust",
+        icon: "trust",
+        title: "Trust",
+        action: async () => {
+          window.o.runProcess(setTrust, {
+            trustLimit: 100,
+            safeAddress: mySafeAddress,
+            privateKey: sessionStorage.getItem("circlesKey"),
+          });
+        }
+      })
+    }
+
 
     return actions;
   },

@@ -236,6 +236,7 @@ type Mutation {
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
+    requestSessionChallenge(address: String!): String!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     sendMessage(content: String!, toSafeAddress: String!): SendMessageResult!
     tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
@@ -244,6 +245,7 @@ type Mutation {
     upsertOffer(data: UpsertOfferInput!): Offer!
     upsertProfile(data: UpsertProfileInput!): Profile!
     upsertTag(data: UpsertTagInput!): Tag!
+    verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
 }
 
 type Offer {
@@ -332,6 +334,8 @@ type Query {
     contacts(safeAddress: String!): [Contact!]!
     eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
     events(fromBlock: Int, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
+    findSafeAddressByOwner(owner: String!): [String!]!
+    hubSignupTransaction: ProfileEvent
     inbox: [ProfileEvent!]!
     invitationTransaction: ProfileEvent
     myInvitations: [CreatedInvitation!]!

@@ -20,7 +20,7 @@ const mountTrigger = new DelayedTrigger(100, async () => {
   //await bankingInstance.tryGetUbi();
   /*await Banking.transferAllAccountXdaiToSafe(
     "",
-    localStorage.getItem("circlesKey")
+    sessionStorage.getItem("circlesKey")
   );*/
 });
 

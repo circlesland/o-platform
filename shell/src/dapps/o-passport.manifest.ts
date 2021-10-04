@@ -7,7 +7,9 @@ import { logout } from "./o-passport/processes/logout";
 import { homer } from "./o-passport/processes/homer";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import {onboardingMenu} from "./o-onboarding/processes/onboardingMenu";
+import {loginWithTorus} from "./o-onboarding/processes/loginWithTorus";
+import {getOpenLogin} from "../shared/openLogin";
+import {LogoutDocument} from "../shared/api/data/types";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -74,7 +76,17 @@ export const passport: DappManifest<DappState> = {
           key: "logout",
           title: "Logout",
           icon: "logout",
-          action: () => window.o.runProcess(logout, {}),
+          action: () => {
+            getOpenLogin().then((openLogin) => {
+              openLogin.logout().then(async () => {
+                const apiClient = await window.o.apiClient.client.subscribeToResult();
+                await apiClient.mutate({
+                  mutation: LogoutDocument
+                });
+              });
+            })
+            // window.o.runProcess(logout, {})
+          },
         },
         {
           key: "homer",
@@ -86,7 +98,7 @@ export const passport: DappManifest<DappState> = {
           key: "bart",
           title: "Eat my shorts",
           icon: "bart",
-          action: () => window.o.runProcess(onboardingMenu, {})
+          action: () => window.o.runProcess(loginWithTorus, {})
         }
       ];
     },

@@ -59,14 +59,14 @@ const processDefinition = (processId: string) =>
           {
             cond: (context) => {
               let seedPhrase =
-                localStorage.getItem("circlesKey") &&
-                localStorage.getItem("circlesKey") != "0x123"
+                sessionStorage.getItem("circlesKey") &&
+                sessionStorage.getItem("circlesKey") != "0x123"
                   ? bip39.entropyToMnemonic(
                       localStorage
                         .getItem("circlesKey")
                         .substr(
                           2,
-                          localStorage.getItem("circlesKey").length - 2
+                          sessionStorage.getItem("circlesKey").length - 2
                         )
                     )
                   : "<no private key>";

@@ -37,7 +37,7 @@ export class Banking {
             await getUBIService(<ProcessContext<GetUbiContextData>> {
                 data: {
                     safeAddress,
-                    privateKey: localStorage.getItem("circlesKey")
+                    privateKey: sessionStorage.getItem("circlesKey")
                 }
             })
             localStorage.setItem("lastUBI", new Date().toJSON());

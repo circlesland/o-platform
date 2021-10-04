@@ -5,7 +5,7 @@
   import { shellProcess } from "../processes/shellProcess";
   import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
   import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-  import { identify } from "../../dapps/o-passport/processes/identify/identify";
+  import { identify } from "../../dapps/o-passport/processes/identify/identify2";
 
   // Import Swiper styles
   import "swiper/swiper-bundle.css";
@@ -40,11 +40,13 @@
   import NavigationList from "../../shared/molecules/NavigationList.svelte";
   import { Process } from "@o-platform/o-process/dist/interfaces/process";
   import { isMobile } from "../functions/isMobile";
-  import { onboardingMenu } from "../../dapps/o-onboarding/processes/onboardingMenu";
+
   import {
     fromCirclesLand,
     FromCirclesLandContextData,
   } from "../../dapps/o-onboarding/processes/fromCirclesLand";
+  import {me} from "../stores/me";
+  import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 
   // install Swiper modules
   SwiperCore.use([Navigation, Pagination]);
@@ -148,7 +150,7 @@
   }
 
   function onOpenContacts() {
-    push("#/friends/chat");
+    push("#/chat");
   }
 
   function onOpenModal() {
@@ -425,7 +427,7 @@
     });
 
     if (!identityChecked && !dapp.noAuthentication) {
-      window.o.runProcess(identify, {}, {});
+      //window.o.runProcess(identify, {}, {});
       identityChecked = true;
     }
   });
@@ -501,6 +503,7 @@
   let firstUrlChangedCall = true;
 
   async function handleUrlChanged() {
+
     const navArgs = <GenerateNavManifestArgs>{};
 
     dapp = findDappById(params.dappId);
@@ -563,6 +566,13 @@
     if (firstUrlChangedCall) {
       firstUrlChangedCall = false;
       init();
+    }
+
+    // If the user is not logged-on return to the homepage
+    const session = await getSessionInfo();
+    if (!$me || !session.isLoggedOn) {
+      await push("/");
+      return;
     }
   }
 
@@ -696,3 +706,4 @@
   {navigation}
   on:clickedOutside="{() => {}}"
   sliderPages="{[]}" />
+

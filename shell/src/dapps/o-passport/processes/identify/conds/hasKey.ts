@@ -1,7 +1,7 @@
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export const hasKey = () => {
-  const key = localStorage.getItem("circlesKey");
+  const key = sessionStorage.getItem("circlesKey");
   if (!key)
     return false;
 

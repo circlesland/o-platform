@@ -1,15 +1,8 @@
 <script lang="ts">
-  import {
-    identify,
-    IdentifyContextData,
-  } from "../../../../dapps/o-passport/processes/identify/identify";
-
   export let props;
 
   async function login() {
-    window.o.runProcess(identify, <IdentifyContextData>{
-      redirectTo: "/dashboard",
-    });
+    window.runInitMachine();
   }
 
   console.log("PROPS ", props);

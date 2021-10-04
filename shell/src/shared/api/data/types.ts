@@ -284,6 +284,7 @@ export type Mutation = {
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
+  requestSessionChallenge: Scalars['String'];
   requestUpdateSafe: RequestUpdateSafeResponse;
   sendMessage: SendMessageResult;
   tagTransaction: TagTransactionResult;
@@ -292,6 +293,7 @@ export type Mutation = {
   upsertOffer: Offer;
   upsertProfile: Profile;
   upsertTag: Tag;
+  verifySessionChallenge?: Maybe<ExchangeTokenResponse>;
 };
 
 
@@ -335,6 +337,11 @@ export type MutationProvePaymentArgs = {
 };
 
 
+export type MutationRequestSessionChallengeArgs = {
+  address: Scalars['String'];
+};
+
+
 export type MutationRequestUpdateSafeArgs = {
   data: RequestUpdateSafeInput;
 };
@@ -374,6 +381,12 @@ export type MutationUpsertProfileArgs = {
 
 export type MutationUpsertTagArgs = {
   data: UpsertTagInput;
+};
+
+
+export type MutationVerifySessionChallengeArgs = {
+  challenge: Scalars['String'];
+  signature: Scalars['String'];
 };
 
 export type Offer = {
@@ -482,6 +495,8 @@ export type Query = {
   contacts: Array<Contact>;
   eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
+  findSafeAddressByOwner: Array<Scalars['String']>;
+  hubSignupTransaction?: Maybe<ProfileEvent>;
   inbox: Array<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
   myInvitations: Array<CreatedInvitation>;
@@ -551,6 +566,11 @@ export type QueryEventsArgs = {
   safeAddress: Scalars['String'];
   toBlock?: Maybe<Scalars['Int']>;
   types?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryFindSafeAddressByOwnerArgs = {
+  owner: Scalars['String'];
 };
 
 
@@ -784,6 +804,30 @@ export type ExchangeTokenMutation = (
     { __typename?: 'ExchangeTokenResponse' }
     & Pick<ExchangeTokenResponse, 'success' | 'errorMessage'>
   ) }
+);
+
+export type RequestSessionChallengeMutationVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+
+export type RequestSessionChallengeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'requestSessionChallenge'>
+);
+
+export type VerifySessionChallengeMutationVariables = Exact<{
+  challenge: Scalars['String'];
+  signature: Scalars['String'];
+}>;
+
+
+export type VerifySessionChallengeMutation = (
+  { __typename?: 'Mutation' }
+  & { verifySessionChallenge?: Maybe<(
+    { __typename?: 'ExchangeTokenResponse' }
+    & Pick<ExchangeTokenResponse, 'success' | 'errorMessage'>
+  )> }
 );
 
 export type AuthenticateAtMutationVariables = Exact<{
@@ -1029,6 +1073,16 @@ export type WhoamiQuery = (
   & Pick<Query, 'whoami'>
 );
 
+export type FindSafeAddressByOwnerQueryVariables = Exact<{
+  owner: Scalars['String'];
+}>;
+
+
+export type FindSafeAddressByOwnerQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'findSafeAddressByOwner'>
+);
+
 export type ClaimedInvitationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1059,6 +1113,21 @@ export type SafeFundingTransactionQuery = (
   & { safeFundingTransaction?: Maybe<(
     { __typename?: 'ProfileEvent' }
     & Pick<ProfileEvent, 'transaction_hash'>
+  )> }
+);
+
+export type HubSignupTransactionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HubSignupTransactionQuery = (
+  { __typename?: 'Query' }
+  & { hubSignupTransaction?: Maybe<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'transaction_hash'>
+    & { payload?: Maybe<{ __typename?: 'ChatMessage' } | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | (
+      { __typename?: 'CrcSignup' }
+      & Pick<CrcSignup, 'token'>
+    ) | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' }> }
   )> }
 );
 
@@ -1101,7 +1170,7 @@ export type ProfilesQuery = (
   { __typename?: 'Query' }
   & { profilesById: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid' | 'status'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
@@ -1573,6 +1642,19 @@ export const ExchangeTokenDocument = gql`
   }
 }
     `;
+export const RequestSessionChallengeDocument = gql`
+    mutation requestSessionChallenge($address: String!) {
+  requestSessionChallenge(address: $address)
+}
+    `;
+export const VerifySessionChallengeDocument = gql`
+    mutation verifySessionChallenge($challenge: String!, $signature: String!) {
+  verifySessionChallenge(challenge: $challenge, signature: $signature) {
+    success
+    errorMessage
+  }
+}
+    `;
 export const AuthenticateAtDocument = gql`
     mutation authenticateAt($appId: String!) {
   authenticateAt(appId: $appId) {
@@ -1843,6 +1925,11 @@ export const WhoamiDocument = gql`
   whoami
 }
     `;
+export const FindSafeAddressByOwnerDocument = gql`
+    query findSafeAddressByOwner($owner: String!) {
+  findSafeAddressByOwner(owner: $owner)
+}
+    `;
 export const ClaimedInvitationDocument = gql`
     query claimedInvitation {
   claimedInvitation {
@@ -1864,6 +1951,18 @@ export const SafeFundingTransactionDocument = gql`
     query safeFundingTransaction {
   safeFundingTransaction {
     transaction_hash
+  }
+}
+    `;
+export const HubSignupTransactionDocument = gql`
+    query hubSignupTransaction {
+  hubSignupTransaction {
+    transaction_hash
+    payload {
+      ... on CrcSignup {
+        token
+      }
+    }
   }
 }
     `;
@@ -1926,6 +2025,7 @@ export const ProfilesDocument = gql`
     avatarCid
     avatarMimeType
     cityGeonameid
+    status
     city {
       geonameid
       name
@@ -2594,6 +2694,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     exchangeToken(variables?: ExchangeTokenMutationVariables): Promise<ExchangeTokenMutation> {
       return withWrapper(() => client.request<ExchangeTokenMutation>(print(ExchangeTokenDocument), variables));
     },
+    requestSessionChallenge(variables: RequestSessionChallengeMutationVariables): Promise<RequestSessionChallengeMutation> {
+      return withWrapper(() => client.request<RequestSessionChallengeMutation>(print(RequestSessionChallengeDocument), variables));
+    },
+    verifySessionChallenge(variables: VerifySessionChallengeMutationVariables): Promise<VerifySessionChallengeMutation> {
+      return withWrapper(() => client.request<VerifySessionChallengeMutation>(print(VerifySessionChallengeDocument), variables));
+    },
     authenticateAt(variables: AuthenticateAtMutationVariables): Promise<AuthenticateAtMutation> {
       return withWrapper(() => client.request<AuthenticateAtMutation>(print(AuthenticateAtDocument), variables));
     },
@@ -2630,6 +2736,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     whoami(variables?: WhoamiQueryVariables): Promise<WhoamiQuery> {
       return withWrapper(() => client.request<WhoamiQuery>(print(WhoamiDocument), variables));
     },
+    findSafeAddressByOwner(variables: FindSafeAddressByOwnerQueryVariables): Promise<FindSafeAddressByOwnerQuery> {
+      return withWrapper(() => client.request<FindSafeAddressByOwnerQuery>(print(FindSafeAddressByOwnerDocument), variables));
+    },
     claimedInvitation(variables?: ClaimedInvitationQueryVariables): Promise<ClaimedInvitationQuery> {
       return withWrapper(() => client.request<ClaimedInvitationQuery>(print(ClaimedInvitationDocument), variables));
     },
@@ -2638,6 +2747,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     safeFundingTransaction(variables?: SafeFundingTransactionQueryVariables): Promise<SafeFundingTransactionQuery> {
       return withWrapper(() => client.request<SafeFundingTransactionQuery>(print(SafeFundingTransactionDocument), variables));
+    },
+    hubSignupTransaction(variables?: HubSignupTransactionQueryVariables): Promise<HubSignupTransactionQuery> {
+      return withWrapper(() => client.request<HubSignupTransactionQuery>(print(HubSignupTransactionDocument), variables));
     },
     myInvitations(variables?: MyInvitationsQueryVariables): Promise<MyInvitationsQuery> {
       return withWrapper(() => client.request<MyInvitationsQuery>(print(MyInvitationsDocument), variables));
