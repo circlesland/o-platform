@@ -184,22 +184,22 @@ function buildDataModel(data) {
             // submit(); TODO: ADD BACK IN TO MARK EVENT AS READ
           },
         },
-        {
-          title: `Send Circles to ${
-            data.payload.from_profile
-              ? data.payload.from_profile.firstName
-              : data.payload.from
-          }`,
-          icon: "sendmoney",
-          colorClass: "",
-          action: () => {
-            window.o.runProcess(transfer, {
-              safeAddress: $me.circlesAddress,
-              recipientAddress: data.payload.from,
-              privateKey: localStorage.getItem("circlesKey"),
-            });
-          },
-        },
+        // {
+        //   title: `Send Circles to ${
+        //     data.payload.from_profile
+        //       ? data.payload.from_profile.firstName
+        //       : data.payload.from
+        //   }`,
+        //   icon: "sendmoney",
+        //   colorClass: "",
+        //   action: () => {
+        //     window.o.runProcess(transfer, {
+        //       safeAddress: $me.circlesAddress,
+        //       recipientAddress: data.payload.from,
+        //       privateKey: localStorage.getItem("circlesKey"),
+        //     });
+        //   },
+        // },
       ];
       break;
   }
