@@ -8,6 +8,8 @@
   import {onMount} from "svelte";
   import {me} from "../../../shared/stores/me";
   import {BalancesByAssetDocument} from "../data/api/types";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  import {KeyManager} from "../../o-passport/data/keyManager";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -47,6 +49,13 @@
     circles.details = balanceResult.data.balancesByAsset;
     circles.balance = circles.details.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
     circles.variety = circles.details.length;
+
+    const safeBalance = await RpcGateway.get().eth.getBalance(safeAddress);
+    const km = new KeyManager(safeAddress);
+    await km.load();
+    const eoaBalance = await RpcGateway.get().eth.getBalance(km.torusKeyAddress);
+
+    xdai.balance = new BN(safeBalance).add(new BN(eoaBalance)).toString();
 
     loading = false;
   });
