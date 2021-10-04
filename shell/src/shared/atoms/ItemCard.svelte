@@ -44,11 +44,14 @@
         <div>
           <div class="inline-flex">
             <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
-              <a on:click={(e) => {if (params.imageAction) params.imageAction(e)}}>
-              <img
-                class="rounded-full"
-                src="{params.imageUrl}"
-                alt="{params.imageAlt ? params.imageAlt : params.title}" />
+              <a
+                on:click="{e => {
+                  if (params.imageAction) params.imageAction(e);
+                }}">
+                <img
+                  class="rounded-full"
+                  src="{params.imageUrl}"
+                  alt="{params.imageAlt ? params.imageAlt : params.title}" />
               </a>
             </div>
           </div>
@@ -66,9 +69,7 @@
           class:truncateThis="{params.truncateMain}">
           <h2 class="text-base">{params.title}</h2>
         </div>
-        <p
-          class="absolute w-full h-4 mt-6 text-xs text-dark-lightest"
-          class:truncateThis="{params.truncateMain}">
+        <p class="absolute w-full h-4 mt-6 text-xs text-dark-lightest">
           {params.subTitle}
         </p>
       </div>

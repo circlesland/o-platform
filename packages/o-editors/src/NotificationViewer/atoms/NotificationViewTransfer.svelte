@@ -15,8 +15,11 @@ export let eventData: any;
   profile="{eventData.profile}"
   targetCirclesAddress="{eventData.targetCirclesAddress}" />
 
-<div
-  class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center text-dark-lightest">
-  {eventData.text}
-</div>
+{#if eventData.text}
+  <div
+    class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center text-dark-lightest">
+    {eventData.text}
+  </div>
+{/if}
+
 <NotificationViewMutualFriends eventData="{eventData}" />

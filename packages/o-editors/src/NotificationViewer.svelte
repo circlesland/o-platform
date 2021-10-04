@@ -246,10 +246,6 @@ function handleClick(action) {
       <svelte:component
         this="{components.find((x) => x.type === eventData.type).component}"
         eventData="{eventData}" />
-
-      <pre>
-      <!-- {JSON.stringify(context.data[context.field], null, 2)} -->
-    </pre>
     </div>
   {/if}
 

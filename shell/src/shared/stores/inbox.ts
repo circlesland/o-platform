@@ -26,9 +26,9 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
   function start(set) {
     set([]);
 
-    queryEvents().then(e => {
+    queryEvents().then((e) => {
       events = e;
-      console.log("EVENTS DUDE ", events);
+      events = events.filter((o) => o.type != "eth_transfer");
       set(events);
     });
 
