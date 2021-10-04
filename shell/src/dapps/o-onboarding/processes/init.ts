@@ -253,7 +253,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           type: "final"
         }
       },
-      onDone: "ubi"
+      onDone: "profile"
     },
     profile: {
       invoke: {src: "loadProfile"},
@@ -271,7 +271,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         },
         GOT_PROFILE: {
           actions: "assignProfileToContext",
-          target: "eoa"
+          target: "ubi"
         }
       }
     },
@@ -423,7 +423,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         });
     },
     loadProfile: (ctx) => (callback) => {
-      if (!ctx.invitation) throw new Error(`ctx.invitation is not set`);
+      // if (!ctx.invitation) throw new Error(`ctx.invitation is not set`);
 
       loadProfile()
         .then(profile => {
