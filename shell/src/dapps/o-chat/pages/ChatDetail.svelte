@@ -341,10 +341,10 @@
       safeAddress: chat.safe_address,
       outgoing: outgoing,
       name: chat.safe_address_profile.firstName,
-      time: chat.timestamp / 1000,
+      time: chat.timestamp,
       content: {
         notificationType: notificationType,
-        time: chat.timestamp / 1000,
+        time: chat.timestamp,
         title: title,
         icon: icon,
         actions: actions,

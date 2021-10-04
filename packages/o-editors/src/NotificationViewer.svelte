@@ -38,6 +38,7 @@ function buildDataModel(data) {
   let icon: string = null;
   let limit: number = null;
   let value: string = null;
+
   let targetCirclesAddress: string = data.payload.from;
 
   let profile: any;
@@ -52,6 +53,7 @@ function buildDataModel(data) {
     case "chat_message":
       notificationType = "chat_message";
       title = `${data.payload.text}`;
+
       profile = data.payload.from_profile;
       actions = [
         {
@@ -184,22 +186,22 @@ function buildDataModel(data) {
             // submit(); TODO: ADD BACK IN TO MARK EVENT AS READ
           },
         },
-        {
-          title: `Send Circles to ${
-            data.payload.from_profile
-              ? data.payload.from_profile.firstName
-              : data.payload.from
-          }`,
-          icon: "sendmoney",
-          colorClass: "",
-          action: () => {
-            window.o.runProcess(transfer, {
-              safeAddress: $me.circlesAddress,
-              recipientAddress: data.payload.from,
-              privateKey: localStorage.getItem("circlesKey"),
-            });
-          },
-        },
+        // {
+        //   title: `Send Circles to ${
+        //     data.payload.from_profile
+        //       ? data.payload.from_profile.firstName
+        //       : data.payload.from
+        //   }`,
+        //   icon: "sendmoney",
+        //   colorClass: "",
+        //   action: () => {
+        //     window.o.runProcess(transfer, {
+        //       safeAddress: $me.circlesAddress,
+        //       recipientAddress: data.payload.from,
+        //       privateKey: localStorage.getItem("circlesKey"),
+        //     });
+        //   },
+        // },
       ];
       break;
   }
@@ -216,7 +218,7 @@ function buildDataModel(data) {
     targetCirclesAddress: targetCirclesAddress,
     type: type,
     profile: profile ? profile : null,
-    time: data.timestamp / 1000,
+    time: data.timestamp,
     fullWidth: true,
     value: value,
     limit: limit,

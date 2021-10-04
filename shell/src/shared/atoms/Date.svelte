@@ -1,21 +1,23 @@
 <script lang="ts">
   import Time from "svelte-time";
 
-  export let time: number = null;
+  export let time: string = null;
   export let relativeDaysBase: number = 7;
 
+  const convertedTime = new Date(Date.parse(time));
   let now = new Date();
+
   let relativeDaysAgo = now.setDate(now.getDate() - relativeDaysBase);
 
   function dateOlderThanSevenDays(unixTime: number) {
-    return relativeDaysAgo > unixTime * 1000;
+    return relativeDaysAgo > unixTime;
   }
 </script>
 
 {#if time}
-  {#if dateOlderThanSevenDays(time)}
-    <Time timestamp="{new Date(time * 1000)}" format="D. MMMM YYYY" />
+  {#if dateOlderThanSevenDays(convertedTime.getTime())}
+    <Time timestamp="{convertedTime}" format="D. MMMM YYYY" />
   {:else}
-    <Time relative timestamp="{new Date(time * 1000)}" live="{true}" />
+    <Time relative timestamp="{convertedTime}" live="{true}" />
   {/if}
 {/if}

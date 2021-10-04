@@ -33,8 +33,6 @@
     content: null,
     image: null,
   };
-
-  console.log("GIMME DA ACTIAAANZA: ", params);
 </script>
 
 <!-- <ItemCard

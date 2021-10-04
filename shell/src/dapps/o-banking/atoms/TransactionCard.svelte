@@ -101,7 +101,7 @@
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
         {#if transfer.timestamp}
-          <Date time="{transfer.timestamp / 1000}" />
+          <Date time="{transfer.timestamp}" />
         {/if}
       </div>
     </div>
