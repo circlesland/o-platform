@@ -14,6 +14,7 @@ let chatData = {
 };
 </script>
 
+<div class="self-center text-2xl font-heading">from</div>
 <NotificationProfile
   profile="{eventData.profile}"
   targetCirclesAddress="{eventData.targetCirclesAddress}" />
