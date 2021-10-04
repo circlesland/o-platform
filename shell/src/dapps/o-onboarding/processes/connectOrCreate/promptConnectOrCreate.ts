@@ -14,6 +14,7 @@ import {loadProfile} from "../../../o-passport/processes/identify/services/loadP
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {GnosisSafeProxyFactory} from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
 import {GNOSIS_SAFE_ADDRESS, PROXY_FACTORY_ADDRESS} from "@o-platform/o-circles/dist/consts";
+import {connectSafe} from "../connectSafe";
 
 export type PromptConnectOrCreateContextData = {
   connectOrCreate: string;
@@ -137,7 +138,13 @@ const processDefinition = (processId: string) =>
             if (!privateKey) {
               throw new Error(`The private key is not unlocked.`);
             }
-          }
+
+            window.o.runProcess(connectSafe, {
+              successAction: (data) => {
+                (<any>window).runInitMachine();
+              }});
+          },
+          onDone: "success"
         }
       },
       importCirclesGarden: {

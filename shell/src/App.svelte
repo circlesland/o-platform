@@ -205,10 +205,18 @@
   import NotFound from "src/shared/pages/NotFound.svelte";
   import {interpret} from "xstate";
   import {initMachine} from "./dapps/o-onboarding/processes/init";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+
+  /*
+  RpcGateway.get().eth.getPendingTransactions().then(o => {
+    console.log("Pending tx:", JSON.stringify(o))
+  });
+   */
 
   window.runInitMachine = () => {
     var m = interpret(initMachine)
       .onEvent(event => {
+        console.log("InitMachine event:", event);
         if (event.type === "COMPLETE") {
           push("#/dashboard");
           return;

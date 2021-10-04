@@ -8,6 +8,7 @@ export type RegistrationData = {
   email: string;
   acceptedToSVersion: string;
   subscribedToNewsletter: boolean;
+  circlesSafeOwner: string;
 }
 
 export type InvitationData = {

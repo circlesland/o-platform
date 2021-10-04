@@ -91,13 +91,13 @@ const processDefinition = (processId: string) =>
             label: "Login with Github",
             target: "#github",
             class: "btn-info",
-          },
+          },/*
           {
             key: "email",
             label: "Login with E-Mail",
             target: "#email",
             class: "btn-info",
-          }
+          }*/
         ],
       }),
 
@@ -158,6 +158,25 @@ const processDefinition = (processId: string) =>
           }
         }
       },
+      facebook: {
+        id: "facebook",
+        invoke: {
+          src: async (context) => {
+            const openLogin = await getOpenLogin();
+            const privateKey = await openLogin.login({
+              loginProvider: "facebook"
+            });
+            return {
+              privateKey: privateKey,
+              userInfo: await openLogin.getUserInfo()
+            };
+          },
+          onDone: {
+            actions: "assignPrivateKeyAndUserInfoToContext",
+            target: "#enterEncryptionPin"
+          }
+        }
+      },/*
       email: {
         id: "email",
         invoke: {
@@ -176,7 +195,7 @@ const processDefinition = (processId: string) =>
             target: "#enterEncryptionPin"
           }
         }
-      },
+      },*/
       enterEncryptionPin: prompt<LoginWithTorusContext, any>({
         id: "enterEncryptionPin",
         field: "encryptionPin",

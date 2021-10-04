@@ -1073,6 +1073,16 @@ export type WhoamiQuery = (
   & Pick<Query, 'whoami'>
 );
 
+export type FindSafeAddressByOwnerQueryVariables = Exact<{
+  owner: Scalars['String'];
+}>;
+
+
+export type FindSafeAddressByOwnerQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'findSafeAddressByOwner'>
+);
+
 export type ClaimedInvitationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1160,7 +1170,7 @@ export type ProfilesQuery = (
   { __typename?: 'Query' }
   & { profilesById: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid' | 'status'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
@@ -1915,6 +1925,11 @@ export const WhoamiDocument = gql`
   whoami
 }
     `;
+export const FindSafeAddressByOwnerDocument = gql`
+    query findSafeAddressByOwner($owner: String!) {
+  findSafeAddressByOwner(owner: $owner)
+}
+    `;
 export const ClaimedInvitationDocument = gql`
     query claimedInvitation {
   claimedInvitation {
@@ -2010,6 +2025,7 @@ export const ProfilesDocument = gql`
     avatarCid
     avatarMimeType
     cityGeonameid
+    status
     city {
       geonameid
       name
@@ -2719,6 +2735,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     whoami(variables?: WhoamiQueryVariables): Promise<WhoamiQuery> {
       return withWrapper(() => client.request<WhoamiQuery>(print(WhoamiDocument), variables));
+    },
+    findSafeAddressByOwner(variables: FindSafeAddressByOwnerQueryVariables): Promise<FindSafeAddressByOwnerQuery> {
+      return withWrapper(() => client.request<FindSafeAddressByOwnerQuery>(print(FindSafeAddressByOwnerDocument), variables));
     },
     claimedInvitation(variables?: ClaimedInvitationQueryVariables): Promise<ClaimedInvitationQuery> {
       return withWrapper(() => client.request<ClaimedInvitationQuery>(print(ClaimedInvitationDocument), variables));

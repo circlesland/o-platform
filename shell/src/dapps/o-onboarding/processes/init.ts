@@ -25,6 +25,7 @@ import {KeyManager} from "../../o-passport/data/keyManager";
 import {unlockKey} from "./unlockKey/unlockKey";
 import {InitEvent, UbiData} from "./initEvent";
 import {InitContext} from "./initContext";
+import {push} from "svelte-spa-router";
 
 export const initMachine = createMachine<InitContext, InitEvent>({
   id: `init`,
@@ -307,7 +308,9 @@ export const initMachine = createMachine<InitContext, InitEvent>({
       type: "final"
     },
     success: {
-      entry: send({type: "COMPLETE"}),
+      entry: () => {
+        push("#/dashboard");
+      },
       type: "final"
     }
   }
@@ -360,6 +363,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             registration: {
               email: email,
               profileId: profile.id,
+              circlesSafeOwner: profile.circlesSafeOwner,
               acceptedToSVersion: "", // TODO: Important in the context?
               subscribedToNewsletter: profile.newsletter
             }
@@ -441,7 +445,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         });
     },
     loadEoa: (ctx) => async (callback) => {
-      if (!ctx.profile) throw new Error(`ctx.profile is not set`);
+      if (!ctx.registration) throw new Error(`ctx.registration is not set`);
 
       const keyManager = new KeyManager(null);
       await keyManager.load();
@@ -452,7 +456,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         return;
       }
 
-      if (!key || !ctx.profile.circlesSafeOwner) {
+      if (!key || !ctx.registration.circlesSafeOwner) {
         callback({type: "NO_EOA"});
         return;
       }

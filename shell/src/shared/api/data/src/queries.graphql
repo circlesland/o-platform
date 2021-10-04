@@ -10,6 +10,10 @@ query whoami {
   whoami
 }
 
+query findSafeAddressByOwner($owner:String!) {
+  findSafeAddressByOwner(owner: $owner)
+}
+
 query claimedInvitation {
   claimedInvitation {
     createdAt
@@ -98,6 +102,7 @@ query profiles($id: [Int!]!) {
     avatarCid
     avatarMimeType
     cityGeonameid
+    status
     city {
       geonameid
       name
