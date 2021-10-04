@@ -25,6 +25,13 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
   null,
   function start(set) {
     set([]);
+
+    queryEvents().then(e => {
+      events = e;
+      console.log("EVENTS DUDE ", events);
+      set(events);
+    });
+
     const subscription = window.o.events.subscribe(
       async (
         event: PlatformEvent & {
@@ -36,15 +43,6 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
           set([]);
           return;
         }
-        // TODO: The server must push new events to the client
-        if (event.type == "shell.authenticated" && event.profile) {
-          events = await queryEvents();
-        }
-        if (event.type == "shell.refresh") {
-          events = await queryEvents();
-        }
-        console.log("EVENTS DUDE ", events);
-        set(events);
       }
     );
 
