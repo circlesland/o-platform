@@ -79,7 +79,7 @@
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
         {#if contact.lastContactAt}
-          <Date time="{contact.lastContactAt / 1000}" />
+          <Date time="{contact.lastContactAt}" />
         {/if}
       </div>
     </div>
