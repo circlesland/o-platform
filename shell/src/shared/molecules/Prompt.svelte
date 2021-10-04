@@ -61,19 +61,23 @@
       </div> -->
     </slot>
     <slot name="EditorTitle">
-      <div class="w-full text-center">
-        <h1
-          class="text-3xl uppercase font-heading {prompt.params.view ? prompt.params.view.titleClass : ''}">
-          {@html prompt.params.view ? prompt.params.view.title : ''}
-        </h1>
-      </div>
+      {#if prompt.params.view && prompt.params.view.title}
+        <div class="w-full text-center">
+          <h1
+            class="text-3xl uppercase font-heading {prompt.params.view ? prompt.params.view.titleClass : ''}">
+            {@html prompt.params.view ? prompt.params.view.title : ''}
+          </h1>
+        </div>
+      {/if}
     </slot>
     <slot name="EditorDescription">
-      <div class="w-full text-center">
-        <span class="text-dark-lightest">
-          {@html prompt.params.view ? prompt.params.view.description : ''}
-        </span>
-      </div>
+      {#if prompt.params.view && prompt.params.view.description}
+        <div class="w-full text-center">
+          <span class="text-dark-lightest">
+            {@html prompt.params.view ? prompt.params.view.description : ''}
+          </span>
+        </div>
+      {/if}
     </slot>
     <div class="w-full">
       <slot name="EditorMainComponent">
