@@ -46,6 +46,7 @@
     FromCirclesLandContextData,
   } from "../../dapps/o-onboarding/processes/fromCirclesLand";
   import {me} from "../stores/me";
+  import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 
   // install Swiper modules
   SwiperCore.use([Navigation, Pagination]);
@@ -568,7 +569,8 @@
     }
 
     // If the user is not logged-on return to the homepage
-    if (!$me) {
+    const session = await getSessionInfo();
+    if (!$me || !session.isLoggedOn) {
       await push("/");
       return;
     }

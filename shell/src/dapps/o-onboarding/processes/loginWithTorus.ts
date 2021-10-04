@@ -109,9 +109,10 @@ const processDefinition = (processId: string) =>
             const privateKey = await openLogin.login({
               loginProvider: "google"
             });
+            const userInfo = await openLogin.getUserInfo();
             return {
               privateKey: privateKey,
-              userInfo: await openLogin.getUserInfo()
+              userInfo: userInfo
             };
           },
           onDone: {

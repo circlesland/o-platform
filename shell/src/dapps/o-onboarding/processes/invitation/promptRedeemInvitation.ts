@@ -9,7 +9,7 @@ import { push } from "svelte-spa-router";
 import * as yup from "yup";
 import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {
-  ClaimInvitationDocument, RedeemClaimedInvitationDocument
+  ClaimInvitationDocument, InvitationTransactionDocument, RedeemClaimedInvitationDocument
 } from "../../../../shared/api/data/types";
 
 export type RedeemInvitationContextData = {
@@ -24,11 +24,11 @@ const editorContent = {
     description: "We will now redeem your invitation.",
     submitButtonText: "Next",
   },
-  success: {
-    title: "Success",
+  waitUntilRedeemed: {
+    title: "Please wait",
     description:
-      "You can now proceed with the setup of your account.",
-    submitButtonText: "Continue",
+      "Please wait until your invitation transaction got confirmed and try again in a few seconds.",
+    submitButtonText: "Try again",
   },
 };
 const processDefinition = (processId: string) =>
@@ -57,35 +57,53 @@ const processDefinition = (processId: string) =>
         id: "redeemInvitation",
         invoke: {
           src: async (context) => {
+            delete context.messages["__"];
             const apiClient = await window.o.apiClient.client.subscribeToResult();
             const claimResult = await apiClient.mutate({
               mutation: RedeemClaimedInvitationDocument,
               variables: {}
             });
             if (claimResult.errors) {
-              context.messages["redeemInvitation"] = claimResult.errors.map(o => o.message).join(" \n");
+              context.messages["__"] = claimResult.errors.map(o => o.message).join(" \n");
               throw new Error(`Couldn't redeem an invitation: ${context.messages["inviteCode"]}`);
             }
             if (!claimResult.data.success) {
-              context.messages["redeemInvitation"] = claimResult.data.error;
+              context.messages["__"] = claimResult.data.error;
               throw new Error(`Couldn't redeem an invitation: ${context.messages["inviteCode"]}`);
             }
           },
           onError: "#info",
-          onDone: "#showSuccess"
+          onDone: "#checkIfRedeemed"
         }
       },
-      showSuccess: prompt({
-        id: "showSuccess",
+      checkIfRedeemed: {
+        id: "checkIfRedeemed",
+        invoke: {
+          src: async (context) => {
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const claimResult = await apiClient.mutate({
+              mutation: InvitationTransactionDocument,
+              variables: {}
+            });
+            if (claimResult.errors?.length || !claimResult.data.invitationTransaction?.transaction_hash) {
+              throw new Error("Invitation is not yet redeemed.");
+            }
+          },
+          onDone: "#success",
+          onError: "#waitUntilRedeemed"
+        }
+      },
+      waitUntilRedeemed: prompt({
+        id: "waitUntilRedeemed",
         field: "__",
         component: HtmlViewer,
         params: {
-          view: editorContent.success,
+          view: editorContent.waitUntilRedeemed,
           html: () => "",
           hideNav: false,
         },
         navigation: {
-          next: "#success",
+          next: "#checkIfRedeemed",
         },
       }),
       success: {

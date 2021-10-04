@@ -101,7 +101,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           actions: "promptGetInvitedAndRestart"
         },
         NO_INVITATION_NECESSARY: {
-          target: "profile"
+          target: "safe"
         },
         GOT_INVITED: {
           target: "invitation"
@@ -207,7 +207,11 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         connectOrCreate: {
           entry: [
             () => {
-              window.o.runProcess(promptConnectOrCreate, {});
+              window.o.runProcess(promptConnectOrCreate, {
+                successAction: (data) => {
+                 // (<any>window).runInitMachine();
+                }
+              });
             }
           ],
           on: {
