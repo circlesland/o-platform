@@ -1633,6 +1633,17 @@ export type CommonTrustQuery = (
   )> }
 );
 
+export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type EventsSubscription = (
+  { __typename?: 'Subscription' }
+  & { events: Array<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'type'>
+  )> }
+);
+
 
 export const ExchangeTokenDocument = gql`
     mutation exchangeToken {
@@ -2684,6 +2695,13 @@ export const CommonTrustDocument = gql`
   }
 }
     `;
+export const EventsDocument = gql`
+    subscription events {
+  events {
+    type
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -2807,6 +2825,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     commonTrust(variables: CommonTrustQueryVariables): Promise<CommonTrustQuery> {
       return withWrapper(() => client.request<CommonTrustQuery>(print(CommonTrustDocument), variables));
+    },
+    events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
+      return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));
     }
   };
 }

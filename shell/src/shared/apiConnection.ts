@@ -2,6 +2,10 @@ import ApolloClient, {DefaultOptions} from "apollo-client";
 import {InMemoryCache, NormalizedCacheObject} from "apollo-cache-inmemory";
 import {HttpLink} from "apollo-link-http";
 import {AsyncBroadcast} from "@o-platform/o-utils/dist/asyncBroadcast";
+import {WebSocketLink} from 'apollo-link-ws';
+import {split} from 'apollo-link';
+import {getMainDefinition} from 'apollo-utilities';
+import {OperationDefinitionNode} from "graphql/language/ast";
 
 export class ApiConnection
 {
@@ -51,22 +55,39 @@ export class ApiConnection
     };
 
     public connect() : ApolloClient<NormalizedCacheObject> {
-        // console.log("apollo client is connecting to: ", this._apiEndpointUrl);
-
         const httpLink = new HttpLink({
             fetch: fetch,
             uri: this._apiEndpointUrl,
             credentials: this._credentialsPolicy
         });
 
-        const client = new ApolloClient({
-            link: httpLink,
+        const wsAddr = this._apiEndpointUrl.replace("http://", "ws://").replace("https://", "wss://");
+        const wsLink = new WebSocketLink({
+            uri: wsAddr,
+            options: {
+                reconnect: true,
+                connectionParams: {
+                }
+            },
+        });
+
+        const link = split(({ query }) => {
+            const mainDefinition:any = getMainDefinition(query);
+            if (mainDefinition.operation) {
+                const { kind, operation } = <OperationDefinitionNode>getMainDefinition(query);
+                return kind === 'OperationDefinition' && operation === 'subscription';
+            } else {
+                throw new Error(`A FragmentDefinitionNode was returned when a OperationDefinitionNode was expected.`)
+            }
+          },
+          wsLink,
+          httpLink,
+        );
+
+        return new ApolloClient({
+            link: link,
             cache: new InMemoryCache({}),
             defaultOptions: ApiConnection._defaultOptions
         });
-
-        // console.log("apollo client is now connected to: ", this._apiEndpointUrl);
-
-        return client;
     }
 }

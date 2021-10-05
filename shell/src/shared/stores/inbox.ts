@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 import {
-  AcknowledgeDocument,
+  AcknowledgeDocument, EventsDocument, EventsSubscription,
   InboxDocument,
   Profile,
   ProfileEvent,
@@ -25,6 +25,19 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
   null,
   function start(set) {
     set([]);
+
+    window.o.apiClient.client.subscribeToResult()
+      .then(apiClient => {
+        apiClient.subscribe({
+          query: EventsDocument
+        }).subscribe(next => {
+          queryEvents().then((e) => {
+            events = e;
+            events = events.filter((o) => o.type != "eth_transfer");
+            set(events);
+          });
+        });
+      });
 
     queryEvents().then((e) => {
       events = e;

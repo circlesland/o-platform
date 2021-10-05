@@ -216,15 +216,10 @@
   window.runInitMachine = () => {
     var m = interpret(initMachine)
       .onEvent(event => {
-        console.log("InitMachine event:", event);
-        if (event.type === "COMPLETE") {
-          push("#/dashboard");
-          return;
-        }
-        console.log("initMachine.event:", event);
+        // console.log("InitMachine event:", event);
       })
       .onTransition(state => {
-        console.log("initMachine.transition:", state);
+        // console.log("initMachine.transition:", state);
       })
       .start();
   }

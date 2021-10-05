@@ -1,5 +1,4 @@
 import {assign, createMachine, send} from "xstate";
-import {actions} from "xstate";
 import {getSessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
 import {BN} from "ethereumjs-util";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
@@ -46,18 +45,11 @@ export const initMachine = createMachine<InitContext, InitEvent>({
   },
   states: {
     initial: {
+      entry: () => console.log("init.initial"),
       invoke: {src: "loadSession"},
       on: {
         NO_SESSION: {
           actions: "acquireSessionAndRestart"
-        },
-        LOGGED_IN: {
-          target: "initial"
-        },
-        CANCELLED: {
-          actions: [
-            send({type: "CANCEL"})
-          ]
         },
         GOT_SESSION: {
           actions: "assignSessionInfoToContext",
@@ -66,21 +58,18 @@ export const initMachine = createMachine<InitContext, InitEvent>({
       }
     },
     register: {
+      entry: () => console.log("init.register"),
       invoke: {src: "loadRegistration"},
       on: {
         NO_REGISTRATION: {
-          actions: "upsertRegistrationAndRestart"
-        },
-        REGISTERED: {
-          target: "register"
-        },
-        CANCELLED: {
           actions: [
-            send({type: "CANCEL"})
-          ],
+            () => console.log("init.register.NO_REGISTRATION"),
+            "upsertRegistrationAndRestart"
+          ]
         },
         REGISTRATION_ERROR: {
           actions: [
+            () => console.log("init.register.REGISTRATION_ERROR"),
             (ctx, event) => {
               console.error(event);
               throw event.error;
@@ -89,25 +78,27 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           ]
         },
         GOT_REGISTRATION: {
-          actions: "assignRegistrationToContext",
+          actions: [
+            () => console.log("init.register.GOT_REGISTRATION"),
+            "assignRegistrationToContext"
+          ],
           target: "invitation"
         }
       }
     },
     invitation: {
+      entry: () => console.log("init.invitation"),
       invoke: {src: "loadClaimedInvitation"},
       on: {
         NO_INVITATION: {
-          actions: "promptGetInvitedAndRestart"
-        },
-        NO_INVITATION_NECESSARY: {
-          target: "safe"
-        },
-        GOT_INVITED: {
-          target: "invitation"
+          actions: [
+            () => console.log("init.invitation.NO_INVITATION"),
+            "promptGetInvitedAndRestart"
+          ]
         },
         INVITATION_ERROR: {
           actions: [
+            () => console.log("init.invitation.INVITATION_ERROR"),
             (ctx, event) => {
               console.error(event);
               throw event.error;
@@ -116,96 +107,117 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           ]
         },
         GOT_INVITATION: {
-          actions: "assignInvitationToContext",
+          actions: [
+            () => console.log("init.invitation.GOT_INVITATION"),
+            "assignInvitationToContext"
+          ],
           target: "eoa"
         }
       }
     },
     eoa: {
+      entry: () => console.log("init.eoa"),
       initial: "load",
       states: {
         load: {
+          entry: () => console.log("init.eoa.load"),
           invoke: {src: "loadEoa"},
           on: {
             LOCKED_EOA: {
+              actions: [
+                () => console.log("init.eoa.load.LOCKED_EOA")
+              ],
               target: "tryUnlockEoa"
             },
             NO_EOA: {
+              actions: [
+                () => console.log("init.eoa.load.NO_EOA")
+              ],
               target: "connectOrCreate"
             },
             GOT_EOA: {
-              actions: "assignEoaToContext",
+              actions: [
+                () => console.log("init.eoa.load.GOT_EOA"),
+                "assignEoaToContext"
+              ],
               target: "checkInvitation"
             }
           }
         },
         tryUnlockEoa: {
-          entry: "unlockEoaAndRestart"
+          entry: [
+            () => console.log("init.eoa.tryUnlockEoa"),
+            "unlockEoaAndRestart"
+          ]
         },
         connectOrCreate: {
-          entry: "promptConnectOrCreateAndRestart",
-          on: {
-            CANCELLED: {
-              actions: [
-                send({type: "CANCEL"})
-              ]
-            },
-            EOA_CONNECTED: {
-              target: "load"
-            },
-            EOA_CREATED: {
-              target: "load"
-            }
-          }
+          entry: [
+            () => console.log("init.eoa.connectOrCreate"),
+            "promptConnectOrCreateAndRestart"
+          ]
         },
         checkInvitation: {
+          entry: () => console.log("init.eoa.checkInvitation"),
           invoke: {src: "loadEoaInvitationTransaction"},
           on: {
             NOT_REDEEMED: {
+              actions: () => console.log("init.eoa.checkInvitation.NOT_REDEEMED"),
               target: "redeemInvitation"
             },
             GOT_REDEEMED: {
-              actions: "assignEoaInvitationTransactionToContext",
+              actions: [
+                () => console.log("init.eoa.checkInvitation.GOT_REDEEMED"),
+                "assignEoaInvitationTransactionToContext"
+              ],
               target: "eoaReady"
             }
           }
         },
         redeemInvitation: {
-          entry: "promptRedeemInvitationAndRestart",
+          entry: [
+            "promptRedeemInvitationAndRestart",
+            () => console.log("init.eoa.redeemInvitation")
+          ],
           on: {
             REDEEMED: {
+              actions: () => console.log("init.eoa.redeemInvitation.REDEEMED"),
               target: "load"
-            },
-            CANCELLED: {
-              actions: [
-                send({type: "CANCEL"})
-              ]
             }
           }
         },
         eoaReady: {
+          entry: [
+            () => console.log("init.eoa.eoaReady")
+          ],
           type: "final"
         }
       },
       onDone: "safe"
     },
     safe: {
+      entry: () => console.log("init.safe"),
       initial: "load",
       states: {
         load: {
+          entry: () => console.log("init.safe.load"),
           invoke: {src: "loadSafe"},
           on: {
             NO_SAFE: {
+              actions: () => console.log("init.safe.load.NO_SAFE"),
               target: "connectOrCreate"
             },
             GOT_SAFE: {
-              actions: "assignSafeToContext",
+              actions: [
+                () => console.log("init.safe.load.GOT_SAFE"),
+                "assignSafeToContext"
+              ],
               target: "checkInvitation"
             }
           }
         },
         connectOrCreate: {
           entry: [
+            () => console.log("init.safe.connectOrCreate"),
             () => {
               window.o.runProcess(promptConnectOrCreate, {
                 successAction: (data) => {
@@ -215,106 +227,129 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             }
           ],
           on: {
-            CANCELLED: {
-              actions: send({type: "CANCEL"})
-            },
             SAFE_CONNECTED: {
+              actions: () => console.log("init.safe.connectOrCreate.SAFE_CONNECTED"),
               target: "load"
             },
             SAFE_CREATED: {
+              actions: () => console.log("init.safe.connectOrCreate.SAFE_CREATED"),
               target: "load"
             }
           }
         },
         checkInvitation: {
+          entry: () => console.log("init.safe.checkInvitation"),
           invoke: {src: "loadSafeInvitationTransaction"},
           on: {
             SAFE_NOT_FUNDED: {
+              actions: () => console.log("init.safe.checkInvitation.SAFE_NOT_FUNDED"),
               target: "fundSafeFromEoa"
             },
             GOT_SAFE_FUNDED: {
-              actions: "assignSafeInvitationTransactionToContext",
+              actions: [
+                () => console.log("init.safe.checkInvitation.GOT_SAFE_FUNDED"),
+                "assignSafeInvitationTransactionToContext"
+              ],
               target: "safeReady"
             }
           }
         },
         fundSafeFromEoa: {
-          entry: "fundSafeFromEoaAndRestart",
+          entry: [
+            () => console.log("init.safe.fundSafeFromEoa"),
+            "fundSafeFromEoaAndRestart"
+          ],
           on: {
             FUNDED: {
+              actions: () => console.log("init.safe.fundSafeFromEoa.FUNDED"),
               target: "load"
-            },
-            CANCELLED: {
-              actions: send({type: "CANCEL"})
             }
           }
         },
         safeReady: {
+          entry: () => console.log("init.safe.safeReady"),
           type: "final"
         }
       },
       onDone: "profile"
     },
     profile: {
+      entry: () => console.log("init.profile"),
       invoke: {src: "loadProfile"},
       on: {
         NO_PROFILE: {
-          actions: "upsertIdentityAndRestart"
-        },
-        CANCELLED: {
           actions: [
-            send({type: "CANCEL"})
+            () => console.log("init.profile.NO_PROFILE"),
+            "upsertIdentityAndRestart"
           ]
         },
         PROFILE_CREATED: {
+          actions: () => console.log("init.profile.PROFILE_CREATED"),
           target: "profile"
         },
         GOT_PROFILE: {
-          actions: "assignProfileToContext",
+          actions: [
+            () => console.log("init.profile.NO_PROFILE"),
+            "assignProfileToContext"
+          ],
           target: "ubi"
         }
       }
     },
     ubi: {
+      entry: () => console.log("init.ubi"),
       invoke: {src: "loadUbi"},
       on: {
         NO_UBI: {
+          actions: () => console.log("init.ubi.NO_UBI"),
           target: "signupForUbi"
         },
         GOT_UBI: {
-          actions: "assignUbiToContext",
+          actions: [
+            () => console.log("init.ubi.GOT_UBI"),
+            "assignUbiToContext"
+          ],
           target: "finalize"
         }
       }
     },
     signupForUbi: {
+      entry: () => console.log("init.signupForUbi"),
       invoke: {
         src: "signupForUbi",
         onDone: "success"
       },
       on: {
         UBI_ERROR: {
+          actions: () => console.log("init.signupForUbi.UBI_ERROR"),
           target: "cancelled"
         },
         GOT_UBI: {
-          actions: "assignUbiToContext",
+          actions: [
+            () => console.log("init.signupForUbi.GOT_UBI"),
+            "assignUbiToContext"
+          ],
           target: "finalize"
         }
       }
     },
     finalize: {
+      entry: () => console.log("init.finalize"),
       invoke: {
         src: "sendAuthenticatedEvent",
         onDone: "success"
       }
     },
     cancelled: {
+      entry: () => console.log("init.cancelled"),
       type: "final"
     },
     success: {
-      entry: () => {
-        push("#/dashboard");
-      },
+      entry: [
+        () => console.log("init.success"),
+        () => {
+          push("#/dashboard");
+        }],
       type: "final"
     }
   }
@@ -398,16 +433,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             return;
           }
           if (!result.data.claimedInvitation) {
-
-            // Maybe the user already has enough xDai to complete the process
-            // if so we'll emit NO_INVITATION_NECESSARY
-            const myProfile = await loadProfile();
-            const eoaBalance = await RpcGateway.get().eth.getBalance(myProfile.circlesSafeOwner);
-            if (new BN(eoaBalance).lt(new BN(RpcGateway.get().utils.toWei("0.1", "ether")))) {
-              callback({type: "NO_INVITATION"});
-            } else {
-              callback({type: "NO_INVITATION_NECESSARY"});
-            }
+            callback({type: "NO_INVITATION"});
             return;
           }
 

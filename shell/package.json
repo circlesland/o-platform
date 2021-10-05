@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@toruslabs/openlogin": "^0.10.2",
+    "@toruslabs/torus-direct-web-sdk": "^4.15.1",
     "@o-platform/o-editors": "0.1.0",
     "@o-platform/o-utils": "0.1.0",
     "@o-platform/o-events": "0.1.0",
@@ -25,6 +26,7 @@
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",
     "apollo-link-http": "^1.5.17",
+    "apollo-link-ws": "^1.0.20",
     "graphql": "^15.5.0",
     "@dicebear/avatars": "^4.6.4",
     "@dicebear/avatars-avataaars-sprites": "^4.6.4",

@@ -230,6 +230,7 @@ type Mutation {
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     createInvitations(for: [String!]!): CreateInvitationResult!
+    createTestInvitation: CreateInvitationResult!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
     lockOffer(data: LockOfferInput!): LockOfferResult!
@@ -246,6 +247,10 @@ type Mutation {
     upsertProfile(data: UpsertProfileInput!): Profile!
     upsertTag(data: UpsertTagInput!): Tag!
     verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
+}
+
+type NotificationEvent {
+    type: String!
 }
 
 type Offer {
@@ -280,6 +285,7 @@ type Profile {
     circlesTokenAddress: String
     city: City
     cityGeonameid: Int
+    claimedInvitation: ClaimedInvitation
     country: String
     dream: String
     firstName: String!
@@ -395,7 +401,7 @@ type Stats {
 }
 
 type Subscription {
-    events: [ProfileEvent!]!
+    events: NotificationEvent!
 }
 
 type Tag {
