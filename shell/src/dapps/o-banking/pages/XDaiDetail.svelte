@@ -1,6 +1,11 @@
 <script lang="ts">
   import ItemCard from "../../../shared/atoms/ItemCard.svelte";
   import { onMount } from "svelte";
+  import { KeyManager } from "../../o-passport/data/keyManager";
+  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+  import { BN } from "ethereumjs-util";
+  import { me } from "../../../shared/stores/me";
+  import Web3 from "web3";
 
   let accountxDai = {
     symbol: "xdai",
@@ -19,7 +24,31 @@
     title: "",
   };
 
-  onMount(async () => {});
+  onMount(async () => {
+    const safeAddress = $me.circlesAddress;
+    const safeBalance = await RpcGateway.get().eth.getBalance(safeAddress);
+    const km = new KeyManager(safeAddress);
+    await km.load();
+    const eoaBalance = await RpcGateway.get().eth.getBalance(
+      km.torusKeyAddress
+    );
+
+    const safeBalanceAmount = Number.parseFloat(
+      Web3.utils.fromWei(new BN(safeBalance).toString(), "ether")
+    ).toFixed(2);
+
+    safexDai.balance = safeBalanceAmount;
+    safexDai.title = "Safe";
+    safexDai.address = safeAddress;
+
+    const eoaBalanceAmount = Number.parseFloat(
+      Web3.utils.fromWei(new BN(eoaBalance).toString(), "ether")
+    ).toFixed(2);
+
+    accountxDai.balance = eoaBalanceAmount;
+    accountxDai.title = "Safe Owner";
+    accountxDai.address = km.torusKeyAddress;
+  });
 </script>
 
 <section class="justify-center mb-4">
