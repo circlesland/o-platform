@@ -359,6 +359,12 @@ button:focus {
   box-shadow: 0px 0px 24px #ebecf2;
 }
 
+.rounded-corners-white-borders {
+  padding: 4px;
+  border: 1px solid transparent;
+  border-radius: 180px;
+  background: #fff;
+}
 .rounded-corners-gradient-borders {
   padding: 4px;
   border: 1px solid transparent;

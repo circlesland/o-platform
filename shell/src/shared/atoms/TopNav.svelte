@@ -4,7 +4,8 @@
   import { me } from "../stores/me";
   import { push } from "svelte-spa-router";
   import Icons from "../molecules/Icons.svelte";
-  import {Profile} from "../api/data/types";
+  import { Profile } from "../api/data/types";
+  import UserImage from "./UserImage.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -45,15 +46,7 @@
       {#if profile}
         <div
           class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
-          <div
-            class="avatar rounded-corners-gradient-borders"
-            style="padding: 2px;">
-            <div class="w-8 h-8 m-auto bg-white rounded-full">
-              <img
-                src="{profile && profile.avatarUrl ? profile.avatarUrl : ''}"
-                alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
-            </div>
-          </div>
+          <UserImage {profile} size="{8}" profileLink="{false}" />
 
         </div>
       {/if}

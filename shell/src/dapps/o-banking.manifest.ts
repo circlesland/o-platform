@@ -1,6 +1,5 @@
 import Transactions from "./o-banking/pages/Transactions.svelte";
 import Assets from "./o-banking/pages/Assets.svelte";
-import Trusts from "./o-banking/pages/Trusts.svelte";
 import CrcDetail from "./o-banking/pages/CrcDetail.svelte";
 import XDaiDetail from "./o-banking/pages/XDaiDetail.svelte";
 
@@ -17,7 +16,7 @@ import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import {loadProfileByProfileId} from "../shared/api/loadProfileByProfileId";
+import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
@@ -59,8 +58,8 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
       : undefined;
 
     let circlesAddress;
-    me.subscribe(o => {
-      circlesAddress = o.circlesAddress
+    me.subscribe((o) => {
+      circlesAddress = o.circlesAddress;
     });
 
     return [
@@ -126,15 +125,6 @@ const xdaiDetail: Page<{ symbol: string }, BankingDappState> = {
   type: "page",
 };
 
-const sendInvite: Page<{ inviteAccountAddress: string }, BankingDappState> = {
-  routeParts: ["=trusts", "=invite", ":inviteAccountAddress"],
-  position: "modal",
-  isSystem: true,
-  component: Trusts,
-  title: "Trusts",
-  type: "page",
-};
-
 const findMySafe: Page<any, BankingDappState> = {
   isSystem: true,
   routeParts: ["=find-my-safe"],
@@ -197,7 +187,6 @@ export const banking: DappManifest<BankingDappState> = {
     assets,
     crcDetail,
     xdaiDetail,
-    sendInvite,
     findMySafe,
   ],
 };

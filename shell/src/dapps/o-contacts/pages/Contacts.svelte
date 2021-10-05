@@ -5,8 +5,7 @@
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import { onMount } from "svelte";
   import { Contact, ContactsDocument } from "../../../shared/api/data/types";
-  import ContactCard from "../../o-chat/atoms/ContactCard.svelte";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import ContactCard from "../atoms/ContactCard.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;

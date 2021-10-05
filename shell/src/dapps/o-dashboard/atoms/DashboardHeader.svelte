@@ -1,7 +1,6 @@
 <script lang="ts">
   import { me } from "../../../shared/stores/me";
   import TopNav from "src/shared/atoms/TopNav.svelte";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import PageHeader from "src/shared/atoms/PageHeader.svelte";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
@@ -9,17 +8,6 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
-
-  let avatarUrl: string = "";
-  $: {
-    if ($me && $me.avatarUrl) {
-      avatarUrl = $me.avatarUrl;
-    } else if ($me) {
-      avatarUrl = AvataarGenerator.generate($me.circlesAddress);
-    } else {
-      avatarUrl = AvataarGenerator.default();
-    }
-  }
 </script>
 
 <TopNav {runtimeDapp} {routable} />

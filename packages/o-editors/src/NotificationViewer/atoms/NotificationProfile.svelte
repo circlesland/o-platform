@@ -1,6 +1,6 @@
 <script lang="ts">
 import Profile from "src/shared/api/data/types";
-import { AvataarGenerator } from "src/shared/avataarGenerator";
+import UserImage from "src/shared/atoms/UserImage.svelte";
 
 export let profile: Profile;
 export let targetCirclesAddress: string;
@@ -12,19 +12,7 @@ console.log("Parammarama", profile);
 {#if profile && profile.circlesAddress}
   <div
     class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
-    <div class="avatar rounded-corners-gradient-borders">
-      <div class="m-auto bg-white rounded-full w-36 h-36">
-        <img
-          src="{profile && profile.avatarUrl
-            ? profile.avatarUrl
-            : AvataarGenerator.generate(profile.circlesAddress)}"
-          alt="{profile
-            ? profile.lastName
-              ? `${profile.firstName} ${profile.lastName}`
-              : profile.firstName
-            : 'avatar'}" />
-      </div>
-    </div>
+    <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />
 
     <div class="mt-4 text-3xl">
       {profile

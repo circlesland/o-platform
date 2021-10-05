@@ -15,13 +15,11 @@
   } from "../../../shared/api/data/types";
   import { me } from "../../../shared/stores/me";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
   import { setTrust } from "../../o-banking/processes/setTrust";
   import { transfer } from "../../o-banking/processes/transfer";
   import { push } from "svelte-spa-router";
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
   export let id: string;
 
   let error: string | undefined = undefined;
@@ -350,13 +348,6 @@
         actions: actions,
         text: text,
       },
-      image: chat.safe_address_profile.avatarUrl
-        ? chat.safe_address_profile.avatarUrl
-        : AvataarGenerator.generate(
-            chat.safe_address_profile.circlesAddress
-              ? chat.safe_address_profile.circlesAddress
-              : chat.safe_address
-          ),
     };
   }
 </script>
@@ -366,15 +357,15 @@
     <div
       class="relative flex flex-col items-center self-center w-full m-auto text-center justify-self-center">
 
-      <div class="absolute avatar " style="left: -56px; top:9px">
-        <div class="w-12 h-12 m-auto rounded-full ">
+      <div class="absolute avatar " style="left: -56px; top:4px">
 
-          {#if contactProfile}
-            <img
-              src="{contactProfile.contactAddressProfile.avatarUrl ? contactProfile.contactAddressProfile.avatarUrl : AvataarGenerator.generate(contactProfile.contactAddressProfile.circlesAddress)}"
-              alt="user-icon" />
-          {/if}
-        </div>
+        {#if contactProfile}
+          <UserImage
+            profile="{contactProfile}"
+            size="{10}"
+            gradientRing="{true}" />
+        {/if}
+
       </div>
       <div class="mt-2 text-3xl tracking-wide uppercase font-heading">
         {#if contactProfile}
