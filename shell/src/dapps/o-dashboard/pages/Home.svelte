@@ -67,7 +67,6 @@
     init();
   });
 
-
   let mySafeAddress: string;
 
   $: {

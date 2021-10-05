@@ -12,11 +12,11 @@
   import { loadProfile } from "../processes/identify/services/loadProfile";
   import TopNav from "src/shared/atoms/TopNav.svelte";
   import PageHeader from "src/shared/atoms/PageHeader.svelte";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import { getCountryName } from "../../../shared/countries";
-  import {Profile} from "../../../shared/api/data/types";
+  import { Profile } from "../../../shared/api/data/types";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -39,14 +39,6 @@
     } else if ($me) {
       profile = $me;
     }
-
-    if (profile && profile.avatarUrl) {
-      avatarUrl = profile.avatarUrl;
-    } else if (profile) {
-      avatarUrl = AvataarGenerator.generate(profile.circlesAddress);
-    } else {
-      avatarUrl = AvataarGenerator.default();
-    }
   }
 
   function editProfileField(dirtyFlags: { [x: string]: boolean }) {
@@ -58,17 +50,11 @@
 
 <PageHeader heightClass="h-72">
   <div class="self-center block mt-2 text-center">
-    <div class="inline-flex">
-      <div
-        class="mb-4 rounded-full cursor-pointer ring ring-white w-36 h-36"
-        on:click="{() => editProfileField({ avatarUrl: true })}">
-        <img
-          class="rounded-full"
-          src="{avatarUrl}"
-          alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
-      </div>
 
+    <div class="mb-4" on:click="{() => editProfileField({ avatarUrl: true })}">
+      <UserImage {profile} size="{36}" />
     </div>
+
     <div
       on:click="{() => editProfileField({ firstName: true, lastName: true })}">
       <h2 class="text-4xl cursor-pointer font-heading">

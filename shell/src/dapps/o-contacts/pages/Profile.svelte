@@ -5,13 +5,13 @@
   import { invite } from "../../o-passport/processes/invite/invite";
   import { getCountryName } from "../../../shared/countries";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
   import { upsertIdentityOnlyWhereDirty } from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import { onDestroy, onMount } from "svelte";
   import { Subscription } from "rxjs";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
   import { Profile } from "../../o-banking/data/api/types";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
@@ -116,12 +116,6 @@
   async function setProfile(apiProfile: Profile) {
     const trust = undefined;
     isEditable = $me && $me.id === apiProfile.id;
-
-    if (!apiProfile.avatarUrl) {
-      apiProfile.avatarUrl = AvataarGenerator.generate(
-        apiProfile.circlesAddress
-      );
-    }
 
     if ($me.circlesAddress !== apiProfile.circlesAddress) {
       const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -231,6 +225,13 @@
     });
     app.$destroy();
   };
+
+  async function getJumplist() {
+    const jumpListItems = await jumplist.items({ id: id }, runtimeDapp);
+    return jumpListItems;
+  }
+
+  let promise = getJumplist();
 </script>
 
 {#if isLoading}
@@ -245,13 +246,7 @@
       </div>
       <div
         class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
-        <div class="avatar rounded-corners-gradient-borders">
-          <div class="m-auto bg-white rounded-full w-36 h-36">
-            <img
-              src="{profile && profile.avatarUrl ? profile.avatarUrl : ''}"
-              alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
-          </div>
-        </div>
+        <UserImage {profile} size="{36}" gradientRing="{true}" profileLink={false}/>
 
         {#if profile && profile.safeAddress}
           <div class="mt-4 text-3xl">
@@ -282,7 +277,7 @@
                   <div class="flex items-center w-full space-x-2 sm:space-x-4">
                     <div class="w-full">
                       <button
-                        class="w-full h-auto btn btn-block btn-primary"
+                        class="h-auto btn btn-block btn-primary"
                         on:click="{execInvite}">
                         Invite {profile.displayName} now
                       </button>
@@ -396,26 +391,14 @@
                 <div class="text-left text-2xs text-dark-lightest">
                   Mutual Friends
                 </div>
-                <div class="flex flex-row flex-wrap content-start space-x-2 ">
+                <div class="mt-2 flex flex-row flex-wrap content-start space-x-2 ">
                   {#each commonTrusts as commonTrust}
-                    <a href="#/friends/{commonTrust.profile.circlesAddress}">
-                      <div class="has-tooltip">
-                        <span
-                          class="px-2 mt-12 text-sm bg-white rounded shadow-sm tooltip">
-                          {commonTrust.profile ? (commonTrust.profile.lastName ? `${commonTrust.profile.firstName} ${commonTrust.profile.lastName}` : commonTrust.profile.firstName) : 'avatar'}
-                        </span>
-
-                        <div
-                          class="self-center mt-4 text-center avatar justify-self-center rounded-corners-gradient-borders"
-                          style="padding: 1px">
-                          <div class="w-10 h-10 m-auto bg-white rounded-full">
-                            <img
-                              src="{commonTrust.profile && commonTrust.profile.avatarUrl ? commonTrust.profile.avatarUrl : AvataarGenerator.generate(commonTrust.profile.circlesAddress)}"
-                              alt="{commonTrust.profile ? (commonTrust.profile.lastName ? `${commonTrust.profile.firstName} ${commonTrust.profile.lastName}` : commonTrust.profile.firstName) : 'avatar'}" />
-                          </div>
-                        </div>
-                      </div>
-                    </a>
+                   {#if commonTrust.profile}
+                    <UserImage
+                      profile="{commonTrust.profile}"
+                      tooltip="{true}"
+                      gradientRing="{true}" />
+                  {/if}
                   {/each}
                 </div>
               </div>
@@ -597,11 +580,10 @@
       {#if jumplist && !isMe}
         <div
           class="sticky bottom-0 left-0 right-0 w-full py-2 mt-2 bg-white rounded-xl">
-          {#await jumplist.items({ id: id }, runtimeDapp)}
-            <p>loading</p>
-
-          {:then items}
-            <DetailActionBar actions="{items}" />
+          {#await promise}
+            <p>...loading</p>
+          {:then jumpListItems}
+            <DetailActionBar actions="{jumpListItems}" />
           {/await}
         </div>
       {/if}

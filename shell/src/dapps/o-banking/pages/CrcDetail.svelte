@@ -4,7 +4,7 @@
   import { me } from "../../../shared/stores/me";
   import { BalancesByAssetDocument, AssetBalance } from "../data/api/types";
   import Card from "../../../shared/atoms/Card.svelte";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+
   import { push } from "svelte-spa-router";
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 
@@ -45,7 +45,7 @@
       {#if token && token.token_balance > 0}
         <div on:click="{() => push(`#/friends/${token.token_owner_address}`)}">
           <ItemCard
-            params="{{ edgeless: false, imageUrl: !token.token_owner_profile || !token.token_owner_profile.avatarUrl ? AvataarGenerator.generate(token.token_owner_address) : token.token_owner_profile.avatarUrl, title: token.token_owner_profile ? `${token.token_owner_profile.firstName} ${token.token_owner_profile.lastName ? token.token_owner_profile.lastName : ''}` : token.tokenOwner, subTitle: token.token_owner_address, truncateMain: true, shadowMedium: true }}">
+            params="{{ edgeless: false, imageProfile: token.token_owner_profile, title: token.token_owner_profile ? `${token.token_owner_profile.firstName} ${token.token_owner_profile.lastName ? token.token_owner_profile.lastName : ''}` : token.tokenOwner, subTitle: token.token_owner_address, truncateMain: true, shadowMedium: true }}">
 
             <div slot="itemCardEnd">
               <div class="self-end text-right text-success">

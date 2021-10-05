@@ -10,7 +10,7 @@
   } from "../data/api/types";
   import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
   import { onMount } from "svelte";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
   import { me } from "../../../shared/stores/me";
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 
@@ -21,6 +21,8 @@
   let path: any;
   let fromProfile: Profile;
   let toProfile: Profile;
+  let targetProfile: Profile;
+  let message: string = "";
   let error: string;
 
   onMount(async () => {
@@ -51,21 +53,15 @@
         id: 0,
         firstName: "Circles Land",
         lastName: "",
-        avatarUrl: "/images/common/circles.png",
         circlesAddress: minting.from,
       };
-      if (!fromProfile.avatarUrl) {
-        fromProfile.avatarUrl = AvataarGenerator.generate(minting.from);
-      }
+
       toProfile = minting.to_profile ?? {
         id: 0,
         firstName: minting.to,
         lastName: "",
         circlesAddress: minting.to,
       };
-      if (!toProfile.avatarUrl) {
-        toProfile.avatarUrl = AvataarGenerator.generate(minting.to);
-      }
     }
 
     if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
@@ -76,22 +72,23 @@
         lastName: "",
         circlesAddress: hubTransfer.from,
       };
-      if (!fromProfile.avatarUrl) {
-        fromProfile.avatarUrl = AvataarGenerator.generate(hubTransfer.from);
-      }
+
       toProfile = hubTransfer.to_profile ?? {
         id: 0,
         firstName: hubTransfer.to,
         lastName: "",
         circlesAddress: hubTransfer.to,
       };
-      if (!toProfile.avatarUrl) {
-        toProfile.avatarUrl = AvataarGenerator.generate(hubTransfer.to);
-      }
+
       path = {
         transfers: hubTransfer.transfers,
       };
     }
+    targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
+
+    message = transfer.tags?.find(
+      o => o.typeId === "o-banking:transfer:message:1"
+    )?.value;
   });
 
   function openDetail(transfer: ProfileEvent) {
@@ -167,21 +164,9 @@
           </svg>
         </span>
       </div>
-      <div
-        class="cursor-pointer avatar rounded-corners-gradient-borders"
-        on:click="{() => openDetail(transfer)}">
-        <div class="m-auto bg-white rounded-full w-36 h-36">
-          {#if transfer.direction === 'in'}
-            <img
-              alt="{fromProfile.firstName + ' ' + fromProfile.lastName}"
-              src="{fromProfile.avatarUrl}" />
-          {:else}
-            <img
-              alt="{toProfile.firstName + ' ' + toProfile.lastName}"
-              src="{toProfile.avatarUrl}" />
-          {/if}
-        </div>
-      </div>
+
+      <UserImage profile="{targetProfile}" size="{36}" gradientRing="{true}" />
+
       <div>
         {#if transfer.direction === 'in'}
           <span class="mt-4 text-xl">
@@ -193,7 +178,7 @@
           </span>
         {/if}
       </div>
-      <div class="text-dark-lightest">{'No Message'}</div>
+      <div class="text-dark-lightest">{message}</div>
 
       {#if path && path.transfers}
         <div class="flex flex-col w-full space-y-1">

@@ -2,6 +2,7 @@
   import { Action } from "rxjs/internal/scheduler/Action";
   import { push } from "svelte-spa-router";
   import Icons from "src/shared/molecules/Icons.svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
 
   export let params = {
     imageUrl: null,
@@ -19,6 +20,7 @@
     endTextBig: null,
     endTextBigClass: "text-success",
     endTextSmall: null,
+    imageProfile: null,
   };
 
   // TODO: find a better way for this.
@@ -40,9 +42,12 @@
     class:shadow-md="{params.shadowMedium && !params.noShadow}"
     class:p-3="{!params.edgeless}">
     <slot name="itemCardStart">
-      {#if params.imageUrl}
-        <div>
-          <div class="inline-flex">
+
+      <div>
+        <div class="inline-flex">
+          {#if params.imageProfile}
+            <UserImage profile="{params.imageProfile}" size="{12}" />
+          {:else if params.imageUrl}
             <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
               <a
                 on:click="{e => {
@@ -54,10 +59,11 @@
                   alt="{params.imageAlt ? params.imageAlt : params.title}" />
               </a>
             </div>
-          </div>
-
+          {/if}
         </div>
-      {/if}
+
+      </div>
+
     </slot>
     <slot name="itemCardText">
       <div
