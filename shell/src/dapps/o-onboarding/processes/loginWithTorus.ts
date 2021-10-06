@@ -126,6 +126,9 @@ const processDefinition = (processId: string) =>
               actions: "assignPrivateKeyAndUserInfoToContext",
               target: "#enterEncryptionPin",
             },
+            onError: {
+              target: "#chooseFlow",
+            },
           },
         },
         apple: {
@@ -145,6 +148,9 @@ const processDefinition = (processId: string) =>
               actions: "assignPrivateKeyAndUserInfoToContext",
               target: "#enterEncryptionPin",
             },
+            onError: {
+              target: "#chooseFlow",
+            },
           },
         },
         github: {
@@ -163,6 +169,9 @@ const processDefinition = (processId: string) =>
             onDone: {
               actions: "assignPrivateKeyAndUserInfoToContext",
               target: "#enterEncryptionPin",
+            },
+            onError: {
+              target: "#chooseFlow",
             },
           },
         },

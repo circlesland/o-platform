@@ -278,6 +278,7 @@ export type Mutation = {
   claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
   createInvitations: CreateInvitationResult;
+  createTestInvitation: CreateInvitationResult;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   lockOffer: LockOfferResult;
@@ -389,6 +390,11 @@ export type MutationVerifySessionChallengeArgs = {
   signature: Scalars['String'];
 };
 
+export type NotificationEvent = {
+  __typename?: 'NotificationEvent';
+  type: Scalars['String'];
+};
+
 export type Offer = {
   __typename?: 'Offer';
   categoryTag?: Maybe<Tag>;
@@ -431,6 +437,7 @@ export type Profile = {
   circlesTokenAddress?: Maybe<Scalars['String']>;
   city?: Maybe<City>;
   cityGeonameid?: Maybe<Scalars['Int']>;
+  claimedInvitation?: Maybe<ClaimedInvitation>;
   country?: Maybe<Scalars['String']>;
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
@@ -707,7 +714,7 @@ export type Stats = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  events: Array<ProfileEvent>;
+  events: NotificationEvent;
 };
 
 export type Tag = {
@@ -1638,10 +1645,10 @@ export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 export type EventsSubscription = (
   { __typename?: 'Subscription' }
-  & { events: Array<(
-    { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'type'>
-  )> }
+  & { events: (
+    { __typename?: 'NotificationEvent' }
+    & Pick<NotificationEvent, 'type'>
+  ) }
 );
 
 
