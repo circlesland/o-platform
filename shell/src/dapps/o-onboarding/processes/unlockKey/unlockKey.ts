@@ -104,28 +104,12 @@ const processDefinition = (processId: string) =>
               delete context.data.privateKey;
               delete context.data.decryptionPin;
             },
-            onDone: "#showSuccess",
+            onDone: "#success",
             onError: {
               target: "#enterDecryptionPin",
             },
           },
         },
-        showSuccess: prompt({
-          id: "showSuccess",
-          field: "__",
-          component: HtmlViewer,
-          params: {
-            html: (context) =>
-              `<p>You successfully logged on as ${context.data.accountAddress}.</p>`,
-            view: {
-              submitButtonText: "Close",
-              hideNav: false,
-            },
-          },
-          navigation: {
-            next: "#success",
-          },
-        }),
         success: {
           id: "success",
           type: "final",
