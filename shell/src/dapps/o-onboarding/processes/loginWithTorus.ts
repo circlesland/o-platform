@@ -71,8 +71,8 @@ const processDefinition = (processId: string) =>
           entry: () => console.log("chooseFlow"),
           params: {
             view: {
-              title: "Please choose a sign-in option:",
-              description: "Hello World",
+              title: "Welcome to Cirles Land",
+              description: "Please choose a sign-in option",
               placeholder: "",
               submitButtonText: "",
             },
@@ -82,19 +82,22 @@ const processDefinition = (processId: string) =>
               key: "google",
               label: "Login with Google",
               target: "#google",
-              class: "btn-info",
+              class: "btn btn-outline",
+              icon: "google",
             },
             {
               key: "apple",
               label: "Login with Apple",
               target: "#apple",
-              class: "btn-info",
+              class: "btn btn-outline",
+              icon: "apple",
             },
             {
               key: "github",
               label: "Login with Github",
               target: "#github",
-              class: "btn-info",
+              class: "btn btn-outline",
+              icon: "github",
             } /*
           {
             key: "email",
@@ -277,7 +280,7 @@ const processDefinition = (processId: string) =>
               delete context.data.privateKey;
               delete context.data.decryptionPin;
             },
-            onDone: "#showSuccess",
+            onDone: "#success",
             onError: {
               target: "#enterDecryptionPin",
             },
@@ -305,7 +308,7 @@ const processDefinition = (processId: string) =>
               delete context.data.privateKey;
               delete context.data.encryptionPin;
             },
-            onDone: "#showSuccess",
+            onDone: "#success",
             onError: {
               actions: (context, event) => {
                 window.o.lastError = event.data;
@@ -327,22 +330,6 @@ const processDefinition = (processId: string) =>
             },
           }),
         },
-        showSuccess: prompt({
-          id: "showSuccess",
-          field: "__",
-          component: HtmlViewer,
-          params: {
-            html: (context) =>
-              `<p>You successfully logged on as ${context.data.accountAddress}.</p>`,
-            view: {
-              submitButtonText: "Close",
-              hideNav: false,
-            },
-          },
-          navigation: {
-            next: "#success",
-          },
-        }),
         success: {
           id: "success",
           type: "final",
