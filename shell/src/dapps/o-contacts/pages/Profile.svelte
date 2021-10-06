@@ -159,7 +159,6 @@
       youTrust: apiProfile.youTrust ?? 0,
     };
 
-    console.log("PROFILE: ", profile);
   }
 
   function execTransfer() {
@@ -246,7 +245,11 @@
       </div>
       <div
         class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
-        <UserImage {profile} size="{36}" gradientRing="{true}" profileLink={false}/>
+        <UserImage
+          {profile}
+          size="{36}"
+          gradientRing="{true}"
+          profileLink="{false}" />
 
         {#if profile && profile.safeAddress}
           <div class="mt-4 text-3xl">
@@ -354,22 +357,6 @@
           {/if}
 
           {#if profile && profile.safeAddress}
-            <!-- <section class="mb-8">
-            <div class="grid w-full grid-cols-3 gap-4 text-2xs ">
-              <div class="flex flex-col items-center justify-items-center">
-                <div class="text-3xl font-medium text-dark">5</div>
-                <div class="mt-4 text-dark-lightest">mutual friends</div>
-              </div>
-              <div class="flex flex-col items-center justify-items-center ">
-                <div class="text-3xl font-medium text-dark">86</div>
-                <div class="mt-4 text-dark-lightest">leader rank</div>
-              </div>
-              <div class="flex flex-col items-center justify-items-center ">
-                <div class="text-3xl font-medium text-dark">230</div>
-                <div class="mt-4 text-dark-lightest">invited</div>
-              </div>
-            </div>
-          </section> -->
             {#if profile.youTrust || profile.trustsYou}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
@@ -391,14 +378,15 @@
                 <div class="text-left text-2xs text-dark-lightest">
                   Mutual Friends
                 </div>
-                <div class="mt-2 flex flex-row flex-wrap content-start space-x-2 ">
+                <div
+                  class="flex flex-row flex-wrap content-start mt-2 space-x-2 ">
                   {#each commonTrusts as commonTrust}
-                   {#if commonTrust.profile}
-                    <UserImage
-                      profile="{commonTrust.profile}"
-                      tooltip="{true}"
-                      gradientRing="{true}" />
-                  {/if}
+                    {#if commonTrust.profile}
+                      <UserImage
+                        profile="{commonTrust.profile}"
+                        tooltip="{true}"
+                        gradientRing="{true}" />
+                    {/if}
                   {/each}
                 </div>
               </div>
@@ -507,74 +495,6 @@
             </section>
           {/if}
         </div>
-
-        <!-- ACTIONS  -->
-
-        <!-- {#if !isMe && profile.safeAddress}
-        <section class="justify-center mb-2 ">
-          <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
-            <div class="text-sm font-bold text-dark-lightest">TRANSFER</div>
-
-            <div class="flex items-center w-full space-x-2 sm:space-x-4">
-              <button
-                class="btn btn-block btn-primary"
-                on:click={() => execTransfer()}
-                >Send Money
-              </button>
-            </div>
-          </div>
-        </section>
-        <section class="justify-center mb-2 ">
-          <div class="flex flex-col w-full p-4 space-y-2 bg-white shadow">
-            <div class="text-sm font-bold text-dark-lightest">CHANGE TRUST</div>
-            {#if profile.trusting && profile.trusting > 0}
-              <div class="flex items-center w-full space-x-2 sm:space-x-4">
-                <button
-                  class="btn btn-block btn-error"
-                  on:click={() => execUntrust()}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    class="inline-block w-4 h-4 mr-2 stroke-current"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                    />
-                  </svg>
-                  Remove trust
-                </button>
-              </div>
-            {:else}
-              <div class="flex items-center w-full space-x-2 sm:space-x-4">
-                <button
-                  class="btn btn-block btn-primary"
-                  on:click={() => execTrust()}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    class="inline-block w-4 h-4 mr-2 stroke-current"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                  Trust
-                </button>
-              </div>
-            {/if}
-          </div>
-        </section>
-      {/if} -->
       </div>
 
       {#if jumplist && !isMe}

@@ -10,9 +10,9 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { transfer } from "./o-banking/processes/transfer";
 import { setTrust } from "./o-banking/processes/setTrust";
-import {loadProfileByProfileId} from "../shared/api/loadProfileByProfileId";
-import {push} from "svelte-spa-router";
-import {loadProfileBySafeAddress} from "../shared/api/loadProfileBySafeAddress";
+import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
+import { push } from "svelte-spa-router";
+import { loadProfileBySafeAddress } from "../shared/api/loadProfileBySafeAddress";
 
 export interface DappState {
   // put state here
@@ -65,8 +65,8 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       : undefined;
 
     let mySafeAddress;
-    me.subscribe(o => {
-      mySafeAddress = o.circlesAddress
+    me.subscribe((o) => {
+      mySafeAddress = o.circlesAddress;
     });
 
     let actions = [];
@@ -84,33 +84,34 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             });
           },
         },
-        !recipientProfile.youTrust
+        recipientProfile.youTrust
           ? {
-          key: "setTrust",
-          icon: "trust",
-          title: "Trust",
-          action: async () => {
-            window.o.runProcess(setTrust, {
-              trustLimit: 100,
-              trustReceiver: recipientProfile.circlesAddress,
-              safeAddress: mySafeAddress,
-              privateKey: sessionStorage.getItem("circlesKey"),
-            });
-          }
-        }
-        : {
-          key: "setTrust",
-          icon: "untrust",
-          title: "Untrust",
-          action: async () => {
-            window.o.runProcess(setTrust, {
-              trustLimit: 0,
-              trustReceiver: recipientProfile.circlesAddress,
-              safeAddress: mySafeAddress,
-              privateKey: sessionStorage.getItem("circlesKey"),
-            });
-          }
-        }]);
+              key: "setTrust",
+              icon: "untrust",
+              title: "Untrust",
+              action: async () => {
+                window.o.runProcess(setTrust, {
+                  trustLimit: 0,
+                  trustReceiver: recipientProfile.circlesAddress,
+                  safeAddress: mySafeAddress,
+                  privateKey: sessionStorage.getItem("circlesKey"),
+                });
+              },
+            }
+          : {
+              key: "setTrust",
+              icon: "trust",
+              title: "Trust",
+              action: async () => {
+                window.o.runProcess(setTrust, {
+                  trustLimit: 100,
+                  trustReceiver: recipientProfile.circlesAddress,
+                  safeAddress: mySafeAddress,
+                  privateKey: sessionStorage.getItem("circlesKey"),
+                });
+              },
+            },
+      ]);
     }
     if (recipientProfile?.id) {
       actions = actions.concat({
@@ -119,7 +120,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         title: "Chat",
         action: async () => {
           push("#/chat/" + recipientProfile.circlesAddress);
-        }
+        },
       });
     }
     if (!recipientProfile) {
@@ -133,10 +134,9 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             safeAddress: mySafeAddress,
             privateKey: sessionStorage.getItem("circlesKey"),
           });
-        }
-      })
+        },
+      });
     }
-
 
     return actions;
   },
