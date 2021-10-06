@@ -361,7 +361,7 @@
 
         {#if contactProfile}
           <UserImage
-            profile="{contactProfile}"
+            profile="{contactProfile.contactAddressProfile}"
             size="{10}"
             gradientRing="{true}" />
         {/if}

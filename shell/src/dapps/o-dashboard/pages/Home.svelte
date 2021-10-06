@@ -177,15 +177,6 @@
         </div>
       </section>
     </div>
-
-    <!-- Tor.us -->
-
-    <section class="mt-4" on:click="{() => torus('/marketplace/stream')}">
-      <button class="btn btn-primary btn-block">
-        Don't bore us, get to the Tor.us
-      </button>
-    </section>
-
   </div>
 </div>
 
