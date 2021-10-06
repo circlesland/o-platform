@@ -4,24 +4,26 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
+import { UpsertProfileDocument } from "../../../../shared/api/data/types";
+import { promptChoice } from "../../../o-passport/processes/identify/prompts/promptChoice";
+import ButtonStackSelector from "@o-platform/o-editors/src/ButtonStackSelector.svelte";
+import { UpsertRegistrationContext } from "../registration/promptRegistration";
+import { loadProfile } from "../../../o-passport/processes/identify/services/loadProfile";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { GnosisSafeProxyFactory } from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
 import {
-  UpsertProfileDocument
-} from "../../../../shared/api/data/types";
-import {promptChoice} from "../../../o-passport/processes/identify/prompts/promptChoice";
-import ChoiceSelector from "../../../../../../packages/o-editors/src/ChoiceSelector.svelte";
-import {UpsertRegistrationContext} from "../registration/promptRegistration";
-import {loadProfile} from "../../../o-passport/processes/identify/services/loadProfile";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {GnosisSafeProxyFactory} from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
-import {GNOSIS_SAFE_ADDRESS, PROXY_FACTORY_ADDRESS} from "@o-platform/o-circles/dist/consts";
-import {connectSafe} from "../connectSafe";
+  GNOSIS_SAFE_ADDRESS,
+  PROXY_FACTORY_ADDRESS,
+} from "@o-platform/o-circles/dist/consts";
+import { connectSafe } from "../connectSafe";
 
 export type PromptConnectOrCreateContextData = {
   connectOrCreate: string;
-  successAction?: (data:PromptConnectOrCreateContextData) => void
+  successAction?: (data: PromptConnectOrCreateContextData) => void;
 };
 
-export type PromptConnectOrCreateContext = ProcessContext<PromptConnectOrCreateContextData>;
+export type PromptConnectOrCreateContext =
+  ProcessContext<PromptConnectOrCreateContextData>;
 
 const editorContent = {
   info: {
@@ -32,15 +34,13 @@ const editorContent = {
   },
   connectOrCreate: {
     title: "Connect or create?",
-    description:
-      "Choose your scenario",
+    description: "Choose your scenario",
     placeholder: "",
     submitButtonText: "",
   },
   success: {
     title: "Success",
-    description:
-      "You can now proceed with the setup of your account.",
+    description: "You can now proceed with the setup of your account.",
     submitButtonText: "Continue",
   },
 };
@@ -68,33 +68,33 @@ const processDefinition = (processId: string) =>
       }),
       connectOrCreate: promptChoice<UpsertRegistrationContext, any>({
         id: "connectOrCreate",
-        component: ChoiceSelector,
+        component: ButtonStackSelector,
         params: { view: editorContent.connectOrCreate },
         options: [
           {
             key: "newSafe",
             label: "I'm new, create everything for me",
             target: "#newSafe",
-            action: (context) => {
-            },
+            class: "btn btn-outline",
+            action: (context) => {},
           },
           {
             key: "importSafe",
             label: "I already have a safe",
             target: "#importSafe",
-            action: (context) => {
-            },
+            class: "btn btn-outline",
+            action: (context) => {},
           },
           {
             key: "importCirclesGarden",
             label: "Import my circles.garden profile",
             target: "#importCirclesGarden",
-            action: (context) => {
-            },
+            class: "btn btn-outline",
+            action: (context) => {},
           },
         ],
         navigation: {
-          canGoBack: () => false
+          canGoBack: () => false,
         },
       }),
       newSafe: {
@@ -108,25 +108,34 @@ const processDefinition = (processId: string) =>
               throw new Error(`The private key is not unlocked.`);
             }
 
-            const proxyFactory = new GnosisSafeProxyFactory(RpcGateway.get(), PROXY_FACTORY_ADDRESS, GNOSIS_SAFE_ADDRESS);
+            const proxyFactory = new GnosisSafeProxyFactory(
+              RpcGateway.get(),
+              PROXY_FACTORY_ADDRESS,
+              GNOSIS_SAFE_ADDRESS
+            );
             const safeProxy = await proxyFactory.deployNewSafeProxy(privateKey);
 
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: UpsertProfileDocument,
               variables: {
                 ...myProfile,
                 status: "eoa",
-                circlesAddress: safeProxy.address
+                circlesAddress: safeProxy.address,
               },
             });
 
             if (result.errors) {
-              throw new Error(`Couldn't update the profile with the generated eoa: ${JSON.stringify(result.errors)}`);
+              throw new Error(
+                `Couldn't update the profile with the generated eoa: ${JSON.stringify(
+                  result.errors
+                )}`
+              );
             }
           },
-          onDone: "success"
-        }
+          onDone: "success",
+        },
       },
       importSafe: {
         id: "importSafe",
@@ -142,13 +151,14 @@ const processDefinition = (processId: string) =>
             window.o.runProcess(connectSafe, {
               successAction: (data) => {
                 (<any>window).runInitMachine();
-              }});
+              },
+            });
           },
-          onDone: "success"
-        }
+          onDone: "success",
+        },
       },
       importCirclesGarden: {
-        id: "importCirclesGarden"
+        id: "importCirclesGarden",
       },
       success: {
         type: "final",
@@ -156,12 +166,15 @@ const processDefinition = (processId: string) =>
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
-        }
-      }
-    }
+        },
+      },
+    },
   });
 
-export const promptConnectOrCreate: ProcessDefinition<void, PromptConnectOrCreateContext> = {
+export const promptConnectOrCreate: ProcessDefinition<
+  void,
+  PromptConnectOrCreateContext
+> = {
   name: "promptConnectOrCreate",
   stateMachine: <any>processDefinition,
 };
