@@ -67,8 +67,8 @@ const processDefinition = (processId: string) =>
         entry: () => console.log("chooseFlow"),
         params: {
           view: {
-            title: "Please choose a sign-in option:",
-            description: "Hello World",
+            title: "Welcome to Cirles Land",
+            description: "Please choose a sign-in option",
             placeholder: "",
             submitButtonText: "",
           },
@@ -135,6 +135,9 @@ const processDefinition = (processId: string) =>
           onDone: {
             actions: "assignPrivateKeyAndUserInfoToContext",
             target: "#enterEncryptionPin"
+          },
+          onError: {
+            target: "#chooseFlow",
           }
         }
       },
@@ -157,6 +160,9 @@ const processDefinition = (processId: string) =>
           onDone: {
             actions: "assignPrivateKeyAndUserInfoToContext",
             target: "#enterEncryptionPin"
+          },
+          onError: {
+            target: "#chooseFlow",
           }
         }
       },
@@ -179,6 +185,9 @@ const processDefinition = (processId: string) =>
           onDone: {
             actions: "assignPrivateKeyAndUserInfoToContext",
             target: "#enterEncryptionPin"
+          },
+          onError: {
+            target: "#chooseFlow",
           }
         }
       },
@@ -201,6 +210,9 @@ const processDefinition = (processId: string) =>
           onDone: {
             actions: "assignPrivateKeyAndUserInfoToContext",
             target: "#enterEncryptionPin"
+          },
+          onError: {
+            target: "#chooseFlow",
           }
         }
       },/*
@@ -285,7 +297,7 @@ const processDefinition = (processId: string) =>
             delete context.data.privateKey;
             delete context.data.decryptionPin;
           },
-          onDone: "#showSuccess",
+          onDone: "#success",
           onError: {
             target: "#enterDecryptionPin"
           }
@@ -306,7 +318,7 @@ const processDefinition = (processId: string) =>
             delete context.data.privateKey;
             delete context.data.encryptionPin;
           },
-          onDone: "#showSuccess",
+          onDone: "#success",
           onError: {
             actions: (context, event) => {
               window.o.lastError = event.data;
@@ -327,21 +339,6 @@ const processDefinition = (processId: string) =>
           }
         })
       },
-      showSuccess: prompt({
-        id: "showSuccess",
-        field: "__",
-        component: HtmlViewer,
-        params: {
-          html: (context) => `<p>You successfully logged on as ${context.data.accountAddress}.</p>`,
-          view: {
-            submitButtonText: "Close",
-            hideNav: false
-          }
-        },
-        navigation: {
-          next: "#success",
-        },
-      }),
       success: {
         id: "success",
         type: "final",
@@ -357,12 +354,12 @@ const processDefinition = (processId: string) =>
       }
     }
   }, {
-    actions: {
-      assignPrivateKeyAndUserInfoToContext: (context, event) => {
-        context.data.privateKey = event.data.privateKey;
-        context.data.userInfo = event.data.userInfo;
+      actions: {
+        assignPrivateKeyAndUserInfoToContext: (context, event) => {
+          context.data.privateKey = event.data.privateKey;
+          context.data.userInfo = event.data.userInfo;
+        }
       }
-    }
   });
 
 export const loginWithTorus: ProcessDefinition<void, LoginWithTorusContext> = {

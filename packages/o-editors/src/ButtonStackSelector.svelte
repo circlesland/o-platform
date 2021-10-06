@@ -52,7 +52,7 @@ function submit(selected: { key: string; label: string }) {
           {#if choice.icon}
             <Icons icon="{choice.icon}" />
           {/if}
-          {choice.label}
+          <span class="ml-4">{choice.label}</span>
         </button>
       </div>
     {/each}

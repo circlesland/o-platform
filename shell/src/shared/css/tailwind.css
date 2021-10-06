@@ -139,6 +139,10 @@ body {
   @apply text-white;
   @apply border-white;
 }
+.btn-outline:hover {
+  @apply bg-light-lighter;
+  @apply text-dark;
+}
 
 .circles-button {
   padding-left: 3px;
