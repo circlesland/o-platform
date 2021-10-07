@@ -118,6 +118,7 @@ const processDefinition = (processId: string) =>
           },
           invoke: {
             src: async (context) => {
+              /*
               const openLogin = await getOpenLogin();
               const authResult = await openLogin.triggerLogin({
                 typeOfLogin: "google",
@@ -131,65 +132,45 @@ const processDefinition = (processId: string) =>
                 privateKey: context.data.privateKey,
                 userInfo: context.data.userInfo,
               };
-              /*
-            const privateKey = await openLogin.login({
-              loginProvider: "google",
-              extraLoginOptions: {
-                prompt: "consent",
-                display: "touch"
-              }
-            });
-            const userInfo = await openLogin.getUserInfo();
-            return {
-              privateKey: privateKey,
-              userInfo: userInfo
-            };
-             */
+
+               */
+              const openLogin = await getOpenLogin();
+              const privateKey = await openLogin.login({
+                loginProvider: "google",
+                extraLoginOptions: {
+                  prompt: "consent",
+                  display: "touch",
+                },
+              });
+              const userInfo = await openLogin.getUserInfo();
+              return {
+                privateKey: privateKey.privKey,
+                userInfo: userInfo,
+              };
             },
             onDone: {
               actions: "assignPrivateKeyAndUserInfoToContext",
               target: "#enterEncryptionPin",
             },
-            onError: [
-              {
-                // user closed popup
-                cond: (context, event) =>
-                  event.data.message == "user closed popup",
-                target: "#chooseFlow",
-              },
-              {
-                cond: (context, event) => (window.o.lastError = event.data),
-                actions: (context, event) => {
-                  window.o.lastError = event.data;
-                },
-                target: "#showError",
-              },
-            ],
+            onError: {
+              target: "#chooseFlow",
+            },
           },
         },
         apple: {
           id: "apple",
-          entry: () => {
-            window.o.publishEvent(<PlatformEvent>{
-              type: "shell.progress",
-              message: "Please wait, we're Signing you in",
-            });
-          },
-
           invoke: {
             src: async (context) => {
-              /*
-            const openLogin = await getOpenLogin();
-            const privateKey = await openLogin.login({
-              loginProvider: "apple"
-            });
-            return {
-              privateKey: privateKey,
-              userInfo: await openLogin.getUserInfo()
-            };
-
-             */
+              const openLogin = await getOpenLogin();
+              const privateKey = await openLogin.login({
+                loginProvider: "apple",
+              });
+              return {
+                privateKey: privateKey.privKey,
+                userInfo: await openLogin.getUserInfo(),
+              };
             },
+
             onDone: {
               actions: "assignPrivateKeyAndUserInfoToContext",
               target: "#enterEncryptionPin",
@@ -201,26 +182,16 @@ const processDefinition = (processId: string) =>
         },
         github: {
           id: "github",
-          entry: () => {
-            window.o.publishEvent(<PlatformEvent>{
-              type: "shell.progress",
-              message: "Please wait, we're Signing you in",
-            });
-          },
-
           invoke: {
             src: async (context) => {
-              /*
-            const openLogin = await getOpenLogin();
-            const privateKey = await openLogin.login({
-              loginProvider: "github"
-            });
-            return {
-              privateKey: privateKey,
-              userInfo: await openLogin.getUserInfo()
-            };
-
-             */
+              const openLogin = await getOpenLogin();
+              const privateKey = await openLogin.login({
+                loginProvider: "github",
+              });
+              return {
+                privateKey: privateKey.privKey,
+                userInfo: await openLogin.getUserInfo(),
+              };
             },
             onDone: {
               actions: "assignPrivateKeyAndUserInfoToContext",
@@ -231,31 +202,29 @@ const processDefinition = (processId: string) =>
             },
           },
         },
-        facebook: {
-          id: "facebook",
-          invoke: {
-            src: async (context) => {
-              /*
+        /*
+      facebook: {
+        id: "facebook",
+        invoke: {
+          src: async (context) => {
             const openLogin = await getOpenLogin();
             const privateKey = await openLogin.login({
-              loginProvider: "facebook"
+              loginProvider: "facebook",
             });
             return {
               privateKey: privateKey,
-              userInfo: await openLogin.getUserInfo()
+              userInfo: await openLogin.getUserInfo(),
             };
-
-             */
-            },
-            onDone: {
-              actions: "assignPrivateKeyAndUserInfoToContext",
-              target: "#enterEncryptionPin",
-            },
-            onError: {
-              target: "#chooseFlow",
-            },
           },
-        } /*
+          onDone: {
+            actions: "assignPrivateKeyAndUserInfoToContext",
+            target: "#enterEncryptionPin"
+          },
+          onError: {
+            target: "#chooseFlow",
+          }
+        }
+      },
       email: {
         id: "email",
         invoke: {
@@ -274,7 +243,7 @@ const processDefinition = (processId: string) =>
             target: "#enterEncryptionPin"
           }
         }
-      },*/,
+      },*/
         enterEncryptionPin: prompt<LoginWithTorusContext, any>({
           id: "enterEncryptionPin",
           field: "encryptionPin",
