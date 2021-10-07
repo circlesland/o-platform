@@ -11,6 +11,8 @@
   import DashboardHeader from "../atoms/DashboardHeader.svelte";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import {unlockKey} from "../../o-onboarding/processes/unlockKey/unlockKey";
+  import {KeyManager} from "../../o-passport/data/keyManager";
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
@@ -26,21 +28,26 @@
 
   const init = async () => {
     const pk = sessionStorage.getItem("circlesKey");
-    if (!pk || localStorage.getItem("isCreatingSafe") !== "true") {
-      disableBanking = !pk;
+    disableBanking = !pk;
+    if (!pk) {
+      unlock();
       return;
     }
 
     accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk)
       .address;
 
-    if (localStorage.getItem("isCreatingSafe")) {
-      showFundHint = true;
-      return;
-    }
     accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
-    showFundHint = new BN(accountBalance).lt(new BN(safeDeployThreshold));
+    //showFundHint = new BN(accountBalance).lt(new BN(safeDeployThreshold));
   };
+
+  function unlock() {
+    window.o.runProcess(unlockKey, {
+      successAction: async () => {
+        await init();
+      }
+    });
+  }
 
   onMount(init);
 

@@ -59,7 +59,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
 
     let circlesAddress;
     me.subscribe((o) => {
-      circlesAddress = o.circlesAddress;
+      circlesAddress = o?.circlesAddress;
     });
 
     return [

@@ -34,12 +34,12 @@ const editorContent = {
 const processDefinition = (processId: string) =>
   createMachine<LogoutContext, any>({
     id: `${processId}:logout`,
-    initial: "checkSeedPhrase",
+    initial: "logout",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<LogoutContext, any>("error"),
-
+/*
       checkSeedPhrase: prompt<LogoutContext, any>({
         field: "checkSeedPhrase",
         component: TextareaEditor,
@@ -83,15 +83,23 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
+
+ */
       logout: {
         id: "logout",
         invoke: {
           src: async (context) => {
+
+            sessionStorage.removeItem("circlesKey");
+            sessionStorage.removeItem("keyCache");
+            localStorage.removeItem("me");
+
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: LogoutDocument,
             });
+
             return result.data.logout.success;
           },
           onDone: "#success",
@@ -102,11 +110,6 @@ const processDefinition = (processId: string) =>
         type: "final",
         id: "success",
         data: (context, event: any) => {
-          localStorage.removeItem("safe");
-          localStorage.removeItem("circlesAccount");
-          localStorage.removeItem("circlesKey");
-          localStorage.removeItem("isCreatingSafe");
-          localStorage.removeItem("me");
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut",
           });

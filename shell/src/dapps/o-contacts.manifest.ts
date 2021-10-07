@@ -66,7 +66,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
 
     let mySafeAddress;
     me.subscribe((o) => {
-      mySafeAddress = o.circlesAddress;
+      mySafeAddress = o?.circlesAddress;
     });
 
     let actions = [];

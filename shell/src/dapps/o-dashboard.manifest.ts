@@ -1,6 +1,5 @@
 import Home from "./o-dashboard/pages/Home.svelte";
 import Invites from "./o-dashboard/pages/Invites.svelte";
-import { logout } from "./o-passport/processes/logout";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
