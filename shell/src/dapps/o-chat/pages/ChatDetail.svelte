@@ -180,12 +180,12 @@
           chat.safe_address == $me.circlesAddress
         ) {
           notificationType = "trust_removed";
-          title = `You untrusted ${chat.payload.address_profile.firstName}`;
+          title = `You untrusted ${chat.payload.address_profile ? chat.payload.address_profile.firstName : ""}`;
           icon = "untrust";
-          actions = !contactProfile.youTrust
+          actions = contactProfile ? (!contactProfile.youTrust
             ? [
                 {
-                  title: `Trust ${chat.payload.address_profile.firstName}`,
+                  title: `Trust ${chat.payload.address_profile ? chat.payload.address_profile.firstName : ""}`,
                   icon: "trust",
                   colorClass: "",
                   action: () => {
@@ -198,19 +198,19 @@
                   },
                 },
               ]
-            : [];
+            : []) : [];
         } else if (
           chat.payload.limit > 0 &&
           chat.safe_address === $me.circlesAddress
         ) {
           notificationType = "trust_added";
-          title = `You trusted ${chat.payload.address_profile.firstName}`;
+          title = `You trusted ${chat.payload.address_profile ? chat.payload.address_profile.firstName : ""}`;
           icon = "trust";
-          actions =
+          actions = contactProfile ? (
             contactProfile.youTrust > 0
               ? [
                   {
-                    title: `Untrust ${chat.payload.address_profile.firstName}`,
+                    title: `Untrust ${chat.payload.address_profile ? chat.payload.address_profile.firstName : ""}`,
                     icon: "untrust",
                     colorClass: "",
                     action: () => {
@@ -223,7 +223,7 @@
                     },
                   },
                 ]
-              : [];
+              : []) : [];
         } else if (
           chat.payload.limit === 0 &&
           chat.safe_address !== $me.circlesAddress
@@ -240,7 +240,7 @@
           title = `${chat.payload.can_send_to_profile.firstName} trusted you`;
           icon = "trust";
           outgoing = chat.safeAddress !== $me.circlesAddress;
-          actions = (!contactProfile.youTrust
+          actions = contactProfile ? ((!contactProfile.youTrust
             ? [
                 {
                   title: `Trust ${chat.payload.can_send_to_profile.firstName}`,
@@ -274,11 +274,11 @@
                   },
                 ]
               : []
-          );
+          )) : [];
         }
         break;
       case "crc_hub_transfer":
-        if (chat.safe_address === $me.circlesAddress) {
+        if (chat.payload.to_profile && chat.safe_address === $me.circlesAddress) {
           notificationType = "transfer_out";
           icon = "sendmoney";
           (title = `You sent ${RpcGateway.get().utils.fromWei(
@@ -286,7 +286,7 @@
             "ether"
           )} CRC to ${chat.payload.to_profile.firstName}`),
             (actions = []);
-        } else if (chat.safe_address !== $me.circlesAddress) {
+        } else if (chat.payload.from_profile && chat.safe_address !== $me.circlesAddress) {
           outgoing = chat.safeAddress !== $me.circlesAddress;
           notificationType = "transfer_in";
           icon = "sendmoney";
@@ -296,7 +296,7 @@
             chat.value,
             "ether"
           )} CRC`;
-          actions = (!contactProfile.youTrust
+          actions = contactProfile ? ((!contactProfile.youTrust
             ? [
                 {
                   title: `Trust ${chat.payload.from_profile.firstName}`,
@@ -324,7 +324,7 @@
                 privateKey: sessionStorage.getItem("circlesKey"),
               });
             },
-          });
+          })) : [];
         }
         break;
     }

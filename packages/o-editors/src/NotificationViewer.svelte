@@ -10,6 +10,7 @@ import NotificationViewUbi from "./NotificationViewer/NotificationViewUbi.svelte
 import NotificationViewTrust from "./NotificationViewer/atoms/NotificationViewTrust.svelte";
 import NotificationViewTransfer from "./NotificationViewer/atoms/NotificationViewTransfer.svelte";
 import NotificationViewMutualFriends from "./NotificationViewer/atoms/NotificationViewMutualFriends.svelte";
+import {inbox} from "../../../shell/src/shared/stores/inbox";
 
 export let context: NotificationViewerContext;
 
@@ -62,8 +63,7 @@ function buildDataModel(data) {
           colorClass: "",
           action: () => {
             context.params.push(`#/chat/${data.payload.from}`);
-
-            // submit(); TODO: ADD BACK IN TO MARK EVENT AS READ
+            inbox.acknowledge(data);
           },
         },
       ];
@@ -80,7 +80,7 @@ function buildDataModel(data) {
             context.params.push(
               `#/banking/transactions/${data.transaction_hash}`
             );
-            // submit(); TODO: ADD BACK IN TO MARK EVENT AS READ
+            inbox.acknowledge(data);
           },
         },
       ];

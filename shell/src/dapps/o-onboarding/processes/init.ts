@@ -3,7 +3,7 @@ import {getSessionInfo} from "../../o-passport/processes/identify/services/getSe
 import {BN} from "ethereumjs-util";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
 import {
-  ClaimedInvitationDocument, HubSignupTransactionDocument,
+  ClaimedInvitationDocument, EventsDocument, HubSignupTransactionDocument,
   InvitationTransactionDocument,
   SafeFundingTransactionDocument,
   WhoamiDocument
@@ -25,6 +25,7 @@ import {unlockKey} from "./unlockKey/unlockKey";
 import {InitEvent, UbiData} from "./initEvent";
 import {InitContext} from "./initContext";
 import {push} from "svelte-spa-router";
+import {inbox} from "../../../shared/stores/inbox";
 
 export const initMachine = createMachine<InitContext, InitEvent>({
   id: `init`,
@@ -360,6 +361,17 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         .then(sessionInfo => {
           if (sessionInfo.isLoggedOn) {
             callback(<any>{type: "GOT_SESSION", session: sessionInfo});
+
+            window.o.apiClient.client.subscribeToResult()
+              .then(apiClient => {
+                apiClient.subscribe({
+                  query: EventsDocument
+                }).subscribe(next => {
+                  console.log("RECEIVED WS EVENT:", next);
+                  inbox.reload();
+                });
+              });
+
           } else {
             callback({type: "NO_SESSION"});
           }

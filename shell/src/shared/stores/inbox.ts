@@ -26,19 +26,6 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
   function start(set) {
     set([]);
 
-    window.o.apiClient.client.subscribeToResult()
-      .then(apiClient => {
-        apiClient.subscribe({
-          query: EventsDocument
-        }).subscribe(next => {
-          queryEvents().then((e) => {
-            events = e;
-            events = events.filter((o) => o.type != "eth_transfer");
-            set(events);
-          });
-        });
-      });
-
     queryEvents().then((e) => {
       events = e;
       events = events.filter((o) => o.type != "eth_transfer");
@@ -67,6 +54,13 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
 
 export const inbox = {
   subscribe,
+  reload: () => {
+    queryEvents().then((e) => {
+      events = e;
+      events = events.filter((o) => o.type != "eth_transfer");
+      update(() => events);
+    });
+  },
   acknowledge: async (event: ProfileEvent) => {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     await apiClient.mutate({
