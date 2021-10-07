@@ -110,6 +110,12 @@ const processDefinition = (processId: string) =>
 
         google: {
           id: "google",
+          entry: () => {
+            window.o.publishEvent(<PlatformEvent>{
+              type: "shell.progress",
+              message: "Please wait, we're Signing you in",
+            });
+          },
           invoke: {
             src: async (context) => {
               const openLogin = await getOpenLogin();
@@ -144,13 +150,32 @@ const processDefinition = (processId: string) =>
               actions: "assignPrivateKeyAndUserInfoToContext",
               target: "#enterEncryptionPin",
             },
-            onError: {
-              target: "#chooseFlow",
-            },
+            onError: [
+              {
+                // user closed popup
+                cond: (context, event) =>
+                  event.data.message == "user closed popup",
+                target: "#chooseFlow",
+              },
+              {
+                cond: (context, event) => (window.o.lastError = event.data),
+                actions: (context, event) => {
+                  window.o.lastError = event.data;
+                },
+                target: "#showError",
+              },
+            ],
           },
         },
         apple: {
           id: "apple",
+          entry: () => {
+            window.o.publishEvent(<PlatformEvent>{
+              type: "shell.progress",
+              message: "Please wait, we're Signing you in",
+            });
+          },
+
           invoke: {
             src: async (context) => {
               /*
@@ -176,6 +201,13 @@ const processDefinition = (processId: string) =>
         },
         github: {
           id: "github",
+          entry: () => {
+            window.o.publishEvent(<PlatformEvent>{
+              type: "shell.progress",
+              message: "Please wait, we're Signing you in",
+            });
+          },
+
           invoke: {
             src: async (context) => {
               /*

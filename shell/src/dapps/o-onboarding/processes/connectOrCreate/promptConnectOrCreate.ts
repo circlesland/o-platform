@@ -11,6 +11,7 @@ import { UpsertRegistrationContext } from "../registration/promptRegistration";
 import { loadProfile } from "../../../o-passport/processes/identify/services/loadProfile";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { GnosisSafeProxyFactory } from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import {
   GNOSIS_SAFE_ADDRESS,
   PROXY_FACTORY_ADDRESS,
@@ -38,34 +39,16 @@ const editorContent = {
     placeholder: "",
     submitButtonText: "",
   },
-  success: {
-    title: "Success",
-    description: "You can now proceed with the setup of your account.",
-    submitButtonText: "Continue",
-  },
 };
 const processDefinition = (processId: string) =>
   createMachine<PromptConnectOrCreateContext, any>({
     id: `${processId}:promptConnectOrCreate`,
-    initial: "info",
+    initial: "connectOrCreate",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<PromptConnectOrCreateContext, any>("error"),
 
-      info: prompt({
-        id: "info",
-        field: "__",
-        component: HtmlViewer,
-        params: {
-          view: editorContent.info,
-          html: () => "",
-          hideNav: false,
-        },
-        navigation: {
-          next: "#connectOrCreate",
-        },
-      }),
       connectOrCreate: promptChoice<UpsertRegistrationContext, any>({
         id: "connectOrCreate",
         component: ButtonStackSelector,
@@ -85,13 +68,13 @@ const processDefinition = (processId: string) =>
             class: "btn btn-outline",
             action: (context) => {},
           },
-          {
-            key: "importCirclesGarden",
-            label: "Import my circles.garden profile",
-            target: "#importCirclesGarden",
-            class: "btn btn-outline",
-            action: (context) => {},
-          },
+          // {
+          //   key: "importCirclesGarden",
+          //   label: "Import my circles.garden profile",
+          //   target: "#importCirclesGarden",
+          //   class: "btn btn-outline",
+          //   action: (context) => {},
+          // },
         ],
         navigation: {
           canGoBack: () => false,
@@ -99,6 +82,12 @@ const processDefinition = (processId: string) =>
       }),
       newSafe: {
         id: "newSafe",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: "Please wait while we create your Safe on the Blockchain.",
+          });
+        },
         invoke: {
           src: async (context) => {
             const myProfile = await loadProfile();

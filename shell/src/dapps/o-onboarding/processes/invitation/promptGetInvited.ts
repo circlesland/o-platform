@@ -7,17 +7,15 @@ import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import * as yup from "yup";
 import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import {
-  ClaimInvitationDocument
-} from "../../../../shared/api/data/types";
-import {loadProfile} from "../../../o-passport/processes/identify/services/loadProfile";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {BN} from "ethereumjs-util";
+import { ClaimInvitationDocument } from "../../../../shared/api/data/types";
+import { loadProfile } from "../../../o-passport/processes/identify/services/loadProfile";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { BN } from "ethereumjs-util";
 
 export type PromptGetInvitedData = {
   needsInvitation: boolean;
   inviteCode: string;
-  successAction?:(data:PromptGetInvitedData) => void;
+  successAction?: (data: PromptGetInvitedData) => void;
 };
 
 export type PromptGetInvitedContext = ProcessContext<PromptGetInvitedData>;
@@ -25,21 +23,13 @@ export type PromptGetInvitedContext = ProcessContext<PromptGetInvitedData>;
 const editorContent = {
   info: {
     title: "Get invited",
-    description:
-      "Find somebody who can give you an invite code to join.",
+    description: "Find somebody who can give you an invite code to join.",
     submitButtonText: "I have a code",
   },
   checkInviteCode: {
     title: "Enter invitation code",
-    description:
-      "Please enter you invitation code below to get started.",
+    description: "Please enter you invitation code below to get started.",
     submitButtonText: "Verify",
-  },
-  success: {
-    title: "Success",
-    description:
-      "You can now proceed with the setup of your account.",
-    submitButtonText: "Continue",
   },
 };
 const processDefinition = (processId: string) =>
@@ -100,39 +90,35 @@ const processDefinition = (processId: string) =>
         id: "redeemCode",
         invoke: {
           src: async (context) => {
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const claimResult = await apiClient.mutate({
               mutation: ClaimInvitationDocument,
               variables: {
-                code: context.data.inviteCode
-              }
+                code: context.data.inviteCode,
+              },
             });
             if (claimResult.errors) {
-              context.messages["inviteCode"] = claimResult.errors.map(o => o.message).join(" \n");
-              throw new Error(`Couldn't claim an invitation: ${context.messages["inviteCode"]}`);
+              context.messages["inviteCode"] = claimResult.errors
+                .map((o) => o.message)
+                .join(" \n");
+              throw new Error(
+                `Couldn't claim an invitation: ${context.messages["inviteCode"]}`
+              );
             }
             if (!claimResult.data.claimInvitation.success) {
-              context.messages["inviteCode"] = claimResult.data.claimInvitation.error;
-              throw new Error(`Couldn't claim an invitation: ${context.messages["inviteCode"]}`);
+              context.messages["inviteCode"] =
+                claimResult.data.claimInvitation.error;
+              throw new Error(
+                `Couldn't claim an invitation: ${context.messages["inviteCode"]}`
+              );
             }
           },
           onError: "#inviteCode",
-          onDone: "#showSuccess"
-        }
+          onDone: "#success",
+        },
       },
-      showSuccess: prompt({
-        id: "showSuccess",
-        field: "__",
-        component: HtmlViewer,
-        params: {
-          view: editorContent.success,
-          html: () => "",
-          hideNav: false,
-        },
-        navigation: {
-          next: "#success",
-        },
-      }),
+
       success: {
         id: "success",
         type: "final",
@@ -145,7 +131,10 @@ const processDefinition = (processId: string) =>
     },
   });
 
-export const promptGetInvited: ProcessDefinition<void, PromptGetInvitedContext> = {
+export const promptGetInvited: ProcessDefinition<
+  void,
+  PromptGetInvitedContext
+> = {
   name: "promptGetInvited",
   stateMachine: <any>processDefinition,
 };
