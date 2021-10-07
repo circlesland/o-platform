@@ -222,7 +222,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
             () => {
               window.o.runProcess(promptConnectOrCreate, {
                 successAction: (data) => {
-                 // (<any>window).runInitMachine();
+                  (<any>window).runInitMachine();
                 }
               });
             }
@@ -361,17 +361,6 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         .then(sessionInfo => {
           if (sessionInfo.isLoggedOn) {
             callback(<any>{type: "GOT_SESSION", session: sessionInfo});
-
-            window.o.apiClient.client.subscribeToResult()
-              .then(apiClient => {
-                apiClient.subscribe({
-                  query: EventsDocument
-                }).subscribe(next => {
-                  console.log("RECEIVED WS EVENT:", next);
-                  inbox.reload();
-                });
-              });
-
           } else {
             callback({type: "NO_SESSION"});
           }

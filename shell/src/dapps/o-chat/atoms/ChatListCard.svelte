@@ -34,7 +34,7 @@
     }
     message += contact.lastEvent ? contact.lastEvent.payload.__typename : "";
 
-    console.log("CONTACT: ", contact);
+    // console.log("CONTACT: ", contact);
   });
 
   function loadDetailPage(path) {

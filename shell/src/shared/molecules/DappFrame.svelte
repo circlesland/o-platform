@@ -47,6 +47,7 @@
   } from "../../dapps/o-onboarding/processes/fromCirclesLand";
   import {me} from "../stores/me";
   import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
+  import {EventsDocument} from "../api/data/types";
 
   // install Swiper modules
   SwiperCore.use([Navigation, Pagination]);
@@ -573,6 +574,17 @@
     if (!$me || !session.isLoggedOn) {
       await push("/");
       return;
+    } else {
+      window.o.apiClient.client.subscribeToResult()
+        .then(apiClient => {
+          console.log("SUBSCRIBING TO WS EVENTS ..");
+          apiClient.subscribe({
+            query: EventsDocument
+          }).subscribe(next => {
+            console.log("RECEIVED WS EVENT:", next);
+            inbox.reload();
+          });
+        });
     }
   }
 

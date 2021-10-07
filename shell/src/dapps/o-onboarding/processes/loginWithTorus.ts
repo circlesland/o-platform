@@ -320,7 +320,7 @@ const processDefinition = (processId: string) =>
           isSensitive: true,
           params: {
             view: {
-              title: "Please your pin",
+              title: "Please enter your pin",
               description:
                 "The pin will be used to decrypt your private key on your device.",
               placeholder: "Enter Pin",

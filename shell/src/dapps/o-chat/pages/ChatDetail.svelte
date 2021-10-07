@@ -155,7 +155,7 @@
   }
 
   function buildCardModel(chat) {
-    console.log("CHAT: ", chat);
+    // console.log("CHAT: ", chat);
     let notificationType: string = null;
     let title: string = null;
     let icon: string = null;

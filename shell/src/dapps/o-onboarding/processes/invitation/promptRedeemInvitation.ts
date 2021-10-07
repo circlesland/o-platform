@@ -82,14 +82,19 @@ const processDefinition = (processId: string) =>
                 `Couldn't redeem an invitation: ${context.messages["inviteCode"]}`
               );
             }
-            if (!claimResult.data.success) {
+            if (!claimResult.data?.redeemClaimedInvitation?.success) {
               context.messages["__"] = claimResult.data.error;
               throw new Error(
                 `Couldn't redeem an invitation: ${context.messages["inviteCode"]}`
               );
             }
           },
-          onError: "#info",
+          onError: {
+            actions: (context, event) => {
+              console.error(`The following error occurred while redeemin you claimed invitation: ${JSON.stringify(event.data)}`);
+            },
+            target: "#info"
+          },
           onDone: "#checkIfRedeemed",
         },
       },
