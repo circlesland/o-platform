@@ -144,17 +144,14 @@ const processDefinition = (processId: string) =>
               throw new Error(`The private key is not unlocked.`);
             }
 
+            const innerSuccessAction = context.data.successAction;
+            context.data.successAction = null;
             window.o.runProcess(connectSafe, {
-              successAction: (data) => {
-                (<any>window).runInitMachine();
-              },
+              successAction: innerSuccessAction,
             });
           },
           onDone: "success",
         },
-      },
-      importCirclesGarden: {
-        id: "importCirclesGarden",
       },
       success: {
         type: "final",

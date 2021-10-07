@@ -8,19 +8,38 @@ import {ConnectSafeContext} from "../../o-passport/processes/identify/connectSaf
 import * as bip39 from "bip39";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {Account} from "web3-core";
-import {FindSafeAddressByOwnerDocument, UpsertProfileDocument} from "../../../shared/api/data/types";
+import {
+  FindSafeAddressByOwnerDocument,
+  Profile, ProfilesByCirclesAddressDocument,
+  UpsertProfileDocument
+} from "../../../shared/api/data/types";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {BalanceDocument} from "../../o-banking/data/api/types";
 import {BN} from "ethereumjs-util";
 import {KeyManager} from "../../o-passport/data/keyManager";
-import {me} from "../../../shared/stores/me";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
+import DropdownSelectEditor from "../../../../../packages/o-editors/src/DropdownSelectEditor.svelte";
+import {DropdownSelectorParams} from "@o-platform/o-editors/src/DropdownSelectEditorContext";
+import DropDownCandidateSafe from "../views/atoms/DropDownCandidateSafe.svelte";
+
+export type SafeCandidate = {
+  address:string,
+  balance?:BN,
+  circlesGardenProfile?:{
+    username:string,
+    avatar: string
+  },
+  circlesLandProfile?: Profile
+};
 
 export type PromptConnectOrCreateContextData = {
   seedPhrase?: string;
   importedAccount?: Account;
-  selectedSafeAddress?: string;
+  safeCandidates?: {
+    [address:string]: SafeCandidate
+  };
+  selectedSafe?: SafeCandidate;
   successAction?: (data: PromptConnectOrCreateContextData) => void
 };
 
@@ -112,44 +131,138 @@ const processDefinition = (processId: string) =>
               throw new Error(`Couldn't find a safe for owner ${context.data.importedAccount.address}: ${JSON.stringify(result.errors)}`)
             }
 
-            const safesWithBalance = [];
-            for(let safeAddress of foundSafeAddresses) {
-              const result = await apiClient.query({
-                query: BalanceDocument,
-                variables: {
-                  safeAddress: safeAddress
-                }
-              });
-              const balance = new BN(result.data.balance);
-              if (balance.gt(new BN("0"))) {
-                safesWithBalance.push(safeAddress);
+            const query = foundSafeAddresses.reduce((p, c) => p + `address[]=${RpcGateway.get().utils.toChecksumAddress(c)}&`, "");
+            const circlesGardenProfileRequest = `https://api.circles.garden/api/users/?${query}`;
+
+            const circlesGardenFetchPromise = fetch(circlesGardenProfileRequest).then(result => result.json());
+            const balanceQueryPromises = foundSafeAddresses.map(safeAddress => apiClient.query({
+              query: BalanceDocument,
+              variables: {
+                safeAddress: safeAddress
               }
-            }
-            if (safesWithBalance.length == 0) {
-              throw new Error(`Found no safes with balance.`);
-            }
-            if (safesWithBalance.length > 0) {
-              context.data.selectedSafeAddress = safesWithBalance[0];
-            }
-// TODO: Use the below code:
-            /*
-            if (safesWithBalance.length > 1) {
-              throw new Error(`Found more than one safe with CRC balance.`);
+            }));
+
+            const circlesLandProfileQueryPromise = apiClient.query({
+              query: ProfilesByCirclesAddressDocument,
+              variables: {
+                circlesAddresses: foundSafeAddresses
+              }
+            });
+
+            const results = await Promise.all([
+              circlesGardenFetchPromise,
+              circlesLandProfileQueryPromise,
+              ...balanceQueryPromises
+            ]);
+
+            const circlesGardenProfilesResult = results[0];
+            const circlesLandProfilesResult = results[1];
+            const balanceResults = results.slice(2, results.length - 1);
+
+            const balancesBySafeAddress:{[safeAddress:string]:BN} = {};
+            balanceResults.map((balanceResult, index) => {
+              if (balanceResult.data?.balance) {
+                return {
+                  address: foundSafeAddresses[index],
+                  balance: new BN(balanceResult.data.balance)
+                }
+              } else {
+                return {
+                  address: foundSafeAddresses[index],
+                  balance: null
+                }
+              }
+            }).forEach(o => {
+              if (!o.balance)
+                return;
+
+              balancesBySafeAddress[o.address] = o.balance;
+            });
+
+            const circlesLandProfiles:Profile[] = circlesLandProfilesResult.data.profilesBySafeAddress;
+            const circlesGardenProfiles = circlesGardenProfilesResult.data?.map((o:any) => {
+                return <Profile>{
+                  id: 0,
+                  firstName: o.username,
+                  lastName: "",
+                  circlesAddress: o.safeAddress.toLowerCase(),
+                  avatarUrl: o.avatarUrl
+                }
+              })
+              ?? [];
+
+            context.data.safeCandidates = {};
+            for (let candidateAddress of foundSafeAddresses) {
+              context.data.safeCandidates[candidateAddress] = {
+                address: candidateAddress,
+                balance: balancesBySafeAddress[candidateAddress],
+                circlesGardenProfile: circlesGardenProfiles?.find(o => o.circlesAddress == candidateAddress),
+                circlesLandProfile: circlesLandProfiles.find(o => o.circlesAddress == candidateAddress)
+              };
             }
 
-             */
+            const candidates = Object.values(context.data.safeCandidates);
+            if (candidates.length == 0) {
+              context.messages["seedPhrase"] = `Found no safes with a positive CRC balance that are owned by ${context.data.importedAccount.address.toLowerCase()}.`;
+              throw new Error(context.messages["seedPhrase"]);
+            }
 
-            context.data.selectedSafeAddress = safesWithBalance[0];
+            if (candidates.length == 1) {
+              context.data.selectedSafe = candidates[0];
+            }
           },
-          onDone: "#addNewOwnerInfo",
-          onError: {
-            actions: (ctx, event) => {
-              ctx.messages["seedPhrase"] = `Couldn't find your safe: ${JSON.stringify(event.data)}.`;
-            },
-            target: "#seedPhrase"
-          },
+          onDone: [{
+            cond: (context) => !!context.data.selectedSafe,
+            target: "#addNewOwnerInfo"
+          }, {
+            cond: (context) => !context.data.selectedSafe && Object.keys(context.data.safeCandidates).length > 1,
+            target: "#selectSafe"
+          }],
+          onError: "#seedPhrase",
         }
       },
+
+      selectSafe: prompt<PromptConnectOrCreateContext, any>({
+        id: "selectSafe",
+        field: "selectedSafe",
+        component: DropdownSelectEditor,
+        params: <DropdownSelectorParams<PromptConnectOrCreateContext, SafeCandidate, string>>{
+          view: {
+            title: "We found multiple safes for your key",
+            description: "Please select the one you want to connect with your circles.land profile",
+            submitButtonText: "Connect"
+          },
+          placeholder: "",
+          submitButtonText: "Connect",
+          itemTemplate: DropDownCandidateSafe,
+          getKey: (o) => o.address,
+          getLabel: (o) => {
+            if (o.circlesLandProfile && o.circlesLandProfile.firstName && o.circlesLandProfile.firstName != "") {
+              return `${o.circlesLandProfile.firstName} ${o.circlesLandProfile.lastName ?? ""}`
+            }
+            if (o.circlesGardenProfile) {
+              return o.circlesGardenProfile.username;
+            }
+            return o.address;
+          },
+          keyProperty: "address",
+          choices: {
+            byKey: async (key: string, context) => {
+              return context.data.safeCandidates[key];
+            },
+            find: async (filter: string, context) => {
+              return Object.values(context.data.safeCandidates)
+                .filter(o => o.address.toLowerCase().startsWith(filter?.toLowerCase() ?? ""));
+            },
+          },
+        },
+        navigation: {
+          next: "#addNewOwnerInfo",
+          previous: "#seedPhrase",
+          canSkip: () => false,
+          canGoBack: () => true
+        },
+      }),
 
       addNewOwnerInfo: prompt({
         id: "addNewOwnerInfo",
@@ -169,9 +282,14 @@ const processDefinition = (processId: string) =>
         id: "addNewOwner",
         invoke: {
           src: async (context) => {
+
+            if (typeof context.data.selectedSafe === "string") {
+              context.data.selectedSafe = context.data.safeCandidates[context.data.selectedSafe];
+            }
+
             const safeProxy = new GnosisSafeProxy(
               RpcGateway.get(),
-              context.data.selectedSafeAddress
+              context.data.selectedSafe.address
             );
 
             var km = new KeyManager(null);
@@ -201,18 +319,13 @@ const processDefinition = (processId: string) =>
         id: "updateRegistration",
         invoke: {
           src: async (context) => {
-            const safeProxy = new GnosisSafeProxy(
-              RpcGateway.get(),
-              context.data.selectedSafeAddress
-            );
-
             const $me = await loadProfile();
             const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: UpsertProfileDocument,
               variables: {
                 id: $me.id,
-                circlesAddress: safeProxy.address,
+                circlesAddress: context.data.selectedSafe.address,
                 circlesSafeOwner: $me.circlesSafeOwner,
                 avatarCid: $me.avatarCid,
                 avatarUrl: $me.avatarUrl,
