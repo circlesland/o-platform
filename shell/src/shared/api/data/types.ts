@@ -255,6 +255,15 @@ export type IEventPayload = {
   transaction_hash?: Maybe<Scalars['String']>;
 };
 
+export type InitAggregateState = {
+  __typename?: 'InitAggregateState';
+  hubSignupTransaction?: Maybe<Scalars['String']>;
+  invitation?: Maybe<ClaimedInvitation>;
+  invitationTransaction?: Maybe<Scalars['String']>;
+  registration?: Maybe<Profile>;
+  safeFundingTransaction?: Maybe<Scalars['String']>;
+};
+
 export type LockOfferInput = {
   offerId: Scalars['Int'];
 };
@@ -505,6 +514,7 @@ export type Query = {
   findSafeAddressByOwner: Array<Scalars['String']>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
   inbox: Array<ProfileEvent>;
+  initAggregateState?: Maybe<InitAggregateState>;
   invitationTransaction?: Maybe<ProfileEvent>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
@@ -1088,6 +1098,24 @@ export type FindSafeAddressByOwnerQueryVariables = Exact<{
 export type FindSafeAddressByOwnerQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'findSafeAddressByOwner'>
+);
+
+export type InitAggregateStateQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InitAggregateStateQuery = (
+  { __typename?: 'Query' }
+  & { initAggregateState?: Maybe<(
+    { __typename?: 'InitAggregateState' }
+    & Pick<InitAggregateState, 'hubSignupTransaction' | 'invitationTransaction' | 'safeFundingTransaction'>
+    & { invitation?: Maybe<(
+      { __typename?: 'ClaimedInvitation' }
+      & Pick<ClaimedInvitation, 'claimedAt'>
+    )>, registration?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName'>
+    )> }
+  )> }
 );
 
 export type ClaimedInvitationQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1948,6 +1976,22 @@ export const FindSafeAddressByOwnerDocument = gql`
   findSafeAddressByOwner(owner: $owner)
 }
     `;
+export const InitAggregateStateDocument = gql`
+    query initAggregateState {
+  initAggregateState {
+    hubSignupTransaction
+    invitation {
+      claimedAt
+    }
+    invitationTransaction
+    safeFundingTransaction
+    registration {
+      id
+      firstName
+    }
+  }
+}
+    `;
 export const ClaimedInvitationDocument = gql`
     query claimedInvitation {
   claimedInvitation {
@@ -2763,6 +2807,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     findSafeAddressByOwner(variables: FindSafeAddressByOwnerQueryVariables): Promise<FindSafeAddressByOwnerQuery> {
       return withWrapper(() => client.request<FindSafeAddressByOwnerQuery>(print(FindSafeAddressByOwnerDocument), variables));
+    },
+    initAggregateState(variables?: InitAggregateStateQueryVariables): Promise<InitAggregateStateQuery> {
+      return withWrapper(() => client.request<InitAggregateStateQuery>(print(InitAggregateStateDocument), variables));
     },
     claimedInvitation(variables?: ClaimedInvitationQueryVariables): Promise<ClaimedInvitationQuery> {
       return withWrapper(() => client.request<ClaimedInvitationQuery>(print(ClaimedInvitationDocument), variables));

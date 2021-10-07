@@ -64,7 +64,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Signing the api challenge to get a session ..`,
+            message: `Starting the session ..`,
           });
         },
         invoke: {

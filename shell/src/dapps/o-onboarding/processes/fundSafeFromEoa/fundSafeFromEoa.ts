@@ -6,6 +6,7 @@ import { createMachine } from "xstate";
 import { PromptConnectOrCreateContext } from "../connectOrCreate/promptConnectOrCreate";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { BN } from "ethereumjs-util";
+import {EventsDocument} from "../../../../shared/api/data/types";
 
 export type FundSafeFromEoaContextData = {
   eoaAddress: string;
@@ -84,8 +85,33 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
             );
             console.log(receipt);
           },
-          onDone: "#success",
+          onDone: "#waitForTransaction",
         },
+      },
+      waitForTransaction: {
+        id: "waitForTransaction",
+        invoke: {
+          src: async () => {
+            await new Promise(async (resolve, reject) => {
+              const apiClient = await window.o.apiClient.client.subscribeToResult();
+              const observable = apiClient.subscribe({
+                query: EventsDocument
+              });
+              let subscription: ZenObservable.Subscription;
+              const subscriptionHandler = next => {
+                if (next.data.events.type == "blockchain_event") {
+                  if (subscription) {
+                    subscription.unsubscribe();
+                  }
+                  resolve(null);
+                  // TODO: Close the connection when done
+                }
+              };
+              subscription = observable.subscribe(subscriptionHandler);
+            });
+          },
+          onDone: "#success"
+        }
       },
       success: {
         type: "final",

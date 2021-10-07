@@ -48,6 +48,7 @@ export type PlatformEventTypes =
   | "process.continue"
   | "process.continued"
   | "blockchain"
+  | "blockchain_event"
   | "signal.begin"
   | "signal.progress"
   | "signal.ready"

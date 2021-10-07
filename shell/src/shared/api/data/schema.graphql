@@ -214,6 +214,14 @@ type Goal {
     totalCitizens: Int!
 }
 
+type InitAggregateState {
+    hubSignupTransaction: String
+    invitation: ClaimedInvitation
+    invitationTransaction: String
+    registration: Profile
+    safeFundingTransaction: String
+}
+
 type LockOfferResult {
     lockedUntil: String
     success: Boolean!
@@ -343,6 +351,7 @@ type Query {
     findSafeAddressByOwner(owner: String!): [String!]!
     hubSignupTransaction: ProfileEvent
     inbox: [ProfileEvent!]!
+    initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile

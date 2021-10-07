@@ -77,18 +77,6 @@ export const passport: DappManifest<DappState> = {
           icon: "logout",
           action: () => {
             window.o.runProcess(logout, {});
-            //getOpenLogin().then((openLogin) => {
-              // TODO: How to log-out with CustomAuth?
-              /*
-              openLogin.logout().then(async () => {
-                const apiClient = await window.o.apiClient.client.subscribeToResult();
-                await apiClient.mutate({
-                  mutation: LogoutDocument
-                });
-              });
-               */
-            //})
-            // window.o.runProcess(logout, {})
           },
         },
       ];

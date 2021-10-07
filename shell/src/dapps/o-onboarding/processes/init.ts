@@ -3,7 +3,7 @@ import {getSessionInfo} from "../../o-passport/processes/identify/services/getSe
 import {BN} from "ethereumjs-util";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
 import {
-  ClaimedInvitationDocument, EventsDocument, HubSignupTransactionDocument,
+  ClaimedInvitationDocument, HubSignupTransactionDocument, InitAggregateStateDocument,
   InvitationTransactionDocument,
   SafeFundingTransactionDocument,
   WhoamiDocument
@@ -25,7 +25,6 @@ import {unlockKey} from "./unlockKey/unlockKey";
 import {InitEvent, UbiData} from "./initEvent";
 import {InitContext} from "./initContext";
 import {push} from "svelte-spa-router";
-import {inbox} from "../../../shared/stores/inbox";
 
 export const initMachine = createMachine<InitContext, InitEvent>({
   id: `init`,
@@ -46,7 +45,9 @@ export const initMachine = createMachine<InitContext, InitEvent>({
   },
   states: {
     initial: {
-      entry: () => console.log("init.initial"),
+      entry: [
+        () => console.log("init.initial")
+      ],
       invoke: {src: "loadSession"},
       on: {
         NO_SESSION: {
@@ -55,9 +56,37 @@ export const initMachine = createMachine<InitContext, InitEvent>({
         GOT_SESSION: {
           actions: "assignSessionInfoToContext",
           target: "register"
+          // target: "checkAggregateState"
         }
       }
     },
+    /*
+    checkAggregateState: {
+      invoke: {
+        src: "loadInitAggregateState",
+        onDone: [{
+          cond: (context) => !!context.initAggregateState.hubSignupTransaction,
+          actions: () => console.log("init.checkAggregateState.onDone: Got 'initAggregateState.hubSignupTransaction'. Going directly to 'success'."),
+          target: "success"
+        }, {
+          cond: (context) => !!context.initAggregateState.safeFundingTransaction,
+          actions: () => console.log("init.checkAggregateState.onDone: Got 'initAggregateState.safeFundingTransaction'. Going directly to 'signupForUbi'."),
+          target: "signupForUbi"
+        }, {
+          cond: (context) => !!context.initAggregateState.invitationTransaction && !context.initAggregateState.registration?.circlesAddress,
+          actions: () => console.log("init.checkAggregateState.onDone: Got 'initAggregateState.invitationTransaction' and no 'initAggregateState.registration.circlesAddress'. Going directly to '#connectOrCreate'."),
+          target: "#connectOrCreate"
+        }, {
+          cond: (context) => !!context.initAggregateState.invitationTransaction && !!context.initAggregateState.registration?.circlesAddress,
+          actions: () => console.log("init.checkAggregateState.onDone: Got 'initAggregateState.invitationTransaction' and 'initAggregateState.registration.circlesAddress'. Going directly to '#fundSafeFromEoa'."),
+          target: "#fundSafeFromEoa"
+        }, {
+          cond: (context) => !!context.initAggregateState.invitation,
+          actions: () => console.log("init.checkAggregateState.onDone: Got 'context.initAggregateState.invitation'. Going directly to '#'."),
+          target: "#"
+        }]
+      }
+    },*/
     register: {
       entry: () => console.log("init.register"),
       invoke: {src: "loadRegistration"},
@@ -152,6 +181,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           ]
         },
         connectOrCreate: {
+          id: "connectOrCreate",
           entry: [
             () => console.log("init.eoa.connectOrCreate"),
             "promptConnectOrCreateAndRestart"
@@ -175,6 +205,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           }
         },
         redeemInvitation: {
+          id: "redeemInvitation",
           entry: [
             "promptRedeemInvitationAndRestart",
             () => console.log("init.eoa.redeemInvitation")
@@ -256,6 +287,7 @@ export const initMachine = createMachine<InitContext, InitEvent>({
           }
         },
         fundSafeFromEoa: {
+          id: "fundSafeFromEoa",
           entry: [
             () => console.log("init.safe.fundSafeFromEoa"),
             "fundSafeFromEoaAndRestart"
@@ -356,6 +388,15 @@ export const initMachine = createMachine<InitContext, InitEvent>({
   }
 }, {
   services: {
+    loadInitAggregateState: async (context) => {
+      const apiClient = await window.o.apiClient.client.subscribeToResult();
+      const result = await apiClient.query({
+        query: InitAggregateStateDocument
+      });
+      if (result.data?.initAggregateState) {
+        context.initAggregateState = result.data.initAggregateState;
+      }
+    },
     loadSession: () => (callback) => {
       getSessionInfo()
         .then(sessionInfo => {

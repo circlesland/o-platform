@@ -14,6 +14,21 @@ query findSafeAddressByOwner($owner:String!) {
   findSafeAddressByOwner(owner: $owner)
 }
 
+query initAggregateState {
+  initAggregateState {
+    hubSignupTransaction
+    invitation {
+      claimedAt
+    }
+    invitationTransaction
+    safeFundingTransaction
+    registration {
+      id
+      firstName
+    }
+  }
+}
+
 query claimedInvitation {
   claimedInvitation {
     createdAt

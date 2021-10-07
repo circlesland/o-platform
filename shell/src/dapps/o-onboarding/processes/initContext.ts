@@ -8,6 +8,7 @@ import {
   SafeData,
   UbiData
 } from "./initEvent";
+import {InitAggregateState} from "../../../shared/api/data/types";
 
 export type InitContext = {
   session?: SessionInfo;
@@ -18,5 +19,6 @@ export type InitContext = {
   eoaInvitationTransaction?: InvitationTransaction;
   safe?: SafeData;
   safeInvitationTransaction?: InvitationTransaction;
-  ubi?: UbiData
+  ubi?: UbiData,
+  initAggregateState?: InitAggregateState
 };

@@ -126,9 +126,11 @@
                 dapp: "chat:1",
                 data: null,
               });
-              console.log("RECEIVED WS MESSAGE EVENT:", next);
             } else {
               console.log("RECEIVED WS BLOCKCHAIN EVENT:", next);
+              window.o.publishEvent(<any>{
+                type: "blockchain_event"
+              });
             }
             inbox.reload();
           });

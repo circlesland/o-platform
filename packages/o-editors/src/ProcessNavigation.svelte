@@ -1,5 +1,4 @@
 <script lang="ts">
-import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { EditorContext } from "./editorContext";
 import { createEventDispatcher } from "svelte";
 import Icons from "../../../shell/src/shared/molecules/Icons.svelte";
@@ -8,9 +7,7 @@ const dispatch = createEventDispatcher();
 
 export let context: EditorContext;
 export let type: string = "large";
-$: {
-  console.log(context);
-}
+
 </script>
 
 <div
@@ -23,10 +20,6 @@ $: {
           type="submit"
           on:click="{() => {
             dispatch('buttonClick');
-            /* const answer = new Continue();
-          answer.data = context.data;
-          context.process.submit(answer);
-          */
           }}"
           class="relative btn btn-primary btn-block"
           >{context.params.view.submitButtonText

@@ -9,10 +9,11 @@ import { push } from "svelte-spa-router";
 import * as yup from "yup";
 import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {
-  ClaimInvitationDocument,
+  ClaimInvitationDocument, EventsDocument,
   InvitationTransactionDocument,
   RedeemClaimedInvitationDocument,
 } from "../../../../shared/api/data/types";
+import {inbox} from "../../../../shared/stores/inbox";
 
 export type RedeemInvitationContextData = {
   inviteCode: string;
@@ -119,6 +120,32 @@ const processDefinition = (processId: string) =>
           onError: "#waitUntilRedeemed",
         },
       },
+      waitUntilRedeemed: {
+        id: "waitUntilRedeemed",
+        invoke: {
+          src: async () => {
+            await new Promise(async (resolve, reject) => {
+              const apiClient = await window.o.apiClient.client.subscribeToResult();
+              const observable = apiClient.subscribe({
+                query: EventsDocument
+              });
+              let subscription: ZenObservable.Subscription;
+              const subscriptionHandler = next => {
+                if (next.data.events.type == "blockchain_event") {
+                  if (subscription) {
+                    subscription.unsubscribe();
+                  }
+                  resolve(null);
+                  // TODO: Close the connection when done
+                }
+              };
+              subscription = observable.subscribe(subscriptionHandler);
+            });
+          },
+          onDone: "#checkIfRedeemed"
+        }
+      },
+      /*
       waitUntilRedeemed: prompt({
         id: "waitUntilRedeemed",
         field: "__",
@@ -132,6 +159,7 @@ const processDefinition = (processId: string) =>
           next: "#checkIfRedeemed",
         },
       }),
+       */
       success: {
         id: "success",
         type: "final",
