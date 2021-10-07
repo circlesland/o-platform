@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import {onDestroy, onMount} from "svelte";
   import ChatCard from "../atoms/ChatCard.svelte";
   import NotificationCard from "../atoms/NotificationCard.svelte";
   import "simplebar";
@@ -19,6 +19,8 @@
   import { setTrust } from "../../o-banking/processes/setTrust";
   import { transfer } from "../../o-banking/processes/transfer";
   import { push } from "svelte-spa-router";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
 
   export let id: string;
 
@@ -26,8 +28,10 @@
   let chatHistory: ProfileEvent[] = [];
 
   let contactProfile: Contact | null;
+  let shellEventSubscription: Subscription;
 
-  onMount(async () => {
+  async function reload() {
+
     const safeAddress = $me.circlesAddress;
     const contactSafeAddress = id;
     const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -58,8 +62,8 @@
     }
     chatHistory = chatHistoryResult.data.chatHistory;
     contactProfile = contactProfileResult.data.contact
-      ? contactProfileResult.data.contact
-      : null;
+            ? contactProfileResult.data.contact
+            : null;
 
     console.log("PRFILE: ", contactProfile);
 
@@ -67,7 +71,21 @@
       type: "shell.scrollToBottom",
       scrollNow: true,
     });
-  });
+  }
+
+    onMount(async () => {
+      shellEventSubscription = window.o.events.subscribe(
+              async (event: PlatformEvent) => {
+                if (event.type != "shell.refresh" || (<any>event).dapp != "chat:1") {
+                  return;
+                }
+                await reload();
+              }
+      );
+      await reload();
+    });
+
+    onDestroy(() => shellEventSubscription.unsubscribe());
 
   let inputField: any;
   let chatmessage: string;

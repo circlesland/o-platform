@@ -48,6 +48,7 @@
   import {me} from "../stores/me";
   import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
   import {EventsDocument} from "../api/data/types";
+  import {ShellEvent} from "@o-platform/o-process/dist/events/shellEvent";
 
   // install Swiper modules
   SwiperCore.use([Navigation, Pagination]);
@@ -103,11 +104,36 @@
   /**
    * This function is called only one time after the first route.
    */
-  function init() {
+  async function init() {
     // setNav({
     //   ...currentNavArgs,
     //   showLogin: dapp.dappId == "homepage:1",
     // });
+    const session = await getSessionInfo();
+    if (!$me || !session.isLoggedOn) {
+      await push("/");
+      return;
+    } else {
+      window.o.apiClient.client.subscribeToResult()
+        .then(apiClient => {
+          console.log("SUBSCRIBING TO WS EVENTS ..");
+          apiClient.subscribe({
+            query: EventsDocument
+          }).subscribe(next => {
+            if (next.data.events.type == "new_message") {
+              window.o.publishEvent(<any>{
+                type: "shell.refresh",
+                dapp: "chat:1",
+                data: null,
+              });
+              console.log("RECEIVED WS MESSAGE EVENT:", next);
+            } else {
+              console.log("RECEIVED WS BLOCKCHAIN EVENT:", next);
+            }
+            inbox.reload();
+          });
+        });
+    }
   }
 
   function onOpenNavigation() {
@@ -574,17 +600,6 @@
     if (!$me || !session.isLoggedOn) {
       await push("/");
       return;
-    } else {
-      window.o.apiClient.client.subscribeToResult()
-        .then(apiClient => {
-          console.log("SUBSCRIBING TO WS EVENTS ..");
-          apiClient.subscribe({
-            query: EventsDocument
-          }).subscribe(next => {
-            console.log("RECEIVED WS EVENT:", next);
-            inbox.reload();
-          });
-        });
     }
   }
 

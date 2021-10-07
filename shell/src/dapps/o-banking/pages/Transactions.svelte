@@ -37,7 +37,7 @@
       }
     });
     if (timeline.errors) {
-      error = `Couldn't load the transaction history for the following reasons: ${timeline.errors.join("\n")}`;
+      error = `Couldn't load the transaction history for the following reasons: ${JSON.stringify(timeline.errors)}`;
     }
     entries = timeline.data.events;
   });

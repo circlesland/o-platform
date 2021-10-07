@@ -27,7 +27,7 @@ export class Banking {
             }
         });
         if (timeline.errors) {
-            throw new Error(`Couldn't load the transaction history for the following reasons: ${timeline.errors.join("\n")}`);
+            throw new Error(`Couldn't load the transaction history for the following reasons: ${JSON.stringify(timeline.errors)}`);
         }
         this.entries = timeline.data.events;
     }

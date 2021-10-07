@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 import {
-  AcknowledgeDocument, EventsDocument, EventsSubscription,
+  AcknowledgeDocument,
   InboxDocument,
   Profile,
   ProfileEvent,
@@ -26,12 +26,6 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
   function start(set) {
     set([]);
 
-    queryEvents().then((e) => {
-      events = e;
-      events = events.filter((o) => o.type != "eth_transfer");
-      set(events);
-    });
-
     const subscription = window.o.events.subscribe(
       async (
         event: PlatformEvent & {
@@ -41,6 +35,14 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
         if (event.type == "shell.loggedOut") {
           localStorage.removeItem("me");
           set([]);
+          return;
+        }
+        if (event.type == "shell.authenticated") {
+          queryEvents().then((e) => {
+            events = e;
+            events = events.filter((o) => o.type != "eth_transfer");
+            set(events);
+          });
           return;
         }
       }
