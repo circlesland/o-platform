@@ -199,7 +199,7 @@
         <div class="flex items-center w-full">
           <div class="text-left ">
             <Time
-              timestamp="{new Date(Number.parseInt(transfer.timestamp))}"
+              timestamp="{new Date(transfer.timestamp)}"
               format="D. MMMM YYYY HH:mm" />
           </div>
         </div>
