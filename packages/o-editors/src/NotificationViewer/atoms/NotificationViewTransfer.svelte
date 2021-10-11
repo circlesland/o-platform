@@ -7,7 +7,7 @@ export let eventData: any;
 </script>
 
 <div class="self-center text-6xl text-success font-heading">
-  +{displayCirclesAmount(eventData.value)}
+  +{displayCirclesAmount(eventData.value, eventData.time, true)}
   <Icons icon="circlessimple" size="10" />
 </div>
 <div class="self-center text-2xl font-heading">from</div>

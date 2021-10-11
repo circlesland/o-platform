@@ -109,12 +109,6 @@
   }
 </script>
 
-<!-- 
-<BankingDetailHeader
-  {runtimeDapp}
-  {routable}
-  amount="{transfer ? transfer.amount : 0}"
-  {classes} /> -->
 <div class="p-5">
   <!--<pre>
     {JSON.stringify(transfer, null, 2)}
@@ -130,9 +124,9 @@
       <div>
         <span class="inline-block text-6xl font-heading {classes}">
           {#if transfer.direction === 'in'}
-            +{displayCirclesAmount(transfer ? transfer.value.toString() : '0')}
+            +{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, true)}
           {:else}
-            -{displayCirclesAmount(transfer ? transfer.value.toString() : '0')}
+            -{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, true)}
           {/if}
 
           <svg
@@ -199,7 +193,7 @@
         <div class="flex items-center w-full">
           <div class="text-left ">
             <Time
-              timestamp="{new Date(Number.parseInt(transfer.timestamp))}"
+              timestamp="{new Date(transfer.timestamp)}"
               format="D. MMMM YYYY HH:mm" />
           </div>
         </div>
@@ -210,7 +204,7 @@
 
         <div class="flex items-center w-full">
           <div class="text-left ">
-            {displayCirclesAmount(transfer ? transfer.value.toString() : '0')}
+            {displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp)}
             Circles
           </div>
         </div>

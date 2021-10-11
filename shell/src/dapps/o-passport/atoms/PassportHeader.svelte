@@ -52,7 +52,7 @@
   <div class="self-center block mt-2 text-center">
 
     <div class="mb-4" on:click="{() => editProfileField({ avatarUrl: true })}">
-      <UserImage {profile} size="{36}" />
+      <UserImage {profile} size="{36}" profileLink="{false}" />
     </div>
 
     <div

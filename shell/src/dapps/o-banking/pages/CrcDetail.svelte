@@ -45,12 +45,12 @@
       {#if token && token.token_balance > 0}
         <div on:click="{() => push(`#/friends/${token.token_owner_address}`)}">
           <ItemCard
-            params="{{ edgeless: false, imageProfile: token.token_owner_profile, title: token.token_owner_profile ? `${token.token_owner_profile.firstName} ${token.token_owner_profile.lastName ? token.token_owner_profile.lastName : ''}` : token.tokenOwner, subTitle: token.token_owner_address, truncateMain: true, shadowMedium: true }}">
+            params="{{ edgeless: false, imageProfile: token.token_owner_profile, title: token.token_owner_profile ? `${token.token_owner_profile.firstName} ${token.token_owner_profile.lastName ? token.token_owner_profile.lastName : ''}` : token.tokenOwner, subTitle: token.token_owner_address, truncateMain: true, shadowSmall: true }}">
 
             <div slot="itemCardEnd">
               <div class="self-end text-right text-success">
                 <span>
-                  {displayCirclesAmount(token.token_balance ? token.token_balance : '0')}
+                  {displayCirclesAmount(token.token_balance ? token.token_balance : '0', null, true)}
                 </span>
               </div>
 
