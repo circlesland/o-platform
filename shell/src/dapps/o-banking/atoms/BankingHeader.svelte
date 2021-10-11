@@ -6,6 +6,7 @@
   import { BalanceDocument } from "../data/api/types";
   import { onMount } from "svelte";
   import { me } from "../../../shared/stores/me";
+
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 
   export let balance: string = "0";
@@ -24,7 +25,7 @@
     if (balanceResult.errors?.length > 0) {
       throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
     }
-    balance = displayCirclesAmount(balanceResult.data.balance);
+    balance = displayCirclesAmount(balanceResult.data.balance, null, true);
   });
 </script>
 

@@ -19,8 +19,12 @@ import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import { Profile } from "../data/api/types";
 import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { SetTrustContext } from "./setTrust";
-import {loadProfileByProfileId} from "../../../shared/api/loadProfileByProfileId";
-import {loadProfileBySafeAddress} from "../../../shared/api/loadProfileBySafeAddress";
+import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
+import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
+import {
+  displayCirclesAmount,
+  convertTimeCirclesToCircles,
+} from "src/shared/functions/displayCirclesAmount";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -183,6 +187,7 @@ const processDefinition = (processId: string) =>
         dataSchema: yup.object().shape({
           amount: yup
             .number()
+            .min(0.1, "Please enter at least 0.1")
             .typeError("Please enter a valid Number.")
             .required("Please enter a valid amount.")
             .positive("Please enter a valid amount."),
@@ -208,11 +213,22 @@ const processDefinition = (processId: string) =>
               throw new Error(`No recipient address on context`);
             }
             context.data.maxFlows = {};
+            console.log("CONEXT DATA", context.data);
             const p1 = new Promise<void>(async (resolve) => {
               const flow = await requestPathToRecipient({
                 data: {
                   recipientAddress: context.data.recipientAddress,
-                  amount: context.data.tokens.amount,
+                  amount:
+                    context.data.tokens.currency == "crc"
+                      ? convertTimeCirclesToCircles(
+                          new BN(
+                            RpcGateway.get().utils.toWei(
+                              context.data.tokens?.amount?.toString(),
+                              "ether"
+                            )
+                          )
+                        ).toString()
+                      : context.data.tokens.amount,
                   safeAddress: context.data.safeAddress,
                 },
               });
@@ -241,10 +257,12 @@ const processDefinition = (processId: string) =>
                   context.data.tokens.currency.toLowerCase()
                 ]
               );
-              const amountInWei = new BN(
-                RpcGateway.get().utils.toWei(
-                  context.data.tokens.amount,
-                  "ether"
+              const amountInWei = convertTimeCirclesToCircles(
+                new BN(
+                  RpcGateway.get().utils.toWei(
+                    context.data.tokens?.amount?.toString(),
+                    "ether"
+                  )
                 )
               );
               return maxFlowInWei.gte(amountInWei);
@@ -254,8 +272,12 @@ const processDefinition = (processId: string) =>
           {
             actions: (context) => {
               const formattedAmount = parseFloat(
-                context.data.tokens.amount
-              ).toFixed(2);
+                displayCirclesAmount(
+                  context.data.tokens.amount.toString(),
+                  null,
+                  true
+                ).toString()
+              );
               const formattedMax = parseFloat(
                 RpcGateway.get().utils.fromWei(
                   context.data.maxFlows[
@@ -430,7 +452,14 @@ const processDefinition = (processId: string) =>
               return {
                 safeAddress: context.data.safeAddress,
                 recipientAddress: context.data.recipientAddress,
-                amount: context.data.tokens.amount,
+                amount: convertTimeCirclesToCircles(
+                  new BN(
+                    RpcGateway.get().utils.toWei(
+                      context.data.tokens?.amount?.toString(),
+                      "ether"
+                    )
+                  )
+                ),
                 privateKey: sessionStorage.getItem("circlesKey"),
                 message: context.data.message,
               };

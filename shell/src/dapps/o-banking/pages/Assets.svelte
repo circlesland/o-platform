@@ -52,7 +52,9 @@
     circles.balance = displayCirclesAmount(
       circles.details
         .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
-        .toString()
+        .toString(),
+      null,
+      true
     );
     circles.variety = circles.details.length;
 
