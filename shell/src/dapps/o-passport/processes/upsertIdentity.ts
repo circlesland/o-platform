@@ -12,12 +12,13 @@ import { promptChoice } from "./identify/prompts/promptChoice";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptCity } from "../../../shared/api/promptCity";
-import {City, UpsertProfileDocument} from "../../../shared/api/data/types";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import { City, UpsertProfileDocument } from "../../../shared/api/data/types";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 
 export type UpsertIdentityContextData = {
   id?: number;
   newsletter?: boolean;
+  displayTimeCircles?: boolean;
   circlesAddress?: string;
   circlesSafeOwner?: string;
   firstName?: string;
@@ -28,7 +29,7 @@ export type UpsertIdentityContextData = {
   city?: City;
   avatarUrl?: string;
   avatarMimeType?: string;
-  successAction?: (data:UpsertIdentityContextData) => void;
+  successAction?: (data: UpsertIdentityContextData) => void;
 };
 
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
@@ -186,9 +187,10 @@ const processDefinition = (processId: string) =>
         id: "upsertIdentity",
         invoke: {
           src: async (context) => {
-
-            if (!context.data.circlesSafeOwner
-              && sessionStorage.getItem("circlesKey")) {
+            if (
+              !context.data.circlesSafeOwner &&
+              sessionStorage.getItem("circlesKey")
+            ) {
               localStorage.removeItem("circlesKey");
             }
 
@@ -211,6 +213,7 @@ const processDefinition = (processId: string) =>
                 lastName: context.data.lastName,
                 dream: context.data.dream,
                 newsletter: context.data.newsletter ?? false,
+                displayTimeCircles: context.data.displayTimeCircles ?? false,
                 country: context.data.country,
                 avatarUrl: context.data.avatarUrl,
                 avatarMimeType: context.data.avatarMimeType,
@@ -243,7 +246,6 @@ const processDefinition = (processId: string) =>
       },
     },
   });
-
 
 export const upsertIdentity: ProcessDefinition<
   void,

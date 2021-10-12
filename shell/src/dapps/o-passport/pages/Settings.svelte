@@ -7,7 +7,10 @@
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import {UpsertProfileDocument, WhoamiDocument} from "../../../shared/api/data/types";
+  import {
+    UpsertProfileDocument,
+    WhoamiDocument,
+  } from "../../../shared/api/data/types";
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
@@ -61,12 +64,14 @@
         country: $me.country,
         dream: $me.dream,
         newsletter: receiveNewsletter,
-        status: ""
+        displayTimeCircles: displayTimeCircles,
+        status: "",
       },
     });
     if (result.errors) {
       return;
     }
+    console.log("RESULT ", result);
     window.o.publishEvent(<PlatformEvent>{
       type: "shell.authenticated",
       profile: result.data.upsertProfile,
@@ -87,6 +92,7 @@
   });
 
   let receiveNewsletter: boolean = $me.newsletter;
+  let displayTimeCircles: boolean = $me.displayTimeCircles;
   const delayedTrigger = new DelayedTrigger(500, async () => {
     // TODO: Make call to upsertProfile shorter
     await editProfile();
@@ -111,11 +117,9 @@
         <div class="w-full form-control">
           <label class="label" for="newsletter">
             <div
-              class="flex flex-row items-stretch w-full space-x-10 cursor-pointer justify-items-stretch"
-            >
+              class="flex flex-row items-stretch w-full space-x-10 cursor-pointer justify-items-stretch">
               <div
-                class="self-center flex-grow text-sm text-left justify-self-start"
-              >
+                class="self-center flex-grow text-sm text-left justify-self-start">
                 Receive Newsletter
               </div>
               <div class="self-center justify-self-end">
@@ -124,11 +128,41 @@
                   id="newsletter"
                   type="checkbox"
                   class="inline-block toggle toggle-primary"
-                  bind:checked={receiveNewsletter}
-                  on:change={() => delayedTrigger.trigger()}
-                />
+                  bind:checked="{receiveNewsletter}"
+                  on:change="{() => delayedTrigger.trigger()}" />
 
-                <span class="toggle-mark" />
+                <span class="toggle-mark"></span>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </Card>
+  </section>
+  <section class="flex items-center justify-center mx-4 mb-2">
+    <Card>
+      <div class="text-xs font-bold text-left text-primary">
+        CIRCLES DISPLAY
+      </div>
+      <div class="w-full space-x-2 bg-white sm:space-x-6">
+        <div class="w-full form-control">
+          <label class="label" for="displayTimeCircles">
+            <div
+              class="flex flex-row items-stretch w-full space-x-10 cursor-pointer justify-items-stretch">
+              <div
+                class="self-center flex-grow text-sm text-left justify-self-start">
+                Display Time Circles
+              </div>
+              <div class="self-center justify-self-end">
+                <input
+                  name="checkbox"
+                  id="displayTimeCircles"
+                  type="checkbox"
+                  class="inline-block toggle toggle-primary"
+                  bind:checked="{displayTimeCircles}"
+                  on:change="{() => delayedTrigger.trigger()}" />
+
+                <span class="toggle-mark"></span>
               </div>
             </div>
           </label>

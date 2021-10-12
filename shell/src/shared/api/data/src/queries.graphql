@@ -10,7 +10,7 @@ query whoami {
   whoami
 }
 
-query findSafeAddressByOwner($owner:String!) {
+query findSafeAddressByOwner($owner: String!) {
   findSafeAddressByOwner(owner: $owner)
 }
 
@@ -51,14 +51,14 @@ query safeFundingTransaction {
 }
 
 query hubSignupTransaction {
-    hubSignupTransaction {
-        transaction_hash
-        payload {
-            ... on CrcSignup {
-                token
-            }
-        }
+  hubSignupTransaction {
+    transaction_hash
+    payload {
+      ... on CrcSignup {
+        token
+      }
     }
+  }
 }
 
 query myInvitations {
@@ -92,6 +92,7 @@ query myProfile {
     avatarCid
     avatarMimeType
     newsletter
+    displayTimeCircles
     cityGeonameid
     city {
       geonameid
