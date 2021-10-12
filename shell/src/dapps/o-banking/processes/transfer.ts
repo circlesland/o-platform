@@ -221,12 +221,8 @@ const processDefinition = (processId: string) =>
                   amount:
                     context.data.tokens.currency == "crc"
                       ? convertTimeCirclesToCircles(
-                          new BN(
-                            RpcGateway.get().utils.toWei(
-                              context.data.tokens?.amount?.toString(),
-                              "ether"
-                            )
-                          )
+                          Number.parseFloat(context.data.tokens.amount),
+                          null
                         ).toString()
                       : context.data.tokens.amount,
                   safeAddress: context.data.safeAddress,
@@ -257,14 +253,16 @@ const processDefinition = (processId: string) =>
                   context.data.tokens.currency.toLowerCase()
                 ]
               );
-              const amountInWei = convertTimeCirclesToCircles(
-                new BN(
-                  RpcGateway.get().utils.toWei(
-                    context.data.tokens?.amount?.toString(),
-                    "ether"
-                  )
+              const amountInWei = new BN(
+                RpcGateway.get().utils.toWei(
+                  convertTimeCirclesToCircles(
+                    Number.parseFloat(context.data.tokens.amount),
+                    null
+                  ).toString(),
+                  "ether"
                 )
               );
+
               return maxFlowInWei.gte(amountInWei);
             },
             target: "#loadRecipientProfile",
@@ -453,12 +451,8 @@ const processDefinition = (processId: string) =>
                 safeAddress: context.data.safeAddress,
                 recipientAddress: context.data.recipientAddress,
                 amount: convertTimeCirclesToCircles(
-                  new BN(
-                    RpcGateway.get().utils.toWei(
-                      context.data.tokens?.amount?.toString(),
-                      "ether"
-                    )
-                  )
+                  Number.parseFloat(context.data.tokens.amount),
+                  null
                 ),
                 privateKey: sessionStorage.getItem("circlesKey"),
                 message: context.data.message,
