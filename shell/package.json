@@ -37,7 +37,9 @@
   },
   "dependencies": {
     "@toruslabs/openlogin": "^0.10.2",
-    "@toruslabs/torus-direct-web-sdk": "^4.15.1",
+    "@toruslabs/torus-direct-web-sdk": "^4.16.0-alpha.2",
+    "@tkey/default": "^4.4.0-alpha.4",
+    "@tkey/web-storage": "^4.4.0-alpha.4",
     "@o-platform/o-editors": "0.1.0",
     "@o-platform/o-utils": "0.1.0",
     "@o-platform/o-events": "0.1.0",

@@ -17,7 +17,7 @@ export type FundSafeFromEoaContextData = {
 
 export type FundSafeFromEoaContext = ProcessContext<FundSafeFromEoaContextData>;
 
-const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
+const processDefinition = (processId: string) =>
   createMachine<FundSafeFromEoaContext, any>({
     id: `${processId}:fundSafeFromEoa`,
     initial: "execute",

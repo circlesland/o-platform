@@ -15,6 +15,7 @@ const day0Unix = dayjs("2020-10-15T00:00:00.000Z").unix();
 const transactionDateUnix = dayjs("2024-10-16T00:00:00.000Z").unix();
 const transactionDate = dayjs("2024-10-16T00:00:00.000Z");
 
+/*
 const baseCirclesPerDayValue = 8;
 
 const transactionDateCirclesAmount = 104.864;
@@ -87,4 +88,20 @@ export function displayCirclesAmount(
   } else {
     return Web3.utils.fromWei(value, "ether");
   }
+}
+
+
+*/
+export function displayCirclesAmount(
+  amount: string,
+  date: number = now,
+  fixed: boolean
+) {
+  return new BN("0");
+}
+function convertCirclesToTimeCircles(amount: BN, date: number = now) {
+  return new BN("0");
+}
+export function convertTimeCirclesToCircles(amount: BN, date: number = now) {
+  return new BN("0");
 }

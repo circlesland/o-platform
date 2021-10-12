@@ -84,7 +84,7 @@
           ) {
             // console.log("Cancel dialog answer:", answer);
             if ((<any>answer).data.___cancelRequest.key === "no") {
-              if (beforeCancelPrompt.navigation.canGoBack) {
+              if (beforeCancelPrompt.navigation.canGoBack && beforeCancelPrompt.dirtyFlags) {
                 window.o.publishEvent({ type: "process.canGoBack" });
               }
               if (beforeCancelPrompt.navigation.canSkip) {
@@ -253,7 +253,9 @@
               cancel: () => process.sendAnswer(new CancelRequest()),
             };
             dispatch("navigation", nav);
-            if (promptEvent.navigation.canGoBack) {
+
+            const isOnlyEditablePage = promptEvent.skipIfNotDirty && Object.keys(promptEvent.dirtyFlags).length == 1;
+            if (promptEvent.navigation.canGoBack && !isOnlyEditablePage) {
               window.o.publishEvent({ type: "process.canGoBack" });
             }
             if (promptEvent.navigation.canSkip) {

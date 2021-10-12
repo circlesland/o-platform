@@ -46,7 +46,6 @@ export function promptTag<
   return prompt<TContext, any>({
     id: spec.id ?? field.name,
     field: spec.field,
-    onlyWhenDirty: spec.onlyWhenDirty,
     component: DropdownSelectEditor,
     params: <DropdownSelectorParams<TContext, Tag, number>>{
       view: spec.params.view,

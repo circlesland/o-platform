@@ -92,7 +92,6 @@ export function promptFile<
         id: id("previewFile"),
         // entry: () => console.log(`previewFile entry`),
         field: spec.field,
-        onlyWhenDirty: spec.onlyWhenDirty,
         component: PicturePreview,
         params: {
           view: spec.params.view,
@@ -140,7 +139,6 @@ export function promptFile<
             file = o;
           },
         },
-        onlyWhenDirty: spec.onlyWhenDirty,
         component: PictureEditor,
         params: {
           view: spec.params.view,
@@ -166,7 +164,7 @@ export function promptFile<
           },
           {
             cond: (context) =>
-              !context.dirtyFlags[field.name] && spec.onlyWhenDirty,
+              !context.dirtyFlags[field.name] && context.onlyWhenDirty,
             target: spec.navigation.skip ?? spec.navigation.next,
           },
           {

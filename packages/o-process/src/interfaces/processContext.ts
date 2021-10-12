@@ -1,4 +1,5 @@
 export interface IProcessContext {
+  onlyWhenDirty: boolean;
   /**
    * Contains the data that collected or manipulated during the process.
    * This data is available to every step.
@@ -20,5 +21,6 @@ export interface TProcessContext<Data extends {[key:string]:any}> extends IProce
 export class ProcessContext<T extends {[key:string]:any}> implements TProcessContext<T> {
   data: T = <any>{};
   dirtyFlags: { [p: string]: boolean } = {};
+  onlyWhenDirty: boolean = false;
   messages: { [p: string]: string } = {};
 }

@@ -26,7 +26,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
   },
 };
 
-const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
+const processDefinition = (processId: string) =>
   createMachine<UpsertRegistrationContext, any>({
     id: `${processId}:upsertRegistration`,
     initial: "upsertRegistration",
@@ -39,7 +39,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "newsletter",
         component: ChoiceSelector,
         params: { view: editorContent.newsletter },
-        onlyWhenDirty: skipIfNotDirty,
         options: [
           {
             key: "dontSubscribe",
