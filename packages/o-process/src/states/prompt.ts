@@ -51,7 +51,7 @@ export type PromptSpec<TContext extends ProcessContext<any>, TEvent> = {
    * If set to 'true' every prompt will automatically submit its present data
    * and go to the next step if it's dirty flag is not set.
    */
-  onlyWhenDirty?: boolean;
+  // onlyWhenDirty?: boolean;
   navigation?: {
     // If you want to allow the user to go one step back then specify here where he came from
     previous?: string;
@@ -112,7 +112,8 @@ export function prompt<
             {
               cond: (context: TContext) => {
                 const skip =
-                  spec.onlyWhenDirty && !context.dirtyFlags[field.name];
+                  context.onlyWhenDirty && !context.dirtyFlags[field.name];
+                  // spec.onlyWhenDirty && !context.dirtyFlags[field.name];
                 if (skip) {
                   console.log(
                     `checkSkip: ${spec.id} ${spec.field} - skipping because '${spec.field}' is not dirty and 'onlyWhenDirty' == true.`

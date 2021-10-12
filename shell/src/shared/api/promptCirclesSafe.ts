@@ -50,7 +50,6 @@ export function promptCirclesSafe<
   return prompt<TContext, any>({
     id: spec.id ?? field.name,
     field: spec.field,
-    onlyWhenDirty: spec.onlyWhenDirty,
     component: DropdownSelectEditor,
     params: <DropdownSelectorParams<TContext, Profile, string>>{
       allowAlternativeInput: true,

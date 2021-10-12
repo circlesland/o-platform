@@ -26,6 +26,7 @@ export function show<TContext extends ProcessContext<any>, TEvent extends Platfo
 
     return <Prompt<TContext>>{
       type: "process.prompt",
+      skipIfNotDirty: context.onlyWhenDirty,
       field: concreteSpec.field,
       component: concreteSpec.component,
       data: /*concreteSpec.passDataByReference

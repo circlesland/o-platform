@@ -439,13 +439,15 @@
     window.o.runProcess = async function runProcess(
       processDefinition: ProcessDefinition<any, any>,
       contextData: { [x: string]: any },
-      dirtyFlags: { [x: string]: boolean } | undefined
+      dirtyFlags: { [x: string]: boolean } | undefined,
+      skipIfNotDirty?: boolean
     ) {
       const modifier = async ctx => {
         ctx.childProcessDefinition = processDefinition;
         ctx.childContext = {
           data: contextData,
           dirtyFlags: !dirtyFlags ? {} : dirtyFlags,
+          skipIfNotDirty: skipIfNotDirty
         };
         return ctx;
       };

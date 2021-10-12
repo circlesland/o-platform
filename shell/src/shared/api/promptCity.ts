@@ -17,7 +17,6 @@ export function promptCity<
 >(spec: {
   id?: string;
   field: PromptField<TContext>;
-  onlyWhenDirty?: boolean;
   params: {
     view: EditorViewContext;
     [x: string]: any;
@@ -42,7 +41,6 @@ export function promptCity<
   return prompt<TContext, any>({
     id: spec.id ?? field.name,
     field: spec.field,
-    onlyWhenDirty: spec.onlyWhenDirty,
     component: DropdownSelectEditor,
     params: <DropdownSelectorParams<TContext, City, number>>{
       view: spec.params.view,

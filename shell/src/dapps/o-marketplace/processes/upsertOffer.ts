@@ -97,7 +97,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
   },
 };
 
-const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
+const processDefinition = (processId: string) =>
   createMachine<UpsertOfferContext, any>({
     id: `${processId}:upsertOffer`,
     initial: "title",
@@ -108,7 +108,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
 
       title: prompt<UpsertOfferContext, any>({
         field: "title",
-        onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
           view: editorContent.title,
@@ -122,7 +121,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       description: prompt<UpsertOfferContext, any>({
         field: "description",
-        onlyWhenDirty: skipIfNotDirty,
         component: TextareaEditor,
         params: {
           view: editorContent.description,
@@ -137,7 +135,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       categoryTagId: promptTag<UpsertOfferContext, any>({
         field: "categoryTagId",
-        onlyWhenDirty: skipIfNotDirty,
         typeId: "o-marketplace:offer:category:1",
         params: {
           view: editorContent.offerCategory,
@@ -150,7 +147,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       geonameid: promptCity<UpsertOfferContext, any>({
         field: "geonameid",
-        onlyWhenDirty: skipIfNotDirty,
         params: {
           view: editorContent.offerlocation,
         },
@@ -161,7 +157,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       unitTagId: promptTag<UpsertOfferContext, any>({
         field: "unitTagId",
-        onlyWhenDirty: skipIfNotDirty,
         typeId: "o-marketplace:offer:unit:1",
         params: {
           view: editorContent.offerUnit,
@@ -174,7 +169,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       pricePerUnit: prompt<UpsertOfferContext, any>({
         field: "pricePerUnit",
-        onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
           view: editorContent.offerPrice,
@@ -186,7 +180,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       maxUnits: prompt<UpsertOfferContext, any>({
         field: "maxUnits",
-        onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
           view: editorContent.offerUnitAmount,
@@ -198,7 +191,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       deliveryTermsTagId: promptTag<UpsertOfferContext, any>({
         field: "deliveryTermsTagId",
-        onlyWhenDirty: skipIfNotDirty,
         typeId: "o-marketplace:offer:deliveryTerms:1",
         params: {
           view: editorContent.offerDelivery,
@@ -211,7 +203,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       pictureUrl: promptFile<UpsertOfferContext, any>({
         field: "pictureUrl",
-        onlyWhenDirty: skipIfNotDirty,
         uploaded: (context, event) => {
           context.data.pictureUrl = event.data?.url;
           context.data.pictureMimeType = event.data?.mimeType;

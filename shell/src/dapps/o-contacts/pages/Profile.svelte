@@ -6,7 +6,7 @@
   import { getCountryName } from "../../../shared/countries";
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import UserImage from "src/shared/atoms/UserImage.svelte";
-  import { upsertIdentityOnlyWhereDirty } from "../../o-passport/processes/upsertIdentity";
+  import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
   import { onDestroy, onMount } from "svelte";
@@ -213,7 +213,7 @@
   function editProfile(dirtyFlags: { [x: string]: boolean }) {
     if (!profile || !profile.id || !isEditable) return;
 
-    window.o.runProcess(upsertIdentityOnlyWhereDirty, profile, dirtyFlags);
+    window.o.runProcess(upsertIdentity, profile, dirtyFlags, true);
   }
 
   let inviteLink: string = "";

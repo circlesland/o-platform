@@ -51,7 +51,6 @@ export function promptChoice<
         entry: spec.entry,
         field: spec.id,
         component: spec.component ?? ChoiceSelector,
-        onlyWhenDirty: spec.onlyWhenDirty,
         params: {
           view: spec.params.view,
           choices: spec.options,

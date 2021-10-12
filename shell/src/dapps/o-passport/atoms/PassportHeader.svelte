@@ -6,7 +6,6 @@
   } from "../../../shared/processes/shellProcess";
   import {
     upsertIdentity,
-    upsertIdentityOnlyWhereDirty,
   } from "../processes/upsertIdentity";
   import { me } from "../../../shared/stores/me";
   import { loadProfile } from "../processes/identify/services/loadProfile";
@@ -42,7 +41,7 @@
   }
 
   function editProfileField(dirtyFlags: { [x: string]: boolean }) {
-    window.o.runProcess(upsertIdentityOnlyWhereDirty, profile, dirtyFlags);
+    window.o.runProcess(upsertIdentity, profile, dirtyFlags, true);
   }
 </script>
 
