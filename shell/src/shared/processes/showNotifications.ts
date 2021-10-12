@@ -36,7 +36,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
   },
 };
 
-const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
+const processDefinition = (processId: string) =>
   createMachine<ShowNotificationsContext, any>({
     id: `${processId}:showNotifications`,
     initial: "init",

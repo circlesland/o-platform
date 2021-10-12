@@ -30,10 +30,12 @@ export class Prompt<TContext extends ProcessContext<any>> implements PlatformEve
   /**
    * The data that should be edited (if any).
    */
+  skipIfNotDirty: boolean = false;
   data: { [x: string]: any } = {};
   dirtyFlags: { [x: string]: boolean } = {};
   editorDirtyFlags: { [x: string]: boolean } = {};
   messages: { [x: string]: string } = {};
+
   /**
    * The component specific params.
    */

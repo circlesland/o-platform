@@ -33,8 +33,16 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
         }
       ) => {
         if (event.type == "shell.loggedOut") {
-          localStorage.removeItem("me");
           set([]);
+          return;
+        }
+
+        if ((<any>event).type == "blockchain_event" || (<any>event).type == "new_message") {
+          queryEvents().then((e) => {
+            events = e;
+            events = events.filter((o) => o.type != "eth_transfer");
+            set(events);
+          });
           return;
         }
         if (event.type == "shell.authenticated") {

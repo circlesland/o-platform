@@ -78,7 +78,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
   },
 };
 
-const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
+const processDefinition = (processId: string) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
     initial: "firstName",
@@ -89,7 +89,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
 
       firstName: prompt<UpsertIdentityContext, any>({
         field: "firstName",
-        onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
           view: editorContent.firstName,
@@ -101,7 +100,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       lastName: prompt<UpsertIdentityContext, any>({
         field: "lastName",
-        onlyWhenDirty: skipIfNotDirty,
         component: TextEditor,
         params: {
           view: editorContent.lastName,
@@ -115,7 +113,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       country: promptCity<UpsertIdentityContext, any>({
         id: "country",
         field: "cityGeonameid",
-        onlyWhenDirty: skipIfNotDirty,
         params: {
           view: editorContent.city,
         },
@@ -127,7 +124,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       dream: prompt<UpsertIdentityContext, any>({
         field: "dream",
-        onlyWhenDirty: skipIfNotDirty,
         component: TextareaEditor,
         params: { view: editorContent.dream },
         dataSchema: yup
@@ -143,7 +139,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
       }),
       avatarUrl: promptFile<UpsertIdentityContext, any>({
         field: "avatarUrl",
-        onlyWhenDirty: skipIfNotDirty,
         uploaded: (context, event) => {
           context.data.avatarUrl = event.data?.url;
           context.data.avatarMimeType = event.data?.mimeType;
@@ -162,7 +157,6 @@ const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
         id: "newsletter",
         component: ChoiceSelector,
         params: { view: editorContent.newsletter },
-        onlyWhenDirty: skipIfNotDirty,
         options: [
           {
             key: "dontSubscribe",
@@ -257,11 +251,4 @@ export const upsertIdentity: ProcessDefinition<
 > = {
   name: "upsertIdentity",
   stateMachine: <any>processDefinition,
-};
-
-export const upsertIdentityOnlyWhereDirty = {
-  id: upsertIdentity.id,
-  name: upsertIdentity.name,
-  stateMachine: (processId?: string) =>
-    (<any>upsertIdentity).stateMachine(processId, true),
 };

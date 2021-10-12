@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { upsertIdentityOnlyWhereDirty } from "../processes/upsertIdentity";
-
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
   import PassportHeader from "../atoms/PassportHeader.svelte";
   import { me } from "../../../shared/stores/me";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import {Profile} from "../../../shared/api/data/types";
+  import {upsertIdentity} from "../processes/upsertIdentity";
 
   let name;
   let profile: Profile;
@@ -33,7 +32,7 @@
   };
 
   function editProfile(dirtyFlags: { [x: string]: boolean }) {
-    window.o.runProcess(upsertIdentityOnlyWhereDirty, profile, dirtyFlags);
+    window.o.runProcess(upsertIdentity, profile, dirtyFlags, true);
   }
 </script>
 

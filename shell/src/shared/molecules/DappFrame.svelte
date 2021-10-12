@@ -126,10 +126,23 @@
                 dapp: "chat:1",
                 data: null,
               });
+              window.o.publishEvent(<any>{
+                type: "shell.refresh",
+                dapp: "contacts:1",
+                data: null,
+              });
+              window.o.publishEvent(<any>{
+                type: "new_message"
+              });
             } else {
               console.log("RECEIVED WS BLOCKCHAIN EVENT:", next);
               window.o.publishEvent(<any>{
                 type: "blockchain_event"
+              });
+              window.o.publishEvent(<any>{
+                type: "shell.refresh",
+                dapp: "contacts:1",
+                data: null,
               });
             }
             inbox.reload();
@@ -426,13 +439,15 @@
     window.o.runProcess = async function runProcess(
       processDefinition: ProcessDefinition<any, any>,
       contextData: { [x: string]: any },
-      dirtyFlags: { [x: string]: boolean } | undefined
+      dirtyFlags: { [x: string]: boolean } | undefined,
+      skipIfNotDirty?: boolean
     ) {
       const modifier = async ctx => {
         ctx.childProcessDefinition = processDefinition;
         ctx.childContext = {
           data: contextData,
           dirtyFlags: !dirtyFlags ? {} : dirtyFlags,
+          skipIfNotDirty: skipIfNotDirty
         };
         return ctx;
       };
@@ -599,7 +614,7 @@
 
     // If the user is not logged-on return to the homepage
     const session = await getSessionInfo();
-    if (!$me || !session.isLoggedOn) {
+    if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
       await push("/");
       return;
     }

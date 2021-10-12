@@ -12,7 +12,7 @@ export type PurchaseContext = ProcessContext<PurchaseContextData>;
 const strings = {
 };
 
-const processDefinition = (processId: string, skipIfNotDirty?: boolean) =>
+const processDefinition = (processId: string) =>
     createMachine<PurchaseContext, any>({
         id: `${processId}:createOffer`,
         initial: "title",
