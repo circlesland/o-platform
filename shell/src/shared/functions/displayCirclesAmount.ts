@@ -37,12 +37,20 @@ export function convertTimeCirclesToCircles(amount: number, date: string) {
   const dayInCurrentCycle = Math.ceil(daysSinceDay0Unix % 365.25);
   const yearsSince = (transactionDateUnix - day0Unix) / oneYearInSeconds;
   const perDayValue = getBaseCirclesPerDayValue(yearsSince);
-  // console.log("YEARS: ", yearsSinceDay0Unix);
-  // console.log("\nAmount: ", amount);
-  // console.log("\nDay in Current Cycle: ", dayInCurrentCycle);
-  // console.log("\nActual Day Value: ", perDayValue);
-  // console.log("\nPrevious Day Value: ", previousCirclesPerDayValue);
-
+  console.log("YEARS: ", yearsSinceDay0Unix);
+  console.log("\nAmount: ", amount);
+  console.log("\nDay in Current Cycle: ", dayInCurrentCycle);
+  console.log("\nActual Day Value: ", perDayValue);
+  console.log("\nPrevious Day Value: ", previousCirclesPerDayValue);
+  const result =
+    (amount / 24) *
+    lerp(previousCirclesPerDayValue, perDayValue, dayInCurrentCycle / 365.25);
+  console.log("LERPed Amount: ", result);
+  console.log("AND BACK: ", convertCirclesToTimeCircles(result, date));
+  console.log(
+    "AND BACK Converted: ",
+    convertCirclesToTimeCircles(result, date)
+  );
   return (
     (amount / 24) *
     lerp(previousCirclesPerDayValue, perDayValue, dayInCurrentCycle / 365.25)
@@ -77,15 +85,19 @@ export function convertCirclesToTimeCircles(amount: number, date: string) {
 export function displayCirclesAmount(
   amount: string,
   date: string,
-  fixed: boolean
+  fixed: boolean,
+  timeCircles: boolean = true
 ) {
-  const dateTime = date ? dayjs(date).unix() : now;
-  const amountInWei = new BN(amount);
-  // return Number.parseFloat(Web3.utils.fromWei(amount, "ether")).toFixed(2);
-  const value = convertCirclesToTimeCircles(
-    Number.parseFloat(amount),
-    dateTime.toString()
-  );
+  const dateTime = date ? dayjs(date) : dayjs();
+  let value: number;
+  if (timeCircles) {
+    value = convertCirclesToTimeCircles(
+      Number.parseFloat(Web3.utils.fromWei(amount, "ether")),
+      dateTime.toString()
+    );
+  } else {
+    value = Number.parseFloat(Web3.utils.fromWei(amount, "ether"));
+  }
   if (fixed) {
     return value.toFixed(2);
   } else {

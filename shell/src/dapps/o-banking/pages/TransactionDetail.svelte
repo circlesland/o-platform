@@ -200,7 +200,9 @@
       </div>
 
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">Amount</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          Amount Circles
+        </div>
 
         <div class="flex items-center w-full">
           <div class="text-left ">
