@@ -25,7 +25,7 @@ import {
   displayCirclesAmount,
   convertTimeCirclesToCircles,
 } from "src/shared/functions/displayCirclesAmount";
-import {me} from "../../../shared/stores/me";
+import { me } from "../../../shared/stores/me";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -271,8 +271,10 @@ const processDefinition = (processId: string) =>
           {
             actions: (context) => {
               let displayTimeCircles = true;
-              const unsubscribeMe = me.subscribe($me => {
-                displayTimeCircles = $me.displayTimeCircles || $me.displayTimeCircles === undefined;
+              const unsubscribeMe = me.subscribe(($me) => {
+                displayTimeCircles =
+                  $me.displayTimeCircles ||
+                  $me.displayTimeCircles === undefined;
               });
               unsubscribeMe();
               const formattedAmount = parseFloat(
@@ -377,9 +379,10 @@ const processDefinition = (processId: string) =>
                 <span class='block mt-2'>
                 to 
                 </span>
-                <div class="avatar self-center justify-self-center text-center mt-4">
+                <div class=" self-center justify-self-center text-center mt-4">
                   <div class="w-36 h-36 rounded-full mb-4">
                     <img
+                      class="rounded-full"
                       src=${toAvatarUrl}
                       alt=${to}
                     />

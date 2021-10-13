@@ -33,7 +33,7 @@
         centralGravity: 0.005,
         springLength: 130,
         springConstant: 0.08,
-        avoidOverlap: 0,
+        avoidOverlap: 1,
       },
       maxVelocity: 66,
       solver: "forceAtlas2Based",

@@ -30,25 +30,20 @@
 
 <div
   class="flex flex-col items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primary-dark"
-  style="background-image: url(/images/common/nice-bg.jpg);"
->
+  style="background-image: url(/images/common/nice-bg.jpg);">
   {#if !isLoading}
-    <div class="self-center text-center avatar justify-self-center">
+    <div class="self-center text-center justify-self-center">
       <div class="mb-4 rounded-full w-36 h-36">
         <img
-          src={profile && profile.avatarUrl ? profile.avatarUrl : ""}
-          alt={profile
-            ? profile.lastName
-              ? `${profile.firstName} ${profile.lastName}`
-              : profile.firstName
-            : "avatar"}
-        />
+          class="rounded-full"
+          src="{profile && profile.avatarUrl ? profile.avatarUrl : ''}"
+          alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
       </div>
     </div>
     <div class="self-center flex-grow text-center justify-self-start">
       <h2>
-        {profile ? profile.firstName : ""}
-        {profile && profile.lastName ? profile.lastName : ""}
+        {profile ? profile.firstName : ''}
+        {profile && profile.lastName ? profile.lastName : ''}
       </h2>
     </div>
   {/if}

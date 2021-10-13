@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {onDestroy, onMount} from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import ChatCard from "../atoms/ChatCard.svelte";
   import NotificationCard from "../atoms/NotificationCard.svelte";
   import "simplebar";
@@ -19,8 +19,8 @@
   import { setTrust } from "../../o-banking/processes/setTrust";
   import { transfer } from "../../o-banking/processes/transfer";
   import { push } from "svelte-spa-router";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {Subscription} from "rxjs";
+  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+  import { Subscription } from "rxjs";
 
   export let id: string;
 
@@ -31,7 +31,6 @@
   let shellEventSubscription: Subscription;
 
   async function reload() {
-
     const safeAddress = $me.circlesAddress;
     const contactSafeAddress = id;
     const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -62,8 +61,8 @@
     }
     chatHistory = chatHistoryResult.data.chatHistory;
     contactProfile = contactProfileResult.data.contact
-            ? contactProfileResult.data.contact
-            : null;
+      ? contactProfileResult.data.contact
+      : null;
 
     console.log("PRFILE: ", contactProfile);
 
@@ -73,19 +72,19 @@
     });
   }
 
-    onMount(async () => {
-      shellEventSubscription = window.o.events.subscribe(
-              async (event: PlatformEvent) => {
-                if (event.type != "shell.refresh" || (<any>event).dapp != "chat:1") {
-                  return;
-                }
-                await reload();
-              }
-      );
-      await reload();
-    });
+  onMount(async () => {
+    shellEventSubscription = window.o.events.subscribe(
+      async (event: PlatformEvent) => {
+        if (event.type != "shell.refresh" || (<any>event).dapp != "chat:1") {
+          return;
+        }
+        await reload();
+      }
+    );
+    await reload();
+  });
 
-    onDestroy(() => shellEventSubscription.unsubscribe());
+  onDestroy(() => shellEventSubscription.unsubscribe());
 
   let inputField: any;
   let chatmessage: string;
@@ -198,37 +197,55 @@
           chat.safe_address == $me.circlesAddress
         ) {
           notificationType = "trust_removed";
-          title = `You untrusted ${chat.payload.address_profile ? chat.payload.address_profile.firstName : ""}`;
+          title = `You untrusted ${
+            chat.payload.address_profile
+              ? chat.payload.address_profile.firstName
+              : ""
+          }`;
           icon = "untrust";
-          actions = contactProfile ? (!contactProfile.youTrust
-            ? [
-                {
-                  title: `Trust ${chat.payload.address_profile ? chat.payload.address_profile.firstName : ""}`,
-                  icon: "trust",
-                  colorClass: "",
-                  action: () => {
-                    window.o.runProcess(setTrust, {
-                      trustLimit: 100,
-                      trustReceiver: chat.payload.address,
-                      safeAddress: $me.circlesAddress,
-                      privateKey: sessionStorage.getItem("circlesKey"),
-                    });
+          actions = contactProfile
+            ? !contactProfile.youTrust
+              ? [
+                  {
+                    title: `Trust ${
+                      chat.payload.address_profile
+                        ? chat.payload.address_profile.firstName
+                        : ""
+                    }`,
+                    icon: "trust",
+                    colorClass: "",
+                    action: () => {
+                      window.o.runProcess(setTrust, {
+                        trustLimit: 100,
+                        trustReceiver: chat.payload.address,
+                        safeAddress: $me.circlesAddress,
+                        privateKey: sessionStorage.getItem("circlesKey"),
+                      });
+                    },
                   },
-                },
-              ]
-            : []) : [];
+                ]
+              : []
+            : [];
         } else if (
           chat.payload.limit > 0 &&
           chat.safe_address === $me.circlesAddress
         ) {
           notificationType = "trust_added";
-          title = `You trusted ${chat.payload.address_profile ? chat.payload.address_profile.firstName : ""}`;
+          title = `You trusted ${
+            chat.payload.address_profile
+              ? chat.payload.address_profile.firstName
+              : ""
+          }`;
           icon = "trust";
-          actions = contactProfile ? (
-            contactProfile.youTrust > 0
+          actions = contactProfile
+            ? contactProfile.youTrust > 0
               ? [
                   {
-                    title: `Untrust ${chat.payload.address_profile ? chat.payload.address_profile.firstName : ""}`,
+                    title: `Untrust ${
+                      chat.payload.address_profile
+                        ? chat.payload.address_profile.firstName
+                        : ""
+                    }`,
                     icon: "untrust",
                     colorClass: "",
                     action: () => {
@@ -241,7 +258,8 @@
                     },
                   },
                 ]
-              : []) : [];
+              : []
+            : [];
         } else if (
           chat.payload.limit === 0 &&
           chat.safe_address !== $me.circlesAddress
@@ -258,45 +276,50 @@
           title = `${chat.payload.can_send_to_profile.firstName} trusted you`;
           icon = "trust";
           outgoing = chat.safeAddress !== $me.circlesAddress;
-          actions = contactProfile ? ((!contactProfile.youTrust
-            ? [
-                {
-                  title: `Trust ${chat.payload.can_send_to_profile.firstName}`,
-                  icon: "trust",
-                  colorClass: "",
-                  action: () => {
-                    window.o.runProcess(setTrust, {
-                      trustLimit: 100,
-                      trustReceiver: chat.payload.can_send_to,
-                      safeAddress: $me.circlesAddress,
-                      privateKey: sessionStorage.getItem("circlesKey"),
-                    });
-                  },
-                },
-              ]
-            : []
-          ).concat(
-            contactProfile.trustsYou
-              ? [
-                  {
-                    title: `Send Circles to ${chat.payload.can_send_to_profile.firstName}`,
-                    icon: "sendmoney",
-                    colorClass: "",
-                    action: () => {
-                      window.o.runProcess(transfer, {
-                        safeAddress: $me.circlesAddress,
-                        recipientAddress: chat.payload.can_send_to,
-                        privateKey: sessionStorage.getItem("circlesKey"),
-                      });
+          actions = contactProfile
+            ? (!contactProfile.youTrust
+                ? [
+                    {
+                      title: `Trust ${chat.payload.can_send_to_profile.firstName}`,
+                      icon: "trust",
+                      colorClass: "",
+                      action: () => {
+                        window.o.runProcess(setTrust, {
+                          trustLimit: 100,
+                          trustReceiver: chat.payload.can_send_to,
+                          safeAddress: $me.circlesAddress,
+                          privateKey: sessionStorage.getItem("circlesKey"),
+                        });
+                      },
                     },
-                  },
-                ]
-              : []
-          )) : [];
+                  ]
+                : []
+              ).concat(
+                contactProfile.trustsYou
+                  ? [
+                      {
+                        title: `Send Circles to ${chat.payload.can_send_to_profile.firstName}`,
+                        icon: "sendmoney",
+                        colorClass: "",
+                        action: () => {
+                          window.o.runProcess(transfer, {
+                            safeAddress: $me.circlesAddress,
+                            recipientAddress: chat.payload.can_send_to,
+                            privateKey: sessionStorage.getItem("circlesKey"),
+                          });
+                        },
+                      },
+                    ]
+                  : []
+              )
+            : [];
         }
         break;
       case "crc_hub_transfer":
-        if (chat.payload.to_profile && chat.safe_address === $me.circlesAddress) {
+        if (
+          chat.payload.to_profile &&
+          chat.safe_address === $me.circlesAddress
+        ) {
           notificationType = "transfer_out";
           icon = "sendmoney";
           (title = `You sent ${RpcGateway.get().utils.fromWei(
@@ -304,7 +327,10 @@
             "ether"
           )} CRC to ${chat.payload.to_profile.firstName}`),
             (actions = []);
-        } else if (chat.payload.from_profile && chat.safe_address !== $me.circlesAddress) {
+        } else if (
+          chat.payload.from_profile &&
+          chat.safe_address !== $me.circlesAddress
+        ) {
           outgoing = chat.safeAddress !== $me.circlesAddress;
           notificationType = "transfer_in";
           icon = "sendmoney";
@@ -314,35 +340,37 @@
             chat.value,
             "ether"
           )} CRC`;
-          actions = contactProfile ? ((!contactProfile.youTrust
-            ? [
-                {
-                  title: `Trust ${chat.payload.from_profile.firstName}`,
-                  icon: "trust",
-                  colorClass: "",
-                  action: () => {
-                    window.o.runProcess(setTrust, {
-                      trustLimit: 100,
-                      trustReceiver: chat.payload.from,
-                      safeAddress: $me.circlesAddress,
-                      privateKey: sessionStorage.getItem("circlesKey"),
-                    });
-                  },
+          actions = contactProfile
+            ? (!contactProfile.youTrust
+                ? [
+                    {
+                      title: `Trust ${chat.payload.from_profile.firstName}`,
+                      icon: "trust",
+                      colorClass: "",
+                      action: () => {
+                        window.o.runProcess(setTrust, {
+                          trustLimit: 100,
+                          trustReceiver: chat.payload.from,
+                          safeAddress: $me.circlesAddress,
+                          privateKey: sessionStorage.getItem("circlesKey"),
+                        });
+                      },
+                    },
+                  ]
+                : []
+              ).concat({
+                title: `Send Circles to ${chat.payload.from_profile.firstName}`,
+                icon: "sendmoney",
+                colorClass: "",
+                action: () => {
+                  window.o.runProcess(transfer, {
+                    safeAddress: $me.circlesAddress,
+                    recipientAddress: chat.payload.from,
+                    privateKey: sessionStorage.getItem("circlesKey"),
+                  });
                 },
-              ]
-            : []
-          ).concat({
-            title: `Send Circles to ${chat.payload.from_profile.firstName}`,
-            icon: "sendmoney",
-            colorClass: "",
-            action: () => {
-              window.o.runProcess(transfer, {
-                safeAddress: $me.circlesAddress,
-                recipientAddress: chat.payload.from,
-                privateKey: sessionStorage.getItem("circlesKey"),
-              });
-            },
-          })) : [];
+              })
+            : [];
         }
         break;
     }
@@ -375,7 +403,7 @@
     <div
       class="relative flex flex-col items-center self-center w-full m-auto text-center justify-self-center">
 
-      <div class="absolute avatar " style="left: -56px; top:4px">
+      <div class="absolute " style="left: -56px; top:4px">
 
         {#if contactProfile}
           <UserImage

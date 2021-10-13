@@ -140,64 +140,55 @@
       active: false,
     },
   ];
-
 </script>
 
-<div class="grid max-w-5xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mx-auto">
+<div class="grid max-w-5xl grid-cols-1 mx-auto sm:grid-cols-2 lg:grid-cols-3">
   {#each milestones as m}
     <div class="p-4 m-4 mb-8 bg-white rounded-lg">
       <div class="flex flex-row">
         {#if m.success}
-          <div class="avatar ">
-            <div class="rounded-full w-16 h-16 bg-primary">
+          <div class="">
+            <div class="w-16 h-16 rounded-full bg-primary">
               <div
-                class="pt-4 mx-auto text-2xl font-bold text-white text-center"
-              >
+                class="pt-4 mx-auto text-2xl font-bold text-center text-white">
                 {m.goal}
               </div>
             </div>
           </div>
 
           <div class="flex flex-col py-2 ml-4">
-            <span class="text-lg font-semibold  text-primary">
-              {m.citizens}
-            </span>
+            <span class="text-lg font-semibold text-primary">{m.citizens}</span>
             <p class="text-sm text-left text-primary">
-              citizen {#if m.success}reached on {m.date}{/if}
+              citizen
+              {#if m.success}reached on {m.date}{/if}
             </p>
           </div>
         {:else if m.active}
-          <div class="avatar ">
-            <div class="rounded-full w-16 h-16 bg-secondary">
+          <div class="">
+            <div class="w-16 h-16 rounded-full bg-secondary">
               <div
-                class="pt-4 mx-auto text-2xl font-bold text-white text-center"
-              >
+                class="pt-4 mx-auto text-2xl font-bold text-center text-white">
                 {m.goal}
               </div>
             </div>
           </div>
 
           <div class="flex flex-col py-2 ml-4">
-            <p class="text-lg font-semibold  ">
-              {m.citizens}
-            </p>
+            <p class="text-lg font-semibold ">{m.citizens}</p>
             <p class="text-sm text-left ">citizen to reach milestone</p>
           </div>
         {:else}
-          <div class="avatar ">
-            <div class="rounded-full w-16 h-16 bg-gray-200 ">
+          <div class="">
+            <div class="w-16 h-16 bg-gray-200 rounded-full ">
               <div
-                class="pt-4 mx-auto text-2xl font-bold text-gray-500  text-center"
-              >
+                class="pt-4 mx-auto text-2xl font-bold text-center text-gray-500">
                 {m.goal}
               </div>
             </div>
           </div>
 
           <div class="flex flex-col py-2 ml-4">
-            <p class="text-lg font-semibold text-gray-500 ">
-              {m.citizens}
-            </p>
+            <p class="text-lg font-semibold text-gray-500 ">{m.citizens}</p>
             <p class="text-sm text-left text-gray-500">
               citizen to reach milestone
             </p>
@@ -208,17 +199,16 @@
   {/each}
 </div>
 
-<div class="pb-12 pt-6 m-auto mt-6 text-center">
+<div class="pt-6 pb-12 m-auto mt-6 text-center">
   <a
     href="/#/milestones"
-    aria-label=""
-    class="text-xl font-semibold transition-colors duration-200 text-primary hover:"
-  >
+    aria-label="
+    "
+    class="text-xl font-semibold transition-colors duration-200 text-primary hover:">
     Show all milestones
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">
       <path
-        d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"
-      />
+        d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"></path>
     </svg>
   </a>
 </div>

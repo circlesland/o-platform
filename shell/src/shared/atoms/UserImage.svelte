@@ -30,7 +30,7 @@
   {/if}
 
   <div
-    class="self-center text-center avatar justify-self-center"
+    class="self-center text-center rounded-full justify-self-center"
     class:rounded-corners-gradient-borders="{gradientRing}"
     class:rounded-corners-white-borders="{whiteRing}"
     style="padding: {size >= 20 ? `4px` : `1px`}">
@@ -38,6 +38,7 @@
       class="w-{size} h-{size} m-auto rounded-full"
       class:bg-white="{!transparent}">
       <img
+        class="rounded-full"
         src="{profile && profile.avatarUrl ? profile.avatarUrl : profile.circlesAddress ? AvataarGenerator.generate(profile.circlesAddress.toLowerCase()) : AvataarGenerator.default()}"
         alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
     </div>
