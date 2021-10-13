@@ -255,6 +255,15 @@ export type IEventPayload = {
   transaction_hash?: Maybe<Scalars['String']>;
 };
 
+export type InitAggregateState = {
+  __typename?: 'InitAggregateState';
+  hubSignupTransaction?: Maybe<Scalars['String']>;
+  invitation?: Maybe<ClaimedInvitation>;
+  invitationTransaction?: Maybe<Scalars['String']>;
+  registration?: Maybe<Profile>;
+  safeFundingTransaction?: Maybe<Scalars['String']>;
+};
+
 export type LockOfferInput = {
   offerId: Scalars['Int'];
 };
@@ -278,12 +287,14 @@ export type Mutation = {
   claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
   createInvitations: CreateInvitationResult;
+  createTestInvitation: CreateInvitationResult;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   lockOffer: LockOfferResult;
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
+  requestSessionChallenge: Scalars['String'];
   requestUpdateSafe: RequestUpdateSafeResponse;
   sendMessage: SendMessageResult;
   tagTransaction: TagTransactionResult;
@@ -292,6 +303,7 @@ export type Mutation = {
   upsertOffer: Offer;
   upsertProfile: Profile;
   upsertTag: Tag;
+  verifySessionChallenge?: Maybe<ExchangeTokenResponse>;
 };
 
 
@@ -332,6 +344,11 @@ export type MutationLockOfferArgs = {
 
 export type MutationProvePaymentArgs = {
   data: PaymentProof;
+};
+
+
+export type MutationRequestSessionChallengeArgs = {
+  address: Scalars['String'];
 };
 
 
@@ -376,6 +393,17 @@ export type MutationUpsertTagArgs = {
   data: UpsertTagInput;
 };
 
+
+export type MutationVerifySessionChallengeArgs = {
+  challenge: Scalars['String'];
+  signature: Scalars['String'];
+};
+
+export type NotificationEvent = {
+  __typename?: 'NotificationEvent';
+  type: Scalars['String'];
+};
+
 export type Offer = {
   __typename?: 'Offer';
   categoryTag?: Maybe<Tag>;
@@ -418,7 +446,9 @@ export type Profile = {
   circlesTokenAddress?: Maybe<Scalars['String']>;
   city?: Maybe<City>;
   cityGeonameid?: Maybe<Scalars['Int']>;
+  claimedInvitation?: Maybe<ClaimedInvitation>;
   country?: Maybe<Scalars['String']>;
+  displayTimeCircles?: Maybe<Scalars['Boolean']>;
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['Int'];
@@ -482,7 +512,10 @@ export type Query = {
   contacts: Array<Contact>;
   eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
+  findSafeAddressByOwner: Array<Scalars['String']>;
+  hubSignupTransaction?: Maybe<ProfileEvent>;
   inbox: Array<ProfileEvent>;
+  initAggregateState?: Maybe<InitAggregateState>;
   invitationTransaction?: Maybe<ProfileEvent>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
@@ -548,9 +581,16 @@ export type QueryEventByTransactionHashArgs = {
 
 export type QueryEventsArgs = {
   fromBlock?: Maybe<Scalars['Int']>;
+  fromTimestamp?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
   safeAddress: Scalars['String'];
   toBlock?: Maybe<Scalars['Int']>;
   types?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryFindSafeAddressByOwnerArgs = {
+  owner: Scalars['String'];
 };
 
 
@@ -687,7 +727,7 @@ export type Stats = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  events: Array<ProfileEvent>;
+  events: NotificationEvent;
 };
 
 export type Tag = {
@@ -753,6 +793,7 @@ export type UpsertProfileInput = {
   circlesTokenAddress?: Maybe<Scalars['String']>;
   cityGeonameid?: Maybe<Scalars['Int']>;
   country?: Maybe<Scalars['String']>;
+  displayTimeCircles?: Maybe<Scalars['Boolean']>;
   dream?: Maybe<Scalars['String']>;
   emailAddress?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
@@ -804,6 +845,7 @@ export type BalancesByAssetQuery = (
 
 export type TransactionTimelineQueryVariables = Exact<{
   safeAddress: Scalars['String'];
+  fromTimestamp: Scalars['String'];
 }>;
 
 
@@ -925,8 +967,12 @@ export const BalancesByAssetDocument = gql`
 }
     `;
 export const TransactionTimelineDocument = gql`
-    query transactionTimeline($safeAddress: String!) {
-  events(safeAddress: $safeAddress, types: ["crc_hub_transfer", "crc_minting"]) {
+    query transactionTimeline($safeAddress: String!, $fromTimestamp: String!) {
+  events(
+    safeAddress: $safeAddress
+    fromTimestamp: $fromTimestamp
+    types: ["crc_hub_transfer", "crc_minting"]
+  ) {
     timestamp
     type
     value
