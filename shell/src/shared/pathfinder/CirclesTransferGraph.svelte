@@ -7,6 +7,7 @@
   import { labelFor, createNodeContents } from "./visUtils.js";
   import { fillUsernames, fillTokens, tokenDB } from "./userdb.js";
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+  import {me} from "../stores/me";
 
   export let transfers = [];
   export let height = "400px";
@@ -99,7 +100,7 @@
         from: step.from,
         to: step.to,
         value: step.value,
-        label: `${displayCirclesAmount(step.value, null, true)} Time Circles`,
+        label: `${displayCirclesAmount(step.value, null, $me.displayTimeCircles || $me.displayTimeCircles === undefined)} ${($me.displayTimeCircles || $me.displayTimeCircles === undefined) ? 'Time ' : ''}Circles`,
         arrows: "to",
         color: {
           color: "#F1E7DD",

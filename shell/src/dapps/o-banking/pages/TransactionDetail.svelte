@@ -3,7 +3,7 @@
   import { push } from "svelte-spa-router";
   import {
     CrcHubTransfer,
-    CrcMinting,
+    CrcMinting, CrcTokenTransfer,
     Profile,
     ProfileEvent,
     TransactionByHashDocument,
@@ -63,6 +63,7 @@
         circlesAddress: minting.to,
       };
     }
+
 
     if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
       const hubTransfer = transfer.payload as CrcHubTransfer;
@@ -124,9 +125,9 @@
       <div>
         <span class="inline-block text-6xl font-heading {classes}">
           {#if transfer.direction === 'in'}
-            +{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, true)}
+            +{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
           {:else}
-            -{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, true)}
+            -{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
           {/if}
 
           <svg

@@ -3,11 +3,12 @@ import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount"
 import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
 import NotificationProfile from "./NotificationProfile.svelte";
 import Icons from "src/shared/molecules/Icons.svelte";
+import {me} from "../../../../../shell/src/shared/stores/me";
 export let eventData: any;
 </script>
 
 <div class="self-center text-6xl text-success font-heading">
-  +{displayCirclesAmount(eventData.value, eventData.time, true)}
+  +{displayCirclesAmount(eventData.value, eventData.time,  $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
   <Icons icon="circlessimple" size="10" />
 </div>
 <div class="self-center text-2xl font-heading">from</div>

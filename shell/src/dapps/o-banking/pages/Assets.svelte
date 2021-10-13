@@ -54,7 +54,7 @@
         .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
         .toString(),
       null,
-      true
+      $me.displayTimeCircles || $me.displayTimeCircles === undefined
     );
     circles.variety = circles.details.length;
 

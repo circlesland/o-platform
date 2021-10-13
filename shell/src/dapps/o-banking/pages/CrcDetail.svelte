@@ -50,7 +50,7 @@
             <div slot="itemCardEnd">
               <div class="self-end text-right text-success">
                 <span>
-                  {displayCirclesAmount(token.token_balance ? token.token_balance : '0', null, true)}
+                  {displayCirclesAmount(token.token_balance ? token.token_balance : '0', null, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
                 </span>
               </div>
 

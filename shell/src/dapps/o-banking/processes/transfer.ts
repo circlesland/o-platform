@@ -25,6 +25,7 @@ import {
   displayCirclesAmount,
   convertTimeCirclesToCircles,
 } from "src/shared/functions/displayCirclesAmount";
+import {me} from "../../../shared/stores/me";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -269,11 +270,16 @@ const processDefinition = (processId: string) =>
           },
           {
             actions: (context) => {
+              let displayTimeCircles = true;
+              const unsubscribeMe = me.subscribe($me => {
+                displayTimeCircles = $me.displayTimeCircles || $me.displayTimeCircles === undefined;
+              });
+              unsubscribeMe();
               const formattedAmount = parseFloat(
                 displayCirclesAmount(
                   context.data.tokens.amount.toString(),
                   null,
-                  true
+                  displayTimeCircles
                 ).toString()
               );
               const formattedMax = parseFloat(
