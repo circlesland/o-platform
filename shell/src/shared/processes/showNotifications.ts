@@ -137,6 +137,11 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
+          view: {
+            title: "All done",
+            description: "",
+            submitButtonText: "Close",
+          },
           html: () => `<p>All done.</p>`,
           submitButtonText: "Close",
           hideNav: false,
