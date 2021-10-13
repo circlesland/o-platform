@@ -31,7 +31,8 @@ export class UbiTimer {
           safeAddress: safeAddress,
           privateKey: sessionStorage.getItem("circlesKey")
         },
-        onlyWhenDirty: false,
+        //onlyWhenDirty: false,
+        onlyThesePages:[],
         messages: {},
         dirtyFlags: {}
       });

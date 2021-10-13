@@ -56,7 +56,8 @@ const processDefinition = () => {
           },
           data: (context) => {
             const newChildContext:ProcessContext<any> = {
-              onlyWhenDirty: context.childContext.skipIfNotDirty,
+              // onlyWhenDirty: context.childContext.skipIfNotDirty,
+              onlyThesePages: context.childContext.onlyThesePages,
               data:{},
               messages:{},
               dirtyFlags:{}

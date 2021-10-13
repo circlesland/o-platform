@@ -164,7 +164,8 @@ export function promptFile<
           },
           {
             cond: (context) =>
-              !context.dirtyFlags[field.name] && context.onlyWhenDirty,
+              context.onlyThesePages?.length > 0 && !context.onlyThesePages.find(o => o == field.name),
+              //!context.dirtyFlags[field.name] && context.onlyWhenDirty,
             target: spec.navigation.skip ?? spec.navigation.next,
           },
           {

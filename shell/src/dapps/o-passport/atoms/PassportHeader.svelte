@@ -1,9 +1,4 @@
 <script lang="ts">
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
   import {
     upsertIdentity,
   } from "../processes/upsertIdentity";
@@ -40,8 +35,8 @@
     }
   }
 
-  function editProfileField(dirtyFlags: { [x: string]: boolean }) {
-    window.o.runProcess(upsertIdentity, profile, dirtyFlags, true);
+  function editProfileField(onlyThesePages: string[]) {
+    window.o.runProcess(upsertIdentity, profile, {}, onlyThesePages);
   }
 </script>
 
@@ -50,12 +45,12 @@
 <PageHeader heightClass="h-72">
   <div class="self-center block mt-2 text-center">
 
-    <div class="mb-4" on:click="{() => editProfileField({ avatarUrl: true })}">
+    <div class="mb-4" on:click="{() => editProfileField(['file', 'avatarUrl'])}">
       <UserImage {profile} size="{36}" profileLink="{false}" />
     </div>
 
     <div
-      on:click="{() => editProfileField({ firstName: true, lastName: true })}">
+      on:click="{() => editProfileField(['firstName', 'lastName'])}">
       <h2 class="text-4xl cursor-pointer font-heading">
         {profile ? profile.firstName : ''}
         {profile && profile.lastName ? profile.lastName : ''}
@@ -65,7 +60,7 @@
   {#if profile && profile.city}
     <div
       class="mt-1 text-sm text-center cursor-pointer"
-      on:click="{() => editProfileField({ cityGeonameid: true })}">
+      on:click="{() => editProfileField(['cityGeonameid'])}">
       {profile.city ? profile.city.name : ''}
       {profile.city ? ', ' + profile.city.country : ', ' + getCountryName(profile)}
     </div>

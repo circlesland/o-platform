@@ -440,14 +440,15 @@
       processDefinition: ProcessDefinition<any, any>,
       contextData: { [x: string]: any },
       dirtyFlags: { [x: string]: boolean } | undefined,
-      skipIfNotDirty?: boolean
+      onlyThesePages?: string[]
     ) {
       const modifier = async ctx => {
         ctx.childProcessDefinition = processDefinition;
         ctx.childContext = {
           data: contextData,
           dirtyFlags: !dirtyFlags ? {} : dirtyFlags,
-          skipIfNotDirty: skipIfNotDirty
+          initialDirtyFlags: !dirtyFlags ? {} : dirtyFlags,
+          onlyThesePages: !onlyThesePages ? [] : onlyThesePages
         };
         return ctx;
       };
@@ -467,7 +468,7 @@
       rightIsOpen: false,
       leftIsOpen: false,
       notificationCount: $inbox.length,
-      showLogin: dapp.dappId == "homepage:1" ? true : false,
+      showLogin: dapp.dappId == "homepage:1",
     });
 
     if (!identityChecked && !dapp.noAuthentication) {

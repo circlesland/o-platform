@@ -22,7 +22,7 @@
       allowEdit && $me && offer && $me.id == offer.createdByProfileId;
   }
 
-  function edit(dirtyFlags: { [field: string]: boolean }) {
+  function edit(onlyThesePages:string[]) {
     // console.log("edit: dirtyFlags:", dirtyFlags);
 
     window.o.runProcess({
@@ -30,7 +30,7 @@
       name: upsertOffer.name,
       stateMachine: (processId?: string) =>
         (<any>upsertOffer).stateMachine(processId, true),
-    }, offer, dirtyFlags);
+    }, offer, {}, onlyThesePages);
   }
 
 </script>
