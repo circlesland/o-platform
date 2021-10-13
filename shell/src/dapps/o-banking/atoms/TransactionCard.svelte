@@ -90,7 +90,7 @@
         class:text-success="{transfer.direction === 'in'}"
         class:text-alert="{transfer.direction === 'out'}">
         <span>
-        {displayCirclesAmount(transfer ? transfer.value : '0', transfer.timestamp, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
+        {displayCirclesAmount(transfer ? transfer.value : '0', transfer.timestamp, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
         </span>
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">

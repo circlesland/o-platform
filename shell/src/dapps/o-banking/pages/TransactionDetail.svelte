@@ -125,9 +125,9 @@
       <div>
         <span class="inline-block text-6xl font-heading {classes}">
           {#if transfer.direction === 'in'}
-            +{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
+            +{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
           {:else}
-            -{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
+            -{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
           {/if}
 
           <svg

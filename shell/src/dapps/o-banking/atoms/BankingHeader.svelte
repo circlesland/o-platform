@@ -25,7 +25,7 @@
     if (balanceResult.errors?.length > 0) {
       throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
     }
-    balance = displayCirclesAmount(balanceResult.data.balance, null, $me.displayTimeCircles || $me.displayTimeCircles === undefined).toString();
+    balance = displayCirclesAmount(balanceResult.data.balance, null, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined).toString();
   });
 </script>
 

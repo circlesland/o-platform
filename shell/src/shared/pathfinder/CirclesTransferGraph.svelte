@@ -100,7 +100,7 @@
         from: step.from,
         to: step.to,
         value: step.value,
-        label: `${displayCirclesAmount(step.value, null, $me.displayTimeCircles || $me.displayTimeCircles === undefined)} ${($me.displayTimeCircles || $me.displayTimeCircles === undefined) ? 'Time ' : ''}Circles`,
+        label: `${displayCirclesAmount(step.value, null, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined)} ${($me.displayTimeCircles || $me.displayTimeCircles === undefined) ? 'Time ' : ''}Circles`,
         arrows: "to",
         color: {
           color: "#F1E7DD",
