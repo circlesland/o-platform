@@ -214,6 +214,14 @@ type Goal {
     totalCitizens: Int!
 }
 
+type InitAggregateState {
+    hubSignupTransaction: String
+    invitation: ClaimedInvitation
+    invitationTransaction: String
+    registration: Profile
+    safeFundingTransaction: String
+}
+
 type LockOfferResult {
     lockedUntil: String
     success: Boolean!
@@ -230,12 +238,14 @@ type Mutation {
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     createInvitations(for: [String!]!): CreateInvitationResult!
+    createTestInvitation: CreateInvitationResult!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
     lockOffer(data: LockOfferInput!): LockOfferResult!
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
+    requestSessionChallenge(address: String!): String!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     sendMessage(content: String!, toSafeAddress: String!): SendMessageResult!
     tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
@@ -244,6 +254,11 @@ type Mutation {
     upsertOffer(data: UpsertOfferInput!): Offer!
     upsertProfile(data: UpsertProfileInput!): Profile!
     upsertTag(data: UpsertTagInput!): Tag!
+    verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
+}
+
+type NotificationEvent {
+    type: String!
 }
 
 type Offer {
@@ -278,7 +293,9 @@ type Profile {
     circlesTokenAddress: String
     city: City
     cityGeonameid: Int
+    claimedInvitation: ClaimedInvitation
     country: String
+    displayTimeCircles: Boolean
     dream: String
     firstName: String!
     id: Int!
@@ -331,8 +348,11 @@ type Query {
     contact(contactAddress: String!, safeAddress: String!): Contact
     contacts(safeAddress: String!): [Contact!]!
     eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
-    events(fromBlock: Int, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
+    events(fromBlock: Int, fromTimestamp: String, limit: Int, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
+    findSafeAddressByOwner(owner: String!): [String!]!
+    hubSignupTransaction: ProfileEvent
     inbox: [ProfileEvent!]!
+    initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
@@ -391,7 +411,7 @@ type Stats {
 }
 
 type Subscription {
-    events: [ProfileEvent!]!
+    events: NotificationEvent!
 }
 
 type Tag {
@@ -537,6 +557,7 @@ input UpsertProfileInput {
     circlesTokenAddress: String
     cityGeonameid: Int
     country: String
+    displayTimeCircles: Boolean
     dream: String
     emailAddress: String
     firstName: String!

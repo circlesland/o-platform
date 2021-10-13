@@ -23,7 +23,8 @@ export class Banking {
         const timeline = await apiClient.query({
             query: TransactionTimelineDocument,
             variables: {
-                safeAddress: this.safeAddress
+                safeAddress: this.safeAddress,
+                fromTimestamp: new Date().toJSON()
             }
         });
         if (timeline.errors) {

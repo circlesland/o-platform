@@ -38,6 +38,7 @@
       query: TransactionTimelineDocument,
       variables: {
         safeAddress: $me.circlesAddress, //this.safeAddress,
+        fromTimestamp: new Date().toJSON()
         // fromBlock: 16471696
       },
     });

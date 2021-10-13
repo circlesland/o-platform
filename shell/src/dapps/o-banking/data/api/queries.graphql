@@ -16,8 +16,8 @@ query balancesByAsset($safeAddress:String!) {
     }
 }
 
-query transactionTimeline($safeAddress:String!) {
-    events(safeAddress: $safeAddress, types: ["crc_hub_transfer", "crc_minting"]) {
+query transactionTimeline($safeAddress:String!, $fromTimestamp: String!) {
+    events(safeAddress: $safeAddress, fromTimestamp: $fromTimestamp, types: ["crc_hub_transfer", "crc_minting"]) {
         timestamp
         type
         value
