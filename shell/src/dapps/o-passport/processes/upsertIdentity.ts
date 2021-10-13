@@ -213,7 +213,7 @@ const processDefinition = (processId: string) =>
                 lastName: context.data.lastName,
                 dream: context.data.dream,
                 newsletter: context.data.newsletter ?? false,
-                displayTimeCircles: context.data.displayTimeCircles ?? false,
+                displayTimeCircles: context.data.displayTimeCircles ?? true,
                 country: context.data.country,
                 avatarUrl: context.data.avatarUrl,
                 avatarMimeType: context.data.avatarMimeType,
