@@ -82,7 +82,7 @@
             answer.type == "process.continue" &&
             (<any>answer).data.___cancelRequest
           ) {
-            // console.log("Cancel dialog answer:", answer);
+            console.log("Cancel dialog answer:", answer);
             if ((<any>answer).data.___cancelRequest.key === "no") {
               if (beforeCancelPrompt.navigation.canGoBack && beforeCancelPrompt.dirtyFlags) {
                 window.o.publishEvent({ type: "process.canGoBack" });
@@ -151,7 +151,7 @@
         );
          */
 
-        if (next.event.type === "process.cancelRequest") {
+        if (next.event.type === "process.cancelRequest" && !cancelDialogVisible) {
           // modalWantsToClose:
           // TODO: Check the context's dirty flags and ask the user only if at least one dirty-flag is set
           // console.log("Received cancel request:", next.event);
@@ -208,6 +208,19 @@
             responseToId: "123",
             ...p,
           };
+        } else if (next.event.type === "process.cancelRequest" && cancelDialogVisible) {
+          // Todo: Don't cancel
+          const cancelCancel = {
+            "___cancelRequest": {
+              "key": "no",
+              "label": "No",
+              "target": "#no"
+            }
+          };
+          interceptedProcess.sendAnswer(<any>{
+            type: "process.continue",
+            data: cancelCancel
+          });
         }
 
         if (
