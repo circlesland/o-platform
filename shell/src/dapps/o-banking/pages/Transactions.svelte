@@ -6,8 +6,9 @@
   import { me } from "../../../shared/stores/me";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import {onMount} from "svelte";
-  import {ProfileEvent, TransactionTimelineDocument} from "../data/api/types";
+  import { onMount } from "svelte";
+  import { ProfileEvent, TransactionTimelineDocument } from "../data/api/types";
+  import Lazy from "src/shared/molecules/Lazy/Lazy.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -25,7 +26,11 @@
   let eof = false;
 
   let entries: ProfileEvent[] = [];
-  let error:string;
+  let error: string;
+
+  const onload = node => {
+    console.log("on load");
+  };
 
   onMount(async () => {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -34,10 +39,12 @@
       variables: {
         safeAddress: $me.circlesAddress, //this.safeAddress,
         // fromBlock: 16471696
-      }
+      },
     });
     if (timeline.errors) {
-      error = `Couldn't load the transaction history for the following reasons: ${JSON.stringify(timeline.errors)}`;
+      error = `Couldn't load the transaction history for the following reasons: ${JSON.stringify(
+        timeline.errors
+      )}`;
     }
     entries = timeline.data.events;
   });
@@ -45,11 +52,7 @@
 
 <svelte:window bind:scrollY />
 
-<BankingHeader
-  {runtimeDapp}
-  {routable}
-  balance="0"
-/>
+<BankingHeader {runtimeDapp} {routable} balance="0" />
 
 <div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   {#if !error && entries.length === 0}
@@ -74,13 +77,19 @@
     </section>
   {:else if entries.length > 0}
     {#each entries as transfer, i}
-      {#if i === 0}
-        <TransactionCard bind:this={firstElement} {transfer} message="" />
-      {:else}
-        <TransactionCard {transfer} message="" />
-      {/if}
+      <Lazy
+        height="{80}"
+        offset="{0}"
+        {onload}
+        fadeOption="{{ delay: 500, duration: 1000 }}">
+        {#if i === 0}
+          <TransactionCard bind:this="{firstElement}" {transfer} message=" " />
+        {:else}
+          <TransactionCard {transfer} message=" " />
+        {/if}
+      </Lazy>
     {/each}
-    <div bind:this={stopElement}>Stop</div>
+    <div bind:this="{stopElement}">Stop</div>
   {:else}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
