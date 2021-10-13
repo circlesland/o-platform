@@ -354,6 +354,7 @@ type Query {
     inbox: [ProfileEvent!]!
     initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
+    lastUBITransaction: String
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
     offers(query: QueryOfferInput!): [Offer!]!

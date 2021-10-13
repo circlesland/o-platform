@@ -517,6 +517,7 @@ export type Query = {
   inbox: Array<ProfileEvent>;
   initAggregateState?: Maybe<InitAggregateState>;
   invitationTransaction?: Maybe<ProfileEvent>;
+  lastUBITransaction?: Maybe<Scalars['String']>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
   offers: Array<Offer>;
@@ -1277,6 +1278,14 @@ export type ProfilesByCirclesAddressQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
     )> }
   )> }
+);
+
+export type LastUbiTransactionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LastUbiTransactionQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'lastUBITransaction'>
 );
 
 export type ProfilesByIdsQueryVariables = Exact<{
@@ -2176,6 +2185,11 @@ export const ProfilesByCirclesAddressDocument = gql`
   }
 }
     `;
+export const LastUbiTransactionDocument = gql`
+    query lastUBITransaction {
+  lastUBITransaction
+}
+    `;
 export const ProfilesByIdsDocument = gql`
     query profilesByIds($id: [Int!]!) {
   profilesById(ids: $id) {
@@ -2850,6 +2864,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
       return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));
+    },
+    lastUBITransaction(variables?: LastUbiTransactionQueryVariables): Promise<LastUbiTransactionQuery> {
+      return withWrapper(() => client.request<LastUbiTransactionQuery>(print(LastUbiTransactionDocument), variables));
     },
     profilesByIds(variables: ProfilesByIdsQueryVariables): Promise<ProfilesByIdsQuery> {
       return withWrapper(() => client.request<ProfilesByIdsQuery>(print(ProfilesByIdsDocument), variables));

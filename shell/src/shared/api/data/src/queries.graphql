@@ -196,6 +196,10 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
   }
 }
 
+query lastUBITransaction {
+  lastUBITransaction
+}
+
 query profilesByIds($id: [Int!]!) {
   profilesById(ids: $id) {
     id

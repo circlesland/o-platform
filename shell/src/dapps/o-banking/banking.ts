@@ -1,13 +1,8 @@
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {getUBIService} from "./processes/getUBIService";
-import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
-import {GetUbiContextData} from "./processes/getUbi";
 import {AvataarGenerator} from "../../shared/avataarGenerator";
 import {Profile, ProfileEvent, TransactionTimelineDocument} from "./data/api/types";
 import {
-    ProfileBySafeAddressDocument,
-    ProfilesByCirclesAddressDocument,
-    ProfilesDocument
+    ProfilesByCirclesAddressDocument
 } from "../../shared/api/data/types";
 
 export class Banking {
@@ -31,20 +26,6 @@ export class Banking {
             throw new Error(`Couldn't load the transaction history for the following reasons: ${JSON.stringify(timeline.errors)}`);
         }
         this.entries = timeline.data.events;
-    }
-
-    private static async getUbi(safeAddress:string) : Promise<void> {
-        try {
-            await getUBIService(<ProcessContext<GetUbiContextData>> {
-                data: {
-                    safeAddress,
-                    privateKey: sessionStorage.getItem("circlesKey")
-                }
-            })
-            localStorage.setItem("lastUBI", new Date().toJSON());
-        } catch (e) {
-            console.error("Couldn't retrieve your UBI.")
-        }
     }
 
     public static async findCirclesGardenProfiles(safeAddresses: string[]) : Promise<{
