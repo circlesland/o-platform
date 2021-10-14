@@ -46,10 +46,6 @@
     "vis-network": "^9.0.1"
   },
   "devDependencies": {
-    "@tkey/default": "^4.4.0-alpha.4",
-    "@tkey/service-provider-torus": "^4.4.0-alpha.4",
-    "@tkey/storage-layer-torus": "^4.4.0-alpha.4",
-    "@tkey/web-storage": "^4.4.0-alpha.4",
     "@toruslabs/openlogin": "^1.0.0",
     "@toruslabs/torus-direct-web-sdk": "^5.0.0",
     "apollo-link-ws": "^1.0.20",

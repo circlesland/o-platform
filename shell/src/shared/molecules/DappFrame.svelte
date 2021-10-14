@@ -352,24 +352,77 @@ function onInputBlurred() {
   return;
 }
 
-    // Set the global "runProcess" function. This needs to be done here
-    // because at any point before the dialog wouldn't be ready.
-    window.o.runProcess = async function runProcess(
-      processDefinition: ProcessDefinition<any, any>,
-      contextData: { [x: string]: any },
-      dirtyFlags: { [x: string]: boolean } | undefined,
-      onlyThesePages?: string[]
-    ) {
-      const modifier = async ctx => {
-        ctx.childProcessDefinition = processDefinition;
-        ctx.childContext = {
-          data: contextData,
-          dirtyFlags: !dirtyFlags ? {} : dirtyFlags,
-          initialDirtyFlags: !dirtyFlags ? {} : dirtyFlags,
-          onlyThesePages: !onlyThesePages ? [] : onlyThesePages
-        };
-        return ctx;
-      };
+onMount(async () => {
+  window.o.events.subscribe(async (event) => {
+    switch (event.type) {
+      case "process.continued":
+        onProcessContinued();
+        break;
+      case "process.canGoBack":
+        onProcessCanGoBack();
+        break;
+      case "process.back":
+        onProcessBack();
+        break;
+      case "process.canSkip":
+        onProcessCanSkip();
+        break;
+      case "process.skip":
+        onProcessSkip();
+        break;
+      case "shell.openNavigation":
+        onOpenNavigation();
+        console.log(event);
+        break;
+      case "shell.closeNavigation":
+        onCloseNavigation();
+        console.log(event);
+        break;
+      case "shell.contacts":
+        onOpenContacts();
+        console.log(event);
+        break;
+      case "shell.openModal":
+        onOpenModal();
+        console.log(event);
+        break;
+      case "shell.home":
+        onHome();
+        console.log(event);
+        break;
+      case "shell.inputFocused":
+        onInputFocused();
+        break;
+      case "shell.inputBlurred":
+        onInputBlurred();
+        break;
+      case "process.cancelRequest":
+        onProcessCancelRequest();
+        console.log(event);
+        break;
+      case "shell.requestCloseModal":
+        await onRequestCloseModal();
+        console.log(event);
+        break;
+      case "shell.closeModal":
+        await onCloseModal();
+        console.log(event);
+        break;
+      case "shell.runProcess":
+        await onRunProcess(event);
+        console.log(event);
+        break;
+      case "shell.processStarted":
+        console.log("Process started:", event);
+        runningProcess = event;
+        break;
+      case "process.stopped":
+        await onProcessStopped();
+        console.log(event);
+        runningProcess = null;
+        break;
+    }
+  });
 
   // Set the global "runProcess" function. This needs to be done here
   // because at any point before the dialog wouldn't be ready.
@@ -377,26 +430,21 @@ function onInputBlurred() {
     processDefinition: ProcessDefinition<any, any>,
     contextData: { [x: string]: any },
     dirtyFlags: { [x: string]: boolean } | undefined,
-    skipIfNotDirty?: boolean
+    onlyThesePages?: string[]
   ) {
     const modifier = async (ctx) => {
       ctx.childProcessDefinition = processDefinition;
       ctx.childContext = {
         data: contextData,
         dirtyFlags: !dirtyFlags ? {} : dirtyFlags,
-        skipIfNotDirty: skipIfNotDirty,
+        initialDirtyFlags: !dirtyFlags ? {} : dirtyFlags,
+        onlyThesePages: !onlyThesePages ? [] : onlyThesePages,
       };
       return ctx;
     };
 
-    setNav({
-      centerContainsProcess: false,
-      centerIsOpen: false,
-      rightIsOpen: false,
-      leftIsOpen: false,
-      notificationCount: $inbox.length,
-      showLogin: dapp.dappId == "homepage:1",
-    });
+    const requestEvent: any = new RunProcess(shellProcess, true, modifier);
+    requestEvent.id = Generate.randomHexString(8);
 
     const processStarted: ProcessStarted =
       await window.o.requestEvent<ProcessStarted>(requestEvent);
@@ -409,7 +457,7 @@ function onInputBlurred() {
     rightIsOpen: false,
     leftIsOpen: false,
     notificationCount: $inbox.length,
-    showLogin: dapp.dappId == "homepage:1" ? true : false,
+    showLogin: dapp.dappId == "homepage:1",
   });
 
   if (!identityChecked && !dapp.noAuthentication) {
