@@ -31,9 +31,10 @@ export class Prompt<TContext extends ProcessContext<any>>
   /**
    * The data that should be edited (if any).
    */
-  skipIfNotDirty: boolean = false;
+  //skipIfNotDirty: boolean = false;
   data: { [x: string]: any } = {};
   dirtyFlags: { [x: string]: boolean } = {};
+  onlyThesePages: string[] = [];
   editorDirtyFlags: { [x: string]: boolean } = {};
   messages: { [x: string]: string } = {};
 

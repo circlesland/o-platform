@@ -267,7 +267,7 @@
             };
             dispatch("navigation", nav);
 
-            const isOnlyEditablePage = promptEvent.skipIfNotDirty && Object.keys(promptEvent.dirtyFlags).length == 1;
+            const isOnlyEditablePage = (promptEvent.onlyThesePages ? promptEvent.onlyThesePages : []).length == 1; //promptEvent.skipIfNotDirty && Object.keys(promptEvent.dirtyFlags).length == 1;
             if (promptEvent.navigation.canGoBack && !isOnlyEditablePage) {
               window.o.publishEvent({ type: "process.canGoBack" });
             }

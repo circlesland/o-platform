@@ -17,95 +17,7 @@
   import {shellEvents} from "./shared/shellEvents";
   import {ApiConnection} from "./shared/apiConnection";
   import {getProcessContext} from "./main";
-  // import {PromptContext, PromptEvent} from "./dapps/o-onboarding/components/dialog";
   import {Stopped} from "@o-platform/o-process/dist/events/stopped";
-
-
-  import ThresholdKey from "@tkey/default";
-  import TorusServiceProvider from "@tkey/service-provider-torus";
-  import TorusStorageLayer from "@tkey/storage-layer-torus";
-  import WebStorageModule, { WEB_STORAGE_MODULE_NAME } from "@tkey/web-storage";
-  import DirectWebSdk from "@toruslabs/torus-direct-web-sdk";
-
-  /*
-  (async function init() {
-    (<any>window).customauth = new DirectWebSdk({
-      baseUrl: document.location.protocol + "//" + document.location.host,
-      network: "testnet",
-      redirectPathName: "redirect.html",
-      uxMode: "popup"
-    });
-
-    await (<any>window).customauth.init({ skipSw: true });
-
-    // Torus service provider uses directAuth to fetch users private key from the set of Torus nodes. This private key is one of the share in TSS.
-    // directAuth requires a deployment of a verifier with your clientId. Use developer.tor.us to create your verifier.
-    // Can use ServiceProviderBase which takes private key as input instead
-    const serviceProvider = new TorusServiceProvider({
-      directParams: {
-        baseUrl: "http://localhost:5000",
-        network: "testnet", // or mainnet
-        proxyContractAddress: "0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183", // corresponding proxy contract address of the specified network
-      },
-    });
-
-    // Storage layer used by the service provider
-    // Can use Custom storage layer which fits IStorageLayer interface
-    const storageLayer = new TorusStorageLayer({ hostUrl: "https://metadata.tor.us", serviceProvider });
-
-    const tkey = new ThresholdKey({
-      modules: {
-        // More modules can be passed to create additional shares.
-        [WEB_STORAGE_MODULE_NAME]: new WebStorageModule(),
-      },
-      serviceProvider,
-      storageLayer,
-    });
-
-    // triggers google login.
-    // After google login succeeds, initialise tkey, metadata and its modules. (Minimum one share is required to read from the storage layer. In this case it was google login)
-    // In case of web applications, we create another share and store it on browsers local storage. This makes the threshold 2/2. You can use modules to create additional shares
-    await tkey.serviceProvider.init()
-    await tkey.serviceProvider.triggerLogin();
-
-
-    await tkey.initialize({});
-
-    // Private key reconstruction. This is your threshold key.
-    const reconstructedKey = await tkey.reconstructKey();
-
-
-    if (params["id_token"]) {
-      // alert(params["id_token"])
-      torus(params["id_token"]);
-    }
-  })();
-  const nonce = Math.random();
-  const state = Math.random();
-  const clientId = "906916064114-5m4nsuvu0uhs2gnav4me4rsdrnlf445k.apps.googleusercontent.com";
-  const redirectUrl = `http://localhost:3001/receiveAuthCode`;
-  const urlTemplate = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientId}&scope=openid%20email&redirect_uri=${redirectUrl}&state=${state}&nonce=${nonce}`;
-
-  function login() {
-    document.location = urlTemplate;
-  }
-
-  const urlSearchParams = new URLSearchParams(window.location.search);
-  const params = Object.fromEntries(urlSearchParams.entries());
-
-  async function torus(idtoken) {
-    const {privateKey, publicAddress} = await window.customauth.getTorusKey(
-      "circles-google-jwt-testnet",
-      "email",
-      {verifier_id: "jaensen2@codeho.org"},
-      idtoken
-    );
-
-    alert(privateKey);
-  }
-
-   */
-
 
   const runningProcesses: {
     [id: string]: Process;
@@ -293,12 +205,18 @@
   import {interpret} from "xstate";
   import {initMachine} from "./dapps/o-onboarding/processes/init";
   import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  import {LastUbiTransactionDocument, ProfileBySafeAddressDocument} from "./shared/api/data/types";
+  import {Banking} from "./dapps/o-banking/banking";
+  import {UbiTimer} from "./shared/ubiTimer";
 
   /*
   RpcGateway.get().eth.getPendingTransactions().then(o => {
     console.log("Pending tx:", JSON.stringify(o))
   });
    */
+
+  new UbiTimer().init();
+
 
   window.runInitMachine = () => {
     var m = interpret(initMachine)

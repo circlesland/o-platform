@@ -112,7 +112,8 @@ export function prompt<
             {
               cond: (context: TContext) => {
                 const skip =
-                  context.onlyWhenDirty && !context.dirtyFlags[field.name];
+                  context.onlyThesePages?.length > 0 && !context.onlyThesePages.find(o => o == field.name)
+                  //context.onlyWhenDirty && !context.dirtyFlags[field.name];
                   // spec.onlyWhenDirty && !context.dirtyFlags[field.name];
                 if (skip) {
                   console.log(

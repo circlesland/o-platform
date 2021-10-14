@@ -22,7 +22,6 @@
     CommonTrust,
     CommonTrustDocument,
   } from "../../../shared/api/data/types";
-  import { push } from "svelte-spa-router";
 
   export let id: string;
   export let jumplist: Jumplist<any, any> | undefined;
@@ -210,10 +209,10 @@
     app.$destroy();
   };
 
-  function editProfile(dirtyFlags: { [x: string]: boolean }) {
+  function editProfile(onlyThesePages?: string[]) {
     if (!profile || !profile.id || !isEditable) return;
 
-    window.o.runProcess(upsertIdentity, profile, dirtyFlags, true);
+    window.o.runProcess(upsertIdentity, profile, {}, onlyThesePages);
   }
 
   let inviteLink: string = "";
