@@ -4,32 +4,32 @@ export DEPLOY_ENVIRONMENT=$1
 
 echo "Installing build dependencies .."
 npm i
-npx --no-install lerna bootstrap || exit
+yarn --ignore-engines || exit
 
 echo "Building 'o-utils' .."
 cd packages/o-utils || exit
-npx --no-install tsc || exit
+tsc || exit
 cd .. || exit
 
 echo "Building 'o-events' .."
 rm -r -f o-events/dist
 cd o-events || exit
-npx --no-install tsc || exit
+tsc || exit
 cd .. || exit
 
 echo "Building 'o-interfaces' .."
 cd o-interfaces || exit
-npx --no-install tsc || exit
+tsc || exit
 cd .. || exit
 
 echo "Building 'o-process' .."
 cd o-process || exit
-npx --no-install tsc || exit
+tsc || exit
 cd .. || exit
 
 echo "Building 'o-circles' .."
 cd o-circles || exit
-npx --no-install tsc || exit
+tsc || exit
 cd ../.. || exit
 
 echo "Generating graphql types for shared/api/data"

@@ -382,7 +382,7 @@ const processDefinition = (processId: string) =>
                 <div class=" self-center justify-self-center text-center mt-4">
                   <div class="w-36 h-36 rounded-full mb-4">
                     <img
-                      class="rounded-full"
+                      class="rounded-full self-center "
                       src=${toAvatarUrl}
                       alt=${to}
                     />

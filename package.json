@@ -1,25 +1,35 @@
 {
-  "name": "root",
-  "private": false,
+  "private": true,
+  "name": "o-platform",
   "engines": {
-    "node": "^16.1.0"
+    "node": "16.5.0"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "dapps/*",
+      "shell"
+    ],
+    "nohoist": [
+      "**/svelte",
+      "**/apollo",
+      "**/svelte-apollo"
+    ]
+  },
+  "scripts": {
+    "test": "lerna run test --stream"
   },
   "devDependencies": {
-    "daisyui": "^0.25.0",
     "lerna": "^4.0.0",
-    "prettier": "^2.3.2",
-    "prettier-plugin-svelte": "^2.3.1",
     "prisma": "2.18.0",
-    "svelte-tabs": "^1.1.0",
     "typescript": "^4.1.3"
   },
   "dependencies": {
     "@prisma/client": "^2.18.0",
-    "@sveltejs/svelte-virtual-list": "^3.0.1",
     "core-util-is": "^1.0.2",
     "rxjs": "^6.6.3",
-    "svelte": "^3.38.3",
-    "web3": "^1.3.6",
-    "xstate": "^4.20.0"
+    "svelte": "^3.38.2",
+    "web3": "^1.3.5",
+    "xstate": "^4.16.0"
   }
 }

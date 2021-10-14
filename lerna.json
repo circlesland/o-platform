@@ -1,8 +1,7 @@
 {
-  "packages": [
-    "packages/*",
-    "dapps/*",
-    "shell"
-  ],
-  "version": "0.0.1"
+  "packages": ["packages/*", "dapps/*", "shell"],
+
+  "version": "independent",
+  "npmClient": "yarn ",
+  "useWorkspaces": true
 }

@@ -1,11 +1,10 @@
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { PlatformEventTypes } from "@o-platform/o-events/dist/eventTypes";
-import {Schema} from "yup";
-import {PromptField} from "../states/prompt";
-import {ProcessContext} from "../interfaces/processContext";
+import { AnySchema } from "yup";
+import { PromptField } from "../states/prompt";
+import { ProcessContext } from "../interfaces/processContext";
 
-export interface PromptNavigation
-{
+export interface PromptNavigation {
   canSkip: boolean;
   canGoBack: boolean;
   canSubmit: boolean;
@@ -14,7 +13,9 @@ export interface PromptNavigation
 /**
  * Can be used to ask for user input or to display status information.
  */
-export class Prompt<TContext extends ProcessContext<any>> implements PlatformEvent {
+export class Prompt<TContext extends ProcessContext<any>>
+  implements PlatformEvent
+{
   type: PlatformEventTypes = "process.prompt";
 
   /**
@@ -45,7 +46,7 @@ export class Prompt<TContext extends ProcessContext<any>> implements PlatformEve
    * Can contain a "yup" schema. If set, the response to this prompt should
    * be validated against this schema.
    */
-  dataSchema?: Schema<any,any>;
+  dataSchema?: AnySchema<any, any>;
 
   /**
    * If set to 'true' tries to avoid to be saved in the browser's form auto-fill.
