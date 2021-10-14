@@ -1,7 +1,7 @@
 <script lang="ts">
 import { EditorContext } from "./editorContext";
 import { onMount } from "svelte";
-import Cropper from "svelte-easy-crop";
+import Cropper from "../../../shell/src/shared/molecules/Cropper/Cropper.svelte";
 import Dropzone from "svelte-file-dropzone";
 import ProcessNavigation from "./ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";

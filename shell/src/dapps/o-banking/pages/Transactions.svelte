@@ -1,59 +1,59 @@
 <script lang="ts">
-  import BankingHeader from "../atoms/BankingHeader.svelte";
-  import { transfer } from "../processes/transfer";
-  import TransactionCard from "../atoms/TransactionCard.svelte";
-  import TopNav from "src/shared/atoms/TopNav.svelte";
-  import { me } from "../../../shared/stores/me";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import { onMount } from "svelte";
-  import { ProfileEvent, TransactionTimelineDocument } from "../data/api/types";
-  import Lazy from "src/shared/molecules/Lazy/Lazy.svelte";
+import BankingHeader from "../atoms/BankingHeader.svelte";
+import { transfer } from "../processes/transfer";
+import TransactionCard from "../atoms/TransactionCard.svelte";
+import TopNav from "src/shared/atoms/TopNav.svelte";
+import { me } from "../../../shared/stores/me";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { onMount } from "svelte";
+import { ProfileEvent, TransactionTimelineDocument } from "../data/api/types";
+import Lazy from "src/shared/molecules/Lazy/Lazy.svelte";
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  $: me;
+$: me;
 
-  let stopElement: HTMLDivElement;
-  let firstElement: TransactionCard;
+let stopElement: HTMLDivElement;
+let firstElement: TransactionCard;
 
-  let scrollY;
-  let oldRowCount = 0;
+let scrollY;
+let oldRowCount = 0;
 
-  const pageSize = 30;
-  let currentPage = 0;
-  let eof = false;
+const pageSize = 30;
+let currentPage = 0;
+let eof = false;
 
-  let entries: ProfileEvent[] = [];
-  let error: string;
+let entries: ProfileEvent[] = [];
+let error: string;
 
-  const onload = node => {
-    console.log("on load");
-  };
+const onload = (node) => {
+  console.log("on load");
+};
 
-  onMount(async () => {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const timeline = await apiClient.query({
-      query: TransactionTimelineDocument,
-      variables: {
-        safeAddress: $me.circlesAddress, //this.safeAddress,
-        fromTimestamp: new Date().toJSON()
-        // fromBlock: 16471696
-      },
-    });
-    if (timeline.errors) {
-      error = `Couldn't load the transaction history for the following reasons: ${JSON.stringify(
-        timeline.errors
-      )}`;
-    }
-    entries = timeline.data.events;
+onMount(async () => {
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const timeline = await apiClient.query({
+    query: TransactionTimelineDocument,
+    variables: {
+      safeAddress: $me.circlesAddress, //this.safeAddress,
+      fromTimestamp: new Date().toJSON(),
+      // fromBlock: 16471696
+    },
   });
+  if (timeline.errors) {
+    error = `Couldn't load the transaction history for the following reasons: ${JSON.stringify(
+      timeline.errors
+    )}`;
+  }
+  entries = timeline.data.events;
+});
 </script>
 
 <svelte:window bind:scrollY />
 
-<BankingHeader {runtimeDapp} {routable} balance="0" />
+<BankingHeader runtimeDapp="{runtimeDapp}" routable="{routable}" balance="0" />
 
 <div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
   {#if !error && entries.length === 0}
@@ -78,15 +78,14 @@
     </section>
   {:else if entries.length > 0}
     {#each entries as transfer, i}
-      <Lazy
-        height="{80}"
-        offset="{0}"
-        {onload}
-        fadeOption="{{ delay: 500, duration: 1000 }}">
+      <Lazy height="{80}" offset="{0}" onload="{onload}">
         {#if i === 0}
-          <TransactionCard bind:this="{firstElement}" {transfer} message=" " />
+          <TransactionCard
+            bind:this="{firstElement}"
+            transfer="{transfer}"
+            message=" " />
         {:else}
-          <TransactionCard {transfer} message=" " />
+          <TransactionCard transfer="{transfer}" message=" " />
         {/if}
       </Lazy>
     {/each}
@@ -111,8 +110,8 @@
         Circles as a welcome gift.
         <br />
         <br />
-        From today on you will unconditionally receive 8 more Circles every day
-        in the form of your personal universal basic income.
+        From today on you will unconditionally receive 8 more Circles every day in
+        the form of your personal universal basic income.
         <br />
         <br />
 
