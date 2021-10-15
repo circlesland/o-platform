@@ -6,9 +6,6 @@ import Login from "./o-passport/pages/Login.svelte";
 import { logout } from "./o-passport/processes/logout";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import {loginWithTorus} from "./o-onboarding/processes/loginWithTorus";
-import {getOpenLogin} from "../shared/openLogin";
-import {LogoutDocument} from "../shared/api/data/types";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],

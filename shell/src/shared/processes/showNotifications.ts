@@ -83,7 +83,7 @@ const processDefinition = (processId: string) =>
             },
             {
               cond: (context) => context.data.currentEvent === undefined,
-              target: "#showSuccess",
+              target: "#success",
             },
           ],
         },
@@ -132,27 +132,6 @@ const processDefinition = (processId: string) =>
         id: "error",
         entry: (context) => console.error(`error entry`, context.data),
       },
-      showSuccess: prompt({
-        id: "showSuccess",
-        field: "__",
-        component: HtmlViewer,
-        params: {
-          view: {
-            title: "All done",
-            description: "",
-            submitButtonText: "Close",
-          },
-          html: () => `<p>All done.</p>`,
-          submitButtonText: "Close",
-          hideNav: false,
-        },
-        navigation: {
-          canGoBack: (context: any) => context.data.currentEventIndex > 0,
-          canSkip: () => false,
-          next: "#success",
-          previous: "#fetchPrevious",
-        },
-      }),
       success: {
         type: "final",
         id: "success",

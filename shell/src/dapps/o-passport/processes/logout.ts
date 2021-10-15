@@ -1,15 +1,11 @@
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import EditorView from "@o-platform/o-editors/src/shared/EditorView.svelte";
-import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { push } from "svelte-spa-router";
-import * as bip39 from "bip39";
-import * as yup from "yup";
 import {LogoutDocument} from "../../../shared/api/data/types";
+import {getOpenLogin} from "../../../shared/openLogin";
 
 export type LogoutContextData = {
   loginEmail: string;
@@ -39,59 +35,16 @@ const processDefinition = (processId: string) =>
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<LogoutContext, any>("error"),
-/*
-      checkSeedPhrase: prompt<LogoutContext, any>({
-        field: "checkSeedPhrase",
-        component: TextareaEditor,
-        params: {
-          view: editorContent.logout,
-        },
-        dataSchema: yup
-          .string()
-          .required("Please enter Secret Recovery Code to logout."),
-        navigation: {
-          next: "#compareSeedPhrase",
-        },
-      }),
-      compareSeedPhrase: {
-        id: "compareSeedPhrase",
-        always: [
-          {
-            cond: (context) => {
-              let seedPhrase =
-                sessionStorage.getItem("circlesKey") &&
-                sessionStorage.getItem("circlesKey") != "0x123"
-                  ? bip39.entropyToMnemonic(
-                      localStorage
-                        .getItem("circlesKey")
-                        .substr(
-                          2,
-                          sessionStorage.getItem("circlesKey").length - 2
-                        )
-                    )
-                  : "<no private key>";
-              const match = context.data.checkSeedPhrase.trim() == seedPhrase;
-              if (!match) {
-                context.messages["checkSeedPhrase"] = "The codes don't match";
-              }
-              return match;
-            },
-            target: "#logout",
-          },
-          {
-            target: "#checkSeedPhrase",
-          },
-        ],
-      },
-
- */
       logout: {
         id: "logout",
         invoke: {
           src: async (context) => {
 
+            const openLogin = await getOpenLogin();
+
             sessionStorage.removeItem("circlesKey");
             sessionStorage.removeItem("keyCache");
+            localStorage.removeItem("circlesKeys");
             localStorage.removeItem("me");
 
             const apiClient =
@@ -99,6 +52,7 @@ const processDefinition = (processId: string) =>
             const result = await apiClient.mutate({
               mutation: LogoutDocument,
             });
+            await openLogin.logout({});
 
             return result.data.logout.success;
           },

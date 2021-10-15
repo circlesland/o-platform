@@ -1,8 +1,6 @@
 import OpenLogin from "@toruslabs/openlogin";
-import DirectWebSDK from "@toruslabs/torus-direct-web-sdk";
 
 let openLogin: OpenLogin;
-let torus: DirectWebSDK;
 
 export async function getOpenLogin() {
   if (!openLogin) {

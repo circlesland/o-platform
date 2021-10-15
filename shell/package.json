@@ -47,7 +47,6 @@
   },
   "devDependencies": {
     "@toruslabs/openlogin": "^1.0.0",
-    "@toruslabs/torus-direct-web-sdk": "^5.0.0",
     "apollo-link-ws": "^1.0.20",
     "simplebar": "^5.3.6",
     "svelte-simplebar": "^1.0.3",
