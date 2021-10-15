@@ -838,7 +838,7 @@ export type BalancesByAssetQuery = (
     & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
     & { token_owner_profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl'>
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
     )> }
   )> }
 );
@@ -961,6 +961,7 @@ export const BalancesByAssetDocument = gql`
       firstName
       lastName
       avatarUrl
+      circlesAddress
     }
     token_balance
   }

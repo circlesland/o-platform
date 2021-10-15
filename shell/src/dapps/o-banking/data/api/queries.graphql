@@ -11,6 +11,7 @@ query balancesByAsset($safeAddress:String!) {
             firstName
             lastName
             avatarUrl
+            circlesAddress
         }
         token_balance
     }
