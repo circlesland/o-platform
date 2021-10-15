@@ -179,6 +179,5 @@ export const banking: DappManifest<BankingDappState> = {
     assets,
     crcDetail,
     xdaiDetail,
-    findMySafe,
   ],
 };
