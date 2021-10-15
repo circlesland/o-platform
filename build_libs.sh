@@ -8,23 +8,23 @@ npx --no-install yarn || exit
 
 echo "Building 'o-utils' .."
 cd packages/o-utils || exit
-tsc --no-install  || exit
+npx --no-install tsc || exit
 cd .. || exit
 
 echo "Building 'o-events' .."
 rm -r -f o-events/dist
 cd o-events || exit
-tsc --no-install  || exit
+npx --no-install tsc || exit
 cd .. || exit
 
 echo "Building 'o-interfaces' .."
 cd o-interfaces || exit
-tsc --no-install  || exit
+npx --no-install tsc || exit
 cd .. || exit
 
 echo "Building 'o-process' .."
 cd o-process || exit
-tsc --no-install  || exit
+npx --no-install tsc || exit
 cd .. || exit
 
 echo "Building 'o-circles' .."
