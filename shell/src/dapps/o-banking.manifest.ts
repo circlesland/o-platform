@@ -8,7 +8,7 @@ import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
 import { transfer } from "./o-banking/processes/transfer";
 import { init } from "./o-banking/init";
 import { me } from "../shared/stores/me";
-import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
+
 import { Profile } from "./o-banking/data/api/types";
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
@@ -122,14 +122,6 @@ const xdaiDetail: Page<{ symbol: string }, BankingDappState> = {
   routeParts: ["=assets", "=xdai"],
   component: XDaiDetail,
   title: "Asset",
-  type: "page",
-};
-
-const findMySafe: Page<any, BankingDappState> = {
-  isSystem: true,
-  routeParts: ["=find-my-safe"],
-  component: FindMySafe,
-  title: "FindMySafe",
   type: "page",
 };
 
