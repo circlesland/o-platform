@@ -155,6 +155,12 @@ type CreateInvitationResult {
     success: Boolean!
 }
 
+type CreateOrganisationResult {
+    error: String
+    organisation: Organisation
+    success: Boolean!
+}
+
 type CreatedInvitation {
     address: String!
     balance: String!
@@ -254,6 +260,7 @@ type Mutation {
     unlistOffer(offerId: Int!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
     upsertOffer(data: UpsertOfferInput!): Offer!
+    upsertOrganisation(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
     upsertProfile(data: UpsertProfileInput!): Profile!
     upsertTag(data: UpsertTagInput!): Tag!
     verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
@@ -293,6 +300,7 @@ type Organisation {
     circlesSafeOwner: String
     city: City
     cityGeonameid: Int
+    createdAt: String!
     description: String
     id: Int!
     members: [ProfileOrOrganisation!]!
@@ -570,6 +578,16 @@ input UpsertOfferInput {
     pricePerUnit: String!
     title: String!
     unitTagId: Int!
+}
+
+input UpsertOrganisationInput {
+    avatarMimeType: String
+    avatarUrl: String
+    circlesAddress: String
+    cityGeonameid: Int
+    description: String
+    id: Int
+    name: String!
 }
 
 input UpsertProfileInput {
