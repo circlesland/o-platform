@@ -72,7 +72,8 @@ const processDefinition = (processId: string) =>
           params: {
             view: {
               title: "Welcome to Cirles Land",
-              description: "Please choose a sign-in option",
+              description:
+                "Please choose a sign-in option<br/> <small>By choosing one of the sign-in options you agree to our <a href='/' class='link' alt='privacy'>Privacy Terms</a>.</small>",
               placeholder: "",
               submitButtonText: "",
             },
