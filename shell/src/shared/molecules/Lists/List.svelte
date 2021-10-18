@@ -1,64 +1,73 @@
 <script lang="ts">
-/*
+import { me } from "../../../shared/stores/me";
 
-params: 
-  Data source action
-  List Element component
-  
-  
-
-
-*/
 import { onMount } from "svelte";
+import {
+  ProfileEvent,
+  TransactionTimelineDocument,
+} from "../../../shared/api/data/types";
 
-import Lazy from "src/shared/molecules/Lazy/Lazy.svelte";
-import { component_subscribe } from "svelte/internal";
+import { inview } from "svelte-inview/dist/index";
 
-export let listComponent = {
-  component: null,
-  componentContext: null,
-  onFocus: null,
-  onBlur: null,
-};
-export let dataSource;
+export let listItemComponent;
+export let listItemType;
+export let fetchQuery: any;
+export let fetchQueryArguments;
+export let dataKey: string;
 
-const onload = (node) => {
-  console.log("on load");
-
-  /*
-  
-    - fill 'entries' from Call to dataSource with offset param
-
-    */
-};
-
-onMount(async () => {
+let fromTimestamp: string = undefined;
+let posts: typeof listItemType[] = [];
+let hasMore: boolean = true;
+let error: string;
+let scrollContent;
+const fetchData = async (timeStamp) => {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const timeline = await apiClient.query({
-    query: TransactionTimelineDocument,
-    variables: {
-      safeAddress: $me.circlesAddress, //this.safeAddress,
-
-      // fromBlock: 16471696
-    },
+    query: fetchQuery,
+    variables: { ...fetchQueryArguments, fromTimestamp: timeStamp },
   });
   if (timeline.errors) {
-    error = `Couldn't load the transaction history for the following reasons: ${JSON.stringify(
+    error = `Couldn't load data for the following reasons: ${JSON.stringify(
       timeline.errors
     )}`;
   }
-  entries = timeline.data.events;
+
+  let newBatch = await timeline.data[dataKey];
+  console.log("BATCH: ", newBatch);
+  if (newBatch.length > 0) {
+    posts = [...posts, ...newBatch];
+    console.log("DUDE: ", newBatch.at(-1).timestamp);
+    fromTimestamp = newBatch.at(-1).timestamp;
+  } else {
+    hasMore = false;
+  }
+};
+
+const handleChange = (e) => {
+  if (e.detail.inView && hasMore) fetchData(fromTimestamp);
+};
+onMount(async () => {
+  fetchData(fromTimestamp);
 });
+
+const initBar = (bar) => {
+  scrollContent = bar;
+};
 </script>
 
-{#each entries as transfer, i}
-  <Lazy height="{80}" offset="{0}" onload="{onload}">
-    {#if i === 0}
-      <svelte:component
-        this="{listComponent.component}"
-        context="{listComponent.componentContext}"
-        on:focus="{listComponent.onFocus}"
-        on:blur="{listComponent.onBlur}" />
-    {/if}
-  </Lazy>
-{/each}
+{#if posts}
+  {#each posts as post}
+    <svelte:component this="{listItemComponent}" param="{post}" />
+  {:else}
+    <section class="flex items-center justify-center mb-2 ">
+      <div
+        class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
+        <div class="flex flex-col items-start text-center">
+          <div>Loading...</div>
+        </div>
+      </div>
+    </section>
+  {/each}
+{/if}
+
+<div use:inview="{{}}" on:change="{handleChange}"></div>

@@ -12862,6 +12862,13 @@ svelte-infinite-loading@^1.3.8:
   resolved "https://registry.yarnpkg.com/svelte-infinite-loading/-/svelte-infinite-loading-1.3.8.tgz#c479938bd5ca69264fe591ffbbb013b368afe578"
   integrity sha512-hn4o848LKd2Q+M11hiMWnfFxM1GHKVDi92HPZ1FYvfed4bEeRZL+QvFAQzhy1SACq6Si0CAJcQFUZpIYmAEnpQ==
 
+svelte-inview@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/svelte-inview/-/svelte-inview-2.0.2.tgz#b26f7607701e118984bbf7b394aab9da212cbe72"
+  integrity sha512-3Ya39TGJzbmtUD1MKzKGMVyhAAIz85ITL+EIKU4sO5eYMIRHegeEhHrPTRI1FQCojW92ahA9a2Zq9R1X0vMiZw==
+  dependencies:
+    tslib "^2.2.0"
+
 svelte-loader-hot@^0.3.1:
   version "0.3.1"
   resolved "https://registry.npmjs.org/svelte-loader-hot/-/svelte-loader-hot-0.3.1.tgz"
@@ -13387,7 +13394,7 @@ tslib@^1.10.0, tslib@^1.9.0, tslib@^1.9.3:
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@~2.3.0:
+tslib@^2, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@~2.3.0:
   version "2.3.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz"
   integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
