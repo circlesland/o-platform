@@ -594,9 +594,11 @@ async function handleUrlChanged() {
 
   // Automatically open leftNav on desktop.
   if ($media.large) {
-    window.o.publishEvent({
-      type: "shell.openNavigation",
-    });
+    if (!layout.dialogs.center) {
+      window.o.publishEvent({
+        type: "shell.openNavigation",
+      });
+    }
   }
 
   if (!navigation) {
