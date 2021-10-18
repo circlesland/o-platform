@@ -1,48 +1,48 @@
 <script lang="ts">
-  import { Action } from "rxjs/internal/scheduler/Action";
-  import { push } from "svelte-spa-router";
-  import Icons from "src/shared/molecules/Icons.svelte";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
+import { Action } from "rxjs/internal/scheduler/Action";
+import { push } from "svelte-spa-router";
+import Icons from "src/shared/molecules/Icons.svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
 
-  export let params = {
-    imageUrl: null,
-    imageAlt: null,
-    title: null,
-    subTitle: null,
-    truncateMain: null,
-    edgeless: null,
-    inline: false,
-    shadowSmall: true,
-    shadowMedium: null,
-    noShadow: false,
-    action: null,
-    imageAction: null,
-    endTextBig: null,
-    endTextBigClass: "text-success",
-    endTextSmall: null,
-    imageProfile: null,
-  };
+export let params = {
+  imageUrl: null,
+  imageAlt: null,
+  title: null,
+  subTitle: null,
+  truncateMain: null,
+  edgeless: null,
+  inline: false,
+  shadowSmall: true,
+  shadowMedium: null,
+  noShadow: false,
+  action: null,
+  imageAction: null,
+  endTextBig: null,
+  endTextBigClass: "text-success",
+  endTextSmall: null,
+  imageProfile: null,
+  noLink: false,
+};
 
-  // TODO: find a better way for this.
-  function cardAction() {
-    if (params.action) {
-      params.action();
-    }
+// TODO: find a better way for this.
+function cardAction() {
+  if (params.action) {
+    params.action();
   }
+}
 </script>
 
 <section
   on:click="{() => cardAction()}"
   class="flex items-center justify-center cursor-pointer"
-  class:mb-3="{!params.inline}">
-
+  class:mb-3="{!params.inline}"
+  class:cursor-pointer="{!params.noLink}">
   <div
     class="flex items-center w-full space-x-2 bg-white rounded-lg"
     class:shadow-sm="{!params.shadowMedium && !params.noShadow}"
     class:shadow-md="{params.shadowMedium && !params.noShadow}"
     class:p-3="{!params.edgeless}">
     <slot name="itemCardStart">
-
       <div>
         <div class="inline-flex">
           {#if params.imageProfile}
@@ -50,7 +50,7 @@
           {:else if params.imageUrl}
             <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
               <a
-                on:click="{e => {
+                on:click="{(e) => {
                   if (params.imageAction) params.imageAction(e);
                 }}">
                 <img
@@ -61,9 +61,7 @@
             </div>
           {/if}
         </div>
-
       </div>
-
     </slot>
     <slot name="itemCardText">
       <div
@@ -93,15 +91,14 @@
       </div>
     </slot>
   </div>
-
 </section>
 
 <style>
-  .status.sending {
-    @apply bg-primary;
-  }
-  .status.received,
-  .status.delivered {
-    @apply bg-success;
-  }
+.status.sending {
+  @apply bg-primary;
+}
+.status.received,
+.status.delivered {
+  @apply bg-success;
+}
 </style>

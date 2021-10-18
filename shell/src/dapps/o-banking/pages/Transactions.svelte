@@ -26,7 +26,7 @@ const listArguments = {
 
 <BankingHeader runtimeDapp="{runtimeDapp}" routable="{routable}" balance="0" />
 
-<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2 mb-14">
   <List
     listItemType="{ProfileEvent}"
     listItemComponent="{TransactionCard}"

@@ -59,7 +59,7 @@ const initBar = (bar) => {
   {#each posts as post}
     <svelte:component this="{listItemComponent}" param="{post}" />
   {:else}
-    <section class="flex items-center justify-center mb-2 ">
+    <section class="flex items-center justify-center mb-6 ">
       <div
         class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
         <div class="flex flex-col items-start text-center">

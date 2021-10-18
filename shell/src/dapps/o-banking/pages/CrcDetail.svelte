@@ -1,31 +1,31 @@
 <script lang="ts">
-  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-  import { onMount } from "svelte";
-  import { me } from "../../../shared/stores/me";
-  import { BalancesByAssetDocument, AssetBalance } from "../data/api/types";
-  import Card from "../../../shared/atoms/Card.svelte";
+import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+import { onMount } from "svelte";
+import { me } from "../../../shared/stores/me";
+import { BalancesByAssetDocument, AssetBalance } from "../data/api/types";
+import Card from "../../../shared/atoms/Card.svelte";
 
-  import { push } from "svelte-spa-router";
-  import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { push } from "svelte-spa-router";
+import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 
-  let loading = true;
-  let balances: AssetBalance[] = [];
+let loading = true;
+let balances: AssetBalance[] = [];
 
-  onMount(async () => {
-    const safeAddress = $me.circlesAddress;
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const balanceResult = await apiClient.query({
-      query: BalancesByAssetDocument,
-      variables: {
-        safeAddress,
-      },
-    });
-    if (balanceResult.errors?.length > 0) {
-      throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
-    }
-    balances = balanceResult.data.balancesByAsset;
-    loading = false;
+onMount(async () => {
+  const safeAddress = $me.circlesAddress;
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const balanceResult = await apiClient.query({
+    query: BalancesByAssetDocument,
+    variables: {
+      safeAddress,
+    },
   });
+  if (balanceResult.errors?.length > 0) {
+    throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
+  }
+  balances = balanceResult.data.balancesByAsset;
+  loading = false;
+});
 </script>
 
 <div class="p-5">
@@ -43,28 +43,41 @@
   {:else}
     {#each balances as token}
       {#if token && token.token_balance > 0}
-        <div on:click="{() => push(`#/friends/${token.token_owner_address}`)}">
+        <div>
           <ItemCard
             params="{{
               edgeless: false,
-              imageProfile: token.token_owner_profile ? token.token_owner_profile : {
-                circlesAddress: token.token_owner_address
-              },
+              imageProfile: token.token_owner_profile
+                ? token.token_owner_profile
+                : {
+                    circlesAddress: token.token_owner_address,
+                  },
               title: token.token_owner_profile
-                ? `${token.token_owner_profile.firstName} ${token.token_owner_profile.lastName ? token.token_owner_profile.lastName : ''}`
+                ? `${token.token_owner_profile.firstName} ${
+                    token.token_owner_profile.lastName
+                      ? token.token_owner_profile.lastName
+                      : ''
+                  }`
                 : token.token_owner_address,
-              subTitle: token.token_owner_profile ? token.token_owner_address : "",
+              subTitle: token.token_owner_profile
+                ? token.token_owner_address
+                : '',
               truncateMain: true,
-              shadowSmall: true
+              shadowSmall: true,
+              noLink: true,
             }}">
-
             <div slot="itemCardEnd">
               <div class="self-end text-right text-success">
                 <span>
-                  {displayCirclesAmount(token.token_balance ? token.token_balance : '0', null, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
+                  {displayCirclesAmount(
+                    token.token_balance ? token.token_balance : "0",
+                    null,
+                    true,
+                    $me.displayTimeCircles ||
+                      $me.displayTimeCircles === undefined
+                  )}
                 </span>
               </div>
-
             </div>
           </ItemCard>
         </div>

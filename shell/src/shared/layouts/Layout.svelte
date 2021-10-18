@@ -1,62 +1,62 @@
 <script lang="ts">
-  import LeftDesktop from "./desktop/Left.svelte";
-  import LeftMobile from "./mobile/Left.svelte";
-  import RightDesktop from "./desktop/Right.svelte";
-  import Center from "./Center.svelte";
-  import NextNav from "src/shared/molecules/NextNav/NextNav.svelte";
-  import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
-  import { isMobile } from "src/shared/functions/isMobile";
-  import { RuntimeLayout } from "./layout";
-  import Pager from "src/shared/molecules/Pager.svelte";
-  import "simplebar";
-  import "simplebar/dist/simplebar.css";
-  import { createEventDispatcher } from "svelte";
+import LeftDesktop from "./desktop/Left.svelte";
+import LeftMobile from "./mobile/Left.svelte";
+import RightDesktop from "./desktop/Right.svelte";
+import Center from "./Center.svelte";
+import NextNav from "src/shared/molecules/NextNav/NextNav.svelte";
+import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
+import { isMobile } from "src/shared/functions/isMobile";
+import { RuntimeLayout } from "./layout";
+import Pager from "src/shared/molecules/Pager.svelte";
+import "simplebar";
+import "simplebar/dist/simplebar.css";
+import { createEventDispatcher } from "svelte";
 
-  let dapp = "homepage:!";
+let dapp = "homepage:!";
 
-  const eventDispatcher = createEventDispatcher();
+const eventDispatcher = createEventDispatcher();
 
-  export let layout: RuntimeLayout;
-  export let navigation: NavigationManifest;
+export let layout: RuntimeLayout;
+export let navigation: NavigationManifest;
 
-  const sliderPages = [
-    /*{
+const sliderPages = [
+  /*{
     export const sliderPages = [/*{
         title: "Item 1"
     },{
         title: "Item 2"
     }*/
-  ];
-  $: {
-    console.log("LayoutChanged:", layout);
-    if (
-      (layout.dialogs.center && layout.dialogs.center.isOpen) ||
-      (isMobile() && layout.dialogs.left && layout.dialogs.left.isOpen)
-    ) {
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.height = "100%";
-      document.body.style.width = "100%";
-    } else {
-      document.body.style.overflow = "inherit";
-      document.body.style.position = "inherit";
-      document.body.style.height = "inherit";
-      document.body.style.width = "inherit";
-    }
+];
+$: {
+  console.log("LayoutChanged:", layout);
+  if (
+    (layout.dialogs.center && layout.dialogs.center.isOpen) ||
+    (isMobile() && layout.dialogs.left && layout.dialogs.left.isOpen)
+  ) {
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.height = "100%";
+    document.body.style.width = "100%";
+  } else {
+    document.body.style.overflow = "inherit";
+    document.body.style.position = "inherit";
+    document.body.style.height = "inherit";
+    document.body.style.width = "inherit";
   }
+}
 
-  function handleClickOutside(event) {
-    event.preventDefault();
-    window.o.publishEvent({
-      type: "shell.requestCloseModal",
-    });
-  }
+function handleClickOutside(event) {
+  event.preventDefault();
+  window.o.publishEvent({
+    type: "shell.requestCloseModal",
+  });
+}
 
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Escape") {
-      window.o.publishEvent({ type: "process.cancelRequest" });
-    }
+function onkeydown(e: KeyboardEvent) {
+  if (e.key == "Escape") {
+    window.o.publishEvent({ type: "process.cancelRequest" });
   }
+}
 </script>
 
 <svelte:window on:keydown="{onkeydown}" />
@@ -67,8 +67,10 @@
         <Pager pages="{sliderPages}" />
       {/if}
       <div
-        class="flex flex-row w-full mainContent"
-        class:mb-16="{layout.dialogs.center && !layout.dialogs.center.isOpen && dapp === 'homepage:1'}"
+        class="flex flex-row w-full bg-gray-100 mainContent"
+        class:mb-16="{layout.dialogs.center &&
+          !layout.dialogs.center.isOpen &&
+          dapp === 'homepage:1'}"
         class:blur="{layout.dialogs.center && layout.dialogs.center.isOpen}">
         <div class="fixed z-50">
           {#if layout.dialogs.left && layout.dialogs.left.isOpen}
@@ -76,14 +78,19 @@
               <LeftMobile>
                 <svelte:component
                   this="{layout.dialogs.left.component}"
-                  {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
-                  on:clickedOutside="{() => eventDispatcher('clickedOutside', {
+                  {...layout.dialogs.left.params
+                    ? layout.dialogs.left.params
+                    : {}}
+                  on:clickedOutside="{() =>
+                    eventDispatcher('clickedOutside', {
                       position: 'left',
                     })}"
-                  on:clickedItem="{() => eventDispatcher('clickedItem', {
+                  on:clickedItem="{() =>
+                    eventDispatcher('clickedItem', {
                       position: 'left',
                     })}"
-                  on:clickedClose="{() => eventDispatcher('clickedClose', {
+                  on:clickedClose="{() =>
+                    eventDispatcher('clickedClose', {
                       position: 'left',
                     })}" />
               </LeftMobile>
@@ -91,14 +98,19 @@
               <LeftDesktop>
                 <svelte:component
                   this="{layout.dialogs.left.component}"
-                  {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
-                  on:clickedOutside="{() => eventDispatcher('clickedOutside', {
+                  {...layout.dialogs.left.params
+                    ? layout.dialogs.left.params
+                    : {}}
+                  on:clickedOutside="{() =>
+                    eventDispatcher('clickedOutside', {
                       position: 'left',
                     })}"
-                  on:clickedItem="{() => eventDispatcher('clickedItem', {
+                  on:clickedItem="{() =>
+                    eventDispatcher('clickedItem', {
                       position: 'left',
                     })}"
-                  on:clickedClose="{() => eventDispatcher('clickedClose', {
+                  on:clickedClose="{() =>
+                    eventDispatcher('clickedClose', {
                       position: 'left',
                     })}" />
               </LeftDesktop>
@@ -117,14 +129,19 @@
             <RightDesktop>
               <svelte:component
                 this="{layout.dialogs.right.component}"
-                {...layout.dialogs.right.params ? layout.dialogs.right.params : {}}
-                on:clickedOutside="{() => eventDispatcher('clickedOutside', {
+                {...layout.dialogs.right.params
+                  ? layout.dialogs.right.params
+                  : {}}
+                on:clickedOutside="{() =>
+                  eventDispatcher('clickedOutside', {
                     position: 'right',
                   })}"
-                on:clickedItem="{() => eventDispatcher('clickedItem', {
+                on:clickedItem="{() =>
+                  eventDispatcher('clickedItem', {
                     position: 'right',
                   })}"
-                on:clickedClose="{() => eventDispatcher('clickedClose', {
+                on:clickedClose="{() =>
+                  eventDispatcher('clickedClose', {
                     position: 'right',
                   })}" />
             </RightDesktop>
@@ -135,7 +152,7 @@
   </div>
 
   {#if navigation}
-    <NextNav {navigation} />
+    <NextNav navigation="{navigation}" />
   {/if}
 
   {#if layout.dialogs.center && layout.dialogs.center.isOpen}
@@ -149,27 +166,27 @@
 
 {#if !isMobile()}
   <style>
-    nav.carousel:hover {
-      @apply cursor-default;
-    }
+  nav.carousel:hover {
+    @apply cursor-default;
+  }
 
-    /* Hide the radio button */
-    nav.carousel input[type="radio"] {
-      display: none;
-    }
+  /* Hide the radio button */
+  nav.carousel input[type="radio"] {
+    display: none;
+  }
   </style>
 {/if}
 
 <style>
-  /* Background Blurring for firefox and other non supportive browsers */
-  @supports not (
-    (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
-  ) {
-    .blur {
-      filter: blur(4px);
-      -webkit-transition: all 0.35s ease-in-out;
-      -moz-transition: all 0.35s ease-in-out;
-      transition: all 0.35s ease-in-out;
-    }
+/* Background Blurring for firefox and other non supportive browsers */
+@supports not (
+  (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
+) {
+  .blur {
+    filter: blur(4px);
+    -webkit-transition: all 0.35s ease-in-out;
+    -moz-transition: all 0.35s ease-in-out;
+    transition: all 0.35s ease-in-out;
   }
+}
 </style>

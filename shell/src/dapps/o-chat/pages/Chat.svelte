@@ -51,7 +51,7 @@ onDestroy(() => shellEventSubscription.unsubscribe());
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2 mb-14">
   {#if !contacts && !error}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -74,6 +74,7 @@ onDestroy(() => shellEventSubscription.unsubscribe());
     </section>
   {:else}
     <!-- TODO: Possible actions: trust, transfer money -->
+
     {#each contacts.filter((o) => !!o.contactAddressProfile) as contact}
       <ChatListCard param="{contact}" />
     {/each}
