@@ -85,19 +85,17 @@ function setNav(navArgs: GenerateNavManifestArgs) {
   if (navArgs.centerIsOpen && !preModalNavArgs) {
     preModalNavArgs = currentNavArgs;
   }
-  navigation = generateNavManifest(navArgs, null);
+  let args = { ...navArgs, showLogin: dapp.dappId == "homepage:1" };
+  console.log(args);
+  navigation = generateNavManifest(args, null);
   console.log("New nav:", navigation);
-  currentNavArgs = navArgs;
+  currentNavArgs = args;
 }
 
 /**
  * This function is called only one time after the first route.
  */
 async function init() {
-  // setNav({
-  //   ...currentNavArgs,
-  //   showLogin: dapp.dappId == "homepage:1",
-  // });
   const session = await getSessionInfo();
   if (!$me || !session.isLoggedOn) {
     await push("/");
@@ -457,7 +455,6 @@ onMount(async () => {
     rightIsOpen: false,
     leftIsOpen: false,
     notificationCount: $inbox.length,
-    showLogin: dapp.dappId == "homepage:1",
   });
 
   if (!identityChecked && !dapp.noAuthentication) {
@@ -682,7 +679,6 @@ function showModalPage(
     leftIsOpen: false,
     notificationCount: $inbox.length,
     rightIsOpen: false,
-    showLogin: dapp.dappId == "homepage:1",
   });
 }
 
@@ -706,10 +702,7 @@ function showMainPage(
     },
   };
 
-  setNav({
-    ...currentNavArgs,
-    showLogin: dapp.dappId == "homepage:1",
-  });
+  setNav(currentNavArgs);
 }
 
 async function hideCenter() {
