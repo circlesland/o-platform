@@ -2,7 +2,7 @@
   import { push } from "svelte-spa-router";
   import Card from "src/shared/atoms/Card.svelte";
   import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-  import { AssetBalance } from "../data/api/types";
+  import {AssetBalance} from "../../../shared/api/data/types";
 
   export let symbol: string;
   export let title: string;

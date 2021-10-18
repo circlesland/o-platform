@@ -14,10 +14,9 @@ import { acquireSession } from "./aquireSession/acquireSession2";
 import { connectSafe } from "./connectSafe/connectSafe2";
 import { createSafe } from "./createSafe/createSafe";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import { Profile } from "../../../o-banking/data/api/types";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
-import {UpsertProfileDocument} from "../../../../shared/api/data/types";
+import {Profile, UpsertProfileDocument} from "../../../../shared/api/data/types";
 
 export type IdentifyContextData = {
   oneTimeCode?: string;

@@ -1,19 +1,18 @@
 <script lang="ts">
 import Time from "svelte-time";
 import { push } from "svelte-spa-router";
-import {
-  CrcHubTransfer,
-  CrcMinting,
-  CrcTokenTransfer,
-  Profile,
-  ProfileEvent,
-  TransactionByHashDocument,
-} from "../data/api/types";
 import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import { onMount } from "svelte";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import {
+  CrcHubTransfer,
+  CrcMinting,
+  Profile,
+  ProfileEvent,
+  TransactionByHashDocument
+} from "../../../shared/api/data/types";
 
 export let transactionHash: string;
 

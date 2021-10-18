@@ -1,13 +1,10 @@
 <script lang="ts">
-import { transfer } from "../../o-banking/processes/transfer";
-
 import { push } from "svelte-spa-router";
 
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import { Contact } from "../../../shared/api/data/types";
+import {Contact, Profile} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import Date from "../../../shared/atoms/Date.svelte";
-import { Profile } from "../../../dapps/o-banking/data/api/types";
 
 export let param: Contact;
 

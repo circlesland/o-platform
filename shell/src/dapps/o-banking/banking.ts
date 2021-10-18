@@ -1,8 +1,10 @@
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {AvataarGenerator} from "../../shared/avataarGenerator";
-import {Profile, ProfileEvent, TransactionTimelineDocument} from "./data/api/types";
+// import {Profile, ProfileEvent, TransactionTimelineDocument} from "./data/api/types";
 import {
-    ProfilesByCirclesAddressDocument
+    Profile,
+    ProfileEvent,
+    ProfilesByCirclesAddressDocument, TransactionTimelineDocument
 } from "../../shared/api/data/types";
 
 export class Banking {

@@ -13,9 +13,7 @@ import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewCo
 import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
 import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { Subscription } from "rxjs";
-import {
-  CreateTagInput
-} from "../data/api/types";
+import {CreateTagInput} from "../../../shared/api/data/types";
 
 export type SetTrustContextData = {
   safeAddress: string;

@@ -2,11 +2,11 @@
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import { onMount } from "svelte";
 import { me } from "../../../shared/stores/me";
-import { BalancesByAssetDocument, AssetBalance } from "../data/api/types";
 import Card from "../../../shared/atoms/Card.svelte";
 
 import { push } from "svelte-spa-router";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import {AssetBalance} from "../../../shared/api/data/types";
 
 let loading = true;
 let balances: AssetBalance[] = [];

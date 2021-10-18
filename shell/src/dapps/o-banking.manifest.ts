@@ -9,7 +9,6 @@ import { transfer } from "./o-banking/processes/transfer";
 import { init } from "./o-banking/init";
 import { me } from "../shared/stores/me";
 
-import { Profile } from "./o-banking/data/api/types";
 import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
@@ -17,6 +16,7 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
+import {Profile} from "../shared/api/data/types";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],

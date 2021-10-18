@@ -16,7 +16,6 @@ import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { BN } from "ethereumjs-util";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
-import { Profile } from "../data/api/types";
 import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { SetTrustContext } from "./setTrust";
 

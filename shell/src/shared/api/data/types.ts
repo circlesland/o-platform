@@ -1216,6 +1216,16 @@ export type MyInvitationsQuery = (
   )> }
 );
 
+export type BalanceQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type BalanceQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'balance'>
+);
+
 export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1779,6 +1789,74 @@ export type CommonTrustQuery = (
   )> }
 );
 
+export type TransactionByHashQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+  transactionHash: Scalars['String'];
+}>;
+
+
+export type TransactionByHashQuery = (
+  { __typename?: 'Query' }
+  & { eventByTransactionHash: Array<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'timestamp' | 'type' | 'value' | 'safe_address' | 'transaction_hash' | 'transaction_index' | 'block_number' | 'direction'>
+    & { safe_address_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>>, payload?: Maybe<{ __typename?: 'ChatMessage' } | (
+      { __typename?: 'CrcHubTransfer' }
+      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, transfers: Array<(
+        { __typename?: 'CrcTokenTransfer' }
+        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'CrcMinting' }
+      & Pick<CrcMinting, 'token' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    ) | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' }> }
+  )> }
+);
+
+export type BalancesByAssetQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type BalancesByAssetQuery = (
+  { __typename?: 'Query' }
+  & { balancesByAsset: Array<(
+    { __typename?: 'AssetBalance' }
+    & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
+    & { token_owner_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )> }
+  )> }
+);
+
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2157,6 +2235,11 @@ export const MyInvitationsDocument = gql`
     balance
     code
   }
+}
+    `;
+export const BalanceDocument = gql`
+    query balance($safeAddress: String!) {
+  balance(safeAddress: $safeAddress)
 }
     `;
 export const MyProfileDocument = gql`
@@ -2973,6 +3056,113 @@ export const CommonTrustDocument = gql`
   }
 }
     `;
+export const TransactionByHashDocument = gql`
+    query transactionByHash($safeAddress: String!, $transactionHash: String!) {
+  eventByTransactionHash(
+    safeAddress: $safeAddress
+    transactionHash: $transactionHash
+    types: ["crc_hub_transfer", "crc_minting"]
+  ) {
+    timestamp
+    type
+    value
+    safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    transaction_hash
+    transaction_index
+    block_number
+    direction
+    tags {
+      id
+      typeId
+      value
+    }
+    payload {
+      ... on CrcHubTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+      }
+      ... on CrcMinting {
+        token
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
+    }
+  }
+}
+    `;
+export const BalancesByAssetDocument = gql`
+    query balancesByAsset($safeAddress: String!) {
+  balancesByAsset(safeAddress: $safeAddress) {
+    token_address
+    token_owner_address
+    token_owner_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    token_balance
+  }
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -3053,6 +3243,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     myInvitations(variables?: MyInvitationsQueryVariables): Promise<MyInvitationsQuery> {
       return withWrapper(() => client.request<MyInvitationsQuery>(print(MyInvitationsDocument), variables));
     },
+    balance(variables: BalanceQueryVariables): Promise<BalanceQuery> {
+      return withWrapper(() => client.request<BalanceQuery>(print(BalanceDocument), variables));
+    },
     myProfile(variables?: MyProfileQueryVariables): Promise<MyProfileQuery> {
       return withWrapper(() => client.request<MyProfileQuery>(print(MyProfileDocument), variables));
     },
@@ -3115,6 +3308,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     commonTrust(variables: CommonTrustQueryVariables): Promise<CommonTrustQuery> {
       return withWrapper(() => client.request<CommonTrustQuery>(print(CommonTrustDocument), variables));
+    },
+    transactionByHash(variables: TransactionByHashQueryVariables): Promise<TransactionByHashQuery> {
+      return withWrapper(() => client.request<TransactionByHashQuery>(print(TransactionByHashDocument), variables));
+    },
+    balancesByAsset(variables: BalancesByAssetQueryVariables): Promise<BalancesByAssetQuery> {
+      return withWrapper(() => client.request<BalancesByAssetQuery>(print(BalancesByAssetDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

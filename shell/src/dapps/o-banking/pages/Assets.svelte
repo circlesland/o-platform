@@ -7,11 +7,11 @@
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import { onMount } from "svelte";
   import { me } from "../../../shared/stores/me";
-  import { BalancesByAssetDocument } from "../data/api/types";
   import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
   import { KeyManager } from "../../o-passport/data/keyManager";
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
   import Web3 from "web3";
+  import {BalancesByAssetDocument} from "../../../shared/api/data/types";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;

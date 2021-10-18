@@ -56,10 +56,5 @@ echo "* api"
 cd shell/src/dapps/o-marketplace/data/api
 npx --no-install  graphql-codegen
 
-cd ../../../../../..
-echo "Generating graphql types for dapps/o-banking"
-echo "* api"
-cd shell/src/dapps/o-banking/data/api
-npx --no-install  graphql-codegen
 
 cd ../../../../../..

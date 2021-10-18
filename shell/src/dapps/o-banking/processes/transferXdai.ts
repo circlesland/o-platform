@@ -6,7 +6,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { BN } from "ethereumjs-util";
-import {CreateTagInput} from "../data/api/types";
+import {CreateTagInput} from "../../../shared/api/data/types";
 
 export type TransferXdaiContextData = {
   safeAddress: string;

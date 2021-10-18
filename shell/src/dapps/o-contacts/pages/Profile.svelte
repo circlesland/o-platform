@@ -12,7 +12,6 @@
   import { onDestroy, onMount } from "svelte";
   import { Subscription } from "rxjs";
   import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-  import { Profile } from "../../o-banking/data/api/types";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
@@ -20,7 +19,7 @@
   import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
   import {
     CommonTrust,
-    CommonTrustDocument,
+    CommonTrustDocument, Profile,
   } from "../../../shared/api/data/types";
 
   export let id: string;
