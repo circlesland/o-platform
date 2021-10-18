@@ -54,9 +54,10 @@ export const chat: DappManifest<DappState> = {
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     const myProfileResult = await new Promise<Profile>((resolve) => {
-      me.subscribe((myProfile) => {
+      const unsub = me.subscribe((myProfile) => {
         resolve(myProfile);
       });
+      unsub();
     });
 
     if (myProfileResult) {

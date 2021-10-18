@@ -65,9 +65,10 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       : undefined;
 
     let mySafeAddress;
-    me.subscribe((o) => {
+    const unsub = me.subscribe((o) => {
       mySafeAddress = o?.circlesAddress;
     });
+    unsub();
 
     let actions = [];
     if (recipientProfile?.circlesAddress) {
@@ -174,9 +175,10 @@ export const friends: DappManifest<DappState> = {
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     const myProfileResult = await new Promise<Profile>((resolve) => {
-      me.subscribe((myProfile) => {
+      const unsub = me.subscribe((myProfile) => {
         resolve(myProfile);
       });
+      unsub();
     });
 
     if (myProfileResult) {

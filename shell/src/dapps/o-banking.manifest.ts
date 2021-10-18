@@ -58,9 +58,10 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
       : undefined;
 
     let circlesAddress;
-    me.subscribe((o) => {
+    const unsub = me.subscribe((o) => {
       circlesAddress = o?.circlesAddress;
     });
+    unsub();
 
     return [
       {
@@ -158,9 +159,10 @@ export const banking: DappManifest<BankingDappState> = {
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     const myProfileResult = await new Promise<Profile>((resolve) => {
-      me.subscribe((myProfile) => {
+      const unsub = me.subscribe((myProfile) => {
         resolve(myProfile);
       });
+      unsub();
     });
 
     if (myProfileResult) {

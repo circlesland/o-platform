@@ -1,11 +1,11 @@
 <script lang="ts">
   import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import PassportHeader from "../atoms/PassportHeader.svelte";
-  import { me } from "../../../shared/stores/me";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+  import {me} from "../../../shared/stores/me";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
   import {Profile} from "../../../shared/api/data/types";
-  import {upsertIdentity} from "../processes/upsertIdentity";
+  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+  import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
 
   let name;
   let profile: Profile;
@@ -26,7 +26,7 @@
   const copy = () => {
     const app = new CopyClipBoard({
       target: document.getElementById("clipboard"),
-      props: { name },
+      props: {name},
     });
     app.$destroy();
   };
@@ -36,8 +36,7 @@
   }
 </script>
 
-<PassportHeader {runtimeDapp} {routable} />
-
+<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="flex flex-col mx-auto md:w-2/3 xl:w-1/2">
   <div class="px-3 py-2 mx-4 -mt-2 bg-white rounded-lg shadow-sm">
     <section class="justify-center mb-2">
