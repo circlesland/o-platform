@@ -1,91 +1,91 @@
 <script lang="ts">
-  import { me } from "../../../shared/stores/me";
-  import { onMount } from "svelte";
-  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import { BN } from "ethereumjs-util";
-  import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import { push } from "svelte-spa-router";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import OpenLogin, { LOGIN_PROVIDER } from "@toruslabs/openlogin";
+import { me } from "../../../shared/stores/me";
+import { onMount } from "svelte";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { BN } from "ethereumjs-util";
+import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
+import { push } from "svelte-spa-router";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import OpenLogin, { LOGIN_PROVIDER } from "@toruslabs/openlogin";
 
-  import DashboardHeader from "../atoms/DashboardHeader.svelte";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import {unlockKey} from "../../o-onboarding/processes/unlockKey/unlockKey";
-  import {KeyManager} from "../../o-passport/data/keyManager";
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+import DashboardHeader from "../atoms/DashboardHeader.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { unlockKey } from "../../o-onboarding/processes/unlockKey/unlockKey";
+import { KeyManager } from "../../o-passport/data/keyManager";
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  $: me;
+$: me;
 
-  let disableBanking: boolean = false;
+let disableBanking: boolean = false;
 
-  let accountAddress: string = "";
-  let accountBalance: string = "";
-  let safeDeployThreshold: string = "200000000000000000";
-  let showFundHint: boolean = false;
-  let inviteLink: string = "";
+let accountAddress: string = "";
+let accountBalance: string = "";
+let safeDeployThreshold: string = "200000000000000000";
+let showFundHint: boolean = false;
+let inviteLink: string = "";
 
-  const init = async () => {
-    const pk = sessionStorage.getItem("circlesKey");
-    disableBanking = !pk;
-    if (!pk) {
-      unlock();
-      return;
-    }
-
-    accountAddress = RpcGateway.get().eth.accounts.privateKeyToAccount(pk)
-      .address;
-
-    accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
-
-    // TODO: The "fundHint" could still be relevant but must be re-specified first
-    //showFundHint = new BN(accountBalance).lt(new BN(safeDeployThreshold));
-  };
-
-  function unlock() {
-    window.o.runProcess(unlockKey, {
-      successAction: async () => {
-        await init();
-      }
-    });
+const init = async () => {
+  const pk = sessionStorage.getItem("circlesKey");
+  disableBanking = !pk;
+  if (!pk) {
+    unlock();
+    return;
   }
 
-  onMount(init);
+  accountAddress =
+    RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
 
-  const copy = () => {
-    const app = new CopyClipBoard({
-      target: document.getElementById("clipboard"),
-      props: { name: inviteLink },
-    });
-    app.$destroy();
-  };
+  accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
 
-  function loadLink(link, external = false) {
-    if (external) {
-      window.open(link, "_blank").focus();
-    } else {
-      push(link);
-    }
-  }
+  // TODO: The "fundHint" could still be relevant but must be re-specified first
+  //showFundHint = new BN(accountBalance).lt(new BN(safeDeployThreshold));
+};
 
-  const sub = window.o.events.subscribe(event => {
-    if (event.type !== "shell.refresh") {
-      return;
-    }
-    init();
+function unlock() {
+  window.o.runProcess(unlockKey, {
+    successAction: async () => {
+      await init();
+    },
   });
+}
 
-  let mySafeAddress: string;
+onMount(init);
 
-  $: {
-    if ($me) {
-      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/${$me.id}`;
-    }
+const copy = () => {
+  const app = new CopyClipBoard({
+    target: document.getElementById("clipboard"),
+    props: { name: inviteLink },
+  });
+  app.$destroy();
+};
+
+function loadLink(link, external = false) {
+  if (external) {
+    window.open(link, "_blank").focus();
+  } else {
+    push(link);
   }
+}
+
+const sub = window.o.events.subscribe((event) => {
+  if (event.type !== "shell.refresh") {
+    return;
+  }
+  init();
+});
+
+let mySafeAddress: string;
+
+$: {
+  if ($me) {
+    inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/${$me.id}`;
+  }
+}
 </script>
 
-<DashboardHeader {runtimeDapp} {routable} />
+<DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <!-- {#if $me && $me.circlesAddress}
   <div class="relative w-full mt-12" style="max-height: 400px">
     <section class="mb-4 bg-white shadow-md">
@@ -95,15 +95,14 @@
 {:else}
   <div class="mt-16" />
 {/if} -->
-<div class="mx-auto md:w-2/3 xl:w-1/2">
 
+<div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-20">
     <section class="mb-4" on:click="{() => loadLink('/dashboard/invites')}">
       <button class="btn btn-primary btn-block">Create Invites</button>
     </section>
     <div
       class="grid grid-cols-2 gap-4 text-base auto-rows-fr lg:grid-cols-3 dashboard-grid">
-
       <!-- PASSPORT  -->
 
       <section
@@ -147,7 +146,8 @@
       {:else}
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow-md dashboard-card cursor-pointerbg-white"
-          on:click="{() => loadLink(showFundHint ? '/dashboard' : '/banking/transactions')}">
+          on:click="{() =>
+            loadLink(showFundHint ? '/dashboard' : '/banking/transactions')}">
           <div
             class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
@@ -175,10 +175,10 @@
       <!-- Chat -->
 
       <section
-              class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "
-              on:click="{() => loadLink('/chat')}">
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "
+        on:click="{() => loadLink('/chat')}">
         <div
-                class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
             <Icons icon="dashchat" />
           </div>
@@ -188,12 +188,12 @@
 
       <!-- Coop -->
       <section
-              class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "
-              on:click="{() => loadLink('/coops')}">
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "
+        on:click="{() => loadLink('/coops')}">
         <div
-                class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashchat" />
+            <Icons icon="dashcoop" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">coops</div>
         </div>
@@ -203,30 +203,30 @@
 </div>
 
 <style>
+.dashboard-grid {
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  grid-auto-rows: 1fr;
+}
+@media (min-width: 640px) {
   .dashboard-grid {
-    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
-    grid-auto-rows: 1fr;
+    grid-template-columns: repeat(3, minmax(8rem, 1fr));
   }
-  @media (min-width: 640px) {
-    .dashboard-grid {
-      grid-template-columns: repeat(3, minmax(8rem, 1fr));
-    }
-  }
+}
 
-  .dashboard-grid::before {
-    content: "";
-    width: 0;
-    padding-bottom: 100%;
-    grid-row: 1 / 1;
-    grid-column: 1 / 1;
-  }
+.dashboard-grid::before {
+  content: "";
+  width: 0;
+  padding-bottom: 100%;
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
+}
 
-  .dashboard-grid > *:first-child {
-    grid-row: 1 / 1;
-    grid-column: 1 / 1;
-  }
+.dashboard-grid > *:first-child {
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
+}
 
-  /* .dashboard-card {
+/* .dashboard-card {
     width: 100%;
     padding-bottom: 100%;
     position: relative;

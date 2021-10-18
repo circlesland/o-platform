@@ -20,7 +20,6 @@ $: me;
 
 const listArguments = {
   safeAddress: $me.circlesAddress,
-  limit: 100,
 };
 </script>
 
@@ -32,5 +31,6 @@ const listArguments = {
     listItemComponent="{TransactionCard}"
     fetchQuery="{TransactionTimelineDocument}"
     fetchQueryArguments="{listArguments}"
-    dataKey="events" />
+    dataKey="events"
+    dataLimit="{100}" />
 </div>

@@ -1,10 +1,10 @@
-import Home from "./o-coop/pages/Home.svelte";
+import Organisations from "./o-coop/pages/Organisations.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
 const index: Page<any, DappState> = {
   routeParts: [],
-  component: Home,
+  component: Organisations,
   title: "List",
   type: "page",
 };

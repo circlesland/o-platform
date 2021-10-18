@@ -11,32 +11,37 @@ import { Profile } from "../../../dapps/o-banking/data/api/types";
 
 export let param: Contact;
 
-let pictureUrl: string;
 let displayName: string;
-let safeAddress: string;
+
 let message: string;
 let contactProfile: Profile;
 
-onMount(() => {
+// God Help us all...
+if (param.contactAddressProfile) {
   contactProfile = param.contactAddressProfile;
-  displayName =
-    contactProfile.firstName +
-    (contactProfile.lastName ? " " + contactProfile.lastName : "");
-  safeAddress = contactProfile.circlesAddress;
-  message = "";
-  if (param.trustsYou > 0 && param.youTrust > 0) {
-    message += "mutual trust | ";
-  } else if (!param.trustsYou && param.youTrust > 0) {
-    message += "trusted by you | ";
-  } else if (param.trustsYou > 0 && !param.youTrust) {
-    message += "is trusting you | ";
-  } else {
-    message += "not trusted | ";
-  }
-  message += param.lastEvent ? param.lastEvent.payload.__typename : "";
+} else {
+  contactProfile = {
+    id: 0,
+    firstName: param.contactAddress,
+    circlesAddress: param.contactAddress,
+  };
+}
 
-  // console.log("CONTACT: ", contact);
-});
+displayName =
+  contactProfile.firstName +
+  (contactProfile.lastName ? " " + contactProfile.lastName : "");
+
+message = "";
+if (param.trustsYou > 0 && param.youTrust > 0) {
+  message += "mutual trust | ";
+} else if (!param.trustsYou && param.youTrust > 0) {
+  message += "trusted by you | ";
+} else if (param.trustsYou > 0 && !param.youTrust) {
+  message += "is trusting you | ";
+} else {
+  message += "not trusted | ";
+}
+message += param.lastEvent ? param.lastEvent.payload.__typename : "";
 
 function loadDetailPage(path) {
   push(`#/chat/${path}`);
@@ -49,7 +54,7 @@ function goToProfile(e, path?: string) {
 }
 </script>
 
-<div on:click="{() => loadDetailPage(safeAddress)}">
+<div on:click="{() => loadDetailPage(param.contactAddress)}">
   <ItemCard
     params="{{
       edgeless: false,

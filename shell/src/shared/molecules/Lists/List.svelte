@@ -10,21 +10,24 @@ import {
 import { inview } from "svelte-inview/dist/index";
 
 export let listItemComponent;
+export let selector = "timestamp";
 export let listItemType;
 export let fetchQuery: any;
 export let fetchQueryArguments;
 export let dataKey: string;
+export let dataLimit: number = 50;
 
-let fromTimestamp: string = undefined;
 let posts: typeof listItemType[] = [];
 let hasMore: boolean = true;
 let error: string;
 let scrollContent;
-const fetchData = async (timeStamp) => {
+let pagination = undefined;
+const fetchData = async (paginationArg) => {
+  fetchQueryArguments.pagination = paginationArg;
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const timeline = await apiClient.query({
     query: fetchQuery,
-    variables: { ...fetchQueryArguments, fromTimestamp: timeStamp },
+    variables: fetchQueryArguments,
   });
   if (timeline.errors) {
     error = `Couldn't load data for the following reasons: ${JSON.stringify(
@@ -36,18 +39,22 @@ const fetchData = async (timeStamp) => {
   console.log("BATCH: ", newBatch);
   if (newBatch.length > 0) {
     posts = [...posts, ...newBatch];
-    console.log("DUDE: ", newBatch.at(-1).timestamp);
-    fromTimestamp = newBatch.at(-1).timestamp;
+    console.log("DUDE: ", newBatch.at(-1)[selector]);
+
+    pagination = {
+      continueAt: newBatch.at(-1)[selector],
+      limit: dataLimit,
+    };
   } else {
     hasMore = false;
   }
 };
 
 const handleChange = (e) => {
-  if (e.detail.inView && hasMore) fetchData(fromTimestamp);
+  if (e.detail.inView && hasMore) fetchData(pagination);
 };
 onMount(async () => {
-  fetchData(fromTimestamp);
+  fetchData(pagination);
 });
 
 const initBar = (bar) => {
