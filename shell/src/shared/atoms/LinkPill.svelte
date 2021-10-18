@@ -1,23 +1,23 @@
 <script lang="ts">
-  import Icons from "./../molecules/Icons.svelte";
-  import { isMobile } from "src/shared/functions/isMobile";
+import Icons from "./../molecules/Icons.svelte";
+import { isMobile } from "src/shared/functions/isMobile";
 
-  export let props: {
-    icon: string;
-    text: string;
-    link: string;
-    extern: boolean;
-    isActive: boolean;
-    isSmall: boolean;
-  };
-  // console.log("PROPS", props);
-  let iconsize: number = 4;
-  if (isMobile()) {
-    iconsize = 6;
-    if (props.isActive) {
-      iconsize = 8;
-    }
+export let props: {
+  icon: string;
+  text: string;
+  link: string;
+  extern: boolean;
+  isActive: boolean;
+  isSmall: boolean;
+};
+// console.log("PROPS", props);
+let iconsize: number = 4;
+if (isMobile()) {
+  iconsize = 6;
+  if (props.isActive) {
+    iconsize = 8;
   }
+}
 </script>
 
 <a

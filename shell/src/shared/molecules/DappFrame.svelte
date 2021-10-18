@@ -593,7 +593,7 @@ async function handleUrlChanged() {
   });
 
   // Automatically open leftNav on desktop.
-  if (!isMobile()) {
+  if ($media.large) {
     window.o.publishEvent({
       type: "shell.openNavigation",
     });

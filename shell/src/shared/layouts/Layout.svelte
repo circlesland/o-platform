@@ -11,6 +11,7 @@ import Pager from "src/shared/molecules/Pager.svelte";
 import "simplebar";
 import "simplebar/dist/simplebar.css";
 import { createEventDispatcher } from "svelte";
+import { media } from "../stores/media";
 
 let dapp = "homepage:!";
 
@@ -31,7 +32,7 @@ $: {
   console.log("LayoutChanged:", layout);
   if (
     (layout.dialogs.center && layout.dialogs.center.isOpen) ||
-    (isMobile() && layout.dialogs.left && layout.dialogs.left.isOpen)
+    ($media.small && layout.dialogs.left && layout.dialogs.left.isOpen)
   ) {
     document.body.style.overflow = "hidden";
     document.body.style.position = "fixed";
@@ -74,7 +75,7 @@ function onkeydown(e: KeyboardEvent) {
         class:blur="{layout.dialogs.center && layout.dialogs.center.isOpen}">
         <div class="fixed z-50">
           {#if layout.dialogs.left && layout.dialogs.left.isOpen}
-            {#if isMobile()}
+            {#if $media.small}
               <LeftMobile>
                 <svelte:component
                   this="{layout.dialogs.left.component}"
@@ -94,7 +95,7 @@ function onkeydown(e: KeyboardEvent) {
                       position: 'left',
                     })}" />
               </LeftMobile>
-            {:else}
+            {:else if $media.large}
               <LeftDesktop>
                 <svelte:component
                   this="{layout.dialogs.left.component}"

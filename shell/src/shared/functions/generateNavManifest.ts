@@ -7,6 +7,7 @@ import {
 } from "@o-platform/o-interfaces/dist/navigationManifest";
 import { Prompt } from "@o-platform/o-process/dist/events/prompt";
 import { isMobile } from "./isMobile";
+import { media } from "../stores/media";
 
 export type GenerateNavManifestArgs = {
   leftIsOpen: boolean;
@@ -127,6 +128,11 @@ export function generateNavManifest(
   prompt: Prompt<any>
 ) {
   let newManifest: NavigationManifest;
+  let small: string | boolean = false;
+  const unsub = media.subscribe(($media) => {
+    small = $media.small;
+  });
+  unsub();
 
   if (args.showLogin) {
     newManifest = homeNavManifest();
@@ -134,7 +140,7 @@ export function generateNavManifest(
     newManifest = defaultNavManifest();
   }
   if (args.leftIsOpen || args.rightIsOpen) {
-    if (isMobile()) {
+    if (small) {
       // Remove the center only if mobile.
       delete newManifest.navPill;
     }
@@ -145,10 +151,10 @@ export function generateNavManifest(
       newManifest.leftSlot.props.icon = "listopen";
       newManifest.leftSlot.props.action = () =>
         window.o.publishEvent({ type: "shell.closeNavigation" });
-      if (isMobile()) {
-        // Remove the left button on mobile, as we have a special button for closing.
-        delete newManifest.leftSlot;
-      }
+      // if (small) {
+      //   // Remove the left button on mobile, as we have a special button for closing.
+      //   delete newManifest.leftSlot;
+      // }
     } else if (args.rightIsOpen) {
       // Remove left too
       delete newManifest.leftSlot;
