@@ -32,7 +32,7 @@ import { inbox } from "../stores/inbox";
 import NavigationList from "../../shared/molecules/NavigationList.svelte";
 import { Process } from "@o-platform/o-process/dist/interfaces/process";
 import { isMobile } from "../functions/isMobile";
-
+import { media } from "../stores/media";
 import {
   fromCirclesLand,
   FromCirclesLandContextData,
@@ -488,6 +488,18 @@ $: {
       lastParamsJson = paramsJson;
     }
   }
+
+  // Open / Close Navigation on screen-size basis.
+  if ($media.small) {
+    window.o.publishEvent({
+      type: "shell.closeNavigation",
+    });
+  }
+  if ($media.large) {
+    window.o.publishEvent({
+      type: "shell.openNavigation",
+    });
+  }
 }
 
 function findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
@@ -579,6 +591,13 @@ async function handleUrlChanged() {
     runtimeDapp: runtimeDapp,
     routable: findRouteResult.routable,
   });
+
+  // Automatically open leftNav on desktop.
+  if (!isMobile()) {
+    window.o.publishEvent({
+      type: "shell.openNavigation",
+    });
+  }
 
   if (!navigation) {
     navigation = generateNavManifest(navArgs, null);

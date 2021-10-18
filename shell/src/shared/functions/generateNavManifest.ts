@@ -6,7 +6,7 @@ import {
   NavigationManifest,
 } from "@o-platform/o-interfaces/dist/navigationManifest";
 import { Prompt } from "@o-platform/o-process/dist/events/prompt";
-import {isMobile} from "./isMobile";
+import { isMobile } from "./isMobile";
 
 export type GenerateNavManifestArgs = {
   leftIsOpen: boolean;
@@ -21,7 +21,17 @@ export type GenerateNavManifestArgs = {
 
 const homeNavManifest = () => {
   return {
-    leftSlot: null,
+    leftSlot: {
+      component: LinkComponent,
+
+      props: {
+        icon: "list",
+        action: () =>
+          window.o.publishEvent({
+            type: "shell.openNavigation",
+          }),
+      },
+    },
     loginPill: {
       component: ActionButtonComponent,
       props: {
@@ -36,7 +46,7 @@ const homeNavManifest = () => {
   };
 };
 
-const defaultNavManifest : () => NavigationManifest  = () => {
+const defaultNavManifest: () => NavigationManifest = () => {
   return {
     leftSlot: {
       component: LinkComponent,
@@ -122,73 +132,72 @@ export function generateNavManifest(
     newManifest = homeNavManifest();
   } else {
     newManifest = defaultNavManifest();
-
-    if (args.leftIsOpen || args.rightIsOpen) {
-      if (isMobile()) {
-        // Remove the center only if mobile.
-        delete newManifest.navPill;
-      }
-
-      if (args.leftIsOpen) {
-        // Remove right too
-        delete newManifest.rightSlot;
-        newManifest.leftSlot.props.icon = "listopen";
-        newManifest.leftSlot.props.action = () =>
-          window.o.publishEvent({ type: "shell.closeNavigation" });
-        if (isMobile()) {
-          // Remove the left button on mobile, as we have a special button for closing.
-          delete newManifest.leftSlot;
-        }
-      } else if (args.rightIsOpen) {
-        // Remove left too
-        delete newManifest.leftSlot;
-        newManifest.rightSlot.props.icon = "simplearrowright";
-        newManifest.leftSlot.props.action = () =>
-          window.o.publishEvent({ type: "shell.closeFilters" });
-      }
+  }
+  if (args.leftIsOpen || args.rightIsOpen) {
+    if (isMobile()) {
+      // Remove the center only if mobile.
+      delete newManifest.navPill;
     }
 
-    if (args.centerIsOpen) {
-      // Remove left and right
-      delete newManifest.leftSlot;
+    if (args.leftIsOpen) {
+      // Remove right too
       delete newManifest.rightSlot;
-
-      if (args.centerContainsProcess) {
-        // Replace the regular center buttons with
-        // the process navigation buttons
-        newManifest.navPill.center = generateCloseButton(true);
-        newManifest.navPill.left = null;
-        newManifest.navPill.right = null;
-
-        if (args.canGoBack) {
-          newManifest.navPill.left = {
-            component: ListComponent,
-            props: {
-              icon: "simplearrowleft",
-              action: () =>
-                window.o.publishEvent({
-                  type: "process.back",
-                }),
-            },
-          };
-        }
-        if (args.canSkip) {
-          newManifest.navPill.right = {
-            component: ListComponent,
-            props: {
-              icon: "simplearrowright",
-              action: () =>
-                window.o.publishEvent({
-                  type: "process.skip",
-                }),
-            },
-          };
-        }
-      } else {
-        newManifest.navPill.center = generateCloseButton(false);
-        newManifest.navPill.left = null;
-        newManifest.navPill.right = null;
+      newManifest.leftSlot.props.icon = "listopen";
+      newManifest.leftSlot.props.action = () =>
+        window.o.publishEvent({ type: "shell.closeNavigation" });
+      if (isMobile()) {
+        // Remove the left button on mobile, as we have a special button for closing.
+        delete newManifest.leftSlot;
       }
+    } else if (args.rightIsOpen) {
+      // Remove left too
+      delete newManifest.leftSlot;
+      newManifest.rightSlot.props.icon = "simplearrowright";
+      newManifest.leftSlot.props.action = () =>
+        window.o.publishEvent({ type: "shell.closeFilters" });
+    }
+  }
+
+  if (args.centerIsOpen) {
+    // Remove left and right
+    delete newManifest.leftSlot;
+    delete newManifest.rightSlot;
+
+    if (args.centerContainsProcess) {
+      // Replace the regular center buttons with
+      // the process navigation buttons
+      newManifest.navPill.center = generateCloseButton(true);
+      newManifest.navPill.left = null;
+      newManifest.navPill.right = null;
+
+      if (args.canGoBack) {
+        newManifest.navPill.left = {
+          component: ListComponent,
+          props: {
+            icon: "simplearrowleft",
+            action: () =>
+              window.o.publishEvent({
+                type: "process.back",
+              }),
+          },
+        };
+      }
+      if (args.canSkip) {
+        newManifest.navPill.right = {
+          component: ListComponent,
+          props: {
+            icon: "simplearrowright",
+            action: () =>
+              window.o.publishEvent({
+                type: "process.skip",
+              }),
+          },
+        };
+      }
+    } else {
+      newManifest.navPill.center = generateCloseButton(false);
+      newManifest.navPill.left = null;
+      newManifest.navPill.right = null;
     }
   }
 
