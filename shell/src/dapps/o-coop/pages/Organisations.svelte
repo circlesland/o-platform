@@ -17,22 +17,6 @@ export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
 const listArguments = {};
-
-async function reload() {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: OrganisationsDocument,
-  });
-  if (result.errors?.length > 0) {
-    error = `Couldn't read the organisations`;
-    return;
-  }
-  organisations = result.data.organisations;
-}
-
-onMount(async () => {
-  await reload();
-});
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -44,5 +28,5 @@ onMount(async () => {
     fetchQuery="{OrganisationsDocument}"
     fetchQueryArguments="{listArguments}"
     dataKey="organisations"
-    dataLimit="{100}" />
+    dataLimit="{50}" />
 </div>

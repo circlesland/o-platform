@@ -36,10 +36,9 @@ const fetchData = async (paginationArg) => {
   }
 
   let newBatch = await timeline.data[dataKey];
-  console.log("BATCH: ", newBatch);
+
   if (newBatch.length > 0) {
     posts = [...posts, ...newBatch];
-    console.log("DUDE: ", newBatch.at(-1)[selector]);
 
     pagination = {
       continueAt: newBatch.at(-1)[selector],
@@ -65,16 +64,16 @@ const initBar = (bar) => {
 {#if posts}
   {#each posts as post}
     <svelte:component this="{listItemComponent}" param="{post}" />
-  {:else}
-    <section class="flex items-center justify-center mb-2 ">
-      <div
-        class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
-        <div class="flex flex-col items-start text-center">
-          <div>Loading...</div>
-        </div>
-      </div>
-    </section>
   {/each}
+{:else}
+  <section class="flex items-center justify-center mb-2 ">
+    <div
+      class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
+      <div class="flex flex-col items-start text-center">
+        <div>Loading...</div>
+      </div>
+    </div>
+  </section>
 {/if}
 
 <div use:inview="{{}}" on:change="{handleChange}"></div>
