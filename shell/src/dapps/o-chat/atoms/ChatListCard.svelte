@@ -11,7 +11,6 @@ import { Profile } from "../../../dapps/o-banking/data/api/types";
 
 export let param: Contact;
 
-console.log("PARASM: ", param);
 let pictureUrl: string;
 let displayName: string;
 let safeAddress: string;
