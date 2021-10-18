@@ -7,7 +7,10 @@ import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { onMount } from "svelte";
-import { ProfileEvent, TransactionTimelineDocument } from "../data/api/types";
+import {
+  ProfileEvent,
+  TransactionTimelineDocument,
+} from "../../../shared/api/data/types";
 import Lazy from "src/shared/molecules/Lazy/Lazy.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -25,20 +28,33 @@ const pageSize = 30;
 let currentPage = 0;
 let eof = false;
 
-let entries: ProfileEvent[] = [];
+let data: ProfileEvent[] = [];
 let error: string;
 
-const onload = (node) => {
-  console.log("on load");
-};
+// if the api (like in this example) just have a simple numeric pagination
+let page = 0;
+// but most likely, you'll have to store a token to fetch the next page
+let nextUrl = "";
+// store all the data here.
 
-onMount(async () => {
+// store the new batch of data here.
+let newBatch = [];
+let fromTimestamp = undefined;
+let noMoreItems = false;
+
+// onMount(() => {
+//   // load first batch onMount
+//   fetchData();
+// });
+
+async function fetchData() {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const timeline = await apiClient.query({
     query: TransactionTimelineDocument,
     variables: {
       safeAddress: $me.circlesAddress, //this.safeAddress,
-      fromTimestamp: new Date().toJSON(),
+      fromTimestamp: fromTimestamp,
+      limit: 20,
       // fromBlock: 16471696
     },
   });
@@ -47,16 +63,58 @@ onMount(async () => {
       timeline.errors
     )}`;
   }
-  entries = timeline.data.events;
+
+  newBatch = await timeline.data.events;
+
+  fromTimestamp = newBatch.at(-1).timestamp;
+  console.log("TIMESTAMP: ", fromTimestamp);
+  // const response = await fetch(`https://api.openbrewerydb.org/breweries?by_city=los_angeles&page=${page}`);
+  // entries = await response.json();
+  console.log(newBatch);
+}
+
+$: data = [...data, ...newBatch];
+
+// async function fetchData(node) {
+//   if (noMoreItems) {
+//     return;
+//   }
+//   const apiClient = await window.o.apiClient.client.subscribeToResult();
+//   const timeline = await apiClient.query({
+//     query: TransactionTimelineDocument,
+//     variables: {
+//       safeAddress: $me.circlesAddress, //this.safeAddress,
+//       fromTimestamp: fromTimestamp,
+//       limit: 150,
+//       // fromBlock: 16471696
+//     },
+//   });
+//   if (timeline.errors) {
+//     error = `Couldn't load the transaction history for the following reasons: ${JSON.stringify(
+//       timeline.errors
+//     )}`;
+//   }
+//   if (timeline.data.events.length) {
+//     entries = await timeline.data.events;
+//   } else {
+//     noMoreItems = true;
+//   }
+//   fromTimestamp = entries.at(-1).timestamp;
+//   // const response = await fetch(`https://api.openbrewerydb.org/breweries?by_city=los_angeles&page=${page}`);
+//   // entries = await response.json();
+//   console.log(entries);
+// }
+
+onMount(() => {
+  // load first batch onMount
+  fetchData();
 });
 </script>
-
-<svelte:window bind:scrollY />
 
 <BankingHeader runtimeDapp="{runtimeDapp}" routable="{routable}" balance="0" />
 
 <div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
-  {#if !error && entries.length === 0}
+  {#if !error && data.length === 0}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
@@ -76,20 +134,19 @@ onMount(async () => {
         </div>
       </div>
     </section>
-  {:else if entries.length > 0}
-    {#each entries as transfer, i}
-      <Lazy height="{80}" offset="{0}" onload="{onload}">
-        {#if i === 0}
-          <TransactionCard
-            bind:this="{firstElement}"
-            transfer="{transfer}"
-            message=" " />
-        {:else}
-          <TransactionCard transfer="{transfer}" message=" " />
-        {/if}
-      </Lazy>
+  {:else if data.length > 0}
+    {#each data as transfer, i}
+      <TransactionCard transfer="{transfer}" />
     {/each}
-    <div bind:this="{stopElement}">Stop</div>
+    <Lazy
+      hasMore="{newBatch.length}"
+      threshold="{30}"
+      on:loadMore="{() => {
+        page++;
+        fetchData();
+      }}">
+      <TransactionCard transfer="{transfer}" />
+    </Lazy>
   {:else}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">

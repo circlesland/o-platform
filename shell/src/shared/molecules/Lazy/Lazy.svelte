@@ -1,163 +1,49 @@
-<script lang="ts">
-import { fade } from "svelte/transition";
-import Placeholder from "./Placeholder.svelte";
-export let height = 0;
-export let offset = 150;
-export let fadeOption = {
-  delay: 0,
-  duration: 0,
-};
-export let resetHeightDelay = 0;
-export let onload = null;
-export let placeholder = null;
-let className = "";
-export { className as class };
+<script>
+import { onMount, onDestroy, createEventDispatcher } from "svelte";
 
-const rootClass = "svelte-lazy" + (className ? " " + className : "");
-const contentClass = "svelte-lazy-content";
-let loaded = false;
+export let threshold = 0;
+export let horizontal = false;
+export let elementScroll;
+export let hasMore = true;
 
-let contentDisplay = "";
-$: contentStyle = contentDisplay === "hide" ? "display: none" : "";
+const dispatch = createEventDispatcher();
+let isLoadMore = false;
+let component;
 
-function load(node) {
-  setHeight(node);
+$: {
+  if (component || elementScroll) {
+    const element = elementScroll ? elementScroll : component.parentNode;
 
-  const loadHandler = throttle((e) => {
-    const nodeTop = node.getBoundingClientRect().top;
-    const expectedTop = getContainerHeight(e) + offset;
+    element.addEventListener("scroll", onScroll);
+    element.addEventListener("resize", onScroll);
+  }
+}
 
-    if (nodeTop <= expectedTop) {
-      loaded = true;
-      resetHeight(node);
-      onload && onload(node);
-      removeListeners();
+const onScroll = (e) => {
+  const element = e.target;
+
+  const offset = horizontal
+    ? e.target.scrollWidth - e.target.clientWidth - e.target.scrollLeft
+    : e.target.scrollHeight - e.target.clientHeight - e.target.scrollTop;
+
+  if (offset <= threshold) {
+    if (!isLoadMore && hasMore) {
+      dispatch("loadMore");
     }
-  }, 200);
-
-  loadHandler();
-  addListeners();
-
-  function addListeners() {
-    document.addEventListener("scroll", loadHandler, true);
-    window.addEventListener("resize", loadHandler);
-  }
-
-  function removeListeners() {
-    document.removeEventListener("scroll", loadHandler, true);
-    window.removeEventListener("resize", loadHandler);
-  }
-
-  return {
-    destroy: () => {
-      removeListeners();
-    },
-  };
-}
-
-function setHeight(node) {
-  if (height) {
-    node.style.height = typeof height === "number" ? height + "px" : height;
-  }
-}
-
-function resetHeight(node) {
-  // Add delay for remote resources like images to load
-  setTimeout(() => {
-    const handled = handleImgContent(node);
-    if (!handled) {
-      node.style.height = "auto";
-    }
-  }, resetHeightDelay);
-}
-
-function handleImgContent(node) {
-  const img = node.querySelector("img");
-  if (img) {
-    if (!img.complete) {
-      contentDisplay = "hide";
-
-      node.addEventListener(
-        "load",
-        () => {
-          contentDisplay = "";
-          node.style.height = "auto";
-        },
-        { capture: true, once: true }
-      );
-
-      node.addEventListener(
-        "error",
-        () => {
-          // Keep passed height if there is error
-          contentDisplay = "";
-        },
-        { capture: true, once: true }
-      );
-
-      return true;
-    } else if (img.naturalHeight === 0) {
-      // Keep passed height if img has zero height
-      return true;
-    }
-  }
-}
-
-function getContainerHeight(e) {
-  if (e && e.target && e.target.getBoundingClientRect) {
-    return e.target.getBoundingClientRect().bottom;
+    isLoadMore = true;
   } else {
-    return window.innerHeight;
+    isLoadMore = false;
   }
-}
+};
 
-// From underscore souce code
-function throttle(func, wait, options) {
-  let context, args, result;
-  let timeout = null;
-  let previous = 0;
-  if (!options) options = {};
-  const later = function () {
-    previous = options.leading === false ? 0 : new Date();
-    timeout = null;
-    result = func.apply(context, args);
-    if (!timeout) context = args = null;
-  };
+onDestroy(() => {
+  if (component || elementScroll) {
+    const element = elementScroll ? elementScroll : component.parentNode;
 
-  return function (event) {
-    const now = new Date();
-    if (!previous && options.leading === false) previous = now;
-    const remaining = wait - (now - previous);
-    context = this;
-    args = arguments;
-    if (remaining <= 0 || remaining > wait) {
-      if (timeout) {
-        clearTimeout(timeout);
-        timeout = null;
-      }
-      previous = now;
-      result = func.apply(context, args);
-      if (!timeout) context = args = null;
-    } else if (!timeout && options.trailing !== false) {
-      timeout = setTimeout(later, remaining);
-    }
-    return result;
-  };
-}
+    element.removeEventListener("scroll", null);
+    element.removeEventListener("resize", null);
+  }
+});
 </script>
 
-<div use:load class="{rootClass}">
-  {#if loaded}
-    <div
-      in:fade="{fadeOption || {}}"
-      class="{contentClass}"
-      style="{contentStyle}">
-      <slot>Lazy load content</slot>
-    </div>
-    {#if contentDisplay === "hide"}
-      <Placeholder placeholder="{placeholder}" />
-    {/if}
-  {:else}
-    <Placeholder placeholder="{placeholder}" />
-  {/if}
-</div>
+<div bind:this="{component}" style="width:0px"></div>

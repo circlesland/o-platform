@@ -1,12 +1,75 @@
-query balance($safeAddress:String!) {
-    balance(safeAddress: $safeAddress)
+query balance($safeAddress: String!) {
+  balance(safeAddress: $safeAddress)
 }
 
-query balancesByAsset($safeAddress:String!) {
-    balancesByAsset(safeAddress: $safeAddress) {
-        token_address
-        token_owner_address
-        token_owner_profile {
+query balancesByAsset($safeAddress: String!) {
+  balancesByAsset(safeAddress: $safeAddress) {
+    token_address
+    token_owner_address
+    token_owner_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+    }
+    token_balance
+  }
+}
+
+query transactionTimeline(
+  $safeAddress: String!
+  $fromTimestamp: String!
+  $limit: Int
+) {
+  events(
+    safeAddress: $safeAddress
+    fromTimestamp: $fromTimestamp
+    types: ["crc_hub_transfer", "crc_minting"]
+    limit: $limit
+  ) {
+    timestamp
+    type
+    value
+    safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    transaction_hash
+    transaction_index
+    block_number
+    direction
+    tags {
+      id
+      typeId
+      value
+    }
+    payload {
+      ... on CrcHubTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
             id
             firstName
             lastName
@@ -29,165 +92,120 @@ query transactionTimeline($safeAddress:String!, $fromTimestamp: String!) {
             lastName
             avatarUrl
             circlesAddress
+          }
+          value
         }
-        transaction_hash
-        transaction_index
-        block_number
-        direction
-        tags {
-            id
-            typeId
-            value
+      }
+      ... on CrcMinting {
+        token
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
         }
-        payload {
-            ... on CrcHubTransfer {
-                from
-                from_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                flow
-                transfers {
-                    token
-                    from
-                    from_profile{
-                        id
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                    }
-                    to
-                    to_profile{
-                        id
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                    }
-                    value
-                }
-            }
-            ... on CrcMinting {
-                token
-                from
-                from_profile {
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                value
-            }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
         }
+        value
+      }
     }
+  }
 }
 
-query transactionByHash($safeAddress:String! $transactionHash:String!) {
-    eventByTransactionHash(
-        safeAddress: $safeAddress
-        transactionHash: $transactionHash
-        types: ["crc_hub_transfer", "crc_minting"]) {
-        timestamp
-        type
-        value
-        safe_address
-        safe_address_profile {
+query transactionByHash($safeAddress: String!, $transactionHash: String!) {
+  eventByTransactionHash(
+    safeAddress: $safeAddress
+    transactionHash: $transactionHash
+    types: ["crc_hub_transfer", "crc_minting"]
+  ) {
+    timestamp
+    type
+    value
+    safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    transaction_hash
+    transaction_index
+    block_number
+    direction
+    tags {
+      id
+      typeId
+      value
+    }
+    payload {
+      ... on CrcHubTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
             id
             firstName
             lastName
             avatarUrl
             circlesAddress
-        }
-        transaction_hash
-        transaction_index
-        block_number
-        direction
-        tags {
+          }
+          to
+          to_profile {
             id
-            typeId
-            value
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
         }
-        payload {
-            ... on CrcHubTransfer {
-                from
-                from_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                flow
-                transfers {
-                    token
-                    from
-                    from_profile{
-                        id
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                    }
-                    to
-                    to_profile{
-                        id
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                    }
-                    value
-                }
-            }
-            ... on CrcMinting {
-                token
-                from
-                from_profile {
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                to
-                to_profile{
-                    id
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                }
-                value
-            }
+      }
+      ... on CrcMinting {
+        token
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
         }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
     }
+  }
 }

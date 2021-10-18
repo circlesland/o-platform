@@ -173,6 +173,102 @@ query profilesByName($searchString: String!) {
   }
 }
 
+
+query transactionTimeline(
+  $safeAddress: String!
+  $fromTimestamp: String
+  $limit: Int
+) {
+  events(
+    safeAddress: $safeAddress
+    fromTimestamp: $fromTimestamp
+    types: ["crc_hub_transfer", "crc_minting"]
+    limit: $limit
+  ) {
+    timestamp
+    type
+    value
+    safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    transaction_hash
+    transaction_index
+    block_number
+    direction
+    tags {
+      id
+      typeId
+      value
+    }
+    payload {
+      ... on CrcHubTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+      }
+      ... on CrcMinting {
+        token
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
+    }
+  }
+}
+
 query profilesByCirclesAddress($circlesAddresses: [String!]!) {
   profilesBySafeAddress(safeAddresses: $circlesAddresses) {
     id

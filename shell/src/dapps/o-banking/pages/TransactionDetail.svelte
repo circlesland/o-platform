@@ -1,113 +1,113 @@
 <script lang="ts">
-  import Time from "svelte-time";
-  import { push } from "svelte-spa-router";
-  import {
-    CrcHubTransfer,
-    CrcMinting, CrcTokenTransfer,
-    Profile,
-    ProfileEvent,
-    TransactionByHashDocument,
-  } from "../data/api/types";
-  import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-  import { onMount } from "svelte";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import { me } from "../../../shared/stores/me";
-  import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import Time from "svelte-time";
+import { push } from "svelte-spa-router";
+import {
+  CrcHubTransfer,
+  CrcMinting,
+  CrcTokenTransfer,
+  Profile,
+  ProfileEvent,
+  TransactionByHashDocument,
+} from "../data/api/types";
+import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+import { onMount } from "svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { me } from "../../../shared/stores/me";
+import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 
-  export let transactionHash: string;
+export let transactionHash: string;
 
-  let transfer: ProfileEvent;
-  let classes: string;
-  let path: any;
-  let fromProfile: Profile;
-  let toProfile: Profile;
-  let targetProfile: Profile;
-  let message: string = "";
-  let error: string;
+let transfer: ProfileEvent;
+let classes: string;
+let path: any;
+let fromProfile: Profile;
+let toProfile: Profile;
+let targetProfile: Profile;
+let message: string = "";
+let error: string;
 
-  onMount(async () => {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const timeline = await apiClient.query({
-      query: TransactionByHashDocument,
-      variables: {
-        safeAddress: $me.circlesAddress,
-        transactionHash,
-      },
-    });
-
-    if (timeline.errors) {
-      throw new Error(
-        `Couldn't load the transaction history for the following reasons: ${timeline.errors.join(
-          "\n"
-        )}`
-      );
-    }
-
-    if (timeline.data.eventByTransactionHash.length > 0) {
-      transfer = timeline.data.eventByTransactionHash[0];
-    }
-
-    if (transfer && transfer.payload?.__typename == "CrcMinting") {
-      const minting = transfer.payload as CrcMinting;
-      fromProfile = minting.from_profile ?? {
-        id: 0,
-        firstName: "Circles Land",
-        lastName: "",
-        circlesAddress: minting.from,
-      };
-
-      toProfile = minting.to_profile ?? {
-        id: 0,
-        firstName: minting.to,
-        lastName: "",
-        circlesAddress: minting.to,
-      };
-    }
-
-
-    if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
-      const hubTransfer = transfer.payload as CrcHubTransfer;
-      fromProfile = hubTransfer.from_profile ?? {
-        id: 0,
-        firstName: hubTransfer.from,
-        lastName: "",
-        circlesAddress: hubTransfer.from,
-      };
-
-      toProfile = hubTransfer.to_profile ?? {
-        id: 0,
-        firstName: hubTransfer.to,
-        lastName: "",
-        circlesAddress: hubTransfer.to,
-      };
-
-      path = {
-        transfers: hubTransfer.transfers,
-      };
-    }
-    targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
-
-    message = transfer.tags?.find(
-      o => o.typeId === "o-banking:transfer:message:1"
-    )?.value;
+onMount(async () => {
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const timeline = await apiClient.query({
+    query: TransactionByHashDocument,
+    variables: {
+      safeAddress: $me.circlesAddress,
+      transactionHash,
+    },
   });
 
-  function openDetail(transfer: ProfileEvent) {
-    if (transfer.type == "crc_hub_transfer") {
-      const hubTransfer = <CrcHubTransfer>transfer.payload;
-      if (transfer.direction == "in") {
-        if (hubTransfer.from.startsWith("0x00000")) {
-          return;
-        }
-        push(`#/friends/${hubTransfer.from}`);
-      } else {
-        if (hubTransfer.to.startsWith("0x00000")) {
-          return;
-        }
-        push(`#/friends/${hubTransfer.to}`);
+  if (timeline.errors) {
+    throw new Error(
+      `Couldn't load the transaction history for the following reasons: ${timeline.errors.join(
+        "\n"
+      )}`
+    );
+  }
+
+  if (timeline.data.eventByTransactionHash.length > 0) {
+    transfer = timeline.data.eventByTransactionHash[0];
+  }
+
+  if (transfer && transfer.payload?.__typename == "CrcMinting") {
+    const minting = transfer.payload as CrcMinting;
+    fromProfile = minting.from_profile ?? {
+      id: 0,
+      firstName: "Circles Land",
+      lastName: "",
+      circlesAddress: minting.from,
+    };
+
+    toProfile = minting.to_profile ?? {
+      id: 0,
+      firstName: minting.to,
+      lastName: "",
+      circlesAddress: minting.to,
+    };
+  }
+
+  if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
+    const hubTransfer = transfer.payload as CrcHubTransfer;
+    fromProfile = hubTransfer.from_profile ?? {
+      id: 0,
+      firstName: hubTransfer.from,
+      lastName: "",
+      circlesAddress: hubTransfer.from,
+    };
+
+    toProfile = hubTransfer.to_profile ?? {
+      id: 0,
+      firstName: hubTransfer.to,
+      lastName: "",
+      circlesAddress: hubTransfer.to,
+    };
+
+    path = {
+      transfers: hubTransfer.transfers,
+    };
+  }
+  targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
+
+  message = transfer.tags?.find(
+    (o) => o.typeId === "o-banking:transfer:message:1"
+  )?.value;
+});
+
+function openDetail(transfer: ProfileEvent) {
+  if (transfer.type == "crc_hub_transfer") {
+    const hubTransfer = <CrcHubTransfer>transfer.payload;
+    if (transfer.direction == "in") {
+      if (hubTransfer.from.startsWith("0x00000")) {
+        return;
       }
+      push(`#/friends/${hubTransfer.from}`);
+    } else {
+      if (hubTransfer.to.startsWith("0x00000")) {
+        return;
+      }
+      push(`#/friends/${hubTransfer.to}`);
     }
   }
+}
 </script>
 
 <div class="p-5">
@@ -119,15 +119,25 @@
       class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
       <div class="w-full text-center">
         <h1 class="text-3xl uppercase font-heading">
-          {transfer.direction === 'in' ? 'received' : 'sent'}
+          {transfer.direction === "in" ? "received" : "sent"}
         </h1>
       </div>
       <div>
         <span class="inline-block text-6xl font-heading {classes}">
-          {#if transfer.direction === 'in'}
-            +{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
+          {#if transfer.direction === "in"}
+            +{displayCirclesAmount(
+              transfer ? transfer.value.toString() : "0",
+              transfer.timestamp,
+              true,
+              $me.displayTimeCircles || $me.displayTimeCircles === undefined
+            )}
           {:else}
-            -{displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined)}
+            -{displayCirclesAmount(
+              transfer ? transfer.value.toString() : "0",
+              transfer.timestamp,
+              true,
+              $me.displayTimeCircles || $me.displayTimeCircles === undefined
+            )}
           {/if}
 
           <svg
@@ -163,17 +173,17 @@
       <UserImage profile="{targetProfile}" size="{36}" gradientRing="{true}" />
 
       <div>
-        {#if transfer.direction === 'in'}
+        {#if transfer.direction === "in"}
           <span class="mt-4 text-xl">
-            from {fromProfile.firstName + ' ' + fromProfile.lastName}
+            from {fromProfile.firstName + " " + fromProfile.lastName}
           </span>
         {:else}
           <span class="mt-4 text-xl">
-            to {toProfile.firstName + ' ' + toProfile.lastName}
+            to {toProfile.firstName + " " + toProfile.lastName}
           </span>
         {/if}
       </div>
-      <div class="text-dark-lightest">{message}</div>
+      <div class="text-dark-lightest">{message ? message : ""}</div>
 
       {#if path && path.transfers}
         <div class="flex flex-col w-full space-y-1">
@@ -207,7 +217,10 @@
 
         <div class="flex items-center w-full">
           <div class="text-left ">
-            {displayCirclesAmount(transfer ? transfer.value.toString() : '0', transfer.timestamp)}
+            {displayCirclesAmount(
+              transfer ? transfer.value.toString() : "0",
+              transfer.timestamp
+            )}
             Circles
           </div>
         </div>
@@ -244,11 +257,10 @@
 
         <div class="flex items-center w-full text-primarydark">
           <div class="text-left break-all">
-            {transfer.transaction_hash ? transfer.transaction_hash : ''}
+            {transfer.transaction_hash ? transfer.transaction_hash : ""}
           </div>
         </div>
       </div>
-
     </div>
   {/if}
 </div>

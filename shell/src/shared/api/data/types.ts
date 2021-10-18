@@ -1263,6 +1263,58 @@ export type ProfilesByNameQuery = (
   )> }
 );
 
+export type TransactionTimelineQueryVariables = Exact<{
+  safeAddress: Scalars['String'];
+  fromTimestamp?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type TransactionTimelineQuery = (
+  { __typename?: 'Query' }
+  & { events: Array<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'timestamp' | 'type' | 'value' | 'safe_address' | 'transaction_hash' | 'transaction_index' | 'block_number' | 'direction'>
+    & { safe_address_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+    )>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>>, payload?: Maybe<{ __typename?: 'ChatMessage' } | (
+      { __typename?: 'CrcHubTransfer' }
+      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, transfers: Array<(
+        { __typename?: 'CrcTokenTransfer' }
+        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'CrcMinting' }
+      & Pick<CrcMinting, 'token' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    ) | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' }> }
+  )> }
+);
+
 export type ProfilesByCirclesAddressQueryVariables = Exact<{
   circlesAddresses: Array<Scalars['String']> | Scalars['String'];
 }>;
@@ -2161,6 +2213,98 @@ export const ProfilesByNameDocument = gql`
   }
 }
     `;
+export const TransactionTimelineDocument = gql`
+    query transactionTimeline($safeAddress: String!, $fromTimestamp: String, $limit: Int) {
+  events(
+    safeAddress: $safeAddress
+    fromTimestamp: $fromTimestamp
+    types: ["crc_hub_transfer", "crc_minting"]
+    limit: $limit
+  ) {
+    timestamp
+    type
+    value
+    safe_address
+    safe_address_profile {
+      id
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+    }
+    transaction_hash
+    transaction_index
+    block_number
+    direction
+    tags {
+      id
+      typeId
+      value
+    }
+    payload {
+      ... on CrcHubTransfer {
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+      }
+      ... on CrcMinting {
+        token
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
+    }
+  }
+}
+    `;
 export const ProfilesByCirclesAddressDocument = gql`
     query profilesByCirclesAddress($circlesAddresses: [String!]!) {
   profilesBySafeAddress(safeAddresses: $circlesAddresses) {
@@ -2861,6 +3005,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     profilesByName(variables: ProfilesByNameQueryVariables): Promise<ProfilesByNameQuery> {
       return withWrapper(() => client.request<ProfilesByNameQuery>(print(ProfilesByNameDocument), variables));
+    },
+    transactionTimeline(variables: TransactionTimelineQueryVariables): Promise<TransactionTimelineQuery> {
+      return withWrapper(() => client.request<TransactionTimelineQuery>(print(TransactionTimelineDocument), variables));
     },
     profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
       return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));
