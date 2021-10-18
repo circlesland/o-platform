@@ -1,21 +1,21 @@
 <script lang="ts">
-  import { AvataarGenerator } from "src/shared/avataarGenerator";
-  import { push } from "svelte-spa-router";
-  import {Profile} from "../api/data/types";
+import { AvataarGenerator } from "src/shared/avataarGenerator";
+import { push } from "svelte-spa-router";
+import { Profile } from "../api/data/types";
 
-  export let profile: Profile;
-  export let size: number = 10;
-  export let gradientRing: boolean = false;
-  export let whiteRing: boolean = false;
-  export let transparent: boolean = false;
-  export let tooltip: boolean = false;
-  export let profileLink: boolean = true;
+export let profile: Profile;
+export let size: number = 10;
+export let gradientRing: boolean = false;
+export let whiteRing: boolean = false;
+export let transparent: boolean = false;
+export let tooltip: boolean = false;
+export let profileLink: boolean = true;
 
-  function linkToProfile() {
-    if (profileLink) {
-      push(`#/friends/${profile.circlesAddress}`);
-    }
+function linkToProfile() {
+  if (profileLink) {
+    push(`#/friends/${profile.circlesAddress}`);
   }
+}
 </script>
 
 <div
@@ -24,7 +24,11 @@
   on:click="{() => linkToProfile()}">
   {#if tooltip}
     <span class="px-2 mt-12 text-sm bg-white rounded shadow-sm tooltip">
-      {profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}
+      {profile
+        ? profile.lastName
+          ? `${profile.firstName} ${profile.lastName}`
+          : profile.firstName
+        : "avatar"}
     </span>
   {/if}
 
@@ -37,9 +41,17 @@
       class="w-{size} h-{size} m-auto rounded-full"
       class:bg-white="{!transparent}">
       <img
-        class="rounded-full"
-        src="{profile && profile.avatarUrl ? profile.avatarUrl : profile.circlesAddress ? AvataarGenerator.generate(profile.circlesAddress.toLowerCase()) : AvataarGenerator.default()}"
-        alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
+        class="rounded-full w-{size} h-{size}"
+        src="{profile && profile.avatarUrl
+          ? profile.avatarUrl
+          : profile.circlesAddress
+          ? AvataarGenerator.generate(profile.circlesAddress.toLowerCase())
+          : AvataarGenerator.default()}"
+        alt="{profile
+          ? profile.lastName
+            ? `${profile.firstName} ${profile.lastName}`
+            : profile.firstName
+          : 'avatar'}" />
     </div>
   </div>
 </div>
