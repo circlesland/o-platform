@@ -183,7 +183,9 @@ function openDetail(transfer: ProfileEvent) {
           </span>
         {/if}
       </div>
-      <div class="text-dark-lightest">{message ? message : ""}</div>
+      <div class="text-dark-lightest">
+        {message && message != undefined ? message : ""}
+      </div>
 
       {#if path && path.transfers}
         <div class="flex flex-col w-full space-y-1">
