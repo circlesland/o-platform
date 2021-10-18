@@ -1,8 +1,7 @@
 <script lang="ts">
   import { AvataarGenerator } from "src/shared/avataarGenerator";
   import { push } from "svelte-spa-router";
-
-  import { Profile } from "../../dapps/o-banking/data/api/types";
+  import {Profile} from "../api/data/types";
 
   export let profile: Profile;
   export let size: number = 10;

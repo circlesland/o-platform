@@ -1,7 +1,6 @@
 import Contacts from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-import { Profile } from "./o-banking/data/api/types";
 import { me } from "../shared/stores/me";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { init } from "./o-banking/init";
@@ -13,6 +12,7 @@ import { setTrust } from "./o-banking/processes/setTrust";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
 import { push } from "svelte-spa-router";
 import { loadProfileBySafeAddress } from "../shared/api/loadProfileBySafeAddress";
+import {Profile} from "../shared/api/data/types";
 
 export interface DappState {
   // put state here

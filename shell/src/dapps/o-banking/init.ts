@@ -6,7 +6,7 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
 import { Banking } from "./banking";
-import { Profile } from "./data/api/types";
+import {Profile} from "../../shared/api/data/types";
 
 // let _currentSafe: Safe | null = emptySafe;
 let profile: Profile | undefined;

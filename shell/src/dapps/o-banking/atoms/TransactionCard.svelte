@@ -4,14 +4,9 @@ import { me } from "../../../shared/stores/me";
 
 import Date from "../../../shared/atoms/Date.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import {
-  CrcHubTransfer,
-  CrcMinting,
-  Profile,
-  ProfileEvent,
-} from "../data/api/types";
 import { onMount } from "svelte";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import {CrcHubTransfer, CrcMinting, Profile, ProfileEvent} from "../../../shared/api/data/types";
 
 export let param: ProfileEvent;
 

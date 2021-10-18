@@ -9,13 +9,13 @@ import * as bip39 from "bip39";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {Account} from "web3-core";
 import {
+  BalanceDocument,
   FindSafeAddressByOwnerDocument,
   Profile, ProfilesByCirclesAddressDocument,
   UpsertProfileDocument
 } from "../../../shared/api/data/types";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import {BalanceDocument} from "../../o-banking/data/api/types";
 import {BN} from "ethereumjs-util";
 import {KeyManager} from "../../o-passport/data/keyManager";
 import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";

@@ -3,11 +3,11 @@
   import PageHeader from "src/shared/atoms/PageHeader.svelte";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import { BalanceDocument } from "../data/api/types";
   import { onMount } from "svelte";
   import { me } from "../../../shared/stores/me";
 
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+  import {BalanceDocument} from "../../../shared/api/data/types";
 
   export let balance: string = "0";
   export let runtimeDapp: RuntimeDapp<any>;

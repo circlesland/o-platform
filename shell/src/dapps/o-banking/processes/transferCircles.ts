@@ -11,7 +11,6 @@ import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {requestPathToRecipient} from "../services/requestPathToRecipient";
 import {show} from "@o-platform/o-process/dist/actions/show";
-import {CreateTagInput} from "../data/api/types";
 import {Subscription} from "rxjs";
 import {TagTransactionDocument} from "../../../shared/api/data/types";
 
