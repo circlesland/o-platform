@@ -176,14 +176,12 @@ query profilesByName($searchString: String!) {
 
 query transactionTimeline(
   $safeAddress: String!
-  $fromTimestamp: String
-  $limit: Int
+  $pagination: PaginationArgs
 ) {
   events(
     safeAddress: $safeAddress
-    fromTimestamp: $fromTimestamp
     types: ["crc_hub_transfer", "crc_minting"]
-    limit: $limit
+    pagination: $pagination
   ) {
     timestamp
     type
@@ -850,8 +848,8 @@ query citiesById($ids: [Int!]!) {
   }
 }
 
-query organisations {
-  organisations {
+query organisations ($pagination:PaginationArgs) {
+  organisations (pagination: $pagination) {
     id
     circlesAddress
     name

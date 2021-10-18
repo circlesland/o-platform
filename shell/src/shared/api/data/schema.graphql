@@ -358,14 +358,14 @@ type Purchase {
 type Query {
     balance(safeAddress: String!): String!
     balancesByAsset(safeAddress: String!): [AssetBalance!]!
-    chatHistory(contactSafeAddress: String!, safeAddress: String!): [ProfileEvent!]!
+    chatHistory(contactSafeAddress: String!, pagination: PaginationArgs, safeAddress: String!): [ProfileEvent!]!
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
     commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
     contact(contactAddress: String!, safeAddress: String!): Contact
     contacts(safeAddress: String!): [Contact!]!
     eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
-    events(fromBlock: Int, fromTimestamp: String, limit: Int, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
+    events(fromBlock: Int, pagination: PaginationArgs, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
     findSafeAddressByOwner(owner: String!): [String!]!
     hubSignupTransaction: ProfileEvent
     inbox: [ProfileEvent!]!
@@ -375,7 +375,7 @@ type Query {
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
     offers(query: QueryOfferInput!): [Offer!]!
-    organisations: [Organisation!]!
+    organisations(pagination: PaginationArgs): [Organisation!]!
     profilesById(ids: [Int!]!): [Profile!]!
     profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
     safeFundingTransaction: ProfileEvent
@@ -488,6 +488,11 @@ input DepositChallenge {
 
 input LockOfferInput {
     offerId: Int!
+}
+
+input PaginationArgs {
+    continueAt: String!
+    limit: Int!
 }
 
 input PaymentProof {

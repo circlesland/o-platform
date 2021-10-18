@@ -6,7 +6,7 @@
   import {onMount} from "svelte";
   import OrganisationCard from "../atoms/OrganisationCard.svelte";
 
-  let organisations: Organisation[] = [];
+  let organisations: Organisation[] = null;
   let error: string | undefined = undefined;
 
   export let runtimeDapp: RuntimeDapp<any>;
@@ -36,7 +36,7 @@
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>Loading contacts...</div>
+          <div>Loading organisations...</div>
         </div>
       </div>
     </section>

@@ -2,10 +2,6 @@
 
 export DEPLOY_ENVIRONMENT=$1
 
-echo "Installing build dependencies .."
-npm i
-npx --no-install yarn || exit
-
 echo "Building 'o-utils' .."
 cd packages/o-utils || exit
 npx --no-install tsc || exit

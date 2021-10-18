@@ -444,6 +444,11 @@ export type Organisation = {
   trustsYou?: Maybe<Scalars['Int']>;
 };
 
+export type PaginationArgs = {
+  continueAt: Scalars['String'];
+  limit: Scalars['Int'];
+};
+
 export type PaymentProof = {
   destinations: Array<Scalars['String']>;
   forOfferId: Scalars['Int'];
@@ -566,6 +571,7 @@ export type QueryBalancesByAssetArgs = {
 
 export type QueryChatHistoryArgs = {
   contactSafeAddress: Scalars['String'];
+  pagination?: Maybe<PaginationArgs>;
   safeAddress: Scalars['String'];
 };
 
@@ -601,8 +607,7 @@ export type QueryEventByTransactionHashArgs = {
 
 export type QueryEventsArgs = {
   fromBlock?: Maybe<Scalars['Int']>;
-  fromTimestamp?: Maybe<Scalars['String']>;
-  limit?: Maybe<Scalars['Int']>;
+  pagination?: Maybe<PaginationArgs>;
   safeAddress: Scalars['String'];
   toBlock?: Maybe<Scalars['Int']>;
   types?: Maybe<Array<Scalars['String']>>;
@@ -616,6 +621,11 @@ export type QueryFindSafeAddressByOwnerArgs = {
 
 export type QueryOffersArgs = {
   query: QueryOfferInput;
+};
+
+
+export type QueryOrganisationsArgs = {
+  pagination?: Maybe<PaginationArgs>;
 };
 
 
@@ -1284,8 +1294,7 @@ export type ProfilesByNameQuery = (
 
 export type TransactionTimelineQueryVariables = Exact<{
   safeAddress: Scalars['String'];
-  fromTimestamp?: Maybe<Scalars['String']>;
-  limit?: Maybe<Scalars['Int']>;
+  pagination?: Maybe<PaginationArgs>;
 }>;
 
 
@@ -1717,7 +1726,9 @@ export type TagByIdQuery = (
   )> }
 );
 
-export type OrganisationsQueryVariables = Exact<{ [key: string]: never; }>;
+export type OrganisationsQueryVariables = Exact<{
+  pagination?: Maybe<PaginationArgs>;
+}>;
 
 
 export type OrganisationsQuery = (
@@ -2248,12 +2259,11 @@ export const ProfilesByNameDocument = gql`
 }
     `;
 export const TransactionTimelineDocument = gql`
-    query transactionTimeline($safeAddress: String!, $fromTimestamp: String, $limit: Int) {
+    query transactionTimeline($safeAddress: String!, $pagination: PaginationArgs) {
   events(
     safeAddress: $safeAddress
-    fromTimestamp: $fromTimestamp
     types: ["crc_hub_transfer", "crc_minting"]
-    limit: $limit
+    pagination: $pagination
   ) {
     timestamp
     type
@@ -2906,8 +2916,8 @@ export const TagByIdDocument = gql`
 }
     `;
 export const OrganisationsDocument = gql`
-    query organisations {
-  organisations {
+    query organisations($pagination: PaginationArgs) {
+  organisations(pagination: $pagination) {
     id
     circlesAddress
     name
