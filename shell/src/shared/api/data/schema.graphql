@@ -22,6 +22,8 @@ interface IEventPayload {
 
 union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer
 
+union ProfileOrOrganisation = Organisation | Profile
+
 type AssetBalance {
     token_address: String!
     token_balance: String!
@@ -284,6 +286,21 @@ type Offer {
     unlistedAt: String
 }
 
+type Organisation {
+    avatarMimeType: String
+    avatarUrl: String
+    circlesAddress: String
+    circlesSafeOwner: String
+    city: City
+    cityGeonameid: Int
+    description: String
+    id: Int!
+    members: [ProfileOrOrganisation!]!
+    name: String!
+    offers: [Offer!]
+    trustsYou: Int
+}
+
 type Profile {
     avatarCid: String
     avatarMimeType: String
@@ -358,6 +375,7 @@ type Query {
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
     offers(query: QueryOfferInput!): [Offer!]!
+    organisations: [Organisation!]!
     profilesById(ids: [Int!]!): [Profile!]!
     profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
     safeFundingTransaction: ProfileEvent

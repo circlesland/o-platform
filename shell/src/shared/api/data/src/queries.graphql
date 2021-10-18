@@ -850,6 +850,23 @@ query citiesById($ids: [Int!]!) {
   }
 }
 
+query organisations {
+  organisations {
+    id
+    circlesAddress
+    name
+    avatarMimeType
+    avatarUrl
+    city {
+      geonameid
+      latitude
+      longitude
+      name
+      population
+    }
+  }
+}
+
 query stats {
   stats {
     cityRank

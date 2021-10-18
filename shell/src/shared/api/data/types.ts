@@ -428,6 +428,22 @@ export type Offer = {
   unlistedAt?: Maybe<Scalars['String']>;
 };
 
+export type Organisation = {
+  __typename?: 'Organisation';
+  avatarMimeType?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  circlesAddress?: Maybe<Scalars['String']>;
+  circlesSafeOwner?: Maybe<Scalars['String']>;
+  city?: Maybe<City>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  members: Array<ProfileOrOrganisation>;
+  name: Scalars['String'];
+  offers?: Maybe<Array<Offer>>;
+  trustsYou?: Maybe<Scalars['Int']>;
+};
+
 export type PaymentProof = {
   destinations: Array<Scalars['String']>;
   forOfferId: Scalars['Int'];
@@ -476,6 +492,8 @@ export type ProfileEvent = {
   value?: Maybe<Scalars['String']>;
 };
 
+export type ProfileOrOrganisation = Organisation | Profile;
+
 export type ProvePaymentResult = {
   __typename?: 'ProvePaymentResult';
   success: Scalars['Boolean'];
@@ -521,6 +539,7 @@ export type Query = {
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
   offers: Array<Offer>;
+  organisations: Array<Organisation>;
   profilesById: Array<Profile>;
   profilesBySafeAddress: Array<Profile>;
   safeFundingTransaction?: Maybe<ProfileEvent>;
@@ -1698,6 +1717,21 @@ export type TagByIdQuery = (
   )> }
 );
 
+export type OrganisationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OrganisationsQuery = (
+  { __typename?: 'Query' }
+  & { organisations: Array<(
+    { __typename?: 'Organisation' }
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'name' | 'avatarMimeType' | 'avatarUrl'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'latitude' | 'longitude' | 'name' | 'population'>
+    )> }
+  )> }
+);
+
 export type StatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2871,6 +2905,24 @@ export const TagByIdDocument = gql`
   }
 }
     `;
+export const OrganisationsDocument = gql`
+    query organisations {
+  organisations {
+    id
+    circlesAddress
+    name
+    avatarMimeType
+    avatarUrl
+    city {
+      geonameid
+      latitude
+      longitude
+      name
+      population
+    }
+  }
+}
+    `;
 export const StatsDocument = gql`
     query stats {
   stats {
@@ -3044,6 +3096,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     tagById(variables: TagByIdQueryVariables): Promise<TagByIdQuery> {
       return withWrapper(() => client.request<TagByIdQuery>(print(TagByIdDocument), variables));
+    },
+    organisations(variables?: OrganisationsQueryVariables): Promise<OrganisationsQuery> {
+      return withWrapper(() => client.request<OrganisationsQuery>(print(OrganisationsDocument), variables));
     },
     stats(variables?: StatsQueryVariables): Promise<StatsQuery> {
       return withWrapper(() => client.request<StatsQuery>(print(StatsDocument), variables));

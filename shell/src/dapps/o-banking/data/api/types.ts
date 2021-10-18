@@ -846,7 +846,6 @@ export type BalancesByAssetQuery = (
 export type TransactionTimelineQueryVariables = Exact<{
   safeAddress: Scalars['String'];
   fromTimestamp: Scalars['String'];
-  limit?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -969,12 +968,11 @@ export const BalancesByAssetDocument = gql`
 }
     `;
 export const TransactionTimelineDocument = gql`
-    query transactionTimeline($safeAddress: String!, $fromTimestamp: String!, $limit: Int) {
+    query transactionTimeline($safeAddress: String!, $fromTimestamp: String!) {
   events(
     safeAddress: $safeAddress
     fromTimestamp: $fromTimestamp
     types: ["crc_hub_transfer", "crc_minting"]
-    limit: $limit
   ) {
     timestamp
     type

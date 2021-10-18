@@ -27,8 +27,17 @@ export const coop: DappManifest<DappState> = {
     title: "Actions",
     isSystem: false,
     routeParts: ["=actions"],
-    items: async () => {
-      return [];
+    items: async (params, runtimeDapp) => {
+      return [
+        {
+          key: "createOrganisation",
+          icon: "createOrganisation",
+          title: "Create new organisation",
+          action: async () => {
+            alert("Do it!");
+          },
+        },
+      ];
     },
   },
   isEnabled: true,
