@@ -1,9 +1,10 @@
 <script lang="ts">
 import { CommonTrustDocument } from "src/shared/api/data/types";
+import Profile from "src/shared/api/data/types";
 
 import UserImage from "src/shared/atoms/UserImage.svelte";
-export let profile;
-export let eventData: any;
+export const profile: Profile = undefined;
+export const eventData: any = undefined;
 
 async function getMutualFriends() {
   if (eventData && eventData.profile) {

@@ -86,9 +86,9 @@ function setNav(navArgs: GenerateNavManifestArgs) {
     preModalNavArgs = currentNavArgs;
   }
   let args = { ...navArgs, showLogin: dapp.dappId == "homepage:1" };
-  console.log(args);
+
   navigation = generateNavManifest(args, null);
-  console.log("New nav:", navigation);
+
   currentNavArgs = args;
 }
 
@@ -102,7 +102,6 @@ async function init() {
     return;
   } else {
     window.o.apiClient.client.subscribeToResult().then((apiClient) => {
-      console.log("SUBSCRIBING TO WS EVENTS ..");
       apiClient
         .subscribe({
           query: EventsDocument,
@@ -118,7 +117,6 @@ async function init() {
               type: "new_message",
             });
           } else {
-            console.log("RECEIVED WS BLOCKCHAIN EVENT:", next);
             window.o.publishEvent(<any>{
               type: "blockchain_event",
             });
@@ -365,23 +363,18 @@ onMount(async () => {
         break;
       case "shell.openNavigation":
         onOpenNavigation();
-        console.log(event);
         break;
       case "shell.closeNavigation":
         onCloseNavigation();
-        console.log(event);
         break;
       case "shell.contacts":
         onOpenContacts();
-        console.log(event);
         break;
       case "shell.openModal":
         onOpenModal();
-        console.log(event);
         break;
       case "shell.home":
         onHome();
-        console.log(event);
         break;
       case "shell.inputFocused":
         onInputFocused();
@@ -391,27 +384,21 @@ onMount(async () => {
         break;
       case "process.cancelRequest":
         onProcessCancelRequest();
-        console.log(event);
         break;
       case "shell.requestCloseModal":
         await onRequestCloseModal();
-        console.log(event);
         break;
       case "shell.closeModal":
         await onCloseModal();
-        console.log(event);
         break;
       case "shell.runProcess":
         await onRunProcess(event);
-        console.log(event);
         break;
       case "shell.processStarted":
-        console.log("Process started:", event);
         runningProcess = event;
         break;
       case "process.stopped":
         await onProcessStopped();
-        console.log(event);
         runningProcess = null;
         break;
     }

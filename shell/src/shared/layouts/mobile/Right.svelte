@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { fly } from "svelte/transition";
-  import Icons from "src/shared/molecules/Icons.svelte";
-  import { createEventDispatcher } from "svelte";
-  import { clickOutside } from "src/shared/functions/clickOutside";
+import { fly } from "svelte/transition";
+import Icons from "src/shared/molecules/Icons.svelte";
+import { createEventDispatcher } from "svelte";
+import { clickOutside } from "src/shared/functions/clickOutside";
 
-  const eventDispatcher = createEventDispatcher();
-  let x = 500;
+const eventDispatcher = createEventDispatcher();
+let x = 500;
 </script>
 
 <aside class="flex sideBarRight">
@@ -19,7 +19,7 @@
       on:click_outside="{() => eventDispatcher('clickedOutside')}">
       <!-- Sidebar content -->
       <div class="z-10 flex flex-col flex-1 text-white bg-dark">
-        <nav class="flex flex-col flex-1 w-64 p-4 mt-4"></nav>
+        <nav class="flex flex-col flex-1 w-1 p-4 mt-4"></nav>
         <div class="flex-shrink-0 p-4 space-y-4">
           <slot />
         </div>
@@ -34,27 +34,27 @@
 </aside>
 
 <style>
-  .sideBarRight {
-    z-index: 99;
-    background-color: rgba(177, 192, 200, 0.4);
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
+.sideBarRight {
+  z-index: 99;
+  background-color: rgba(177, 192, 200, 0.4);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
 
-    align-items: flex-end;
-    justify-content: center;
-    overflow-y: hidden;
-    @apply pb-20;
+  align-items: flex-end;
+  justify-content: center;
+  overflow-y: hidden;
+  @apply pb-20;
 
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-  }
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
 
-  .sideBarRight .sidebar {
-    --tw-shadow: 0 25px 50px 82px rgba(0, 0, 0, 0.45);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-  }
+.sideBarRight .sidebar {
+  --tw-shadow: 0 25px 50px 82px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
 </style>

@@ -86,6 +86,7 @@ $: {
 </script>
 
 <template lang="pug">
+
 DashboardHeader(runtimeDapp="{runtimeDapp}" routable="{routable}")
 div.mx-auto(class="md:w-2/3 xl:w-1/2")
   div.m-4.mb-20
@@ -131,7 +132,6 @@ div.mx-auto(class="md:w-2/3 xl:w-1/2")
           div.mt-4.text-3xl.font-heading.text-dark coops
 </template>
 
-
 <style>
 .dashboard-grid {
   grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
@@ -155,5 +155,4 @@ div.mx-auto(class="md:w-2/3 xl:w-1/2")
   grid-row: 1 / 1;
   grid-column: 1 / 1;
 }
-
 </style>

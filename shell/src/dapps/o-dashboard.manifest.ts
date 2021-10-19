@@ -23,9 +23,9 @@ const invites: Page<any, DappState> = {
 
 const externalChat: Link<any, DappState> = {
   type: "link",
-  title: "Chat",
+  title: "Support Chat",
   icon: "chat",
-  routeParts: ["=chat"],
+  routeParts: [],
   openInNewTab: true,
   url: () => "https://discord.gg/CS6xq7jECR",
 };
@@ -33,7 +33,7 @@ const externalForum: Link<any, DappState> = {
   type: "link",
   title: "Forum",
   icon: "forum",
-  routeParts: ["=forum"],
+  routeParts: [],
   openInNewTab: true,
   url: () => "https://aboutcircles.com",
 };
@@ -49,7 +49,7 @@ const externalBlog: Link<any, DappState> = {
   type: "link",
   title: "Blog",
   icon: "blog",
-  routeParts: ["=blog"],
+  routeParts: [],
   openInNewTab: true,
   url: () => "https://blog.circles.land/",
 };
@@ -58,7 +58,7 @@ const externalWhitepaper: Link<any, DappState> = {
   type: "link",
   title: "Whitepaper",
   icon: "whitepaper",
-  routeParts: ["=whitepaper"],
+  routeParts: [],
   openInNewTab: true,
   url: () => "https://blog.circles.land/whitepaper/",
 };

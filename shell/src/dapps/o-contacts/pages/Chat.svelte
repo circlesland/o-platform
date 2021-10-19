@@ -3,10 +3,8 @@ import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { onDestroy, onMount } from "svelte";
 import { Contact, ContactsDocument } from "../../../shared/api/data/types";
 import ChatListCard from "../atoms/ChatListCard.svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 import List from "../../../shared/molecules/Lists/List.svelte";
 

@@ -9,13 +9,13 @@ import {
 
 import { inview } from "svelte-inview/dist/index";
 
-export let listItemComponent;
-export let selector = "timestamp";
-export let listItemType;
-export let fetchQuery: any;
+export const listItemComponent: any = undefined;
+export const selector = "timestamp";
+export const listItemType: any = undefined;
+export const fetchQuery: any = undefined;
 export let fetchQueryArguments;
-export let dataKey: string;
-export let dataLimit: number = 50;
+export const dataKey: string = undefined;
+export const dataLimit: number = 50;
 
 let posts: typeof listItemType[] = [];
 let hasMore: boolean = true;

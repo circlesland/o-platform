@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { showNotifications } from "../../../processes/showNotifications";
+import { showNotifications } from "../../../processes/showNotifications";
 
-  import { inbox } from "../../../stores/inbox";
-  import Icons from "../../Icons.svelte";
+import { inbox } from "../../../stores/inbox";
+import Icons from "../../Icons.svelte";
 
-  export let props;
+export let props;
 </script>
 
 <div class="h-12 col-start-2 place-self-center">
@@ -13,15 +13,15 @@
       class="flex justify-center flex-shrink-0 w-20 h-12 -mr-4 rounded-l-full cursor-pointer"
       class:bg-white="{props && props.left}"
       on:click="{props && props.left ? props.left.props.action : null}">
-
       {#if props && props.left}
-        {#if $inbox.length && props.center.props.icon !== 'close'}
+        {#if $inbox.length && props.center.props.icon !== "close"}
           <div class="relative self-center text-secondary">
             <Icons icon="notificationbubble" />
             <div
               class="absolute top-0 w-full text-center text-white font-heading"
-              on:click="{() => window.o.runProcess(showNotifications, {
-                  events: $inbox.map(o => o),
+              on:click="{() =>
+                window.o.runProcess(showNotifications, {
+                  events: $inbox.map((o) => o),
                 })}">
               {$inbox.length}
             </div>

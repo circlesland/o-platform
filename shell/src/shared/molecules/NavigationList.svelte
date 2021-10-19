@@ -28,13 +28,6 @@ $: {
     navigation = [];
   }
 }
-//  use:clickOutside
-// on:click_outside="{e => {
-//   if (isMobile()) {
-//     window.o.publishEvent({ type: 'shell.closeNavigation' });
-//     e.stopImmediatePropagation();
-//   }
-// }}"
 </script>
 
 <div class="z-10 flex flex-col flex-1">
@@ -68,6 +61,7 @@ $: {
             icon: navItem.icon,
             text: navItem.title,
             link: navItem.url,
+            extern: navItem.extern,
             isActive: navItem.isActive,
           }}" />
       {/each}
