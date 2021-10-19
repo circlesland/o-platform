@@ -111,12 +111,7 @@ async function init() {
           if (next.data.events.type == "new_message") {
             window.o.publishEvent(<any>{
               type: "shell.refresh",
-              dapp: "chat:1",
-              data: null,
-            });
-            window.o.publishEvent(<any>{
-              type: "shell.refresh",
-              dapp: "contacts:1",
+              dapp: "friends:1",
               data: null,
             });
             window.o.publishEvent(<any>{
@@ -129,7 +124,7 @@ async function init() {
             });
             window.o.publishEvent(<any>{
               type: "shell.refresh",
-              dapp: "contacts:1",
+              dapp: "friends:1",
               data: null,
             });
           }
@@ -180,7 +175,7 @@ function onCloseNavigation() {
 }
 
 function onOpenContacts() {
-  push("#/chat");
+  push("#/friends/chat");
 }
 
 function onOpenModal() {

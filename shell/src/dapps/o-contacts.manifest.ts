@@ -1,5 +1,7 @@
 import Contacts from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
+import Chat from "./o-contacts/pages/Chat.svelte";
+import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { me } from "../shared/stores/me";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
@@ -12,7 +14,7 @@ import { setTrust } from "./o-banking/processes/setTrust";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
 import { push } from "svelte-spa-router";
 import { loadProfileBySafeAddress } from "../shared/api/loadProfileBySafeAddress";
-import {Profile} from "../shared/api/data/types";
+import { Profile } from "../shared/api/data/types";
 
 export interface DappState {
   // put state here
@@ -120,7 +122,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         icon: "chat",
         title: "Chat",
         action: async () => {
-          push("#/chat/" + recipientProfile.circlesAddress);
+          push("#/friends/chat/" + recipientProfile.circlesAddress);
         },
       });
     }
@@ -160,6 +162,23 @@ const graph: Page<any, ContactsDappState> = {
   type: "page",
 };
 
+export const chatdetail: Page<any, ContactsDappState> = {
+  type: "page",
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=chat", ":id"],
+  title: "Chat",
+  component: ChatDetail,
+};
+
+export const chat: Page<any, ContactsDappState> = {
+  routeParts: ["=chat"],
+  component: Chat,
+  title: "Chat",
+  icon: "chat",
+  type: "page",
+};
+
 export const friends: DappManifest<DappState> = {
   type: "dapp",
   dappId: "friends:1",
@@ -190,5 +209,5 @@ export const friends: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, graph, profile],
+  routables: [index, chat, chatdetail, graph, profile],
 };

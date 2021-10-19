@@ -172,20 +172,6 @@ $: {
         </div>
       </section>
 
-      <!-- Chat -->
-
-      <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "
-        on:click="{() => loadLink('/chat')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-          <div class="pt-2 text-primary">
-            <Icons icon="dashchat" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">chat</div>
-        </div>
-      </section>
-
       <!-- Coop -->
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card "

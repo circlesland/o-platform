@@ -10,7 +10,7 @@ import NotificationViewUbi from "./NotificationViewer/NotificationViewUbi.svelte
 import NotificationViewTrust from "./NotificationViewer/atoms/NotificationViewTrust.svelte";
 import NotificationViewTransfer from "./NotificationViewer/atoms/NotificationViewTransfer.svelte";
 import NotificationViewMutualFriends from "./NotificationViewer/atoms/NotificationViewMutualFriends.svelte";
-import {inbox} from "../../../shell/src/shared/stores/inbox";
+import { inbox } from "../../../shell/src/shared/stores/inbox";
 
 export let context: NotificationViewerContext;
 
@@ -62,7 +62,7 @@ function buildDataModel(data) {
           icon: "chat",
           colorClass: "",
           action: () => {
-            context.params.push(`#/chat/${data.payload.from}`);
+            context.params.push(`#/friends/chat/${data.payload.from}`);
             inbox.acknowledge(data);
           },
         },

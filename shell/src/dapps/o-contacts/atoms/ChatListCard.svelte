@@ -2,7 +2,7 @@
 import { push } from "svelte-spa-router";
 
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import {Contact, Profile} from "../../../shared/api/data/types";
+import { Contact, Profile } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 
@@ -41,7 +41,7 @@ if (param.trustsYou > 0 && param.youTrust > 0) {
 message += param.lastEvent ? param.lastEvent.payload.__typename : "";
 
 function loadDetailPage(path) {
-  push(`#/chat/${path}`);
+  push(`#/friends/chat/${path}`);
 }
 
 function goToProfile(e, path?: string) {

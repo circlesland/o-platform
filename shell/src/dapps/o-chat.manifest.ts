@@ -1,10 +1,10 @@
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { me } from "../shared/stores/me";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { init} from "./o-banking/init";
-import ChatDetail from "./o-chat/pages/ChatDetail.svelte";
-import Chat from "./o-chat/pages/Chat.svelte";
-import {Profile} from "../shared/api/data/types";
+import { init } from "./o-banking/init";
+import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
+import Chat from "./o-contacts/pages/Chat.svelte";
+import { Profile } from "../shared/api/data/types";
 
 export interface DappState {
   // put state here

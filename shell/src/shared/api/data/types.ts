@@ -161,6 +161,13 @@ export type CreateInvitationResult = {
   success: Scalars['Boolean'];
 };
 
+export type CreateOrganisationResult = {
+  __typename?: 'CreateOrganisationResult';
+  error?: Maybe<Scalars['String']>;
+  organisation?: Maybe<Organisation>;
+  success: Scalars['Boolean'];
+};
+
 export type CreateTagInput = {
   typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
@@ -301,6 +308,7 @@ export type Mutation = {
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
   upsertOffer: Offer;
+  upsertOrganisation: CreateOrganisationResult;
   upsertProfile: Profile;
   upsertTag: Tag;
   verifySessionChallenge?: Maybe<ExchangeTokenResponse>;
@@ -384,6 +392,11 @@ export type MutationUpsertOfferArgs = {
 };
 
 
+export type MutationUpsertOrganisationArgs = {
+  organisation: UpsertOrganisationInput;
+};
+
+
 export type MutationUpsertProfileArgs = {
   data: UpsertProfileInput;
 };
@@ -436,6 +449,7 @@ export type Organisation = {
   circlesSafeOwner?: Maybe<Scalars['String']>;
   city?: Maybe<City>;
   cityGeonameid?: Maybe<Scalars['Int']>;
+  createdAt: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   members: Array<ProfileOrOrganisation>;
@@ -812,6 +826,16 @@ export type UpsertOfferInput = {
   pricePerUnit: Scalars['String'];
   title: Scalars['String'];
   unitTagId: Scalars['Int'];
+};
+
+export type UpsertOrganisationInput = {
+  avatarMimeType?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  circlesAddress?: Maybe<Scalars['String']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
 };
 
 export type UpsertProfileInput = {
@@ -1745,7 +1769,7 @@ export type OrganisationsQuery = (
   { __typename?: 'Query' }
   & { organisations: Array<(
     { __typename?: 'Organisation' }
-    & Pick<Organisation, 'id' | 'circlesAddress' | 'name' | 'avatarMimeType' | 'avatarUrl'>
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarMimeType' | 'avatarUrl'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'latitude' | 'longitude' | 'name' | 'population'>
@@ -3003,6 +3027,7 @@ export const OrganisationsDocument = gql`
   organisations(pagination: $pagination) {
     id
     circlesAddress
+    createdAt
     name
     avatarMimeType
     avatarUrl
