@@ -208,17 +208,7 @@ module.exports = {
           options: {
             emitCss: true,
             hotReload: true,
-            preprocess: sveltePreprocess({
-              //   // https://github.com/kaisermann/svelte-preprocess/#user-content-options
-              //   sourceMap: true,
-              //   postcss: {
-              //     plugins: [
-              //       require("tailwindcss"),
-              //       require("autoprefixer"),
-              //       require("postcss-nesting"),
-              //     ],
-              //   },
-            }),
+            preprocess: sveltePreprocess({}),
           },
         },
       },
