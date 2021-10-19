@@ -118,7 +118,7 @@ div.mx-auto(class="md:w-2/3 xl:w-1/2")
               Icons(icon="dashbanking")
             div.mt-4.text-3xl.font-heading.text-dark banking
       
-      section.flex.items-center.justify-center.bg-white.rounded-lg.shadow-md.cursor-pointer.dashboard-card(on:click!="{() => loadLink('marketplace/stream')}")
+      section.flex.items-center.justify-center.bg-white.rounded-lg.shadow-md.cursor-pointer.dashboard-card(on:click!="{() => loadLink('/marketplace/stream')}")
         div.flex.flex-col.items-center.w-full.p-4.pt-6.justify-items-center
           div.pt-2.text-primary
             Icons(icon="dashmarket")
