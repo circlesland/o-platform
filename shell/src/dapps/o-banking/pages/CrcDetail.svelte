@@ -6,7 +6,10 @@ import Card from "../../../shared/atoms/Card.svelte";
 
 import { push } from "svelte-spa-router";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
-import {AssetBalance} from "../../../shared/api/data/types";
+import {
+  BalancesByAssetDocument,
+  AssetBalance,
+} from "../../../shared/api/data/types";
 
 let loading = true;
 let balances: AssetBalance[] = [];
