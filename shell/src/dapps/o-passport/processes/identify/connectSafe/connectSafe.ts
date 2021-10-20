@@ -7,7 +7,7 @@ import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/organisationSafeProxy";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import * as bip39 from "bip39";
 import { Account } from "web3-core";

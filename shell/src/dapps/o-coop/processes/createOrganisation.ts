@@ -5,36 +5,137 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import * as yup from "yup";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptCity } from "../../../shared/api/promptCity";
-import {TagsDocument} from "../../o-marketplace/data/api/types";
 import {Profile, UpsertOrganisationDocument} from "../../../shared/api/data/types";
-import {number} from "yup";
 import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
+import {GNOSIS_SAFE_ADDRESS, HUB_ADDRESS, PROXY_FACTORY_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {me} from "../../../shared/stores/me";
-import {unpadBuffer} from "ethereumjs-util";
+import {GnosisSafeProxyFactory} from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
+import {show} from "@o-platform/o-process/dist/actions/show";
+import ErrorView from "../../../shared/atoms/Error.svelte";
+import {BN} from "ethereumjs-util";
 
 export type CreateOrganisationContextData = {
   successAction: (data:CreateOrganisationContextData) => void,
-  id: undefined,
+  id: number|undefined,
   avatarMimeType: "image/png",
-  avatarUrl: undefined,
-  circlesAddress: undefined,
-  cityGeonameid: undefined,
-  description: undefined,
-  name: undefined
+  avatarUrl: string,
+  circlesAddress: string,
+  cityGeonameid: string,
+  description: string,
+  name: string,
+  organisationSafeProxy: GnosisSafeProxy
 };
 
 export type CreateOrganisationContext = ProcessContext<CreateOrganisationContextData>;
 
+
+/**
+ * Sends the specified "amount".
+ */
+async function sendFundsFromEoa(to:string, amount: BN)
+{
+  let $me:Profile = null;
+  const unsub = me.subscribe(current => {
+    $me = current;
+  });
+  unsub();
+
+  if (!$me)
+    throw new Error(`You're not logged on`);
+  if (!$me.circlesSafeOwner)
+    throw new Error(`You have no eoa`);
+
+  const privateKey = sessionStorage.getItem("circlesKey");
+  if (!privateKey) {
+    throw new Error(`The private key is not unlocked`);
+  }
+
+  const web3 = RpcGateway.get();
+  const eoaBalance = new BN(
+    await web3.eth.getBalance($me.circlesSafeOwner)
+  );
+  const gas = 41000;
+  const gasPrice = new BN(await web3.eth.getGasPrice());
+  const totalFee = gasPrice.mul(new BN(gas.toString()));
+  const nonce = await web3.eth.getTransactionCount(
+    $me.circlesSafeOwner
+  );
+
+  const availableForTransfer = eoaBalance.sub(totalFee);
+  if (availableForTransfer.lt(amount)) {
+    throw new Error(`You have not enough funds on '${$me.circlesSafeOwner}'. Max. transferable amount is ${web3.utils.fromWei(availableForTransfer, "ether")}`);
+  }
+
+  const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+  const signedTx = await account.signTransaction({
+    from: $me.circlesSafeOwner,
+    to: to,
+    value: amount,
+    gasPrice: gasPrice,
+    gas: gas,
+    nonce: nonce,
+  });
+
+  if (!signedTx?.rawTransaction) {
+    throw new Error(`Couldn't send the invitation transaction`);
+  }
+
+  const receipt = await web3.eth.sendSignedTransaction(
+    signedTx.rawTransaction
+  );
+  console.log(receipt);
+}
+
+/**
+ * Sends the specified "amount".
+ */
+async function sendFundsFromSafe(to:string, amount: BN)
+{
+  let $me:Profile = null;
+  const unsub = me.subscribe(current => {
+    $me = current;
+  });
+  unsub();
+
+  if (!$me)
+    throw new Error(`You're not logged on`);
+  if (!$me.circlesSafeOwner)
+    throw new Error(`You have no eoa`);
+
+  const privateKey = sessionStorage.getItem("circlesKey");
+  if (!privateKey) {
+    throw new Error(`The private key is not unlocked`);
+  }
+
+  const web3 = RpcGateway.get();
+  const eoaBalance = new BN(
+    await web3.eth.getBalance($me.circlesAddress)
+  );
+  const gas = 41000;
+  const gasPrice = new BN(await web3.eth.getGasPrice());
+  const totalFee = gasPrice.mul(new BN(gas.toString()));
+  const nonce = await web3.eth.getTransactionCount(
+    $me.circlesAddress
+  );
+
+  const availableForTransfer = eoaBalance.sub(totalFee);
+  if (availableForTransfer.lt(amount)) {
+    throw new Error(`You have not enough funds on '${$me.circlesAddress}'. Max. transferable amount is ${web3.utils.fromWei(availableForTransfer, "ether")}`);
+  }
+
+  const proxy = new GnosisSafeProxy(web3, $me.circlesAddress);
+  const receipt = await (await proxy.transferEth(privateKey, amount, to)).toPromise();
+  console.log(receipt);
+}
+
 const processDefinition = (processId: string) =>
   createMachine<CreateOrganisationContext, any>({
-    id: `${processId}:upsertIdentity`,
+    id: `${processId}:createOrganisation`,
     initial: "name",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
@@ -70,13 +171,13 @@ const processDefinition = (processId: string) =>
           }
         },
         navigation: {
-          next: "#dream",
+          next: "#description",
           previous: "#name",
           canSkip: () => true,
         },
       }),
-      dream: prompt<CreateOrganisationContext, any>({
-        field: "dream",
+      description: prompt<CreateOrganisationContext, any>({
+        field: "description",
         component: TextareaEditor,
         params: {
           view: {
@@ -112,44 +213,119 @@ const processDefinition = (processId: string) =>
           },
         },
         navigation: {
-          next: "#upsertOrganisation",
-          previous: "#dream",
+          next: "#checkDeploy",
+          previous: "#description",
           canSkip: () => true
         },
       }),
+      checkDeploy: {
+        id: "checkDeploy",
+        always:[{
+          cond: () => true,
+          target: "#deployOrganisation"
+        }, {
+          cond: () => false,
+          target: "#upsertOrganisation"
+        }]
+      },
       deployOrganisation: {
         id: "deployOrganisation",
+        entry: () => console.log(`deployOrganisation ...`),
         invoke: {
           src: async (context) => {
-            const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);
             const privateKey = sessionStorage.getItem("circlesKey");
-            if (!privateKey)
+            if (!privateKey) {
               throw new Error(`The private key is not unlocked`);
+            }
 
             let $me:Profile = null;
             const unsub = me.subscribe(current => {
               $me = current;
             });
             unsub();
+
             if (!$me.circlesAddress) {
               throw new Error(`You need a fully set-up circles account to create an organisation.`)
             }
 
-            const safeProxy = new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress);
-            const receipt = await (await hub.signupOrganisation(privateKey, safeProxy)).toPromise();
-            console.log(receipt);
-          }
+            const proxyFactory = new GnosisSafeProxyFactory(
+              RpcGateway.get(),
+              PROXY_FACTORY_ADDRESS,
+              GNOSIS_SAFE_ADDRESS
+            );
+
+            context.data.organisationSafeProxy = await proxyFactory.deployNewSafeProxy(privateKey);
+            context.data.circlesAddress = context.data.organisationSafeProxy.address;
+
+            console.log(context.data.organisationSafeProxy);
+          },
+          onDone: "#fundOrganisation",
+          onError: {
+            actions: (context, event) => {
+              window.o.lastError = event.data;
+            },
+            target: "#showError",
+          },
+        }
+      },
+      fundOrganisation: {
+        id: "fundOrganisation",
+        entry: () => console.log(`fundOrganisation ...`),
+        invoke: {
+          src: async (context, event) => {
+            let $me:Profile = null;
+            const unsub = me.subscribe(current => {
+              $me = current;
+            });
+            unsub();
+
+            await sendFundsFromSafe(
+              context.data.organisationSafeProxy.address,
+              new BN(RpcGateway.get().utils.toWei("0.01", "ether"))
+            );
+          },
+          onDone: "#signupOrganisation",
+          onError: {
+            actions: (context, event) => {
+              window.o.lastError = event.data;
+            },
+            target: "#showError",
+          },
+        }
+      },
+      signupOrganisation: {
+        id: "signupOrganisation",
+        entry: () => console.log(`signupOrganisation ...`),
+        invoke: {
+          src: async (context, event) => {
+            const privateKey = sessionStorage.getItem("circlesKey");
+            if (!privateKey) {
+              throw new Error(`The private key is not unlocked`);
+            }
+
+            const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);
+            const receipt = await (await hub.signupOrganisation(privateKey, context.data.organisationSafeProxy)).toPromise();
+            console.log(receipt)
+          },
+          onDone: "#upsertOrganisation",
+          onError: {
+            actions: (context, event) => {
+              window.o.lastError = event.data;
+            },
+            target: "#showError",
+          },
         }
       },
       upsertOrganisation: {
         id: "upsertOrganisation",
+        entry: () => console.log(`upsertOrganisation ...`),
         invoke: {
           src: async (context) => {
             // return result.data.upsertProfile;
             const organisation = {
               avatarMimeType: context.data.avatarMimeType,
               avatarUrl: context.data.avatarUrl,
-              circlesAddress: context.data.circlesAddress,
+              circlesAddress: context.data.circlesAddress.toLowerCase(),
               cityGeonameid: context.data.cityGeonameid,
               description: context.data.description,
               name: context.data.name,
@@ -165,8 +341,26 @@ const processDefinition = (processId: string) =>
             });
           },
           onDone: "#success",
-          onError: "#error",
+          onError: {
+            actions: (context, event) => {
+              window.o.lastError = event.data;
+            },
+            target: "#showError",
+          },
         },
+      },
+      showError: {
+        id: "showError",
+        entry: show({
+          // TODO: fix <any> cast
+          component: ErrorView,
+          params: {},
+          field: {
+            name: "",
+            get: () => undefined,
+            set: (o: any) => {},
+          },
+        }),
       },
       success: {
         type: "final",

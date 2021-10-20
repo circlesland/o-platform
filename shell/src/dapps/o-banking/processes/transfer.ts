@@ -20,12 +20,9 @@ import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { SetTrustContext } from "./setTrust";
 import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
-import {
-  displayCirclesAmount,
-  convertTimeCirclesToCircles,
-} from "src/shared/functions/displayCirclesAmount";
 import { me } from "../../../shared/stores/me";
 import {Profile} from "../../../shared/api/data/types";
+import {convertTimeCirclesToCircles, displayCirclesAmount} from "../../../shared/functions/displayCirclesAmount";
 
 export type TransferContextData = {
   safeAddress: string;

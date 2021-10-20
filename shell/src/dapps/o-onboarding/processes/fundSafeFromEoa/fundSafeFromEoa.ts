@@ -17,6 +17,47 @@ export type FundSafeFromEoaContextData = {
 
 export type FundSafeFromEoaContext = ProcessContext<FundSafeFromEoaContextData>;
 
+/**
+ * Sends all funds (except 0.03 eth) from the "from" address to the "to" address.
+ */
+async function sendAllFunds(privateKey: string, from:string, to:string)
+{
+  const web3 = RpcGateway.get();
+  const minAccBalance = new BN(web3.utils.toWei("0.03", "ether"));
+  const eoaBalance = new BN(
+    await web3.eth.getBalance(from)
+  );
+  const gas = 41000;
+  const gasPrice = new BN(await web3.eth.getGasPrice());
+  const totalFee = gasPrice.mul(new BN(gas.toString()));
+  const nonce = await web3.eth.getTransactionCount(
+    from
+  );
+
+  const availableForTransfer = eoaBalance
+    .sub(totalFee)
+    .sub(minAccBalance);
+
+  const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+  const signedTx = await account.signTransaction({
+    from: from,
+    to: to,
+    value: availableForTransfer,
+    gasPrice: gasPrice,
+    gas: gas,
+    nonce: nonce,
+  });
+
+  if (!signedTx?.rawTransaction) {
+    throw new Error(`Couldn't send the invitation transaction`);
+  }
+
+  const receipt = await web3.eth.sendSignedTransaction(
+    signedTx.rawTransaction
+  );
+  console.log(receipt);
+}
+
 const processDefinition = (processId: string) =>
   createMachine<FundSafeFromEoaContext, any>({
     id: `${processId}:fundSafeFromEoa`,
@@ -49,41 +90,7 @@ const processDefinition = (processId: string) =>
                 `The context's 'eoaAddress' or 'safeAddress' property is not set.`
               );
             }
-
-            const web3 = RpcGateway.get();
-            const minAccBalance = new BN(web3.utils.toWei("0.03", "ether"));
-            const eoaBalance = new BN(
-              await web3.eth.getBalance(context.data.eoaAddress)
-            );
-            const gas = 41000;
-            const gasPrice = new BN(await web3.eth.getGasPrice());
-            const totalFee = gasPrice.mul(new BN(gas.toString()));
-            const nonce = await web3.eth.getTransactionCount(
-              context.data.eoaAddress
-            );
-
-            const availableForTransfer = eoaBalance
-              .sub(totalFee)
-              .sub(minAccBalance);
-
-            const account = web3.eth.accounts.privateKeyToAccount(privateKey);
-            const signedTx = await account.signTransaction({
-              from: context.data.eoaAddress,
-              to: context.data.safeAddress,
-              value: availableForTransfer,
-              gasPrice: gasPrice,
-              gas: gas,
-              nonce: nonce,
-            });
-
-            if (!signedTx?.rawTransaction) {
-              throw new Error(`Couldn't send the invitation transaction`);
-            }
-
-            const receipt = await web3.eth.sendSignedTransaction(
-              signedTx.rawTransaction
-            );
-            console.log(receipt);
+            await sendAllFunds(privateKey, context.data.eoaAddress, context.data.safeAddress);
           },
           onDone: "#waitForTransaction",
         },
