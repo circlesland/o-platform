@@ -73,7 +73,8 @@ function cardAction() {
           class:truncateThis="{params.truncateMain}">
           <h2 class="text-base">{params.title}</h2>
         </div>
-        <p class="absolute w-full h-4 mt-6 text-xs text-dark-lightest">
+        <p
+          class="absolute w-full h-4 mt-6 overflow-hidden text-xs truncateThis text-dark-lightest whitespace-nowrap">
           {params.subTitle}
         </p>
       </div>
@@ -81,11 +82,11 @@ function cardAction() {
     <slot name="itemCardEnd">
       <div>
         <div
-          class="self-end text-right {params.endTextBigClass}"
+          class="self-end text-right pl-2 {params.endTextBigClass}"
           class:text-success="{!params.endTextBigClass}">
           <span>{params.endTextBig}</span>
         </div>
-        <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
+        <div class="self-end pl-2 text-xs text-dark-lightest whitespace-nowrap">
           <span>{params.endTextSmall}</span>
         </div>
       </div>

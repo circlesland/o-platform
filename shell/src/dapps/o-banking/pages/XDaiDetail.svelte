@@ -78,17 +78,13 @@ onMount(async () => {
     <ItemCard
       params="{{
         edgeless: false,
-        imageUrl: '/logos/xdai.png',
+        imageUrl: `/logos/xdai.png`,
         title: token.title,
         subTitle: token.address,
         truncateMain: true,
+        endTextBig: Number.parseFloat(token.balance).toFixed(2),
+        endTextSmall: '',
         noLink: true,
-      }}">
-      <div slot="itemCardEnd">
-        <div class="self-end text-right text-success">
-          <span>{Number.parseFloat(token.balance).toFixed(2)}</span>
-        </div>
-      </div>
-    </ItemCard>
+      }}" />
   {/each}
 </div>
