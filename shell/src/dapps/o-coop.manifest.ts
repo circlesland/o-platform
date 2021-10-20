@@ -2,12 +2,23 @@ import Organisations from "./o-coop/pages/Organisations.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import {createOrganisation} from "./o-coop/processes/createOrganisation";
+import {ContactsDappState} from "./o-contacts.manifest";
+import OrganisationDetail from "./o-coop/pages/OrganisationDetail.svelte";
 
 const index: Page<any, DappState> = {
   routeParts: [],
   component: Organisations,
   title: "List",
   type: "page",
+};
+
+export const profile: Page<any, ContactsDappState> = {
+  type: "page",
+  isSystem: true,
+  position: "modal",
+  routeParts: [":id"],
+  title: "Profile",
+  component: OrganisationDetail,
 };
 
 export interface DappState {
@@ -50,5 +61,5 @@ export const coop: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index],
+  routables: [index, profile],
 };

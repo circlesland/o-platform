@@ -14,6 +14,12 @@ export type Scalars = {
   Float: number;
 };
 
+export type AddMemberResult = {
+  __typename?: 'AddMemberResult';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
 export type AssetBalance = {
   __typename?: 'AssetBalance';
   token_address: Scalars['String'];
@@ -290,6 +296,7 @@ export type LogoutResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   acknowledge: Scalars['Boolean'];
+  addMember?: Maybe<AddMemberResult>;
   authenticateAt: DelegateAuthInit;
   claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
@@ -301,6 +308,7 @@ export type Mutation = {
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
+  removeMember?: Maybe<RemoveMemberResult>;
   requestSessionChallenge: Scalars['String'];
   requestUpdateSafe: RequestUpdateSafeResponse;
   sendMessage: SendMessageResult;
@@ -317,6 +325,12 @@ export type Mutation = {
 
 export type MutationAcknowledgeArgs = {
   until: Scalars['String'];
+};
+
+
+export type MutationAddMemberArgs = {
+  groupId: Scalars['Int'];
+  memberId: Scalars['Int'];
 };
 
 
@@ -352,6 +366,12 @@ export type MutationLockOfferArgs = {
 
 export type MutationProvePaymentArgs = {
   data: PaymentProof;
+};
+
+
+export type MutationRemoveMemberArgs = {
+  groupId: Scalars['Int'];
+  memberId: Scalars['Int'];
 };
 
 
@@ -452,7 +472,7 @@ export type Organisation = {
   createdAt: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
-  members: Array<ProfileOrOrganisation>;
+  members?: Maybe<Array<ProfileOrOrganisation>>;
   name: Scalars['String'];
   offers?: Maybe<Array<Offer>>;
   trustsYou?: Maybe<Scalars['Int']>;
@@ -559,6 +579,7 @@ export type Query = {
   myProfile?: Maybe<Profile>;
   offers: Array<Offer>;
   organisations: Array<Organisation>;
+  organisationsByAddress: Array<Organisation>;
   profilesById: Array<Profile>;
   profilesBySafeAddress: Array<Profile>;
   safeFundingTransaction?: Maybe<ProfileEvent>;
@@ -643,6 +664,11 @@ export type QueryOrganisationsArgs = {
 };
 
 
+export type QueryOrganisationsByAddressArgs = {
+  addresses: Array<Scalars['String']>;
+};
+
+
 export type QueryProfilesByIdArgs = {
   ids: Array<Scalars['Int']>;
 };
@@ -720,6 +746,12 @@ export type RedeemClaimedInvitationResult = {
   error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
   transactionHash?: Maybe<Scalars['String']>;
+};
+
+export type RemoveMemberResult = {
+  __typename?: 'RemoveMemberResult';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
 };
 
 export type RequestUpdateSafeInput = {
@@ -1789,6 +1821,23 @@ export type OrganisationsQueryVariables = Exact<{
 export type OrganisationsQuery = (
   { __typename?: 'Query' }
   & { organisations: Array<(
+    { __typename?: 'Organisation' }
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarMimeType' | 'avatarUrl'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'latitude' | 'longitude' | 'name' | 'population'>
+    )> }
+  )> }
+);
+
+export type OrganisationsByAddressQueryVariables = Exact<{
+  addresses: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type OrganisationsByAddressQuery = (
+  { __typename?: 'Query' }
+  & { organisationsByAddress: Array<(
     { __typename?: 'Organisation' }
     & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarMimeType' | 'avatarUrl'>
     & { city?: Maybe<(
@@ -3090,6 +3139,25 @@ export const OrganisationsDocument = gql`
   }
 }
     `;
+export const OrganisationsByAddressDocument = gql`
+    query organisationsByAddress($addresses: [String!]!) {
+  organisationsByAddress(addresses: $addresses) {
+    id
+    circlesAddress
+    createdAt
+    name
+    avatarMimeType
+    avatarUrl
+    city {
+      geonameid
+      latitude
+      longitude
+      name
+      population
+    }
+  }
+}
+    `;
 export const StatsDocument = gql`
     query stats {
   stats {
@@ -3379,6 +3447,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     organisations(variables?: OrganisationsQueryVariables): Promise<OrganisationsQuery> {
       return withWrapper(() => client.request<OrganisationsQuery>(print(OrganisationsDocument), variables));
+    },
+    organisationsByAddress(variables: OrganisationsByAddressQueryVariables): Promise<OrganisationsByAddressQuery> {
+      return withWrapper(() => client.request<OrganisationsByAddressQuery>(print(OrganisationsByAddressDocument), variables));
     },
     stats(variables?: StatsQueryVariables): Promise<StatsQuery> {
       return withWrapper(() => client.request<StatsQuery>(print(StatsDocument), variables));

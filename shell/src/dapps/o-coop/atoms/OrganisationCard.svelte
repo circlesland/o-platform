@@ -12,7 +12,7 @@ function loadDetailPage(path) {
 function goToProfile(e, path?: string) {
   if (!path) return;
   e.stopPropagation();
-  push(`#/friends/${path}`);
+  push(`#/coops/${path}`);
   return false;
 }
 </script>

@@ -866,6 +866,24 @@ query organisations($pagination: PaginationArgs) {
   }
 }
 
+query organisationsByAddress($addresses: [String!]!) {
+  organisationsByAddress(addresses: $addresses) {
+    id
+    circlesAddress
+    createdAt
+    name
+    avatarMimeType
+    avatarUrl
+    city {
+      geonameid
+      latitude
+      longitude
+      name
+      population
+    }
+  }
+}
+
 query stats {
   stats {
     cityRank

@@ -24,6 +24,11 @@ union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | Crc
 
 union ProfileOrOrganisation = Organisation | Profile
 
+type AddMemberResult {
+    error: String
+    success: Boolean!
+}
+
 type AssetBalance {
     token_address: String!
     token_balance: String!
@@ -242,6 +247,7 @@ type LogoutResponse {
 
 type Mutation {
     acknowledge(until: String!): Boolean!
+    addMember(groupId: Int!, memberId: Int!): AddMemberResult
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
@@ -253,6 +259,7 @@ type Mutation {
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
+    removeMember(groupId: Int!, memberId: Int!): RemoveMemberResult
     requestSessionChallenge(address: String!): String!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     sendMessage(content: String!, toSafeAddress: String!): SendMessageResult!
@@ -303,7 +310,7 @@ type Organisation {
     createdAt: String!
     description: String
     id: Int!
-    members: [ProfileOrOrganisation!]!
+    members: [ProfileOrOrganisation!]
     name: String!
     offers: [Offer!]
     trustsYou: Int
@@ -384,6 +391,7 @@ type Query {
     myProfile: Profile
     offers(query: QueryOfferInput!): [Offer!]!
     organisations(pagination: PaginationArgs): [Organisation!]!
+    organisationsByAddress(addresses: [String!]!): [Organisation!]!
     profilesById(ids: [Int!]!): [Profile!]!
     profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
     safeFundingTransaction: ProfileEvent
@@ -401,6 +409,11 @@ type RedeemClaimedInvitationResult {
     error: String
     success: Boolean!
     transactionHash: String
+}
+
+type RemoveMemberResult {
+    error: String
+    success: Boolean!
 }
 
 type RequestUpdateSafeResponse {
