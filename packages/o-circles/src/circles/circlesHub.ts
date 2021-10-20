@@ -89,6 +89,21 @@ export class CirclesHub extends Web3Contract {
       });
   }
 
+  async signupOrganisation(privateKey: string, safeProxy: GnosisSafeProxy) : Promise<ExecResult> {
+    const txData = this.contract.methods.organizationSignup().encodeABI();
+
+    return await safeProxy.execTransaction(
+      privateKey,
+      {
+        to: this.address,
+        data: txData,
+        value: new BN("0"),
+        refundReceiver: ZERO_ADDRESS,
+        gasToken: ZERO_ADDRESS,
+        operation: SafeOps.CALL
+      });
+  }
+
   async setTrust(privateKey: string, safeProxy: GnosisSafeProxy, to: string, trustPercentage: BN) : Promise<ExecResult> {
     const txData = this.contract.methods.trust(to, trustPercentage).encodeABI();
 

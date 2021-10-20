@@ -1,12 +1,9 @@
 <script lang="ts">
 import BankingHeader from "../atoms/BankingHeader.svelte";
-import { transfer } from "../processes/transfer";
 import TransactionCard from "../atoms/TransactionCard.svelte";
-import TopNav from "src/shared/atoms/TopNav.svelte";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { onMount } from "svelte";
 import {
   ProfileEvent,
   TransactionTimelineDocument,

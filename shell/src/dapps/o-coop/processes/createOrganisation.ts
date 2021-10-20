@@ -9,9 +9,25 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import * as yup from "yup";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptCity } from "../../../shared/api/promptCity";
+import {TagsDocument} from "../../o-marketplace/data/api/types";
+import {Profile, UpsertOrganisationDocument} from "../../../shared/api/data/types";
+import {number} from "yup";
+import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
+import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import {me} from "../../../shared/stores/me";
+import {unpadBuffer} from "ethereumjs-util";
 
 export type CreateOrganisationContextData = {
-  successAction: (data:CreateOrganisationContextData) => void
+  successAction: (data:CreateOrganisationContextData) => void,
+  id: undefined,
+  avatarMimeType: "image/png",
+  avatarUrl: undefined,
+  circlesAddress: undefined,
+  cityGeonameid: undefined,
+  description: undefined,
+  name: undefined
 };
 
 export type CreateOrganisationContext = ProcessContext<CreateOrganisationContextData>;
@@ -27,7 +43,7 @@ const processDefinition = (processId: string) =>
 
       name: prompt<CreateOrganisationContext, any>({
         id: "name",
-        field: "firstName",
+        field: "name",
         component: TextEditor,
         params: {
           view: {
@@ -98,14 +114,55 @@ const processDefinition = (processId: string) =>
         navigation: {
           next: "#upsertOrganisation",
           previous: "#dream",
-          canSkip: () => true,
+          canSkip: () => true
         },
       }),
+      deployOrganisation: {
+        id: "deployOrganisation",
+        invoke: {
+          src: async (context) => {
+            const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);
+            const privateKey = sessionStorage.getItem("circlesKey");
+            if (!privateKey)
+              throw new Error(`The private key is not unlocked`);
+
+            let $me:Profile = null;
+            const unsub = me.subscribe(current => {
+              $me = current;
+            });
+            unsub();
+            if (!$me.circlesAddress) {
+              throw new Error(`You need a fully set-up circles account to create an organisation.`)
+            }
+
+            const safeProxy = new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress);
+            const receipt = await (await hub.signupOrganisation(privateKey, safeProxy)).toPromise();
+            console.log(receipt);
+          }
+        }
+      },
       upsertOrganisation: {
         id: "upsertOrganisation",
         invoke: {
           src: async (context) => {
             // return result.data.upsertProfile;
+            const organisation = {
+              avatarMimeType: context.data.avatarMimeType,
+              avatarUrl: context.data.avatarUrl,
+              circlesAddress: context.data.circlesAddress,
+              cityGeonameid: context.data.cityGeonameid,
+              description: context.data.description,
+              name: context.data.name,
+              id: context.data.id
+            };
+
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.mutate({
+              mutation: UpsertOrganisationDocument,
+              variables: {
+                organisation: organisation
+              }
+            });
           },
           onDone: "#success",
           onError: "#error",
@@ -114,19 +171,13 @@ const processDefinition = (processId: string) =>
       success: {
         type: "final",
         id: "success",
+        /*
         entry: (context) => {
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
-        },
-        data: (context, event: any) => {
-          //console.log(`enter: upsertIdentity.success`, context.data);
-          window.o.publishEvent(<PlatformEvent>{
-            type: "shell.authenticated",
-            profile: event.data,
-          });
-          return event.data;
-        },
+        }
+         */
       },
     },
   });

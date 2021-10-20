@@ -292,3 +292,30 @@ mutation upsertProfile(
     status
   }
 }
+
+mutation upsertOrganisation ($organisation: UpsertOrganisationInput!) {
+  upsertOrganisation(organisation: $organisation) {
+    success
+    error
+    organisation {
+      id
+      avatarMimeType
+      avatarUrl
+      circlesAddress
+      circlesSafeOwner
+      cityGeonameid
+      city {
+        geonameid
+        country
+        name
+        latitude
+        longitude
+        population
+        feature_code
+      }
+      createdAt
+      description
+      name
+    }
+  }
+}

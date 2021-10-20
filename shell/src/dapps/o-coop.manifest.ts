@@ -1,6 +1,7 @@
 import Organisations from "./o-coop/pages/Organisations.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import {createOrganisation} from "./o-coop/processes/createOrganisation";
 
 const index: Page<any, DappState> = {
   routeParts: [],
@@ -34,7 +35,8 @@ export const coop: DappManifest<DappState> = {
           icon: "createOrganisation",
           title: "Create new organisation",
           action: async () => {
-            alert("Do it!");
+            //alert("Do it!");//
+            window.o.runProcess(createOrganisation, {}, {});
           },
         },
       ];

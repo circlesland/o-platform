@@ -237,4 +237,5 @@ let _routes = {
 </script>
 
 <SvelteToast />
+
 <Router routes="{_routes}" />

@@ -1130,6 +1130,27 @@ export type UpsertProfileMutation = (
   ) }
 );
 
+export type UpsertOrganisationMutationVariables = Exact<{
+  organisation: UpsertOrganisationInput;
+}>;
+
+
+export type UpsertOrganisationMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertOrganisation: (
+    { __typename?: 'CreateOrganisationResult' }
+    & Pick<CreateOrganisationResult, 'success' | 'error'>
+    & { organisation?: Maybe<(
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'avatarMimeType' | 'avatarUrl' | 'circlesAddress' | 'circlesSafeOwner' | 'cityGeonameid' | 'createdAt' | 'description' | 'name'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
+      )> }
+    )> }
+  ) }
+);
+
 export type SessionInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2168,6 +2189,34 @@ export const UpsertProfileDocument = gql`
       feature_code
     }
     status
+  }
+}
+    `;
+export const UpsertOrganisationDocument = gql`
+    mutation upsertOrganisation($organisation: UpsertOrganisationInput!) {
+  upsertOrganisation(organisation: $organisation) {
+    success
+    error
+    organisation {
+      id
+      avatarMimeType
+      avatarUrl
+      circlesAddress
+      circlesSafeOwner
+      cityGeonameid
+      city {
+        geonameid
+        country
+        name
+        latitude
+        longitude
+        population
+        feature_code
+      }
+      createdAt
+      description
+      name
+    }
   }
 }
     `;
@@ -3240,6 +3289,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     upsertProfile(variables: UpsertProfileMutationVariables): Promise<UpsertProfileMutation> {
       return withWrapper(() => client.request<UpsertProfileMutation>(print(UpsertProfileDocument), variables));
+    },
+    upsertOrganisation(variables: UpsertOrganisationMutationVariables): Promise<UpsertOrganisationMutation> {
+      return withWrapper(() => client.request<UpsertOrganisationMutation>(print(UpsertOrganisationDocument), variables));
     },
     sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
       return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));
