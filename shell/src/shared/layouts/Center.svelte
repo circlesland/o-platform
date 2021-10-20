@@ -42,13 +42,12 @@ const initBar = (bar) => {
         eventDispatcher('clickedOutside', {
           position: 'left',
         })}">
-      <div
-        data-simplebar
-        id="modalScrollable"
-        class="modalAsideScrollableContent rounded-xl">
-        <div class="w-full m-auto">
-          <slot />
-        </div>
+      <div id="modalScrollable" class="modalAsideScrollableContent rounded-xl">
+        <SvelteSimplebar init="{initBar}">
+          <div class="w-full m-auto">
+            <slot />
+          </div>
+        </SvelteSimplebar>
       </div>
     </div>
   </div>
