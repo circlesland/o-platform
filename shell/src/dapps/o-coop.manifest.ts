@@ -4,6 +4,7 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import {createOrganisation} from "./o-coop/processes/createOrganisation";
 import {ContactsDappState} from "./o-contacts.manifest";
 import OrganisationDetail from "./o-coop/pages/OrganisationDetail.svelte";
+import {addMember} from "./o-coop/processes/addMember";
 
 const index: Page<any, DappState> = {
   routeParts: [],
@@ -48,6 +49,15 @@ export const coop: DappManifest<DappState> = {
           action: async () => {
             //alert("Do it!");//
             window.o.runProcess(createOrganisation, {}, {});
+          },
+        },
+        {
+          key: "addMember",
+          icon: "addMember",
+          title: "Add a member",
+          action: async () => {
+            //alert("Do it!");//
+            window.o.runProcess(addMember, {}, {});
           },
         },
       ];

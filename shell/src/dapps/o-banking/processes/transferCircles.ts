@@ -5,12 +5,9 @@ import {createMachine} from "xstate";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {BN} from "ethereumjs-util";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import PaymentPath from "../../../shared/molecules/PaymentPath.svelte";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
-import {requestPathToRecipient} from "../services/requestPathToRecipient";
-import {show} from "@o-platform/o-process/dist/actions/show";
 import {Subscription} from "rxjs";
 import {TagTransactionDocument} from "../../../shared/api/data/types";
 

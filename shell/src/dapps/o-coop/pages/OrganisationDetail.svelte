@@ -12,16 +12,17 @@
   import {loadOrganisationsBySafeAddress} from "../../../shared/api/loadOrganisationsBySafeAddress";
   import {getCountryName} from "../../../shared/countries";
   import {onMount} from "svelte";
+  import ContactCard from "../../o-contacts/atoms/ContactCard.svelte";
 
   export let id: string;
   export let jumplist: Jumplist<any, any> | undefined;
   export let runtimeDapp: RuntimeDapp<any>;
 
   let isLoading = true;
-  let profile:Organisation;
+  let profile: Organisation;
   let isMe: boolean;
-  let name:string;
-  let isEditable:boolean = false;
+  let name: string;
+  let isEditable: boolean = false;
 
   async function loadProfile() {
     if (!id) {
@@ -42,7 +43,7 @@
 
     isMe = profile.id == ($me ? $me.id : 0);
     isLoading = false;
-    name = profile.circlesAddress;
+    name = profile.name ?? profile.circlesAddress;
   }
 
   async function setOrganisation(apiProfile: Organisation) {
@@ -77,11 +78,11 @@
   onMount(() => loadProfile());
 
   function editProfile() {
-    
+
   }
 
   async function getJumplist() {
-    const jumpListItems = await jumplist.items({ id: id }, runtimeDapp);
+    const jumpListItems = await jumplist.items({id: id}, runtimeDapp);
     return jumpListItems;
   }
 
@@ -108,7 +109,7 @@
 
         {#if profile && profile.circlesAddress}
           <div class="mt-4 text-3xl">
-            {profile.displayName ? profile.displayName : profile.circlesAddress}
+            {profile.name ? profile.name : profile.circlesAddress}
           </div>
         {/if}
         {#if profile && profile.city}
@@ -157,10 +158,10 @@
             -->
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
-                <div class="text-left text-2xs text-dark-lightest">Passion</div>
+                <div class="text-left text-2xs text-dark-lightest">Description</div>
 
                 <div class="flex items-center w-full text-lg">
-                  {#if profile && profile.dream}{profile.dream}{/if}
+                  {#if profile && profile.description}{profile.description}{/if}
                   {#if isEditable}
                     <button
                             class="link link-primary text-primary text-2xs"
@@ -223,28 +224,6 @@
             </section> -->
           {/if}
 
-          {#if !isMe && (profile.trusting || profile.trustedBy)}
-            <section class="justify-center">
-              <div class="flex flex-col w-full py-2 space-y-1">
-                <div class="mb-1 text-left text-2xs text-dark-lightest">
-                  Trust
-                </div>
-
-                <div class="flex items-center w-full">
-                  {#if profile.trusting && profile.trustedBy}
-                    You are trusting {profile.displayName} {profile.trusting}%
-                    <br />
-                    {profile.displayName} is trusting you {profile.trustedBy}%
-                  {:else if profile.trusting && !profile.trustedBy}
-                    You are trusting {profile.displayName} {profile.trusting}%
-                  {:else if !profile.trusting && profile.trustedBy}
-                    {profile.displayName} is trusting you {profile.trustedBy}%
-                  {/if}
-                </div>
-              </div>
-            </section>
-          {/if}
-
           {#if !isMe && profile.circlesAddress}
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
@@ -258,6 +237,21 @@
               </div>
             </section>
           {/if}
+
+
+          <section class="justify-center">
+            <div class="flex flex-col w-full pt-2 space-y-1">
+              <div class="mb-1 text-left text-2xs text-dark-lightest">
+                Members
+              </div>
+
+              <div class="flex items-center w-full text-2xs">
+                {#each profile.members as member}
+                  <ContactCard contact={{contactAddressProfile: member}} />
+                {/each}
+              </div>
+            </div>
+          </section>
         </div>
       </div>
 

@@ -1062,6 +1062,34 @@ export type SendMessageMutation = (
   ) }
 );
 
+export type AddMemberMutationVariables = Exact<{
+  groupId: Scalars['Int'];
+  memberId: Scalars['Int'];
+}>;
+
+
+export type AddMemberMutation = (
+  { __typename?: 'Mutation' }
+  & { addMember?: Maybe<(
+    { __typename?: 'AddMemberResult' }
+    & Pick<AddMemberResult, 'error' | 'success'>
+  )> }
+);
+
+export type RemoveMemberMutationVariables = Exact<{
+  groupId: Scalars['Int'];
+  memberId: Scalars['Int'];
+}>;
+
+
+export type RemoveMemberMutation = (
+  { __typename?: 'Mutation' }
+  & { removeMember?: Maybe<(
+    { __typename?: 'RemoveMemberResult' }
+    & Pick<RemoveMemberResult, 'error' | 'success'>
+  )> }
+);
+
 export type RedeemClaimedInvitationMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1843,7 +1871,21 @@ export type OrganisationsByAddressQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'latitude' | 'longitude' | 'name' | 'population'>
-    )> }
+    )>, members?: Maybe<Array<(
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarMimeType' | 'avatarUrl'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'latitude' | 'longitude' | 'name' | 'population'>
+      )> }
+    ) | (
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName' | 'dream' | 'country' | 'cityGeonameid'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'country' | 'name'>
+      )> }
+    )>> }
   )> }
 );
 
@@ -2158,6 +2200,22 @@ export const SendMessageDocument = gql`
         }
       }
     }
+  }
+}
+    `;
+export const AddMemberDocument = gql`
+    mutation addMember($groupId: Int!, $memberId: Int!) {
+  addMember(groupId: $groupId, memberId: $memberId) {
+    error
+    success
+  }
+}
+    `;
+export const RemoveMemberDocument = gql`
+    mutation removeMember($groupId: Int!, $memberId: Int!) {
+  removeMember(groupId: $groupId, memberId: $memberId) {
+    error
+    success
   }
 }
     `;
@@ -3155,6 +3213,39 @@ export const OrganisationsByAddressDocument = gql`
       name
       population
     }
+    members {
+      ... on Organisation {
+        id
+        circlesAddress
+        createdAt
+        name
+        avatarMimeType
+        avatarUrl
+        city {
+          geonameid
+          latitude
+          longitude
+          name
+          population
+        }
+      }
+      ... on Profile {
+        id
+        circlesSafeOwner
+        circlesAddress
+        avatarUrl
+        firstName
+        lastName
+        dream
+        country
+        cityGeonameid
+        city {
+          geonameid
+          country
+          name
+        }
+      }
+    }
   }
 }
     `;
@@ -3339,6 +3430,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     sendMessage(variables: SendMessageMutationVariables): Promise<SendMessageMutation> {
       return withWrapper(() => client.request<SendMessageMutation>(print(SendMessageDocument), variables));
+    },
+    addMember(variables: AddMemberMutationVariables): Promise<AddMemberMutation> {
+      return withWrapper(() => client.request<AddMemberMutation>(print(AddMemberDocument), variables));
+    },
+    removeMember(variables: RemoveMemberMutationVariables): Promise<RemoveMemberMutation> {
+      return withWrapper(() => client.request<RemoveMemberMutation>(print(RemoveMemberDocument), variables));
     },
     redeemClaimedInvitation(variables?: RedeemClaimedInvitationMutationVariables): Promise<RedeemClaimedInvitationMutation> {
       return withWrapper(() => client.request<RedeemClaimedInvitationMutation>(print(RedeemClaimedInvitationDocument), variables));

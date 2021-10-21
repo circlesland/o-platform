@@ -189,6 +189,19 @@ mutation sendMessage($toSafeAddress: String!, $content: String!) {
   }
 }
 
+mutation addMember($groupId: Int! $memberId: Int!) {
+  addMember(groupId: $groupId memberId: $memberId) {
+    error
+    success
+  }
+}
+mutation removeMember($groupId: Int! $memberId: Int!) {
+  removeMember(groupId: $groupId memberId: $memberId){
+    error
+    success
+  }
+}
+
 mutation redeemClaimedInvitation {
   redeemClaimedInvitation {
     success

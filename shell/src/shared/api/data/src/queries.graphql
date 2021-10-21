@@ -881,6 +881,39 @@ query organisationsByAddress($addresses: [String!]!) {
       name
       population
     }
+    members {
+      ... on Organisation {
+        id
+        circlesAddress
+        createdAt
+        name
+        avatarMimeType
+        avatarUrl
+        city {
+          geonameid
+          latitude
+          longitude
+          name
+          population
+        }
+      }
+      ... on Profile {
+        id
+        circlesSafeOwner
+        circlesAddress
+        avatarUrl
+        firstName
+        lastName
+        dream
+        country
+        cityGeonameid
+        city {
+          geonameid
+          country
+          name
+        }
+      }
+    }
   }
 }
 
