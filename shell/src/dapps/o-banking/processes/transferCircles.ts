@@ -18,6 +18,7 @@ export type TransferCirclesContextData = {
   amount: string;
   privateKey: string;
   transitivePath?: TransitivePath;
+  receipt: any;
   pathToRecipient?: {
     tokenOwners: string[];
     sources: string[];
@@ -26,11 +27,7 @@ export type TransferCirclesContextData = {
   };
 };
 
-/**
- * This is the context on which the process will work.
- * The actual fields are defined above in the 'AuthenticateContextData' type.
- * The 'AuthenticateContextData' type is also the return value of the process (see bottom for the signature).
- */
+
 export type TransferCirclesContext = ProcessContext<TransferCirclesContextData>;
 
 /**
@@ -60,36 +57,8 @@ const processDefinition = (processId: string) =>
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<TransferCirclesContext, any>("error"),
-      /*
-      requestPathToRecipient: {
-        id: "requestPathToRecipient",
-        invoke: {
-          src: async (context) => {
-            context.data.transitivePath = await requestPathToRecipient(context);
-          },
-          onDone: "#transferCircles",
-          onError: "#error"
-        }
-      },
-      */
       transferCircles: {
         id: "transferCircles",
-        /*entry: <any>show({
-          field: "__",
-          component: PaymentPath,
-          params: (context) => {
-            return {
-              hideNav: true,
-              label: "Transferring Circles ..",
-              transfers: context.data.transitivePath.transfers
-            }
-          },
-          navigation: {
-            canGoBack: () => false,
-            canSkip: () => false,
-          }
-        }),
-         */
         invoke: {
           src: async (context) => {
             const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
@@ -142,7 +111,7 @@ const processDefinition = (processId: string) =>
                 });
               });
 
-              await transferTroughResult.toPromise();
+              context.data.receipt = await (await transferTroughResult.toPromise());
             } catch (e) {
               console.error(e);
               throw e;
