@@ -27,6 +27,7 @@ import {
   displayCirclesAmount,
 } from "../../../shared/functions/displayCirclesAmount";
 import TransferSummary__SvelteComponent_ from "../atoms/TransferSummary.svelte";
+import {TransactionReceipt} from "web3-core";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -34,6 +35,7 @@ export type TransferContextData = {
   recipientProfileId?: number;
   recipientProfile?: Profile;
   transitivePath: TransitivePath;
+  receipt:TransactionReceipt;
   message?: string;
   tokens?: {
     currency: string;
@@ -478,6 +480,7 @@ const processDefinition = (processId: string) =>
             target: "#showSuccess",
             actions: ((context, event) => {
               context.data.transitivePath = event.data.transitivePath;
+              context.data.receipt = event.data.receipt;
               //console.log("Transfer CRC returned:", event.data);
             })
           },
@@ -504,7 +507,12 @@ const processDefinition = (processId: string) =>
             messages: {},
             dirtyFlags: {},
           },
-          onDone: "#showSuccess",
+          onDone: {
+            target: "#showSuccess",
+            actions: ((context, event) => {
+              context.data.receipt = event.data.receipt;
+            })
+          },
           onError: "#error",
         },
       },

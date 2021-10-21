@@ -7,12 +7,14 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { BN } from "ethereumjs-util";
 import {CreateTagInput} from "../../../shared/api/data/types";
+import {TransactionReceipt} from "web3-core";
 
 export type TransferXdaiContextData = {
   safeAddress: string;
   recipientAddress: string;
   amount: string;
   privateKey: string;
+  receipt:TransactionReceipt;
   message?:string;
 };
 
@@ -85,12 +87,12 @@ const processDefinition = (processId: string) =>
         },
       },
       success: {
-        id: "success",
-        type: "final",
+        id: 'success',
+        type: 'final',
         data: (context, event: PlatformEvent) => {
-          return "yeah!";
-        },
-      },
+          return context.data;
+        }
+      }
     },
   });
 
