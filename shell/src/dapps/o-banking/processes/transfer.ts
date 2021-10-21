@@ -232,6 +232,7 @@ const processDefinition = (processId: string) =>
                 },
               });
               context.data.maxFlows["crc"] = flow.flow;
+              context.data.transitivePath = flow;
               resolve();
             });
             const p2 = await RpcGateway.trigger(async (web3) => {
@@ -467,6 +468,7 @@ const processDefinition = (processId: string) =>
                 ),
                 privateKey: sessionStorage.getItem("circlesKey"),
                 message: context.data.message,
+                transitivePath: context.data.transitivePath
               };
             },
             messages: {},

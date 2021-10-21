@@ -58,12 +58,12 @@ export type TransitivePath = {
 const processDefinition = (processId: string) =>
   createMachine<TransferCirclesContext, any>({
     id: `${processId}:transferCircles`,
-    initial: "requestPathToRecipient",
+    initial: "transferCircles",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<TransferCirclesContext, any>("error"),
-
+      /*
       requestPathToRecipient: {
         id: "requestPathToRecipient",
         invoke: {
@@ -74,9 +74,10 @@ const processDefinition = (processId: string) =>
           onError: "#error"
         }
       },
+      */
       transferCircles: {
         id: "transferCircles",
-        entry: <any>show({
+        /*entry: <any>show({
           field: "__",
           component: PaymentPath,
           params: (context) => {
@@ -91,6 +92,7 @@ const processDefinition = (processId: string) =>
             canSkip: () => false,
           }
         }),
+         */
         invoke: {
           src: async (context) => {
             const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
