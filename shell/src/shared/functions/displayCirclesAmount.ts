@@ -37,6 +37,8 @@ export function convertTimeCirclesToCircles(amount: number, date: string) {
   const dayInCurrentCycle = Math.ceil(daysSinceDay0Unix % 365.25);
   const yearsSince = (transactionDateUnix - day0Unix) / oneYearInSeconds;
   const perDayValue = getBaseCirclesPerDayValue(yearsSince);
+
+  // console.log("DATE: ", date);
   // console.log("YEARS: ", yearsSinceDay0Unix);
   // console.log("\nAmount: ", amount);
   // console.log("\nDay in Current Cycle: ", dayInCurrentCycle);

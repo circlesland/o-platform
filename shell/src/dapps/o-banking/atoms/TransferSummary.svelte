@@ -3,7 +3,10 @@ import { onMount } from "svelte";
 import Time from "svelte-time";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
-import { displayCirclesAmount } from "../../../shared/functions/displayCirclesAmount";
+import {
+  displayCirclesAmount,
+  convertTimeCirclesToCircles,
+} from "../../../shared/functions/displayCirclesAmount";
 import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import {
   CrcHubTransfer,
@@ -13,6 +16,7 @@ import {
 import { loadProfile } from "../../../shared/functions/loadProfile";
 
 import { now } from "svelte/internal";
+import XDaiDetail from "../pages/XDaiDetail.svelte";
 
 export let context: any;
 let _context: any;
@@ -28,7 +32,7 @@ console.log("Params: ", context);
 onMount(async () => {
   console.log(
     "loadProfile2: ",
-    (profile = await loadProfile(context.data.safeAddress, $me))
+    (profile = await loadProfile(context.data.recipientAddress, $me))
   );
 });
 
@@ -46,12 +50,7 @@ let now = new Date();
     class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
     <div>
       <span class="inline-block text-6xl font-heading {classes}">
-        -{displayCirclesAmount(
-          _context.data.tokens ? _context.data.tokens.amount : "0",
-          JSON.stringify(now),
-          true,
-          $me.displayTimeCircles || $me.displayTimeCircles === undefined
-        )}
+        {_context.data.tokens.amount}
 
         <svg
           class="inline w-10 h-10 -ml-2"
@@ -83,11 +82,11 @@ let now = new Date();
       </span>
     </div>
 
-    <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />
+    <UserImage profile="{profile.profile}" size="{36}" gradientRing="{true}" />
 
     <div>
       <span class="mt-4 text-xl">
-        to {profile.firstName + " " + profile.lastName}
+        to {profile.profile.firstName + " " + profile.profile.lastName}
       </span>
     </div>
     <div class="text-dark-lightest">
@@ -96,7 +95,7 @@ let now = new Date();
         : ""}
     </div>
 
-    {#if path && path.transfers}
+    {#if _context.data && _context.data.transitivePath}
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
           Payment Path
@@ -120,19 +119,19 @@ let now = new Date();
     </div>
 
     <div class="flex flex-col w-full space-y-1">
-      <div class="mb-1 text-left text-2xs text-dark-lightest">
-        Amount Circles
-      </div>
+      <div class="mb-1 text-left text-2xs text-dark-lightest">Amount</div>
 
       <div class="flex items-center w-full">
         <div class="text-left ">
-          -{displayCirclesAmount(
-            _context.data.tokens ? _context.data.tokens.amount : "0",
-            JSON.stringify(now),
-            false,
-            false
-          )}
-          Circles
+          {#if _context.data.tokens.currency == "crc"}
+            {convertTimeCirclesToCircles(
+              _context.data.tokens ? _context.data.tokens.amount : "0",
+              null
+            )}
+            Circles
+          {:else}
+            {_context.data.tokens ? _context.data.tokens.amount : "0"} xDai
+          {/if}
         </div>
       </div>
     </div>
@@ -141,15 +140,17 @@ let now = new Date();
       <div class="mb-1 text-left text-2xs text-dark-lightest">To</div>
 
       <div class="flex items-center w-full">
-        <div class="text-left break-all">{profile.circlesAddress}</div>
+        <div class="text-left break-all">{profile.profile.circlesAddress}</div>
       </div>
     </div>
 
-    <!-- <div class="flex flex-col w-full space-y-1">
+    <div class="flex flex-col w-full space-y-1">
       <div class="mb-1 text-left text-2xs text-dark-lightest">Block</div>
 
       <div class="flex items-center w-full">
-        <div class="text-left break-all">{transfer.block_number}</div>
+        <div class="text-left break-all">
+          {_context.data.receipt ? _context.data.receipt.blockNumber : ""}
+        </div>
       </div>
     </div>
 
@@ -160,9 +161,9 @@ let now = new Date();
 
       <div class="flex items-center w-full text-primarydark">
         <div class="text-left break-all">
-          {transfer.transaction_hash ? transfer.transaction_hash : ""}
+          {_context.data.receipt ? _context.data.receipt.transactionHash : ""}
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 {/if}

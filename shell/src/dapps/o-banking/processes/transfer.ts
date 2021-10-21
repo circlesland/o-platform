@@ -26,7 +26,7 @@ import {
   convertTimeCirclesToCircles,
   displayCirclesAmount,
 } from "../../../shared/functions/displayCirclesAmount";
-import {TransactionReceipt} from "web3-core";
+import { TransactionReceipt } from "web3-core";
 import TransferSummary from "../atoms/TransferSummary.svelte";
 
 export type TransferContextData = {
@@ -35,7 +35,7 @@ export type TransferContextData = {
   recipientProfileId?: number;
   recipientProfile?: Profile;
   transitivePath: TransitivePath;
-  receipt:TransactionReceipt;
+  receipt: TransactionReceipt;
   message?: string;
   tokens?: {
     currency: string;
@@ -470,7 +470,7 @@ const processDefinition = (processId: string) =>
                 ),
                 privateKey: sessionStorage.getItem("circlesKey"),
                 message: context.data.message,
-                transitivePath: context.data.transitivePath
+                transitivePath: context.data.transitivePath,
               };
             },
             messages: {},
@@ -480,6 +480,7 @@ const processDefinition = (processId: string) =>
             target: "#showSuccess",
             actions: (context, event) => {
               context.data.transitivePath = event.data.transitivePath;
+              context.data.receipt = event.data.receipt;
               console.log("Transfer CRC returned:", event.data);
             },
           },
@@ -508,9 +509,9 @@ const processDefinition = (processId: string) =>
           },
           onDone: {
             target: "#showSuccess",
-            actions: ((context, event) => {
+            actions: (context, event) => {
               context.data.receipt = event.data.receipt;
-            })
+            },
           },
           onError: "#error",
         },
@@ -518,6 +519,9 @@ const processDefinition = (processId: string) =>
       showSuccess: prompt({
         id: "showSuccess",
         field: "__",
+        entry: (context) => {
+          context.dirtyFlags = {};
+        },
         component: TransferSummary,
         params: {
           view: editorContent.success,
