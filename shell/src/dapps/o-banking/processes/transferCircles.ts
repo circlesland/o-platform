@@ -10,6 +10,7 @@ import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {Subscription} from "rxjs";
 import {TagTransactionDocument} from "../../../shared/api/data/types";
+import type {TransactionReceipt} from "web3-core";
 
 export type TransferCirclesContextData = {
   safeAddress: string;
@@ -18,7 +19,7 @@ export type TransferCirclesContextData = {
   amount: string;
   privateKey: string;
   transitivePath?: TransitivePath;
-  receipt: any;
+  receipt:TransactionReceipt;
   pathToRecipient?: {
     tokenOwners: string[];
     sources: string[];
