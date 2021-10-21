@@ -7,7 +7,7 @@ import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import CurrencyTransfer from "@o-platform/o-editors/src/CurrencyTransfer.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transferXdai } from "./transferXdai";
-import {transferCircles, TransitivePath} from "./transferCircles";
+import { transferCircles, TransitivePath } from "./transferCircles";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
@@ -26,8 +26,8 @@ import {
   convertTimeCirclesToCircles,
   displayCirclesAmount,
 } from "../../../shared/functions/displayCirclesAmount";
-import TransferSummary__SvelteComponent_ from "../atoms/TransferSummary.svelte";
 import {TransactionReceipt} from "web3-core";
+import TransferSummary from "../atoms/TransferSummary.svelte";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -385,7 +385,7 @@ const processDefinition = (processId: string) =>
                 to 
                 </span>
                 <div class=" self-center justify-self-center text-center mt-4">
-                  <div class="w-36 h-36 rounded-full mb-4">
+                  <div class="w-36 h-36 rounded-full mb-4 mx-auto">
                     <img
                       class="rounded-full self-center "
                       src=${toAvatarUrl}
@@ -478,11 +478,10 @@ const processDefinition = (processId: string) =>
           },
           onDone: {
             target: "#showSuccess",
-            actions: ((context, event) => {
+            actions: (context, event) => {
               context.data.transitivePath = event.data.transitivePath;
-              context.data.receipt = event.data.receipt;
-              //console.log("Transfer CRC returned:", event.data);
-            })
+              console.log("Transfer CRC returned:", event.data);
+            },
           },
           onError: "#error",
         },
@@ -519,7 +518,7 @@ const processDefinition = (processId: string) =>
       showSuccess: prompt({
         id: "showSuccess",
         field: "__",
-        component: HtmlViewer,
+        component: TransferSummary,
         params: {
           view: editorContent.success,
           html: () => "",

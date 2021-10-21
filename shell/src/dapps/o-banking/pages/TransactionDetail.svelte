@@ -6,6 +6,7 @@ import {
   TransactionByHashDocument,
 } from "../../../shared/api/data/types";
 import TransferSummary from "../atoms/TransferSummary.svelte";
+import { loadProfile } from "../../../shared/functions/loadProfile";
 
 export let transactionHash: string;
 
@@ -32,6 +33,9 @@ onMount(async () => {
   if (timeline.data.eventByTransactionHash.length > 0) {
     transfer = timeline.data.eventByTransactionHash[0];
   }
+
+  console.log("transfer: ", transfer);
+  console.log("loadProfile: ", await loadProfile(transfer.safe_address, $me));
 });
 
 // function openDetail(transfer: ProfileEvent) {
@@ -53,5 +57,5 @@ onMount(async () => {
 </script>
 
 {#if transfer}
-  <TransferSummary transfer="{transfer}" />
+  <!-- <TransferSummary transfer="{transfer}" /> -->
 {/if}

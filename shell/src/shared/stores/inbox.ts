@@ -37,7 +37,10 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
           return;
         }
 
-        if ((<any>event).type == "blockchain_event" || (<any>event).type == "new_message") {
+        if (
+          (<any>event).type == "blockchain_event" ||
+          (<any>event).type == "new_message"
+        ) {
           queryEvents().then((e) => {
             events = e;
             events = events.filter((o) => o.type != "eth_transfer");
