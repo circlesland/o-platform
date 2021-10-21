@@ -7,7 +7,7 @@ import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import CurrencyTransfer from "@o-platform/o-editors/src/CurrencyTransfer.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transferXdai } from "./transferXdai";
-import { transferCircles } from "./transferCircles";
+import {transferCircles, TransitivePath} from "./transferCircles";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
@@ -33,6 +33,7 @@ export type TransferContextData = {
   recipientAddress?: string;
   recipientProfileId?: number;
   recipientProfile?: Profile;
+  transitivePath: TransitivePath;
   message?: string;
   tokens?: {
     currency: string;
@@ -471,7 +472,13 @@ const processDefinition = (processId: string) =>
             messages: {},
             dirtyFlags: {},
           },
-          onDone: "#showSuccess",
+          onDone: {
+            target: "#showSuccess",
+            actions: ((context, event) => {
+              context.data.transitivePath = event.data.transitivePath;
+              //console.log("Transfer CRC returned:", event.data);
+            })
+          },
           onError: "#error",
         },
       },
