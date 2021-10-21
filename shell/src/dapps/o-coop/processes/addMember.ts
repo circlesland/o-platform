@@ -4,8 +4,8 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import {show} from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
-import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
-import {AddMemberDocument, Profile, ProfilesDocument} from "../../../shared/api/data/types";
+import {AddMemberDocument} from "../../../shared/api/data/types";
+import {promptProfileId} from "../../../shared/api/promptProfileId";
 
 export type AddMemberContextData = {
   successAction: (data:AddMemberContextData) => void,
@@ -24,7 +24,7 @@ const processDefinition = (processId: string) =>
       // TODO: Check if this works as intended
       ...fatalError<AddMemberContext, any>("error"),
 
-      memberId: promptCirclesSafe<AddMemberContext, any>({
+      memberId: promptProfileId<AddMemberContext, any>({
         field: "memberId",
         onlyWhenDirty: false,
         params: {
@@ -49,7 +49,7 @@ const processDefinition = (processId: string) =>
             const result = await apiClient.mutate({
               mutation: AddMemberDocument,
               variables: {
-                groupId: 0,
+                groupId: context.data.groupId,
                 memberId: context.data.memberId
               },
             });

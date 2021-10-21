@@ -57,7 +57,9 @@ export const coop: DappManifest<DappState> = {
           title: "Add a member",
           action: async () => {
             //alert("Do it!");//
-            window.o.runProcess(addMember, {}, {});
+            window.o.runProcess(addMember, {
+              groupId: params.id
+            }, {});
           },
         },
       ];

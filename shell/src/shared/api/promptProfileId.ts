@@ -51,18 +51,18 @@ export function promptProfileId<
     id: spec.id ?? field.name,
     field: spec.field,
     component: DropdownSelectEditor,
-    params: <DropdownSelectorParams<TContext, Profile, string>>{
+    params: <DropdownSelectorParams<TContext, Profile, number>>{
       allowAlternativeInput: true,
       view: spec.params.view,
       getKey: (profile) => {
-        return profile.circlesAddress;
+        return profile.id;
       },
-      keyProperty: "circlesAddress",
+      keyProperty: "id",
       itemTemplate: DropDownProfile,
       getLabel: (profile) =>
         `${profile.firstName} ${profile.lastName ? profile.lastName : ""}`,
       choices: {
-        byKey: async (key: string) => {
+        byKey: async (key: number) => {
           const apiClient = await window.o.apiClient.client.subscribeToResult();
           const result = await apiClient.query({
             query: ProfileBySafeAddressDocument,

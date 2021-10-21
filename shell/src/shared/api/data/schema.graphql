@@ -247,7 +247,8 @@ type LogoutResponse {
 
 type Mutation {
     acknowledge(until: String!): Boolean!
-    addMember(groupId: Int!, memberId: Int!): AddMemberResult
+    addMember(groupId: String!, memberId: Int!): AddMemberResult
+    removeMember(groupId: String!, memberId: Int!): RemoveMemberResult
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
@@ -259,7 +260,7 @@ type Mutation {
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
-    removeMember(groupId: Int!, memberId: Int!): RemoveMemberResult
+    removeMember(groupId: String!, memberId: Int!): RemoveMemberResult
     requestSessionChallenge(address: String!): String!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     sendMessage(content: String!, toSafeAddress: String!): SendMessageResult!

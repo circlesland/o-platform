@@ -297,6 +297,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   acknowledge: Scalars['Boolean'];
   addMember?: Maybe<AddMemberResult>;
+  removeMember?: Maybe<RemoveMemberResult>;
   authenticateAt: DelegateAuthInit;
   claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
@@ -308,7 +309,6 @@ export type Mutation = {
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
-  removeMember?: Maybe<RemoveMemberResult>;
   requestSessionChallenge: Scalars['String'];
   requestUpdateSafe: RequestUpdateSafeResponse;
   sendMessage: SendMessageResult;
@@ -329,7 +329,13 @@ export type MutationAcknowledgeArgs = {
 
 
 export type MutationAddMemberArgs = {
-  groupId: Scalars['Int'];
+  groupId: Scalars['String'];
+  memberId: Scalars['Int'];
+};
+
+
+export type MutationRemoveMemberArgs = {
+  groupId: Scalars['String'];
   memberId: Scalars['Int'];
 };
 
@@ -366,12 +372,6 @@ export type MutationLockOfferArgs = {
 
 export type MutationProvePaymentArgs = {
   data: PaymentProof;
-};
-
-
-export type MutationRemoveMemberArgs = {
-  groupId: Scalars['Int'];
-  memberId: Scalars['Int'];
 };
 
 
@@ -1063,7 +1063,7 @@ export type SendMessageMutation = (
 );
 
 export type AddMemberMutationVariables = Exact<{
-  groupId: Scalars['Int'];
+  groupId: Scalars['String'];
   memberId: Scalars['Int'];
 }>;
 
@@ -1077,7 +1077,7 @@ export type AddMemberMutation = (
 );
 
 export type RemoveMemberMutationVariables = Exact<{
-  groupId: Scalars['Int'];
+  groupId: Scalars['String'];
   memberId: Scalars['Int'];
 }>;
 
@@ -2204,7 +2204,7 @@ export const SendMessageDocument = gql`
 }
     `;
 export const AddMemberDocument = gql`
-    mutation addMember($groupId: Int!, $memberId: Int!) {
+    mutation addMember($groupId: String!, $memberId: Int!) {
   addMember(groupId: $groupId, memberId: $memberId) {
     error
     success
@@ -2212,7 +2212,7 @@ export const AddMemberDocument = gql`
 }
     `;
 export const RemoveMemberDocument = gql`
-    mutation removeMember($groupId: Int!, $memberId: Int!) {
+    mutation removeMember($groupId: String!, $memberId: Int!) {
   removeMember(groupId: $groupId, memberId: $memberId) {
     error
     success
