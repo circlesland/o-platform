@@ -21,8 +21,12 @@ import { SetTrustContext } from "./setTrust";
 import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
 import { me } from "../../../shared/stores/me";
-import {Profile} from "../../../shared/api/data/types";
-import {convertTimeCirclesToCircles, displayCirclesAmount} from "../../../shared/functions/displayCirclesAmount";
+import { Profile } from "../../../shared/api/data/types";
+import {
+  convertTimeCirclesToCircles,
+  displayCirclesAmount,
+} from "../../../shared/functions/displayCirclesAmount";
+import TransferSummary__SvelteComponent_ from "../atoms/TransferSummary.svelte";
 
 export type TransferContextData = {
   safeAddress: string;
