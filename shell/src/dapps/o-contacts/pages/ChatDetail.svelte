@@ -19,6 +19,7 @@ import { transfer } from "../../o-banking/processes/transfer";
 import { push } from "svelte-spa-router";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
+import { displayCirclesAmount } from "../../../shared/functions/displayCirclesAmount";
 
 export let id: string;
 
@@ -314,10 +315,12 @@ function buildCardModel(chat) {
       if (chat.payload.to_profile && chat.safe_address === $me.circlesAddress) {
         notificationType = "transfer_out";
         icon = "sendmoney";
-        (title = `You sent ${RpcGateway.get().utils.fromWei(
+        (title = `You sent ${displayCirclesAmount(
           chat.value,
-          "ether"
-        )} CRC to ${chat.payload.to_profile.firstName}`),
+          null,
+          true,
+          $me.displayTimeCircles || $me.displayTimeCircles === undefined
+        )} Circles to ${chat.payload.to_profile.firstName}`),
           (actions = []);
       } else if (
         chat.payload.from_profile &&
@@ -328,7 +331,12 @@ function buildCardModel(chat) {
         icon = "sendmoney";
         title = `${
           chat.payload.from_profile.firstName
-        } sent you ${RpcGateway.get().utils.fromWei(chat.value, "ether")} CRC`;
+        } sent you ${displayCirclesAmount(
+          chat.value,
+          null,
+          true,
+          $me.displayTimeCircles || $me.displayTimeCircles === undefined
+        )} Circles`;
         actions = contactProfile
           ? (!contactProfile.youTrust
               ? [
