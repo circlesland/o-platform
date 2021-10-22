@@ -31,14 +31,17 @@ let promise = getMutualFriends();
   {#if mutualFriends.data && mutualFriends.data.commonTrust}
     <div>
       <div class="text-left text-2xs text-dark-lightest">Mutual Friends</div>
-      <div class="flex flex-row mt-2 space-x-2">
+
+      <div class="flex flex-row flex-wrap mt-2 ">
         {#if mutualFriends.data.commonTrust.length > 0}
           {#each mutualFriends.data.commonTrust as friend, i}
             {#if friend.profile}
-              <UserImage
-                profile="{friend.profile}"
-                tooltip="{true}"
-                gradientRing="{true}" />
+              <div class="mt-2 mr-2">
+                <UserImage
+                  profile="{friend.profile}"
+                  tooltip="{true}"
+                  gradientRing="{true}" />
+              </div>
             {/if}
           {/each}
         {:else}
