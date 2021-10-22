@@ -2,8 +2,6 @@
 import { onDestroy, onMount } from "svelte";
 import ChatCard from "../atoms/ChatCard.svelte";
 import NotificationCard from "../atoms/NotificationCard.svelte";
-import "simplebar";
-import "simplebar/dist/simplebar.css";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import {

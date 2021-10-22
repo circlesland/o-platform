@@ -4,7 +4,7 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import * as yup from "yup";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import NumberEditor from "@o-platform/o-editors/src/NumberEditor.svelte";
+import PinInputEditor from "@o-platform/o-editors/src/Pin/PinInputEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { KeyManager } from "../../../o-passport/data/keyManager";
 
@@ -51,7 +51,7 @@ const processDefinition = (processId: string) =>
         enterDecryptionPin: prompt<LoginWithTorusContext, any>({
           id: "enterDecryptionPin",
           field: "decryptionPin",
-          component: NumberEditor,
+          component: PinInputEditor,
           isSensitive: true,
           params: {
             view: {

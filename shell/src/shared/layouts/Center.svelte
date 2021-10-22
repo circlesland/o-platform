@@ -1,7 +1,7 @@
 <script lang="ts">
 import { createEventDispatcher, getContext } from "svelte";
-import { clickOutside } from "src/shared/functions/clickOutside";
-import { SvelteSimplebar } from "svelte-simplebar";
+import { clickOutside } from "./../functions/clickOutside";
+import SvelteSimplebar from "./../molecules/SimpleBar/SvelteSimpleBar.svelte";
 
 export let blur: boolean = false;
 

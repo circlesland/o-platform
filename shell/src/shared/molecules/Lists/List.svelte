@@ -11,7 +11,7 @@ import { inview } from "svelte-inview/dist/index";
 
 export let listItemComponent;
 export let selector = "timestamp";
-export let listItemType;
+export const listItemType: any = undefined;
 export let fetchQuery: any;
 export let fetchQueryArguments;
 export let dataKey: string;

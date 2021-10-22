@@ -9,7 +9,6 @@ export let title: string;
 export let balance: string;
 export let variety: number;
 export let description: string;
-export let details: AssetBalance[];
 
 let pictureUrl: string;
 
