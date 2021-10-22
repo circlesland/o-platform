@@ -51,7 +51,10 @@ function onkeydown(e: KeyboardEvent) {
     </div>
   {/if}
 
-  <Pin size="{6}" bind:pin="{_context.data[context.field]}" />
+  <Pin
+    size="{6}"
+    bind:pin="{_context.data[context.field]}"
+    on:finished="{submitHandler}" />
 
   <ProcessNavigation on:buttonClick="{submitHandler}" context="{context}" />
 </div>

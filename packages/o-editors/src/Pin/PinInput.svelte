@@ -1,5 +1,8 @@
 <script>
 import { onMount } from "svelte";
+import { createEventDispatcher } from "svelte";
+
+const dispatch = createEventDispatcher();
 
 const KEYBOARD = {
   BACKSPACE: 8,
@@ -66,6 +69,10 @@ const changeHandler = function (e, i) {
   // if not last digit, move cursor
   if (currentIndex !== items.length - 1 || isKeyDelete(e.keyCode)) {
     items[newIndex].focus();
+  } else {
+    dispatch("finished", {
+      finished: true,
+    });
   }
   return;
 };

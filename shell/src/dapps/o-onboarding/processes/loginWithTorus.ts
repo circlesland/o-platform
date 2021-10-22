@@ -350,17 +350,14 @@ const processDefinition = (processId: string) =>
                   context.data.decryptionPin
                 );
               } catch (e) {
-                context.messages[
-                  "decryptionPin"
-                ] = `Couldn't decrypt your key: ${e.message}`;
+                context.messages["decryptionPin"] = `Invalid Pin`;
                 throw e;
               }
 
               if (!privateKey || privateKey == "") {
                 delete context.data.decryptionPin;
                 delete context.data.privateKey;
-                context.messages["decryptionPin"] =
-                  "Couldn't decrypt your key. Have you entered the correct pin?";
+                context.messages["decryptionPin"] = "Invalid Pin";
                 throw new Error(context.messages["decryptionPin"]);
               }
 
