@@ -6,6 +6,7 @@
   import Icons from "../molecules/Icons.svelte";
   import { Profile } from "../api/data/types";
   import UserImage from "./UserImage.svelte";
+  import {switchProfile} from "../../dapps/o-passport/processes/switchProfile";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -14,6 +15,11 @@
   let profile: Profile;
 
   $: name = profile?.circlesAddress ? profile.circlesAddress : "";
+
+
+  function showSwitcher() {
+    window.o.runProcess(switchProfile, {});
+  }
 
   $: {
     if ($me) {
@@ -45,7 +51,7 @@
     <div class="col-start-3 pr-1 place-self-end justify-self-end">
       {#if profile}
         <div
-          class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
+          class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center" on:click={showSwitcher}>
           <UserImage {profile} size="{8}" profileLink="{false}" />
 
         </div>
