@@ -1,234 +1,234 @@
 <script lang="ts">
-  import { transfer } from "../../o-banking/processes/transfer";
-  import { setTrust } from "../../o-banking/processes/setTrust";
-  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import { invite } from "../../o-passport/processes/invite/invite";
-  import { getCountryName } from "../../../shared/countries";
-  import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import {upsertIdentity} from "../../o-passport/processes/upsertIdentity";
-  import { me } from "../../../shared/stores/me";
-  import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-  import { onDestroy, onMount } from "svelte";
-  import { Subscription } from "rxjs";
-  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
-  import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
-  import {
-    CommonTrust,
-    CommonTrustDocument, Profile,
-  } from "../../../shared/api/data/types";
+import { transfer } from "../../o-banking/processes/transfer";
+import { setTrust } from "../../o-banking/processes/setTrust";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { invite } from "../../o-passport/processes/invite/invite";
+import { getCountryName } from "../../../shared/countries";
+import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
+import { me } from "../../../shared/stores/me";
+import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
+import { onDestroy, onMount } from "svelte";
+import { Subscription } from "rxjs";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
+import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
+import {
+  CommonTrust,
+  CommonTrustDocument,
+  Profile,
+} from "../../../shared/api/data/types";
 
-  export let id: string;
-  export let jumplist: Jumplist<any, any> | undefined;
-  export let runtimeDapp: RuntimeDapp<any>;
+export let id: string;
+export let jumplist: Jumplist<any, any> | undefined;
+export let runtimeDapp: RuntimeDapp<any>;
 
-  onMount(() => {
-    shellEventSubscription = window.o.events.subscribe(
-      async (event: PlatformEvent) => {
-        if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
-          return;
-        }
-        await loadProfile();
-        // console.log("AWAIT LOADPRO");
+onMount(() => {
+  shellEventSubscription = window.o.events.subscribe(
+    async (event: PlatformEvent) => {
+      if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
+        return;
       }
+      await loadProfile();
+      // console.log("AWAIT LOADPRO");
+    }
+  );
+
+  if (id) {
+    isLoading = true;
+    // console.log("LOADPRO IF CONTEXT");
+    loadProfile();
+  }
+});
+
+$: {
+  if (id) {
+    isLoading = true;
+    // console.log("LOADPRO NOCHMAL");
+    loadProfile();
+  }
+  if ($me) {
+    inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/${$me.id}`;
+  }
+}
+
+let shellEventSubscription: Subscription;
+
+onDestroy(() => shellEventSubscription.unsubscribe());
+
+let isEditable: boolean = false;
+let isLoading: boolean = true;
+let isMe: boolean = false;
+let name: string;
+
+let commonTrusts: CommonTrust[] = [];
+let profile: {
+  id?: number;
+  dream?: string;
+  country?: string;
+  safeAddress?: string;
+  displayName: string;
+  avatarUrl?: string;
+  avatarCid?: string;
+  avatarMimeType?: string;
+  firstName?: string;
+  lastName?: string;
+  circlesAddress?: string;
+  circlesSafeOwner?: string;
+  cityGeonameid?: number;
+  city: any;
+  // The incoming trust limit
+  trustsYou?: any;
+  // The outgoing trust limit
+  youTrust?: any;
+} = {};
+
+async function loadProfile() {
+  // console.log("LOADING PROFILE!!!");
+  if (!id) {
+    console.warn(
+      `No profile specified ('id' must contain safeAddress or profileId)`
     );
-
-    if (id) {
-      isLoading = true;
-      // console.log("LOADPRO IF CONTEXT");
-      loadProfile();
-    }
-  });
-
-  $: {
-    if (id) {
-      isLoading = true;
-      // console.log("LOADPRO NOCHMAL");
-      loadProfile();
-    }
-    if ($me) {
-      inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/${$me.id}`;
-    }
+    return;
   }
 
-  let shellEventSubscription: Subscription;
+  if (Number.parseInt(id) && !id.startsWith("0x")) {
+    const profile = await loadProfileByProfileId(Number.parseInt(id));
+    await setProfile(profile);
+  } else if (RpcGateway.get().utils.isAddress(id)) {
+    const profile = await loadProfileBySafeAddress(id);
+    await setProfile(profile);
+  } else {
+    throw new Error(`id isn't an integer nor an eth address.`);
+  }
+  isMe = profile.id == ($me ? $me.id : 0);
+  isLoading = false;
+  name = profile.safeAddress;
 
-  onDestroy(() => shellEventSubscription.unsubscribe());
+  // console.log("PROFILE: ", profile);
+}
 
-  let isEditable: boolean = false;
-  let isLoading: boolean = true;
-  let isMe: boolean = false;
-  let name: string;
+async function setProfile(apiProfile: Profile) {
+  const trust = undefined;
+  isEditable = $me && $me.id === apiProfile.id;
 
-  let commonTrusts: CommonTrust[] = [];
-  let profile: {
-    id?: number;
-    dream?: string;
-    country?: string;
-    safeAddress?: string;
-    displayName: string;
-    avatarUrl?: string;
-    avatarCid?: string;
-    avatarMimeType?: string;
-    firstName?: string;
-    lastName?: string;
-    circlesAddress?: string;
-    circlesSafeOwner?: string;
-    cityGeonameid?: number;
-    city: any;
-    // The incoming trust limit
-    trustsYou?: any;
-    // The outgoing trust limit
-    youTrust?: any;
-  } = {};
-
-  async function loadProfile() {
-    // console.log("LOADING PROFILE!!!");
-    if (!id) {
-      console.warn(
-        `No profile specified ('id' must contain safeAddress or profileId)`
+  if ($me.circlesAddress !== apiProfile.circlesAddress) {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const result = await apiClient.query({
+      query: CommonTrustDocument,
+      variables: {
+        safeAddress1: $me.circlesAddress.toLowerCase(),
+        safeAddress2: apiProfile.circlesAddress.toLowerCase(),
+      },
+    });
+    if (result.errors) {
+      throw new Error(
+        `Couldn't load a profile with safeAddress '${
+          apiProfile.circlesAddress
+        }': ${JSON.stringify(result.errors)}`
       );
-      return;
     }
-
-    if (Number.parseInt(id) && !id.startsWith("0x")) {
-      const profile = await loadProfileByProfileId(Number.parseInt(id));
-      await setProfile(profile);
-    } else if (RpcGateway.get().utils.isAddress(id)) {
-      const profile = await loadProfileBySafeAddress(id);
-      await setProfile(profile);
-    } else {
-      throw new Error(`id isn't an integer nor an eth address.`);
-    }
-    isMe = profile.id == ($me ? $me.id : 0);
-    isLoading = false;
-    name = profile.safeAddress;
-
-    // console.log("PROFILE: ", profile);
+    commonTrusts = result.data.commonTrust.filter((o) => o.profile);
+  } else {
+    commonTrusts = [];
   }
 
-  async function setProfile(apiProfile: Profile) {
-    const trust = undefined;
-    isEditable = $me && $me.id === apiProfile.id;
-
-    if ($me.circlesAddress !== apiProfile.circlesAddress) {
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      const result = await apiClient.query({
-        query: CommonTrustDocument,
-        variables: {
-          safeAddress1: $me.circlesAddress.toLowerCase(),
-          safeAddress2: apiProfile.circlesAddress.toLowerCase(),
-        },
-      });
-      if (result.errors) {
-        throw new Error(
-          `Couldn't load a profile with safeAddress '${
-            apiProfile.circlesAddress
-          }': ${JSON.stringify(result.errors)}`
-        );
-      }
-      commonTrusts = result.data.commonTrust.filter(o => o.profile);
-    } else {
-      commonTrusts = [];
-    }
-
-    profile = {
-      id: apiProfile.id,
-      avatarUrl: apiProfile.avatarUrl,
-      dream: apiProfile.dream,
-      country: apiProfile.country,
-      safeAddress: apiProfile.circlesAddress,
-      firstName: apiProfile.firstName,
-      lastName: apiProfile.lastName,
-      circlesAddress: apiProfile.circlesAddress,
-      circlesSafeOwner: apiProfile.circlesSafeOwner,
-      displayName: `${apiProfile.firstName} ${
-        apiProfile.lastName ? apiProfile.lastName : ""
-      }`,
-      trusting: undefined,
-      trustedBy: undefined,
-      cityGeonameid: apiProfile.cityGeonameid,
-      city: apiProfile.city,
-      trustsYou: apiProfile.trustsYou ?? 0,
-      youTrust: apiProfile.youTrust ?? 0,
-    };
-
-  }
-
-  function execTransfer() {
-    if (!profile || !$me.circlesAddress || isMe) return;
-
-    window.o.runProcess(transfer, {
-      safeAddress: $me.circlesAddress,
-      recipientAddress: profile.safeAddress,
-      recipientProfileId: profile.id,
-    });
-  }
-
-  function execTrust() {
-    if (!profile || !$me.circlesAddress || isMe) return;
-
-    window.o.runProcess(setTrust, {
-      safeAddress: $me.circlesAddress,
-      trustLimit: 100,
-      trustReceiver: profile.safeAddress,
-      privateKey: sessionStorage.getItem("circlesKey"),
-    });
-  }
-
-  function execUntrust() {
-    if (!profile || !$me.circlesAddress || isMe) return;
-
-    window.o.runProcess(setTrust, {
-      safeAddress: $me.circlesAddress,
-      trustLimit: 0,
-      trustReceiver: profile.safeAddress,
-      privateKey: sessionStorage.getItem("circlesKey"),
-    });
-  }
-
-  function execInvite() {
-    if (!profile || !$me.circlesAddress || !profile.id || isMe) return;
-
-    window.o.runProcess(invite, {
-      safeAddress: $me.circlesAddress,
-      inviteProfileId: profile.id,
-    });
-  }
-
-  const copy = () => {
-    const app = new CopyClipBoard({
-      target: document.getElementById("clipboard"),
-      props: { name },
-    });
-    app.$destroy();
+  profile = {
+    id: apiProfile.id,
+    avatarUrl: apiProfile.avatarUrl,
+    dream: apiProfile.dream,
+    country: apiProfile.country,
+    safeAddress: apiProfile.circlesAddress,
+    firstName: apiProfile.firstName,
+    lastName: apiProfile.lastName,
+    circlesAddress: apiProfile.circlesAddress,
+    circlesSafeOwner: apiProfile.circlesSafeOwner,
+    displayName: `${apiProfile.firstName} ${
+      apiProfile.lastName ? apiProfile.lastName : ""
+    }`,
+    trusting: undefined,
+    trustedBy: undefined,
+    cityGeonameid: apiProfile.cityGeonameid,
+    city: apiProfile.city,
+    trustsYou: apiProfile.trustsYou ?? 0,
+    youTrust: apiProfile.youTrust ?? 0,
   };
+}
 
-  function editProfile(onlyThesePages?: string[]) {
-    if (!profile || !profile.id || !isEditable) return;
+function execTransfer() {
+  if (!profile || !$me.circlesAddress || isMe) return;
 
-    window.o.runProcess(upsertIdentity, profile, {}, onlyThesePages);
-  }
+  window.o.runProcess(transfer, {
+    safeAddress: $me.circlesAddress,
+    recipientAddress: profile.safeAddress,
+    recipientProfileId: profile.id,
+  });
+}
 
-  let inviteLink: string = "";
-  const copyInviteLink = () => {
-    const app = new CopyClipBoard({
-      target: document.getElementById("clipboardInviteLink"),
-      props: { name: inviteLink },
-    });
-    app.$destroy();
-  };
+function execTrust() {
+  if (!profile || !$me.circlesAddress || isMe) return;
 
-  async function getJumplist() {
-    const jumpListItems = await jumplist.items({ id: id }, runtimeDapp);
-    return jumpListItems;
-  }
+  window.o.runProcess(setTrust, {
+    safeAddress: $me.circlesAddress,
+    trustLimit: 100,
+    trustReceiver: profile.safeAddress,
+    privateKey: sessionStorage.getItem("circlesKey"),
+  });
+}
 
-  let promise = getJumplist();
+function execUntrust() {
+  if (!profile || !$me.circlesAddress || isMe) return;
+
+  window.o.runProcess(setTrust, {
+    safeAddress: $me.circlesAddress,
+    trustLimit: 0,
+    trustReceiver: profile.safeAddress,
+    privateKey: sessionStorage.getItem("circlesKey"),
+  });
+}
+
+function execInvite() {
+  if (!profile || !$me.circlesAddress || !profile.id || isMe) return;
+
+  window.o.runProcess(invite, {
+    safeAddress: $me.circlesAddress,
+    inviteProfileId: profile.id,
+  });
+}
+
+const copy = () => {
+  const app = new CopyClipBoard({
+    target: document.getElementById("clipboard"),
+    props: { name },
+  });
+  app.$destroy();
+};
+
+function editProfile(onlyThesePages?: string[]) {
+  if (!profile || !profile.id || !isEditable) return;
+
+  window.o.runProcess(upsertIdentity, profile, {}, onlyThesePages);
+}
+
+let inviteLink: string = "";
+const copyInviteLink = () => {
+  const app = new CopyClipBoard({
+    target: document.getElementById("clipboardInviteLink"),
+    props: { name: inviteLink },
+  });
+  app.$destroy();
+};
+
+async function getJumplist() {
+  const jumpListItems = await jumplist.items({ id: id }, runtimeDapp);
+  return jumpListItems;
+}
+
+let promise = getJumplist();
 </script>
 
 {#if isLoading}
@@ -244,7 +244,7 @@
       <div
         class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
         <UserImage
-          {profile}
+          profile="{profile}"
           size="{36}"
           gradientRing="{true}"
           profileLink="{false}" />
@@ -256,8 +256,10 @@
         {/if}
         {#if profile && profile.city}
           <div class="mt-1 text-sm text-dark-lightest">
-            {profile.city ? profile.city.name : ''}
-            {profile.city ? ', ' + profile.city.country : ', ' + getCountryName(profile)}
+            {profile.city ? profile.city.name : ""}
+            {profile.city
+              ? ", " + profile.city.country
+              : ", " + getCountryName(profile)}
           </div>
         {/if}
       </div>
@@ -376,14 +378,15 @@
                 <div class="text-left text-2xs text-dark-lightest">
                   Mutual Friends
                 </div>
-                <div
-                  class="flex flex-row flex-wrap content-start mt-2 space-x-2 ">
+                <div class="flex flex-row flex-wrap mt-2 ">
                   {#each commonTrusts as commonTrust}
                     {#if commonTrust.profile}
-                      <UserImage
-                        profile="{commonTrust.profile}"
-                        tooltip="{true}"
-                        gradientRing="{true}" />
+                      <div class="mt-2 mr-2">
+                        <UserImage
+                          profile="{commonTrust.profile}"
+                          tooltip="{true}"
+                          gradientRing="{true}" />
+                      </div>
                     {/if}
                   {/each}
                 </div>
@@ -466,7 +469,8 @@
 
                 <div class="flex items-center w-full">
                   {#if profile.trusting && profile.trustedBy}
-                    You are trusting {profile.displayName} {profile.trusting}%
+                    You are trusting {profile.displayName}
+                    {profile.trusting}%
                     <br />
                     {profile.displayName} is trusting you {profile.trustedBy}%
                   {:else if profile.trusting && !profile.trustedBy}
