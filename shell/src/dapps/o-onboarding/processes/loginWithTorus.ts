@@ -4,7 +4,7 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { promptChoice } from "../../o-passport/processes/identify/prompts/promptChoice";
 import ButtonStackSelector from "@o-platform/o-editors/src/ButtonStackSelector.svelte";
-import NumberEditor from "../../../../../packages/o-editors/src/NumberEditor.svelte";
+import PinInputEditor from "../../../../../packages/o-editors/src/Pin/PinInputEditor.svelte";
 import * as yup from "yup";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { KeyManager } from "../../o-passport/data/keyManager";
@@ -296,7 +296,7 @@ const processDefinition = (processId: string) =>
         enterEncryptionPin: prompt<LoginWithTorusContext, any>({
           id: "enterEncryptionPin",
           field: "encryptionPin",
-          component: NumberEditor,
+          component: PinInputEditor,
           isSensitive: true,
           params: {
             view: {
@@ -317,7 +317,7 @@ const processDefinition = (processId: string) =>
         enterDecryptionPin: prompt<LoginWithTorusContext, any>({
           id: "enterDecryptionPin",
           field: "decryptionPin",
-          component: NumberEditor,
+          component: PinInputEditor,
           isSensitive: true,
           params: {
             view: {
