@@ -106,6 +106,26 @@ query myProfile {
       longitude
       population
     }
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        avatarMimeType
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
 

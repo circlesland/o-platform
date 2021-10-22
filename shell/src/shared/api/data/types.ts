@@ -293,11 +293,16 @@ export type LogoutResponse = {
   success: Scalars['Boolean'];
 };
 
+export type Membership = {
+  __typename?: 'Membership';
+  isAdmin: Scalars['Boolean'];
+  organisation: Organisation;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   acknowledge: Scalars['Boolean'];
   addMember?: Maybe<AddMemberResult>;
-  removeMember?: Maybe<RemoveMemberResult>;
   authenticateAt: DelegateAuthInit;
   claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
@@ -309,6 +314,7 @@ export type Mutation = {
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
+  removeMember?: Maybe<RemoveMemberResult>;
   requestSessionChallenge: Scalars['String'];
   requestUpdateSafe: RequestUpdateSafeResponse;
   sendMessage: SendMessageResult;
@@ -329,12 +335,6 @@ export type MutationAcknowledgeArgs = {
 
 
 export type MutationAddMemberArgs = {
-  groupId: Scalars['String'];
-  memberId: Scalars['Int'];
-};
-
-
-export type MutationRemoveMemberArgs = {
   groupId: Scalars['String'];
   memberId: Scalars['Int'];
 };
@@ -372,6 +372,12 @@ export type MutationLockOfferArgs = {
 
 export type MutationProvePaymentArgs = {
   data: PaymentProof;
+};
+
+
+export type MutationRemoveMemberArgs = {
+  groupId: Scalars['String'];
+  memberId: Scalars['Int'];
 };
 
 
@@ -509,6 +515,7 @@ export type Profile = {
   id: Scalars['Int'];
   lastEvent?: Maybe<ProfileEvent>;
   lastName?: Maybe<Scalars['String']>;
+  memberships?: Maybe<Array<Membership>>;
   newsletter?: Maybe<Scalars['Boolean']>;
   offers?: Maybe<Array<Offer>>;
   status?: Maybe<Scalars['String']>;
@@ -1342,7 +1349,18 @@ export type MyProfileQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
-    )> }
+    )>, memberships?: Maybe<Array<(
+      { __typename?: 'Membership' }
+      & Pick<Membership, 'isAdmin'>
+      & { organisation: (
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'avatarMimeType'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      ) }
+    )>> }
   )> }
 );
 
@@ -2445,6 +2463,26 @@ export const MyProfileDocument = gql`
       latitude
       longitude
       population
+    }
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        avatarMimeType
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
     }
   }
 }

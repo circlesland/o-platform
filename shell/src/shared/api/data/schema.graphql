@@ -245,10 +245,14 @@ type LogoutResponse {
     success: Boolean!
 }
 
+type Membership {
+    isAdmin: Boolean!
+    organisation: Organisation!
+}
+
 type Mutation {
     acknowledge(until: String!): Boolean!
     addMember(groupId: String!, memberId: Int!): AddMemberResult
-    removeMember(groupId: String!, memberId: Int!): RemoveMemberResult
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
@@ -334,6 +338,7 @@ type Profile {
     id: Int!
     lastEvent: ProfileEvent
     lastName: String
+    memberships: [Membership!]
     newsletter: Boolean
     offers: [Offer!]
     status: String
