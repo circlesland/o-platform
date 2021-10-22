@@ -1377,7 +1377,18 @@ export type ProfilesQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
-    )> }
+    )>, memberships?: Maybe<Array<(
+      { __typename?: 'Membership' }
+      & Pick<Membership, 'isAdmin'>
+      & { organisation: (
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'avatarMimeType'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      ) }
+    )>> }
   )> }
 );
 
@@ -1489,7 +1500,18 @@ export type ProfilesByCirclesAddressQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
-    )> }
+    )>, memberships?: Maybe<Array<(
+      { __typename?: 'Membership' }
+      & Pick<Membership, 'isAdmin'>
+      & { organisation: (
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'avatarMimeType'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      ) }
+    )>> }
   )> }
 );
 
@@ -1828,7 +1850,18 @@ export type ProfileBySafeAddressQuery = (
         { __typename?: 'CrcTrust' }
         & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
       ) | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' }> }
-    )> }
+    )>, memberships?: Maybe<Array<(
+      { __typename?: 'Membership' }
+      & Pick<Membership, 'isAdmin'>
+      & { organisation: (
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'avatarMimeType'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      ) }
+    )>> }
   )> }
 );
 
@@ -2510,6 +2543,26 @@ export const ProfilesDocument = gql`
       longitude
       population
     }
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        avatarMimeType
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
     `;
@@ -2670,6 +2723,26 @@ export const ProfilesByCirclesAddressDocument = gql`
       latitude
       longitude
       population
+    }
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        avatarMimeType
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
     }
   }
 }
@@ -3195,6 +3268,26 @@ export const ProfileBySafeAddressDocument = gql`
     }
     youTrust
     trustsYou
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        avatarMimeType
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
     `;

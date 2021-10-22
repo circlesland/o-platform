@@ -19,7 +19,7 @@ import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfile
 import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
 import {
   CommonTrust,
-  CommonTrustDocument,
+  CommonTrustDocument, Membership,
   Profile,
 } from "../../../shared/api/data/types";
 
@@ -85,6 +85,7 @@ let profile: {
   trustsYou?: any;
   // The outgoing trust limit
   youTrust?: any;
+  memberships: Membership[];
 } = {};
 
 async function loadProfile() {
@@ -156,6 +157,7 @@ async function setProfile(apiProfile: Profile) {
     city: apiProfile.city,
     trustsYou: apiProfile.trustsYou ?? 0,
     youTrust: apiProfile.youTrust ?? 0,
+    memberships:apiProfile.memberships
   };
 }
 
@@ -383,9 +385,28 @@ let promise = getJumplist();
                     {#if commonTrust.profile}
                       <div class="mt-2 mr-2">
                         <UserImage
-                          profile="{commonTrust.profile}"
-                          tooltip="{true}"
-                          gradientRing="{true}" />
+                                profile="{commonTrust.profile}"
+                                tooltip="{true}"
+                                gradientRing="{true}"/>
+                      </div>
+                    {/if}
+                  {/each}
+                </div>
+              </div>
+            </section>
+            <section class="justify-center mb-2 ">
+              <div class="flex flex-col w-full pt-2 space-y-1">
+                <div class="text-left text-2xs text-dark-lightest">
+                  Member at
+                </div>
+                <div class="flex flex-row flex-wrap mt-2 ">
+                  {#each profile.memberships as membership}
+                    {#if membership.organisation}
+                      <div class="mt-2 mr-2">
+                        <UserImage
+                                profile="{membership.organisation}"
+                                tooltip="{true}"
+                                gradientRing="{true}" />
                       </div>
                     {/if}
                   {/each}

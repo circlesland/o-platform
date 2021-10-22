@@ -151,6 +151,26 @@ query profiles($id: [Int!]!) {
       longitude
       population
     }
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        avatarMimeType
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
 
@@ -306,6 +326,26 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
       latitude
       longitude
       population
+    }
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        avatarMimeType
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
     }
   }
 }
@@ -825,6 +865,26 @@ query profileBySafeAddress($safeAddress: String!) {
     }
     youTrust
     trustsYou
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        avatarMimeType
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
 
