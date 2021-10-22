@@ -6,13 +6,13 @@ import { Organisation } from "../../../shared/api/data/types";
 export let param: Organisation;
 
 function loadDetailPage(path) {
-  push(`#/coops/${path}`);
+  push(`#/coops/organisations/${path}`);
 }
 
 function goToProfile(e, path?: string) {
   if (!path) return;
   e.stopPropagation();
-  push(`#/coops/${path}`);
+  push(`#/coops/organisations/${path}`);
   return false;
 }
 </script>
