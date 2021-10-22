@@ -274,6 +274,7 @@ type Mutation {
     upsertOffer(data: UpsertOfferInput!): Offer!
     upsertOrganisation(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
     upsertProfile(data: UpsertProfileInput!): Profile!
+    upsertRegion(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
     upsertTag(data: UpsertTagInput!): Tag!
     verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
 }
@@ -400,6 +401,7 @@ type Query {
     organisationsByAddress(addresses: [String!]!): [Organisation!]!
     profilesById(ids: [Int!]!): [Profile!]!
     profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
+    regions(pagination: PaginationArgs): [Organisation!]!
     safeFundingTransaction: ProfileEvent
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!

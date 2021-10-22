@@ -332,3 +332,30 @@ mutation upsertOrganisation ($organisation: UpsertOrganisationInput!) {
     }
   }
 }
+
+mutation upsertRegion ($organisation: UpsertOrganisationInput!) {
+  upsertRegion(organisation: $organisation) {
+    success
+    error
+    organisation {
+      id
+      avatarMimeType
+      avatarUrl
+      circlesAddress
+      circlesSafeOwner
+      cityGeonameid
+      city {
+        geonameid
+        country
+        name
+        latitude
+        longitude
+        population
+        feature_code
+      }
+      createdAt
+      description
+      name
+    }
+  }
+}

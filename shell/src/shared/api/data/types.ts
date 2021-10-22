@@ -324,6 +324,7 @@ export type Mutation = {
   upsertOffer: Offer;
   upsertOrganisation: CreateOrganisationResult;
   upsertProfile: Profile;
+  upsertRegion: CreateOrganisationResult;
   upsertTag: Tag;
   verifySessionChallenge?: Maybe<ExchangeTokenResponse>;
 };
@@ -425,6 +426,11 @@ export type MutationUpsertOrganisationArgs = {
 
 export type MutationUpsertProfileArgs = {
   data: UpsertProfileInput;
+};
+
+
+export type MutationUpsertRegionArgs = {
+  organisation: UpsertOrganisationInput;
 };
 
 
@@ -589,6 +595,7 @@ export type Query = {
   organisationsByAddress: Array<Organisation>;
   profilesById: Array<Profile>;
   profilesBySafeAddress: Array<Profile>;
+  regions: Array<Organisation>;
   safeFundingTransaction?: Maybe<ProfileEvent>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
@@ -683,6 +690,11 @@ export type QueryProfilesByIdArgs = {
 
 export type QueryProfilesBySafeAddressArgs = {
   safeAddresses: Array<Scalars['String']>;
+};
+
+
+export type QueryRegionsArgs = {
+  pagination?: Maybe<PaginationArgs>;
 };
 
 
@@ -1205,6 +1217,27 @@ export type UpsertOrganisationMutationVariables = Exact<{
 export type UpsertOrganisationMutation = (
   { __typename?: 'Mutation' }
   & { upsertOrganisation: (
+    { __typename?: 'CreateOrganisationResult' }
+    & Pick<CreateOrganisationResult, 'success' | 'error'>
+    & { organisation?: Maybe<(
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'avatarMimeType' | 'avatarUrl' | 'circlesAddress' | 'circlesSafeOwner' | 'cityGeonameid' | 'createdAt' | 'description' | 'name'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
+      )> }
+    )> }
+  ) }
+);
+
+export type UpsertRegionMutationVariables = Exact<{
+  organisation: UpsertOrganisationInput;
+}>;
+
+
+export type UpsertRegionMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertRegion: (
     { __typename?: 'CreateOrganisationResult' }
     & Pick<CreateOrganisationResult, 'success' | 'error'>
     & { organisation?: Maybe<(
@@ -1909,6 +1942,21 @@ export type OrganisationsQuery = (
   )> }
 );
 
+export type RegionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RegionsQuery = (
+  { __typename?: 'Query' }
+  & { regions: Array<(
+    { __typename?: 'Organisation' }
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarMimeType' | 'avatarUrl'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'latitude' | 'longitude' | 'name' | 'population'>
+    )> }
+  )> }
+);
+
 export type OrganisationsByAddressQueryVariables = Exact<{
   addresses: Array<Scalars['String']> | Scalars['String'];
 }>;
@@ -2353,6 +2401,34 @@ export const UpsertProfileDocument = gql`
 export const UpsertOrganisationDocument = gql`
     mutation upsertOrganisation($organisation: UpsertOrganisationInput!) {
   upsertOrganisation(organisation: $organisation) {
+    success
+    error
+    organisation {
+      id
+      avatarMimeType
+      avatarUrl
+      circlesAddress
+      circlesSafeOwner
+      cityGeonameid
+      city {
+        geonameid
+        country
+        name
+        latitude
+        longitude
+        population
+        feature_code
+      }
+      createdAt
+      description
+      name
+    }
+  }
+}
+    `;
+export const UpsertRegionDocument = gql`
+    mutation upsertRegion($organisation: UpsertOrganisationInput!) {
+  upsertRegion(organisation: $organisation) {
     success
     error
     organisation {
@@ -3328,6 +3404,25 @@ export const OrganisationsDocument = gql`
   }
 }
     `;
+export const RegionsDocument = gql`
+    query regions {
+  regions {
+    id
+    circlesAddress
+    createdAt
+    name
+    avatarMimeType
+    avatarUrl
+    city {
+      geonameid
+      latitude
+      longitude
+      name
+      population
+    }
+  }
+}
+    `;
 export const OrganisationsByAddressDocument = gql`
     query organisationsByAddress($addresses: [String!]!) {
   organisationsByAddress(addresses: $addresses) {
@@ -3589,6 +3684,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     upsertOrganisation(variables: UpsertOrganisationMutationVariables): Promise<UpsertOrganisationMutation> {
       return withWrapper(() => client.request<UpsertOrganisationMutation>(print(UpsertOrganisationDocument), variables));
     },
+    upsertRegion(variables: UpsertRegionMutationVariables): Promise<UpsertRegionMutation> {
+      return withWrapper(() => client.request<UpsertRegionMutation>(print(UpsertRegionDocument), variables));
+    },
     sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
       return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));
     },
@@ -3675,6 +3773,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     organisations(variables?: OrganisationsQueryVariables): Promise<OrganisationsQuery> {
       return withWrapper(() => client.request<OrganisationsQuery>(print(OrganisationsDocument), variables));
+    },
+    regions(variables?: RegionsQueryVariables): Promise<RegionsQuery> {
+      return withWrapper(() => client.request<RegionsQuery>(print(RegionsDocument), variables));
     },
     organisationsByAddress(variables: OrganisationsByAddressQueryVariables): Promise<OrganisationsByAddressQuery> {
       return withWrapper(() => client.request<OrganisationsByAddressQuery>(print(OrganisationsByAddressDocument), variables));
