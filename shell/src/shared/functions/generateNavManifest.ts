@@ -172,9 +172,13 @@ export function generateNavManifest(
     if (args.centerContainsProcess) {
       // Replace the regular center buttons with
       // the process navigation buttons
-      newManifest.navPill.center = generateCloseButton(true);
-      newManifest.navPill.left = null;
-      newManifest.navPill.right = null;
+      if (args.showLogin) {
+        newManifest.loginPill = generateCloseButton(true);
+      } else {
+        newManifest.navPill.center = generateCloseButton(true);
+        newManifest.navPill.left = null;
+        newManifest.navPill.right = null;
+      }
 
       if (args.canGoBack) {
         newManifest.navPill.left = {
@@ -201,9 +205,13 @@ export function generateNavManifest(
         };
       }
     } else {
-      newManifest.navPill.center = generateCloseButton(false);
-      newManifest.navPill.left = null;
-      newManifest.navPill.right = null;
+      if (args.showLogin) {
+        newManifest.loginPill = generateCloseButton(false);
+      } else {
+        newManifest.navPill.center = generateCloseButton(false);
+        newManifest.navPill.left = null;
+        newManifest.navPill.right = null;
+      }
     }
   }
 
