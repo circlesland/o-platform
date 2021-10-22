@@ -5,15 +5,13 @@ import { createMachine } from "xstate";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import {loadProfile} from "./identify/services/loadProfile";
 import {Organisation, Profile} from "../../../shared/api/data/types";
-import {UpsertRegistrationContext} from "../../o-onboarding/processes/registration/promptRegistration";
 import DynamicChoiceSelector from "../../../../../packages/o-editors/src/DynamicChoiceSelector.svelte";
 import {prompt} from "@o-platform/o-process/dist/states/prompt";
-import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 
 export type ProfileOrOrganisation = Profile | Organisation;
 
 export type SwitchProfileContextData = {
-  chooseProfile_options: ProfileOrOrganisation[]
+  chooseProfile_options: {label:string, value:string}[]
   chooseProfile: ProfileOrOrganisation
 };
 
@@ -40,10 +38,15 @@ const processDefinition = (processId: string) =>
         invoke: {
           src: async (context) => {
             const myProfile = await loadProfile();
-            context.data.chooseProfile_options = [myProfile, ];
             if (myProfile.memberships && myProfile.memberships.length > 0) {
                const myMemberships = myProfile.memberships.filter(o => o.isAdmin).map(o => o.organisation);
-               context.data.chooseProfile_options = [myProfile, ...myMemberships];
+               context.data.chooseProfile_options = <any>[myProfile, ...myMemberships].map(o => {
+                 const displayName = (<any>o).firstName ? (<any>o).firstName + " " + (<any>o).lastName : (<any>o).name;
+                 return {
+                   value: o,
+                   label: displayName
+                 }
+               });
             }
             console.log(context.data.chooseProfile_options);
           },
@@ -75,7 +78,7 @@ const processDefinition = (processId: string) =>
             });
             window.o.publishEvent(<PlatformEvent>{
               type: "shell.authenticated",
-              profile: context.data.chooseProfile
+              profile: (<any>context.data.chooseProfile).value
             });
             location.reload();
           }
