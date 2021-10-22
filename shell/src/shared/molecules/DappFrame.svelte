@@ -116,6 +116,8 @@ async function init() {
             window.o.publishEvent(<any>{
               type: "new_message",
             });
+            var audio = new Audio('blblblbl.mp3');
+            audio.play();
           } else {
             window.o.publishEvent(<any>{
               type: "blockchain_event",
