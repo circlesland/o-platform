@@ -412,7 +412,9 @@ function buildCardModel(chat) {
         {#if contactProfile}
           {#if contactProfile.contactAddressProfile}
             {contactProfile.contactAddressProfile.firstName}
-            {contactProfile.contactAddressProfile.lastName}
+            {contactProfile.contactAddressProfile.lastName
+              ? contactProfile.contactAddressProfile.lastName
+              : ""}
           {/if}
         {/if}
       </div>
