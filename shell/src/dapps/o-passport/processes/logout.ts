@@ -3,14 +3,17 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+
 import { push } from "svelte-spa-router";
-import {LogoutDocument} from "../../../shared/api/data/types";
-import {getOpenLogin} from "../../../shared/openLogin";
+import { LogoutDocument } from "../../../shared/api/data/types";
+import { getOpenLogin } from "../../../shared/openLogin";
 
 export type LogoutContextData = {
+  successAction: (data: LogoutContextData) => void;
   loginEmail: string;
   checkSeedPhrase?: string;
   lastName?: string;
+  reLogin?: boolean;
   avatar?: {
     bytes: Buffer;
     mimeType: string;
@@ -39,7 +42,6 @@ const processDefinition = (processId: string) =>
         id: "logout",
         invoke: {
           src: async (context) => {
-
             const openLogin = await getOpenLogin();
 
             sessionStorage.removeItem("circlesKey");
@@ -63,6 +65,11 @@ const processDefinition = (processId: string) =>
       success: {
         type: "final",
         id: "success",
+        entry: (context) => {
+          if (context.data.successAction) {
+            context.data.successAction(context.data);
+          }
+        },
         data: (context, event: any) => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut",
