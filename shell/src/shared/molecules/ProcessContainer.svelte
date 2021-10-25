@@ -278,7 +278,7 @@ function subscribeToProcess() {
           if (promptEvent.navigation.canGoBack && !isOnlyEditablePage) {
             window.o.publishEvent({ type: "process.canGoBack" });
           }
-          if (promptEvent.navigation.canSkip) {
+          if (promptEvent.navigation.canSkip && !isOnlyEditablePage) {
             window.o.publishEvent({ type: "process.canSkip" });
           }
         }
