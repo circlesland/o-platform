@@ -202,13 +202,7 @@ import DappFrame from "src/shared/molecules/DappFrame.svelte";
 import NotFound from "src/shared/pages/NotFound.svelte";
 import { interpret } from "xstate";
 import { initMachine } from "./dapps/o-onboarding/processes/init";
-import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import {
-  LastUbiTransactionDocument,
-  ProfileBySafeAddressDocument,
-} from "./shared/api/data/types";
-import { Banking } from "./dapps/o-banking/banking";
-import { UbiTimer } from "./shared/ubiTimer";
+import {ubiMachine} from "./shared/ubiTimer2";
 
 /*
   RpcGateway.get().eth.getPendingTransactions().then(o => {
@@ -216,10 +210,17 @@ import { UbiTimer } from "./shared/ubiTimer";
   });
    */
 
-// new UbiTimer().init();
+interpret(ubiMachine)
+  .onEvent((event) => {
+    console.log("UBI machine event:", event);
+  })
+  .onTransition((state) => {
+    console.log("UBI machine transition:", state.value);
+  })
+  .start();
 
 window.runInitMachine = () => {
-  var m = interpret(initMachine)
+  interpret(initMachine)
     .onEvent((event) => {
       // console.log("InitMachine event:", event);
     })
