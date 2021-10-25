@@ -17,11 +17,13 @@ let amount: string =
   context.data && context.data.tokens ? context.data.tokens.amount : "";
 let maxAmount: string = "0";
 let selected = context.data.tokens ? context.data.tokens.currency : "crc";
-let selectedCurrency = context.params.currencies.find((o) => o.value === "crc");
+let selectedCurrency = context.params.currencies.find(
+  (o) => o.value === selected
+);
 
-$: selectedCurrency = context.data.tokens
-  ? context.data.tokens.currency
-  : context.params.currencies.find((o) => o.value === selected);
+$: selectedCurrency = context.params.currencies.find(
+  (o) => o.value === selected
+);
 
 $: {
   if (selected && context.data.maxFlows) {
