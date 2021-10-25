@@ -13,8 +13,8 @@ import gql from "graphql-tag";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import DropDownString from "@o-platform/o-editors/src/dropdownItems/DropDownString.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
-import {AddressEoaMap, Eoa, KeyManager} from "../../../data/keyManager";
-import NumberEditor from "../../../../../../../packages/o-editors/src/NumberEditor.svelte";
+import { AddressEoaMap, Eoa, KeyManager } from "../../../data/keyManager";
+import PinInputEditor from "@o-platform/o-editors/src/Pin/PinInputEditor.svelte";
 import * as yup from "yup";
 
 export type ConnectSafeContextData = {
@@ -71,37 +71,45 @@ const processDefinition = (processId: string) =>
             await keyManager.load();
             context.data.availableKeys = keyManager.eoas;
           },
-          onDone: "#checkLocalKeys"
-        }
+          onDone: "#checkLocalKeys",
+        },
       },
       checkLocalKeys: {
         id: "checkLocalKeys",
         entry: () => console.log("connectSafe2/checkLocalKeys/entry"),
         //always: "#seedPhrase",
-        always: [{
-          cond: (context, event) => {
-            const availableKeys = Object.values(context.data.availableKeys);
-            const result = availableKeys.filter(o => o.isOwner && o.encryptedPrivateKey).length > 0;
-            return result;
+        always: [
+          {
+            cond: (context, event) => {
+              const availableKeys = Object.values(context.data.availableKeys);
+              const result =
+                availableKeys.filter((o) => o.isOwner && o.encryptedPrivateKey)
+                  .length > 0;
+              return result;
+            },
+            target: "#unlockKeyPin",
           },
-          target: "#unlockKeyPin"
-        }, {
-          cond: (context, event) => {
-            const availableKeys = Object.values(context.data.availableKeys);
-            const result = availableKeys.filter(o => o.isOwner && o.encryptedPrivateKey).length == 0;
-            return result;
+          {
+            cond: (context, event) => {
+              const availableKeys = Object.values(context.data.availableKeys);
+              const result =
+                availableKeys.filter((o) => o.isOwner && o.encryptedPrivateKey)
+                  .length == 0;
+              return result;
+            },
+            target: "#seedPhrase",
           },
-          target: "#seedPhrase"
-        }]
+        ],
       },
       unlockKeyPin: prompt<ConnectSafeContext, any>({
         id: "unlockKeyPin",
         field: "unlockKeyPin",
-        component: NumberEditor,
+        component: PinInputEditor,
         isSensitive: true,
         params: (context) => {
-          const eoa = Object.values(context.data.availableKeys)
-            .filter(o => o.isOwner && o.encryptedPrivateKey)[0];
+          const eoa = Object.values(context.data.availableKeys).filter(
+            (o) => o.isOwner && o.encryptedPrivateKey
+          )[0];
           return {
             view: editorContent.unlockPin,
             label: `Please enter the PIN for key '${eoa.name}'`,
@@ -117,22 +125,26 @@ const processDefinition = (processId: string) =>
         id: "unlockKey",
         invoke: {
           src: async (context, event) => {
-            const key = Object.values(context.data.availableKeys).filter(o => o.isOwner && o.encryptedPrivateKey)[0];
-            if (!key)
-              throw new Error(`WTF?!`)
+            const key = Object.values(context.data.availableKeys).filter(
+              (o) => o.isOwner && o.encryptedPrivateKey
+            )[0];
+            if (!key) throw new Error(`WTF?!`);
 
             const km = new KeyManager(context.data.safeAddress);
             await km.load();
-            const decryptedKey = await km.getKey(key.address, context.data.unlockKeyPin);
+            const decryptedKey = await km.getKey(
+              key.address,
+              context.data.unlockKeyPin
+            );
 
             if (!decryptedKey) {
-              throw new Error(`Wrong pin?`)
+              throw new Error(`Wrong pin?`);
             }
 
             sessionStorage.setItem("circlesKey", decryptedKey);
           },
-          onDone: "#checkSafeAddress"
-        }
+          onDone: "#checkSafeAddress",
+        },
       },
       seedPhrase: prompt<ConnectSafeContext, any>({
         field: "seedPhrase",
@@ -155,45 +167,59 @@ const processDefinition = (processId: string) =>
             let account: Account;
 
             try {
-              keyFromMnemonic = "0x" + bip39.mnemonicToEntropy(context.data.seedPhrase);
+              keyFromMnemonic =
+                "0x" + bip39.mnemonicToEntropy(context.data.seedPhrase);
             } catch (e) {
-              context.messages["seedPhrase"] = `The seedphrase cannot be converted to a private key. Please double check it.`;
+              context.messages[
+                "seedPhrase"
+              ] = `The seedphrase cannot be converted to a private key. Please double check it.`;
               throw e;
             }
 
             try {
-              account = RpcGateway.get().eth.accounts.privateKeyToAccount(keyFromMnemonic);
+              account =
+                RpcGateway.get().eth.accounts.privateKeyToAccount(
+                  keyFromMnemonic
+                );
             } catch (e) {
-              context.messages["seedPhrase"] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
+              context.messages[
+                "seedPhrase"
+              ] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
               throw e;
             }
 
             if (!context.data.safeAddress) {
               // If the flow was initialized without safe-address ..
-              const graph = await window.o.theGraphClient.client.subscribeToResult();
+              const graph =
+                await window.o.theGraphClient.client.subscribeToResult();
               const foundSafes = await graph.query({
-                query: gql`query user($id:String!) {
-                  user(id: $id) {
-                    id
-                    safeAddresses
+                query: gql`
+                  query user($id: String!) {
+                    user(id: $id) {
+                      id
+                      safeAddresses
+                    }
                   }
-                }`,
+                `,
                 variables: {
-                  id: account.address.toLowerCase()
-                }
+                  id: account.address.toLowerCase(),
+                },
               });
 
               if (foundSafes.errors && foundSafes.errors.length) {
-                const msg = `An error occurred while we tried to find your safe: ${JSON.stringify(foundSafes.errors)}`;
+                const msg = `An error occurred while we tried to find your safe: ${JSON.stringify(
+                  foundSafes.errors
+                )}`;
                 context.messages["seedPhrase"] = msg;
-                throw new Error(msg)
+                throw new Error(msg);
               }
 
-              context.data.foundSafeAddresses = foundSafes.data.user?.safeAddresses ?? [];
+              context.data.foundSafeAddresses =
+                foundSafes.data.user?.safeAddresses ?? [];
               if (!context.data.foundSafeAddresses.length) {
                 const msg = `We couldn't find a safe for your account ${account.address}`;
                 context.messages["seedPhrase"] = msg;
-                throw new Error(msg)
+                throw new Error(msg);
               }
             }
 
@@ -206,44 +232,54 @@ const processDefinition = (processId: string) =>
             await km.load();
             await km.setKey(account.address, "123456", keyFromMnemonic);
           },
-          onDone: [{
-            cond: (context) => (context.messages["seedPhrase"]?.trim() ?? "") !== "",
-            target: "#seedPhrase"
-          }, {
-            cond: (context) => context.data.foundSafeAddresses?.length > 1,
-            target: "#safeAddress"
-          }, {
-            cond: (context) => context.data.foundSafeAddresses?.length == 1,
-            actions: (context) => context.data.safeAddress = context.data.foundSafeAddresses[0],
-            target: "#checkSafeAddress"
-          }, {
-            target: "#checkSafeAddress"
-          }],
-          onError: "#seedPhrase"
-        }
+          onDone: [
+            {
+              cond: (context) =>
+                (context.messages["seedPhrase"]?.trim() ?? "") !== "",
+              target: "#seedPhrase",
+            },
+            {
+              cond: (context) => context.data.foundSafeAddresses?.length > 1,
+              target: "#safeAddress",
+            },
+            {
+              cond: (context) => context.data.foundSafeAddresses?.length == 1,
+              actions: (context) =>
+                (context.data.safeAddress = context.data.foundSafeAddresses[0]),
+              target: "#checkSafeAddress",
+            },
+            {
+              target: "#checkSafeAddress",
+            },
+          ],
+          onError: "#seedPhrase",
+        },
       },
       safeAddress: prompt({
         field: "safeAddress",
         component: DropdownSelectEditor,
         params: <DropdownSelectorParams<ConnectSafeContext, string, string>>{
-          label: "We found multiple safes for your account. Please select the one you want to connect.",
+          label:
+            "We found multiple safes for your account. Please select the one you want to connect.",
           placeholder: "Click to select a safe",
           submitButtonText: "Connect",
           itemTemplate: DropDownString,
-          getKey: (safeAddress:any) => safeAddress.value,
-          getLabel: (safeAddress:any) => safeAddress.label,
+          getKey: (safeAddress: any) => safeAddress.value,
+          getLabel: (safeAddress: any) => safeAddress.label,
           choices: {
             byKey: async (key: string, context) => {
-              return context.data.foundSafeAddresses.find(o => o == key);
+              return context.data.foundSafeAddresses.find((o) => o == key);
             },
-            find: async (filter: string|undefined, context) => {
-              return context.data.foundSafeAddresses.filter(o => o.toLowerCase().startsWith(filter?.toLowerCase() ?? ""));
+            find: async (filter: string | undefined, context) => {
+              return context.data.foundSafeAddresses.filter((o) =>
+                o.toLowerCase().startsWith(filter?.toLowerCase() ?? "")
+              );
             },
           },
         },
         navigation: {
           next: "#checkSafeAddress",
-        }
+        },
       }),
       checkSafeAddress: {
         id: "checkSafeAddress",
@@ -257,8 +293,8 @@ const processDefinition = (processId: string) =>
               );*/
               await RpcGateway.trigger(async (web3) => {
                 const safeProxy = new GnosisSafeProxy(
-                    web3,
-                    context.data.safeAddress
+                  web3,
+                  context.data.safeAddress
                 );
                 context.data.safeOwners = await safeProxy.getOwners();
                 /*console.log(
@@ -271,8 +307,8 @@ const processDefinition = (processId: string) =>
                 throw e;
               }
               context.messages[
-                  "safeAddress"
-                  ] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Is the address right?`;
+                "safeAddress"
+              ] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Is the address right?`;
               /* console.log(
                   `Checking if safe ${context.data.safeAddress} exists .. Safe doesn't exist.`,
                   e

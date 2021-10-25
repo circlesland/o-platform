@@ -2,6 +2,8 @@
 import { EditorContext } from "./../editorContext";
 import ProcessNavigation from "./../ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
+import { logout } from "@o-platform/shell/src/dapps/o-passport/processes/logout";
+import { identify } from "@o-platform/shell/src/dapps/o-passport/processes/identify/identify2";
 import Pin from "./PinInput.svelte";
 import { onMount } from "svelte";
 
@@ -51,10 +53,23 @@ function onkeydown(e: KeyboardEvent) {
     </div>
   {/if}
 
-  <Pin
-    size="{6}"
-    bind:pin="{_context.data[context.field]}"
-    on:finished="{submitHandler}" />
+  <div class="m-auto w-min">
+    <Pin
+      size="{6}"
+      bind:pin="{_context.data[context.field]}"
+      on:finished="{submitHandler}" />
+
+    <div class="mt-2 text-right">
+      <span
+        class="mt-4 text-xs link link-primary"
+        on:click="{() =>
+          window.o.runProcess(logout, {
+            successAction: () => {
+              window.o.runProcess(identify, { redirectTo: '/dashboard' });
+            },
+          })}">Forgot your Pin?</span>
+    </div>
+  </div>
 
   <ProcessNavigation on:buttonClick="{submitHandler}" context="{context}" />
 </div>
