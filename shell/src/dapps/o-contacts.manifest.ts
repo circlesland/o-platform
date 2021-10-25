@@ -23,7 +23,7 @@ export interface DappState {
 const index: Page<any, DappState> = {
   routeParts: [],
   component: Contacts,
-  title: "Contacts",
+  title: "Friends",
   icon: "friends",
   type: "page",
 };
@@ -209,5 +209,5 @@ export const friends: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, chat, chatdetail, graph, profile],
+  routables: [chat, index, chatdetail, graph, profile],
 };
