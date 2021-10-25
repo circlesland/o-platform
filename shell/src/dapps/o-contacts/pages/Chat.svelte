@@ -53,7 +53,7 @@ onDestroy(() => shellEventSubscription.unsubscribe());
   
 SimpleHeader(runtimeDapp="{runtimeDapp}" routable="{routable}")
 
-div.px-4.mx-auto.-mt-3.mb-14(class='md:w-2/3 xl:w-1/2')
+div.px-4.mx-auto.-mt-3.mb-20(class='md:w-2/3 xl:w-1/2')
   +if('!contacts && !error')
     section.flex.items-center.justify-center.mb-2
       div.flex.items-center.w-full.p-4.space-x-2.bg-white.shadow

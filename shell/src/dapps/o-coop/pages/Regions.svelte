@@ -1,13 +1,11 @@
 <script lang="ts">
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import {
-  Organisation,
-} from "../../../shared/api/data/types";
+import { Organisation } from "../../../shared/api/data/types";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import OrganisationCard from "../atoms/OrganisationCard.svelte";
 import List from "../../../shared/molecules/Lists/List.svelte";
-import {RegionsDocument} from "../../../shared/api/data/types";
+import { RegionsDocument } from "../../../shared/api/data/types";
 
 let organisations: Organisation[] = null;
 let error: string | undefined = undefined;
@@ -20,7 +18,7 @@ const listArguments = {};
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2 mb-14">
+<div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
   <List
     listItemType="{Organisation}"
     listItemComponent="{OrganisationCard}"
