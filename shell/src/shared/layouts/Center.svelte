@@ -104,13 +104,6 @@ aside {
   min-height: 0;
 }
 
-:global(.keyboard-open #modalAside) {
-  padding-bottom: 0;
-}
-:global(.keyboard-open .modalAsideContentContainer) {
-  margin-bottom: 0rem;
-}
-
 /* Background Blurring for firefox and other non supportive browsers lies in App.svelte through the .blur class */
 @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
   .blur_aside {

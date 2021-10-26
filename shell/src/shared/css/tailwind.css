@@ -414,6 +414,12 @@ button:focus {
   display: none;
 }
 
+.keyboard-open #modalAside {
+  padding-bottom: 0;
+}
+.keyboard-open .modalAsideContentContainer {
+  margin-bottom: 0rem !important;
+}
 .tooltip {
   @apply absolute invisible;
 }

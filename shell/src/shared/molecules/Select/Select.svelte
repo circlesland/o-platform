@@ -330,7 +330,8 @@ beforeUpdate(() => {
       handleFocus();
     } else {
       resetFilter();
-      if (input) input.blur();
+
+      handleBlur();
     }
   }
 
@@ -545,9 +546,12 @@ function handleKeyDown(e) {
 
 function handleFocus() {
   isFocused = true;
-  if (input) input.focus();
+  document.body.classList.add("keyboard-open");
 }
-
+function handleBlur() {
+  isFocused = false;
+  document.body.classList.remove("keyboard-open");
+}
 function removeList() {
   resetFilter();
   activeSelectedValue = undefined;
@@ -724,17 +728,14 @@ onDestroy(() => {
       activeSelectedValue="{activeSelectedValue}"
       isDisabled="{isDisabled}"
       multiFullItemClearable="{multiFullItemClearable}"
-      on:multiItemClear="{handleMultiItemClear}"
-      on:focus="{handleFocus}" />
+      on:multiItemClear="{handleMultiItemClear}" />
   {/if}
 
   {#if isDisabled}
     <input
       {..._inputAttributes}
       bind:this="{input}"
-      on:focus="{handleFocus}"
-      on:focus
-      on:blur
+      on:blur="{handleBlur}"
       bind:value="{filterText}"
       placeholder="{placeholderText}"
       style="{inputStyles}"
@@ -755,9 +756,7 @@ onDestroy(() => {
           {staticList ? 'padding-left: 35px' : ''}"
           {..._inputAttributes}
           bind:this="{input}"
-          on:focus
-          on:blur
-          on:focus="{handleFocus}"
+          on:blur="{handleBlur}"
           bind:value="{filterText}"
           placeholder="{displayableSelectedValue
             ? displayableSelectedValue

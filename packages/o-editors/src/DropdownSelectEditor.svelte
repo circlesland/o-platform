@@ -120,7 +120,7 @@ function toggleInputView() {
         <Select
           name="searchTerm"
           autoComplete="off"
-          isFocused="{true}"
+          isFocused="{false}"
           selectedValue="{selected}"
           loadOptions="{(searchString) =>
             context.params.choices.find(searchString, context)}"
@@ -140,8 +140,6 @@ function toggleInputView() {
           on:select="{handleSelect}"
           bind:this="{selectComponent}"
           bind:filterText
-          on:focus
-          on:blur
           on:buttonClick="{submitHandler}" />
       {/if}
       {#if context.params.allowAlternativeInput}
