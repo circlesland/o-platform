@@ -14,6 +14,7 @@ import isOutOfViewport from "./utils/isOutOfViewport";
 import debounce from "./utils/debounce";
 import Icons from "../../molecules/Icons.svelte";
 import DefaultClearIcon from "./ClearIcon.svelte";
+import { isMobile } from "src/shared/functions/isMobile";
 
 const dispatch = createEventDispatcher();
 export let container = undefined;
@@ -546,11 +547,15 @@ function handleKeyDown(e) {
 
 function handleFocus() {
   isFocused = true;
-  document.body.classList.add("keyboard-open");
+  if (isMobile()) {
+    document.body.classList.add("keyboard-open");
+  }
 }
 function handleBlur() {
   isFocused = false;
-  document.body.classList.remove("keyboard-open");
+  if (isMobile()) {
+    document.body.classList.remove("keyboard-open");
+  }
 }
 function removeList() {
   resetFilter();

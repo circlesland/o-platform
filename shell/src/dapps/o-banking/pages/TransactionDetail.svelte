@@ -74,10 +74,12 @@ onMount(async () => {
       transfers: hubTransfer.transfers,
     };
   }
-  targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
-  message = transfer.tags?.find(
-    (o) => o.typeId === "o-banking:transfer:message:1"
-  )?.value;
+  if (transfer) {
+    targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
+    message = transfer.tags?.find(
+      (o) => o.typeId === "o-banking:transfer:message:1"
+    )?.value;
+  }
 });
 function openDetail(transfer: ProfileEvent) {
   if (transfer.type == "crc_hub_transfer") {

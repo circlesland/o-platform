@@ -71,9 +71,8 @@ function onkeydown(e: KeyboardEvent) {
         class="flex flex-row w-full bg-gray-100 mainContent"
         class:mb-16="{layout.dialogs.center &&
           !layout.dialogs.center.isOpen &&
-          dapp === 'homepage:1'}"
-        class:blur="{layout.dialogs.center && layout.dialogs.center.isOpen}">
-        <div class="fixed z-50">
+          dapp === 'homepage:1'}">
+        <div class="z-50">
           {#if layout.dialogs.left && layout.dialogs.left.isOpen}
             {#if $media.small}
               <LeftMobile>

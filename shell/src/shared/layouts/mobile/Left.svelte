@@ -33,7 +33,7 @@ let x = -500;
   z-index: 99;
   background-color: rgba(177, 192, 200, 0.4);
   position: absolute;
-  top: 48px;
+  top: 0;
   left: 0;
   bottom: 0;
 
