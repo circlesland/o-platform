@@ -9,7 +9,6 @@ import NotificationViewChatMessage from "./NotificationViewer/atoms/Notification
 import NotificationViewUbi from "./NotificationViewer/NotificationViewUbi.svelte";
 import NotificationViewTrust from "./NotificationViewer/atoms/NotificationViewTrust.svelte";
 import NotificationViewTransfer from "./NotificationViewer/atoms/NotificationViewTransfer.svelte";
-import NotificationViewMutualFriends from "./NotificationViewer/atoms/NotificationViewMutualFriends.svelte";
 import { inbox } from "../../../shell/src/shared/stores/inbox";
 
 export let context: NotificationViewerContext;

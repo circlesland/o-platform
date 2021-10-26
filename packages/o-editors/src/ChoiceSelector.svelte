@@ -9,7 +9,6 @@ onMount(() => {
   if (!context.editorDirtyFlags) {
     context.editorDirtyFlags = {};
   }
-  context.editorDirtyFlags[context.field] = true;
 });
 
 function submit(selected: { key: string; label: string }) {
@@ -17,6 +16,7 @@ function submit(selected: { key: string; label: string }) {
   event.data = {};
   event.data[context.field] = selected;
   context.data[context.field] = selected;
+  context.editorDirtyFlags[context.field] = true;
   context.process.sendAnswer(event);
 }
 </script>

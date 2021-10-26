@@ -15,11 +15,11 @@ onMount(() => {
   if (!context.editorDirtyFlags) {
     context.editorDirtyFlags = {};
   }
-  context.editorDirtyFlags[context.field] = true;
 });
 
 const submitHandler = () => {
   const answer = new Continue();
+  context.editorDirtyFlags[context.field] = true;
   answer.data = context.data;
   context.process.sendAnswer(answer);
 };

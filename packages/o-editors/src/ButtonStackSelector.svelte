@@ -11,7 +11,7 @@ onMount(() => {
   if (!context.editorDirtyFlags) {
     context.editorDirtyFlags = {};
   }
-  context.editorDirtyFlags[context.field] = true;
+  //context.editorDirtyFlags[context.field] = true;
 });
 
 function submit(selected: { key: string; label: string }) {

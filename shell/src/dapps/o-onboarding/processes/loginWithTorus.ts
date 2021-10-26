@@ -68,7 +68,6 @@ const processDefinition = (processId: string) =>
         chooseFlow: promptChoice({
           id: "chooseFlow",
           component: ButtonStackSelector,
-          entry: () => console.log("chooseFlow"),
           params: {
             view: {
               title: "Welcome to Cirles Land",
@@ -111,12 +110,14 @@ const processDefinition = (processId: string) =>
 
         google: {
           id: "google",
-          entry: () => {
+          entry: [() => {
             window.o.publishEvent(<PlatformEvent>{
               type: "shell.progress",
               message: "Please wait, we're Signing you in",
-            });
-          },
+            })
+          }, (context) => {
+            context.dirtyFlags = {};
+          }],
           invoke: {
             src: async (context) => {
               /*
@@ -172,12 +173,14 @@ const processDefinition = (processId: string) =>
         },
         apple: {
           id: "apple",
-          entry: () => {
+          entry: [() => {
             window.o.publishEvent(<PlatformEvent>{
               type: "shell.progress",
               message: "Please wait, we're Signing you in",
-            });
-          },
+            })
+          }, (context) => {
+            context.dirtyFlags = {};
+          }],
           invoke: {
             src: async (context) => {
               const openLogin = await getOpenLogin();
@@ -213,12 +216,14 @@ const processDefinition = (processId: string) =>
         },
         github: {
           id: "github",
-          entry: () => {
+          entry: [() => {
             window.o.publishEvent(<PlatformEvent>{
               type: "shell.progress",
               message: "Please wait, we're Signing you in",
-            });
-          },
+            })
+          }, (context) => {
+            context.dirtyFlags = {};
+          }],
           invoke: {
             src: async (context) => {
               const openLogin = await getOpenLogin();
@@ -339,6 +344,9 @@ const processDefinition = (processId: string) =>
         }),
         unlockKey: {
           id: "unlockKey",
+          entry: (context) => {
+            context.dirtyFlags = {};
+          },
           invoke: {
             src: async (context) => {
               const km = new KeyManager(null);

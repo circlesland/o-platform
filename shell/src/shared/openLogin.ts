@@ -5,7 +5,7 @@ let openLogin: OpenLogin;
 export async function getOpenLogin() {
   if (!openLogin) {
     openLogin = new OpenLogin({
-      clientId: "BDDPr08kYwSJM7PW6dj7WR7C5IB64iloOcJBLjbdu8ZBOgOZ_8lxSMsmqbdCCZOBEWbFarpsgGOu5lmuQa8pl1c",
+      clientId: "BDRsIztLb9k7boO6mmiQXudEiF0FaIuQEOtB06Ege7BklGMXV9j5xKIQw5O7IFMo5cDxMRi11X_jXT3JDqzr1jk",
       network: "testnet",
       uxMode: "popup", // default is redirect , popup mode is also supported
     });

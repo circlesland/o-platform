@@ -9,13 +9,13 @@ onMount(() => {
   if (!context.editorDirtyFlags) {
     context.editorDirtyFlags = {};
   }
-  context.editorDirtyFlags[context.field] = true;
 });
 
 function submit(selected: { key: string; label: string }) {
   const event = new Continue();
   event.data = {};
   event.data[context.field] = selected;
+  context.editorDirtyFlags[context.field] = true;
   context.data[context.field] = selected;
   context.process.sendAnswer(event);
 }
