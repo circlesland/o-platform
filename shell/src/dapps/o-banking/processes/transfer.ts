@@ -28,6 +28,7 @@ import {
 } from "../../../shared/functions/displayCirclesAmount";
 import { TransactionReceipt } from "web3-core";
 import TransferSummary from "../atoms/TransferSummary.svelte";
+import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -91,7 +92,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
     submitButtonText: "Submit",
   },
   confirm: {
-    title: "Confirm",
+    title: "You are about to transfer",
     description: "",
     submitButtonText: "Send Money",
   },
@@ -328,7 +329,7 @@ const processDefinition = (processId: string) =>
               target: "#message",
             },
             {
-              target: "#prepareSummary",
+              target: "#acceptSummary",
             },
           ],
           onError: "#error",
@@ -343,84 +344,18 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           previous: "#tokens",
-          next: "#prepareSummary",
+          next: "#acceptSummary",
           canSkip: () => true,
         },
       }),
-      prepareSummary: {
-        id: "prepareSummary",
-        invoke: {
-          src: async (context) => {
-            const lastName = context.data.recipientProfile.lastName
-              ? context.data.recipientProfile.lastName
-              : "";
-            const to = context.data.recipientProfile.firstName
-              ? context.data.recipientProfile.firstName + " " + lastName
-              : context.data.recipientAddress;
 
-            let toAvatarUrl = context.data.recipientProfile
-              ? context.data.recipientProfile.avatarUrl
-              : null;
-
-            if (context.data.tokens?.currency?.toLowerCase() != "xdai") {
-              toAvatarUrl = toAvatarUrl
-                ? toAvatarUrl
-                : AvataarGenerator.generate(context.data.recipientAddress);
-            } else {
-              toAvatarUrl = toAvatarUrl
-                ? toAvatarUrl
-                : AvataarGenerator.default();
-            }
-
-            if (!context.data.tokens) {
-              throw new Error(`No currency or amount selected`);
-            } else {
-              context.data.summaryHtml = `<span>You are about to transfer</span>
-                <strong class='text-primary text-5xl block mt-2'>
-                    ${context.data.tokens.amount}
-                    ${
-                      currencyLookup[context.data.tokens.currency.toUpperCase()]
-                    }</strong>
-                <span class='block mt-2'>
-                to 
-                </span>
-                <div class=" self-center justify-self-center text-center mt-4">
-                  <div class="w-36 h-36 rounded-full mb-4 mx-auto">
-                    <img
-                      class="rounded-full self-center "
-                      src=${toAvatarUrl}
-                      alt=${to}
-                    />
-                  </div>
-                </div>
-                <div class="self-center flex-grow justify-self-start text-center">
-                  <h2>
-                    ${to}
-                  </h2>
-                </div>
-                <span class='block mt-2'>
-                ${
-                  context.data.message
-                    ? "<b>Purpose:</b><br/>" + context.data.message
-                    : ""
-                }
-                </span>
-                <strong class='text-primary block mt-4'>
-                Do you want to continue?
-                </strong>`;
-            }
-          },
-          onDone: "#acceptSummary",
-          onError: "#error",
-        },
-      },
       acceptSummary: prompt<TransferContext, any>({
         field: "acceptSummary",
-        component: HtmlViewer,
+        component: TransferConfirmation,
         params: {
           view: editorContent.confirm,
           submitButtonText: editorContent.confirm.submitButtonText,
-          html: (context) => context.data.summaryHtml,
+          html: () => "",
         },
         navigation: {
           previous: "#message",
