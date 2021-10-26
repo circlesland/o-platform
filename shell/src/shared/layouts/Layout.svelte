@@ -71,7 +71,8 @@ function onkeydown(e: KeyboardEvent) {
         class="flex flex-row w-full bg-gray-100 mainContent"
         class:mb-16="{layout.dialogs.center &&
           !layout.dialogs.center.isOpen &&
-          dapp === 'homepage:1'}">
+          dapp === 'homepage:1'}"
+        class:blur="{layout.dialogs.center && layout.dialogs.center.isOpen}">
         <div class="z-50">
           {#if layout.dialogs.left && layout.dialogs.left.isOpen}
             {#if $media.small}
@@ -187,6 +188,7 @@ function onkeydown(e: KeyboardEvent) {
     -webkit-transition: all 0.35s ease-in-out;
     -moz-transition: all 0.35s ease-in-out;
     transition: all 0.35s ease-in-out;
+    margin: -9px -1px -41px -11px;
   }
 }
 </style>
