@@ -208,7 +208,7 @@ const processDefinition = (processId: string) =>
               variables: {
                 id: context.data.id,
                 circlesAddress: context.data.circlesAddress,
-                circlesSafeOwner: safeOwnerAddress,
+                circlesSafeOwner: safeOwnerAddress.toLowerCase(),
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 dream: context.data.dream,
