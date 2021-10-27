@@ -41,6 +41,7 @@ export const coop: DappManifest<DappState> = {
   icon: "passport",
   title: "Coops",
   routeParts: ["=coops"],
+  defaultRoute: ["organisations"],
   tag: Promise.resolve("alpha"),
   jumplist: {
     type: "jumplist",
