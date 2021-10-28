@@ -1,17 +1,21 @@
 <script lang="ts">
-  import Icons from "../molecules/Icons.svelte";
+import Icons from "../molecules/Icons.svelte";
 
-  export let title: string = null;
-  export let icon: string = null;
-  export let colorClass: string = null;
+export let title: string = null;
+export let icon: string = null;
+export let colorClass: string = null;
+export let small: boolean = false;
 </script>
 
 <div
   on:click
-  class="flex flex-col items-center flex-grow p-2 text-xs text-center rounded-lg
-  cursor-pointer {colorClass} bg-light-lighter">
-  <div class="text-center">
-    <Icons {icon} />
+  class="flex space-x-2 flex-grow p-3 px-4 text-xs rounded-lg
+  cursor-pointer {colorClass} bg-light-lighter mt-2 mr-2 justify-center items-center">
+  <div class="">
+    <Icons icon="{icon}" size="{4}" />
   </div>
-  <span class="block mt-2 text-3xs sm:text-sm {colorClass}">{title}</span>
+  {#if title}
+    <span class="block text-xs sm:text-sm {colorClass} self-center"
+      >{title}</span>
+  {/if}
 </div>

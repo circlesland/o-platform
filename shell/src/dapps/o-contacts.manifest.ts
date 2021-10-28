@@ -87,11 +87,22 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             });
           },
         },
+        recipientProfile.id
+          ? {
+              key: "chat",
+              icon: "chat",
+              title: "Chat",
+              action: async () => {
+                push("#/friends/chat/" + recipientProfile.circlesAddress);
+              },
+            }
+          : "",
         recipientProfile.youTrust
           ? {
               key: "setTrust",
               icon: "untrust",
               title: "Untrust",
+              colorClass: "text-alert",
               action: async () => {
                 window.o.runProcess(setTrust, {
                   trustLimit: 0,
@@ -116,16 +127,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             },
       ]);
     }
-    if (recipientProfile?.id) {
-      actions = actions.concat({
-        key: "chat",
-        icon: "chat",
-        title: "Chat",
-        action: async () => {
-          push("#/friends/chat/" + recipientProfile.circlesAddress);
-        },
-      });
-    }
+
     if (!recipientProfile) {
       actions = actions.concat({
         key: "setTrust",
