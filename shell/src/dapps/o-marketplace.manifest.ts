@@ -72,7 +72,7 @@ export const marketplace: DappManifest<DappState> = {
       {
         key: "createOffer",
         title: "Create offer",
-        icon: "createoffer",
+        icon: "add",
         action: () => window.o.runProcess(upsertOffer, {}),
       },
     ],

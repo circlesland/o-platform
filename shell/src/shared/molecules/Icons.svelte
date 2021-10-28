@@ -126,7 +126,7 @@ const icons = {
   sendmoney: `<svg class='w-${size} h-${size}' viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M21 1.22363L10 12.2236M21 1.22363L14 21.2236L10 12.2236M21 1.22363L1 8.22363L10 12.2236" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
-  createoffer: `<svg class='w-${size} h-${size}' viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+  add: `<svg class='w-${size} h-${size}' viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M11 1.66663V20.3333M1.66669 11H20.3334" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`,
   network: `<svg class='w-${size} h-${size}' viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">

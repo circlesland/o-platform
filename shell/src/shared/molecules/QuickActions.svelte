@@ -1,8 +1,9 @@
 <script>
 import { clickOutside } from "src/shared/functions/clickOutside.ts";
 import { createEventDispatcher, onMount } from "svelte";
-import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
+
 import { dapps } from "src/loader";
+import DetailActionBar from "./DetailActionBar.svelte";
 
 let categories = [
   {
@@ -48,13 +49,8 @@ const eventDispatcher = createEventDispatcher();
       <div class="text-dark-lightest text-3xs sm:text-sm">
         {catergory.title}
       </div>
-      <div class="flex flex-row items-stretch space-x-4">
-        {#each catergory.items as item}
-          <ActionListItem
-            icon="{item.icon}"
-            title="{item.title}"
-            on:click="{() => item.action()}" />
-        {/each}
+      <div class="">
+        <DetailActionBar actions="{catergory.items}" />
       </div>
     {/each}
   </div>

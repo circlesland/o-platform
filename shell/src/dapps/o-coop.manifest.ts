@@ -2,11 +2,11 @@ import Organisations from "./o-coop/pages/Organisations.svelte";
 import Regions from "./o-coop/pages/Regions.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import {createOrganisation} from "./o-coop/processes/createOrganisation";
-import {ContactsDappState} from "./o-contacts.manifest";
+import { createOrganisation } from "./o-coop/processes/createOrganisation";
+import { ContactsDappState } from "./o-contacts.manifest";
 import OrganisationDetail from "./o-coop/pages/OrganisationDetail.svelte";
-import {addMember} from "./o-coop/processes/addMember";
-import {createRegion} from "./o-coop/processes/createRegion";
+import { addMember } from "./o-coop/processes/addMember";
+import { createRegion } from "./o-coop/processes/createRegion";
 
 const index: Page<any, ContactsDappState> = {
   routeParts: ["=organisations"],
@@ -52,7 +52,7 @@ export const coop: DappManifest<DappState> = {
       return [
         {
           key: "createOrganisation",
-          icon: "createOrganisation",
+          icon: "add",
           title: "Create new organisation",
           action: async () => {
             //alert("Do it!");//
@@ -61,7 +61,7 @@ export const coop: DappManifest<DappState> = {
         },
         {
           key: "createRegion",
-          icon: "createRegion",
+          icon: "add",
           title: "Create new region",
           action: async () => {
             //alert("Do it!");//
@@ -70,13 +70,17 @@ export const coop: DappManifest<DappState> = {
         },
         {
           key: "addMember",
-          icon: "addMember",
+          icon: "add",
           title: "Add a member",
           action: async () => {
             //alert("Do it!");//
-            window.o.runProcess(addMember, {
-              groupId: params.id
-            }, {});
+            window.o.runProcess(
+              addMember,
+              {
+                groupId: params.id,
+              },
+              {}
+            );
           },
         },
       ];
