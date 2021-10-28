@@ -45,6 +45,7 @@ function clickedOutside() {
 }
 
 function switchProfile(profile: Profile) {
+  clickedOutside();
   window.o.publishEvent(<PlatformEvent>{
     type: "shell.loggedOut",
   });
