@@ -28,6 +28,6 @@ const listArguments = {
     listItemComponent="{TransactionCard}"
     fetchQuery="{TransactionTimelineDocument}"
     fetchQueryArguments="{listArguments}"
-    dataKey="events"
+    dataKey="blockchainEvents"
     dataLimit="{100}" />
 </div>

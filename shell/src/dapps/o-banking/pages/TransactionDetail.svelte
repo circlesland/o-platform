@@ -38,8 +38,8 @@ onMount(async () => {
       )}`
     );
   }
-  if (timeline.data.eventByTransactionHash.length > 0) {
-    transfer = timeline.data.eventByTransactionHash[0];
+  if (timeline.data.blockchainEventsByTransactionHash.length > 0) {
+    transfer = timeline.data.blockchainEventsByTransactionHash[0];
   }
   if (transfer && transfer.payload?.__typename == "CrcMinting") {
     const minting = transfer.payload as CrcMinting;

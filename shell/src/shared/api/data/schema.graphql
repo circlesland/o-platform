@@ -20,9 +20,14 @@ interface IEventPayload {
     transaction_hash: String
 }
 
-union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer
+union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | WelcomeMessage
 
 union ProfileOrOrganisation = Organisation | Profile
+
+type AcceptMembershipResult {
+    error: String
+    success: Boolean!
+}
 
 type AddMemberResult {
     error: String
@@ -235,6 +240,20 @@ type InitAggregateState {
     safeFundingTransaction: String
 }
 
+type InvitationCreated implements IEventPayload {
+    code: String!
+    name: String!
+    transaction_hash: String
+}
+
+type InvitationRedeemed implements IEventPayload {
+    code: String!
+    name: String!
+    redeemedBy: String!
+    redeemedBy_profile: Profile
+    transaction_hash: String
+}
+
 type LockOfferResult {
     lockedUntil: String
     success: Boolean!
@@ -245,12 +264,57 @@ type LogoutResponse {
     success: Boolean!
 }
 
+type MemberAdded implements IEventPayload {
+    createdBy: String!
+    createdBy_profile: Profile
+    isAdmin: Boolean!
+    member: String!
+    member_profile: Profile
+    organisation: String!
+    organisation_profile: Organisation
+    transaction_hash: String
+}
+
 type Membership {
+    acceptedAt: String
+    createdAt: String!
+    createdBy: Profile
+    createdByProfileId: Int!
     isAdmin: Boolean!
     organisation: Organisation!
+    rejectedAt: String
+    validTo: String
+}
+
+type MembershipAccepted implements IEventPayload {
+    createdBy: String!
+    createdBy_profile: Profile
+    member: String!
+    member_profile: Profile
+    organisation: String!
+    organisation_profile: Organisation
+    transaction_hash: String
+}
+
+type MembershipOffer implements IEventPayload {
+    createdBy: String!
+    createdBy_profile: Profile
+    isAdmin: Boolean!
+    organisation: String!
+    organisation_profile: Organisation
+    transaction_hash: String
+}
+
+type MembershipRejected implements IEventPayload {
+    member: String!
+    member_profile: Profile
+    organisation: String!
+    organisation_profile: Organisation
+    transaction_hash: String
 }
 
 type Mutation {
+    acceptMembership(membershipId: Int!): AcceptMembershipResult
     acknowledge(until: String!): Boolean!
     addMember(groupId: String!, memberId: Int!): AddMemberResult
     authenticateAt(appId: String!): DelegateAuthInit!
@@ -264,12 +328,14 @@ type Mutation {
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
+    rejectMembership(membershipId: Int!): RejectMembershipResult
     removeMember(groupId: String!, memberId: Int!): RemoveMemberResult
+    requestInvitationOffer(for: String!): Offer!
     requestSessionChallenge(address: String!): String!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     sendMessage(content: String!, toSafeAddress: String!): SendMessageResult!
     tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
-    unlistOffer(offerId: Int!): Boolean!
+    unlistOffer(offerId: LockOfferInput!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
     upsertOffer(data: UpsertOfferInput!): Offer!
     upsertOrganisation(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
@@ -293,7 +359,7 @@ type Offer {
     deliveryTermsTagId: Int!
     description: String
     geonameid: Int!
-    id: Int!
+    id: String!
     maxUnits: Int
     pictureMimeType: String!
     pictureUrl: String!
@@ -320,6 +386,12 @@ type Organisation {
     name: String!
     offers: [Offer!]
     trustsYou: Int
+}
+
+type OrganisationCreated implements IEventPayload {
+    organisation: String!
+    organisation_profile: Organisation
+    transaction_hash: String
 }
 
 type Profile {
@@ -373,21 +445,21 @@ type Purchase {
     purchasedFrom: Profile!
     purchasedFromProfileId: Int!
     purchasedItem: Offer!
-    purchasedOfferId: Int!
+    purchasedOfferId: String!
     status: PurchaseStatus!
 }
 
 type Query {
     balance(safeAddress: String!): String!
     balancesByAsset(safeAddress: String!): [AssetBalance!]!
+    blockchainEvents(fromBlock: Int, pagination: PaginationArgs, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
+    blockchainEventsByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
     chatHistory(contactSafeAddress: String!, pagination: PaginationArgs, safeAddress: String!): [ProfileEvent!]!
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
     commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
     contact(contactAddress: String!, safeAddress: String!): Contact
     contacts(safeAddress: String!): [Contact!]!
-    eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
-    events(fromBlock: Int, pagination: PaginationArgs, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
     findSafeAddressByOwner(owner: String!): [String!]!
     hubSignupTransaction: ProfileEvent
     inbox: [ProfileEvent!]!
@@ -417,6 +489,11 @@ type RedeemClaimedInvitationResult {
     error: String
     success: Boolean!
     transactionHash: String
+}
+
+type RejectMembershipResult {
+    error: String
+    success: Boolean!
 }
 
 type RemoveMemberResult {
@@ -494,10 +571,21 @@ type Version {
     revision: Int!
 }
 
+type WelcomeMessage implements IEventPayload {
+    member: String!
+    member_profile: Profile
+    transaction_hash: String
+}
+
 enum PurchaseStatus {
     INVALID
     ITEM_LOCKED
     PAYMENT_PROVEN
+}
+
+enum SortOrder {
+    ASC
+    DESC
 }
 
 enum TrustDirection {
@@ -516,20 +604,18 @@ input DepositChallenge {
 }
 
 input LockOfferInput {
-    offerId: Int!
+    offerId: String!
 }
 
 input PaginationArgs {
     continueAt: String!
     limit: Int!
+    order: SortOrder!
 }
 
 input PaymentProof {
-    destinations: [String!]!
-    forOfferId: Int!
-    sources: [String!]!
-    tokenOwners: [String!]!
-    values: [String!]!
+    forOfferId: LockOfferInput!
+    transactionHash: String!
 }
 
 input QueryCitiesByGeonameIdInput {
@@ -549,7 +635,7 @@ input QueryCitiesInput {
 input QueryOfferInput {
     categoryTagId: Int
     createdByProfileId: Int
-    id: Int
+    id: String
     publishedAt_gt: String
     publishedAt_lt: String
 }
@@ -592,7 +678,7 @@ input UpsertOfferInput {
     deliveryTermsTagId: Int!
     description: String
     geonameid: Int!
-    id: Int
+    id: String
     maxUnits: Int
     pictureMimeType: String
     pictureUrl: String

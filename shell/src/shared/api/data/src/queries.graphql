@@ -218,9 +218,9 @@ query profilesByName($searchString: String!) {
 }
 
 query transactionTimeline($safeAddress: String!, $pagination: PaginationArgs) {
-  events(
+  blockchainEvents(
     safeAddress: $safeAddress
-    types: ["crc_hub_transfer", "crc_minting"]
+    types: ["CrcHubTransfer", "CrcMinting"]
     pagination: $pagination
   ) {
     timestamp
@@ -1054,10 +1054,10 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
 }
 
 query transactionByHash($safeAddress: String!, $transactionHash: String!) {
-  eventByTransactionHash(
+  blockchainEventsByTransactionHash(
     safeAddress: $safeAddress
     transactionHash: $transactionHash
-    types: ["crc_hub_transfer", "crc_minting"]
+    types: ["CrcHubTransfer", "CrcMinting"]
   ) {
     timestamp
     type

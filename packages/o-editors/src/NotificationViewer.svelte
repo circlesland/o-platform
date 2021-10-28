@@ -17,10 +17,10 @@ let data: any = context.data[context.field];
 let eventData: any = null;
 
 const components = [
-  { type: "chat_message", component: NotificationViewChatMessage },
-  { type: "crc_minting", component: NotificationViewUbi },
-  { type: "crc_trust", component: NotificationViewTrust },
-  { type: "crc_hub_transfer", component: NotificationViewTransfer },
+  { type: "ChatMessage", component: NotificationViewChatMessage },
+  { type: "CrcMinting", component: NotificationViewUbi },
+  { type: "CrcTrust", component: NotificationViewTrust },
+  { type: "CrcHubTransfer", component: NotificationViewTransfer },
 ];
 
 function submit() {
@@ -50,7 +50,7 @@ function buildDataModel(data) {
   }[] = [];
 
   switch (data.type) {
-    case "chat_message":
+    case "ChatMessage":
       notificationType = "chat_message";
       title = `${data.payload.text}`;
 
@@ -67,7 +67,7 @@ function buildDataModel(data) {
         },
       ];
       break;
-    case "crc_minting":
+    case "CrcMinting":
       notificationType = "crc_minting";
       value = data.value;
       actions = [
@@ -85,7 +85,7 @@ function buildDataModel(data) {
       ];
       break;
 
-    case "crc_trust":
+    case "CrcTrust":
       profile = data.payload.can_send_to_profile;
       targetCirclesAddress = data.payload.can_send_to;
       limit = data.payload.limit;
@@ -167,7 +167,7 @@ function buildDataModel(data) {
         ];
       }
       break;
-    case "crc_hub_transfer":
+    case "CrcHubTransfer":
       profile = data.payload.from_profile;
       value = data.value;
       notificationType = "transfer_in";

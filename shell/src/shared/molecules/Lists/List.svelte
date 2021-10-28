@@ -41,6 +41,7 @@ const fetchData = async (paginationArg) => {
     posts = [...posts, ...newBatch];
 
     pagination = {
+      order: "DESC",
       continueAt: newBatch[newBatch.length - 1][selector],
       limit: dataLimit,
     };
