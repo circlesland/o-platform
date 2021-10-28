@@ -382,7 +382,7 @@ function buildCardModel(chat) {
   return {
     safeAddress: chat.safe_address,
     outgoing: outgoing,
-    name: chat.safe_address_profile.firstName,
+    name: chat.safe_address_profile ? chat.safe_address_profile.firstName : chat.safe_address,
     time: chat.timestamp,
     content: {
       notificationType: notificationType,
