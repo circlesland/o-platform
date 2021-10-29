@@ -56,8 +56,8 @@ function goToProfile(e, path?: string) {
     params="{{
       edgeless: false,
       imageProfile: contactProfile,
-      title: displayName,
-      subTitle: message,
+      title: message,
+      subTitle: displayName,
       truncateMain: true,
     }}">
     <div slot="itemCardEnd">
