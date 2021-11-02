@@ -85,7 +85,7 @@ function loadDetailPage(path) {
         push(`#/friends/${target}`);
         e.stopPropagation();
       },
-      title: targetProfile.firstName + ' ' + targetProfile.lastName,
+      title: targetProfile.firstName + ' ' + (!targetProfile.lastName ? "" : targetProfile.lastName),
       subTitle: message ? message : '',
       truncateMain: true,
     }}">
@@ -95,12 +95,21 @@ function loadDetailPage(path) {
         class:text-success="{param.direction === 'in'}"
         class:text-alert="{param.direction === 'out'}">
         <span>
-          {displayCirclesAmount(
-            param ? param.value : "0",
-            param.timestamp,
-            true,
-            $me.displayTimeCircles || $me.displayTimeCircles === undefined
-          )}
+          {#if param.type === "CrcHubTransfer"}
+            {displayCirclesAmount(
+                    param.payload && param.payload.flow ? param.payload.flow.toString() : "0",
+                    param.timestamp,
+                    true,
+                    $me.displayTimeCircles || $me.displayTimeCircles === undefined
+            )}
+          {:else if param.type === "CrcMinting"}
+            {displayCirclesAmount(
+                    param.payload && param.payload.value ? param.payload.value.toString() : "0",
+                    param.timestamp,
+                    true,
+                    $me.displayTimeCircles || $me.displayTimeCircles === undefined
+            )}
+          {/if}
         </span>
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">

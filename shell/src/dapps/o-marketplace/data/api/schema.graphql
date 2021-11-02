@@ -6,6 +6,10 @@ schema {
     subscription: Subscription
 }
 
+interface IAggregatePayload {
+    lastUpdatedAt: String
+}
+
 interface ICity {
     country: String!
     feature_code: String!
@@ -20,7 +24,21 @@ interface IEventPayload {
     transaction_hash: String
 }
 
-union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer
+union AggregatePayload = Contacts | CrcBalance | Members | Memberships
+
+union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | WelcomeMessage
+
+union ProfileOrOrganisation = Organisation | Profile
+
+type AcceptMembershipResult {
+    error: String
+    success: Boolean!
+}
+
+type AddMemberResult {
+    error: String
+    success: Boolean!
+}
 
 type AssetBalance {
     token_address: String!
@@ -96,9 +114,32 @@ type Contact {
     youTrust: Int
 }
 
+type ContactPoint {
+    contactAddress: String!
+    contactAddress_Profile: Profile
+    lastContactAt: String!
+    metadata: [ContactPointSource!]!
+}
+
+type ContactPointSource {
+    directions: [ContactDirection!]!
+    name: String!
+    values: [String!]!
+}
+
+type Contacts implements IAggregatePayload {
+    contacts: [ContactPoint!]!
+    lastUpdatedAt: String!
+}
+
 type CountryStats {
     citizenCount: Int!
     name: String!
+}
+
+type CrcBalance implements IAggregatePayload {
+    balances: [AssetBalance!]!
+    lastUpdatedAt: String!
 }
 
 type CrcHubTransfer implements IEventPayload {
@@ -150,6 +191,12 @@ type CrcTrust implements IEventPayload {
 type CreateInvitationResult {
     createdInviteEoas: [CreatedInvitation!]!
     error: String
+    success: Boolean!
+}
+
+type CreateOrganisationResult {
+    error: String
+    organisation: Organisation
     success: Boolean!
 }
 
@@ -214,6 +261,28 @@ type Goal {
     totalCitizens: Int!
 }
 
+type InitAggregateState {
+    hubSignupTransaction: String
+    invitation: ClaimedInvitation
+    invitationTransaction: String
+    registration: Profile
+    safeFundingTransaction: String
+}
+
+type InvitationCreated implements IEventPayload {
+    code: String!
+    name: String!
+    transaction_hash: String
+}
+
+type InvitationRedeemed implements IEventPayload {
+    code: String!
+    name: String!
+    redeemedBy: String!
+    redeemedBy_profile: Profile
+    transaction_hash: String
+}
+
 type LockOfferResult {
     lockedUntil: String
     success: Boolean!
@@ -224,26 +293,99 @@ type LogoutResponse {
     success: Boolean!
 }
 
+type MemberAdded implements IEventPayload {
+    createdBy: String!
+    createdBy_profile: Profile
+    isAdmin: Boolean!
+    member: String!
+    member_profile: Profile
+    organisation: String!
+    organisation_profile: Organisation
+    transaction_hash: String
+}
+
+type Members implements IAggregatePayload {
+    lastUpdatedAt: String!
+    members: [ProfileOrOrganisation!]!
+}
+
+type Membership {
+    acceptedAt: String
+    createdAt: String!
+    createdBy: Profile
+    createdByProfileId: Int!
+    isAdmin: Boolean!
+    organisation: Organisation!
+    rejectedAt: String
+    validTo: String
+}
+
+type MembershipAccepted implements IEventPayload {
+    createdBy: String!
+    createdBy_profile: Profile
+    member: String!
+    member_profile: Profile
+    organisation: String!
+    organisation_profile: Organisation
+    transaction_hash: String
+}
+
+type MembershipOffer implements IEventPayload {
+    createdBy: String!
+    createdBy_profile: Profile
+    isAdmin: Boolean!
+    organisation: String!
+    organisation_profile: Organisation
+    transaction_hash: String
+}
+
+type MembershipRejected implements IEventPayload {
+    member: String!
+    member_profile: Profile
+    organisation: String!
+    organisation_profile: Organisation
+    transaction_hash: String
+}
+
+type Memberships implements IAggregatePayload {
+    lastUpdatedAt: String!
+    organisations: [Organisation!]!
+}
+
 type Mutation {
+    acceptMembership(membershipId: Int!): AcceptMembershipResult
     acknowledge(until: String!): Boolean!
+    addMember(groupId: String!, memberId: Int!): AddMemberResult
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     createInvitations(for: [String!]!): CreateInvitationResult!
+    createTestInvitation: CreateInvitationResult!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
     lockOffer(data: LockOfferInput!): LockOfferResult!
     logout: LogoutResponse!
     provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
+    rejectMembership(membershipId: Int!): RejectMembershipResult
+    removeMember(groupId: String!, memberId: Int!): RemoveMemberResult
+    requestInvitationOffer(for: String!): Offer!
+    requestSessionChallenge(address: String!): String!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     sendMessage(content: String!, toSafeAddress: String!): SendMessageResult!
     tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
-    unlistOffer(offerId: Int!): Boolean!
+    unlistOffer(offerId: LockOfferInput!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
     upsertOffer(data: UpsertOfferInput!): Offer!
+    upsertOrganisation(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
     upsertProfile(data: UpsertProfileInput!): Profile!
+    upsertRegion(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
     upsertTag(data: UpsertTagInput!): Tag!
+    verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
+}
+
+type NotificationEvent {
+    type: String!
 }
 
 type Offer {
@@ -256,7 +398,7 @@ type Offer {
     deliveryTermsTagId: Int!
     description: String
     geonameid: Int!
-    id: Int!
+    id: String!
     maxUnits: Int
     pictureMimeType: String!
     pictureUrl: String!
@@ -269,6 +411,28 @@ type Offer {
     unlistedAt: String
 }
 
+type Organisation {
+    avatarMimeType: String
+    avatarUrl: String
+    circlesAddress: String
+    circlesSafeOwner: String
+    city: City
+    cityGeonameid: Int
+    createdAt: String!
+    description: String
+    id: Int!
+    members: [ProfileOrOrganisation!]
+    name: String!
+    offers: [Offer!]
+    trustsYou: Int
+}
+
+type OrganisationCreated implements IEventPayload {
+    organisation: String!
+    organisation_profile: Organisation
+    transaction_hash: String
+}
+
 type Profile {
     avatarCid: String
     avatarMimeType: String
@@ -278,17 +442,27 @@ type Profile {
     circlesTokenAddress: String
     city: City
     cityGeonameid: Int
+    claimedInvitation: ClaimedInvitation
     country: String
+    displayTimeCircles: Boolean
     dream: String
     firstName: String!
     id: Int!
     lastEvent: ProfileEvent
     lastName: String
+    memberships: [Membership!]
     newsletter: Boolean
     offers: [Offer!]
     status: String
     trustsYou: Int
     youTrust: Int
+}
+
+type ProfileAggregate {
+    payload: AggregatePayload!
+    safe_address: String!
+    safe_address_profile: Profile
+    type: String!
 }
 
 type ProfileEvent {
@@ -317,28 +491,37 @@ type Purchase {
     purchasedFrom: Profile!
     purchasedFromProfileId: Int!
     purchasedItem: Offer!
-    purchasedOfferId: Int!
+    purchasedOfferId: String!
     status: PurchaseStatus!
 }
 
 type Query {
+    aggregates(safeAddress: String!, types: [AggregateType!]!): [ProfileAggregate!]!
     balance(safeAddress: String!): String!
     balancesByAsset(safeAddress: String!): [AssetBalance!]!
-    chatHistory(contactSafeAddress: String!, safeAddress: String!): [ProfileEvent!]!
+    blockchainEvents(fromBlock: Int, pagination: PaginationArgs, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
+    blockchainEventsByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
+    chatHistory(contactSafeAddress: String!, pagination: PaginationArgs, safeAddress: String!): [ProfileEvent!]!
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
     commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
     contact(contactAddress: String!, safeAddress: String!): Contact
     contacts(safeAddress: String!): [Contact!]!
-    eventByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
-    events(fromBlock: Int, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
+    events(pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
+    findSafeAddressByOwner(owner: String!): [String!]!
+    hubSignupTransaction: ProfileEvent
     inbox: [ProfileEvent!]!
+    initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
+    lastUBITransaction: String
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
     offers(query: QueryOfferInput!): [Offer!]!
+    organisations(pagination: PaginationArgs): [Organisation!]!
+    organisationsByAddress(addresses: [String!]!): [Organisation!]!
     profilesById(ids: [Int!]!): [Profile!]!
     profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
+    regions(pagination: PaginationArgs): [Organisation!]!
     safeFundingTransaction: ProfileEvent
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
@@ -354,6 +537,16 @@ type RedeemClaimedInvitationResult {
     error: String
     success: Boolean!
     transactionHash: String
+}
+
+type RejectMembershipResult {
+    error: String
+    success: Boolean!
+}
+
+type RemoveMemberResult {
+    error: String
+    success: Boolean!
 }
 
 type RequestUpdateSafeResponse {
@@ -391,7 +584,7 @@ type Stats {
 }
 
 type Subscription {
-    events: [ProfileEvent!]!
+    events: NotificationEvent!
 }
 
 type Tag {
@@ -426,10 +619,52 @@ type Version {
     revision: Int!
 }
 
+type WelcomeMessage implements IEventPayload {
+    member: String!
+    member_profile: Profile
+    transaction_hash: String
+}
+
+enum AggregateType {
+    Contacts
+    CrcBalance
+    Members
+    Memberships
+}
+
+enum ContactDirection {
+    In
+    Out
+}
+
+enum EventType {
+    ChatMessage
+    CrcHubTransfer
+    CrcMinting
+    CrcSignup
+    CrcTokenTransfer
+    CrcTrust
+    EthTransfer
+    GnosisSafeEthTransfer
+    InvitationCreated
+    InvitationRedeemed
+    MemberAdded
+    MembershipAccepted
+    MembershipOffer
+    MembershipRejected
+    OrganisationCreated
+    WelcomeMessage
+}
+
 enum PurchaseStatus {
     INVALID
     ITEM_LOCKED
     PAYMENT_PROVEN
+}
+
+enum SortOrder {
+    ASC
+    DESC
 }
 
 enum TrustDirection {
@@ -448,15 +683,18 @@ input DepositChallenge {
 }
 
 input LockOfferInput {
-    offerId: Int!
+    offerId: String!
+}
+
+input PaginationArgs {
+    continueAt: String!
+    limit: Int!
+    order: SortOrder!
 }
 
 input PaymentProof {
-    destinations: [String!]!
-    forOfferId: Int!
-    sources: [String!]!
-    tokenOwners: [String!]!
-    values: [String!]!
+    forOfferId: LockOfferInput!
+    transactionHash: String!
 }
 
 input QueryCitiesByGeonameIdInput {
@@ -476,7 +714,7 @@ input QueryCitiesInput {
 input QueryOfferInput {
     categoryTagId: Int
     createdByProfileId: Int
-    id: Int
+    id: String
     publishedAt_gt: String
     publishedAt_lt: String
 }
@@ -519,13 +757,23 @@ input UpsertOfferInput {
     deliveryTermsTagId: Int!
     description: String
     geonameid: Int!
-    id: Int
+    id: String
     maxUnits: Int
     pictureMimeType: String
     pictureUrl: String
     pricePerUnit: String!
     title: String!
     unitTagId: Int!
+}
+
+input UpsertOrganisationInput {
+    avatarMimeType: String
+    avatarUrl: String
+    circlesAddress: String
+    cityGeonameid: Int
+    description: String
+    id: Int
+    name: String!
 }
 
 input UpsertProfileInput {
@@ -537,6 +785,7 @@ input UpsertProfileInput {
     circlesTokenAddress: String
     cityGeonameid: Int
     country: String
+    displayTimeCircles: Boolean
     dream: String
     emailAddress: String
     firstName: String!

@@ -1,54 +1,67 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import { me } from "../../../shared/stores/me";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { onDestroy, onMount } from "svelte";
-import { Contact, ContactsDocument } from "../../../shared/api/data/types";
-import ChatListCard from "../atoms/ChatListCard.svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+  import {me} from "../../../shared/stores/me";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {onDestroy, onMount} from "svelte";
+  import {Contact, ContactsDocument, EventType} from "../../../shared/api/data/types";
+  import ChatListCard from "../atoms/ChatListCard.svelte";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
+  import List from "../../../shared/molecules/Lists/List.svelte";
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
 
-let error: string | undefined = undefined;
-let contacts: Contact[] = [];
-let shellEventSubscription: Subscription;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
-async function reload() {
-  const safeAddress = $me.circlesAddress;
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const contactsResult = await apiClient.query({
-    query: ContactsDocument,
-    variables: {
-      safeAddress,
-    },
-  });
-  if (contactsResult.errors?.length > 0) {
-    error = `Couldn't read the contacts of safe ${safeAddress}: \n${contactsResult.errors
-      .map((o) => o.message)
-      .join("\n")}`;
-    return;
-  }
-  contacts = contactsResult.data.contacts;
-}
+  let error: string | undefined = undefined;
+  let contacts: Contact[] = [];
+  let shellEventSubscription: Subscription;
 
-onMount(async () => {
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (event.type != "shell.refresh" || (<any>event).dapp != "chat:1") {
-        return;
-      }
-      await reload();
+  async function reload() {
+    const safeAddress = $me.circlesAddress;
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const contactsResult = await apiClient.query({
+      query: ContactsDocument,
+      variables: {
+        safeAddress,
+      },
+    });
+    if (contactsResult.errors?.length > 0) {
+      error = `Couldn't read the contacts of safe ${safeAddress}: \n${contactsResult.errors
+              .map((o) => o.message)
+              .join("\n")}`;
+      return;
     }
-  );
-  await reload();
-});
+    contacts = contactsResult.data.contacts;
+  }
 
-onDestroy(() => shellEventSubscription.unsubscribe());
+  onMount(async () => {
+    shellEventSubscription = window.o.events.subscribe(
+            async (event: PlatformEvent) => {
+              if (event.type != "shell.refresh" || (<any>event).dapp != "chat:1") {
+                return;
+              }
+              await reload();
+            }
+    );
+    await reload();
+  });
+
+  onDestroy(() => shellEventSubscription.unsubscribe());
 </script>
-
+<!--
+<List limit="{100}"
+      queryArguments="{{
+          safeAddress: $me.circlesAddress,
+          types: [
+            EventType.ChatMessage
+          ]
+        }}"
+      views={{
+          [EventType.ChatMessage]: ChatListCard
+        }} />
+-->
 <template lang="pug">
   
 SimpleHeader(runtimeDapp="{runtimeDapp}" routable="{routable}")

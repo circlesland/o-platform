@@ -3,7 +3,7 @@ import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount"
 import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
 import NotificationProfile from "./NotificationProfile.svelte";
 import Icons from "src/shared/molecules/Icons.svelte";
-import {me} from "../../../../../shell/src/shared/stores/me";
+import {me} from "../../stores/me";
 export let eventData: any;
 </script>
 

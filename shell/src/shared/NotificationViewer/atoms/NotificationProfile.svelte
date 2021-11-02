@@ -1,6 +1,6 @@
 <script lang="ts">
-import Profile from "src/shared/api/data/types";
 import UserImage from "src/shared/atoms/UserImage.svelte";
+import {Profile} from "../../api/data/types";
 
 export let profile: Profile;
 export let targetCirclesAddress: string;

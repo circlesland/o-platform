@@ -1,6 +1,5 @@
 <script lang="ts">
-import { CommonTrustDocument } from "src/shared/api/data/types";
-import Profile from "src/shared/api/data/types";
+  import {CommonTrustDocument, Profile} from "src/shared/api/data/types";
 
 import UserImage from "src/shared/atoms/UserImage.svelte";
 export const profile: Profile = undefined;

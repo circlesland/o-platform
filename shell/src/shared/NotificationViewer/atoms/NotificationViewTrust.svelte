@@ -1,5 +1,4 @@
 <script lang="ts">
-import Icons from "src/shared/molecules/Icons.svelte";
 import NotificationProfile from "./NotificationProfile.svelte";
 import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
 export let eventData: any;

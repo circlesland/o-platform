@@ -26,6 +26,15 @@ export type AddMemberResult = {
   success: Scalars['Boolean'];
 };
 
+export type AggregatePayload = Contacts | CrcBalance | Members | Memberships;
+
+export enum AggregateType {
+  Contacts = 'Contacts',
+  CrcBalance = 'CrcBalance',
+  Members = 'Members',
+  Memberships = 'Memberships'
+}
+
 export type AssetBalance = {
   __typename?: 'AssetBalance';
   token_address: Scalars['String'];
@@ -109,10 +118,42 @@ export type Contact = {
   youTrust?: Maybe<Scalars['Int']>;
 };
 
+export enum ContactDirection {
+  In = 'In',
+  Out = 'Out'
+}
+
+export type ContactPoint = {
+  __typename?: 'ContactPoint';
+  contactAddress: Scalars['String'];
+  contactAddress_Profile?: Maybe<Profile>;
+  lastContactAt: Scalars['String'];
+  metadata: Array<ContactPointSource>;
+};
+
+export type ContactPointSource = {
+  __typename?: 'ContactPointSource';
+  directions: Array<ContactDirection>;
+  name: Scalars['String'];
+  values: Array<Scalars['String']>;
+};
+
+export type Contacts = IAggregatePayload & {
+  __typename?: 'Contacts';
+  contacts: Array<ContactPoint>;
+  lastUpdatedAt: Scalars['String'];
+};
+
 export type CountryStats = {
   __typename?: 'CountryStats';
   citizenCount: Scalars['Int'];
   name: Scalars['String'];
+};
+
+export type CrcBalance = IAggregatePayload & {
+  __typename?: 'CrcBalance';
+  balances: Array<AssetBalance>;
+  lastUpdatedAt: Scalars['String'];
 };
 
 export type CrcHubTransfer = IEventPayload & {
@@ -238,6 +279,25 @@ export type EthTransfer = IEventPayload & {
 
 export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | WelcomeMessage;
 
+export enum EventType {
+  ChatMessage = 'ChatMessage',
+  CrcHubTransfer = 'CrcHubTransfer',
+  CrcMinting = 'CrcMinting',
+  CrcSignup = 'CrcSignup',
+  CrcTokenTransfer = 'CrcTokenTransfer',
+  CrcTrust = 'CrcTrust',
+  EthTransfer = 'EthTransfer',
+  GnosisSafeEthTransfer = 'GnosisSafeEthTransfer',
+  InvitationCreated = 'InvitationCreated',
+  InvitationRedeemed = 'InvitationRedeemed',
+  MemberAdded = 'MemberAdded',
+  MembershipAccepted = 'MembershipAccepted',
+  MembershipOffer = 'MembershipOffer',
+  MembershipRejected = 'MembershipRejected',
+  OrganisationCreated = 'OrganisationCreated',
+  WelcomeMessage = 'WelcomeMessage'
+}
+
 export type ExchangeTokenResponse = {
   __typename?: 'ExchangeTokenResponse';
   errorMessage?: Maybe<Scalars['String']>;
@@ -258,6 +318,10 @@ export type GnosisSafeEthTransfer = IEventPayload & {
 export type Goal = {
   __typename?: 'Goal';
   totalCitizens: Scalars['Int'];
+};
+
+export type IAggregatePayload = {
+  lastUpdatedAt?: Maybe<Scalars['String']>;
 };
 
 export type ICity = {
@@ -327,6 +391,12 @@ export type MemberAdded = IEventPayload & {
   transaction_hash?: Maybe<Scalars['String']>;
 };
 
+export type Members = IAggregatePayload & {
+  __typename?: 'Members';
+  lastUpdatedAt: Scalars['String'];
+  members: Array<ProfileOrOrganisation>;
+};
+
 export type Membership = {
   __typename?: 'Membership';
   acceptedAt?: Maybe<Scalars['String']>;
@@ -367,6 +437,12 @@ export type MembershipRejected = IEventPayload & {
   organisation: Scalars['String'];
   organisation_profile?: Maybe<Organisation>;
   transaction_hash?: Maybe<Scalars['String']>;
+};
+
+export type Memberships = IAggregatePayload & {
+  __typename?: 'Memberships';
+  lastUpdatedAt: Scalars['String'];
+  organisations: Array<Organisation>;
 };
 
 export type Mutation = {
@@ -622,6 +698,14 @@ export type Profile = {
   youTrust?: Maybe<Scalars['Int']>;
 };
 
+export type ProfileAggregate = {
+  __typename?: 'ProfileAggregate';
+  payload: AggregatePayload;
+  safe_address: Scalars['String'];
+  safe_address_profile?: Maybe<Profile>;
+  type: Scalars['String'];
+};
+
 export type ProfileEvent = {
   __typename?: 'ProfileEvent';
   block_number?: Maybe<Scalars['Int']>;
@@ -665,6 +749,7 @@ export enum PurchaseStatus {
 
 export type Query = {
   __typename?: 'Query';
+  aggregates: Array<ProfileAggregate>;
   balance: Scalars['String'];
   balancesByAsset: Array<AssetBalance>;
   blockchainEvents: Array<ProfileEvent>;
@@ -675,6 +760,7 @@ export type Query = {
   commonTrust: Array<CommonTrust>;
   contact?: Maybe<Contact>;
   contacts: Array<Contact>;
+  events: Array<ProfileEvent>;
   findSafeAddressByOwner: Array<Scalars['String']>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
   inbox: Array<ProfileEvent>;
@@ -698,6 +784,12 @@ export type Query = {
   trustRelations: Array<TrustRelation>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryAggregatesArgs = {
+  safeAddress: Scalars['String'];
+  types: Array<AggregateType>;
 };
 
 
@@ -753,6 +845,13 @@ export type QueryContactArgs = {
 
 export type QueryContactsArgs = {
   safeAddress: Scalars['String'];
+};
+
+
+export type QueryEventsArgs = {
+  pagination: PaginationArgs;
+  safeAddress: Scalars['String'];
+  types: Array<EventType>;
 };
 
 
@@ -2200,6 +2299,151 @@ export type BalancesByAssetQuery = (
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
     )> }
+  )> }
+);
+
+export type StreamQueryVariables = Exact<{
+  types: Array<EventType> | EventType;
+  safeAddress: Scalars['String'];
+  pagination: PaginationArgs;
+}>;
+
+
+export type StreamQuery = (
+  { __typename?: 'Query' }
+  & { events: Array<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'timestamp' | 'transaction_hash' | 'safe_address' | 'direction' | 'type'>
+    & { payload?: Maybe<(
+      { __typename?: 'ChatMessage' }
+      & Pick<ChatMessage, 'from' | 'to' | 'text'>
+    ) | (
+      { __typename?: 'CrcHubTransfer' }
+      & Pick<CrcHubTransfer, 'transaction_hash' | 'from' | 'to' | 'flow'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, transfers: Array<(
+        { __typename?: 'CrcTokenTransfer' }
+        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'CrcMinting' }
+      & Pick<CrcMinting, 'transaction_hash' | 'token' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    ) | (
+      { __typename?: 'CrcSignup' }
+      & Pick<CrcSignup, 'transaction_hash' | 'user' | 'token'>
+    ) | { __typename?: 'CrcTokenTransfer' } | (
+      { __typename?: 'CrcTrust' }
+      & Pick<CrcTrust, 'transaction_hash' | 'address' | 'can_send_to' | 'limit'>
+    ) | (
+      { __typename?: 'EthTransfer' }
+      & Pick<EthTransfer, 'transaction_hash' | 'from' | 'to' | 'value'>
+    ) | (
+      { __typename?: 'GnosisSafeEthTransfer' }
+      & Pick<GnosisSafeEthTransfer, 'transaction_hash' | 'initiator' | 'from' | 'to' | 'value'>
+    ) | (
+      { __typename?: 'InvitationCreated' }
+      & Pick<InvitationCreated, 'name' | 'code'>
+    ) | (
+      { __typename?: 'InvitationRedeemed' }
+      & Pick<InvitationRedeemed, 'name' | 'code' | 'redeemedBy'>
+    ) | (
+      { __typename?: 'MemberAdded' }
+      & Pick<MemberAdded, 'createdBy' | 'isAdmin' | 'member' | 'organisation'>
+    ) | (
+      { __typename?: 'MembershipAccepted' }
+      & Pick<MembershipAccepted, 'createdBy' | 'member' | 'organisation'>
+    ) | (
+      { __typename?: 'MembershipOffer' }
+      & Pick<MembershipOffer, 'createdBy' | 'organisation' | 'isAdmin'>
+    ) | (
+      { __typename?: 'MembershipRejected' }
+      & Pick<MembershipRejected, 'member' | 'organisation'>
+    ) | (
+      { __typename?: 'OrganisationCreated' }
+      & Pick<OrganisationCreated, 'organisation'>
+    ) | (
+      { __typename?: 'WelcomeMessage' }
+      & Pick<WelcomeMessage, 'member'>
+    )> }
+  )> }
+);
+
+export type AggregatesQueryVariables = Exact<{
+  types: Array<AggregateType> | AggregateType;
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type AggregatesQuery = (
+  { __typename?: 'Query' }
+  & { aggregates: Array<(
+    { __typename?: 'ProfileAggregate' }
+    & Pick<ProfileAggregate, 'type' | 'safe_address'>
+    & { safe_address_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl'>
+    )>, payload: (
+      { __typename?: 'Contacts' }
+      & Pick<Contacts, 'lastUpdatedAt'>
+      & { contacts: Array<(
+        { __typename?: 'ContactPoint' }
+        & Pick<ContactPoint, 'lastContactAt' | 'contactAddress'>
+        & { metadata: Array<(
+          { __typename?: 'ContactPointSource' }
+          & Pick<ContactPointSource, 'name' | 'directions' | 'values'>
+        )>, contactAddress_Profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl'>
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'CrcBalance' }
+      & Pick<CrcBalance, 'lastUpdatedAt'>
+      & { balances: Array<(
+        { __typename?: 'AssetBalance' }
+        & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
+        & { token_owner_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl'>
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'Members' }
+      & Pick<Members, 'lastUpdatedAt'>
+      & { members: Array<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress'>
+      ) | (
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'circlesAddress'>
+      )> }
+    ) | (
+      { __typename?: 'Memberships' }
+      & Pick<Memberships, 'lastUpdatedAt'>
+      & { organisations: Array<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress'>
+      )> }
+    ) }
   )> }
 );
 
@@ -3733,6 +3977,206 @@ export const BalancesByAssetDocument = gql`
   }
 }
     `;
+export const StreamDocument = gql`
+    query stream($types: [EventType!]!, $safeAddress: String!, $pagination: PaginationArgs!) {
+  events(types: $types, safeAddress: $safeAddress, pagination: $pagination) {
+    timestamp
+    transaction_hash
+    safe_address
+    direction
+    type
+    payload {
+      ... on CrcHubTransfer {
+        transaction_hash
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+      }
+      ... on CrcTrust {
+        transaction_hash
+        address
+        can_send_to
+        limit
+      }
+      ... on CrcSignup {
+        transaction_hash
+        user
+        token
+      }
+      ... on CrcMinting {
+        transaction_hash
+        token
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
+      ... on EthTransfer {
+        transaction_hash
+        from
+        to
+        value
+      }
+      ... on GnosisSafeEthTransfer {
+        transaction_hash
+        initiator
+        from
+        to
+        value
+      }
+      ... on ChatMessage {
+        from
+        to
+        text
+      }
+      ... on MembershipOffer {
+        createdBy
+        organisation
+        isAdmin
+      }
+      ... on MembershipAccepted {
+        createdBy
+        member
+        organisation
+      }
+      ... on MembershipRejected {
+        member
+        organisation
+      }
+      ... on WelcomeMessage {
+        member
+      }
+      ... on InvitationCreated {
+        name
+        code
+      }
+      ... on InvitationRedeemed {
+        name
+        code
+        redeemedBy
+      }
+      ... on OrganisationCreated {
+        organisation
+      }
+      ... on MemberAdded {
+        createdBy
+        isAdmin
+        member
+        organisation
+      }
+    }
+  }
+}
+    `;
+export const AggregatesDocument = gql`
+    query aggregates($types: [AggregateType!]!, $safeAddress: String!) {
+  aggregates(types: $types, safeAddress: $safeAddress) {
+    type
+    safe_address
+    safe_address_profile {
+      firstName
+      lastName
+      avatarUrl
+    }
+    payload {
+      ... on CrcBalance {
+        lastUpdatedAt
+        balances {
+          token_address
+          token_owner_address
+          token_owner_profile {
+            firstName
+            lastName
+            avatarUrl
+          }
+          token_balance
+        }
+      }
+      ... on Contacts {
+        lastUpdatedAt
+        contacts {
+          metadata {
+            name
+            directions
+            values
+          }
+          lastContactAt
+          contactAddress
+          contactAddress_Profile {
+            firstName
+            lastName
+            avatarUrl
+          }
+        }
+      }
+      ... on Members {
+        lastUpdatedAt
+        members {
+          ... on Profile {
+            circlesAddress
+          }
+          ... on Organisation {
+            circlesAddress
+          }
+        }
+      }
+      ... on Memberships {
+        lastUpdatedAt
+        organisations {
+          circlesAddress
+        }
+      }
+    }
+  }
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -3902,6 +4346,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     balancesByAsset(variables: BalancesByAssetQueryVariables): Promise<BalancesByAssetQuery> {
       return withWrapper(() => client.request<BalancesByAssetQuery>(print(BalancesByAssetDocument), variables));
+    },
+    stream(variables: StreamQueryVariables): Promise<StreamQuery> {
+      return withWrapper(() => client.request<StreamQuery>(print(StreamDocument), variables));
+    },
+    aggregates(variables: AggregatesQueryVariables): Promise<AggregatesQuery> {
+      return withWrapper(() => client.request<AggregatesQuery>(print(AggregatesDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

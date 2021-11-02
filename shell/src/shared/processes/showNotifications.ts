@@ -3,9 +3,8 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import NotificationViewer from "@o-platform/o-editors/src/NotificationViewer.svelte";
+import NotificationViewer from "./../NotificationViewer.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import HtmlViewer from "../../../../packages/o-editors/src/HtmlViewer.svelte";
 import { inbox } from "../stores/inbox";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import { ProfileEvent } from "../api/data/types";

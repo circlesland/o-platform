@@ -1,6 +1,6 @@
 <script lang="ts">
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
-import {me} from "../../../../shell/src/shared/stores/me";
+import {me} from "../stores/me";
 import Icons from "src/shared/molecules/Icons.svelte";
 export let eventData: any;
 

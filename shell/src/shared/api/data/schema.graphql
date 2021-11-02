@@ -6,6 +6,10 @@ schema {
     subscription: Subscription
 }
 
+interface IAggregatePayload {
+    lastUpdatedAt: String
+}
+
 interface ICity {
     country: String!
     feature_code: String!
@@ -19,6 +23,8 @@ interface ICity {
 interface IEventPayload {
     transaction_hash: String
 }
+
+union AggregatePayload = Contacts | CrcBalance | Members | Memberships
 
 union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | WelcomeMessage
 
@@ -108,9 +114,32 @@ type Contact {
     youTrust: Int
 }
 
+type ContactPoint {
+    contactAddress: String!
+    contactAddress_Profile: Profile
+    lastContactAt: String!
+    metadata: [ContactPointSource!]!
+}
+
+type ContactPointSource {
+    directions: [ContactDirection!]!
+    name: String!
+    values: [String!]!
+}
+
+type Contacts implements IAggregatePayload {
+    contacts: [ContactPoint!]!
+    lastUpdatedAt: String!
+}
+
 type CountryStats {
     citizenCount: Int!
     name: String!
+}
+
+type CrcBalance implements IAggregatePayload {
+    balances: [AssetBalance!]!
+    lastUpdatedAt: String!
 }
 
 type CrcHubTransfer implements IEventPayload {
@@ -275,6 +304,11 @@ type MemberAdded implements IEventPayload {
     transaction_hash: String
 }
 
+type Members implements IAggregatePayload {
+    lastUpdatedAt: String!
+    members: [ProfileOrOrganisation!]!
+}
+
 type Membership {
     acceptedAt: String
     createdAt: String!
@@ -311,6 +345,11 @@ type MembershipRejected implements IEventPayload {
     organisation: String!
     organisation_profile: Organisation
     transaction_hash: String
+}
+
+type Memberships implements IAggregatePayload {
+    lastUpdatedAt: String!
+    organisations: [Organisation!]!
 }
 
 type Mutation {
@@ -419,6 +458,13 @@ type Profile {
     youTrust: Int
 }
 
+type ProfileAggregate {
+    payload: AggregatePayload!
+    safe_address: String!
+    safe_address_profile: Profile
+    type: String!
+}
+
 type ProfileEvent {
     block_number: Int
     direction: String!
@@ -450,6 +496,7 @@ type Purchase {
 }
 
 type Query {
+    aggregates(safeAddress: String!, types: [AggregateType!]!): [ProfileAggregate!]!
     balance(safeAddress: String!): String!
     balancesByAsset(safeAddress: String!): [AssetBalance!]!
     blockchainEvents(fromBlock: Int, pagination: PaginationArgs, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
@@ -460,6 +507,7 @@ type Query {
     commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
     contact(contactAddress: String!, safeAddress: String!): Contact
     contacts(safeAddress: String!): [Contact!]!
+    events(pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
     findSafeAddressByOwner(owner: String!): [String!]!
     hubSignupTransaction: ProfileEvent
     inbox: [ProfileEvent!]!
@@ -575,6 +623,37 @@ type WelcomeMessage implements IEventPayload {
     member: String!
     member_profile: Profile
     transaction_hash: String
+}
+
+enum AggregateType {
+    Contacts
+    CrcBalance
+    Members
+    Memberships
+}
+
+enum ContactDirection {
+    In
+    Out
+}
+
+enum EventType {
+    ChatMessage
+    CrcHubTransfer
+    CrcMinting
+    CrcSignup
+    CrcTokenTransfer
+    CrcTrust
+    EthTransfer
+    GnosisSafeEthTransfer
+    InvitationCreated
+    InvitationRedeemed
+    MemberAdded
+    MembershipAccepted
+    MembershipOffer
+    MembershipRejected
+    OrganisationCreated
+    WelcomeMessage
 }
 
 enum PurchaseStatus {

@@ -1157,3 +1157,206 @@ query balancesByAsset($safeAddress: String!) {
     token_balance
   }
 }
+
+query stream($types: [EventType!]! $safeAddress: String! $pagination: PaginationArgs!) {
+  events(
+    types: $types
+    safeAddress: $safeAddress
+    pagination: $pagination) {
+    timestamp
+    transaction_hash
+    safe_address
+    direction
+    type
+    payload {
+      ... on CrcHubTransfer {
+        transaction_hash
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+      }
+      ...on CrcTrust {
+        transaction_hash
+        address
+        can_send_to
+        limit
+      }
+      ...on CrcSignup {
+        transaction_hash
+        user
+        token
+      }
+      ...on CrcMinting {
+        transaction_hash
+        token
+        from
+        from_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          id
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
+      ...on EthTransfer {
+        transaction_hash
+        from
+        to
+        value
+      }
+      ...on GnosisSafeEthTransfer {
+        transaction_hash
+        initiator
+        from
+        to
+        value
+      }
+      ...on ChatMessage {
+        from
+        to
+        text
+      }
+      ...on MembershipOffer {
+        createdBy
+        organisation
+        isAdmin
+      }
+      ...on MembershipAccepted {
+        createdBy
+        member
+        organisation
+      }
+      ...on MembershipRejected {
+        member
+        organisation
+      }
+      ...on WelcomeMessage {
+        member
+      }
+      ...on InvitationCreated {
+        name
+        code
+      }
+      ...on InvitationRedeemed {
+        name
+        code
+        redeemedBy
+      }
+      ...on OrganisationCreated {
+        organisation
+      }
+      ...on MemberAdded {
+        createdBy
+        isAdmin
+        member
+        organisation
+      }
+    }
+  }
+}
+
+query aggregates($types:[AggregateType!]! $safeAddress:String!) {
+  aggregates(
+    types: $types
+    safeAddress: $safeAddress) {
+    type
+    safe_address
+    safe_address_profile {
+      firstName
+      lastName
+      avatarUrl
+    }
+    payload {
+      ...on CrcBalance {
+        lastUpdatedAt
+        balances {
+          token_address
+          token_owner_address
+          token_owner_profile {
+            firstName
+            lastName
+            avatarUrl
+          }
+          token_balance
+        }
+      }
+      ...on Contacts {
+        lastUpdatedAt
+        contacts {
+          metadata {
+            name
+            directions
+            values
+          }
+          lastContactAt
+          contactAddress
+          contactAddress_Profile {
+            firstName
+            lastName
+            avatarUrl
+          }
+        }
+      }
+      ...on Members {
+        lastUpdatedAt
+        members{
+          ...on Profile {
+            circlesAddress
+          }
+          ...on Organisation {
+            circlesAddress
+          }
+        }
+      }
+      ...on Memberships {
+        lastUpdatedAt
+        organisations {
+          circlesAddress
+        }
+      }
+    }
+  }
+}

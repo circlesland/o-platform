@@ -16,6 +16,7 @@ export class Banking {
     }
 
     async onMount() {
+        /*
         const apiClient = await window.o.apiClient.client.subscribeToResult();
         const timeline = await apiClient.query({
             query: TransactionTimelineDocument,
@@ -28,6 +29,7 @@ export class Banking {
             throw new Error(`Couldn't load the transaction history for the following reasons: ${JSON.stringify(timeline.errors)}`);
         }
         this.entries = timeline.data.events;
+         */
     }
 
     public static async findCirclesGardenProfiles(safeAddresses: string[]) : Promise<{
