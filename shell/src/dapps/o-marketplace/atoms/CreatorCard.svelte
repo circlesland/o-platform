@@ -1,34 +1,34 @@
 <script lang="ts">
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
-  import { Profile } from "../data/api/types";
-  import { push } from "svelte-spa-router";
+import { AvataarGenerator } from "../../../shared/avataarGenerator";
+import { Profile } from "../../../shared/api/data/types";
+import { push } from "svelte-spa-router";
 
-  export let profile: Profile;
+export let profile: Profile;
 
-  let displayName: string;
-  let pictureUrl: string;
-  let safeAddress: string;
-  let id: number;
+let displayName: string;
+let pictureUrl: string;
+let safeAddress: string;
+let id: number;
 
-  $: {
-    if (profile) {
-      // <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
-      displayName = profile
-        ? profile.firstName + " " + profile.lastName
-        : profile.circlesAddress;
-      pictureUrl = profile ? profile.avatarUrl : undefined;
-      safeAddress = profile.circlesAddress;
-      id = profile.id;
+$: {
+  if (profile) {
+    // <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
+    displayName = profile
+      ? profile.firstName + " " + profile.lastName
+      : profile.circlesAddress;
+    pictureUrl = profile ? profile.avatarUrl : undefined;
+    safeAddress = profile.circlesAddress;
+    id = profile.id;
 
-      if (!pictureUrl) {
-        pictureUrl = AvataarGenerator.generate(safeAddress);
-      }
+    if (!pictureUrl) {
+      pictureUrl = AvataarGenerator.generate(safeAddress);
     }
   }
+}
 
-  function loadDetailPage() {
-    push(`#/friends/${profile.id.toString()}`);
-  }
+function loadDetailPage() {
+  push(`#/friends/${profile.id.toString()}`);
+}
 </script>
 
 <section

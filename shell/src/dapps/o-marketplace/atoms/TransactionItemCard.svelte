@@ -1,34 +1,36 @@
 <script lang="ts">
-  import { push } from "svelte-spa-router";
+import { push } from "svelte-spa-router";
 
-  import { Offer } from "../data/api/types";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import ItemCard from "src/shared/atoms/ItemCard.svelte";
+import { Offer } from "../../../shared/api/data/types";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import ItemCard from "src/shared/atoms/ItemCard.svelte";
 
-  import { truncateString } from "../../../shared/functions/truncateString";
+import { truncateString } from "../../../shared/functions/truncateString";
 
-  export let offer: Offer;
+export let offer: Offer;
 
-  let params = {
-    imageUrl: offer.pictureUrl,
-    title: offer.title,
-    subTitle: truncateString(offer.description, 60),
-    truncateMain: true,
-    edgeless: true,
-  };
+let params = {
+  imageUrl: offer.pictureUrl,
+  title: offer.title,
+  subTitle: truncateString(offer.description, 60),
+  truncateMain: true,
+  edgeless: true,
+};
 
-  function loadDetailPage() {
-    push("#/marketplace/offer/" + offer.id);
-  }
+function loadDetailPage() {
+  push("#/marketplace/offer/" + offer.id);
+}
 </script>
 
 <div on:click="{() => loadDetailPage()}">
-  <ItemCard {params}>
+  <ItemCard params="{params}">
     <div slot="itemCardStart">
       <div
         class="relative w-16 h-16 overflow-hidden rounded-l-lg image-wrapper">
         <img
-          src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
+          src="{offer.pictureUrl
+            ? offer.pictureUrl
+            : '/images/market/circles-no-image.jpg'}"
           alt="{offer.title}"
           class="absolute object-cover w-20 h-16 rounded-l-lg" />
       </div>

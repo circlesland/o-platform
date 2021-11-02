@@ -54,12 +54,6 @@ npx --no-install  graphql-codegen
 # cd shell/src/dapps/o-contacts/data/api
 # npx graphql-codegen
 
-cd ../../../../../..
-echo "Generating graphql types for dapps/o-marketplace"
-echo "* api"
-cd shell/src/dapps/o-marketplace/data/api
-npx --no-install  graphql-codegen
-
 
 cd ../../../../../..
 

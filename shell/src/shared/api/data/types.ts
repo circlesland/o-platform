@@ -1362,6 +1362,43 @@ export type UpsertRegionMutation = (
   ) }
 );
 
+export type UpsertOfferMutationVariables = Exact<{
+  id?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
+  pictureUrl: Scalars['String'];
+  pictureMimeType: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  categoryTagId: Scalars['Int'];
+  geonameid: Scalars['Int'];
+  pricePerUnit: Scalars['String'];
+  unitTagId: Scalars['Int'];
+  maxUnits?: Maybe<Scalars['Int']>;
+  deliveryTermsTagId: Scalars['Int'];
+}>;
+
+
+export type UpsertOfferMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertOffer: (
+    { __typename?: 'Offer' }
+    & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'categoryTagId' | 'geonameid' | 'pricePerUnit' | 'unitTagId' | 'maxUnits' | 'deliveryTermsTagId'>
+    & { createdBy?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'avatarMimeType'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'name' | 'country'>
+      )> }
+    )>, categoryTag?: Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>, city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
+    )> }
+  ) }
+);
+
 export type SessionInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2203,6 +2240,43 @@ export type BalancesByAssetQuery = (
   )> }
 );
 
+export type OffersQueryVariables = Exact<{
+  createdByProfileId?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['String']>;
+  publishedAt_gt?: Maybe<Scalars['String']>;
+  publishedAt_lt?: Maybe<Scalars['String']>;
+  categoryTagId?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type OffersQuery = (
+  { __typename?: 'Query' }
+  & { offers: Array<(
+    { __typename?: 'Offer' }
+    & Pick<Offer, 'id' | 'createdByProfileId' | 'publishedAt' | 'unlistedAt' | 'purchasedAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'categoryTagId' | 'geonameid' | 'pricePerUnit' | 'unitTagId' | 'maxUnits' | 'deliveryTermsTagId'>
+    & { createdBy?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl' | 'avatarMimeType'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'name' | 'country'>
+      )> }
+    )>, categoryTag?: Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>, unitTag?: Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>, deliveryTermsTag?: Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )>, city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
+    )> }
+  )> }
+);
+
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2561,6 +2635,53 @@ export const UpsertRegionDocument = gql`
       createdAt
       description
       name
+    }
+  }
+}
+    `;
+export const UpsertOfferDocument = gql`
+    mutation upsertOffer($id: String, $title: String!, $pictureUrl: String!, $pictureMimeType: String!, $description: String, $categoryTagId: Int!, $geonameid: Int!, $pricePerUnit: String!, $unitTagId: Int!, $maxUnits: Int, $deliveryTermsTagId: Int!) {
+  upsertOffer(
+    data: {id: $id, geonameid: $geonameid, categoryTagId: $categoryTagId, deliveryTermsTagId: $deliveryTermsTagId, description: $description, maxUnits: $maxUnits, pictureUrl: $pictureUrl, pictureMimeType: $pictureMimeType, pricePerUnit: $pricePerUnit, title: $title, unitTagId: $unitTagId}
+  ) {
+    id
+    createdBy {
+      firstName
+      lastName
+      avatarUrl
+      avatarMimeType
+      city {
+        name
+        country
+      }
+    }
+    createdByProfileId
+    publishedAt
+    unlistedAt
+    purchasedAt
+    title
+    pictureUrl
+    pictureMimeType
+    description
+    categoryTagId
+    categoryTag {
+      id
+      typeId
+      value
+    }
+    geonameid
+    pricePerUnit
+    unitTagId
+    maxUnits
+    deliveryTermsTagId
+    city {
+      geonameid
+      country
+      name
+      latitude
+      longitude
+      population
+      feature_code
     }
   }
 }
@@ -3733,6 +3854,65 @@ export const BalancesByAssetDocument = gql`
   }
 }
     `;
+export const OffersDocument = gql`
+    query offers($createdByProfileId: Int, $id: String, $publishedAt_gt: String, $publishedAt_lt: String, $categoryTagId: Int) {
+  offers(
+    query: {createdByProfileId: $createdByProfileId, id: $id, publishedAt_gt: $publishedAt_gt, publishedAt_lt: $publishedAt_lt, categoryTagId: $categoryTagId}
+  ) {
+    id
+    createdBy {
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+      avatarMimeType
+      city {
+        name
+        country
+      }
+    }
+    createdByProfileId
+    publishedAt
+    unlistedAt
+    purchasedAt
+    title
+    pictureUrl
+    pictureMimeType
+    description
+    categoryTagId
+    categoryTag {
+      id
+      typeId
+      value
+    }
+    geonameid
+    pricePerUnit
+    unitTag {
+      id
+      typeId
+      value
+    }
+    unitTagId
+    maxUnits
+    deliveryTermsTag {
+      id
+      typeId
+      value
+    }
+    deliveryTermsTagId
+    city {
+      geonameid
+      country
+      name
+      latitude
+      longitude
+      population
+      feature_code
+    }
+  }
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -3797,6 +3977,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     upsertRegion(variables: UpsertRegionMutationVariables): Promise<UpsertRegionMutation> {
       return withWrapper(() => client.request<UpsertRegionMutation>(print(UpsertRegionDocument), variables));
+    },
+    upsertOffer(variables: UpsertOfferMutationVariables): Promise<UpsertOfferMutation> {
+      return withWrapper(() => client.request<UpsertOfferMutation>(print(UpsertOfferDocument), variables));
     },
     sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
       return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));
@@ -3902,6 +4085,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     balancesByAsset(variables: BalancesByAssetQueryVariables): Promise<BalancesByAssetQuery> {
       return withWrapper(() => client.request<BalancesByAssetQuery>(print(BalancesByAssetDocument), variables));
+    },
+    offers(variables?: OffersQueryVariables): Promise<OffersQuery> {
+      return withWrapper(() => client.request<OffersQuery>(print(OffersDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

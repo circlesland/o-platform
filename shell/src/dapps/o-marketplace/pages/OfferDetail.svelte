@@ -1,67 +1,67 @@
 <script lang="ts">
-  import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
-  import { Offer, OffersDocument } from "../data/api/types";
-  import OfferCard from "../atoms/OfferCard.svelte";
-  import { onMount } from "svelte";
-  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-  import { Subscription } from "rxjs";
-  import CreatorCard from "../atoms/CreatorCard.svelte";
-  import Time from "svelte-time";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
+import { Offer, OffersDocument } from "../../../shared/api/data/types";
+import OfferCard from "../atoms/OfferCard.svelte";
+import { onMount } from "svelte";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { Subscription } from "rxjs";
+import CreatorCard from "../atoms/CreatorCard.svelte";
+import Time from "svelte-time";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-  let isLoading: boolean;
-  let error: Error;
-  let offers: Offer[] = [];
-  let shellEventSubscription: Subscription;
+let isLoading: boolean;
+let error: Error;
+let offers: Offer[] = [];
+let shellEventSubscription: Subscription;
 
-  export let id: number;
+export let id: number;
 
-  async function load() {
-    if (isLoading || !id) return;
+async function load() {
+  if (isLoading || !id) return;
 
-    isLoading = true;
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.query({
-      query: OffersDocument,
-      variables: {
-        id: parseInt(id.toString()),
-      },
-    });
-    if (result.errors && result.errors.length) {
-      error = new Error(
-        `An error occurred while the offer was loaded: ${JSON.stringify(
-          result.errors
-        )}`
-      );
-      throw error;
-    }
-    isLoading = false;
-    offers = result.data.offers;
-
-    console.log("OFFER: ", offers);
-  }
-
-  onMount(async () => {
-    await load();
-
-    shellEventSubscription = window.o.events.subscribe(
-      async (event: PlatformEvent) => {
-        if (
-          event.type != "shell.refresh" ||
-          (<any>event).dapp != "marketplace:1"
-        ) {
-          return;
-        }
-        await load();
-      }
-    );
-
-    return () => {
-      shellEventSubscription.unsubscribe();
-    };
+  isLoading = true;
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const result = await apiClient.query({
+    query: OffersDocument,
+    variables: {
+      id: parseInt(id.toString()),
+    },
   });
+  if (result.errors && result.errors.length) {
+    error = new Error(
+      `An error occurred while the offer was loaded: ${JSON.stringify(
+        result.errors
+      )}`
+    );
+    throw error;
+  }
+  isLoading = false;
+  offers = result.data.offers;
+
+  console.log("OFFER: ", offers);
+}
+
+onMount(async () => {
+  await load();
+
+  shellEventSubscription = window.o.events.subscribe(
+    async (event: PlatformEvent) => {
+      if (
+        event.type != "shell.refresh" ||
+        (<any>event).dapp != "marketplace:1"
+      ) {
+        return;
+      }
+      await load();
+    }
+  );
+
+  return () => {
+    shellEventSubscription.unsubscribe();
+  };
+});
 </script>
 
 <div class="pb-4">
@@ -90,7 +90,9 @@
           <header class=" rounded-t-xl headerImageContainer">
             <div class="relative rounded-t-xl image-wrapper">
               <img
-                src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
+                src="{offer.pictureUrl
+                  ? offer.pictureUrl
+                  : '/images/market/circles-no-image.jpg'}"
                 alt="
                 "
                 class="w-full rounded-t-xl" />
@@ -107,7 +109,9 @@
               <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
                 <img
                   class="rounded-full"
-                  src="{offer.createdBy.avatarUrl ? offer.createdBy.avatarUrl : '/images/market/city.png'}"
+                  src="{offer.createdBy.avatarUrl
+                    ? offer.createdBy.avatarUrl
+                    : '/images/market/city.png'}"
                   alt="user-icon" />
               </div>
             </div>
@@ -118,7 +122,8 @@
               <div
                 class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
                 <a
-                  href="#/marketplace/categories/{offer.categoryTagId}/{offer.categoryTag.value}"
+                  href="#/marketplace/categories/{offer.categoryTagId}/{offer
+                    .categoryTag.value}"
                   alt="{offer.categoryTag.value}">
                   {offer.categoryTag.value}
                 </a>
@@ -331,21 +336,21 @@
 </div>
 
 <style>
-  /* Ensure image is always 16:9 Ratio */
-  .headerImageContainer {
-    max-width: none;
-  }
+/* Ensure image is always 16:9 Ratio */
+.headerImageContainer {
+  max-width: none;
+}
 
-  .image-wrapper {
-    position: relative;
-    /* padding-bottom: 56.2%;b 16:9 */
-    padding-bottom: 75%; /* 4:3 */
-  }
+.image-wrapper {
+  position: relative;
+  /* padding-bottom: 56.2%;b 16:9 */
+  padding-bottom: 75%; /* 4:3 */
+}
 
-  .image-wrapper img {
-    position: absolute;
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-  }
+.image-wrapper img {
+  position: absolute;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
 </style>

@@ -82,6 +82,7 @@ export function promptCirclesSafe<
               searchString: (filter ?? "") + "%",
             },
           });
+          console.log("result.data: ", result.data);
           return result.data.search && result.data.search.length > 0
             ? result.data.search
                 .filter((o) => o.circlesAddress)

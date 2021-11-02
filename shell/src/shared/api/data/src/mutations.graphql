@@ -189,14 +189,14 @@ mutation sendMessage($toSafeAddress: String!, $content: String!) {
   }
 }
 
-mutation addMember($groupId: String! $memberId: Int!) {
-  addMember(groupId: $groupId memberId: $memberId) {
+mutation addMember($groupId: String!, $memberId: Int!) {
+  addMember(groupId: $groupId, memberId: $memberId) {
     error
     success
   }
 }
-mutation removeMember($groupId: String! $memberId: Int!) {
-  removeMember(groupId: $groupId memberId: $memberId){
+mutation removeMember($groupId: String!, $memberId: Int!) {
+  removeMember(groupId: $groupId, memberId: $memberId) {
     error
     success
   }
@@ -306,7 +306,7 @@ mutation upsertProfile(
   }
 }
 
-mutation upsertOrganisation ($organisation: UpsertOrganisationInput!) {
+mutation upsertOrganisation($organisation: UpsertOrganisationInput!) {
   upsertOrganisation(organisation: $organisation) {
     success
     error
@@ -333,7 +333,7 @@ mutation upsertOrganisation ($organisation: UpsertOrganisationInput!) {
   }
 }
 
-mutation upsertRegion ($organisation: UpsertOrganisationInput!) {
+mutation upsertRegion($organisation: UpsertOrganisationInput!) {
   upsertRegion(organisation: $organisation) {
     success
     error
@@ -356,6 +356,75 @@ mutation upsertRegion ($organisation: UpsertOrganisationInput!) {
       createdAt
       description
       name
+    }
+  }
+}
+mutation upsertOffer(
+  $id: String
+  $title: String!
+  $pictureUrl: String!
+  $pictureMimeType: String!
+  $description: String
+  $categoryTagId: Int!
+  $geonameid: Int!
+  $pricePerUnit: String!
+  $unitTagId: Int!
+  $maxUnits: Int
+  $deliveryTermsTagId: Int!
+) {
+  upsertOffer(
+    data: {
+      id: $id
+      geonameid: $geonameid
+      categoryTagId: $categoryTagId
+      deliveryTermsTagId: $deliveryTermsTagId
+      description: $description
+      maxUnits: $maxUnits
+      pictureUrl: $pictureUrl
+      pictureMimeType: $pictureMimeType
+      pricePerUnit: $pricePerUnit
+      title: $title
+      unitTagId: $unitTagId
+    }
+  ) {
+    id
+    createdBy {
+      firstName
+      lastName
+      avatarUrl
+      avatarMimeType
+      city {
+        name
+        country
+      }
+    }
+    createdByProfileId
+    publishedAt
+    unlistedAt
+    purchasedAt
+    title
+    pictureUrl
+    pictureMimeType
+    description
+    categoryTagId
+    categoryTag {
+      id
+      typeId
+      value
+    }
+    geonameid
+    pricePerUnit
+    unitTagId
+    maxUnits
+    deliveryTermsTagId
+    city {
+      geonameid
+      country
+      name
+      latitude
+      longitude
+      population
+      feature_code
     }
   }
 }

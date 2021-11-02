@@ -8,7 +8,7 @@ import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import * as yup from "yup";
-import { UpsertOfferDocument } from "../data/api/types";
+import { UpsertOfferDocument } from "../../../shared/api/data/types";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptTag } from "../../../shared/api/promptTag";
 import { promptCity } from "../../../shared/api/promptCity";

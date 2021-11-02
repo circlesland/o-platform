@@ -9,11 +9,7 @@ import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor
 import DropDownTag from "@o-platform/o-editors/src/dropdownItems/DropDownTag.svelte";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
-import {
-  Tag,
-  TagByIdDocument,
-  TagsDocument,
-} from "../../dapps/o-marketplace/data/api/types";
+import { Tag, TagsDocument, TagByIdDocument } from "./data/types";
 
 export function promptTag<
   TContext extends ProcessContext<any>,
