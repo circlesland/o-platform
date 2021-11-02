@@ -1,6 +1,6 @@
 query offers (
     $createdByProfileId: Int
-    $id: Int
+    $id: String
     $publishedAt_gt: String
     $publishedAt_lt: String
     $categoryTagId: Int

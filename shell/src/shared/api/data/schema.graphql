@@ -146,6 +146,7 @@ type CrcHubTransfer implements IEventPayload {
     flow: String!
     from: String!
     from_profile: Profile
+    tags: [Tag!]!
     to: String!
     to_profile: Profile
     transaction_hash: String!

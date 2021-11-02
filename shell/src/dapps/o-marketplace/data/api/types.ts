@@ -14,6 +14,27 @@ export type Scalars = {
   Float: number;
 };
 
+export type AcceptMembershipResult = {
+  __typename?: 'AcceptMembershipResult';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
+export type AddMemberResult = {
+  __typename?: 'AddMemberResult';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
+export type AggregatePayload = Contacts | CrcBalance | Members | Memberships;
+
+export enum AggregateType {
+  Contacts = 'Contacts',
+  CrcBalance = 'CrcBalance',
+  Members = 'Members',
+  Memberships = 'Memberships'
+}
+
 export type AssetBalance = {
   __typename?: 'AssetBalance';
   token_address: Scalars['String'];
@@ -97,10 +118,42 @@ export type Contact = {
   youTrust?: Maybe<Scalars['Int']>;
 };
 
+export enum ContactDirection {
+  In = 'In',
+  Out = 'Out'
+}
+
+export type ContactPoint = {
+  __typename?: 'ContactPoint';
+  contactAddress: Scalars['String'];
+  contactAddress_Profile?: Maybe<Profile>;
+  lastContactAt: Scalars['String'];
+  metadata: Array<ContactPointSource>;
+};
+
+export type ContactPointSource = {
+  __typename?: 'ContactPointSource';
+  directions: Array<ContactDirection>;
+  name: Scalars['String'];
+  values: Array<Scalars['String']>;
+};
+
+export type Contacts = IAggregatePayload & {
+  __typename?: 'Contacts';
+  contacts: Array<ContactPoint>;
+  lastUpdatedAt: Scalars['String'];
+};
+
 export type CountryStats = {
   __typename?: 'CountryStats';
   citizenCount: Scalars['Int'];
   name: Scalars['String'];
+};
+
+export type CrcBalance = IAggregatePayload & {
+  __typename?: 'CrcBalance';
+  balances: Array<AssetBalance>;
+  lastUpdatedAt: Scalars['String'];
 };
 
 export type CrcHubTransfer = IEventPayload & {
@@ -161,6 +214,13 @@ export type CreateInvitationResult = {
   success: Scalars['Boolean'];
 };
 
+export type CreateOrganisationResult = {
+  __typename?: 'CreateOrganisationResult';
+  error?: Maybe<Scalars['String']>;
+  organisation?: Maybe<Organisation>;
+  success: Scalars['Boolean'];
+};
+
 export type CreateTagInput = {
   typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
@@ -217,7 +277,26 @@ export type EthTransfer = IEventPayload & {
   value: Scalars['String'];
 };
 
-export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer;
+export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | WelcomeMessage;
+
+export enum EventType {
+  ChatMessage = 'ChatMessage',
+  CrcHubTransfer = 'CrcHubTransfer',
+  CrcMinting = 'CrcMinting',
+  CrcSignup = 'CrcSignup',
+  CrcTokenTransfer = 'CrcTokenTransfer',
+  CrcTrust = 'CrcTrust',
+  EthTransfer = 'EthTransfer',
+  GnosisSafeEthTransfer = 'GnosisSafeEthTransfer',
+  InvitationCreated = 'InvitationCreated',
+  InvitationRedeemed = 'InvitationRedeemed',
+  MemberAdded = 'MemberAdded',
+  MembershipAccepted = 'MembershipAccepted',
+  MembershipOffer = 'MembershipOffer',
+  MembershipRejected = 'MembershipRejected',
+  OrganisationCreated = 'OrganisationCreated',
+  WelcomeMessage = 'WelcomeMessage'
+}
 
 export type ExchangeTokenResponse = {
   __typename?: 'ExchangeTokenResponse';
@@ -241,6 +320,10 @@ export type Goal = {
   totalCitizens: Scalars['Int'];
 };
 
+export type IAggregatePayload = {
+  lastUpdatedAt?: Maybe<Scalars['String']>;
+};
+
 export type ICity = {
   country: Scalars['String'];
   feature_code: Scalars['String'];
@@ -255,8 +338,33 @@ export type IEventPayload = {
   transaction_hash?: Maybe<Scalars['String']>;
 };
 
+export type InitAggregateState = {
+  __typename?: 'InitAggregateState';
+  hubSignupTransaction?: Maybe<Scalars['String']>;
+  invitation?: Maybe<ClaimedInvitation>;
+  invitationTransaction?: Maybe<Scalars['String']>;
+  registration?: Maybe<Profile>;
+  safeFundingTransaction?: Maybe<Scalars['String']>;
+};
+
+export type InvitationCreated = IEventPayload & {
+  __typename?: 'InvitationCreated';
+  code: Scalars['String'];
+  name: Scalars['String'];
+  transaction_hash?: Maybe<Scalars['String']>;
+};
+
+export type InvitationRedeemed = IEventPayload & {
+  __typename?: 'InvitationRedeemed';
+  code: Scalars['String'];
+  name: Scalars['String'];
+  redeemedBy: Scalars['String'];
+  redeemedBy_profile?: Maybe<Profile>;
+  transaction_hash?: Maybe<Scalars['String']>;
+};
+
 export type LockOfferInput = {
-  offerId: Scalars['Int'];
+  offerId: Scalars['String'];
 };
 
 export type LockOfferResult = {
@@ -271,32 +379,119 @@ export type LogoutResponse = {
   success: Scalars['Boolean'];
 };
 
+export type MemberAdded = IEventPayload & {
+  __typename?: 'MemberAdded';
+  createdBy: Scalars['String'];
+  createdBy_profile?: Maybe<Profile>;
+  isAdmin: Scalars['Boolean'];
+  member: Scalars['String'];
+  member_profile?: Maybe<Profile>;
+  organisation: Scalars['String'];
+  organisation_profile?: Maybe<Organisation>;
+  transaction_hash?: Maybe<Scalars['String']>;
+};
+
+export type Members = IAggregatePayload & {
+  __typename?: 'Members';
+  lastUpdatedAt: Scalars['String'];
+  members: Array<ProfileOrOrganisation>;
+};
+
+export type Membership = {
+  __typename?: 'Membership';
+  acceptedAt?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  createdBy?: Maybe<Profile>;
+  createdByProfileId: Scalars['Int'];
+  isAdmin: Scalars['Boolean'];
+  organisation: Organisation;
+  rejectedAt?: Maybe<Scalars['String']>;
+  validTo?: Maybe<Scalars['String']>;
+};
+
+export type MembershipAccepted = IEventPayload & {
+  __typename?: 'MembershipAccepted';
+  createdBy: Scalars['String'];
+  createdBy_profile?: Maybe<Profile>;
+  member: Scalars['String'];
+  member_profile?: Maybe<Profile>;
+  organisation: Scalars['String'];
+  organisation_profile?: Maybe<Organisation>;
+  transaction_hash?: Maybe<Scalars['String']>;
+};
+
+export type MembershipOffer = IEventPayload & {
+  __typename?: 'MembershipOffer';
+  createdBy: Scalars['String'];
+  createdBy_profile?: Maybe<Profile>;
+  isAdmin: Scalars['Boolean'];
+  organisation: Scalars['String'];
+  organisation_profile?: Maybe<Organisation>;
+  transaction_hash?: Maybe<Scalars['String']>;
+};
+
+export type MembershipRejected = IEventPayload & {
+  __typename?: 'MembershipRejected';
+  member: Scalars['String'];
+  member_profile?: Maybe<Profile>;
+  organisation: Scalars['String'];
+  organisation_profile?: Maybe<Organisation>;
+  transaction_hash?: Maybe<Scalars['String']>;
+};
+
+export type Memberships = IAggregatePayload & {
+  __typename?: 'Memberships';
+  lastUpdatedAt: Scalars['String'];
+  organisations: Array<Organisation>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptMembership?: Maybe<AcceptMembershipResult>;
   acknowledge: Scalars['Boolean'];
+  addMember?: Maybe<AddMemberResult>;
   authenticateAt: DelegateAuthInit;
   claimInvitation: ClaimInvitationResult;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
   createInvitations: CreateInvitationResult;
+  createTestInvitation: CreateInvitationResult;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   lockOffer: LockOfferResult;
   logout: LogoutResponse;
   provePayment: ProvePaymentResult;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
+  rejectMembership?: Maybe<RejectMembershipResult>;
+  removeMember?: Maybe<RemoveMemberResult>;
+  requestInvitationOffer: Offer;
+  requestSessionChallenge: Scalars['String'];
   requestUpdateSafe: RequestUpdateSafeResponse;
   sendMessage: SendMessageResult;
   tagTransaction: TagTransactionResult;
   unlistOffer: Scalars['Boolean'];
   updateSafe: UpdateSafeResponse;
   upsertOffer: Offer;
+  upsertOrganisation: CreateOrganisationResult;
   upsertProfile: Profile;
+  upsertRegion: CreateOrganisationResult;
   upsertTag: Tag;
+  verifySessionChallenge?: Maybe<ExchangeTokenResponse>;
+};
+
+
+export type MutationAcceptMembershipArgs = {
+  membershipId: Scalars['Int'];
 };
 
 
 export type MutationAcknowledgeArgs = {
   until: Scalars['String'];
+};
+
+
+export type MutationAddMemberArgs = {
+  groupId: Scalars['String'];
+  memberId: Scalars['Int'];
 };
 
 
@@ -335,6 +530,27 @@ export type MutationProvePaymentArgs = {
 };
 
 
+export type MutationRejectMembershipArgs = {
+  membershipId: Scalars['Int'];
+};
+
+
+export type MutationRemoveMemberArgs = {
+  groupId: Scalars['String'];
+  memberId: Scalars['Int'];
+};
+
+
+export type MutationRequestInvitationOfferArgs = {
+  for: Scalars['String'];
+};
+
+
+export type MutationRequestSessionChallengeArgs = {
+  address: Scalars['String'];
+};
+
+
 export type MutationRequestUpdateSafeArgs = {
   data: RequestUpdateSafeInput;
 };
@@ -353,7 +569,7 @@ export type MutationTagTransactionArgs = {
 
 
 export type MutationUnlistOfferArgs = {
-  offerId: Scalars['Int'];
+  offerId: LockOfferInput;
 };
 
 
@@ -367,13 +583,34 @@ export type MutationUpsertOfferArgs = {
 };
 
 
+export type MutationUpsertOrganisationArgs = {
+  organisation: UpsertOrganisationInput;
+};
+
+
 export type MutationUpsertProfileArgs = {
   data: UpsertProfileInput;
 };
 
 
+export type MutationUpsertRegionArgs = {
+  organisation: UpsertOrganisationInput;
+};
+
+
 export type MutationUpsertTagArgs = {
   data: UpsertTagInput;
+};
+
+
+export type MutationVerifySessionChallengeArgs = {
+  challenge: Scalars['String'];
+  signature: Scalars['String'];
+};
+
+export type NotificationEvent = {
+  __typename?: 'NotificationEvent';
+  type: Scalars['String'];
 };
 
 export type Offer = {
@@ -387,7 +624,7 @@ export type Offer = {
   deliveryTermsTagId: Scalars['Int'];
   description?: Maybe<Scalars['String']>;
   geonameid: Scalars['Int'];
-  id: Scalars['Int'];
+  id: Scalars['String'];
   maxUnits?: Maybe<Scalars['Int']>;
   pictureMimeType: Scalars['String'];
   pictureUrl: Scalars['String'];
@@ -400,12 +637,39 @@ export type Offer = {
   unlistedAt?: Maybe<Scalars['String']>;
 };
 
+export type Organisation = {
+  __typename?: 'Organisation';
+  avatarMimeType?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  circlesAddress?: Maybe<Scalars['String']>;
+  circlesSafeOwner?: Maybe<Scalars['String']>;
+  city?: Maybe<City>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
+  createdAt: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  members?: Maybe<Array<ProfileOrOrganisation>>;
+  name: Scalars['String'];
+  offers?: Maybe<Array<Offer>>;
+  trustsYou?: Maybe<Scalars['Int']>;
+};
+
+export type OrganisationCreated = IEventPayload & {
+  __typename?: 'OrganisationCreated';
+  organisation: Scalars['String'];
+  organisation_profile?: Maybe<Organisation>;
+  transaction_hash?: Maybe<Scalars['String']>;
+};
+
+export type PaginationArgs = {
+  continueAt: Scalars['String'];
+  limit: Scalars['Int'];
+  order: SortOrder;
+};
+
 export type PaymentProof = {
-  destinations: Array<Scalars['String']>;
-  forOfferId: Scalars['Int'];
-  sources: Array<Scalars['String']>;
-  tokenOwners: Array<Scalars['String']>;
-  values: Array<Scalars['String']>;
+  forOfferId: LockOfferInput;
+  transactionHash: Scalars['String'];
 };
 
 export type Profile = {
@@ -418,17 +682,28 @@ export type Profile = {
   circlesTokenAddress?: Maybe<Scalars['String']>;
   city?: Maybe<City>;
   cityGeonameid?: Maybe<Scalars['Int']>;
+  claimedInvitation?: Maybe<ClaimedInvitation>;
   country?: Maybe<Scalars['String']>;
+  displayTimeCircles?: Maybe<Scalars['Boolean']>;
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['Int'];
   lastEvent?: Maybe<ProfileEvent>;
   lastName?: Maybe<Scalars['String']>;
+  memberships?: Maybe<Array<Membership>>;
   newsletter?: Maybe<Scalars['Boolean']>;
   offers?: Maybe<Array<Offer>>;
   status?: Maybe<Scalars['String']>;
   trustsYou?: Maybe<Scalars['Int']>;
   youTrust?: Maybe<Scalars['Int']>;
+};
+
+export type ProfileAggregate = {
+  __typename?: 'ProfileAggregate';
+  payload: AggregatePayload;
+  safe_address: Scalars['String'];
+  safe_address_profile?: Maybe<Profile>;
+  type: Scalars['String'];
 };
 
 export type ProfileEvent = {
@@ -446,6 +721,8 @@ export type ProfileEvent = {
   value?: Maybe<Scalars['String']>;
 };
 
+export type ProfileOrOrganisation = Organisation | Profile;
+
 export type ProvePaymentResult = {
   __typename?: 'ProvePaymentResult';
   success: Scalars['Boolean'];
@@ -460,7 +737,7 @@ export type Purchase = {
   purchasedFrom: Profile;
   purchasedFromProfileId: Scalars['Int'];
   purchasedItem: Offer;
-  purchasedOfferId: Scalars['Int'];
+  purchasedOfferId: Scalars['String'];
   status: PurchaseStatus;
 };
 
@@ -472,23 +749,32 @@ export enum PurchaseStatus {
 
 export type Query = {
   __typename?: 'Query';
+  aggregates: Array<ProfileAggregate>;
   balance: Scalars['String'];
   balancesByAsset: Array<AssetBalance>;
+  blockchainEvents: Array<ProfileEvent>;
+  blockchainEventsByTransactionHash: Array<ProfileEvent>;
   chatHistory: Array<ProfileEvent>;
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
   commonTrust: Array<CommonTrust>;
   contact?: Maybe<Contact>;
   contacts: Array<Contact>;
-  eventByTransactionHash: Array<ProfileEvent>;
   events: Array<ProfileEvent>;
+  findSafeAddressByOwner: Array<Scalars['String']>;
+  hubSignupTransaction?: Maybe<ProfileEvent>;
   inbox: Array<ProfileEvent>;
+  initAggregateState?: Maybe<InitAggregateState>;
   invitationTransaction?: Maybe<ProfileEvent>;
+  lastUBITransaction?: Maybe<Scalars['String']>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
   offers: Array<Offer>;
+  organisations: Array<Organisation>;
+  organisationsByAddress: Array<Organisation>;
   profilesById: Array<Profile>;
   profilesBySafeAddress: Array<Profile>;
+  regions: Array<Organisation>;
   safeFundingTransaction?: Maybe<ProfileEvent>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
@@ -498,6 +784,12 @@ export type Query = {
   trustRelations: Array<TrustRelation>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryAggregatesArgs = {
+  safeAddress: Scalars['String'];
+  types: Array<AggregateType>;
 };
 
 
@@ -511,8 +803,25 @@ export type QueryBalancesByAssetArgs = {
 };
 
 
+export type QueryBlockchainEventsArgs = {
+  fromBlock?: Maybe<Scalars['Int']>;
+  pagination?: Maybe<PaginationArgs>;
+  safeAddress: Scalars['String'];
+  toBlock?: Maybe<Scalars['Int']>;
+  types?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryBlockchainEventsByTransactionHashArgs = {
+  safeAddress: Scalars['String'];
+  transactionHash: Scalars['String'];
+  types?: Maybe<Array<Scalars['String']>>;
+};
+
+
 export type QueryChatHistoryArgs = {
   contactSafeAddress: Scalars['String'];
+  pagination?: Maybe<PaginationArgs>;
   safeAddress: Scalars['String'];
 };
 
@@ -539,23 +848,30 @@ export type QueryContactsArgs = {
 };
 
 
-export type QueryEventByTransactionHashArgs = {
+export type QueryEventsArgs = {
+  pagination: PaginationArgs;
   safeAddress: Scalars['String'];
-  transactionHash: Scalars['String'];
-  types?: Maybe<Array<Scalars['String']>>;
+  types: Array<EventType>;
 };
 
 
-export type QueryEventsArgs = {
-  fromBlock?: Maybe<Scalars['Int']>;
-  safeAddress: Scalars['String'];
-  toBlock?: Maybe<Scalars['Int']>;
-  types?: Maybe<Array<Scalars['String']>>;
+export type QueryFindSafeAddressByOwnerArgs = {
+  owner: Scalars['String'];
 };
 
 
 export type QueryOffersArgs = {
   query: QueryOfferInput;
+};
+
+
+export type QueryOrganisationsArgs = {
+  pagination?: Maybe<PaginationArgs>;
+};
+
+
+export type QueryOrganisationsByAddressArgs = {
+  addresses: Array<Scalars['String']>;
 };
 
 
@@ -566,6 +882,11 @@ export type QueryProfilesByIdArgs = {
 
 export type QueryProfilesBySafeAddressArgs = {
   safeAddresses: Array<Scalars['String']>;
+};
+
+
+export type QueryRegionsArgs = {
+  pagination?: Maybe<PaginationArgs>;
 };
 
 
@@ -605,7 +926,7 @@ export type QueryCitiesInput = {
 export type QueryOfferInput = {
   categoryTagId?: Maybe<Scalars['Int']>;
   createdByProfileId?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['String']>;
   publishedAt_gt?: Maybe<Scalars['String']>;
   publishedAt_lt?: Maybe<Scalars['String']>;
 };
@@ -636,6 +957,18 @@ export type RedeemClaimedInvitationResult = {
   error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
   transactionHash?: Maybe<Scalars['String']>;
+};
+
+export type RejectMembershipResult = {
+  __typename?: 'RejectMembershipResult';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
+export type RemoveMemberResult = {
+  __typename?: 'RemoveMemberResult';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
 };
 
 export type RequestUpdateSafeInput = {
@@ -672,6 +1005,11 @@ export type SessionInfo = {
   profileId?: Maybe<Scalars['Int']>;
 };
 
+export enum SortOrder {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
 export type Stats = {
   __typename?: 'Stats';
   cities: Array<CityStats>;
@@ -687,7 +1025,7 @@ export type Stats = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  events: Array<ProfileEvent>;
+  events: NotificationEvent;
 };
 
 export type Tag = {
@@ -735,13 +1073,23 @@ export type UpsertOfferInput = {
   deliveryTermsTagId: Scalars['Int'];
   description?: Maybe<Scalars['String']>;
   geonameid: Scalars['Int'];
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['String']>;
   maxUnits?: Maybe<Scalars['Int']>;
   pictureMimeType?: Maybe<Scalars['String']>;
   pictureUrl?: Maybe<Scalars['String']>;
   pricePerUnit: Scalars['String'];
   title: Scalars['String'];
   unitTagId: Scalars['Int'];
+};
+
+export type UpsertOrganisationInput = {
+  avatarMimeType?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  circlesAddress?: Maybe<Scalars['String']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
 };
 
 export type UpsertProfileInput = {
@@ -753,6 +1101,7 @@ export type UpsertProfileInput = {
   circlesTokenAddress?: Maybe<Scalars['String']>;
   cityGeonameid?: Maybe<Scalars['Int']>;
   country?: Maybe<Scalars['String']>;
+  displayTimeCircles?: Maybe<Scalars['Boolean']>;
   dream?: Maybe<Scalars['String']>;
   emailAddress?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
@@ -775,8 +1124,15 @@ export type Version = {
   revision: Scalars['Int'];
 };
 
+export type WelcomeMessage = IEventPayload & {
+  __typename?: 'WelcomeMessage';
+  member: Scalars['String'];
+  member_profile?: Maybe<Profile>;
+  transaction_hash?: Maybe<Scalars['String']>;
+};
+
 export type UpsertOfferMutationVariables = Exact<{
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['String']>;
   title: Scalars['String'];
   pictureUrl: Scalars['String'];
   pictureMimeType: Scalars['String'];
@@ -814,7 +1170,7 @@ export type UpsertOfferMutation = (
 
 export type OffersQueryVariables = Exact<{
   createdByProfileId?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['String']>;
   publishedAt_gt?: Maybe<Scalars['String']>;
   publishedAt_lt?: Maybe<Scalars['String']>;
   categoryTagId?: Maybe<Scalars['Int']>;
@@ -905,7 +1261,7 @@ export type CitiesByIdQuery = (
 
 
 export const UpsertOfferDocument = gql`
-    mutation upsertOffer($id: Int, $title: String!, $pictureUrl: String!, $pictureMimeType: String!, $description: String, $categoryTagId: Int!, $geonameid: Int!, $pricePerUnit: String!, $unitTagId: Int!, $maxUnits: Int, $deliveryTermsTagId: Int!) {
+    mutation upsertOffer($id: String, $title: String!, $pictureUrl: String!, $pictureMimeType: String!, $description: String, $categoryTagId: Int!, $geonameid: Int!, $pricePerUnit: String!, $unitTagId: Int!, $maxUnits: Int, $deliveryTermsTagId: Int!) {
   upsertOffer(
     data: {id: $id, geonameid: $geonameid, categoryTagId: $categoryTagId, deliveryTermsTagId: $deliveryTermsTagId, description: $description, maxUnits: $maxUnits, pictureUrl: $pictureUrl, pictureMimeType: $pictureMimeType, pricePerUnit: $pricePerUnit, title: $title, unitTagId: $unitTagId}
   ) {
@@ -952,7 +1308,7 @@ export const UpsertOfferDocument = gql`
 }
     `;
 export const OffersDocument = gql`
-    query offers($createdByProfileId: Int, $id: Int, $publishedAt_gt: String, $publishedAt_lt: String, $categoryTagId: Int) {
+    query offers($createdByProfileId: Int, $id: String, $publishedAt_gt: String, $publishedAt_lt: String, $categoryTagId: Int) {
   offers(
     query: {createdByProfileId: $createdByProfileId, id: $id, publishedAt_gt: $publishedAt_gt, publishedAt_lt: $publishedAt_lt, categoryTagId: $categoryTagId}
   ) {

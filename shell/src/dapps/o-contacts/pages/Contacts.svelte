@@ -1,70 +1,89 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import { me } from "../../../shared/stores/me";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { onDestroy, onMount } from "svelte";
-import { Contact, ContactsDocument } from "../../../shared/api/data/types";
-import ContactCard from "../atoms/ContactCard.svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+  import {me} from "../../../shared/stores/me";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {onDestroy, onMount} from "svelte";
+  import {
+    AggregatesDocument,
+    AggregateType,
+    ContactPoint,
+  } from "../../../shared/api/data/types";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
+  import ContactCard2 from "../atoms/ContactCard2.svelte";
+  import {ZERO_ADDRESS} from "@o-platform/o-circles/dist/consts";
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
-let error: string | undefined = undefined;
-let contacts: Contact[] = [];
+  let error: string | undefined = undefined;
+  let contacts: ContactPoint[] = [];
 
-async function reload() {
-  const safeAddress = $me.circlesAddress;
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const contactsResult = await apiClient.query({
-    query: ContactsDocument,
-    variables: {
-      safeAddress,
-    },
-  });
-  if (contactsResult.errors?.length > 0) {
-    error = `Couldn't read the contacts of safe ${safeAddress}: \n${contactsResult.errors
-      .map((o) => o.message)
-      .join("\n")}`;
-    return;
-  }
-  contacts = contactsResult.data.contacts
-    .filter((o) => {
-      return o.contactAddressProfile && (o.trustsYou || o.youTrust);
-    })
-    .sort((a, b) => {
-      if (!a.contactAddressProfile && !b.contactAddressProfile) {
-        return 0;
+  async function reload() {
+    const safeAddress = $me.circlesAddress.toLowerCase();
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+
+    const c = await apiClient.query({
+      query: AggregatesDocument,
+      variables: {
+        types: [AggregateType.Contacts],
+        safeAddress: safeAddress
       }
-      if (a.contactAddressProfile && !b.contactAddressProfile) {
-        return 1;
-      }
-      if (!a.contactAddressProfile && b.contactAddressProfile) {
-        return -1;
-      }
-
-      const displayName_a = `${a.contactAddressProfile.firstName} ${a.contactAddressProfile.lastName}`;
-      const displayName_b = `${b.contactAddressProfile.firstName} ${b.contactAddressProfile.lastName}`;
-      return displayName_a.localeCompare(displayName_b);
     });
-}
 
-let shellEventSubscription: Subscription;
-onMount(async () => {
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (event.type != "shell.refresh" || (<any>event).dapp != "contacts:1") {
-        return;
-      }
-      await reload();
+    if (c.errors?.length > 0) {
+      error = `Couldn't read the contacts of safe ${safeAddress}: \n${c.errors
+              .map((o) => o.message)
+              .join("\n")}`;
+      return;
     }
-  );
-  await reload();
-});
 
-onDestroy(() => shellEventSubscription.unsubscribe());
+    const contactsList:ContactPoint[] = c.data.aggregates[0].payload.contacts;
+
+    let trustedContacts = contactsList.filter(o => {
+      // Check if the contact trusted me or if I trusted the contact
+      const crcTrust = o.metadata.find(p => p.name === "CrcTrust");
+      if (!crcTrust) {
+        return false;
+      }
+
+      // Check if the contact still trusts me or if I still trust the contact
+      return crcTrust.directions.find((o, i) => parseInt(crcTrust.values[i]) > 0);
+    });
+
+    // Filter my own address and the UBI minting address
+    trustedContacts = trustedContacts.filter(o => o.contactAddress != safeAddress
+                                              && o.contactAddress != ZERO_ADDRESS);
+
+    contacts = trustedContacts.sort((a,b) => {
+      // Contacts without profile should be sorted to the bottom
+      if (a.contactAddress_Profile.firstName.startsWith("0x"))
+        return 1;
+      if (b.contactAddress_Profile.firstName.startsWith("0x"))
+        return -1;
+
+      // All others alphabetically
+      return (a.contactAddress_Profile.firstName + a.contactAddress_Profile.lastName).localeCompare(
+              b.contactAddress_Profile.firstName + b.contactAddress_Profile.lastName
+      )
+    });
+  }
+
+  let shellEventSubscription: Subscription;
+  onMount(async () => {
+    shellEventSubscription = window.o.events.subscribe(
+            async (event: PlatformEvent) => {
+              if (event.type != "shell.refresh" || (<any>event).dapp != "contacts:1") {
+                return;
+              }
+              await reload();
+            }
+    );
+    await reload();
+  });
+
+  onDestroy(() => shellEventSubscription.unsubscribe());
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -92,8 +111,9 @@ onDestroy(() => shellEventSubscription.unsubscribe());
     </section>
   {:else}
     <!-- TODO: Possible actions: trust, transfer money -->
-    {#each contacts.filter((o) => !!o.contactAddressProfile) as contact}
-      <ContactCard contact="{contact}" />
+    {#each contacts.sort(o => o.contactAddress_Profile.f) as contact}
+      <!--<ContactCard contact="{contact}" />-->
+      <ContactCard2 contact="{contact}" />
     {/each}
   {/if}
 </div>

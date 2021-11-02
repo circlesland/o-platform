@@ -161,6 +161,7 @@ export type CrcHubTransfer = IEventPayload & {
   flow: Scalars['String'];
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
+  tags: Array<Tag>;
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
   transaction_hash: Scalars['String'];
@@ -2336,6 +2337,9 @@ export type StreamQuery = (
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
+      )>, tags: Array<(
+        { __typename?: 'Tag' }
+        & Pick<Tag, 'id' | 'typeId' | 'value'>
       )> }
     ) | (
       { __typename?: 'CrcMinting' }
@@ -2412,7 +2416,7 @@ export type AggregatesQuery = (
           & Pick<ContactPointSource, 'name' | 'directions' | 'values'>
         )>, contactAddress_Profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl'>
+          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
       )> }
     ) | (
@@ -4025,6 +4029,11 @@ export const StreamDocument = gql`
           }
           value
         }
+        tags {
+          id
+          typeId
+          value
+        }
       }
       ... on CrcTrust {
         transaction_hash
@@ -4153,6 +4162,7 @@ export const AggregatesDocument = gql`
             firstName
             lastName
             avatarUrl
+            circlesAddress
           }
         }
       }

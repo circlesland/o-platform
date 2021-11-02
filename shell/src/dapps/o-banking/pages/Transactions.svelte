@@ -1,6 +1,7 @@
 <script lang="ts">
 import BankingHeader from "../atoms/BankingHeader.svelte";
-import TransactionCard from "../atoms/TransactionCard.svelte";
+//import TransactionCard from "../atoms/TransactionCard.svelte";
+import TransactionCard2 from "../atoms/TransactionCard2.svelte";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
@@ -23,21 +24,21 @@ $: me;
           types: [
             EventType.CrcHubTransfer,
             EventType.CrcMinting,
-            EventType.CrcTrust,
-            EventType.ChatMessage,
-            EventType.CrcSignup,
-            EventType.CrcTokenTransfer,
-            EventType.EthTransfer,
-            EventType.GnosisSafeEthTransfer,
-            EventType.InvitationCreated,
-            EventType.InvitationRedeemed,
-            EventType.MembershipOffer,
-            EventType.MembershipAccepted,
-            EventType.MembershipRejected
+            //EventType.CrcTrust,
+            //EventType.ChatMessage,
+            //EventType.CrcSignup,
+            //EventType.CrcTokenTransfer,
+            //EventType.EthTransfer,
+            //EventType.GnosisSafeEthTransfer,
+            //EventType.InvitationCreated,
+            //EventType.InvitationRedeemed,
+            //EventType.MembershipOffer,
+            //EventType.MembershipAccepted,
+            //EventType.MembershipRejected
           ]
         }}"
         views={{
-          [EventType.CrcHubTransfer]: TransactionCard,
-          [EventType.CrcMinting]: TransactionCard
+          [EventType.CrcHubTransfer]: TransactionCard2,
+          [EventType.CrcMinting]: TransactionCard2
         }} />
 </div>

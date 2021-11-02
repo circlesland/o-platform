@@ -1208,6 +1208,11 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
           }
           value
         }
+        tags {
+          id
+          typeId
+          value
+        }
       }
       ...on CrcTrust {
         transaction_hash
@@ -1337,6 +1342,7 @@ query aggregates($types:[AggregateType!]! $safeAddress:String!) {
             firstName
             lastName
             avatarUrl
+            circlesAddress
           }
         }
       }

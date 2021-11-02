@@ -1,5 +1,5 @@
 mutation upsertOffer (
-    $id: Int
+    $id: String
     $title: String!
     $pictureUrl: String!
     $pictureMimeType: String!
