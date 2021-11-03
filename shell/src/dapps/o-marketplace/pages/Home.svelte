@@ -1,6 +1,5 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-
 import OfferCard from "../atoms/OfferCard.svelte";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -9,14 +8,19 @@ import { Subscription } from "rxjs";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import List from "../../../shared/molecules/Lists/List.svelte";
+
 import {
   Offer,
   OffersDocument,
   TagsDocument,
 } from "../../../shared/api/data/types";
+import { me } from "../../../shared/stores/me";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+
+const listArguments = {};
 
 let isLoading: boolean;
 let error: Error;
@@ -99,86 +103,16 @@ function loadCategoryPage(category: any) {
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="px-4 mx-auto -mt-3 lg:w-2/3 xl:w-1/2">
-  {#if isLoading}
-    <section class="flex items-center justify-center mx-4 mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-        <div class="flex flex-col items-start">
-          <div>Loading offers...</div>
-        </div>
-      </div>
-    </section>
-  {:else if error}
-    <section class="flex items-center justify-center mx-4 mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-        <div class="flex flex-col items-start">
-          <div>
-            <b>An error occurred while loading the recent activities:</b>
-          </div>
-        </div>
-      </div>
-    </section>
-  {:else if offers.length}
-    <!-- <section class="flex items-center justify-center mb-1 ">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div class="text-xs font-bold text-left ">Offers</div>
-      </div>
-    </section> -->
-
-    <!-- <div class="p-2 mt-4 mb-4">
-      <Swiper
-        slidesPerView={4.1}
-        spaceBetween={10}
-        grabCursor={true}
-        pagination={{
-          clickable: true,
-        }}
-        on:slideChange={() => console.log("slide change")}
-        on:swiper={(e) => console.log(e.detail[0])}
-      >
-        {#each categories as category}
-          <SwiperSlide>
-            <div
-              class="p-2 rounded-full cursor-pointer bg-light-lighter text-2xs"
-              on:click={() => loadCategoryPage(category)}
-            >
-              {category.value}
-            </div>
-          </SwiperSlide>
-        {/each}
-      </Swiper>
-    </div> -->
-
-    <div
-      class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
-      {#each offers as offer}
-        <OfferCard offer="{offer}" />
-      {/each}
-    </div>
-
-    <!-- {#each Object.keys(citites) as city}
-      <section class="flex items-center justify-center mx-4 mb-1 ">
-        <div class="flex flex-col w-full p-4 space-y-2 ">
-          <div class="text-xs font-bold text-left ">
-            {city}
-          </div>
-        </div>
-      </section>
-
-      {#each citites[city] as offer}
-        <OfferCard {offer} />
-      {/each}
-    {/each} -->
-  {:else}
-    <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-        <div class="flex flex-col items-start">
-          <div>No offers</div>
-        </div>
-      </div>
-    </section>
-  {/if}
+  <div
+    class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
+    <List
+      listItemType="{Offer}"
+      listItemComponent="{OfferCard}"
+      fetchQuery="{OffersDocument}"
+      fetchQueryArguments="{listArguments}"
+      dataKey="offers"
+      dataLimit="{100}" />
+  </div>
 </div>
 
 <style>
