@@ -5,7 +5,7 @@
   import ItemCard from "./atoms/ItemCard.svelte";
   import Date from "./atoms/Date.svelte";
 
-  export let param: ProfileEvent;
+  export let eventData: ProfileEvent;
 
   onMount(async () => {
   });
@@ -14,8 +14,8 @@
 <div>
     <ItemCard params={{
       edgeless: false,
-      title: `Couldn't find a view for event type '${param.type}'.`,
-      subTitle: JSON.stringify(param.payload),
+      title: `Couldn't find a view for event type '${eventData.type}'.`,
+      subTitle: JSON.stringify(eventData.payload),
       truncateMain: true
     }}>
         <div slot="itemCardEnd">
@@ -24,8 +24,8 @@
                 </span>
             </div>
             <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
-                {#if param.timestamp}
-                    <Date time="{param.timestamp}" />
+                {#if eventData.timestamp}
+                    <Date time="{eventData.timestamp}" />
                 {/if}
             </div>
         </div>

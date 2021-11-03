@@ -444,6 +444,7 @@
 
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
   <div class="flex flex-col pb-0 space-y-4 sm:space-y-8">
+    <!--
     <List limit="{100}"
           queryArguments="{{
           safeAddress: $me.circlesAddress,
@@ -468,7 +469,7 @@
           //[EventType.CrcHubTransfer]: TransactionCard2,
           //[EventType.CrcMinting]: TransactionCard2
         }} />
-    <!--
+    -->
     {#each chatHistory as chat}
       {#if chat.type === "chat_message"}
         <ChatCard params="{buildCardModel(chat)}" />
@@ -476,7 +477,6 @@
         <NotificationCard params="{buildCardModel(chat)}" />
       {/if}
     {/each}
-    -->
   </div>
   <div
     class:hidden="{!contactProfile ||

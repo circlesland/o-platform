@@ -20,7 +20,7 @@
   let pagination: PaginationArgs = {
     order: order,
     limit: 100,
-    continueAt: new Date(0).toJSON()
+    continueAt: new Date().toJSON()
   };
 
   const fetchData = async (paginationArg: PaginationArgs) => {
@@ -69,7 +69,7 @@
     {#if views[event.type]}
       <svelte:component this="{views[event.type]}" param="{event}" />
     {:else}
-      <GenericEventCard param={event} />
+      <GenericEventCard eventData={event} />
     {/if}
   {/each}
 {:else}
