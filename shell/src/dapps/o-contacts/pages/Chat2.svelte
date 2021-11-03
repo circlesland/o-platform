@@ -8,7 +8,7 @@ import { Contact, ContactsDocument } from "../../../shared/api/data/types";
 import ChatListCard from "../atoms/ChatListCard.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
-import List from "../../../shared/molecules/Lists/List.svelte";
+import EventList from "../../../shared/molecules/Lists/EventList.svelte";
 
 import {EventType} from "../../../shared/api/data/types";
 

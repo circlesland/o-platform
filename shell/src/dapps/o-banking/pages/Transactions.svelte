@@ -7,7 +7,7 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import {EventType, StreamDocument} from "../../../shared/api/data/types";
 
-import List from "../../../shared/molecules/Lists/List.svelte";
+import List from "../../../shared/molecules/Lists/EventList.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;

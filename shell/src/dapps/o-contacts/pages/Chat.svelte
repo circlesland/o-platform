@@ -14,7 +14,7 @@
   import ChatListCard from "../atoms/ChatListCard.svelte";
   import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
   import {Subscription} from "rxjs";
-  import List from "../../../shared/molecules/Lists/List.svelte";
+  import List from "../../../shared/molecules/Lists/EventList.svelte";
   import {ZERO_ADDRESS} from "@o-platform/o-circles/dist/consts";
 
 

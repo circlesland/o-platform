@@ -20,7 +20,7 @@
   import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
   import {Subscription} from "rxjs";
   import {displayCirclesAmount} from "../../../shared/functions/displayCirclesAmount";
-  import List from "../../../shared/molecules/Lists/List.svelte";
+  import EventList from "../../../shared/molecules/Lists/EventList.svelte";
 
   export let id: string;
 
