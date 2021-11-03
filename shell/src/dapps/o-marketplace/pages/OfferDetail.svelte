@@ -2,7 +2,7 @@
 import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
 import { Offer, OffersDocument } from "../../../shared/api/data/types";
 import OfferCard from "../atoms/OfferCard.svelte";
-import { onMount } from "svelte";
+import { onMount, onDestroy } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 import CreatorCard from "../atoms/CreatorCard.svelte";
@@ -10,6 +10,9 @@ import Time from "svelte-time";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { cartContents } from "../stores/shoppingCartStore";
+
+import { push } from "svelte-spa-router";
 
 let isLoading: boolean;
 let error: Error;
@@ -26,7 +29,7 @@ async function load() {
   const result = await apiClient.query({
     query: OffersDocument,
     variables: {
-      id: parseInt(id.toString()),
+      id: id,
     },
   });
   if (result.errors && result.errors.length) {
@@ -39,8 +42,11 @@ async function load() {
   }
   isLoading = false;
   offers = result.data.offers;
+}
 
-  console.log("OFFER: ", offers);
+function addToCart(item) {
+  $cartContents = $cartContents ? [...$cartContents, item] : [item];
+  push(`#/marketplace/cart`);
 }
 
 onMount(async () => {
@@ -314,8 +320,11 @@ onMount(async () => {
             </button>
           </div>
           <div class="flex-grow">
-            <button type="submit" class="relative btn btn-primary btn-block">
-              Buy now
+            <button
+              type="submit"
+              class="relative btn btn-primary btn-block"
+              on:click="{() => addToCart(offer)}">
+              Add to Cart
               <div class="absolute mr-1 right-2">
                 <Icons icon="cart" />
               </div>
