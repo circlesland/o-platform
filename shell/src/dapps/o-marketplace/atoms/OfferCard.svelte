@@ -9,7 +9,7 @@ import { upsertOffer } from "../processes/upsertOffer";
 import { truncateString } from "../../../shared/functions/truncateString";
 import Time from "svelte-time";
 
-export let offer: Offer = <any>{
+export let param: Offer = <any>{
   categoryTag: {
     value: "",
     id: 0,
@@ -30,6 +30,8 @@ export let offer: Offer = <any>{
   geonameid: 0,
   createdBy: {},
 };
+
+let offer = param;
 
 export let allowEdit: boolean = false;
 

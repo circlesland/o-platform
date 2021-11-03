@@ -51,6 +51,8 @@ const fetchData = async (paginationArg) => {
 };
 
 const handleChange = (e) => {
+  console.log("hasMore: ", hasMore);
+  console.log("e.detail.inView: ", e.detail.inView);
   if (e.detail.inView && hasMore) fetchData(pagination);
 };
 onMount(async () => {
