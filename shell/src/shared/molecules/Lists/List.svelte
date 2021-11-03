@@ -3,13 +3,13 @@
   import {PaginationArgs, QueryEventsArgs, SortOrder, StreamDocument} from "../../api/data/types";
 
   import {inview} from "svelte-inview/dist/index";
-  import ItemCard from "../../atoms/ItemCard.svelte";
   import GenericEventCard from "../../GenericEventCard.svelte";
 
   export let views: { [type: string]: any } = {};
   export let selector = "timestamp";
   export let fetchQuery: any = StreamDocument;
   export let queryArguments: QueryEventsArgs;
+  export let order: SortOrder = SortOrder.Desc;
   export let dataKey: string = "events";
   export let limit: number = 50;
 
@@ -18,9 +18,9 @@
   let error: string;
   let scrollContent;
   let pagination: PaginationArgs = {
-    order: SortOrder.Desc,
+    order: order,
     limit: 100,
-    continueAt: new Date().toJSON()
+    continueAt: new Date(0).toJSON()
   };
 
   const fetchData = async (paginationArg: PaginationArgs) => {
@@ -43,7 +43,7 @@
       events = [...events, ...newBatch];
 
       pagination = {
-        order: SortOrder.Desc,
+        order: order,
         continueAt: newBatch[newBatch.length - 1][selector],
         limit: limit,
       };
