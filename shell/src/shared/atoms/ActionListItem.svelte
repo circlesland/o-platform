@@ -5,7 +5,6 @@ export let title: string = null;
 export let icon: string = null;
 export let colorClass: string = null;
 export let small: boolean = false;
-console.log("icon: ", icon);
 </script>
 
 <div

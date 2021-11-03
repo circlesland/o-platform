@@ -1,68 +1,62 @@
 <script lang="ts">
-  import { push } from "svelte-spa-router";
-  import { Offer } from "../data/api/types";
-  import { purchase } from "../processes/purchase";
-  import OfferCardField from "./OfferCardField.svelte";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import { me } from "../../../shared/stores/me";
-  import { upsertOffer } from "../processes/upsertOffer";
-  import { truncateString } from "../../../shared/functions/truncateString";
-  import Time from "svelte-time";
+import { push } from "svelte-spa-router";
+import { Offer } from "../../../shared/api/data/types";
+import { purchase } from "../processes/purchase";
+import OfferCardField from "./OfferCardField.svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import { me } from "../../../shared/stores/me";
+import { upsertOffer } from "../processes/upsertOffer";
+import { truncateString } from "../../../shared/functions/truncateString";
+import Time from "svelte-time";
 
-  export let offer: Offer = <any>{
-    categoryTag: {
-      value: "",
-      id: 0,
-    },
-    categoryTagId: 0,
-    deliveryTermsTag: {
-      value: "",
-      id: 0,
-    },
-    description: "",
-    unitTag: {
-      value: "",
-      id: 0,
-    },
-    pricePerUnit: "",
+export let offer: Offer = <any>{
+  categoryTag: {
+    value: "",
     id: 0,
-    title: "",
-    geonameid: 0,
-    createdBy: {},
-  };
+  },
+  categoryTagId: 0,
+  deliveryTermsTag: {
+    value: "",
+    id: 0,
+  },
+  description: "",
+  unitTag: {
+    value: "",
+    id: 0,
+  },
+  pricePerUnit: "",
+  id: 0,
+  title: "",
+  geonameid: 0,
+  createdBy: {},
+};
 
-  export let allowEdit: boolean = false;
+export let allowEdit: boolean = false;
 
-  let isEditable: boolean = false;
-  $: {
-    isEditable =
-      allowEdit && $me && offer && $me.id == offer.createdByProfileId;
-  }
+let isEditable: boolean = false;
+$: {
+  isEditable = allowEdit && $me && offer && $me.id == offer.createdByProfileId;
+}
 
-  function edit(dirtyFlags: { [field: string]: boolean }) {
-    // console.log("edit: dirtyFlags:", dirtyFlags);
-    window.o.runProcess(
-      upsertOffer,
-      offer,
-      dirtyFlags,
-      true
-    );
-  }
+function edit(dirtyFlags: { [field: string]: boolean }) {
+  // console.log("edit: dirtyFlags:", dirtyFlags);
+  window.o.runProcess(upsertOffer, offer, dirtyFlags, true);
+}
 
-  function loadDetailPage() {
-    push("#/marketplace/offer/" + offer.id);
-  }
+function loadDetailPage() {
+  push("#/marketplace/offer/" + offer.id);
+}
 
-  function buy() {
-    window.o.runProcess(purchase, {});
-  }
+function buy() {
+  window.o.runProcess(purchase, {});
+}
 
-  let now = new Date();
-  let sevendaysago = now.setDate(now.getDate() - 7);
+let now = new Date();
+let sevendaysago = now.setDate(now.getDate() - 7);
 
-  function dateOlderThanSevenDays(unixTime: number) {
-    return sevendaysago > unixTime * 1000;
-  }
+function dateOlderThanSevenDays(unixTime: number) {
+  return sevendaysago > unixTime * 1000;
+}
 </script>
 
 <section class="flex items-start pb-2 bg-white shadow rounded-xl">
@@ -70,7 +64,9 @@
     <header class=" rounded-t-xl headerImageContainer">
       <div class="relative rounded-t-xl image-wrapper">
         <img
-          src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
+          src="{offer.pictureUrl
+            ? offer.pictureUrl
+            : '/images/market/circles-no-image.jpg'}"
           alt="
           "
           class="rounded-t-xl" />
@@ -87,7 +83,9 @@
         <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
           <img
             class="rounded-full"
-            src="{offer.createdBy.avatarUrl ? offer.createdBy.avatarUrl : '/images/market/city.png'}"
+            src="{offer.createdBy.avatarUrl
+              ? offer.createdBy.avatarUrl
+              : '/images/market/city.png'}"
             alt="user-icon" />
         </div>
       </div>
@@ -98,7 +96,8 @@
         <div
           class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
           <a
-            href="#/marketplace/categories/{offer.categoryTagId}/{offer.categoryTag.value}"
+            href="#/marketplace/categories/{offer.categoryTagId}/{offer
+              .categoryTag.value}"
             alt="{offer.categoryTag.value}">
             {offer.categoryTag.value}
           </a>
@@ -282,21 +281,21 @@
 </section>
 
 <style>
-  /* Ensure image is always 16:9 Ratio */
-  .headerImageContainer {
-    max-width: none;
-  }
+/* Ensure image is always 16:9 Ratio */
+.headerImageContainer {
+  max-width: none;
+}
 
-  .image-wrapper {
-    position: relative;
-    /* padding-bottom: 56.2%;b 16:9 */
-    padding-bottom: 75%; /* 4:3 */
-  }
+.image-wrapper {
+  position: relative;
+  /* padding-bottom: 56.2%;b 16:9 */
+  padding-bottom: 75%; /* 4:3 */
+}
 
-  .image-wrapper img {
-    position: absolute;
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-  }
+.image-wrapper img {
+  position: absolute;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
 </style>
