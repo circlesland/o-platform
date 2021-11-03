@@ -131,6 +131,7 @@ async function init() {
           inbox.reload();
         });
     });
+    inbox.reload();
   }
 }
 
