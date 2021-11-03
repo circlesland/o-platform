@@ -1313,9 +1313,10 @@ query aggregates($types:[AggregateType!]! $safeAddress:String!) {
       firstName
       lastName
       avatarUrl
+      circlesAddress
     }
     payload {
-      ...on CrcBalance {
+      ...on CrcBalances {
         lastUpdatedAt
         balances {
           token_address
@@ -1324,6 +1325,7 @@ query aggregates($types:[AggregateType!]! $safeAddress:String!) {
             firstName
             lastName
             avatarUrl
+            circlesAddress
           }
           token_balance
         }

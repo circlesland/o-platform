@@ -24,7 +24,7 @@ interface IEventPayload {
     transaction_hash: String
 }
 
-union AggregatePayload = Contacts | CrcBalance | Members | Memberships
+union AggregatePayload = Contacts | CrcBalances | Members | Memberships
 
 union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | WelcomeMessage
 
@@ -114,21 +114,22 @@ type Contact {
     youTrust: Int
 }
 
-type ContactPoint {
+type Contact2 {
     contactAddress: String!
     contactAddress_Profile: Profile
     lastContactAt: String!
-    metadata: [ContactPointSource!]!
+    metadata: [ContactPoint!]!
 }
 
-type ContactPointSource {
+type ContactPoint {
     directions: [ContactDirection!]!
+    lastContactAt: String!
     name: String!
     values: [String!]!
 }
 
 type Contacts implements IAggregatePayload {
-    contacts: [ContactPoint!]!
+    contacts: [Contact2!]!
     lastUpdatedAt: String!
 }
 
@@ -137,7 +138,7 @@ type CountryStats {
     name: String!
 }
 
-type CrcBalance implements IAggregatePayload {
+type CrcBalances implements IAggregatePayload {
     balances: [AssetBalance!]!
     lastUpdatedAt: String!
 }
@@ -237,6 +238,7 @@ type DepositChallengeResponse {
 type EthTransfer implements IEventPayload {
     from: String!
     from_profile: Profile
+    tags: [Tag!]!
     to: String!
     to_profile: Profile
     transaction_hash: String!
@@ -252,6 +254,7 @@ type GnosisSafeEthTransfer implements IEventPayload {
     from: String!
     from_profile: Profile
     initiator: String!
+    tags: [Tag!]!
     to: String!
     to_profile: Profile
     transaction_hash: String!
@@ -628,7 +631,7 @@ type WelcomeMessage implements IEventPayload {
 
 enum AggregateType {
     Contacts
-    CrcBalance
+    CrcBalances
     Members
     Memberships
 }

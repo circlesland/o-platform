@@ -26,11 +26,11 @@ export type AddMemberResult = {
   success: Scalars['Boolean'];
 };
 
-export type AggregatePayload = Contacts | CrcBalance | Members | Memberships;
+export type AggregatePayload = Contacts | CrcBalances | Members | Memberships;
 
 export enum AggregateType {
   Contacts = 'Contacts',
-  CrcBalance = 'CrcBalance',
+  CrcBalances = 'CrcBalances',
   Members = 'Members',
   Memberships = 'Memberships'
 }
@@ -118,6 +118,14 @@ export type Contact = {
   youTrust?: Maybe<Scalars['Int']>;
 };
 
+export type Contact2 = {
+  __typename?: 'Contact2';
+  contactAddress: Scalars['String'];
+  contactAddress_Profile?: Maybe<Profile>;
+  lastContactAt: Scalars['String'];
+  metadata: Array<ContactPoint>;
+};
+
 export enum ContactDirection {
   In = 'In',
   Out = 'Out'
@@ -125,22 +133,15 @@ export enum ContactDirection {
 
 export type ContactPoint = {
   __typename?: 'ContactPoint';
-  contactAddress: Scalars['String'];
-  contactAddress_Profile?: Maybe<Profile>;
-  lastContactAt: Scalars['String'];
-  metadata: Array<ContactPointSource>;
-};
-
-export type ContactPointSource = {
-  __typename?: 'ContactPointSource';
   directions: Array<ContactDirection>;
+  lastContactAt: Scalars['String'];
   name: Scalars['String'];
   values: Array<Scalars['String']>;
 };
 
 export type Contacts = IAggregatePayload & {
   __typename?: 'Contacts';
-  contacts: Array<ContactPoint>;
+  contacts: Array<Contact2>;
   lastUpdatedAt: Scalars['String'];
 };
 
@@ -150,8 +151,8 @@ export type CountryStats = {
   name: Scalars['String'];
 };
 
-export type CrcBalance = IAggregatePayload & {
-  __typename?: 'CrcBalance';
+export type CrcBalances = IAggregatePayload & {
+  __typename?: 'CrcBalances';
   balances: Array<AssetBalance>;
   lastUpdatedAt: Scalars['String'];
 };
@@ -272,6 +273,7 @@ export type EthTransfer = IEventPayload & {
   __typename?: 'EthTransfer';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
+  tags: Array<Tag>;
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
   transaction_hash: Scalars['String'];
@@ -310,6 +312,7 @@ export type GnosisSafeEthTransfer = IEventPayload & {
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
   initiator: Scalars['String'];
+  tags: Array<Tag>;
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
   transaction_hash: Scalars['String'];
@@ -2404,30 +2407,30 @@ export type AggregatesQuery = (
     & Pick<ProfileAggregate, 'type' | 'safe_address'>
     & { safe_address_profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl'>
+      & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
     )>, payload: (
       { __typename?: 'Contacts' }
       & Pick<Contacts, 'lastUpdatedAt'>
       & { contacts: Array<(
-        { __typename?: 'ContactPoint' }
-        & Pick<ContactPoint, 'lastContactAt' | 'contactAddress'>
+        { __typename?: 'Contact2' }
+        & Pick<Contact2, 'lastContactAt' | 'contactAddress'>
         & { metadata: Array<(
-          { __typename?: 'ContactPointSource' }
-          & Pick<ContactPointSource, 'name' | 'directions' | 'values'>
+          { __typename?: 'ContactPoint' }
+          & Pick<ContactPoint, 'name' | 'directions' | 'values'>
         )>, contactAddress_Profile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
       )> }
     ) | (
-      { __typename?: 'CrcBalance' }
-      & Pick<CrcBalance, 'lastUpdatedAt'>
+      { __typename?: 'CrcBalances' }
+      & Pick<CrcBalances, 'lastUpdatedAt'>
       & { balances: Array<(
         { __typename?: 'AssetBalance' }
         & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
         & { token_owner_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl'>
+          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
       )> }
     ) | (
@@ -4133,9 +4136,10 @@ export const AggregatesDocument = gql`
       firstName
       lastName
       avatarUrl
+      circlesAddress
     }
     payload {
-      ... on CrcBalance {
+      ... on CrcBalances {
         lastUpdatedAt
         balances {
           token_address
@@ -4144,6 +4148,7 @@ export const AggregatesDocument = gql`
             firstName
             lastName
             avatarUrl
+            circlesAddress
           }
           token_balance
         }

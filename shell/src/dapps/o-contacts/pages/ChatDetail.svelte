@@ -106,6 +106,11 @@ const sendMessage = async (text) => {
     type: "shell.scrollToBottom",
     scrollNow: true,
   });
+  window.o.publishEvent(<any>{
+    type: "shell.refresh",
+    dapp: "chat:1",
+    data: null,
+  });
 };
 
 function init(el) {

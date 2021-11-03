@@ -11,7 +11,7 @@
   import { KeyManager } from "../../o-passport/data/keyManager";
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
   import Web3 from "web3";
-  import {BalancesByAssetDocument} from "../../../shared/api/data/types";
+  import {AggregatesDocument, BalancesByAssetDocument, CrcBalances} from "../../../shared/api/data/types";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -39,16 +39,25 @@
   onMount(async () => {
     const safeAddress = $me.circlesAddress;
     const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const balanceResult = await apiClient.query({
-      query: BalancesByAssetDocument,
+
+    const balancesResult = await apiClient.query({
+      query: AggregatesDocument,
       variables: {
-        safeAddress,
+        types: ["CrcBalances"],
+        safeAddress: safeAddress
       },
     });
-    if (balanceResult.errors?.length > 0) {
+
+    if (balancesResult.errors?.length > 0) {
       throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
     }
-    circles.details = balanceResult.data.balancesByAsset;
+
+    const crcBalances:CrcBalances = balancesResult.data.aggregates.find(o => o.type == "CrcBalances");
+    if (!crcBalances) {
+      throw new Error(`Couldn't find the CrcBalances in the query result.`)
+    }
+
+    circles.details = crcBalances.payload.balances;
     circles.balance = displayCirclesAmount(
       circles.details
         .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))

@@ -4,36 +4,50 @@
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
   import {onDestroy, onMount} from "svelte";
-  import {Contact, ContactsDocument, EventType} from "../../../shared/api/data/types";
+  import {
+    AggregatesDocument,
+    AggregateType,
+    Contact, ContactPoint,
+    ContactsDocument,
+    EventType
+  } from "../../../shared/api/data/types";
   import ChatListCard from "../atoms/ChatListCard.svelte";
   import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
   import {Subscription} from "rxjs";
   import List from "../../../shared/molecules/Lists/List.svelte";
+  import {ZERO_ADDRESS} from "@o-platform/o-circles/dist/consts";
 
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
   let error: string | undefined = undefined;
-  let contacts: Contact[] = [];
+  let contacts: ContactPoint[] = [];
   let shellEventSubscription: Subscription;
 
   async function reload() {
-    const safeAddress = $me.circlesAddress;
+    const safeAddress = $me.circlesAddress.toLowerCase();
     const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const contactsResult = await apiClient.query({
-      query: ContactsDocument,
+
+    const c = await apiClient.query({
+      query: AggregatesDocument,
       variables: {
-        safeAddress,
-      },
+        types: [AggregateType.Contacts],
+        safeAddress: safeAddress
+      }
     });
-    if (contactsResult.errors?.length > 0) {
-      error = `Couldn't read the contacts of safe ${safeAddress}: \n${contactsResult.errors
+
+    if (c.errors?.length > 0) {
+      error = `Couldn't read the contacts of safe ${safeAddress}: \n${c.errors
               .map((o) => o.message)
               .join("\n")}`;
       return;
     }
-    contacts = contactsResult.data.contacts;
+
+    const contactsList:ContactPoint[] = c.data.aggregates[0].payload.contacts.filter((o:ContactPoint) => {
+      return o.contactAddress !== ZERO_ADDRESS && o.contactAddress != safeAddress;
+    });
+    contacts = contactsList.sort((a,b) => a.lastContactAt > b.lastContactAt ? -1 :a.lastContactAt < b.lastContactAt ? 1 :0);
   }
 
   onMount(async () => {
@@ -81,7 +95,7 @@ div.px-4.mx-auto.-mt-3.mb-20(class='md:w-2/3 xl:w-1/2')
               | {error}
     +else
       +if('contacts')
-        +each(`contacts.filter((o) => !!o.contactAddressProfile) as contact`)
+        +each(`contacts as contact(contact.contactAddress + contact.lastContactAt)`)
           ChatListCard(param="{contact}")
 
 </template>

@@ -4,7 +4,7 @@ import { push } from "svelte-spa-router";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import { Contact, Profile } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
-import Date from "../../../shared/atoms/Date.svelte";
+import DateView from "../../../shared/atoms/Date.svelte";
 
 export let param: Contact;
 
@@ -28,17 +28,14 @@ displayName =
   contactProfile.firstName +
   (contactProfile.lastName ? " " + contactProfile.lastName : "");
 
-message = "";
-if (param.trustsYou > 0 && param.youTrust > 0) {
-  message += "mutual trust | ";
-} else if (!param.trustsYou && param.youTrust > 0) {
-  message += "trusted by you | ";
-} else if (param.trustsYou > 0 && !param.youTrust) {
-  message += "is trusting you | ";
-} else {
-  message += "not trusted | ";
+message = JSON.stringify(param)
+let unixTimestamp = parseInt(param.lastContactAt);
+let jsonTimestamp = new Date(unixTimestamp).toJSON();
+
+const lastMessage = param.metadata.find(o => o.name == "ChatMessage");
+if (lastMessage) {
+  message = lastMessage.values[0];
 }
-message += param.lastEvent ? param.lastEvent.payload.__typename : "";
 
 function loadDetailPage(path) {
   push(`#/friends/chat/${path}`);
@@ -55,7 +52,7 @@ function goToProfile(e, path?: string) {
   <ItemCard
     params="{{
       edgeless: false,
-      imageProfile: contactProfile,
+      imageProfile: param.contactAddress_Profile,
       title: message,
       subTitle: displayName,
       truncateMain: true,
@@ -66,7 +63,7 @@ function goToProfile(e, path?: string) {
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
         {#if param.lastContactAt}
-          <Date time="{param.lastContactAt}" />
+          <DateView time={jsonTimestamp} />
         {/if}
       </div>
     </div>
