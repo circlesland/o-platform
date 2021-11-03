@@ -4,6 +4,7 @@ import OfferDetail from "./o-marketplace/pages/OfferDetail.svelte";
 import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
+import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
 import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
@@ -20,6 +21,14 @@ const offerDetail: Page<any, DappState> = {
   routeParts: ["=offer", ":id"],
   component: OfferDetail,
   title: "Offer detail",
+  type: "page",
+};
+const shoppingCart: Page<any, DappState> = {
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=cart"],
+  component: ShoppingCart,
+  title: "Cart",
   type: "page",
 };
 const categories: Page<any, DappState> = {
@@ -91,6 +100,7 @@ export const marketplace: DappManifest<DappState> = {
     favorites,
     myOffers,
     offerDetail,
+    shoppingCart,
     categoryDetail,
   ],
 };
