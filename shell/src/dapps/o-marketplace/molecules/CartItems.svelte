@@ -4,6 +4,7 @@ import Item from "../../../shared/molecules/Select/Item.svelte";
 
 export let cartContents;
 
+$: console.log($cartContents);
 $: groupedItems = $cartContents ? orderItems($cartContents) : {};
 
 function removeAllItems(id) {
@@ -59,6 +60,8 @@ function orderItems(items) {
             Icons(icon="smallx" size="4")
             
         .flex.justify-end.items-center.w-full
+          .flex-grow.text-sm.text-dark-lightest 1 {item.item.unitTag ? item.item.unitTag.value : "item"}
+            
           .pr-8.flex  
             .span.font-semibold.cursor-pointer(on:click!="{() =>  removeOneItem(item.item.id)}") -
             
