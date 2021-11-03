@@ -1445,6 +1445,7 @@ query aggregates($types:[AggregateType!]! $safeAddress:String!) {
             name
             directions
             values
+            timestamps
           }
           lastContactAt
           contactAddress

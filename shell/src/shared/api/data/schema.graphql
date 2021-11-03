@@ -123,8 +123,8 @@ type Contact2 {
 
 type ContactPoint {
     directions: [ContactDirection!]!
-    lastContactAt: String!
     name: String!
+    timestamps: [String!]!
     values: [String!]!
 }
 
