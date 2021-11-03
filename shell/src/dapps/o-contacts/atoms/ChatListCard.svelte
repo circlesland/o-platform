@@ -2,7 +2,7 @@
 import { push } from "svelte-spa-router";
 
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import {Contact2, ContactDirection, ContactPoint, Profile} from "../../../shared/api/data/types";
+import {Contact2, ContactDirection, ContactPoint, ContactPointSource, Profile} from "../../../shared/api/data/types";
 import DateView from "../../../shared/atoms/Date.svelte";
 
 export let param: Contact2;
@@ -26,6 +26,30 @@ displayName =
   contactProfile.firstName +
   (contactProfile.lastName ? " " + contactProfile.lastName : "");
 
+
+const trustMetadata:ContactPointSource = param.metadata.find(p => p.name === "CrcTrust");
+let trustIn = 0;
+let trustOut = 0;
+if (trustMetadata) {
+  trustMetadata.directions.forEach((d, i) => {
+    if (d == ContactDirection.In) {
+      trustIn = parseInt(trustMetadata.values[i]);
+    } else if (d == ContactDirection.Out) {
+      trustOut = parseInt(trustMetadata.values[i]);
+    }
+  });
+}
+let trustStatus = "";
+if (trustIn > 0 && trustOut > 0) {
+  trustStatus = "mutual trust";
+} else if (!trustIn && trustOut > 0) {
+  trustStatus = "trusted by you";
+} else if (trustIn > 0 && !trustOut) {
+  trustStatus = "is trusting you";
+} else {
+  trustStatus = "not trusted";
+}
+
 const unixTimestamp = parseInt(param.lastContactAt);
 const jsonTimestamp = new Date(unixTimestamp).toJSON();
 const mostRecentContactPoint:ContactPoint = param.metadata.find((o:ContactPoint) => o.timestamps.find(o => o == param.lastContactAt));
@@ -33,11 +57,51 @@ const mostRecentIndex = mostRecentContactPoint.timestamps.indexOf(param.lastCont
 const mostRecentDirection = mostRecentContactPoint.directions[mostRecentIndex];
 const mostRecentValue = mostRecentContactPoint.values[mostRecentIndex];
 
-message = JSON.stringify({
+const mostRecentDisplayEvent = {
   type: mostRecentContactPoint.name,
   direction: mostRecentDirection,
   value: mostRecentValue
-});
+};
+
+if (mostRecentDisplayEvent.direction == ContactDirection.In) {
+  switch (mostRecentDisplayEvent.type) {
+    case "CrcTrust":
+      message = `${displayName} ${mostRecentDisplayEvent.value > 0 ? "trusted" : "untrusted"} you`
+      break;
+    case "CrcHubTransfer":
+      message = `${displayName} sent you ${mostRecentDisplayEvent.value} CRC`
+      break;
+    case "ChatMessage":
+      message = `${displayName} wrote: ${mostRecentDisplayEvent.value}`
+      break;
+    case "Invitation":
+      message = `${displayName} invited you to CirclesLand`
+      break;
+    case "MembershipOffer":
+      message = `${displayName} invited you to ${mostRecentDisplayEvent.value}`
+      break;
+  }
+} else {
+  switch (mostRecentDisplayEvent.type) {
+    case "CrcTrust":
+      message = `You ${mostRecentDisplayEvent.value > 0 ? "trusted" : "untrusted"} ${displayName}`
+      break;
+    case "CrcHubTransfer":
+      message = `You send ${displayName} ${mostRecentDisplayEvent.value} CRC`
+      break;
+    case "ChatMessage":
+      message = `You wrote: ${mostRecentDisplayEvent.value}`
+      break;
+    case "Invitation":
+      message = `${displayName} accepted your invitation to CirclesLand.`
+      break;
+    case "MembershipOffer":
+      message = `You invited ${displayName} to ${mostRecentDisplayEvent.value}`
+      break;
+  }
+}
+
+displayName += ` | ${trustStatus}`;
 
 function loadDetailPage(path) {
   push(`#/friends/chat/${path}`);
@@ -47,45 +111,6 @@ function goToProfile(e, path?: string) {
   if (!path) return;
   e.stopPropagation();
   push(`#/friends/${path}`);
-}
-
-function formatLastEvent(lastContact: ContactPoint) {
-  switch (lastContact.name) {
-    case "CrcTrust":
-      let trustIn = 0;
-      let trustOut = 0;
-      lastContact.directions.forEach((d, i) => {
-        if (d == ContactDirection.In) {
-          trustIn = parseInt(lastContact.values[i]);
-        } else if (d == ContactDirection.Out) {
-          trustOut = parseInt(lastContact.values[i]);
-        }
-      });
-
-      if (trustIn > 0 && trustOut > 0) {
-        return "mutual trust";
-      } else if (!trustIn && trustOut > 0) {
-        return "trusted by you";
-      } else if (trustIn > 0 && !trustOut) {
-        return "is trusting you";
-      } else {
-        return "not trusted";
-      }
-      break;
-    case "CrcHubTransfer":
-      return `Transferred ${0} CRC`;
-
-    case "ChatMessage":
-      return lastContact.values[0];
-
-    case "Invitation":
-      return `Invitation`;
-
-    case "MembershipOffer":
-      return `Membership offer`;
-
-    default: break;
-  }
 }
 
 </script>
