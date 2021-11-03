@@ -4,6 +4,7 @@ import Item from "../../../shared/molecules/Select/Item.svelte";
 
 export let cartContents;
 
+$: console.log($cartContents);
 $: groupedItems = $cartContents ? orderItems($cartContents) : {};
 
 function removeAllItems(id) {
@@ -49,22 +50,27 @@ function orderItems(items) {
 <template lang="pug">
 +each(`groupedItems as {item}`)
   .flex.justify-between.items-center.mb-6.pb-6.border-b
-    .flex.items-center
+    .flex.items-center.w-full
       img.rounded-full.w-20.mask.mask-circle(src='{item.item.pictureUrl}' alt='{item.item.title}')
-      .flex.flex-col.ml-2
-        span(class="md:text-md") {item.item.title}
+      .flex.flex-col.ml-2.space-y-2.w-full.items-start
+        .flex.flex-row.justify-between.w-full
+          div(class="md:text-md") {item.item.title}
 
-    .flex.justify-center.items-center
-      .pr-8.flex  
-        .span.font-semibold.cursor-pointer(on:click!="{() =>  removeOneItem(item.item.id)}") -
-        
-        input.bg-gray-100.border.h-6.w-8.rounded.text-sm.text-center.px-2.mx-2(type='text' value='{item.qty}', class="focus:outline-none")
-        
-        span.font-semibold.cursor-pointer(on:click!="{() =>  addOneItem(item.item.id)}") +
-      
-      .pr-8.items-center
-        span.whitespace-nowrap.text-sm {item.item.pricePerUnit} ⦿
-      div.text-light-dark.cursor-pointer(on:click!="{() =>  removeAllItems(item.item.id)}")
-        Icons(icon="smallx" size="4")
+          div.text-dark.cursor-pointer.self-center(on:click!="{() =>  removeAllItems(item.item.id)}")
+            Icons(icon="smallx" size="2")
+            
+        .flex.justify-end.items-center.w-full
+          .flex-grow.text-sm.text-dark-lightest 1 {item.item.unitTag ? item.item.unitTag.value : "item"}
+            
+          .pr-8.flex  
+            .span.font-semibold.cursor-pointer(on:click!="{() =>  removeOneItem(item.item.id)}") -
+            
+            input.bg-gray-100.border.h-6.w-8.rounded.text-sm.text-center.px-2.mx-2(type='text' value='{item.qty}', class="focus:outline-none")
+            
+            span.font-semibold.cursor-pointer(on:click!="{() =>  addOneItem(item.item.id)}") +
+          
+          .items-center
+            span.whitespace-nowrap {item.item.pricePerUnit} ⦿
+
 
 </template>

@@ -26,7 +26,7 @@ div.p-5
                 
                   .flex.flex-row.w-full.space-x-4
                     div
-                      button.h-auto.btn-block.btn.btn-light(on:click!="{() =>  history.back()}") Continue Shopping
+                      button.h-auto.btn-block.btn.btn-light(on:click!="{() =>  history.back()}") Close Cart
                     .flex-grow
                       button.h-auto.btn-block.btn.btn-primary Check Out
     +else
