@@ -6,7 +6,12 @@ import Date from "../../../shared/atoms/Date.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import { onMount } from "svelte";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
-import {CrcHubTransfer, CrcMinting, Profile, ProfileEvent} from "../../../shared/api/data/types";
+import {
+  CrcHubTransfer,
+  CrcMinting,
+  Profile,
+  ProfileEvent,
+} from "../../../shared/api/data/types";
 
 export let param: ProfileEvent;
 
@@ -58,7 +63,7 @@ onMount(async () => {
 
     if (param) {
       message = hubTransfer.tags?.find(
-              (o) => o.typeId === "o-banking:transfer:message:1"
+        (o) => o.typeId === "o-banking:transfer:message:1"
       )?.value;
     }
   }
@@ -85,7 +90,10 @@ function loadDetailPage(path) {
         push(`#/friends/${target}`);
         e.stopPropagation();
       },
-      title: targetProfile.firstName + ' ' + (!targetProfile.lastName ? "" : targetProfile.lastName),
+      title:
+        targetProfile.firstName +
+        ' ' +
+        (!targetProfile.lastName ? '' : targetProfile.lastName),
       subTitle: message ? message : '',
       truncateMain: true,
     }}">
@@ -97,17 +105,21 @@ function loadDetailPage(path) {
         <span>
           {#if param.type === "CrcHubTransfer"}
             {displayCirclesAmount(
-                    param.payload && param.payload.flow ? param.payload.flow.toString() : "0",
-                    param.timestamp,
-                    true,
-                    $me.displayTimeCircles || $me.displayTimeCircles === undefined
+              param.payload && param.payload.flow
+                ? param.payload.flow.toString()
+                : "0",
+              param.timestamp,
+              true,
+              $me.displayTimeCircles || $me.displayTimeCircles === undefined
             )}
           {:else if param.type === "CrcMinting"}
             {displayCirclesAmount(
-                    param.payload && param.payload.value ? param.payload.value.toString() : "0",
-                    param.timestamp,
-                    true,
-                    $me.displayTimeCircles || $me.displayTimeCircles === undefined
+              param.payload && param.payload.value
+                ? param.payload.value.toString()
+                : "0",
+              param.timestamp,
+              true,
+              $me.displayTimeCircles || $me.displayTimeCircles === undefined
             )}
           {/if}
         </span>

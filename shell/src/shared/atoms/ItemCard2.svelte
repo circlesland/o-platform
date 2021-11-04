@@ -66,14 +66,13 @@ function cardAction() {
     <slot name="itemCardText">
       <div
         class="relative flex-grow h-12 py-1 text-left title"
-        class:px-3="{params.imageUrl}">
-        <div class="absolute w-full h-4 mb-4 ">
-          <h2 class="text-base">
-            {params.title
-              ? params.title.length >= 20
-                ? params.title.substr(0, 20) + "..."
-                : params.title
-              : ""}
+        class:px-3="{params.imageUrl}"
+        class:truncate="{params.truncateMain}">
+        <div
+          class="absolute w-full h-4 min-w-0 mb-4"
+          class:truncateThis="{params.truncateMain}">
+          <h2 class="text-base whitespace-nowrap overflow-ellipsis max-w-0">
+            {params.title}
           </h2>
         </div>
         <p
@@ -83,13 +82,14 @@ function cardAction() {
       </div>
     </slot>
     <slot name="itemCardEnd">
-      <div>
+      <div class="absolute">
         <div
-          class="self-end text-right pl-2 {params.endTextBigClass}"
+          class="absolute self-end text-right pl-2 {params.endTextBigClass}"
           class:text-success="{!params.endTextBigClass}">
           <span>{params.endTextBig}</span>
         </div>
-        <div class="self-end pl-2 text-xs text-dark-lightest whitespace-nowrap">
+        <div
+          class="absolute self-end pl-2 text-xs text-dark-lightest whitespace-nowrap">
           <span>{params.endTextSmall}</span>
         </div>
       </div>
@@ -98,6 +98,20 @@ function cardAction() {
 </section>
 
 <style>
+.top-bottom-overflow-fade {
+  mask-image: linear-gradient(
+    transparent,
+    black 20%,
+    black 80%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    transparent,
+    black 20%,
+    black 80%,
+    transparent 100%
+  );
+}
 .status.sending {
   @apply bg-primary;
 }

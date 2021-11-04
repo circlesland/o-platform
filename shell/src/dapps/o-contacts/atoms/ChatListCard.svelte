@@ -2,7 +2,13 @@
 import { push } from "svelte-spa-router";
 
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import {Contact2, ContactDirection, ContactPoint, ContactPointSource, Profile} from "../../../shared/api/data/types";
+import {
+  Contact2,
+  ContactDirection,
+  ContactPoint,
+  ContactPointSource,
+  Profile,
+} from "../../../shared/api/data/types";
 import DateView from "../../../shared/atoms/Date.svelte";
 
 export let param: Contact2;
@@ -26,8 +32,9 @@ displayName =
   contactProfile.firstName +
   (contactProfile.lastName ? " " + contactProfile.lastName : "");
 
-
-const trustMetadata:ContactPointSource = param.metadata.find(p => p.name === "CrcTrust");
+const trustMetadata: ContactPointSource = param.metadata.find(
+  (p) => p.name === "CrcTrust"
+);
 let trustIn = 0;
 let trustOut = 0;
 if (trustMetadata) {
@@ -52,51 +59,59 @@ if (trustIn > 0 && trustOut > 0) {
 
 const unixTimestamp = parseInt(param.lastContactAt);
 const jsonTimestamp = new Date(unixTimestamp).toJSON();
-const mostRecentContactPoint:ContactPoint = param.metadata.find((o:ContactPoint) => o.timestamps.find(o => o == param.lastContactAt));
-const mostRecentIndex = mostRecentContactPoint.timestamps.indexOf(param.lastContactAt);
+const mostRecentContactPoint: ContactPoint = param.metadata.find(
+  (o: ContactPoint) => o.timestamps.find((o) => o == param.lastContactAt)
+);
+const mostRecentIndex = mostRecentContactPoint.timestamps.indexOf(
+  param.lastContactAt
+);
 const mostRecentDirection = mostRecentContactPoint.directions[mostRecentIndex];
 const mostRecentValue = mostRecentContactPoint.values[mostRecentIndex];
 
 const mostRecentDisplayEvent = {
   type: mostRecentContactPoint.name,
   direction: mostRecentDirection,
-  value: mostRecentValue
+  value: mostRecentValue,
 };
 
 if (mostRecentDisplayEvent.direction == ContactDirection.In) {
   switch (mostRecentDisplayEvent.type) {
     case "CrcTrust":
-      message = `${displayName} ${mostRecentDisplayEvent.value > 0 ? "trusted" : "untrusted"} you`
+      message = `${displayName} ${
+        mostRecentDisplayEvent.value > 0 ? "trusted" : "untrusted"
+      } you`;
       break;
     case "CrcHubTransfer":
-      message = `${displayName} sent you ${mostRecentDisplayEvent.value} CRC`
+      message = `${displayName} sent you ${mostRecentDisplayEvent.value} CRC`;
       break;
     case "ChatMessage":
-      message = `${displayName} wrote: ${mostRecentDisplayEvent.value}`
+      message = `${displayName} wrote: ${mostRecentDisplayEvent.value}`;
       break;
     case "Invitation":
-      message = `${displayName} invited you to CirclesLand`
+      message = `${displayName} invited you to CirclesLand`;
       break;
     case "MembershipOffer":
-      message = `${displayName} invited you to ${mostRecentDisplayEvent.value}`
+      message = `${displayName} invited you to ${mostRecentDisplayEvent.value}`;
       break;
   }
 } else {
   switch (mostRecentDisplayEvent.type) {
     case "CrcTrust":
-      message = `You ${mostRecentDisplayEvent.value > 0 ? "trusted" : "untrusted"} ${displayName}`
+      message = `You ${
+        mostRecentDisplayEvent.value > 0 ? "trusted" : "untrusted"
+      } ${displayName}`;
       break;
     case "CrcHubTransfer":
-      message = `You send ${displayName} ${mostRecentDisplayEvent.value} CRC`
+      message = `You sent ${displayName} ${mostRecentDisplayEvent.value} CRC`;
       break;
     case "ChatMessage":
-      message = `You wrote: ${mostRecentDisplayEvent.value}`
+      message = `You wrote: ${mostRecentDisplayEvent.value}`;
       break;
     case "Invitation":
-      message = `${displayName} accepted your invitation to CirclesLand.`
+      message = `${displayName} accepted your invitation to CirclesLand.`;
       break;
     case "MembershipOffer":
-      message = `You invited ${displayName} to ${mostRecentDisplayEvent.value}`
+      message = `You invited ${displayName} to ${mostRecentDisplayEvent.value}`;
       break;
   }
 }
@@ -112,7 +127,6 @@ function goToProfile(e, path?: string) {
   e.stopPropagation();
   push(`#/friends/${path}`);
 }
-
 </script>
 
 <div on:click="{() => loadDetailPage(param.contactAddress)}">
@@ -130,7 +144,7 @@ function goToProfile(e, path?: string) {
       </div>
       <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
         {#if param.lastContactAt}
-          <DateView time={jsonTimestamp} />
+          <DateView time="{jsonTimestamp}" />
         {/if}
       </div>
     </div>
