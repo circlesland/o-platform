@@ -34,7 +34,11 @@ $: {
   <div
     class="grid w-full grid-cols-3 p-2 mx-auto text-white navbar bg-dark-dark justify-items-stretch">
     <div class="justify-self-start whitespace-nowrap">
-      <img src="/logos/circles.png" class="w-8 h-8" alt="Circles Land" />
+      <img
+        src="/logos/circles.png"
+        class="w-8 h-8"
+        alt="Circles Land"
+        on:click="{() => push(`/`)}" />
       <span class="ml-2 text-2xl uppercase font-heading text-light">
         {runtimeDapp ? runtimeDapp.title : "<<No dapp>>"}
       </span>
