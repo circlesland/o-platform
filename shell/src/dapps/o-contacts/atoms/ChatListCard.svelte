@@ -136,17 +136,11 @@ function goToProfile(e, path?: string) {
       imageProfile: param.contactAddress_Profile,
       title: message,
       subTitle: displayName,
-      truncateMain: true,
     }}">
-    <div slot="itemCardEnd">
-      <div class="self-end text-right">
-        <span>&nbsp;</span>
-      </div>
-      <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
-        {#if param.lastContactAt}
-          <DateView time="{jsonTimestamp}" />
-        {/if}
-      </div>
+    <div slot="itemCardEndSmallElement">
+      {#if param.timestamp}
+        <DateView time="{jsonTimestamp}" />
+      {/if}
     </div>
   </ItemCard>
 </div>

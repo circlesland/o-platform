@@ -1,67 +1,72 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import {PaginationArgs, QueryEventsArgs, SortOrder, StreamDocument} from "../../api/data/types";
+import { onMount } from "svelte";
+import {
+  PaginationArgs,
+  QueryEventsArgs,
+  SortOrder,
+  StreamDocument,
+} from "../../api/data/types";
 
-  import {inview} from "svelte-inview/dist/index";
-  import GenericEventCard from "../../GenericEventCard.svelte";
+import { inview } from "svelte-inview/dist/index";
+import GenericEventCard from "../../GenericEventCard.svelte";
 
-  export let views: { [type: string]: any } = {};
-  export let selector = "timestamp";
-  export let fetchQuery: any = StreamDocument;
-  export let queryArguments: QueryEventsArgs;
-  export let order: SortOrder = SortOrder.Desc;
-  export let dataKey: string = "events";
-  export let limit: number = 50;
+export let views: { [type: string]: any } = {};
+export let selector = "timestamp";
+export let fetchQuery: any = StreamDocument;
+export let queryArguments: QueryEventsArgs;
+export let order: SortOrder = SortOrder.Desc;
+export let dataKey: string = "events";
+export let limit: number = 50;
 
-  let events: any[] = [];
-  let hasMore: boolean = true;
-  let error: string;
-  let scrollContent;
-  let pagination: PaginationArgs = {
-    order: order,
-    limit: 100,
-    continueAt: new Date().toJSON()
-  };
+let events: any[] = [];
+let hasMore: boolean = true;
+let error: string;
+let scrollContent;
+let pagination: PaginationArgs = {
+  order: order,
+  limit: limit,
+  continueAt: new Date().toJSON(),
+};
 
-  const fetchData = async (paginationArg: PaginationArgs) => {
-    queryArguments.pagination = paginationArg;
+const fetchData = async (paginationArg: PaginationArgs) => {
+  queryArguments.pagination = paginationArg;
 
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const timeline: any = await apiClient.query({
-      query: fetchQuery,
-      variables: queryArguments,
-    });
-    if (timeline.errors) {
-      error = `Couldn't load data for the following reasons: ${JSON.stringify(
-              timeline.errors
-      )}`;
-    }
-
-    let newBatch = await timeline.data[dataKey];
-
-    if (newBatch.length > 0) {
-      events = [...events, ...newBatch];
-
-      pagination = {
-        order: order,
-        continueAt: newBatch[newBatch.length - 1][selector],
-        limit: limit,
-      };
-    } else {
-      hasMore = false;
-    }
-  };
-
-  const handleChange = async (e) => {
-    if (e.detail.inView && hasMore) await fetchData(pagination);
-  };
-  onMount(async () => {
-    await fetchData(pagination);
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const timeline: any = await apiClient.query({
+    query: fetchQuery,
+    variables: queryArguments,
   });
+  if (timeline.errors) {
+    error = `Couldn't load data for the following reasons: ${JSON.stringify(
+      timeline.errors
+    )}`;
+  }
 
-  const initBar = (bar) => {
-    scrollContent = bar;
-  };
+  let newBatch = await timeline.data[dataKey];
+
+  if (newBatch.length > 0) {
+    events = [...events, ...newBatch];
+
+    pagination = {
+      order: order,
+      continueAt: newBatch[newBatch.length - 1][selector],
+      limit: limit,
+    };
+  } else {
+    hasMore = false;
+  }
+};
+
+const handleChange = async (e) => {
+  if (e.detail.inView && hasMore) await fetchData(pagination);
+};
+onMount(async () => {
+  await fetchData(pagination);
+});
+
+const initBar = (bar) => {
+  scrollContent = bar;
+};
 </script>
 
 {#if events}
@@ -69,7 +74,7 @@
     {#if views[event.type]}
       <svelte:component this="{views[event.type]}" param="{event}" />
     {:else}
-      <GenericEventCard eventData={event} />
+      <GenericEventCard eventData="{event}" />
     {/if}
   {/each}
 {:else}

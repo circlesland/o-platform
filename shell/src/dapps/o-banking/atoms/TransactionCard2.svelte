@@ -21,6 +21,7 @@ let toProfile: Profile = <any>{};
 let error: string;
 let message: string | undefined = undefined;
 let targetProfile: Profile = <any>{};
+let amount: string = "";
 
 onMount(async () => {
   if (param && param.payload?.__typename == "CrcMinting") {
@@ -61,13 +62,28 @@ onMount(async () => {
       transfers: hubTransfer.transfers,
     };
 
-    if (param) {
-      message = hubTransfer.tags?.find(
-        (o) => o.typeId === "o-banking:transfer:message:1"
-      )?.value;
-    }
+    message = hubTransfer.tags?.find(
+      (o) => o.typeId === "o-banking:transfer:message:1"
+    )?.value;
+
+    amount = displayCirclesAmount(
+      param.payload && param.payload.flow ? param.payload.flow.toString() : "0",
+      param.timestamp,
+      true,
+      $me.displayTimeCircles || $me.displayTimeCircles === undefined
+    );
   }
 
+  if (param && param.payload?.__typename == "CrcMinting") {
+    amount = displayCirclesAmount(
+      param.payload && param.payload.value
+        ? param.payload.value.toString()
+        : "0",
+      param.timestamp,
+      true,
+      $me.displayTimeCircles || $me.displayTimeCircles === undefined
+    );
+  }
   targetProfile = param.direction === "in" ? fromProfile : toProfile;
 });
 
@@ -96,39 +112,12 @@ function loadDetailPage(path) {
         (!targetProfile.lastName ? '' : targetProfile.lastName),
       subTitle: message ? message : '',
       truncateMain: true,
+      endTextBig: amount,
     }}">
-    <div slot="itemCardEnd">
-      <div
-        class="self-end text-right"
-        class:text-success="{param.direction === 'in'}"
-        class:text-alert="{param.direction === 'out'}">
-        <span>
-          {#if param.type === "CrcHubTransfer"}
-            {displayCirclesAmount(
-              param.payload && param.payload.flow
-                ? param.payload.flow.toString()
-                : "0",
-              param.timestamp,
-              true,
-              $me.displayTimeCircles || $me.displayTimeCircles === undefined
-            )}
-          {:else if param.type === "CrcMinting"}
-            {displayCirclesAmount(
-              param.payload && param.payload.value
-                ? param.payload.value.toString()
-                : "0",
-              param.timestamp,
-              true,
-              $me.displayTimeCircles || $me.displayTimeCircles === undefined
-            )}
-          {/if}
-        </span>
-      </div>
-      <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
-        {#if param.timestamp}
-          <Date time="{param.timestamp}" />
-        {/if}
-      </div>
+    <div slot="itemCardEndSmallElement">
+      {#if param.timestamp}
+        <Date time="{param.timestamp}" />
+      {/if}
     </div>
   </ItemCard>
 </div>
