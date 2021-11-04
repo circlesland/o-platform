@@ -6,8 +6,31 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import TransferSummary from "../../o-banking/atoms/TransferSummary.svelte";
+import { Profile } from "../../../shared/api/data/types";
+import {
+  transferCircles,
+  TransitivePath,
+} from "../../../dapps/o-banking/processes/transferCircles";
+import { TransactionReceipt } from "web3-core";
 
-export type PurchaseContextData = {};
+export type PurchaseContextData = {
+  safeAddress: string;
+  recipientAddress?: string;
+  recipientProfileId?: number;
+  recipientProfile?: Profile;
+  transitivePath: TransitivePath;
+  receipt: TransactionReceipt;
+  message?: string;
+  tokens?: {
+    currency: string;
+    amount: string;
+  };
+  maxFlows?: {
+    [currency: string]: string;
+  };
+  summaryHtml?: string;
+  acceptSummary?: boolean;
+};
 
 export type PurchaseContext = ProcessContext<PurchaseContextData>;
 
