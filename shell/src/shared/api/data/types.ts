@@ -362,7 +362,7 @@ export type InvitationRedeemed = IEventPayload & {
   __typename?: 'InvitationRedeemed';
   code: Scalars['String'];
   name: Scalars['String'];
-  redeemedBy: Scalars['String'];
+  redeemedBy?: Maybe<Scalars['String']>;
   redeemedBy_profile?: Maybe<Profile>;
   transaction_hash?: Maybe<Scalars['String']>;
 };
@@ -728,6 +728,7 @@ export type ProfileEvent = {
 export type ProfileEventFilter = {
   from?: Maybe<Scalars['String']>;
   to?: Maybe<Scalars['String']>;
+  transactionHash?: Maybe<Scalars['String']>;
   with?: Maybe<Scalars['String']>;
 };
 
@@ -961,6 +962,7 @@ export type SessionInfo = {
   __typename?: 'SessionInfo';
   hasProfile?: Maybe<Scalars['Boolean']>;
   isLoggedOn: Scalars['Boolean'];
+  lastAcknowledgedAt?: Maybe<Scalars['String']>;
   profileId?: Maybe<Scalars['Int']>;
 };
 

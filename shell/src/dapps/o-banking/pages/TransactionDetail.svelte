@@ -8,9 +8,9 @@ import { me } from "../../../shared/stores/me";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import {
   CrcHubTransfer,
-  CrcMinting,
+  CrcMinting, EventType,
   Profile,
-  ProfileEvent,
+  ProfileEvent, SortOrder, StreamDocument,
   //TransactionByHashDocument,
 } from "../../../shared/api/data/types";
 export let transactionHash: string;
@@ -23,31 +23,37 @@ let targetProfile: Profile;
 let message: string = "";
 let error: string;
 let displayableName: string = "";
+
 onMount(async () => {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
-  /*const timeline = await apiClient.query({
-    query: TransactionByHashDocument,
+  const result = await apiClient.query({
+    query: StreamDocument,
     variables: {
       safeAddress: $me.circlesAddress,
-      transactionHash,
-    },
-  });*/
-  // TODO: implement with new api
-  const timeline = {
-    errors: ["Not implemented"],
-    data: {
-      blockchainEventsByTransactionHash: []
+      pagination: {
+        order: SortOrder.Asc,
+        limit: 1,
+        continueAt: new Date(0),
+      },
+      filter: {
+        transactionHash: transactionHash
+      },
+      types: [
+        EventType.CrcHubTransfer,
+        EventType.CrcMinting
+      ]
     }
-  };
-  if (timeline.errors) {
+  });
+
+  if (result.errors) {
     throw new Error(
-      `Couldn't load the transaction history for the following reasons: ${timeline.errors.join(
+      `Couldn't load the transaction history for the following reasons: ${result.errors.join(
         "\n"
       )}`
     );
   }
-  if (timeline.data.blockchainEventsByTransactionHash.length > 0) {
-    transfer = timeline.data.blockchainEventsByTransactionHash[0];
+  if (result.data.events.length > 0) {
+    transfer = result.data.events[0];
   }
   if (transfer && transfer.payload?.__typename == "CrcMinting") {
     const minting = transfer.payload as CrcMinting;
@@ -124,14 +130,14 @@ function openDetail(transfer: ProfileEvent) {
         <span class="inline-block text-6xl font-heading {classes}">
           {#if transfer.direction === "in"}
             +{displayCirclesAmount(
-              transfer ? transfer.value.toString() : "0",
+              transfer ? (transfer.payload.value ? transfer.payload.value : transfer.payload.flow).toString() : "0",
               transfer.timestamp,
               true,
               $me.displayTimeCircles || $me.displayTimeCircles === undefined
             )}
           {:else}
             -{displayCirclesAmount(
-              transfer ? transfer.value.toString() : "0",
+              transfer ? (transfer.payload.value ? transfer.payload.value : transfer.payload.flow).toString() : "0",
               transfer.timestamp,
               true,
               $me.displayTimeCircles || $me.displayTimeCircles === undefined
@@ -219,7 +225,7 @@ function openDetail(transfer: ProfileEvent) {
         <div class="flex items-center w-full">
           <div class="text-left ">
             {displayCirclesAmount(
-              transfer ? transfer.value.toString() : "0",
+              transfer ? (transfer.payload.value ? transfer.payload.value : transfer.payload.flow).toString() : "0",
               transfer.timestamp
             )}
             Circles

@@ -282,7 +282,7 @@ type InvitationCreated implements IEventPayload {
 type InvitationRedeemed implements IEventPayload {
     code: String!
     name: String!
-    redeemedBy: String!
+    redeemedBy: String
     redeemedBy_profile: Profile
     transaction_hash: String
 }
@@ -564,6 +564,7 @@ type Server {
 type SessionInfo {
     hasProfile: Boolean
     isLoggedOn: Boolean!
+    lastAcknowledgedAt: String
     profileId: Int
 }
 
@@ -696,6 +697,7 @@ input PaymentProof {
 input ProfileEventFilter {
     from: String
     to: String
+    transactionHash: String
     with: String
 }
 
