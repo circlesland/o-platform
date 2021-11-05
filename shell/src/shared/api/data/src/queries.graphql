@@ -669,6 +669,7 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
   ) {
     timestamp
     transaction_hash
+    block_number
     safe_address
     contact_address
     contact_address_profile {

@@ -11,7 +11,6 @@ import {
   CrcMinting, EventType,
   Profile,
   ProfileEvent, SortOrder, StreamDocument,
-  //TransactionByHashDocument,
 } from "../../../shared/api/data/types";
 export let transactionHash: string;
 let transfer: ProfileEvent;
@@ -90,10 +89,12 @@ onMount(async () => {
   }
   if (transfer) {
     targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
+    classes = transfer.direction === "out" ? "text-alert" : "";
+
     message = transfer.tags?.find(
       (o) => o.typeId === "o-banking:transfer:message:1"
     )?.value;
-    displayableName = fromProfile.firstName + " " + fromProfile.lastName;
+    displayableName = targetProfile.firstName + (!targetProfile.lastName ? "" : " " +targetProfile.lastName);
   }
 });
 function openDetail(transfer: ProfileEvent) {

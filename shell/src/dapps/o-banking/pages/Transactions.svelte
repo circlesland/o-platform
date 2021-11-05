@@ -24,18 +24,7 @@ $: me;
       safeAddress: $me.circlesAddress,
       types: [
         EventType.CrcHubTransfer,
-        EventType.CrcMinting,
-        //EventType.CrcTrust,
-        //EventType.ChatMessage,
-        //EventType.CrcSignup,
-        //EventType.CrcTokenTransfer,
-        //EventType.EthTransfer,
-        //EventType.GnosisSafeEthTransfer,
-        //EventType.InvitationCreated,
-        //EventType.InvitationRedeemed,
-        //EventType.MembershipOffer,
-        //EventType.MembershipAccepted,
-        //EventType.MembershipRejected
+        EventType.CrcMinting
       ],
     }}"
     views="{{

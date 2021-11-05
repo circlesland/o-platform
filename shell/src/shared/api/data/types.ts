@@ -1986,7 +1986,7 @@ export type StreamQuery = (
   { __typename?: 'Query' }
   & { events: Array<(
     { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'timestamp' | 'transaction_hash' | 'safe_address' | 'contact_address' | 'direction' | 'type'>
+    & Pick<ProfileEvent, 'timestamp' | 'transaction_hash' | 'block_number' | 'safe_address' | 'contact_address' | 'direction' | 'type'>
     & { contact_address_profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
@@ -3162,6 +3162,7 @@ export const StreamDocument = gql`
   ) {
     timestamp
     transaction_hash
+    block_number
     safe_address
     contact_address
     contact_address_profile {
