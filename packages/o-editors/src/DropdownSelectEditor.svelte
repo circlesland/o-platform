@@ -17,7 +17,7 @@ import { DropdownSelectorContext } from "./DropdownSelectEditorContext";
  * add a "most-recent" list to the dropdownselecteditor
  */
 
-export let context: DropdownSelectorContext<any, any>;
+export let context: DropdownSelectorContext<any, any, any>;
 
 $: selected = {};
 

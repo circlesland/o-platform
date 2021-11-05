@@ -1,27 +1,71 @@
-import { writable } from "svelte/store";
+import {writable} from "svelte/store";
 import {
   AcknowledgeDocument,
-  InboxDocument,
+  EventType,
+  PaginationArgs,
   Profile,
   ProfileEvent,
+  SortOrder,
+  StreamDocument,
 } from "../api/data/types";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {me} from "./me";
 
 let events: ProfileEvent[] = [];
+
 async function queryEvents() {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: InboxDocument,
+
+  // TODO: Get last acknowledged
+  // TODO: Get my safe address
+
+  let pagination: PaginationArgs = {
+    order: SortOrder.Asc,
+    limit: 100,
+    continueAt: new Date().toJSON()
+  }
+
+  let mySafeAddress:string = null;
+  me.subscribe($me => {
+    mySafeAddress = $me.circlesAddress;
   });
+
+  if (!mySafeAddress) {
+    events = [];
+    return;
+  }
+
+  const result = await apiClient.query({
+    query: StreamDocument,
+    variables: {
+      safeAddress: mySafeAddress,
+      pagination: pagination,
+      types: [
+        EventType.CrcHubTransfer,
+        EventType.CrcMinting,
+        EventType.CrcTrust,
+        EventType.ChatMessage,
+        EventType.CrcSignup,
+        EventType.CrcTokenTransfer,
+        EventType.EthTransfer,
+        EventType.GnosisSafeEthTransfer,
+        EventType.InvitationCreated,
+        EventType.InvitationRedeemed,
+        EventType.MembershipOffer,
+        EventType.MembershipAccepted,
+        EventType.MembershipRejected
+      ]
+    }
+  });
+
   if (result.errors) {
     console.error(result.errors);
     return [];
   }
-
-  return result.data.inbox;
+  return result.data.events;
 }
 
-const { subscribe, set, update } = writable<ProfileEvent[] | null>(
+const {subscribe, set, update} = writable<ProfileEvent[] | null>(
   null,
   function start(set) {
     set([]);

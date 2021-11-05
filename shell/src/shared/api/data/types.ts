@@ -725,6 +725,12 @@ export type ProfileEvent = {
   value?: Maybe<Scalars['String']>;
 };
 
+export type ProfileEventFilter = {
+  from?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
+  with?: Maybe<Scalars['String']>;
+};
+
 export type ProfileOrOrganisation = Organisation | Profile;
 
 export type ProvePaymentResult = {
@@ -754,20 +760,12 @@ export enum PurchaseStatus {
 export type Query = {
   __typename?: 'Query';
   aggregates: Array<ProfileAggregate>;
-  balance: Scalars['String'];
-  balancesByAsset: Array<AssetBalance>;
-  blockchainEvents: Array<ProfileEvent>;
-  blockchainEventsByTransactionHash: Array<ProfileEvent>;
-  chatHistory: Array<ProfileEvent>;
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
   commonTrust: Array<CommonTrust>;
-  contact?: Maybe<Contact>;
-  contacts: Array<Contact>;
   events: Array<ProfileEvent>;
   findSafeAddressByOwner: Array<Scalars['String']>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
-  inbox: Array<ProfileEvent>;
   initAggregateState?: Maybe<InitAggregateState>;
   invitationTransaction?: Maybe<ProfileEvent>;
   lastUBITransaction?: Maybe<Scalars['String']>;
@@ -797,39 +795,6 @@ export type QueryAggregatesArgs = {
 };
 
 
-export type QueryBalanceArgs = {
-  safeAddress: Scalars['String'];
-};
-
-
-export type QueryBalancesByAssetArgs = {
-  safeAddress: Scalars['String'];
-};
-
-
-export type QueryBlockchainEventsArgs = {
-  fromBlock?: Maybe<Scalars['Int']>;
-  pagination?: Maybe<PaginationArgs>;
-  safeAddress: Scalars['String'];
-  toBlock?: Maybe<Scalars['Int']>;
-  types?: Maybe<Array<Scalars['String']>>;
-};
-
-
-export type QueryBlockchainEventsByTransactionHashArgs = {
-  safeAddress: Scalars['String'];
-  transactionHash: Scalars['String'];
-  types?: Maybe<Array<Scalars['String']>>;
-};
-
-
-export type QueryChatHistoryArgs = {
-  contactSafeAddress: Scalars['String'];
-  pagination?: Maybe<PaginationArgs>;
-  safeAddress: Scalars['String'];
-};
-
-
 export type QueryCitiesArgs = {
   query: QueryCitiesInput;
 };
@@ -841,18 +806,8 @@ export type QueryCommonTrustArgs = {
 };
 
 
-export type QueryContactArgs = {
-  contactAddress: Scalars['String'];
-  safeAddress: Scalars['String'];
-};
-
-
-export type QueryContactsArgs = {
-  safeAddress: Scalars['String'];
-};
-
-
 export type QueryEventsArgs = {
+  filter?: Maybe<ProfileEventFilter>;
   pagination: PaginationArgs;
   safeAddress: Scalars['String'];
   types: Array<EventType>;
@@ -1612,16 +1567,6 @@ export type MyInvitationsQuery = (
   )> }
 );
 
-export type BalanceQueryVariables = Exact<{
-  safeAddress: Scalars['String'];
-}>;
-
-
-export type BalanceQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'balance'>
-);
-
 export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1720,57 +1665,6 @@ export type ProfilesByNameQuery = (
   )> }
 );
 
-export type TransactionTimelineQueryVariables = Exact<{
-  safeAddress: Scalars['String'];
-  pagination?: Maybe<PaginationArgs>;
-}>;
-
-
-export type TransactionTimelineQuery = (
-  { __typename?: 'Query' }
-  & { blockchainEvents: Array<(
-    { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'timestamp' | 'type' | 'value' | 'safe_address' | 'transaction_hash' | 'transaction_index' | 'block_number' | 'direction'>
-    & { safe_address_profile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, tags?: Maybe<Array<(
-      { __typename?: 'Tag' }
-      & Pick<Tag, 'id' | 'typeId' | 'value'>
-    )>>, payload?: Maybe<{ __typename?: 'ChatMessage' } | (
-      { __typename?: 'CrcHubTransfer' }
-      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, transfers: Array<(
-        { __typename?: 'CrcTokenTransfer' }
-        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
-        & { from_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )>, to_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )> }
-      )> }
-    ) | (
-      { __typename?: 'CrcMinting' }
-      & Pick<CrcMinting, 'token' | 'from' | 'to' | 'value'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )> }
-    ) | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'WelcomeMessage' }> }
-  )> }
-);
-
 export type ProfilesByCirclesAddressQueryVariables = Exact<{
   circlesAddresses: Array<Scalars['String']> | Scalars['String'];
 }>;
@@ -1841,256 +1735,6 @@ export type TrustRelationsQuery = (
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
     )> }
-  )> }
-);
-
-export type ContactsQueryVariables = Exact<{
-  safeAddress: Scalars['String'];
-}>;
-
-
-export type ContactsQuery = (
-  { __typename?: 'Query' }
-  & { contacts: Array<(
-    { __typename?: 'Contact' }
-    & Pick<Contact, 'contactAddress' | 'safeAddress' | 'lastContactAt' | 'youTrust' | 'trustsYou'>
-    & { contactAddressProfile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, safeAddressProfile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, lastEvent?: Maybe<(
-      { __typename?: 'ProfileEvent' }
-      & Pick<ProfileEvent, 'block_number' | 'direction' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
-      & { payload?: Maybe<{ __typename?: 'ChatMessage' } | (
-        { __typename?: 'CrcHubTransfer' }
-        & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
-      ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
-        { __typename?: 'CrcTrust' }
-        & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
-      ) | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'WelcomeMessage' }> }
-    )> }
-  )> }
-);
-
-export type ContactQueryVariables = Exact<{
-  safeAddress: Scalars['String'];
-  contactAddress: Scalars['String'];
-}>;
-
-
-export type ContactQuery = (
-  { __typename?: 'Query' }
-  & { contact?: Maybe<(
-    { __typename?: 'Contact' }
-    & Pick<Contact, 'contactAddress' | 'safeAddress' | 'lastContactAt' | 'youTrust' | 'trustsYou'>
-    & { contactAddressProfile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, safeAddressProfile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )> }
-  )> }
-);
-
-export type ChatHistoryQueryVariables = Exact<{
-  safeAddress: Scalars['String'];
-  contactSafeAddress: Scalars['String'];
-}>;
-
-
-export type ChatHistoryQuery = (
-  { __typename?: 'Query' }
-  & { chatHistory: Array<(
-    { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'block_number' | 'direction' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
-    & { safe_address_profile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, tags?: Maybe<Array<(
-      { __typename?: 'Tag' }
-      & Pick<Tag, 'id' | 'typeId' | 'value'>
-    )>>, payload?: Maybe<(
-      { __typename?: 'ChatMessage' }
-      & Pick<ChatMessage, 'from' | 'to' | 'text'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )> }
-    ) | (
-      { __typename?: 'CrcHubTransfer' }
-      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, transfers: Array<(
-        { __typename?: 'CrcTokenTransfer' }
-        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
-        & { from_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )>, to_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )> }
-      )> }
-    ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
-      { __typename?: 'CrcTrust' }
-      & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
-      & { address_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, can_send_to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )> }
-    ) | (
-      { __typename?: 'EthTransfer' }
-      & Pick<EthTransfer, 'from' | 'to' | 'value'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )> }
-    ) | (
-      { __typename?: 'GnosisSafeEthTransfer' }
-      & Pick<GnosisSafeEthTransfer, 'from' | 'to' | 'value'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )> }
-    ) | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'WelcomeMessage' }> }
-  )> }
-);
-
-export type InboxQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type InboxQuery = (
-  { __typename?: 'Query' }
-  & { inbox: Array<(
-    { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'block_number' | 'direction' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
-    & { safe_address_profile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, tags?: Maybe<Array<(
-      { __typename?: 'Tag' }
-      & Pick<Tag, 'id' | 'typeId' | 'value'>
-    )>>, payload?: Maybe<(
-      { __typename?: 'ChatMessage' }
-      & Pick<ChatMessage, 'from' | 'to' | 'text'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
-        & { city?: Maybe<(
-          { __typename?: 'City' }
-          & Pick<City, 'name' | 'country'>
-        )> }
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
-        & { city?: Maybe<(
-          { __typename?: 'City' }
-          & Pick<City, 'name' | 'country'>
-        )> }
-      )> }
-    ) | (
-      { __typename?: 'CrcHubTransfer' }
-      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
-        & { city?: Maybe<(
-          { __typename?: 'City' }
-          & Pick<City, 'name' | 'country'>
-        )> }
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
-        & { city?: Maybe<(
-          { __typename?: 'City' }
-          & Pick<City, 'name' | 'country'>
-        )> }
-      )>, transfers: Array<(
-        { __typename?: 'CrcTokenTransfer' }
-        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
-        & { from_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )>, to_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )> }
-      )> }
-    ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
-      { __typename?: 'CrcTrust' }
-      & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
-      & { address_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
-        & { city?: Maybe<(
-          { __typename?: 'City' }
-          & Pick<City, 'name' | 'country'>
-        )> }
-      )>, can_send_to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
-        & { city?: Maybe<(
-          { __typename?: 'City' }
-          & Pick<City, 'name' | 'country'>
-        )> }
-      )> }
-    ) | (
-      { __typename?: 'EthTransfer' }
-      & Pick<EthTransfer, 'from' | 'to' | 'value'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
-        & { city?: Maybe<(
-          { __typename?: 'City' }
-          & Pick<City, 'name' | 'country'>
-        )> }
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
-        & { city?: Maybe<(
-          { __typename?: 'City' }
-          & Pick<City, 'name' | 'country'>
-        )> }
-      )> }
-    ) | (
-      { __typename?: 'GnosisSafeEthTransfer' }
-      & Pick<GnosisSafeEthTransfer, 'from' | 'to' | 'value'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
-        & { city?: Maybe<(
-          { __typename?: 'City' }
-          & Pick<City, 'name' | 'country'>
-        )> }
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'dream'>
-        & { city?: Maybe<(
-          { __typename?: 'City' }
-          & Pick<City, 'name' | 'country'>
-        )> }
-      )> }
-    ) | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'WelcomeMessage' }> }
   )> }
 );
 
@@ -2275,74 +1919,6 @@ export type CommonTrustQuery = (
   )> }
 );
 
-export type TransactionByHashQueryVariables = Exact<{
-  safeAddress: Scalars['String'];
-  transactionHash: Scalars['String'];
-}>;
-
-
-export type TransactionByHashQuery = (
-  { __typename?: 'Query' }
-  & { blockchainEventsByTransactionHash: Array<(
-    { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'timestamp' | 'type' | 'value' | 'safe_address' | 'transaction_hash' | 'transaction_index' | 'block_number' | 'direction'>
-    & { safe_address_profile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )>, tags?: Maybe<Array<(
-      { __typename?: 'Tag' }
-      & Pick<Tag, 'id' | 'typeId' | 'value'>
-    )>>, payload?: Maybe<{ __typename?: 'ChatMessage' } | (
-      { __typename?: 'CrcHubTransfer' }
-      & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, transfers: Array<(
-        { __typename?: 'CrcTokenTransfer' }
-        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
-        & { from_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )>, to_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )> }
-      )> }
-    ) | (
-      { __typename?: 'CrcMinting' }
-      & Pick<CrcMinting, 'token' | 'from' | 'to' | 'value'>
-      & { from_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, to_profile?: Maybe<(
-        { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )> }
-    ) | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'WelcomeMessage' }> }
-  )> }
-);
-
-export type BalancesByAssetQueryVariables = Exact<{
-  safeAddress: Scalars['String'];
-}>;
-
-
-export type BalancesByAssetQuery = (
-  { __typename?: 'Query' }
-  & { balancesByAsset: Array<(
-    { __typename?: 'AssetBalance' }
-    & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
-    & { token_owner_profile?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-    )> }
-  )> }
-);
-
 export type OffersQueryVariables = Exact<{
   createdByProfileId?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['String']>;
@@ -2384,6 +1960,7 @@ export type StreamQueryVariables = Exact<{
   types: Array<EventType> | EventType;
   safeAddress: Scalars['String'];
   pagination: PaginationArgs;
+  filter?: Maybe<ProfileEventFilter>;
 }>;
 
 
@@ -3027,11 +2604,6 @@ export const MyInvitationsDocument = gql`
   }
 }
     `;
-export const BalanceDocument = gql`
-    query balance($safeAddress: String!) {
-  balance(safeAddress: $safeAddress)
-}
-    `;
 export const MyProfileDocument = gql`
     query myProfile {
   myProfile {
@@ -3171,97 +2743,6 @@ export const ProfilesByNameDocument = gql`
   }
 }
     `;
-export const TransactionTimelineDocument = gql`
-    query transactionTimeline($safeAddress: String!, $pagination: PaginationArgs) {
-  blockchainEvents(
-    safeAddress: $safeAddress
-    types: ["CrcHubTransfer", "CrcMinting"]
-    pagination: $pagination
-  ) {
-    timestamp
-    type
-    value
-    safe_address
-    safe_address_profile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    transaction_hash
-    transaction_index
-    block_number
-    direction
-    tags {
-      id
-      typeId
-      value
-    }
-    payload {
-      ... on CrcHubTransfer {
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        flow
-        transfers {
-          token
-          from
-          from_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          to
-          to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          value
-        }
-      }
-      ... on CrcMinting {
-        token
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        value
-      }
-    }
-  }
-}
-    `;
 export const ProfilesByCirclesAddressDocument = gql`
     query profilesByCirclesAddress($circlesAddresses: [String!]!) {
   profilesBySafeAddress(safeAddresses: $circlesAddresses) {
@@ -3354,414 +2835,6 @@ export const TrustRelationsDocument = gql`
       lastName
       avatarUrl
       circlesAddress
-    }
-  }
-}
-    `;
-export const ContactsDocument = gql`
-    query contacts($safeAddress: String!) {
-  contacts(safeAddress: $safeAddress) {
-    contactAddress
-    contactAddressProfile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    safeAddress
-    safeAddressProfile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    lastContactAt
-    lastEvent {
-      block_number
-      direction
-      safe_address
-      timestamp
-      transaction_hash
-      transaction_index
-      type
-      value
-      payload {
-        ... on CrcHubTransfer {
-          from
-          to
-          flow
-        }
-        ... on CrcTrust {
-          address
-          can_send_to
-          limit
-        }
-      }
-    }
-    youTrust
-    trustsYou
-  }
-}
-    `;
-export const ContactDocument = gql`
-    query contact($safeAddress: String!, $contactAddress: String!) {
-  contact(safeAddress: $safeAddress, contactAddress: $contactAddress) {
-    contactAddress
-    contactAddressProfile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    safeAddress
-    safeAddressProfile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    lastContactAt
-    youTrust
-    trustsYou
-  }
-}
-    `;
-export const ChatHistoryDocument = gql`
-    query chatHistory($safeAddress: String!, $contactSafeAddress: String!) {
-  chatHistory(safeAddress: $safeAddress, contactSafeAddress: $contactSafeAddress) {
-    block_number
-    direction
-    safe_address
-    safe_address_profile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    timestamp
-    transaction_hash
-    transaction_index
-    type
-    value
-    tags {
-      id
-      typeId
-      value
-    }
-    payload {
-      ... on ChatMessage {
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        text
-      }
-      ... on CrcHubTransfer {
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        flow
-        transfers {
-          token
-          from
-          from_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          to
-          to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          value
-        }
-      }
-      ... on EthTransfer {
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        value
-      }
-      ... on GnosisSafeEthTransfer {
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        value
-      }
-      ... on CrcTrust {
-        address
-        address_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        can_send_to
-        can_send_to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        limit
-      }
-    }
-  }
-}
-    `;
-export const InboxDocument = gql`
-    query inbox {
-  inbox {
-    block_number
-    direction
-    safe_address
-    safe_address_profile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    timestamp
-    transaction_hash
-    transaction_index
-    type
-    value
-    tags {
-      id
-      typeId
-      value
-    }
-    payload {
-      ... on ChatMessage {
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-          dream
-          city {
-            name
-            country
-          }
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-          dream
-          city {
-            name
-            country
-          }
-        }
-        text
-      }
-      ... on CrcHubTransfer {
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-          dream
-          city {
-            name
-            country
-          }
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-          dream
-          city {
-            name
-            country
-          }
-        }
-        flow
-        transfers {
-          token
-          from
-          from_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          to
-          to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          value
-        }
-      }
-      ... on EthTransfer {
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-          dream
-          city {
-            name
-            country
-          }
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-          dream
-          city {
-            name
-            country
-          }
-        }
-        value
-      }
-      ... on GnosisSafeEthTransfer {
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-          dream
-          city {
-            name
-            country
-          }
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-          dream
-          city {
-            name
-            country
-          }
-        }
-        value
-      }
-      ... on CrcTrust {
-        address
-        address_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-          dream
-          city {
-            name
-            country
-          }
-        }
-        can_send_to
-        can_send_to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-          dream
-          city {
-            name
-            country
-          }
-        }
-        limit
-      }
     }
   }
 }
@@ -3998,113 +3071,6 @@ export const CommonTrustDocument = gql`
   }
 }
     `;
-export const TransactionByHashDocument = gql`
-    query transactionByHash($safeAddress: String!, $transactionHash: String!) {
-  blockchainEventsByTransactionHash(
-    safeAddress: $safeAddress
-    transactionHash: $transactionHash
-    types: ["CrcHubTransfer", "CrcMinting"]
-  ) {
-    timestamp
-    type
-    value
-    safe_address
-    safe_address_profile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    transaction_hash
-    transaction_index
-    block_number
-    direction
-    tags {
-      id
-      typeId
-      value
-    }
-    payload {
-      ... on CrcHubTransfer {
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        flow
-        transfers {
-          token
-          from
-          from_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          to
-          to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          value
-        }
-      }
-      ... on CrcMinting {
-        token
-        from
-        from_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        to
-        to_profile {
-          id
-          firstName
-          lastName
-          avatarUrl
-          circlesAddress
-        }
-        value
-      }
-    }
-  }
-}
-    `;
-export const BalancesByAssetDocument = gql`
-    query balancesByAsset($safeAddress: String!) {
-  balancesByAsset(safeAddress: $safeAddress) {
-    token_address
-    token_owner_address
-    token_owner_profile {
-      id
-      firstName
-      lastName
-      avatarUrl
-      circlesAddress
-    }
-    token_balance
-  }
-}
-    `;
 export const OffersDocument = gql`
     query offers($createdByProfileId: Int, $id: String, $publishedAt_gt: String, $publishedAt_lt: String, $categoryTagId: Int) {
   offers(
@@ -4165,8 +3131,13 @@ export const OffersDocument = gql`
 }
     `;
 export const StreamDocument = gql`
-    query stream($types: [EventType!]!, $safeAddress: String!, $pagination: PaginationArgs!) {
-  events(types: $types, safeAddress: $safeAddress, pagination: $pagination) {
+    query stream($types: [EventType!]!, $safeAddress: String!, $pagination: PaginationArgs!, $filter: ProfileEventFilter) {
+  events(
+    types: $types
+    safeAddress: $safeAddress
+    pagination: $pagination
+    filter: $filter
+  ) {
     timestamp
     transaction_hash
     safe_address
@@ -4468,9 +3439,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     myInvitations(variables?: MyInvitationsQueryVariables): Promise<MyInvitationsQuery> {
       return withWrapper(() => client.request<MyInvitationsQuery>(print(MyInvitationsDocument), variables));
     },
-    balance(variables: BalanceQueryVariables): Promise<BalanceQuery> {
-      return withWrapper(() => client.request<BalanceQuery>(print(BalanceDocument), variables));
-    },
     myProfile(variables?: MyProfileQueryVariables): Promise<MyProfileQuery> {
       return withWrapper(() => client.request<MyProfileQuery>(print(MyProfileDocument), variables));
     },
@@ -4486,9 +3454,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     profilesByName(variables: ProfilesByNameQueryVariables): Promise<ProfilesByNameQuery> {
       return withWrapper(() => client.request<ProfilesByNameQuery>(print(ProfilesByNameDocument), variables));
     },
-    transactionTimeline(variables: TransactionTimelineQueryVariables): Promise<TransactionTimelineQuery> {
-      return withWrapper(() => client.request<TransactionTimelineQuery>(print(TransactionTimelineDocument), variables));
-    },
     profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
       return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));
     },
@@ -4500,18 +3465,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     trustRelations(variables: TrustRelationsQueryVariables): Promise<TrustRelationsQuery> {
       return withWrapper(() => client.request<TrustRelationsQuery>(print(TrustRelationsDocument), variables));
-    },
-    contacts(variables: ContactsQueryVariables): Promise<ContactsQuery> {
-      return withWrapper(() => client.request<ContactsQuery>(print(ContactsDocument), variables));
-    },
-    contact(variables: ContactQueryVariables): Promise<ContactQuery> {
-      return withWrapper(() => client.request<ContactQuery>(print(ContactDocument), variables));
-    },
-    chatHistory(variables: ChatHistoryQueryVariables): Promise<ChatHistoryQuery> {
-      return withWrapper(() => client.request<ChatHistoryQuery>(print(ChatHistoryDocument), variables));
-    },
-    inbox(variables?: InboxQueryVariables): Promise<InboxQuery> {
-      return withWrapper(() => client.request<InboxQuery>(print(InboxDocument), variables));
     },
     profileById(variables: ProfileByIdQueryVariables): Promise<ProfileByIdQuery> {
       return withWrapper(() => client.request<ProfileByIdQuery>(print(ProfileByIdDocument), variables));
@@ -4539,12 +3492,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     commonTrust(variables: CommonTrustQueryVariables): Promise<CommonTrustQuery> {
       return withWrapper(() => client.request<CommonTrustQuery>(print(CommonTrustDocument), variables));
-    },
-    transactionByHash(variables: TransactionByHashQueryVariables): Promise<TransactionByHashQuery> {
-      return withWrapper(() => client.request<TransactionByHashQuery>(print(TransactionByHashDocument), variables));
-    },
-    balancesByAsset(variables: BalancesByAssetQueryVariables): Promise<BalancesByAssetQuery> {
-      return withWrapper(() => client.request<BalancesByAssetQuery>(print(BalancesByAssetDocument), variables));
     },
     offers(variables?: OffersQueryVariables): Promise<OffersQuery> {
       return withWrapper(() => client.request<OffersQuery>(print(OffersDocument), variables));

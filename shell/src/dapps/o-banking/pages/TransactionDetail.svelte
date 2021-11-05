@@ -11,7 +11,7 @@ import {
   CrcMinting,
   Profile,
   ProfileEvent,
-  TransactionByHashDocument,
+  //TransactionByHashDocument,
 } from "../../../shared/api/data/types";
 export let transactionHash: string;
 let transfer: ProfileEvent;
@@ -24,13 +24,20 @@ let message: string = "";
 let error: string;
 onMount(async () => {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const timeline = await apiClient.query({
+  /*const timeline = await apiClient.query({
     query: TransactionByHashDocument,
     variables: {
       safeAddress: $me.circlesAddress,
       transactionHash,
     },
-  });
+  });*/
+  // TODO: implement with new api
+  const timeline = {
+    errors: ["Not implemented"],
+    data: {
+      blockchainEventsByTransactionHash: []
+    }
+  };
   if (timeline.errors) {
     throw new Error(
       `Couldn't load the transaction history for the following reasons: ${timeline.errors.join(

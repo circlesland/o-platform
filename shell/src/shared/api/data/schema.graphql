@@ -501,20 +501,12 @@ type Purchase {
 
 type Query {
     aggregates(safeAddress: String!, types: [AggregateType!]!): [ProfileAggregate!]!
-    balance(safeAddress: String!): String!
-    balancesByAsset(safeAddress: String!): [AssetBalance!]!
-    blockchainEvents(fromBlock: Int, pagination: PaginationArgs, safeAddress: String!, toBlock: Int, types: [String!]): [ProfileEvent!]!
-    blockchainEventsByTransactionHash(safeAddress: String!, transactionHash: String!, types: [String!]): [ProfileEvent!]!
-    chatHistory(contactSafeAddress: String!, pagination: PaginationArgs, safeAddress: String!): [ProfileEvent!]!
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
     commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
-    contact(contactAddress: String!, safeAddress: String!): Contact
-    contacts(safeAddress: String!): [Contact!]!
-    events(pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
+    events(filter: ProfileEventFilter, pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
     findSafeAddressByOwner(owner: String!): [String!]!
     hubSignupTransaction: ProfileEvent
-    inbox: [ProfileEvent!]!
     initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
     lastUBITransaction: String
@@ -699,6 +691,12 @@ input PaginationArgs {
 input PaymentProof {
     forOfferId: LockOfferInput!
     transactionHash: String!
+}
+
+input ProfileEventFilter {
+    from: String
+    to: String
+    with: String
 }
 
 input QueryCitiesByGeonameIdInput {

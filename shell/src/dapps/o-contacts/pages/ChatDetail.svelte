@@ -5,14 +5,11 @@
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
   import {
-    ChatHistoryDocument,
     Contact,
-    ContactDocument, EventType,
-    ProfileEvent,
+    EventType, ProfileEvent,
     SendMessageDocument, SortOrder, StreamDocument,
   } from "../../../shared/api/data/types";
   import {me} from "../../../shared/stores/me";
-  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
   import UserImage from "src/shared/atoms/UserImage.svelte";
   import {setTrust} from "../../o-banking/processes/setTrust";
   import {transfer} from "../../o-banking/processes/transfer";
@@ -20,7 +17,6 @@
   import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
   import {Subscription} from "rxjs";
   import {displayCirclesAmount} from "../../../shared/functions/displayCirclesAmount";
-  import EventList from "../../../shared/molecules/Lists/EventList.svelte";
 
   export let id: string;
 
@@ -31,42 +27,39 @@
   let shellEventSubscription: Subscription;
 
   async function reload() {
-    const safeAddress = $me.circlesAddress;
-    const contactSafeAddress = id;
     const apiClient = await window.o.apiClient.client.subscribeToResult();
 
-
-    const chatHistoryResultPromise = apiClient.query({
-      query: ChatHistoryDocument,
+    const result = await apiClient.query({
+      query: StreamDocument,
       variables: {
-        safeAddress,
-        contactSafeAddress,
-      },
-    });
-    const contactProfileResultPromise = apiClient.query({
-      query: ContactDocument,
-      variables: {
-        safeAddress: $me.circlesAddress.toLowerCase(),
-        contactAddress: id,
-      },
+        safeAddress: $me.circlesAddress,
+        pagination: {
+          order: SortOrder.Asc,
+          limit: 1000000,
+          continueAt: new Date(0),
+        },
+        filter: {
+          with: id
+        },
+        types: [
+          EventType.CrcHubTransfer,
+          //EventType.CrcMinting,
+          EventType.CrcTrust,
+          EventType.ChatMessage,
+          //EventType.CrcSignup,
+          //EventType.CrcTokenTransfer,
+          //EventType.EthTransfer,
+          //EventType.GnosisSafeEthTransfer,
+          EventType.InvitationCreated,
+          EventType.InvitationRedeemed,
+          EventType.MembershipOffer,
+          //EventType.MembershipAccepted,
+          //EventType.MembershipRejected
+        ]
+      }
     });
 
-    const apiResults = await Promise.all([
-      chatHistoryResultPromise,
-      contactProfileResultPromise,
-    ]);
-    const chatHistoryResult = apiResults[0];
-    const contactProfileResult = apiResults[1];
-    if (apiResults.filter((o) => o.errors?.length > 0).length > 0) {
-      error = `Couldn't read the chatHistory or the profile of safe ${safeAddress}`;
-      return;
-    }
-    chatHistory = chatHistoryResult.data.chatHistory;
-    contactProfile = contactProfileResult.data.contact
-            ? contactProfileResult.data.contact
-            : null;
-
-    console.log("PRFILE: ", contactProfile);
+    chatHistory = (<any>result).data.events;
 
     window.o.publishEvent(<any>{
       type: "shell.scrollToBottom",
@@ -193,13 +186,13 @@
     }[] = [];
 
     switch (chat.type) {
-      case "chat_message":
+      case EventType.ChatMessage:
         notificationType = "chat_message";
         title = `${chat.payload.text}`;
         outgoing = chat.payload.from !== $me.circlesAddress.toLowerCase();
         chat.safe_address_profile = chat.payload.from_profile;
         break;
-      case "crc_trust":
+      case EventType.CrcTrust:
         if (chat.payload.limit == 0 && chat.safe_address == $me.circlesAddress) {
           notificationType = "trust_removed";
           title = `You untrusted ${
@@ -320,28 +313,25 @@
                   : [];
         }
         break;
-      case "crc_hub_transfer":
-        if (chat.payload.to_profile && chat.safe_address === $me.circlesAddress) {
+      case EventType.CrcHubTransfer:
+        if (chat.direction == "out") {
           notificationType = "transfer_out";
           icon = "sendmoney";
           (title = `You sent ${displayCirclesAmount(
-                  chat.value,
+                  chat.payload.flow,
                   null,
                   true,
                   $me.displayTimeCircles || $me.displayTimeCircles === undefined
           )} Circles to ${chat.payload.to_profile.firstName}`),
                   (actions = []);
-        } else if (
-                chat.payload.from_profile &&
-                chat.safe_address !== $me.circlesAddress
-        ) {
+        } else {
           outgoing = chat.safeAddress !== $me.circlesAddress;
           notificationType = "transfer_in";
           icon = "sendmoney";
           title = `${
                   chat.payload.from_profile.firstName
           } sent you ${displayCirclesAmount(
-                  chat.value,
+                  chat.payload.flow,
                   null,
                   true,
                   $me.displayTimeCircles || $me.displayTimeCircles === undefined
@@ -379,6 +369,8 @@
                   : [];
         }
         break;
+        default:
+          return;
     }
 
     let text = chat.tags?.find(
@@ -444,37 +436,16 @@
 
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
   <div class="flex flex-col pb-0 space-y-4 sm:space-y-8">
-    <!--
-    <List limit="{100}"
-          queryArguments="{{
-          safeAddress: $me.circlesAddress,
-          types: [
-            EventType.CrcHubTransfer,
-            EventType.CrcMinting,
-            EventType.CrcTrust,
-            EventType.ChatMessage,
-            EventType.CrcSignup,
-            EventType.CrcTokenTransfer,
-            EventType.EthTransfer,
-            EventType.GnosisSafeEthTransfer,
-            EventType.InvitationCreated,
-            EventType.InvitationRedeemed,
-            EventType.MembershipOffer,
-            EventType.MembershipAccepted,
-            EventType.MembershipRejected
-          ]
-        }}"
-          order={SortOrder.Asc}
-          views={{
-          //[EventType.CrcHubTransfer]: TransactionCard2,
-          //[EventType.CrcMinting]: TransactionCard2
-        }} />
-    -->
-    {#each chatHistory as chat}
-      {#if chat.type === "chat_message"}
-        <ChatCard params="{buildCardModel(chat)}" />
+    {#each chatHistory.map(o => {
+      return {
+        original: o,
+        cardModel: buildCardModel(o)
+      };
+    }).filter(o => !!o.cardModel) as event}
+      {#if event.original.type === "ChatMessage"}
+        <ChatCard params="{event.cardModel}" />
       {:else}
-        <NotificationCard params="{buildCardModel(chat)}" />
+        <NotificationCard params="{event.cardModel}" />
       {/if}
     {/each}
   </div>

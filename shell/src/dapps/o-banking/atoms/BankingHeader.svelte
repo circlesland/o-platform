@@ -7,7 +7,8 @@
   import { me } from "../../../shared/stores/me";
 
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
-  import {BalanceDocument} from "../../../shared/api/data/types";
+  import {AggregatesDocument, CrcBalances} from "../../../shared/api/data/types";
+  import {BN} from "ethereumjs-util";
 
   export let balance: string = "0";
   export let runtimeDapp: RuntimeDapp<any>;
@@ -16,16 +17,26 @@
   onMount(async () => {
     const safeAddress = $me.circlesAddress;
     const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const balanceResult = await apiClient.query({
-      query: BalanceDocument,
+
+    const balancesResult = await apiClient.query({
+      query: AggregatesDocument,
       variables: {
-        safeAddress,
+        types: ["CrcBalances"],
+        safeAddress: safeAddress
       },
     });
-    if (balanceResult.errors?.length > 0) {
+
+    if (balancesResult.errors?.length > 0) {
       throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
     }
-    balance = displayCirclesAmount(balanceResult.data.balance, null, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined).toString();
+
+    const crcBalances:CrcBalances = balancesResult.data.aggregates.find(o => o.type == "CrcBalances");
+    if (!crcBalances) {
+      throw new Error(`Couldn't find the CrcBalances in the query result.`)
+    }
+
+    const sum = crcBalances.payload.balances.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
+    balance = displayCirclesAmount(sum, null, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined).toString();
   });
 </script>
 

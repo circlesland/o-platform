@@ -29,7 +29,7 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Pr
 
     return {
         id: 0,
-        circlesAddress: RpcGateway.get().utils.toChecksumAddress(safeAddress),
+        circlesAddress: safeAddress,
         firstName: "",
     };
 }

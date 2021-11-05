@@ -9,7 +9,6 @@ import * as bip39 from "bip39";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {Account} from "web3-core";
 import {
-  BalanceDocument,
   FindSafeAddressByOwnerDocument,
   Profile, ProfilesByCirclesAddressDocument,
   UpsertProfileDocument
@@ -135,12 +134,12 @@ const processDefinition = (processId: string) =>
             const circlesGardenProfileRequest = `https://api.circles.garden/api/users/?${query}`;
 
             const circlesGardenFetchPromise = fetch(circlesGardenProfileRequest).then(result => result.json());
-            const balanceQueryPromises = foundSafeAddresses.map(safeAddress => apiClient.query({
+            /*const balanceQueryPromises = foundSafeAddresses.map(safeAddress => apiClient.query({
               query: BalanceDocument,
               variables: {
                 safeAddress: safeAddress
               }
-            }));
+            }));*/
 
             const circlesLandProfileQueryPromise = apiClient.query({
               query: ProfilesByCirclesAddressDocument,
@@ -152,15 +151,17 @@ const processDefinition = (processId: string) =>
             const results = await Promise.all([
               circlesGardenFetchPromise,
               circlesLandProfileQueryPromise,
-              ...balanceQueryPromises
+              //...balanceQueryPromises
             ]);
 
             const circlesGardenProfilesResult = results[0];
             const circlesLandProfilesResult = results[1];
-            const balanceResults = results.slice(2, results.length - 1);
+            // const balanceResults = results.slice(2, results.length - 1);
+
+            // TODO: Re-implement the balance-check for safes on onboarding with new api
 
             const balancesBySafeAddress:{[safeAddress:string]:BN} = {};
-            balanceResults.map((balanceResult, index) => {
+            /*balanceResults.map((balanceResult, index) => {
               if (balanceResult.data?.balance) {
                 return {
                   address: foundSafeAddresses[index],
@@ -177,7 +178,7 @@ const processDefinition = (processId: string) =>
                 return;
 
               balancesBySafeAddress[o.address] = o.balance;
-            });
+            });*/
 
             const circlesLandProfiles:Profile[] = circlesLandProfilesResult.data.profilesBySafeAddress;
             const circlesGardenProfiles = circlesGardenProfilesResult.data?.map((o:any) => {
