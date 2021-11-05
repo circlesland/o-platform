@@ -7,7 +7,7 @@
   import { me } from "../../../shared/stores/me";
 
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
-  import {AggregatesDocument, CrcBalances} from "../../../shared/api/data/types";
+  import {AggregatesDocument, AggregateType, CrcBalances} from "../../../shared/api/data/types";
   import {BN} from "ethereumjs-util";
 
   export let balance: string = "0";
@@ -21,7 +21,7 @@
     const balancesResult = await apiClient.query({
       query: AggregatesDocument,
       variables: {
-        types: ["CrcBalances"],
+        types: [AggregateType.CrcBalances],
         safeAddress: safeAddress
       },
     });
@@ -30,7 +30,7 @@
       throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
     }
 
-    const crcBalances:CrcBalances = balancesResult.data.aggregates.find(o => o.type == "CrcBalances");
+    const crcBalances:CrcBalances = balancesResult.data.aggregates.find(o => o.type == AggregateType.CrcBalances);
     if (!crcBalances) {
       throw new Error(`Couldn't find the CrcBalances in the query result.`)
     }

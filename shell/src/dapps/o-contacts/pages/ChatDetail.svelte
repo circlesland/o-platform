@@ -4,8 +4,9 @@
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
   import {
-    Contact,
-    EventType, ProfileEvent,
+    AggregatesDocument, AggregateType,
+    Contact, Contacts, CrcBalances,
+    EventType, Profile, ProfileAggregate, ProfileEvent,
     SendMessageDocument, SortOrder, StreamDocument,
   } from "../../../shared/api/data/types";
   import {me} from "../../../shared/stores/me";
@@ -19,11 +20,37 @@
   let error: string | undefined = undefined;
   let chatHistory: ProfileEvent[] = [];
 
-  let contactProfile: Contact | null;
+  let contactProfile: Profile | null;
   let shellEventSubscription: Subscription;
 
   async function reload() {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
+
+    const contactsResult = await apiClient.query({
+      query: AggregatesDocument,
+      variables: {
+        types: [AggregateType.Contacts],
+        safeAddress: $me.circlesAddress,
+        filter: {
+          contacts: {
+            addresses: [id]
+          }
+        }
+      }
+    });
+
+    if (contactsResult.errors?.length > 0) {
+      throw new Error(`Couldn't read the contacts of safe ${$me.circlesAddress}`);
+    }
+
+    const contacts:ProfileAggregate = contactsResult.data.aggregates.find(o => o.type == AggregateType.Contacts);
+    if (!contacts) {
+      throw new Error(`Couldn't find the AggregateType.Contacts in the query result.`)
+    }
+
+    if ((<Contacts>contacts.payload).contacts.length > 0) {
+      contactProfile = (<Contacts>contacts.payload).contacts[0].contactAddress_Profile;
+    }
 
     const result = await apiClient.query({
       query: StreamDocument,
@@ -222,19 +249,17 @@
       <div class="absolute " style="left: -56px; top:4px">
         {#if contactProfile}
           <UserImage
-            profile="{contactProfile.contactAddressProfile}"
+            profile="{contactProfile}"
             size="{10}"
             gradientRing="{true}" />
         {/if}
       </div>
       <div class="mt-2 text-3xl tracking-wide uppercase font-heading">
         {#if contactProfile}
-          {#if contactProfile.contactAddressProfile}
-            {contactProfile.contactAddressProfile.firstName}
-            {contactProfile.contactAddressProfile.lastName
-              ? contactProfile.contactAddressProfile.lastName
-              : ""}
-          {/if}
+          {contactProfile.firstName}
+          {contactProfile.lastName
+            ? contactProfile.lastName
+            : ""}
         {/if}
       </div>
 
@@ -260,8 +285,7 @@
   </div>
   <div
     class:hidden="{!contactProfile ||
-      !contactProfile.contactAddressProfile ||
-      !contactProfile.contactAddressProfile.id}"
+      !contactProfile.id}"
     class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2">
     <div class="flex-grow">
       <input

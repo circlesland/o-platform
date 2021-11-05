@@ -808,10 +808,11 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
   }
 }
 
-query aggregates($types:[AggregateType!]! $safeAddress:String!) {
+query aggregates($types:[AggregateType!]! $safeAddress:String! $filter:ProfileAggregateFilter) {
   aggregates(
     types: $types
-    safeAddress: $safeAddress) {
+    safeAddress: $safeAddress
+    filter: $filter) {
     type
     safe_address
     safe_address_profile {
@@ -847,6 +848,7 @@ query aggregates($types:[AggregateType!]! $safeAddress:String!) {
           lastContactAt
           contactAddress
           contactAddress_Profile {
+            id
             firstName
             lastName
             avatarUrl

@@ -502,7 +502,7 @@ type Purchase {
 }
 
 type Query {
-    aggregates(safeAddress: String!, types: [AggregateType!]!): [ProfileAggregate!]!
+    aggregates(filter: ProfileAggregateFilter, safeAddress: String!, types: [AggregateType!]!): [ProfileAggregate!]!
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
     commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
@@ -672,6 +672,14 @@ enum TrustDirection {
     OUT
 }
 
+input ContactAggregateFilter {
+    addresses: [String!]!
+}
+
+input CrcBalanceAggregateFilter {
+    tokenAddresses: [String!]!
+}
+
 input CreateTagInput {
     typeId: String!
     value: String
@@ -694,6 +702,11 @@ input PaginationArgs {
 input PaymentProof {
     forOfferId: LockOfferInput!
     transactionHash: String!
+}
+
+input ProfileAggregateFilter {
+    contacts: ContactAggregateFilter
+    crcBalance: CrcBalanceAggregateFilter
 }
 
 input ProfileEventFilter {

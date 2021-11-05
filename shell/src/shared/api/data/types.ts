@@ -126,6 +126,10 @@ export type Contact2 = {
   metadata: Array<ContactPoint>;
 };
 
+export type ContactAggregateFilter = {
+  addresses: Array<Scalars['String']>;
+};
+
 export enum ContactDirection {
   In = 'In',
   Out = 'Out'
@@ -149,6 +153,10 @@ export type CountryStats = {
   __typename?: 'CountryStats';
   citizenCount: Scalars['Int'];
   name: Scalars['String'];
+};
+
+export type CrcBalanceAggregateFilter = {
+  tokenAddresses: Array<Scalars['String']>;
 };
 
 export type CrcBalances = IAggregatePayload & {
@@ -710,6 +718,11 @@ export type ProfileAggregate = {
   type: Scalars['String'];
 };
 
+export type ProfileAggregateFilter = {
+  contacts?: Maybe<ContactAggregateFilter>;
+  crcBalance?: Maybe<CrcBalanceAggregateFilter>;
+};
+
 export type ProfileEvent = {
   __typename?: 'ProfileEvent';
   block_number?: Maybe<Scalars['Int']>;
@@ -793,6 +806,7 @@ export type Query = {
 
 
 export type QueryAggregatesArgs = {
+  filter?: Maybe<ProfileAggregateFilter>;
   safeAddress: Scalars['String'];
   types: Array<AggregateType>;
 };
@@ -2055,6 +2069,7 @@ export type StreamQuery = (
 export type AggregatesQueryVariables = Exact<{
   types: Array<AggregateType> | AggregateType;
   safeAddress: Scalars['String'];
+  filter?: Maybe<ProfileAggregateFilter>;
 }>;
 
 
@@ -2077,7 +2092,7 @@ export type AggregatesQuery = (
           & Pick<ContactPoint, 'name' | 'directions' | 'values' | 'timestamps'>
         )>, contactAddress_Profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
       )> }
     ) | (
@@ -3287,8 +3302,8 @@ export const StreamDocument = gql`
 }
     `;
 export const AggregatesDocument = gql`
-    query aggregates($types: [AggregateType!]!, $safeAddress: String!) {
-  aggregates(types: $types, safeAddress: $safeAddress) {
+    query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: ProfileAggregateFilter) {
+  aggregates(types: $types, safeAddress: $safeAddress, filter: $filter) {
     type
     safe_address
     safe_address_profile {
@@ -3324,6 +3339,7 @@ export const AggregatesDocument = gql`
           lastContactAt
           contactAddress
           contactAddress_Profile {
+            id
             firstName
             lastName
             avatarUrl
