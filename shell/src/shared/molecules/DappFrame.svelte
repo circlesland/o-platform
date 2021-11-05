@@ -6,7 +6,6 @@ import { shellProcess } from "../processes/shellProcess";
 import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { identify } from "../../dapps/o-passport/processes/identify/identify2";
-
 import Layout from "../../shared/layouts/Layout.svelte";
 import ProcessContainer from "../../shared/molecules/ProcessContainer.svelte";
 import { RuntimeLayout } from "../layouts/layout";
@@ -28,7 +27,6 @@ import {
   GenerateNavManifestArgs,
 } from "../functions/generateNavManifest";
 import { inbox } from "../stores/inbox";
-
 import NavigationList from "../../shared/molecules/NavigationList.svelte";
 import { Process } from "@o-platform/o-process/dist/interfaces/process";
 import { isMobile } from "../functions/isMobile";
@@ -41,13 +39,11 @@ import { me } from "../stores/me";
 import { getSessionInfo } from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 import { EventsDocument } from "../api/data/types";
 import { ShellEvent } from "@o-platform/o-process/dist/events/shellEvent";
-
 /*
     left icons:
     open: "simplearrowleft"
     closed: "list";
      */
-
 export let params: {
   dappId: string;
   "1": string | null;
@@ -57,17 +53,14 @@ export let params: {
   "5": string | null;
   "6": string | null;
 };
-
 let lastParamsJson: string = "";
 let identityChecked: boolean = false;
 let dappFrameState: any;
 let nextRoutable: Routable | undefined;
-
 let dapp: DappManifest<any>;
 let runtimeDapp: RuntimeDapp<any>;
 let routable: Routable;
 let modalContent: "process" | "page" | "quickActions" | "none" = "none";
-
 let layout: RuntimeLayout = <RuntimeLayout>{
   main: undefined,
   dialogs: {
@@ -80,18 +73,14 @@ let navigation: NavigationManifest;
 let currentNavArgs: GenerateNavManifestArgs;
 let preModalNavArgs: GenerateNavManifestArgs;
 let runningProcess: ProcessStarted;
-
 function setNav(navArgs: GenerateNavManifestArgs) {
   if (navArgs.centerIsOpen && !preModalNavArgs) {
     preModalNavArgs = currentNavArgs;
   }
   let args = { ...navArgs, showLogin: dapp.dappId == "homepage:1" };
-
   navigation = generateNavManifest(args, null);
-
   currentNavArgs = args;
 }
-
 /**
  * This function is called only one time after the first route.
  */
@@ -134,7 +123,6 @@ async function init() {
     inbox.reload();
   }
 }
-
 function onOpenNavigation() {
   layout = {
     ...layout,
@@ -160,7 +148,6 @@ function onOpenNavigation() {
     centerContainsProcess: false,
   });
 }
-
 function onCloseNavigation() {
   layout.dialogs.left = {
     ...layout.dialogs.left,
@@ -174,11 +161,9 @@ function onCloseNavigation() {
     centerContainsProcess: false,
   });
 }
-
 function onOpenContacts() {
   push("#/friends/chat");
 }
-
 function onOpenModal() {
   showModalPage(
     runtimeDapp,
@@ -196,20 +181,16 @@ function onOpenModal() {
     centerContainsProcess: false,
   });
 }
-
 function onHome() {
   push("#/dashboard");
 }
-
 async function onCloseModal() {
   await hideCenter();
-
   setNav({
     ...preModalNavArgs,
     notificationCount: $inbox.length,
   });
 }
-
 function onRequestCloseModal() {
   if (!runningProcess) {
     onCloseModal();
@@ -224,7 +205,6 @@ function onRequestCloseModal() {
   onProcessContinued();
   process.sendEvent({ type: "process.cancelRequest" });
 }
-
 function onProcessCancelRequest() {
   if (!runningProcess) {
     return;
@@ -238,20 +218,17 @@ function onProcessCancelRequest() {
   onProcessContinued();
   process.sendEvent({ type: "process.cancelRequest" });
 }
-
 async function onRunProcess(event: any) {
   const runProcessEvent = <RunProcess<any>>event;
   const runningProcess = await window.o.stateMachines.run(
     runProcessEvent.definition,
     runProcessEvent.contextModifier
   );
-
   // If not, send an event with the process id.
   const startedEvent = new ProcessStarted(runningProcess.id);
   startedEvent.responseToId = runProcessEvent.id;
   window.o.publishEvent(startedEvent);
 }
-
 async function onProcessStopped() {
   await onCloseModal();
   if (preModalNavArgs) {
@@ -270,7 +247,6 @@ async function onProcessStopped() {
     });
   }
 }
-
 function onProcessContinued() {
   setNav({
     notificationCount: $inbox.length,
@@ -280,7 +256,6 @@ function onProcessContinued() {
     rightIsOpen: false,
   });
 }
-
 function onProcessCanGoBack() {
   setNav({
     notificationCount: $inbox.length,
@@ -292,7 +267,6 @@ function onProcessCanGoBack() {
     canGoBack: true,
   });
 }
-
 function onProcessCanSkip() {
   setNav({
     notificationCount: $inbox.length,
@@ -304,7 +278,6 @@ function onProcessCanSkip() {
     canSkip: true,
   });
 }
-
 function onProcessBack() {
   if (!runningProcess) {
     return;
@@ -318,7 +291,6 @@ function onProcessBack() {
   onProcessContinued();
   process.sendAnswer({ type: "process.back" });
 }
-
 function onProcessSkip() {
   if (!runningProcess) {
     return;
@@ -332,7 +304,6 @@ function onProcessSkip() {
   onProcessContinued();
   process.sendAnswer({ type: "process.skip" });
 }
-
 function onInputFocused() {
   if (isMobile()) {
     document.body.classList.add("keyboard-open");
@@ -345,7 +316,6 @@ function onInputBlurred() {
   }
   return;
 }
-
 onMount(async () => {
   window.o.events.subscribe(async (event) => {
     switch (event.type) {
@@ -406,7 +376,6 @@ onMount(async () => {
         break;
     }
   });
-
   // Set the global "runProcess" function. This needs to be done here
   // because at any point before the dialog wouldn't be ready.
   window.o.runProcess = async function runProcess(
@@ -425,15 +394,12 @@ onMount(async () => {
       };
       return ctx;
     };
-
     const requestEvent: any = new RunProcess(shellProcess, true, modifier);
     requestEvent.id = Generate.randomHexString(8);
-
     const processStarted: ProcessStarted =
       await window.o.requestEvent<ProcessStarted>(requestEvent);
     showModalProcess(processStarted.processId);
   };
-
   setNav({
     centerContainsProcess: false,
     centerIsOpen: false,
@@ -441,13 +407,11 @@ onMount(async () => {
     leftIsOpen: false,
     notificationCount: $inbox.length,
   });
-
   if (!identityChecked && !dapp.noAuthentication) {
     //window.o.runProcess(identify, {}, {});
     identityChecked = true;
   }
 });
-
 function showQuickActions() {
   // setCloseAsNavCenter();
   showModalPage(
@@ -459,9 +423,7 @@ function showQuickActions() {
     {}
   );
 }
-
 let startProcessing: boolean = true;
-
 $: {
   if (startProcessing) {
     const paramsJson = JSON.stringify(params);
@@ -470,20 +432,19 @@ $: {
       lastParamsJson = paramsJson;
     }
   }
-
   // Open / Close Navigation on screen-size basis.
-  if ($media.small) {
-    window.o.publishEvent({
-      type: "shell.closeNavigation",
-    });
-  }
-  if ($media.large) {
-    window.o.publishEvent({
-      type: "shell.openNavigation",
-    });
-  }
+  // OKay, this breaks a lot of things. sorry about that.
+  // if ($media.small) {
+  //   window.o.publishEvent({
+  //     type: "shell.closeNavigation",
+  //   });
+  // }
+  // if ($media.large) {
+  //   window.o.publishEvent({
+  //     type: "shell.openNavigation",
+  //   });
+  // }
 }
-
 function findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
   // If no nextRoutable could be found then look for a default in the dapp
   const defaultRoutable = findRoutableByParams(runtimeDapp, {
@@ -515,20 +476,15 @@ function findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
     };
   }
 }
-
 let firstUrlChangedCall = true;
-
 async function handleUrlChanged() {
   const navArgs = <GenerateNavManifestArgs>{};
-
   dapp = findDappById(params.dappId);
   runtimeDapp = dapp
     ? await RuntimeDapps.instance().getRuntimeDapp(dapp)
     : null;
-
   if (!runtimeDapp)
     throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
-
   const findRouteResult = findRoutableByParams(runtimeDapp, params);
   if (!findRouteResult.found) {
     throw new Error(
@@ -539,9 +495,7 @@ async function handleUrlChanged() {
       )}`
     );
   }
-
   routable = findRouteResult.routable;
-
   if (findRouteResult.routable.type === "page") {
     const page: Page<any, any> = <any>findRouteResult.routable;
     if (page.position === "modal") {
@@ -567,13 +521,11 @@ async function handleUrlChanged() {
       showMainPage(runtimeDapp, page, findRouteResult.params);
     }
   }
-
   window.o.publishEvent({
     type: "shell.routeChanged",
     runtimeDapp: runtimeDapp,
     routable: findRouteResult.routable,
   });
-
   // Automatically open leftNav on desktop.
   if ($media.large) {
     if (!layout.dialogs.center) {
@@ -582,16 +534,13 @@ async function handleUrlChanged() {
       });
     }
   }
-
   if (!navigation) {
     navigation = generateNavManifest(navArgs, null);
   }
-
   if (firstUrlChangedCall) {
     firstUrlChangedCall = false;
     init();
   }
-
   // If the user is not logged-on return to the homepage
   const session = await getSessionInfo();
   if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
@@ -599,7 +548,6 @@ async function handleUrlChanged() {
     return;
   }
 }
-
 function showModalProcess(processId: string) {
   modalContent = "process";
   const process = window.o.stateMachines.findById(processId);
@@ -610,7 +558,6 @@ function showModalProcess(processId: string) {
     },
     { process }
   );
-
   setNav({
     centerIsOpen: true,
     centerContainsProcess: true,
@@ -619,13 +566,11 @@ function showModalProcess(processId: string) {
     rightIsOpen: false,
   });
 }
-
 let lastModalPage: {
   runtimeDapp: RuntimeDapp<any>;
   routable: Page<any, any>;
   params: { [x: string]: any };
 };
-
 function showModalPage(
   runtimeDapp: RuntimeDapp<any>,
   routable: Page<any, any>,
@@ -639,7 +584,6 @@ function showModalPage(
       params,
     };
   }
-
   layout = {
     ...layout,
     dialogs: {
@@ -657,7 +601,6 @@ function showModalPage(
       },
     },
   };
-
   setNav({
     centerIsOpen: true,
     centerContainsProcess: false,
@@ -666,7 +609,6 @@ function showModalPage(
     rightIsOpen: false,
   });
 }
-
 function showMainPage(
   runtimeDapp: RuntimeDapp<any>,
   routable: Page<any, any>,
@@ -686,10 +628,8 @@ function showMainPage(
       routable: routable,
     },
   };
-
   setNav(currentNavArgs);
 }
-
 async function hideCenter() {
   modalContent = "none";
   if (

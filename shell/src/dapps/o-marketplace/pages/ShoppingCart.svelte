@@ -2,6 +2,12 @@
 import { cartContents, totalPrice } from "../stores/shoppingCartStore";
 import CartItems from "../molecules/CartItems.svelte";
 import { push } from "svelte-spa-router";
+import { purchase } from "../processes/purchase";
+
+function checkout() {
+  // console.log("edit: dirtyFlags:", dirtyFlags);
+  window.o.runProcess(purchase, cartContents);
+}
 </script>
 
 <template lang="pug">
@@ -28,7 +34,7 @@ div.p-5
                     div
                       button.h-auto.btn-block.btn.btn-light(on:click!="{() =>  history.back()}") Close Cart
                     .flex-grow
-                      button.h-auto.btn-block.btn.btn-primary Check Out
+                      button.h-auto.btn-block.btn.btn-primary(on:click!="{() =>  checkout()}") Check Out
     +else
       p.text-center.mt-6 Your cart is empty!
       .w-full.mt-6

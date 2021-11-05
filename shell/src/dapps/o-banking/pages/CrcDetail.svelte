@@ -8,7 +8,9 @@ import { push } from "svelte-spa-router";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import {
   BalancesByAssetDocument,
-  AssetBalance, AggregatesDocument, CrcBalances,
+  AssetBalance,
+  AggregatesDocument,
+  CrcBalances,
 } from "../../../shared/api/data/types";
 
 let loading = true;
@@ -22,7 +24,7 @@ onMount(async () => {
     query: AggregatesDocument,
     variables: {
       types: ["CrcBalances"],
-      safeAddress: safeAddress
+      safeAddress: safeAddress,
     },
   });
 
@@ -30,9 +32,11 @@ onMount(async () => {
     throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
   }
 
-  const crcBalances:CrcBalances = balancesResult.data.aggregates.find(o => o.type == "CrcBalances");
+  const crcBalances: CrcBalances = balancesResult.data.aggregates.find(
+    (o) => o.type == "CrcBalances"
+  );
   if (!crcBalances) {
-    throw new Error(`Couldn't find the CrcBalances in the query result.`)
+    throw new Error(`Couldn't find the CrcBalances in the query result.`);
   }
   balances = crcBalances.payload.balances;
   loading = false;
@@ -73,24 +77,16 @@ onMount(async () => {
               subTitle: token.token_owner_profile
                 ? token.token_owner_address
                 : '',
-              truncateMain: true,
+
               shadowSmall: true,
               noLink: true,
-            }}">
-            <div slot="itemCardEnd">
-              <div class="self-end text-right text-success">
-                <span>
-                  {displayCirclesAmount(
-                    token.token_balance ? token.token_balance : "0",
-                    null,
-                    true,
-                    $me.displayTimeCircles ||
-                      $me.displayTimeCircles === undefined
-                  )}
-                </span>
-              </div>
-            </div>
-          </ItemCard>
+              endTextBig: displayCirclesAmount(
+                token.token_balance ? token.token_balance : '0',
+                null,
+                true,
+                $me.displayTimeCircles || $me.displayTimeCircles === undefined
+              ),
+            }}" />
         </div>
       {/if}
     {/each}

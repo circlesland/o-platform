@@ -59,17 +59,6 @@ onMount(() => {
   }
 
   scrollToActiveItem("active");
-
-  container.addEventListener(
-    "scroll",
-    () => {
-      clearTimeout(isScrollingTimer);
-      isScrollingTimer = setTimeout(() => {
-        isScrolling = false;
-      }, 100);
-    },
-    false
-  );
 });
 
 onDestroy(() => {
@@ -93,6 +82,7 @@ beforeUpdate(() => {
   prev_items = items;
   prev_activeItemIndex = activeItemIndex;
   prev_selectedValue = selectedValue;
+  window.o.publishEvent({ type: "shell.scrollToBottom" });
 });
 
 function handleSelect(item) {
@@ -102,7 +92,7 @@ function handleSelect(item) {
 
 function handleHover(i) {
   if (isScrolling) return;
-  hoverItemIndex = i;
+  // hoverItemIndex = i;
 }
 
 function handleClick(args) {

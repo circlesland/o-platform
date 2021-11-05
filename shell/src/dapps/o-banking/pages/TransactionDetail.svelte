@@ -22,6 +22,7 @@ let toProfile: Profile;
 let targetProfile: Profile;
 let message: string = "";
 let error: string;
+let displayableName: string = "";
 onMount(async () => {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   /*const timeline = await apiClient.query({
@@ -86,6 +87,7 @@ onMount(async () => {
     message = transfer.tags?.find(
       (o) => o.typeId === "o-banking:transfer:message:1"
     )?.value;
+    displayableName = fromProfile.firstName + " " + fromProfile.lastName;
   }
 });
 function openDetail(transfer: ProfileEvent) {
@@ -168,11 +170,19 @@ function openDetail(transfer: ProfileEvent) {
       <div>
         {#if transfer.direction === "in"}
           <span class="mt-4 text-xl">
-            from {fromProfile.firstName + " " + fromProfile.lastName}
+            from {displayableName
+              ? displayableName.length >= 22
+                ? displayableName.substr(0, 22) + "..."
+                : displayableName
+              : ""}
           </span>
         {:else}
           <span class="mt-4 text-xl">
-            to {toProfile.firstName + " " + toProfile.lastName}
+            to {displayableName
+              ? displayableName.length >= 22
+                ? displayableName.substr(0, 22) + "..."
+                : displayableName
+              : ""}
           </span>
         {/if}
       </div>
