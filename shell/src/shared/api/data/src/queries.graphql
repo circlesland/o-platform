@@ -670,6 +670,13 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
     timestamp
     transaction_hash
     safe_address
+    contact_address
+    contact_address_profile {
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
     direction
     type
     payload {
@@ -677,7 +684,6 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
         transaction_hash
         from
         from_profile {
-          id
           firstName
           lastName
           avatarUrl
@@ -685,7 +691,6 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
         }
         to
         to_profile {
-          id
           firstName
           lastName
           avatarUrl
@@ -696,7 +701,6 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
           token
           from
           from_profile {
-            id
             firstName
             lastName
             avatarUrl
@@ -704,7 +708,6 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
           }
           to
           to_profile {
-            id
             firstName
             lastName
             avatarUrl
@@ -734,7 +737,6 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
         token
         from
         from_profile {
-          id
           firstName
           lastName
           avatarUrl
@@ -742,7 +744,6 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
         }
         to
         to_profile {
-          id
           firstName
           lastName
           avatarUrl

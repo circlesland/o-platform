@@ -1,6 +1,5 @@
 <script lang="ts">
   import {onDestroy, onMount} from "svelte";
-  import ChatCard from "../atoms/ChatCard.svelte";
   import NotificationCard from "../atoms/NotificationCard.svelte";
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
@@ -11,12 +10,9 @@
   } from "../../../shared/api/data/types";
   import {me} from "../../../shared/stores/me";
   import UserImage from "src/shared/atoms/UserImage.svelte";
-  import {setTrust} from "../../o-banking/processes/setTrust";
-  import {transfer} from "../../o-banking/processes/transfer";
   import {push} from "svelte-spa-router";
   import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
   import {Subscription} from "rxjs";
-  import {displayCirclesAmount} from "../../../shared/functions/displayCirclesAmount";
 
   export let id: string;
 
@@ -50,16 +46,26 @@
           //EventType.CrcTokenTransfer,
           //EventType.EthTransfer,
           //EventType.GnosisSafeEthTransfer,
-          EventType.InvitationCreated,
-          EventType.InvitationRedeemed,
-          EventType.MembershipOffer,
+          //EventType.InvitationCreated,
+          //EventType.InvitationRedeemed,
+          //EventType.MembershipOffer,
           //EventType.MembershipAccepted,
           //EventType.MembershipRejected
         ]
       }
     });
 
-    chatHistory = (<any>result).data.events;
+    // TODO: Load the contact
+
+    chatHistory = (<any>result).data.events.map(o => {
+      return {
+        original: o,
+        contactProfile: (o.contact_address_profile ? o.contact_address_profile : {
+          circlesAddress: o.contact_address,
+          firstName: o.contact_address
+        })
+      };
+    });
 
     window.o.publishEvent(<any>{
       type: "shell.scrollToBottom",
@@ -185,194 +191,6 @@
       action: () => void;
     }[] = [];
 
-    switch (chat.type) {
-      case EventType.ChatMessage:
-        notificationType = "chat_message";
-        title = `${chat.payload.text}`;
-        outgoing = chat.payload.from !== $me.circlesAddress.toLowerCase();
-        chat.safe_address_profile = chat.payload.from_profile;
-        break;
-      case EventType.CrcTrust:
-        if (chat.payload.limit == 0 && chat.safe_address == $me.circlesAddress) {
-          notificationType = "trust_removed";
-          title = `You untrusted ${
-                  chat.payload.address_profile
-                          ? chat.payload.address_profile.firstName
-                          : ""
-          }`;
-          icon = "untrust";
-          actions = contactProfile
-                  ? !contactProfile.youTrust
-                          ? [
-                            {
-                              title: `Trust ${
-                                      chat.payload.address_profile
-                                              ? chat.payload.address_profile.firstName
-                                              : ""
-                              }`,
-                              icon: "trust",
-                              colorClass: "",
-                              action: () => {
-                                window.o.runProcess(setTrust, {
-                                  trustLimit: 100,
-                                  trustReceiver: chat.payload.address,
-                                  safeAddress: $me.circlesAddress,
-                                  privateKey: sessionStorage.getItem("circlesKey"),
-                                });
-                              },
-                            },
-                          ]
-                          : []
-                  : [];
-        } else if (
-                chat.payload.limit > 0 &&
-                chat.safe_address === $me.circlesAddress
-        ) {
-          notificationType = "trust_added";
-          title = `You trusted ${
-                  chat.payload.address_profile
-                          ? chat.payload.address_profile.firstName
-                          : ""
-          }`;
-          icon = "trust";
-          actions = contactProfile
-                  ? contactProfile.youTrust > 0
-                          ? [
-                            {
-                              title: `Untrust ${
-                                      chat.payload.address_profile
-                                              ? chat.payload.address_profile.firstName
-                                              : ""
-                              }`,
-                              icon: "untrust",
-                              colorClass: "",
-                              action: () => {
-                                window.o.runProcess(setTrust, {
-                                  trustLimit: 0,
-                                  trustReceiver: chat.payload.address,
-                                  safeAddress: $me.circlesAddress,
-                                  privateKey: sessionStorage.getItem("circlesKey"),
-                                });
-                              },
-                            },
-                          ]
-                          : []
-                  : [];
-        } else if (
-                chat.payload.limit === 0 &&
-                chat.safe_address !== $me.circlesAddress
-        ) {
-          notificationType = "trust_removed";
-          title = `${chat.payload.can_send_to_profile.firstName} untrusted you`;
-          icon = "untrust";
-          outgoing = chat.safeAddress !== $me.circlesAddress;
-        } else if (
-                chat.payload.limit > 0 &&
-                chat.safe_address !== $me.circlesAddress
-        ) {
-          notificationType = "trust_added";
-          title = `${chat.payload.can_send_to_profile.firstName} trusted you`;
-          icon = "trust";
-          outgoing = chat.safeAddress !== $me.circlesAddress;
-          actions = contactProfile
-                  ? (!contactProfile.youTrust
-                                  ? [
-                                    {
-                                      title: `Trust ${chat.payload.can_send_to_profile.firstName}`,
-                                      icon: "trust",
-                                      colorClass: "",
-                                      action: () => {
-                                        window.o.runProcess(setTrust, {
-                                          trustLimit: 100,
-                                          trustReceiver: chat.payload.can_send_to,
-                                          safeAddress: $me.circlesAddress,
-                                          privateKey: sessionStorage.getItem("circlesKey"),
-                                        });
-                                      },
-                                    },
-                                  ]
-                                  : []
-                  ).concat(
-                          contactProfile.trustsYou
-                                  ? [
-                                    {
-                                      title: `Send Circles to ${chat.payload.can_send_to_profile.firstName}`,
-                                      icon: "sendmoney",
-                                      colorClass: "",
-                                      action: () => {
-                                        window.o.runProcess(transfer, {
-                                          safeAddress: $me.circlesAddress,
-                                          recipientAddress: chat.payload.can_send_to,
-                                          privateKey: sessionStorage.getItem("circlesKey"),
-                                        });
-                                      },
-                                    },
-                                  ]
-                                  : []
-                  )
-                  : [];
-        }
-        break;
-      case EventType.CrcHubTransfer:
-        if (chat.direction == "out") {
-          notificationType = "transfer_out";
-          icon = "sendmoney";
-          (title = `You sent ${displayCirclesAmount(
-                  chat.payload.flow,
-                  null,
-                  true,
-                  $me.displayTimeCircles || $me.displayTimeCircles === undefined
-          )} Circles to ${chat.payload.to_profile.firstName}`),
-                  (actions = []);
-        } else {
-          outgoing = chat.safeAddress !== $me.circlesAddress;
-          notificationType = "transfer_in";
-          icon = "sendmoney";
-          title = `${
-                  chat.payload.from_profile.firstName
-          } sent you ${displayCirclesAmount(
-                  chat.payload.flow,
-                  null,
-                  true,
-                  $me.displayTimeCircles || $me.displayTimeCircles === undefined
-          )} Circles`;
-          actions = contactProfile
-                  ? (!contactProfile.youTrust
-                                  ? [
-                                    {
-                                      title: `Trust ${chat.payload.from_profile.firstName}`,
-                                      icon: "trust",
-                                      colorClass: "",
-                                      action: () => {
-                                        window.o.runProcess(setTrust, {
-                                          trustLimit: 100,
-                                          trustReceiver: chat.payload.from,
-                                          safeAddress: $me.circlesAddress,
-                                          privateKey: sessionStorage.getItem("circlesKey"),
-                                        });
-                                      },
-                                    },
-                                  ]
-                                  : []
-                  ).concat({
-                    title: `Send Circles to ${chat.payload.from_profile.firstName}`,
-                    icon: "sendmoney",
-                    colorClass: "",
-                    action: () => {
-                      window.o.runProcess(transfer, {
-                        safeAddress: $me.circlesAddress,
-                        recipientAddress: chat.payload.from,
-                        privateKey: sessionStorage.getItem("circlesKey"),
-                      });
-                    },
-                  })
-                  : [];
-        }
-        break;
-        default:
-          return;
-    }
-
     let text = chat.tags?.find(
             (o) => o.typeId === "o-banking:transfer:message:1"
     )?.value;
@@ -436,17 +254,8 @@
 
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
   <div class="flex flex-col pb-0 space-y-4 sm:space-y-8">
-    {#each chatHistory.map(o => {
-      return {
-        original: o,
-        cardModel: buildCardModel(o)
-      };
-    }).filter(o => !!o.cardModel) as event}
-      {#if event.original.type === "ChatMessage"}
-        <ChatCard params="{event.cardModel}" />
-      {:else}
-        <NotificationCard params="{event.cardModel}" />
-      {/if}
+    {#each chatHistory as event}
+      <NotificationCard event={event.original} />
     {/each}
   </div>
   <div

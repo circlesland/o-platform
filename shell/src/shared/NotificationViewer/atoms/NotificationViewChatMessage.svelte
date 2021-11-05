@@ -1,6 +1,6 @@
 <script lang="ts">
 import NotificationProfile from "./NotificationProfile.svelte";
-import ChatCard from "src/dapps/o-contacts/atoms/ChatCard.svelte";
+import ChatCard from "src/dapps/o-contacts/atoms/NotificationCard.svelte";
 import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
 
 export let eventData: any;
@@ -18,6 +18,6 @@ let chatData = {
   profile="{eventData.profile}"
   targetCirclesAddress="{eventData.targetCirclesAddress}" />
 
-<ChatCard params="{chatData}" />
+<ChatCard event="{chatData}" />
 
 <NotificationViewMutualFriends eventData="{eventData}" />

@@ -1,121 +1,71 @@
-<script lang="ts">
-  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import Date from "../../../shared/atoms/Date.svelte";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-
-  export let params: {
-    safeAddress: string;
-    outgoing: boolean;
-    name: string;
-    time: number;
-    content:
-      | string
-      | {
-          title: string;
-          icon: string;
-          text: string;
-          notificationType: string;
-          time: number;
-          actions: {
-            icon: string;
-            title: string;
-            colorClass: string;
-            action: () => void;
-          }[];
-        };
-    image: string;
-  } = {
-    safeAddress: null,
-    outgoing: true,
-    name: null,
-    time: null,
-    content: null,
-    image: null,
+<script lang="ts" context="module">
+  export type NotificationCardStyle = {
+    backgroundClass: string,
+    titleClass: string
   };
 </script>
+<script lang="ts">
+  import Date from "../../../shared/atoms/Date.svelte";
+  import {EventType, ProfileEvent} from "../../../shared/api/data/types";
+  import CrcTrust from "./chatListItems/CrcTrust.svelte";
+  import ChatMessage from "./chatListItems/ChatMessage.svelte";
+  import CrcHubTransfer from "./chatListItems/CrcHubTransfer.svelte";
 
-<!-- <ItemCard
-  params="{{ edgeless: false, title: params.content.title, subTitle: params.content.text, truncateMain: true }}">
-  <div slot="itemCardStart">
-    <div>
-      <div class="inline-flex">
-        <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
-          <Icons icon="{params.content.icon}" size="10" />
-        </div>
-      </div>
-    </div>
-  </div>
-  <div slot="itemCardEnd">
-    <div class="self-end text-right ">
-      <DetailActionBar actions="{params.content.actions}" />
-    </div>
+  export let event: ProfileEvent;
 
-  </div>
-</ItemCard> -->
+  function determineCardStyle(event?: ProfileEvent): string {
+    if (!event)
+      return "border-light-lighter";
 
-<!-- <div class="bg-cover bg-gradient-to-r from-gradient1 to-gradient2">
-  <div class="flex flex-row w-full p-px space-x-2">
+    switch (event.type) {
+      case EventType.CrcHubTransfer:
+        if (event.direction == "in" || event.direction == "self") {
+          return "border-light-lighter";
+        } else if (event.direction == "out") {
+          return "border-primary-dark";
+        }
+        break;
+      case EventType.CrcTrust:
+        const textClass = (<any>event.payload).limit == 0 ? "text-alert" : "";
+        if (event.direction == "in" || event.direction == "self") {
+          return "border-primary-lighter";
+        } else if (event.direction == "out") {
+          return "border-alert-lightest";
+        }
+        break;
+      case EventType.InvitationCreated:
+      case EventType.InvitationRedeemed:
+      case EventType.MembershipOffer:
+      case EventType.MembershipAccepted:
+      case EventType.MembershipRejected:
+      default:
+        return "border-light-lighter";
+    }
+  }
+</script>
 
-    <div class="flex flex-col flex-grow space-y-1">
-      <div
-        class="relative w-full p-4 pt-3 pb-6 text-xs sm:text-sm message chatText"
-        class:border-light-lighter="{['transfer_in', 'invite'].includes(params.content.notificationType)}"
-        class:border-primary-dark="{params.content.notificationType == 'transfer_out'}"
-        class:border-primary-lighter="{params.content.notificationType == 'trust_added'}"
-        class:border-alert-lightest="{params.content.notificationType == 'trust_removed'}">
-        <div class="absolute bottom-2 right-3 text-2xs">
-          <Date time="{params.time}" />
-        </div>
-
-        <div class="flex flex-row items-center content-center space-x-3">
-          <Icons icon="{params.content.icon}" />
-          <h1 class="uppercase font-heading">{params.content.title}</h1>
-        </div>
-        <div class="mt-2">
-          {@html params.content.text}
-        </div>
-        <div class="mt-4">
-          <DetailActionBar actions="{params.content.actions}" />
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
+{#if event.type == EventType.ChatMessage}
+  <ChatMessage event={event} />
+{:else}
 <div class="px-2 sm:px-6">
   <div class="flex flex-row w-full p-px space-x-2">
-
     <div
       class="flex flex-col flex-grow space-y-1 bg-gradient-to-r from-gradient1 to-gradient2 rounded-xl">
       <div
-        class="relative w-full p-4 pt-3 pb-6 text-xs sm:text-sm message chatText"
-        class:border-light-lighter="{['transfer_in', 'invite'].includes(params.content.notificationType)}"
-        class:border-primary-dark="{params.content.notificationType == 'transfer_out'}"
-        class:border-primary-lighter="{params.content.notificationType == 'trust_added'}"
-        class:border-alert-lightest="{params.content.notificationType == 'trust_removed'}">
+        class="relative w-full p-4 pt-3 pb-6 text-xs sm:text-sm message chatText {determineCardStyle(event).backgroundClass}">
         <div class="absolute bottom-2 right-3 text-2xs">
-          <Date time="{params.time}" />
+          <Date time="{event.timestamp}" />
         </div>
-
-        <div
-          class="flex flex-row items-center content-center space-x-3"
-          class:text-alert="{params.content.notificationType == 'trust_removed'}">
-
-          <Icons icon="{params.content.icon}" />
-
-          <h1 class="uppercase font-heading">{params.content.title}</h1>
-        </div>
-        <div class="mt-2">
-          {@html params.content.text}
-        </div>
-        <div class="mt-4">
-          <DetailActionBar actions="{params.content.actions}" />
-        </div>
+        {#if event.type == EventType.CrcTrust}
+          <CrcTrust event={event} />
+        {:else if event.type == EventType.CrcHubTransfer}
+          <CrcHubTransfer event={event} />
+        {/if}
       </div>
     </div>
   </div>
 </div>
-
+{/if}
 <style>
   .chatText {
     overflow-wrap: break-word;

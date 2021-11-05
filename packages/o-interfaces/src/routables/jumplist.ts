@@ -20,5 +20,6 @@ export interface JumplistItem {
   icon?: string;
   title: string;
   event?: PlatformEvent;
+  colorClass?: string;
   action?: () => void;
 }

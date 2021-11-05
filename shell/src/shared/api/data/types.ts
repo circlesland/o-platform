@@ -713,6 +713,8 @@ export type ProfileAggregate = {
 export type ProfileEvent = {
   __typename?: 'ProfileEvent';
   block_number?: Maybe<Scalars['Int']>;
+  contact_address?: Maybe<Scalars['String']>;
+  contact_address_profile?: Maybe<Profile>;
   direction: Scalars['String'];
   payload?: Maybe<EventPayload>;
   safe_address: Scalars['String'];
@@ -1970,8 +1972,11 @@ export type StreamQuery = (
   { __typename?: 'Query' }
   & { events: Array<(
     { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'timestamp' | 'transaction_hash' | 'safe_address' | 'direction' | 'type'>
-    & { payload?: Maybe<(
+    & Pick<ProfileEvent, 'timestamp' | 'transaction_hash' | 'safe_address' | 'contact_address' | 'direction' | 'type'>
+    & { contact_address_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )>, payload?: Maybe<(
       { __typename?: 'ChatMessage' }
       & Pick<ChatMessage, 'from' | 'to' | 'text'>
     ) | (
@@ -1979,19 +1984,19 @@ export type StreamQuery = (
       & Pick<CrcHubTransfer, 'transaction_hash' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, transfers: Array<(
         { __typename?: 'CrcTokenTransfer' }
         & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
         & { from_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )>, to_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
       )>, tags: Array<(
         { __typename?: 'Tag' }
@@ -2002,10 +2007,10 @@ export type StreamQuery = (
       & Pick<CrcMinting, 'transaction_hash' | 'token' | 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )> }
     ) | (
       { __typename?: 'CrcSignup' }
@@ -3143,6 +3148,13 @@ export const StreamDocument = gql`
     timestamp
     transaction_hash
     safe_address
+    contact_address
+    contact_address_profile {
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
     direction
     type
     payload {
@@ -3150,7 +3162,6 @@ export const StreamDocument = gql`
         transaction_hash
         from
         from_profile {
-          id
           firstName
           lastName
           avatarUrl
@@ -3158,7 +3169,6 @@ export const StreamDocument = gql`
         }
         to
         to_profile {
-          id
           firstName
           lastName
           avatarUrl
@@ -3169,7 +3179,6 @@ export const StreamDocument = gql`
           token
           from
           from_profile {
-            id
             firstName
             lastName
             avatarUrl
@@ -3177,7 +3186,6 @@ export const StreamDocument = gql`
           }
           to
           to_profile {
-            id
             firstName
             lastName
             avatarUrl
@@ -3207,7 +3215,6 @@ export const StreamDocument = gql`
         token
         from
         from_profile {
-          id
           firstName
           lastName
           avatarUrl
@@ -3215,7 +3222,6 @@ export const StreamDocument = gql`
         }
         to
         to_profile {
-          id
           firstName
           lastName
           avatarUrl

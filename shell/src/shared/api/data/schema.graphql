@@ -471,6 +471,8 @@ type ProfileAggregate {
 
 type ProfileEvent {
     block_number: Int
+    contact_address: String
+    contact_address_profile: Profile
     direction: String!
     payload: EventPayload
     safe_address: String!
