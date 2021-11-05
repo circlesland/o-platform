@@ -18,6 +18,8 @@ export let order: SortOrder = SortOrder.Desc;
 export let dataKey: string = "events";
 export let limit: number = 50;
 
+let isLoading = true;
+
 let events: any[] = [];
 let hasMore: boolean = true;
 let error: string;
@@ -29,6 +31,7 @@ let pagination: PaginationArgs = {
 };
 
 const fetchData = async (paginationArg: PaginationArgs) => {
+  isLoading = true;
   queryArguments.pagination = paginationArg;
 
   const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -55,6 +58,7 @@ const fetchData = async (paginationArg: PaginationArgs) => {
   } else {
     hasMore = false;
   }
+  isLoading = false;
 };
 
 const handleChange = async (e) => {
@@ -87,5 +91,6 @@ const initBar = (bar) => {
     </div>
   </section>
 {/if}
-
-<div use:inview="{{}}" on:change="{handleChange}"></div>
+{#if !isLoading}
+  <div use:inview="{{}}" on:change="{handleChange}"></div>
+{/if}
