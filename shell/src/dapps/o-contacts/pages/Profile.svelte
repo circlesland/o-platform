@@ -406,7 +406,7 @@ let promise = getJumplist();
                       <div class="mt-2 mr-2">
                         <UserImage
                           profile="{membership.organisation}"
-                          tooltip="{false}"
+                          tooltip="{true}"
                           gradientRing="{true}" />
                       </div>
                     {/if}
