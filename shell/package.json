@@ -43,7 +43,8 @@
     "bip39": "^3.0.3",
     "yup": "^0.32.11",
     "vis-data": "^7.1.2",
-    "vis-network": "^9.0.1"
+    "vis-network": "^9.0.1",
+    "svelecte": "^3.2.1"
   },
   "devDependencies": {
     "@toruslabs/openlogin": "^1.0.0",

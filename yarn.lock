@@ -6514,7 +6514,7 @@ fs.realpath@^1.0.0:
 
 fsevents@^1.2.7:
   version "1.2.13"
-  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-1.2.13.tgz#f325cb0455592428bcf11b383370ef70e3bfcc38"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz"
   integrity sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==
   dependencies:
     bindings "^1.5.0"
@@ -6522,7 +6522,7 @@ fsevents@^1.2.7:
 
 fsevents@~2.3.2:
   version "2.3.2"
-  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
 
 function-bind@^1.1.1:
@@ -12755,6 +12755,13 @@ supports-color@^7.0.0, supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
+svelecte@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.npmjs.org/svelecte/-/svelecte-3.2.1.tgz"
+  integrity sha512-6lMFgu96Z3WdBrbGcCWIKw0MaLUOgQW2+Y+MYj+XWWlDLWxEJxhU/WxavYsjwo8FCV0Dfj7efjQUIUcrw3D2sg==
+  dependencies:
+    svelte-tiny-virtual-list "^1.1.7"
+
 svelte-apollo@^0.4.0:
   version "0.4.0"
   resolved "https://registry.npmjs.org/svelte-apollo/-/svelte-apollo-0.4.0.tgz"
@@ -12847,6 +12854,11 @@ svelte-time@^0.6.0:
   integrity sha512-cvlD81LaF9bze0S+3UCGW61/JPugO31/J5ZESMg4Og4bRWM53ApQLqJiWOxId8sOFKQlb8Ed5aO9kf3PB10eyQ==
   dependencies:
     dayjs "^1.10.7"
+
+svelte-tiny-virtual-list@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.npmjs.org/svelte-tiny-virtual-list/-/svelte-tiny-virtual-list-1.1.7.tgz"
+  integrity sha512-8314cmLXOVqIQwSc3NFu8yGU7BdHEJeixrwFirmnMoWl6YNcCq5jVjCKjE3tDNJfUenz1LN5M5YshPt6GcPuww==
 
 svelte-typeahead@^4.1.0:
   version "4.1.0"
