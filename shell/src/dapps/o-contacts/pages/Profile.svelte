@@ -257,8 +257,8 @@ let promise = getJumplist();
             {profile.displayName
               ? profile.displayName.length >= 22
                 ? profile.displayName.substr(0, 22) + "..."
-                : profile.safeAddress.substr(0, 22) + "..."
-              : ""}
+                : profile.displayName
+              : profile.safeAddress.substr(0, 22) + "..."}
           </div>
         {/if}
         {#if profile && profile.city}
