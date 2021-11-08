@@ -239,7 +239,7 @@ let promise = getJumplist();
     <LoadingIndicator />
   </div>
 {:else}
-  <div class="p-5">
+  <div class="p-5 pb-0">
     <header class="grid overflow-hidden bg-white h-72 ">
       <div class="w-full text-center">
         <h1 class="text-3xl uppercase font-heading">PROFILE</h1>
@@ -522,7 +522,7 @@ let promise = getJumplist();
       </div>
 
       {#if jumplist && !isMe}
-        <div class="sticky bottom-0 left-0 right-0 w-full pb-2 bg-white">
+        <div class="sticky bottom-0 left-0 right-0 w-full pb-5 bg-white">
           {#await promise}
             <p>...loading</p>
           {:then jumpListItems}
