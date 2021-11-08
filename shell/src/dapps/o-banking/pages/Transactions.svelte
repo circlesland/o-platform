@@ -19,7 +19,7 @@ $: me;
 
 <div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
   <List
-    limit="{10}"
+    limit="{25}"
     queryArguments="{{
       safeAddress: $me.circlesAddress,
       types: [

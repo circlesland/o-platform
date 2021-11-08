@@ -979,6 +979,7 @@ export type SessionInfo = {
   hasProfile?: Maybe<Scalars['Boolean']>;
   isLoggedOn: Scalars['Boolean'];
   lastAcknowledgedAt?: Maybe<Scalars['String']>;
+  profile?: Maybe<Profile>;
   profileId?: Maybe<Scalars['Int']>;
 };
 
@@ -1482,7 +1483,11 @@ export type SessionInfoQuery = (
   { __typename?: 'Query' }
   & { sessionInfo: (
     { __typename?: 'SessionInfo' }
-    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId'>
+    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId' | 'lastAcknowledgedAt'>
+    & { profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )> }
   ) }
 );
 
@@ -2542,6 +2547,14 @@ export const SessionInfoDocument = gql`
     isLoggedOn
     hasProfile
     profileId
+    lastAcknowledgedAt
+    profile {
+      circlesAddress
+      circlesSafeOwner
+      firstName
+      lastName
+      avatarUrl
+    }
   }
 }
     `;

@@ -1,5 +1,5 @@
-import {SessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
 import {BN} from "ethereumjs-util";
+import {SessionInfo} from "../../../shared/api/data/types";
 
 export type Origin = "Created" | "Imported";
 

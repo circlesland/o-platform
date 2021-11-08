@@ -567,6 +567,7 @@ type SessionInfo {
     hasProfile: Boolean
     isLoggedOn: Boolean!
     lastAcknowledgedAt: String
+    profile: Profile
     profileId: Int
 }
 

@@ -10,6 +10,7 @@ import {
 } from "../api/data/types";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {me} from "./me";
+import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 
 let events: ProfileEvent[] = [];
 
@@ -19,16 +20,18 @@ async function queryEvents() {
   // TODO: Get last acknowledged
   // TODO: Get my safe address
 
-  let pagination: PaginationArgs = {
-    order: SortOrder.Asc,
-    limit: 100,
-    continueAt: new Date().toJSON()
-  }
+  const sessionInfo = await getSessionInfo();
 
   let mySafeAddress:string = null;
   me.subscribe($me => {
     mySafeAddress = $me.circlesAddress;
   });
+
+  let pagination: PaginationArgs = {
+    order: SortOrder.Asc,
+    limit: 100,
+    continueAt: sessionInfo.lastAcknowledgedAt ?? new Date(0)
+  }
 
   if (!mySafeAddress) {
     events = [];

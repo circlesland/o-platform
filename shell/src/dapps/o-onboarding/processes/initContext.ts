@@ -1,4 +1,3 @@
-import {SessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
 import {
   EoaData,
   InvitationData,
@@ -8,7 +7,7 @@ import {
   SafeData,
   UbiData
 } from "./initEvent";
-import {InitAggregateState} from "../../../shared/api/data/types";
+import {InitAggregateState, SessionInfo} from "../../../shared/api/data/types";
 
 export type InitContext = {
   session?: SessionInfo;

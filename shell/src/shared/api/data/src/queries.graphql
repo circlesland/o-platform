@@ -3,6 +3,14 @@ query sessionInfo {
     isLoggedOn
     hasProfile
     profileId
+    lastAcknowledgedAt
+    profile {
+      circlesAddress
+      circlesSafeOwner
+      firstName
+      lastName
+      avatarUrl
+    }
   }
 }
 
