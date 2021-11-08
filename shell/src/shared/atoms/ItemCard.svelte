@@ -22,6 +22,7 @@ export let params = {
   endTextBigClass: "text-success",
   endTextSmall: null,
   imageProfile: null,
+  profileLink: null,
   noLink: false,
 };
 
@@ -46,7 +47,10 @@ function cardAction() {
     <slot name="itemCardStart">
       <div class="">
         {#if params.imageProfile}
-          <UserImage profile="{params.imageProfile}" size="{12}" />
+          <UserImage
+            profile="{params.imageProfile}"
+            size="{12}"
+            profileLink="{params.profileLink}" />
         {:else if params.imageUrl}
           <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
             <span

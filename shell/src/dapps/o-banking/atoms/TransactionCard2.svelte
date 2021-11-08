@@ -62,14 +62,14 @@ if (event && event.payload?.__typename == "CrcHubTransfer") {
   };
 
   message = hubTransfer.tags?.find(
-          (o) => o.typeId === "o-banking:transfer:message:1"
+    (o) => o.typeId === "o-banking:transfer:message:1"
   )?.value;
 
   amount = displayCirclesAmount(
-          event.payload && event.payload.flow ? event.payload.flow.toString() : "0",
-          event.timestamp,
-          true,
-          $me.displayTimeCircles || $me.displayTimeCircles === undefined
+    event.payload && event.payload.flow ? event.payload.flow.toString() : "0",
+    event.timestamp,
+    true,
+    $me.displayTimeCircles || $me.displayTimeCircles === undefined
   );
 
   if (event.direction == "out") {
@@ -79,12 +79,10 @@ if (event && event.payload?.__typename == "CrcHubTransfer") {
 
 if (event && event.payload?.__typename == "CrcMinting") {
   amount = displayCirclesAmount(
-          event.payload && event.payload.value
-                  ? event.payload.value.toString()
-                  : "0",
-          event.timestamp,
-          true,
-          $me.displayTimeCircles || $me.displayTimeCircles === undefined
+    event.payload && event.payload.value ? event.payload.value.toString() : "0",
+    event.timestamp,
+    true,
+    $me.displayTimeCircles || $me.displayTimeCircles === undefined
   );
 }
 targetProfile = event.direction === "in" ? fromProfile : toProfile;
@@ -96,9 +94,10 @@ function loadDetailPage(path) {
 
 <div on:click="{() => loadDetailPage(event.transaction_hash)}">
   <ItemCard
-    params={{
+    params="{{
       edgeless: false,
       imageProfile: targetProfile,
+      profileLink: false,
       imageAlt:
         event.direction === 'in'
           ? fromProfile.circlesAddress
@@ -115,8 +114,8 @@ function loadDetailPage(path) {
       subTitle: message ? message : '',
       truncateMain: true,
       endTextBig: amount,
-      endTextBigClass: amount.startsWith("-") ? "text-alert" : undefined
-    }}>
+      endTextBigClass: amount.startsWith('-') ? 'text-alert' : undefined,
+    }}">
     <div slot="itemCardEndSmallElement">
       {#if event.timestamp}
         <Date time="{event.timestamp}" />
