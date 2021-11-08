@@ -254,7 +254,11 @@ let promise = getJumplist();
 
         {#if profile && profile.safeAddress}
           <div class="mt-4 text-3xl">
-            {profile.displayName ? profile.displayName : profile.safeAddress}
+            {profile.displayName
+              ? profile.displayName.length >= 22
+                ? profile.displayName.substr(0, 22) + "..."
+                : profile.safeAddress
+              : ""}
           </div>
         {/if}
         {#if profile && profile.city}
@@ -382,16 +386,20 @@ let promise = getJumplist();
                   Mutual Friends
                 </div>
                 <div class="flex flex-row flex-wrap mt-2 ">
-                  {#each commonTrusts as commonTrust}
-                    {#if commonTrust.profile}
-                      <div class="mt-2 mr-2">
-                        <UserImage
-                          profile="{commonTrust.profile}"
-                          tooltip="{true}"
-                          gradientRing="{true}" />
-                      </div>
-                    {/if}
-                  {/each}
+                  {#if commonTrusts.length}
+                    {#each commonTrusts as commonTrust}
+                      {#if commonTrust.profile}
+                        <div class="mt-2 mr-2">
+                          <UserImage
+                            profile="{commonTrust.profile}"
+                            tooltip="{true}"
+                            gradientRing="{true}" />
+                        </div>
+                      {/if}
+                    {/each}
+                  {:else}
+                    No mutual friends
+                  {/if}
                 </div>
               </div>
             </section>
@@ -401,44 +409,52 @@ let promise = getJumplist();
                   Member at
                 </div>
                 <div class="flex flex-row flex-wrap mt-2 ">
-                  {#each profile.memberships as membership}
-                    {#if membership.organisation}
-                      <div class="mt-2 mr-2">
-                        <UserImage
-                          profile="{membership.organisation}"
-                          tooltip="{true}"
-                          gradientRing="{true}" />
-                      </div>
-                    {/if}
-                  {/each}
-                </div>
-              </div>
-            </section>
-            <section class="justify-center mb-2 ">
-              <div class="flex flex-col w-full pt-2 space-y-1">
-                <div class="text-left text-2xs text-dark-lightest">Passion</div>
-
-                <div class="flex items-center w-full text-lg">
-                  {#if profile && profile.dream}{profile.dream}{/if}
-                  {#if isEditable}
-                    <button
-                      class="link link-primary text-primary text-2xs"
-                      on:click="{() => editProfile({ dream: true })}">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-3 h-3"
-                        viewBox="0 0 20 20"
-                        fill="currentColor">
-                        <path
-                          d="M13.586 3.586a2 2 0 112.828
-                          2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3
-                          14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                      </svg>
-                    </button>
+                  {#if profile.memberships.length}
+                    {#each profile.memberships as membership}
+                      {#if membership.organisation}
+                        <div class="mt-2 mr-2">
+                          <UserImage
+                            profile="{membership.organisation}"
+                            tooltip="{true}"
+                            gradientRing="{true}" />
+                        </div>
+                      {/if}
+                    {/each}
+                  {:else}
+                    No memberships
                   {/if}
                 </div>
               </div>
             </section>
+            {#if profile && profile.dream}
+              <section class="justify-center mb-2 ">
+                <div class="flex flex-col w-full pt-2 space-y-1">
+                  <div class="text-left text-2xs text-dark-lightest">
+                    Passion
+                  </div>
+
+                  <div class="flex items-center w-full text-lg">
+                    {profile.dream}
+                    {#if isEditable}
+                      <button
+                        class="link link-primary text-primary text-2xs"
+                        on:click="{() => editProfile({ dream: true })}">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="w-3 h-3"
+                          viewBox="0 0 20 20"
+                          fill="currentColor">
+                          <path
+                            d="M13.586 3.586a2 2 0 112.828
+                          2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3
+                          14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                        </svg>
+                      </button>
+                    {/if}
+                  </div>
+                </div>
+              </section>
+            {/if}
 
             <!-- <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full py-2 space-y-1">
