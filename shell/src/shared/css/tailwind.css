@@ -292,7 +292,7 @@ body {
   max-width: 7rem;
 }
 
-input:focus,
+input[type="text"]:focus,
 select:focus,
 button:focus {
   outline: none !important;

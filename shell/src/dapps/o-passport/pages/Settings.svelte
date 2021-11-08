@@ -1,21 +1,21 @@
 <script lang="ts">
-  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
-  import Card from "src/shared/atoms/Card.svelte";
-  import { me } from "../../../shared/stores/me";
-  import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
-  import { onMount } from "svelte";
-  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import {
-    UpsertProfileDocument,
-    WhoamiDocument,
-  } from "../../../shared/api/data/types";
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+import Card from "src/shared/atoms/Card.svelte";
+import { me } from "../../../shared/stores/me";
+import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
+import { onMount } from "svelte";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import {
+  UpsertProfileDocument,
+  WhoamiDocument,
+} from "../../../shared/api/data/types";
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  async function editProfile() {
-    /*
+async function editProfile() {
+  /*
     const requestEvent = new RunProcess<ShellProcessContext>(
             shellProcess,
             true,
@@ -48,58 +48,58 @@
 
     window.o.publishEvent(requestEvent);
      */
-    // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.mutate({
-      mutation: UpsertProfileDocument,
-      variables: {
-        id: $me.id,
-        circlesAddress: $me.circlesAddress,
-        circlesSafeOwner: $me.circlesSafeOwner,
-        avatarCid: $me.avatarCid,
-        avatarUrl: $me.avatarUrl,
-        avatarMimeType: $me.avatarMimeType,
-        firstName: $me.firstName,
-        lastName: $me.lastName,
-        country: $me.country,
-        dream: $me.dream,
-        newsletter: receiveNewsletter,
-        displayTimeCircles: displayTimeCircles,
-        status: "",
-      },
-    });
-    if (result.errors) {
-      return;
-    }
-    console.log("RESULT ", result);
-    window.o.publishEvent(<PlatformEvent>{
-      type: "shell.authenticated",
-      profile: result.data.upsertProfile,
-    });
+  // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const result = await apiClient.mutate({
+    mutation: UpsertProfileDocument,
+    variables: {
+      id: $me.id,
+      circlesAddress: $me.circlesAddress,
+      circlesSafeOwner: $me.circlesSafeOwner,
+      avatarCid: $me.avatarCid,
+      avatarUrl: $me.avatarUrl,
+      avatarMimeType: $me.avatarMimeType,
+      firstName: $me.firstName,
+      lastName: $me.lastName,
+      country: $me.country,
+      dream: $me.dream,
+      newsletter: receiveNewsletter,
+      displayTimeCircles: displayTimeCircles,
+      status: "",
+    },
+  });
+  if (result.errors) {
+    return;
   }
-
-  let email: string = "unknown";
-
-  onMount(async () => {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.query({
-      query: WhoamiDocument,
-    });
-    if (result.errors) {
-      return;
-    }
-    email = result.data.whoami;
+  console.log("RESULT ", result);
+  window.o.publishEvent(<PlatformEvent>{
+    type: "shell.authenticated",
+    profile: result.data.upsertProfile,
   });
+}
 
-  let receiveNewsletter: boolean = $me.newsletter;
-  let displayTimeCircles: boolean = $me.displayTimeCircles;
-  const delayedTrigger = new DelayedTrigger(500, async () => {
-    // TODO: Make call to upsertProfile shorter
-    await editProfile();
+let email: string = "unknown";
+
+onMount(async () => {
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const result = await apiClient.query({
+    query: WhoamiDocument,
   });
+  if (result.errors) {
+    return;
+  }
+  email = result.data.whoami;
+});
+
+let receiveNewsletter: boolean = $me.newsletter;
+let displayTimeCircles: boolean = $me.displayTimeCircles;
+const delayedTrigger = new DelayedTrigger(500, async () => {
+  // TODO: Make call to upsertProfile shorter
+  await editProfile();
+});
 </script>
 
-<SimpleHeader {runtimeDapp} {routable} />
+<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <section class="flex items-center justify-center mx-4 mb-2 -mt-2">

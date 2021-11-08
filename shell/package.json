@@ -37,7 +37,7 @@
     "xstate": "^4.7.0-rc6",
     "@xstate/fsm": "^1.5.2",
     "xstate-svelte": "^1.0.1",
-    "daisyui": "^1.14.4",
+    "daisyui": "^1.16.2",
     "postcss-flexbugs-fixes": "^5.0.2",
     "ethereumjs-util": "^7.0.10",
     "bip39": "^3.0.3",
