@@ -35,7 +35,8 @@ reload();
   </slot>
   <slot name="EditorDescription">
     <div class="w-full text-center">
-      <span class="text-dark-lightest">Hier wird was erklärt</span>
+      <span class="text-dark-lightest"
+        >Here you can create invitaion Codes to invite other people.</span>
     </div>
   </slot>
   <slot name="EditorDescription">
@@ -48,8 +49,8 @@ reload();
             },
           });
         }}"
-        class="self-end text-base btn btn-square btn-primary ">
-        <Icons icon="sendmoney" />
+        class="self-end text-base btn btn-primary ">
+        Create Invitation <Icons icon="sendmoney" />
       </button>
     </div>
   </slot>

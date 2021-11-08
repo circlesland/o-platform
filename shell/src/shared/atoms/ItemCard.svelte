@@ -31,7 +31,6 @@ if (params.noTruncate) {
   textCutoff = 256;
 }
 
-console.log("params.noTruncate: ", textCutoff);
 // TODO: find a better way for this.
 function cardAction() {
   if (params.action) {

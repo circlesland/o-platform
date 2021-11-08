@@ -17,7 +17,9 @@ $: {
 }
 </script>
 
-<div on:click="{() => push(`#/banking/assets/${symbol}`)}">
+<div
+  on:click="{() => push(`#/banking/assets/${symbol}`)}"
+  class="cursor-pointer">
   <ItemCard
     params="{{
       edgeless: false,

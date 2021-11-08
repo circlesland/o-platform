@@ -7,7 +7,6 @@ const dispatch = createEventDispatcher();
 
 export let context: EditorContext;
 export let type: string = "large";
-
 </script>
 
 <div
@@ -22,7 +21,7 @@ export let type: string = "large";
             dispatch('buttonClick');
           }}"
           class="relative btn btn-primary btn-block"
-          >{context.params.view.submitButtonText
+          >{context.params.view && context.params.view.submitButtonText
             ? context.params.view.submitButtonText
             : "Submit"}
           <div class="absolute right-2">

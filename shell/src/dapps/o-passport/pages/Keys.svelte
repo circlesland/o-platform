@@ -1,88 +1,95 @@
 <script lang="ts">
-  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
-  import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import Card from "src/shared/atoms/Card.svelte";
-  import * as bip39 from "bip39";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
-  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-  import {me} from "../../../shared/stores/me";
-  import {KeyManager} from "../data/keyManager";
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
+import Card from "src/shared/atoms/Card.svelte";
+import * as bip39 from "bip39";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { me } from "../../../shared/stores/me";
+import { KeyManager } from "../data/keyManager";
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  let showPhrase = !sessionStorage.getItem("circlesKey");
-  let keyManager: KeyManager|null = null;
+let showPhrase = !sessionStorage.getItem("circlesKey");
+let keyManager: KeyManager | null = null;
 
-  async function init() {
-    const km = new KeyManager($me.circlesAddress);
-    await km.load();
-    keyManager = km;
+async function init() {
+  const km = new KeyManager($me.circlesAddress);
+  await km.load();
+  keyManager = km;
+}
+
+$: {
+  if ($me && $me.circlesAddress) {
+    init();
   }
+}
 
-  $: {
-    if ($me && $me.circlesAddress) {
-      init()
-    }
-  }
+let name =
+  sessionStorage.getItem("circlesKey") &&
+  sessionStorage.getItem("circlesKey") != "0x123"
+    ? bip39.entropyToMnemonic(
+        sessionStorage
+          .getItem("circlesKey")
+          .substr(2, sessionStorage.getItem("circlesKey").length - 2)
+      )
+    : "<no private key>";
 
-  let name =
-    sessionStorage.getItem("circlesKey") &&
-    sessionStorage.getItem("circlesKey") != "0x123"
-      ? bip39.entropyToMnemonic(
-            sessionStorage
-            .getItem("circlesKey")
-            .substr(2, sessionStorage.getItem("circlesKey").length - 2)
-        )
-      : "<no private key>";
+const copy = () => {
+  const app = new CopyClipBoard({
+    target: document.getElementById("clipboard"),
+    props: { name },
+  });
+  app.$destroy();
+};
 
-  const copy = () => {
-    const app = new CopyClipBoard({
-      target: document.getElementById("clipboard"),
-      props: { name },
-    });
-    app.$destroy();
-  };
+function show() {
+  showPhrase = !showPhrase;
+}
 
-  function show() {
-    showPhrase = !showPhrase;
-  }
-
-  let addOwnerAddress:string = "";
-  let newKeyPassphrase:string = "";
-
+let addOwnerAddress: string = "";
+let newKeyPassphrase: string = "";
 </script>
 
-<SimpleHeader {runtimeDapp} {routable} />
+<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="mx-auto -mt-2 md:w-2/3 xl:w-1/2">
   {#if keyManager}
-    {#each Object.values(keyManager.eoas).sort((a,b) => a.address.localeCompare(b.address)) as key}
+    {#each Object.values(keyManager.eoas).sort( (a, b) => a.address.localeCompare(b.address) ) as key}
       <section class="flex items-center justify-center mx-4 mb-2">
         <Card>
           <div class="flex flex-col items-start">
             <div>
-              Address: {key.address}<br/>
-              Name: {key.name}<br/>
-              Key: {key.key !== null}<br/>
+              Address: {key.address}<br />
+              Name: {key.name}<br />
+              Key: {key.key !== null}<br />
               Is active: {key.isOwner}
             </div>
 
             {#if key.isOwner}
-              <button class="btn-primary" on:click={async () => {
+              <!-- <button class="btn-primary" on:click={async () => {
                 const result = await new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress)
                 .removeOwner(localStorage.getItem("circlesKey"), key.address);
                 console.log(result);
                 await init();
-              }}>Remove owner</button>
+              }}>Remove owner</button> -->
             {:else}
-              <button class="btn-primary" on:click={async () => {
-                const result = await new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress)
-                .addOwnerWithThreshold(localStorage.getItem("circlesKey"), key.address, 1);
-                console.log(result);
-                await init();
-              }}>Add as owner</button>
+              <button
+                class="btn-primary"
+                on:click="{async () => {
+                  const result = await new GnosisSafeProxy(
+                    RpcGateway.get(),
+                    $me.circlesAddress
+                  ).addOwnerWithThreshold(
+                    localStorage.getItem('circlesKey'),
+                    key.address,
+                    1
+                  );
+                  console.log(result);
+                  await init();
+                }}">Add as owner</button>
             {/if}
           </div>
         </Card>
@@ -174,7 +181,7 @@
 </div>
 
 <style>
-  .blur {
-    filter: blur(5px);
-  }
+.blur {
+  filter: blur(5px);
+}
 </style>

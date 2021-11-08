@@ -19,7 +19,8 @@ import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfile
 import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
 import {
   CommonTrust,
-  CommonTrustDocument, Membership,
+  CommonTrustDocument,
+  Membership,
   Profile,
 } from "../../../shared/api/data/types";
 
@@ -157,7 +158,7 @@ async function setProfile(apiProfile: Profile) {
     city: apiProfile.city,
     trustsYou: apiProfile.trustsYou ?? 0,
     youTrust: apiProfile.youTrust ?? 0,
-    memberships:apiProfile.memberships
+    memberships: apiProfile.memberships,
   };
 }
 
@@ -385,9 +386,9 @@ let promise = getJumplist();
                     {#if commonTrust.profile}
                       <div class="mt-2 mr-2">
                         <UserImage
-                                profile="{commonTrust.profile}"
-                                tooltip="{true}"
-                                gradientRing="{true}"/>
+                          profile="{commonTrust.profile}"
+                          tooltip="{true}"
+                          gradientRing="{true}" />
                       </div>
                     {/if}
                   {/each}
@@ -404,9 +405,9 @@ let promise = getJumplist();
                     {#if membership.organisation}
                       <div class="mt-2 mr-2">
                         <UserImage
-                                profile="{membership.organisation}"
-                                tooltip="{true}"
-                                gradientRing="{true}" />
+                          profile="{membership.organisation}"
+                          tooltip="{false}"
+                          gradientRing="{true}" />
                       </div>
                     {/if}
                   {/each}
@@ -521,8 +522,7 @@ let promise = getJumplist();
       </div>
 
       {#if jumplist && !isMe}
-        <div
-          class="sticky bottom-0 left-0 right-0 w-full py-2 mt-2 bg-white rounded-xl">
+        <div class="sticky bottom-0 left-0 right-0 w-full pb-2 bg-white">
           {#await promise}
             <p>...loading</p>
           {:then jumpListItems}
