@@ -10,8 +10,15 @@ import {
 } from "@o-platform/o-process/dist/states/prompt";
 
 let selected;
+let items;
 
 export let context: DropdownSelectorContext<any, any, any>;
+
+onMount(async () => {
+  items = await context.params.choices.all();
+
+  console.log("ITEMS: ", items);
+});
 
 $: selected = {};
 
@@ -26,6 +33,7 @@ let fieldId = context.isSensitive
 
 $: {
   _context = context;
+  console.log("Choices: ", context.params.choices);
 }
 
 function handleSelect(event) {
@@ -58,13 +66,44 @@ function onkeydown(e: KeyboardEvent) {
     submitHandler();
   }
 }
-const items = [
-  { value: "chocolate", label: "🍫 Chocolate", group: "Sweet" },
-  { value: "pizza", label: "🍕 Pizza", group: "Savory" },
-  { value: "cake", label: "🎂 Cake", group: "Sweet" },
-  { value: "cookies", label: "🍪 Cookies", group: "Savory" },
-  { value: "ice-cream", label: "🍦 Ice Cream", group: "Sweet" },
-];
+
+function itemRenderer(item, isSelected) {
+  console.log("item", item);
+
+  return `<svelte:component this="${context.params.itemTemplate}" item="${item}"/>`;
+}
+
+addFormatter("itemRenderer", itemRenderer);
 </script>
 
-<Svelecte options="{items}" bind:value="{selected}" />
+<Svelecte
+  options="{items}"
+  renderer="itemRenderer"
+  bind:value="{selected}"
+  placeholder="{context.params.view.placeholder}" />
+
+<style>
+:global(.sv-dropdown) {
+  position: static !important;
+  bottom: 100%;
+  order: 1;
+  max-height: fit-content !important;
+}
+:global(.sv-control) {
+  order: 2;
+  width: 100%;
+
+  bottom: 1rem;
+  background: white;
+}
+:global(.svelecte) {
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+  margin-bottom: 1.5rem;
+  position: static !important;
+}
+:global(.sv-content > div) {
+  flex-grow: 1;
+}
+</style>

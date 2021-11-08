@@ -6,6 +6,7 @@ import {
   PromptField,
 } from "@o-platform/o-process/dist/states/prompt";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
+import SimpleDropdownEditor from "@o-platform/o-editors/src/SimpleDropdownEditor.svelte";
 import DropDownTag from "@o-platform/o-editors/src/dropdownItems/DropDownTag.svelte";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
@@ -70,6 +71,23 @@ export function promptTag<
             variables: {
               typeId_in: [spec.typeId],
               value_like: filter ?? "",
+            },
+          });
+          if (result.errors && result.errors.length) {
+            throw new Error(
+              `An error occurred while querying tags: ${JSON.stringify(
+                result.errors
+              )}`
+            );
+          }
+          return result.data.tags;
+        },
+        all: async () => {
+          const apiClient = await window.o.apiClient.client.subscribeToResult();
+          const result = await apiClient.query({
+            query: TagsDocument,
+            variables: {
+              typeId_in: [spec.typeId],
             },
           });
           if (result.errors && result.errors.length) {
