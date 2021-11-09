@@ -1,14 +1,10 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import Time from "svelte-time";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { cartContents, totalPrice } from "../stores/shoppingCartStore";
 import CartItems from "../molecules/CartItems.svelte";
 import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
-import { Profile, Offer } from "../../../shared/api/data/types";
-import { loadProfile } from "../../../shared/functions/loadProfile";
 
 export let context: any;
 let profile: any;
