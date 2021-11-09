@@ -211,5 +211,5 @@ export const friends: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [chat, index, chatdetail, profile],
+  routables: [chat, chatdetail, profile],
 };

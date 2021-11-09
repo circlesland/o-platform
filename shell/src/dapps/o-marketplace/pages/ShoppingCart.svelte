@@ -25,7 +25,7 @@ div.p-5
                 CartItems(cartContents="{cartContents}")
                 
                 .flex.justify-end.items-center
-                  span.text-sm.font-medium.text-gray-400.mr-2 Subtotal:
+                  span.text-sm.font-medium.text-gray-400.mr-2 Total:
                   span.text-lg.font-bold {$totalPrice.toFixed(2)} ⦿
                   
                 .flex.justify-center.items-center.mt-6
