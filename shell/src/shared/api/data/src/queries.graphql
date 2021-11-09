@@ -370,8 +370,6 @@ query profileBySafeAddress($safeAddress: String!) {
         }
       }
     }
-    youTrust
-    trustsYou
     memberships {
       isAdmin
       organisation {
@@ -729,6 +727,31 @@ query stream(
         name
         code
         redeemedBy
+        redeemedBy_profile {
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+      }
+      ... on Purchased {
+        buyer
+        buyer_profile {
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        purchase {
+          lines {
+            amount
+            product {
+              id
+              title
+              pictureUrl
+            }
+          }
+        }
       }
       ... on OrganisationCreated {
         organisation

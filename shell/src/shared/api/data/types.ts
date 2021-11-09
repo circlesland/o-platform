@@ -99,18 +99,6 @@ export type ConsumeDepositedChallengeResponse = {
 export type Contact = {
   __typename?: 'Contact';
   contactAddress: Scalars['String'];
-  contactAddressProfile?: Maybe<Profile>;
-  lastContactAt?: Maybe<Scalars['String']>;
-  lastEvent?: Maybe<ProfileEvent>;
-  safeAddress: Scalars['String'];
-  safeAddressProfile?: Maybe<Profile>;
-  trustsYou?: Maybe<Scalars['Int']>;
-  youTrust?: Maybe<Scalars['Int']>;
-};
-
-export type Contact2 = {
-  __typename?: 'Contact2';
-  contactAddress: Scalars['String'];
   contactAddress_Profile?: Maybe<Profile>;
   lastContactAt: Scalars['String'];
   metadata: Array<ContactPoint>;
@@ -135,7 +123,7 @@ export type ContactPoint = {
 
 export type Contacts = IAggregatePayload & {
   __typename?: 'Contacts';
-  contacts: Array<Contact2>;
+  contacts: Array<Contact>;
   lastUpdatedAt: Scalars['String'];
 };
 
@@ -652,8 +640,6 @@ export type Profile = {
   memberships?: Maybe<Array<Membership>>;
   newsletter?: Maybe<Scalars['Boolean']>;
   status?: Maybe<Scalars['String']>;
-  trustsYou?: Maybe<Scalars['Int']>;
-  youTrust?: Maybe<Scalars['Int']>;
 };
 
 export type ProfileAggregate = {
@@ -1658,7 +1644,7 @@ export type ProfileBySafeAddressQuery = (
   { __typename?: 'Query' }
   & { profilesBySafeAddress: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName' | 'dream' | 'country' | 'cityGeonameid' | 'youTrust' | 'trustsYou'>
+    & Pick<Profile, 'id' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName' | 'dream' | 'country' | 'cityGeonameid'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
@@ -1913,8 +1899,8 @@ export type AggregatesQuery = (
       { __typename?: 'Contacts' }
       & Pick<Contacts, 'lastUpdatedAt'>
       & { contacts: Array<(
-        { __typename?: 'Contact2' }
-        & Pick<Contact2, 'lastContactAt' | 'contactAddress'>
+        { __typename?: 'Contact' }
+        & Pick<Contact, 'lastContactAt' | 'contactAddress'>
         & { metadata: Array<(
           { __typename?: 'ContactPoint' }
           & Pick<ContactPoint, 'name' | 'directions' | 'values' | 'timestamps'>
@@ -2720,8 +2706,6 @@ export const ProfileBySafeAddressDocument = gql`
         }
       }
     }
-    youTrust
-    trustsYou
     memberships {
       isAdmin
       organisation {

@@ -94,17 +94,6 @@ type ConsumeDepositedChallengeResponse {
 
 type Contact {
     contactAddress: String!
-    contactAddressProfile: Profile
-    lastContactAt: String
-    lastEvent: ProfileEvent
-    safeAddress: String!
-    safeAddressProfile: Profile
-    trustsYou: Int
-    youTrust: Int
-}
-
-type Contact2 {
-    contactAddress: String!
     contactAddress_Profile: Profile
     lastContactAt: String!
     metadata: [ContactPoint!]!
@@ -118,7 +107,7 @@ type ContactPoint {
 }
 
 type Contacts implements IAggregatePayload {
-    contacts: [Contact2!]!
+    contacts: [Contact!]!
     lastUpdatedAt: String!
 }
 
@@ -423,8 +412,6 @@ type Profile {
     memberships: [Membership!]
     newsletter: Boolean
     status: String
-    trustsYou: Int
-    youTrust: Int
 }
 
 type ProfileAggregate {
@@ -468,6 +455,7 @@ type PurchaseLine {
 type Purchased implements IEventPayload {
     buyer: String!
     buyer_profile: Profile
+    purchase: Purchase
     transaction_hash: String
 }
 
