@@ -1866,18 +1866,34 @@ export type StreamQuery = (
     ) | (
       { __typename?: 'MemberAdded' }
       & Pick<MemberAdded, 'createdBy' | 'isAdmin' | 'member' | 'organisation'>
+      & { organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress'>
+      )> }
     ) | (
       { __typename?: 'MembershipAccepted' }
       & Pick<MembershipAccepted, 'createdBy' | 'member' | 'organisation'>
+      & { organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress'>
+      )> }
     ) | (
       { __typename?: 'MembershipOffer' }
       & Pick<MembershipOffer, 'createdBy' | 'organisation' | 'isAdmin'>
     ) | (
       { __typename?: 'MembershipRejected' }
       & Pick<MembershipRejected, 'member' | 'organisation'>
+      & { organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress'>
+      )> }
     ) | (
       { __typename?: 'OrganisationCreated' }
       & Pick<OrganisationCreated, 'organisation'>
+      & { organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress'>
+      )> }
     ) | (
       { __typename?: 'Purchased' }
       & Pick<Purchased, 'buyer'>
@@ -3007,10 +3023,20 @@ export const StreamDocument = gql`
         createdBy
         member
         organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+        }
       }
       ... on MembershipRejected {
         member
         organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+        }
       }
       ... on WelcomeMessage {
         member
@@ -3051,12 +3077,22 @@ export const StreamDocument = gql`
       }
       ... on OrganisationCreated {
         organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+        }
       }
       ... on MemberAdded {
         createdBy
         isAdmin
         member
         organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+        }
       }
     }
   }

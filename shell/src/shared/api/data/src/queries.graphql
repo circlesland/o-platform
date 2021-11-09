@@ -711,10 +711,20 @@ query stream(
         createdBy
         member
         organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+        }
       }
       ... on MembershipRejected {
         member
         organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+        }
       }
       ... on WelcomeMessage {
         member
@@ -755,12 +765,22 @@ query stream(
       }
       ... on OrganisationCreated {
         organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+        }
       }
       ... on MemberAdded {
         createdBy
         isAdmin
         member
         organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+        }
       }
     }
   }
@@ -781,7 +801,7 @@ query aggregates(
       circlesAddress
     }
     payload {
-      ...on Offers {
+      ... on Offers {
         lastUpdatedAt
         offers {
           id
@@ -802,7 +822,7 @@ query aggregates(
           pricePerUnit
         }
       }
-      ...on CrcBalances {
+      ... on CrcBalances {
         lastUpdatedAt
         balances {
           token_address

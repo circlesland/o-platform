@@ -10,10 +10,10 @@ let payload: MembershipAccepted = <MembershipAccepted>event.payload;
 
 <div class="flex flex-col items-center space-y-4">
   <div>
-    <NotificationProfile profile="{payload.createdBy_profile}" />
+    <NotificationProfile profile="{event.contact_address_profile}" />
   </div>
   <div class="self-center pb-2 text-2xl text-center font-heading">
-    invited you to
+    Accepted your invitation to
   </div>
 
   <NotificationProfile profile="{payload.organisation_profile}" />
