@@ -7,7 +7,6 @@ import Card from "../../../shared/atoms/Card.svelte";
 import { push } from "svelte-spa-router";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import {
-  BalancesByAssetDocument,
   AssetBalance,
   AggregatesDocument,
   CrcBalances,

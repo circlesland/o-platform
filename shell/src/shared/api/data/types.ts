@@ -704,6 +704,7 @@ export type Purchased = IEventPayload & {
   __typename?: 'Purchased';
   buyer: Scalars['String'];
   buyer_profile?: Maybe<Profile>;
+  purchase?: Maybe<Purchase>;
   transaction_hash?: Maybe<Scalars['String']>;
 };
 
@@ -1858,6 +1859,10 @@ export type StreamQuery = (
     ) | (
       { __typename?: 'InvitationRedeemed' }
       & Pick<InvitationRedeemed, 'name' | 'code' | 'redeemedBy'>
+      & { redeemedBy_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
     ) | (
       { __typename?: 'MemberAdded' }
       & Pick<MemberAdded, 'createdBy' | 'isAdmin' | 'member' | 'organisation'>
@@ -1873,7 +1878,24 @@ export type StreamQuery = (
     ) | (
       { __typename?: 'OrganisationCreated' }
       & Pick<OrganisationCreated, 'organisation'>
-    ) | { __typename?: 'Purchased' } | (
+    ) | (
+      { __typename?: 'Purchased' }
+      & Pick<Purchased, 'buyer'>
+      & { buyer_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, purchase?: Maybe<(
+        { __typename?: 'Purchase' }
+        & { lines: Array<(
+          { __typename?: 'PurchaseLine' }
+          & Pick<PurchaseLine, 'amount'>
+          & { product: (
+            { __typename?: 'Offer' }
+            & Pick<Offer, 'id' | 'title' | 'pictureUrl'>
+          ) }
+        )> }
+      )> }
+    ) | (
       { __typename?: 'WelcomeMessage' }
       & Pick<WelcomeMessage, 'member'>
     )> }
@@ -3001,6 +3023,31 @@ export const StreamDocument = gql`
         name
         code
         redeemedBy
+        redeemedBy_profile {
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+      }
+      ... on Purchased {
+        buyer
+        buyer_profile {
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        purchase {
+          lines {
+            amount
+            product {
+              id
+              title
+              pictureUrl
+            }
+          }
+        }
       }
       ... on OrganisationCreated {
         organisation

@@ -2,19 +2,24 @@ import Contacts from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
 import Chat from "./o-contacts/pages/Chat.svelte";
 import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
-import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-import { me } from "../shared/stores/me";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { init } from "./o-banking/init";
+import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+import {me} from "../shared/stores/me";
+import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import {init} from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
-import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
-import { transfer } from "./o-banking/processes/transfer";
-import { setTrust } from "./o-banking/processes/setTrust";
-import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
-import { push } from "svelte-spa-router";
-import { loadProfileBySafeAddress } from "../shared/api/loadProfileBySafeAddress";
-import { Profile } from "../shared/api/data/types";
+import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
+import {
+  AggregatesDocument,
+  AggregateType,
+  Contact,
+  ContactDirection,
+  EventType,
+  Profile,
+  ProfileAggregateFilter,
+} from "../shared/api/data/types";
+import {transfer} from "./o-banking/processes/transfer";
+import {push} from "svelte-spa-router";
+import {setTrust} from "./o-banking/processes/setTrust";
 
 export interface DappState {
   // put state here
@@ -47,33 +52,69 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
   isSystem: false,
   routeParts: ["=actions"],
   items: async (params, runtimeDapp) => {
+    let $me:Profile = null;
+    const unsub = me.subscribe(e => $me = e);
+    unsub();
+
     const getRecipientProfile = async () => {
-      if (RpcGateway.get().utils.isAddress(params.id)) {
-        const profile = await loadProfileBySafeAddress(params.id);
-        if (profile) {
-          return profile;
+      const apiClient = await window.o.apiClient.client.subscribeToResult();
+      const result = await apiClient.query({
+        query: AggregatesDocument,
+        variables: {
+          safeAddress: $me.circlesAddress,
+          filter: <ProfileAggregateFilter>{
+            contacts: {
+              addresses: [params.id]
+            }
+          },
+          types: [
+            AggregateType.Contacts
+          ]
         }
-      } else if (Number.isInteger(params.id)) {
-        const profile = await loadProfileByProfileId(parseInt(params.id));
-        if (profile) {
-          return profile;
-        }
+      });
+
+      if (result.errors?.length > 0) {
+        throw new Error(`Couldn't read the contacts of safe ${$me.circlesAddress}: \n${result.errors
+          .map((o) => o.message)
+          .join("\n")}`);
       }
-      return undefined;
+
+      const contactsList:Contact[] = result.data.aggregates[0].payload.contacts;
+      console.log(contactsList);
+
+      if (contactsList.length > 0)
+        return contactsList[0];
+      else
+        return undefined;
     };
 
     const recipientProfile = params.id
       ? await getRecipientProfile()
       : undefined;
 
-    let mySafeAddress;
-    const unsub = me.subscribe((o) => {
-      mySafeAddress = o?.circlesAddress;
-    });
-    unsub();
+    console.log("recipientProfile:", recipientProfile)
+
+    const trustMetadata = recipientProfile.metadata.find(o => o.name == EventType.CrcTrust);
+    // let trustsYou = false;
+    let youTrust = false;
+
+    if (trustMetadata) {
+      /*
+      const inTrust = trustMetadata.directions.indexOf(ContactDirection.In);
+      if (inTrust > -1) {
+        const trustLimit = trustMetadata.values[inTrust];
+        trustsYou = parseInt(trustLimit) > 0;
+      }*/
+      const outTrust = trustMetadata.directions.indexOf(ContactDirection.Out);
+      if (outTrust > -1) {
+        const trustLimit = trustMetadata.values[outTrust];
+        youTrust = parseInt(trustLimit) > 0;
+      }
+    }
 
     let actions = [];
-    if (recipientProfile?.circlesAddress) {
+
+    if (recipientProfile?.contactAddress) {
       actions = actions.concat([
         {
           key: "transfer",
@@ -81,23 +122,21 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           title: "Send Money",
           action: async () => {
             window.o.runProcess(transfer, {
-              safeAddress: mySafeAddress,
-              recipientAddress: recipientProfile.circlesAddress,
+              safeAddress: $me.circlesAddress,
+              recipientAddress: recipientProfile.contactAddress,
               privateKey: sessionStorage.getItem("circlesKey"),
             });
           },
         },
-        recipientProfile.id
-          ? {
-              key: "chat",
-              icon: "chat",
-              title: "Chat",
-              action: async () => {
-                push("#/friends/chat/" + recipientProfile.circlesAddress);
-              },
-            }
-          : "",
-        recipientProfile.youTrust
+        {
+          key: "chat",
+          icon: "chat",
+          title: "Chat",
+          action: async () => {
+            push("#/friends/chat/" + recipientProfile.contactAddress);
+          },
+        },
+        youTrust
           ? {
               key: "setTrust",
               icon: "untrust",
@@ -106,8 +145,8 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
               action: async () => {
                 window.o.runProcess(setTrust, {
                   trustLimit: 0,
-                  trustReceiver: recipientProfile.circlesAddress,
-                  safeAddress: mySafeAddress,
+                  trustReceiver: recipientProfile.contactAddress,
+                  safeAddress: $me.circlesAddress,
                   privateKey: sessionStorage.getItem("circlesKey"),
                 });
               },
@@ -119,15 +158,15 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
               action: async () => {
                 window.o.runProcess(setTrust, {
                   trustLimit: 100,
-                  trustReceiver: recipientProfile.circlesAddress,
-                  safeAddress: mySafeAddress,
+                  trustReceiver: recipientProfile.contactAddress,
+                  safeAddress: $me.circlesAddress,
                   privateKey: sessionStorage.getItem("circlesKey"),
                 });
               },
             },
       ]);
     }
-
+/*
     if (!recipientProfile) {
       actions = actions.concat({
         key: "setTrust",
@@ -136,12 +175,13 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         action: async () => {
           window.o.runProcess(setTrust, {
             trustLimit: 100,
-            safeAddress: mySafeAddress,
+            safeAddress: recipientProfile.contactAddress,
             privateKey: sessionStorage.getItem("circlesKey"),
           });
         },
       });
     }
+ */
 
     return actions;
   },

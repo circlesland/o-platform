@@ -7,7 +7,7 @@
   import {
     AggregatesDocument,
     AggregateType,
-    ContactPoint,
+    ContactPoint, EventType,
   } from "../../../shared/api/data/types";
   import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
   import {Subscription} from "rxjs";
@@ -43,7 +43,7 @@
 
     let trustedContacts = contactsList.filter(o => {
       // Check if the contact trusted me or if I trusted the contact
-      const crcTrust = o.metadata.find(p => p.name === "CrcTrust");
+      const crcTrust = o.metadata.find(p => p.name === EventType.CrcTrust);
       if (!crcTrust) {
         return false;
       }

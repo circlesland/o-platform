@@ -61,9 +61,7 @@ async function setProfile(apiProfile: Profile, $me) {
       trusting: undefined,
       trustedBy: undefined,
       cityGeonameid: apiProfile.cityGeonameid,
-      city: apiProfile.city,
-      trustsYou: apiProfile.trustsYou ?? 0,
-      youTrust: apiProfile.youTrust ?? 0,
+      city: apiProfile.city
     },
     commonTrusts: commonTrusts,
   };
