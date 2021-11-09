@@ -490,8 +490,11 @@ async function handleUrlChanged() {
   runtimeDapp = dapp
     ? await RuntimeDapps.instance().getRuntimeDapp(dapp)
     : null;
-  if (!runtimeDapp)
-    throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
+  if (!runtimeDapp) {
+    // throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
+    await push("/");
+    return;
+  }
   const findRouteResult = findRoutableByParams(runtimeDapp, params);
   if (!findRouteResult.found) {
     throw new Error(
