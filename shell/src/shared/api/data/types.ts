@@ -433,6 +433,8 @@ export type Mutation = {
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
   logout: LogoutResponse;
+  proofPayment?: Maybe<ProofPaymentResult>;
+  purchase?: Maybe<Purchase>;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
   rejectMembership?: Maybe<RejectMembershipResult>;
   removeMember?: Maybe<RemoveMemberResult>;
@@ -488,6 +490,17 @@ export type MutationCreateInvitationsArgs = {
 
 export type MutationDepositChallengeArgs = {
   jwt: Scalars['String'];
+};
+
+
+export type MutationProofPaymentArgs = {
+  purchaseId: Scalars['Int'];
+  transactionHash: Scalars['String'];
+};
+
+
+export type MutationPurchaseArgs = {
+  lines: Array<PurchaseLineInput>;
 };
 
 
@@ -683,6 +696,11 @@ export type ProfileEventFilter = {
 
 export type ProfileOrOrganisation = Organisation | Profile;
 
+export type ProofPaymentResult = {
+  __typename?: 'ProofPaymentResult';
+  acknowledged: Scalars['Boolean'];
+};
+
 export type Purchase = {
   __typename?: 'Purchase';
   createdAt: Scalars['String'];
@@ -698,6 +716,11 @@ export type PurchaseLine = {
   amount: Scalars['Int'];
   id: Scalars['Int'];
   product: Offer;
+};
+
+export type PurchaseLineInput = {
+  amount: Scalars['Int'];
+  offerId: Scalars['Int'];
 };
 
 export type Purchased = IEventPayload & {
@@ -999,8 +1022,8 @@ export type Version = {
 
 export type WelcomeMessage = IEventPayload & {
   __typename?: 'WelcomeMessage';
-  member: Scalars['String'];
-  member_profile?: Maybe<Profile>;
+  invitedBy: Scalars['String'];
+  invitedBy_profile?: Maybe<Profile>;
   transaction_hash?: Maybe<Scalars['String']>;
 };
 
@@ -1913,7 +1936,11 @@ export type StreamQuery = (
       )> }
     ) | (
       { __typename?: 'WelcomeMessage' }
-      & Pick<WelcomeMessage, 'member'>
+      & Pick<WelcomeMessage, 'invitedBy'>
+      & { invitedBy_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
     )> }
   )> }
 );
@@ -3039,7 +3066,13 @@ export const StreamDocument = gql`
         }
       }
       ... on WelcomeMessage {
-        member
+        invitedBy
+        invitedBy_profile {
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
       }
       ... on InvitationCreated {
         name

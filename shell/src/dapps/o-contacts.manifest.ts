@@ -94,7 +94,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
 
     console.log("recipientProfile:", recipientProfile)
 
-    const trustMetadata = recipientProfile.metadata.find(o => o.name == EventType.CrcTrust);
+    const trustMetadata = recipientProfile?.metadata.find(o => o.name == EventType.CrcTrust) ?? undefined;
     // let trustsYou = false;
     let youTrust = false;
 
@@ -166,7 +166,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             },
       ]);
     }
-/*
+
     if (!recipientProfile) {
       actions = actions.concat({
         key: "setTrust",
@@ -175,13 +175,12 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         action: async () => {
           window.o.runProcess(setTrust, {
             trustLimit: 100,
-            safeAddress: recipientProfile.contactAddress,
+            safeAddress: $me.circlesAddress,
             privateKey: sessionStorage.getItem("circlesKey"),
           });
         },
       });
     }
- */
 
     return actions;
   },
