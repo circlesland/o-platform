@@ -74,11 +74,12 @@ function onkeydown(e: KeyboardEvent) {
       <span class="mt-4 text-xl">
         to {profile.firstName + " " + profile.lastName}
       </span>
-    </div>
-    <div class="text-dark-lightest">
-      {context.data.message && context.data.message != undefined
-        ? context.data.message
-        : ""}
+      <div class="mt-2 text-dark-lightest">
+        Reifenstühlstr. 6, 80469 München
+        <br />
+        <span class="text-sm"
+          >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
+      </div>
     </div>
 
     {#if context.data && context.data.transitivePath}
