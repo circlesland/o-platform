@@ -727,7 +727,13 @@ query stream(
         }
       }
       ... on WelcomeMessage {
-        member
+        invitedBy
+        invitedBy_profile {
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
       }
       ... on InvitationCreated {
         name

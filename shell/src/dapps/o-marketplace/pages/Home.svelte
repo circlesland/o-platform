@@ -12,10 +12,8 @@ import List from "../../../shared/molecules/Lists/List.svelte";
 
 import {
   Offer,
-  OffersDocument,
   TagsDocument,
 } from "../../../shared/api/data/types";
-import { me } from "../../../shared/stores/me";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;

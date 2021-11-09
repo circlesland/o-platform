@@ -332,6 +332,8 @@ type Mutation {
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
     logout: LogoutResponse!
+    proofPayment(purchaseId: Int!, transactionHash: String!): ProofPaymentResult
+    purchase(lines: [PurchaseLineInput!]!): Purchase
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     rejectMembership(membershipId: Int!): RejectMembershipResult
     removeMember(groupId: String!, memberId: Int!): RemoveMemberResult
@@ -435,6 +437,10 @@ type ProfileEvent {
     transaction_index: Int
     type: String!
     value: String
+}
+
+type ProofPaymentResult {
+    acknowledged: Boolean!
 }
 
 type Purchase {
@@ -569,8 +575,8 @@ type Version {
 }
 
 type WelcomeMessage implements IEventPayload {
-    member: String!
-    member_profile: Profile
+    invitedBy: String!
+    invitedBy_profile: Profile
     transaction_hash: String
 }
 
@@ -664,6 +670,11 @@ input ProfileEventFilter {
     to: String
     transactionHash: String
     with: String
+}
+
+input PurchaseLineInput {
+    amount: Int!
+    offerId: Int!
 }
 
 input QueryCitiesByGeonameIdInput {
