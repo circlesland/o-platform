@@ -21,7 +21,7 @@ const profile: Page<any, DappState> = {
   type: "page",
 };
 const account: Page<any, DappState> = {
-  routeParts: ["=account"],
+  routeParts: ["=accounts"],
   component: Account,
   title: "Accounts",
   type: "page",
@@ -87,5 +87,5 @@ export const passport: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, profile, account, keys, settings, login],
+  routables: [index, profile, account, settings, login],
 };

@@ -7,6 +7,7 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import { me } from "../../../shared/stores/me";
 import { KeyManager } from "../data/keyManager";
 export let runtimeDapp: RuntimeDapp<any>;
@@ -55,7 +56,24 @@ let newKeyPassphrase: string = "";
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="mx-auto -mt-2 md:w-2/3 xl:w-1/2">
+<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+  <ItemCard
+    params="{{
+      edgeless: false,
+      imageProfile: $me,
+      title: $me
+        ? $me.lastName
+          ? `${$me.firstName} ${$me.lastName}`
+          : $me.firstName
+        : '',
+      subTitle: 'Main Account holder',
+      truncateMain: true,
+    }}">
+    <div slot="itemCardEnd">
+      <div class="self-end text-lg sm:text-3xl">UBI</div>
+    </div>
+  </ItemCard>
+
   {#if keyManager}
     {#each Object.values(keyManager.eoas).sort( (a, b) => a.address.localeCompare(b.address) ) as key}
       <section class="flex items-center justify-center mx-4 mb-2">

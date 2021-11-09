@@ -23,6 +23,7 @@ const components = [
   { type: "CrcMinting", component: NotificationViewUbi },
   { type: "CrcTrust", component: NotificationViewTrust },
   { type: "CrcHubTransfer", component: NotificationViewTransfer },
+  // { type: "InvitationCreated", component: NotificationViewTransfer }, Is this needed?
 ];
 
 function submit() {

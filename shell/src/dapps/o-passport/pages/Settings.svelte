@@ -102,15 +102,15 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  <section class="flex items-center justify-center mx-4 mb-2 -mt-2">
+  <!-- <section class="flex items-center justify-center mx-4 mb-2 -mt-2">
     <Card>
       <div class="text-xs font-bold text-left text-primary">EMAIL</div>
       <div class="flex items-center w-full space-x-2 bg-white sm:space-x-6">
         <div class="mr-2 text-center">{email}</div>
       </div>
     </Card>
-  </section>
-  <section class="flex items-center justify-center mx-4 mb-2">
+  </section> -->
+  <section class="flex items-center justify-center mx-4 mb-2 -mt-2">
     <Card>
       <div class="text-xs font-bold text-left text-primary">NEWSLETTER</div>
       <div class="w-full space-x-2 bg-white sm:space-x-6">
