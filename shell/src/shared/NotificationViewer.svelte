@@ -1,34 +1,36 @@
 <script lang="ts">
 import { Continue } from "@o-platform/o-process/dist/events/continue";
-
 import NotificationViewChatMessage from "./NotificationViewer/molecules/NotificationViewChatMessage.svelte";
 import NotificationViewUbi from "./NotificationViewer/molecules/NotificationViewUbi.svelte";
 import NotificationViewTrust from "./NotificationViewer/molecules/NotificationViewTrust.svelte";
 import NotificationViewTransfer from "./NotificationViewer/molecules/NotificationViewTransfer.svelte";
 import NotificationViewMembershipOffer from "./NotificationViewer/molecules/NotificationViewMembershipOffer.svelte";
 import NotificationViewMembershipAccepted from "./NotificationViewer/molecules/NotificationViewMembershipAccepted.svelte";
-
-import GenericEventCard from "./GenericEventCard.svelte";
-
-import { inbox } from "./stores/inbox";
+import GenericEventCard from "./NotificationViewer/molecules/GenericEventCard.svelte";
 import { NotificationViewerContext } from "@o-platform/o-editors/src/notificationViewerContext";
 import ProcessNavigation from "../../../packages/o-editors/src/ProcessNavigation.svelte";
-import { me } from "./stores/me";
-import { setTrust } from "../dapps/o-banking/processes/setTrust";
 
 import { EventType } from "./api/data/types";
 
 export let context: NotificationViewerContext;
 
 let data: any = context.data[context.field];
-let eventData: any = null;
+
+$: console.log("DATA", data);
 
 const components = [
-  { type: "chat_message", component: NotificationViewChatMessage },
-  { type: "CrcMinting", component: NotificationViewUbi },
-  { type: "CrcTrust", component: NotificationViewTrust },
-  { type: "CrcHubTransfer", component: NotificationViewTransfer },
-  // { type: "InvitationCreated", component: NotificationViewTransfer }, Is this needed?
+  { type: EventType.ChatMessage, component: NotificationViewChatMessage },
+  { type: EventType.CrcMinting, component: NotificationViewUbi },
+  { type: EventType.CrcTrust, component: NotificationViewTrust },
+  { type: EventType.CrcHubTransfer, component: NotificationViewTransfer },
+  {
+    type: EventType.MembershipOffer,
+    component: NotificationViewMembershipOffer,
+  },
+  {
+    type: EventType.MembershipAccepted,
+    component: NotificationViewMembershipAccepted,
+  },
 ];
 
 function submit() {
@@ -36,208 +38,6 @@ function submit() {
   answer.data = context.data;
   context.process.sendAnswer(answer);
 }
-
-function buildDataModel(data) {
-  console.log("DATA: ", data);
-  let notificationType: string = null;
-  let title: string = null;
-
-  let type: string = data.type;
-  let icon: string = null;
-  let limit: number = null;
-  let value: string = null;
-
-  let targetCirclesAddress: string = data.payload.from;
-
-  let profile: any;
-  let actions: {
-    title: string;
-    icon: string;
-    colorClass: string;
-    action: () => void;
-  }[] = [];
-
-  switch (data.type) {
-    case "ChatMessage":
-      notificationType = "chat_message";
-      title = `${data.payload.text}`;
-
-      profile = data.payload.from_profile;
-      actions = [
-        {
-          title: "Go to Chat",
-          icon: "chat",
-          colorClass: "",
-          action: () => {
-            context.params.push(`#/friends/chat/${data.payload.from}`);
-            inbox.acknowledge(data);
-          },
-        },
-      ];
-      break;
-    case "CrcMinting":
-      notificationType = "crc_minting";
-      value = data.value;
-      actions = [
-        {
-          title: "Show details",
-          icon: "",
-          colorClass: "",
-          action: () => {
-            context.params.push(
-              `#/banking/transactions/${data.transaction_hash}`
-            );
-            inbox.acknowledge(data);
-          },
-        },
-      ];
-      break;
-    case "CrcTrust":
-      profile = data.payload.can_send_to_profile;
-      targetCirclesAddress = data.payload.can_send_to;
-      limit = data.payload.limit;
-
-      if (data.payload.limit == 0) {
-        notificationType = "trust_removed";
-        icon = "untrust";
-        actions = [
-          {
-            title: "Show Profile",
-            icon: "",
-            colorClass: "",
-            action: () => {
-              context.params.push(
-                `#/friends/${
-                  data.payload.can_send_to_profile
-                    ? data.payload.can_send_to_profile.circlesAddress
-                    : data.payload.from
-                }`
-              );
-              // submit(); TODO: ADD BACK IN TO MARK EVENT AS READ
-            },
-          },
-          {
-            title: `Untrust ${
-              data.payload.can_send_to_profile
-                ? data.payload.can_send_to_profile.firstName
-                : data.payload.can_send_to
-            }`,
-            icon: "untrust",
-            colorClass: "",
-            action: () => {
-              window.o.runProcess(setTrust, {
-                trustLimit: 0,
-                trustReceiver: data.payload.can_send_to,
-                safeAddress: $me.circlesAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              });
-            },
-          },
-        ];
-      } else if (data.payload.limit > 0) {
-        notificationType = "trust_added";
-
-        icon = "trust";
-        actions = [
-          {
-            title: "Show Profile",
-            icon: "",
-            colorClass: "",
-            action: () => {
-              context.params.push(
-                `#/friends/${
-                  data.payload.can_send_to_profile
-                    ? data.payload.can_send_to_profile.circlesAddress
-                    : data.payload.can_send_to
-                }`
-              );
-              // submit(); TODO: ADD BACK IN TO MARK EVENT AS READ
-            },
-          },
-          {
-            title: `Trust ${
-              data.payload.can_send_to_profile
-                ? data.payload.can_send_to_profile.firstName
-                : data.payload.can_send_to
-            }`,
-            icon: "trust",
-            colorClass: "",
-            action: () => {
-              window.o.runProcess(setTrust, {
-                trustLimit: 100,
-                trustReceiver: data.payload.can_send_to,
-                safeAddress: $me.circlesAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              });
-            },
-          },
-        ];
-      }
-      break;
-    case "CrcHubTransfer":
-      profile = data.payload.from_profile;
-      value = data.value;
-      notificationType = "transfer_in";
-      icon = "sendmoney";
-
-      actions = [
-        {
-          title: "Show details",
-          icon: "",
-          colorClass: "",
-          action: () => {
-            context.params.push(
-              `#/banking/transactions/${data.transaction_hash}`
-            );
-            // submit(); TODO: ADD BACK IN TO MARK EVENT AS READ
-          },
-        },
-        // {
-        //   title: `Send Circles to ${
-        //     data.payload.from_profile
-        //       ? data.payload.from_profile.firstName
-        //       : data.payload.from
-        //   }`,
-        //   icon: "sendmoney",
-        //   colorClass: "",
-        //   action: () => {
-        //     window.o.runProcess(transfer, {
-        //       safeAddress: $me.circlesAddress,
-        //       recipientAddress: data.payload.from,
-        //       privateKey: localStorage.getItem("circlesKey"),
-        //     });
-        //   },
-        // },
-      ];
-      break;
-  }
-
-  let text = data.tags?.find(
-    (o) => o.typeId === "o-banking:transfer:message:1"
-  )?.value;
-  if (!text) {
-    text = "";
-  }
-
-  return {
-    safeAddress: data.safe_address,
-    targetCirclesAddress: targetCirclesAddress,
-    type: type,
-    profile: profile ? profile : null,
-    time: data.timestamp,
-    fullWidth: true,
-    value: value,
-    limit: limit,
-    notificationType: notificationType,
-    title: title,
-    icon: icon,
-    actions: actions,
-    text: text,
-  };
-}
-
-eventData = buildDataModel(data);
-console.log("eventData: ", eventData);
 
 function handleClick(action) {
   if (action.event) {
@@ -249,48 +49,26 @@ function handleClick(action) {
 }
 
 function getEventView() {
-  console.log("VIEW: ", eventData.type);
-  const specificView = components.find((x) => x.type === eventData.type);
-
-  if (!specificView) return { component: GenericEventCard };
-
-  return specificView;
+  const specificView = components.find((x) => x.type === data.type);
+  if (!specificView) return GenericEventCard;
+  return specificView.component;
 }
 </script>
 
 <div>
-  {#if data.type == EventType.CrcMinting}
-    <NotificationViewUbi event="{data}" />
-  {:else if data.type == EventType.ChatMessage}
-    <NotificationViewChatMessage event="{data}" />
-  {:else if data.type == EventType.CrcTrust}
-    <NotificationViewTrust event="{data}" />
-  {:else if data.type == EventType.CrcHubTransfer}
-    <NotificationViewTransfer event="{data}" />
-  {:else if data.type == EventType.MembershipOffer}
-    <NotificationViewMembershipOffer event="{data}" />
-  {:else if data.type == EventType.MembershipAccepted}
-    <NotificationViewMembershipAccepted event="{data}" />
-  {:else}
-    {#if eventData}
-      <div class="flex flex-col space-y-4">
-        <svelte:component
-          this="{getEventView().component}"
-          eventData="{eventData}" />
+  <svelte:component this="{getEventView()}" event="{data}" />
+  <!-- 
+  {#if eventData.actions.length > 0}
+    <div class="flex flex-row items-center content-center w-full space-x-4">
+      <div class="mt-6">
+        <button
+          on:click="{() => handleClick(eventData.actions[0])}"
+          class="h-auto btn-block btn btn-light whitespace-nowrap">
+          {eventData.actions[0].title}
+        </button>
       </div>
-    {/if}
+    </div>
+  {/if} -->
 
-    {#if eventData.actions.length > 0}
-      <div class="flex flex-row items-center content-center w-full space-x-4">
-        <div class="mt-6">
-          <button
-            on:click="{() => handleClick(eventData.actions[0])}"
-            class="h-auto btn-block btn btn-light whitespace-nowrap">
-            {eventData.actions[0].title}
-          </button>
-        </div>
-      </div>
-    {/if}
-  {/if}
   <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
 </div>

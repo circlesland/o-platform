@@ -8,7 +8,7 @@ import {
 } from "../../api/data/types";
 
 import { inview } from "svelte-inview/dist/index";
-import GenericEventCard from "../../GenericEventCard.svelte";
+import GenericEventCard from "../../NotificationViewer/molecules/GenericEventCard.svelte";
 
 export let views: { [type: string]: any } = {};
 export let selector = "timestamp";
