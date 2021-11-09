@@ -9,6 +9,7 @@ import { inbox } from "../stores/inbox";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import { ProfileEvent } from "../api/data/types";
 import { push } from "svelte-spa-router";
+import {current_component} from "svelte/internal";
 
 export type ShowNotificationsContextData = {
   events: ProfileEvent[];

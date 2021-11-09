@@ -13,6 +13,8 @@ import ProcessNavigation from "../../../packages/o-editors/src/ProcessNavigation
 import { me } from "./stores/me";
 import { setTrust } from "../dapps/o-banking/processes/setTrust";
 
+import {EventType} from "./api/data/types";
+
 export let context: NotificationViewerContext;
 
 let data: any = context.data[context.field];
@@ -254,26 +256,31 @@ function getEventView() {
 </script>
 
 <div>
-  {#if eventData}
-    <div class="flex flex-col space-y-4">
-      <svelte:component
-        this="{getEventView().component}"
-        eventData="{eventData}" />
-    </div>
-  {/if}
 
-  {#if eventData.actions.length > 0}
-    <div class="flex flex-row items-center content-center w-full space-x-4">
-      <div class="mt-6">
-        <button
-          on:click="{() => handleClick(eventData.actions[0])}"
-          class="h-auto btn-block btn btn-light whitespace-nowrap">
-          {eventData.actions[0].title}
-        </button>
-      </div>
-      <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
-    </div>
+  {#if data.type == EventType.CrcMinting}
+    <NotificationViewUbi event={data} />
   {:else}
-    <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+    {#if eventData}
+      <div class="flex flex-col space-y-4">
+        <svelte:component
+          this="{getEventView().component}"
+          eventData="{eventData}" />
+      </div>
+    {/if}
+
+    {#if eventData.actions.length > 0}
+      <div class="flex flex-row items-center content-center w-full space-x-4">
+        <div class="mt-6">
+          <button
+            on:click="{() => handleClick(eventData.actions[0])}"
+            class="h-auto btn-block btn btn-light whitespace-nowrap">
+            {eventData.actions[0].title}
+          </button>
+        </div>
+        <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+      </div>
+    {:else}
+      <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+    {/if}
   {/if}
 </div>

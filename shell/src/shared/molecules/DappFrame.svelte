@@ -116,6 +116,11 @@ async function init() {
               dapp: "friends:1",
               data: null,
             });
+            window.o.publishEvent(<any>{
+              type: "shell.refresh",
+              dapp: "banking:1",
+              data: null,
+            });
           }
           inbox.reload();
         });

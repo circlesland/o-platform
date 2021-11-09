@@ -44,14 +44,7 @@ let promise = getMutualFriends();
             {/if}
           {/each}
         {:else}
-          <span
-            >No mutual Friends. Use the
-            <button
-              class="link link-primary text-primary"
-              href="#/friends/graph"
-              alt="CirclesLand Network Graph">Network Graph</button> to find common
-            Friends.
-          </span>
+          <span>No mutual Friends.</span>
         {/if}
       </div>
     </div>

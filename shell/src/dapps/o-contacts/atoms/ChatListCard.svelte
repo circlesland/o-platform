@@ -5,8 +5,7 @@ import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {
   Contact2,
   ContactDirection,
-  ContactPoint,
-  ContactPointSource,
+  ContactPoint, EventType,
   Profile,
 } from "../../../shared/api/data/types";
 import DateView from "../../../shared/atoms/Date.svelte";
@@ -32,7 +31,7 @@ displayName =
   contactProfile.firstName +
   (contactProfile.lastName ? " " + contactProfile.lastName : "");
 
-const trustMetadata: ContactPointSource = param.metadata.find(
+const trustMetadata: ContactPoint = param.metadata.find(
   (p) => p.name === "CrcTrust"
 );
 let trustIn = 0;
@@ -76,41 +75,41 @@ const mostRecentDisplayEvent = {
 
 if (mostRecentDisplayEvent.direction == ContactDirection.In) {
   switch (mostRecentDisplayEvent.type) {
-    case "CrcTrust":
+    case EventType.CrcTrust:
       message = `${displayName} ${
         mostRecentDisplayEvent.value > 0 ? "trusted" : "untrusted"
       } you`;
       break;
-    case "CrcHubTransfer":
+    case EventType.CrcHubTransfer:
       message = `${displayName} sent you ${mostRecentDisplayEvent.value} CRC`;
       break;
-    case "ChatMessage":
+    case EventType.ChatMessage:
       message = `${displayName} wrote: ${mostRecentDisplayEvent.value}`;
       break;
-    case "Invitation":
+    case EventType.InvitationRedeemed:
       message = `${displayName} invited you to CirclesLand`;
       break;
-    case "MembershipOffer":
+    case EventType.MembershipOffer:
       message = `${displayName} invited you to ${mostRecentDisplayEvent.value}`;
       break;
   }
 } else {
   switch (mostRecentDisplayEvent.type) {
-    case "CrcTrust":
+    case EventType.CrcTrust:
       message = `You ${
         mostRecentDisplayEvent.value > 0 ? "trusted" : "untrusted"
       } ${displayName}`;
       break;
-    case "CrcHubTransfer":
+    case EventType.CrcHubTransfer:
       message = `You sent ${displayName} ${mostRecentDisplayEvent.value} CRC`;
       break;
-    case "ChatMessage":
+    case EventType.ChatMessage:
       message = `You wrote: ${mostRecentDisplayEvent.value}`;
       break;
-    case "Invitation":
+    case EventType.InvitationRedeemed:
       message = `${displayName} accepted your invitation to CirclesLand.`;
       break;
-    case "MembershipOffer":
+    case EventType.MembershipOffer:
       message = `You invited ${displayName} to ${mostRecentDisplayEvent.value}`;
       break;
   }
