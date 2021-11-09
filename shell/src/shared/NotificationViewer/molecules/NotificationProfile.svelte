@@ -1,14 +1,21 @@
 <script lang="ts">
 import UserImage from "src/shared/atoms/UserImage.svelte";
-import { Profile } from "../../api/data/types";
+import { Profile, Organisation } from "../../api/data/types";
 
-export let profile: Profile;
+export let profile: Profile | Organisation;
 export let targetCirclesAddress: string;
 export let showPassion: boolean = true;
+let displayName: string;
 
-let displayName = `${profile.firstName} ${
-  profile.lastName ? profile.lastName : ""
-}`;
+if (profile.__typename == "Profile") {
+  displayName = `${profile.firstName} ${
+    profile.lastName ? profile.lastName : ""
+  }`;
+} else {
+  displayName = profile.name ? profile.name : "";
+}
+displayName =
+  displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
 {#if profile && profile.circlesAddress}
@@ -17,11 +24,7 @@ let displayName = `${profile.firstName} ${
     <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />
 
     <div class="mt-4 text-3xl">
-      {displayName
-        ? displayName.length >= 22
-          ? displayName.substr(0, 22) + "..."
-          : displayName
-        : profile.circlesAddress.substr(0, 22) + "..."}
+      {displayName}
     </div>
 
     {#if profile && profile.city}

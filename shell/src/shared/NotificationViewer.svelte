@@ -5,6 +5,9 @@ import NotificationViewChatMessage from "./NotificationViewer/molecules/Notifica
 import NotificationViewUbi from "./NotificationViewer/molecules/NotificationViewUbi.svelte";
 import NotificationViewTrust from "./NotificationViewer/molecules/NotificationViewTrust.svelte";
 import NotificationViewTransfer from "./NotificationViewer/molecules/NotificationViewTransfer.svelte";
+import NotificationViewMembershipOffer from "./NotificationViewer/molecules/NotificationViewMembershipOffer.svelte";
+import NotificationViewMembershipAccepted from "./NotificationViewer/molecules/NotificationViewMembershipAccepted.svelte";
+
 import GenericEventCard from "./GenericEventCard.svelte";
 
 import { inbox } from "./stores/inbox";
@@ -264,6 +267,10 @@ function getEventView() {
     <NotificationViewTrust event="{data}" />
   {:else if data.type == EventType.CrcHubTransfer}
     <NotificationViewTransfer event="{data}" />
+  {:else if data.type == EventType.MembershipOffer}
+    <NotificationViewMembershipOffer event="{data}" />
+  {:else if data.type == EventType.MembershipAccepted}
+    <NotificationViewMembershipAccepted event="{data}" />
   {:else}
     {#if eventData}
       <div class="flex flex-col space-y-4">

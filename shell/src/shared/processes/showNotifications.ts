@@ -19,10 +19,13 @@ export type ShowNotificationsContextData = {
 
 const strings = {
   CrcHubTransfer: "Received",
-  CrcTrust: "New incoming trust",
+  CrcTrust: "New trust",
   crc_untrust: "Trust removed",
   ChatMessage: "New Message",
   CrcMinting: "Received new Basic Income",
+  MembershipOffer: "Invitation to Organisation",
+  InvitationCreated: "",
+  MembershipAccepted: "Invitation Accepted",
 };
 export type ShowNotificationsContext =
   ProcessContext<ShowNotificationsContextData>;

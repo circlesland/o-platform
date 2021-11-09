@@ -1,6 +1,7 @@
-import {writable} from "svelte/store";
+import { writable } from "svelte/store";
 import {
-  AcknowledgeDocument, Direction,
+  AcknowledgeDocument,
+  Direction,
   EventType,
   PaginationArgs,
   Profile,
@@ -8,9 +9,9 @@ import {
   SortOrder,
   StreamDocument,
 } from "../api/data/types";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {me} from "./me";
-import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { me } from "./me";
+import { getSessionInfo } from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 
 let events: ProfileEvent[] = [];
 
@@ -22,16 +23,16 @@ async function queryEvents() {
 
   const sessionInfo = await getSessionInfo();
 
-  let mySafeAddress:string = null;
-  me.subscribe($me => {
-    mySafeAddress = $me.circlesAddress;
+  let mySafeAddress: string = null;
+  me.subscribe(($me) => {
+    mySafeAddress = $me?.circlesAddress;
   });
 
   let pagination: PaginationArgs = {
     order: SortOrder.Asc,
     limit: 100,
-    continueAt: sessionInfo.lastAcknowledgedAt ?? new Date(0)
-  }
+    continueAt: sessionInfo.lastAcknowledgedAt ?? new Date(0),
+  };
 
   if (!mySafeAddress) {
     events = [];
@@ -44,7 +45,7 @@ async function queryEvents() {
       safeAddress: mySafeAddress,
       pagination: pagination,
       filter: {
-        direction: Direction.In
+        direction: Direction.In,
       },
       types: [
         EventType.CrcHubTransfer,
@@ -59,9 +60,9 @@ async function queryEvents() {
         EventType.InvitationRedeemed,
         EventType.MembershipOffer,
         EventType.MembershipAccepted,
-        EventType.MembershipRejected
-      ]
-    }
+        EventType.MembershipRejected,
+      ],
+    },
   });
 
   if (result.errors) {
@@ -71,7 +72,7 @@ async function queryEvents() {
   return result.data.events;
 }
 
-const {subscribe, set, update} = writable<ProfileEvent[] | null>(
+const { subscribe, set, update } = writable<ProfileEvent[] | null>(
   null,
   function start(set) {
     set([]);

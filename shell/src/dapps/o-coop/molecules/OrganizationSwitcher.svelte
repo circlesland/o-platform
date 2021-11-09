@@ -3,13 +3,13 @@ import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { loadProfile } from "../../o-passport/processes/identify/services/loadProfile";
 import { me } from "../../../shared/stores/me";
-import { Profile } from "../../../shared/api/data/types";
+import { Profile, Organisation } from "../../../shared/api/data/types";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { clickOutside } from "../../../shared/functions/clickOutside";
 import { createEventDispatcher } from "svelte";
 
 let myProfile: Profile;
-let organizations: [] = [];
+let organisations: [] = [];
 let profile: Profile;
 
 $: name = profile?.circlesAddress ? profile.circlesAddress : "";
@@ -20,6 +20,7 @@ $: {
   } else {
     profile = undefined;
   }
+  console.log("ORGI ", organisations);
 }
 onMount(async () => {
   myProfile = await loadProfile();
@@ -27,7 +28,7 @@ onMount(async () => {
     const myMemberships = myProfile.memberships
       .filter((o) => o.isAdmin)
       .map((o) => o.organisation);
-    organizations = <any>[myProfile, ...myMemberships].map((o) => {
+    organisations = <any>[myProfile, ...myMemberships].map((o) => {
       const displayName = (<any>o).firstName
         ? (<any>o).firstName + " " + (<any>o).lastName
         : (<any>o).name;
@@ -44,11 +45,12 @@ function clickedOutside() {
   dispatch("click_outside");
 }
 
-function switchProfile(profile: Profile) {
+function switchProfile(profile: Profile | Organisation) {
   clickedOutside();
   window.o.publishEvent(<PlatformEvent>{
     type: "shell.loggedOut",
   });
+
   window.o.publishEvent(<PlatformEvent>{
     type: "shell.authenticated",
     profile: profile,
@@ -59,18 +61,18 @@ function switchProfile(profile: Profile) {
 
 <template lang="pug">
   div.cls(on:click!="{() => clickedOutside()}", use:clickOutside)
-  +if('myProfile && organizations')
+  +if('myProfile && organisations')
     div.flex.flex-col.z-10.absolute.right-0.top-0
       div.self-end.text-primary.relative.right-14.top-5 Switch Profile
-      +each(`organizations as organization`)
-        +if('organization.value.circlesAddress != $me.circlesAddress')
+      +each(`organisations as organisation`)
+        +if('organisation.value.circlesAddress != $me.circlesAddress')
           div.relative.right-3.top-10
-            div.flex.flex-row.items-center.px-4.py-2.space-x-2.rounded-full.bg-white.shadow-sm.text-lg.cursor-pointer(on:click!="{() => switchProfile(organization.value)}")
-              UserImage(profile="{organization.value}" size="{8}" profileLink="{false}" gradientRing="{true}")
-              div.text-dark-dark {organization.label}
-          //- div.flex.flex-row.cursor-pointer.space-x-2.self-end(on:click!="{() => switchProfile(organization.value)}")
-          //-   div.self-center.text-dark-dark {organization.label}
-          //-   UserImage(profile="{organization.value}" size="{8}" profileLink="{false}" gradientRing="{true}")
+            div.flex.flex-row.items-center.px-4.py-2.space-x-2.rounded-full.bg-white.shadow-sm.text-lg.cursor-pointer(on:click!="{() => switchProfile(organisation.value)}")
+              UserImage(profile="{organisation.value}" size="{8}" profileLink="{false}" gradientRing="{true}")
+              div.text-dark-dark {organisation.label}
+          //- div.flex.flex-row.cursor-pointer.space-x-2.self-end(on:click!="{() => switchProfile(organisation.value)}")
+          //-   div.self-center.text-dark-dark {organisation.label}
+          //-   UserImage(profile="{organisation.value}" size="{8}" profileLink="{false}" gradientRing="{true}")
 
 </template>
 

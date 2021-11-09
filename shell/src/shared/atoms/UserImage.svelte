@@ -1,15 +1,16 @@
 <script lang="ts">
 import { AvataarGenerator } from "src/shared/avataarGenerator";
 import { push } from "svelte-spa-router";
-import { Profile } from "../api/data/types";
+import { Profile, Organisation } from "../api/data/types";
 
-export let profile: Profile;
+export let profile: Profile | Organisation;
 export let size: number = 10;
 export let gradientRing: boolean = false;
 export let whiteRing: boolean = false;
 export let transparent: boolean = false;
 export let tooltip: boolean = false;
 export let profileLink: boolean = true;
+let displayName: string = "";
 
 function linkToProfile() {
   if (profileLink) {
@@ -17,7 +18,19 @@ function linkToProfile() {
   }
 }
 
-$: console.log("profile: ", profile.firstName);
+if (profile.__typename == "Profile") {
+  if (profile.firstName) {
+    displayName = `${profile.firstName} ${
+      profile.lastName ? profile.lastName : ""
+    }`;
+  } else {
+    displayName = profile.circlesAddress;
+  }
+} else {
+  displayName = profile.name ? profile.name : "";
+}
+displayName =
+  displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
 {#if profile}
@@ -27,9 +40,7 @@ $: console.log("profile: ", profile.firstName);
     on:click="{() => linkToProfile()}">
     {#if tooltip}
       <span class="px-2 mt-12 text-sm bg-white rounded shadow-sm tooltip">
-        {profile.firstName
-          ? `${profile.firstName} ${profile.lastName ? profile.lastName : ""}`
-          : profile.circlesAddress}
+        {displayName}
       </span>
     {/if}
 
@@ -48,11 +59,7 @@ $: console.log("profile: ", profile.firstName);
             : profile.circlesAddress
             ? AvataarGenerator.generate(profile.circlesAddress.toLowerCase())
             : AvataarGenerator.default()}"
-          alt="{profile
-            ? profile.lastName
-              ? `${profile.firstName} ${profile.lastName}`
-              : profile.firstName
-            : 'avatar'}" />
+          alt="{displayName}" />
       </div>
     </div>
   </div>
