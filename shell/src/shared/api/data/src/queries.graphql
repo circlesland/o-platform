@@ -544,6 +544,7 @@ query tags($typeId_in: [String!]!, $value_like: String) {
     value
   }
 }
+
 query tagById($id: Int!) {
   tagById(id: $id) {
     id
@@ -576,7 +577,12 @@ query citiesById($ids: [Int!]!) {
   }
 }
 
-query stream($types: [EventType!]! $safeAddress: String! $pagination: PaginationArgs! $filter: ProfileEventFilter) {
+query stream(
+  $types: [EventType!]!
+  $safeAddress: String!
+  $pagination: PaginationArgs!
+  $filter: ProfileEventFilter
+) {
   events(
     types: $types
     safeAddress: $safeAddress
@@ -638,18 +644,18 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
           value
         }
       }
-      ...on CrcTrust {
+      ... on CrcTrust {
         transaction_hash
         address
         can_send_to
         limit
       }
-      ...on CrcSignup {
+      ... on CrcSignup {
         transaction_hash
         user
         token
       }
-      ...on CrcMinting {
+      ... on CrcMinting {
         transaction_hash
         token
         from
@@ -668,54 +674,66 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
         }
         value
       }
-      ...on EthTransfer {
+      ... on EthTransfer {
         transaction_hash
         from
         to
         value
       }
-      ...on GnosisSafeEthTransfer {
+      ... on GnosisSafeEthTransfer {
         transaction_hash
         initiator
         from
         to
         value
       }
-      ...on ChatMessage {
+      ... on ChatMessage {
         from
+        from_profile {
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
         to
+        to_profile {
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
         text
       }
-      ...on MembershipOffer {
+      ... on MembershipOffer {
         createdBy
         organisation
         isAdmin
       }
-      ...on MembershipAccepted {
+      ... on MembershipAccepted {
         createdBy
         member
         organisation
       }
-      ...on MembershipRejected {
+      ... on MembershipRejected {
         member
         organisation
       }
-      ...on WelcomeMessage {
+      ... on WelcomeMessage {
         member
       }
-      ...on InvitationCreated {
+      ... on InvitationCreated {
         name
         code
       }
-      ...on InvitationRedeemed {
+      ... on InvitationRedeemed {
         name
         code
         redeemedBy
       }
-      ...on OrganisationCreated {
+      ... on OrganisationCreated {
         organisation
       }
-      ...on MemberAdded {
+      ... on MemberAdded {
         createdBy
         isAdmin
         member
@@ -725,11 +743,12 @@ query stream($types: [EventType!]! $safeAddress: String! $pagination: Pagination
   }
 }
 
-query aggregates($types:[AggregateType!]! $safeAddress:String! $filter:ProfileAggregateFilter) {
-  aggregates(
-    types: $types
-    safeAddress: $safeAddress
-    filter: $filter) {
+query aggregates(
+  $types: [AggregateType!]!
+  $safeAddress: String!
+  $filter: ProfileAggregateFilter
+) {
+  aggregates(types: $types, safeAddress: $safeAddress, filter: $filter) {
     type
     safe_address
     safe_address_profile {
@@ -774,7 +793,7 @@ query aggregates($types:[AggregateType!]! $safeAddress:String! $filter:ProfileAg
           token_balance
         }
       }
-      ...on Contacts {
+      ... on Contacts {
         lastUpdatedAt
         contacts {
           metadata {
@@ -794,18 +813,18 @@ query aggregates($types:[AggregateType!]! $safeAddress:String! $filter:ProfileAg
           }
         }
       }
-      ...on Members {
+      ... on Members {
         lastUpdatedAt
-        members{
-          ...on Profile {
+        members {
+          ... on Profile {
             circlesAddress
           }
-          ...on Organisation {
+          ... on Organisation {
             circlesAddress
           }
         }
       }
-      ...on Memberships {
+      ... on Memberships {
         lastUpdatedAt
         organisations {
           circlesAddress

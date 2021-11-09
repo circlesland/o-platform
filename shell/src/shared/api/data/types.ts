@@ -1814,6 +1814,13 @@ export type StreamQuery = (
     )>, payload?: Maybe<(
       { __typename?: 'ChatMessage' }
       & Pick<ChatMessage, 'from' | 'to' | 'text'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
     ) | (
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'transaction_hash' | 'from' | 'to' | 'flow'>
@@ -2970,7 +2977,19 @@ export const StreamDocument = gql`
       }
       ... on ChatMessage {
         from
+        from_profile {
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
         to
+        to_profile {
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
         text
       }
       ... on MembershipOffer {

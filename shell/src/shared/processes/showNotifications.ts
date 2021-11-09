@@ -9,7 +9,7 @@ import { inbox } from "../stores/inbox";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import { ProfileEvent } from "../api/data/types";
 import { push } from "svelte-spa-router";
-import {current_component} from "svelte/internal";
+import { current_component } from "svelte/internal";
 
 export type ShowNotificationsContextData = {
   events: ProfileEvent[];
@@ -18,11 +18,11 @@ export type ShowNotificationsContextData = {
 };
 
 const strings = {
-  crc_hub_transfer: "Received",
-  crc_trust: "New incoming trust",
+  CrcHubTransfer: "Received",
+  CrcTrust: "New incoming trust",
   crc_untrust: "Trust removed",
-  chat_message: "New incoming Chat Message",
-  crc_minting: "Received new Basic Income",
+  ChatMessage: "New Message",
+  CrcMinting: "Received new Basic Income",
 };
 export type ShowNotificationsContext =
   ProcessContext<ShowNotificationsContextData>;
@@ -102,9 +102,10 @@ const processDefinition = (processId: string) =>
           return {
             view: {
               title: strings[title],
+              titleClass: "",
               description: "",
               placeholder: "",
-              submitButtonText: "Next",
+              submitButtonText: "Got it",
             },
             push: (target) => push(target),
           };

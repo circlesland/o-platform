@@ -1,11 +1,11 @@
 <script lang="ts">
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 
-import NotificationViewChatMessage from "./NotificationViewer/atoms/NotificationViewChatMessage.svelte";
-import NotificationViewUbi from "./NotificationViewer/NotificationViewUbi.svelte";
-import NotificationViewTrust from "./NotificationViewer/atoms/NotificationViewTrust.svelte";
+import NotificationViewChatMessage from "./NotificationViewer/molecules/NotificationViewChatMessage.svelte";
+import NotificationViewUbi from "./NotificationViewer/molecules/NotificationViewUbi.svelte";
+import NotificationViewTrust from "./NotificationViewer/molecules/NotificationViewTrust.svelte";
+import NotificationViewTransfer from "./NotificationViewer/molecules/NotificationViewTransfer.svelte";
 import GenericEventCard from "./GenericEventCard.svelte";
-import NotificationViewTransfer from "./NotificationViewer/atoms/NotificationViewTransfer.svelte";
 
 import { inbox } from "./stores/inbox";
 import { NotificationViewerContext } from "@o-platform/o-editors/src/notificationViewerContext";
@@ -13,7 +13,7 @@ import ProcessNavigation from "../../../packages/o-editors/src/ProcessNavigation
 import { me } from "./stores/me";
 import { setTrust } from "../dapps/o-banking/processes/setTrust";
 
-import {EventType} from "./api/data/types";
+import { EventType } from "./api/data/types";
 
 export let context: NotificationViewerContext;
 
@@ -256,9 +256,14 @@ function getEventView() {
 </script>
 
 <div>
-
   {#if data.type == EventType.CrcMinting}
-    <NotificationViewUbi event={data} />
+    <NotificationViewUbi event="{data}" />
+  {:else if data.type == EventType.ChatMessage}
+    <NotificationViewChatMessage event="{data}" />
+  {:else if data.type == EventType.CrcTrust}
+    <NotificationViewTrust event="{data}" />
+  {:else if data.type == EventType.CrcHubTransfer}
+    <NotificationViewTransfer event="{data}" />
   {:else}
     {#if eventData}
       <div class="flex flex-col space-y-4">
@@ -277,10 +282,8 @@ function getEventView() {
             {eventData.actions[0].title}
           </button>
         </div>
-        <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
       </div>
-    {:else}
-      <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
     {/if}
   {/if}
+  <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
 </div>
