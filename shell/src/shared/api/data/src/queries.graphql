@@ -522,29 +522,6 @@ query organisationsByAddress($addresses: [String!]!) {
   }
 }
 
-query stats {
-  stats {
-    cityRank
-    inviteRank
-    currentGoal
-    totalCitizens
-    currentGoalFrom
-    nextGoalAt
-    cities {
-      geonameid
-      latitude
-      longitude
-      name
-      citizenCount
-      population
-    }
-    countries {
-      citizenCount
-      name
-    }
-  }
-}
-
 query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
   commonTrust(safeAddress1: $safeAddress1, safeAddress2: $safeAddress2) {
     type
@@ -560,75 +537,6 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
   }
 }
 
-query offers(
-  $createdByProfileId: Int
-  $id: String
-  $publishedAt_gt: String
-  $publishedAt_lt: String
-  $categoryTagId: Int
-) {
-  offers(
-    query: {
-      createdByProfileId: $createdByProfileId
-      id: $id
-      publishedAt_gt: $publishedAt_gt
-      publishedAt_lt: $publishedAt_lt
-      categoryTagId: $categoryTagId
-    }
-  ) {
-    id
-    createdBy {
-      id
-      circlesAddress
-      firstName
-      lastName
-      avatarUrl
-      avatarMimeType
-      city {
-        name
-        country
-      }
-    }
-    createdByProfileId
-    publishedAt
-    unlistedAt
-    purchasedAt
-    title
-    pictureUrl
-    pictureMimeType
-    description
-    categoryTagId
-    categoryTag {
-      id
-      typeId
-      value
-    }
-    geonameid
-    pricePerUnit
-    unitTag {
-      id
-      typeId
-      value
-    }
-    unitTagId
-    maxUnits
-    deliveryTermsTag {
-      id
-      typeId
-      value
-    }
-    deliveryTermsTagId
-    city {
-      geonameid
-      country
-      name
-      latitude
-      longitude
-      population
-      feature_code
-    }
-  }
-}
 query tags($typeId_in: [String!]!, $value_like: String) {
   tags(query: { typeId_in: $typeId_in, value_like: $value_like }) {
     id
@@ -831,6 +739,27 @@ query aggregates($types:[AggregateType!]! $safeAddress:String! $filter:ProfileAg
       circlesAddress
     }
     payload {
+      ...on Offers {
+        lastUpdatedAt
+        offers {
+          id
+          version
+          createdByProfile {
+            id
+            circlesAddress
+            firstName
+            lastName
+            avatarUrl
+          }
+          createdByAddress
+          createdAt
+          title
+          pictureUrl
+          pictureMimeType
+          description
+          pricePerUnit
+        }
+      }
       ...on CrcBalances {
         lastUpdatedAt
         balances {

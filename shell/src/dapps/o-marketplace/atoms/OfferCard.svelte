@@ -5,7 +5,7 @@ import { purchase } from "../processes/purchase";
 import OfferCardField from "./OfferCardField.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../../shared/stores/me";
-import { upsertOffer } from "../processes/upsertOffer";
+//import { upsertOffer } from "../processes/upsertOffer";
 import { truncateString } from "../../../shared/functions/truncateString";
 import Time from "svelte-time";
 
@@ -42,7 +42,7 @@ $: {
 
 function edit(dirtyFlags: { [field: string]: boolean }) {
   // console.log("edit: dirtyFlags:", dirtyFlags);
-  window.o.runProcess(upsertOffer, offer, dirtyFlags, true);
+  // window.o.runProcess(upsertOffer, offer, dirtyFlags, true);
 }
 
 function loadDetailPage() {

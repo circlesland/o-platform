@@ -5,7 +5,7 @@ import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
 import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
-import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
+// import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
@@ -82,7 +82,7 @@ export const marketplace: DappManifest<DappState> = {
         key: "createOffer",
         title: "Create offer",
         icon: "add",
-        action: () => window.o.runProcess(upsertOffer, {}),
+        //action: () => window.o.runProcess(upsertOffer, {}),
       },
     ],
   },

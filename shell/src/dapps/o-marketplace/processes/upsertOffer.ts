@@ -8,7 +8,7 @@ import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import * as yup from "yup";
-import { UpsertOfferDocument } from "../../../shared/api/data/types";
+// import { UpsertOfferDocument } from "../../../shared/api/data/types";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptTag } from "../../../shared/api/promptTag";
 import { promptCity } from "../../../shared/api/promptCity";
@@ -96,6 +96,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
     submitButtonText: "Publish Offer",
   },
 };
+
 
 const processDefinition = (processId: string) =>
   createMachine<UpsertOfferContext, any>({
@@ -223,6 +224,7 @@ const processDefinition = (processId: string) =>
           src: async (context) => {
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();
+            /*
             const result = await apiClient.mutate({
               mutation: UpsertOfferDocument,
               variables: {
@@ -243,6 +245,8 @@ const processDefinition = (processId: string) =>
               },
             });
             return result.data.upsertOffer;
+             */
+            return <any>{};
           },
           onDone: "#success",
           onError: "#error",

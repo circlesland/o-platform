@@ -1,6 +1,6 @@
 import {writable} from "svelte/store";
 import {
-  AcknowledgeDocument,
+  AcknowledgeDocument, Direction,
   EventType,
   PaginationArgs,
   Profile,
@@ -43,6 +43,9 @@ async function queryEvents() {
     variables: {
       safeAddress: mySafeAddress,
       pagination: pagination,
+      filter: {
+        direction: Direction.In
+      },
       types: [
         EventType.CrcHubTransfer,
         EventType.CrcMinting,

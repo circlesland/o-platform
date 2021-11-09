@@ -6,7 +6,7 @@ import {
   shellProcess,
   ShellProcessContext,
 } from "../../../shared/processes/shellProcess";
-import { upsertOffer } from "../processes/upsertOffer";
+// import { upsertOffer } from "../processes/upsertOffer";
 
 export let offer: Offer;
 export let field: {
@@ -23,7 +23,7 @@ $: {
 
 function edit(onlyThesePages: string[]) {
   // console.log("edit: dirtyFlags:", dirtyFlags);
-
+/*
   window.o.runProcess(
     {
       id: upsertOffer.id,
@@ -35,6 +35,7 @@ function edit(onlyThesePages: string[]) {
     {},
     onlyThesePages
   );
+ */
 }
 </script>
 

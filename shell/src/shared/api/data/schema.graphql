@@ -24,9 +24,9 @@ interface IEventPayload {
     transaction_hash: String
 }
 
-union AggregatePayload = Contacts | CrcBalances | Members | Memberships
+union AggregatePayload = Contacts | CrcBalances | Members | Memberships | Offers | Purchases
 
-union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | WelcomeMessage
+union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | Purchased | WelcomeMessage
 
 union ProfileOrOrganisation = Organisation | Profile
 
@@ -57,17 +57,6 @@ type ChatMessage implements IEventPayload {
 }
 
 type City implements ICity {
-    country: String!
-    feature_code: String!
-    geonameid: Int!
-    latitude: Float!
-    longitude: Float!
-    name: String!
-    population: Int!
-}
-
-type CityStats implements ICity {
-    citizenCount: Int!
     country: String!
     feature_code: String!
     geonameid: Int!
@@ -131,11 +120,6 @@ type ContactPoint {
 type Contacts implements IAggregatePayload {
     contacts: [Contact2!]!
     lastUpdatedAt: String!
-}
-
-type CountryStats {
-    citizenCount: Int!
-    name: String!
 }
 
 type CrcBalances implements IAggregatePayload {
@@ -261,10 +245,6 @@ type GnosisSafeEthTransfer implements IEventPayload {
     value: String!
 }
 
-type Goal {
-    totalCitizens: Int!
-}
-
 type InitAggregateState {
     hubSignupTransaction: String
     invitation: ClaimedInvitation
@@ -285,11 +265,6 @@ type InvitationRedeemed implements IEventPayload {
     redeemedBy: String
     redeemedBy_profile: Profile
     transaction_hash: String
-}
-
-type LockOfferResult {
-    lockedUntil: String
-    success: Boolean!
 }
 
 type LogoutResponse {
@@ -367,9 +342,7 @@ type Mutation {
     createTestInvitation: CreateInvitationResult!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
-    lockOffer(data: LockOfferInput!): LockOfferResult!
     logout: LogoutResponse!
-    provePayment(data: PaymentProof!): ProvePaymentResult!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     rejectMembership(membershipId: Int!): RejectMembershipResult
     removeMember(groupId: String!, memberId: Int!): RemoveMemberResult
@@ -378,9 +351,7 @@ type Mutation {
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     sendMessage(content: String!, toSafeAddress: String!): SendMessageResult!
     tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
-    unlistOffer(offerId: LockOfferInput!): Boolean!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
-    upsertOffer(data: UpsertOfferInput!): Offer!
     upsertOrganisation(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
     upsertProfile(data: UpsertProfileInput!): Profile!
     upsertRegion(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
@@ -393,26 +364,21 @@ type NotificationEvent {
 }
 
 type Offer {
-    categoryTag: Tag
-    categoryTagId: Int!
-    city: City
-    createdBy: Profile
-    createdByProfileId: Int!
-    deliveryTermsTag: Tag
-    deliveryTermsTagId: Int!
+    createdAt: String!
+    createdByAddress: String!
+    createdByProfile: Profile
     description: String
-    geonameid: Int!
-    id: String!
-    maxUnits: Int
+    id: Int!
     pictureMimeType: String!
     pictureUrl: String!
     pricePerUnit: String!
-    publishedAt: String!
-    purchasedAt: String
     title: String!
-    unitTag: Tag
-    unitTagId: Int!
-    unlistedAt: String
+    version: Int!
+}
+
+type Offers implements IAggregatePayload {
+    lastUpdatedAt: String!
+    offers: [Offer!]!
 }
 
 type Organisation {
@@ -456,7 +422,6 @@ type Profile {
     lastName: String
     memberships: [Membership!]
     newsletter: Boolean
-    offers: [Offer!]
     status: String
     trustsYou: Int
     youTrust: Int
@@ -485,20 +450,30 @@ type ProfileEvent {
     value: String
 }
 
-type ProvePaymentResult {
-    success: Boolean!
+type Purchase {
+    createdAt: String!
+    createdByAddress: String!
+    createdByProfile: Profile
+    id: Int!
+    lines: [PurchaseLine!]!
+    paymentTransaction: ProfileEvent
 }
 
-type Purchase {
+type PurchaseLine {
+    amount: Int!
     id: Int!
-    purchasedAt: String!
-    purchasedBy: Profile!
-    purchasedByProfileId: Int!
-    purchasedFrom: Profile!
-    purchasedFromProfileId: Int!
-    purchasedItem: Offer!
-    purchasedOfferId: String!
-    status: PurchaseStatus!
+    product: Offer!
+}
+
+type Purchased implements IEventPayload {
+    buyer: String!
+    buyer_profile: Profile
+    transaction_hash: String
+}
+
+type Purchases implements IAggregatePayload {
+    lastUpdatedAt: String!
+    purchases: [Purchase!]!
 }
 
 type Query {
@@ -514,7 +489,6 @@ type Query {
     lastUBITransaction: String
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
-    offers(query: QueryOfferInput!): [Offer!]!
     organisations(pagination: PaginationArgs): [Organisation!]!
     organisationsByAddress(addresses: [String!]!): [Organisation!]!
     profilesById(ids: [Int!]!): [Profile!]!
@@ -523,7 +497,6 @@ type Query {
     safeFundingTransaction: ProfileEvent
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
-    stats: Stats
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!
     trustRelations(safeAddress: String!): [TrustRelation!]!
@@ -569,18 +542,6 @@ type SessionInfo {
     lastAcknowledgedAt: String
     profile: Profile
     profileId: Int
-}
-
-type Stats {
-    cities: [CityStats!]!
-    cityRank: Int
-    countries: [CountryStats!]!
-    currentGoal: Int!
-    currentGoalFrom: Int!
-    goals: [Goal!]!
-    inviteRank: Int!
-    nextGoalAt: Int!
-    totalCitizens: Int!
 }
 
 type Subscription {
@@ -630,11 +591,18 @@ enum AggregateType {
     CrcBalances
     Members
     Memberships
+    Offers
+    Purchases
 }
 
 enum ContactDirection {
     In
     Out
+}
+
+enum Direction {
+    in
+    out
 }
 
 enum EventType {
@@ -653,13 +621,8 @@ enum EventType {
     MembershipOffer
     MembershipRejected
     OrganisationCreated
+    Purchased
     WelcomeMessage
-}
-
-enum PurchaseStatus {
-    INVALID
-    ITEM_LOCKED
-    PAYMENT_PROVEN
 }
 
 enum SortOrder {
@@ -690,8 +653,9 @@ input DepositChallenge {
     jwt: String!
 }
 
-input LockOfferInput {
-    offerId: String!
+input OffersAggregateFilter {
+    createdByAddresses: [String!]
+    offerIds: [Int!]
 }
 
 input PaginationArgs {
@@ -700,17 +664,14 @@ input PaginationArgs {
     order: SortOrder!
 }
 
-input PaymentProof {
-    forOfferId: LockOfferInput!
-    transactionHash: String!
-}
-
 input ProfileAggregateFilter {
     contacts: ContactAggregateFilter
     crcBalance: CrcBalanceAggregateFilter
+    offers: OffersAggregateFilter
 }
 
 input ProfileEventFilter {
+    direction: Direction
     from: String
     to: String
     transactionHash: String
@@ -731,24 +692,12 @@ input QueryCitiesInput {
     byName: QueryCitiesByNameInput
 }
 
-input QueryOfferInput {
-    categoryTagId: Int
-    createdByProfileId: Int
-    id: String
-    publishedAt_gt: String
-    publishedAt_lt: String
-}
-
 input QueryProfileInput {
     circlesAddress: [String!]
     country: String
     firstName: String
     id: [Int!]
     lastName: String
-}
-
-input QueryPurchaseInput {
-    purchasedByProfileId: String!
 }
 
 input QueryTagsInput {
@@ -770,20 +719,6 @@ input SearchInput {
 
 input UpdateSafeInput {
     signature: String!
-}
-
-input UpsertOfferInput {
-    categoryTagId: Int!
-    deliveryTermsTagId: Int!
-    description: String
-    geonameid: Int!
-    id: String
-    maxUnits: Int
-    pictureMimeType: String
-    pictureUrl: String
-    pricePerUnit: String!
-    title: String!
-    unitTagId: Int!
 }
 
 input UpsertOrganisationInput {
