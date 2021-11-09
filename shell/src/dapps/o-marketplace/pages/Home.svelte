@@ -11,9 +11,11 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import List from "../../../shared/molecules/Lists/List.svelte";
 
 import {
-  Offer,
+  AggregatesDocument, AggregateType, CrcBalances,
+  Offer, Offers,
   TagsDocument,
 } from "../../../shared/api/data/types";
+import {me} from "../../../shared/stores/me";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -30,10 +32,44 @@ let categories: string[] = [];
 let shellEventSubscription: Subscription;
 
 async function load() {
-  if (isLoading) return;
 
-  isLoading = true;
+
+
+
+  const safeAddress = $me.circlesAddress;
   const apiClient = await window.o.apiClient.client.subscribeToResult();
+
+  const offersResult = await apiClient.query({
+    query: AggregatesDocument,
+    variables: {
+      types: [AggregateType.Offers],
+      safeAddress: safeAddress
+    },
+  });
+
+  if (offersResult.errors?.length > 0) {
+    throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
+  }
+
+  const o = offersResult.data.aggregates.find(o => o.type == AggregateType.Offers);
+  if (!o) {
+    throw new Error(`Couldn't find the Offers in the query result.`)
+  }
+
+  offers = o.payload.offers;
+
+  console.log(o);
+
+
+
+
+
+
+
+  //if (isLoading) return;
+
+  //isLoading = true;
+  /*
   const result = await apiClient.query({
     query: OffersDocument,
     variables: {},
@@ -54,7 +90,7 @@ async function load() {
     return p;
   }, {});
   offers = result.data.offers;
-
+*/
   const categoryResult = await apiClient.query({
     query: TagsDocument,
     variables: {
@@ -103,13 +139,19 @@ function loadCategoryPage(category: any) {
 <div class="px-4 mx-auto -mt-3 lg:w-2/3 xl:w-1/2">
   <div
     class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
+    <!--
     <List
       listItemType="{Offer}"
       listItemComponent="{OfferCard}"
       fetchQuery="{OffersDocument}"
       fetchQueryArguments="{listArguments}"
       dataKey="offers"
-      dataLimit="{100}" />
+      dataLimit="{100}" />-->
+    {#if offers}
+      {#each offers as offer}
+        <OfferCard param={offer} />
+      {/each}
+    {/if}
   </div>
 </div>
 
