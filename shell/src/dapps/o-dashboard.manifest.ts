@@ -75,6 +75,7 @@ export const dashboard: DappManifest<DappState> = {
   icon: "dashboard",
   title: "Dashboard",
   routeParts: ["=dashboard"],
+  defaultRoute: ["dashboard"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,

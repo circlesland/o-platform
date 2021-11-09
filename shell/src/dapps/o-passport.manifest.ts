@@ -60,6 +60,7 @@ export const passport: DappManifest<DappState> = {
   icon: "passport",
   title: "Passport",
   routeParts: ["=passport"],
+  defaultRoute: ["passport"],
   tag: Promise.resolve("alpha"),
   jumplist: {
     type: "jumplist",
