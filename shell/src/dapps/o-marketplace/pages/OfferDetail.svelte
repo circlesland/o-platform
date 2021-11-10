@@ -1,15 +1,9 @@
 <script lang="ts">
-import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
-import {AggregatesDocument, AggregateType, Offer, OffersDocument} from "../../../shared/api/data/types";
-import OfferCard from "../atoms/OfferCard.svelte";
-import { onMount, onDestroy } from "svelte";
+import {AggregatesDocument, AggregateType, Offer} from "../../../shared/api/data/types";
+import { onMount} from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
-import CreatorCard from "../atoms/CreatorCard.svelte";
-import Time from "svelte-time";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { cartContents } from "../stores/shoppingCartStore";
 
 import { push } from "svelte-spa-router";
@@ -36,7 +30,7 @@ async function load() {
       safeAddress: safeAddress,
       filter: {
         offers: {
-          offerIds: [parseInt(id)]
+          offerIds: [Number.isInteger(id) ? id : parseInt(id.toString())]
         }
       }
     },
@@ -53,25 +47,6 @@ async function load() {
 
   offers = o.payload.offers;
   isLoading = false;
-
-  /*
-  const result = await apiClient.query({
-    query: OffersDocument,
-    variables: {
-      id: id,
-    },
-  });
-  if (result.errors && result.errors.length) {
-    error = new Error(
-      `An error occurred while the offer was loaded: ${JSON.stringify(
-        result.errors
-      )}`
-    );
-    throw error;
-  }
-  isLoading = false;
-  offers = result.data.offers;
-   */
 }
 
 function addToCart(item) {

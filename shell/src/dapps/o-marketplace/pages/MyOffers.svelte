@@ -1,7 +1,6 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import { Offer, OffersDocument } from "../../../shared/api/data/types";
-import OfferCard from "../atoms/OfferCard.svelte";
+import {AggregatesDocument, AggregateType, Offer} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
@@ -9,7 +8,6 @@ import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
-import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -22,25 +20,33 @@ let shellEventSubscription: Subscription;
 async function load() {
   if (isLoading) return;
 
-  isLoading = true;
+  const safeAddress = $me.circlesAddress;
   const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: OffersDocument,
+
+  const offersResult = await apiClient.query({
+    query: AggregatesDocument,
     variables: {
-      createdByProfileId: $me.id,
+      types: [AggregateType.Offers],
+      safeAddress: safeAddress,
+      filter: {
+        offers: {
+          createdByAddresses: [$me.circlesAddress]
+        }
+      }
     },
   });
-  if (result.errors && result.errors.length) {
-    error = new Error(
-      `An error occurred while the offer was loaded: ${JSON.stringify(
-        result.errors
-      )}`
-    );
-    throw error;
+
+  if (offersResult.errors?.length > 0) {
+    throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
   }
+
+  const o = offersResult.data.aggregates.find(o => o.type == AggregateType.Offers);
+  if (!o) {
+    throw new Error(`Couldn't find the Offers in the query result.`)
+  }
+
+  offers = o.payload.offers;
   isLoading = false;
-  offers = result.data.offers;
-  offers.splice(4);
 }
 
 onMount(async () => {
