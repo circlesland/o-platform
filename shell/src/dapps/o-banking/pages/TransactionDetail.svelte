@@ -8,9 +8,12 @@ import { me } from "../../../shared/stores/me";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import {
   CrcHubTransfer,
-  CrcMinting, EventType,
+  CrcMinting,
+  EventType,
   Profile,
-  ProfileEvent, SortOrder, StreamDocument,
+  ProfileEvent,
+  SortOrder,
+  StreamDocument,
 } from "../../../shared/api/data/types";
 export let transactionHash: string;
 let transfer: ProfileEvent;
@@ -35,13 +38,10 @@ onMount(async () => {
         continueAt: new Date(0),
       },
       filter: {
-        transactionHash: transactionHash
+        transactionHash: transactionHash,
       },
-      types: [
-        EventType.CrcHubTransfer,
-        EventType.CrcMinting
-      ]
-    }
+      types: [EventType.CrcHubTransfer, EventType.CrcMinting],
+    },
   });
 
   if (result.errors) {
@@ -94,7 +94,9 @@ onMount(async () => {
     message = transfer.tags?.find(
       (o) => o.typeId === "o-banking:transfer:message:1"
     )?.value;
-    displayableName = targetProfile.firstName + (!targetProfile.lastName ? "" : " " +targetProfile.lastName);
+    displayableName =
+      targetProfile.firstName +
+      (!targetProfile.lastName ? "" : " " + targetProfile.lastName);
   }
 });
 function openDetail(transfer: ProfileEvent) {
@@ -131,14 +133,24 @@ function openDetail(transfer: ProfileEvent) {
         <span class="inline-block text-6xl font-heading {classes}">
           {#if transfer.direction === "in"}
             +{displayCirclesAmount(
-              transfer ? (transfer.payload.value ? transfer.payload.value : transfer.payload.flow).toString() : "0",
+              transfer
+                ? (transfer.payload.value
+                    ? transfer.payload.value
+                    : transfer.payload.flow
+                  ).toString()
+                : "0",
               transfer.timestamp,
               true,
               $me.displayTimeCircles || $me.displayTimeCircles === undefined
             )}
           {:else}
             -{displayCirclesAmount(
-              transfer ? (transfer.payload.value ? transfer.payload.value : transfer.payload.flow).toString() : "0",
+              transfer
+                ? (transfer.payload.value
+                    ? transfer.payload.value
+                    : transfer.payload.flow
+                  ).toString()
+                : "0",
               transfer.timestamp,
               true,
               $me.displayTimeCircles || $me.displayTimeCircles === undefined
@@ -219,7 +231,7 @@ function openDetail(transfer: ProfileEvent) {
           </div>
         </div>
       </div>
-      <div class="flex flex-col w-full space-y-1">
+      <!-- <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
           Amount Circles
         </div>
@@ -232,7 +244,7 @@ function openDetail(transfer: ProfileEvent) {
             Circles
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">From</div>
         <div class="flex items-center w-full">
