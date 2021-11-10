@@ -3,7 +3,6 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import CurrencyTransfer from "@o-platform/o-editors/src/CurrencyTransfer.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transferXdai } from "./transferXdai";

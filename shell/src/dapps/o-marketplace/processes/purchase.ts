@@ -11,6 +11,14 @@ import {
   CreatePurchaseDocument,
   PurchaseLineInput
 } from "../../../shared/api/data/types";
+import {show} from "@o-platform/o-process/dist/actions/show";
+import ErrorView from "../../../shared/atoms/Error.svelte";
+import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {transferCircles} from "../../o-banking/processes/transferCircles";
+import {convertTimeCirclesToCircles} from "../../../shared/functions/displayCirclesAmount";
+import {totalPrice} from "../stores/shoppingCartStore";
+import {me} from "../../../shared/stores/me";
 
 export type PurchaseContextData = {
   items: Offer[];
@@ -88,9 +96,81 @@ const processDefinition = (processId: string) =>
 
             console.log(result);
           },
-          onDone: "#success",
-          onError: "#success"
+          onDone: "#pay",
+          onError: {
+            actions: (context, event) => {
+              window.o.lastError = event.data;
+            },
+            target: "#showError",
+          }
         }
+      },
+      pay: {
+        id: "pay",
+        on: <any>{
+          ...ipc("pay"),
+        },
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Sending Circles ..`,
+          });
+        },
+        invoke: {
+          src: transferCircles.stateMachine(
+            `${processId}:transfer:transferCircles`
+          ),
+          data: {
+            data: (context, event) => {
+              let amount = 0;
+              const unsub = totalPrice.subscribe($totalPrice => {
+                amount = $totalPrice;
+              });
+              unsub();
+
+              let mySafeAddress = "";
+              const unsub2 = me.subscribe($me => {
+                mySafeAddress = $me.circlesAddress;
+              });
+              unsub2();
+
+              return {
+                safeAddress: mySafeAddress,
+                recipientAddress: context.data.sellerProfile.circlesAddress,
+                amount: convertTimeCirclesToCircles(
+                  amount,
+                  null
+                ),
+                privateKey: sessionStorage.getItem("circlesKey"),
+                message: undefined,
+                transitivePath: context.data.transitivePath,
+              };
+            },
+            messages: {},
+            dirtyFlags: {},
+          },
+          onDone: {
+            target: "#success",
+            actions: (context, event) => {
+              // context.data.transitivePath = event.data.transitivePath;
+              // context.data.receipt = event.data.receipt;
+              console.log("Transfer CRC returned:", event.data);
+            },
+          },
+          onError: "#showError",
+        },
+      },
+      showError: {
+        id: "showError",
+        entry: show({
+          component: ErrorView,
+          params: {},
+          field: {
+            name: "",
+            get: () => undefined,
+            set: (o: any) => {},
+          },
+        }),
       },
       success: {
         type: "final",
