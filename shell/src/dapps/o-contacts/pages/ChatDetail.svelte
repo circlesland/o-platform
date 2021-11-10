@@ -128,7 +128,9 @@
     });
 
     if (result.data?.sendMessage?.success) {
-      chatHistory = [...chatHistory, result.data.sendMessage.event];
+      chatHistory = [...chatHistory, <any>{
+        original: result.data.sendMessage.event
+      }];
     }
 
     window.o.publishEvent(<any>{

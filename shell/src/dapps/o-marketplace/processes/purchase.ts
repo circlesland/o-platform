@@ -3,42 +3,18 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import CheckoutSummary from "../../o-marketplace/atoms/CheckoutSummary.svelte";
 import {
   Profile,
   Offer,
-  Purchase,
-  ProfilesDocument,
   CreatePurchaseDocument,
   PurchaseLineInput
 } from "../../../shared/api/data/types";
 
-import {
-  transferCircles,
-  TransitivePath,
-} from "../../../dapps/o-banking/processes/transferCircles";
-import { TransactionReceipt } from "web3-core";
-
 export type PurchaseContextData = {
   items: Offer[];
-  safeAddress: string;
-  recipientAddress?: string;
   sellerProfile?: Profile;
-  recipientProfile?: Profile;
-  transitivePath: TransitivePath;
-  receipt: TransactionReceipt;
-  message?: string;
-  tokens?: {
-    currency: string;
-    amount: string;
-  };
-  maxFlows?: {
-    [currency: string]: string;
-  };
-  summaryHtml?: string;
-  acceptSummary?: boolean;
 };
 
 export type PurchaseContext = ProcessContext<PurchaseContextData>;
