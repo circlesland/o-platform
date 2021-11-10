@@ -13,7 +13,7 @@ import {
   ProfileEvent,
 } from "../../../shared/api/data/types";
 
-export let param: ProfileEvent;
+export let event: ProfileEvent;
 
 let path: any;
 let fromProfile: Profile = <any>{};
@@ -21,68 +21,84 @@ let toProfile: Profile = <any>{};
 let error: string;
 let message: string | undefined = undefined;
 let targetProfile: Profile = <any>{};
+let amount: string = "";
 
-onMount(async () => {
-  if (param && param.payload?.__typename == "CrcMinting") {
-    const minting = param.payload as CrcMinting;
-    fromProfile = minting.from_profile ?? {
-      id: 0,
-      firstName: "Circles Land",
-      lastName: "",
-      avatarUrl: "/images/common/circles.png",
-      circlesAddress: minting.from,
-    };
+if (event && event.payload?.__typename == "CrcMinting") {
+  const minting = event.payload as CrcMinting;
+  fromProfile = minting.from_profile ?? {
+    id: 0,
+    firstName: "Circles Land",
+    lastName: "",
+    avatarUrl: "/images/common/circles.png",
+    circlesAddress: minting.from,
+  };
 
-    toProfile = minting.to_profile ?? {
-      id: 0,
-      firstName: minting.to.substr(0, 24) + "...",
-      lastName: "",
-      circlesAddress: minting.to,
-    };
+  toProfile = minting.to_profile ?? {
+    id: 0,
+    firstName: minting.to.substr(0, 24) + "...",
+    lastName: "",
+    circlesAddress: minting.to,
+  };
+  amount = displayCirclesAmount(
+    event.payload && event.payload.value ? event.payload.value.toString() : "0",
+    event.timestamp,
+    true,
+    $me.displayTimeCircles || $me.displayTimeCircles === undefined
+  );
+  message = "Universal basic income";
+}
+
+if (event && event.payload?.__typename == "CrcHubTransfer") {
+  const hubTransfer = event.payload as CrcHubTransfer;
+  fromProfile = hubTransfer.from_profile ?? {
+    id: 0,
+    firstName: hubTransfer.from.substr(0, 24) + "...",
+    lastName: "",
+    circlesAddress: hubTransfer.from,
+  };
+
+  toProfile = hubTransfer.to_profile ?? {
+    id: 0,
+    firstName: hubTransfer.to.substr(0, 24) + "...",
+    lastName: "",
+    circlesAddress: hubTransfer.to,
+  };
+
+  path = {
+    transfers: hubTransfer.transfers,
+  };
+
+  message = hubTransfer.tags?.find(
+    (o) => o.typeId === "o-banking:transfer:message:1"
+  )?.value;
+
+  amount = displayCirclesAmount(
+    event.payload && event.payload.flow ? event.payload.flow.toString() : "0",
+    event.timestamp,
+    true,
+    $me.displayTimeCircles || $me.displayTimeCircles === undefined
+  );
+
+  if (event.direction == "out") {
+    amount = "-" + amount;
   }
+}
 
-  if (param && param.payload?.__typename == "CrcHubTransfer") {
-    const hubTransfer = param.payload as CrcHubTransfer;
-    fromProfile = hubTransfer.from_profile ?? {
-      id: 0,
-      firstName: hubTransfer.from.substr(0, 24) + "...",
-      lastName: "",
-      circlesAddress: hubTransfer.from,
-    };
-
-    toProfile = hubTransfer.to_profile ?? {
-      id: 0,
-      firstName: hubTransfer.to.substr(0, 24) + "...",
-      lastName: "",
-      circlesAddress: hubTransfer.to,
-    };
-
-    path = {
-      transfers: hubTransfer.transfers,
-    };
-  }
-
-  if (param) {
-    message = param.tags?.find(
-      (o) => o.typeId === "o-banking:transfer:message:1"
-    )?.value;
-  }
-
-  targetProfile = param.direction === "in" ? fromProfile : toProfile;
-});
+targetProfile = event.direction === "in" ? fromProfile : toProfile;
 
 function loadDetailPage(path) {
   push(`#/banking/transactions/${path}`);
 }
 </script>
 
-<div on:click="{() => loadDetailPage(param.transaction_hash)}">
+<div on:click="{() => loadDetailPage(event.transaction_hash)}">
   <ItemCard
     params="{{
       edgeless: false,
       imageProfile: targetProfile,
+      profileLink: false,
       imageAlt:
-        param.direction === 'in'
+        event.direction === 'in'
           ? fromProfile.circlesAddress
           : toProfile.circlesAddress,
       imageAction: (e) => {
@@ -96,39 +112,13 @@ function loadDetailPage(path) {
         (!targetProfile.lastName ? '' : targetProfile.lastName),
       subTitle: message ? message : '',
       truncateMain: true,
+      endTextBig: amount,
+      endTextBigClass: amount.startsWith('-') ? 'text-alert' : undefined,
     }}">
-    <div slot="itemCardEnd">
-      <div
-        class="self-end text-right"
-        class:text-success="{param.direction === 'in'}"
-        class:text-alert="{param.direction === 'out'}">
-        <span>
-          {#if param.type === "CrcHubTransfer"}
-            {displayCirclesAmount(
-              param.payload && param.payload.flow
-                ? param.payload.flow.toString()
-                : "0",
-              param.timestamp,
-              true,
-              $me.displayTimeCircles || $me.displayTimeCircles === undefined
-            )}
-          {:else if param.type === "CrcMinting"}
-            {displayCirclesAmount(
-              param.payload && param.payload.value
-                ? param.payload.value.toString()
-                : "0",
-              param.timestamp,
-              true,
-              $me.displayTimeCircles || $me.displayTimeCircles === undefined
-            )}
-          {/if}
-        </span>
-      </div>
-      <div class="self-end text-xs text-dark-lightest whitespace-nowrap">
-        {#if param.timestamp}
-          <Date time="{param.timestamp}" />
-        {/if}
-      </div>
+    <div slot="itemCardEndSmallElement">
+      {#if event.timestamp}
+        <Date time="{event.timestamp}" />
+      {/if}
     </div>
   </ItemCard>
 </div>

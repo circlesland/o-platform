@@ -1,7 +1,7 @@
 <script lang="ts">
 import BankingHeader from "../atoms/BankingHeader.svelte";
 //import TransactionCard from "../atoms/TransactionCard.svelte";
-import TransactionCard2 from "../atoms/TransactionCard2.svelte";
+import TransactionCard from "../atoms/TransactionCard.svelte";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
@@ -22,13 +22,10 @@ $: me;
     limit="{25}"
     queryArguments="{{
       safeAddress: $me.circlesAddress,
-      types: [
-        EventType.CrcHubTransfer,
-        EventType.CrcMinting
-      ],
+      types: [EventType.CrcHubTransfer, EventType.CrcMinting],
     }}"
     views="{{
-      [EventType.CrcHubTransfer]: TransactionCard2,
-      [EventType.CrcMinting]: TransactionCard2,
+      [EventType.CrcHubTransfer]: TransactionCard,
+      [EventType.CrcMinting]: TransactionCard,
     }}" />
 </div>
