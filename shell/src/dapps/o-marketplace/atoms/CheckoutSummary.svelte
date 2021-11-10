@@ -146,5 +146,8 @@ function onkeydown(e: KeyboardEvent) {
       </div> -->
     </div>
   </div>
-  <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+  <ProcessNavigation
+    on:buttonClick="{submit}"
+    context="{context}"
+    noSticky="{true}" />
 {/if}

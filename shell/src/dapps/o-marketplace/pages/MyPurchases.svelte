@@ -106,7 +106,7 @@ onMount(async () => {
           title: `Purchase from ${dayjs(purchase.createdAt).format(
             'DD.MM.YYYY'
           )}`,
-          action: () => push(`#/marketplace/purchase/${purchase.id}`),
+          action: () => push(`#/marketplace/my-purchases/${purchase.id}`),
           subTitle: `${purchase.lines
             .map((line) => line.offer.title)
             .join(', ')}`,

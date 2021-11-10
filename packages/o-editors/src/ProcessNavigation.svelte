@@ -7,11 +7,13 @@ const dispatch = createEventDispatcher();
 
 export let context: EditorContext;
 export let type: string = "large";
+export let noSticky: boolean = false;
 </script>
 
 <div
-  class="sticky bottom-0 left-0 right-0 flex flex-col flex-grow w-full py-2 space-x-0 space-y-4 bg-white md:space-x-4 md:space-y-0 md:flex-row"
-  class:mt-6="{type != 'small'}">
+  class="bottom-0 left-0 right-0 flex flex-col flex-grow w-full py-2 space-x-0 space-y-4 bg-white md:space-x-4 md:space-y-0 md:flex-row"
+  class:mt-6="{type != 'small'}"
+  class:sticky="{!noSticky}">
   <div class="flex-1">
     {#if !context.params.hideNav}
       {#if type == "large"}

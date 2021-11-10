@@ -5,7 +5,7 @@ import Item from "../../../shared/molecules/Select/Item.svelte";
 export let cartContents;
 export let editable: boolean = true;
 
-$: console.log($cartContents);
+$: console.log("Content:", $cartContents);
 $: groupedItems = $cartContents ? orderItems($cartContents) : {};
 
 function removeAllItems(id) {
