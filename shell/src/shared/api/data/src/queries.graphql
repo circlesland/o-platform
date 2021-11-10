@@ -764,6 +764,7 @@ query stream(
           circlesAddress
         }
         purchase {
+          id
           lines {
             amount
             offer {
@@ -887,6 +888,7 @@ query aggregates(
       ... on Purchases {
         lastUpdatedAt
         purchases {
+          id
           createdAt
           createdByAddress
           createdByProfile {

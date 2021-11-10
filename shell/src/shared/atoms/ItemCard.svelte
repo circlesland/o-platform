@@ -23,6 +23,7 @@ export let params = {
   endTextSmall: null,
   imageProfile: null,
   profileLink: null,
+  class: null,
   noLink: false,
 };
 
@@ -40,7 +41,10 @@ function cardAction() {
 }
 </script>
 
-<section on:click="{() => cardAction()}" class:mb-3="{!params.inline}">
+<section
+  on:click="{() => cardAction()}"
+  class:mb-3="{!params.inline}"
+  class="{params.class ? params.class : ''}">
   <div
     class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-sm"
     class:p-3="{!params.edgeless}">

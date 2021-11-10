@@ -1,12 +1,20 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import {AggregatesDocument, AggregateType, Offer, Purchase} from "../../../shared/api/data/types";
+import {
+  AggregatesDocument,
+  AggregateType,
+  Offer,
+  Purchase,
+} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
+import dayjs from "dayjs";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import SimpleItemCard from "../atoms/SimpleItemCard.svelte";
+import { push } from "svelte-spa-router";
 import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -27,7 +35,7 @@ async function load() {
     query: AggregatesDocument,
     variables: {
       types: [AggregateType.Purchases],
-      safeAddress: safeAddress
+      safeAddress: safeAddress,
     },
   });
 
@@ -35,9 +43,11 @@ async function load() {
     throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
   }
 
-  const o = purchasesResult.data.aggregates.find(o => o.type == AggregateType.Purchases);
+  const o = purchasesResult.data.aggregates.find(
+    (o) => o.type == AggregateType.Purchases
+  );
   if (!o) {
-    throw new Error(`Couldn't find the Purchases in the query result.`)
+    throw new Error(`Couldn't find the Purchases in the query result.`);
   }
 
   purchases = o.payload.purchases;
@@ -63,6 +73,15 @@ onMount(async () => {
     shellEventSubscription.unsubscribe();
   };
 });
+
+// {
+//   imageUrl: "",
+//   title: "",
+//   subTitle: "",
+//   noTruncate: false,
+//   edgeless: true,
+//   cardLink: "",
+// };
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -88,6 +107,22 @@ onMount(async () => {
     </section>
   {:else if purchases.length}
     {#each purchases as purchase}
+      <SimpleItemCard
+        params="{{
+          imageUrl: purchase.lines[0].product.pictureUrl,
+          edgeless: true,
+
+          title: `Purchase from ${dayjs(purchase.createdAt).format(
+            'DD.MM.YYYY'
+          )}`,
+          action: push(`#/marketplace/purchase/${purchase.id}`),
+          subTitle: `${purchase.lines
+            .map((line) => line.product.title)
+            .join(', ')}`,
+          endTextBig: `22  ⦿`,
+          endTextBigClass: 'text-3xl',
+          class: 'cursor-pointer',
+        }}" />
       <!--<TransactionItemCard offer="{offer}" />-->
       <pre>{JSON.stringify(purchase, null, 2)}</pre>
     {/each}
