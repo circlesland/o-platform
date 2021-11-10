@@ -440,8 +440,10 @@ $: {
   // Open / Close Navigation on screen-size basis.
   // OKay, this breaks a lot of things. sorry about that.
   // if ($media.small) {
-  //   window.o.publishEvent({
-  //     type: "shell.closeNavigation",
+  //   console.log("DUDE");
+  //   setNav({
+  //     ...currentNavArgs,
+  //     leftIsOpen: false,
   //   });
   // }
   // if ($media.large) {
@@ -531,12 +533,23 @@ async function handleUrlChanged() {
     runtimeDapp: runtimeDapp,
     routable: findRouteResult.routable,
   });
-  // Automatically open leftNav on desktop.
-  if ($media.large) {
-    if (!layout.dialogs.center) {
-      window.o.publishEvent({
-        type: "shell.openNavigation",
-      });
+
+  // Automatically open leftNav on desktop unless it's marketplace
+  if (dapp.dappId == "marketplace:1") {
+    if (!$media.xlarge) {
+      if (!layout.dialogs.center) {
+        window.o.publishEvent({
+          type: "shell.closeNavigation",
+        });
+      }
+    }
+  } else {
+    if ($media.large) {
+      if (!layout.dialogs.center) {
+        window.o.publishEvent({
+          type: "shell.openNavigation",
+        });
+      }
     }
   }
   if (!navigation) {

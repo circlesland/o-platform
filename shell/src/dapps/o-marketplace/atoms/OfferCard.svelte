@@ -3,6 +3,7 @@ import { push } from "svelte-spa-router";
 import { Offer } from "../../../shared/api/data/types";
 import { purchase } from "../processes/purchase";
 import OfferCardField from "./OfferCardField.svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../../shared/stores/me";
 //import { upsertOffer } from "../processes/upsertOffer";
@@ -59,11 +60,20 @@ let sevendaysago = now.setDate(now.getDate() - 7);
 function dateOlderThanSevenDays(unixTime: number) {
   return sevendaysago > unixTime * 1000;
 }
+
+let displayName = `${offer.createdByProfile.firstName} ${
+  offer.createdByProfile.lastName ? offer.createdByProfile.lastName : ""
+}`;
+
+displayName =
+  displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
 <section class="flex items-start pb-2 bg-white shadow rounded-xl">
   <div class="flex flex-col w-full ">
-    <header class=" rounded-t-xl headerImageContainer">
+    <header
+      class="cursor-pointer rounded-t-xl headerImageContainer"
+      on:click="{() => loadDetailPage()}">
       <div class="relative rounded-t-xl image-wrapper">
         <img
           src="{offer.pictureUrl
@@ -83,18 +93,13 @@ function dateOlderThanSevenDays(unixTime: number) {
     <div
       class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
       <div class="inline-flex">
-        <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
-          <img
-            class="rounded-full"
-            src="{offer.createdByProfile.avatarUrl
-              ? offer.createdByProfile.avatarUrl
-              : '/images/market/city.png'}"
-            alt="user-icon" />
-        </div>
+        <UserImage
+          profile="{offer.createdByProfile}"
+          size="{10}"
+          gradientRing="{false}" />
       </div>
       <div>
-        {offer.createdByProfile.firstName}
-        {offer.createdByProfile.lastName}
+        {displayName}
       </div>
     </div>
     <div class="flex flex-col w-full px-4 pb-2 mt-2 space-y-4 bg-white">

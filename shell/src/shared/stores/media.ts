@@ -3,6 +3,7 @@ import watchMedia from "../functions/watchMedia";
 const mediaqueries = {
   small: "(max-width: 776px)",
   large: "(min-width: 768px)",
+  xlarge: "(min-width: 1024px)",
   short: "(max-height: 399px)",
   landscape: "(orientation: landscape) and (max-height: 499px)",
   tiny: "(orientation: portrait) and (max-height: 599px)",
