@@ -897,6 +897,7 @@ query aggregates(
             lastName
             avatarCid
           }
+          total
           lines {
             id
             amount

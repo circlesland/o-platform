@@ -450,6 +450,7 @@ type Purchase {
     id: Int!
     lines: [PurchaseLine!]!
     paymentTransaction: ProfileEvent
+    total: String!
 }
 
 type PurchaseLine {

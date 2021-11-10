@@ -710,6 +710,7 @@ export type Purchase = {
   id: Scalars['Int'];
   lines: Array<PurchaseLine>;
   paymentTransaction?: Maybe<ProfileEvent>;
+  total: Scalars['String'];
 };
 
 export type PurchaseLine = {
@@ -1955,7 +1956,6 @@ export type StreamQuery = (
         & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, purchase?: Maybe<(
         { __typename?: 'Purchase' }
-        & Pick<Purchase, 'id'>
         & { lines: Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'amount'>
@@ -2049,7 +2049,7 @@ export type AggregatesQuery = (
       & Pick<Purchases, 'lastUpdatedAt'>
       & { purchases: Array<(
         { __typename?: 'Purchase' }
-        & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress'>
+        & Pick<Purchase, 'createdAt' | 'createdByAddress' | 'total'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarCid'>
@@ -3182,7 +3182,6 @@ export const StreamDocument = gql`
           circlesAddress
         }
         purchase {
-          id
           lines {
             amount
             offer {
@@ -3303,7 +3302,6 @@ export const AggregatesDocument = gql`
       ... on Purchases {
         lastUpdatedAt
         purchases {
-          id
           createdAt
           createdByAddress
           createdByProfile {
@@ -3312,6 +3310,7 @@ export const AggregatesDocument = gql`
             lastName
             avatarCid
           }
+          total
           lines {
             id
             amount
