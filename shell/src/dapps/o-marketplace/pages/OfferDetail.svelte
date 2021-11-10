@@ -1,6 +1,6 @@
 <script lang="ts">
 import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
-import { Offer, OffersDocument } from "../../../shared/api/data/types";
+import {AggregatesDocument, AggregateType, Offer, OffersDocument} from "../../../shared/api/data/types";
 import OfferCard from "../atoms/OfferCard.svelte";
 import { onMount, onDestroy } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -13,6 +13,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { cartContents } from "../stores/shoppingCartStore";
 
 import { push } from "svelte-spa-router";
+import {me} from "../../../shared/stores/me";
 
 let isLoading: boolean;
 let error: Error;
@@ -23,9 +24,37 @@ export let id: number;
 
 async function load() {
   if (isLoading || !id) return;
-
   isLoading = true;
+
+  const safeAddress = $me.circlesAddress;
   const apiClient = await window.o.apiClient.client.subscribeToResult();
+
+  const offersResult = await apiClient.query({
+    query: AggregatesDocument,
+    variables: {
+      types: [AggregateType.Offers],
+      safeAddress: safeAddress,
+      filter: {
+        offers: {
+          offerIds: [parseInt(id)]
+        }
+      }
+    },
+  });
+
+  if (offersResult.errors?.length > 0) {
+    throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
+  }
+
+  const o = offersResult.data.aggregates.find(o => o.type == AggregateType.Offers);
+  if (!o) {
+    throw new Error(`Couldn't find the Offers in the query result.`)
+  }
+
+  offers = o.payload.offers;
+  isLoading = false;
+
+  /*
   const result = await apiClient.query({
     query: OffersDocument,
     variables: {
@@ -42,6 +71,7 @@ async function load() {
   }
   isLoading = false;
   offers = result.data.offers;
+   */
 }
 
 function addToCart(item) {
@@ -104,7 +134,7 @@ onMount(async () => {
                 class="w-full rounded-t-xl" />
               <div
                 class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest">
-                {offer.pricePerUnit} C / {offer.unitTag.value}
+                {offer.pricePerUnit} C <!--/ {offer.unitTag.value}-->
                 <!-- <Time relative timestamp={offer.publishedAt} /> -->
               </div>
             </div>
@@ -115,24 +145,25 @@ onMount(async () => {
               <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
                 <img
                   class="rounded-full"
-                  src="{offer.createdBy.avatarUrl
-                    ? offer.createdBy.avatarUrl
+                  src="{offer.createdByProfile.avatarUrl
+                    ? offer.createdByProfile.avatarUrl
                     : '/images/market/city.png'}"
                   alt="user-icon" />
               </div>
             </div>
-            <div>{offer.createdBy.firstName} {offer.createdBy.lastName}</div>
+            <div>{offer.createdByProfile.firstName} {offer.createdByProfile.lastName}</div>
           </div>
           <div class="flex flex-col w-full px-6 mt-6 space-y-4 bg-white">
             <div class="flex flex-row flex-grow space-x-2">
               <div
                 class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
+                <!--
                 <a
                   href="#/marketplace/categories/{offer.categoryTagId}/{offer
                     .categoryTag.value}"
                   alt="{offer.categoryTag.value}">
                   {offer.categoryTag.value}
-                </a>
+                </a>-->
               </div>
             </div>
             <div class="text-lg font-bold text-left uppercase">

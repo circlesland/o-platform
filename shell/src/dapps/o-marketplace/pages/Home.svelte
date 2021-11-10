@@ -32,9 +32,7 @@ let categories: string[] = [];
 let shellEventSubscription: Subscription;
 
 async function load() {
-
-
-
+  if (isLoading) return;
 
   const safeAddress = $me.circlesAddress;
   const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -58,39 +56,16 @@ async function load() {
 
   offers = o.payload.offers;
 
-  console.log(o);
-
-
-
-
-
-
-
-  //if (isLoading) return;
-
-  //isLoading = true;
   /*
-  const result = await apiClient.query({
-    query: OffersDocument,
-    variables: {},
-  });
-  if (result.errors && result.errors.length) {
-    error = new Error(
-      `An error occurred while the offer was loaded: ${JSON.stringify(
-        result.errors
-      )}`
-    );
-    throw error;
-  }
-  citites = result.data.offers.reduce((p, c) => {
+  citites = offers.reduce((p, c) => {
     if (!p[c.city.name]) {
       p[c.city.name] = [];
     }
     p[c.city.name].push(c);
     return p;
   }, {});
-  offers = result.data.offers;
-*/
+ */
+
   const categoryResult = await apiClient.query({
     query: TagsDocument,
     variables: {

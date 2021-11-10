@@ -3,14 +3,14 @@ import { push } from "svelte-spa-router";
 
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {
-  Contact2,
+  Contact,
   ContactDirection,
   ContactPoint, EventType,
   Profile,
 } from "../../../shared/api/data/types";
 import DateView from "../../../shared/atoms/Date.svelte";
 
-export let param: Contact2;
+export let param: Contact;
 
 let displayName: string;
 let message: string;
@@ -115,7 +115,7 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
   }
 }
 
-displayName += ` | ${trustStatus}`;
+// displayName += ` | ${trustStatus}`;
 
 function loadDetailPage(path) {
   push(`#/friends/chat/${path}`);
@@ -135,8 +135,8 @@ function goToProfile(e, path?: string) {
     params="{{
       edgeless: false,
       imageProfile: param.contactAddress_Profile,
-      title: message,
-      subTitle: displayName,
+      title: displayName,
+      subTitle: message,
     }}">
     <div slot="itemCardEndSmallElement">
       {#if param.timestamp}
