@@ -72,20 +72,20 @@ export const marketplace: DappManifest<DappState> = {
   routeParts: ["=marketplace"],
   defaultRoute: ["stream"],
   tag: Promise.resolve("alpha"),
-  jumplist: {
-    type: "jumplist",
-    title: "Actions",
-    isSystem: false,
-    routeParts: ["=actions"],
-    items: async () => [
-      {
-        key: "createOffer",
-        title: "Create offer",
-        icon: "add",
-        //action: () => window.o.runProcess(upsertOffer, {}),
-      },
-    ],
-  },
+  // jumplist: {
+  //   type: "jumplist",
+  //   title: "Actions",
+  //   isSystem: false,
+  //   routeParts: ["=actions"],
+  //   items: async () => [
+  //     {
+  //       key: "createOffer",
+  //       title: "Create offer",
+  //       icon: "add",
+  //       //action: () => window.o.runProcess(upsertOffer, {}),
+  //     },
+  //   ],
+  // },
   isEnabled: true,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
