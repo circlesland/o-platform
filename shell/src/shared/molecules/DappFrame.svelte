@@ -77,7 +77,7 @@ function setNav(navArgs: GenerateNavManifestArgs) {
   if (navArgs.centerIsOpen && !preModalNavArgs) {
     preModalNavArgs = currentNavArgs;
   }
-  let args = { ...navArgs, showLogin: dapp.dappId == "homepage:1" };
+  let args = { ...navArgs, showLogin: dapp.dappId == "homepage:1" && !layout.dialogs.center };
   navigation = generateNavManifest(args, null);
   currentNavArgs = args;
 }
