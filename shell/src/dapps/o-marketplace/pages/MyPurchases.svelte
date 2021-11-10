@@ -73,15 +73,6 @@ onMount(async () => {
     shellEventSubscription.unsubscribe();
   };
 });
-
-// {
-//   imageUrl: "",
-//   title: "",
-//   subTitle: "",
-//   noTruncate: false,
-//   edgeless: true,
-//   cardLink: "",
-// };
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -109,22 +100,20 @@ onMount(async () => {
     {#each purchases as purchase}
       <SimpleItemCard
         params="{{
-          imageUrl: purchase.lines[0].product.pictureUrl,
+          imageUrl: purchase.lines[0].offer.pictureUrl,
           edgeless: true,
 
           title: `Purchase from ${dayjs(purchase.createdAt).format(
             'DD.MM.YYYY'
           )}`,
-          action: push(`#/marketplace/purchase/${purchase.id}`),
+          action: () => push(`#/marketplace/purchase/${purchase.id}`),
           subTitle: `${purchase.lines
-            .map((line) => line.product.title)
+            .map((line) => line.offer.title)
             .join(', ')}`,
-          endTextBig: `22  ⦿`,
+          endTextBig: `(fixme) 22  ⦿`,
           endTextBigClass: 'text-3xl',
           class: 'cursor-pointer',
         }}" />
-      <!--<TransactionItemCard offer="{offer}" />-->
-      <pre>{JSON.stringify(purchase, null, 2)}</pre>
     {/each}
   {:else}
     <section class="flex items-center justify-center mb-2 ">

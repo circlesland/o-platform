@@ -10,10 +10,10 @@ import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-const stream: Page<any, DappState> = {
-  routeParts: ["=stream"],
+const market: Page<any, DappState> = {
+  routeParts: ["=market"],
   component: Home,
-  title: "Stream",
+  title: "Market",
   type: "page",
 };
 const offerDetail: Page<any, DappState> = {
@@ -77,7 +77,7 @@ export const marketplace: DappManifest<DappState> = {
   icon: "marketplace",
   title: "Marketplace",
   routeParts: ["=marketplace"],
-  defaultRoute: ["stream"],
+  defaultRoute: ["market"],
   tag: Promise.resolve("alpha"),
   // jumplist: {
   //   type: "jumplist",
@@ -97,18 +97,16 @@ export const marketplace: DappManifest<DappState> = {
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
-      initialRoutable: stream,
+      initialRoutable: market,
       cancelDependencyLoading: false,
     };
   },
   routables: [
-    stream,
-    categories,
+    market,
     favorites,
     myOffers,
     offerDetail,
     shoppingCart,
-    categoryDetail,
-    myPurchases
+    myPurchases,
   ],
 };
