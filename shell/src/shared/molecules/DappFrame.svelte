@@ -535,15 +535,7 @@ async function handleUrlChanged() {
   });
 
   // Automatically open leftNav on desktop unless it's marketplace
-  if (dapp.dappId == "marketplace:1") {
-    if (!$media.xlarge) {
-      if (!layout.dialogs.center) {
-        window.o.publishEvent({
-          type: "shell.closeNavigation",
-        });
-      }
-    }
-  } else {
+  if (dapp.dappId != "marketplace:1") {
     if ($media.large) {
       if (!layout.dialogs.center) {
         window.o.publishEvent({

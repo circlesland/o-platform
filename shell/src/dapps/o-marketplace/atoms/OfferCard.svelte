@@ -102,7 +102,7 @@ displayName =
         {displayName}
       </div>
     </div>
-    <div class="flex flex-col w-full px-4 pb-2 mt-2 space-y-4 bg-white">
+    <div class="flex flex-col w-full px-4 pb-2 mt-2 space-y-4 ">
       <!--<<div class="flex flex-row flex-grow space-x-2">
         div
           class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
