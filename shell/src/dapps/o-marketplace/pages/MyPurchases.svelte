@@ -35,7 +35,7 @@ async function load() {
     query: AggregatesDocument,
     variables: {
       types: [AggregateType.Purchases],
-      safeAddress: safeAddress,
+      safeAddress: safeAddress
     },
   });
 

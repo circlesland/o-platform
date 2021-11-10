@@ -323,7 +323,7 @@ type Memberships implements IAggregatePayload {
 type Mutation {
     acceptMembership(membershipId: Int!): AcceptMembershipResult
     acknowledge(until: String!): Boolean!
-    addMember(groupId: String!, memberId: Int!): AddMemberResult
+    addMember(groupId: String!, memberAddress: String!): AddMemberResult
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
@@ -336,7 +336,7 @@ type Mutation {
     purchase(lines: [PurchaseLineInput!]!): Purchase
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     rejectMembership(membershipId: Int!): RejectMembershipResult
-    removeMember(groupId: String!, memberId: Int!): RemoveMemberResult
+    removeMember(groupId: String!, memberAddress: String!): RemoveMemberResult
     requestInvitationOffer(for: String!): Offer!
     requestSessionChallenge(address: String!): String!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
@@ -663,6 +663,7 @@ input ProfileAggregateFilter {
     contacts: ContactAggregateFilter
     crcBalance: CrcBalanceAggregateFilter
     offers: OffersAggregateFilter
+    purchases: PurchasesAggregateFilter
 }
 
 input ProfileEventFilter {
@@ -676,6 +677,11 @@ input ProfileEventFilter {
 input PurchaseLineInput {
     amount: Int!
     offerId: Int!
+}
+
+input PurchasesAggregateFilter {
+    createdByAddresses: [String!]
+    purchaseIds: [Int!]
 }
 
 input QueryCitiesByGeonameIdInput {
