@@ -1903,6 +1903,10 @@ export type StreamQuery = (
     ) | (
       { __typename?: 'MembershipOffer' }
       & Pick<MembershipOffer, 'createdBy' | 'organisation' | 'isAdmin'>
+      & { organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress'>
+      )> }
     ) | (
       { __typename?: 'MembershipRejected' }
       & Pick<MembershipRejected, 'member' | 'organisation'>
@@ -3044,6 +3048,11 @@ export const StreamDocument = gql`
       ... on MembershipOffer {
         createdBy
         organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+        }
         isAdmin
       }
       ... on MembershipAccepted {

@@ -74,7 +74,7 @@ function dateOlderThanSevenDays(unixTime: number) {
           class="rounded-t-xl" />
         <div
           class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-2xl leading-tight rounded-l-full font-heading top-2 bg-light-lightest">
-          {offer.pricePerUnit}
+          {offer.pricePerUnit} ⦿
           <!--{offer.pricePerUnit} C / {offer.unitTag.value}-->
           <!-- <Time relative timestamp={offer.publishedAt} /> -->
         </div>
@@ -92,20 +92,23 @@ function dateOlderThanSevenDays(unixTime: number) {
             alt="user-icon" />
         </div>
       </div>
-      <div>{offer.createdByProfile.firstName} {offer.createdByProfile.lastName}</div>
+      <div>
+        {offer.createdByProfile.firstName}
+        {offer.createdByProfile.lastName}
+      </div>
     </div>
-    <div class="flex flex-col w-full px-4 pb-2 mt-6 space-y-4 bg-white">
-      <div class="flex flex-row flex-grow space-x-2">
-        <div
+    <div class="flex flex-col w-full px-4 pb-2 mt-2 space-y-4 bg-white">
+      <!--<<div class="flex flex-row flex-grow space-x-2">
+        div
           class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
-          <!--<a
+         <a
             href="#/marketplace/categories/{offer.categoryTagId}/{offer
               .categoryTag.value}"
             alt="{offer.categoryTag.value}">
             {offer.categoryTag.value}
-          </a>-->
+          </a>
         </div>
-      </div>
+      </div>-->
       <div class="h-32">
         <div
           class="text-4xl leading-tight text-left uppercase break-all font-heading">

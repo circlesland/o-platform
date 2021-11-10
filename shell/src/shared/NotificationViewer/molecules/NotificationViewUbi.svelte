@@ -13,6 +13,7 @@ let payload: CrcMinting = <CrcMinting>event.payload;
   +{displayCirclesAmount(
     payload.value,
     event.timestamp,
+    true,
     $me.displayTimeCircles || $me.displayTimeCircles === undefined
   )}
   <Icons icon="circlessimple" size="10" />

@@ -705,6 +705,11 @@ query stream(
       ... on MembershipOffer {
         createdBy
         organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+        }
         isAdmin
       }
       ... on MembershipAccepted {
