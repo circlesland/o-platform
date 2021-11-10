@@ -6,7 +6,14 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import CheckoutSummary from "../../o-marketplace/atoms/CheckoutSummary.svelte";
-import { Profile, Offer, Purchase } from "../../../shared/api/data/types";
+import {
+  Profile,
+  Offer,
+  Purchase,
+  ProfilesDocument,
+  CreatePurchaseDocument,
+  PurchaseLineInput
+} from "../../../shared/api/data/types";
 
 import {
   transferCircles,
@@ -76,9 +83,39 @@ const processDefinition = (processId: string) =>
           submitButtonText: editorContent.summary.submitButtonText,
         },
         navigation: {
-          next: "#success",
+          next: "#createPurchase",
         },
       }),
+      createPurchase: {
+        id: "createPurchase",
+        invoke: {
+          src: async (context) => {
+            const linesGroupedByOffer: {[offerId:number]: number} = {};
+            context.data.items.forEach(o => {
+              linesGroupedByOffer[o.id] = linesGroupedByOffer[o.id]
+                ? linesGroupedByOffer[o.id] + 1
+                : 1;
+            })
+
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const result = await apiClient.mutate({
+              mutation: CreatePurchaseDocument,
+              variables: {
+                lines: Object.entries(linesGroupedByOffer).map(o => {
+                  return <PurchaseLineInput> {
+                    offerId: parseInt(o[0]),
+                    amount: o[1]
+                  }
+                })
+              }
+            });
+
+            console.log(result);
+          },
+          onDone: "#success",
+          onError: "#success"
+        }
+      },
       success: {
         type: "final",
         id: "success",

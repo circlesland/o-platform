@@ -37,12 +37,16 @@ async function load() {
   const safeAddress = $me.circlesAddress;
   const apiClient = await window.o.apiClient.client.subscribeToResult();
 
+  const queryVars = {
+    types: [AggregateType.Offers],
+    safeAddress: safeAddress
+  };
+
+  console.log(queryVars);
+
   const offersResult = await apiClient.query({
     query: AggregatesDocument,
-    variables: {
-      types: [AggregateType.Offers],
-      safeAddress: safeAddress
-    },
+    variables: queryVars
   });
 
   if (offersResult.errors?.length > 0) {

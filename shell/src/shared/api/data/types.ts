@@ -1027,6 +1027,30 @@ export type WelcomeMessage = IEventPayload & {
   transaction_hash?: Maybe<Scalars['String']>;
 };
 
+export type CreatePurchaseMutationVariables = Exact<{
+  lines: Array<PurchaseLineInput> | PurchaseLineInput;
+}>;
+
+
+export type CreatePurchaseMutation = (
+  { __typename?: 'Mutation' }
+  & { purchase?: Maybe<(
+    { __typename?: 'Purchase' }
+    & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress'>
+    & { createdByProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'avatarUrl'>
+    )>, lines: Array<(
+      { __typename?: 'PurchaseLine' }
+      & Pick<PurchaseLine, 'id' | 'amount'>
+      & { product: (
+        { __typename?: 'Offer' }
+        & Pick<Offer, 'id' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+      ) }
+    )> }
+  )> }
+);
+
 export type ExchangeTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2017,7 +2041,25 @@ export type AggregatesQuery = (
           & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
         )> }
       )> }
-    ) | { __typename?: 'Purchases' } }
+    ) | (
+      { __typename?: 'Purchases' }
+      & Pick<Purchases, 'lastUpdatedAt'>
+      & { purchases: Array<(
+        { __typename?: 'Purchase' }
+        & Pick<Purchase, 'createdAt' | 'createdByAddress'>
+        & { createdByProfile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarCid'>
+        )>, lines: Array<(
+          { __typename?: 'PurchaseLine' }
+          & Pick<PurchaseLine, 'id' | 'amount'>
+          & { product: (
+            { __typename?: 'Offer' }
+            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+          ) }
+        )> }
+      )> }
+    ) }
   )> }
 );
 
@@ -2033,6 +2075,32 @@ export type EventsSubscription = (
 );
 
 
+export const CreatePurchaseDocument = gql`
+    mutation createPurchase($lines: [PurchaseLineInput!]!) {
+  purchase(lines: $lines) {
+    id
+    createdAt
+    createdByAddress
+    createdByProfile {
+      id
+      circlesAddress
+      firstName
+      avatarUrl
+    }
+    lines {
+      id
+      amount
+      product {
+        id
+        title
+        description
+        pictureUrl
+        pricePerUnit
+      }
+    }
+  }
+}
+    `;
 export const ExchangeTokenDocument = gql`
     mutation exchangeToken {
   exchangeToken {
@@ -3224,6 +3292,31 @@ export const AggregatesDocument = gql`
           circlesAddress
         }
       }
+      ... on Purchases {
+        lastUpdatedAt
+        purchases {
+          createdAt
+          createdByAddress
+          createdByProfile {
+            id
+            firstName
+            lastName
+            avatarCid
+          }
+          lines {
+            id
+            amount
+            product {
+              id
+              version
+              title
+              description
+              pictureUrl
+              pricePerUnit
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -3242,6 +3335,9 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    createPurchase(variables: CreatePurchaseMutationVariables): Promise<CreatePurchaseMutation> {
+      return withWrapper(() => client.request<CreatePurchaseMutation>(print(CreatePurchaseDocument), variables));
+    },
     exchangeToken(variables?: ExchangeTokenMutationVariables): Promise<ExchangeTokenMutation> {
       return withWrapper(() => client.request<ExchangeTokenMutation>(print(ExchangeTokenDocument), variables));
     },

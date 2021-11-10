@@ -1,3 +1,28 @@
+mutation createPurchase($lines: [PurchaseLineInput!]!) {
+  purchase(lines: $lines) {
+    id
+    createdAt
+    createdByAddress
+    createdByProfile {
+      id
+      circlesAddress
+      firstName
+      avatarUrl
+    }
+    lines {
+      id
+      amount
+      product {
+        id
+        title
+        description
+        pictureUrl
+        pricePerUnit
+      }
+    }
+  }
+}
+
 mutation exchangeToken {
   exchangeToken {
     success

@@ -884,6 +884,31 @@ query aggregates(
           circlesAddress
         }
       }
+      ... on Purchases {
+        lastUpdatedAt
+        purchases {
+          createdAt
+          createdByAddress
+          createdByProfile {
+            id
+            firstName
+            lastName
+            avatarCid
+          }
+          lines {
+            id
+            amount
+            product {
+              id
+              version
+              title
+              description
+              pictureUrl
+              pricePerUnit
+            }
+          }
+        }
+      }
     }
   }
 }
