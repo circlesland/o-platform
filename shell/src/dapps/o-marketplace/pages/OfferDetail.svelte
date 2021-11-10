@@ -1,13 +1,17 @@
 <script lang="ts">
-import {AggregatesDocument, AggregateType, Offer} from "../../../shared/api/data/types";
-import { onMount} from "svelte";
+import {
+  AggregatesDocument,
+  AggregateType,
+  Offer,
+} from "../../../shared/api/data/types";
+import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { cartContents } from "../stores/shoppingCartStore";
-
 import { push } from "svelte-spa-router";
-import {me} from "../../../shared/stores/me";
+import { me } from "../../../shared/stores/me";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 
 let isLoading: boolean;
 let error: Error;
@@ -30,9 +34,9 @@ async function load() {
       safeAddress: safeAddress,
       filter: {
         offers: {
-          offerIds: [Number.isInteger(id) ? id : parseInt(id.toString())]
-        }
-      }
+          offerIds: [Number.isInteger(id) ? id : parseInt(id.toString())],
+        },
+      },
     },
   });
 
@@ -40,9 +44,11 @@ async function load() {
     throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
   }
 
-  const o = offersResult.data.aggregates.find(o => o.type == AggregateType.Offers);
+  const o = offersResult.data.aggregates.find(
+    (o) => o.type == AggregateType.Offers
+  );
   if (!o) {
-    throw new Error(`Couldn't find the Offers in the query result.`)
+    throw new Error(`Couldn't find the Offers in the query result.`);
   }
 
   offers = o.payload.offers;
@@ -117,30 +123,32 @@ onMount(async () => {
           <div
             class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
             <div class="inline-flex">
-              <div class="w-10 h-10 rounded-full sm:w-12 sm:h-12">
-                <img
-                  class="rounded-full"
-                  src="{offer.createdByProfile.avatarUrl
-                    ? offer.createdByProfile.avatarUrl
-                    : '/images/market/city.png'}"
-                  alt="user-icon" />
-              </div>
+              <UserImage
+                profile="{offer.createdByProfile}"
+                size="{10}"
+                gradientRing="{false}" />
             </div>
-            <div>{offer.createdByProfile.firstName} {offer.createdByProfile.lastName}</div>
+            <div>
+              {offer.createdByProfile.firstName}
+              {offer.createdByProfile.lastName}
+            </div>
           </div>
-          <div class="flex flex-col w-full px-6 mt-6 space-y-4 bg-white">
+
+          <div class="flex flex-col w-full px-6 mt-2 space-y-4 bg-white">
+            <!--
             <div class="flex flex-row flex-grow space-x-2">
               <div
                 class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
-                <!--
+            
                 <a
                   href="#/marketplace/categories/{offer.categoryTagId}/{offer
                     .categoryTag.value}"
                   alt="{offer.categoryTag.value}">
                   {offer.categoryTag.value}
-                </a>-->
+                </a>
               </div>
             </div>
+            -->
             <div class="text-lg font-bold text-left uppercase">
               {offer.title}
             </div>
@@ -321,7 +329,12 @@ onMount(async () => {
             </button>
           </div>
           <div>
-            <button class="btn btn-square btn-light">
+            <button
+              class="btn btn-square btn-light"
+              on:click="{() =>
+                push(
+                  `#/friends/chat/${offer.createdByProfile.circlesAddress}`
+                )}">
               <Icons icon="chat" />
             </button>
           </div>

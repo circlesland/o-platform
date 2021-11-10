@@ -60,7 +60,8 @@ const processDefinition = (processId: string) =>
           const cartContents = JSON.parse(localStorage.getItem("cartContents"));
           if (cartContents) {
             context.data.items = cartContents;
-            context.data.sellerProfile = cartContents[0].createdBy;
+            // TODO: THIS ASSUMES ALL ITEMS ARE FROM THE SAME SELLER
+            context.data.sellerProfile = cartContents[0].createdByProfile;
           }
         },
         always: "#checkoutSummary",

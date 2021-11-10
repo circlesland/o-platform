@@ -5,18 +5,19 @@ import CartItems from "../molecules/CartItems.svelte";
 import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
+import { Profile, Organisation } from "../../../shared/api/data/types";
 
 export let context: any;
-let profile: any;
+let profile: Profile | Organisation;
 
 $: {
   context = context;
   profile = context.data.sellerProfile;
   console.log("CONTEXT BABY ", context);
+  console.log("PROFILE BABY ", profile);
 }
 
 let classes: string;
-let now = new Date();
 
 function submit() {
   const answer = new Continue();
