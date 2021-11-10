@@ -63,7 +63,7 @@ function onkeydown(e: KeyboardEvent) {
 <svelte:window on:keydown="{onkeydown}" />
 {#if layout}
   <div class="absolute flex flex-row w-full overflow-auto">
-    <main class="relative z-30 w-full overflow-auto">
+    <main class="relative z-30 w-full overflow-auto overflow-hidden">
       {#if sliderPages && sliderPages.length > 0}
         <Pager pages="{sliderPages}" />
       {/if}

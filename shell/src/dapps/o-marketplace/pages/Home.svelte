@@ -11,11 +11,14 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import List from "../../../shared/molecules/Lists/List.svelte";
 
 import {
-  AggregatesDocument, AggregateType, CrcBalances,
-  Offer, Offers,
+  AggregatesDocument,
+  AggregateType,
+  CrcBalances,
+  Offer,
+  Offers,
   TagsDocument,
 } from "../../../shared/api/data/types";
-import {me} from "../../../shared/stores/me";
+import { me } from "../../../shared/stores/me";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -39,23 +42,25 @@ async function load() {
 
   const queryVars = {
     types: [AggregateType.Offers],
-    safeAddress: safeAddress
+    safeAddress: safeAddress,
   };
 
   console.log(queryVars);
 
   const offersResult = await apiClient.query({
     query: AggregatesDocument,
-    variables: queryVars
+    variables: queryVars,
   });
 
   if (offersResult.errors?.length > 0) {
     throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
   }
 
-  const o = offersResult.data.aggregates.find(o => o.type == AggregateType.Offers);
+  const o = offersResult.data.aggregates.find(
+    (o) => o.type == AggregateType.Offers
+  );
   if (!o) {
-    throw new Error(`Couldn't find the Offers in the query result.`)
+    throw new Error(`Couldn't find the Offers in the query result.`);
   }
 
   offers = o.payload.offers;
@@ -116,8 +121,9 @@ function loadCategoryPage(category: any) {
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="px-4 mx-auto -mt-3 lg:w-2/3 xl:w-1/2">
+  <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   <div
-    class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
+    class="grid grid-cols-1 mb-20 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
     <!--
     <List
       listItemType="{Offer}"
@@ -128,7 +134,7 @@ function loadCategoryPage(category: any) {
       dataLimit="{100}" />-->
     {#if offers}
       {#each offers as offer}
-        <OfferCard param={offer} />
+        <OfferCard param="{offer}" />
       {/each}
     {/if}
   </div>
