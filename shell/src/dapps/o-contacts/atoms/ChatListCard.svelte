@@ -1,11 +1,13 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
-
+import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { me } from "../../../shared/stores/me";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {
   Contact,
   ContactDirection,
-  ContactPoint, EventType,
+  ContactPoint,
+  EventType,
   Profile,
 } from "../../../shared/api/data/types";
 import DateView from "../../../shared/atoms/Date.svelte";
@@ -30,6 +32,8 @@ if (param.contactAddress_Profile) {
 displayName =
   contactProfile.firstName +
   (contactProfile.lastName ? " " + contactProfile.lastName : "");
+displayName =
+  displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 
 const trustMetadata: ContactPoint = param.metadata.find(
   (p) => p.name === "CrcTrust"
@@ -81,7 +85,12 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
       } you`;
       break;
     case EventType.CrcHubTransfer:
-      message = `${displayName} sent you ${mostRecentDisplayEvent.value} CRC`;
+      message = `${displayName} sent you ${displayCirclesAmount(
+        mostRecentDisplayEvent.value,
+        null,
+        true,
+        $me.displayTimeCircles || $me.displayTimeCircles === undefined
+      )} ⦿`;
       break;
     case EventType.ChatMessage:
       message = `${displayName} wrote: ${mostRecentDisplayEvent.value}`;
@@ -101,7 +110,13 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
       } ${displayName}`;
       break;
     case EventType.CrcHubTransfer:
-      message = `You sent ${displayName} ${mostRecentDisplayEvent.value} CRC`;
+      message = `You sent ${displayName} 
+      ${displayCirclesAmount(
+        mostRecentDisplayEvent.value,
+        null,
+        true,
+        $me.displayTimeCircles || $me.displayTimeCircles === undefined
+      )} ⦿`;
       break;
     case EventType.ChatMessage:
       message = `You wrote: ${mostRecentDisplayEvent.value}`;
