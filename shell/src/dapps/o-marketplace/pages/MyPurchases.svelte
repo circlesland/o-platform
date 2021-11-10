@@ -110,10 +110,12 @@ onMount(async () => {
           subTitle: `${purchase.lines
             .map((line) => line.offer.title)
             .join(', ')}`,
-          endTextBig: `(fixme) 22  ⦿`,
-          endTextBigClass: 'text-3xl',
+          endTextBig: `${purchase.total}  ⦿`,
+          endTextBigClass: 'text-2xl',
+          endTextSmall: 'paid, not yet picked up',
           class: 'cursor-pointer',
         }}" />
+      <!-- <pre>{JSON.stringify(purchase, null, 2)}</pre> -->
     {/each}
   {:else}
     <section class="flex items-center justify-center mb-2 ">
