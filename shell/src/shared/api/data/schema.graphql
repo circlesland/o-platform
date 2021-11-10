@@ -340,7 +340,7 @@ type Mutation {
     requestInvitationOffer(for: String!): Offer!
     requestSessionChallenge(address: String!): String!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
-    sendMessage(content: String!, toSafeAddress: String!): SendMessageResult!
+    sendMessage(content: String!, fromSafeAddress: String, toSafeAddress: String!): SendMessageResult!
     tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
     upsertOrganisation(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
@@ -455,7 +455,7 @@ type Purchase {
 type PurchaseLine {
     amount: Int!
     id: Int!
-    product: Offer!
+    offer: Offer!
 }
 
 type Purchased implements IEventPayload {

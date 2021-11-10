@@ -12,7 +12,7 @@ mutation createPurchase($lines: [PurchaseLineInput!]!) {
     lines {
       id
       amount
-      product {
+      offer {
         id
         title
         description
@@ -68,8 +68,8 @@ mutation acknowledge($until: String!) {
   acknowledge(until: $until)
 }
 
-mutation sendMessage($toSafeAddress: String!, $content: String!) {
-  sendMessage(toSafeAddress: $toSafeAddress, content: $content) {
+mutation sendMessage($fromSafeAddress: String, $toSafeAddress: String!, $content: String!) {
+  sendMessage(fromSafeAddress: $fromSafeAddress, toSafeAddress: $toSafeAddress, content: $content) {
     success
     error
     event {

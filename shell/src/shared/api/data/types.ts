@@ -532,6 +532,7 @@ export type MutationRequestUpdateSafeArgs = {
 
 export type MutationSendMessageArgs = {
   content: Scalars['String'];
+  fromSafeAddress?: Maybe<Scalars['String']>;
   toSafeAddress: Scalars['String'];
 };
 
@@ -715,7 +716,7 @@ export type PurchaseLine = {
   __typename?: 'PurchaseLine';
   amount: Scalars['Int'];
   id: Scalars['Int'];
-  product: Offer;
+  offer: Offer;
 };
 
 export type PurchaseLineInput = {
@@ -1043,7 +1044,7 @@ export type CreatePurchaseMutation = (
     )>, lines: Array<(
       { __typename?: 'PurchaseLine' }
       & Pick<PurchaseLine, 'id' | 'amount'>
-      & { product: (
+      & { offer: (
         { __typename?: 'Offer' }
         & Pick<Offer, 'id' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
       ) }
@@ -1127,6 +1128,7 @@ export type AcknowledgeMutation = (
 );
 
 export type SendMessageMutationVariables = Exact<{
+  fromSafeAddress?: Maybe<Scalars['String']>;
   toSafeAddress: Scalars['String'];
   content: Scalars['String'];
 }>;
@@ -1956,7 +1958,7 @@ export type StreamQuery = (
         & { lines: Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'amount'>
-          & { product: (
+          & { offer: (
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'title' | 'pictureUrl'>
           ) }
@@ -2053,7 +2055,7 @@ export type AggregatesQuery = (
         )>, lines: Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount'>
-          & { product: (
+          & { offer: (
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
           ) }
@@ -2090,7 +2092,7 @@ export const CreatePurchaseDocument = gql`
     lines {
       id
       amount
-      product {
+      offer {
         id
         title
         description
@@ -2153,8 +2155,12 @@ export const AcknowledgeDocument = gql`
 }
     `;
 export const SendMessageDocument = gql`
-    mutation sendMessage($toSafeAddress: String!, $content: String!) {
-  sendMessage(toSafeAddress: $toSafeAddress, content: $content) {
+    mutation sendMessage($fromSafeAddress: String, $toSafeAddress: String!, $content: String!) {
+  sendMessage(
+    fromSafeAddress: $fromSafeAddress
+    toSafeAddress: $toSafeAddress
+    content: $content
+  ) {
     success
     error
     event {
@@ -3177,7 +3183,7 @@ export const StreamDocument = gql`
         purchase {
           lines {
             amount
-            product {
+            offer {
               id
               title
               pictureUrl
@@ -3306,7 +3312,7 @@ export const AggregatesDocument = gql`
           lines {
             id
             amount
-            product {
+            offer {
               id
               version
               title

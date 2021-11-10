@@ -119,9 +119,12 @@
 
   const sendMessage = async (text) => {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
+
+    // If we're acting as organisation then we need to specify a "fromSafeAddress"
     const result = await apiClient.mutate({
       mutation: SendMessageDocument,
       variables: {
+        fromSafeAddress: $me.circlesAddress,
         toSafeAddress: id,
         content: text,
       },

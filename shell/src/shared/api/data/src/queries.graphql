@@ -766,7 +766,7 @@ query stream(
         purchase {
           lines {
             amount
-            product {
+            offer {
               id
               title
               pictureUrl
@@ -898,7 +898,7 @@ query aggregates(
           lines {
             id
             amount
-            product {
+            offer {
               id
               version
               title
