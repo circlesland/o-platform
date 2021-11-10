@@ -28,6 +28,12 @@ $: {
     profile = undefined;
   }
 }
+
+function profileSwitcher() {
+  if (profile.memberships && profile.memberships.length > 0) {
+    showSwitcher = !showSwitcher;
+  }
+}
 </script>
 
 <div class="fixed top-0 left-0 z-50 w-full">
@@ -68,7 +74,7 @@ $: {
       {#if profile}
         <div
           class="cursor-pointer justify-self-center"
-          on:click="{() => (showSwitcher = !showSwitcher)}">
+          on:click="{() => profileSwitcher()}">
           <UserImage profile="{profile}" size="{8}" profileLink="{false}" />
         </div>
         {#if showSwitcher}
