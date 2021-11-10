@@ -120,11 +120,6 @@ const processDefinition = (processId: string) =>
         type: "final",
         id: "success",
         data: (context, event: any) => {
-          // console.log(`enter: upsertIdentity.success`, context.data);
-          window.o.publishEvent(<PlatformEvent>{
-            type: "shell.authenticated",
-            profile: context.data,
-          });
           return event.data;
         },
       },
