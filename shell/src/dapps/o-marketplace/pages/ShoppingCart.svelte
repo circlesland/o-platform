@@ -39,5 +39,5 @@ div.p-5
       p.text-center.mt-6 Your cart is empty!
       .w-full.mt-6
           div
-          button.h-auto.btn-block.btn.btn-light(on:click!="{() =>  history.back()}") Continue Shopping
+          button.h-auto.btn-block.btn.btn-light(on:click!="{() =>  push('#/marketplace/stream')}") Continue Shopping
 </template>
