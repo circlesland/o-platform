@@ -65,7 +65,7 @@ export function handleClear() {
 
 function submitHandler() {
   const event = new Continue();
-  console.log("CONTEXT: ", context);
+
   event.data = {};
   event.data[field.name] = context.params.getKey(selected);
   context.data[field.name] = context.params.getKey(selected);
