@@ -37,7 +37,7 @@ displayName =
   <div
     class="has-tooltip"
     class:cursor-pointer="{profileLink}"
-    on:click="{() => linkToProfile()}">
+    on:click|stopPropagation="{() => linkToProfile()}">
     {#if tooltip}
       <span class="px-2 mt-12 text-sm bg-white rounded shadow-sm tooltip">
         {displayName}

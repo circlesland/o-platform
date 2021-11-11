@@ -865,6 +865,31 @@ query aggregates(
             lastName
             avatarUrl
             circlesAddress
+            city {
+              geonameid
+              name
+              country
+            }
+            memberships {
+              isAdmin
+              organisation {
+                id
+                circlesAddress
+                circlesSafeOwner
+                name
+                description
+                avatarUrl
+                avatarMimeType
+                city {
+                  geonameid
+                  name
+                  country
+                  latitude
+                  longitude
+                  population
+                }
+              }
+            }
           }
         }
       }

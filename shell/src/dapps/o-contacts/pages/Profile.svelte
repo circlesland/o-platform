@@ -1,12 +1,7 @@
 <script lang="ts">
-import { transfer } from "../../o-banking/processes/transfer";
-import { setTrust } from "../../o-banking/processes/setTrust";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import { invite } from "../../o-passport/processes/invite/invite";
 import { getCountryName } from "../../../shared/countries";
-import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
 import UserImage from "src/shared/atoms/UserImage.svelte";
-import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
 import { me } from "../../../shared/stores/me";
 import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
 import { onDestroy, onMount } from "svelte";
@@ -18,15 +13,29 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
 import {
+  AggregatesDocument,
+  AggregateType,
   CommonTrust,
   CommonTrustDocument,
   Membership,
+  Contact,
+  ContactPointSource,
+  ContactDirection,
   Profile,
 } from "../../../shared/api/data/types";
 
 export let id: string;
 export let jumplist: Jumplist<any, any> | undefined;
 export let runtimeDapp: RuntimeDapp<any>;
+
+let error: string | undefined = undefined;
+let displayName: string;
+let trustMessage: string;
+let isLoading: boolean = true;
+let isMe: boolean = false;
+let commonTrusts: CommonTrust[] = [];
+let profile: Profile;
+let contact: Contact;
 
 onMount(() => {
   shellEventSubscription = window.o.events.subscribe(
@@ -52,42 +61,11 @@ $: {
     // console.log("LOADPRO NOCHMAL");
     loadProfile();
   }
-  if ($me) {
-    inviteLink = `${window.location.protocol}//${window.location.host}/#/friends/${$me.id}`;
-  }
 }
 
 let shellEventSubscription: Subscription;
 
 onDestroy(() => shellEventSubscription.unsubscribe());
-
-let isEditable: boolean = false;
-let isLoading: boolean = true;
-let isMe: boolean = false;
-let name: string;
-
-let commonTrusts: CommonTrust[] = [];
-let profile: {
-  id?: number;
-  dream?: string;
-  country?: string;
-  safeAddress?: string;
-  displayName: string;
-  avatarUrl?: string;
-  avatarCid?: string;
-  avatarMimeType?: string;
-  firstName?: string;
-  lastName?: string;
-  circlesAddress?: string;
-  circlesSafeOwner?: string;
-  cityGeonameid?: number;
-  city: any;
-  // The incoming trust limit
-  trustsYou?: any;
-  // The outgoing trust limit
-  youTrust?: any;
-  memberships: Membership[];
-} = {};
 
 async function loadProfile() {
   // console.log("LOADING PROFILE!!!");
@@ -97,40 +75,90 @@ async function loadProfile() {
     );
     return;
   }
+  // Load Contact
+  const safeAddress = $me.circlesAddress.toLowerCase();
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
 
+  const c = await apiClient.query({
+    query: AggregatesDocument,
+    variables: {
+      types: [AggregateType.Contacts],
+      safeAddress: safeAddress,
+      filter: {
+        contacts: {
+          addresses: [id],
+        },
+      },
+    },
+  });
+
+  if (c.errors?.length > 0) {
+    error = `Couldn't read the contacts of safe ${safeAddress}: \n${c.errors
+      .map((o) => o.message)
+      .join("\n")}`;
+    return;
+  }
+
+  const contact: Contact = c.data.aggregates[0].payload.contacts.length
+    ? c.data.aggregates[0].payload.contacts[0]
+    : null;
+
+  // Load Profile
   if (Number.parseInt(id) && !id.startsWith("0x")) {
-    const profile = await loadProfileByProfileId(Number.parseInt(id));
-    await setProfile(profile);
+    let apiProfile: Profile | Contact = await loadProfileByProfileId(
+      Number.parseInt(id)
+    );
+    apiProfile = contact ? contact : apiProfile;
+    await setProfile(apiProfile);
   } else if (RpcGateway.get().utils.isAddress(id)) {
-    const profile = await loadProfileBySafeAddress(id);
-    await setProfile(profile);
+    let apiProfile: Profile | Contact = await loadProfileBySafeAddress(id);
+    apiProfile = contact ? contact : apiProfile;
+    await setProfile(apiProfile);
   } else {
     throw new Error(`id isn't an integer nor an eth address.`);
   }
+
   isMe = profile.id == ($me ? $me.id : 0);
   isLoading = false;
-  name = profile.safeAddress;
-
-  // console.log("PROFILE: ", profile);
 }
 
-async function setProfile(apiProfile: Profile) {
+async function setProfile(apiProfile: Profile | Contact) {
   const trust = undefined;
-  isEditable = $me && $me.id === apiProfile.id;
 
-  if ($me.circlesAddress !== apiProfile.circlesAddress) {
+  console.log("PROFFF", apiProfile.__typename);
+  if (apiProfile.__typename == "Contact") {
+    contact = apiProfile;
+  } else {
+    contact = {
+      contactAddress: apiProfile.circlesAddress,
+      contactAddress_Profile: {
+        id: apiProfile.id,
+        avatarUrl: apiProfile.avatarUrl,
+        dream: apiProfile.dream,
+        country: apiProfile.country,
+        firstName: apiProfile.firstName,
+        lastName: apiProfile.lastName,
+        city: apiProfile.city,
+        memberships: apiProfile.memberships,
+      },
+      metadata: null,
+      lastContactAt: null,
+    };
+  }
+
+  if ($me.circlesAddress !== contact.contactAddress) {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     const result = await apiClient.query({
       query: CommonTrustDocument,
       variables: {
         safeAddress1: $me.circlesAddress.toLowerCase(),
-        safeAddress2: apiProfile.circlesAddress.toLowerCase(),
+        safeAddress2: contact.contactAddress.toLowerCase(),
       },
     });
     if (result.errors) {
       throw new Error(
         `Couldn't load a profile with safeAddress '${
-          apiProfile.circlesAddress
+          contact.contactAddress
         }': ${JSON.stringify(result.errors)}`
       );
     }
@@ -139,92 +167,45 @@ async function setProfile(apiProfile: Profile) {
     commonTrusts = [];
   }
 
-  profile = {
-    id: apiProfile.id,
-    avatarUrl: apiProfile.avatarUrl,
-    dream: apiProfile.dream,
-    country: apiProfile.country,
-    safeAddress: apiProfile.circlesAddress,
-    firstName: apiProfile.firstName,
-    lastName: apiProfile.lastName,
-    circlesAddress: apiProfile.circlesAddress,
-    circlesSafeOwner: apiProfile.circlesSafeOwner,
-    displayName: `${apiProfile.firstName} ${
-      apiProfile.lastName ? apiProfile.lastName : ""
-    }`,
-    trusting: undefined,
-    trustedBy: undefined,
-    cityGeonameid: apiProfile.cityGeonameid,
-    city: apiProfile.city,
-    trustsYou: apiProfile.trustsYou ?? 0,
-    youTrust: apiProfile.youTrust ?? 0,
-    memberships: apiProfile.memberships,
-  };
+  displayName = contact.contactAddress_Profile.firstName
+    ? contact.contactAddress_Profile.firstName +
+      (contact.contactAddress_Profile.lastName
+        ? " " + contact.contactAddress_Profile.lastName
+        : "")
+    : contact.contactAddress;
+  displayName =
+    displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
+
+  profile = contact.contactAddress_Profile;
+
+  if (contact.metadata) {
+    const trustMetadata: ContactPointSource = contact.metadata.find(
+      (p) => p.name === "CrcTrust"
+    );
+    let trustIn = 0;
+    let trustOut = 0;
+
+    if (trustMetadata) {
+      trustMetadata.directions.forEach((d, i) => {
+        if (d == ContactDirection.In) {
+          trustIn = parseInt(trustMetadata.values[i]);
+        } else if (d == ContactDirection.Out) {
+          trustOut = parseInt(trustMetadata.values[i]);
+        }
+      });
+    }
+
+    if (trustIn > 0 && trustOut > 0) {
+      trustMessage = "mutual trust";
+    } else if (!trustIn && trustOut > 0) {
+      trustMessage = "trusted by you";
+    } else if (trustIn > 0 && !trustOut) {
+      trustMessage = "is trusting you";
+    } else {
+      trustMessage = "not trusted";
+    }
+  }
 }
-
-function execTransfer() {
-  if (!profile || !$me.circlesAddress || isMe) return;
-
-  window.o.runProcess(transfer, {
-    safeAddress: $me.circlesAddress,
-    recipientAddress: profile.safeAddress,
-    recipientProfileId: profile.id,
-  });
-}
-
-function execTrust() {
-  if (!profile || !$me.circlesAddress || isMe) return;
-
-  window.o.runProcess(setTrust, {
-    safeAddress: $me.circlesAddress,
-    trustLimit: 100,
-    trustReceiver: profile.safeAddress,
-    privateKey: sessionStorage.getItem("circlesKey"),
-  });
-}
-
-function execUntrust() {
-  if (!profile || !$me.circlesAddress || isMe) return;
-
-  window.o.runProcess(setTrust, {
-    safeAddress: $me.circlesAddress,
-    trustLimit: 0,
-    trustReceiver: profile.safeAddress,
-    privateKey: sessionStorage.getItem("circlesKey"),
-  });
-}
-
-function execInvite() {
-  if (!profile || !$me.circlesAddress || !profile.id || isMe) return;
-
-  window.o.runProcess(invite, {
-    safeAddress: $me.circlesAddress,
-    inviteProfileId: profile.id,
-  });
-}
-
-const copy = () => {
-  const app = new CopyClipBoard({
-    target: document.getElementById("clipboard"),
-    props: { name },
-  });
-  app.$destroy();
-};
-
-function editProfile(onlyThesePages?: string[]) {
-  if (!profile || !profile.id || !isEditable) return;
-
-  window.o.runProcess(upsertIdentity, profile, {}, onlyThesePages);
-}
-
-let inviteLink: string = "";
-const copyInviteLink = () => {
-  const app = new CopyClipBoard({
-    target: document.getElementById("clipboardInviteLink"),
-    props: { name: inviteLink },
-  });
-  app.$destroy();
-};
 
 async function getJumplist() {
   const jumpListItems = await jumplist.items({ id: id }, runtimeDapp);
@@ -252,13 +233,9 @@ let promise = getJumplist();
           gradientRing="{true}"
           profileLink="{false}" />
 
-        {#if profile && profile.safeAddress}
+        {#if profile && contact.contactAddress}
           <div class="mt-4 text-3xl">
-            {profile.displayName
-              ? profile.displayName.length >= 22
-                ? profile.displayName.substr(0, 22) + "..."
-                : profile.displayName
-              : profile.safeAddress.substr(0, 22) + "..."}
+            {displayName}
           </div>
         {/if}
         {#if profile && profile.city}
@@ -274,108 +251,13 @@ let promise = getJumplist();
     <div class="flex flex-col">
       <div class="mt-4">
         <div class="">
-          {#if !profile.safeAddress && !isMe}
-            <section class="justify-center mb-2 ">
-              <div
-                class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow">
-                <div
-                  class="text-left text-2xs text-dark-lightesttext-dark-lightest">
-                  This citizen is waiting to be empowered by you.
-                </div>
-
-                {#if $me && $me.id !== profile.id && $me.circlesAddress}
-                  <div class="flex items-center w-full space-x-2 sm:space-x-4">
-                    <div class="w-full">
-                      <button
-                        class="h-auto btn btn-block btn-primary"
-                        on:click="{execInvite}">
-                        Invite {profile.displayName} now
-                      </button>
-                    </div>
-                  </div>
-                {:else}
-                  <div class="flex items-center w-full space-x-2 sm:space-x-4">
-                    <div class="text-left">
-                      <div class="inline-block break-all">
-                        <div
-                          class="flex items-center w-full space-x-2 sm:space-x-4">
-                          <!-- TODO: Safe wasn't opened before so we don't know our balance (at least not on $mySafe)  -->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                {/if}
-              </div>
-            </section>
-          {/if}
-          {#if !profile.safeAddress && isMe}
-            <!-- Create safe  -->
-            <section class="mb-8">
-              <div class="w-full px-2 pb-4 -mt-3 bg-white rounded-sm shadow">
-                <div class="px-4 py-2 mr-4 -ml-3 text-center "></div>
-                <div style="text-align: center">
-                  <p class="w-64 m-auto mt-2 text-2xl font-bold text-gradient">
-                    You're almost there.
-                  </p>
-                  <p class="mt-4 text">
-                    Copy the invite link and send it to someone who's already a
-                    citizen of CirclesLand:
-                  </p>
-                  <div
-                    class="mt-4 mb-4 text-xs break-all"
-                    id="clipboardInviteLink">
-                    <input
-                      type="text"
-                      class="hidden"
-                      bind:value="{inviteLink}" />
-                    <div class="inline-block text-2xl">
-                      <button
-                        class="btn btn-primary"
-                        on:click="{copyInviteLink}">
-                        Copy Invite Link
-                      </button>
-                    </div>
-
-                    <div class="block mt-2 text-sm text-light ">
-                      {inviteLink}
-                    </div>
-                  </div>
-                  <p class="text">
-                    If you don't know anybody who has Circles yet, ask nicely in
-                    our
-                    <a
-                      href="https://discord.gg/33bPcyF5JN"
-                      target="_blank"
-                      class="btn-link">
-                      Discord
-                    </a>
-                    if someone can invite you.
-                  </p>
-                  <p class="pb-4 mt-4 text-xs">
-                    alternatively,
-                    <a href="#/dashboard/become-a-hub" class="btn-link">
-                      become a hub
-                    </a>
-                  </p>
-                  <div class="mr-1 text-primary"></div>
-                </div>
-              </div>
-            </section>
-          {/if}
-
-          {#if profile && profile.safeAddress}
-            {#if profile.youTrust || profile.trustsYou}
+          {#if profile}
+            {#if trustMessage}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">Trust</div>
                   <div class="flex flex-wrap content-start">
-                    {#if profile.youTrust > 0 && profile.trustsYou > 0}
-                      mututal trust
-                    {:else if !profile.youTrust && profile.trustsYou > 0}
-                      is trusting you
-                    {:else if profile.youTrust > 0 && !profile.trustsYou}
-                      you are trusting
-                    {/if}
+                    {trustMessage}
                   </div>
                 </div>
               </section>
@@ -433,93 +315,13 @@ let promise = getJumplist();
 
                   <div class="flex items-center w-full text-lg">
                     {profile.dream}
-                    {#if isEditable}
-                      <button
-                        class="link link-primary text-primary text-2xs"
-                        on:click="{() => editProfile({ dream: true })}">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="w-3 h-3"
-                          viewBox="0 0 20 20"
-                          fill="currentColor">
-                          <path
-                            d="M13.586 3.586a2 2 0 112.828
-                          2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3
-                          14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                        </svg>
-                      </button>
-                    {/if}
                   </div>
                 </div>
               </section>
             {/if}
-
-            <!-- <section class="justify-center mb-2 ">
-              <div class="flex flex-col w-full py-2 space-y-1">
-                <div class="mb-1 text-left text-2xs text-dark-lightest">
-                  Address
-                </div>
-
-                <div class="flex items-center w-full">
-                  <div class="inline-block break-all" id="clipboard">
-                    {#if profile}
-                      <input
-                        name="name"
-                        type="text"
-                        class="hidden"
-                        bind:value="{name}" />
-                      {profile.safeAddress ? profile.safeAddress : ''}
-                    {/if}
-                    <div
-                      class="relative inline-block text-primary cursor-pointertext-center -bottom-1"
-                      on:click="{copy}"
-                      alt="Copy to Clipboard">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 stroke-current transform
-                        group-hover:rotate-[-4deg] transition"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0
-                          002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0
-                          002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section> -->
           {/if}
 
-          {#if !isMe && (profile.trusting || profile.trustedBy)}
-            <section class="justify-center">
-              <div class="flex flex-col w-full py-2 space-y-1">
-                <div class="mb-1 text-left text-2xs text-dark-lightest">
-                  Trust
-                </div>
-
-                <div class="flex items-center w-full">
-                  {#if profile.trusting && profile.trustedBy}
-                    You are trusting {profile.displayName}
-                    {profile.trusting}%
-                    <br />
-                    {profile.displayName} is trusting you {profile.trustedBy}%
-                  {:else if profile.trusting && !profile.trustedBy}
-                    You are trusting {profile.displayName} {profile.trusting}%
-                  {:else if !profile.trusting && profile.trustedBy}
-                    {profile.displayName} is trusting you {profile.trustedBy}%
-                  {/if}
-                </div>
-              </div>
-            </section>
-          {/if}
-
-          {#if !isMe && profile.safeAddress}
+          {#if !isMe && contact.contactAddress}
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
@@ -527,7 +329,7 @@ let promise = getJumplist();
                 </div>
 
                 <div class="flex items-center w-full text-2xs">
-                  {profile.safeAddress}
+                  {contact.contactAddress}
                 </div>
               </div>
             </section>

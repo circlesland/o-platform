@@ -143,15 +143,15 @@ function goToProfile(e, path?: string) {
 }
 </script>
 
-<div
-  on:click="{() => loadDetailPage(param.contactAddress)}"
-  class="cursor-pointer">
+<!-- on:click|stopPropagation="{() => loadDetailPage(param.contactAddress)}" -->
+<div class="cursor-pointer">
   <ItemCard
     params="{{
       edgeless: false,
       imageProfile: param.contactAddress_Profile,
       title: displayName,
       subTitle: message,
+      action: () => loadDetailPage(param.contactAddress),
     }}">
     <div slot="itemCardEndSmallElement">
       {#if param.timestamp}

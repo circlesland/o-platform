@@ -2014,6 +2014,21 @@ export type AggregatesQuery = (
         )>, contactAddress_Profile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & { city?: Maybe<(
+            { __typename?: 'City' }
+            & Pick<City, 'geonameid' | 'name' | 'country'>
+          )>, memberships?: Maybe<Array<(
+            { __typename?: 'Membership' }
+            & Pick<Membership, 'isAdmin'>
+            & { organisation: (
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'avatarMimeType'>
+              & { city?: Maybe<(
+                { __typename?: 'City' }
+                & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+              )> }
+            ) }
+          )>> }
         )> }
       )> }
     ) | (
@@ -3302,6 +3317,31 @@ export const AggregatesDocument = gql`
             lastName
             avatarUrl
             circlesAddress
+            city {
+              geonameid
+              name
+              country
+            }
+            memberships {
+              isAdmin
+              organisation {
+                id
+                circlesAddress
+                circlesSafeOwner
+                name
+                description
+                avatarUrl
+                avatarMimeType
+                city {
+                  geonameid
+                  name
+                  country
+                  latitude
+                  longitude
+                  population
+                }
+              }
+            }
           }
         }
       }
