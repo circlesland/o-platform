@@ -91,9 +91,12 @@ onMount(async () => {
     targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
     classes = transfer.direction === "out" ? "text-alert" : "";
 
-    message = transfer.tags?.find(
-      (o) => o.typeId === "o-banking:transfer:message:1"
-    )?.value;
+    if (transfer.payload) {
+      message = transfer.payload.tags?.find(
+        (o) => o.typeId === "o-banking:transfer:message:1"
+      )?.value;
+    }
+
     displayableName =
       targetProfile.firstName +
       (!targetProfile.lastName ? "" : " " + targetProfile.lastName);
