@@ -156,14 +156,14 @@ onMount(async () => {
             {#if offer.description}
               <div class="text-sm text-dark-lightest">{offer.description}</div>
             {/if}
-            {#if offer.deliveryTermsTag}
-              <div class="flex flex-col space-y-1">
-                <div class="text-2xs">Shipping</div>
-                <div class="text-sm text-dark-lightest">
-                  {offer.deliveryTermsTag.value}
-                </div>
+            <!-- {#if offer.deliveryTermsTag} -->
+            <div class="flex flex-col space-y-1">
+              <div class="text-2xs">Shipping</div>
+              <div class="text-sm text-dark-lightest">
+                Store Pickup in München, Germany
               </div>
-            {/if}
+            </div>
+            <!-- {/if} -->
             {#if offer.city}
               <div class="flex flex-col space-y-1">
                 <div class="text-2xs">Location</div>
@@ -321,7 +321,7 @@ onMount(async () => {
       <CreatorCard profile={offer.createdBy} />
       <OfferCard {offer} allowEdit={true} /> -->
       <div
-        class="sticky bottom-0 left-0 right-0 w-full px-4 mt-2 bg-white rounded-xl">
+        class="sticky bottom-0 left-0 right-0 w-full px-4 mt-4 bg-white rounded-xl">
         <div class="flex flex-row space-x-4">
           <div>
             <button class="btn btn-square btn-light">
