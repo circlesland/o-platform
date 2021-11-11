@@ -74,7 +74,7 @@ function profileSwitcher() {
       {#if profile}
         <div
           class="cursor-pointer justify-self-center"
-          on:click="{() => profileSwitcher()}">
+          on:click="{() => (showSwitcher = !showSwitcher)}">
           <UserImage profile="{profile}" size="{8}" profileLink="{false}" />
         </div>
         {#if showSwitcher}

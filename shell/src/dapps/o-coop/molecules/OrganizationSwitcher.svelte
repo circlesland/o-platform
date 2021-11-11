@@ -66,7 +66,7 @@ function switchProfile(profile: Profile | Organisation) {
       div.self-end.text-primary.relative.right-14.top-5 Switch Profile
       +each(`organisations as organisation`)
         +if('organisation.value.circlesAddress != $me.circlesAddress')
-          div.relative.right-3.top-10
+          div.relative.right-3.top-10.mb-4
             div.flex.flex-row.items-center.px-4.py-2.space-x-2.rounded-full.bg-white.shadow-sm.text-lg.cursor-pointer(on:click!="{() => switchProfile(organisation.value)}")
               UserImage(profile="{organisation.value}" size="{8}" profileLink="{false}" gradientRing="{true}")
               div.text-dark-dark {organisation.label}
