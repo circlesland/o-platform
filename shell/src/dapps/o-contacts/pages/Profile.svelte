@@ -403,13 +403,13 @@ let promise = getJumplist();
                 </div>
               </div>
             </section>
-            <section class="justify-center mb-2 ">
-              <div class="flex flex-col w-full pt-2 space-y-1">
-                <div class="text-left text-2xs text-dark-lightest">
-                  Member at
-                </div>
-                <div class="flex flex-row flex-wrap mt-2 ">
-                  {#if profile.memberships.length}
+            {#if profile.memberships.length}
+              <section class="justify-center mb-2 ">
+                <div class="flex flex-col w-full pt-2 space-y-1">
+                  <div class="text-left text-2xs text-dark-lightest">
+                    Member at
+                  </div>
+                  <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.memberships as membership}
                       {#if membership.organisation}
                         <div class="mt-2 mr-2">
@@ -420,12 +420,10 @@ let promise = getJumplist();
                         </div>
                       {/if}
                     {/each}
-                  {:else}
-                    No memberships
-                  {/if}
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            {/if}
             {#if profile && profile.dream}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">

@@ -91,7 +91,7 @@ displayName =
       </div>
     </header>
     <div
-      class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
+      class="relative flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
       <div class="inline-flex">
         <UserImage
           profile="{offer.createdByProfile}"
@@ -125,6 +125,9 @@ displayName =
             {truncateString(offer.description, 70)}
           </div>
         {/if}
+      </div>
+      <div class="text-xs text-right text-dark">
+        Store Pick Up in München, Germany
       </div>
       <div class="flex flex-row space-x-4">
         <div>
