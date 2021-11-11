@@ -97,8 +97,7 @@ function onkeydown(e: KeyboardEvent) {
       </div>
     {/if}
 
-    <div class="flex flex-col w-full space-y-1">
-      <div class="mb-1 text-left text-2xs text-dark-lightest">Items</div>
+    <div class="flex flex-col w-full mt-6 space-y-1">
       <div class="flex flex-col items-center w-full">
         <CartItems cartContents="{cartContents}" editable="{false}" />
       </div>
@@ -110,40 +109,24 @@ function onkeydown(e: KeyboardEvent) {
       </div>
     </div>
 
-    <div class="flex flex-col w-full space-y-2 text-left text-primary-dark">
-      <h1 class="p-2 text-white uppercase bg-primary-dark">
-        Important Information
-      </h1>
+    <div class="flex flex-col w-full space-y-2 text-left">
+      <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
+        <h1 class="p-2 text-white uppercase bg-dark-dark ">
+          Important Information
+        </h1>
+      </div>
       <div>
-        After a successful purchase, we will show you a <span class="text-dark"
-          >PickUp Code</span
+        After a successful purchase, we will show you a <span
+          class="text-primary-dark">PickUp Code</span
         >, which you will need to
-        <span class="text-dark">show to the seller</span> when you pick up your Order
-        at the Store.
+        <span class="text-primary-dark">show to the seller</span> when you pick up
+        your Order at the Store.
       </div>
       <div class="pt-2 text-sm">
-        To see your <span class="text-dark">PickUp Code</span> at any time after
-        the purchase, go to <span class="text-dark">My purchases</span> and click
-        on the Purchase.
+        To see your <span class="text-primary-dark">PickUp Code</span> at any
+        time after the purchase, go to
+        <span class="text-primary-dark">My purchases</span> and click on the Purchase.
       </div>
-    </div>
-
-    <div class="flex flex-col w-full space-y-1">
-      <div class="mb-1 text-left text-2xs text-dark-lightest">Amount</div>
-
-      <!-- <div class="flex items-center w-full">
-        <div class="text-left ">
-          {#if context.data.tokens.currency == "crc"}
-            {convertTimeCirclesToCircles(
-              context.data.tokens ? context.data.tokens.amount : "0",
-              null
-            )}
-            Circles
-          {:else}
-            {context.data.tokens ? context.data.tokens.amount : "0"} xDai
-          {/if}
-        </div>
-      </div> -->
     </div>
   </div>
   <ProcessNavigation
