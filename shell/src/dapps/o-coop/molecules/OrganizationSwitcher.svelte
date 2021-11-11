@@ -20,7 +20,6 @@ $: {
   } else {
     profile = undefined;
   }
-  console.log("ORGI ", organisations);
 }
 onMount(async () => {
   myProfile = await loadProfile();
