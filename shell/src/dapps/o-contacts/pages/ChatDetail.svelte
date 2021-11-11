@@ -1,254 +1,212 @@
 <script lang="ts">
-  import {onDestroy, onMount} from "svelte";
-  import NotificationCard from "../atoms/NotificationCard.svelte";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {
-    AggregatesDocument, AggregateType,
-    Contact, Contacts, CrcBalances,
-    EventType, Profile, ProfileAggregate, ProfileEvent,
-    SendMessageDocument, SortOrder, StreamDocument,
-  } from "../../../shared/api/data/types";
-  import {me} from "../../../shared/stores/me";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import {push} from "svelte-spa-router";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {Subscription} from "rxjs";
+import { onDestroy, onMount, afterUpdate } from "svelte";
+import NotificationCard from "../atoms/NotificationCard.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import {
+  AggregatesDocument,
+  AggregateType,
+  Contact,
+  Contacts,
+  CrcBalances,
+  EventType,
+  Profile,
+  ProfileAggregate,
+  ProfileEvent,
+  SendMessageDocument,
+  SortOrder,
+  StreamDocument,
+} from "../../../shared/api/data/types";
+import { me } from "../../../shared/stores/me";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { push } from "svelte-spa-router";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { Subscription } from "rxjs";
 
-  export let id: string;
+export let id: string;
 
-  let error: string | undefined = undefined;
-  let chatHistory: ProfileEvent[] = [];
+let error: string | undefined = undefined;
+let chatHistory: ProfileEvent[] = [];
 
-  let contactProfile: Profile | null;
-  let shellEventSubscription: Subscription;
+let contactProfile: Profile | null;
+let shellEventSubscription: Subscription;
 
-  async function reload() {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
+async function reload() {
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
 
-    const contactsResult = await apiClient.query({
-      query: AggregatesDocument,
-      variables: {
-        types: [AggregateType.Contacts],
-        safeAddress: $me.circlesAddress,
-        filter: {
-          contacts: {
-            addresses: [id]
-          }
-        }
-      }
-    });
-
-    if (contactsResult.errors?.length > 0) {
-      throw new Error(`Couldn't read the contacts of safe ${$me.circlesAddress}`);
-    }
-
-    const contacts:ProfileAggregate = contactsResult.data.aggregates.find(o => o.type == AggregateType.Contacts);
-    if (!contacts) {
-      throw new Error(`Couldn't find the AggregateType.Contacts in the query result.`)
-    }
-
-    if ((<Contacts>contacts.payload).contacts.length > 0) {
-      contactProfile = (<Contacts>contacts.payload).contacts[0].contactAddress_Profile;
-    }
-
-    const result = await apiClient.query({
-      query: StreamDocument,
-      variables: {
-        safeAddress: $me.circlesAddress,
-        pagination: {
-          order: SortOrder.Asc,
-          limit: 1000000,
-          continueAt: new Date(0),
+  const contactsResult = await apiClient.query({
+    query: AggregatesDocument,
+    variables: {
+      types: [AggregateType.Contacts],
+      safeAddress: $me.circlesAddress,
+      filter: {
+        contacts: {
+          addresses: [id],
         },
-        filter: {
-          with: id
-        },
-        types: [
-          EventType.CrcHubTransfer,
-          //EventType.CrcMinting,
-          EventType.CrcTrust,
-          EventType.ChatMessage,
-          //EventType.CrcSignup,
-          //EventType.CrcTokenTransfer,
-          //EventType.EthTransfer,
-          //EventType.GnosisSafeEthTransfer,
-          //EventType.InvitationCreated,
-          //EventType.InvitationRedeemed,
-          //EventType.MembershipOffer,
-          //EventType.MembershipAccepted,
-          //EventType.MembershipRejected
-        ]
-      }
-    });
+      },
+    },
+  });
 
-    // TODO: Load the contact
-
-    chatHistory = (<any>result).data.events.map(o => {
-      return {
-        original: o,
-        contactProfile: (o.contact_address_profile ? o.contact_address_profile : {
-          circlesAddress: o.contact_address,
-          firstName: o.contact_address
-        })
-      };
-    });
-
-    window.o.publishEvent(<any>{
-      type: "shell.scrollToBottom",
-      scrollNow: true,
-    });
+  if (contactsResult.errors?.length > 0) {
+    throw new Error(`Couldn't read the contacts of safe ${$me.circlesAddress}`);
   }
 
-  onMount(async () => {
-    shellEventSubscription = window.o.events.subscribe(
-            async (event: PlatformEvent) => {
-              if (event.type != "shell.refresh" || (<any>event).dapp != "chat:1") {
-                return;
-              }
-              await reload();
-            }
+  const contacts: ProfileAggregate = contactsResult.data.aggregates.find(
+    (o) => o.type == AggregateType.Contacts
+  );
+  if (!contacts) {
+    throw new Error(
+      `Couldn't find the AggregateType.Contacts in the query result.`
     );
-    await reload();
-  });
+  }
 
-  onDestroy(() => shellEventSubscription.unsubscribe());
+  if ((<Contacts>contacts.payload).contacts.length > 0) {
+    contactProfile = (<Contacts>contacts.payload).contacts[0]
+      .contactAddress_Profile;
+  }
 
-  let inputField: any;
-  let chatmessage: string;
-
-  const sendMessage = async (text) => {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-    // If we're acting as organisation then we need to specify a "fromSafeAddress"
-    const result = await apiClient.mutate({
-      mutation: SendMessageDocument,
-      variables: {
-        fromSafeAddress: $me.circlesAddress,
-        toSafeAddress: id,
-        content: text,
+  const result = await apiClient.query({
+    query: StreamDocument,
+    variables: {
+      safeAddress: $me.circlesAddress,
+      pagination: {
+        order: SortOrder.Asc,
+        limit: 1000000,
+        continueAt: new Date(0),
       },
-    });
-
-    if (result.data?.sendMessage?.success) {
-      chatHistory = [...chatHistory, <any>{
-        original: result.data.sendMessage.event
-      }];
-    }
-
-    window.o.publishEvent(<any>{
-      type: "shell.scrollToBottom",
-      scrollNow: true,
-    });
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "chat:1",
-      data: null,
-    });
-  };
-
-  function init(el) {
-    el.focus();
-  }
-
-  var autoExpand = function () {
-    var el = this;
-    setTimeout(function () {
-      el.style.cssText = "height:auto; padding:0 padding-top: 2px;";
-      el.style.cssText = "height:" + el.scrollHeight + "px";
-    }, 0);
-  };
-
-  var resetAutoExpand = function () {
-    var el = this;
-    setTimeout(function () {
-      el.style.cssText = "height:auto; padding:0 padding-top: 2px;";
-    }, 0);
-  };
-
-  onMount(() => {
-    window.o.publishEvent(<any>{
-      type: "shell.scrollToBottom",
-      scrollNow: true,
-    });
-    // let textarea = document.querySelector("textarea");
-    // textarea.addEventListener("input", autoExpand);
-    // let detectedDevice = uaParser.getDevice();
-    // if (length > 17) {
-    //   textarea.dispatchEvent(new Event("input"));
-    // }
-    // if (detectedDevice && detectedDevice.type) {
-    //   if (detectedDevice.type != "mobile") {
-    //     inputField.focus();
-    //   }
-    // } else {
-    //   inputField.focus();
-    // }
+      filter: {
+        with: id,
+      },
+      types: [
+        EventType.CrcHubTransfer,
+        //EventType.CrcMinting,
+        EventType.CrcTrust,
+        EventType.ChatMessage,
+        //EventType.CrcSignup,
+        //EventType.CrcTokenTransfer,
+        //EventType.EthTransfer,
+        //EventType.GnosisSafeEthTransfer,
+        //EventType.InvitationCreated,
+        //EventType.InvitationRedeemed,
+        //EventType.MembershipOffer,
+        //EventType.MembershipAccepted,
+        //EventType.MembershipRejected
+      ],
+    },
   });
 
-  async function submitChat() {
-    if (!chatmessage) {
-      return;
-    }
+  // TODO: Load the contact
 
-    sendMessage(chatmessage);
-
-    chatmessage = null;
-    // let textarea = document.querySelector("textarea");
-    // textarea.style.cssText = "height:auto; padding:0 padding-top: 2px;";
-  }
-
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Enter" && !e.shiftKey) {
-      submitChat();
-    }
-  }
-
-  function goToProfile(e, path?: string) {
-    if (!path) return;
-    e.stopPropagation();
-    push(`#/friends/${path}`);
-  }
-
-  function buildCardModel(chat) {
-    // console.log("CHAT: ", chat);
-    let notificationType: string = null;
-    let title: string = null;
-    let icon: string = null;
-    let outgoing: boolean = chat.safeAddress === $me.circlesAddress;
-    let actions: {
-      title: string;
-      icon: string;
-      colorClass: string;
-      action: () => void;
-    }[] = [];
-
-    let text = chat.tags?.find(
-            (o) => o.typeId === "o-banking:transfer:message:1"
-    )?.value;
-    if (!text) {
-      text = "";
-    }
-
+  chatHistory = (<any>result).data.events.map((o) => {
     return {
-      safeAddress: chat.safe_address,
-      outgoing: outgoing,
-      name: chat.safe_address_profile ? chat.safe_address_profile.firstName : chat.safe_address,
-      time: chat.timestamp,
-      content: {
-        notificationType: notificationType,
-        time: chat.timestamp,
-        title: title,
-        icon: icon,
-        actions: actions,
-        text: text,
-      },
+      original: o,
+      contactProfile: o.contact_address_profile
+        ? o.contact_address_profile
+        : {
+            circlesAddress: o.contact_address,
+            firstName: o.contact_address,
+          },
     };
+  });
+
+  window.o.publishEvent(<any>{
+    type: "shell.scrollToBottom",
+    scrollNow: true,
+  });
+}
+
+onMount(async () => {
+  shellEventSubscription = window.o.events.subscribe(
+    async (event: PlatformEvent) => {
+      if (event.type != "shell.refresh" || (<any>event).dapp != "chat:1") {
+        return;
+      }
+      await reload();
+    }
+  );
+  await reload();
+});
+
+onDestroy(() => shellEventSubscription.unsubscribe());
+
+let inputField: any;
+let chatmessage: string;
+
+const sendMessage = async (text) => {
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+
+  // If we're acting as organisation then we need to specify a "fromSafeAddress"
+  const result = await apiClient.mutate({
+    mutation: SendMessageDocument,
+    variables: {
+      fromSafeAddress: $me.circlesAddress,
+      toSafeAddress: id,
+      content: text,
+    },
+  });
+
+  if (result.data?.sendMessage?.success) {
+    chatHistory = [
+      ...chatHistory,
+      <any>{
+        original: result.data.sendMessage.event,
+      },
+    ];
   }
+
+  window.o.publishEvent(<any>{
+    type: "shell.scrollToBottom",
+    scrollNow: true,
+  });
+  window.o.publishEvent(<any>{
+    type: "shell.refresh",
+    dapp: "chat:1",
+    data: null,
+  });
+};
+
+function init(el) {
+  el.focus();
+}
+
+onMount(() => {
+  // TEMPORARY FIX UNTIL THE LIST IS WORKING BETTER
+  setTimeout(function () {
+    window.o.publishEvent(<any>{
+      type: "shell.scrollToBottom",
+      scrollNow: true,
+    });
+  }, 2500);
+});
+
+async function submitChat() {
+  if (!chatmessage) {
+    return;
+  }
+
+  sendMessage(chatmessage);
+
+  chatmessage = null;
+  // let textarea = document.querySelector("textarea");
+  // textarea.style.cssText = "height:auto; padding:0 padding-top: 2px;";
+}
+
+function onkeydown(e: KeyboardEvent) {
+  if (e.key == "Enter" && !e.shiftKey) {
+    submitChat();
+  }
+}
+
+function goToProfile(e, path?: string) {
+  if (!path) return;
+  e.stopPropagation();
+  push(`#/friends/${path}`);
+}
 </script>
 
 <div id="chatlist">
-  <header class="sticky top-0 z-50 grid w-full bg-white place-content-center">
+  <header
+    class="sticky top-0 z-50 grid w-full bg-white place-content-center rounded-t-xl">
     <div
       class="relative flex flex-col items-center self-center w-full m-auto text-center justify-self-center">
       <div class="absolute " style="left: -56px; top:4px">
@@ -262,9 +220,7 @@
       <div class="mt-2 text-3xl tracking-wide uppercase font-heading">
         {#if contactProfile}
           {contactProfile.firstName}
-          {contactProfile.lastName
-            ? contactProfile.lastName
-            : ""}
+          {contactProfile.lastName ? contactProfile.lastName : ""}
         {/if}
       </div>
 
@@ -285,13 +241,13 @@
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
   <div class="flex flex-col pb-0 space-y-4 sm:space-y-8">
     {#each chatHistory as event}
-      <NotificationCard event={event.original} />
+      <NotificationCard event="{event.original}" />
     {/each}
+    <div id="endOfList"></div>
   </div>
   <div
-    class:hidden="{!contactProfile ||
-      !contactProfile.id}"
-    class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2">
+    class:hidden="{!contactProfile || !contactProfile.id}"
+    class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2 rounded-b-xl">
     <div class="flex-grow">
       <input
         bind:this="{inputField}"

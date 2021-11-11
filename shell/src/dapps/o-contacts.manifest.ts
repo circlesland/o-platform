@@ -2,12 +2,12 @@ import Contacts from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
 import Chat from "./o-contacts/pages/Chat.svelte";
 import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
-import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-import {me} from "../shared/stores/me";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-import {init} from "./o-banking/init";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { me } from "../shared/stores/me";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { init } from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
-import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import {
   AggregatesDocument,
   AggregateType,
@@ -17,9 +17,9 @@ import {
   Profile,
   ProfileAggregateFilter,
 } from "../shared/api/data/types";
-import {transfer} from "./o-banking/processes/transfer";
-import {push} from "svelte-spa-router";
-import {setTrust} from "./o-banking/processes/setTrust";
+import { transfer } from "./o-banking/processes/transfer";
+import { push } from "svelte-spa-router";
+import { setTrust } from "./o-banking/processes/setTrust";
 
 export interface DappState {
   // put state here
@@ -52,8 +52,8 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
   isSystem: false,
   routeParts: ["=actions"],
   items: async (params, runtimeDapp) => {
-    let $me:Profile = null;
-    const unsub = me.subscribe(e => $me = e);
+    let $me: Profile = null;
+    const unsub = me.subscribe((e) => ($me = e));
     unsub();
 
     const getRecipientProfile = async () => {
@@ -64,37 +64,38 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           safeAddress: $me.circlesAddress,
           filter: <ProfileAggregateFilter>{
             contacts: {
-              addresses: [params.id]
-            }
+              addresses: [params.id],
+            },
           },
-          types: [
-            AggregateType.Contacts
-          ]
-        }
+          types: [AggregateType.Contacts],
+        },
       });
 
       if (result.errors?.length > 0) {
-        throw new Error(`Couldn't read the contacts of safe ${$me.circlesAddress}: \n${result.errors
-          .map((o) => o.message)
-          .join("\n")}`);
+        throw new Error(
+          `Couldn't read the contacts of safe ${
+            $me.circlesAddress
+          }: \n${result.errors.map((o) => o.message).join("\n")}`
+        );
       }
 
-      const contactsList:Contact[] = result.data.aggregates[0].payload.contacts;
+      const contactsList: Contact[] =
+        result.data.aggregates[0].payload.contacts;
       console.log(contactsList);
 
-      if (contactsList.length > 0)
-        return contactsList[0];
-      else
-        return undefined;
+      if (contactsList.length > 0) return contactsList[0];
+      else return undefined;
     };
 
     const recipientProfile = params.id
       ? await getRecipientProfile()
       : undefined;
 
-    console.log("recipientProfile:", recipientProfile)
+    console.log("recipientProfile:", recipientProfile);
 
-    const trustMetadata = recipientProfile?.metadata.find(o => o.name == EventType.CrcTrust) ?? undefined;
+    const trustMetadata =
+      recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??
+      undefined;
     // let trustsYou = false;
     let youTrust = false;
 
@@ -227,7 +228,7 @@ export const friends: DappManifest<DappState> = {
   icon: "group",
   title: "Friends",
   routeParts: ["=friends"],
-  defaultRoute: [],
+  defaultRoute: ["chat"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   jumplist: profileJumplist,
