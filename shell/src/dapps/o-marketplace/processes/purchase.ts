@@ -21,6 +21,8 @@ import {BN} from "ethereumjs-util";
 import {fTransferCircles, TransitivePath} from "../../o-banking/processes/transferCircles";
 import {circIn} from "svelte/easing";
 import {me} from "../../../shared/stores/me";
+import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
+import {cartContents} from "../stores/shoppingCartStore";
 
 export type PurchaseContextData = {
   items: Offer[];
@@ -40,6 +42,12 @@ const editorContent: { [x: string]: EditorViewContext } = {
     description: "You are about to transfer",
     placeholder: "",
     submitButtonText: "Buy now",
+  },
+  success: {
+    title: "Check out successful",
+    description: "",
+    placeholder: "",
+    submitButtonText: "Close",
   },
 };
 
@@ -203,12 +211,10 @@ const processDefinition = (processId: string) =>
               sessionStorage.getItem("circlesKey"),
               currentInvoice.path,
               `Payment of invoice ${currentInvoice.invoice.id}`);
-
-            console.log(`Payment-receipt of invoice ${currentInvoice.invoice.id}:`, receipt);
           },
           onDone: [{
             cond: (context) => context.data.payableInvoices.length == 0,
-            target: "#success"
+            target: "#showSuccess"
           }, {
             cond: (context) => context.data.payableInvoices.length > 0,
             target: "#pay"
@@ -233,13 +239,30 @@ const processDefinition = (processId: string) =>
           },
         }),
       },
+      showSuccess: prompt({
+        id: "showSuccess",
+        field: "__",
+        component: HtmlViewer,
+        params: {
+          view: editorContent.success,
+          html: () => ``,
+          submitButtonText: editorContent.success.submitButtonText,
+          hideNav: false,
+        },
+        navigation: {
+          next: "#success",
+        },
+      }),
       success: {
         type: "final",
         id: "success",
-        data: (context, event: any) => {
-          return event.data;
+        entry: () => {
+          cartContents.set([]);
         },
-      },
+        data: (context, event: PlatformEvent) => {
+          return "yeah!";
+        },
+      }
     },
   });
 
