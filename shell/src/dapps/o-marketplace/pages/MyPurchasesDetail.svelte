@@ -29,77 +29,33 @@ let groupedItems;
 async function load() {
   if (isLoading) return;
 
-  // const safeAddress = $me.circlesAddress;
-  // const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const safeAddress = $me.circlesAddress;
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
 
-  // const purchaseResult = await apiClient.query({
-  //   query: AggregatesDocument,
-  //   variables: {
-  //     types: [AggregateType.Purchase],
-  //     safeAddress: safeAddress,
-  //     filter: {
-  //       id: id,
-  //     },
-  //   },
-  // });
-
-  // if (purchaseResult.errors?.length > 0) {
-  //   throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
-  // }
-
-  // const o = purchaseResult.data.aggregates.find(
-  //   (o) => o.type == AggregateType.Purchases
-  // );
-  // if (!o) {
-  //   throw new Error(`Couldn't find the Purchases in the query result.`);
-  // }
-
-  // purchase = o.payload.purchase;
-
-  purchase = {
-    id: 11,
-    createdAt: "2021-11-10T17:27:25.545Z",
-    createdByAddress: "0x009626daded5e90aecee30ad3ebf2b3e510fe256",
-    createdByProfile: {
-      id: 258,
-      firstName: "Hier, haste",
-      lastName: "nen Namen",
-      avatarCid: null,
-      __typename: "Profile",
+  const purchaseResult = await apiClient.query({
+    query: AggregatesDocument,
+    variables: {
+      types: [AggregateType.Purchases],
+      safeAddress: safeAddress,
+      purchases: {
+        purchaseIds: [id],
+      },
     },
-    total: "0.02",
-    lines: [
-      {
-        id: 12,
-        amount: 1,
-        offer: {
-          id: 3,
-          version: 2,
-          title: "Mundgranate Energy Drink",
-          description: "It's hot, it's cold, it's a piece of american freedom",
-          pictureUrl: "/images/market/mundgranate_large.jpg",
-          pricePerUnit: "0.01",
-          __typename: "Offer",
-        },
-        __typename: "PurchaseLine",
-      },
-      {
-        id: 13,
-        amount: 1,
-        offer: {
-          id: 6,
-          version: 1,
-          title: "Chuckalina Weisswein",
-          description: "Schmeckt",
-          pictureUrl: "/images/market/Chuckalina_Large.jpg",
-          pricePerUnit: "0.01",
-          __typename: "Offer",
-        },
-        __typename: "PurchaseLine",
-      },
-    ],
-    __typename: "Purchase",
-  };
+  });
+
+  if (purchaseResult.errors?.length > 0) {
+    throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
+  }
+  console.log("ID", id);
+  console.log("RESULT", purchaseResult);
+  const o = purchaseResult.data.aggregates.find(
+    (o) => o.type == AggregateType.Purchases
+  );
+  if (!o) {
+    throw new Error(`Couldn't find the Purchases in the query result.`);
+  }
+
+  purchase = o.payload.purchase;
 
   isLoading = false;
 }
@@ -163,7 +119,7 @@ onMount(async () => {
     </section>
   {:else if groupedItems}
     <!-- <CartItems cartContents="{purchase.lines}" editable="{false}" /> -->
-    <!-- <pre>{JSON.stringify(groupedItems, null, 2)}</pre> -->
+    <pre>{JSON.stringify(purchase, null, 2)}</pre>
 
     <div class="mt-6">
       {#each groupedItems as item, i}
@@ -177,7 +133,11 @@ onMount(async () => {
             <div class="flex flex-col items-start w-full ml-2 space-y-2">
               <div class="flex flex-row justify-between w-full">
                 <div class="md:text-md">
-                  {item.item.item.offer.title}
+                  <a
+                    href="#/marketplace/offer/{item.item.item.offer.id}"
+                    alt="{item.item.item.offer.title}">
+                    {item.item.item.offer.title}
+                  </a>
                 </div>
               </div>
               <div class="flex items-center justify-end w-full">
