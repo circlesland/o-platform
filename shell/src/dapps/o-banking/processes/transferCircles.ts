@@ -50,6 +50,65 @@ export type TransitivePath = {
   }]
 }
 
+export async function fTransferCircles (safeAddress:string, privateKey:string, path:TransitivePath, message:string) {
+  const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), safeAddress);
+
+  try {
+    const tokenOwners = [];
+    const sources = [];
+    const destinations = [];
+    const values = [];
+
+    path.transfers.forEach(transfer => {
+      tokenOwners.push(transfer.tokenOwner);
+      sources.push(transfer.from);
+      destinations.push(transfer.to);
+      values.push(new BN(transfer.value));
+    });
+
+    const transferTroughResult = await new CirclesHub(RpcGateway.get(), HUB_ADDRESS).transferTrough(
+      privateKey,
+      gnosisSafeProxy,
+      tokenOwners,
+      sources,
+      destinations,
+      values
+    );
+
+    let txHashSubscription: Subscription;
+    txHashSubscription = transferTroughResult.observable.subscribe(async o => {
+      if (o.type != "transactionHash") {
+        return;
+      }
+      if (txHashSubscription) {
+        txHashSubscription.unsubscribe();
+      }
+
+      if (!message) {
+        return;
+      }
+
+      const api = await window.o.apiClient.client.subscribeToResult();
+      await api.mutate({
+        mutation: TagTransactionDocument,
+        variables: {
+          tag: {
+            typeId: "o-banking:transfer:message:1",
+            value: message
+          },
+          transactionHash: o.data
+        }
+      });
+    });
+
+    const receipt = await (await transferTroughResult.toPromise());
+    return receipt;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
 const processDefinition = (processId: string) =>
   createMachine<TransferCirclesContext, any>({
     id: `${processId}:transferCircles`,
@@ -62,61 +121,11 @@ const processDefinition = (processId: string) =>
         id: "transferCircles",
         invoke: {
           src: async (context) => {
-            const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
-
-            try {
-              const tokenOwners = [];
-              const sources = [];
-              const destinations = [];
-              const values = [];
-
-              context.data.transitivePath.transfers.forEach(transfer => {
-                tokenOwners.push(transfer.tokenOwner);
-                sources.push(transfer.from);
-                destinations.push(transfer.to);
-                values.push(new BN(transfer.value));
-              });
-
-              const transferTroughResult = await new CirclesHub(RpcGateway.get(), HUB_ADDRESS).transferTrough(
-                context.data.privateKey,
-                gnosisSafeProxy,
-                tokenOwners,
-                sources,
-                destinations,
-                values
-              );
-
-              let txHashSubscription: Subscription;
-              txHashSubscription = transferTroughResult.observable.subscribe(async o => {
-                if (o.type != "transactionHash") {
-                  return;
-                }
-                if (txHashSubscription) {
-                  txHashSubscription.unsubscribe();
-                }
-
-                if (!context.data.message) {
-                  return;
-                }
-
-                const api = await window.o.apiClient.client.subscribeToResult();
-                await api.mutate({
-                  mutation: TagTransactionDocument,
-                  variables: {
-                    tag: {
-                      typeId: "o-banking:transfer:message:1",
-                      value: context.data.message
-                    },
-                    transactionHash: o.data
-                  }
-                });
-              });
-
-              context.data.receipt = await (await transferTroughResult.toPromise());
-            } catch (e) {
-              console.error(e);
-              throw e;
-            }
+            context.data.receipt = await fTransferCircles(
+              context.data.safeAddress,
+              context.data.privateKey,
+              context.data.transitivePath,
+              context.data.message);
           },
           onDone: "#success",
           onError: "#error",

@@ -9,20 +9,27 @@ import {
   Profile,
   Offer,
   CreatePurchaseDocument,
-  PurchaseLineInput
+  PurchaseLineInput, Invoice
 } from "../../../shared/api/data/types";
 import {show} from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {transferCircles} from "../../o-banking/processes/transferCircles";
 import {convertTimeCirclesToCircles} from "../../../shared/functions/displayCirclesAmount";
-import {totalPrice} from "../stores/shoppingCartStore";
+import {requestPathToRecipient} from "../../o-banking/services/requestPathToRecipient";
+import {BN} from "ethereumjs-util";
+import {fTransferCircles, TransitivePath} from "../../o-banking/processes/transferCircles";
+import {circIn} from "svelte/easing";
 import {me} from "../../../shared/stores/me";
 
 export type PurchaseContextData = {
   items: Offer[];
   sellerProfile?: Profile;
+  invoices: Invoice[]
+  payableInvoices: {
+    invoice: Invoice,
+    path: TransitivePath
+  }[]
 };
 
 export type PurchaseContext = ProcessContext<PurchaseContextData>;
@@ -61,7 +68,6 @@ const processDefinition = (processId: string) =>
       checkoutSummary: prompt<PurchaseContext, any>({
         field: "checkoutSummary",
         component: CheckoutSummary,
-        // const cachedProfile = localStorage.getItem("cartContents");
         params: {
           view: editorContent.summary,
           submitButtonText: editorContent.summary.submitButtonText,
@@ -72,6 +78,12 @@ const processDefinition = (processId: string) =>
       }),
       createPurchase: {
         id: "createPurchase",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Processing your purchase ..`,
+          });
+        },
         invoke: {
           src: async (context) => {
             const linesGroupedByOffer: {[offerId:number]: number} = {};
@@ -94,21 +106,87 @@ const processDefinition = (processId: string) =>
               }
             });
 
+            context.data.invoices = <Invoice[]>result.data.purchase;
+
             console.log(result);
           },
-          onDone: "#pay",
+          onDone: "#calculatePaths",
           onError: {
             actions: (context, event) => {
               window.o.lastError = event.data;
             },
+            target: "#showError"
+          }
+        }
+      },
+      calculatePaths: {
+        id: "calculatePaths",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Checking transferable circles amount ..`,
+          });
+        },
+        invoke: {
+          src: async (context) => {
+            context.data.payableInvoices = [];
+            for(let invoice of context.data.invoices) {
+              const invoiceTotal = invoice.lines.reduce((p,c) => {
+                const amount = c.amount;
+                const pricePerUnit = parseFloat(c.offer.pricePerUnit);
+                return p + amount * pricePerUnit;
+              }, 0);
+
+              const flow = await requestPathToRecipient({
+                data: {
+                  safeAddress: invoice.buyerAddress,
+                  recipientAddress: invoice.sellerAddress,
+                  amount: convertTimeCirclesToCircles(
+                      invoiceTotal,
+                      null
+                      ).toString()
+                }
+              });
+
+              if (flow.transfers.length > 0) {
+                context.data.payableInvoices.push({
+                  invoice: invoice,
+                  path: flow
+                });
+              }
+            }
+
+            console.log(JSON.stringify(context.data.payableInvoices, null, 2));
+          },
+          onDone: [{
+            cond: (context) => context.data.invoices.length == context.data.payableInvoices.length,
+            target: "#pay"
+          }, {
+            cond: (context) => context.data.invoices.length != context.data.payableInvoices.length,
+            actions: (context, event) => {
+              let invoices = JSON.parse(JSON.stringify(context.data.invoices));
+              context.data.payableInvoices.forEach(pi => {
+                const pi_ = context.data.invoices.find(o => o.id == pi.invoice.id);
+                const pi_i = context.data.invoices.indexOf(pi_);
+                invoices = invoices.splice(pi_i, 1);
+              });
+              const errorMessage = `You don't have enough trust paths to the following sellers: ${invoices.map(o => o.sellerAddress).join(", ")}`;
+              window.o.lastError = new Error(errorMessage);
+            },
+            target: "#showError"
+          }],
+          onError: {
             target: "#showError",
+            actions: (context, event) => {
+              window.o.lastError = event.data;
+            }
           }
         }
       },
       pay: {
         id: "pay",
         on: <any>{
-          ...ipc("pay"),
+          ...ipc("pay")
         },
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
@@ -117,47 +195,30 @@ const processDefinition = (processId: string) =>
           });
         },
         invoke: {
-          src: transferCircles.stateMachine(
-            `${processId}:transfer:transferCircles`
-          ),
-          data: {
-            data: (context, event) => {
-              let amount = 0;
-              const unsub = totalPrice.subscribe($totalPrice => {
-                amount = $totalPrice;
-              });
-              unsub();
+          src: async (context) => {
+            const currentInvoice = context.data.payableInvoices.pop();
 
-              let mySafeAddress = "";
-              const unsub2 = me.subscribe($me => {
-                mySafeAddress = $me.circlesAddress;
-              });
-              unsub2();
+            const receipt = await fTransferCircles(
+              currentInvoice.invoice.buyerAddress,
+              sessionStorage.getItem("circlesKey"),
+              currentInvoice.path,
+              `Payment of invoice ${currentInvoice.invoice.id}`);
 
-              return {
-                safeAddress: mySafeAddress,
-                recipientAddress: context.data.sellerProfile.circlesAddress,
-                amount: convertTimeCirclesToCircles(
-                  amount,
-                  null
-                ),
-                privateKey: sessionStorage.getItem("circlesKey"),
-                message: undefined,
-                transitivePath: context.data.transitivePath,
-              };
-            },
-            messages: {},
-            dirtyFlags: {},
+            console.log(`Payment-receipt of invoice ${currentInvoice.invoice.id}:`, receipt);
           },
-          onDone: {
-            target: "#success",
+          onDone: [{
+            cond: (context) => context.data.payableInvoices.length == 0,
+            target: "#success"
+          }, {
+            cond: (context) => context.data.payableInvoices.length > 0,
+            target: "#pay"
+          }],
+          onError: {
+            target: "#showError",
             actions: (context, event) => {
-              // context.data.transitivePath = event.data.transitivePath;
-              // context.data.receipt = event.data.receipt;
-              console.log("Transfer CRC returned:", event.data);
-            },
-          },
-          onError: "#showError",
+              window.o.lastError = event.data;
+            }
+          }
         },
       },
       showError: {

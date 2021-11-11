@@ -1,30 +1,40 @@
 mutation createPurchase($lines: [PurchaseLineInput!]!) {
   purchase(lines: $lines) {
     id
-    createdAt
-    createdByAddress
-    createdByProfile {
+    buyerAddress
+    buyerProfile {
       id
       circlesAddress
       firstName
+      lastName
       avatarUrl
     }
+    sellerAddress
+    sellerProfile {
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
+    purchaseId
     lines {
       id
       amount
       offer {
         id
-        title
-        description
-        pictureUrl
-        pricePerUnit
+        version
         createdByAddress
         createdByProfile {
           id
           circlesAddress
           firstName
+          lastName
           avatarUrl
         }
+        pricePerUnit
+        title
+        description
       }
     }
   }

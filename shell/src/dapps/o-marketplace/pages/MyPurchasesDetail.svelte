@@ -18,7 +18,7 @@ import Date from "../../../shared/atoms/Date.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-export let id: number;
+export let id: string;
 
 let isLoading: boolean;
 let error: Error;

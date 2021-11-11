@@ -348,6 +348,26 @@ export type InvitationRedeemed = IEventPayload & {
   transaction_hash?: Maybe<Scalars['String']>;
 };
 
+export type Invoice = {
+  __typename?: 'Invoice';
+  buyerAddress: Scalars['String'];
+  buyerProfile?: Maybe<Profile>;
+  id: Scalars['Int'];
+  lines: Array<InvoiceLine>;
+  paymentTransactionHash?: Maybe<Scalars['String']>;
+  purchase?: Maybe<Purchase>;
+  purchaseId: Scalars['Int'];
+  sellerAddress: Scalars['String'];
+  sellerProfile?: Maybe<Profile>;
+};
+
+export type InvoiceLine = {
+  __typename?: 'InvoiceLine';
+  amount: Scalars['Int'];
+  id: Scalars['Int'];
+  offer: Offer;
+};
+
 export type LogoutResponse = {
   __typename?: 'LogoutResponse';
   errorMessage?: Maybe<Scalars['String']>;
@@ -434,7 +454,7 @@ export type Mutation = {
   exchangeToken: ExchangeTokenResponse;
   logout: LogoutResponse;
   proofPayment?: Maybe<ProofPaymentResult>;
-  purchase?: Maybe<Purchase>;
+  purchase: Array<Invoice>;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
   rejectMembership?: Maybe<RejectMembershipResult>;
   removeMember?: Maybe<RemoveMemberResult>;
@@ -669,6 +689,7 @@ export type ProfileAggregateFilter = {
   crcBalance?: Maybe<CrcBalanceAggregateFilter>;
   offers?: Maybe<OffersAggregateFilter>;
   purchases?: Maybe<PurchasesAggregateFilter>;
+  sales?: Maybe<SalesAggregateFilter>;
 };
 
 export type ProfileEvent = {
@@ -911,6 +932,11 @@ export type RequestUpdateSafeResponse = {
   success: Scalars['Boolean'];
 };
 
+export type SalesAggregateFilter = {
+  createdByAddresses?: Maybe<Array<Scalars['String']>>;
+  salesIds?: Maybe<Array<Scalars['Int']>>;
+};
+
 export type SearchInput = {
   searchString: Scalars['String'];
 };
@@ -1042,21 +1068,24 @@ export type CreatePurchaseMutationVariables = Exact<{
 
 export type CreatePurchaseMutation = (
   { __typename?: 'Mutation' }
-  & { purchase?: Maybe<(
-    { __typename?: 'Purchase' }
-    & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress'>
-    & { createdByProfile?: Maybe<(
+  & { purchase: Array<(
+    { __typename?: 'Invoice' }
+    & Pick<Invoice, 'id' | 'buyerAddress' | 'sellerAddress' | 'purchaseId'>
+    & { buyerProfile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'avatarUrl'>
+      & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )>, sellerProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
     )>, lines: Array<(
-      { __typename?: 'PurchaseLine' }
-      & Pick<PurchaseLine, 'id' | 'amount'>
+      { __typename?: 'InvoiceLine' }
+      & Pick<InvoiceLine, 'id' | 'amount'>
       & { offer: (
         { __typename?: 'Offer' }
-        & Pick<Offer, 'id' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'createdByAddress'>
+        & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'pricePerUnit' | 'title' | 'description'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'avatarUrl'>
+          & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
         )> }
       ) }
     )> }
@@ -2112,30 +2141,40 @@ export const CreatePurchaseDocument = gql`
     mutation createPurchase($lines: [PurchaseLineInput!]!) {
   purchase(lines: $lines) {
     id
-    createdAt
-    createdByAddress
-    createdByProfile {
+    buyerAddress
+    buyerProfile {
       id
       circlesAddress
       firstName
+      lastName
       avatarUrl
     }
+    sellerAddress
+    sellerProfile {
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
+    purchaseId
     lines {
       id
       amount
       offer {
         id
-        title
-        description
-        pictureUrl
-        pricePerUnit
+        version
         createdByAddress
         createdByProfile {
           id
           circlesAddress
           firstName
+          lastName
           avatarUrl
         }
+        pricePerUnit
+        title
+        description
       }
     }
   }
