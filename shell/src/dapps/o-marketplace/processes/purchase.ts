@@ -33,6 +33,10 @@ export type PurchaseContextData = {
     invoice: Invoice;
     path: TransitivePath;
   }[];
+  paidInvoices: {
+    invoice: Invoice;
+    path: TransitivePath;
+  }[];
 };
 
 export type PurchaseContext = ProcessContext<PurchaseContextData>;
@@ -140,6 +144,7 @@ const processDefinition = (processId: string) =>
         invoke: {
           src: async (context) => {
             context.data.payableInvoices = [];
+            context.data.paidInvoices = [];
             for (let invoice of context.data.invoices) {
               const invoiceTotal = invoice.lines.reduce((p, c) => {
                 const amount = c.amount;
@@ -226,6 +231,8 @@ const processDefinition = (processId: string) =>
               sessionStorage.getItem("circlesKey"),
               currentInvoice.path,
               `Payment of invoice ${currentInvoice.invoice.id}`);
+
+            context.data.paidInvoices.push(currentInvoice);
           },
           onDone: [{
             cond: (context) => context.data.payableInvoices.length == 0,
