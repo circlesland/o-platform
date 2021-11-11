@@ -37,8 +37,10 @@ async function load() {
     variables: {
       types: [AggregateType.Purchases],
       safeAddress: safeAddress,
-      purchases: {
-        purchaseIds: [id],
+      filter: {
+        purchases: {
+          purchaseIds: [parseInt(id)],
+        },
       },
     },
   });
@@ -55,7 +57,7 @@ async function load() {
     throw new Error(`Couldn't find the Purchases in the query result.`);
   }
 
-  purchase = o.payload.purchase;
+  purchase = o.payload.purchases[0];
 
   isLoading = false;
 }
@@ -122,41 +124,42 @@ onMount(async () => {
     <pre>{JSON.stringify(purchase, null, 2)}</pre>
 
     <div class="mt-6">
-      {#each groupedItems as item, i}
+      {#each groupedItems as groupPurchase, i}
         <div
           class="flex items-center justify-between w-full pb-6 mb-6 border-b">
           <div class="flex items-center w-full">
             <img
-              src="{item.item.item.offer.pictureUrl}"
-              alt="{item.item.item.offer.title}"
+              src="{groupPurchase.item.item.offer.pictureUrl}"
+              alt="{groupPurchase.item.item.offer.title}"
               class="w-20 rounded-full mask mask-circle" />
             <div class="flex flex-col items-start w-full ml-2 space-y-2">
               <div class="flex flex-row justify-between w-full">
                 <div class="md:text-md">
                   <a
-                    href="#/marketplace/offer/{item.item.item.offer.id}"
-                    alt="{item.item.item.offer.title}">
-                    {item.item.item.offer.title}
+                    href="#/marketplace/offer/{groupPurchase.item.item.offer
+                      .id}"
+                    alt="{groupPurchase.item.item.offer.title}">
+                    {groupPurchase.item.item.offer.title}
                   </a>
                 </div>
               </div>
               <div class="flex items-center justify-end w-full">
                 <div class="flex-grow text-sm text-left text-dark-lightest">
-                  1 {item.item.item.offer.unitTag
-                    ? item.item.item.offer.unitTag.value
+                  1 {groupPurchase.item.item.offer.unitTag
+                    ? groupPurchase.item.item.offer.unitTag.value
                     : "item"}
                 </div>
 
                 <div class="flex pr-8">
                   <input
                     type="text"
-                    value="{item.item.item.amount}"
+                    value="{groupPurchase.item.item.amount}"
                     disabled
                     class="w-8 h-6 px-2 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none" />
                 </div>
                 <div class="items-center">
                   <span class="whitespace-nowrap">
-                    {item.item.item.offer.pricePerUnit} ⦿
+                    {groupPurchase.item.item.offer.pricePerUnit} ⦿
                   </span>
                 </div>
               </div>

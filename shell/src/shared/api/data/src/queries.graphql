@@ -908,6 +908,13 @@ query aggregates(
               description
               pictureUrl
               pricePerUnit
+              createdByProfile {
+                id
+                circlesAddress
+                firstName
+                lastName
+                avatarUrl
+              }
             }
           }
         }

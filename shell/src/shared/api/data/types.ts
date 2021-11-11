@@ -464,7 +464,7 @@ export type MutationAcknowledgeArgs = {
 
 export type MutationAddMemberArgs = {
   groupId: Scalars['String'];
-  memberId: Scalars['Int'];
+  memberAddress: Scalars['String'];
 };
 
 
@@ -511,7 +511,7 @@ export type MutationRejectMembershipArgs = {
 
 export type MutationRemoveMemberArgs = {
   groupId: Scalars['String'];
-  memberId: Scalars['Int'];
+  memberAddress: Scalars['String'];
 };
 
 
@@ -668,6 +668,7 @@ export type ProfileAggregateFilter = {
   contacts?: Maybe<ContactAggregateFilter>;
   crcBalance?: Maybe<CrcBalanceAggregateFilter>;
   offers?: Maybe<OffersAggregateFilter>;
+  purchases?: Maybe<PurchasesAggregateFilter>;
 };
 
 export type ProfileEvent = {
@@ -737,6 +738,11 @@ export type Purchases = IAggregatePayload & {
   __typename?: 'Purchases';
   lastUpdatedAt: Scalars['String'];
   purchases: Array<Purchase>;
+};
+
+export type PurchasesAggregateFilter = {
+  createdByAddresses?: Maybe<Array<Scalars['String']>>;
+  purchaseIds?: Maybe<Array<Scalars['Int']>>;
 };
 
 export type Query = {
@@ -1047,7 +1053,11 @@ export type CreatePurchaseMutation = (
       & Pick<PurchaseLine, 'id' | 'amount'>
       & { offer: (
         { __typename?: 'Offer' }
-        & Pick<Offer, 'id' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+        & Pick<Offer, 'id' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'createdByAddress'>
+        & { createdByProfile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'avatarUrl'>
+        )> }
       ) }
     )> }
   )> }
@@ -1216,7 +1226,7 @@ export type SendMessageMutation = (
 
 export type AddMemberMutationVariables = Exact<{
   groupId: Scalars['String'];
-  memberId: Scalars['Int'];
+  memberAddress: Scalars['String'];
 }>;
 
 
@@ -1230,7 +1240,7 @@ export type AddMemberMutation = (
 
 export type RemoveMemberMutationVariables = Exact<{
   groupId: Scalars['String'];
-  memberId: Scalars['Int'];
+  memberAddress: Scalars['String'];
 }>;
 
 
@@ -2060,6 +2070,10 @@ export type AggregatesQuery = (
           & { offer: (
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+            & { createdByProfile?: Maybe<(
+              { __typename?: 'Profile' }
+              & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+            )> }
           ) }
         )> }
       )> }
@@ -2100,6 +2114,13 @@ export const CreatePurchaseDocument = gql`
         description
         pictureUrl
         pricePerUnit
+        createdByAddress
+        createdByProfile {
+          id
+          circlesAddress
+          firstName
+          avatarUrl
+        }
       }
     }
   }
@@ -2308,16 +2329,16 @@ export const SendMessageDocument = gql`
 }
     `;
 export const AddMemberDocument = gql`
-    mutation addMember($groupId: String!, $memberId: Int!) {
-  addMember(groupId: $groupId, memberId: $memberId) {
+    mutation addMember($groupId: String!, $memberAddress: String!) {
+  addMember(groupId: $groupId, memberAddress: $memberAddress) {
     error
     success
   }
 }
     `;
 export const RemoveMemberDocument = gql`
-    mutation removeMember($groupId: String!, $memberId: Int!) {
-  removeMember(groupId: $groupId, memberId: $memberId) {
+    mutation removeMember($groupId: String!, $memberAddress: String!) {
+  removeMember(groupId: $groupId, memberAddress: $memberAddress) {
     error
     success
   }
@@ -3324,6 +3345,13 @@ export const AggregatesDocument = gql`
               description
               pictureUrl
               pricePerUnit
+              createdByProfile {
+                id
+                circlesAddress
+                firstName
+                lastName
+                avatarUrl
+              }
             }
           }
         }

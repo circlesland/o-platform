@@ -18,6 +18,13 @@ mutation createPurchase($lines: [PurchaseLineInput!]!) {
         description
         pictureUrl
         pricePerUnit
+        createdByAddress
+        createdByProfile {
+          id
+          circlesAddress
+          firstName
+          avatarUrl
+        }
       }
     }
   }
@@ -68,8 +75,16 @@ mutation acknowledge($until: String!) {
   acknowledge(until: $until)
 }
 
-mutation sendMessage($fromSafeAddress: String, $toSafeAddress: String!, $content: String!) {
-  sendMessage(fromSafeAddress: $fromSafeAddress, toSafeAddress: $toSafeAddress, content: $content) {
+mutation sendMessage(
+  $fromSafeAddress: String
+  $toSafeAddress: String!
+  $content: String!
+) {
+  sendMessage(
+    fromSafeAddress: $fromSafeAddress
+    toSafeAddress: $toSafeAddress
+    content: $content
+  ) {
     success
     error
     event {
@@ -214,14 +229,14 @@ mutation sendMessage($fromSafeAddress: String, $toSafeAddress: String!, $content
   }
 }
 
-mutation addMember($groupId: String!, $memberId: Int!) {
-  addMember(groupId: $groupId, memberId: $memberId) {
+mutation addMember($groupId: String!, $memberAddress: String!) {
+  addMember(groupId: $groupId, memberAddress: $memberAddress) {
     error
     success
   }
 }
-mutation removeMember($groupId: String!, $memberId: Int!) {
-  removeMember(groupId: $groupId, memberId: $memberId) {
+mutation removeMember($groupId: String!, $memberAddress: String!) {
+  removeMember(groupId: $groupId, memberAddress: $memberAddress) {
     error
     success
   }
