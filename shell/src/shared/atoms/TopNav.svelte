@@ -30,9 +30,10 @@ $: {
 }
 
 function profileSwitcher() {
-  if (profile.memberships && profile.memberships.length > 0) {
-    showSwitcher = !showSwitcher;
-  }
+  // if (profile.memberships && profile.memberships.length > 0) {
+  console.log("O:ASUDLJKASDN");
+  showSwitcher = !showSwitcher;
+  // }
 }
 </script>
 
@@ -74,7 +75,7 @@ function profileSwitcher() {
       {#if profile}
         <div
           class="cursor-pointer justify-self-center"
-          on:click="{() => (showSwitcher = !showSwitcher)}">
+          on:click="{() => profileSwitcher()}">
           <UserImage profile="{profile}" size="{8}" profileLink="{false}" />
         </div>
         {#if showSwitcher}

@@ -12,8 +12,9 @@ export let tooltip: boolean = false;
 export let profileLink: boolean = true;
 let displayName: string = "";
 
-function linkToProfile() {
+function linkToProfile(event) {
   if (profileLink) {
+    event.stopPropagation();
     push(`#/friends/${profile.circlesAddress}`);
   }
 }
@@ -37,7 +38,7 @@ displayName =
   <div
     class="has-tooltip"
     class:cursor-pointer="{profileLink}"
-    on:click|stopPropagation="{() => linkToProfile()}">
+    on:click="{(event) => linkToProfile(event)}">
     {#if tooltip}
       <span class="px-2 mt-12 text-sm bg-white rounded shadow-sm tooltip">
         {displayName}
