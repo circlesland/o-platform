@@ -25,7 +25,7 @@ onMount(async () => {
   myProfile = await loadProfile();
   if (myProfile.memberships && myProfile.memberships.length > 0) {
     const myMemberships = myProfile.memberships
-      .filter((o) => o.isAdmin)
+      //.filter((o) => o.isAdmin)
       .map((o) => o.organisation);
     organisations = <any>[myProfile, ...myMemberships].map((o) => {
       const displayName = (<any>o).firstName
