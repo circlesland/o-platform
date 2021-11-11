@@ -5,6 +5,7 @@ import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import CheckoutSummary from "../../o-marketplace/molecules/CheckoutSummary.svelte";
+import CheckoutConfirm from "../../o-marketplace/molecules/CheckoutConfirm.svelte";
 import {
   Profile,
   Offer,
@@ -14,16 +15,19 @@ import {
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
-import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {convertTimeCirclesToCircles} from "../../../shared/functions/displayCirclesAmount";
-import {requestPathToRecipient} from "../../o-banking/services/requestPathToRecipient";
-import {BN} from "ethereumjs-util";
-import {fTransferCircles, TransitivePath} from "../../o-banking/processes/transferCircles";
-import {circIn} from "svelte/easing";
-import {me} from "../../../shared/stores/me";
+import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { convertTimeCirclesToCircles } from "../../../shared/functions/displayCirclesAmount";
+import { requestPathToRecipient } from "../../o-banking/services/requestPathToRecipient";
+import { BN } from "ethereumjs-util";
+import {
+  fTransferCircles,
+  TransitivePath,
+} from "../../o-banking/processes/transferCircles";
+import { circIn } from "svelte/easing";
+import { me } from "../../../shared/stores/me";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import {cartContents} from "../stores/shoppingCartStore";
+import { cartContents } from "../stores/shoppingCartStore";
 
 export type PurchaseContextData = {
   items: Offer[];
@@ -234,13 +238,16 @@ const processDefinition = (processId: string) =>
 
             context.data.paidInvoices.push(currentInvoice);
           },
-          onDone: [{
-            cond: (context) => context.data.payableInvoices.length == 0,
-            target: "#showSuccess"
-          }, {
-            cond: (context) => context.data.payableInvoices.length > 0,
-            target: "#pay"
-          }],
+          onDone: [
+            {
+              cond: (context) => context.data.payableInvoices.length == 0,
+              target: "#showSuccess",
+            },
+            {
+              cond: (context) => context.data.payableInvoices.length > 0,
+              target: "#pay",
+            },
+          ],
           onError: {
             target: "#showError",
             actions: (context, event) => {
@@ -264,7 +271,7 @@ const processDefinition = (processId: string) =>
       showSuccess: prompt({
         id: "showSuccess",
         field: "__",
-        component: HtmlViewer,
+        component: CheckoutConfirm,
         params: {
           view: editorContent.success,
           html: () => ``,
@@ -284,7 +291,7 @@ const processDefinition = (processId: string) =>
         data: (context, event: PlatformEvent) => {
           return "yeah!";
         },
-      }
+      },
     },
   });
 

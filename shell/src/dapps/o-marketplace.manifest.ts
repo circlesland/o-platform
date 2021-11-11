@@ -121,9 +121,9 @@ export const marketplace: DappManifest<DappState> = {
   routables: [
     market,
     favorites,
-    myOffers,
+    // myOffers,
     offerDetail,
-    myOffersDetail,
+    // myOffersDetail,
     shoppingCart,
     myPurchases,
     myPurchasesDetail,
