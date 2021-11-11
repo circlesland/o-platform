@@ -127,7 +127,14 @@ displayName =
         {/if}
       </div>
       <div class="text-xs text-right text-dark">
-        Store Pick Up in München, Germany
+        <div class="pt-2 text-sm">
+          <span class="text-xs">Store Pick Up at:</span><br />
+          Homo Circulus, Basic Income Lab GmbH<br />
+          Reifenstühlstrasse 6<br />
+          80469 München<br />
+          <span class="text-sm font-thin"
+            >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
+        </div>
       </div>
       <div class="flex flex-row space-x-4">
         <div>

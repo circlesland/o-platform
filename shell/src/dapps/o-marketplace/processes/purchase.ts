@@ -4,14 +4,15 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
-import CheckoutSummary from "../../o-marketplace/atoms/CheckoutSummary.svelte";
+import CheckoutSummary from "../../o-marketplace/molecules/CheckoutSummary.svelte";
 import {
   Profile,
   Offer,
   CreatePurchaseDocument,
-  PurchaseLineInput, Invoice
+  PurchaseLineInput,
+  Invoice,
 } from "../../../shared/api/data/types";
-import {show} from "@o-platform/o-process/dist/actions/show";
+import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
@@ -27,11 +28,11 @@ import {cartContents} from "../stores/shoppingCartStore";
 export type PurchaseContextData = {
   items: Offer[];
   sellerProfile?: Profile;
-  invoices: Invoice[]
+  invoices: Invoice[];
   payableInvoices: {
-    invoice: Invoice,
-    path: TransitivePath
-  }[]
+    invoice: Invoice;
+    path: TransitivePath;
+  }[];
 };
 
 export type PurchaseContext = ProcessContext<PurchaseContextData>;
@@ -94,24 +95,25 @@ const processDefinition = (processId: string) =>
         },
         invoke: {
           src: async (context) => {
-            const linesGroupedByOffer: {[offerId:number]: number} = {};
-            context.data.items.forEach(o => {
+            const linesGroupedByOffer: { [offerId: number]: number } = {};
+            context.data.items.forEach((o) => {
               linesGroupedByOffer[o.id] = linesGroupedByOffer[o.id]
                 ? linesGroupedByOffer[o.id] + 1
                 : 1;
-            })
+            });
 
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: CreatePurchaseDocument,
               variables: {
-                lines: Object.entries(linesGroupedByOffer).map(o => {
-                  return <PurchaseLineInput> {
+                lines: Object.entries(linesGroupedByOffer).map((o) => {
+                  return <PurchaseLineInput>{
                     offerId: parseInt(o[0]),
-                    amount: o[1]
-                  }
-                })
-              }
+                    amount: o[1],
+                  };
+                }),
+              },
             });
 
             context.data.invoices = <Invoice[]>result.data.purchase;
@@ -123,9 +125,9 @@ const processDefinition = (processId: string) =>
             actions: (context, event) => {
               window.o.lastError = event.data;
             },
-            target: "#showError"
-          }
-        }
+            target: "#showError",
+          },
+        },
       },
       calculatePaths: {
         id: "calculatePaths",
@@ -138,8 +140,8 @@ const processDefinition = (processId: string) =>
         invoke: {
           src: async (context) => {
             context.data.payableInvoices = [];
-            for(let invoice of context.data.invoices) {
-              const invoiceTotal = invoice.lines.reduce((p,c) => {
+            for (let invoice of context.data.invoices) {
+              const invoiceTotal = invoice.lines.reduce((p, c) => {
                 const amount = c.amount;
                 const pricePerUnit = parseFloat(c.offer.pricePerUnit);
                 return p + amount * pricePerUnit;
@@ -150,51 +152,64 @@ const processDefinition = (processId: string) =>
                   safeAddress: invoice.buyerAddress,
                   recipientAddress: invoice.sellerAddress,
                   amount: convertTimeCirclesToCircles(
-                      invoiceTotal,
-                      null
-                      ).toString()
-                }
+                    invoiceTotal,
+                    null
+                  ).toString(),
+                },
               });
 
               if (flow.transfers.length > 0) {
                 context.data.payableInvoices.push({
                   invoice: invoice,
-                  path: flow
+                  path: flow,
                 });
               }
             }
 
             console.log(JSON.stringify(context.data.payableInvoices, null, 2));
           },
-          onDone: [{
-            cond: (context) => context.data.invoices.length == context.data.payableInvoices.length,
-            target: "#pay"
-          }, {
-            cond: (context) => context.data.invoices.length != context.data.payableInvoices.length,
-            actions: (context, event) => {
-              let invoices = JSON.parse(JSON.stringify(context.data.invoices));
-              context.data.payableInvoices.forEach(pi => {
-                const pi_ = context.data.invoices.find(o => o.id == pi.invoice.id);
-                const pi_i = context.data.invoices.indexOf(pi_);
-                invoices = invoices.splice(pi_i, 1);
-              });
-              const errorMessage = `You don't have enough trust paths to the following sellers: ${invoices.map(o => o.sellerAddress).join(", ")}`;
-              window.o.lastError = new Error(errorMessage);
+          onDone: [
+            {
+              cond: (context) =>
+                context.data.invoices.length ==
+                context.data.payableInvoices.length,
+              target: "#pay",
             },
-            target: "#showError"
-          }],
+            {
+              cond: (context) =>
+                context.data.invoices.length !=
+                context.data.payableInvoices.length,
+              actions: (context, event) => {
+                let invoices = JSON.parse(
+                  JSON.stringify(context.data.invoices)
+                );
+                context.data.payableInvoices.forEach((pi) => {
+                  const pi_ = context.data.invoices.find(
+                    (o) => o.id == pi.invoice.id
+                  );
+                  const pi_i = context.data.invoices.indexOf(pi_);
+                  invoices = invoices.splice(pi_i, 1);
+                });
+                const errorMessage = `You don't have enough trust paths to the following sellers: ${invoices
+                  .map((o) => o.sellerAddress)
+                  .join(", ")}`;
+                window.o.lastError = new Error(errorMessage);
+              },
+              target: "#showError",
+            },
+          ],
           onError: {
             target: "#showError",
             actions: (context, event) => {
               window.o.lastError = event.data;
-            }
-          }
-        }
+            },
+          },
+        },
       },
       pay: {
         id: "pay",
         on: <any>{
-          ...ipc("pay")
+          ...ipc("pay"),
         },
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
@@ -223,8 +238,8 @@ const processDefinition = (processId: string) =>
             target: "#showError",
             actions: (context, event) => {
               window.o.lastError = event.data;
-            }
-          }
+            },
+          },
         },
       },
       showError: {

@@ -115,7 +115,7 @@ onMount(async () => {
           endTextSmall: 'paid, not yet picked up',
           class: 'cursor-pointer',
         }}" />
-      <pre>{JSON.stringify(purchase, null, 2)}</pre>
+      <!-- <pre>{JSON.stringify(purchase, null, 2)}</pre> -->
     {/each}
   {:else}
     <section class="flex items-center justify-center mb-2 ">

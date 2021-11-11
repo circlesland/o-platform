@@ -157,10 +157,14 @@ onMount(async () => {
               <div class="text-sm text-dark-lightest">{offer.description}</div>
             {/if}
             <!-- {#if offer.deliveryTermsTag} -->
-            <div class="flex flex-col space-y-1">
-              <div class="text-2xs">Shipping</div>
-              <div class="text-sm text-dark-lightest">
-                Store Pickup in München, Germany
+            <div class="flex flex-col space-y-1 text-right">
+              <div class="pt-2 text-sm">
+                <span class="text-xs">Store Pick Up at:</span><br />
+                Homo Circulus, Basic Income Lab GmbH<br />
+                Reifenstühlstrasse 6<br />
+                80469 München<br />
+                <span class="text-sm font-thin"
+                  >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
               </div>
             </div>
             <!-- {/if} -->

@@ -3,7 +3,7 @@ import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import {
   AggregatesDocument,
   AggregateType,
-  Offer,
+  Profile,
   Purchase,
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
@@ -22,6 +22,7 @@ export let id: string;
 
 let isLoading: boolean;
 let error: Error;
+let sellerProfile: Profile;
 let purchase: Purchase;
 let shellEventSubscription: Subscription;
 let groupedItems;
@@ -58,7 +59,6 @@ async function load() {
   }
 
   purchase = o.payload.purchases[0];
-
   isLoading = false;
 }
 
@@ -79,6 +79,7 @@ onMount(async () => {
   await load();
 
   groupedItems = purchase ? orderItems(purchase.lines) : {};
+  sellerProfile = purchase?.lines[0].offer.createdByProfile;
   console.log("PURCHASE: ", purchase);
 
   shellEventSubscription = window.o.events.subscribe(
@@ -121,9 +122,24 @@ onMount(async () => {
     </section>
   {:else if groupedItems}
     <!-- <CartItems cartContents="{purchase.lines}" editable="{false}" /> -->
-    <pre>{JSON.stringify(purchase, null, 2)}</pre>
+    <!-- <pre>{JSON.stringify(purchase, null, 2)}</pre> -->
 
     <div class="mt-6">
+      <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
+        <div
+          class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left ">
+          <div class="inline-flex">
+            <UserImage
+              profile="{sellerProfile}"
+              size="{5}"
+              gradientRing="{false}" />
+          </div>
+
+          <div>
+            {sellerProfile.firstName}
+          </div>
+        </div>
+      </div>
       {#each groupedItems as groupPurchase, i}
         <div
           class="flex items-center justify-between w-full pb-6 mb-6 border-b">
@@ -167,21 +183,28 @@ onMount(async () => {
           </div>
         </div>
       {/each}
-
-      <div class="flex flex-col p-2 bg-light-lighter ">
-        <div
-          class="flex flex-row items-center content-start space-x-4 text-base font-medium text-left ">
-          <div class="inline-flex">
-            <UserImage
-              profile="{purchase.createdByProfile}"
-              size="{10}"
-              gradientRing="{false}" />
-          </div>
-
-          <div>
-            {purchase.createdByProfile.firstName}
-          </div>
+    </div>
+    <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
+      <div class="p-2 text-white bg-primary-dark">
+        <h1 class="text-2xl text-center uppercase x font-heading">
+          Your Pick-Up Code
+        </h1>
+        <div class="text-sm text-center">
+          show this code to the seller when you pick up your Order at the Store.
         </div>
+      </div>
+      <div class="w-full text-center">
+        <h1 class="uppercase text-8xl font-heading">71415</h1>
+      </div>
+
+      <div class="pt-2 text-sm">Pick-Up Location for this Order is:</div>
+      <div class="pt-2 text-sm">
+        <span class="font-bold">Homo Circulus, Basic Income Lab GmbH</span
+        ><br />
+        Reifenstühlstrasse 6<br />
+        80469 München<br />
+        <span class="text-sm font-thin"
+          >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
       </div>
     </div>
   {/if}
