@@ -120,7 +120,7 @@ export const marketplace: DappManifest<DappState> = {
   },
   routables: [
     market,
-    favorites,
+    // favorites,
     // myOffers,
     offerDetail,
     // myOffersDetail,
