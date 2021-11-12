@@ -355,6 +355,7 @@ export type Invoice = {
   id: Scalars['Int'];
   lines: Array<InvoiceLine>;
   paymentTransactionHash?: Maybe<Scalars['String']>;
+  pickupCode?: Maybe<Scalars['String']>;
   purchase?: Maybe<Purchase>;
   purchaseId: Scalars['Int'];
   sellerAddress: Scalars['String'];
@@ -730,6 +731,7 @@ export type Purchase = {
   createdByAddress: Scalars['String'];
   createdByProfile?: Maybe<Profile>;
   id: Scalars['Int'];
+  invoices: Array<Invoice>;
   lines: Array<PurchaseLine>;
   paymentTransaction?: Maybe<ProfileEvent>;
   total: Scalars['String'];
@@ -2003,6 +2005,13 @@ export type StreamQuery = (
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'title' | 'pictureUrl'>
           ) }
+        )>, invoices: Array<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'sellerAddress' | 'pickupCode'>
+          & { sellerProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+          )> }
         )> }
       )> }
     ) | (
@@ -2119,6 +2128,13 @@ export type AggregatesQuery = (
               & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
             )> }
           ) }
+        )>, invoices: Array<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'sellerAddress' | 'pickupCode'>
+          & { sellerProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+          )> }
         )> }
       )> }
     ) }
@@ -3267,6 +3283,17 @@ export const StreamDocument = gql`
               pictureUrl
             }
           }
+          invoices {
+            sellerAddress
+            pickupCode
+            sellerProfile {
+              id
+              circlesAddress
+              firstName
+              lastName
+              avatarUrl
+            }
+          }
         }
       }
       ... on OrganisationCreated {
@@ -3431,6 +3458,17 @@ export const AggregatesDocument = gql`
                 lastName
                 avatarUrl
               }
+            }
+          }
+          invoices {
+            sellerAddress
+            pickupCode
+            sellerProfile {
+              id
+              circlesAddress
+              firstName
+              lastName
+              avatarUrl
             }
           }
         }

@@ -773,6 +773,17 @@ query stream(
               pictureUrl
             }
           }
+          invoices {
+            sellerAddress
+            pickupCode
+            sellerProfile {
+              id
+              circlesAddress
+              firstName
+              lastName
+              avatarUrl
+            }
+          }
         }
       }
       ... on OrganisationCreated {
@@ -940,6 +951,17 @@ query aggregates(
                 lastName
                 avatarUrl
               }
+            }
+          }
+          invoices {
+            sellerAddress
+            pickupCode
+            sellerProfile {
+              id
+              circlesAddress
+              firstName
+              lastName
+              avatarUrl
             }
           }
         }

@@ -262,6 +262,7 @@ type Invoice {
     id: Int!
     lines: [InvoiceLine!]!
     paymentTransactionHash: String
+    pickupCode: String
     purchase: Purchase
     purchaseId: Int!
     sellerAddress: String!
@@ -466,6 +467,7 @@ type Purchase {
     createdByAddress: String!
     createdByProfile: Profile
     id: Int!
+    invoices: [Invoice!]!
     lines: [PurchaseLine!]!
     paymentTransaction: ProfileEvent
     total: String!
