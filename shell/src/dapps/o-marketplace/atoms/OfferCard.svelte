@@ -91,12 +91,12 @@ displayName =
       </div>
     </header>
     <div
-      class="relative flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
+      class="relative flex flex-row items-center content-start p-2 space-x-4 text-base font-medium text-left bg-light-lighter">
       <div class="inline-flex">
         <UserImage
           profile="{offer.createdByProfile}"
           size="{10}"
-          gradientRing="{false}" />
+          gradientRing="{true}" />
       </div>
       <div>
         {displayName}
