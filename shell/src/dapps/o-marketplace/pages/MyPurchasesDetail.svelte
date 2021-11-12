@@ -184,6 +184,7 @@ onMount(async () => {
         </div>
       {/each}
     </div>
+    {#each purchase.invoices as invoice}
     <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
       <div class="p-2 text-white bg-primary-dark">
         <h1 class="text-2xl text-center uppercase x font-heading">
@@ -194,7 +195,11 @@ onMount(async () => {
         </div>
       </div>
       <div class="w-full text-center">
-        <h1 class="uppercase text-8xl font-heading">71415</h1>
+        {#if !invoice.pickupCode}
+          <h1 class="uppercase text-8xl font-heading">No pickup code yet ..</h1>
+        {:else}
+          <h1 class="uppercase text-8xl font-heading">{invoice.pickupCode}</h1>
+        {/if}
       </div>
 
       <div class="pt-2 text-sm">Pick-Up Location for this Order is:</div>
@@ -207,6 +212,7 @@ onMount(async () => {
           >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
       </div>
     </div>
+    {/each}
   {/if}
 </div>
 
