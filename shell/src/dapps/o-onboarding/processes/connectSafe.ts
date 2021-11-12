@@ -19,7 +19,7 @@ import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte"
 import { BN } from "ethereumjs-util";
 import { KeyManager } from "../../o-passport/data/keyManager";
 import { loadProfile } from "../../o-passport/processes/identify/services/loadProfile";
-import DropdownSelectEditor from "../../../../../packages/o-editors/src/DropdownSelectEditor.svelte";
+import SimpleDropDownEditor from "../../../../../packages/o-editors/src/SimpleDropDownEditor.svelte";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import DropDownCandidateSafe from "../views/atoms/DropDownCandidateSafe.svelte";
 
@@ -219,37 +219,18 @@ const processDefinition = (processId: string) =>
               }) ?? [];
 
             context.data.safeCandidates = {};
-            // for (let candidateAddress of foundSafeAddresses) {
-            //   // FAKE THIS.
-            //   context.data.safeCandidates[candidateAddress] = {
-            //     address: candidateAddress,
-            //     balance: balancesBySafeAddress[candidateAddress],
-            //     circlesGardenProfile: circlesGardenProfiles?.find(
-            //       (o) => o.circlesAddress == candidateAddress
-            //     ),
-            //     circlesLandProfile: circlesLandProfiles.find(
-            //       (o) => o.circlesAddress == candidateAddress
-            //     ),
-            //   };
-            // }
-            context.data.safeCandidates[0] = {
-              address: "candidateAddressXXOOLove u",
-              balance: new BN(12),
-              circlesGardenProfile: null,
-              circlesLandProfile: null,
-            };
-            context.data.safeCandidates[1] = {
-              address: "candidateAddressXXOOLove u 2",
-              balance: new BN(12),
-              circlesGardenProfile: null,
-              circlesLandProfile: null,
-            };
-            context.data.safeCandidates[2] = {
-              address: "candidateAddressXXOOLove u 3",
-              balance: new BN(12),
-              circlesGardenProfile: null,
-              circlesLandProfile: null,
-            };
+            for (let candidateAddress of foundSafeAddresses) {
+              context.data.safeCandidates[candidateAddress] = {
+                address: candidateAddress,
+                balance: balancesBySafeAddress[candidateAddress],
+                circlesGardenProfile: circlesGardenProfiles?.find(
+                  (o) => o.circlesAddress == candidateAddress
+                ),
+                circlesLandProfile: circlesLandProfiles.find(
+                  (o) => o.circlesAddress == candidateAddress
+                ),
+              };
+            }
 
             const candidates = Object.values(context.data.safeCandidates);
             if (candidates.length == 0) {
@@ -282,7 +263,7 @@ const processDefinition = (processId: string) =>
       selectSafe: prompt<PromptConnectOrCreateContext, any>({
         id: "selectSafe",
         field: "selectedSafe",
-        component: DropdownSelectEditor,
+        component: SimpleDropDownEditor,
         params: <
           DropdownSelectorParams<
             PromptConnectOrCreateContext,
@@ -321,9 +302,7 @@ const processDefinition = (processId: string) =>
               return context.data.safeCandidates[key];
             },
             find: async (filter: string, context) => {
-              return Object.values(context.data.safeCandidates).filter((o) =>
-                o.address.toLowerCase().startsWith(filter?.toLowerCase() ?? "")
-              );
+              return Object.values(context.data.safeCandidates);
             },
           },
         },
