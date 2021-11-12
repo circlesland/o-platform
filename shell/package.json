@@ -47,6 +47,7 @@
     "svelecte": "^3.2.1"
   },
   "devDependencies": {
+    "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "@toruslabs/openlogin": "^1.0.0",
     "apollo-link-ws": "^1.0.20",
     "simplebar": "^5.3.6",

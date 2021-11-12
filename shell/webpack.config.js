@@ -4,6 +4,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const path = require("path");
 const sveltePreprocess = require("svelte-preprocess");
 const webpack = require("webpack");
+const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
@@ -227,6 +228,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new CaseSensitivePathsPlugin(),
     new MiniCssExtractPlugin({
       filename: "[name].css",
       chunkFilename: "bundle.[name].css",
