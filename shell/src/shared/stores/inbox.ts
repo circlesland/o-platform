@@ -146,8 +146,6 @@ async function followTrust(profile: Profile | Organisation) {
   let allTrustRelations: any[] = [];
 
   if (orga.data.organisationsByAddress && orga.data.organisationsByAddress.length) {
-
-
     const orgaTrustRelations = await apiClient.query({
       query: TrustRelationsDocument,
       variables: {
@@ -155,13 +153,23 @@ async function followTrust(profile: Profile | Organisation) {
       }
     });
 
+    const missingMemberTrusts: {[userAddress: string]: boolean} = {};
     const currentTrust: { [userAddress: string]: boolean } = {};
     const removeTrust: { [userAddress: string]: boolean } = {};
     const addTrust: { [userAddress: string]: boolean } = {};
 
+    orga.data.organisationsByAddress[0].members.forEach(m => {
+      missingMemberTrusts[m.circlesAddress] = true;
+    });
+
     orgaTrustRelations.data.trustRelations.forEach(t => {
+      delete missingMemberTrusts[t.otherSafeAddress];
       removeTrust[t.otherSafeAddress] = true;
       currentTrust[t.otherSafeAddress] = true;
+    });
+
+    Object.keys(missingMemberTrusts).forEach(mmt => {
+      addTrust[mmt] = true;
     });
 
     for (let member of orga.data.organisationsByAddress[0].members) {
@@ -229,7 +237,8 @@ export const inbox = {
       unsub();
 
       if (profile && profile.__typename === "Organisation") {
-        // followTrust(profile);
+        // TODO: Comment-in to enable follow trust
+        //followTrust(profile);
       }
 
       events = e;

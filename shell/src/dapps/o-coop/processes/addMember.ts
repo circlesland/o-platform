@@ -6,11 +6,13 @@ import {show} from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
 import {AddMemberDocument} from "../../../shared/api/data/types";
 import {promptProfileId} from "../../../shared/api/promptProfileId";
+import {loadProfileByProfileId} from "../../../shared/api/loadProfileByProfileId";
+import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
 
 export type AddMemberContextData = {
   successAction: (data:AddMemberContextData) => void,
   groupId?: number;
-  memberId?: number;
+  memberAddress?: string;
 };
 
 export type AddMemberContext = ProcessContext<AddMemberContextData>;
@@ -18,14 +20,14 @@ export type AddMemberContext = ProcessContext<AddMemberContextData>;
 const processDefinition = (processId: string) =>
   createMachine<AddMemberContext, any>({
     id: `${processId}:addMember`,
-    initial: "memberId",
+    initial: "memberAddress",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<AddMemberContext, any>("error"),
 
-      memberId: promptProfileId<AddMemberContext, any>({
-        field: "memberId",
+      memberAddress: promptCirclesSafe<AddMemberContext, any>({
+        field: "memberAddress",
         onlyWhenDirty: false,
         params: {
           view: {
@@ -50,7 +52,7 @@ const processDefinition = (processId: string) =>
               mutation: AddMemberDocument,
               variables: {
                 groupId: context.data.groupId,
-                memberId: context.data.memberId
+                memberAddress: context.data.memberAddress
               },
             });
           },
