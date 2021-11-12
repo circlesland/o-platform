@@ -50,7 +50,7 @@ function orderItems(items) {
 </script>
 
 {#if context.data && profile && groupedItems}
-  <div class="mt-6">
+  <div class="mt-2">
     <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
       <div
         class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left ">
@@ -110,9 +110,9 @@ function orderItems(items) {
 
     <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
-        <h1 class="p-2 text-white uppercase bg-dark-dark ">
+        <h1 class="p-2 text-white uppercase bg-dark-dark">
           Important Information<br />
-          <div class="text-sm text-center">Your Pick-Up Code</div>
+          <div class="text-sm">Your Pick-Up Code</div>
         </h1>
       </div>
 
@@ -127,7 +127,7 @@ function orderItems(items) {
       </div>
       <div class="pt-2 text-sm">
         To see your <span class="text-primary-dark">PickUp Code</span> at any
-        time after the purchase,<br />go to
+        time after the purchase, go to
         <a href="#/marketplace/my-purchases" alt="My Purchases" class="btn-link"
           >My purchases</a> and click on the Purchase.
       </div>

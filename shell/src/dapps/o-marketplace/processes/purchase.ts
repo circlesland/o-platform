@@ -54,7 +54,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
   },
   success: {
     title: "Check out successful",
-    description: "",
+    description: "Thank you for your purchase.",
     placeholder: "",
     submitButtonText: "Close",
   },
@@ -234,7 +234,8 @@ const processDefinition = (processId: string) =>
               currentInvoice.invoice.buyerAddress,
               sessionStorage.getItem("circlesKey"),
               currentInvoice.path,
-              `Payment of invoice ${currentInvoice.invoice.id}`);
+              `Payment of invoice ${currentInvoice.invoice.id}`
+            );
 
             context.data.paidInvoices.push(currentInvoice);
           },
@@ -270,6 +271,9 @@ const processDefinition = (processId: string) =>
       },
       showSuccess: prompt({
         id: "showSuccess",
+        entry: () => {
+          cartContents.set([]);
+        },
         field: "__",
         component: CheckoutConfirm,
         params: {
@@ -285,9 +289,7 @@ const processDefinition = (processId: string) =>
       success: {
         type: "final",
         id: "success",
-        entry: () => {
-          cartContents.set([]);
-        },
+
         data: (context, event: PlatformEvent) => {
           return "yeah!";
         },
