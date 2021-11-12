@@ -58,7 +58,7 @@ async function queryEvents() {
         EventType.CrcTokenTransfer,
         // EventType.EthTransfer,
         // EventType.GnosisSafeEthTransfer,
-        EventType.InvitationCreated,
+        // EventType.InvitationCreated,
         EventType.InvitationRedeemed,
         EventType.MembershipOffer,
         EventType.MembershipAccepted,
@@ -90,15 +90,35 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
           return;
         }
 
-        if (
-          (<any>event).type == "blockchain_event" ||
-          (<any>event).type == "new_message"
-        ) {
-          this.reload();
+        if ((<any>event).type == "blockchain_event") {
+          inbox.reload();
+          window.o.publishEvent(<any>{
+            type: "shell.refresh",
+            dapp: "chat:1"
+          });
+          window.o.publishEvent(<any>{
+            type: "shell.refresh",
+            dapp: "friends:1"
+          });
+          window.o.publishEvent(<any>{
+            type: "shell.refresh",
+            dapp: "banking:1"
+          });
+          return;
+        } else if ((<any>event).type == "new_message") {
+          inbox.reload();
+          window.o.publishEvent(<any>{
+            type: "shell.refresh",
+            dapp: "chat:1"
+          });
+          window.o.publishEvent(<any>{
+            type: "shell.refresh",
+            dapp: "friends:1"
+          });
           return;
         }
         if (event.type == "shell.authenticated") {
-          this.refresh();
+          inbox.reload();
           return;
         }
       }
