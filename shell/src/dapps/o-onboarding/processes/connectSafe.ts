@@ -219,19 +219,37 @@ const processDefinition = (processId: string) =>
               }) ?? [];
 
             context.data.safeCandidates = {};
-            for (let candidateAddress of foundSafeAddresses) {
-              // FAKE THIS.
-              context.data.safeCandidates[candidateAddress] = {
-                address: candidateAddress,
-                balance: balancesBySafeAddress[candidateAddress],
-                circlesGardenProfile: circlesGardenProfiles?.find(
-                  (o) => o.circlesAddress == candidateAddress
-                ),
-                circlesLandProfile: circlesLandProfiles.find(
-                  (o) => o.circlesAddress == candidateAddress
-                ),
-              };
-            }
+            // for (let candidateAddress of foundSafeAddresses) {
+            //   // FAKE THIS.
+            //   context.data.safeCandidates[candidateAddress] = {
+            //     address: candidateAddress,
+            //     balance: balancesBySafeAddress[candidateAddress],
+            //     circlesGardenProfile: circlesGardenProfiles?.find(
+            //       (o) => o.circlesAddress == candidateAddress
+            //     ),
+            //     circlesLandProfile: circlesLandProfiles.find(
+            //       (o) => o.circlesAddress == candidateAddress
+            //     ),
+            //   };
+            // }
+            context.data.safeCandidates[0] = {
+              address: "candidateAddressXXOOLove u",
+              balance: new BN(12),
+              circlesGardenProfile: null,
+              circlesLandProfile: null,
+            };
+            context.data.safeCandidates[1] = {
+              address: "candidateAddressXXOOLove u 2",
+              balance: new BN(12),
+              circlesGardenProfile: null,
+              circlesLandProfile: null,
+            };
+            context.data.safeCandidates[2] = {
+              address: "candidateAddressXXOOLove u 3",
+              balance: new BN(12),
+              circlesGardenProfile: null,
+              circlesLandProfile: null,
+            };
 
             const candidates = Object.values(context.data.safeCandidates);
             if (candidates.length == 0) {

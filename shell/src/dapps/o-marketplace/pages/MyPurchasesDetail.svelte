@@ -185,33 +185,39 @@ onMount(async () => {
       {/each}
     </div>
     {#each purchase.invoices as invoice}
-    <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
-      <div class="p-2 text-white bg-primary-dark">
-        <h1 class="text-2xl text-center uppercase x font-heading">
-          Your Pick-Up Code
-        </h1>
-        <div class="text-sm text-center">
-          show this code to the seller when you pick up your Order at the Store.
+      <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
+        <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
+          <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
+            Your Pick-Up Code
+            <div class="text-sm text-center">
+              show this code to the seller when you pick up your Order at the
+              Store.
+            </div>
+          </h1>
+        </div>
+
+        <div class="w-full text-center">
+          {#if !invoice.pickupCode}
+            <h1 class="uppercase text-8xl font-heading">
+              No pickup code yet ..
+            </h1>
+          {:else}
+            <h1 class="uppercase text-8xl font-heading">
+              {invoice.pickupCode}
+            </h1>
+          {/if}
+        </div>
+
+        <div class="pt-2 text-sm">Pick-Up Location for this Order is:</div>
+        <div class="pt-2 text-sm">
+          <span class="font-bold">Homo Circulus, Basic Income Lab GmbH</span
+          ><br />
+          Reifenstühlstrasse 6<br />
+          80469 München<br />
+          <span class="text-sm font-thin"
+            >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
         </div>
       </div>
-      <div class="w-full text-center">
-        {#if !invoice.pickupCode}
-          <h1 class="uppercase text-8xl font-heading">No pickup code yet ..</h1>
-        {:else}
-          <h1 class="uppercase text-8xl font-heading">{invoice.pickupCode}</h1>
-        {/if}
-      </div>
-
-      <div class="pt-2 text-sm">Pick-Up Location for this Order is:</div>
-      <div class="pt-2 text-sm">
-        <span class="font-bold">Homo Circulus, Basic Income Lab GmbH</span
-        ><br />
-        Reifenstühlstrasse 6<br />
-        80469 München<br />
-        <span class="text-sm font-thin"
-          >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
-      </div>
-    </div>
     {/each}
   {/if}
 </div>
