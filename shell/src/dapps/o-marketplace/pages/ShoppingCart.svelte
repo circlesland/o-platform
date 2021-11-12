@@ -5,8 +5,14 @@ import { push } from "svelte-spa-router";
 import { purchase } from "../processes/purchase";
 
 function checkout() {
-  // console.log("edit: dirtyFlags:", dirtyFlags);
   window.o.runProcess(purchase, cartContents);
+}
+
+function handleClickOutside(event) {
+  event.preventDefault();
+  window.o.publishEvent({
+    type: "shell.requestCloseModal",
+  });
 }
 </script>
 
@@ -39,5 +45,5 @@ div.p-5
       p.text-center.mt-6 Your cart is empty!
       .w-full.mt-6
           div
-          button.h-auto.btn-block.btn.btn-light(on:click!="{() =>  push('#/marketplace/market')}") Continue Shopping
+          button.h-auto.btn-block.btn.btn-light(on:click!="{(event) =>  handleClickOutside(event)}") Continue Shopping
 </template>
