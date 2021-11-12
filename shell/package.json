@@ -1,7 +1,7 @@
 {
   "name": "@o-platform/shell",
   "version": "0.1.0",
-  "author": "Daniel Janz & Samuel Andert (Basic Income Lab GmbH)",
+  "author": "Daniel Janz, Thorsten Schau & Samuel Andert (Basic Income Lab GmbH)",
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "clean:all": "npx shx rm -rf public/bundle.* && npx shx rm -rf node_modules",
