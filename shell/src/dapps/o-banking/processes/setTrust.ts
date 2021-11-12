@@ -62,6 +62,48 @@ const editorContent: { [x: string]: EditorViewContext } = {
   },
 };
 
+export async function fSetTrust(context: ProcessContext<SetTrustContextData>) {
+  const ownerAddress =
+    RpcGateway.get().eth.accounts.privateKeyToAccount(
+      context.data.privateKey
+    ).address;
+
+  const gnosisSafeProxy = new GnosisSafeProxy(
+    RpcGateway.get(),
+    context.data.safeAddress
+  );
+
+  const execResult = await new CirclesHub(
+    RpcGateway.get(),
+    HUB_ADDRESS
+  ).setTrust(
+    context.data.privateKey,
+    gnosisSafeProxy,
+    context.data.trustReceiver,
+    new BN(context.data.trustLimit.toString())
+  );
+
+  let txHashSubscription: Subscription;
+  txHashSubscription = execResult.observable.subscribe(async (o) => {
+    if (o.type != "transactionHash") {
+      return;
+    }
+    if (txHashSubscription) {
+      txHashSubscription.unsubscribe();
+    }
+
+    const transactionTags: CreateTagInput[] = [];
+    const trustMessage: string = undefined; // TODO: Ask if the user wants to send a message together with the un/trust
+    if (trustMessage) {
+      transactionTags.push({
+        typeId: "o-banking:trust:message:1",
+        value: trustMessage,
+      });
+    }
+  });
+  return execResult.toPromise();
+}
+
 const processDefinition = (processId: string) =>
   createMachine<SetTrustContext, any>({
     id: `${processId}:setTrust`,
@@ -132,45 +174,7 @@ const processDefinition = (processId: string) =>
         },
         invoke: {
           src: async (context) => {
-            const ownerAddress =
-              RpcGateway.get().eth.accounts.privateKeyToAccount(
-                context.data.privateKey
-              ).address;
-
-            const gnosisSafeProxy = new GnosisSafeProxy(
-              RpcGateway.get(),
-              context.data.safeAddress
-            );
-
-            const execResult = await new CirclesHub(
-              RpcGateway.get(),
-              HUB_ADDRESS
-            ).setTrust(
-              context.data.privateKey,
-              gnosisSafeProxy,
-              context.data.trustReceiver,
-              new BN(context.data.trustLimit.toString())
-            );
-
-            let txHashSubscription: Subscription;
-            txHashSubscription = execResult.observable.subscribe(async (o) => {
-              if (o.type != "transactionHash") {
-                return;
-              }
-              if (txHashSubscription) {
-                txHashSubscription.unsubscribe();
-              }
-
-              const transactionTags: CreateTagInput[] = [];
-              const trustMessage: string = undefined; // TODO: Ask if the user wants to send a message together with the un/trust
-              if (trustMessage) {
-                transactionTags.push({
-                  typeId: "o-banking:trust:message:1",
-                  value: trustMessage,
-                });
-              }
-            });
-            return execResult.toPromise();
+            return await fSetTrust(context);
           },
           onDone: "#showSuccess",
           onError: "#error",

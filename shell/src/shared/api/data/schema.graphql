@@ -433,6 +433,7 @@ type Profile {
     memberships: [Membership!]
     newsletter: Boolean
     status: String
+    type: String
 }
 
 type ProfileAggregate {

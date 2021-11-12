@@ -675,6 +675,7 @@ export type Profile = {
   memberships?: Maybe<Array<Membership>>;
   newsletter?: Maybe<Scalars['Boolean']>;
   status?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
 };
 
 export type ProfileAggregate = {
@@ -1894,29 +1895,29 @@ export type StreamQuery = (
       & Pick<ChatMessage, 'from' | 'to' | 'text'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )> }
     ) | (
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'transaction_hash' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, transfers: Array<(
         { __typename?: 'CrcTokenTransfer' }
         & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
         & { from_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )>, to_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
       )>, tags: Array<(
         { __typename?: 'Tag' }
@@ -1927,10 +1928,10 @@ export type StreamQuery = (
       & Pick<CrcMinting, 'transaction_hash' | 'token' | 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )> }
     ) | (
       { __typename?: 'CrcSignup' }
@@ -1952,7 +1953,7 @@ export type StreamQuery = (
       & Pick<InvitationRedeemed, 'name' | 'code' | 'redeemedBy'>
       & { redeemedBy_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )> }
     ) | (
       { __typename?: 'MemberAdded' }
@@ -1994,7 +1995,7 @@ export type StreamQuery = (
       & Pick<Purchased, 'buyer'>
       & { buyer_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, purchase?: Maybe<(
         { __typename?: 'Purchase' }
         & Pick<Purchase, 'id'>
@@ -2010,7 +2011,7 @@ export type StreamQuery = (
           & Pick<Invoice, 'sellerAddress' | 'pickupCode'>
           & { sellerProfile?: Maybe<(
             { __typename?: 'Profile' }
-            & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+            & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
           )> }
         )> }
       )> }
@@ -2019,7 +2020,7 @@ export type StreamQuery = (
       & Pick<WelcomeMessage, 'invitedBy'>
       & { invitedBy_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )> }
     )> }
   )> }
@@ -2051,7 +2052,7 @@ export type AggregatesQuery = (
           & Pick<ContactPoint, 'name' | 'directions' | 'values' | 'timestamps'>
         )>, contactAddress_Profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'type' | 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
           & { city?: Maybe<(
             { __typename?: 'City' }
             & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2077,7 +2078,7 @@ export type AggregatesQuery = (
         & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
         & { token_owner_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
       )> }
     ) | (
@@ -2105,7 +2106,7 @@ export type AggregatesQuery = (
         & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+          & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
         )> }
       )> }
     ) | (
@@ -2116,7 +2117,7 @@ export type AggregatesQuery = (
         & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress' | 'total'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarCid'>
+          & Pick<Profile, 'type' | 'id' | 'firstName' | 'lastName' | 'avatarCid'>
         )>, lines: Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount'>
@@ -2125,7 +2126,7 @@ export type AggregatesQuery = (
             & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
-              & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+              & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
             )> }
           ) }
         )>, invoices: Array<(
@@ -2133,7 +2134,7 @@ export type AggregatesQuery = (
           & Pick<Invoice, 'sellerAddress' | 'pickupCode'>
           & { sellerProfile?: Maybe<(
             { __typename?: 'Profile' }
-            & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+            & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
           )> }
         )> }
       )> }
@@ -3115,6 +3116,7 @@ export const StreamDocument = gql`
         transaction_hash
         from
         from_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -3122,6 +3124,7 @@ export const StreamDocument = gql`
         }
         to
         to_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -3132,6 +3135,7 @@ export const StreamDocument = gql`
           token
           from
           from_profile {
+            type
             firstName
             lastName
             avatarUrl
@@ -3139,6 +3143,7 @@ export const StreamDocument = gql`
           }
           to
           to_profile {
+            type
             firstName
             lastName
             avatarUrl
@@ -3168,6 +3173,7 @@ export const StreamDocument = gql`
         token
         from
         from_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -3175,6 +3181,7 @@ export const StreamDocument = gql`
         }
         to
         to_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -3198,6 +3205,7 @@ export const StreamDocument = gql`
       ... on ChatMessage {
         from
         from_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -3205,6 +3213,7 @@ export const StreamDocument = gql`
         }
         to
         to_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -3244,6 +3253,7 @@ export const StreamDocument = gql`
       ... on WelcomeMessage {
         invitedBy
         invitedBy_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -3259,6 +3269,7 @@ export const StreamDocument = gql`
         code
         redeemedBy
         redeemedBy_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -3268,6 +3279,7 @@ export const StreamDocument = gql`
       ... on Purchased {
         buyer
         buyer_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -3287,6 +3299,7 @@ export const StreamDocument = gql`
             sellerAddress
             pickupCode
             sellerProfile {
+              type
               id
               circlesAddress
               firstName
@@ -3337,6 +3350,7 @@ export const AggregatesDocument = gql`
           id
           version
           createdByProfile {
+            type
             id
             circlesAddress
             firstName
@@ -3358,6 +3372,7 @@ export const AggregatesDocument = gql`
           token_address
           token_owner_address
           token_owner_profile {
+            type
             firstName
             lastName
             avatarUrl
@@ -3378,6 +3393,7 @@ export const AggregatesDocument = gql`
           lastContactAt
           contactAddress
           contactAddress_Profile {
+            type
             id
             firstName
             lastName
@@ -3435,6 +3451,7 @@ export const AggregatesDocument = gql`
           createdAt
           createdByAddress
           createdByProfile {
+            type
             id
             firstName
             lastName
@@ -3452,6 +3469,7 @@ export const AggregatesDocument = gql`
               pictureUrl
               pricePerUnit
               createdByProfile {
+                type
                 id
                 circlesAddress
                 firstName
@@ -3464,6 +3482,7 @@ export const AggregatesDocument = gql`
             sellerAddress
             pickupCode
             sellerProfile {
+              type
               id
               circlesAddress
               firstName

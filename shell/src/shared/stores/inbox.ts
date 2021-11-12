@@ -2,18 +2,20 @@ import { writable } from "svelte/store";
 import {
   AcknowledgeDocument,
   Direction,
-  EventType,
+  EventType, Organisation, OrganisationsByAddressDocument, OrganisationsDocument,
   PaginationArgs,
   Profile,
   ProfileEvent,
   SortOrder,
-  StreamDocument,
+  StreamDocument, TrustRelationsDocument,
 } from "../api/data/types";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { me } from "./me";
 import { getSessionInfo } from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
+import {fSetTrust, setTrust} from "../../dapps/o-banking/processes/setTrust";
 
 let events: ProfileEvent[] = [];
+let following: boolean = false;
 
 async function queryEvents() {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -92,19 +94,11 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
           (<any>event).type == "blockchain_event" ||
           (<any>event).type == "new_message"
         ) {
-          queryEvents().then((e) => {
-            events = e;
-            events = events.filter((o) => o.type != "eth_transfer");
-            set(events);
-          });
+          this.reload();
           return;
         }
         if (event.type == "shell.authenticated") {
-          queryEvents().then((e) => {
-            events = e;
-            events = events.filter((o) => o.type != "eth_transfer");
-            set(events);
-          });
+          this.refresh();
           return;
         }
       }
@@ -116,13 +110,110 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
   }
 );
 
+async function followTrust(profile: Profile | Organisation) {
+  if (following) return;
+  // Check the trust status of all members
+  following = true;
+
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const orga = await apiClient.query({
+    query: OrganisationsByAddressDocument,
+    variables: {
+      addresses: [profile.circlesAddress]
+    }
+  });
+
+  let allTrustRelations: any[] = [];
+
+  if (orga.data.organisationsByAddress && orga.data.organisationsByAddress.length) {
+
+
+    const orgaTrustRelations = await apiClient.query({
+      query: TrustRelationsDocument,
+      variables: {
+        safeAddress: profile.circlesAddress
+      }
+    });
+
+    const currentTrust: { [userAddress: string]: boolean } = {};
+    const removeTrust: { [userAddress: string]: boolean } = {};
+    const addTrust: { [userAddress: string]: boolean } = {};
+
+    orgaTrustRelations.data.trustRelations.forEach(t => {
+      removeTrust[t.otherSafeAddress] = true;
+      currentTrust[t.otherSafeAddress] = true;
+    });
+
+    for (let member of orga.data.organisationsByAddress[0].members) {
+      const memberTrustRelations = await apiClient.query({
+        query: TrustRelationsDocument,
+        variables: {
+          safeAddress: member.circlesAddress
+        }
+      });
+      const trusts = memberTrustRelations.data.trustRelations.filter(o => o.direction == "OUT" || o.direction == "MUTUAL");
+      trusts.forEach(t => {
+        delete removeTrust[t.otherSafeAddress];
+        if (!currentTrust[t.otherSafeAddress]) {
+          addTrust[t.otherSafeAddress] = true;
+        }
+      });
+      allTrustRelations = [...allTrustRelations, ...trusts];
+    }
+
+    console.log("Add trust:", addTrust);
+    console.log("Remove trust:", removeTrust);
+
+    for(let address of Object.keys(removeTrust)) {
+      console.log(`Removing trust to ${address}`);
+      await fSetTrust({
+        data: {
+          safeAddress: profile.circlesAddress,
+          trustLimit: 0,
+          trustReceiver: address,
+          privateKey: sessionStorage.getItem("circlesKey")
+        },
+        messages:{},
+        dirtyFlags: {},
+        onlyThesePages:[]
+      })
+    }
+    for(let address of Object.keys(addTrust)) {
+      console.log(`Adding trust to ${address}`);
+      await fSetTrust({
+        data: {
+          safeAddress: profile.circlesAddress,
+          trustLimit: 100,
+          trustReceiver: address,
+          privateKey: sessionStorage.getItem("circlesKey")
+        },
+        messages:{},
+        dirtyFlags: {},
+        onlyThesePages:[]
+      })
+    }
+
+    following = false;
+  }
+}
+
 export const inbox = {
   subscribe,
   reload: () => {
-    queryEvents().then((e) => {
+    queryEvents().then(async (e) => {
+      // If we're in an organisation context then find all trust changes of all members since the last update
+      let profile: Profile|Organisation;
+      const unsub = me.subscribe($me => {
+        profile = $me;
+      });
+      unsub();
+
+      if (profile && profile.__typename === "Organisation") {
+        // followTrust(profile);
+      }
+
       events = e;
-      events = events.filter((o) => o.type != "eth_transfer");
-      update(() => events);
+      set(events);
     });
   },
   acknowledge: async (event: ProfileEvent) => {

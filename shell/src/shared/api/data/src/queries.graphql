@@ -605,6 +605,7 @@ query stream(
         transaction_hash
         from
         from_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -612,6 +613,7 @@ query stream(
         }
         to
         to_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -622,6 +624,7 @@ query stream(
           token
           from
           from_profile {
+            type
             firstName
             lastName
             avatarUrl
@@ -629,6 +632,7 @@ query stream(
           }
           to
           to_profile {
+            type
             firstName
             lastName
             avatarUrl
@@ -658,6 +662,7 @@ query stream(
         token
         from
         from_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -665,6 +670,7 @@ query stream(
         }
         to
         to_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -688,6 +694,7 @@ query stream(
       ... on ChatMessage {
         from
         from_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -695,6 +702,7 @@ query stream(
         }
         to
         to_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -734,6 +742,7 @@ query stream(
       ... on WelcomeMessage {
         invitedBy
         invitedBy_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -749,6 +758,7 @@ query stream(
         code
         redeemedBy
         redeemedBy_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -758,6 +768,7 @@ query stream(
       ... on Purchased {
         buyer
         buyer_profile {
+          type
           firstName
           lastName
           avatarUrl
@@ -777,6 +788,7 @@ query stream(
             sellerAddress
             pickupCode
             sellerProfile {
+              type
               id
               circlesAddress
               firstName
@@ -830,6 +842,7 @@ query aggregates(
           id
           version
           createdByProfile {
+            type
             id
             circlesAddress
             firstName
@@ -851,6 +864,7 @@ query aggregates(
           token_address
           token_owner_address
           token_owner_profile {
+            type
             firstName
             lastName
             avatarUrl
@@ -871,6 +885,7 @@ query aggregates(
           lastContactAt
           contactAddress
           contactAddress_Profile {
+            type
             id
             firstName
             lastName
@@ -928,6 +943,7 @@ query aggregates(
           createdAt
           createdByAddress
           createdByProfile {
+            type
             id
             firstName
             lastName
@@ -945,6 +961,7 @@ query aggregates(
               pictureUrl
               pricePerUnit
               createdByProfile {
+                type
                 id
                 circlesAddress
                 firstName
@@ -957,6 +974,7 @@ query aggregates(
             sellerAddress
             pickupCode
             sellerProfile {
+              type
               id
               circlesAddress
               firstName
