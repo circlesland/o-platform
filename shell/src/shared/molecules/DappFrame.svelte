@@ -86,45 +86,48 @@ function setNav(navArgs: GenerateNavManifestArgs) {
  */
 async function init() {
   const session = await getSessionInfo();
+
+  window.o.apiClient.client.subscribeToResult().then((apiClient) => {
+    apiClient
+      .subscribe({
+        query: EventsDocument,
+      })
+      .subscribe((next) => {
+        if (next.data.events.type == "new_message") {
+          window.o.publishEvent(<any>{
+            type: "shell.refresh",
+            dapp: "friends:1",
+            data: null,
+          });
+          window.o.publishEvent(<any>{
+            type: "new_message",
+          });
+          var audio = new Audio("blblblbl.mp3");
+          audio.play();
+        } else {
+          window.o.publishEvent(<any>{
+            type: "blockchain_event",
+          });
+          window.o.publishEvent(<any>{
+            type: "shell.refresh",
+            dapp: "friends:1",
+            data: null,
+          });
+          window.o.publishEvent(<any>{
+            type: "shell.refresh",
+            dapp: "banking:1",
+            data: null,
+          });
+        }
+        inbox.reload();
+      });
+  });
+
   if (!$me || !session.isLoggedOn) {
     await push("/");
     return;
   } else {
-    window.o.apiClient.client.subscribeToResult().then((apiClient) => {
-      apiClient
-        .subscribe({
-          query: EventsDocument,
-        })
-        .subscribe((next) => {
-          if (next.data.events.type == "new_message") {
-            window.o.publishEvent(<any>{
-              type: "shell.refresh",
-              dapp: "friends:1",
-              data: null,
-            });
-            window.o.publishEvent(<any>{
-              type: "new_message",
-            });
-            var audio = new Audio("blblblbl.mp3");
-            audio.play();
-          } else {
-            window.o.publishEvent(<any>{
-              type: "blockchain_event",
-            });
-            window.o.publishEvent(<any>{
-              type: "shell.refresh",
-              dapp: "friends:1",
-              data: null,
-            });
-            window.o.publishEvent(<any>{
-              type: "shell.refresh",
-              dapp: "banking:1",
-              data: null,
-            });
-          }
-          inbox.reload();
-        });
-    });
+
     inbox.reload();
   }
 }
@@ -148,7 +151,7 @@ function onOpenNavigation() {
   setNav({
     leftIsOpen: true,
     rightIsOpen: false,
-    notificationCount: $inbox.length,
+    notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: false,
     centerContainsProcess: false,
   });
@@ -161,7 +164,7 @@ function onCloseNavigation() {
   setNav({
     leftIsOpen: false,
     rightIsOpen: false,
-    notificationCount: $inbox.length,
+    notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: false,
     centerContainsProcess: false,
   });
@@ -181,7 +184,7 @@ function onOpenModal() {
   setNav({
     leftIsOpen: false,
     rightIsOpen: false,
-    notificationCount: $inbox.length,
+    notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
     centerContainsProcess: false,
   });
@@ -193,7 +196,7 @@ async function onCloseModal() {
   await hideCenter();
   setNav({
     ...preModalNavArgs,
-    notificationCount: $inbox.length,
+    notificationCount: $inbox ? $inbox.length : 0,
   });
 }
 function onRequestCloseModal() {
@@ -239,12 +242,12 @@ async function onProcessStopped() {
   if (preModalNavArgs) {
     setNav({
       ...preModalNavArgs,
-      notificationCount: $inbox.length,
+      notificationCount: $inbox ? $inbox.length : 0,
     });
     preModalNavArgs = null;
   } else {
     setNav({
-      notificationCount: $inbox.length,
+      notificationCount: $inbox ? $inbox.length : 0,
       centerIsOpen: false,
       centerContainsProcess: false,
       leftIsOpen: false,
@@ -254,7 +257,7 @@ async function onProcessStopped() {
 }
 function onProcessContinued() {
   setNav({
-    notificationCount: $inbox.length,
+    notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
     centerContainsProcess: true,
     leftIsOpen: false,
@@ -263,7 +266,7 @@ function onProcessContinued() {
 }
 function onProcessCanGoBack() {
   setNav({
-    notificationCount: $inbox.length,
+    notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
     centerContainsProcess: true,
     leftIsOpen: false,
@@ -274,7 +277,7 @@ function onProcessCanGoBack() {
 }
 function onProcessCanSkip() {
   setNav({
-    notificationCount: $inbox.length,
+    notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
     centerContainsProcess: true,
     leftIsOpen: false,
@@ -410,7 +413,7 @@ onMount(async () => {
     centerIsOpen: false,
     rightIsOpen: false,
     leftIsOpen: false,
-    notificationCount: $inbox.length,
+    notificationCount: $inbox ? $inbox.length : 0,
   });
   if (!identityChecked && !dapp.noAuthentication) {
     //window.o.runProcess(identify, {}, {});
@@ -575,7 +578,7 @@ function showModalProcess(processId: string) {
     centerIsOpen: true,
     centerContainsProcess: true,
     leftIsOpen: false,
-    notificationCount: $inbox.length,
+    notificationCount: $inbox ? $inbox.length : 0,
     rightIsOpen: false,
   });
 }
@@ -618,7 +621,7 @@ function showModalPage(
     centerIsOpen: true,
     centerContainsProcess: false,
     leftIsOpen: false,
-    notificationCount: $inbox.length,
+    notificationCount: $inbox ? $inbox.length : 0,
     rightIsOpen: false,
   });
 }
