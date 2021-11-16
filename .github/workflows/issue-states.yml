@@ -1,11 +1,2 @@
-on:
-  issues:
-    types: [opened]
-jobs:
-  createCard:
-    steps:
-      - name: Create or Update Project Card
-        uses: peter-evans/create-or-update-project-card@v1
-        with:
-          project-name: Circles Land
-          column-name: To do
+- name: Create or Update Project Card
+  uses: peter-evans/create-or-update-project-card@v1.1.4
