@@ -125,6 +125,9 @@ export class GnosisSafeProxy extends Web3Contract
     console.log("executableTransaction:", executableTransaction);
 
     const transactionHash = await this.getTransactionHash(executableTransaction);
+    console.log("Transaction hash to sign: ", transactionHash);
+
+
     const signatures = GnosisSafeProxy.signTransactionHash(this.web3, privateKey, transactionHash);
 
     const gasPrice = await RpcGateway.getGasPrice();
@@ -159,7 +162,6 @@ export class GnosisSafeProxy extends Web3Contract
       new BN("0"));
 
     console.log("signedRawTransaction:", signedTransactionData);
-
     return Web3Contract.sendSignedRawTransaction(signedTransactionData);
   }
 
@@ -229,14 +231,10 @@ export class GnosisSafeProxy extends Web3Contract
         // TODO: This is a quick fix because xdai.poanetwork.dev updated their geth version
         //       and it now returns other revert messages.
         //       Consider all other major gateways in future.
-        if (e.data && e.data.startsWith("Reverted 0x") && e.data.length == 211)
+        if (e.data && e.data.startsWith("Reverted 0x")/* && e.data.length == 211*/)
         {
-          let estimateInError = e.data;
-          if (estimateInError.startsWith("Reverted 0x"))
-          {
-            estimateInError = estimateInError.substr(11);
-          }
-          txGasEstimation = new BN(estimateInError.substring(138), 16)
+          const revertMessageHexPart = e.data.replace("Reverted 0x", "");
+          txGasEstimation = new BN(revertMessageHexPart, 16)
         }
         else if (e.data && e.data.startsWith("revert: ") && e.data.length == 40)
         {
