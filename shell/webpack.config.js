@@ -17,7 +17,7 @@ let __API_ENDPOINT__ = "https://api.circles.land";
 let __FILES_ENDPOINT__ = "https://files.circles.land";
 let __CIRCLES_SUBGRAPH_ENDPOINT__ =
   "https://api.thegraph.com/subgraphs/name/circlesubi/circles";
-let __PATHFINDER_ENDPOINT__ = "https://rpc.circles.land/pathfinder";
+let __PATHFINDER_ENDPOINT__ = "https://rpc.helsinki.circles.land/pathfinder";
 let __APP_ID__ = "circles.land";
 let __FILES_APP_ID__ = "files.circles.land";
 let __SAFE_SCHEMA_VERSION__ = "2";
