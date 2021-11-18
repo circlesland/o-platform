@@ -20,7 +20,7 @@ import { SetTrustContext } from "./setTrust";
 import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
 import { me } from "../../../shared/stores/me";
-import { Profile } from "../../../shared/api/data/types";
+import {DirectPathDocument, Profile, ProfileBySafeAddressDocument} from "../../../shared/api/data/types";
 import {
   convertTimeCirclesToCircles,
   displayCirclesAmount,
@@ -47,6 +47,27 @@ export type TransferContextData = {
   summaryHtml?: string;
   acceptSummary?: boolean;
 };
+
+
+async function findDirectTransfers(from:string, to:string, amount:string) {
+  // Find all tokens which are trusted by "to"
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const result = await apiClient.query({
+    query: DirectPathDocument,
+    variables: {
+      from: from,
+      to: to,
+      amount: amount
+    },
+  });
+  if (result.errors) {
+    throw new Error(`An error occurred in the graphQL query: ${JSON.stringify(result.errors)}`);
+  }
+  const transitivePath:TransitivePath = result.data.directPath;
+  console.log("Direct path: ", transitivePath);
+
+  return transitivePath;
+}
 
 /**
  * This is the context on which the process will work.
@@ -220,6 +241,23 @@ const processDefinition = (processId: string) =>
             context.data.maxFlows = {};
             console.log("CONEXT DATA", context.data);
             const p1 = new Promise<void>(async (resolve) => {
+
+              const amount = context.data.tokens.currency == "crc"
+                ? convertTimeCirclesToCircles(
+                  Number.parseFloat(context.data.tokens.amount),
+                  null
+                ).toString()
+                : context.data.tokens.amount;
+
+              const circlesValueInWei = RpcGateway.get().utils
+                .toWei(amount.toString() ?? "0", "ether")
+                .toString();
+
+              const flow = await findDirectTransfers(context.data.safeAddress, context.data.recipientAddress, circlesValueInWei);
+
+              // TODO: Re-implement pathfinder when available again
+/*
+
               const flow = await requestPathToRecipient({
                 data: {
                   recipientAddress: context.data.recipientAddress,
@@ -233,6 +271,7 @@ const processDefinition = (processId: string) =>
                   safeAddress: context.data.safeAddress,
                 },
               });
+ */
               context.data.maxFlows["crc"] = flow.flow;
               context.data.transitivePath = flow;
               resolve();

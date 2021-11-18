@@ -987,3 +987,19 @@ query aggregates(
     }
   }
 }
+
+query directPath($from:String! $to:String! $amount:String!) {
+  directPath(
+    from: $from
+    to: $to
+    amount: $amount) {
+    flow
+    transfers {
+      from
+      to
+      token
+      tokenOwner
+      value
+    }
+  }
+}

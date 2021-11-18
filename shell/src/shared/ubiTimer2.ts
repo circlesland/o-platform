@@ -24,6 +24,9 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
   },
   states: {
     waitFor60Seconds: {
+      entry: (context, event) => {
+        console.log("Waiting for 60 sec. until next UBI-retrieval try. Previous event was:", event);
+      },
       after: {
         60000: "checkLastPayout"
       }
@@ -83,7 +86,10 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
       const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress);
       const circlesAccount = new CirclesAccount($me.circlesAddress);
       const result = await circlesAccount.getUBI(privateKey, gnosisSafeProxy);
-      return await result.toPromise();
+      return result.toPromise().then(o => {
+        console.log(`Ubi request result (transactionHash):`, o.transactionHash);
+        return o;
+      });
     },
     getLastUbiRetrievalDate: () => async (callback) => {
       const apiClient = await window.o.apiClient.client.subscribeToResult();

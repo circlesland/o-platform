@@ -497,6 +497,7 @@ type Query {
     cities(query: QueryCitiesInput!): [City!]!
     claimedInvitation: ClaimedInvitation
     commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
+    directPath(amount: String!, from: String!, to: String!): TransitivePath!
     events(filter: ProfileEventFilter, pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
     findSafeAddressByOwner(owner: String!): [String!]!
     hubSignupTransaction: ProfileEvent
@@ -574,6 +575,20 @@ type TagTransactionResult {
     error: String
     success: Boolean!
     tag: Tag
+}
+
+type TransitivePath {
+    flow: String!
+    requestedAmount: String!
+    transfers: [TransitiveTransfer!]!
+}
+
+type TransitiveTransfer {
+    from: String!
+    to: String!
+    token: String!
+    tokenOwner: String!
+    value: String!
 }
 
 type TrustRelation {

@@ -775,6 +775,7 @@ export type Query = {
   cities: Array<City>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
   commonTrust: Array<CommonTrust>;
+  directPath: TransitivePath;
   events: Array<ProfileEvent>;
   findSafeAddressByOwner: Array<Scalars['String']>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
@@ -814,6 +815,13 @@ export type QueryCitiesArgs = {
 export type QueryCommonTrustArgs = {
   safeAddress1: Scalars['String'];
   safeAddress2: Scalars['String'];
+};
+
+
+export type QueryDirectPathArgs = {
+  amount: Scalars['String'];
+  from: Scalars['String'];
+  to: Scalars['String'];
 };
 
 
@@ -987,6 +995,22 @@ export type TagTransactionResult = {
   error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
   tag?: Maybe<Tag>;
+};
+
+export type TransitivePath = {
+  __typename?: 'TransitivePath';
+  flow: Scalars['String'];
+  requestedAmount: Scalars['String'];
+  transfers: Array<TransitiveTransfer>;
+};
+
+export type TransitiveTransfer = {
+  __typename?: 'TransitiveTransfer';
+  from: Scalars['String'];
+  to: Scalars['String'];
+  token: Scalars['String'];
+  tokenOwner: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export enum TrustDirection {
@@ -2140,6 +2164,25 @@ export type AggregatesQuery = (
       )> }
     ) }
   )> }
+);
+
+export type DirectPathQueryVariables = Exact<{
+  from: Scalars['String'];
+  to: Scalars['String'];
+  amount: Scalars['String'];
+}>;
+
+
+export type DirectPathQuery = (
+  { __typename?: 'Query' }
+  & { directPath: (
+    { __typename?: 'TransitivePath' }
+    & Pick<TransitivePath, 'flow'>
+    & { transfers: Array<(
+      { __typename?: 'TransitiveTransfer' }
+      & Pick<TransitiveTransfer, 'from' | 'to' | 'token' | 'tokenOwner' | 'value'>
+    )> }
+  ) }
 );
 
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
@@ -3496,6 +3539,20 @@ export const AggregatesDocument = gql`
   }
 }
     `;
+export const DirectPathDocument = gql`
+    query directPath($from: String!, $to: String!, $amount: String!) {
+  directPath(from: $from, to: $to, amount: $amount) {
+    flow
+    transfers {
+      from
+      to
+      token
+      tokenOwner
+      value
+    }
+  }
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -3647,6 +3704,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     aggregates(variables: AggregatesQueryVariables): Promise<AggregatesQuery> {
       return withWrapper(() => client.request<AggregatesQuery>(print(AggregatesDocument), variables));
+    },
+    directPath(variables: DirectPathQueryVariables): Promise<DirectPathQuery> {
+      return withWrapper(() => client.request<DirectPathQuery>(print(DirectPathDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));
