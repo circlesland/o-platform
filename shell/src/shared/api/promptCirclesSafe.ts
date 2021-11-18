@@ -89,9 +89,7 @@ export function promptCirclesSafe<
                 .map((o) => {
                   return {
                     ...o,
-                    circlesAddress: RpcGateway.get().utils.toChecksumAddress(
-                      o.circlesAddress
-                    ),
+                    circlesAddress: o.circlesAddress,
                     avatarUrl: o.avatarUrl
                       ? o.avatarUrl
                       : AvataarGenerator.generate(o.circlesAddress),

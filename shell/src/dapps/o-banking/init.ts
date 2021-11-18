@@ -40,9 +40,7 @@ export async function init() {
       !bankingInstance &&
       RpcGateway.get().utils.isAddress(profileOrNull?.circlesAddress)
     ) {
-      bankingInstance = new Banking(
-        RpcGateway.get().utils.toChecksumAddress(profile.circlesAddress)
-      );
+      bankingInstance = new Banking(profile.circlesAddress);
     } else {
       return;
     }

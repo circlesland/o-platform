@@ -75,8 +75,8 @@ export class Banking {
         return (result.data ?? []).profilesBySafeAddress.map(p => {
             return {
                 ...p,
-                circlesAddress : RpcGateway.get().utils.toChecksumAddress(p.circlesAddress),
-                safeAddress : RpcGateway.get().utils.toChecksumAddress(p.circlesAddress),
+                circlesAddress : p.circlesAddress,
+                safeAddress : p.circlesAddress,
                 displayName: `${p.firstName}${!!p.lastName ? " " + p.lastName : ""}`,
                 avatarUrl: p.avatarUrl ? p.avatarUrl : AvataarGenerator.generate(p.circlesAddress)
             };

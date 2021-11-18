@@ -28,6 +28,6 @@ export async function loadProfileByProfileId(profileId: number) : Promise<Profil
 
     return {
         ...apiProfile,
-        circlesAddress: apiProfile.circlesAddress ? RpcGateway.get().utils.toChecksumAddress(apiProfile.circlesAddress) : null
+        circlesAddress: apiProfile.circlesAddress ? apiProfile.circlesAddress : null
     };
 }

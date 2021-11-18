@@ -24,7 +24,7 @@ export class CirclesAccount implements CirclesAccountModel
 
   constructor(safeAddress: string)
   {
-    this.safeAddress = this.web3.utils.toChecksumAddress(safeAddress);
+    this.safeAddress = safeAddress;
     this.hub = new CirclesHub(this.web3, HUB_ADDRESS);
   }
 
