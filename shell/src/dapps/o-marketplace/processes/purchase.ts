@@ -28,6 +28,8 @@ import { circIn } from "svelte/easing";
 import { me } from "../../../shared/stores/me";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import { cartContents } from "../stores/shoppingCartStore";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {findDirectTransfers} from "../../o-banking/processes/transfer";
 
 export type PurchaseContextData = {
   items: Offer[];
@@ -156,6 +158,18 @@ const processDefinition = (processId: string) =>
                 return p + amount * pricePerUnit;
               }, 0);
 
+              const amount = convertTimeCirclesToCircles(
+                  invoiceTotal,
+                  null
+                ).toString();
+
+              const circlesValueInWei = RpcGateway.get().utils
+                .toWei(amount.toString() ?? "0", "ether")
+                .toString();
+
+              const flow = await findDirectTransfers(invoice.buyerAddress, invoice.sellerAddress, circlesValueInWei);
+
+              /*
               const flow = await requestPathToRecipient({
                 data: {
                   safeAddress: invoice.buyerAddress,
@@ -166,6 +180,7 @@ const processDefinition = (processId: string) =>
                   ).toString(),
                 },
               });
+               */
 
               if (flow.transfers.length > 0) {
                 context.data.payableInvoices.push({

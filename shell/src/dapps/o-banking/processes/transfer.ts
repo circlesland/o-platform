@@ -49,7 +49,7 @@ export type TransferContextData = {
 };
 
 
-async function findDirectTransfers(from:string, to:string, amount:string) {
+export async function findDirectTransfers(from:string, to:string, amount:string) {
   // Find all tokens which are trusted by "to"
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.query({

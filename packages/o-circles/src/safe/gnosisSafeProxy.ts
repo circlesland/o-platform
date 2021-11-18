@@ -2,11 +2,11 @@ import type { AbiItem } from "web3-utils";
 import Web3 from "web3";
 import { EMPTY_DATA, GNOSIS_SAFE_ABI, ZERO_ADDRESS } from "../consts";
 import { BN } from "ethereumjs-util";
-const EthLibAccount = require("eth-lib/lib/account");
 import { ExecResult, Web3Contract } from "../web3Contract";
 import { SafeTransaction } from "../model/safeTransaction";
 import { SafeOps } from "../model/safeOps";
 import { RpcGateway } from "../rpcGateway";
+const EthLibAccount = require("eth-lib/lib/account");
 
 export class GnosisSafeProxy extends Web3Contract {
   constructor(web3: Web3, safeProxyAddress: string) {

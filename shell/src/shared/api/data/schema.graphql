@@ -645,6 +645,7 @@ enum EventType {
     CrcTrust
     EthTransfer
     GnosisSafeEthTransfer
+    HmnTransfer
     InvitationCreated
     InvitationRedeemed
     MemberAdded

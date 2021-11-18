@@ -75,19 +75,15 @@ export async function fTransferCircles (safeAddress:string, privateKey:string, p
       values
     );
 
+    /*
     let txHashSubscription: Subscription;
     txHashSubscription = transferTroughResult.observable.subscribe(async o => {
-      if (o.type != "transactionHash") {
-        return;
-      }
-      if (txHashSubscription) {
-        txHashSubscription.unsubscribe();
-      }
 
-      if (!message) {
-        return;
-      }
+    });
+     */
 
+    const receipt = await (await transferTroughResult.toPromise());
+    if (receipt && message) {
       const api = await window.o.apiClient.client.subscribeToResult();
       await api.mutate({
         mutation: TagTransactionDocument,
@@ -96,12 +92,10 @@ export async function fTransferCircles (safeAddress:string, privateKey:string, p
             typeId: "o-banking:transfer:message:1",
             value: message
           },
-          transactionHash: o.data
+          transactionHash: receipt.transactionHash
         }
       });
-    });
-
-    const receipt = await (await transferTroughResult.toPromise());
+    }
     return receipt;
   } catch (e) {
     console.error(e);

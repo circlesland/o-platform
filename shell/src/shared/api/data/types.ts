@@ -276,6 +276,7 @@ export enum EventType {
   CrcTrust = 'CrcTrust',
   EthTransfer = 'EthTransfer',
   GnosisSafeEthTransfer = 'GnosisSafeEthTransfer',
+  HmnTransfer = 'HmnTransfer',
   InvitationCreated = 'InvitationCreated',
   InvitationRedeemed = 'InvitationRedeemed',
   MemberAdded = 'MemberAdded',
