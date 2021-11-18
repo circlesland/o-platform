@@ -305,9 +305,9 @@ const processDefinition = (processId: string) =>
           isSensitive: true,
           params: {
             view: {
-              title: "Please enter a pin",
+              title: "Set a PIN to protect your account",
               description:
-                "The pin will be used to encrypt your private key on your device.",
+                "The pin will be used to encrypt your private key on your device. NOTE: This won't help against a sophisticated attacker but prevents casual theft. ",
               placeholder: "Enter Pin",
               submitButtonText: "Store private key on this device",
             },
