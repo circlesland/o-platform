@@ -245,23 +245,24 @@ function goToProfile(e, path?: string) {
     {/each}
     <div id="endOfList"></div>
   </div>
-  <div
-    class:hidden="{!contactProfile || !contactProfile.id}"
-    class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2 rounded-b-xl">
-    <div class="flex-grow">
-      <input
-        bind:this="{inputField}"
-        on:keydown="{onkeydown}"
-        bind:value="{chatmessage}"
-        use:init
-        type="text"
-        name="searchTerm"
-        autocomplete="off"
-        autocorrect="off"
-        spellcheck="false"
-        placeholder="Your Message"
-        class="order-1 w-full input input-bordered" />
-      <!-- <textarea
+  {#if contactProfile && contactProfile.type != null}
+    <div
+      class:hidden="{!contactProfile || !contactProfile.id}"
+      class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2 rounded-b-xl">
+      <div class="flex-grow">
+        <input
+          bind:this="{inputField}"
+          on:keydown="{onkeydown}"
+          bind:value="{chatmessage}"
+          use:init
+          type="text"
+          name="searchTerm"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          placeholder="Your Message"
+          class="order-1 w-full input input-bordered" />
+        <!-- <textarea
         on:keydown="{onkeydown}"
         name="searchTerm"
         rows="1"
@@ -271,27 +272,28 @@ function goToProfile(e, path?: string) {
         bind:this="{inputField}"
         bind:value="{chatmessage}"
         use:init></textarea> -->
-    </div>
-    <div class="flex flex-row content-end">
-      <button
-        type="submit"
-        class="self-end mb-2 btn btn-primary btn-square"
-        on:click="{() => submitChat()}">
-        <svg
-          class="w-6"
-          viewBox="0 0 23 22"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M11.5 15L15.5 11M15.5 11L11.5 7M15.5 11H7.5M21.5 11C21.5 16.5228
+      </div>
+      <div class="flex flex-row content-end">
+        <button
+          type="submit"
+          class="self-end mb-2 btn btn-primary btn-square"
+          on:click="{() => submitChat()}">
+          <svg
+            class="w-6"
+            viewBox="0 0 23 22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M11.5 15L15.5 11M15.5 11L11.5 7M15.5 11H7.5M21.5 11C21.5 16.5228
             17.0228 21 11.5 21C5.97715 21 1.5 16.5228 1.5 11C1.5 5.47715 5.97715
             1 11.5 1C17.0228 1 21.5 5.47715 21.5 11Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"></path>
-        </svg>
-      </button>
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+        </button>
+      </div>
     </div>
-  </div>
+  {/if}
 </div>

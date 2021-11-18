@@ -81,7 +81,6 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
 
       const contactsList: Contact[] =
         result.data.aggregates[0].payload.contacts;
-      console.log(contactsList);
 
       if (contactsList.length > 0) return contactsList[0];
       else return undefined;
@@ -90,8 +89,6 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
     const recipientProfile = params.id
       ? await getRecipientProfile()
       : undefined;
-
-    console.log("recipientProfile:", recipientProfile);
 
     const trustMetadata =
       recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??
@@ -118,18 +115,6 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
     if (recipientProfile?.contactAddress) {
       actions = actions.concat([
         {
-          key: "transfer",
-          icon: "sendmoney",
-          title: "Send Money",
-          action: async () => {
-            window.o.runProcess(transfer, {
-              safeAddress: $me.circlesAddress,
-              recipientAddress: recipientProfile.contactAddress,
-              privateKey: sessionStorage.getItem("circlesKey"),
-            });
-          },
-        },
-        {
           key: "chat",
           icon: "chat",
           title: "Chat",
@@ -137,35 +122,54 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             push("#/friends/chat/" + recipientProfile.contactAddress);
           },
         },
-        youTrust
-          ? {
-              key: "setTrust",
-              icon: "untrust",
-              title: "Untrust",
-              colorClass: "text-alert",
-              action: async () => {
-                window.o.runProcess(setTrust, {
-                  trustLimit: 0,
-                  trustReceiver: recipientProfile.contactAddress,
-                  safeAddress: $me.circlesAddress,
-                  privateKey: sessionStorage.getItem("circlesKey"),
-                });
-              },
-            }
-          : {
-              key: "setTrust",
-              icon: "trust",
-              title: "Trust",
-              action: async () => {
-                window.o.runProcess(setTrust, {
-                  trustLimit: 100,
-                  trustReceiver: recipientProfile.contactAddress,
-                  safeAddress: $me.circlesAddress,
-                  privateKey: sessionStorage.getItem("circlesKey"),
-                });
-              },
-            },
       ]);
+      if (
+        recipientProfile.contactAddress_Profile &&
+        recipientProfile.contactAddress_Profile.type == "PERSON"
+      ) {
+        actions = actions.concat([
+          {
+            key: "transfer",
+            icon: "sendmoney",
+            title: "Send Money",
+            action: async () => {
+              window.o.runProcess(transfer, {
+                safeAddress: $me.circlesAddress,
+                recipientAddress: recipientProfile.contactAddress,
+                privateKey: sessionStorage.getItem("circlesKey"),
+              });
+            },
+          },
+          youTrust
+            ? {
+                key: "setTrust",
+                icon: "untrust",
+                title: "Untrust",
+                colorClass: "text-alert",
+                action: async () => {
+                  window.o.runProcess(setTrust, {
+                    trustLimit: 0,
+                    trustReceiver: recipientProfile.contactAddress,
+                    safeAddress: $me.circlesAddress,
+                    privateKey: sessionStorage.getItem("circlesKey"),
+                  });
+                },
+              }
+            : {
+                key: "setTrust",
+                icon: "trust",
+                title: "Trust",
+                action: async () => {
+                  window.o.runProcess(setTrust, {
+                    trustLimit: 100,
+                    trustReceiver: recipientProfile.contactAddress,
+                    safeAddress: $me.circlesAddress,
+                    privateKey: sessionStorage.getItem("circlesKey"),
+                  });
+                },
+              },
+        ]);
+      }
     }
 
     if (!recipientProfile) {
