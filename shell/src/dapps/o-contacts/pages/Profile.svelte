@@ -8,7 +8,10 @@ import { onDestroy, onMount } from "svelte";
 import { Subscription } from "rxjs";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import {
+  Jumplist,
+  JumplistItem,
+} from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
@@ -36,8 +39,10 @@ let isMe: boolean = false;
 let commonTrusts: CommonTrust[] = [];
 let profile: Profile;
 let contact: Contact;
+let jumplistResult: JumplistItem[] = [];
 
 onMount(() => {
+  console.log("ON MOUNT ID: ", id);
   shellEventSubscription = window.o.events.subscribe(
     async (event: PlatformEvent) => {
       if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
@@ -119,13 +124,13 @@ async function loadProfile() {
   }
 
   isMe = profile.id == ($me ? $me.id : 0);
+  jumplistResult = await jumplist.items({ id: id }, runtimeDapp);
   isLoading = false;
 }
 
 async function setProfile(apiProfile: Profile | Contact) {
   const trust = undefined;
 
-  console.log("PROFFF", apiProfile.__typename);
   if (apiProfile.__typename == "Contact") {
     contact = apiProfile;
   } else {
@@ -206,13 +211,6 @@ async function setProfile(apiProfile: Profile | Contact) {
     }
   }
 }
-
-async function getJumplist() {
-  const jumpListItems = await jumplist.items({ id: id }, runtimeDapp);
-  return jumpListItems;
-}
-
-let promise = getJumplist();
 </script>
 
 {#if isLoading}
@@ -337,13 +335,9 @@ let promise = getJumplist();
         </div>
       </div>
 
-      {#if jumplist && !isMe}
+      {#if profile && jumplistResult && !isMe}
         <div class="sticky bottom-0 left-0 right-0 w-full pb-5 bg-white">
-          {#await promise}
-            <p>...loading</p>
-          {:then jumpListItems}
-            <DetailActionBar actions="{jumpListItems}" />
-          {/await}
+          <DetailActionBar actions="{jumplistResult}" />
         </div>
       {/if}
     </div>

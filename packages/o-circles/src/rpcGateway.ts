@@ -7,7 +7,7 @@ import { Observable } from "rxjs";
 
 export class RpcGateway {
   static readonly gateways = [
-    "wss://rpc.helsinki.circles.land/",
+    "wss://rpc.circles.land/",
     //"wss://circles-xdai-rpc.lab10.io/wss"
   ];
 

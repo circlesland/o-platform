@@ -6,7 +6,7 @@ import { createMachine } from "xstate";
 import { PromptConnectOrCreateContext } from "../connectOrCreate/promptConnectOrCreate";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { BN } from "ethereumjs-util";
-import {EventsDocument} from "../../../../shared/api/data/types";
+import { EventsDocument } from "../../../../shared/api/data/types";
 
 export type FundSafeFromEoaContextData = {
   eoaAddress: string;
@@ -20,23 +20,16 @@ export type FundSafeFromEoaContext = ProcessContext<FundSafeFromEoaContextData>;
 /**
  * Sends all funds (except 0.03 eth) from the "from" address to the "to" address.
  */
-async function sendAllFunds(privateKey: string, from:string, to:string)
-{
+async function sendAllFunds(privateKey: string, from: string, to: string) {
   const web3 = RpcGateway.get();
   const minAccBalance = new BN(web3.utils.toWei("0.03", "ether"));
-  const eoaBalance = new BN(
-    await web3.eth.getBalance(from)
-  );
+  const eoaBalance = new BN(await web3.eth.getBalance(from));
   const gas = 41000;
   const gasPrice = new BN(await web3.eth.getGasPrice());
   const totalFee = gasPrice.mul(new BN(gas.toString()));
-  const nonce = await web3.eth.getTransactionCount(
-    from
-  );
+  const nonce = await web3.eth.getTransactionCount(from);
 
-  const availableForTransfer = eoaBalance
-    .sub(totalFee)
-    .sub(minAccBalance);
+  const availableForTransfer = eoaBalance.sub(totalFee).sub(minAccBalance);
 
   const account = web3.eth.accounts.privateKeyToAccount(privateKey);
   const signedTx = await account.signTransaction({
@@ -52,9 +45,7 @@ async function sendAllFunds(privateKey: string, from:string, to:string)
     throw new Error(`Couldn't send the invitation transaction`);
   }
 
-  const receipt = await web3.eth.sendSignedTransaction(
-    signedTx.rawTransaction
-  );
+  const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
   console.log(receipt);
 }
 
@@ -90,7 +81,11 @@ const processDefinition = (processId: string) =>
                 `The context's 'eoaAddress' or 'safeAddress' property is not set.`
               );
             }
-            await sendAllFunds(privateKey, context.data.eoaAddress, context.data.safeAddress);
+            await sendAllFunds(
+              privateKey,
+              context.data.eoaAddress,
+              context.data.safeAddress
+            );
           },
           onDone: "#waitForTransaction",
         },
@@ -100,12 +95,13 @@ const processDefinition = (processId: string) =>
         invoke: {
           src: async () => {
             await new Promise(async (resolve, reject) => {
-              const apiClient = await window.o.apiClient.client.subscribeToResult();
+              const apiClient =
+                await window.o.apiClient.client.subscribeToResult();
               const observable = apiClient.subscribe({
-                query: EventsDocument
+                query: EventsDocument,
               });
               let subscription: ZenObservable.Subscription;
-              const subscriptionHandler = next => {
+              const subscriptionHandler = (next) => {
                 if (next.data.events.type == "blockchain_event") {
                   if (subscription) {
                     subscription.unsubscribe();
@@ -117,8 +113,8 @@ const processDefinition = (processId: string) =>
               subscription = observable.subscribe(subscriptionHandler);
             });
           },
-          onDone: "#success"
-        }
+          onDone: "#success",
+        },
       },
       success: {
         type: "final",
