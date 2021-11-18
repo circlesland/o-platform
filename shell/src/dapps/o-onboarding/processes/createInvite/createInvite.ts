@@ -10,6 +10,8 @@ import {
 } from "../../../../shared/api/data/types";
 import TextEditor from "../../../../../../packages/o-editors/src/TextEditor.svelte";
 import {UpsertIdentityContext} from "../../../o-passport/processes/upsertIdentity";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {push} from "svelte-spa-router";
 
 export type PromptCreateInvitationContextData = {
   name: string;
@@ -33,10 +35,16 @@ const editorContent = {
     placeholder: "",
     submitButtonText: "",
   },
+  success: {
+    title: "You successfully created an invitation",
+    description: "",
+    placeholder: "",
+    submitButtonText: "Close",
+  },
 };
 const processDefinition = (processId: string) =>
   createMachine<PromptCreateInvitationContext, any>({
-    id: `${processId}:promptCreateInvitation`,
+    id: `${processId}:createInvite`,
     initial: "info",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
@@ -84,20 +92,33 @@ const processDefinition = (processId: string) =>
             throw new Error(`Couldn't create an invitation for the following reason: ${JSON.stringify(result.errors)}`);
           }
         },
-        always: "#success"
+        always: "#showSuccess"
       },
+      showSuccess: prompt({
+        id: "showSuccess",
+        field: "__",
+        component: HtmlViewer,
+        params: {
+          view: editorContent.success,
+          html: () => `<p>You successfully created an invitation</p>`,
+          submitButtonText: editorContent.success.submitButtonText,
+          hideNav: false,
+        },
+        navigation: {
+          next: "#success",
+        },
+      }),
       success: {
         type: "final",
         id: "success",
-        entry: (context) => {
-          if (context.data.successAction) {
-            context.data.successAction(context.data);
-          }
-        }}
+        data: (context, event: PlatformEvent) => {
+          return "yeah!";
+        }
+      }
     }
   });
 
 export const createInvite: ProcessDefinition<void, PromptCreateInvitationContext> = {
-  name: "promptCreateInvitation",
+  name: "createInvite",
   stateMachine: <any>processDefinition,
 };

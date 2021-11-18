@@ -13,7 +13,6 @@ const index: Page<any, DappState> = {
   type: "page",
 };
 const invites: Page<any, DappState> = {
-  isSystem: true,
   routeParts: ["=invites"],
   component: Invites,
   title: "Invites",
@@ -75,7 +74,7 @@ export const dashboard: DappManifest<DappState> = {
   icon: "dashboard",
   title: "Dashboard",
   routeParts: ["=dashboard"],
-  defaultRoute: ["dashboard"],
+  defaultRoute: [],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
