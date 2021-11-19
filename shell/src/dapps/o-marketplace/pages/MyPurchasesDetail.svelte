@@ -1,5 +1,4 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import {
   AggregatesDocument,
   AggregateType,
@@ -12,10 +11,10 @@ import { Subscription } from "rxjs";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-
+import dayjs from "dayjs";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
-
+import { displayableName } from "../../../shared/functions/stringHelper";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 export let id: string;
@@ -26,6 +25,7 @@ let sellerProfile: Profile;
 let purchase: Purchase;
 let shellEventSubscription: Subscription;
 let groupedItems;
+let invoiceData;
 
 async function load() {
   if (isLoading) return;
@@ -49,8 +49,7 @@ async function load() {
   if (purchaseResult.errors?.length > 0) {
     throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
   }
-  console.log("ID", id);
-  console.log("RESULT", purchaseResult);
+
   const o = purchaseResult.data.aggregates.find(
     (o) => o.type == AggregateType.Purchases
   );
@@ -75,12 +74,21 @@ function orderItems(items) {
   return Object.entries(orderedCart).map(([id, item]) => ({ id, item }));
 }
 
+function totalPrice(items) {
+  let pricePerUnit = 0;
+  if (items) {
+    items.forEach(
+      (e) => (pricePerUnit = pricePerUnit + parseFloat(e.pricePerUnit))
+    );
+  }
+  return pricePerUnit;
+}
+
 onMount(async () => {
   await load();
 
   groupedItems = purchase ? orderItems(purchase.lines) : {};
   sellerProfile = purchase?.lines[0].offer.createdByProfile;
-  console.log("PURCHASE: ", purchase);
 
   shellEventSubscription = window.o.events.subscribe(
     async (event: PlatformEvent) => {

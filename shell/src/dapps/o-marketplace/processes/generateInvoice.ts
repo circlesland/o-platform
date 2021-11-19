@@ -1,134 +1,48 @@
 import fs from "fs";
 import { PDFDocument } from "pdfkit";
 
-// const PDFDocument = require("pdfkit");
 const margin = 30;
 const marginx = 50;
 const lineMargin = 15;
 
 let top = margin;
+let path = ""; // PATH TO PDF FILE.
 
-const invoice = {
-  shipping: {
-    name: "Thorsten Rock",
-    address: "Ehrengutstrasse 9",
-    city: "München",
-    state: "",
-    country: "Deutschland",
-    postal_code: "80469",
-    safe_address: "0xC926abe1d76BfD071da28E8AA62D117cF9339B30",
-  },
-  seller: {
-    name: "Basic income Lab GmbH",
-    address: "Reifenstuehlstr. 9",
-    city: "München",
-    state: "",
-    country: "Deutschland",
-    postal_code: "80469",
-    safe_address: "0x009626dAdEd5E90aECee30AD3EBf2b3E510FE256",
-    phone: "089-38466851",
-    email: "lab@circles.name",
-  },
-  items: [
-    {
-      item: "Chuckalaka 2 (Flasche)",
+export let invoice;
 
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-    {
-      item: "Chuckalaka 2 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-
-    {
-      item: "Chuckalaka 2 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-    {
-      item: "Chuckalaka 2 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-    {
-      item: "Chuckalaka 2 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-    {
-      item: "Chuckalaka 2 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-    {
-      item: "Chuckalaka 2 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-    {
-      item: "Chuckalaka 2 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-    {
-      item: "Chuckalaka 2 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-    {
-      item: "Chuckalaka 2 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-
-    {
-      item: "Chuckalaka 2 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-    {
-      item: "Chuckalaka 3 (Flasche)",
-
-      quantity: 1,
-      salesTax: 19,
-      amount: 800,
-    },
-  ],
-  salesTax: [
-    { name: "7", value: "12" },
-    { name: "19", value: "23" },
-  ],
-  subtotal: 8000,
-  timeCirclesTotal: 13.22,
-  paid: 0,
-  invoice_nr: 1234,
-  invoice_date: "25.10.2021",
-  transferTime: "25.10.2021 15:35",
-  transactionHash: "0x2398ughewa8ofuhasd9fhdsapoigfhpsodfhjgposah389fguihaerag",
-};
+// invoiceData = {
+//   buyer: {
+//     name: displayableName(
+//       purchase.createdByProfile.firstName,
+//       purchase.createdByProfile.lastName
+//     ),
+//     address: "",
+//     city: "",
+//     state: "",
+//     country: "",
+//     postal_code: "",
+//     safe_address: purchase.createdByAddress,
+//   },
+//   seller: {
+//     name: displayableName(sellerProfile.firstName, sellerProfile.lastName),
+//     address: "Reifenstuehlstr. 9",
+//     city: "München",
+//     state: "",
+//     country: "Deutschland",
+//     postal_code: "80469",
+//     safe_address: sellerProfile.circlesAddress,
+//     phone: "089-38466851",
+//     email: "lab@circles.name",
+//   },
+//   items: purchase.lines,
+//   salesTax: [],
+//   subtotal: purchase.total,
+//   timeCirclesTotal: purchase.total,
+//   invoice_nr: purchase.id,
+//   invoice_date: dayjs(purchase.createdAt).format("DD.MM.YYYY"),
+//   transferTime: "TBD",
+//   transactionHash: "TBD",
+// };
 
 function createInvoice(invoice, path) {
   let doc = new PDFDocument({
@@ -158,7 +72,7 @@ function newPageCheck(doc, invoice, itemsHeader = false) {
         .fill("#F8F8FA")
         .font("Helvetica-Bold")
         .fillColor("#333333");
-      generateTableRow(doc, top + 10, "ITEM", "COST", "QTY", "PRICE");
+      generateTableRow(doc, top + 10, "ITEM", "QTY", "COST", "PRICE");
       top += 50;
     }
   }
@@ -202,14 +116,14 @@ function generateCustomerInformation(doc, invoice) {
     .text("Bill to:", 50, top)
     .font("Helvetica")
     .fillColor("#000000")
-    .text(invoice.shipping.name, marginx, (top += lineMargin))
-    .text(invoice.shipping.address, marginx, (top += lineMargin))
+    .text(invoice.buyer.name, marginx, (top += lineMargin))
+    .text(invoice.buyer.address, marginx, (top += lineMargin))
     .text(
-      `${invoice.shipping.postal_code} ${invoice.shipping.city}`,
+      `${invoice.buyer.postal_code} ${invoice.buyer.city}`,
       marginx,
       (top += lineMargin)
     )
-    .text(invoice.shipping.country, marginx, (top += lineMargin))
+    .text(invoice.buyer.country, marginx, (top += lineMargin))
 
     .font("Helvetica-Bold")
     .fillColor("#333333")
@@ -217,7 +131,7 @@ function generateCustomerInformation(doc, invoice) {
     .font("Helvetica")
     .fillColor("#000000")
     .fontSize(8)
-    .text(invoice.shipping.safe_address, marginx, (top += lineMargin))
+    .text(invoice.buyer.safe_address, marginx, (top += lineMargin))
 
     // Seller
     .fontSize(10)
@@ -229,7 +143,7 @@ function generateCustomerInformation(doc, invoice) {
     .text(invoice.seller.name, 300, (sectionTop += lineMargin))
     .text(invoice.seller.address, 300, (sectionTop += lineMargin))
     .text(
-      `${invoice.seller.postal_code} ${invoice.shipping.city}`,
+      `${invoice.seller.postal_code} ${invoice.buyer.city}`,
       300,
       (sectionTop += lineMargin)
     )
@@ -261,25 +175,30 @@ function generateSubtotalTable(doc, invoice) {
 
   newPageCheck(doc, invoice);
 
-  invoice.salesTax.forEach((taxRow, index) => {
-    doc
-      .fontSize(10)
-      .font("Helvetica")
-      .fillColor("#333333")
+  top += 10;
 
-      .text(
-        `VAT ${taxRow.name}% (included)`,
-        300,
-        index == 0 ? (top += 10) : (top += 20),
-        {
-          width: 100,
-          align: "left",
-        }
-      )
-      .text(formatCurrency(taxRow.value), 0, top, {
-        align: "right",
-      });
-  });
+  if (invoice.salesTax && invoice.salesTax.length) {
+    invoice.salesTax.forEach((taxRow, index) => {
+      doc
+        .fontSize(10)
+        .font("Helvetica")
+        .fillColor("#333333")
+
+        .text(
+          `VAT ${taxRow.name}% (included)`,
+          300,
+          index == 0 ? top : (top += 20),
+          {
+            width: 100,
+            align: "left",
+          }
+        )
+        .text(formatCurrency(taxRow.value), 0, top, {
+          align: "right",
+        });
+    });
+    top += 20;
+  }
 
   newPageCheck(doc, invoice);
 
@@ -288,7 +207,7 @@ function generateSubtotalTable(doc, invoice) {
     .font("Helvetica-Bold")
     .fillColor("#333333")
 
-    .text("Invoice Total", 300, (top += 20), { width: 70, align: "left" })
+    .text("Invoice Total", 300, top, { width: 70, align: "left" })
     .text(formatCurrency(invoice.subtotal), 0, top, { align: "right" });
 
   newPageCheck(doc, invoice);
@@ -363,7 +282,6 @@ function generateTransactionMetaData(doc, invoice) {
     .text("Transaction Hash", marginx, (top += 20))
     .font("Helvetica")
     .fillColor("#000000")
-    .fontSize(8)
     .text(invoice.transactionHash, marginx, (top += lineMargin));
 }
 
@@ -375,7 +293,7 @@ function generateInvoiceTable(doc, invoice) {
     .fill("#F8F8FA")
     .font("Helvetica-Bold")
     .fillColor("#333333");
-  generateTableRow(doc, top, "ITEM", "COST", "PRICE", "QTY");
+  generateTableRow(doc, top, "ITEM", "QTY", "COST", "PRICE");
 
   top += 5;
   newPageCheck(doc, invoice);
@@ -392,12 +310,11 @@ function generateInvoiceTable(doc, invoice) {
     generateTableRow(
       doc,
       top,
-      item.item,
-
-      item.quantity,
-      formatCurrency(item.amount / item.quantity),
-
-      formatCurrency(item.amount)
+      item.offer.title,
+      item.amount,
+      item.offer.pricePerUnit,
+      // formatCurrency(item.amount * item.offer.pricePerUnit)
+      item.amount * item.offer.pricePerUnit
     );
     if (top > 680) {
       generateFooter(doc, invoice);
@@ -460,8 +377,8 @@ function generateHr(doc, y) {
   doc.strokeColor("#aaaaaa").lineWidth(1).moveTo(50, y).lineTo(550, y).stroke();
 }
 
-function formatCurrency(cents) {
-  return (cents / 100).toFixed(2) + " €";
+function formatCurrency(amount) {
+  return amount + " €";
 }
 
 function formatDate(date) {
