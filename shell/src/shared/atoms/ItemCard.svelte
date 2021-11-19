@@ -83,7 +83,7 @@ function cardAction() {
             </h2>
           </div>
           <div
-            class="self-end text-right pl-2 {params.endTextBigClass}"
+            class="self-end text-right pl-2 {params.endTextBigClass} whitespace-nowrap"
             class:text-success="{!params.endTextBigClass}">
             <span>{params.endTextBig ? params.endTextBig : ""}</span>
           </div>

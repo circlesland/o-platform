@@ -35,7 +35,7 @@ export let params = {
   <ItemCard params="{params}">
     <div slot="itemCardStart">
       <div
-        class="relative w-24 h-24 overflow-hidden rounded-l-lg image-wrapper">
+        class="relative w-10 h-24 overflow-hidden rounded-l-lg sm:w-24 image-wrapper">
         <img
           src="{params.imageUrl
             ? params.imageUrl
