@@ -13,8 +13,6 @@ let profile: Profile | Organisation;
 $: {
   context = context;
   profile = context.data.sellerProfile;
-  console.log("CONTEXT BABY ", context);
-  console.log("PROFILE BABY ", profile);
 }
 
 let classes: string;
@@ -73,7 +71,9 @@ function onkeydown(e: KeyboardEvent) {
 
     <div>
       <span class="mt-4 text-xl">
-        to {profile.firstName + " " + profile.lastName}
+        to {profile.firstName +
+          " " +
+          (profile.lastName ? profile.lastName : "")}
       </span>
       <div class="mt-2 text-dark-lightest">
         Reifenstühlstr. 6, 80469 München
