@@ -6,6 +6,7 @@ import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGrap
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";
+import { displayableName } from "../../../shared/functions/stringHelper";
 
 export let context: any;
 let profile: Profile | Organisation;
@@ -71,9 +72,7 @@ function onkeydown(e: KeyboardEvent) {
 
     <div>
       <span class="mt-4 text-xl">
-        to {profile.firstName +
-          " " +
-          (profile.lastName ? profile.lastName : "")}
+        to {displayableName(profile.firstName, profile.lastName)}
       </span>
       <div class="mt-2 text-dark-lightest">
         Reifenstühlstr. 6, 80469 München
