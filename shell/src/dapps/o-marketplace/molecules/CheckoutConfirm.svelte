@@ -63,6 +63,11 @@ function orderItems(items) {
 
         <div>
           {context.data.sellerProfile.firstName}
+          {context.data.sellerProfile.firstName +
+            " " +
+            (context.data.sellerProfile.lastName
+              ? context.data.sellerProfile.lastName
+              : "")}
         </div>
       </div>
     </div>
