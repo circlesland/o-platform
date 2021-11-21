@@ -65,9 +65,15 @@
       throw new Error(`Couldn't find the CrcBalances in the query result.`)
     }
 
-    const erc20Balances: ProfileAggregate = balancesResult.data.aggregates.find(o => o.type == "Erc20Balances");
+    let erc20Balances: ProfileAggregate = balancesResult.data.aggregates.find(o => o.type == "Erc20Balances");
     if (!erc20Balances) {
-      throw new Error(`Couldn't find the Erc20Balances in the query result.`)
+      erc20Balances = {
+        safe_address: safeAddress,
+        type: "Erc20Balances",
+        payload: <any>{
+          balances: []
+        }
+      };
     }
 
     return {
