@@ -78,7 +78,7 @@ const initBar = (bar) => {
     {#if views[event.type]}
       <svelte:component this="{views[event.type]}" event="{event}" />
     {:else}
-      <GenericEventCard eventData="{event}" />
+      <GenericEventCard event={event} />
     {/if}
   {/each}
 {:else}

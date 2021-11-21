@@ -8,10 +8,11 @@ import { onMount } from "svelte";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import {
   CrcHubTransfer,
-  CrcMinting,
+  CrcMinting, Erc20Transfer,
   Profile,
   ProfileEvent,
 } from "../../../shared/api/data/types";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
 export let event: ProfileEvent;
 
@@ -46,6 +47,26 @@ if (event && event.payload?.__typename == "CrcMinting") {
     $me.displayTimeCircles || $me.displayTimeCircles === undefined
   );
   message = "Universal basic income";
+}
+
+if (event && event.payload?.__typename == "Erc20Transfer") {
+  const ercTransfer = event.payload as Erc20Transfer;
+  fromProfile = ercTransfer.from_profile ?? {
+    id: 0,
+    firstName: "Circles Land",
+    lastName: "",
+    avatarUrl: "/logos/erc20.png",
+    circlesAddress: ercTransfer.from,
+  };
+
+  toProfile = ercTransfer.to_profile ?? {
+    id: 0,
+    firstName: ercTransfer.to.substr(0, 24) + "...",
+    lastName: "",
+    circlesAddress: ercTransfer.to,
+  };
+  amount = parseFloat(RpcGateway.get().utils.fromWei(ercTransfer.value, "ether")).toFixed(2);
+  message = "ERC-20 Transfer";
 }
 
 if (event && event.payload?.__typename == "CrcHubTransfer") {

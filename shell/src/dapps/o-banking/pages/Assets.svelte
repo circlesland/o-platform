@@ -11,7 +11,7 @@
   import { KeyManager } from "../../o-passport/data/keyManager";
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
   import Web3 from "web3";
-  import {AggregatesDocument, BalancesByAssetDocument, CrcBalances} from "../../../shared/api/data/types";
+  import {AggregatesDocument, AggregateType, CrcBalances, ProfileAggregate} from "../../../shared/api/data/types";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -36,14 +36,22 @@
     details: [],
   };
 
-  onMount(async () => {
-    const safeAddress = $me.circlesAddress;
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
+  let erc20 = {
+    symbol: "erc20",
+    icon: "",
+    balance: "ß",
+    variety: 0,
+    title: "ERC-20",
+    description: "",
+    details: [],
+  };
 
+  async function getBalances(safeAddress: string) {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
     const balancesResult = await apiClient.query({
       query: AggregatesDocument,
       variables: {
-        types: ["CrcBalances"],
+        types: [AggregateType.CrcBalances, AggregateType.Erc20Balances],
         safeAddress: safeAddress
       },
     });
@@ -52,23 +60,42 @@
       throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
     }
 
-    const crcBalances:CrcBalances = balancesResult.data.aggregates.find(o => o.type == "CrcBalances");
+    const crcBalances: ProfileAggregate = balancesResult.data.aggregates.find(o => o.type == "CrcBalances");
     if (!crcBalances) {
       throw new Error(`Couldn't find the CrcBalances in the query result.`)
     }
 
-    circles.details = crcBalances.payload.balances;
+    const erc20Balances: ProfileAggregate = balancesResult.data.aggregates.find(o => o.type == "Erc20Balances");
+    if (!erc20Balances) {
+      throw new Error(`Couldn't find the Erc20Balances in the query result.`)
+    }
+
+    return {
+      crcBalances,
+      erc20Balances
+    };
+  }
+
+  onMount(async () => {
+    const balances = await getBalances($me.circlesAddress);
+
+    circles.details = balances.crcBalances.payload.balances;
     circles.balance = displayCirclesAmount(
-      circles.details
-        .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
-        .toString(),
-      null,
-      $me.displayTimeCircles || $me.displayTimeCircles === undefined
+            circles.details
+                    .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
+                    .toString(),
+            null,
+            $me.displayTimeCircles || $me.displayTimeCircles === undefined
     );
     circles.variety = circles.details.length;
 
-    const safeBalance = await RpcGateway.get().eth.getBalance(safeAddress);
-    const km = new KeyManager(safeAddress);
+    erc20.details = balances.erc20Balances.payload.balances;
+    erc20.symbol = "erc20";
+    erc20.balance = "0";
+    erc20.variety = erc20.details.length;
+
+    const safeBalance = await RpcGateway.get().eth.getBalance($me.circlesAddress);
+    const km = new KeyManager($me.circlesAddress);
     await km.load();
     const eoaBalance = await RpcGateway.get().eth.getBalance(
       km.torusKeyAddress
@@ -98,7 +125,7 @@
       </Card>
     </section>
   {:else}
-    {#each [circles, xdai] as token}
+    {#each [circles, xdai, erc20] as token}
       <AssetCard
         symbol="{token.symbol}"
         title="{token.title}"

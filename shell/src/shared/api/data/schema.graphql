@@ -24,9 +24,9 @@ interface IEventPayload {
     transaction_hash: String
 }
 
-union AggregatePayload = Contacts | CrcBalances | Members | Memberships | Offers | Purchases
+union AggregatePayload = Contacts | CrcBalances | Erc20Balances | Members | Memberships | Offers | Purchases
 
-union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | Purchased | WelcomeMessage
+union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | Purchased | WelcomeMessage
 
 union ProfileOrOrganisation = Organisation | Profile
 
@@ -45,6 +45,7 @@ type AssetBalance {
     token_balance: String!
     token_owner_address: String!
     token_owner_profile: Profile
+    token_symbol: String
 }
 
 type ChatMessage implements IEventPayload {
@@ -206,6 +207,21 @@ type DelegateAuthInit {
 type DepositChallengeResponse {
     errorMessage: String
     success: Boolean!
+}
+
+type Erc20Balances implements IAggregatePayload {
+    balances: [AssetBalance!]!
+    lastUpdatedAt: String!
+}
+
+type Erc20Transfer implements IEventPayload {
+    from: String!
+    from_profile: Profile
+    to: String!
+    to_profile: Profile
+    token: String!
+    transaction_hash: String!
+    value: String!
 }
 
 type EthTransfer implements IEventPayload {
@@ -504,6 +520,7 @@ type Query {
     initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
     lastUBITransaction: String
+    mostRecentUbiSafeOfAccount(account: String!): String
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
     organisations(pagination: PaginationArgs): [Organisation!]!
@@ -620,6 +637,7 @@ type WelcomeMessage implements IEventPayload {
 enum AggregateType {
     Contacts
     CrcBalances
+    Erc20Balances
     Members
     Memberships
     Offers
@@ -643,9 +661,9 @@ enum EventType {
     CrcSignup
     CrcTokenTransfer
     CrcTrust
+    Erc20Transfer
     EthTransfer
     GnosisSafeEthTransfer
-    HmnTransfer
     InvitationCreated
     InvitationRedeemed
     MemberAdded

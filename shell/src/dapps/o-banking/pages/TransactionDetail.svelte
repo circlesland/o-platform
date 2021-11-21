@@ -8,7 +8,7 @@ import { me } from "../../../shared/stores/me";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import {
   CrcHubTransfer,
-  CrcMinting,
+  CrcMinting, Erc20Transfer,
   EventType,
   Profile,
   ProfileEvent,
@@ -40,7 +40,7 @@ onMount(async () => {
       filter: {
         transactionHash: transactionHash,
       },
-      types: [EventType.CrcHubTransfer, EventType.CrcMinting],
+      types: [EventType.CrcHubTransfer, EventType.CrcMinting, EventType.Erc20Transfer],
     },
   });
 
@@ -67,6 +67,21 @@ onMount(async () => {
       firstName: minting.to,
       lastName: "",
       circlesAddress: minting.to,
+    };
+  }
+  if (transfer && transfer.payload?.__typename == "Erc20Transfer") {
+    const erc20Transfer = transfer.payload as Erc20Transfer;
+    fromProfile = erc20Transfer.from_profile ?? {
+      id: 0,
+      firstName: erc20Transfer.from,
+      lastName: "",
+      circlesAddress: erc20Transfer.from,
+    };
+    toProfile = erc20Transfer.to_profile ?? {
+      id: 0,
+      firstName: erc20Transfer.to,
+      lastName: "",
+      circlesAddress: erc20Transfer.to,
     };
   }
   if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
@@ -144,7 +159,7 @@ function openDetail(transfer: ProfileEvent) {
                 : "0",
               transfer.timestamp,
               true,
-              $me.displayTimeCircles || $me.displayTimeCircles === undefined
+              transfer.payload.__typename != "Erc20Transfer" && $me.displayTimeCircles || $me.displayTimeCircles === undefined
             )}
           {:else}
             -{displayCirclesAmount(
@@ -156,7 +171,7 @@ function openDetail(transfer: ProfileEvent) {
                 : "0",
               transfer.timestamp,
               true,
-              $me.displayTimeCircles || $me.displayTimeCircles === undefined
+              transfer.payload.__typename != "Erc20Transfer" && $me.displayTimeCircles || $me.displayTimeCircles === undefined
             )}
           {/if}
           <svg

@@ -120,6 +120,7 @@ const processDefinition = (processId: string) =>
         navigation: {
           next: "#dream",
           previous: "#lastName",
+          canSkip: () => true,
         },
       }),
       dream: prompt<UpsertIdentityContext, any>({

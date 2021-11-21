@@ -26,11 +26,12 @@ export type AddMemberResult = {
   success: Scalars['Boolean'];
 };
 
-export type AggregatePayload = Contacts | CrcBalances | Members | Memberships | Offers | Purchases;
+export type AggregatePayload = Contacts | CrcBalances | Erc20Balances | Members | Memberships | Offers | Purchases;
 
 export enum AggregateType {
   Contacts = 'Contacts',
   CrcBalances = 'CrcBalances',
+  Erc20Balances = 'Erc20Balances',
   Members = 'Members',
   Memberships = 'Memberships',
   Offers = 'Offers',
@@ -43,6 +44,7 @@ export type AssetBalance = {
   token_balance: Scalars['String'];
   token_owner_address: Scalars['String'];
   token_owner_profile?: Maybe<Profile>;
+  token_symbol?: Maybe<Scalars['String']>;
 };
 
 export type ChatMessage = IEventPayload & {
@@ -254,6 +256,23 @@ export enum Direction {
   Out = 'out'
 }
 
+export type Erc20Balances = IAggregatePayload & {
+  __typename?: 'Erc20Balances';
+  balances: Array<AssetBalance>;
+  lastUpdatedAt: Scalars['String'];
+};
+
+export type Erc20Transfer = IEventPayload & {
+  __typename?: 'Erc20Transfer';
+  from: Scalars['String'];
+  from_profile?: Maybe<Profile>;
+  to: Scalars['String'];
+  to_profile?: Maybe<Profile>;
+  token: Scalars['String'];
+  transaction_hash: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type EthTransfer = IEventPayload & {
   __typename?: 'EthTransfer';
   from: Scalars['String'];
@@ -265,7 +284,7 @@ export type EthTransfer = IEventPayload & {
   value: Scalars['String'];
 };
 
-export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | Purchased | WelcomeMessage;
+export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | Purchased | WelcomeMessage;
 
 export enum EventType {
   ChatMessage = 'ChatMessage',
@@ -274,9 +293,9 @@ export enum EventType {
   CrcSignup = 'CrcSignup',
   CrcTokenTransfer = 'CrcTokenTransfer',
   CrcTrust = 'CrcTrust',
+  Erc20Transfer = 'Erc20Transfer',
   EthTransfer = 'EthTransfer',
   GnosisSafeEthTransfer = 'GnosisSafeEthTransfer',
-  HmnTransfer = 'HmnTransfer',
   InvitationCreated = 'InvitationCreated',
   InvitationRedeemed = 'InvitationRedeemed',
   MemberAdded = 'MemberAdded',
@@ -783,6 +802,7 @@ export type Query = {
   initAggregateState?: Maybe<InitAggregateState>;
   invitationTransaction?: Maybe<ProfileEvent>;
   lastUBITransaction?: Maybe<Scalars['String']>;
+  mostRecentUbiSafeOfAccount?: Maybe<Scalars['String']>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
   organisations: Array<Organisation>;
@@ -836,6 +856,11 @@ export type QueryEventsArgs = {
 
 export type QueryFindSafeAddressByOwnerArgs = {
   owner: Scalars['String'];
+};
+
+
+export type QueryMostRecentUbiSafeOfAccountArgs = {
+  account: Scalars['String'];
 };
 
 
@@ -1256,7 +1281,7 @@ export type SendMessageMutation = (
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
-      ) | (
+      ) | { __typename?: 'Erc20Transfer' } | (
         { __typename?: 'EthTransfer' }
         & Pick<EthTransfer, 'from' | 'to' | 'value'>
         & { from_profile?: Maybe<(
@@ -1546,7 +1571,7 @@ export type HubSignupTransactionQuery = (
     & { payload?: Maybe<{ __typename?: 'ChatMessage' } | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | (
       { __typename?: 'CrcSignup' }
       & Pick<CrcSignup, 'token'>
-    ) | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'WelcomeMessage' }> }
+    ) | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'WelcomeMessage' }> }
   )> }
 );
 
@@ -1775,7 +1800,7 @@ export type ProfileBySafeAddressQuery = (
       ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
         { __typename?: 'CrcTrust' }
         & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
-      ) | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'WelcomeMessage' }> }
+      ) | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'WelcomeMessage' }> }
     )>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
@@ -1965,6 +1990,16 @@ export type StreamQuery = (
       { __typename?: 'CrcTrust' }
       & Pick<CrcTrust, 'transaction_hash' | 'address' | 'can_send_to' | 'limit'>
     ) | (
+      { __typename?: 'Erc20Transfer' }
+      & Pick<Erc20Transfer, 'transaction_hash' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )> }
+    ) | (
       { __typename?: 'EthTransfer' }
       & Pick<EthTransfer, 'transaction_hash' | 'from' | 'to' | 'value'>
     ) | (
@@ -2098,6 +2133,17 @@ export type AggregatesQuery = (
     ) | (
       { __typename?: 'CrcBalances' }
       & Pick<CrcBalances, 'lastUpdatedAt'>
+      & { balances: Array<(
+        { __typename?: 'AssetBalance' }
+        & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
+        & { token_owner_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'Erc20Balances' }
+      & Pick<Erc20Balances, 'lastUpdatedAt'>
       & { balances: Array<(
         { __typename?: 'AssetBalance' }
         & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
@@ -3239,6 +3285,26 @@ export const StreamDocument = gql`
         to
         value
       }
+      ... on Erc20Transfer {
+        transaction_hash
+        from
+        from_profile {
+          type
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          type
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
       ... on GnosisSafeEthTransfer {
         transaction_hash
         initiator
@@ -3411,6 +3477,21 @@ export const AggregatesDocument = gql`
         }
       }
       ... on CrcBalances {
+        lastUpdatedAt
+        balances {
+          token_address
+          token_owner_address
+          token_owner_profile {
+            type
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          token_balance
+        }
+      }
+      ... on Erc20Balances {
         lastUpdatedAt
         balances {
           token_address

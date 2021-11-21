@@ -684,6 +684,26 @@ query stream(
         to
         value
       }
+      ... on Erc20Transfer {
+        transaction_hash
+        from
+        from_profile {
+          type
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        to
+        to_profile {
+          type
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        value
+      }
       ... on GnosisSafeEthTransfer {
         transaction_hash
         initiator
@@ -859,6 +879,21 @@ query aggregates(
         }
       }
       ... on CrcBalances {
+        lastUpdatedAt
+        balances {
+          token_address
+          token_owner_address
+          token_owner_profile {
+            type
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          token_balance
+        }
+      }
+      ... on Erc20Balances {
         lastUpdatedAt
         balances {
           token_address

@@ -22,11 +22,11 @@ $: me;
     limit="{25}"
     queryArguments="{{
       safeAddress: $me.circlesAddress,
-      types: [EventType.CrcHubTransfer, EventType.CrcMinting/*, EventType.HmnTransfer*/],
+      types: [EventType.CrcHubTransfer, EventType.CrcMinting, EventType.Erc20Transfer],
     }}"
     views="{{
       [EventType.CrcHubTransfer]: TransactionCard,
       [EventType.CrcMinting]: TransactionCard,
-      //[EventType.HmnTransfer]: TransactionCard,
+      [EventType.Erc20Transfer]: TransactionCard
     }}" />
 </div>
