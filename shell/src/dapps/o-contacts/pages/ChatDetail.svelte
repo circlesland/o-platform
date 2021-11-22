@@ -87,7 +87,7 @@ async function reload() {
         //EventType.EthTransfer,
         //EventType.GnosisSafeEthTransfer,
         //EventType.InvitationCreated,
-        //EventType.InvitationRedeemed,
+        EventType.InvitationRedeemed,
         //EventType.MembershipOffer,
         //EventType.MembershipAccepted,
         //EventType.MembershipRejected
