@@ -264,8 +264,11 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
   }
 }
 
-query lastUBITransaction {
-  lastUBITransaction
+query ubiInfo {
+  ubiInfo {
+    lastTransactionAt
+    tokenAddress
+  }
 }
 
 query profilesByIds($id: [Int!]!) {

@@ -519,7 +519,6 @@ type Query {
     hubSignupTransaction: ProfileEvent
     initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
-    lastUBITransaction: String
     mostRecentUbiSafeOfAccount(account: String!): String
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
@@ -534,6 +533,7 @@ type Query {
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!
     trustRelations(safeAddress: String!): [TrustRelation!]!
+    ubiInfo: UbiInfo!
     version: Version!
     whoami: String
 }
@@ -638,6 +638,11 @@ type TrustRelation {
     otherSafeAddressProfile: Profile
     safeAddress: String!
     safeAddressProfile: Profile
+}
+
+type UbiInfo {
+    lastTransactionAt: String
+    tokenAddress: String
 }
 
 type UpdateSafeResponse {

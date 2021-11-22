@@ -2,14 +2,11 @@
   import DetailActionBar from "../../../../shared/molecules/DetailActionBar.svelte";
   import Icons from "../../../../shared/molecules/Icons.svelte";
   import {
-    CrcHubTransfer, InvitationRedeemed,
+    InvitationRedeemed,
     ProfileEvent,
   } from "../../../../shared/api/data/types";
-  import { displayCirclesAmount } from "../../../../shared/functions/displayCirclesAmount";
-  import { me } from "../../../../shared/stores/me";
   import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
   import { onMount } from "svelte";
-  import { banking } from "../../../o-banking.manifest";
 
   export let event: ProfileEvent;
 
@@ -53,8 +50,7 @@
   }
 </script>
 
-<div
-        class="flex flex-row items-center content-center space-x-3 {values.titleClass}">
+<div class="flex flex-row items-center content-center space-x-3 {values.titleClass}">
     <Icons icon="{values.icon}" />
     <h1 class="uppercase font-heading">{values.title}</h1>
 </div>

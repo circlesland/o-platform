@@ -28,21 +28,15 @@ export class CirclesAccount implements CirclesAccountModel
     this.hub = new CirclesHub(this.web3, HUB_ADDRESS);
   }
 
-  async getUBI(privateKey: string, safe: GnosisSafeProxy) : Promise<TransactionReceipt>
+  async getUBI(privateKey: string, safe: GnosisSafeProxy, tokenAddress:string) : Promise<TransactionReceipt>
   {
-    const ownToken = await this.tryGetMyToken();
-    if (!ownToken)
-    {
-      throw new Error(`Couldn't find a personal circles token for the safe '${safe.address}'.`);
-    }
-
-    const erc20Contract = new Erc20Token(this.web3, ownToken.tokenAddress);
+    const erc20Contract = new Erc20Token(this.web3, tokenAddress);
     const txData = erc20Contract.contract.methods.update().encodeABI();
 
     return await safe.execTransaction(
       privateKey,
       {
-        to: ownToken.tokenAddress,
+        to: tokenAddress,
         data: txData,
         value: new BN("0"),
         refundReceiver: ZERO_ADDRESS,

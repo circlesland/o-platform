@@ -802,7 +802,6 @@ export type Query = {
   hubSignupTransaction?: Maybe<ProfileEvent>;
   initAggregateState?: Maybe<InitAggregateState>;
   invitationTransaction?: Maybe<ProfileEvent>;
-  lastUBITransaction?: Maybe<Scalars['String']>;
   mostRecentUbiSafeOfAccount?: Maybe<Scalars['String']>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
@@ -817,6 +816,7 @@ export type Query = {
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
   trustRelations: Array<TrustRelation>;
+  ubiInfo: UbiInfo;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
 };
@@ -1080,6 +1080,12 @@ export type TrustRelation = {
   otherSafeAddressProfile?: Maybe<Profile>;
   safeAddress: Scalars['String'];
   safeAddressProfile?: Maybe<Profile>;
+};
+
+export type UbiInfo = {
+  __typename?: 'UbiInfo';
+  lastTransactionAt?: Maybe<Scalars['String']>;
+  tokenAddress?: Maybe<Scalars['String']>;
 };
 
 export type UpdateSafeInput = {
@@ -1744,12 +1750,15 @@ export type ProfilesByCirclesAddressQuery = (
   )> }
 );
 
-export type LastUbiTransactionQueryVariables = Exact<{ [key: string]: never; }>;
+export type UbiInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LastUbiTransactionQuery = (
+export type UbiInfoQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'lastUBITransaction'>
+  & { ubiInfo: (
+    { __typename?: 'UbiInfo' }
+    & Pick<UbiInfo, 'lastTransactionAt' | 'tokenAddress'>
+  ) }
 );
 
 export type ProfilesByIdsQueryVariables = Exact<{
@@ -2982,9 +2991,12 @@ export const ProfilesByCirclesAddressDocument = gql`
   }
 }
     `;
-export const LastUbiTransactionDocument = gql`
-    query lastUBITransaction {
-  lastUBITransaction
+export const UbiInfoDocument = gql`
+    query ubiInfo {
+  ubiInfo {
+    lastTransactionAt
+    tokenAddress
+  }
 }
     `;
 export const ProfilesByIdsDocument = gql`
@@ -3864,8 +3876,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
       return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));
     },
-    lastUBITransaction(variables?: LastUbiTransactionQueryVariables): Promise<LastUbiTransactionQuery> {
-      return withWrapper(() => client.request<LastUbiTransactionQuery>(print(LastUbiTransactionDocument), variables));
+    ubiInfo(variables?: UbiInfoQueryVariables): Promise<UbiInfoQuery> {
+      return withWrapper(() => client.request<UbiInfoQuery>(print(UbiInfoDocument), variables));
     },
     profilesByIds(variables: ProfilesByIdsQueryVariables): Promise<ProfilesByIdsQuery> {
       return withWrapper(() => client.request<ProfilesByIdsQuery>(print(ProfilesByIdsDocument), variables));
