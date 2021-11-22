@@ -1,28 +1,23 @@
 <script lang="ts">
-  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import {me} from "../../../shared/stores/me";
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
   import {onDestroy, onMount} from "svelte";
   import {
     AggregatesDocument,
-    AggregateType,
-    Contact, ContactPoint,
-    ContactsDocument,
-    EventType
+    AggregateType, Contact
   } from "../../../shared/api/data/types";
-  import ChatListCard from "../atoms/ChatListCard.svelte";
   import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
   import {Subscription} from "rxjs";
-  import List from "../../../shared/molecules/Lists/EventList.svelte";
   import {ZERO_ADDRESS} from "@o-platform/o-circles/dist/consts";
-
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+  import ChatListCard from "../atoms/ChatListCard.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
   let error: string | undefined = undefined;
-  let contacts: ContactPoint[] = [];
+  let contacts: Contact[] = [];
   let shellEventSubscription: Subscription;
 
   async function reload() {
@@ -44,7 +39,7 @@
       return;
     }
 
-    const contactsList:ContactPoint[] = c.data.aggregates[0].payload.contacts.filter((o:ContactPoint) => {
+    const contactsList:Contact[] = c.data.aggregates[0].payload.contacts.filter((o:Contact) => {
       return o.contactAddress !== ZERO_ADDRESS && o.contactAddress != safeAddress;
     });
     contacts = contactsList.sort((a,b) => a.lastContactAt > b.lastContactAt ? -1 :a.lastContactAt < b.lastContactAt ? 1 :0);

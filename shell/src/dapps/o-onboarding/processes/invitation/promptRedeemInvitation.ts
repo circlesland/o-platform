@@ -109,6 +109,7 @@ const processDefinition = (processId: string) =>
               mutation: InvitationTransactionDocument,
               variables: {},
             });
+
             if (
               claimResult.errors?.length ||
               !claimResult.data.invitationTransaction?.transaction_hash

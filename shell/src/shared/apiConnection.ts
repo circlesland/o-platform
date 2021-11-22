@@ -13,15 +13,15 @@ export class ApiConnection
     private readonly _credentialsPolicy: string|undefined;
     private _client:ApolloClient<NormalizedCacheObject>|undefined;
 
+    reset() {
+        this._client.stop();
+        this._client = null;
+    }
+
     readonly client = new AsyncBroadcast<void, ApolloClient<NormalizedCacheObject>>(async () =>
     {
         if (!this._client)
         {
-            if (this._client)
-            {
-                this._client.stop();
-            }
-
             this._client = await this.connect();
         }
 

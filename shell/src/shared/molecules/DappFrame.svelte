@@ -87,42 +87,43 @@ function setNav(navArgs: GenerateNavManifestArgs) {
 async function init() {
   const session = await getSessionInfo();
 
-  window.o.apiClient.client.subscribeToResult().then((apiClient) => {
-    apiClient
-      .subscribe({
-        query: EventsDocument,
-      })
-      .subscribe((next) => {
-        if (next.data.events.type == "new_message") {
-          window.o.publishEvent(<any>{
-            type: "shell.refresh",
-            dapp: "friends:1",
-            data: null,
-          });
-          window.o.publishEvent(<any>{
-            type: "new_message",
-          });
-          var audio = new Audio("blblblbl.mp3");
-          audio.play();
-        } else {
-          window.o.publishEvent(<any>{
-            type: "blockchain_event",
-          });
-          window.o.publishEvent(<any>{
-            type: "shell.refresh",
-            dapp: "friends:1",
-            data: null,
-          });
-          window.o.publishEvent(<any>{
-            type: "shell.refresh",
-            dapp: "banking:1",
-            data: null,
-          });
-        }
-        inbox.reload();
-      });
-  });
-
+  if (session.isLoggedOn && session.hasProfile) {
+    window.o.apiClient.client.subscribeToResult().then((apiClient) => {
+      apiClient
+        .subscribe({
+          query: EventsDocument,
+        })
+        .subscribe((next) => {
+          if (next.data.events.type == "new_message") {
+            window.o.publishEvent(<any>{
+              type: "shell.refresh",
+              dapp: "friends:1",
+              data: null,
+            });
+            window.o.publishEvent(<any>{
+              type: "new_message",
+            });
+            var audio = new Audio("blblblbl.mp3");
+            audio.play();
+          } else {
+            window.o.publishEvent(<any>{
+              type: "blockchain_event",
+            });
+            window.o.publishEvent(<any>{
+              type: "shell.refresh",
+              dapp: "friends:1",
+              data: null,
+            });
+            window.o.publishEvent(<any>{
+              type: "shell.refresh",
+              dapp: "banking:1",
+              data: null,
+            });
+          }
+          inbox.reload();
+        });
+    });
+  }
   if (!$me || !session.isLoggedOn) {
     await push("/");
     return;

@@ -14,7 +14,7 @@ export let props;
       class:bg-white="{props && props.left}"
       on:click="{props && props.left ? props.left.props.action : null}">
       {#if props && props.left}
-        {#if $inbox.length && props.center.props.icon !== "close"}
+        {#if $inbox.length && $inbox.length && props.center.props.icon !== "close"}
           <div class="relative self-center text-secondary">
             <Icons icon="notificationbubble" />
             <div
