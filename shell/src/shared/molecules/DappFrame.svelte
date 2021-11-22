@@ -5,7 +5,6 @@ import { Generate } from "@o-platform/o-utils/dist/generate";
 import { shellProcess } from "../processes/shellProcess";
 import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-import { identify } from "../../dapps/o-passport/processes/identify/identify2";
 import Layout from "../../shared/layouts/Layout.svelte";
 import ProcessContainer from "../../shared/molecules/ProcessContainer.svelte";
 import { RuntimeLayout } from "../layouts/layout";

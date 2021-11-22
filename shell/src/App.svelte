@@ -135,7 +135,12 @@ const shell: IShell = {
     },
   },
   events: shellEvents.observable,
-  publishEvent: (event) => shellEvents.publish(event),
+  publishEvent: (event) => {
+    if (event.type == "shell.authenticated") {
+      console.log("authenticated:", new Error().stack);
+    }
+    return shellEvents.publish(event);
+  },
   requestEvent: <TResult extends PlatformEvent>(requestEvent) => {
     const timeoutPeriod = 100;
     return new Promise<TResult>((resolve, reject) => {

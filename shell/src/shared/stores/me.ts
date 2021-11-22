@@ -31,8 +31,15 @@ export const me = readable<Profile|null>(null, function start(set) {
       localStorage.removeItem("safe");
     }
 
+    let $me:Profile;
+    const unsub = me.subscribe(me => {
+      $me = me;
+    });
+    unsub();
+
     window.o.publishEvent(runShellProcess(identify, <IdentifyContextData>{
       redirectTo: window.document.location.href,
+      profile: $me
     }));
   }
 

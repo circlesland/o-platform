@@ -33,10 +33,7 @@ onMount(async () => {
   const erc20Balances: Erc20Balances = balancesResult.data.aggregates.find(
     (o) => o.type == "Erc20Balances"
   );
-  if (!erc20Balances) {
-    throw new Error(`Couldn't find the Erc20Balances in the query result.`);
-  }
-  balances = erc20Balances.payload.balances;
+  balances = !erc20Balances ? [] : erc20Balances.payload.balances;
   loading = false;
 });
 </script>

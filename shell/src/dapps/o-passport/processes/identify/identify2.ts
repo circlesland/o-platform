@@ -116,7 +116,13 @@ const processDefinition = (processId: string) =>
         entry: (ctx) => console.log(`enter: identify.loadProfile`, ctx.data),
         invoke: {
           src: async (context) => {
-            context.data.profile = await loadProfile();
+            const userProfile =  await loadProfile();
+            if (context.data.profile?.circlesAddress
+              && context.data.profile.circlesAddress != userProfile.circlesAddress) {
+
+            } else {
+              context.data.profile = userProfile;
+            }
           },
           onDone: [
             {
