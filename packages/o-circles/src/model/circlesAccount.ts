@@ -87,29 +87,6 @@ export class CirclesAccount implements CirclesAccountModel
       ));
   }
 
-  async tryGetXDaiBalance(safeOwner?: string): Promise<{
-    mySafeXDaiBalance?: BN,
-    myAccountXDaiBalance?: BN
-  }>
-  {
-    const balances: {
-      mySafeXDaiBalance?: BN,
-      myAccountXDaiBalance?: BN
-    } = {};
-
-    if (this.safeAddress)
-    {
-      balances.mySafeXDaiBalance = new BN(await this.web3.eth.getBalance(this.safeAddress))
-    }
-
-    if (safeOwner)
-    {
-      balances.myAccountXDaiBalance = new BN(await this.web3.eth.getBalance(safeOwner))
-    }
-
-    return balances;
-  }
-
   findHubTransfers(startBlock?:number) : Observable<BlockchainEvent>
   {
     const subject = new Subject<BlockchainEvent>();

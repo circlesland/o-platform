@@ -20,8 +20,6 @@ $: me;
 
 let disableBanking: boolean = false;
 
-let accountAddress: string = "";
-let accountBalance: string = "";
 let safeDeployThreshold: string = "200000000000000000";
 let showFundHint: boolean = false;
 let inviteLink: string = "";
@@ -33,14 +31,6 @@ const init = async () => {
     unlock();
     return;
   }
-
-  accountAddress =
-    RpcGateway.get().eth.accounts.privateKeyToAccount(pk).address;
-
-  accountBalance = await RpcGateway.get().eth.getBalance(accountAddress);
-
-  // TODO: The "fundHint" could still be relevant but must be re-specified first
-  //showFundHint = new BN(accountBalance).lt(new BN(safeDeployThreshold));
 };
 
 function unlock() {
