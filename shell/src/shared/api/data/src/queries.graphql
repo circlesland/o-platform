@@ -1007,8 +1007,64 @@ query aggregates(
           }
           invoices {
             sellerAddress
+            buyerAddress
             pickupCode
             sellerProfile {
+              type
+              id
+              circlesAddress
+              firstName
+              lastName
+              avatarUrl
+            }
+          }
+        }
+      }
+      ... on Sales {
+        lastUpdatedAt
+        sales {
+          id
+          createdAt
+          sellerProfile {
+            type
+            id
+            firstName
+            lastName
+            avatarCid
+          }
+          buyerProfile {
+            type
+            id
+            firstName
+            lastName
+            avatarCid
+          }
+          total
+          lines {
+            id
+            amount
+            offer {
+              id
+              version
+              title
+              description
+              pictureUrl
+              pricePerUnit
+              createdByProfile {
+                type
+                id
+                circlesAddress
+                firstName
+                lastName
+                avatarUrl
+              }
+            }
+          }
+          invoices {
+            sellerAddress
+            buyerAddress
+            pickupCode
+            buyerProfile {
               type
               id
               circlesAddress

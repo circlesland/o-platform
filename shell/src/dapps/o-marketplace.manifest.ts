@@ -5,6 +5,8 @@ import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
 import MyPurchases from "./o-marketplace/pages/MyPurchases.svelte";
+import MySales from "./o-marketplace/pages/MySales.svelte";
+import MySaleDetail from "./o-marketplace/pages/MySaleDetail.svelte";
 import MyPurchasesDetail from "./o-marketplace/pages/MyPurchasesDetail.svelte";
 import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
 // import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
@@ -73,12 +75,26 @@ const myPurchases: Page<any, DappState> = {
   title: "My purchases",
   type: "page",
 };
+const mySales: Page<any, DappState> = {
+  routeParts: ["=my-sales"],
+  component: MySales,
+  title: "My sales",
+  type: "page",
+};
 const myPurchasesDetail: Page<any, DappState> = {
   isSystem: true,
   position: "modal",
   routeParts: ["=my-purchases", ":id"],
   component: MyPurchasesDetail,
   title: "Purchase Details",
+  type: "page",
+};
+const mySaleDetail: Page<any, DappState> = {
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=my-sales", ":id"],
+  component: MySaleDetail,
+  title: "Sale Details",
   type: "page",
 };
 
@@ -127,5 +143,7 @@ export const marketplace: DappManifest<DappState> = {
     shoppingCart,
     myPurchases,
     myPurchasesDetail,
+    mySales,
+    mySaleDetail
   ],
 };

@@ -26,7 +26,7 @@ export type AddMemberResult = {
   success: Scalars['Boolean'];
 };
 
-export type AggregatePayload = Contacts | CrcBalances | Erc20Balances | Members | Memberships | Offers | Purchases;
+export type AggregatePayload = Contacts | CrcBalances | Erc20Balances | Members | Memberships | Offers | Purchases | Sales;
 
 export enum AggregateType {
   Contacts = 'Contacts',
@@ -35,7 +35,8 @@ export enum AggregateType {
   Members = 'Members',
   Memberships = 'Memberships',
   Offers = 'Offers',
-  Purchases = 'Purchases'
+  Purchases = 'Purchases',
+  Sales = 'Sales'
 }
 
 export type AssetBalance = {
@@ -969,9 +970,36 @@ export type RequestUpdateSafeResponse = {
   success: Scalars['Boolean'];
 };
 
+export type Sale = {
+  __typename?: 'Sale';
+  buyerAddress: Scalars['String'];
+  buyerProfile?: Maybe<Profile>;
+  createdAt: Scalars['String'];
+  id: Scalars['Int'];
+  invoices: Array<Invoice>;
+  lines: Array<SalesLine>;
+  paymentTransaction?: Maybe<ProfileEvent>;
+  sellerAddress: Scalars['String'];
+  sellerProfile?: Maybe<Profile>;
+  total: Scalars['String'];
+};
+
+export type Sales = IAggregatePayload & {
+  __typename?: 'Sales';
+  lastUpdatedAt: Scalars['String'];
+  sales: Array<Sale>;
+};
+
 export type SalesAggregateFilter = {
   createdByAddresses?: Maybe<Array<Scalars['String']>>;
   salesIds?: Maybe<Array<Scalars['Int']>>;
+};
+
+export type SalesLine = {
+  __typename?: 'SalesLine';
+  amount: Scalars['Int'];
+  id: Scalars['Int'];
+  offer: Offer;
 };
 
 export type SearchInput = {
@@ -2202,8 +2230,40 @@ export type AggregatesQuery = (
           ) }
         )>, invoices: Array<(
           { __typename?: 'Invoice' }
-          & Pick<Invoice, 'sellerAddress' | 'pickupCode'>
+          & Pick<Invoice, 'sellerAddress' | 'buyerAddress' | 'pickupCode'>
           & { sellerProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+          )> }
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'Sales' }
+      & Pick<Sales, 'lastUpdatedAt'>
+      & { sales: Array<(
+        { __typename?: 'Sale' }
+        & Pick<Sale, 'id' | 'createdAt' | 'total'>
+        & { sellerProfile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'type' | 'id' | 'firstName' | 'lastName' | 'avatarCid'>
+        )>, buyerProfile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'type' | 'id' | 'firstName' | 'lastName' | 'avatarCid'>
+        )>, lines: Array<(
+          { __typename?: 'SalesLine' }
+          & Pick<SalesLine, 'id' | 'amount'>
+          & { offer: (
+            { __typename?: 'Offer' }
+            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+            & { createdByProfile?: Maybe<(
+              { __typename?: 'Profile' }
+              & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+            )> }
+          ) }
+        )>, invoices: Array<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'sellerAddress' | 'buyerAddress' | 'pickupCode'>
+          & { buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
           )> }
@@ -3605,8 +3665,64 @@ export const AggregatesDocument = gql`
           }
           invoices {
             sellerAddress
+            buyerAddress
             pickupCode
             sellerProfile {
+              type
+              id
+              circlesAddress
+              firstName
+              lastName
+              avatarUrl
+            }
+          }
+        }
+      }
+      ... on Sales {
+        lastUpdatedAt
+        sales {
+          id
+          createdAt
+          sellerProfile {
+            type
+            id
+            firstName
+            lastName
+            avatarCid
+          }
+          buyerProfile {
+            type
+            id
+            firstName
+            lastName
+            avatarCid
+          }
+          total
+          lines {
+            id
+            amount
+            offer {
+              id
+              version
+              title
+              description
+              pictureUrl
+              pricePerUnit
+              createdByProfile {
+                type
+                id
+                circlesAddress
+                firstName
+                lastName
+                avatarUrl
+              }
+            }
+          }
+          invoices {
+            sellerAddress
+            buyerAddress
+            pickupCode
+            buyerProfile {
               type
               id
               circlesAddress

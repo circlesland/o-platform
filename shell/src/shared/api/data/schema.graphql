@@ -24,7 +24,7 @@ interface IEventPayload {
     transaction_hash: String
 }
 
-union AggregatePayload = Contacts | CrcBalances | Erc20Balances | Members | Memberships | Offers | Purchases
+union AggregatePayload = Contacts | CrcBalances | Erc20Balances | Members | Memberships | Offers | Purchases | Sales
 
 union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | Purchased | WelcomeMessage
 
@@ -560,6 +560,30 @@ type RequestUpdateSafeResponse {
     success: Boolean!
 }
 
+type Sale {
+    buyerAddress: String!
+    buyerProfile: Profile
+    createdAt: String!
+    id: Int!
+    invoices: [Invoice!]!
+    lines: [SalesLine!]!
+    paymentTransaction: ProfileEvent
+    sellerAddress: String!
+    sellerProfile: Profile
+    total: String!
+}
+
+type Sales implements IAggregatePayload {
+    lastUpdatedAt: String!
+    sales: [Sale!]!
+}
+
+type SalesLine {
+    amount: Int!
+    id: Int!
+    offer: Offer!
+}
+
 type SendMessageResult {
     error: String
     event: ProfileEvent
@@ -642,6 +666,7 @@ enum AggregateType {
     Memberships
     Offers
     Purchases
+    Sales
 }
 
 enum ContactDirection {
