@@ -3,8 +3,9 @@ import type { AbiItem } from "web3-utils";
 import {CIRCLES_HUB_ABI, HUB_BLOCK, ZERO_ADDRESS} from "../consts";
 import type { GnosisSafeProxy } from "../safe/gnosisSafeProxy";
 import {BN} from "ethereumjs-util";
-import {ExecResult, Web3Contract} from "../web3Contract";
+import {Web3Contract} from "../web3Contract";
 import {SafeOps} from "../model/safeOps";
+import type {TransactionReceipt} from "web3-core";
 
 export class CirclesHub extends Web3Contract {
   constructor(web3: Web3, hubAddress: string) {
@@ -74,7 +75,7 @@ export class CirclesHub extends Web3Contract {
   static readonly OrganizationSignupEvent = "OrganizationSignup";
   static readonly TrustEvent = "Trust";
 
-  async signup(privateKey: string, safeProxy: GnosisSafeProxy) : Promise<ExecResult> {
+  async signup(privateKey: string, safeProxy: GnosisSafeProxy) : Promise<TransactionReceipt> {
     const txData = this.contract.methods.signup().encodeABI();
 
     return await safeProxy.execTransaction(
@@ -89,7 +90,7 @@ export class CirclesHub extends Web3Contract {
       });
   }
 
-  async signupOrganisation(privateKey: string, safeProxy: GnosisSafeProxy) : Promise<ExecResult> {
+  async signupOrganisation(privateKey: string, safeProxy: GnosisSafeProxy) : Promise<TransactionReceipt> {
     const txData = this.contract.methods.organizationSignup().encodeABI();
 
     return await safeProxy.execTransaction(
@@ -104,10 +105,10 @@ export class CirclesHub extends Web3Contract {
       });
   }
 
-  async setTrust(privateKey: string, safeProxy: GnosisSafeProxy, to: string, trustPercentage: BN) : Promise<ExecResult> {
+  async setTrust(privateKey: string, safeProxy: GnosisSafeProxy, to: string, trustPercentage: BN) : Promise<TransactionReceipt> {
     const txData = this.contract.methods.trust(to, trustPercentage).encodeABI();
 
-    return await safeProxy.execTransaction(
+    const a = await safeProxy.execTransaction(
       privateKey,
       {
         to: this.address,
@@ -117,6 +118,8 @@ export class CirclesHub extends Web3Contract {
         gasToken: ZERO_ADDRESS,
         operation: SafeOps.CALL
       });
+
+    return await a;
   }
 
   async transferTrough(
@@ -125,7 +128,7 @@ export class CirclesHub extends Web3Contract {
     tokenOwners: string[],
     sources: string[],
     destinations: string[],
-    values: BN[]) : Promise<ExecResult> {
+    values: BN[]) : Promise<TransactionReceipt> {
     const transfer = {
       tokenOwners: tokenOwners,
       sources: sources,

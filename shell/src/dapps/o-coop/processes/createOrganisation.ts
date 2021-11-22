@@ -129,7 +129,7 @@ async function sendFundsFromSafe(to:string, amount: BN)
   }
 
   const proxy = new GnosisSafeProxy(web3, $me.circlesAddress);
-  const receipt = await (await proxy.transferEth(privateKey, amount, to)).toPromise();
+  const receipt = await proxy.transferEth(privateKey, amount, to);
   console.log(receipt);
 }
 
@@ -304,7 +304,7 @@ const processDefinition = (processId: string) =>
             }
 
             const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);
-            const receipt = await (await hub.signupOrganisation(privateKey, context.data.organisationSafeProxy)).toPromise();
+            const receipt = await hub.signupOrganisation(privateKey, context.data.organisationSafeProxy);
             console.log(receipt)
           },
           onDone: "#upsertOrganisation",

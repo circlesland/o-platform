@@ -6,5 +6,5 @@ export const getUBIService = async (context:{data:{safeAddress:string, privateKe
     const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), context.data.safeAddress);
     const circlesAccount = new CirclesAccount(context.data.safeAddress);
     const result = await circlesAccount.getUBI(context.data.privateKey, gnosisSafeProxy);
-    return await result.toPromise();
+    return result;
 };

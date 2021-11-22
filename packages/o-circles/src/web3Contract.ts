@@ -11,47 +11,6 @@ import {BN} from "ethereumjs-util";
 import {RpcGateway} from "./rpcGateway";
 import {PromiEvent} from "web3-core";
 
-export type ExecResultObservable = Observable<{
-    type: 'error' | 'confirmation' | 'receipt' | 'transactionHash';
-    data: Error | TransactionReceipt | string | number;
-}>;
-
-export class ExecResult {
-    readonly observable: ExecResultObservable;
-
-    constructor(observable: ExecResultObservable) {
-        this.observable = observable;
-    }
-
-    toPromise(timeout:number = 60000): Promise<TransactionReceipt> {
-        const stack = new Error().stack;
-        return new Promise((resolve, reject) => {
-            let completed = false;
-            const subscription = this.observable.subscribe(o => {
-                if (completed) {
-                    return;
-                }
-                if (o.type == "error") {
-                    reject(o.data);
-                    completed = true;
-                }
-                if (o.type == "receipt") {
-                    resolve(<TransactionReceipt>o.data);
-                    completed = true;
-                }
-            });
-            setTimeout(() => {
-                if (completed)
-                    return;
-
-                reject(`The request timed out after ${timeout} ms. Entry point to request was: ` + stack);
-                completed = true;
-                subscription.unsubscribe();
-            }, timeout)
-        });
-    }
-}
-
 export abstract class Web3Contract {
     readonly web3: Web3;
     readonly address: string;
@@ -171,45 +130,8 @@ export abstract class Web3Contract {
         return '0x' + tx.serialize().toString('hex');
     }
 
-    static sendSignedRawTransaction(serializedTx: string): ExecResult {
+    static async sendSignedRawTransaction(serializedTx: string): Promise<TransactionReceipt> {
         const web3 = RpcGateway.get();
-        return new ExecResult(new Observable(subscriber => {
-            web3.eth.sendSignedTransaction(serializedTx)
-                .once('transactionHash', (hash) => {
-                    console.log("web3.eth.sendSignedTransaction | Got transaction hash: " + hash);
-                    subscriber.next({
-                        type: "transactionHash",
-                        data: hash
-                    });
-                })
-                .once('receipt', (receipt) => {
-                    console.log("web3.eth.sendSignedTransaction | Got receipt:", receipt);
-                    subscriber.next({
-                        type: "receipt",
-                        data: receipt
-                    });
-                })
-                .once('confirmation', (confNumber) => {
-                    console.log("web3.eth.sendSignedTransaction | Got confirmation. Conf No.: " + confNumber);
-                    subscriber.next({
-                        type: "confirmation",
-                        data: confNumber
-                    });
-                })
-                .once('error', (error) => {
-                    subscriber.next({
-                        type: "error",
-                        data: error
-                    });
-                    subscriber.error(error);
-                })
-                .then(function (receipt) {
-                    subscriber.next({
-                        type: "receipt",
-                        data: receipt
-                    });
-                    subscriber.complete();
-                })
-        }));
+        return web3.eth.sendSignedTransaction(serializedTx);
     }
 }

@@ -696,7 +696,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         );
         const receipt = await (
           await hub.signup(privateKey, safeProxy)
-        ).toPromise();
+        );
         console.log(receipt);
       },
       validateInvitation: async (context, event) => {

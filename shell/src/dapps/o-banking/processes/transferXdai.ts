@@ -67,11 +67,11 @@ const processDefinition = (processId: string) =>
                 "ether"
               )
             );
-            const receipt = await (await gnosisSafeProxy.transferEth(
+            const receipt = await gnosisSafeProxy.transferEth(
               context.data.privateKey,
               ethAmount,
               context.data.recipientAddress
-            )).toPromise();
+            );
 
             const transactionTags: CreateTagInput[] = [];
             if (context.data.message) {

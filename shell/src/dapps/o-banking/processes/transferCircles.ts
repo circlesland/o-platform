@@ -82,7 +82,7 @@ export async function fTransferCircles (safeAddress:string, privateKey:string, p
     });
      */
 
-    const receipt = await (await transferTroughResult.toPromise());
+    const receipt = transferTroughResult;
     if (receipt && message) {
       const api = await window.o.apiClient.client.subscribeToResult();
       await api.mutate({

@@ -86,10 +86,8 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
       const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress);
       const circlesAccount = new CirclesAccount($me.circlesAddress);
       const result = await circlesAccount.getUBI(privateKey, gnosisSafeProxy);
-      return result.toPromise().then(o => {
-        console.log(`Ubi request result (transactionHash):`, o.transactionHash);
-        return o;
-      });
+      console.log(`Ubi request result (transactionHash):`, result.transactionHash);
+      return result;
     },
     getLastUbiRetrievalDate: () => async (callback) => {
       const apiClient = await window.o.apiClient.client.subscribeToResult();

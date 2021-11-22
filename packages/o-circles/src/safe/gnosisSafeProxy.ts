@@ -2,10 +2,11 @@ import type { AbiItem } from "web3-utils";
 import Web3 from "web3";
 import { EMPTY_DATA, GNOSIS_SAFE_ABI, ZERO_ADDRESS } from "../consts";
 import { BN } from "ethereumjs-util";
-import { ExecResult, Web3Contract } from "../web3Contract";
+import { Web3Contract } from "../web3Contract";
 import { SafeTransaction } from "../model/safeTransaction";
 import { SafeOps } from "../model/safeOps";
 import { RpcGateway } from "../rpcGateway";
+import type {TransactionReceipt} from "web3-core";
 const EthLibAccount = require("eth-lib/lib/account");
 
 export class GnosisSafeProxy extends Web3Contract {
@@ -62,7 +63,7 @@ export class GnosisSafeProxy extends Web3Contract {
       operation: SafeOps.CALL,
     });
 
-    return receipt.toPromise();
+    return receipt;
   }
 
   async removeOwner(privateKey: string, address: string) {
@@ -79,7 +80,7 @@ export class GnosisSafeProxy extends Web3Contract {
       operation: SafeOps.CALL,
     });
 
-    return receipt.toPromise();
+    return receipt;
   }
 
   async getNonce(): Promise<number> {
@@ -90,7 +91,7 @@ export class GnosisSafeProxy extends Web3Contract {
     privateKey: string,
     value: BN,
     to: string
-  ): Promise<ExecResult> {
+  ): Promise<TransactionReceipt> {
     const safeTransaction = <SafeTransaction>{
       value: value,
       to: to,
@@ -107,7 +108,7 @@ export class GnosisSafeProxy extends Web3Contract {
     privateKey: string,
     safeTransaction: SafeTransaction,
     dontEstimate?: boolean
-  ): Promise<ExecResult> {
+  ): Promise<TransactionReceipt> {
     this.validateSafeTransaction(safeTransaction);
 
     const estimatedBaseGas = dontEstimate

@@ -1,19 +1,18 @@
-import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
-import { createMachine } from "xstate";
-import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
-import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
-import { HUB_ADDRESS } from "@o-platform/o-circles/dist/consts";
-import { BN } from "ethereumjs-util";
-import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
+import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
+import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
+import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
+import {createMachine} from "xstate";
+import {prompt} from "@o-platform/o-process/dist/states/prompt";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
+import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
+import {BN} from "ethereumjs-util";
+import {EditorViewContext} from "@o-platform/o-editors/src/shared/editorViewContext";
 import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
-import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
-import { Subscription } from "rxjs";
-import {CreateTagInput} from "../../../shared/api/data/types";
+import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
+import type {TransactionReceipt} from "web3-core";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -62,18 +61,13 @@ const editorContent: { [x: string]: EditorViewContext } = {
   },
 };
 
-export async function fSetTrust(context: ProcessContext<SetTrustContextData>) {
-  const ownerAddress =
-    RpcGateway.get().eth.accounts.privateKeyToAccount(
-      context.data.privateKey
-    ).address;
-
+export async function fSetTrust(context: ProcessContext<SetTrustContextData>) : Promise<TransactionReceipt> {
   const gnosisSafeProxy = new GnosisSafeProxy(
     RpcGateway.get(),
     context.data.safeAddress
   );
 
-  const execResult = await new CirclesHub(
+  return await new CirclesHub(
     RpcGateway.get(),
     HUB_ADDRESS
   ).setTrust(
@@ -82,26 +76,6 @@ export async function fSetTrust(context: ProcessContext<SetTrustContextData>) {
     context.data.trustReceiver,
     new BN(context.data.trustLimit.toString())
   );
-
-  let txHashSubscription: Subscription;
-  txHashSubscription = execResult.observable.subscribe(async (o) => {
-    if (o.type != "transactionHash") {
-      return;
-    }
-    if (txHashSubscription) {
-      txHashSubscription.unsubscribe();
-    }
-
-    const transactionTags: CreateTagInput[] = [];
-    const trustMessage: string = undefined; // TODO: Ask if the user wants to send a message together with the un/trust
-    if (trustMessage) {
-      transactionTags.push({
-        typeId: "o-banking:trust:message:1",
-        value: trustMessage,
-      });
-    }
-  });
-  return execResult.toPromise();
 }
 
 const processDefinition = (processId: string) =>
