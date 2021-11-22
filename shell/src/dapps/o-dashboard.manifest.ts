@@ -15,6 +15,7 @@ const index: Page<any, DappState> = {
 const invites: Page<any, DappState> = {
   routeParts: ["=invites"],
   component: Invites,
+  isSystem: true,
   title: "Invites",
   position: "modal",
   type: "page",
