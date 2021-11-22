@@ -40,7 +40,7 @@ async function load() {
       safeAddress: safeAddress,
       filter: {
         sales: {
-          salesIds: [parseInt(id)],
+          salesIds: [parseInt(id)]
         },
       },
     },
@@ -229,54 +229,3 @@ onMount(async () => {
     {/each}
   {/if}
 </div>
-
-<!-- {#if isLoading}
-    <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-        <div class="flex flex-col items-start">
-          <div>Loading sales...</div>
-        </div>
-      </div>
-    </section>
-  {:else if error}
-    <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-        <div class="flex flex-col items-start">
-          <div>
-            <b>An error occurred while loading the recent activities:</b>
-          </div>
-        </div>
-      </div>
-    </section>
-  {:else if sale}
-    <pre>{JSON.stringify(sale, null, 2)}</pre> -->
-<!-- {#each sales as sale}
-      <SimpleItemCard
-        params="{{
-          imageUrl: sale.lines[0].offer.pictureUrl,
-          edgeless: true,
-
-          title: `Sale from ${dayjs(sale.createdAt).format(
-            'DD.MM.YYYY'
-          )}`,
-          action: () => push(`#/marketplace/sale/${sale.id}`),
-          subTitle: `${sale.lines
-            .map((line) => line.offer.title)
-            .join(', ')}`,
-          endTextBig: `${sale.total}  ⦿`,
-          endTextBigClass: 'text-2xl',
-          endTextSmall: 'paid, not yet picked up',
-          class: 'cursor-pointer',
-        }}" />
-     <pre>{JSON.stringify(sale, null, 2)}</pre>
-    {/each} -->
-<!-- {:else}
-    <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-        <div class="flex flex-col items-start">
-          <div>No sales</div>
-        </div>
-      </div>
-    </section>
-  {/if}
-</div> -->

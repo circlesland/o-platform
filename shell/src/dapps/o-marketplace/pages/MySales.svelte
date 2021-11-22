@@ -51,6 +51,7 @@ async function load() {
   }
 
   sales = o.payload.sales;
+  console.log(sales);
   isLoading = false;
 }
 

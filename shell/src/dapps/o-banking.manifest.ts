@@ -2,6 +2,7 @@ import Transactions from "./o-banking/pages/Transactions.svelte";
 import Assets from "./o-banking/pages/Assets.svelte";
 import CrcDetail from "./o-banking/pages/CrcDetail.svelte";
 import XDaiDetail from "./o-banking/pages/XDaiDetail.svelte";
+import Erc20Detail from "./o-banking/pages/Erc20Detail.svelte";
 
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
 
@@ -125,6 +126,14 @@ const xdaiDetail: Page<{ symbol: string }, BankingDappState> = {
   title: "Asset",
   type: "page",
 };
+const erc20Detail: Page<{ symbol: string }, BankingDappState> = {
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=assets", "=erc20"],
+  component: Erc20Detail,
+  title: "Asset",
+  type: "page",
+};
 
 export interface DappState {
   // put state here
@@ -181,5 +190,6 @@ export const banking: DappManifest<BankingDappState> = {
     assets,
     crcDetail,
     xdaiDetail,
+    erc20Detail
   ],
 };
