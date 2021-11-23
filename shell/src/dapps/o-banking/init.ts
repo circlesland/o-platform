@@ -64,11 +64,6 @@ export async function init() {
         localStorage.removeItem("circlesKey");
         localStorage.removeItem("lastUBI");
         profile = null;
-        window.o.publishEvent(<any>{
-          type: "shell.refresh",
-          dapp: "banking:1",
-          data: null,
-        });
         push("/");
         return;
       }

@@ -5,21 +5,20 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import * as yup from "yup";
 import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import {
-  CreateInvitationsDocument
-} from "../../../../shared/api/data/types";
+import { CreateInvitationsDocument } from "../../../../shared/api/data/types";
 import TextEditor from "../../../../../../packages/o-editors/src/TextEditor.svelte";
-import {UpsertIdentityContext} from "../../../o-passport/processes/upsertIdentity";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {push} from "svelte-spa-router";
+import { UpsertIdentityContext } from "../../../o-passport/processes/upsertIdentity";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { push } from "svelte-spa-router";
 
 export type PromptCreateInvitationContextData = {
   name: string;
   address: string;
-  successAction?: (data:PromptCreateInvitationContextData) => void;
+  successAction?: (data: PromptCreateInvitationContextData) => void;
 };
 
-export type PromptCreateInvitationContext = ProcessContext<PromptCreateInvitationContextData>;
+export type PromptCreateInvitationContext =
+  ProcessContext<PromptCreateInvitationContextData>;
 
 const editorContent = {
   info: {
@@ -30,8 +29,7 @@ const editorContent = {
   },
   name: {
     title: "Who do you want to invite?",
-    description:
-      "Give your invitation a name to easier keep track of it.",
+    description: "Give your invitation a name to easier keep track of it.",
     placeholder: "",
     submitButtonText: "",
   },
@@ -84,15 +82,21 @@ const processDefinition = (processId: string) =>
           const result = await apiClient.mutate({
             mutation: CreateInvitationsDocument,
             variables: {
-              for: [context.data.name ?? `Invitation from ${new Date().toJSON()}`]
+              for: [
+                context.data.name ?? `Invitation from ${new Date().toJSON()}`,
+              ],
             },
           });
 
           if (result.errors) {
-            throw new Error(`Couldn't create an invitation for the following reason: ${JSON.stringify(result.errors)}`);
+            throw new Error(
+              `Couldn't create an invitation for the following reason: ${JSON.stringify(
+                result.errors
+              )}`
+            );
           }
         },
-        always: "#showSuccess"
+        always: "#showSuccess",
       },
       showSuccess: prompt({
         id: "showSuccess",
@@ -100,7 +104,8 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: editorContent.success,
-          html: () => `<p>You successfully created an invitation</p>`,
+          html: () =>
+            `<span class="text-dark-lightest text-sm">it can take up to 10 seconds for the new Invitation to show up in your list.</span>`,
           submitButtonText: editorContent.success.submitButtonText,
           hideNav: false,
         },
@@ -113,12 +118,15 @@ const processDefinition = (processId: string) =>
         id: "success",
         data: (context, event: PlatformEvent) => {
           return "yeah!";
-        }
-      }
-    }
+        },
+      },
+    },
   });
 
-export const createInvite: ProcessDefinition<void, PromptCreateInvitationContext> = {
+export const createInvite: ProcessDefinition<
+  void,
+  PromptCreateInvitationContext
+> = {
   name: "createInvite",
   stateMachine: <any>processDefinition,
 };

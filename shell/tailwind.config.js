@@ -95,6 +95,7 @@ module.exports = {
         borderColor: "#8597C6",
         darkgrey: "#E2E7EB",
         background: "#F5F8FF",
+        newbackground: "#EFF1F7",
 
         gradient1: "#1DD6A4",
         gradient2: "#41C7F1",
