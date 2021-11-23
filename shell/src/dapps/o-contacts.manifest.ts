@@ -1,4 +1,4 @@
-import Contacts from "./o-contacts/pages/Contacts.svelte";
+import ContactsView from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
 import Chat from "./o-contacts/pages/Chat.svelte";
 import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
@@ -11,15 +11,14 @@ import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import {
   AggregatesDocument,
   AggregateType,
-  Contact,
-  ContactDirection,
-  EventType,
-  Profile,
-  ProfileAggregateFilter,
+  ContactDirection, EventType,
+  Profile, ProfileAggregate,
+  ProfileAggregateFilter, QueryAggregatesArgs,
 } from "../shared/api/data/types";
 import { transfer } from "./o-banking/processes/transfer";
 import { push } from "svelte-spa-router";
 import { setTrust } from "./o-banking/processes/setTrust";
+import {ApiClient} from "../shared/apiConnection";
 
 export interface DappState {
   // put state here
@@ -27,7 +26,7 @@ export interface DappState {
 
 const index: Page<any, DappState> = {
   routeParts: [],
-  component: Contacts,
+  component: ContactsView,
   title: "Friends",
   icon: "friends",
   type: "page",
@@ -57,10 +56,9 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
     unsub();
 
     const getRecipientProfile = async () => {
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      const result = await apiClient.query({
-        query: AggregatesDocument,
-        variables: {
+      const result = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(
+        AggregatesDocument,
+        {
           safeAddress: $me.circlesAddress,
           filter: <ProfileAggregateFilter>{
             contacts: {
@@ -68,22 +66,11 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             },
           },
           types: [AggregateType.Contacts],
-        },
-      });
+        });
 
-      if (result.errors?.length > 0) {
-        throw new Error(
-          `Couldn't read the contacts of safe ${
-            $me.circlesAddress
-          }: \n${result.errors.map((o) => o.message).join("\n")}`
-        );
-      }
-
-      const contactsList: Contact[] =
-        result.data.aggregates[0].payload.contacts;
-
-      if (contactsList.length > 0) return contactsList[0];
-      else return undefined;
+      const contactsAgg = result.find(o => o.type == AggregateType.Contacts);
+      const contacts = contactsAgg ? (<any>contactsAgg.payload).contacts : [];
+      return contacts.length > 0 ?  contacts[0] : undefined;
     };
 
     const recipientProfile = params.id

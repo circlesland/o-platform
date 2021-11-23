@@ -53,10 +53,10 @@ export function convertTimeCirclesToCircles(amount: number, date: string) {
   //   "AND BACK Converted: ",
   //   convertCirclesToTimeCircles(result, date)
   // );
-  return (
+  return parseFloat((
     (amount / 24) *
     lerp(previousCirclesPerDayValue, perDayValue, dayInCurrentCycle / 365.25)
-  );
+  ).toFixed(12));
 }
 
 export function convertCirclesToTimeCircles(amount: number, date: string) {

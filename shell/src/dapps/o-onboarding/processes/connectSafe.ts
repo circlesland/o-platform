@@ -151,7 +151,7 @@ const processDefinition = (processId: string) =>
 
             const query = foundSafeAddresses.reduce(
               (p, c) =>
-                p + `address[]=${RpcGateway.get().utils.toChecksumAddress(c)}&`,
+                p + `address[]=${RpcGateway.get().utils.toChecksumAddress(c.safeAddress)}&`,
               ""
             );
             const circlesGardenProfileRequest = `https://api.circles.garden/api/users/?${query}`;
@@ -159,18 +159,12 @@ const processDefinition = (processId: string) =>
             const circlesGardenFetchPromise = fetch(
               circlesGardenProfileRequest
             ).then((result) => result.json());
-            /*const balanceQueryPromises = foundSafeAddresses.map(safeAddress => apiClient.query({
-              query: BalanceDocument,
-              variables: {
-                safeAddress: safeAddress
-              }
-            }));*/
 
             const circlesLandProfileQueryPromise = apiClient.query({
               query: ProfilesByCirclesAddressDocument,
               variables: {
                 circlesAddresses: foundSafeAddresses,
-              },
+              }
             });
 
             const results = await Promise.all([
@@ -181,32 +175,12 @@ const processDefinition = (processId: string) =>
 
             const circlesGardenProfilesResult = results[0];
             const circlesLandProfilesResult = results[1];
-            // const balanceResults = results.slice(2, results.length - 1);
-
-            // TODO: Re-implement the balance-check for safes on onboarding with new api
 
             const balancesBySafeAddress: { [safeAddress: string]: BN } = {};
-            /*balanceResults.map((balanceResult, index) => {
-              if (balanceResult.data?.balance) {
-                return {
-                  address: foundSafeAddresses[index],
-                  balance: new BN(balanceResult.data.balance)
-                }
-              } else {
-                return {
-                  address: foundSafeAddresses[index],
-                  balance: null
-                }
-              }
-            }).forEach(o => {
-              if (!o.balance)
-                return;
-
-              balancesBySafeAddress[o.address] = o.balance;
-            });*/
 
             const circlesLandProfiles: Profile[] =
               circlesLandProfilesResult.data.profilesBySafeAddress;
+
             const circlesGardenProfiles =
               circlesGardenProfilesResult.data?.map((o: any) => {
                 return <Profile>{
@@ -251,13 +225,12 @@ const processDefinition = (processId: string) =>
             },
             {
               cond: (context) =>
-                !context.data.selectedSafe &&
-                Object.keys(context.data.safeCandidates).length > 1,
+                !context.data.selectedSafe && Object.keys(context.data.safeCandidates).length > 1,
               target: "#selectSafe",
             },
           ],
-          onError: "#seedPhrase",
-        },
+          onError: "#seedPhrase"
+        }
       },
 
       selectSafe: prompt<PromptConnectOrCreateContext, any>({
@@ -408,6 +381,19 @@ const processDefinition = (processId: string) =>
         },
       },
     },
+  }, {
+    services: {
+      findMostRecentUbiSafe: async (context, event) => {
+        const apiClient =
+          await window.o.apiClient.client.subscribeToResult();
+        const result = await apiClient.query({
+          query: FindSafeAddressByOwnerDocument,
+          variables: {
+            owner: context.data.importedAccount.address.toLowerCase(),
+          },
+        });
+      }
+    }
   });
 
 export const connectSafe: ProcessDefinition<

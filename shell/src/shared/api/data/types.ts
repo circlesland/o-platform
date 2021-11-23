@@ -798,7 +798,7 @@ export type Query = {
   commonTrust: Array<CommonTrust>;
   directPath: TransitivePath;
   events: Array<ProfileEvent>;
-  findSafeAddressByOwner: Array<Scalars['String']>;
+  findSafeAddressByOwner: Array<SafeAddressByOwnerResult>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
   initAggregateState?: Maybe<InitAggregateState>;
   invitationTransaction?: Maybe<ProfileEvent>;
@@ -968,6 +968,12 @@ export type RequestUpdateSafeResponse = {
   challenge?: Maybe<Scalars['String']>;
   errorMessage?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type SafeAddressByOwnerResult = {
+  __typename?: 'SafeAddressByOwnerResult';
+  safeAddress: Scalars['String'];
+  type: Scalars['String'];
 };
 
 export type Sale = {
@@ -1540,7 +1546,10 @@ export type FindSafeAddressByOwnerQueryVariables = Exact<{
 
 export type FindSafeAddressByOwnerQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'findSafeAddressByOwner'>
+  & { findSafeAddressByOwner: Array<(
+    { __typename?: 'SafeAddressByOwnerResult' }
+    & Pick<SafeAddressByOwnerResult, 'type' | 'safeAddress'>
+  )> }
 );
 
 export type InitAggregateStateQueryVariables = Exact<{ [key: string]: never; }>;
@@ -2301,6 +2310,16 @@ export type DirectPathQuery = (
   ) }
 );
 
+export type MostRecentUbiSafeOfAccountQueryVariables = Exact<{
+  account: Scalars['String'];
+}>;
+
+
+export type MostRecentUbiSafeOfAccountQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'mostRecentUbiSafeOfAccount'>
+);
+
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2734,7 +2753,10 @@ export const WhoamiDocument = gql`
     `;
 export const FindSafeAddressByOwnerDocument = gql`
     query findSafeAddressByOwner($owner: String!) {
-  findSafeAddressByOwner(owner: $owner)
+  findSafeAddressByOwner(owner: $owner) {
+    type
+    safeAddress
+  }
 }
     `;
 export const InitAggregateStateDocument = gql`
@@ -3763,6 +3785,11 @@ export const DirectPathDocument = gql`
   }
 }
     `;
+export const MostRecentUbiSafeOfAccountDocument = gql`
+    query mostRecentUbiSafeOfAccount($account: String!) {
+  mostRecentUbiSafeOfAccount(account: $account)
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -3917,6 +3944,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     directPath(variables: DirectPathQueryVariables): Promise<DirectPathQuery> {
       return withWrapper(() => client.request<DirectPathQuery>(print(DirectPathDocument), variables));
+    },
+    mostRecentUbiSafeOfAccount(variables: MostRecentUbiSafeOfAccountQueryVariables): Promise<MostRecentUbiSafeOfAccountQuery> {
+      return withWrapper(() => client.request<MostRecentUbiSafeOfAccountQuery>(print(MostRecentUbiSafeOfAccountDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

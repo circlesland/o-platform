@@ -5,7 +5,45 @@ import {AsyncBroadcast} from "@o-platform/o-utils/dist/asyncBroadcast";
 import {WebSocketLink} from 'apollo-link-ws';
 import {split} from 'apollo-link';
 import {getMainDefinition} from 'apollo-utilities';
-import {OperationDefinitionNode} from "graphql/language/ast";
+import {DocumentNode, OperationDefinitionNode} from "graphql/language/ast";
+
+export class ApiClient {
+    /**
+     * Executes a graphQL query against the api.
+     * @param query
+     * @param args
+     */
+    static async query<TResult, TArgs>(query: DocumentNode, args: TArgs) : Promise<TResult> {
+        const queryDef:any = query.definitions.length == 1 ? query.definitions[0] : null;
+        if (!queryDef) {
+            throw new Error(`The query contains none or more than one definition. Only 1 definition per query is supported.`)
+        }
+        if (!queryDef.selectionSet){
+            throw new Error(`The query definition doesn't contain a 'selectionSet'.`)
+        }
+        if (queryDef.selectionSet.selections?.length != 1) {
+            throw new Error(`The query definition contains none or more than one selection. Only 1 selection is supported.`)
+        }
+
+        const selection = queryDef.selectionSet.selections[0];
+        const dataProp:string = selection.name.value;
+        if (!dataProp) {
+            throw new Error(`The selection doesn't have a name. Cannot find the data-holding property of the graphql response.`)
+        }
+
+        const apiClient = await window.o.apiClient.client.subscribeToResult();
+        const result = await apiClient.query({
+            query: query,
+            variables: args
+        });
+
+        if (result.errors?.length > 0) {
+            throw new Error(`Something went wrong while querying the api: ${result.errors.map((o) => o.message).join("\n")}`);
+        }
+
+        return <TResult>result.data[dataProp];
+    }
+}
 
 export class ApiConnection
 {
@@ -14,7 +52,10 @@ export class ApiConnection
     private _client:ApolloClient<NormalizedCacheObject>|undefined;
 
     reset() {
-        this._client.stop();
+        if (this._client)
+        {
+            this._client.stop();
+        }
         this._client = null;
     }
 
@@ -32,15 +73,6 @@ export class ApiConnection
     {
         this._apiEndpointUrl = apiEndpointUrl;
         this._credentialsPolicy = credentialsPolicy;
-    }
-
-    destroy()
-    {
-        if (this._client)
-        {
-            this._client.stop();
-            this._client = undefined;
-        }
     }
 
     private static readonly _defaultOptions:DefaultOptions = {

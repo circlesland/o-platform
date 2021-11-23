@@ -19,7 +19,10 @@ query whoami {
 }
 
 query findSafeAddressByOwner($owner: String!) {
-  findSafeAddressByOwner(owner: $owner)
+  findSafeAddressByOwner(owner: $owner) {
+    type
+    safeAddress
+  }
 }
 
 query initAggregateState {
@@ -1096,4 +1099,8 @@ query directPath($from:String! $to:String! $amount:String!) {
       value
     }
   }
+}
+
+query mostRecentUbiSafeOfAccount($account: String!) {
+  mostRecentUbiSafeOfAccount(account: $account)
 }

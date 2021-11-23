@@ -515,7 +515,7 @@ type Query {
     commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
     directPath(amount: String!, from: String!, to: String!): TransitivePath!
     events(filter: ProfileEventFilter, pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
-    findSafeAddressByOwner(owner: String!): [String!]!
+    findSafeAddressByOwner(owner: String!): [SafeAddressByOwnerResult!]!
     hubSignupTransaction: ProfileEvent
     initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
@@ -558,6 +558,11 @@ type RequestUpdateSafeResponse {
     challenge: String
     errorMessage: String
     success: Boolean!
+}
+
+type SafeAddressByOwnerResult {
+    safeAddress: String!
+    type: String!
 }
 
 type Sale {
