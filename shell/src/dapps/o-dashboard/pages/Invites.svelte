@@ -40,7 +40,7 @@ reload();
   <slot name="EditorDescription">
     <div class="w-full text-center">
       <span class="text-dark-lightest"
-        >Here you can create invitaion Codes to invite other people.</span>
+        >Here you can create invitation Codes to invite other people.</span>
     </div>
   </slot>
 
