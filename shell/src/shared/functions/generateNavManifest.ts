@@ -184,7 +184,7 @@ export function generateNavManifest(
         newManifest.navPill.left = {
           component: ListComponent,
           props: {
-            icon: "simplearrowleft",
+            text: "back",
             action: () =>
               window.o.publishEvent({
                 type: "process.back",
@@ -196,7 +196,7 @@ export function generateNavManifest(
         newManifest.navPill.right = {
           component: ListComponent,
           props: {
-            icon: "simplearrowright",
+            text: "skip",
             action: () =>
               window.o.publishEvent({
                 type: "process.skip",
