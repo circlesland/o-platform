@@ -2,15 +2,15 @@
 export function clickOutside(node) {
   const handleClick = (event) => {
     if (
-      event.target.id &&
-      event.target.id == "modalAsideContentContainer" &&
+      (event.target.tagName == "ASIDE" ||
+        event.target.tagName == "BODY" ||
+        event.target.tagName == "DIV" ||
+        event.target.tagName == "FOOTER") &&
       node &&
       !node.contains(event.target) &&
       !event.defaultPrevented
     ) {
       node.dispatchEvent(new CustomEvent("click_outside", node));
-      // event.preventDefault();
-      // return false;
     }
   };
 
