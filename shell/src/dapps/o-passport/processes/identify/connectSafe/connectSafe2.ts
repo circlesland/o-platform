@@ -168,7 +168,10 @@ const processDefinition = (processId: string) =>
 
             try {
               keyFromMnemonic =
-                "0x" + bip39.mnemonicToEntropy(context.data.seedPhrase);
+                "0x" +
+                bip39.mnemonicToEntropy(
+                  context.data.seedPhrase.replace(/\s\s+/g, " ")
+                );
             } catch (e) {
               context.messages[
                 "seedPhrase"
