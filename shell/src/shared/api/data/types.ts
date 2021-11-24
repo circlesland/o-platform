@@ -2263,10 +2263,10 @@ export type AggregatesQuery = (
         & Pick<Sale, 'id' | 'createdAt' | 'total'>
         & { sellerProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'type' | 'id' | 'firstName' | 'lastName' | 'avatarCid'>
+          & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarCid'>
         )>, buyerProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'type' | 'id' | 'firstName' | 'lastName' | 'avatarCid'>
+          & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarCid'>
         )>, lines: Array<(
           { __typename?: 'SalesLine' }
           & Pick<SalesLine, 'id' | 'amount'>
@@ -3720,6 +3720,7 @@ export const AggregatesDocument = gql`
           sellerProfile {
             type
             id
+            circlesAddress
             firstName
             lastName
             avatarCid
@@ -3727,6 +3728,7 @@ export const AggregatesDocument = gql`
           buyerProfile {
             type
             id
+            circlesAddress
             firstName
             lastName
             avatarCid

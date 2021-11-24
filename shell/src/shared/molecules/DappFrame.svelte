@@ -131,6 +131,7 @@ async function init() {
     inbox.reload();
   }
 }
+
 function onOpenNavigation() {
   layout = {
     ...layout,
@@ -354,6 +355,9 @@ onMount(async () => {
       case "shell.openModal":
         onOpenModal();
         break;
+      case "shell.openModalProcess":
+        showModalProcess("");
+        break;
       case "shell.home":
         onHome();
         break;
@@ -564,7 +568,7 @@ async function handleUrlChanged() {
     return;
   }
 }
-function showModalProcess(processId: string) {
+function showModalProcess(processId?: string) {
   modalContent = "process";
   const process = window.o.stateMachines.findById(processId);
   showModalPage(

@@ -138,6 +138,9 @@ const shell: IShell = {
   },
   events: shellEvents.observable,
   publishEvent: (event) => {
+    if (event.type == "shell.progress") {
+      console.log("Progress event: ", event);
+    }
     return shellEvents.publish(event);
   },
   requestEvent: <TResult extends PlatformEvent>(requestEvent) => {

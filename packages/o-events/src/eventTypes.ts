@@ -3,6 +3,7 @@ export type PlatformEventTypes =
   | "shell.runProcessInShell"
   | "shell.showModal"
   | "shell.openModal"
+  | "shell.openModalProcess"
   | "shell.begin"
   | "shell.progress"
   | "shell.done"

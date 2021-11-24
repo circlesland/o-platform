@@ -89,7 +89,13 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       }
     },*/
       register: {
-        entry: () => console.log("init.register"),
+        entry: () => {
+          console.log("init.register");
+
+          window.o.publishEvent({
+            type: "shell.openModalProcess"
+          });
+        },
         invoke: { src: "loadRegistration" },
         on: {
           NO_REGISTRATION: {
@@ -166,6 +172,15 @@ export const initMachine = createMachine<InitContext, InitEvent>(
                 actions: [
                   () => console.log("init.eoa.load.GOT_EOA"),
                   "assignEoaToContext",
+                  () => {
+                    window.o.publishEvent({
+                      type: "shell.openModalProcess"
+                    });
+                    window.o.publishEvent(<any>{
+                      type: "shell.progress",
+                      message: "Starting your session .."
+                    });
+                  }
                 ],
                 target: "checkInvitation",
               },
@@ -185,7 +200,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
             ],
           },
           checkInvitation: {
-            entry: () => console.log("init.eoa.checkInvitation"),
+            entry: () => {
+              console.log("init.eoa.checkInvitation");
+            },
             invoke: { src: "loadEoaInvitationTransaction" },
             on: {
               NOT_REDEEMED: {
@@ -195,7 +212,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
               },
               GOT_REDEEMED: {
                 actions: [
-                  () => console.log("init.eoa.checkInvitation.GOT_REDEEMED"),
+                  () => {
+                    console.log("init.eoa.checkInvitation.GOT_REDEEMED");
+                  },
                   "assignEoaInvitationTransactionToContext",
                 ],
                 target: "eoaReady",
