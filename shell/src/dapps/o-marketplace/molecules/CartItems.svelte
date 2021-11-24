@@ -58,7 +58,7 @@ function orderItems(items) {
           div(class="md:text-md") {item.item.title}
 
           div.text-dark.cursor-pointer.self-center(on:click!="{() =>  removeAllItems(item.item.id)}" class:hidden="{!editable}")
-            Icons(icon="smallx" size="2")
+            Icons(icon="trash" size="4")
             
         div.flex.justify-end.items-center.w-full
           div.flex-grow.text-sm.text-dark-lightest.text-left 1 {item.item.unitTag ? item.item.unitTag.value : "item"}
