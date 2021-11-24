@@ -18,6 +18,8 @@ import { shellEvents } from "./shared/shellEvents";
 import { ApiConnection } from "./shared/apiConnection";
 import { getProcessContext } from "./main";
 import { Stopped } from "@o-platform/o-process/dist/events/stopped";
+import {getSdk} from "./shared/api/data/types";
+import {GraphQLClient} from "graphql-request";
 
 const runningProcesses: {
   [id: string]: Process;
@@ -136,9 +138,6 @@ const shell: IShell = {
   },
   events: shellEvents.observable,
   publishEvent: (event) => {
-    if (event.type == "shell.authenticated") {
-      console.log("authenticated:", new Error().stack);
-    }
     return shellEvents.publish(event);
   },
   requestEvent: <TResult extends PlatformEvent>(requestEvent) => {
