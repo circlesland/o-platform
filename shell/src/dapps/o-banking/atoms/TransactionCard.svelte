@@ -8,11 +8,12 @@ import { onMount } from "svelte";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import {
   CrcHubTransfer,
-  CrcMinting, Erc20Transfer,
+  CrcMinting,
+  Erc20Transfer,
   Profile,
   ProfileEvent,
 } from "../../../shared/api/data/types";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 
 export let event: ProfileEvent;
 
@@ -26,13 +27,6 @@ let amount: string = "";
 
 if (event && event.payload?.__typename == "CrcMinting") {
   const minting = event.payload as CrcMinting;
-  fromProfile = minting.from_profile ?? {
-    id: 0,
-    firstName: "Circles Land",
-    lastName: "",
-    avatarUrl: "/images/common/circles.png",
-    circlesAddress: minting.from,
-  };
 
   toProfile = minting.to_profile ?? {
     id: 0,
@@ -40,12 +34,16 @@ if (event && event.payload?.__typename == "CrcMinting") {
     lastName: "",
     circlesAddress: minting.to,
   };
+
+  fromProfile = toProfile;
+
   amount = displayCirclesAmount(
     event.payload && event.payload.value ? event.payload.value.toString() : "0",
     event.timestamp,
     true,
     $me.displayTimeCircles || $me.displayTimeCircles === undefined
   );
+
   message = "Universal basic income";
 }
 
@@ -65,7 +63,9 @@ if (event && event.payload?.__typename == "Erc20Transfer") {
     lastName: "",
     circlesAddress: ercTransfer.to,
   };
-  amount = parseFloat(RpcGateway.get().utils.fromWei(ercTransfer.value, "ether")).toFixed(2);
+  amount = parseFloat(
+    RpcGateway.get().utils.fromWei(ercTransfer.value, "ether")
+  ).toFixed(2);
   message = "ERC-20 Transfer";
 }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 import BankingHeader from "../atoms/BankingHeader.svelte";
-//import TransactionCard from "../atoms/TransactionCard.svelte";
+
 import TransactionCard from "../atoms/TransactionCard.svelte";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";

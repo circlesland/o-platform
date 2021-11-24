@@ -8,7 +8,8 @@ import { me } from "../../../shared/stores/me";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import {
   CrcHubTransfer,
-  CrcMinting, Erc20Transfer,
+  CrcMinting,
+  Erc20Transfer,
   EventType,
   Profile,
   ProfileEvent,
@@ -40,7 +41,11 @@ onMount(async () => {
       filter: {
         transactionHash: transactionHash,
       },
-      types: [EventType.CrcHubTransfer, EventType.CrcMinting, EventType.Erc20Transfer],
+      types: [
+        EventType.CrcHubTransfer,
+        EventType.CrcMinting,
+        EventType.Erc20Transfer,
+      ],
     },
   });
 
@@ -56,18 +61,14 @@ onMount(async () => {
   }
   if (transfer && transfer.payload?.__typename == "CrcMinting") {
     const minting = transfer.payload as CrcMinting;
-    fromProfile = minting.from_profile ?? {
-      id: 0,
-      firstName: "Circles Land",
-      lastName: "",
-      circlesAddress: minting.from,
-    };
+
     toProfile = minting.to_profile ?? {
       id: 0,
       firstName: minting.to,
       lastName: "",
       circlesAddress: minting.to,
     };
+    fromProfile = toProfile;
   }
   if (transfer && transfer.payload?.__typename == "Erc20Transfer") {
     const erc20Transfer = transfer.payload as Erc20Transfer;
@@ -107,9 +108,13 @@ onMount(async () => {
     classes = transfer.direction === "out" ? "text-alert" : "";
 
     if (transfer.payload) {
-      message = transfer.payload.tags?.find(
-        (o) => o.typeId === "o-banking:transfer:message:1"
-      )?.value;
+      if (transfer.payload?.__typename == "CrcMinting") {
+        message = "Universal Basic Income";
+      } else {
+        message = transfer.payload.tags?.find(
+          (o) => o.typeId === "o-banking:transfer:message:1"
+        )?.value;
+      }
     }
 
     displayableName =
@@ -159,7 +164,9 @@ function openDetail(transfer: ProfileEvent) {
                 : "0",
               transfer.timestamp,
               true,
-              transfer.payload.__typename != "Erc20Transfer" && $me.displayTimeCircles || $me.displayTimeCircles === undefined
+              (transfer.payload.__typename != "Erc20Transfer" &&
+                $me.displayTimeCircles) ||
+                $me.displayTimeCircles === undefined
             )}
           {:else}
             -{displayCirclesAmount(
@@ -171,7 +178,9 @@ function openDetail(transfer: ProfileEvent) {
                 : "0",
               transfer.timestamp,
               true,
-              transfer.payload.__typename != "Erc20Transfer" && $me.displayTimeCircles || $me.displayTimeCircles === undefined
+              (transfer.payload.__typename != "Erc20Transfer" &&
+                $me.displayTimeCircles) ||
+                $me.displayTimeCircles === undefined
             )}
           {/if}
           <svg
