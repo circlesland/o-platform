@@ -64,7 +64,6 @@ export async function init() {
         localStorage.removeItem("circlesKey");
         localStorage.removeItem("lastUBI");
         profile = null;
-        push("/");
         return;
       }
     }
