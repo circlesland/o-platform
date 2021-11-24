@@ -130,7 +130,7 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
   }
 );
 
-async function followTrust(profile: Profile | Organisation) {
+export async function followTrust(profile: Profile | Organisation) {
   if (following) return;
   // Check the trust status of all members
   following = true;
@@ -145,84 +145,87 @@ async function followTrust(profile: Profile | Organisation) {
 
   let allTrustRelations: any[] = [];
 
-  if (orga.data.organisationsByAddress && orga.data.organisationsByAddress.length) {
-    const orgaTrustRelations = await apiClient.query({
+  if (!orga.data.organisationsByAddress || !orga.data.organisationsByAddress.length) {
+    console.warn("Follow trust only works in organisation context.")
+    return;
+  }
+
+  const orgaTrustRelations = await apiClient.query({
+    query: TrustRelationsDocument,
+    variables: {
+      safeAddress: profile.circlesAddress
+    }
+  });
+
+  const missingMemberTrusts: {[userAddress: string]: boolean} = {};
+  const currentTrust: { [userAddress: string]: boolean } = {};
+  const removeTrust: { [userAddress: string]: boolean } = {};
+  const addTrust: { [userAddress: string]: boolean } = {};
+
+  orga.data.organisationsByAddress[0].members.forEach(m => {
+    missingMemberTrusts[m.circlesAddress] = true;
+  });
+
+  orgaTrustRelations.data.trustRelations.forEach(t => {
+    delete missingMemberTrusts[t.otherSafeAddress];
+    removeTrust[t.otherSafeAddress] = true;
+    currentTrust[t.otherSafeAddress] = true;
+  });
+
+  Object.keys(missingMemberTrusts).forEach(mmt => {
+    addTrust[mmt] = true;
+  });
+
+  for (let member of orga.data.organisationsByAddress[0].members) {
+    const memberTrustRelations = await apiClient.query({
       query: TrustRelationsDocument,
       variables: {
-        safeAddress: profile.circlesAddress
+        safeAddress: member.circlesAddress
       }
     });
-
-    const missingMemberTrusts: {[userAddress: string]: boolean} = {};
-    const currentTrust: { [userAddress: string]: boolean } = {};
-    const removeTrust: { [userAddress: string]: boolean } = {};
-    const addTrust: { [userAddress: string]: boolean } = {};
-
-    orga.data.organisationsByAddress[0].members.forEach(m => {
-      missingMemberTrusts[m.circlesAddress] = true;
+    const trusts = memberTrustRelations.data.trustRelations.filter(o => o.direction == "OUT" || o.direction == "MUTUAL");
+    trusts.forEach(t => {
+      delete removeTrust[t.otherSafeAddress];
+      if (!currentTrust[t.otherSafeAddress]) {
+        addTrust[t.otherSafeAddress] = true;
+      }
     });
-
-    orgaTrustRelations.data.trustRelations.forEach(t => {
-      delete missingMemberTrusts[t.otherSafeAddress];
-      removeTrust[t.otherSafeAddress] = true;
-      currentTrust[t.otherSafeAddress] = true;
-    });
-
-    Object.keys(missingMemberTrusts).forEach(mmt => {
-      addTrust[mmt] = true;
-    });
-
-    for (let member of orga.data.organisationsByAddress[0].members) {
-      const memberTrustRelations = await apiClient.query({
-        query: TrustRelationsDocument,
-        variables: {
-          safeAddress: member.circlesAddress
-        }
-      });
-      const trusts = memberTrustRelations.data.trustRelations.filter(o => o.direction == "OUT" || o.direction == "MUTUAL");
-      trusts.forEach(t => {
-        delete removeTrust[t.otherSafeAddress];
-        if (!currentTrust[t.otherSafeAddress]) {
-          addTrust[t.otherSafeAddress] = true;
-        }
-      });
-      allTrustRelations = [...allTrustRelations, ...trusts];
-    }
-
-    console.log("Add trust:", addTrust);
-    console.log("Remove trust:", removeTrust);
-
-    for(let address of Object.keys(removeTrust)) {
-      console.log(`Removing trust to ${address}`);
-      await fSetTrust({
-        data: {
-          safeAddress: profile.circlesAddress,
-          trustLimit: 0,
-          trustReceiver: address,
-          privateKey: sessionStorage.getItem("circlesKey")
-        },
-        messages:{},
-        dirtyFlags: {},
-        onlyThesePages:[]
-      })
-    }
-    for(let address of Object.keys(addTrust)) {
-      console.log(`Adding trust to ${address}`);
-      await fSetTrust({
-        data: {
-          safeAddress: profile.circlesAddress,
-          trustLimit: 100,
-          trustReceiver: address,
-          privateKey: sessionStorage.getItem("circlesKey")
-        },
-        messages:{},
-        dirtyFlags: {},
-        onlyThesePages:[]
-      })
-    }
-
-    following = false;
+    allTrustRelations = [...allTrustRelations, ...trusts];
   }
+
+  console.log("Add trust:", addTrust);
+  console.log("Remove trust:", removeTrust);
+
+  for(let address of Object.keys(removeTrust)) {
+    console.log(`Removing trust to ${address}`);
+    await fSetTrust({
+      data: {
+        safeAddress: profile.circlesAddress,
+        trustLimit: 0,
+        trustReceiver: address,
+        privateKey: sessionStorage.getItem("circlesKey")
+      },
+      messages:{},
+      dirtyFlags: {},
+      onlyThesePages:[]
+    })
+  }
+  for(let address of Object.keys(addTrust)) {
+    console.log(`Adding trust to ${address}`);
+    await fSetTrust({
+      data: {
+        safeAddress: profile.circlesAddress,
+        trustLimit: 100,
+        trustReceiver: address,
+        privateKey: sessionStorage.getItem("circlesKey")
+      },
+      messages:{},
+      dirtyFlags: {},
+      onlyThesePages:[]
+    })
+  }
+
+  following = false;
 }
 
 export const inbox = {
@@ -243,6 +246,8 @@ export const inbox = {
 
       events = e;
       set(events);
+
+      await followTrust(profile);
     });
   },
   acknowledge: async (event: ProfileEvent) => {

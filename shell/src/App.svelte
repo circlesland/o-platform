@@ -207,6 +207,8 @@ import NotFound from "src/shared/pages/NotFound.svelte";
 import { interpret } from "xstate";
 import { initMachine } from "./dapps/o-onboarding/processes/init";
 import {ubiMachine} from "./shared/ubiTimer2";
+import {followTrust} from "./shared/stores/inbox";
+import {me} from "./shared/stores/me";
 
 /*
   RpcGateway.get().eth.getPendingTransactions().then(o => {
