@@ -235,11 +235,11 @@ onMount(async () => {
 
         <div class="w-full text-center">
           {#if !invoice.pickupCode}
-            <h1 class="uppercase text-8xl font-heading">
+            <h1 class="text-3xl uppercase font-heading">
               No pickup code yet ..
             </h1>
           {:else}
-            <h1 class="uppercase text-8xl font-heading">
+            <h1 class="text-6xl uppercase font-heading">
               {invoice.pickupCode}
             </h1>
           {/if}

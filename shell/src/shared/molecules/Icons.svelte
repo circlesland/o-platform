@@ -1,5 +1,7 @@
 <script lang="ts">
 export let size: number = 6;
+export let customClass: string = "";
+
 const icons = {
   filter: `<svg
       class="navbuttonicon"
@@ -1451,6 +1453,12 @@ EwAAAABJRU5ErkJggg==" />
   document: `
 <svg class='w-${size} h-${size}' viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.6666 1.66669H3.99998C3.29274 1.66669 2.61446 1.94764 2.11436 2.44774C1.61426 2.94783 1.33331 3.62611 1.33331 4.33335V25.6667C1.33331 26.3739 1.61426 27.0522 2.11436 27.5523C2.61446 28.0524 3.29274 28.3334 3.99998 28.3334H20C20.7072 28.3334 21.3855 28.0524 21.8856 27.5523C22.3857 27.0522 22.6666 26.3739 22.6666 25.6667V9.66669M14.6666 1.66669L22.6666 9.66669M14.6666 1.66669V9.66669H22.6666M17.3333 16.3334H6.66665M17.3333 21.6667H6.66665M9.33331 11H6.66665" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+  check: `
+
+<svg class='w-${size} h-${size} ${customClass}' viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M26.6667 8L12 22.6667L5.33334 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
 };

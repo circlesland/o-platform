@@ -13,10 +13,9 @@ import { Subscription } from "rxjs";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import SimpleItemCard from "../atoms/SimpleItemCard.svelte";
 import { push } from "svelte-spa-router";
-import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
 import { displayableName } from "../../../shared/functions/stringHelper";
+import Icons from "../../../shared/molecules/Icons.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -107,11 +106,11 @@ onMount(async () => {
           class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-sm">
           <div>
             <div
-              class="relative w-16 h-16 overflow-hidden rounded-l-lg image-wrapper">
+              class="relative w-20 h-20 overflow-hidden rounded-l-lg image-wrapper">
               <img
                 src="{sale.lines[0].offer.pictureUrl}"
                 alt="{sale.lines[0].offer.title}"
-                class="absolute object-cover w-16 h-16 rounded-l-lg" />
+                class="absolute object-cover w-20 h-20 rounded-l-lg" />
             </div>
           </div>
 
@@ -147,6 +146,31 @@ onMount(async () => {
                     {sale.lines[0].offer.title}
                   {/if}
                 </h2>
+              </div>
+            </div>
+            <div
+              class="flex flex-row items-center justify-between px-3 mt-2 text-left">
+              <div
+                class="inline-block text-xs "
+                class:text-inactive="{!sale.invoices[0].paymentTransactionHash}"
+                class:text-success="{sale.invoices[0].paymentTransactionHash}">
+                <span>paid</span>
+                {#if sale.invoices[0].paymentTransactionHash}
+                  <Icons icon="check" size="{4}" customClass="inline" />
+                {/if}
+              </div>
+              <div
+                class="inline-block text-xs "
+                class:text-inactive="{!sale.invoices[0].pickupCode}"
+                class:text-success="{sale.invoices[0].pickupCode}">
+                <span>pick-up code</span>
+                {#if sale.invoices[0].pickupCode}
+                  <Icons icon="check" size="{4}" customClass="inline" />
+                {/if}
+              </div>
+              <div class="text-xs text-inactive">
+                <span>picked up</span>
+                <!-- <Icons icon="check" size="{4}" customClass="inline" /> -->
               </div>
             </div>
           </div>

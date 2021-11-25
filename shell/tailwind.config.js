@@ -92,6 +92,7 @@ module.exports = {
           lightest: "#FFF6D7",
           dark: "#F29C05",
         },
+        inactive: "#bcbcbc",
         borderColor: "#8597C6",
         darkgrey: "#E2E7EB",
         background: "#F5F8FF",
