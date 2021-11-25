@@ -10,7 +10,7 @@ export let small: boolean = false;
 <div
   on:click
   class="flex space-x-2 flex-grow p-3 px-4 text-xs rounded-lg
-  cursor-pointer {colorClass} bg-light-lighter mt-2 mr-2 justify-center items-center">
+  cursor-pointer {colorClass} bg-light-light mt-2 mr-2 justify-center items-center">
   {#if icon && icon !== "undefined"}
     <div class="">
       <Icons icon="{icon}" size="{4}" />

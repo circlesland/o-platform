@@ -52,7 +52,7 @@ module.exports = {
         },
         light: {
           DEFAULT: "#EDDFD2",
-          light: "#F1E7DD",
+          light: "#F8EFE7",
           lighter: "#FBF6F1",
           lightest: "#FEFCF9",
           dark: "#DDCBBB",

@@ -107,7 +107,7 @@ body {
 }
 
 .btn-light {
-  @apply bg-light-lighter;
+  @apply bg-light-light;
   @apply text-dark;
   border: none;
 }
