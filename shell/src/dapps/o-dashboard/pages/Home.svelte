@@ -1,18 +1,13 @@
 <script lang="ts">
 import { me } from "../../../shared/stores/me";
 import { onMount } from "svelte";
-import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import { BN } from "ethereumjs-util";
 import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
 import { push } from "svelte-spa-router";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import OpenLogin, { LOGIN_PROVIDER } from "@toruslabs/openlogin";
 
 import DashboardHeader from "../atoms/DashboardHeader.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { unlockKey } from "../../o-onboarding/processes/unlockKey/unlockKey";
-import { KeyManager } from "../../o-passport/data/keyManager";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
@@ -27,19 +22,7 @@ let inviteLink: string = "";
 const init = async () => {
   const pk = sessionStorage.getItem("circlesKey");
   disableBanking = !pk;
-  if (!pk) {
-    unlock();
-    return;
-  }
 };
-
-function unlock() {
-  window.o.runProcess(unlockKey, {
-    successAction: async () => {
-      await init();
-    },
-  });
-}
 
 onMount(init);
 

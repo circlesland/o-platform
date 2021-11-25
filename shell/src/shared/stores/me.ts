@@ -36,11 +36,12 @@ export const me = readable<Profile|null>(null, function start(set) {
       $me = me;
     });
     unsub();
-
+/*
     window.o.publishEvent(runShellProcess(identify, <IdentifyContextData>{
       redirectTo: window.document.location.href,
       profile: $me
     }));
+ */
   }
 
   return function stop() {

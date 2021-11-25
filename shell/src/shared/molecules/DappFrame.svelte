@@ -335,14 +335,16 @@ async function onCloseModal() {
 function onRequestCloseModal() {
   log("onRequestCloseModal()");
   if (!runningProcess) {
-    onCloseModal();
+    //onCloseModal();
+    onBack();
     return;
   }
   const process: Process = window.o.stateMachines.findById(
     runningProcess.processId
   );
   if (!process) {
-    onCloseModal();
+    //onCloseModal();
+    onBack();
   }
   onProcessContinued();
   process.sendEvent({ type: "process.cancelRequest" });
@@ -550,6 +552,7 @@ onMount(async () => {
         break;
     }
   }));
+
   // Set the global "runProcess" function. This needs to be done here
   // because at any point before the dialog wouldn't be ready.
   window.o.runProcess = async function runProcess(
