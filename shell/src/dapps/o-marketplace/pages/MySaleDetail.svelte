@@ -11,9 +11,10 @@ import { Subscription } from "rxjs";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import dayjs from "dayjs";
+import { push } from "svelte-spa-router";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
+import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { displayableName } from "../../../shared/functions/stringHelper";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -25,7 +26,7 @@ let buyerProfile: Profile;
 let sale: Sale;
 let shellEventSubscription: Subscription;
 let groupedItems;
-let invoiceData;
+let actions = [];
 
 async function load() {
   if (isLoading) return;
@@ -40,7 +41,7 @@ async function load() {
       safeAddress: safeAddress,
       filter: {
         sales: {
-          salesIds: [parseInt(id)]
+          salesIds: [parseInt(id)],
         },
       },
     },
@@ -58,13 +59,39 @@ async function load() {
   }
 
   sale = o.payload.sales[0];
+  console.log("SALE ", sale);
   isLoading = false;
+
+  actions = [
+    {
+      icon: "chat",
+      title: "Chat",
+      action: () => push(`#/friends/chat/${sale.buyerProfile.circlesAddress}`),
+    },
+  ];
+
+  if (sale.invoices && sale.invoices.length) {
+    actions.push(
+      {
+        icon: "transactions",
+        title: "Transaction",
+        action: () =>
+          push(
+            `#/banking/transactions/${sale.invoices[0].paymentTransactionHash}`
+          ),
+      },
+      {
+        icon: "document",
+        title: "Download Invoice",
+        action: () => null,
+      }
+    );
+  }
 }
 
 function orderItems(items) {
   const orderedCart = {};
   items.forEach((item) => {
-    console.log("ITI: ", item);
     orderedCart[item.id] = {
       item: item,
       qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
@@ -108,7 +135,7 @@ onMount(async () => {
 });
 </script>
 
-<div class="p-5 pb-0">
+<div class="p-5">
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">Sale Details</h1>
@@ -135,7 +162,8 @@ onMount(async () => {
     <div class="mt-6">
       <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
         <div
-          class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left ">
+          class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left cursor-pointer"
+          on:click="{() => push(`#/friends/${buyerProfile.circlesAddress}`)}">
           <div class="inline-flex">
             <UserImage
               profile="{buyerProfile}"
@@ -144,7 +172,7 @@ onMount(async () => {
           </div>
 
           <div>
-            {buyerProfile.firstName}
+            {displayableName(buyerProfile.firstName, buyerProfile.lastName)}
           </div>
         </div>
       </div>
@@ -160,8 +188,7 @@ onMount(async () => {
               <div class="flex flex-row justify-between w-full">
                 <div class="md:text-md">
                   <a
-                    href="#/marketplace/offer/{groupSale.item.item.offer
-                      .id}"
+                    href="#/marketplace/offer/{groupSale.item.item.offer.id}"
                     alt="{groupSale.item.item.offer.title}">
                     {groupSale.item.item.offer.title}
                   </a>
@@ -196,11 +223,7 @@ onMount(async () => {
       <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
         <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
           <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
-            Your Pick-Up Code
-            <div class="text-sm text-center">
-              show this code to the seller when you pick up your Order at the
-              Store.
-            </div>
+            Pick-Up Code
           </h1>
         </div>
 
@@ -215,17 +238,8 @@ onMount(async () => {
             </h1>
           {/if}
         </div>
-
-        <div class="pt-2 text-sm">Pick-Up Location for this Order is:</div>
-        <div class="pt-2 text-sm">
-          <span class="font-bold">Homo Circulus, Basic Income Lab GmbH</span
-          ><br />
-          Reifenstühlstrasse 6<br />
-          80469 München<br />
-          <span class="text-sm font-thin"
-            >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
-        </div>
       </div>
     {/each}
+    <DetailActionBar actions="{actions}" />
   {/if}
 </div>

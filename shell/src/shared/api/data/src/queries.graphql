@@ -1013,6 +1013,7 @@ query aggregates(
           }
           invoices {
             sellerAddress
+            paymentTransactionHash
             buyerAddress
             pickupCode
             sellerProfile {
@@ -1070,6 +1071,7 @@ query aggregates(
           }
           invoices {
             sellerAddress
+            paymentTransactionHash
             buyerAddress
             pickupCode
             buyerProfile {
@@ -1087,11 +1089,8 @@ query aggregates(
   }
 }
 
-query directPath($from:String! $to:String! $amount:String!) {
-  directPath(
-    from: $from
-    to: $to
-    amount: $amount) {
+query directPath($from: String!, $to: String!, $amount: String!) {
+  directPath(from: $from, to: $to, amount: $amount) {
     flow
     transfers {
       from

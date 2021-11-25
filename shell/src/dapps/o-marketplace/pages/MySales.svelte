@@ -16,6 +16,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import SimpleItemCard from "../atoms/SimpleItemCard.svelte";
 import { push } from "svelte-spa-router";
 import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
+import { displayableName } from "../../../shared/functions/stringHelper";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -104,13 +105,12 @@ onMount(async () => {
           imageUrl: sale.lines[0].offer.pictureUrl,
           edgeless: true,
 
-          title: `Sale from ${dayjs(sale.createdAt).format(
-            'DD.MM.YYYY'
-          )}`,
+          title: `Sale to ${displayableName(
+            sale.buyerProfile.firstName,
+            sale.buyerProfile.lastName
+          )} - ${dayjs(sale.createdAt).format('DD.MM.YYYY')}`,
           action: () => push(`#/marketplace/my-sales/${sale.id}`),
-          subTitle: `${sale.lines
-            .map((line) => line.offer.title)
-            .join(', ')}`,
+          subTitle: `${sale.lines.map((line) => line.offer.title).join(', ')}`,
           endTextBig: `${sale.total}  ⦿`,
           endTextBigClass: 'text-2xl',
           endTextSmall: 'paid, not yet picked up',

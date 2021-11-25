@@ -11,10 +11,11 @@ import { Subscription } from "rxjs";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import dayjs from "dayjs";
+import { push } from "svelte-spa-router";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import { displayableName } from "../../../shared/functions/stringHelper";
+import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 export let id: string;
@@ -25,7 +26,7 @@ let sellerProfile: Profile;
 let purchase: Purchase;
 let shellEventSubscription: Subscription;
 let groupedItems;
-let invoiceData;
+let actions = [];
 
 async function load() {
   if (isLoading) return;
@@ -58,6 +59,7 @@ async function load() {
   }
 
   purchase = o.payload.purchases[0];
+
   isLoading = false;
 }
 
@@ -90,6 +92,33 @@ onMount(async () => {
   groupedItems = purchase ? orderItems(purchase.lines) : {};
   sellerProfile = purchase?.lines[0].offer.createdByProfile;
 
+  actions = [
+    {
+      icon: "chat",
+      title: "Chat",
+      action: () => push(`#/friends/chat/${sellerProfile.circlesAddress}`),
+    },
+  ];
+  console.log("PURCH", purchase);
+  console.log("SELL", sellerProfile);
+  if (purchase.invoices && purchase.invoices.length) {
+    actions.push(
+      {
+        icon: "transactions",
+        title: "Transaction",
+        action: () =>
+          push(
+            `#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`
+          ),
+      },
+      {
+        icon: "document",
+        title: "Download Invoice",
+        action: () => null,
+      }
+    );
+  }
+
   shellEventSubscription = window.o.events.subscribe(
     async (event: PlatformEvent) => {
       if (
@@ -108,7 +137,7 @@ onMount(async () => {
 });
 </script>
 
-<div class="p-5 pb-0">
+<div class="p-5">
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">Purchase Details</h1>
@@ -135,7 +164,8 @@ onMount(async () => {
     <div class="mt-6">
       <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
         <div
-          class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left ">
+          class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left cursor-pointer"
+          on:click="{() => push(`#/friends/${sellerProfile.circlesAddress}`)}">
           <div class="inline-flex">
             <UserImage
               profile="{sellerProfile}"
@@ -227,6 +257,7 @@ onMount(async () => {
         </div>
       </div>
     {/each}
+    <DetailActionBar actions="{actions}" />
   {/if}
 </div>
 
