@@ -100,23 +100,74 @@ onMount(async () => {
     </section>
   {:else if sales.length}
     {#each sales as sale}
-      {console.log("SALE ", sale)}
-      <SimpleItemCard
+      <section
+        on:click="{() => push(`#/marketplace/my-sales/${sale.id}`)}"
+        class="mb-3 cursor-pointer">
+        <div
+          class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-sm">
+          <div>
+            <div
+              class="relative w-16 h-16 overflow-hidden rounded-l-lg image-wrapper">
+              <img
+                src="{sale.lines[0].offer.pictureUrl}"
+                alt="{sale.lines[0].offer.title}"
+                class="absolute object-cover w-16 h-16 rounded-l-lg" />
+            </div>
+          </div>
+
+          <div class="flex-col flex-grow">
+            <div
+              class="flex flex-row items-center justify-between px-3 text-left">
+              <div class="flex-grow min-w-0">
+                <h2 class="overflow-hidden text-base text-lg overflow-ellipsis">
+                  {displayableName(
+                    sale.buyerProfile.firstName,
+                    sale.buyerProfile.lastName
+                  )}
+                </h2>
+              </div>
+              <div
+                class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
+                <span class="inline-block">
+                  {dayjs(sale.createdAt).format("DD.MM.YYYY")}</span>
+              </div>
+              <!-- <div
+                  class="self-end text-right pl-2 {params.endTextBigClass} whitespace-nowrap"
+                  class:text-success="{!params.endTextBigClass}">
+                  <span>{params.endTextBig ? params.endTextBig : ""}</span>
+                </div> -->
+            </div>
+            <div
+              class="flex flex-row items-center justify-between px-3 text-left">
+              <div class="flex-grow leading-none">
+                <h2 class="overflow-hidden text-sm overflow-ellipsis">
+                  {#if sale.lines.length > 1}
+                    {sale.lines[0].offer.title} ..
+                  {:else}
+                    {sale.lines[0].offer.title}
+                  {/if}
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- <SimpleItemCard
         params="{{
           imageUrl: sale.lines[0].offer.pictureUrl,
           edgeless: true,
 
-          title: `Sale to ${displayableName(
+          title: `${displayableName(
             sale.buyerProfile.firstName,
             sale.buyerProfile.lastName
           )} - ${dayjs(sale.createdAt).format('DD.MM.YYYY')}`,
           action: () => push(`#/marketplace/my-sales/${sale.id}`),
           subTitle: `${sale.lines.map((line) => line.offer.title).join(', ')}`,
-          endTextBig: `${sale.total}  ⦿`,
+          endTextBig: '',
           endTextBigClass: 'text-2xl',
           endTextSmall: 'paid, not yet picked up',
           class: 'cursor-pointer',
-        }}" />
+        }}" /> -->
       <!-- <pre>{JSON.stringify(sale, null, 2)}</pre> -->
     {/each}
   {:else}

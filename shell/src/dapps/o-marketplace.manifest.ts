@@ -110,7 +110,7 @@ export const marketplace: DappManifest<DappState> = {
   isSingleton: true,
   isHidden: false,
   icon: "marketplace",
-  title: "Marketplace",
+  title: "Market",
   routeParts: ["=marketplace"],
   defaultRoute: ["market"],
   tag: Promise.resolve("alpha"),
@@ -146,6 +146,6 @@ export const marketplace: DappManifest<DappState> = {
     myPurchases,
     myPurchasesDetail,
     mySales,
-    mySaleDetail
+    mySaleDetail,
   ],
 };

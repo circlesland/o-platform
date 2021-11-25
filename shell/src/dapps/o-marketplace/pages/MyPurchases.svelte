@@ -16,6 +16,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import SimpleItemCard from "../atoms/SimpleItemCard.svelte";
 import { push } from "svelte-spa-router";
 import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
+import { displayableName } from "../../../shared/functions/stringHelper";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -98,6 +99,54 @@ onMount(async () => {
     </section>
   {:else if purchases.length}
     {#each purchases as purchase}
+      <section
+        on:click="{() => push(`#/marketplace/my-purchases/${purchase.id}`)}"
+        class="mb-3 cursor-pointer">
+        <div
+          class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-sm">
+          <div>
+            <div
+              class="relative w-16 h-16 overflow-hidden rounded-l-lg image-wrapper">
+              <img
+                src="{purchase.lines[0].offer.pictureUrl}"
+                alt="{purchase.lines[0].offer.title}"
+                class="absolute object-cover w-16 h-16 rounded-l-lg" />
+            </div>
+          </div>
+
+          <div class="flex-col flex-grow">
+            <div
+              class="flex flex-row items-center justify-between px-3 text-left">
+              <div class="flex-grow min-w-0">
+                <h2 class="overflow-hidden text-base overflow-ellipsis">
+                  {#if purchase.lines.length > 1}
+                    {purchase.lines[0].offer.title} ..
+                  {:else}
+                    {purchase.lines[0].offer.title}
+                  {/if}
+                </h2>
+              </div>
+              <div
+                class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
+                <span class="inline-block">
+                  {dayjs(purchase.createdAt).format("DD.MM.YYYY")}</span>
+              </div>
+            </div>
+            <div
+              class="flex flex-row items-center justify-between px-3 text-left">
+              <div class="flex-grow leading-none">
+                <h2 class="overflow-hidden text-sm overflow-ellipsis">
+                  {displayableName(
+                    purchase.invoices[0].sellerProfile.firstName,
+                    purchase.invoices[0].sellerProfile.lastName
+                  )}
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- 
       <SimpleItemCard
         params="{{
           imageUrl: purchase.lines[0].offer.pictureUrl,
@@ -114,7 +163,7 @@ onMount(async () => {
           endTextBigClass: 'text-2xl',
           endTextSmall: 'paid, not yet picked up',
           class: 'cursor-pointer',
-        }}" />
+        }}" /> -->
       <!-- <pre>{JSON.stringify(purchase, null, 2)}</pre> -->
     {/each}
   {:else}
