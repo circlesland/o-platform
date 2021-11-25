@@ -59,7 +59,7 @@ async function load() {
   }
 
   sale = o.payload.sales[0];
-  console.log("SALE ", sale);
+
   isLoading = false;
 
   actions = [

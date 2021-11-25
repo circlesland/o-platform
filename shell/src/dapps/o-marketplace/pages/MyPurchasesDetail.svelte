@@ -99,8 +99,7 @@ onMount(async () => {
       action: () => push(`#/friends/chat/${sellerProfile.circlesAddress}`),
     },
   ];
-  console.log("PURCH", purchase);
-  console.log("SELL", sellerProfile);
+
   if (purchase.invoices && purchase.invoices.length) {
     actions.push(
       {

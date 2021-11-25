@@ -79,7 +79,7 @@ onMount(async () => {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+<div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -100,6 +100,7 @@ onMount(async () => {
     </section>
   {:else if sales.length}
     {#each sales as sale}
+      {console.log("SALE ", sale)}
       <SimpleItemCard
         params="{{
           imageUrl: sale.lines[0].offer.pictureUrl,
