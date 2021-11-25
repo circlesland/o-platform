@@ -30,19 +30,11 @@ import NavigationList from "../../shared/molecules/NavigationList.svelte";
 import { Process } from "@o-platform/o-process/dist/interfaces/process";
 import { isMobile } from "../functions/isMobile";
 import { media } from "../stores/media";
-import {
-  fromCirclesLand,
-  FromCirclesLandContextData,
-} from "../../dapps/o-onboarding/processes/fromCirclesLand";
 import { me } from "../stores/me";
 import { getSessionInfo } from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 import { EventsDocument } from "../api/data/types";
-import { ShellEvent } from "@o-platform/o-process/dist/events/shellEvent";
-/*
-    left icons:
-    open: "simplearrowleft"
-    closed: "list";
-     */
+import {log} from "../logUiEvent";
+
 export let params: {
   dappId: string;
   "1": string | null;
@@ -71,8 +63,139 @@ let layout: RuntimeLayout = <RuntimeLayout>{
 let navigation: NavigationManifest;
 let currentNavArgs: GenerateNavManifestArgs;
 let preModalNavArgs: GenerateNavManifestArgs;
+
 let runningProcess: ProcessStarted;
+
+/**
+ * A stack of opened modal pages.
+ */
+const stack:{
+  dappId: string,
+  params: { [x: string]: any }
+}[] = [];
+
+async function onBack() {
+  log("onBack() - current stack: ", stack);
+  if (stack.length < 2) {
+    await onRoot();
+    return;
+  }
+  stack.pop();
+  const previous = stack[stack.length - 1];
+  log("onBack() - new stack: ", stack);
+
+  const previousContext: {
+    runtimeDapp: RuntimeDapp<any>,
+    routable: Page<any, any>,
+    params: {[x:string]:any}
+  } = {};
+
+  const previousDapp = findDappById(previous.dappId);
+  previousContext.runtimeDapp = previousDapp
+    ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
+    : null;
+
+  const routable = findRoutableByParams(previousContext.runtimeDapp, previous.params)
+  if (!routable.found) {
+    throw new Error(`The page from the back stack couldn't be found: ${JSON.stringify(previous)}`);
+  }
+  if (routable.routable.type != "page") {
+    throw new Error(`The page from the back stack is not a page: ${JSON.stringify(previous)}`)
+  }
+  previousContext.routable = <Page<any, any>>routable;
+  previousContext.params = previous.params;
+
+  console.log("onBack() - TODO: set the following context: ", previousContext);
+  const path = Object.keys(previous.params)
+    .filter(o => parseInt(o) != Number.NaN && o >= 0 && o <= 6)
+    .map(o => previous.params[o])
+    .filter(o => !!o && o != "")
+    .reduce((p,c) => p + "/" + c, "");
+
+  stack.pop();
+  await push(`#/${previous.params.dappId}${path}`);
+}
+
+async function onStay() {
+  log("onStay() - current stack: ", stack);
+  if (stack.length < 1) {
+    await onRoot();
+    return;
+  }
+  const previous = stack.pop();
+  log("onStay() - new stack: ", stack);
+
+  const previousContext: {
+    runtimeDapp: RuntimeDapp<any>,
+    routable: Page<any, any>,
+    params: {[x:string]:any}
+  } = {};
+
+  const previousDapp = findDappById(previous.dappId);
+  previousContext.runtimeDapp = previousDapp
+    ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
+    : null;
+
+  const routable = findRoutableByParams(previousContext.runtimeDapp, previous.params)
+  if (!routable.found) {
+    throw new Error(`The page from the back stack couldn't be found: ${JSON.stringify(previous)}`);
+  }
+  if (routable.routable.type != "page") {
+    throw new Error(`The page from the back stack is not a page: ${JSON.stringify(previous)}`)
+  }
+  previousContext.routable = <Page<any, any>>routable;
+  previousContext.params = previous.params;
+
+  console.log("onStay() - TODO: set the following context: ", previousContext);
+  const path = Object.keys(previous.params)
+    .filter(o => parseInt(o) != Number.NaN && o >= 0 && o <= 6)
+    .map(o => previous.params[o])
+    .filter(o => !!o && o != "")
+    .reduce((p,c) => p + "/" + c, "");
+
+  await push(`#/${previous.params.dappId}${path}`);
+  await handleUrlChanged();
+}
+
+async function onRoot() {
+  log("onRoot() - current stack: ", stack);
+  if (stack.length == 0) {
+    await onCloseModal();
+    return;
+  }
+  const root = stack[0];
+  log("onRoot() - new stack: ", stack);
+
+  const previousContext: {
+    runtimeDapp: RuntimeDapp<any>,
+    routable: Page<any, any>,
+    params: {[x:string]:any}
+  } = {};
+
+  const previousDapp = findDappById(root.dappId);
+  previousContext.runtimeDapp = previousDapp
+    ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
+    : null;
+
+  const routable = findDefaultRoute(previousContext.runtimeDapp);
+  if (!routable.found) {
+    throw new Error(`The page from the back stack couldn't be found: ${JSON.stringify(root)}`);
+  }
+  if (routable.routable.type != "page") {
+    throw new Error(`The page from the back stack is not a page: ${JSON.stringify(root)}`)
+  }
+
+  while (stack.length > 0) stack.pop();
+
+  const path = routable.routable.routeParts.map(o => o.replace("=", "")).join("/");
+  onCloseModal();
+  const dapp = previousDapp.dappId.substr(0, previousDapp.dappId.indexOf(":"));
+  await push(`#/${dapp}/${path}`)
+}
+
 function setNav(navArgs: GenerateNavManifestArgs) {
+  log(`setNav(navArgs: GenerateNavManifestArgs)`, navArgs);
+
   if (navArgs.centerIsOpen && !preModalNavArgs) {
     preModalNavArgs = currentNavArgs;
   }
@@ -80,10 +203,12 @@ function setNav(navArgs: GenerateNavManifestArgs) {
   navigation = generateNavManifest(args, null);
   currentNavArgs = args;
 }
+
 /**
  * This function is called only one time after the first route.
  */
 async function init() {
+  log(`init()`);
   const session = await getSessionInfo();
 
   if (session.isLoggedOn && session.hasProfile) {
@@ -133,6 +258,7 @@ async function init() {
 }
 
 function onOpenNavigation() {
+  log("onOpenNavigation()");
   layout = {
     ...layout,
     dialogs: {
@@ -158,6 +284,7 @@ function onOpenNavigation() {
   });
 }
 function onCloseNavigation() {
+  log("onCloseNavigation()");
   layout.dialogs.left = {
     ...layout.dialogs.left,
     isOpen: false,
@@ -174,7 +301,9 @@ function onOpenContacts() {
   push("#/friends/chat");
 }
 function onOpenModal() {
+  log("onOpenModal()");
   showModalPage(
+    false,
     runtimeDapp,
     <Page<any, any>>{
       position: "modal",
@@ -194,13 +323,17 @@ function onHome() {
   push("#/dashboard");
 }
 async function onCloseModal() {
+  log("onCloseModal()");
+
   await hideCenter();
+
   setNav({
     ...preModalNavArgs,
     notificationCount: $inbox ? $inbox.length : 0,
   });
 }
 function onRequestCloseModal() {
+  log("onRequestCloseModal()");
   if (!runningProcess) {
     onCloseModal();
     return;
@@ -215,6 +348,7 @@ function onRequestCloseModal() {
   process.sendEvent({ type: "process.cancelRequest" });
 }
 function onProcessCancelRequest() {
+  log("onProcessCancelRequest()");
   if (!runningProcess) {
     return;
   }
@@ -228,6 +362,7 @@ function onProcessCancelRequest() {
   process.sendEvent({ type: "process.cancelRequest" });
 }
 async function onRunProcess(event: any) {
+  log("onRunProcess(event: any)", event);
   const runProcessEvent = <RunProcess<any>>event;
   const runningProcess = await window.o.stateMachines.run(
     runProcessEvent.definition,
@@ -239,6 +374,13 @@ async function onRunProcess(event: any) {
   window.o.publishEvent(startedEvent);
 }
 async function onProcessStopped() {
+  log("onProcessStopped()");
+  // TODO: How to handle onProcessStopped() vs. onRoot()? Exit to the root page when a process stopped or go back to the last card?
+  //       Below is the "to last card" solution
+  await onStay();
+
+  // TODO: The following is the "to root" solution
+  /*
   await onCloseModal();
   if (preModalNavArgs) {
     setNav({
@@ -255,8 +397,11 @@ async function onProcessStopped() {
       rightIsOpen: false,
     });
   }
+  */
 }
+
 function onProcessContinued() {
+  log("onProcessContinued()");
   setNav({
     notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
@@ -266,6 +411,7 @@ function onProcessContinued() {
   });
 }
 function onProcessCanGoBack() {
+  log("onProcessCanGoBack()");
   setNav({
     notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
@@ -277,6 +423,7 @@ function onProcessCanGoBack() {
   });
 }
 function onProcessCanSkip() {
+  log("onProcessCanSkip()");
   setNav({
     notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
@@ -288,6 +435,7 @@ function onProcessCanSkip() {
   });
 }
 function onProcessBack() {
+  log("onProcessBack()");
   if (!runningProcess) {
     return;
   }
@@ -301,6 +449,7 @@ function onProcessBack() {
   process.sendAnswer({ type: "process.back" });
 }
 function onProcessSkip() {
+  log("onProcessSkip()");
   if (!runningProcess) {
     return;
   }
@@ -314,20 +463,33 @@ function onProcessSkip() {
   process.sendAnswer({ type: "process.skip" });
 }
 function onInputFocused() {
+  log("onInputFocused()");
   if (isMobile()) {
     document.body.classList.add("keyboard-open");
   }
   return;
 }
 function onInputBlurred() {
+  log("onInputBlurred()");
   if (isMobile()) {
     document.body.classList.remove("keyboard-open");
   }
   return;
 }
 onMount(async () => {
-  window.o.events.subscribe(async (event) => {
+  log("onMount()");
+
+  await window.o.events.subscribe(<any>(async (event) => {
+    log("DappFrame event: ", event);
     switch (event.type) {
+      case "shell.back":
+        onBack();
+        break;
+      case "shell.root":
+        onRoot();
+        break;
+      case "shell.forward":
+        break;
       case "process.continued":
         onProcessContinued();
         break;
@@ -387,7 +549,7 @@ onMount(async () => {
         runningProcess = null;
         break;
     }
-  });
+  }));
   // Set the global "runProcess" function. This needs to be done here
   // because at any point before the dialog wouldn't be ready.
   window.o.runProcess = async function runProcess(
@@ -396,6 +558,7 @@ onMount(async () => {
     dirtyFlags: { [x: string]: boolean } | undefined,
     onlyThesePages?: string[]
   ) {
+    log(`window.o.runProcess(processDefinition: ${processDefinition.name}) `, contextData);
     const modifier = async (ctx) => {
       ctx.childProcessDefinition = processDefinition;
       ctx.childContext = {
@@ -425,8 +588,10 @@ onMount(async () => {
   }
 });
 function showQuickActions() {
+  log(`showQuickActions()`);
   // setCloseAsNavCenter();
   showModalPage(
+    false,
     runtimeDapp,
     <Page<any, any>>{
       position: "modal",
@@ -460,6 +625,7 @@ $: {
   // }
 }
 function findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
+  log(`findDefaultRoute(runtimeDapp: ${runtimeDapp.dappId})`);
   // If no nextRoutable could be found then look for a default in the dapp
   const defaultRoutable = findRoutableByParams(runtimeDapp, {
     dappId: runtimeDapp.dappId,
@@ -477,31 +643,47 @@ function findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
       runtimeDapp.defaultRoute.length > 5 ? runtimeDapp.defaultRoute[5] : null,
   });
   if (defaultRoutable) {
-    return <FindRouteResult>{
+    const result = <FindRouteResult>{
       routable: defaultRoutable.routable,
       found: true,
       params: {
         ...defaultRoutable.params,
       },
     };
+    log(`findDefaultRoute(runtimeDapp: ${runtimeDapp.dappId}) - found: `, result);
+    return result;
   } else {
     return <FindRouteResult>{
       found: false,
     };
   }
 }
+let currentParams:{
+  dappId: string;
+  "1": string | null;
+  "2": string | null;
+  "3": string | null;
+  "4": string | null;
+  "5": string | null;
+  "6": string | null;
+} = null;
+
 let firstUrlChangedCall = true;
 async function handleUrlChanged() {
+  log(`handleUrlChanged()`);
   const navArgs = <GenerateNavManifestArgs>{};
   dapp = findDappById(params.dappId);
   runtimeDapp = dapp
     ? await RuntimeDapps.instance().getRuntimeDapp(dapp)
     : null;
+
   if (!runtimeDapp) {
     // throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
+    log(`handleUrlChanged() - Couldn't find a dapp with the id: ${params.dappId} - going to /`);
     await push("/");
     return;
   }
+
   const findRouteResult = findRoutableByParams(runtimeDapp, params);
   if (!findRouteResult.found) {
     throw new Error(
@@ -512,7 +694,12 @@ async function handleUrlChanged() {
       )}`
     );
   }
+
   routable = findRouteResult.routable;
+  log(`handleUrlChanged() - Found routable: ${routable.title} (type: ${routable.type})`);
+
+  currentParams = JSON.parse(JSON.stringify(params));
+
   if (findRouteResult.routable.type === "page") {
     const page: Page<any, any> = <any>findRouteResult.routable;
     if (page.position === "modal") {
@@ -530,7 +717,7 @@ async function handleUrlChanged() {
           // TODO: 404
         }
       }
-      showModalPage(runtimeDapp, page, findRouteResult.params);
+      showModalPage(true, runtimeDapp, page, findRouteResult.params);
       navArgs.centerIsOpen = true;
     } else {
       await hideCenter();
@@ -538,6 +725,7 @@ async function handleUrlChanged() {
       showMainPage(runtimeDapp, page, findRouteResult.params);
     }
   }
+
   window.o.publishEvent({
     type: "shell.routeChanged",
     runtimeDapp: runtimeDapp,
@@ -554,13 +742,16 @@ async function handleUrlChanged() {
       }
     }
   }
+
   if (!navigation) {
     navigation = generateNavManifest(navArgs, null);
   }
+
   if (firstUrlChangedCall) {
     firstUrlChangedCall = false;
     init();
   }
+
   // If the user is not logged-on return to the homepage
   const session = await getSessionInfo();
   if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
@@ -568,10 +759,13 @@ async function handleUrlChanged() {
     return;
   }
 }
+
 function showModalProcess(processId?: string) {
+  log(`showModalProcess(processId: ${processId ? processId : 'undefined'})`);
   modalContent = "process";
   const process = window.o.stateMachines.findById(processId);
   showModalPage(
+    false,
     runtimeDapp,
     <Page<any, any>>{
       component: ProcessContainer,
@@ -586,16 +780,28 @@ function showModalProcess(processId?: string) {
     rightIsOpen: false,
   });
 }
+
 let lastModalPage: {
   runtimeDapp: RuntimeDapp<any>;
   routable: Page<any, any>;
   params: { [x: string]: any };
 };
+
 function showModalPage(
+  pushToStack: boolean,
   runtimeDapp: RuntimeDapp<any>,
   routable: Page<any, any>,
   params: { [x: string]: any }
 ) {
+  log(`showModalPage(pushToStack: ${pushToStack}) - current stack:`, stack);
+  if (pushToStack) {
+    stack.push({
+      dappId: runtimeDapp.dappId,
+      params: currentParams
+    });
+  }
+  log(`showModalPage(pushToStack: ${pushToStack}) - new stack:`, stack);
+
   modalContent = "page";
   if (routable.type == "page" && routable.component !== ProcessContainer) {
     lastModalPage = {
@@ -622,6 +828,7 @@ function showModalPage(
     },
   };
   setNav({
+    canGoBack: stack.length > 1,
     centerIsOpen: true,
     centerContainsProcess: false,
     leftIsOpen: false,
@@ -634,6 +841,7 @@ function showMainPage(
   routable: Page<any, any>,
   params: { [x: string]: any }
 ) {
+  log(`showMainPage(runtimeDapp: ${runtimeDapp.dappId}, routable: ${routable.title} (type: ${routable.type}), params: object)`, params);
   layout = {
     ...layout,
     main: {
@@ -650,8 +858,19 @@ function showMainPage(
   };
   setNav(currentNavArgs);
 }
+
 async function hideCenter() {
+  log(`hideCenter()`);
+
   modalContent = "none";
+  layout = {
+    ...layout,
+    dialogs: {
+      ...layout.dialogs,
+      center: null,
+    }
+  };
+  /*
   if (
     layout.dialogs.center &&
     layout.dialogs.center.routable &&
@@ -664,6 +883,7 @@ async function hideCenter() {
     return;
   } else if (lastModalPage) {
     showModalPage(
+      false,
       lastModalPage.runtimeDapp,
       lastModalPage.routable,
       lastModalPage.params
@@ -678,11 +898,12 @@ async function hideCenter() {
       },
     };
   }
+   */
 }
 </script>
 
 <Layout
   layout="{layout}"
   navigation="{navigation}"
-  on:clickedOutside="{() => {}}"
+  on:clickedOutside="{() => {onRoot()}}"
   sliderPages="{[]}" />

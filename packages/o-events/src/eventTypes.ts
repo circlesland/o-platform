@@ -3,6 +3,9 @@ export type PlatformEventTypes =
   | "shell.runProcessInShell"
   | "shell.showModal"
   | "shell.openModal"
+  | "shell.back"
+  | "shell.forward"
+  | "shell.root"
   | "shell.openModalProcess"
   | "shell.begin"
   | "shell.progress"
@@ -59,3 +62,4 @@ export type PlatformEventTypes =
   // IPC
   | "process.ipc.bubble" // used with 'sendParent' to bubble events up to the top
   | "process.ipc.sinker"; // used with 'send' to sink down a result for a previously bubbled event
+

@@ -116,7 +116,7 @@ function generateCloseButton(
         icon: "close",
         action: () =>
           window.o.publishEvent({
-            type: "shell.closeModal",
+            type: "shell.root",
           }),
       },
     };
@@ -179,31 +179,6 @@ export function generateNavManifest(
         newManifest.navPill.left = null;
         newManifest.navPill.right = null;
       }
-
-      if (args.canGoBack) {
-        newManifest.navPill.left = {
-          component: ListComponent,
-          props: {
-            text: "back",
-            action: () =>
-              window.o.publishEvent({
-                type: "process.back",
-              }),
-          },
-        };
-      }
-      if (args.canSkip) {
-        newManifest.navPill.right = {
-          component: ListComponent,
-          props: {
-            text: "skip",
-            action: () =>
-              window.o.publishEvent({
-                type: "process.skip",
-              }),
-          },
-        };
-      }
     } else {
       if (args.showLogin) {
         newManifest.loginPill = generateCloseButton(false);
@@ -212,6 +187,31 @@ export function generateNavManifest(
         newManifest.navPill.left = null;
         newManifest.navPill.right = null;
       }
+    }
+
+    if (args.canGoBack) {
+      newManifest.navPill.left = {
+        component: ListComponent,
+        props: {
+          text: "back",
+          action: () =>
+            window.o.publishEvent({
+              type: args.centerContainsProcess ? "process.back" : "shell.back"
+            })
+        },
+      };
+    }
+    if (args.canSkip) {
+      newManifest.navPill.right = {
+        component: ListComponent,
+        props: {
+          text: "skip",
+          action: () =>
+            window.o.publishEvent({
+              type: args.centerContainsProcess ? "process.skip" : "shell.forward"
+            })
+        },
+      };
     }
   }
 
