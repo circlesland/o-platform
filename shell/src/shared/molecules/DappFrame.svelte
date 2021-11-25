@@ -63,7 +63,7 @@
   let navigation: NavigationManifest;
   let currentNavArgs: GenerateNavManifestArgs;
   let preModalNavArgs: GenerateNavManifestArgs;
-
+  let _scrollY: number;
   let runningProcess: ProcessStarted;
 
   /**
@@ -156,6 +156,39 @@
 
     await push(`#/${previous.params.dappId}${path}`);
     await handleUrlChanged();
+    window.scrollTo(0, previous.scrollY);
+  }
+
+  async function onRoot() {
+    log("onRoot() - current stack: ", stack);
+    if (stack.length == 0) {
+      await onCloseModal();
+      return;
+    }
+    const root = stack[0];
+    log("onRoot() - new stack: ", stack);
+
+    /*
+    const previousContext: {
+      runtimeDapp: RuntimeDapp<any>,
+      routable: Page<any, any>,
+      params: { [x: string]: any }
+    } = {};
+     */
+
+    const previousDapp = findDappById(root.dappId);
+    const previousRuntimeDapp = previousDapp
+      ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
+      : null;
+
+    let nextRoute = findNextRoute(previousRuntimeDapp, root);
+
+    while (stack.length > 0) stack.pop();
+
+    const path = nextRoute.routeParts.map(o => o.replace("=", "")).join("/");
+    onCloseModal();
+    await push(`#/${root.params.dappId}/${path}`);
+    window.scrollTo(0, root.scrollY);
   }
 
   function findNextRoute(previousRuntimeDapp: RuntimeDapp<any>, root: { params: { [p: string]: any }; scrollY: number }) {
@@ -197,38 +230,6 @@
       throw new Error(`Couldn't find the root. Stack item was: ${JSON.stringify(root)}`);
     }
     return nextRoute;
-  }
-
-  async function onRoot() {
-    log("onRoot() - current stack: ", stack);
-    if (stack.length == 0) {
-      await onCloseModal();
-      return;
-    }
-    const root = stack[0];
-    log("onRoot() - new stack: ", stack);
-
-    /*
-    const previousContext: {
-      runtimeDapp: RuntimeDapp<any>,
-      routable: Page<any, any>,
-      params: { [x: string]: any }
-    } = {};
-     */
-
-    const previousDapp = findDappById(root.dappId);
-    const previousRuntimeDapp = previousDapp
-      ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
-      : null;
-
-    let nextRoute = findNextRoute(previousRuntimeDapp, root);
-
-    while (stack.length > 0) stack.pop();
-
-    const path = nextRoute.routeParts.map(o => o.replace("=", "")).join("/");
-    onCloseModal();
-    await push(`#/${root.params.dappId}/${path}`);
-    window.scrollTo(0, root.scrollY);
   }
 
   function setNav(navArgs: GenerateNavManifestArgs) {
@@ -374,6 +375,7 @@
       ...preModalNavArgs,
       notificationCount: $inbox ? $inbox.length : 0,
     });
+    window.scrollTo(0, _scrollY);
   }
 
   function onRequestCloseModal() {
@@ -572,6 +574,7 @@
           onOpenContacts();
           break;
         case "shell.openModal":
+          _scrollY = window.scrollY;
           onOpenModal();
           break;
         case "shell.openModalProcess":
