@@ -189,7 +189,7 @@ export function generateNavManifest(
       }
     }
 
-    if (args.canGoBack) {
+    if (newManifest.navPill && args.canGoBack) {
       newManifest.navPill.left = {
         component: ListComponent,
         props: {
@@ -201,7 +201,7 @@ export function generateNavManifest(
         },
       };
     }
-    if (args.canSkip) {
+    if (newManifest.navPill && args.canSkip) {
       newManifest.navPill.right = {
         component: ListComponent,
         props: {
