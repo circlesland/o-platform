@@ -71,7 +71,8 @@ let runningProcess: ProcessStarted;
  */
 const stack:{
   dappId: string,
-  params: { [x: string]: any }
+  params: { [x: string]: any },
+  scrollY: number
 }[] = [];
 
 async function onBack() {
@@ -190,7 +191,8 @@ async function onRoot() {
   const path = routable.routable.routeParts.map(o => o.replace("=", "")).join("/");
   onCloseModal();
   const dapp = previousDapp.dappId.substr(0, previousDapp.dappId.indexOf(":"));
-  await push(`#/${dapp}/${path}`)
+  await push(`#/${dapp}/${path}`);
+  window.scrollTo(0, root.scrollY);
 }
 
 function setNav(navArgs: GenerateNavManifestArgs) {
@@ -480,6 +482,7 @@ function onInputBlurred() {
 }
 onMount(async () => {
   log("onMount()");
+
 
   await window.o.events.subscribe(<any>(async (event) => {
     log("DappFrame event: ", event);
@@ -800,7 +803,8 @@ function showModalPage(
   if (pushToStack) {
     stack.push({
       dappId: runtimeDapp.dappId,
-      params: currentParams
+      params: currentParams,
+      scrollY: window.scrollY
     });
   }
   log(`showModalPage(pushToStack: ${pushToStack}) - new stack:`, stack);
