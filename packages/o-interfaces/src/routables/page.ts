@@ -10,6 +10,10 @@ import {Routable} from "../routable";
 export interface Page<TParams extends {[x:string]:any}, TDappState extends {[x:string]:any}> extends Routable {
   type: "page",
   position?: ("main"|"modal"),
+  /**
+   * The route parts to the base page if the "position" of this page is "modal"
+   */
+  basePage?: string[];
   component?: any,
   jumplist?: Jumplist<TParams, TDappState>,
   isFullWidth?:boolean,
