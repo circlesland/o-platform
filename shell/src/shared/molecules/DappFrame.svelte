@@ -76,14 +76,14 @@
   }[] = [];
 
   async function onBack() {
-    log("onBack() - current stack: ", stack);
+    log("onBack() - current stack: ", JSON.stringify(stack, null, 2));
     if (stack.length < 2) {
       await onRoot();
       return;
     }
     stack.pop();
     const previous = stack[stack.length - 1];
-    log("onBack() - new stack: ", stack);
+    log("onBack() - new stack: ", JSON.stringify(stack, null, 2));
 
     const previousContext: {
       runtimeDapp: RuntimeDapp<any>,
@@ -113,18 +113,18 @@
       .filter(o => !!o && o != "")
       .reduce((p, c) => p + "/" + c, "");
 
-    stack.pop();
+    //stack.pop();
     await push(`#/${previous.params.dappId}${path}`);
   }
 
   async function onStay() {
-    log("onStay() - current stack: ", stack);
+    log("onStay() - current stack: ", JSON.stringify(stack, null, 2));
     if (stack.length < 1) {
       await onRoot();
       return;
     }
     const previous = stack.pop();
-    log("onStay() - new stack: ", stack);
+    log("onStay() - new stack: ", JSON.stringify(stack, null, 2));
 
     const previousContext: {
       runtimeDapp: RuntimeDapp<any>,
@@ -154,19 +154,19 @@
       .filter(o => !!o && o != "")
       .reduce((p, c) => p + "/" + c, "");
 
-    await push(`#/${previous.params.dappId}${path}`);
+    //await push(`#/${previous.params.dappId}${path}`);
     await handleUrlChanged();
     window.scrollTo(0, previous.scrollY);
   }
 
   async function onRoot() {
-    log("onRoot() - current stack: ", stack);
+    log("onRoot() - current stack: ", JSON.stringify(stack, null, 2));
     if (stack.length == 0) {
       await onCloseModal();
       return;
     }
     const root = stack[0];
-    log("onRoot() - new stack: ", stack);
+    log("onRoot() - new stack: ", JSON.stringify(stack, null, 2));
 
     /*
     const previousContext: {
@@ -776,13 +776,6 @@
         if (!layout.main) {
           // Check if the modal page was called directly. In this case the default main
           // page of the corresponding dapp must be loaded as well.
-          /*if (stack.length == 0) {
-            stack.push({
-              params: JSON.parse(JSON.stringify(params)),
-              scrollY: window.scrollY,
-              dappId: runtimeDapp.dappId
-            });
-          }*/
           const defaultRoute = findNextRoute(runtimeDapp, {
             params: params,
             scrollY: 0
@@ -873,7 +866,11 @@
     routable: Page<any, any>,
     params: { [x: string]: any }
   ) {
-    log(`showModalPage(pushToStack: ${pushToStack}) - current stack:`, stack);
+    log(`showModalPage(pushToStack: ${pushToStack}) - current stack:`, JSON.stringify(stack, null, 2));
+    if (stack.length > 0) {
+      const last = stack[stack.length - 1];
+      pushToStack = !(last.dappId == runtimeDapp.dappId && JSON.stringify(currentParams) == JSON.stringify(last.params));
+    }
     if (pushToStack) {
       stack.push({
         dappId: runtimeDapp.dappId,
@@ -881,7 +878,7 @@
         scrollY: window.scrollY
       });
     }
-    log(`showModalPage(pushToStack: ${pushToStack}) - new stack:`, stack);
+    log(`showModalPage(pushToStack: ${pushToStack}) - new stack:`, JSON.stringify(stack, null, 2));
 
     modalContent = "page";
     if (routable.type == "page" && routable.component !== ProcessContainer) {

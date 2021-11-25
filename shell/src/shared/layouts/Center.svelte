@@ -16,8 +16,6 @@ const sub = window.o.events.subscribe((event) => {
 });
 
 function gotoBottom(id) {
-  console.log("scrollContent", scrollContent);
-  console.log("scrollContent element", scrollContent.getScrollElement());
   scrollContent.getScrollElement().scrollTo(0, 100000);
 }
 
