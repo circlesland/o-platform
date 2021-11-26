@@ -1,6 +1,5 @@
 <script lang="ts">
 import Icons from "./../molecules/Icons.svelte";
-import { isMobile } from "src/shared/functions/isMobile";
 import { media } from "../stores/media";
 
 export let props: {

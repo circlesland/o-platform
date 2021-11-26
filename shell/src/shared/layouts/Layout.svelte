@@ -5,9 +5,9 @@ import RightDesktop from "./desktop/Right.svelte";
 import Center from "./Center.svelte";
 import NextNav from "src/shared/molecules/NextNav/NextNav.svelte";
 import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
-import { isMobile } from "src/shared/functions/isMobile";
+
 import { RuntimeLayout } from "./layout";
-import Pager from "src/shared/molecules/Pager.svelte";
+
 import "simplebar";
 import "simplebar/dist/simplebar.css";
 import { createEventDispatcher } from "svelte";
@@ -20,14 +20,6 @@ const eventDispatcher = createEventDispatcher();
 export let layout: RuntimeLayout;
 export let navigation: NavigationManifest;
 
-const sliderPages = [
-  /*{
-    export const sliderPages = [/*{
-        title: "Item 1"
-    },{
-        title: "Item 2"
-    }*/
-];
 $: {
   console.log("LayoutChanged:", layout);
   if (
@@ -64,9 +56,6 @@ function onkeydown(e: KeyboardEvent) {
 {#if layout}
   <div class="absolute flex flex-row w-full overflow-auto">
     <main class="relative z-30 w-full overflow-auto overflow-hidden">
-      {#if sliderPages && sliderPages.length > 0}
-        <Pager pages="{sliderPages}" />
-      {/if}
       <div
         class="flex flex-row w-full bg-gray-100 mainContent"
         class:mb-16="{layout.dialogs.center &&
@@ -163,19 +152,6 @@ function onkeydown(e: KeyboardEvent) {
         {...layout.dialogs.center.params ? layout.dialogs.center.params : {}} />
     </Center>
   {/if}
-{/if}
-
-{#if !isMobile()}
-  <style>
-  nav.carousel:hover {
-    @apply cursor-default;
-  }
-
-  /* Hide the radio button */
-  nav.carousel input[type="radio"] {
-    display: none;
-  }
-  </style>
 {/if}
 
 <style>

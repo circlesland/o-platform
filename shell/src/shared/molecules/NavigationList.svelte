@@ -5,7 +5,6 @@ import { onMount } from "svelte";
 import LinkPill from "src/shared/atoms/LinkPill.svelte";
 import { getRouteList } from "src/shared/functions/getRouteList";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { isMobile } from "../functions/isMobile";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: RuntimeDapp<any>;
