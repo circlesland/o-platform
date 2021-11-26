@@ -103,17 +103,17 @@
       } else if (o.token_address == "0x63e62989d9eb2d37dfdb1f93a22f063635b07d51") {
         o.token_symbol = "MIVA";
         o.token_image = "/logos/miva.png";
-        o.token_balance = RpcGateway.get().utils.fromWei(o.token_balance, "ether");
+        o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
       }  else if (o.token_address == "0x62f5caa239a97b21aa61502963cf8c33f8182e79") {
         o.token_symbol = "ARTIS";
         o.token_image = "/logos/artis.png";
-        o.token_balance = RpcGateway.get().utils.fromWei(o.token_balance, "ether");
+        o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
       }  else if (o.token_address == "0x5227e8810281482f25454a8f00ea871589fc040e") {
         o.token_symbol = "HUMAN";
         o.token_image = "/logos/hmn.png";
-        o.token_balance = RpcGateway.get().utils.fromWei(o.token_balance, "ether");
+        o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
       } else {
-        o.token_balance = RpcGateway.get().utils.fromWei(o.token_balance, "ether");
+        o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
       }
       return o;
     });
