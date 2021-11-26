@@ -1,17 +1,24 @@
 <script lang="ts">
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import Card from "src/shared/atoms/Card.svelte";
-  import { BN } from "ethereumjs-util";
+  import {BN} from "ethereumjs-util";
   import AssetCard from "../atoms/AssetCard.svelte";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import { onMount } from "svelte";
-  import { me } from "../../../shared/stores/me";
-  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import { KeyManager } from "../../o-passport/data/keyManager";
-  import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {onMount} from "svelte";
+  import {me} from "../../../shared/stores/me";
+  import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+  import {KeyManager} from "../../o-passport/data/keyManager";
+  import {displayCirclesAmount} from "src/shared/functions/displayCirclesAmount";
   import Web3 from "web3";
-  import {AggregatesDocument, AggregateType, CrcBalances, ProfileAggregate} from "../../../shared/api/data/types";
+  import {
+    AggregatesDocument,
+    AggregateType, AssetBalance,
+    CrcBalances,
+    Erc20Balances,
+    ProfileAggregate
+  } from "../../../shared/api/data/types";
+  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -36,15 +43,7 @@
     details: [],
   };
 
-  let erc20 = {
-    symbol: "erc20",
-    icon: "",
-    balance: "ß",
-    variety: 0,
-    title: "ERC-20",
-    description: "",
-    details: [],
-  };
+  let erc20DisplayBalances: AssetBalance[] = [];
 
   async function getBalances(safeAddress: string) {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -95,23 +94,20 @@
     );
     circles.variety = circles.details.length;
 
-    erc20.details = balances.erc20Balances.payload.balances;
-    erc20.symbol = "erc20";
-    erc20.balance = "0";
-    erc20.variety = erc20.details.length;
+    erc20DisplayBalances = Object.values(balances.erc20Balances.payload.balances);
 
     const safeBalance = await RpcGateway.get().eth.getBalance($me.circlesAddress);
     const km = new KeyManager($me.circlesAddress);
     await km.load();
     const eoaBalance = await RpcGateway.get().eth.getBalance(
-      km.torusKeyAddress
+            km.torusKeyAddress
     );
 
     xdai.balance = Number.parseFloat(
-      Web3.utils.fromWei(
-        new BN(safeBalance).add(new BN(eoaBalance)).toString(),
-        "ether"
-      )
+            Web3.utils.fromWei(
+                    new BN(safeBalance).add(new BN(eoaBalance)).toString(),
+                    "ether"
+            )
     ).toFixed(2);
 
     loading = false;
@@ -131,7 +127,7 @@
       </Card>
     </section>
   {:else}
-    {#each [circles, xdai, erc20] as token}
+    {#each [circles, xdai] as token}
       <AssetCard
         symbol="{token.symbol}"
         title="{token.title}"
@@ -140,5 +136,27 @@
         description="{token.description}"
         details="{token.details}" />
     {/each}
+
+
+    <!-- all other ERC20s -->
+    {#each erc20DisplayBalances as token}
+      {#if token && token.token_balance > 0}
+        <div>
+          <ItemCard
+                  params={{
+              edgeless: false,
+              imageProfile: {
+                circlesAddress: token.token_address,
+              },
+              title: 'ERC-20',
+              subTitle: token.token_address,
+              shadowSmall: true,
+              noLink: true,
+              endTextBig: RpcGateway.get().utils.fromWei(token.token_balance, "ether")
+          }} />
+        </div>
+      {/if}
+    {/each}
+
   {/if}
 </div>

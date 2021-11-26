@@ -212,6 +212,9 @@ import { initMachine } from "./dapps/o-onboarding/processes/init";
 import {ubiMachine} from "./shared/ubiTimer2";
 import {followTrust} from "./shared/stores/inbox";
 import {me} from "./shared/stores/me";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import {ImportOrganisationsDocument} from "./shared/api/data/types";
 
 /*
   RpcGateway.get().eth.getPendingTransactions().then(o => {
