@@ -94,7 +94,17 @@
     );
     circles.variety = circles.details.length;
 
-    erc20DisplayBalances = Object.values(balances.erc20Balances.payload.balances);
+    erc20DisplayBalances = <any>Object.values(balances.erc20Balances.payload.balances)
+    .map(o => {
+      if (o.token_address == "0x9ee40742182707467f78344f6b287be8704f27e2") {
+        o.token_symbol = "EURS";
+        o.token_image = "/logos/eurs.png";
+        o.token_balance = (parseFloat(o.token_balance) / 100).toFixed(2);
+      } else {
+        o.token_balance = RpcGateway.get().utils.fromWei(o.token_balance, "ether");
+      }
+      return o;
+    });
 
     const safeBalance = await RpcGateway.get().eth.getBalance($me.circlesAddress);
     const km = new KeyManager($me.circlesAddress);
@@ -146,13 +156,14 @@
                   params={{
               edgeless: false,
               imageProfile: {
+                avatarUrl: token.token_image,
                 circlesAddress: token.token_address,
               },
-              title: 'ERC-20',
+              title: token.token_symbol ? token.token_symbol : "ERC-20",
               subTitle: token.token_address,
               shadowSmall: true,
               noLink: true,
-              endTextBig: RpcGateway.get().utils.fromWei(token.token_balance, "ether")
+              endTextBig: token.token_balance
           }} />
         </div>
       {/if}
