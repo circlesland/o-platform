@@ -409,3 +409,13 @@ mutation upsertRegion($organisation: UpsertOrganisationInput!) {
     }
   }
 }
+
+mutation importOrganisations {
+  importOrganisationsOfAccount {
+    id
+    circlesAddress
+    name
+    description
+    avatarUrl
+  }
+}

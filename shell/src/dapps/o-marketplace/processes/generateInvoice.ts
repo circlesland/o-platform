@@ -1,5 +1,6 @@
 import fs from "fs";
-import { PDFDocument } from "pdfkit";
+import PDFDocument from "pdfkit";
+import {Invoice} from "../../../shared/api/data/types";
 
 const margin = 30;
 const marginx = 50;
@@ -44,7 +45,31 @@ export let invoice;
 //   transactionHash: "TBD",
 // };
 
-function createInvoice(invoice, path) {
+function createInvoice(invoice: {
+  invoice_nr: string,
+  invoice_date: string,
+  transferTime: string,
+  transactionHash: string,
+  salesTax: {
+    name: string,
+    value: number
+  }[],
+  subtotal: number,
+  timeCirclesTotal: number,
+  buyer: {
+    postal_code: string, name: string, address: string, city: string, country: string, safe_address: string
+  },
+  seller: {
+    postal_code: string, name: string, address: string, city: string, country: string, safe_address: string
+  },
+  items: {
+    amount: number
+    offer: {
+      title: string,
+      pricePerUnit: number
+    }
+  }[]
+}, path) {
   let doc = new PDFDocument({
     size: "A4",
     margins: { top: margin, left: margin, bottom: 10, right: 50 },

@@ -1,10 +1,8 @@
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { prompt } from "@o-platform/o-process/dist/states/prompt";
+import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext"
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import { UpsertProfileDocument } from "../../../../shared/api/data/types";
+import {ImportOrganisationsDocument, UpsertProfileDocument} from "../../../../shared/api/data/types";
 import { promptChoice } from "../../../o-passport/processes/identify/prompts/promptChoice";
 import ButtonStackSelector from "@o-platform/o-editors/src/ButtonStackSelector.svelte";
 import { UpsertRegistrationContext } from "../registration/promptRegistration";
@@ -67,14 +65,7 @@ const processDefinition = (processId: string) =>
             target: "#importSafe",
             class: "btn btn-outline",
             action: (context) => {},
-          },
-          // {
-          //   key: "importCirclesGarden",
-          //   label: "Import my circles.garden profile",
-          //   target: "#importCirclesGarden",
-          //   class: "btn btn-outline",
-          //   action: (context) => {},
-          // },
+          }
         ],
         navigation: {
           canGoBack: () => false,
@@ -149,6 +140,12 @@ const processDefinition = (processId: string) =>
             window.o.runProcess(connectSafe, {
               successAction: innerSuccessAction,
             });
+
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const importedOrganisations = await apiClient.mutate({
+              mutation: ImportOrganisationsDocument
+            });
+            console.log("importedOrganisations:", importedOrganisations);
           },
           onDone: "success",
         },

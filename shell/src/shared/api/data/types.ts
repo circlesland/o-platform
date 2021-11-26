@@ -285,7 +285,7 @@ export type EthTransfer = IEventPayload & {
   value: Scalars['String'];
 };
 
-export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | Purchased | WelcomeMessage;
+export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | SaleEvent | WelcomeMessage;
 
 export enum EventType {
   ChatMessage = 'ChatMessage',
@@ -304,7 +304,7 @@ export enum EventType {
   MembershipOffer = 'MembershipOffer',
   MembershipRejected = 'MembershipRejected',
   OrganisationCreated = 'OrganisationCreated',
-  Purchased = 'Purchased',
+  SaleEvent = 'SaleEvent',
   WelcomeMessage = 'WelcomeMessage'
 }
 
@@ -373,6 +373,8 @@ export type Invoice = {
   __typename?: 'Invoice';
   buyerAddress: Scalars['String'];
   buyerProfile?: Maybe<Profile>;
+  buyerSignature?: Maybe<Scalars['Boolean']>;
+  buyerSignedDate?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   lines: Array<InvoiceLine>;
   paymentTransactionHash?: Maybe<Scalars['String']>;
@@ -381,6 +383,8 @@ export type Invoice = {
   purchaseId: Scalars['Int'];
   sellerAddress: Scalars['String'];
   sellerProfile?: Maybe<Profile>;
+  sellerSignature?: Maybe<Scalars['Boolean']>;
+  sellerSignedDate?: Maybe<Scalars['String']>;
 };
 
 export type InvoiceLine = {
@@ -474,6 +478,7 @@ export type Mutation = {
   createTestInvitation: CreateInvitationResult;
   depositChallenge: DepositChallengeResponse;
   exchangeToken: ExchangeTokenResponse;
+  importOrganisationsOfAccount: Array<Organisation>;
   logout: LogoutResponse;
   proofPayment?: Maybe<ProofPaymentResult>;
   purchase: Array<Invoice>;
@@ -771,14 +776,6 @@ export type PurchaseLineInput = {
   offerId: Scalars['Int'];
 };
 
-export type Purchased = IEventPayload & {
-  __typename?: 'Purchased';
-  buyer: Scalars['String'];
-  buyer_profile?: Maybe<Profile>;
-  purchase?: Maybe<Purchase>;
-  transaction_hash?: Maybe<Scalars['String']>;
-};
-
 export type Purchases = IAggregatePayload & {
   __typename?: 'Purchases';
   lastUpdatedAt: Scalars['String'];
@@ -988,6 +985,14 @@ export type Sale = {
   sellerAddress: Scalars['String'];
   sellerProfile?: Maybe<Profile>;
   total: Scalars['String'];
+};
+
+export type SaleEvent = IEventPayload & {
+  __typename?: 'SaleEvent';
+  buyer: Scalars['String'];
+  buyer_profile?: Maybe<Profile>;
+  invoice?: Maybe<Invoice>;
+  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type Sales = IAggregatePayload & {
@@ -1341,7 +1346,7 @@ export type SendMessageMutation = (
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
-      ) | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'WelcomeMessage' }> }
+      ) | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
     )> }
   ) }
 );
@@ -1516,6 +1521,17 @@ export type UpsertRegionMutation = (
   ) }
 );
 
+export type ImportOrganisationsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ImportOrganisationsMutation = (
+  { __typename?: 'Mutation' }
+  & { importOrganisationsOfAccount: Array<(
+    { __typename?: 'Organisation' }
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'name' | 'description' | 'avatarUrl'>
+  )> }
+);
+
 export type SessionInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1614,7 +1630,7 @@ export type HubSignupTransactionQuery = (
     & { payload?: Maybe<{ __typename?: 'ChatMessage' } | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | (
       { __typename?: 'CrcSignup' }
       & Pick<CrcSignup, 'token'>
-    ) | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'WelcomeMessage' }> }
+    ) | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
   )> }
 );
 
@@ -1846,7 +1862,7 @@ export type ProfileBySafeAddressQuery = (
       ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
         { __typename?: 'CrcTrust' }
         & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
-      ) | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'WelcomeMessage' }> }
+      ) | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
     )>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
@@ -2097,28 +2113,21 @@ export type StreamQuery = (
         & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress'>
       )> }
     ) | (
-      { __typename?: 'Purchased' }
-      & Pick<Purchased, 'buyer'>
+      { __typename?: 'SaleEvent' }
+      & Pick<SaleEvent, 'buyer'>
       & { buyer_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-      )>, purchase?: Maybe<(
-        { __typename?: 'Purchase' }
-        & Pick<Purchase, 'id'>
+      )>, invoice?: Maybe<(
+        { __typename?: 'Invoice' }
+        & Pick<Invoice, 'id'>
         & { lines: Array<(
-          { __typename?: 'PurchaseLine' }
-          & Pick<PurchaseLine, 'amount'>
+          { __typename?: 'InvoiceLine' }
+          & Pick<InvoiceLine, 'amount'>
           & { offer: (
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'title' | 'pictureUrl'>
           ) }
-        )>, invoices: Array<(
-          { __typename?: 'Invoice' }
-          & Pick<Invoice, 'sellerAddress' | 'pickupCode'>
-          & { sellerProfile?: Maybe<(
-            { __typename?: 'Profile' }
-            & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
-          )> }
         )> }
       )> }
     ) | (
@@ -2726,6 +2735,17 @@ export const UpsertRegionDocument = gql`
       description
       name
     }
+  }
+}
+    `;
+export const ImportOrganisationsDocument = gql`
+    mutation importOrganisations {
+  importOrganisationsOfAccount {
+    id
+    circlesAddress
+    name
+    description
+    avatarUrl
   }
 }
     `;
@@ -3480,7 +3500,7 @@ export const StreamDocument = gql`
           circlesAddress
         }
       }
-      ... on Purchased {
+      ... on SaleEvent {
         buyer
         buyer_profile {
           type
@@ -3489,7 +3509,7 @@ export const StreamDocument = gql`
           avatarUrl
           circlesAddress
         }
-        purchase {
+        invoice {
           id
           lines {
             amount
@@ -3497,18 +3517,6 @@ export const StreamDocument = gql`
               id
               title
               pictureUrl
-            }
-          }
-          invoices {
-            sellerAddress
-            pickupCode
-            sellerProfile {
-              type
-              id
-              circlesAddress
-              firstName
-              lastName
-              avatarUrl
             }
           }
         }
@@ -3861,6 +3869,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     upsertRegion(variables: UpsertRegionMutationVariables): Promise<UpsertRegionMutation> {
       return withWrapper(() => client.request<UpsertRegionMutation>(print(UpsertRegionDocument), variables));
+    },
+    importOrganisations(variables?: ImportOrganisationsMutationVariables): Promise<ImportOrganisationsMutation> {
+      return withWrapper(() => client.request<ImportOrganisationsMutation>(print(ImportOrganisationsDocument), variables));
     },
     sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
       return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));

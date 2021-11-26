@@ -791,7 +791,7 @@ query stream(
           circlesAddress
         }
       }
-      ... on Purchased {
+      ... on SaleEvent {
         buyer
         buyer_profile {
           type
@@ -800,7 +800,7 @@ query stream(
           avatarUrl
           circlesAddress
         }
-        purchase {
+        invoice {
           id
           lines {
             amount
@@ -808,18 +808,6 @@ query stream(
               id
               title
               pictureUrl
-            }
-          }
-          invoices {
-            sellerAddress
-            pickupCode
-            sellerProfile {
-              type
-              id
-              circlesAddress
-              firstName
-              lastName
-              avatarUrl
             }
           }
         }

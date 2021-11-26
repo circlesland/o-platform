@@ -89,7 +89,8 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "workbox-webpack-plugin": "^6.0.2",
-    "pdfkit": "^0.13.0"
+    "pdfkit": "^0.13.0",
+    "@types/pdfkit": "^0.12.3"
   },
   "browserslist": [
     "defaults"

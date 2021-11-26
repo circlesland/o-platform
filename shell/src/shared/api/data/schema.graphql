@@ -26,7 +26,7 @@ interface IEventPayload {
 
 union AggregatePayload = Contacts | CrcBalances | Erc20Balances | Members | Memberships | Offers | Purchases | Sales
 
-union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | Purchased | WelcomeMessage
+union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | SaleEvent | WelcomeMessage
 
 union ProfileOrOrganisation = Organisation | Profile
 
@@ -275,6 +275,8 @@ type InvitationRedeemed implements IEventPayload {
 type Invoice {
     buyerAddress: String!
     buyerProfile: Profile
+    buyerSignature: Boolean
+    buyerSignedDate: String
     id: Int!
     lines: [InvoiceLine!]!
     paymentTransactionHash: String
@@ -283,6 +285,8 @@ type Invoice {
     purchaseId: Int!
     sellerAddress: String!
     sellerProfile: Profile
+    sellerSignature: Boolean
+    sellerSignedDate: String
 }
 
 type InvoiceLine {
@@ -366,6 +370,7 @@ type Mutation {
     createTestInvitation: CreateInvitationResult!
     depositChallenge(jwt: String!): DepositChallengeResponse!
     exchangeToken: ExchangeTokenResponse!
+    importOrganisationsOfAccount: [Organisation!]!
     logout: LogoutResponse!
     proofPayment(purchaseId: Int!, transactionHash: String!): ProofPaymentResult
     purchase(lines: [PurchaseLineInput!]!): [Invoice!]!
@@ -496,13 +501,6 @@ type PurchaseLine {
     offer: Offer!
 }
 
-type Purchased implements IEventPayload {
-    buyer: String!
-    buyer_profile: Profile
-    purchase: Purchase
-    transaction_hash: String
-}
-
 type Purchases implements IAggregatePayload {
     lastUpdatedAt: String!
     purchases: [Purchase!]!
@@ -576,6 +574,13 @@ type Sale {
     sellerAddress: String!
     sellerProfile: Profile
     total: String!
+}
+
+type SaleEvent implements IEventPayload {
+    buyer: String!
+    buyer_profile: Profile
+    invoice: Invoice
+    transaction_hash: String
 }
 
 type Sales implements IAggregatePayload {
@@ -706,7 +711,7 @@ enum EventType {
     MembershipOffer
     MembershipRejected
     OrganisationCreated
-    Purchased
+    SaleEvent
     WelcomeMessage
 }
 
