@@ -517,6 +517,7 @@ type Query {
     hubSignupTransaction: ProfileEvent
     initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
+    invoice(purchaseId: Int!): String
     mostRecentUbiSafeOfAccount(account: String!): String
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
@@ -652,6 +653,7 @@ type TrustRelation {
 
 type UbiInfo {
     lastTransactionAt: String
+    randomValue: String
     tokenAddress: String
 }
 

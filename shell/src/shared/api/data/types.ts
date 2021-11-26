@@ -799,6 +799,7 @@ export type Query = {
   hubSignupTransaction?: Maybe<ProfileEvent>;
   initAggregateState?: Maybe<InitAggregateState>;
   invitationTransaction?: Maybe<ProfileEvent>;
+  invoice?: Maybe<Scalars['String']>;
   mostRecentUbiSafeOfAccount?: Maybe<Scalars['String']>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
@@ -854,6 +855,11 @@ export type QueryEventsArgs = {
 
 export type QueryFindSafeAddressByOwnerArgs = {
   owner: Scalars['String'];
+};
+
+
+export type QueryInvoiceArgs = {
+  purchaseId: Scalars['Int'];
 };
 
 
@@ -1096,6 +1102,7 @@ export type TrustRelation = {
 export type UbiInfo = {
   __typename?: 'UbiInfo';
   lastTransactionAt?: Maybe<Scalars['String']>;
+  randomValue?: Maybe<Scalars['String']>;
   tokenAddress?: Maybe<Scalars['String']>;
 };
 
@@ -1782,7 +1789,7 @@ export type UbiInfoQuery = (
   { __typename?: 'Query' }
   & { ubiInfo: (
     { __typename?: 'UbiInfo' }
-    & Pick<UbiInfo, 'lastTransactionAt' | 'tokenAddress'>
+    & Pick<UbiInfo, 'lastTransactionAt' | 'tokenAddress' | 'randomValue'>
   ) }
 );
 
@@ -3038,6 +3045,7 @@ export const UbiInfoDocument = gql`
   ubiInfo {
     lastTransactionAt
     tokenAddress
+    randomValue
   }
 }
     `;

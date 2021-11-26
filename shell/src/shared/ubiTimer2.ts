@@ -12,25 +12,27 @@ export type UbiTimerContext = {
 
 export type UbiEvents = {
   type: "GOT_PREVIOUS_PAYOUT",
-  lastPayoutAt: Date
+  lastPayoutAt: Date,
+  randomValue: String
 } | {
   type: "NO_PREVIOUS_PAYOUT",
+  randomValue: String
 }
 
 export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
   id: `ubi`,
-  initial: "waitFor60Seconds",
+  initial: "waitFor5Seconds",
   context: {
     nextUbiAt: null,
     tokenAddress: null
   },
   states: {
-    waitFor60Seconds: {
+    waitFor5Seconds: {
       entry: (context, event) => {
         console.log("Waiting for 60 sec. until next UBI-retrieval try. Previous event was:", event);
       },
       after: {
-        60000: "checkLastPayout"
+        5000: "checkLastPayout"
       }
     },
     checkLastPayout: {
@@ -58,18 +60,20 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
       entry: "clearContext",
       invoke: {
         src: "getUbi",
-        onDone: "waitFor60Seconds",
-        onError: "waitFor60Seconds"
+        onDone: "waitFor5Seconds",
+        onError: "waitFor5Seconds"
       }
     }
   }
 }, {
   guards: {
-    previousPayoutIsNewerThan24Hours: (ctx, event: {type: "GOT_PREVIOUS_PAYOUT", lastPayoutAt:Date}) => Date.now() < event.lastPayoutAt.getTime() + (24 * 60 * 60 * 1000),
-    previousPayoutIsOlderThan24Hours: (ctx, event: {type: "GOT_PREVIOUS_PAYOUT", lastPayoutAt:Date}) => Date.now() >= event.lastPayoutAt.getTime() + (24 * 60 * 60 * 1000)
+    previousPayoutIsNewerThan24Hours: (ctx, event: {type: "GOT_PREVIOUS_PAYOUT", lastPayoutAt:Date, randomValue:string}) => Date.now() < event.lastPayoutAt.getTime() + (24 * 60 * 60 * 1000),
+    previousPayoutIsOlderThan24Hours: (ctx, event: {type: "GOT_PREVIOUS_PAYOUT", lastPayoutAt:Date, randomValue:string}) => Date.now() >= event.lastPayoutAt.getTime() + (24 * 60 * 60 * 1000)
   },
   delays: {
-    NEXT_UBI_DELAY: (context, event) => context.nextUbiAt - Date.now()
+    NEXT_UBI_DELAY: (context, event) => {
+      return context.nextUbiAt - Date.now();
+    }
   },
   services: {
     getUbi: async (context) => {
@@ -104,12 +108,14 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
       }
       if ((result.errors && result.errors.length) || !result.data.ubiInfo.lastTransactionAt) {
         callback({
-          type: "NO_PREVIOUS_PAYOUT"
+          type: "NO_PREVIOUS_PAYOUT",
+          randomValue: result.data.ubiInfo.randomValue
         });
       } else {
         callback({
           type: "GOT_PREVIOUS_PAYOUT",
-          lastPayoutAt: new Date(parseFloat(result.data.ubiInfo.lastTransactionAt))
+          lastPayoutAt: new Date(parseFloat(result.data.ubiInfo.lastTransactionAt)),
+          randomValue: result.data.ubiInfo.randomValue
         });
       }
     }
@@ -122,7 +128,7 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
     calculateAndAssignNextUbiAt: assign({
       nextUbiAt: (ctx, event:UbiEvents) => {
         const nextUbiAt = event.type === "GOT_PREVIOUS_PAYOUT"
-          ? event.lastPayoutAt.getTime() + (24 * 60 * 60 * 1000)
+          ? event.lastPayoutAt.getTime() + (24 * 60 * 60 * 1000) + Math.ceil((event.randomValue.charCodeAt(0) - 32) * 1000)
           : null;
         console.log("nextUbiAt:", nextUbiAt);
         return nextUbiAt;
