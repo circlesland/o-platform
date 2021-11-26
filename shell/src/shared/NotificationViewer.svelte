@@ -10,14 +10,15 @@ import NotificationViewInvitationRedeemed from "./NotificationViewer/molecules/N
 import GenericEventCard from "./NotificationViewer/molecules/GenericEventCard.svelte";
 import { NotificationViewerContext } from "@o-platform/o-editors/src/notificationViewerContext";
 import ProcessNavigation from "../../../packages/o-editors/src/ProcessNavigation.svelte";
+import Icons from "./molecules/Icons.svelte";
 
 import { EventType } from "./api/data/types";
+import { setTrust } from "../dapps/o-banking/processes/setTrust";
+import { me } from "./stores/me";
 
 export let context: NotificationViewerContext;
 
 let data: any = context.data[context.field];
-
-$: console.log("DATA", data);
 
 const components = [
   { type: EventType.ChatMessage, component: NotificationViewChatMessage },
@@ -37,6 +38,15 @@ const components = [
     component: NotificationViewInvitationRedeemed,
   },
 ];
+
+async function trust(circlesAddress) {
+  window.o.runProcess(setTrust, {
+    trustLimit: 100,
+    trustReceiver: circlesAddress,
+    safeAddress: $me.circlesAddress,
+    privateKey: sessionStorage.getItem("circlesKey"),
+  });
+}
 
 function submit() {
   const answer = new Continue();
@@ -62,18 +72,30 @@ function getEventView() {
 
 <div>
   <svelte:component this="{getEventView()}" event="{data}" />
-  <!-- 
-  {#if eventData.actions.length > 0}
+
+  {#if data.type == EventType.InvitationRedeemed}
     <div class="flex flex-row items-center content-center w-full space-x-4">
-      <div class="mt-6">
+      <div class="">
         <button
-          on:click="{() => handleClick(eventData.actions[0])}"
+          on:click="{() =>
+            trust(data.payload.redeemedBy_profile.circlesAddress)}"
           class="h-auto btn-block btn btn-light whitespace-nowrap">
-          {eventData.actions[0].title}
+          Trust {data.payload.redeemedBy_profile.firstName}
+        </button>
+      </div>
+      <div class="flex-grow">
+        <button
+          type="submit"
+          class="relative btn btn-primary btn-block"
+          on:click="{() => submit()}">
+          No thanks
+          <div class="absolute mr-1 right-2">
+            <Icons icon="buttonrightarrow" />
+          </div>
         </button>
       </div>
     </div>
-  {/if} -->
-
-  <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+  {:else}
+    <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+  {/if}
 </div>
