@@ -517,7 +517,7 @@ type Query {
     hubSignupTransaction: ProfileEvent
     initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
-    invoice(purchaseId: Int!): String
+    invoice(invoiceId: Int!): String
     mostRecentUbiSafeOfAccount(account: String!): String
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile

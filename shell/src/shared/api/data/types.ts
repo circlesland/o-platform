@@ -859,7 +859,7 @@ export type QueryFindSafeAddressByOwnerArgs = {
 
 
 export type QueryInvoiceArgs = {
-  purchaseId: Scalars['Int'];
+  invoiceId: Scalars['Int'];
 };
 
 
@@ -2264,7 +2264,7 @@ export type AggregatesQuery = (
           ) }
         )>, invoices: Array<(
           { __typename?: 'Invoice' }
-          & Pick<Invoice, 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode'>
+          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode'>
           & { sellerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
@@ -2334,6 +2334,16 @@ export type MostRecentUbiSafeOfAccountQueryVariables = Exact<{
 export type MostRecentUbiSafeOfAccountQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'mostRecentUbiSafeOfAccount'>
+);
+
+export type InvoiceQueryVariables = Exact<{
+  invoiceId: Scalars['Int'];
+}>;
+
+
+export type InvoiceQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'invoice'>
 );
 
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
@@ -3714,6 +3724,7 @@ export const AggregatesDocument = gql`
             }
           }
           invoices {
+            id
             sellerAddress
             paymentTransactionHash
             buyerAddress
@@ -3808,6 +3819,11 @@ export const DirectPathDocument = gql`
 export const MostRecentUbiSafeOfAccountDocument = gql`
     query mostRecentUbiSafeOfAccount($account: String!) {
   mostRecentUbiSafeOfAccount(account: $account)
+}
+    `;
+export const InvoiceDocument = gql`
+    query invoice($invoiceId: Int!) {
+  invoice(invoiceId: $invoiceId)
 }
     `;
 export const EventsDocument = gql`
@@ -3970,6 +3986,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     mostRecentUbiSafeOfAccount(variables: MostRecentUbiSafeOfAccountQueryVariables): Promise<MostRecentUbiSafeOfAccountQuery> {
       return withWrapper(() => client.request<MostRecentUbiSafeOfAccountQuery>(print(MostRecentUbiSafeOfAccountDocument), variables));
+    },
+    invoice(variables: InvoiceQueryVariables): Promise<InvoiceQuery> {
+      return withWrapper(() => client.request<InvoiceQuery>(print(InvoiceDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

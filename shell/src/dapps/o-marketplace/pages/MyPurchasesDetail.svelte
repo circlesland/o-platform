@@ -1,10 +1,10 @@
 <script lang="ts">
-import {
-  AggregatesDocument,
-  AggregateType,
-  Profile,
-  Purchase,
-} from "../../../shared/api/data/types";
+  import {
+    AggregatesDocument,
+    AggregateType, InvoiceDocument,
+    Profile,
+    Purchase,
+  } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
@@ -76,6 +76,13 @@ function orderItems(items) {
   return Object.entries(orderedCart).map(([id, item]) => ({ id, item }));
 }
 
+function download(data:Buffer, fileName:string) {
+  let file = new File([data], fileName, {type: "application/pdf"});
+  let exportUrl = URL.createObjectURL(file);
+  window.location.assign(exportUrl);
+  URL.revokeObjectURL(exportUrl);
+}
+
 function totalPrice(items) {
   let pricePerUnit = 0;
   if (items) {
@@ -113,7 +120,22 @@ onMount(async () => {
       {
         icon: "document",
         title: "Download Invoice",
-        action: () => null,
+        action: async () => {
+          const apiClient = await window.o.apiClient.client.subscribeToResult();
+          for(let invoice of purchase.invoices) {
+            const invoicePdfBytes = await apiClient.query({
+              query: InvoiceDocument,
+              variables: {
+                invoiceId: invoice.id
+              }
+            });
+            if (invoicePdfBytes.errors && invoicePdfBytes.errors.length > 0 || !invoicePdfBytes.data.invoice){
+              throw new Error("Couldn't load the pdf for invoice " + invoice.id);
+            }
+
+            download(Buffer.from(invoicePdfBytes.data.invoice, "base64"), `invoice.pdf`);
+          }
+        },
       }
     );
   }

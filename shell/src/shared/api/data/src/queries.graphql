@@ -1001,6 +1001,7 @@ query aggregates(
             }
           }
           invoices {
+            id
             sellerAddress
             paymentTransactionHash
             buyerAddress
@@ -1093,4 +1094,8 @@ query directPath($from: String!, $to: String!, $amount: String!) {
 
 query mostRecentUbiSafeOfAccount($account: String!) {
   mostRecentUbiSafeOfAccount(account: $account)
+}
+
+query invoice($invoiceId: Int!) {
+  invoice(invoiceId: $invoiceId)
 }
