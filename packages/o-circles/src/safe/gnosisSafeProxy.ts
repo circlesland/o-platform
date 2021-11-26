@@ -6,7 +6,7 @@ import { Web3Contract } from "../web3Contract";
 import { SafeTransaction } from "../model/safeTransaction";
 import { SafeOps } from "../model/safeOps";
 import { RpcGateway } from "../rpcGateway";
-import type {TransactionReceipt} from "web3-core";
+import type { TransactionReceipt } from "web3-core";
 const EthLibAccount = require("eth-lib/lib/account");
 
 export class GnosisSafeProxy extends Web3Contract {
@@ -194,7 +194,6 @@ export class GnosisSafeProxy extends Web3Contract {
   }
 
   private validateSafeTransaction(safeTransaction: SafeTransaction) {
-    console.log("ASLKDJHASKLJDh", safeTransaction.safeTxGas);
     if (safeTransaction.safeTxGas && !BN.isBN(safeTransaction.safeTxGas))
       throw new Error(
         "The 'safeTxGas' property of the transaction is not a valid bn.js BigNum."

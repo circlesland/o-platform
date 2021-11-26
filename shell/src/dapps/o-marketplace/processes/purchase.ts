@@ -18,18 +18,15 @@ import ErrorView from "../../../shared/atoms/Error.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { convertTimeCirclesToCircles } from "../../../shared/functions/displayCirclesAmount";
-import { requestPathToRecipient } from "../../o-banking/services/requestPathToRecipient";
-import { BN } from "ethereumjs-util";
+
 import {
   fTransferCircles,
   TransitivePath,
 } from "../../o-banking/processes/transferCircles";
-import { circIn } from "svelte/easing";
-import { me } from "../../../shared/stores/me";
-import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
+
 import { cartContents } from "../stores/shoppingCartStore";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {findDirectTransfers} from "../../o-banking/processes/transfer";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { findDirectTransfers } from "../../o-banking/processes/transfer";
 
 export type PurchaseContextData = {
   items: Offer[];
@@ -159,15 +156,19 @@ const processDefinition = (processId: string) =>
               }, 0);
 
               const amount = convertTimeCirclesToCircles(
-                  invoiceTotal,
-                  null
-                ).toString();
+                invoiceTotal,
+                null
+              ).toString();
 
-              const circlesValueInWei = RpcGateway.get().utils
-                .toWei(amount.toString() ?? "0", "ether")
+              const circlesValueInWei = RpcGateway.get()
+                .utils.toWei(amount.toString() ?? "0", "ether")
                 .toString();
 
-              const flow = await findDirectTransfers(invoice.buyerAddress, invoice.sellerAddress, circlesValueInWei);
+              const flow = await findDirectTransfers(
+                invoice.buyerAddress,
+                invoice.sellerAddress,
+                circlesValueInWei
+              );
 
               /*
               const flow = await requestPathToRecipient({
@@ -306,6 +307,7 @@ const processDefinition = (processId: string) =>
         id: "success",
 
         data: (context, event: PlatformEvent) => {
+          window.o.publishEvent({ type: "shell.root" });
           return "yeah!";
         },
       },
