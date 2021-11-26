@@ -27,7 +27,7 @@
   let xdai = {
     symbol: "xdai",
     icon: "",
-    title: "",
+    title: "xDAI",
     balance: "ß",
     variety: 1,
     description: "1 xDai  ~ 1 USD",
@@ -81,28 +81,6 @@
     };
   }
 
-  function prepareToken(o) {
-    if (o.token_address == "0x9ee40742182707467f78344f6b287be8704f27e2") {
-      o.token_symbol = "EURS";
-      o.token_image = "/logos/eurs.png";
-      o.token_balance = (parseFloat(o.token_balance) / 100).toFixed(2);
-    } else if (o.token_address == "0x63e62989d9eb2d37dfdb1f93a22f063635b07d51") {
-      o.token_symbol = "MIVA";
-      o.token_image = "/logos/miva.png";
-      o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
-    } else if (o.token_address == "0x62f5caa239a97b21aa61502963cf8c33f8182e79") {
-      o.token_symbol = "ARTIS";
-      o.token_image = "/logos/artis.png";
-      o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
-    } else if (o.token_address == "0x5227e8810281482f25454a8f00ea871589fc040e") {
-      o.token_symbol = "HUMAN";
-      o.token_image = "/logos/hmn.png";
-      o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
-    } else {
-      o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
-    }
-  }
-
   onMount(async () => {
     const balances = await getBalances($me.circlesAddress);
 
@@ -118,7 +96,25 @@
 
     erc20DisplayBalances = <any>Object.values(balances.erc20Balances.payload.balances)
     .map(o => {
-      prepareToken(o);
+      if (o.token_address == "0x9ee40742182707467f78344f6b287be8704f27e2") {
+        o.token_symbol = "EURS";
+        o.token_image = "/logos/eurs.png";
+        o.token_balance = (parseFloat(o.token_balance) / 100).toFixed(2);
+      } else if (o.token_address == "0x63e62989d9eb2d37dfdb1f93a22f063635b07d51") {
+        o.token_symbol = "MIVA";
+        o.token_image = "/logos/miva.png";
+        o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
+      }  else if (o.token_address == "0x62f5caa239a97b21aa61502963cf8c33f8182e79") {
+        o.token_symbol = "ARTIS";
+        o.token_image = "/logos/artis.png";
+        o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
+      }  else if (o.token_address == "0x5227e8810281482f25454a8f00ea871589fc040e") {
+        o.token_symbol = "HUMAN";
+        o.token_image = "/logos/hmn.png";
+        o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
+      } else {
+        o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2);
+      }
       return o;
     });
 
