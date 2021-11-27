@@ -1,80 +1,35 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import {
-  PaginationArgs,
-  QueryEventsArgs,
-  SortOrder,
-  StreamDocument,
+  ProfileEvent
 } from "../../api/data/types";
 
 import { inview } from "svelte-inview/dist/index";
 import GenericEventCard from "../../NotificationViewer/molecules/GenericEventCard.svelte";
+import {Readable} from "svelte/store";
 
 export let views: { [type: string]: any } = {};
-export let selector = "timestamp";
-export let fetchQuery: any = StreamDocument;
-export let queryArguments: QueryEventsArgs;
-export let order: SortOrder = SortOrder.Desc;
-export let dataKey: string = "events";
-export let limit: number = 50;
+export let store: Readable<ProfileEvent[]> & {fetchMore: () => Promise<boolean>};
 
 let isLoading = true;
-
-let events: any[] = [];
-let hasMore: boolean = true;
-let error: string;
+let hasMore = true;
 let scrollContent;
-let pagination: PaginationArgs = {
-  order: order,
-  limit: limit,
-  continueAt: new Date().toJSON(),
-};
 
-const fetchData = async (paginationArg: PaginationArgs) => {
-  isLoading = true;
-  queryArguments.pagination = paginationArg;
-
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const timeline: any = await apiClient.query({
-    query: fetchQuery,
-    variables: queryArguments,
-  });
-  if (timeline.errors) {
-    error = `Couldn't load data for the following reasons: ${JSON.stringify(
-      timeline.errors
-    )}`;
-  }
-
-  let newBatch = await timeline.data[dataKey];
-
-  if (newBatch.length > 0) {
-    events = [...events, ...newBatch];
-
-    pagination = {
-      order: order,
-      continueAt: newBatch[newBatch.length - 1][selector],
-      limit: limit,
-    };
-  } else {
-    hasMore = false;
-  }
-  isLoading = false;
-};
+onMount(() => isLoading = true);
 
 const handleChange = async (e) => {
-  if (e.detail.inView && hasMore) await fetchData(pagination);
+  if (e.detail.inView && hasMore) {
+    hasMore = await store.fetchMore();
+  }
 };
-onMount(async () => {
-  await fetchData(pagination);
-});
 
 const initBar = (bar) => {
   scrollContent = bar;
 };
 </script>
 
-{#if events}
-  {#each events as event}
+{#if store}
+  {#each $store as event}
     {#if views[event.type]}
       <svelte:component this="{views[event.type]}" event="{event}" />
     {:else}
@@ -91,6 +46,6 @@ const initBar = (bar) => {
     </div>
   </section>
 {/if}
-{#if !isLoading}
+{#if store}
   <div use:inview="{{}}" on:change="{handleChange}"></div>
 {/if}

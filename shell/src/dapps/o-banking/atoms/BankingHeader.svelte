@@ -3,41 +3,20 @@
   import PageHeader from "src/shared/atoms/PageHeader.svelte";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import { onMount } from "svelte";
   import { me } from "../../../shared/stores/me";
 
   import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
-  import {AggregatesDocument, AggregateType, CrcBalances} from "../../../shared/api/data/types";
   import {BN} from "ethereumjs-util";
+  import {assetsBalances} from "../../../shared/stores/assetsBalances";
 
   export let balance: string = "0";
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
-  onMount(async () => {
-    const safeAddress = $me.circlesAddress;
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-    const balancesResult = await apiClient.query({
-      query: AggregatesDocument,
-      variables: {
-        types: [AggregateType.CrcBalances],
-        safeAddress: safeAddress
-      },
-    });
-
-    if (balancesResult.errors?.length > 0) {
-      throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
-    }
-
-    const crcBalances:CrcBalances = balancesResult.data.aggregates.find(o => o.type == AggregateType.CrcBalances);
-    if (!crcBalances) {
-      throw new Error(`Couldn't find the CrcBalances in the query result.`)
-    }
-
-    const sum = crcBalances.payload.balances.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
+  $: {
+    const sum = $assetsBalances.crcBalances.reduce((p,c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
     balance = displayCirclesAmount(sum, null, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined).toString();
-  });
+  }
 </script>
 
 <TopNav {runtimeDapp} {routable} />
