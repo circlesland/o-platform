@@ -16,6 +16,7 @@ import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+  import {saveBufferAs} from "../../../shared/saveBufferAs";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 export let id: string;

@@ -1060,6 +1060,7 @@ query aggregates(
             }
           }
           invoices {
+            id
             sellerAddress
             paymentTransactionHash
             buyerAddress

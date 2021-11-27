@@ -2296,7 +2296,7 @@ export type AggregatesQuery = (
           ) }
         )>, invoices: Array<(
           { __typename?: 'Invoice' }
-          & Pick<Invoice, 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode'>
+          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode'>
           & { buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
@@ -3783,6 +3783,7 @@ export const AggregatesDocument = gql`
             }
           }
           invoices {
+            id
             sellerAddress
             paymentTransactionHash
             buyerAddress
