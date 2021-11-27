@@ -76,13 +76,6 @@ function orderItems(items) {
   return Object.entries(orderedCart).map(([id, item]) => ({ id, item }));
 }
 
-function download(data:Buffer, fileName:string) {
-  let file = new File([data], fileName, {type: "application/pdf"});
-  let exportUrl = URL.createObjectURL(file);
-  window.location.assign(exportUrl);
-  URL.revokeObjectURL(exportUrl);
-}
-
 function totalPrice(items) {
   let pricePerUnit = 0;
   if (items) {
@@ -133,7 +126,7 @@ onMount(async () => {
               throw new Error("Couldn't load the pdf for invoice " + invoice.id);
             }
 
-            download(Buffer.from(invoicePdfBytes.data.invoice, "base64"), `invoice.pdf`);
+            saveBufferAs(Buffer.from(invoicePdfBytes.data.invoice, "base64"), `invoice.pdf`);
           }
         },
       }

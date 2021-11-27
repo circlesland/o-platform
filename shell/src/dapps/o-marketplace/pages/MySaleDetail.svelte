@@ -1,10 +1,10 @@
 <script lang="ts">
-import {
-  AggregatesDocument,
-  AggregateType,
-  Profile,
-  Sale,
-} from "../../../shared/api/data/types";
+  import {
+    AggregatesDocument,
+    AggregateType, InvoiceDocument,
+    Profile,
+    Sale,
+  } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
@@ -16,6 +16,7 @@ import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { displayableName } from "../../../shared/functions/stringHelper";
+  import {saveBufferAs} from "../../../shared/saveBufferAs";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 export let id: string;
@@ -80,11 +81,26 @@ async function load() {
             `#/banking/transactions/${sale.invoices[0].paymentTransactionHash}`
           ),
       },
-      {
-        icon: "document",
-        title: "Download Invoice",
-        action: () => null,
-      }
+            {
+              icon: "document",
+              title: "Download Invoice",
+              action: async () => {
+                const apiClient = await window.o.apiClient.client.subscribeToResult();
+                for(let invoice of sale.invoices) {
+                  const invoicePdfBytes = await apiClient.query({
+                    query: InvoiceDocument,
+                    variables: {
+                      invoiceId: invoice.id
+                    }
+                  });
+                  if (invoicePdfBytes.errors && invoicePdfBytes.errors.length > 0 || !invoicePdfBytes.data.invoice){
+                    throw new Error("Couldn't load the pdf for invoice " + invoice.id);
+                  }
+
+                  saveBufferAs(Buffer.from(invoicePdfBytes.data.invoice, "base64"), `invoice.pdf`);
+                }
+              },
+            }
     );
   }
 }
