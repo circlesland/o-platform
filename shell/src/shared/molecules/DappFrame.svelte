@@ -34,6 +34,7 @@
   import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
   import {EventsDocument} from "../api/data/types";
   import {log} from "../logUiEvent";
+  import {contacts} from "../stores/contacts";
 
   export let params: {
     dappId: string;
@@ -285,6 +286,12 @@
             }
             inbox.reload();
           });
+      });
+
+      // Load the contacts so that they're ready when the user
+      // enters the dashboard..
+      contacts.subscribe(data => {
+        console.log("loaded contacts: ", data);
       });
     }
     if (!$me || !session.isLoggedOn) {

@@ -2,11 +2,13 @@ import {readable} from "svelte/store";
 import {
   AggregatesDocument,
   AggregateType,
-  Contact
+  Contact, Profile
 } from "../api/data/types";
 import {me} from "./me";
 import {Subscription} from "rxjs";
 import {ZERO_ADDRESS} from "@o-platform/o-circles/dist/consts";
+
+let contactsBySafeAddress: {[address:string]:Contact} = {};
 
 async function loadContacts(safeAddress: string) {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -30,10 +32,18 @@ async function loadContacts(safeAddress: string) {
     return o.contactAddress !== ZERO_ADDRESS && o.contactAddress != safeAddress;
   });
 
-  return contactsList.sort((a,b) => a.lastContactAt > b.lastContactAt ? -1 :a.lastContactAt < b.lastContactAt ? 1 :0);
+  contactsList.forEach(o => contactsBySafeAddress[o.contactAddress] = o);
+
+  return contactsList.sort((a,b) => {
+      return a.lastContactAt > b.lastContactAt
+        ? -1
+        : a.lastContactAt < b.lastContactAt
+          ? 1
+          : 0;
+    });
 }
 
-export const contacts = readable<Contact[]>([], function start(set) {
+export const {subscribe} = readable<Contact[]>([], function start(set) {
   // Subscribe to $me and reload the store when the profile changes
   async function update(safeAddress:string) {
     const contacts = await loadContacts(safeAddress);
@@ -77,3 +87,10 @@ export const contacts = readable<Contact[]>([], function start(set) {
     }
   };
 });
+
+export const contacts = {
+  subscribe: subscribe,
+  findBySafeAddress: async (safeAddress:string) => {
+    return contactsBySafeAddress[safeAddress];
+  }
+}

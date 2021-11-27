@@ -16,6 +16,7 @@ import {
   SortOrder,
   StreamDocument,
 } from "../../../shared/api/data/types";
+import {transactions} from "../../../shared/stores/transactions";
 export let transactionHash: string;
 let transfer: ProfileEvent;
 let classes: string;
@@ -28,37 +29,7 @@ let error: string;
 let displayableName: string = "";
 
 onMount(async () => {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: StreamDocument,
-    variables: {
-      safeAddress: $me.circlesAddress,
-      pagination: {
-        order: SortOrder.Asc,
-        limit: 1,
-        continueAt: new Date(0),
-      },
-      filter: {
-        transactionHash: transactionHash,
-      },
-      types: [
-        EventType.CrcHubTransfer,
-        EventType.CrcMinting,
-        EventType.Erc20Transfer,
-      ],
-    },
-  });
-
-  if (result.errors) {
-    throw new Error(
-      `Couldn't load the transaction history for the following reasons: ${result.errors.join(
-        "\n"
-      )}`
-    );
-  }
-  if (result.data.events.length > 0) {
-    transfer = result.data.events[0];
-  }
+  transfer = await transactions.findByHash(transactionHash);
   if (transfer && transfer.payload?.__typename == "CrcMinting") {
     const minting = transfer.payload as CrcMinting;
 

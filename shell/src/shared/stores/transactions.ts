@@ -1,7 +1,7 @@
 import {writable} from "svelte/store";
 import {
-  EventType, PaginationArgs,
-  ProfileEvent, QueryEventsArgs, SortOrder, StreamDocument
+  EventType, PaginationArgs, Profile,
+  ProfileEvent, ProfileEventFilter, QueryEventsArgs, SortOrder, StreamDocument
 } from "../api/data/types";
 import {me} from "./me";
 import {Subscription} from "rxjs";
@@ -12,7 +12,6 @@ let limit: number = 25;
 let selector = "timestamp";
 let fetchQuery: any = StreamDocument;
 let eventsByHash: { [hash:string]: ProfileEvent } = {};
-let error: string;
 let hasMore: boolean = true;
 let pagination: PaginationArgs = {
   order: order,
@@ -28,9 +27,9 @@ async function fetchData(queryArguments:QueryEventsArgs) {
     },
   });
   if (timeline.errors) {
-    error = `Couldn't load data for the following reasons: ${JSON.stringify(
+    throw new Error(`Couldn't load data for the following reasons: ${JSON.stringify(
       timeline.errors
-    )}`;
+    )}`);
   }
 
   let newBatch = await timeline.data[dataKey];
@@ -97,6 +96,8 @@ async function updateTransactions(safeAddress: string) {
         : 0);
 }
 
+let isInitialized = false;
+
 const { subscribe, set, update } = writable<ProfileEvent[]>(
   [],
   function start(set) {
@@ -104,11 +105,21 @@ const { subscribe, set, update } = writable<ProfileEvent[]>(
     async function _update(safeAddress: string) {
       const events = await updateTransactions(safeAddress);
       // set(events);
-      update(() => events);
+      update((currentTransactions:ProfileEvent[]) => {
+        const existingHashes = currentTransactions.reduce((p,c) => {
+          p[c.transaction_hash] = true;
+          return p;
+        }, <{[hash:string]:any}>{});
+        const newEvents = events.filter(o => !existingHashes[o.transaction_hash]);
+        newEvents.forEach(e => currentTransactions.unshift(e));
+
+        return currentTransactions;
+      });
     }
     async function initialize(safeAddress: string) {
       const events = await loadTransactions(safeAddress);
       set(events);
+      isInitialized = true;
     }
 
     let shellEventSubscription: Subscription;
@@ -125,8 +136,9 @@ const { subscribe, set, update } = writable<ProfileEvent[]>(
         return;
       }
       console.log(`transactions: Initialize for ${$me.circlesAddress} ..`);
-      await initialize($me.circlesAddress);
-
+      if (!isInitialized) {
+        await initialize($me.circlesAddress);
+      }
       shellEventSubscription = window.o.events.subscribe(async event => {
         if (event.type == "blockchain_event") {
           console.log(`transactions: Updating because of blockchain event ..`);
@@ -146,7 +158,10 @@ const { subscribe, set, update } = writable<ProfileEvent[]>(
   });
 
 export const transactions = {
-  subscribe: subscribe,
+  subscribe: (a) => {
+    console.log("Subscribing to transactions")
+    return subscribe(a);
+  },
   fetchMore: async () => {
     let safeAddress:string|null = null;
     const unsub = me.subscribe($me => safeAddress = $me.circlesAddress);
@@ -154,5 +169,43 @@ export const transactions = {
     const events = await loadTransactions(safeAddress);
     set(events);
     return hasMore;
+  },
+  findByHash: async (transactionHash: string) => {
+    let foundTx = eventsByHash[transactionHash];
+    if (!foundTx) {
+      let safeAddress:string;
+      me.subscribe($me => safeAddress = $me.circlesAddress)()
+      const apiClient = await window.o.apiClient.client.subscribeToResult();
+      const timeline: any = await apiClient.query({
+        query: fetchQuery,
+        variables: {
+          safeAddress: safeAddress,
+          types: [
+            EventType.CrcHubTransfer,
+            EventType.CrcMinting,
+            EventType.Erc20Transfer,
+          ],
+          pagination: {
+            order: order,
+            limit: limit,
+            continueAt: new Date().toJSON(),
+          },
+          filter: <ProfileEventFilter>{
+            transactionHash: transactionHash
+          }
+        },
+      });
+      if (timeline.errors) {
+        throw new Error(`Couldn't load data for the following reasons: ${JSON.stringify(
+          timeline.errors
+        )}`);
+      }
+      if (timeline.data.events && timeline.data.events.length > 0) {
+        foundTx = timeline.data.events[0];
+        eventsByHash[foundTx.transaction_hash] = foundTx;
+      }
+    }
+
+    return foundTx;
   }
 }

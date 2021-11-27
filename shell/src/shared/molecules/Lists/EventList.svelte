@@ -14,8 +14,15 @@ export let store: Readable<ProfileEvent[]> & {fetchMore: () => Promise<boolean>}
 let isLoading = true;
 let hasMore = true;
 let scrollContent;
+let events:ProfileEvent[] = [];
 
-onMount(() => isLoading = true);
+onMount(() => {
+  isLoading = true;
+  return store.subscribe(data => {
+    events = data;
+    isLoading = false;
+  });
+});
 
 const handleChange = async (e) => {
   if (e.detail.inView && hasMore) {
@@ -29,7 +36,7 @@ const initBar = (bar) => {
 </script>
 
 {#if store}
-  {#each $store as event}
+  {#each events as event}
     {#if views[event.type]}
       <svelte:component this="{views[event.type]}" event="{event}" />
     {:else}

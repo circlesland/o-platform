@@ -14,8 +14,8 @@ let displayName: string = "";
 
 function linkToProfile(event) {
   if (profileLink) {
-    event.stopPropagation();
     push(`#/friends/${profile.circlesAddress}`);
+    event.stopPropagation();
   }
 }
 

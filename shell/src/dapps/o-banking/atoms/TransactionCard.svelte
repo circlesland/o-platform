@@ -117,16 +117,11 @@ function loadDetailPage(path) {
     params="{{
       edgeless: false,
       imageProfile: targetProfile,
-      profileLink: false,
+      profileLink: `#/friends/${targetProfile.circlesAddress}`,
       imageAlt:
         event.direction === 'in'
           ? fromProfile.circlesAddress
           : toProfile.circlesAddress,
-      imageAction: (e) => {
-        const target = targetProfile.circlesAddress;
-        push(`#/friends/${target}`);
-        e.stopPropagation();
-      },
       title:
         targetProfile.firstName +
         ' ' +

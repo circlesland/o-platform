@@ -27,6 +27,7 @@ import { unlockKey } from "./unlockKey/unlockKey";
 import { InitEvent, UbiData } from "./initEvent";
 import { InitContext } from "./initContext";
 import { push } from "svelte-spa-router";
+import {contacts} from "../../../shared/stores/contacts";
 
 export const initMachine = createMachine<InitContext, InitEvent>(
   {
