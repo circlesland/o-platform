@@ -949,7 +949,11 @@
         routable: routable,
       },
     };
-    setNav(currentNavArgs);
+    setNav({
+      ...currentNavArgs,
+      centerIsOpen: false,
+      centerContainsProcess: false
+    });
   }
 
   async function hideCenter() {

@@ -56,16 +56,15 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
     const trustMetadata =
       recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??
       undefined;
-    // let trustsYou = false;
+    let trustsYou = false;
     let youTrust = false;
 
     if (trustMetadata) {
-      /*
       const inTrust = trustMetadata.directions.indexOf(ContactDirection.In);
       if (inTrust > -1) {
         const trustLimit = trustMetadata.values[inTrust];
         trustsYou = parseInt(trustLimit) > 0;
-      }*/
+      }
       const outTrust = trustMetadata.directions.indexOf(ContactDirection.Out);
       if (outTrust > -1) {
         const trustLimit = trustMetadata.values[outTrust];
@@ -90,7 +89,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         recipientProfile.contactAddress_Profile &&
         recipientProfile.contactAddress_Profile.type == "PERSON"
       ) {
-        actions = actions.concat([
+        actions = actions.concat((trustsYou ? [
           {
             key: "transfer",
             icon: "sendmoney",
@@ -102,9 +101,9 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                 privateKey: sessionStorage.getItem("circlesKey"),
               });
             },
-          },
-          youTrust
-            ? {
+          }] : []),
+          (youTrust
+            ? [{
                 key: "setTrust",
                 icon: "untrust",
                 title: "Untrust",
@@ -117,8 +116,8 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     privateKey: sessionStorage.getItem("circlesKey"),
                   });
                 },
-              }
-            : {
+              }]
+            : [{
                 key: "setTrust",
                 icon: "trust",
                 title: "Trust",
@@ -130,8 +129,8 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     privateKey: sessionStorage.getItem("circlesKey"),
                   });
                 },
-              },
-        ]);
+              }])
+        );
       }
     }
 

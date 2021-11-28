@@ -89,7 +89,7 @@ export const contacts = {
     }
     let contact = contactsBySafeAddress[safeAddress];
     if (!contact) {
-      const filteredContacts = await ApiClient.queryAggregate<Contacts>(AggregateType.Contacts, safeAddress, {
+      const filteredContacts = await ApiClient.queryAggregate<Contacts>(AggregateType.Contacts, _$me.circlesAddress, {
         contacts: {
           addresses: [safeAddress]
         }

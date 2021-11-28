@@ -1,6 +1,5 @@
 <script lang="ts">
 import { showNotifications } from "../../../processes/showNotifications";
-
 import { inbox } from "../../../stores/inbox";
 import Icons from "../../Icons.svelte";
 
@@ -21,7 +20,7 @@ export let props;
               class="absolute top-0 w-full text-center text-white font-heading"
               on:click="{() =>
                 window.o.runProcess(showNotifications, {
-                  events: $inbox.map((o) => o),
+                  events: $inbox.map((o) => o)
                 }, {}, {})}">
               {$inbox.length}
             </div>

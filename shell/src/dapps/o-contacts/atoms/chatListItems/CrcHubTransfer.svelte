@@ -26,7 +26,7 @@ values = getValues();
 onMount(async () => {
   values.actions = await banking.jumplist.items(
     {
-      id: event.direction == "in" ? event.contact_address : event.safe_address,
+      id: event.contact_address
     },
     null
   );

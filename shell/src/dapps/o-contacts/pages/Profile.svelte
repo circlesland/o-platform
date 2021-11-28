@@ -3,7 +3,6 @@ import { getCountryName } from "../../../shared/countries";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-import { onMount } from "svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import {
   Jumplist,
@@ -109,6 +108,9 @@ async function setProfile(id: string) {
       trustMessage = "not trusted";
     }
   }
+
+  isMe = profile.id == ($me ? $me.id : 0);
+  jumplistResult = await jumplist.items({ id: id }, runtimeDapp);
 }
 </script>
 

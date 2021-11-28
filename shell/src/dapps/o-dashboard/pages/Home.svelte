@@ -4,7 +4,6 @@ import { onMount } from "svelte";
 import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
 import { push } from "svelte-spa-router";
 import Icons from "../../../shared/molecules/Icons.svelte";
-
 import DashboardHeader from "../atoms/DashboardHeader.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
@@ -41,13 +40,6 @@ function loadLink(link, external = false) {
     push(link);
   }
 }
-
-const sub = window.o.events.subscribe((event) => {
-  if (event.type !== "shell.refresh") {
-    return;
-  }
-  init();
-});
 
 let mySafeAddress: string;
 
