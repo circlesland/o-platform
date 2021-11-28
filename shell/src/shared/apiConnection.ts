@@ -1,5 +1,5 @@
 import ApolloClient, {DefaultOptions} from "apollo-client";
-import {InMemoryCache, NormalizedCacheObject} from "apollo-cache-inmemory";
+import {InMemoryCache, IntrospectionFragmentMatcher, NormalizedCacheObject} from "apollo-cache-inmemory";
 import {HttpLink} from "apollo-link-http";
 import {AsyncBroadcast} from "@o-platform/o-utils/dist/asyncBroadcast";
 import {WebSocketLink} from 'apollo-link-ws';
@@ -86,11 +86,38 @@ export class ApiConnection
         },
     };
 
-    public connect() : ApolloClient<NormalizedCacheObject> {
+    public async connect() : Promise<ApolloClient<NormalizedCacheObject>> {
         const httpLink = new HttpLink({
             fetch: fetch,
             uri: this._apiEndpointUrl,
             credentials: this._credentialsPolicy
+        });
+        const result = await (await fetch(this._apiEndpointUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                variables: {},
+                query: `{
+                            __schema {
+                              types {
+                                kind
+                                name
+                                possibleTypes {
+                                  name
+                                }
+                              }
+                            }
+                          }`,
+            }),
+        })).json();
+
+        // here we're filtering out any type information unrelated to unions or interfaces
+        result.data.__schema.types = result.data.__schema.types.filter(
+          type => type.possibleTypes !== null,
+        );
+
+        const fragmentMatcher = new IntrospectionFragmentMatcher({
+            introspectionQueryResultData: result.data
         });
 
         const wsAddr = this._apiEndpointUrl.replace("http://", "ws://").replace("https://", "wss://");
@@ -118,7 +145,9 @@ export class ApiConnection
 
         return new ApolloClient({
             link: link,
-            cache: new InMemoryCache({}),
+            cache: new InMemoryCache({
+                fragmentMatcher
+            }),
             defaultOptions: ApiConnection._defaultOptions
         });
     }

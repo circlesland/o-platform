@@ -2,13 +2,13 @@ import {readable} from "svelte/store";
 import {
   AggregatesDocument,
   AggregateType,
-  Contact, Profile
+  Contact, ContactAggregateFilter, Profile
 } from "../api/data/types";
 import {me} from "./me";
 import {Subscription} from "rxjs";
 import {ZERO_ADDRESS} from "@o-platform/o-circles/dist/consts";
 
-let contactsBySafeAddress: {[address:string]:Contact} = {};
+let contactsBySafeAddress: { [address: string]: Contact } = {};
 
 async function loadContacts(safeAddress: string) {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -28,24 +28,24 @@ async function loadContacts(safeAddress: string) {
     throw new Error(error);
   }
 
-  const contactsList:Contact[] = c.data.aggregates[0].payload.contacts.filter((o:Contact) => {
+  const contactsList: Contact[] = c.data.aggregates[0].payload.contacts.filter((o: Contact) => {
     return o.contactAddress !== ZERO_ADDRESS && o.contactAddress != safeAddress;
   });
 
   contactsList.forEach(o => contactsBySafeAddress[o.contactAddress] = o);
 
-  return contactsList.sort((a,b) => {
-      return a.lastContactAt > b.lastContactAt
-        ? -1
-        : a.lastContactAt < b.lastContactAt
-          ? 1
-          : 0;
-    });
+  return contactsList.sort((a, b) => {
+    return a.lastContactAt > b.lastContactAt
+      ? -1
+      : a.lastContactAt < b.lastContactAt
+        ? 1
+        : 0;
+  });
 }
 
 export const {subscribe} = readable<Contact[]>([], function start(set) {
   // Subscribe to $me and reload the store when the profile changes
-  async function update(safeAddress:string) {
+  async function update(safeAddress: string) {
     const contacts = await loadContacts(safeAddress);
     set(contacts);
   }
@@ -90,8 +90,8 @@ export const {subscribe} = readable<Contact[]>([], function start(set) {
 
 export const contacts = {
   subscribe: subscribe,
-  findBySafeAddress: async (safeAddress:string) => {
-    let _$me:Profile;
+  findBySafeAddress: async (safeAddress: string) => {
+    let _$me: Profile;
     me.subscribe($me => _$me = $me)();
     if (_$me.circlesAddress == safeAddress) {
       return <Contact>{
@@ -101,6 +101,35 @@ export const contacts = {
         metadata: []
       };
     }
-    return contactsBySafeAddress[safeAddress];
+    let contact = contactsBySafeAddress[safeAddress];
+    if (!contact) {
+      const apiClient = await window.o.apiClient.client.subscribeToResult();
+      const c = await apiClient.query({
+        query: AggregatesDocument,
+        variables: {
+          types: [AggregateType.Contacts],
+          safeAddress: safeAddress,
+          filter: {
+            contacts: <ContactAggregateFilter>{
+              addresses: [safeAddress]
+            }
+          }
+        }
+      });
+      if (c.errors?.length > 0) {
+        let error = `Couldn't read the contacts of safe ${safeAddress}: \n${c.errors
+          .map((o) => o.message)
+          .join("\n")}`;
+
+        throw new Error(error);
+      }
+      const foundContacts = c.data.aggregates.find(o => o.type == "Contacts")?.payload.contacts;
+      if (foundContacts && foundContacts.length > 0){
+        contact = foundContacts[0];
+        contactsBySafeAddress[contact.contactAddress] = contact;
+      }
+    }
+
+    return contact;
   }
 }
