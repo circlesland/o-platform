@@ -14,7 +14,7 @@ import {
   CommonTrust,
   CommonTrustDocument, CommonTrustQueryVariables,
   Contact,
-  ContactDirection, ContactPoint,
+  ContactDirection, ContactPoint, EventType,
   Profile,
 } from "../../../shared/api/data/types";
 import {contacts} from "../../../shared/stores/contacts";
@@ -34,31 +34,28 @@ let profile: Profile;
 let contact: Contact;
 let jumplistResult: JumplistItem[] = [];
 
-onMount(async () => {
-  console.log("ON MOUNT ID: ", id);
-  const profile = await contacts.findBySafeAddress(id);
-  console.log("ON MOUNT ID: profile: ", profile);
-  setProfile(profile);
-  isLoading = false;
-});
+$: {
+  isLoading = true;
+  setProfile(id).then(() => isLoading = false);
+}
 
-async function setProfile(apiProfile: Profile | Contact) {
-  const trust = undefined;
-
-  if (apiProfile.__typename == "Contact") {
-    contact = apiProfile;
+async function setProfile(id: string) {
+  const _profile = await contacts.findBySafeAddress(id);
+  if (_profile.__typename == "Contact") {
+    contact = <Contact>_profile;
   } else {
+    const p = <Profile>_profile;
     contact = {
-      contactAddress: apiProfile.circlesAddress,
+      contactAddress: p.circlesAddress,
       contactAddress_Profile: {
-        id: apiProfile.id,
-        avatarUrl: apiProfile.avatarUrl,
-        dream: apiProfile.dream,
-        country: apiProfile.country,
-        firstName: apiProfile.firstName,
-        lastName: apiProfile.lastName,
-        city: apiProfile.city,
-        memberships: apiProfile.memberships,
+        id: p.id,
+        avatarUrl: p.avatarUrl,
+        dream: p.dream,
+        country: p.country,
+        firstName: p.firstName,
+        lastName: p.lastName,
+        city: p.city,
+        memberships: p.memberships,
       },
       metadata: null,
       lastContactAt: null,
@@ -87,7 +84,7 @@ async function setProfile(apiProfile: Profile | Contact) {
 
   if (contact.metadata) {
     const trustMetadata: ContactPoint = contact.metadata.find(
-      (p) => p.name === "CrcTrust"
+      (p) => p.name === EventType.CrcTrust
     );
     let trustIn = 0;
     let trustOut = 0;
