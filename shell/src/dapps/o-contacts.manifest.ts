@@ -10,7 +10,7 @@ import Graph from "./o-contacts/pages/Graph.svelte";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import {
   AggregatesDocument,
-  AggregateType,
+  AggregateType, Contact,
   ContactDirection, EventType,
   Profile, ProfileAggregate,
   ProfileAggregateFilter, QueryAggregatesArgs,
@@ -19,6 +19,7 @@ import { transfer } from "./o-banking/processes/transfer";
 import { push } from "svelte-spa-router";
 import { setTrust } from "./o-banking/processes/setTrust";
 import {ApiClient} from "../shared/apiConnection";
+import {contacts} from "../shared/stores/contacts";
 
 export interface DappState {
   // put state here
@@ -73,9 +74,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       return contacts.length > 0 ?  contacts[0] : undefined;
     };
 
-    const recipientProfile = params.id
-      ? await getRecipientProfile()
-      : undefined;
+    const recipientProfile:Contact = await contacts.findBySafeAddress(params.id);
 
     const trustMetadata =
       recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??

@@ -276,11 +276,8 @@ const processDefinition = (processId: string) =>
               context.data.transitivePath = flow;
               resolve();
             });
-            const p2 = await RpcGateway.trigger(async (web3) => {
-              context.data.maxFlows["xdai"] = await web3.eth.getBalance(context.data.safeAddress);
-            }, 1000);
-
-            await Promise.all([p1, p2]);
+            context.data.maxFlows["xdai"] = await RpcGateway.get().eth.getBalance(context.data.safeAddress);
+            await p1;
           },
           onDone: "#checkAmount",
           onError: "#error",

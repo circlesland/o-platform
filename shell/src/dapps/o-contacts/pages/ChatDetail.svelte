@@ -1,27 +1,21 @@
 <script lang="ts">
-import { onDestroy, onMount, afterUpdate } from "svelte";
-import NotificationCard from "../atoms/NotificationCard.svelte";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { onMount } from "svelte";
 import {
-  AggregatesDocument,
-  AggregateType,
-  Contact,
-  Contacts,
-  CrcBalances,
   EventType,
   Profile,
-  ProfileAggregate,
   ProfileEvent,
   SendMessageDocument,
   SortOrder,
   StreamDocument,
 } from "../../../shared/api/data/types";
 import { me } from "../../../shared/stores/me";
-import UserImage from "src/shared/atoms/UserImage.svelte";
 import { push } from "svelte-spa-router";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
+import {contacts} from "../../../shared/stores/contacts";
+
+import NotificationCard from "../atoms/NotificationCard.svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
 
 export let id: string;
 
@@ -32,39 +26,9 @@ let contactProfile: Profile | null;
 let shellEventSubscription: Subscription;
 
 async function reload() {
+  contactProfile = (await contacts.findBySafeAddress(id)).contactAddress_Profile;
+
   const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-  const contactsResult = await apiClient.query({
-    query: AggregatesDocument,
-    variables: {
-      types: [AggregateType.Contacts],
-      safeAddress: $me.circlesAddress,
-      filter: {
-        contacts: {
-          addresses: [id],
-        },
-      },
-    },
-  });
-
-  if (contactsResult.errors?.length > 0) {
-    throw new Error(`Couldn't read the contacts of safe ${$me.circlesAddress}`);
-  }
-
-  const contacts: ProfileAggregate = contactsResult.data.aggregates.find(
-    (o) => o.type == AggregateType.Contacts
-  );
-  if (!contacts) {
-    throw new Error(
-      `Couldn't find the AggregateType.Contacts in the query result.`
-    );
-  }
-
-  if ((<Contacts>contacts.payload).contacts.length > 0) {
-    contactProfile = (<Contacts>contacts.payload).contacts[0]
-      .contactAddress_Profile;
-  }
-
   const result = await apiClient.query({
     query: StreamDocument,
     variables: {
@@ -96,7 +60,6 @@ async function reload() {
   });
 
   // TODO: Load the contact
-
   chatHistory = (<any>result).data.events.map((o) => {
     return {
       original: o,
@@ -111,23 +74,24 @@ async function reload() {
 
   window.o.publishEvent(<any>{
     type: "shell.scrollToBottom",
-    scrollNow: true,
+    scrollNow: false,
   });
 }
 
 onMount(async () => {
   shellEventSubscription = window.o.events.subscribe(
     async (event: PlatformEvent) => {
-      if (event.type != "shell.refresh" || (<any>event).dapp != "chat:1") {
+      if (event.type != "new_message"
+        && event.type != "blockchain_event") {
         return;
       }
       await reload();
     }
   );
   await reload();
-});
 
-onDestroy(() => shellEventSubscription.unsubscribe());
+  return () => shellEventSubscription.unsubscribe();
+});
 
 let inputField: any;
 let chatmessage: string;
@@ -170,6 +134,7 @@ function init(el) {
 }
 
 onMount(() => {
+  /*
   // TEMPORARY FIX UNTIL THE LIST IS WORKING BETTER
   setTimeout(function () {
     window.o.publishEvent(<any>{
@@ -177,6 +142,7 @@ onMount(() => {
       scrollNow: true,
     });
   }, 2500);
+   */
 });
 
 async function submitChat() {

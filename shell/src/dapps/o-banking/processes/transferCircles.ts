@@ -39,15 +39,16 @@ const strings = {
   labelAmount: ""
 };
 
+export type TransitivePathStep = {
+  from: string,
+  to: string,
+  token: string,
+  tokenOwner: string,
+  value: string
+}
 export type TransitivePath = {
   flow: string,
-  transfers: [{
-    from: string,
-    to: string,
-    token: string,
-    tokenOwner: string,
-    value: string
-  }]
+  transfers: TransitivePathStep[]
 }
 
 export async function fTransferCircles (safeAddress:string, privateKey:string, path:TransitivePath, message:string) {

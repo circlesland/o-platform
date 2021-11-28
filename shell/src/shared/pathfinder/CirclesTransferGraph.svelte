@@ -1,22 +1,22 @@
-<script>
+<script lang="ts">
 import { Network } from "vis-network";
 import { DataSet } from "vis-data";
 import { onMount } from "svelte";
 
-import { formatValue } from "./utility.js";
 import { labelFor, createNodeContents } from "./visUtils.js";
 import { fillUsernames, fillTokens, tokenDB } from "./userdb.js";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import { me } from "../stores/me";
+import {TransitivePathStep} from "../../dapps/o-banking/processes/transferCircles";
 
-export let transfers = [];
+export let transfers:TransitivePathStep[] = [];
 export let height = "400px";
 export let onWhiteBackground = false;
 let graph;
 let nodes = new DataSet();
 let edges = new DataSet();
-let firstNode = -1;
-let lastNode = -1;
+let firstNode = "";
+let lastNode = "";
 
 let addresses = [];
 const afterzoomlimit = {
@@ -72,18 +72,18 @@ onMount(() => {
   });
 });
 
-let retrieveUserAndTokenInfo = async function (steps) {
+let retrieveUserAndTokenInfo = async function (steps:TransitivePathStep[]) {
   let tokens = [];
   for (let step of steps) {
     addresses.push(step.from);
     addresses.push(step.to);
-    tokens.push(step.token.toLowerCase());
+    tokens.push({token: step.token, tokenOwner: step.tokenOwner});
   }
   await fillUsernames(addresses);
   await fillTokens(tokens);
 };
 
-let drawGraph = async function (steps) {
+let drawGraph = async function (steps:TransitivePathStep[]) {
   await retrieveUserAndTokenInfo(steps);
   nodes.clear();
   edges.clear();
@@ -96,7 +96,7 @@ let drawGraph = async function (steps) {
     createNode(step.from);
     createNode(step.to);
 
-    edges.update({
+    edges.update(<any>{
       from: step.from,
       to: step.to,
       value: step.value,
@@ -137,8 +137,8 @@ let drawGraph = async function (steps) {
     firstNode = steps[0].from;
     lastNode = steps[steps.length - 1].to;
   } else {
-    firstNode = -1;
-    lastNode = -1;
+    firstNode = "";
+    lastNode = "";
   }
 };
 

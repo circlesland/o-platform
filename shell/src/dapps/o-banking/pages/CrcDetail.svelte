@@ -4,40 +4,17 @@ import { onMount } from "svelte";
 import { me } from "../../../shared/stores/me";
 import Card from "../../../shared/atoms/Card.svelte";
 
-import { push } from "svelte-spa-router";
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import {
   AssetBalance,
-  AggregatesDocument,
-  CrcBalances,
 } from "../../../shared/api/data/types";
+import {assetsBalances} from "../../../shared/stores/assetsBalances";
 
 let loading = true;
 let balances: AssetBalance[] = [];
 
 onMount(async () => {
-  const safeAddress = $me.circlesAddress;
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-  const balancesResult = await apiClient.query({
-    query: AggregatesDocument,
-    variables: {
-      types: ["CrcBalances"],
-      safeAddress: safeAddress,
-    },
-  });
-
-  if (balancesResult.errors?.length > 0) {
-    throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
-  }
-
-  const crcBalances: CrcBalances = balancesResult.data.aggregates.find(
-    (o) => o.type == "CrcBalances"
-  );
-  if (!crcBalances) {
-    throw new Error(`Couldn't find the CrcBalances in the query result.`);
-  }
-  balances = crcBalances.payload.balances;
+  balances = $assetsBalances.crcBalances;
   loading = false;
 });
 </script>

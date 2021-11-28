@@ -291,19 +291,11 @@ const processDefinition = (processId: string) =>
             context.messages["safeAddress"] = ``;
             context.data.safeAddress = context.data.safeAddress?.trim();
             try {
-              /*console.log(
-                  `Checking if safe ${context.data.safeAddress} exists ..`
-              );*/
-              await RpcGateway.trigger(async (web3) => {
                 const safeProxy = new GnosisSafeProxy(
-                  web3,
+                  RpcGateway.get(),
                   context.data.safeAddress
                 );
                 context.data.safeOwners = await safeProxy.getOwners();
-                /*console.log(
-                    `Checking if safe ${context.data.safeAddress} exists .. Safe exists.`
-                );*/
-              }, 2500);
               return true;
             } catch (e) {
               if (e.message == "slow_provider") {
@@ -312,10 +304,6 @@ const processDefinition = (processId: string) =>
               context.messages[
                 "safeAddress"
               ] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Is the address right?`;
-              /* console.log(
-                  `Checking if safe ${context.data.safeAddress} exists .. Safe doesn't exist.`,
-                  e
-              );*/
               throw e;
             }
           },

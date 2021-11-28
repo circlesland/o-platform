@@ -202,10 +202,8 @@ const processDefinition = (processId: string) =>
               context.data.chooseSafeAddress?.trim() ??
               context.data.safe?.address;
             try {
-              await RpcGateway.trigger(async (web3) => {
-                const safeProxy = new GnosisSafeProxy(web3, addressToCheck);
-                await safeProxy.getNonce();
-              }, 2500);
+              const safeProxy = new GnosisSafeProxy(RpcGateway.get(), addressToCheck);
+              await safeProxy.getNonce();
 
               context.data.safe = {
                 address: addressToCheck,

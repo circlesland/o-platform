@@ -18,20 +18,23 @@ function linkToProfile(event) {
     event.stopPropagation();
   }
 }
-
-if (profile.__typename == "Profile") {
-  if (profile.firstName) {
-    displayName = `${profile.firstName} ${
-      profile.lastName ? profile.lastName : ""
-    }`;
-  } else {
-    displayName = profile.circlesAddress;
+$: {
+  if (profile) {
+    if (profile.__typename == "Profile") {
+      if (profile.firstName) {
+        displayName = `${profile.firstName} ${
+                profile.lastName ? profile.lastName : ""
+        }`;
+      } else {
+        displayName = profile.circlesAddress;
+      }
+    } else {
+      displayName = profile.name ? profile.name : "";
+    }
+    displayName =
+            displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
   }
-} else {
-  displayName = profile.name ? profile.name : "";
 }
-displayName =
-  displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
 {#if profile}

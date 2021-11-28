@@ -91,6 +91,16 @@ export const {subscribe} = readable<Contact[]>([], function start(set) {
 export const contacts = {
   subscribe: subscribe,
   findBySafeAddress: async (safeAddress:string) => {
+    let _$me:Profile;
+    me.subscribe($me => _$me = $me)();
+    if (_$me.circlesAddress == safeAddress) {
+      return <Contact>{
+        contactAddress: safeAddress,
+        contactAddress_Profile: _$me,
+        lastContactAt: new Date().toJSON(),
+        metadata: []
+      };
+    }
     return contactsBySafeAddress[safeAddress];
   }
 }

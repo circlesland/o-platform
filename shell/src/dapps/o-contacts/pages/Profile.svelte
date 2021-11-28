@@ -1,31 +1,23 @@
 <script lang="ts">
-import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { getCountryName } from "../../../shared/countries";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-import { onDestroy, onMount } from "svelte";
-import { Subscription } from "rxjs";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { onMount } from "svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import {
   Jumplist,
   JumplistItem,
 } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
-import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
 import {
-  AggregatesDocument,
-  AggregateType,
   CommonTrust,
   CommonTrustDocument,
-  Membership,
   Contact,
-  ContactPointSource,
-  ContactDirection,
+  ContactDirection, ContactPoint,
   Profile,
 } from "../../../shared/api/data/types";
+import {contacts} from "../../../shared/stores/contacts";
 
 export let id: string;
 export let jumplist: Jumplist<any, any> | undefined;
@@ -41,92 +33,13 @@ let profile: Profile;
 let contact: Contact;
 let jumplistResult: JumplistItem[] = [];
 
-onMount(() => {
+onMount(async () => {
   console.log("ON MOUNT ID: ", id);
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (event.type != "shell.refresh" || (<any>event).dapp != "banking:1") {
-        return;
-      }
-      await loadProfile();
-      // console.log("AWAIT LOADPRO");
-    }
-  );
-
-  if (id) {
-    isLoading = true;
-    // console.log("LOADPRO IF CONTEXT");
-    loadProfile();
-  }
-});
-
-$: {
-  if (id) {
-    isLoading = true;
-    // console.log("LOADPRO NOCHMAL");
-    loadProfile();
-  }
-}
-
-let shellEventSubscription: Subscription;
-
-onDestroy(() => shellEventSubscription.unsubscribe());
-
-async function loadProfile() {
-  // console.log("LOADING PROFILE!!!");
-  if (!id) {
-    console.warn(
-      `No profile specified ('id' must contain safeAddress or profileId)`
-    );
-    return;
-  }
-  // Load Contact
-  const safeAddress = $me.circlesAddress.toLowerCase();
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-  const c = await apiClient.query({
-    query: AggregatesDocument,
-    variables: {
-      types: [AggregateType.Contacts],
-      safeAddress: safeAddress,
-      filter: {
-        contacts: {
-          addresses: [id],
-        },
-      },
-    },
-  });
-
-  if (c.errors?.length > 0) {
-    error = `Couldn't read the contacts of safe ${safeAddress}: \n${c.errors
-      .map((o) => o.message)
-      .join("\n")}`;
-    return;
-  }
-
-  const contact: Contact = c.data.aggregates[0].payload.contacts.length
-    ? c.data.aggregates[0].payload.contacts[0]
-    : null;
-
-  // Load Profile
-  if (Number.parseInt(id) && !id.startsWith("0x")) {
-    let apiProfile: Profile | Contact = await loadProfileByProfileId(
-      Number.parseInt(id)
-    );
-    apiProfile = contact ? contact : apiProfile;
-    await setProfile(apiProfile);
-  } else if (RpcGateway.get().utils.isAddress(id)) {
-    let apiProfile: Profile | Contact = await loadProfileBySafeAddress(id);
-    apiProfile = contact ? contact : apiProfile;
-    await setProfile(apiProfile);
-  } else {
-    throw new Error(`id isn't an integer nor an eth address.`);
-  }
-
-  isMe = profile.id == ($me ? $me.id : 0);
-  jumplistResult = await jumplist.items({ id: id }, runtimeDapp);
+  const profile = await contacts.findBySafeAddress(id);
+  console.log("ON MOUNT ID: profile: ", profile);
+  setProfile(profile);
   isLoading = false;
-}
+});
 
 async function setProfile(apiProfile: Profile | Contact) {
   const trust = undefined;
@@ -184,7 +97,7 @@ async function setProfile(apiProfile: Profile | Contact) {
   profile = contact.contactAddress_Profile;
 
   if (contact.metadata) {
-    const trustMetadata: ContactPointSource = contact.metadata.find(
+    const trustMetadata: ContactPoint = contact.metadata.find(
       (p) => p.name === "CrcTrust"
     );
     let trustIn = 0;

@@ -22,7 +22,7 @@ export let props;
               on:click="{() =>
                 window.o.runProcess(showNotifications, {
                   events: $inbox.map((o) => o),
-                })}">
+                }, {}, {})}">
               {$inbox.length}
             </div>
           </div>
