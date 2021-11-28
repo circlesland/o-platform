@@ -9,8 +9,9 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import {
   UpsertProfileDocument,
-  WhoamiDocument,
+  WhoamiDocument, WhoamiQueryVariables,
 } from "../../../shared/api/data/types";
+import {ApiClient} from "../../../shared/apiConnection";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
@@ -81,14 +82,7 @@ async function editProfile() {
 let email: string = "unknown";
 
 onMount(async () => {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: WhoamiDocument,
-  });
-  if (result.errors) {
-    return;
-  }
-  email = result.data.whoami;
+  email = await ApiClient.query<string,WhoamiQueryVariables>(WhoamiDocument, {});
 });
 
 let receiveNewsletter: boolean = $me.newsletter;

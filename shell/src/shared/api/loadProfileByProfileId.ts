@@ -1,25 +1,17 @@
-import {Profile, ProfilesDocument} from "./data/types";
-import {RpcGateway} from "../../../../packages/o-circles/dist/rpcGateway";
+import {
+    Profile,
+    ProfilesDocument, ProfilesQueryVariables
+} from "./data/types";
+import {ApiClient} from "../apiConnection";
 
 export async function loadProfileByProfileId(profileId: number) : Promise<Profile> {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.query({
-        query: ProfilesDocument,
-        variables: {
-            id: [profileId],
-        },
+    const result = await ApiClient.query<Profile[], ProfilesQueryVariables>(ProfilesDocument,{
+        id: [profileId]
     });
-    if (result.errors) {
-        throw new Error(
-            `Couldn't load a profile with id '${profileId}': ${JSON.stringify(
-                result.errors
-            )}`
-        );
-    }
 
     const apiProfile: Profile =
-        result.data.profiles && result.data.profiles.length
-            ? result.data.profiles[0]
+        result && result.length
+            ? result[0]
             : undefined;
 
     if (!apiProfile) {

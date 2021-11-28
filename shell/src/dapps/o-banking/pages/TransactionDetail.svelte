@@ -10,11 +10,8 @@ import {
   CrcHubTransfer,
   CrcMinting,
   Erc20Transfer,
-  EventType,
   Profile,
-  ProfileEvent,
-  SortOrder,
-  StreamDocument,
+  ProfileEvent
 } from "../../../shared/api/data/types";
 import {transactions} from "../../../shared/stores/transactions";
 export let transactionHash: string;

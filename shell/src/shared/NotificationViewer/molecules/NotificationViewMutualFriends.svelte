@@ -1,19 +1,15 @@
 <script lang="ts">
-  import {CommonTrustDocument, Profile} from "src/shared/api/data/types";
-
+import {CommonTrust, CommonTrustDocument, CommonTrustQueryVariables, Profile} from "src/shared/api/data/types";
 import UserImage from "src/shared/atoms/UserImage.svelte";
+import {ApiClient} from "../../apiConnection";
 export const profile: Profile = undefined;
 export const eventData: any = undefined;
 
-async function getMutualFriends() {
+async function getMutualFriends() : Promise<CommonTrust[]> {
   if (eventData && eventData.profile) {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const mutualFriends = await apiClient.query({
-      query: CommonTrustDocument,
-      variables: {
-        safeAddress1: eventData.safeAddress.toLowerCase(),
-        safeAddress2: eventData.profile.circlesAddress.toLowerCase(),
-      },
+    const mutualFriends = await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(CommonTrustDocument, {
+      safeAddress1: eventData.safeAddress.toLowerCase(),
+      safeAddress2: eventData.profile.circlesAddress.toLowerCase(),
     });
     return mutualFriends;
   } else {

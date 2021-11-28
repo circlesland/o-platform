@@ -1,6 +1,8 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import { Offer, OffersDocument } from "../../../shared/api/data/types";
+import {
+  Offer
+} from "../../../shared/api/data/types";
 import OfferCard from "../atoms/OfferCard.svelte";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -23,6 +25,8 @@ async function load() {
   if (isLoading || !category) return;
 
   isLoading = true;
+  /*
+
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.query({
     query: OffersDocument,
@@ -40,6 +44,8 @@ async function load() {
   }
   isLoading = false;
   offers = result.data.offers;
+
+   */
 }
 
 onMount(async () => {

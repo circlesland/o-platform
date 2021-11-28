@@ -3,8 +3,8 @@ import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import {
   AggregatesDocument,
   AggregateType,
-  Offer,
-  Sale,
+  Offer, ProfileAggregate, QueryAggregatesArgs,
+  Sale, Sales,
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import dayjs from "dayjs";
@@ -16,6 +16,8 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { push } from "svelte-spa-router";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import Icons from "../../../shared/molecules/Icons.svelte";
+import {ApiClient} from "../../../shared/apiConnection";
+import {id} from "./MySaleDetail.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -28,29 +30,16 @@ let shellEventSubscription: Subscription;
 async function load() {
   if (isLoading) return;
 
-  const safeAddress = $me.circlesAddress;
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-  const salesResult = await apiClient.query({
-    query: AggregatesDocument,
-    variables: {
-      types: [AggregateType.Sales],
-      safeAddress: safeAddress,
-    },
+  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+    types: [AggregateType.Sales],
+    safeAddress: $me.circlesAddress
   });
-
-  if (salesResult.errors?.length > 0) {
-    throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
-  }
-
-  const o = salesResult.data.aggregates.find(
-    (o) => o.type == AggregateType.Sales
-  );
-  if (!o) {
+  const foundAggregate = aggregates.find(o => o.type == AggregateType.Sales)?.payload as Sales;
+  if (!foundAggregate) {
     throw new Error(`Couldn't find the Sales in the query result.`);
   }
 
-  sales = o.payload.sales;
+  sales = foundAggregate.sales;
   console.log(sales);
   isLoading = false;
 }

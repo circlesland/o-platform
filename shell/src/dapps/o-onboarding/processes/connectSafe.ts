@@ -9,9 +9,11 @@ import * as bip39 from "bip39";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Account } from "web3-core";
 import {
-  FindSafeAddressByOwnerDocument,
+  FindSafeAddressByOwnerDocument, FindSafeAddressByOwnerQueryVariables,
   Profile,
-  ProfilesByCirclesAddressDocument,
+  ProfilesByCirclesAddressDocument, ProfilesByCirclesAddressQueryVariables,
+  QueryFindSafeAddressByOwnerArgs,
+  SafeAddressByOwnerResult,
   UpsertProfileDocument,
 } from "../../../shared/api/data/types";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
@@ -22,6 +24,7 @@ import { loadProfile } from "../../o-passport/processes/identify/services/loadPr
 import SimpleDropDownEditor from "../../../../../packages/o-editors/src/SimpleDropDownEditor.svelte";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import DropDownCandidateSafe from "../views/atoms/DropDownCandidateSafe.svelte";
+import {ApiClient} from "../../../shared/apiConnection";
 
 export type SafeCandidate = {
   address: string;
@@ -127,31 +130,12 @@ const processDefinition = (processId: string) =>
           id: "findSafe",
           invoke: {
             src: async (context) => {
-              const apiClient =
-                await window.o.apiClient.client.subscribeToResult();
-              const result = await apiClient.query({
-                query: FindSafeAddressByOwnerDocument,
-                variables: {
-                  owner: context.data.importedAccount.address.toLowerCase(),
-                },
-              });
 
-              if (result.errors && result.errors.length) {
-                throw new Error(
-                  `Couldn't find a safe for owner ${
-                    context.data.importedAccount.address
-                  }: ${JSON.stringify(result.errors)}`
-                );
-              }
-
-              const foundSafeAddresses = result.data.findSafeAddressByOwner;
-              if (!foundSafeAddresses.length) {
-                throw new Error(
-                  `Couldn't find a safe for owner ${
-                    context.data.importedAccount.address
-                  }: ${JSON.stringify(result.errors)}`
-                );
-              }
+              const foundSafeAddresses = await ApiClient.query<
+                SafeAddressByOwnerResult[], FindSafeAddressByOwnerQueryVariables
+                >(FindSafeAddressByOwnerDocument,{
+                  owner: context.data.importedAccount.address.toLowerCase()
+                });
 
               const query = foundSafeAddresses.reduce(
                 (p, c) =>
@@ -167,12 +151,10 @@ const processDefinition = (processId: string) =>
                 circlesGardenProfileRequest
               ).then((result) => result.json());
 
-              const circlesLandProfileQueryPromise = apiClient.query({
-                query: ProfilesByCirclesAddressDocument,
-                variables: {
-                  circlesAddresses: foundSafeAddresses,
-                },
-              });
+              const circlesLandProfileQueryPromise = ApiClient.query<Profile[], ProfilesByCirclesAddressQueryVariables>(
+                ProfilesByCirclesAddressDocument,{
+                  circlesAddresses: foundSafeAddresses.filter(o => o.type === "ubi").map(o => o.safeAddress)
+                });
 
               const results = await Promise.all([
                 circlesGardenFetchPromise,
@@ -184,9 +166,7 @@ const processDefinition = (processId: string) =>
               const circlesLandProfilesResult = results[1];
 
               const balancesBySafeAddress: { [safeAddress: string]: BN } = {};
-
-              const circlesLandProfiles: Profile[] =
-                circlesLandProfilesResult.data.profilesBySafeAddress;
+              const circlesLandProfiles: Profile[] = circlesLandProfilesResult;
 
               const circlesGardenProfiles =
                 circlesGardenProfilesResult.data?.map((o: any) => {
@@ -201,14 +181,14 @@ const processDefinition = (processId: string) =>
 
               context.data.safeCandidates = {};
               for (let candidateAddress of foundSafeAddresses) {
-                context.data.safeCandidates[candidateAddress] = {
-                  address: candidateAddress,
-                  balance: balancesBySafeAddress[candidateAddress],
+                context.data.safeCandidates[candidateAddress.safeAddress] = {
+                  address: candidateAddress.safeAddress,
+                  balance: balancesBySafeAddress[candidateAddress.safeAddress],
                   circlesGardenProfile: circlesGardenProfiles?.find(
-                    (o) => o.circlesAddress == candidateAddress
+                    (o) => o.circlesAddress == candidateAddress.safeAddress
                   ),
                   circlesLandProfile: circlesLandProfiles.find(
-                    (o) => o.circlesAddress == candidateAddress
+                    (o) => o.circlesAddress == candidateAddress.safeAddress
                   ),
                 };
               }
@@ -393,12 +373,8 @@ const processDefinition = (processId: string) =>
     {
       services: {
         findMostRecentUbiSafe: async (context, event) => {
-          const apiClient = await window.o.apiClient.client.subscribeToResult();
-          const result = await apiClient.query({
-            query: FindSafeAddressByOwnerDocument,
-            variables: {
-              owner: context.data.importedAccount.address.toLowerCase(),
-            },
+          const result = await ApiClient.query<string, FindSafeAddressByOwnerQueryVariables>(FindSafeAddressByOwnerDocument,{
+            owner: context.data.importedAccount.address.toLowerCase(),
           });
         },
       },

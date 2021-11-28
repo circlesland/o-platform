@@ -1,23 +1,25 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import {
-  EventType,
-  Profile,
-  ProfileEvent,
-  SendMessageDocument,
-  SortOrder,
-  StreamDocument,
-} from "../../../shared/api/data/types";
-import { me } from "../../../shared/stores/me";
-import { push } from "svelte-spa-router";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import {contacts} from "../../../shared/stores/contacts";
+  import {onMount} from "svelte";
+  import {
+    EventType,
+    Profile,
+    ProfileEvent,
+    SendMessageDocument,
+    SortOrder,
+    StreamDocument,
+    StreamQueryVariables,
+  } from "../../../shared/api/data/types";
+  import {me} from "../../../shared/stores/me";
+  import {push} from "svelte-spa-router";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
+  import {contacts} from "../../../shared/stores/contacts";
 
-import NotificationCard from "../atoms/NotificationCard.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+  import NotificationCard from "../atoms/NotificationCard.svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import {ApiClient} from "../../../shared/apiConnection";
 
-export let id: string;
+  export let id: string;
 
 let error: string | undefined = undefined;
 let chatHistory: ProfileEvent[] = [];
@@ -27,49 +29,31 @@ let shellEventSubscription: Subscription;
 
 async function reload() {
   contactProfile = (await contacts.findBySafeAddress(id)).contactAddress_Profile;
-
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: StreamDocument,
-    variables: {
-      safeAddress: $me.circlesAddress,
-      pagination: {
-        order: SortOrder.Asc,
-        limit: 1000000,
-        continueAt: new Date(0),
-      },
-      filter: {
-        with: id,
-      },
-      types: [
-        EventType.CrcHubTransfer,
-        //EventType.CrcMinting,
-        EventType.CrcTrust,
-        EventType.ChatMessage,
-        //EventType.CrcSignup,
-        //EventType.CrcTokenTransfer,
-        //EventType.EthTransfer,
-        //EventType.GnosisSafeEthTransfer,
-        //EventType.InvitationCreated,
-        EventType.InvitationRedeemed,
-        //EventType.MembershipOffer,
-        //EventType.MembershipAccepted,
-        //EventType.MembershipRejected
-      ],
+  chatHistory = await ApiClient.query<ProfileEvent[], StreamQueryVariables>(StreamDocument, {
+    safeAddress: $me.circlesAddress,
+    pagination: {
+      order: SortOrder.Asc,
+      limit: 1000000,
+      continueAt: new Date(0).toJSON(),
     },
-  });
-
-  // TODO: Load the contact
-  chatHistory = (<any>result).data.events.map((o) => {
-    return {
-      original: o,
-      contactProfile: o.contact_address_profile
-        ? o.contact_address_profile
-        : {
-            circlesAddress: o.contact_address,
-            firstName: o.contact_address,
-          },
-    };
+    filter: {
+      with: id,
+    },
+    types: [
+      EventType.CrcHubTransfer,
+      //EventType.CrcMinting,
+      EventType.CrcTrust,
+      EventType.ChatMessage,
+      //EventType.CrcSignup,
+      //EventType.CrcTokenTransfer,
+      //EventType.EthTransfer,
+      //EventType.GnosisSafeEthTransfer,
+      //EventType.InvitationCreated,
+      EventType.InvitationRedeemed,
+      //EventType.MembershipOffer,
+      //EventType.MembershipAccepted,
+      //EventType.MembershipRejected
+    ]
   });
 
   window.o.publishEvent(<any>{
@@ -112,9 +96,7 @@ const sendMessage = async (text) => {
   if (result.data?.sendMessage?.success) {
     chatHistory = [
       ...chatHistory,
-      <any>{
-        original: result.data.sendMessage.event,
-      },
+      result.data.sendMessage.event
     ];
   }
 
@@ -207,7 +189,7 @@ function goToProfile(e, path?: string) {
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
   <div class="flex flex-col pb-0 space-y-4 sm:space-y-8">
     {#each chatHistory as event}
-      <NotificationCard event="{event.original}" />
+      <NotificationCard event="{event}" />
     {/each}
     <div id="endOfList"></div>
   </div>

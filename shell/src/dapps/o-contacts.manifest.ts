@@ -53,29 +53,9 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
   routeParts: ["=actions"],
   items: async (params, runtimeDapp) => {
     let $me: Profile = null;
-    const unsub = me.subscribe((e) => ($me = e));
-    unsub();
+    me.subscribe((e) => ($me = e))();
 
-    const getRecipientProfile = async () => {
-      const result = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(
-        AggregatesDocument,
-        {
-          safeAddress: $me.circlesAddress,
-          filter: <ProfileAggregateFilter>{
-            contacts: {
-              addresses: [params.id],
-            },
-          },
-          types: [AggregateType.Contacts],
-        });
-
-      const contactsAgg = result.find(o => o.type == AggregateType.Contacts);
-      const contacts = contactsAgg ? (<any>contactsAgg.payload).contacts : [];
-      return contacts.length > 0 ?  contacts[0] : undefined;
-    };
-
-    const recipientProfile:Contact = await contacts.findBySafeAddress(params.id);
-
+    const recipientProfile:Contact = await contacts.findBySafeAddress(params.id ?? $me.circlesAddress);
     const trustMetadata =
       recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??
       undefined;

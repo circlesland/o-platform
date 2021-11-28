@@ -4,6 +4,7 @@
   import StatsHeader from "../atoms/StatsHeader.svelte";
   import { Stats, StatsDocument } from "../../../shared/api/data/types";
   import StatsField from "../atoms/StatsField.svelte";
+  import {ApiClient} from "../../../shared/apiConnection";
 
   $: me;
   let isLoading: boolean = true;
@@ -11,6 +12,7 @@
   let stats: Stats;
 
   const init = async () => {
+    /*
     try {
       const apiClient = await window.o.apiClient.client.subscribeToResult();
       const statsData = await apiClient.query({
@@ -29,6 +31,7 @@
     } finally {
       isLoading = false;
     }
+     */
   };
 
   onMount(init);

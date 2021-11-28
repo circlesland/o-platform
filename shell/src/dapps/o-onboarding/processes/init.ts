@@ -3,12 +3,17 @@ import { getSessionInfo } from "../../o-passport/processes/identify/services/get
 import { BN } from "ethereumjs-util";
 import { loadProfile } from "../../o-passport/processes/identify/services/loadProfile";
 import {
+  ClaimedInvitation,
   ClaimedInvitationDocument,
-  HubSignupTransactionDocument,
-  InitAggregateStateDocument,
+  ClaimedInvitationQueryVariables, CrcSignup,
+  HubSignupTransactionDocument, HubSignupTransactionQueryVariables, InitAggregateState,
+  InitAggregateStateDocument, InitAggregateStateQueryVariables,
   InvitationTransactionDocument,
-  SafeFundingTransactionDocument,
+  InvitationTransactionQueryVariables,
+  ProfileEvent,
+  SafeFundingTransactionDocument, SafeFundingTransactionQueryVariables,
   WhoamiDocument,
+  WhoamiQueryVariables,
 } from "../../../shared/api/data/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
@@ -24,10 +29,10 @@ import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { KeyManager } from "../../o-passport/data/keyManager";
 import { unlockKey } from "./unlockKey/unlockKey";
-import { InitEvent, UbiData } from "./initEvent";
+import {InitEvent, UbiData} from "./initEvent";
 import { InitContext } from "./initContext";
 import { push } from "svelte-spa-router";
-import {contacts} from "../../../shared/stores/contacts";
+import {ApiClient} from "../../../shared/apiConnection";
 
 export const initMachine = createMachine<InitContext, InitEvent>(
   {
@@ -412,32 +417,28 @@ export const initMachine = createMachine<InitContext, InitEvent>(
   {
     services: {
       loadInitAggregateState: async (context) => {
-        const apiClient = await window.o.apiClient.client.subscribeToResult();
-        const result = await apiClient.query({
-          query: InitAggregateStateDocument,
-        });
-        if (result.data?.initAggregateState) {
-          context.initAggregateState = result.data.initAggregateState;
+        const result = await ApiClient.query<InitAggregateState, InitAggregateStateQueryVariables>(InitAggregateStateDocument,{});
+        if (result) {
+          context.initAggregateState = result;
         }
       },
-      loadSession: () => (callback) => {
-        getSessionInfo()
-          .then((sessionInfo) => {
-            if (sessionInfo.isLoggedOn) {
-              callback(<any>{ type: "GOT_SESSION", session: sessionInfo });
-            } else {
-              callback({ type: "NO_SESSION" });
-            }
-          })
-          .catch((e) => {
-            console.warn(
-              `Couldn't determine the session state -> Assuming "NO_SESSION".`,
-              e
-            );
-            callback({ type: "NO_SESSION" });
-          });
+      loadSession: () => async (callback) => {
+        try {
+          const sessionInfo = await getSessionInfo();
+          if (sessionInfo.isLoggedOn) {
+            callback(<any>{type: "GOT_SESSION", session: sessionInfo});
+          } else {
+            callback({type: "NO_SESSION"});
+          }
+        } catch (e) {
+          console.error(
+            `Couldn't determine the session state -> Assuming "NO_SESSION".`,
+            e
+          );
+          callback({ type: "NO_SESSION" });
+        }
       },
-      loadRegistration: (ctx) => (callback) => {
+      loadRegistration: (ctx) => async (callback) => {
         if (!ctx.session) throw new Error(`ctx.session is not set`);
 
         if (!ctx.session.profileId) {
@@ -445,115 +446,71 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           return;
         }
 
-        let email: string;
+        try {
+          const email = await ApiClient.query<string, WhoamiQueryVariables>(WhoamiDocument, {});
+          const profile = await loadProfile(ctx.session.profileId);
 
-        window.o.apiClient.client
-          .subscribeToResult()
-          .then((apiClient) => {
-            return apiClient.query({
-              query: WhoamiDocument,
-            });
-          })
-          .then((result) => {
-            if (result.errors) {
-              callback({
-                type: "REGISTRATION_ERROR",
-                error: new Error(
-                  `Couldn't load the registration for the following reason: ${JSON.stringify(
-                    result.errors
-                  )}`
-                ),
-              });
-            } else {
-              email = result.data.whoami;
-              return loadProfile(ctx.session.profileId);
-            }
-          })
-          .then((profile) => {
-            callback({
-              type: "GOT_REGISTRATION",
-              registration: {
-                email: email,
-                profileId: profile.id,
-                circlesSafeOwner: profile.circlesSafeOwner,
-                acceptedToSVersion: "", // TODO: Important in the context?
-                subscribedToNewsletter: profile.newsletter,
-              },
-            });
-          })
-          .catch((e) => {
-            callback({ type: "REGISTRATION_ERROR", error: e });
+          callback({
+            type: "GOT_REGISTRATION",
+            registration: {
+              email: email,
+              profileId: profile.id,
+              circlesSafeOwner: profile.circlesSafeOwner,
+              acceptedToSVersion: "", // TODO: Important in the context?
+              subscribedToNewsletter: profile.newsletter,
+            },
           });
+        } catch (e) {
+          callback({
+            type: "REGISTRATION_ERROR",
+            error: e
+          });
+        }
       },
-      loadClaimedInvitation: (ctx) => (callback) => {
+      loadClaimedInvitation: (ctx) => async (callback) => {
         if (!ctx.registration) throw new Error(`ctx.registration is not set`);
 
-        /*callback({type: "NO_INVITATION"});
-      return;*/
+        try {
+          const claimedInvitation = await ApiClient.query<ClaimedInvitation, ClaimedInvitationQueryVariables>(
+            ClaimedInvitationDocument, {});
 
-        window.o.apiClient.client
-          .subscribeToResult()
-          .then((apiClient) => {
-            return apiClient.query({
-              query: ClaimedInvitationDocument,
-            });
-          })
-          .then(async (result) => {
-            if (result.errors) {
-              callback({
-                type: "INVITATION_ERROR",
-                error: new Error(
-                  `Couldn't load the registration for the following reason: ${JSON.stringify(
-                    result.errors
-                  )}`
-                ),
-              });
-              return;
-            }
-            if (!result.data.claimedInvitation) {
-              callback({ type: "NO_INVITATION" });
-              return;
-            }
-
-            // TODO: Why is the any cast necessary for the "GOT_INVITATION" event?
-            // callback({type: "NO_INVITATION"});
+          if (claimedInvitation) {
             callback(<InitEvent>{
               type: "GOT_INVITATION",
-              invitation: result.data.claimedInvitation,
+              invitation: claimedInvitation,
             });
-          })
-          .catch((e) => {
-            callback({
-              type: "INVITATION_ERROR",
-              error: e,
-            });
+          } else {
+            callback({ type: "NO_INVITATION" });
+          }
+        } catch (e) {
+          callback({
+            type: "INVITATION_ERROR",
+            error: e,
           });
+        }
       },
-      loadProfile: (ctx) => (callback) => {
-        // if (!ctx.invitation) throw new Error(`ctx.invitation is not set`);
-
-        loadProfile()
-          .then((profile) => {
-            if (profile.firstName.trim() !== "") {
-              callback({
-                type: "GOT_PROFILE",
-                profile: {
-                  id: profile.id,
-                  avatarUrl: profile.avatarUrl,
-                  lastName: profile.lastName,
-                  firstName: profile.firstName,
-                  cityId: profile.cityGeonameid,
-                  passion: profile.dream,
-                  circlesSafeOwner: profile.circlesSafeOwner,
-                },
-              });
-            } else {
-              callback({ type: "NO_PROFILE" });
-            }
-          })
-          .catch((e) => {
-            callback({ type: "PROFILE_ERROR", error: e });
-          });
+      loadProfile: (ctx) => async (callback) => {
+        try {
+          const profile = await loadProfile();
+          if (profile.firstName.trim() !== "") {
+            callback({
+              type: "GOT_PROFILE",
+              profile: {
+                id: profile.id,
+                avatarUrl: profile.avatarUrl,
+                lastName: profile.lastName,
+                firstName: profile.firstName,
+                cityId: profile.cityGeonameid,
+                passion: profile.dream,
+                circlesSafeOwner: profile.circlesSafeOwner,
+              },
+            });
+          } else {
+            callback({type: "NO_PROFILE"});
+          }
+        } catch (e) {
+          callback({ type: "PROFILE_ERROR", error: e });
+        }
       },
       loadEoa: (ctx) => async (callback) => {
         if (!ctx.registration) throw new Error(`ctx.registration is not set`);
@@ -582,129 +539,92 @@ export const initMachine = createMachine<InitContext, InitEvent>(
             });
             return;
           }
-          RpcGateway.get()
-            .eth.getBalance(eoa.address)
-            .then((balance) => {
-              callback({
-                type: "GOT_EOA",
-                eoa: {
-                  address: eoa.address,
-                  privateKey: key,
-                  origin: "Created",
-                  balance: new BN(balance),
-                },
-              });
-            })
-            .catch((e) => {
-              callback({ type: "EOA_ERROR", error: e });
-            });
+
+          const balance = await RpcGateway.get().eth.getBalance(eoa.address);
+          callback({
+            type: "GOT_EOA",
+            eoa: {
+              address: eoa.address,
+              privateKey: key,
+              origin: "Created",
+              balance: new BN(balance),
+            },
+          });
+
         } catch (e) {
           callback({ type: "EOA_ERROR", error: e });
         }
       },
-      loadEoaInvitationTransaction: (ctx) => (callback) => {
+      loadEoaInvitationTransaction: (ctx) => async (callback) => {
         if (!ctx.eoa) throw new Error(`ctx.eoa is not set`);
 
-        window.o.apiClient.client
-          .subscribeToResult()
-          .then((apiClient) => {
-            return apiClient.query({
-              query: InvitationTransactionDocument,
-            });
-          })
-          .then((result) => {
-            // TODO: Find the transaction from the "invitation EOA" to the user's EOA (must be the only outgoing transaction from the invite-eoa)
-            if (
-              result.errors ||
-              !result.data?.invitationTransaction?.transaction_hash
-            ) {
-              callback({ type: "NOT_REDEEMED" });
-            } else {
-              callback({
-                type: "GOT_REDEEMED",
-                transaction: result.data.invitationTransaction.transaction_hash,
-              });
-            }
+        // TODO: This is missing an error response
+        const invitationTransaction = await ApiClient.query<ProfileEvent, InvitationTransactionQueryVariables>(
+          InvitationTransactionDocument, {});
+
+        if (invitationTransaction) {
+          callback({
+            type: "GOT_REDEEMED",
+            transaction: invitationTransaction,
           });
+        } else {
+          callback({ type: "NOT_REDEEMED" });
+        }
       },
-      loadSafe: (ctx) => (callback) => {
-        loadProfile()
-          .then((result) => {
-            if (!result.circlesAddress) {
-              callback({ type: "NO_SAFE" });
-            } else {
-              // TODO: Check if the safe is owned by the previously queried EOA.
-              RpcGateway.get()
-                .eth.getBalance(result.circlesAddress)
-                .then((balance) => {
-                  callback({
-                    type: "GOT_SAFE",
-                    safe: {
-                      address: result.circlesAddress,
-                      origin: "Created", // TODO: Find correct origin,
-                      balance: new BN(balance),
-                    },
-                  });
-                })
-                .catch((error) => {
-                  callback({
-                    type: "SAFE_ERROR",
-                    error: error,
-                  });
-                });
-            }
-          })
-          .catch((error) => {
+      loadSafe: (ctx) => async (callback) => {
+        try {
+          const profile = await loadProfile();
+          if (profile?.circlesAddress) {
+            const safeBalance = await RpcGateway.get().eth.getBalance(profile.circlesAddress);
             callback({
-              type: "SAFE_ERROR",
-              error: error,
+              type: "GOT_SAFE",
+              safe: {
+                address: profile.circlesAddress,
+                origin: "Created", // TODO: Find correct origin,
+                balance: new BN(safeBalance),
+              },
             });
+          } else {
+            callback({type: "NO_SAFE"});
+          }
+        } catch (e) {
+          callback({
+            type: "SAFE_ERROR",
+            error: e,
           });
+        }
       },
-      loadSafeInvitationTransaction: (ctx) => (callback) => {
+      loadSafeInvitationTransaction: (ctx) => async (callback) => {
         if (!ctx.safe) throw new Error(`ctx.safe is not set`);
 
-        window.o.apiClient.client
-          .subscribeToResult()
-          .then((apiClient) => {
-            return apiClient.query({
-              query: SafeFundingTransactionDocument,
-            });
-          })
-          .then((result) => {
-            // TODO: Find the invitation transaction from the user's EOA to the safe (use IndexedTransactions from the API.)
-            if (result.errors || !result.data.safeFundingTransaction) {
-              callback({ type: "SAFE_NOT_FUNDED" });
-            } else {
-              callback({
-                type: "GOT_SAFE_FUNDED",
-                transaction: result.data.safeFundingTransaction,
-              });
-            }
-          });
-      },
-      loadUbi: (ctx) => (callback) => {
-        window.o.apiClient.client
-          .subscribeToResult()
-          .then((apiClient) =>
-            apiClient.query({
-              query: HubSignupTransactionDocument,
-            })
-          )
-          .then((result) => {
-            if (result.errors || !result.data.hubSignupTransaction) {
-              callback({ type: "NO_UBI" });
-            } else {
-              callback({
-                type: "GOT_UBI",
-                ubi: <UbiData>{
-                  tokenAddress: result.data.hubSignupTransaction.payload.token,
-                },
-              });
-            }
-          });
+        // TODO: This is missing an error response
+        const safeFundingTransaction = await ApiClient.query<ProfileEvent, SafeFundingTransactionQueryVariables>(
+          SafeFundingTransactionDocument, {});
 
-        // TODO: Check if the user's safe is already signed up at the UBI hub
+        if (safeFundingTransaction) {
+          callback({
+            type: "GOT_SAFE_FUNDED",
+            transaction: safeFundingTransaction,
+          });
+        } else {
+          callback({ type: "SAFE_NOT_FUNDED" });
+        }
+      },
+      loadUbi: (ctx) => async (callback) => {
+        // TODO: This is missing an error response
+        const hubSignupTransaction = await ApiClient.query<ProfileEvent, HubSignupTransactionQueryVariables>(
+          HubSignupTransactionDocument, {});
+
+        if (hubSignupTransaction?.payload) {
+          callback({
+            type: "GOT_UBI",
+            ubi: <UbiData>{
+              tokenAddress: (<CrcSignup>hubSignupTransaction.payload).token,
+            },
+          });
+        } else {
+          callback({ type: "NO_UBI" });
+        }
       },
       signupForUbi: (ctx) => async (callback) => {
         const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);

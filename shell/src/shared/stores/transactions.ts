@@ -1,10 +1,11 @@
 import {writable} from "svelte/store";
 import {
-  EventType, PaginationArgs, Profile,
+  EventType, PaginationArgs,
   ProfileEvent, ProfileEventFilter, QueryEventsArgs, SortOrder, StreamDocument
 } from "../api/data/types";
 import {me} from "./me";
 import {Subscription} from "rxjs";
+import {ApiClient} from "../apiConnection";
 
 let order: SortOrder = SortOrder.Desc;
 let dataKey: string = "events";
@@ -18,6 +19,11 @@ let pagination: PaginationArgs = {
   limit: limit,
   continueAt: new Date().toJSON(),
 };
+const transactionEventTypes = [
+  EventType.CrcHubTransfer,
+  EventType.CrcMinting,
+  EventType.Erc20Transfer
+];
 async function fetchData(queryArguments:QueryEventsArgs) {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const timeline: any = await apiClient.query({
@@ -49,11 +55,7 @@ async function fetchData(queryArguments:QueryEventsArgs) {
 async function loadTransactions(safeAddress: string) {
   const args = {
     safeAddress: safeAddress,
-    types: [
-      EventType.CrcHubTransfer,
-      EventType.CrcMinting,
-      EventType.Erc20Transfer,
-    ],
+    types: transactionEventTypes,
     pagination: pagination,
     filter: undefined
   };
@@ -72,11 +74,7 @@ async function loadTransactions(safeAddress: string) {
 async function updateTransactions(safeAddress: string) {
   const args = {
     safeAddress: safeAddress,
-    types: [
-      EventType.CrcHubTransfer,
-      EventType.CrcMinting,
-      EventType.Erc20Transfer,
-    ],
+    types: transactionEventTypes,
     pagination: {
       order: order,
       limit: limit,
@@ -175,33 +173,22 @@ export const transactions = {
     if (!foundTx) {
       let safeAddress:string;
       me.subscribe($me => safeAddress = $me.circlesAddress)()
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      const timeline: any = await apiClient.query({
-        query: fetchQuery,
-        variables: {
-          safeAddress: safeAddress,
-          types: [
-            EventType.CrcHubTransfer,
-            EventType.CrcMinting,
-            EventType.Erc20Transfer,
-          ],
-          pagination: {
-            order: order,
-            limit: limit,
-            continueAt: new Date().toJSON(),
-          },
-          filter: <ProfileEventFilter>{
-            transactionHash: transactionHash
-          }
+
+      const foundEvents = await ApiClient.query<ProfileEvent[], QueryEventsArgs>(fetchQuery, {
+        safeAddress: safeAddress,
+        types: transactionEventTypes,
+        pagination: {
+          order: order,
+          limit: limit,
+          continueAt: new Date().toJSON(),
         },
+        filter: <ProfileEventFilter>{
+          transactionHash: transactionHash
+        }
       });
-      if (timeline.errors) {
-        throw new Error(`Couldn't load data for the following reasons: ${JSON.stringify(
-          timeline.errors
-        )}`);
-      }
-      if (timeline.data.events && timeline.data.events.length > 0) {
-        foundTx = timeline.data.events[0];
+
+      if (foundEvents && foundEvents.length > 0) {
+        foundTx = foundEvents[0];
         eventsByHash[foundTx.transaction_hash] = foundTx;
       }
     }

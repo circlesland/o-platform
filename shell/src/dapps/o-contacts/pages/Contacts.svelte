@@ -6,40 +6,32 @@
   import {onDestroy, onMount} from "svelte";
   import {
     AggregatesDocument,
-    AggregateType,
-    ContactPoint, EventType,
+    AggregateType, Contact,
+    Contacts, EventType, ProfileAggregate, QueryAggregatesArgs,
   } from "../../../shared/api/data/types";
   import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
   import {Subscription} from "rxjs";
   import ContactCard2 from "../atoms/ContactCard2.svelte";
   import {ZERO_ADDRESS} from "@o-platform/o-circles/dist/consts";
+  import {ApiClient} from "../../../shared/apiConnection";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
   let error: string | undefined = undefined;
-  let contacts: ContactPoint[] = [];
+  let contacts: Contact[] = [];
 
   async function reload() {
-    const safeAddress = $me.circlesAddress.toLowerCase();
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-    const c = await apiClient.query({
-      query: AggregatesDocument,
-      variables: {
-        types: [AggregateType.Contacts],
-        safeAddress: safeAddress
-      }
+    const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+      types: [AggregateType.Contacts],
+      safeAddress: $me.circlesAddress
     });
-
-    if (c.errors?.length > 0) {
-      error = `Couldn't read the contacts of safe ${safeAddress}: \n${c.errors
-              .map((o) => o.message)
-              .join("\n")}`;
-      return;
+    const foundAggregate = aggregates.find(o => o.type == AggregateType.Contacts)?.payload as Contacts;
+    if (!foundAggregate) {
+      throw new Error(`Couldn't find the Contacts in the query result.`);
     }
 
-    const contactsList:ContactPoint[] = c.data.aggregates[0].payload.contacts;
+    const contactsList:Contact[] = foundAggregate.contacts;
 
     let trustedContacts = contactsList.filter(o => {
       // Check if the contact trusted me or if I trusted the contact
@@ -53,7 +45,7 @@
     });
 
     // Filter my own address and the UBI minting address
-    trustedContacts = trustedContacts.filter(o => o.contactAddress != safeAddress
+    trustedContacts = trustedContacts.filter(o => o.contactAddress != $me.circlesAddress
                                               && o.contactAddress != ZERO_ADDRESS);
 
     contacts = trustedContacts.sort((a,b) => {

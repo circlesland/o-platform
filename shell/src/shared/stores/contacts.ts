@@ -2,33 +2,26 @@ import {readable} from "svelte/store";
 import {
   AggregatesDocument,
   AggregateType,
-  Contact, ContactAggregateFilter, Profile
+  Contact, ContactAggregateFilter, Contacts, Profile, ProfileAggregate, QueryAggregatesArgs
 } from "../api/data/types";
 import {me} from "./me";
 import {Subscription} from "rxjs";
 import {ZERO_ADDRESS} from "@o-platform/o-circles/dist/consts";
+import {ApiClient} from "../apiConnection";
 
 let contactsBySafeAddress: { [address: string]: Contact } = {};
 
 async function loadContacts(safeAddress: string) {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const c = await apiClient.query({
-    query: AggregatesDocument,
-    variables: {
-      types: [AggregateType.Contacts],
-      safeAddress: safeAddress
-    }
+  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+    types: [AggregateType.Contacts],
+    safeAddress: safeAddress
   });
-
-  if (c.errors?.length > 0) {
-    let error = `Couldn't read the contacts of safe ${safeAddress}: \n${c.errors
-      .map((o) => o.message)
-      .join("\n")}`;
-
-    throw new Error(error);
+  const foundAggregate = aggregates.find(o => o.type == AggregateType.Contacts)?.payload as Contacts;
+  if (!foundAggregate) {
+    throw new Error(`Couldn't find the Contacts in the query result.`);
   }
 
-  const contactsList: Contact[] = c.data.aggregates[0].payload.contacts.filter((o: Contact) => {
+  const contactsList: Contact[] = foundAggregate.contacts.filter((o: Contact) => {
     return o.contactAddress !== ZERO_ADDRESS && o.contactAddress != safeAddress;
   });
 
@@ -103,29 +96,18 @@ export const contacts = {
     }
     let contact = contactsBySafeAddress[safeAddress];
     if (!contact) {
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      const c = await apiClient.query({
-        query: AggregatesDocument,
-        variables: {
-          types: [AggregateType.Contacts],
-          safeAddress: safeAddress,
-          filter: {
-            contacts: <ContactAggregateFilter>{
-              addresses: [safeAddress]
-            }
+      const filteredContacts = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+        types: [AggregateType.Contacts],
+        safeAddress: safeAddress,
+        filter: {
+          contacts: <ContactAggregateFilter>{
+            addresses: [safeAddress]
           }
         }
       });
-      if (c.errors?.length > 0) {
-        let error = `Couldn't read the contacts of safe ${safeAddress}: \n${c.errors
-          .map((o) => o.message)
-          .join("\n")}`;
-
-        throw new Error(error);
-      }
-      const foundContacts = c.data.aggregates.find(o => o.type == "Contacts")?.payload.contacts;
-      if (foundContacts && foundContacts.length > 0){
-        contact = foundContacts[0];
+      const foundContacts = filteredContacts.find(o => o.type == "Contacts")?.payload as Contacts;
+      if (foundContacts && foundContacts.contacts.length > 0){
+        contact = foundContacts.contacts[0];
         contactsBySafeAddress[contact.contactAddress] = contact;
       }
     }

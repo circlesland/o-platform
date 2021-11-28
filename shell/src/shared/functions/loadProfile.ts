@@ -1,7 +1,8 @@
 import { loadProfileByProfileId } from "../api/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../api/loadProfileBySafeAddress";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import { CommonTrust, CommonTrustDocument, Profile } from "../api/data/types";
+import {CommonTrust, CommonTrustDocument, CommonTrustQueryVariables, Profile} from "../api/data/types";
+import {ApiClient} from "../apiConnection";
 
 export async function loadProfile(id: string, $me) {
   if (!id) {
@@ -23,25 +24,13 @@ export async function loadProfile(id: string, $me) {
 }
 
 async function setProfile(apiProfile: Profile, $me) {
-  const trust = undefined;
   let commonTrusts: CommonTrust[] = [];
   if ($me.circlesAddress !== apiProfile.circlesAddress) {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.query({
-      query: CommonTrustDocument,
-      variables: {
-        safeAddress1: $me.circlesAddress.toLowerCase(),
-        safeAddress2: apiProfile.circlesAddress.toLowerCase(),
-      },
+    const mutualFriends = await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(CommonTrustDocument, {
+      safeAddress1: $me.circlesAddress.toLowerCase(),
+      safeAddress2: apiProfile.circlesAddress.toLowerCase(),
     });
-    if (result.errors) {
-      throw new Error(
-        `Couldn't load a profile with safeAddress '${
-          apiProfile.circlesAddress
-        }': ${JSON.stringify(result.errors)}`
-      );
-    }
-    commonTrusts = result.data.commonTrust.filter((o) => o.profile);
+    commonTrusts = mutualFriends.filter((o) => o.profile);
   }
 
   return {

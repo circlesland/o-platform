@@ -1,34 +1,34 @@
 import {readable} from "svelte/store";
-import {AggregatesDocument, AggregateType, AssetBalance, Erc20Balances, ProfileAggregate} from "../api/data/types";
+import {
+  AggregatesDocument,
+  AggregateType,
+  AssetBalance,
+  Erc20Balances,
+  ProfileAggregate,
+  QueryAggregatesArgs
+} from "../api/data/types";
 import {me} from "./me";
 import {Subscription} from "rxjs";
+import {ApiClient} from "../apiConnection";
 
 async function loadBalances(safeAddress: string) {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const balancesResult = await apiClient.query({
-    query: AggregatesDocument,
-    variables: {
-      types: [AggregateType.CrcBalances, AggregateType.Erc20Balances],
-      safeAddress: safeAddress
-    },
+  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+    types: [AggregateType.CrcBalances, AggregateType.Erc20Balances],
+    safeAddress: safeAddress
   });
 
-  if (balancesResult.errors?.length > 0) {
-    throw new Error(`Couldn't read the balance of safe ${safeAddress}`);
-  }
-
-  const crcBalances: ProfileAggregate = balancesResult.data.aggregates.find(o => o.type == "CrcBalances");
-  if (!crcBalances || crcBalances.payload.__typename !== "CrcBalances") {
+  const crcBalances: ProfileAggregate = aggregates.find(o => o.type == AggregateType.CrcBalances);
+  if (!crcBalances || crcBalances.payload.__typename !== AggregateType.CrcBalances) {
     throw new Error(`Couldn't find the CrcBalances in the query result.`)
   }
 
-  let erc20Balances: ProfileAggregate = balancesResult.data.aggregates.find(o => o.type == "Erc20Balances");
-  if (!erc20Balances  || erc20Balances.payload.__typename !== "Erc20Balances") {
+  let erc20Balances: ProfileAggregate = aggregates.find(o => o.type == AggregateType.Erc20Balances);
+  if (!erc20Balances  || erc20Balances.payload.__typename !== AggregateType.Erc20Balances) {
     erc20Balances = {
-      type: "Erc20Balances",
+      type: AggregateType.Erc20Balances,
       safe_address: safeAddress,
       payload: <Erc20Balances>{
-        __typename: "Erc20Balances",
+        __typename: AggregateType.Erc20Balances,
         lastUpdatedAt: new Date().toJSON(),
         balances: []
       }

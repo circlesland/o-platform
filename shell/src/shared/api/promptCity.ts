@@ -9,7 +9,14 @@ import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import DropDownCity from "@o-platform/o-editors/src/dropdownItems/DropDownCity.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
-import {CitiesByIdDocument, CitiesByNameDocument, City} from "./data/types";
+import {
+  CitiesByIdDocument,
+  CitiesByIdQueryVariables,
+  CitiesByNameDocument,
+  CitiesByNameQueryVariables,
+  City
+} from "./data/types";
+import {ApiClient} from "../apiConnection";
 
 export function promptCity<
   TContext extends ProcessContext<any>,
@@ -52,30 +59,27 @@ export function promptCity<
       keyProperty: "geonameid",
       choices: {
         byKey: async (key: number) => {
-          const apiClient = await window.o.apiClient.client.subscribeToResult();
-          const result = await apiClient.query({
-            query: CitiesByIdDocument,
-            variables: {
-              ids: [key],
-            },
-          });
-          return result.data?.cities?.length
-            ? result.data.cities[0]
+          const result = await ApiClient.query<City[], CitiesByIdQueryVariables>(
+            CitiesByIdDocument, {
+              ids: [key]
+            }
+          );
+          return result.length > 0
+            ? result[0]
             : undefined;
         },
         find: async (filter: string) => {
           const n = <any>navigator;
           const lang = n.language || n.userLanguage;
-          const apiClient = await window.o.apiClient.client.subscribeToResult();
-          const result = await apiClient.query({
-            query: CitiesByNameDocument,
-            variables: {
+
+          const result = await ApiClient.query<City[], CitiesByNameQueryVariables>(
+            CitiesByNameDocument, {
               name: (filter ?? "") + "%",
               languageCode: lang.substr(0, 2),
-            },
-          });
-          return result.data?.cities?.length
-            ? result.data.cities.reverse()
+            }
+          );
+          return result.length
+            ? result.reverse()
             : [];
         },
       },

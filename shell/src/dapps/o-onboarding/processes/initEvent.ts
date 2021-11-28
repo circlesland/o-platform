@@ -1,5 +1,5 @@
 import {BN} from "ethereumjs-util";
-import {SessionInfo} from "../../../shared/api/data/types";
+import {ClaimedInvitation, ProfileEvent, SessionInfo} from "../../../shared/api/data/types";
 
 export type Origin = "Created" | "Imported";
 
@@ -71,7 +71,7 @@ export type InitEvent = {
   type: "NO_INVITATION_NECESSARY"
 } | {
   type: "GOT_INVITATION",
-  invitation: InvitationData
+  invitation: ClaimedInvitation
 } | {
   type: "NO_PROFILE"
 } | {
@@ -88,7 +88,7 @@ export type InitEvent = {
   type: "NOT_REDEEMED"
 } | {
   type: "GOT_REDEEMED",
-  transaction: InvitationTransaction
+  transaction: ProfileEvent
 } | {
   type: "NO_SAFE"
 } | {
@@ -98,7 +98,7 @@ export type InitEvent = {
   type: "SAFE_NOT_FUNDED"
 } | {
   type: "GOT_SAFE_FUNDED",
-  transaction: InvitationTransaction
+  transaction: ProfileEvent
 } | {
   type: "NO_UBI"
 } | {

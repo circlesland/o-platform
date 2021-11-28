@@ -12,12 +12,13 @@ import {
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {
   CommonTrust,
-  CommonTrustDocument,
+  CommonTrustDocument, CommonTrustQueryVariables,
   Contact,
   ContactDirection, ContactPoint,
   Profile,
 } from "../../../shared/api/data/types";
 import {contacts} from "../../../shared/stores/contacts";
+import {ApiClient} from "../../../shared/apiConnection";
 
 export let id: string;
 export let jumplist: Jumplist<any, any> | undefined;
@@ -65,22 +66,10 @@ async function setProfile(apiProfile: Profile | Contact) {
   }
 
   if ($me.circlesAddress !== contact.contactAddress) {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.query({
-      query: CommonTrustDocument,
-      variables: {
-        safeAddress1: $me.circlesAddress.toLowerCase(),
-        safeAddress2: contact.contactAddress.toLowerCase(),
-      },
-    });
-    if (result.errors) {
-      throw new Error(
-        `Couldn't load a profile with safeAddress '${
-          contact.contactAddress
-        }': ${JSON.stringify(result.errors)}`
-      );
-    }
-    commonTrusts = result.data.commonTrust.filter((o) => o.profile);
+    commonTrusts = (await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(CommonTrustDocument, {
+      safeAddress1: $me.circlesAddress.toLowerCase(),
+      safeAddress2: contact.contactAddress.toLowerCase()
+    })).filter((o) => o.profile);
   } else {
     commonTrusts = [];
   }

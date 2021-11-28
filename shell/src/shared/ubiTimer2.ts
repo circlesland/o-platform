@@ -1,9 +1,10 @@
 import {assign, createMachine} from "xstate";
-import {UbiInfo, Profile, UbiInfoDocument} from "./api/data/types";
+import {UbiInfo, Profile, UbiInfoDocument, UbiInfoQueryVariables} from "./api/data/types";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {CirclesAccount} from "@o-platform/o-circles/dist/model/circlesAccount";
 import {me} from "./stores/me";
+import {ApiClient} from "./apiConnection";
 
 export type UbiTimerContext = {
   nextUbiAt: number|null
@@ -99,23 +100,20 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
       return result;
     },
     getUbiInfo: (context) => async (callback) => {
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      const result = await apiClient.query({
-        query: UbiInfoDocument
-      });
-      if (result.data.ubiInfo.tokenAddress) {
-        context.tokenAddress = result.data.ubiInfo.tokenAddress;
+      const ubiInfo = await ApiClient.query<UbiInfo, UbiInfoQueryVariables>(UbiInfoDocument, {});
+      if (ubiInfo.tokenAddress) {
+        context.tokenAddress = ubiInfo.tokenAddress;
       }
-      if ((result.errors && result.errors.length) || !result.data.ubiInfo.lastTransactionAt) {
+      if (ubiInfo.lastTransactionAt) {
         callback({
-          type: "NO_PREVIOUS_PAYOUT",
-          randomValue: result.data.ubiInfo.randomValue
+          type: "GOT_PREVIOUS_PAYOUT",
+          lastPayoutAt: new Date(parseFloat(ubiInfo.lastTransactionAt)),
+          randomValue: ubiInfo.randomValue
         });
       } else {
         callback({
-          type: "GOT_PREVIOUS_PAYOUT",
-          lastPayoutAt: new Date(parseFloat(result.data.ubiInfo.lastTransactionAt)),
-          randomValue: result.data.ubiInfo.randomValue
+          type: "NO_PREVIOUS_PAYOUT",
+          randomValue: ubiInfo.randomValue
         });
       }
     }

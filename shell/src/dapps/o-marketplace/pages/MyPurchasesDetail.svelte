@@ -1,9 +1,8 @@
 <script lang="ts">
   import {
     AggregatesDocument,
-    AggregateType, InvoiceDocument,
-    Profile,
-    Purchase,
+    AggregateType, InvoiceDocument, Profile, ProfileAggregate,
+    Purchase, Purchases, QueryAggregatesArgs, QueryInvoiceArgs,
   } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -12,11 +11,13 @@ import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { push } from "svelte-spa-router";
+import {saveBufferAs} from "../../../shared/saveBufferAs";
+import {ApiClient} from "../../../shared/apiConnection";
+
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
-import { displayableName } from "../../../shared/functions/stringHelper";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import {saveBufferAs} from "../../../shared/saveBufferAs";
+
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 export let id: string;
@@ -32,34 +33,21 @@ let actions = [];
 async function load() {
   if (isLoading) return;
 
-  const safeAddress = $me.circlesAddress;
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-  const purchaseResult = await apiClient.query({
-    query: AggregatesDocument,
-    variables: {
-      types: [AggregateType.Purchases],
-      safeAddress: safeAddress,
-      filter: {
-        purchases: {
-          purchaseIds: [parseInt(id)],
-        },
+  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+    types: [AggregateType.Purchases],
+    safeAddress: $me.circlesAddress,
+    filter: {
+      purchases: {
+        purchaseIds: [parseInt(id)],
       },
     },
   });
-
-  if (purchaseResult.errors?.length > 0) {
-    throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
-  }
-
-  const o = purchaseResult.data.aggregates.find(
-    (o) => o.type == AggregateType.Purchases
-  );
-  if (!o) {
+  const foundAggregate = aggregates.find(o => o.type == AggregateType.Purchases)?.payload as Purchases;
+  if (!foundAggregate) {
     throw new Error(`Couldn't find the Purchases in the query result.`);
   }
 
-  purchase = o.payload.purchases[0];
+  purchase = foundAggregate.purchases[0];
 
   isLoading = false;
 }
@@ -115,21 +103,13 @@ onMount(async () => {
         icon: "document",
         title: "Download Invoice",
         action: async () => {
-          const apiClient = await window.o.apiClient.client.subscribeToResult();
           for(let invoice of purchase.invoices) {
-            const invoicePdfBytes = await apiClient.query({
-              query: InvoiceDocument,
-              variables: {
-                invoiceId: invoice.id
-              }
+            const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(InvoiceDocument, {
+              invoiceId: invoice.id
             });
-            if (invoicePdfBytes.errors && invoicePdfBytes.errors.length > 0 || !invoicePdfBytes.data.invoice){
-              throw new Error("Couldn't load the pdf for invoice " + invoice.id);
-            }
-
-            saveBufferAs(Buffer.from(invoicePdfBytes.data.invoice, "base64"), `invoice.pdf`);
+            saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
           }
-        },
+        }
       }
     );
   }

@@ -20,7 +20,12 @@ import { SetTrustContext } from "./setTrust";
 import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
 import { me } from "../../../shared/stores/me";
-import {DirectPathDocument, Profile, ProfileBySafeAddressDocument} from "../../../shared/api/data/types";
+import {
+  DirectPathDocument,
+  DirectPathQuery,
+  Profile,
+  ProfileBySafeAddressDocument, QueryDirectPathArgs
+} from "../../../shared/api/data/types";
 import {
   convertTimeCirclesToCircles,
   displayCirclesAmount,
@@ -28,6 +33,7 @@ import {
 import { TransactionReceipt } from "web3-core";
 import TransferSummary from "../atoms/TransferSummary.svelte";
 import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
+import {ApiClient} from "../../../shared/apiConnection";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -51,22 +57,14 @@ export type TransferContextData = {
 
 export async function findDirectTransfers(from:string, to:string, amount:string) {
   // Find all tokens which are trusted by "to"
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: DirectPathDocument,
-    variables: {
-      from: from,
-      to: to,
-      amount: amount
-    },
+  const result = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(DirectPathDocument, {
+    from: from,
+    to: to,
+    amount: amount
   });
-  if (result.errors) {
-    throw new Error(`An error occurred in the graphQL query: ${JSON.stringify(result.errors)}`);
-  }
-  const transitivePath:TransitivePath = result.data.directPath;
-  console.log("Direct path: ", transitivePath);
+  console.log("Direct path: ", result);
 
-  return transitivePath;
+  return result;
 }
 
 /**

@@ -1,6 +1,11 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import {AggregatesDocument, AggregateType, Offer} from "../../../shared/api/data/types";
+import {
+  AggregatesDocument,
+  AggregateType,
+  Offer, Offers,
+  ProfileAggregate, QueryAggregatesArgs
+} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
@@ -8,6 +13,7 @@ import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
+import {ApiClient} from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -20,32 +26,16 @@ let shellEventSubscription: Subscription;
 async function load() {
   if (isLoading) return;
 
-  const safeAddress = $me.circlesAddress;
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-  const offersResult = await apiClient.query({
-    query: AggregatesDocument,
-    variables: {
-      types: [AggregateType.Offers],
-      safeAddress: safeAddress,
-      filter: {
-        offers: {
-          createdByAddresses: [$me.circlesAddress]
-        }
-      }
-    },
+  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+    types: [AggregateType.Offers],
+    safeAddress: $me.circlesAddress
   });
-
-  if (offersResult.errors?.length > 0) {
-    throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
+  const foundAggregate = aggregates.find(o => o.type == AggregateType.Offers)?.payload as Offers;
+  if (!foundAggregate) {
+    throw new Error(`Couldn't find the Offers in the query result.`);
   }
 
-  const o = offersResult.data.aggregates.find(o => o.type == AggregateType.Offers);
-  if (!o) {
-    throw new Error(`Couldn't find the Offers in the query result.`)
-  }
-
-  offers = o.payload.offers;
+  offers = foundAggregate.offers;
   isLoading = false;
 }
 

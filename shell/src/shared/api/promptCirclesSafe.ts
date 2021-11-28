@@ -13,9 +13,10 @@ import { AvataarGenerator } from "../avataarGenerator";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import {
   Profile,
-  ProfileBySafeAddressDocument,
-  ProfilesByNameDocument,
+  ProfileBySafeAddressDocument, ProfileBySafeAddressQueryVariables,
+  ProfilesByNameDocument, ProfilesByNameQueryVariables, UbiInfo, UbiInfoDocument, UbiInfoQueryVariables,
 } from "./data/types";
+import {ApiClient} from "../apiConnection";
 
 export function promptCirclesSafe<
   TContext extends ProcessContext<any>,
@@ -63,28 +64,19 @@ export function promptCirclesSafe<
         `${profile.firstName} ${profile.lastName ? profile.lastName : ""}`,
       choices: {
         byKey: async (key: string) => {
-          const apiClient = await window.o.apiClient.client.subscribeToResult();
-          const result = await apiClient.query({
-            query: ProfileBySafeAddressDocument,
-            variables: {
-              safeAddress: key,
-            },
+          const profiles = await ApiClient.query<Profile[], ProfileBySafeAddressQueryVariables>(ProfileBySafeAddressDocument, {
+            safeAddress: key
           });
-          return result.data?.profiles?.length
-            ? result.data.profiles[0]
+          return profiles?.length
+            ? profiles[0]
             : undefined;
         },
         find: async (filter?: string) => {
-          const apiClient = await window.o.apiClient.client.subscribeToResult();
-          const result = await apiClient.query({
-            query: ProfilesByNameDocument,
-            variables: {
-              searchString: (filter ?? "") + "%",
-            },
+          const profiles = await ApiClient.query<Profile[], ProfilesByNameQueryVariables>(ProfilesByNameDocument, {
+            searchString: (filter ?? "") + "%",
           });
-          console.log("result.data: ", result.data);
-          return result.data.search && result.data.search.length > 0
-            ? result.data.search
+          return profiles && profiles.length > 0
+            ? profiles
                 .filter((o) => o.circlesAddress)
                 .map((o) => {
                   return {

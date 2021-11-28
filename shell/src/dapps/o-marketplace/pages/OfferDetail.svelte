@@ -1,9 +1,9 @@
 <script lang="ts">
-import {
-  AggregatesDocument,
-  AggregateType,
-  Offer,
-} from "../../../shared/api/data/types";
+  import {
+    AggregatesDocument,
+    AggregateType,
+    Offer, Offers, ProfileAggregate, QueryAggregatesArgs,
+  } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
@@ -12,6 +12,7 @@ import { cartContents } from "../stores/shoppingCartStore";
 import { push } from "svelte-spa-router";
 import { me } from "../../../shared/stores/me";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
+  import {ApiClient} from "../../../shared/apiConnection";
 
 let isLoading: boolean;
 let error: Error;
@@ -24,34 +25,21 @@ async function load() {
   if (isLoading || !id) return;
   isLoading = true;
 
-  const safeAddress = $me.circlesAddress;
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-  const offersResult = await apiClient.query({
-    query: AggregatesDocument,
-    variables: {
-      types: [AggregateType.Offers],
-      safeAddress: safeAddress,
-      filter: {
-        offers: {
-          offerIds: [Number.isInteger(id) ? id : parseInt(id.toString())],
-        },
+  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+    types: [AggregateType.Offers],
+    safeAddress: $me.circlesAddress,
+    filter: {
+      offers: {
+        offerIds: [Number.isInteger(id) ? id : parseInt(id.toString())],
       },
     },
   });
-
-  if (offersResult.errors?.length > 0) {
-    throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
-  }
-
-  const o = offersResult.data.aggregates.find(
-    (o) => o.type == AggregateType.Offers
-  );
-  if (!o) {
+  const foundAggregate = aggregates.find(o => o.type == AggregateType.Offers)?.payload as Offers;
+  if (!foundAggregate) {
     throw new Error(`Couldn't find the Offers in the query result.`);
   }
 
-  offers = o.payload.offers;
+  offers = foundAggregate.offers;
   isLoading = false;
 }
 

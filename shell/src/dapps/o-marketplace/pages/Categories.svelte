@@ -7,7 +7,8 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import { TagsDocument } from "../../../shared/api/data/types";
+import {QueryTagsInput, Tag, TagsDocument} from "../../../shared/api/data/types";
+import {ApiClient} from "../../../shared/apiConnection";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
@@ -20,23 +21,11 @@ async function load() {
   if (isLoading) return;
 
   isLoading = true;
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: TagsDocument,
-    variables: {
-      typeId_in: ["o-marketplace:offer:category:1"],
-    },
+  const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(TagsDocument, {
+    typeId_in: ["o-marketplace:offer:category:1"]
   });
-  if (result.errors && result.errors.length) {
-    error = new Error(
-      `An error occurred while loading the categories: ${JSON.stringify(
-        result.errors
-      )}`
-    );
-    throw error;
-  }
+  categories = categoryResult.map(o => o.value);
   isLoading = false;
-  categories = result.data.tags;
 }
 
 onMount(async () => {

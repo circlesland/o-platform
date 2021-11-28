@@ -8,17 +8,16 @@ import { Subscription } from "rxjs";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import List from "../../../shared/molecules/Lists/List.svelte";
 
 import {
   AggregatesDocument,
   AggregateType,
-  CrcBalances,
   Offer,
-  Offers,
+  Offers, ProfileAggregate, QueryAggregatesArgs, QueryTagsArgs, QueryTagsInput, Tag,
   TagsDocument,
 } from "../../../shared/api/data/types";
 import { me } from "../../../shared/stores/me";
+import {ApiClient} from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -38,32 +37,16 @@ async function load() {
   if (isLoading) return;
 
   const safeAddress = $me.circlesAddress;
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-  const queryVars = {
+  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
     types: [AggregateType.Offers],
     safeAddress: safeAddress,
-  };
-
-  console.log(queryVars);
-
-  const offersResult = await apiClient.query({
-    query: AggregatesDocument,
-    variables: queryVars,
   });
-
-  if (offersResult.errors?.length > 0) {
-    throw new Error(`Couldn't read the offers for safe ${safeAddress}`);
-  }
-
-  const o = offersResult.data.aggregates.find(
-    (o) => o.type == AggregateType.Offers
-  );
-  if (!o) {
+  const foundAggregate = aggregates.find(o => o.type == AggregateType.Offers)?.payload as Offers;
+  if (!foundAggregate) {
     throw new Error(`Couldn't find the Offers in the query result.`);
   }
 
-  offers = o.payload.offers;
+  offers = foundAggregate.offers;
 
   /*
   citites = offers.reduce((p, c) => {
@@ -75,21 +58,10 @@ async function load() {
   }, {});
  */
 
-  const categoryResult = await apiClient.query({
-    query: TagsDocument,
-    variables: {
-      typeId_in: ["o-marketplace:offer:category:1"],
-    },
+  const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(TagsDocument, {
+    typeId_in: ["o-marketplace:offer:category:1"]
   });
-  if (categoryResult.errors && categoryResult.errors.length) {
-    error = new Error(
-      `An error occurred while loading the categories: ${JSON.stringify(
-        categoryResult.errors
-      )}`
-    );
-    throw error;
-  }
-  categories = categoryResult.data.tags;
+  categories = categoryResult.map(o => o.value);
   isLoading = false;
 }
 

@@ -8,14 +8,13 @@ import {
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import DropDownProfile from "@o-platform/o-editors/src/dropdownItems/DropDownProfile.svelte";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
-import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { AvataarGenerator } from "../avataarGenerator";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import {
-  Profile,
-  ProfileBySafeAddressDocument,
-  ProfilesByNameDocument,
+  Profile, ProfileByIdDocument, ProfileByIdQueryVariables,
+  ProfilesByNameDocument, ProfilesByNameQueryVariables,
 } from "./data/types";
+import {ApiClient} from "../apiConnection";
 
 export function promptProfileId<
   TContext extends ProcessContext<any>,
@@ -63,27 +62,19 @@ export function promptProfileId<
         `${profile.firstName} ${profile.lastName ? profile.lastName : ""}`,
       choices: {
         byKey: async (key: number) => {
-          const apiClient = await window.o.apiClient.client.subscribeToResult();
-          const result = await apiClient.query({
-            query: ProfileBySafeAddressDocument,
-            variables: {
-              safeAddress: key,
-            },
+          const result = await ApiClient.query<Profile[], ProfileByIdQueryVariables>(ProfileByIdDocument, {
+            id: key
           });
-          return result.data?.profiles?.length
-            ? result.data.profiles[0]
+          return result?.length
+            ? result[0]
             : undefined;
         },
         find: async (filter?: string) => {
-          const apiClient = await window.o.apiClient.client.subscribeToResult();
-          const result = await apiClient.query({
-            query: ProfilesByNameDocument,
-            variables: {
-              searchString: (filter ?? "") + "%",
-            },
+          const result = await ApiClient.query<Profile[], ProfilesByNameQueryVariables>(ProfilesByNameDocument, {
+            searchString: (filter ?? "") + "%",
           });
-          return result.data.search && result.data.search.length > 0
-            ? result.data.search
+          return result && result.length > 0
+            ? result
                 .filter((o) => o.circlesAddress)
                 .map((o) => {
                   return {
