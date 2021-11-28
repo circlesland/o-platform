@@ -6,8 +6,27 @@ import {WebSocketLink} from 'apollo-link-ws';
 import {split} from 'apollo-link';
 import {getMainDefinition} from 'apollo-utilities';
 import {DocumentNode, OperationDefinitionNode} from "graphql/language/ast";
+import {
+    AggregatesDocument,
+    AggregateType, ProfileAggregate,
+    ProfileAggregateFilter,
+    QueryAggregatesArgs
+} from "./api/data/types";
 
 export class ApiClient {
+    static async queryAggregate<TPayloadType>(type: AggregateType, safeAddress: string, filter?: ProfileAggregateFilter) {
+        const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+            types: [type],
+            safeAddress: safeAddress,
+            filter: filter
+        });
+        const foundAggregate = aggregates.find(o => o.type == type)?.payload;
+        if (!foundAggregate) {
+            throw new Error(`Couldn't find the ${type} in the query result.`);
+        }
+        return <TPayloadType><any>foundAggregate;
+    }
+
     /**
      * Executes a graphQL query against the api.
      * @param query

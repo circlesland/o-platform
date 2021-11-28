@@ -9,16 +9,13 @@ import { init } from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import {
-  AggregatesDocument,
-  AggregateType, Contact,
+  Contact,
   ContactDirection, EventType,
-  Profile, ProfileAggregate,
-  ProfileAggregateFilter, QueryAggregatesArgs,
+  Profile
 } from "../shared/api/data/types";
 import { transfer } from "./o-banking/processes/transfer";
 import { push } from "svelte-spa-router";
 import { setTrust } from "./o-banking/processes/setTrust";
-import {ApiClient} from "../shared/apiConnection";
 import {contacts} from "../shared/stores/contacts";
 
 export interface DappState {

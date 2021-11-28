@@ -1,8 +1,7 @@
 <script lang="ts">
   import {
-    AggregatesDocument,
     AggregateType,
-    Offer, Offers, ProfileAggregate, QueryAggregatesArgs,
+    Offer, Offers
   } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -25,21 +24,12 @@ async function load() {
   if (isLoading || !id) return;
   isLoading = true;
 
-  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
-    types: [AggregateType.Offers],
-    safeAddress: $me.circlesAddress,
-    filter: {
-      offers: {
-        offerIds: [Number.isInteger(id) ? id : parseInt(id.toString())],
-      },
-    },
+  const result = await ApiClient.queryAggregate<Offers>(AggregateType.Offers, $me.circlesAddress, {
+    offers: {
+      offerIds: [Number.isInteger(id) ? id : parseInt(id.toString())]
+    }
   });
-  const foundAggregate = aggregates.find(o => o.type == AggregateType.Offers)?.payload as Offers;
-  if (!foundAggregate) {
-    throw new Error(`Couldn't find the Offers in the query result.`);
-  }
-
-  offers = foundAggregate.offers;
+  offers = result.offers;
   isLoading = false;
 }
 

@@ -1,10 +1,8 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import {
-  AggregatesDocument,
-  AggregateType, ContactAggregateFilter, Contacts,
-  Offer, ProfileAggregate,
-  Purchase, Purchases, QueryAggregatesArgs,
+  AggregateType,
+  Purchase, Purchases
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import dayjs from "dayjs";
@@ -29,16 +27,8 @@ let shellEventSubscription: Subscription;
 async function load() {
   if (isLoading) return;
 
-  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
-    types: [AggregateType.Purchases],
-    safeAddress: $me.circlesAddress
-  });
-  const foundAggregate = aggregates.find(o => o.type == AggregateType.Purchases)?.payload as Purchases;
-  if (!foundAggregate) {
-    throw new Error(`Couldn't find the Purchases in the query result.`);
-  }
-
-  purchases = foundAggregate.purchases;
+  const result = await ApiClient.queryAggregate<Purchases>(AggregateType.Purchases, $me.circlesAddress);
+  purchases = result.purchases;
   isLoading = false;
 }
 

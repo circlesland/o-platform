@@ -10,10 +10,9 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
 import {
-  AggregatesDocument,
   AggregateType,
   Offer,
-  Offers, ProfileAggregate, QueryAggregatesArgs, QueryTagsArgs, QueryTagsInput, Tag,
+  Offers, QueryTagsInput, Tag,
   TagsDocument,
 } from "../../../shared/api/data/types";
 import { me } from "../../../shared/stores/me";
@@ -36,17 +35,8 @@ let shellEventSubscription: Subscription;
 async function load() {
   if (isLoading) return;
 
-  const safeAddress = $me.circlesAddress;
-  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
-    types: [AggregateType.Offers],
-    safeAddress: safeAddress,
-  });
-  const foundAggregate = aggregates.find(o => o.type == AggregateType.Offers)?.payload as Offers;
-  if (!foundAggregate) {
-    throw new Error(`Couldn't find the Offers in the query result.`);
-  }
-
-  offers = foundAggregate.offers;
+  const result = await ApiClient.queryAggregate<Offers>(AggregateType.Offers, $me.circlesAddress);
+  offers = result.offers;
 
   /*
   citites = offers.reduce((p, c) => {

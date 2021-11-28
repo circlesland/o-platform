@@ -1,8 +1,9 @@
 import {readable} from "svelte/store";
 import {
-  AggregatesDocument,
   AggregateType,
-  Contact, ContactAggregateFilter, Contacts, Profile, ProfileAggregate, QueryAggregatesArgs
+  Contact,
+  Contacts,
+  Profile
 } from "../api/data/types";
 import {me} from "./me";
 import {Subscription} from "rxjs";
@@ -12,16 +13,8 @@ import {ApiClient} from "../apiConnection";
 let contactsBySafeAddress: { [address: string]: Contact } = {};
 
 async function loadContacts(safeAddress: string) {
-  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
-    types: [AggregateType.Contacts],
-    safeAddress: safeAddress
-  });
-  const foundAggregate = aggregates.find(o => o.type == AggregateType.Contacts)?.payload as Contacts;
-  if (!foundAggregate) {
-    throw new Error(`Couldn't find the Contacts in the query result.`);
-  }
-
-  const contactsList: Contact[] = foundAggregate.contacts.filter((o: Contact) => {
+  const contacts = await ApiClient.queryAggregate<Contacts>(AggregateType.Contacts, safeAddress);
+  const contactsList: Contact[] = contacts.contacts.filter((o: Contact) => {
     return o.contactAddress !== ZERO_ADDRESS && o.contactAddress != safeAddress;
   });
 
@@ -96,18 +89,14 @@ export const contacts = {
     }
     let contact = contactsBySafeAddress[safeAddress];
     if (!contact) {
-      const filteredContacts = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
-        types: [AggregateType.Contacts],
-        safeAddress: safeAddress,
-        filter: {
-          contacts: <ContactAggregateFilter>{
-            addresses: [safeAddress]
-          }
+      const filteredContacts = await ApiClient.queryAggregate<Contacts>(AggregateType.Contacts, safeAddress, {
+        contacts: {
+          addresses: [safeAddress]
         }
       });
-      const foundContacts = filteredContacts.find(o => o.type == "Contacts")?.payload as Contacts;
-      if (foundContacts && foundContacts.contacts.length > 0){
-        contact = foundContacts.contacts[0];
+
+      if (filteredContacts && filteredContacts.contacts?.length > 0){
+        contact = filteredContacts.contacts[0];
         contactsBySafeAddress[contact.contactAddress] = contact;
       }
     }

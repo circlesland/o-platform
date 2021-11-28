@@ -1,9 +1,7 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import {
-  AggregatesDocument,
   AggregateType,
-  Offer, ProfileAggregate, QueryAggregatesArgs,
   Sale, Sales,
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
@@ -17,7 +15,6 @@ import { push } from "svelte-spa-router";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import {ApiClient} from "../../../shared/apiConnection";
-import {id} from "./MySaleDetail.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -30,16 +27,8 @@ let shellEventSubscription: Subscription;
 async function load() {
   if (isLoading) return;
 
-  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
-    types: [AggregateType.Sales],
-    safeAddress: $me.circlesAddress
-  });
-  const foundAggregate = aggregates.find(o => o.type == AggregateType.Sales)?.payload as Sales;
-  if (!foundAggregate) {
-    throw new Error(`Couldn't find the Sales in the query result.`);
-  }
-
-  sales = foundAggregate.sales;
+  const result = await ApiClient.queryAggregate<Sales>(AggregateType.Sales, $me.circlesAddress);
+  sales = result.sales;
   console.log(sales);
   isLoading = false;
 }

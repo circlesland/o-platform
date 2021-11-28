@@ -1,7 +1,6 @@
 <script lang="ts">
   import {
-    AggregatesDocument,
-    AggregateType, InvoiceDocument, Profile, ProfileAggregate, QueryAggregatesArgs, QueryInvoiceArgs,
+    AggregateType, InvoiceDocument, Profile, QueryInvoiceArgs,
     Sale, Sales,
   } from "../../../shared/api/data/types";
   import {onMount} from "svelte";
@@ -33,21 +32,13 @@
   async function load() {
     if (isLoading) return;
 
-    const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
-      types: [AggregateType.Sales],
-      safeAddress: $me.circlesAddress,
-      filter: {
-        sales: {
-          salesIds: [parseInt(id)],
-        },
-      },
+    const result = await ApiClient.queryAggregate<Sales>(AggregateType.Sales, $me.circlesAddress, {
+      sales: {
+        salesIds: [parseInt(id)]
+      }
     });
-    const foundAggregate = aggregates.find(o => o.type == AggregateType.Sales)?.payload as Sales;
-    if (!foundAggregate) {
-      throw new Error(`Couldn't find the Sales in the query result.`);
-    }
 
-    sale = foundAggregate.sales[0];
+    sale = result.sales[0];
     isLoading = false;
 
     actions = [

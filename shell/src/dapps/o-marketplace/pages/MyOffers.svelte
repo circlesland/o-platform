@@ -1,10 +1,8 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import {
-  AggregatesDocument,
   AggregateType,
-  Offer, Offers,
-  ProfileAggregate, QueryAggregatesArgs
+  Offer, Offers
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -26,16 +24,8 @@ let shellEventSubscription: Subscription;
 async function load() {
   if (isLoading) return;
 
-  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
-    types: [AggregateType.Offers],
-    safeAddress: $me.circlesAddress
-  });
-  const foundAggregate = aggregates.find(o => o.type == AggregateType.Offers)?.payload as Offers;
-  if (!foundAggregate) {
-    throw new Error(`Couldn't find the Offers in the query result.`);
-  }
-
-  offers = foundAggregate.offers;
+  const result = await ApiClient.queryAggregate<Offers>(AggregateType.Offers, $me.circlesAddress);
+  offers = result.offers;
   isLoading = false;
 }
 

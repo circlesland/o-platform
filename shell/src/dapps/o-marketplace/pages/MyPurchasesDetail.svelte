@@ -1,8 +1,7 @@
 <script lang="ts">
   import {
-    AggregatesDocument,
-    AggregateType, InvoiceDocument, Profile, ProfileAggregate,
-    Purchase, Purchases, QueryAggregatesArgs, QueryInvoiceArgs,
+    AggregateType, InvoiceDocument, Profile,
+    Purchase, Purchases, QueryInvoiceArgs,
   } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -33,22 +32,16 @@ let actions = [];
 async function load() {
   if (isLoading) return;
 
-  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
-    types: [AggregateType.Purchases],
-    safeAddress: $me.circlesAddress,
-    filter: {
-      purchases: {
-        purchaseIds: [parseInt(id)],
-      },
+  const result = await ApiClient.queryAggregate<Purchases>(AggregateType.Purchases, $me.circlesAddress,{
+    purchases: {
+      purchaseIds: [parseInt(id)],
     },
   });
-  const foundAggregate = aggregates.find(o => o.type == AggregateType.Purchases)?.payload as Purchases;
-  if (!foundAggregate) {
-    throw new Error(`Couldn't find the Purchases in the query result.`);
+
+  if (!result.purchases?.length) {
+    throw new Error(`Couldn't find a purchase with id ${id}`);
   }
-
-  purchase = foundAggregate.purchases[0];
-
+  purchase = result.purchases[0];
   isLoading = false;
 }
 
