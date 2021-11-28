@@ -250,6 +250,11 @@
   async function init() {
     log(`init()`);
     const session = await getSessionInfo();
+    if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
+      // TODO: Stash the current URL away and redirect the user to it after authentication
+      await push("/");
+      return;
+    }
 
     if (session.isLoggedOn && session.hasProfile) {
       window.o.apiClient.client.subscribeToResult().then((apiClient) => {
@@ -834,11 +839,12 @@
     }
 
     // If the user is not logged-on return to the homepage
+    /*
     const session = await getSessionInfo();
     if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
       await push("/");
       return;
-    }
+    }*/
   }
 
   function showModalProcess(processId?: string) {
