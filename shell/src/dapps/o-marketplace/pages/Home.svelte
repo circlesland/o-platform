@@ -9,14 +9,16 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
+
 import {
-  AggregateType,
   Offer,
-  Offers, QueryTagsInput, Tag,
+  QueryTagsInput, Tag,
   TagsDocument,
 } from "../../../shared/api/data/types";
 import { me } from "../../../shared/stores/me";
 import {ApiClient} from "../../../shared/apiConnection";
+
+import {offers} from "../../../shared/stores/offers";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -25,7 +27,6 @@ const listArguments = {};
 
 let isLoading: boolean;
 let error: Error;
-let offers: Offer[] = [];
 let citites: {
   [name: string]: Offer[];
 } = {};
@@ -37,22 +38,8 @@ async function load() {
 
   if (!$me.circlesAddress) {
     isLoading = false;
-    offers = [];
     return;
   }
-
-  const result = await ApiClient.queryAggregate<Offers>(AggregateType.Offers, $me.circlesAddress);
-  offers = result.offers;
-
-  /*
-  citites = offers.reduce((p, c) => {
-    if (!p[c.city.name]) {
-      p[c.city.name] = [];
-    }
-    p[c.city.name].push(c);
-    return p;
-  }, {});
- */
 
   const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(TagsDocument, {
     typeId_in: ["o-marketplace:offer:category:1"]
@@ -100,8 +87,8 @@ function loadCategoryPage(category: any) {
       fetchQueryArguments="{listArguments}"
       dataKey="offers"
       dataLimit="{100}" />-->
-    {#if offers}
-      {#each offers as offer}
+    {#if $offers}
+      {#each $offers as offer}
         <OfferCard param="{offer}" />
       {/each}
     {/if}

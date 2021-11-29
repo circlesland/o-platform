@@ -1,7 +1,6 @@
 <script lang="ts">
   import {
-    AggregateType,
-    Offer, Offers
+    Offer
   } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -9,27 +8,24 @@ import { Subscription } from "rxjs";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { cartContents } from "../stores/shoppingCartStore";
 import { push } from "svelte-spa-router";
-import { me } from "../../../shared/stores/me";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
-  import {ApiClient} from "../../../shared/apiConnection";
+import {offers} from "../../../shared/stores/offers";
 
 let isLoading: boolean;
 let error: Error;
-let offers: Offer[] = [];
+let offer: Offer[] = [];
 let shellEventSubscription: Subscription;
 
 export let id: number;
 
 async function load() {
-  if (isLoading || !id) return;
-  isLoading = true;
+  if (!id) {
+    offer = [];
+    return;
+  };
 
-  const result = await ApiClient.queryAggregate<Offers>(AggregateType.Offers, $me.circlesAddress, {
-    offers: {
-      offerIds: [Number.isInteger(id) ? id : parseInt(id.toString())]
-    }
-  });
-  offers = result.offers;
+  const o = await offers.findById(parseInt(id.toString()));
+  offer = o ? [o] : [];
   isLoading = false;
 }
 
@@ -39,6 +35,7 @@ function addToCart(item) {
 }
 
 onMount(async () => {
+  isLoading = true;
   await load();
 
   shellEventSubscription = window.o.events.subscribe(
@@ -78,23 +75,23 @@ onMount(async () => {
         </div>
       </div>
     </section>
-  {:else if offers.length}
-    {#each offers as offer}
+  {:else if offer.length}
+    {#each offer as o}
       <section class="flex items-start rounded-xl">
         <div class="flex flex-col w-full ">
           <header class=" rounded-t-xl headerImageContainer">
             <div class="relative rounded-t-xl image-wrapper">
               <img
-                src="{offer.pictureUrl
-                  ? offer.pictureUrl
+                src="{o.pictureUrl
+                  ? o.pictureUrl
                   : '/images/market/circles-no-image.jpg'}"
                 alt="
                 "
                 class="w-full rounded-t-xl" />
               <div
                 class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest">
-                {offer.pricePerUnit} C <!--/ {offer.unitTag.value}-->
-                <!-- <Time relative timestamp={offer.publishedAt} /> -->
+                {o.pricePerUnit} C <!--/ {o.unitTag.value}-->
+                <!-- <Time relative timestamp={o.publishedAt} /> -->
               </div>
             </div>
           </header>
@@ -102,13 +99,13 @@ onMount(async () => {
             class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
             <div class="inline-flex">
               <UserImage
-                profile="{offer.createdByProfile}"
+                profile="{o.createdByProfile}"
                 size="{10}"
                 gradientRing="{false}" />
             </div>
             <div>
-              {offer.createdByProfile.firstName}
-              {offer.createdByProfile.lastName}
+              {o.createdByProfile.firstName}
+              {o.createdByProfile.lastName}
             </div>
           </div>
 
@@ -119,22 +116,22 @@ onMount(async () => {
                 class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
             
                 <a
-                  href="#/marketplace/categories/{offer.categoryTagId}/{offer
+                  href="#/marketplace/categories/{o.categoryTagId}/{o
                     .categoryTag.value}"
-                  alt="{offer.categoryTag.value}">
-                  {offer.categoryTag.value}
+                  alt="{o.categoryTag.value}">
+                  {o.categoryTag.value}
                 </a>
               </div>
             </div>
             -->
             <div class="text-lg font-bold text-left uppercase">
-              {offer.title}
+              {o.title}
             </div>
 
-            {#if offer.description}
-              <div class="text-sm text-dark-lightest">{offer.description}</div>
+            {#if o.description}
+              <div class="text-sm text-dark-lightest">{o.description}</div>
             {/if}
-            <!-- {#if offer.deliveryTermsTag} -->
+            <!-- {#if o.deliveryTermsTag} -->
             <div class="flex flex-col space-y-1 text-right">
               <div class="pt-2 text-sm">
                 <span class="text-xs">Store Pick Up at:</span><br />
@@ -146,10 +143,10 @@ onMount(async () => {
               </div>
             </div>
             <!-- {/if} -->
-            {#if offer.city}
+            {#if o.city}
               <div class="flex flex-col space-y-1">
                 <div class="text-2xs">Location</div>
-                <div class="text-sm text-dark-lightest">{offer.city.name}</div>
+                <div class="text-sm text-dark-lightest">{o.city.name}</div>
               </div>
             {/if}
           </div>
@@ -157,7 +154,7 @@ onMount(async () => {
           <!-- <div class="relative flex-grow text-left">
       <div class="max-w-full cursor-pointer">
         <h2 class="text-2xl sm:text-3xl">
-          {offer.title}
+          {o.title}
           {#if isEditable}
             <button
               class="link link-primary text-primary text-2xs"
@@ -176,9 +173,9 @@ onMount(async () => {
             </button>
           {/if}
         </h2>
-        {#if offer.description}
+        {#if o.description}
           <span class="inline text-dark"
-            >{offer.description}
+            >{o.description}
             {#if isEditable}
               <button
                 class="link link-primary text-primary text-2xs"
@@ -199,9 +196,9 @@ onMount(async () => {
           </span>
           <br />
         {/if}
-        {#if offer.deliveryTermsTag}
+        {#if o.deliveryTermsTag}
           <span class="inline text-sm"
-            >{offer.deliveryTermsTag.value}
+            >{o.deliveryTermsTag.value}
             {#if isEditable}
               <button
                 class="link link-primary text-primary text-2xs"
@@ -226,43 +223,43 @@ onMount(async () => {
 
       <OfferCardField
         {allowEdit}
-        {offer}
+        {o}
         field={{
           key: "categoryTagId",
           title: "Category",
-          displayName: (offer) => offer.categoryTag.value,
+          displayName: (o) => o.categoryTag.value,
         }}
       />
       <OfferCardField
         {allowEdit}
-        {offer}
+        {o}
         field={{
           key: "geonameid",
           title: "City",
-          displayName: (offer) => offer.city.name,
+          displayName: (o) => o.city.name,
         }}
       />
       <OfferCardField
         {allowEdit}
-        {offer}
+        {o}
         field={{
           key: "geonameid",
           title: "Country",
-          displayName: (offer) => offer.city.country,
+          displayName: (o) => o.city.country,
         }}
       />
       <OfferCardField
         {allowEdit}
-        {offer}
+        {o}
         field={{
           key: "unitTagId",
           title: "Unit",
-          displayName: (offer) => offer.unitTag.value,
+          displayName: (o) => o.unitTag.value,
         }}
       />
       <OfferCardField
         {allowEdit}
-        {offer}
+        {o}
         field={{
           key: "pricePerUnit",
           title: "Price per unit",
@@ -293,15 +290,15 @@ onMount(async () => {
         </button>
       </div>
       <div class="self-end mt-2 text-xs text-light-dark">
-        {offer.publishedAt} (9 days ago)
+        {o.publishedAt} (9 days ago)
       </div>
     </div> -->
         </div>
       </section>
 
       <!-- 
-      <CreatorCard profile={offer.createdBy} />
-      <OfferCard {offer} allowEdit={true} /> -->
+      <CreatorCard profile={o.createdBy} />
+      <OfferCard {o} allowEdit={true} /> -->
       <div
         class="sticky bottom-0 left-0 right-0 w-full px-4 mt-4 bg-white rounded-xl">
         <div class="flex flex-row space-x-4">
@@ -315,7 +312,7 @@ onMount(async () => {
               class="btn btn-square btn-light"
               on:click="{() =>
                 push(
-                  `#/friends/chat/${offer.createdByProfile.circlesAddress}`
+                  `#/friends/chat/${o.createdByProfile.circlesAddress}`
                 )}">
               <Icons icon="chat" />
             </button>
@@ -324,7 +321,7 @@ onMount(async () => {
             <button
               type="submit"
               class="relative btn btn-primary btn-block"
-              on:click="{() => addToCart(offer)}">
+              on:click="{() => addToCart(o)}">
               Add to Cart
               <div class="absolute mr-1 right-2">
                 <Icons icon="cart" />
