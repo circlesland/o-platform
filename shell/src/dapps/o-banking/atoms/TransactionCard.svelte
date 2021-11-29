@@ -88,21 +88,25 @@ if (event && event.payload?.__typename == "CrcHubTransfer") {
   };
 
   message = hubTransfer.tags?.find(
-    (o) => o.typeId === "o-banking:transfer:message:1"
+          (o) => o.typeId === "o-banking:transfer:message:1"
   )?.value;
 
-  amount = Currency.instance().displayAmount(
-    event.payload && event.payload.flow ? event.payload.flow.toString() : "0",
-    event.timestamp,
-    $me.displayCurrency
-  );
+  if (event.payload?.__typename == "CrcHubTransfer") {
+    amount = Currency.instance().displayAmount(
+            event.payload && event.payload.flow ? event.payload.flow.toString() : "0",
+            event.timestamp,
+            $me.displayCurrency
+    );
+  }
 
   if (event.direction == "out") {
     amount = "-" + amount;
   }
 }
 
-amount += ` ${Currency.currencySymbol[$me.displayCurrency]}`;
+if (event.payload?.__typename == "CrcHubTransfer") {
+  amount += ` ${Currency.currencySymbol[$me.displayCurrency]}`;
+}
 
 targetProfile = event.direction === "in" ? fromProfile : toProfile;
 
