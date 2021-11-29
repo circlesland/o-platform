@@ -1,69 +1,22 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import {
-  AggregateType,
-  Purchases
-} from "../../../shared/api/data/types";
-import { onMount } from "svelte";
 import dayjs from "dayjs";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { push } from "svelte-spa-router";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import {ApiClient} from "../../../shared/apiConnection";
 import {purchases} from "../../../shared/stores/purchases";
-
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
-let isLoading: boolean;
-let error: Error;
-// let purchases: Purchase[] = [];
-let shellEventSubscription: Subscription;
-
-async function load() {
-  if (isLoading) return;
-
-  if (!$me.circlesAddress) {
-    isLoading = false;
-   // purchases = [];
-    return;
-  }
-  const result = await ApiClient.queryAggregate<Purchases>(AggregateType.Purchases, $me.circlesAddress);
-  // purchases = result.purchases;
-  isLoading = false;
-}
-
-onMount(async () => {
-  await load();
-
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
-    }
-  );
-
-  return () => {
-    shellEventSubscription.unsubscribe();
-  };
-});
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
-  {#if isLoading}
+  {#if !$purchases}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
@@ -71,17 +24,15 @@ onMount(async () => {
         </div>
       </div>
     </section>
-  {:else if error}
+  {:else if $purchases && $purchases.length === 0}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>
-            <b>An error occurred while loading the recent activities:</b>
-          </div>
+          <div>No purchases</div>
         </div>
       </div>
     </section>
-  {:else if $purchases && $purchases.length}
+  {:else if $purchases && $purchases.length > 0}
     {#each $purchases as purchase}
       <section
         on:click="{() => push(`#/marketplace/my-purchases/${purchase.id}`)}"
@@ -181,13 +132,5 @@ onMount(async () => {
         }}" /> -->
       <!-- <pre>{JSON.stringify(purchase, null, 2)}</pre> -->
     {/each}
-  {:else}
-    <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-        <div class="flex flex-col items-start">
-          <div>No purchases</div>
-        </div>
-      </div>
-    </section>
   {/if}
 </div>

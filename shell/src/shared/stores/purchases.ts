@@ -13,7 +13,7 @@ async function loadPurchases() {
   return result.purchases;
 }
 
-export const {subscribe, set, update} = writable<Purchase[]>([], function start(set) {
+export const {subscribe, set, update} = writable<Purchase[]>(null, function start(set) {
   // Subscribe to $me and reload the store when the profile changes
   async function update() {
     const purchases = await loadPurchases();

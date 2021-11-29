@@ -16,6 +16,8 @@
   import {displayableName} from "../../../shared/functions/stringHelper";
   import {saveBufferAs} from "../../../shared/saveBufferAs";
   import {ApiClient} from "../../../shared/apiConnection";
+  import {purchases} from "../../../shared/stores/purchases";
+  import {sales} from "../../../shared/stores/sales";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -32,13 +34,10 @@
   async function load() {
     if (isLoading) return;
 
-    const result = await ApiClient.queryAggregate<Sales>(AggregateType.Sales, $me.circlesAddress, {
-      sales: {
-        salesIds: [parseInt(id)]
-      }
-    });
-
-    sale = result.sales[0];
+    sale = await sales.findById(parseInt(id));
+    if (!sale) {
+      return;
+    }
     isLoading = false;
 
     actions = [
@@ -59,13 +58,7 @@
               const action = actions.find(o => o.title == "I handed out the order");
               actions = actions.splice(actions.indexOf(action) - 1, 1);
 
-              const apiClient = await window.o.apiClient.client.subscribeToResult();
-              await apiClient.mutate({
-                mutation: CompleteSaleDocument,
-                variables: {
-                  invoiceId: sale.invoices[0].id
-                }
-              });
+              await sales.completeSale(sale.invoices[0].id);
             }
           });
       }
