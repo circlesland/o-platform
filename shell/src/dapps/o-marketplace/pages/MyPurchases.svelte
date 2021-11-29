@@ -2,7 +2,7 @@
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import {
   AggregateType,
-  Purchase, Purchases
+  Purchases
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import dayjs from "dayjs";
@@ -15,13 +15,15 @@ import { push } from "svelte-spa-router";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import {ApiClient} from "../../../shared/apiConnection";
+import {purchases} from "../../../shared/stores/purchases";
+
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
 let isLoading: boolean;
 let error: Error;
-let purchases: Purchase[] = [];
+// let purchases: Purchase[] = [];
 let shellEventSubscription: Subscription;
 
 async function load() {
@@ -29,11 +31,11 @@ async function load() {
 
   if (!$me.circlesAddress) {
     isLoading = false;
-    purchases = [];
+   // purchases = [];
     return;
   }
   const result = await ApiClient.queryAggregate<Purchases>(AggregateType.Purchases, $me.circlesAddress);
-  purchases = result.purchases;
+  // purchases = result.purchases;
   isLoading = false;
 }
 
@@ -79,8 +81,8 @@ onMount(async () => {
         </div>
       </div>
     </section>
-  {:else if purchases.length}
-    {#each purchases as purchase}
+  {:else if $purchases && $purchases.length}
+    {#each $purchases as purchase}
       <section
         on:click="{() => push(`#/marketplace/my-purchases/${purchase.id}`)}"
         class="mb-3 cursor-pointer">

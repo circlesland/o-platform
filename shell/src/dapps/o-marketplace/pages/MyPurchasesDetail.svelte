@@ -16,6 +16,7 @@ import {ApiClient} from "../../../shared/apiConnection";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+  import {purchases} from "../../../shared/stores/purchases";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -37,16 +38,8 @@ async function load() {
     purchase = null;
     return;
   }
-  const result = await ApiClient.queryAggregate<Purchases>(AggregateType.Purchases, $me.circlesAddress,{
-    purchases: {
-      purchaseIds: [parseInt(id)],
-    },
-  });
 
-  if (!result.purchases?.length) {
-    throw new Error(`Couldn't find a purchase with id ${id}`);
-  }
-  purchase = result.purchases[0];
+  purchase = await purchases.findById(parseInt(id));
   isLoading = false;
 }
 
