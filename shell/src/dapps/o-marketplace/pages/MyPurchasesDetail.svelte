@@ -1,7 +1,7 @@
 <script lang="ts">
   import {
-    AggregateType, CompletePurchaseDocument, InvoiceDocument, Profile,
-    Purchase, Purchases, QueryInvoiceArgs,
+    InvoiceDocument, Profile,
+    Purchase, QueryInvoiceArgs,
   } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -16,7 +16,7 @@ import {ApiClient} from "../../../shared/apiConnection";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import {purchases} from "../../../shared/stores/purchases";
+import {purchases} from "../../../shared/stores/purchases";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -88,14 +88,7 @@ onMount(async () => {
       action: async () => {
         const action = actions.find(o => o.title == "I picked up the order");
         actions = actions.splice(actions.indexOf(action) - 1, 1);
-
-        const apiClient = await window.o.apiClient.client.subscribeToResult();
-        await apiClient.mutate({
-          mutation: CompletePurchaseDocument,
-          variables: {
-            invoiceId: purchase.invoices[0].id
-          }
-        });
+        await purchases.completePurchase(purchase.invoices[0].id);
       }
     };
     if (!purchase.invoices[0].buyerSignature) {

@@ -1,5 +1,5 @@
-import {readable} from "svelte/store";
-import {AggregateType, Purchase, Purchases} from "../api/data/types";
+import {writable} from "svelte/store";
+import {AggregateType, CompletePurchaseDocument, Purchase, Purchases} from "../api/data/types";
 import {me} from "./me";
 import {Subscription} from "rxjs";
 import {ApiClient} from "../apiConnection";
@@ -13,7 +13,7 @@ async function loadPurchases() {
   return result.purchases;
 }
 
-export const {subscribe} = readable<Purchase[]>([], function start(set) {
+export const {subscribe, set, update} = writable<Purchase[]>([], function start(set) {
   // Subscribe to $me and reload the store when the profile changes
   async function update() {
     const purchases = await loadPurchases();
@@ -65,5 +65,16 @@ export const purchases = {
       cachedPurchase = result.purchases[0];
     }
     return cachedPurchase;
+  },
+  completePurchase: async (invoiceId:number) => {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    await apiClient.mutate({
+      mutation: CompletePurchaseDocument,
+      variables: {
+        invoiceId: invoiceId
+      }
+    });
+    const refreshedPurchases = await loadPurchases();
+    set(refreshedPurchases);
   }
 }
