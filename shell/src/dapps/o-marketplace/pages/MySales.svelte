@@ -107,7 +107,7 @@ export let routable: Routable;
                 <span
                     class:text-inactive="{!sale.invoices[0].sellerSignature}"
                     class:text-success="{sale.invoices[0].sellerSignature}">
-                  picked up
+                  handed out
                 </span>
                 <!-- <Icons icon="check" size="{4}" customClass="inline" /> -->
               </div>

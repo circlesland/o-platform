@@ -49,18 +49,30 @@
     ];
 
     if (sale.invoices && sale.invoices.length) {
+      const pickUpAction = {
+        icon: "transactions",
+        title: "I handed out the order",
+        action: async () => {
+          const action = actions.find(o => o.title == "I handed out the order");
+          actions = actions.splice(actions.indexOf(action) - 1, 1);
+          await sales.completeSale(sale.invoices[0].id);
+          actions.push(unPickUpAction);
+        }
+      };
+      const unPickUpAction = {
+        icon: "transactions",
+        title: "I haven't handed out the order yet",
+        action: async () => {
+          const action = actions.find(o => o.title == "I haven't handed out the order yet");
+          actions = actions.splice(actions.indexOf(action) - 1, 1);
+          await sales.revokeSale(sale.invoices[0].id);
+          actions.push(pickUpAction);
+        }
+      };
       if (!sale.invoices[0].sellerSignature) {
-        actions.push(
-          {
-            icon: "transactions",
-            title: "I handed out the order",
-            action: async () => {
-              const action = actions.find(o => o.title == "I handed out the order");
-              actions = actions.splice(actions.indexOf(action) - 1, 1);
-
-              await sales.completeSale(sale.invoices[0].id);
-            }
-          });
+        actions.push(pickUpAction);
+      } else {
+        actions.push(unPickUpAction);
       }
       actions.push(
         {
