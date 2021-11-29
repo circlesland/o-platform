@@ -635,6 +635,7 @@ export type Offer = {
   pictureMimeType: Scalars['String'];
   pictureUrl: Scalars['String'];
   pricePerUnit: Scalars['String'];
+  timeCirclesPriceShare: Scalars['Int'];
   title: Scalars['String'];
   version: Scalars['Int'];
 };

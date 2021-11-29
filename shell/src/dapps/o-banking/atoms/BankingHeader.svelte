@@ -4,7 +4,7 @@ import PageHeader from "src/shared/atoms/PageHeader.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { me } from "../../../shared/stores/me";
-
+import { displayCirclesAmount } from "../../../shared/functions/displayCirclesAmount";
 import { Currency } from "../../../shared/currency";
 import { BN } from "ethereumjs-util";
 import { assetsBalances } from "../../../shared/stores/assetsBalances";
