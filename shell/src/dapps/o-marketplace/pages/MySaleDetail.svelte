@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    AggregateType, InvoiceDocument, Profile, QueryInvoiceArgs,
+    AggregateType, CompleteSaleDocument, InvoiceDocument, Profile, QueryInvoiceArgs,
     Sale, Sales,
   } from "../../../shared/api/data/types";
   import {onMount} from "svelte";
@@ -50,6 +50,25 @@
     ];
 
     if (sale.invoices && sale.invoices.length) {
+      if (!sale.invoices[0].sellerSignature) {
+        actions.push(
+          {
+            icon: "transactions",
+            title: "I handed out the order",
+            action: async () => {
+              const action = actions.find(o => o.title == "I handed out the order");
+              actions = actions.splice(actions.indexOf(action) - 1, 1);
+
+              const apiClient = await window.o.apiClient.client.subscribeToResult();
+              await apiClient.mutate({
+                mutation: CompleteSaleDocument,
+                variables: {
+                  invoiceId: sale.invoices[0].id
+                }
+              });
+            }
+          });
+      }
       actions.push(
         {
           icon: "transactions",

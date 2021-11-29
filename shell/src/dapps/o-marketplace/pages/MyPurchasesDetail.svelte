@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    AggregateType, InvoiceDocument, Profile,
+    AggregateType, CompletePurchaseDocument, InvoiceDocument, Profile,
     Purchase, Purchases, QueryInvoiceArgs,
   } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
@@ -87,7 +87,27 @@ onMount(async () => {
     },
   ];
 
+
   if (purchase.invoices && purchase.invoices.length) {
+    const pickUpAction = {
+      icon: "transactions",
+      title: "I picked up the order",
+      action: async () => {
+        const action = actions.find(o => o.title == "I picked up the order");
+        actions = actions.splice(actions.indexOf(action) - 1, 1);
+
+        const apiClient = await window.o.apiClient.client.subscribeToResult();
+        await apiClient.mutate({
+          mutation: CompletePurchaseDocument,
+          variables: {
+            invoiceId: purchase.invoices[0].id
+          }
+        });
+      }
+    };
+    if (!purchase.invoices[0].buyerSignature) {
+      actions.push(pickUpAction);
+    }
     actions.push(
       {
         icon: "transactions",

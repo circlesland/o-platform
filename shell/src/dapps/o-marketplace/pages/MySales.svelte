@@ -152,7 +152,11 @@ onMount(async () => {
                 {/if}
               </div>
               <div class="text-xs text-inactive">
-                <span>picked up</span>
+                <span
+                    class:text-inactive="{!sale.invoices[0].sellerSignature}"
+                    class:text-success="{sale.invoices[0].sellerSignature}">
+                  picked up
+                </span>
                 <!-- <Icons icon="check" size="{4}" customClass="inline" /> -->
               </div>
             </div>
