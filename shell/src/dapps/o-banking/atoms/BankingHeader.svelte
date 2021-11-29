@@ -18,7 +18,9 @@ $: {
   const sum = $assetsBalances.crcBalances
     .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
     .toString();
-  balance = Currency.instance().displayAmount(sum, null, $me).toString();
+  balance = Currency.instance()
+    .displayAmount(sum, null, $me.displayCurrency)
+    .toString();
 }
 </script>
 
@@ -27,7 +29,9 @@ $: {
 <PageHeader heightClass="h-60">
   <div class="self-center block text-center">
     <span class="inline-block tracking-wide text-7xl font-heading">
-      {balance} <span class="text-7xl font-primary">€</span>
+      {balance}
+      <span class="text-7xl font-primary"
+        >{Currency.currencySymbol[$me.displayCurrency]}</span>
       <!-- <svg
         class="inline w-8 h-8 mt-2 -ml-3"
         viewBox="0 0 229 255"

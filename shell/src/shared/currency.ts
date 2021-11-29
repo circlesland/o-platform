@@ -1,3 +1,6 @@
+/*
+ * displayCurrencies = { CRC, TIME_CRC, EURS }
+ */
 import Web3 from "web3";
 import dayjs from "dayjs";
 import { BN } from "ethereumjs-util";
@@ -53,6 +56,8 @@ export class Currency {
     return circlesPerDayValue;
   }
 
+  public static currencySymbol = { CRC: "c", TIME_CRC: "⦿", EURS: "€" };
+
   public convertTimeCirclesToCircles(amount: number, date: string) {
     if (!amount) {
       throw new Error("argument missing: amount");
@@ -98,7 +103,14 @@ export class Currency {
     );
   }
 
-  public displayAmount(amount: string, date: string, displayCurrency: any) {
+  public convertEurosToCircles(amount) {}
+
+  public displayAmount(
+    amount: string,
+    date: string,
+    displayCurrency: any,
+    from: string
+  ) {
     if (!amount) {
       throw new Error("argument missing: amount");
     }
@@ -106,35 +118,36 @@ export class Currency {
       throw new Error("argument missing: amount");
     }
 
+    console.log("CURR: ", displayCurrency);
+
     const dateTime = date ? dayjs(date) : dayjs();
     let value: number;
 
-    value =
-      this.convertCirclesToTimeCircles(
-        Number.parseFloat(Web3.utils.fromWei(amount, "ether")),
-        dateTime.toString()
-      ) / 10;
+    console.log("FROM", from);
 
+    if (displayCurrency == "CRC") {
+      value = Number.parseFloat(Web3.utils.fromWei(amount, "ether"));
+    } else if (displayCurrency == "EURS") {
+      if (from === "erc20") {
+        value = Number.parseFloat(Web3.utils.fromWei(amount, "ether"));
+      } else {
+        value =
+          this.convertCirclesToTimeCircles(
+            Number.parseFloat(Web3.utils.fromWei(amount, "ether")),
+            dateTime.toString()
+          ) / 10;
+      }
+    } else if (displayCurrency == "TIME_CRC") {
+      if (from === "erc20") {
+        value = Number.parseFloat(Web3.utils.fromWei(amount, "ether")) * 10;
+      } else {
+        value = this.convertCirclesToTimeCircles(
+          Number.parseFloat(Web3.utils.fromWei(amount, "ether")),
+          dateTime.toString()
+        );
+      }
+    }
     return value.toFixed(2);
-  }
-  public displayEuroAmount(amount: string, date: string, fixed: boolean) {
-    if (!amount) {
-      throw new Error("argument missing: amount");
-    }
-    const dateTime = date ? dayjs(date) : dayjs();
-    let value: number;
-
-    value =
-      this.convertCirclesToTimeCircles(
-        Number.parseFloat(Web3.utils.fromWei(amount, "ether")),
-        dateTime.toString()
-      ) / 10;
-
-    if (fixed) {
-      return value.toFixed(2);
-    } else {
-      return value;
-    }
   }
 
   public displayCirclesAmount(

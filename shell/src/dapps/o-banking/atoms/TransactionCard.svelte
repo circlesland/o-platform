@@ -1,11 +1,10 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import { me } from "../../../shared/stores/me";
-
+import { Currency } from "../../../shared/currency";
 import Date from "../../../shared/atoms/Date.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import { onMount } from "svelte";
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+
 import {
   CrcHubTransfer,
   CrcMinting,
@@ -37,11 +36,10 @@ if (event && event.payload?.__typename == "CrcMinting") {
 
   fromProfile = toProfile;
 
-  amount = displayCirclesAmount(
+  amount = Currency.instance().displayAmount(
     event.payload && event.payload.value ? event.payload.value.toString() : "0",
     event.timestamp,
-    true,
-    ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+    $me.displayCurrency
   );
 
   message = "Universal basic income";
@@ -93,17 +91,18 @@ if (event && event.payload?.__typename == "CrcHubTransfer") {
     (o) => o.typeId === "o-banking:transfer:message:1"
   )?.value;
 
-  amount = displayCirclesAmount(
+  amount = Currency.instance().displayAmount(
     event.payload && event.payload.flow ? event.payload.flow.toString() : "0",
     event.timestamp,
-    true,
-    ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+    $me.displayCurrency
   );
 
   if (event.direction == "out") {
     amount = "-" + amount;
   }
 }
+
+amount += ` ${Currency.currencySymbol[$me.displayCurrency]}`;
 
 targetProfile = event.direction === "in" ? fromProfile : toProfile;
 
