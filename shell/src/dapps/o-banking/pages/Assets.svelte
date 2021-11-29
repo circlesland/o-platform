@@ -85,7 +85,7 @@
         } else if (copy.token_address == "0x5227e8810281482f25454a8f00ea871589fc040e") {
           copy.token_symbol = "HUMAN";
           copy.token_image = "/logos/hmn.png";
-        } else if (copy.token_address == "0x04e7c72A70975B3d2f35ec7f6B474451f43d4ea0") {
+        } else if (copy.token_address == "0x04e7c72a70975b3d2f35ec7f6b474451f43d4ea0") {
           copy.token_symbol = "HUMAN (Test token)";
           copy.token_image = "/logos/hmn.png";
         }
