@@ -103,8 +103,6 @@ export class Currency {
     );
   }
 
-  public convertEurosToCircles(amount) {}
-
   public displayAmount(
     amount: string,
     date: string,
@@ -118,12 +116,8 @@ export class Currency {
       throw new Error("argument missing: amount");
     }
 
-    console.log("CURR: ", displayCurrency);
-
     const dateTime = date ? dayjs(date) : dayjs();
     let value: number;
-
-    console.log("FROM", from);
 
     if (displayCurrency == "CRC") {
       value = Number.parseFloat(Web3.utils.fromWei(amount, "ether"));
