@@ -89,7 +89,7 @@
           copy.token_symbol = "HUMAN";
           copy.token_image = "/logos/hmn.png";
           //copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
-        } else if (copy.token_address == "0xd9190f4c57240955bf4e7bfef4d8c168cc94bef0") {
+        } else if (copy.token_address == "0x04e7c72A70975B3d2f35ec7f6B474451f43d4ea0") {
           copy.token_symbol = "HUMAN (Test token)";
           copy.token_image = "/logos/hmn.png";
           //copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
