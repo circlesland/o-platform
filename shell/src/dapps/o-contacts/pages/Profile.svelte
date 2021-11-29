@@ -41,7 +41,13 @@ $: {
 async function setProfile(id: string) {
   const _profile = await contacts.findBySafeAddress(id);
   if (_profile.__typename == "Contact") {
-    contact = <Contact>_profile;
+    contact = <Contact>{
+      ..._profile,
+      contactAddress_Profile: {
+        ..._profile.contactAddress_Profile,
+        memberships: _profile.contactAddress_Profile.memberships ? _profile.contactAddress_Profile.memberships : []
+      }
+    };
   } else {
     const p = <Profile>_profile;
     contact = {
@@ -54,7 +60,7 @@ async function setProfile(id: string) {
         firstName: p.firstName,
         lastName: p.lastName,
         city: p.city,
-        memberships: p.memberships,
+        memberships: p.memberships ? p.memberships : [],
       },
       metadata: null,
       lastContactAt: null,
