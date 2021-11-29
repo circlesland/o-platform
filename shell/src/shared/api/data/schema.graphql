@@ -365,6 +365,8 @@ type Mutation {
     addMember(groupId: String!, memberAddress: String!): AddMemberResult
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
+    completePurchase(invoiceId: Int!): Invoice!
+    completeSale(invoiceId: Int!): Invoice!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     createInvitations(for: [String!]!): CreateInvitationResult!
     createTestInvitation: CreateInvitationResult!

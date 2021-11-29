@@ -257,6 +257,12 @@ export enum Direction {
   Out = 'out'
 }
 
+export enum DisplayCurrency {
+  Crc = 'CRC',
+  Eurs = 'EURS',
+  TimeCrc = 'TIME_CRC'
+}
+
 export type Erc20Balances = IAggregatePayload & {
   __typename?: 'Erc20Balances';
   balances: Array<AssetBalance>;
@@ -473,6 +479,8 @@ export type Mutation = {
   addMember?: Maybe<AddMemberResult>;
   authenticateAt: DelegateAuthInit;
   claimInvitation: ClaimInvitationResult;
+  completePurchase: Invoice;
+  completeSale: Invoice;
   consumeDepositedChallenge: ConsumeDepositedChallengeResponse;
   createInvitations: CreateInvitationResult;
   createTestInvitation: CreateInvitationResult;
@@ -522,6 +530,16 @@ export type MutationAuthenticateAtArgs = {
 
 export type MutationClaimInvitationArgs = {
   code: Scalars['String'];
+};
+
+
+export type MutationCompletePurchaseArgs = {
+  invoiceId: Scalars['Int'];
+};
+
+
+export type MutationCompleteSaleArgs = {
+  invoiceId: Scalars['Int'];
 };
 
 
@@ -693,6 +711,7 @@ export type Profile = {
   cityGeonameid?: Maybe<Scalars['Int']>;
   claimedInvitation?: Maybe<ClaimedInvitation>;
   country?: Maybe<Scalars['String']>;
+  displayCurrency?: Maybe<DisplayCurrency>;
   displayTimeCircles?: Maybe<Scalars['Boolean']>;
   dream?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
@@ -1540,6 +1559,40 @@ export type ImportOrganisationsMutation = (
   )> }
 );
 
+export type CompletePurchaseMutationVariables = Exact<{
+  invoiceId: Scalars['Int'];
+}>;
+
+
+export type CompletePurchaseMutation = (
+  { __typename?: 'Mutation' }
+  & { completePurchase: (
+    { __typename?: 'Invoice' }
+    & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
+    & { sellerProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )> }
+  ) }
+);
+
+export type CompleteSaleMutationVariables = Exact<{
+  invoiceId: Scalars['Int'];
+}>;
+
+
+export type CompleteSaleMutation = (
+  { __typename?: 'Mutation' }
+  & { completeSale: (
+    { __typename?: 'Invoice' }
+    & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
+    & { sellerProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )> }
+  ) }
+);
+
 export type SessionInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1664,7 +1717,7 @@ export type MyProfileQuery = (
   { __typename?: 'Query' }
   & { myProfile?: Maybe<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'displayCurrency' | 'cityGeonameid'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
@@ -2128,7 +2181,7 @@ export type StreamQuery = (
         & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
       )>, invoice?: Maybe<(
         { __typename?: 'Invoice' }
-        & Pick<Invoice, 'id'>
+        & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
         & { lines: Array<(
           { __typename?: 'InvoiceLine' }
           & Pick<InvoiceLine, 'amount'>
@@ -2265,7 +2318,7 @@ export type AggregatesQuery = (
           ) }
         )>, invoices: Array<(
           { __typename?: 'Invoice' }
-          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode'>
+          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
           & { sellerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
@@ -2297,7 +2350,7 @@ export type AggregatesQuery = (
           ) }
         )>, invoices: Array<(
           { __typename?: 'Invoice' }
-          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode'>
+          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
           & { buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
@@ -2767,6 +2820,52 @@ export const ImportOrganisationsDocument = gql`
   }
 }
     `;
+export const CompletePurchaseDocument = gql`
+    mutation completePurchase($invoiceId: Int!) {
+  completePurchase(invoiceId: $invoiceId) {
+    id
+    sellerAddress
+    paymentTransactionHash
+    buyerAddress
+    pickupCode
+    buyerSignature
+    buyerSignedDate
+    sellerSignature
+    sellerSignedDate
+    sellerProfile {
+      type
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
+  }
+}
+    `;
+export const CompleteSaleDocument = gql`
+    mutation completeSale($invoiceId: Int!) {
+  completeSale(invoiceId: $invoiceId) {
+    id
+    sellerAddress
+    paymentTransactionHash
+    buyerAddress
+    pickupCode
+    buyerSignature
+    buyerSignedDate
+    sellerSignature
+    sellerSignedDate
+    sellerProfile {
+      type
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
+  }
+}
+    `;
 export const SessionInfoDocument = gql`
     query sessionInfo {
   sessionInfo {
@@ -2883,6 +2982,7 @@ export const MyProfileDocument = gql`
     avatarMimeType
     newsletter
     displayTimeCircles
+    displayCurrency
     cityGeonameid
     city {
       geonameid
@@ -3530,6 +3630,10 @@ export const StreamDocument = gql`
         }
         invoice {
           id
+          buyerSignature
+          buyerSignedDate
+          sellerSignature
+          sellerSignedDate
           lines {
             amount
             offer {
@@ -3732,6 +3836,10 @@ export const AggregatesDocument = gql`
             paymentTransactionHash
             buyerAddress
             pickupCode
+            buyerSignature
+            buyerSignedDate
+            sellerSignature
+            sellerSignedDate
             sellerProfile {
               type
               id
@@ -3792,6 +3900,10 @@ export const AggregatesDocument = gql`
             paymentTransactionHash
             buyerAddress
             pickupCode
+            buyerSignature
+            buyerSignedDate
+            sellerSignature
+            sellerSignedDate
             buyerProfile {
               type
               id
@@ -3901,6 +4013,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     importOrganisations(variables?: ImportOrganisationsMutationVariables): Promise<ImportOrganisationsMutation> {
       return withWrapper(() => client.request<ImportOrganisationsMutation>(print(ImportOrganisationsDocument), variables));
+    },
+    completePurchase(variables: CompletePurchaseMutationVariables): Promise<CompletePurchaseMutation> {
+      return withWrapper(() => client.request<CompletePurchaseMutation>(print(CompletePurchaseDocument), variables));
+    },
+    completeSale(variables: CompleteSaleMutationVariables): Promise<CompleteSaleMutation> {
+      return withWrapper(() => client.request<CompleteSaleMutation>(print(CompleteSaleDocument), variables));
     },
     sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
       return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));

@@ -419,3 +419,48 @@ mutation importOrganisations {
     avatarUrl
   }
 }
+
+mutation completePurchase($invoiceId: Int!) {
+  completePurchase(invoiceId: $invoiceId) {
+    id
+    sellerAddress
+    paymentTransactionHash
+    buyerAddress
+    pickupCode
+    buyerSignature
+    buyerSignedDate
+    sellerSignature
+    sellerSignedDate
+    sellerProfile {
+      type
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
+
+  }
+}
+
+mutation completeSale($invoiceId: Int!) {
+  completeSale(invoiceId: $invoiceId) {
+    id
+    sellerAddress
+    paymentTransactionHash
+    buyerAddress
+    pickupCode
+    buyerSignature
+    buyerSignedDate
+    sellerSignature
+    sellerSignedDate
+    sellerProfile {
+      type
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
+  }
+}

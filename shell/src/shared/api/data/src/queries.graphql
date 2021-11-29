@@ -804,6 +804,10 @@ query stream(
         }
         invoice {
           id
+          buyerSignature
+          buyerSignedDate
+          sellerSignature
+          sellerSignedDate
           lines {
             amount
             offer {
@@ -1009,6 +1013,10 @@ query aggregates(
             paymentTransactionHash
             buyerAddress
             pickupCode
+            buyerSignature
+            buyerSignedDate
+            sellerSignature
+            sellerSignedDate
             sellerProfile {
               type
               id
@@ -1069,6 +1077,10 @@ query aggregates(
             paymentTransactionHash
             buyerAddress
             pickupCode
+            buyerSignature
+            buyerSignedDate
+            sellerSignature
+            sellerSignedDate
             buyerProfile {
               type
               id
