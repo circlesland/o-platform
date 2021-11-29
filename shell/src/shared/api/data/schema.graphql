@@ -446,6 +446,7 @@ type Profile {
     cityGeonameid: Int
     claimedInvitation: ClaimedInvitation
     country: String
+    displayCurrency: DisplayCurrency
     displayTimeCircles: Boolean
     dream: String
     firstName: String!
@@ -695,6 +696,12 @@ enum ContactDirection {
 enum Direction {
     in
     out
+}
+
+enum DisplayCurrency {
+    CRC
+    EURS
+    TIME_CRC
 }
 
 enum EventType {
