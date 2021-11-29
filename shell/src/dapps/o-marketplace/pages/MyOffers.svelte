@@ -6,7 +6,7 @@ import {
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
+import {of, Subscription} from "rxjs";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
@@ -23,7 +23,11 @@ let shellEventSubscription: Subscription;
 
 async function load() {
   if (isLoading) return;
-
+  if (!$me.circlesAddress) {
+    isLoading = false;
+    offers = [];
+    return;
+  }
   const result = await ApiClient.queryAggregate<Offers>(AggregateType.Offers, $me.circlesAddress);
   offers = result.offers;
   isLoading = false;

@@ -104,9 +104,9 @@ let drawGraph = async function (steps:TransitivePathStep[]) {
         step.value,
         null,
         true,
-        $me.displayTimeCircles || $me.displayTimeCircles === undefined
+        ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
       )} ${
-        $me.displayTimeCircles || $me.displayTimeCircles === undefined
+        ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
           ? "Time "
           : ""
       }Circles`,

@@ -128,7 +128,7 @@ const { subscribe, set, update } = writable<ProfileEvent[]>(
         shellEventSubscription = null;
       }
 
-      if (!$me.circlesAddress) {
+      if (!$me?.circlesAddress) {
         console.log(`transactions: Not loaded. No safe address on profile.`);
         set([]);
         return;

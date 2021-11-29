@@ -23,7 +23,7 @@ if (payload) {
     +{displayCirclesAmount(
       payload.flow,
       event.timestamp,
-      $me.displayTimeCircles || $me.displayTimeCircles === undefined
+      ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
     )}
     <Icons icon="circlessimple" size="10" />
   </div>

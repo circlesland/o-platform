@@ -86,7 +86,7 @@ onMount(async () => {
 });
 
 let receiveNewsletter: boolean = $me.newsletter;
-let displayTimeCircles: boolean = $me.displayTimeCircles;
+let displayTimeCircles: boolean = ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true);
 const delayedTrigger = new DelayedTrigger(500, async () => {
   // TODO: Make call to upsertProfile shorter
   await editProfile();

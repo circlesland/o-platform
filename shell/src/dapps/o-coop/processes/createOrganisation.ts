@@ -244,7 +244,7 @@ const processDefinition = (processId: string) =>
             });
             unsub();
 
-            if (!$me.circlesAddress) {
+            if (!$me?.circlesAddress) {
               throw new Error(`You need a fully set-up circles account to create an organisation.`)
             }
 

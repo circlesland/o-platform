@@ -44,7 +44,7 @@ export const {subscribe} = readable<Contact[]>([], function start(set) {
       shellEventSubscription = null;
     }
 
-    if (!$me.circlesAddress) {
+    if (!$me?.circlesAddress) {
       console.log(`contacts: Not loaded. No safe address on profile.`);
       set([]);
       return;

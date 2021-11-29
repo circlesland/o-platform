@@ -41,7 +41,7 @@ if (event && event.payload?.__typename == "CrcMinting") {
     event.payload && event.payload.value ? event.payload.value.toString() : "0",
     event.timestamp,
     true,
-    $me.displayTimeCircles || $me.displayTimeCircles === undefined
+    ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
   );
 
   message = "Universal basic income";
@@ -97,7 +97,7 @@ if (event && event.payload?.__typename == "CrcHubTransfer") {
     event.payload && event.payload.flow ? event.payload.flow.toString() : "0",
     event.timestamp,
     true,
-    $me.displayTimeCircles || $me.displayTimeCircles === undefined
+    ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
   );
 
   if (event.direction == "out") {

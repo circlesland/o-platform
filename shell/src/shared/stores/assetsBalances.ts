@@ -65,7 +65,7 @@ export const assetsBalances = readable<{
       shellEventSubscription = null;
     }
 
-    if (!$me.circlesAddress) {
+    if (!$me?.circlesAddress) {
       console.log(`assetBalances: Not loaded. No safe address on profile.`);
       set({
         erc20Balances: [],

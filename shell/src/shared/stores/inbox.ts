@@ -206,6 +206,10 @@ export const inbox = {
       profile = $me;
     })();
 
+    if (profile?.circlesAddress) {
+      set([]);
+      return;
+    }
     events = await queryEvents(profile?.circlesAddress);
     set(events);
 

@@ -15,7 +15,7 @@
 
   $: {
     const sum = $assetsBalances.crcBalances.reduce((p,c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
-    balance = displayCirclesAmount(sum, null, true, $me.displayTimeCircles || $me.displayTimeCircles === undefined).toString();
+    balance = displayCirclesAmount(sum, null, true, ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined).toString();
   }
 </script>
 

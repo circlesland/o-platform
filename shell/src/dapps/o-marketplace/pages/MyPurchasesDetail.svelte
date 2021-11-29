@@ -32,6 +32,11 @@ let actions = [];
 async function load() {
   if (isLoading) return;
 
+  if (!$me.circlesAddress) {
+    isLoading = false;
+    purchase = null;
+    return;
+  }
   const result = await ApiClient.queryAggregate<Purchases>(AggregateType.Purchases, $me.circlesAddress,{
     purchases: {
       purchaseIds: [parseInt(id)],

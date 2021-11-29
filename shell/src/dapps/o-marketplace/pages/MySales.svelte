@@ -27,6 +27,11 @@ let shellEventSubscription: Subscription;
 async function load() {
   if (isLoading) return;
 
+  if (!$me.circlesAddress) {
+    isLoading = false;
+    sales = [];
+    return;
+  }
   const result = await ApiClient.queryAggregate<Sales>(AggregateType.Sales, $me.circlesAddress);
   sales = result.sales;
   console.log(sales);

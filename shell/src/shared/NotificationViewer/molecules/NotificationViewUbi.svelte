@@ -14,7 +14,7 @@ let payload: CrcMinting = <CrcMinting>event.payload;
     payload.value,
     event.timestamp,
     true,
-    $me.displayTimeCircles || $me.displayTimeCircles === undefined
+    ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
   )}
   <Icons icon="circlessimple" size="10" />
 </div>

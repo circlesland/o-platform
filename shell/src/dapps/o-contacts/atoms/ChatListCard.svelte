@@ -89,7 +89,7 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
         mostRecentDisplayEvent.value,
         null,
         true,
-        $me.displayTimeCircles || $me.displayTimeCircles === undefined
+        ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
       )} ⦿`;
       break;
     case EventType.ChatMessage:
@@ -115,7 +115,7 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
         mostRecentDisplayEvent.value,
         null,
         true,
-        $me.displayTimeCircles || $me.displayTimeCircles === undefined
+        ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
       )} ⦿`;
       break;
     case EventType.ChatMessage:

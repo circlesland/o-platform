@@ -403,6 +403,7 @@ type Offer {
     pictureMimeType: String!
     pictureUrl: String!
     pricePerUnit: String!
+    timeCirclesPriceShare: Int!
     title: String!
     version: Int!
 }

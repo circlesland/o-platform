@@ -60,7 +60,7 @@ onMount(async () => {
                 token.token_balance ? token.token_balance : '0',
                 null,
                 true,
-                $me.displayTimeCircles || $me.displayTimeCircles === undefined
+                ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
               ),
             }}" />
         </div>

@@ -133,8 +133,8 @@ function openDetail(transfer: ProfileEvent) {
               transfer.timestamp,
               true,
               (transfer.payload.__typename != "Erc20Transfer" &&
-                $me.displayTimeCircles) ||
-                $me.displayTimeCircles === undefined
+                ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true)) ||
+                ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
             )}
           {:else}
             -{displayCirclesAmount(
@@ -147,8 +147,8 @@ function openDetail(transfer: ProfileEvent) {
               transfer.timestamp,
               true,
               (transfer.payload.__typename != "Erc20Transfer" &&
-                $me.displayTimeCircles) ||
-                $me.displayTimeCircles === undefined
+                ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true)) ||
+                ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
             )}
           {/if}
           <svg

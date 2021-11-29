@@ -1,7 +1,6 @@
 <script lang="ts">
   import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
   import Card from "src/shared/atoms/Card.svelte";
-  import {BN} from "ethereumjs-util";
   import AssetCard from "../atoms/AssetCard.svelte";
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
@@ -15,6 +14,7 @@
   } from "../../../shared/api/data/types";
   import ItemCard from "../../../shared/atoms/ItemCard.svelte";
   import {assetsBalances} from "../../../shared/stores/assetsBalances";
+  import {BN} from "ethereumjs-util";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -66,7 +66,7 @@
         .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
         .toString(),
       null,
-      $me.displayTimeCircles || $me.displayTimeCircles === undefined
+      ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
     );
     circles.variety = circles.details.length;
 
@@ -76,24 +76,39 @@
         if (copy.token_address == "0x9ee40742182707467f78344f6b287be8704f27e2") {
           copy.token_symbol = "EURS";
           copy.token_image = "/logos/eurs.png";
-          copy.token_balance = (parseFloat(copy.token_balance) / 100).toFixed(2);
+          //copy.token_balance = (parseFloat(copy.token_balance) / 100).toFixed(2);
         } else if (copy.token_address == "0x63e62989d9eb2d37dfdb1f93a22f063635b07d51") {
           copy.token_symbol = "MIVA";
           copy.token_image = "/logos/miva.png";
-          copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
+          //copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
         } else if (copy.token_address == "0x62f5caa239a97b21aa61502963cf8c33f8182e79") {
           copy.token_symbol = "ARTIS";
           copy.token_image = "/logos/artis.png";
-          copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
+          //copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
         } else if (copy.token_address == "0x5227e8810281482f25454a8f00ea871589fc040e") {
           copy.token_symbol = "HUMAN";
           copy.token_image = "/logos/hmn.png";
-          copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
+          //copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
+        } else if (copy.token_address == "0xd9190f4c57240955bf4e7bfef4d8c168cc94bef0") {
+          copy.token_symbol = "HUMAN (Test token)";
+          copy.token_image = "/logos/hmn.png";
+          //copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
         } else {
-          copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
+          //copy.token_balance = parseFloat(RpcGateway.get().utils.fromWei(copy.token_balance, "ether")).toFixed(2);
         }
         return copy;
       });
+
+    erc20DisplayBalances = erc20DisplayBalances.sort((a,b) => {
+      const bnA = new BN(a.token_balance);
+      const bnB = new BN(b.token_balance);
+      return bnA.gt(bnB) ? -1 : bnA.lt(bnB) ? 1 : 0;
+    }).map(o => {
+      return {
+        ...o,
+        token_balance: o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2)
+      }
+    })
 
     updateXdaiBalance().then(o => {
       if (loading) {

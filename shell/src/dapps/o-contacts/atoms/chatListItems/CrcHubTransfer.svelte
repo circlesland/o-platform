@@ -60,14 +60,14 @@ function getValues(): {
       hubTransfer.flow,
       null,
       true,
-      $me.displayTimeCircles || $me.displayTimeCircles === undefined
+      ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
     )} CRC`;
   } else {
     title = ` You sent ${displayCirclesAmount(
       hubTransfer.flow,
       null,
       true,
-      $me.displayTimeCircles || $me.displayTimeCircles === undefined
+      ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
     )} CRC to ${event.contact_address_profile.firstName}`;
   }
 
