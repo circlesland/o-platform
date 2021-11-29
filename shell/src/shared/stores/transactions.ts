@@ -111,7 +111,12 @@ const { subscribe, set, update } = writable<ProfileEvent[]>(
         const newEvents = events.filter(o => !existingHashes[o.transaction_hash]);
         newEvents.forEach(e => currentTransactions.unshift(e));
 
-        return currentTransactions;
+        return currentTransactions.sort((a,b) =>
+          a.block_number > b.block_number
+            ? -1
+            : a.block_number < b.block_number
+            ? 1
+            : 0);
       });
     }
     async function initialize(safeAddress: string) {

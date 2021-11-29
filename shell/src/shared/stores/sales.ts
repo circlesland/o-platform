@@ -83,5 +83,20 @@ export const sales = {
     }
     const refreshedPurchases = await loadSales(completedInvoice.data.completeSale.sellerAddress);
     set(refreshedPurchases);
+  },
+  revokeSale: async (invoiceId:number) => {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const completedInvoice = await apiClient.mutate({
+      mutation: CompleteSaleDocument,
+      variables: {
+        invoiceId: invoiceId,
+        revoke: true
+      }
+    });
+    if (!completedInvoice.data?.completeSale) {
+      throw new Error(`Couldn't revoke the completion status.`);
+    }
+    const refreshedPurchases = await loadSales(completedInvoice.data.completeSale.sellerAddress);
+    set(refreshedPurchases);
   }
 }

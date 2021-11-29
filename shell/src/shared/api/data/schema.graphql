@@ -365,8 +365,8 @@ type Mutation {
     addMember(groupId: String!, memberAddress: String!): AddMemberResult
     authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
-    completePurchase(invoiceId: Int!): Invoice!
-    completeSale(invoiceId: Int!): Invoice!
+    completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
+    completeSale(invoiceId: Int!, revoke: Boolean): Invoice!
     consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     createInvitations(for: [String!]!): CreateInvitationResult!
     createTestInvitation: CreateInvitationResult!
@@ -374,7 +374,6 @@ type Mutation {
     exchangeToken: ExchangeTokenResponse!
     importOrganisationsOfAccount: [Organisation!]!
     logout: LogoutResponse!
-    proofPayment(purchaseId: Int!, transactionHash: String!): ProofPaymentResult
     purchase(lines: [PurchaseLineInput!]!): [Invoice!]!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     rejectMembership(membershipId: Int!): RejectMembershipResult

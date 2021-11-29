@@ -488,7 +488,6 @@ export type Mutation = {
   exchangeToken: ExchangeTokenResponse;
   importOrganisationsOfAccount: Array<Organisation>;
   logout: LogoutResponse;
-  proofPayment?: Maybe<ProofPaymentResult>;
   purchase: Array<Invoice>;
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
   rejectMembership?: Maybe<RejectMembershipResult>;
@@ -535,11 +534,13 @@ export type MutationClaimInvitationArgs = {
 
 export type MutationCompletePurchaseArgs = {
   invoiceId: Scalars['Int'];
+  revoke?: Maybe<Scalars['Boolean']>;
 };
 
 
 export type MutationCompleteSaleArgs = {
   invoiceId: Scalars['Int'];
+  revoke?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -555,12 +556,6 @@ export type MutationCreateInvitationsArgs = {
 
 export type MutationDepositChallengeArgs = {
   jwt: Scalars['String'];
-};
-
-
-export type MutationProofPaymentArgs = {
-  purchaseId: Scalars['Int'];
-  transactionHash: Scalars['String'];
 };
 
 
@@ -1561,6 +1556,7 @@ export type ImportOrganisationsMutation = (
 
 export type CompletePurchaseMutationVariables = Exact<{
   invoiceId: Scalars['Int'];
+  revoke?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -1578,6 +1574,7 @@ export type CompletePurchaseMutation = (
 
 export type CompleteSaleMutationVariables = Exact<{
   invoiceId: Scalars['Int'];
+  revoke?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -2821,8 +2818,8 @@ export const ImportOrganisationsDocument = gql`
 }
     `;
 export const CompletePurchaseDocument = gql`
-    mutation completePurchase($invoiceId: Int!) {
-  completePurchase(invoiceId: $invoiceId) {
+    mutation completePurchase($invoiceId: Int!, $revoke: Boolean) {
+  completePurchase(invoiceId: $invoiceId, revoke: $revoke) {
     id
     sellerAddress
     paymentTransactionHash
@@ -2844,8 +2841,8 @@ export const CompletePurchaseDocument = gql`
 }
     `;
 export const CompleteSaleDocument = gql`
-    mutation completeSale($invoiceId: Int!) {
-  completeSale(invoiceId: $invoiceId) {
+    mutation completeSale($invoiceId: Int!, $revoke: Boolean) {
+  completeSale(invoiceId: $invoiceId, revoke: $revoke) {
     id
     sellerAddress
     paymentTransactionHash

@@ -420,8 +420,8 @@ mutation importOrganisations {
   }
 }
 
-mutation completePurchase($invoiceId: Int!) {
-  completePurchase(invoiceId: $invoiceId) {
+mutation completePurchase($invoiceId: Int! $revoke: Boolean) {
+  completePurchase(invoiceId: $invoiceId revoke: $revoke) {
     id
     sellerAddress
     paymentTransactionHash
@@ -443,8 +443,8 @@ mutation completePurchase($invoiceId: Int!) {
   }
 }
 
-mutation completeSale($invoiceId: Int!) {
-  completeSale(invoiceId: $invoiceId) {
+mutation completeSale($invoiceId: Int! $revoke: Boolean) {
+  completeSale(invoiceId: $invoiceId revoke: $revoke) {
     id
     sellerAddress
     paymentTransactionHash
