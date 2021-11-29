@@ -10,6 +10,7 @@ async function loadSales() {
   let mySafeAddress = "";
   me.subscribe($me => mySafeAddress = $me.circlesAddress)();
   const result = await ApiClient.queryAggregate<Sales>(AggregateType.Sales, mySafeAddress);
+  result.sales.forEach(o => salesById[o.id] = o);
   return result.sales;
 }
 
@@ -17,7 +18,6 @@ export const {subscribe, set, update} = writable<Sale[]>(null, function start(se
   // Subscribe to $me and reload the store when the profile changes
   async function update() {
     const sales = await loadSales();
-    sales.forEach(o => salesById[o.id] = o);
     set(sales);
   }
 

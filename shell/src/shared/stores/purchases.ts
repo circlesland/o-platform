@@ -10,6 +10,7 @@ async function loadPurchases() {
   let mySafeAddress = "";
   me.subscribe($me => mySafeAddress = $me.circlesAddress)();
   const result = await ApiClient.queryAggregate<Purchases>(AggregateType.Purchases, mySafeAddress);
+  result.purchases.forEach(o => purchasesById[o.id] = o);
   return result.purchases;
 }
 
@@ -17,7 +18,6 @@ export const {subscribe, set, update} = writable<Purchase[]>(null, function star
   // Subscribe to $me and reload the store when the profile changes
   async function update() {
     const purchases = await loadPurchases();
-    purchases.forEach(o => purchasesById[o.id] = o);
     set(purchases);
   }
 
