@@ -8,6 +8,7 @@ import { me } from "../../../shared/stores/me";
 import { Currency } from "../../../shared/currency";
 import { BN } from "ethereumjs-util";
 import { assetsBalances } from "../../../shared/stores/assetsBalances";
+import Icons from "../../../shared/molecules/Icons.svelte";
 
 export let balance: string = "0";
 export let runtimeDapp: RuntimeDapp<any>;
@@ -17,19 +18,7 @@ $: {
   const sum = $assetsBalances.crcBalances
     .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
     .toString();
-  balance = Currency.instance()
-    .displayCirclesAmount(
-      sum,
-      null,
-      true,
-      ($me && $me.displayTimeCircles !== undefined
-        ? $me.displayTimeCircles
-        : true) ||
-        ($me && $me.displayTimeCircles !== undefined
-          ? $me.displayTimeCircles
-          : true) === undefined
-    )
-    .toString();
+  balance = Currency.instance().displayAmount(sum, null, $me).toString();
 }
 </script>
 
@@ -38,8 +27,8 @@ $: {
 <PageHeader heightClass="h-60">
   <div class="self-center block text-center">
     <span class="inline-block tracking-wide text-7xl font-heading">
-      {balance}
-      <svg
+      {balance} <span class="text-7xl font-primary">€</span>
+      <!-- <svg
         class="inline w-8 h-8 mt-2 -ml-3"
         viewBox="0 0 229 255"
         fill="none"
@@ -64,7 +53,7 @@ $: {
           rx="26.5727"
           ry="26.3333"
           fill="white"></ellipse>
-      </svg>
+      </svg> -->
     </span>
   </div>
   <div

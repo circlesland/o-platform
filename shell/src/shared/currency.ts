@@ -1,6 +1,7 @@
 import Web3 from "web3";
 import dayjs from "dayjs";
 import { BN } from "ethereumjs-util";
+import { me } from "./stores/me";
 
 export class Currency {
   public static instance() {
@@ -95,6 +96,45 @@ export class Currency {
         )) *
       24
     );
+  }
+
+  public displayAmount(amount: string, date: string, displayCurrency: any) {
+    if (!amount) {
+      throw new Error("argument missing: amount");
+    }
+    if (!me) {
+      throw new Error("argument missing: amount");
+    }
+
+    const dateTime = date ? dayjs(date) : dayjs();
+    let value: number;
+
+    value =
+      this.convertCirclesToTimeCircles(
+        Number.parseFloat(Web3.utils.fromWei(amount, "ether")),
+        dateTime.toString()
+      ) / 10;
+
+    return value.toFixed(2);
+  }
+  public displayEuroAmount(amount: string, date: string, fixed: boolean) {
+    if (!amount) {
+      throw new Error("argument missing: amount");
+    }
+    const dateTime = date ? dayjs(date) : dayjs();
+    let value: number;
+
+    value =
+      this.convertCirclesToTimeCircles(
+        Number.parseFloat(Web3.utils.fromWei(amount, "ether")),
+        dateTime.toString()
+      ) / 10;
+
+    if (fixed) {
+      return value.toFixed(2);
+    } else {
+      return value;
+    }
   }
 
   public displayCirclesAmount(
