@@ -871,6 +871,7 @@ query aggregates(
           pictureMimeType
           description
           pricePerUnit
+          timeCirclesPriceShare
         }
       }
       ... on CrcBalances {
