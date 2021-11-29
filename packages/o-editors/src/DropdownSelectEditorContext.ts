@@ -1,6 +1,7 @@
 import { EditorContext } from "./editorContext";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { EditorViewContext } from "./shared/editorViewContext";
+import {Observable} from "rxjs";
 
 export type DropdownSelectorParams<
   TContext extends ProcessContext<any>,
@@ -15,7 +16,7 @@ export type DropdownSelectorParams<
   showResultsOnLoad?: boolean;
   choices: {
     byKey: (key: TKey, context: TContext) => Promise<TOption | undefined>;
-    find: (filter: string | undefined, context: TContext) => Promise<TOption[]>;
+    find: (filter: string | undefined, context: TContext) => Observable<TOption[]>|Promise<TOption[]>;
   };
   [x: string]: any;
 };

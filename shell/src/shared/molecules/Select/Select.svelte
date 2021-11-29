@@ -15,6 +15,7 @@ import debounce from "./utils/debounce";
 import Icons from "../../molecules/Icons.svelte";
 import DefaultClearIcon from "./ClearIcon.svelte";
 import { isMobile } from "src/shared/functions/isMobile";
+import {Observable} from "rxjs";
 
 const dispatch = createEventDispatcher();
 export let container = undefined;
@@ -32,8 +33,13 @@ export let selectedValue = undefined;
 export let filterText = "";
 export let placeholder = "Select...";
 export let items = [];
-export let itemFilter = (label, filterText, option) =>
-  label.toLowerCase().includes(filterText.toLowerCase());
+export let itemFilter = (label, filterText, option, options) => {
+  if (options.filter) {
+    return label.toLowerCase().includes(filterText.toLowerCase())
+  } else {
+    return true;
+  }
+};
 export let groupBy = undefined;
 export let groupFilter = (groups) => groups;
 export let isGroupHeaderSelectable = false;
@@ -110,23 +116,40 @@ export const getItems = debounce(async () => {
   getItemsHasInvoked = true;
   isWaiting = true;
 
-  let res = await loadOptions(filterText).catch((err) => {
-    console.warn("svelte-select loadOptions error :>> ", err);
-    dispatch("error", { type: "loadOptions", details: err });
-  });
+  const evaluatedLoadOptions = loadOptions(filterText);
+  if (evaluatedLoadOptions.then) {
+    const promise = evaluatedLoadOptions;
+    let res = promise.catch((err) => {
+      console.warn("svelte-select loadOptions error :>> ", err);
+      dispatch("error", { type: "loadOptions", details: err });
+    });
 
-  if (res && !res.cancelled) {
-    if (res) {
-      items = [...res];
-      dispatch("loaded", { items });
-    } else {
-      items = [];
+    if (res && !res.cancelled) {
+      if (res) {
+        items = [...res];
+        dispatch("loaded", { items });
+      } else {
+        items = [];
+      }
+
+      isWaiting = false;
+      isFocused = true;
+      listOpen = true;
     }
-
-    isWaiting = false;
-    isFocused = true;
-    listOpen = true;
+  } else if (evaluatedLoadOptions.subscribe) {
+    return new Promise((resolve) => {
+      const observable = evaluatedLoadOptions;
+      observable.subscribe(next => {
+        if (!next) {
+          resolve();
+        } else {
+          items = [...next];
+          dispatch("loaded", { items });
+        }
+      });
+    });
   }
+
 }, loadOptionsInterval);
 
 $: disabled = isDisabled;
@@ -224,7 +247,9 @@ $: {
 
           if (!keepItem) return false;
           if (filterText.length < 1) return true;
-          return itemFilter(getOptionLabel(item, filterText), filterText, item);
+          return itemFilter(getOptionLabel(item, filterText), filterText, item, {
+            filter: (loadOptions && loadOptions().then)
+          });
         })
       : [];
   }

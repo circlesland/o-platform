@@ -8,7 +8,7 @@ console.log("item: ", item);
 let itemClasses = "";
 
 $: {
-  const classes = [];
+  let classes = [];
 
   if (isActive) {
     classes.push("active border-primary");
@@ -41,7 +41,8 @@ $: {
     </div>
 
     <div class="relative flex-grow text-left truncate">
-      <div class="max-w-full -mt-1 leading-8 cursor-pointer ">
+      <div class="max-w-full -mt-1 leading-8 cursor-pointer "
+           class:text-dark-lightest={!item.id || item.id < 1}>
         {`${item.firstName} ${item.lastName ? item.lastName : ""}`}
       </div>
     </div>

@@ -8,15 +8,17 @@ import {
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import DropDownProfile from "@o-platform/o-editors/src/dropdownItems/DropDownProfile.svelte";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
-import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { AvataarGenerator } from "../avataarGenerator";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import {
+  Contact,
   Profile,
   ProfileBySafeAddressDocument, ProfileBySafeAddressQueryVariables,
-  ProfilesByNameDocument, ProfilesByNameQueryVariables, UbiInfo, UbiInfoDocument, UbiInfoQueryVariables,
+  ProfilesByNameDocument, ProfilesByNameQueryVariables,
 } from "./data/types";
 import {ApiClient} from "../apiConnection";
+import {Observable, TeardownLogic} from "rxjs";
+import {contacts} from "../stores/contacts";
 
 export function promptCirclesSafe<
   TContext extends ProcessContext<any>,
@@ -47,7 +49,29 @@ export function promptCirclesSafe<
   };
 }) {
   const field = normalizePromptField(spec.field);
+  function resultComparer(a:Profile,b:Profile) {
+    let firstNameOrder = 0;
+    if (a.firstName > b.firstName)
+      firstNameOrder = 1;
+    else if (a.firstName < b.firstName)
+      firstNameOrder = -1;
+    else
+      firstNameOrder = 0;
 
+    let lastNameOrder = 0;
+    if (a.lastName > b.lastName)
+      lastNameOrder = 1;
+    else if (a.lastName < b.lastName)
+      lastNameOrder = -1;
+    else
+      lastNameOrder = 0;
+
+    if (firstNameOrder != 0) {
+      return firstNameOrder;
+    } else {
+      return lastNameOrder;
+    }
+  }
   return prompt<TContext, any>({
     id: spec.id ?? field.name,
     field: spec.field,
@@ -71,25 +95,44 @@ export function promptCirclesSafe<
             ? profiles[0]
             : undefined;
         },
-        find: async (filter?: string) => {
-          const profiles = await ApiClient.query<Profile[], ProfilesByNameQueryVariables>(ProfilesByNameDocument, {
-            searchString: (filter ?? "") + "%",
+        find: (filter?: string) => {
+          const resultsObservable = new Observable<Profile[]>((observer) => {
+            contacts.subscribe(c => {
+              const filteredCachedContacts = c.filter(contact =>
+                ((contact.contactAddress_Profile?.firstName ?? "")
+                + (contact.contactAddress_Profile?.firstName ?? "")
+                + (contact.contactAddress_Profile?.circlesAddress ?? ""))
+                  .toLowerCase()
+                  .indexOf(filter.toLowerCase()) > -1
+              ).sort((a,b) => resultComparer(a.contactAddress_Profile, b.contactAddress_Profile));
+              observer.next(filteredCachedContacts.map(o => o.contactAddress_Profile));
+            })();
+
+            ApiClient.query<Profile[], ProfilesByNameQueryVariables>(ProfilesByNameDocument, {
+              searchString: (filter ?? "") + "%",
+            }).then(profiles => {
+              const searchResult = (profiles && profiles.length > 0
+                ? profiles
+                  .filter((o) => o.circlesAddress)
+                  .map((o) => {
+                    return {
+                      ...o,
+                      circlesAddress: o.circlesAddress,
+                      avatarUrl: o.avatarUrl
+                        ? o.avatarUrl
+                        : AvataarGenerator.generate(o.circlesAddress),
+                    };
+                  })
+                  .reverse()
+                : []).sort(resultComparer);
+
+              observer.next(searchResult);
+              observer.complete();
+            });
           });
-          return profiles && profiles.length > 0
-            ? profiles
-                .filter((o) => o.circlesAddress)
-                .map((o) => {
-                  return {
-                    ...o,
-                    circlesAddress: o.circlesAddress,
-                    avatarUrl: o.avatarUrl
-                      ? o.avatarUrl
-                      : AvataarGenerator.generate(o.circlesAddress),
-                  };
-                })
-                .reverse()
-            : [];
-        },
+
+          return resultsObservable;
+        }
       },
     },
     navigation: spec.navigation,
