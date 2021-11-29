@@ -9,10 +9,9 @@ import * as bip39 from "bip39";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Account } from "web3-core";
 import {
-  FindSafeAddressByOwnerDocument, FindSafeAddressByOwnerQueryVariables,
+  FindSafeAddressByOwnerDocument, FindSafeAddressByOwnerQueryVariables, ImportOrganisationsDocument,
   Profile,
   ProfilesByCirclesAddressDocument, ProfilesByCirclesAddressQueryVariables,
-  QueryFindSafeAddressByOwnerArgs,
   SafeAddressByOwnerResult,
   UpsertProfileDocument,
 } from "../../../shared/api/data/types";
@@ -25,6 +24,7 @@ import SimpleDropDownEditor from "../../../../../packages/o-editors/src/SimpleDr
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import DropDownCandidateSafe from "../views/atoms/DropDownCandidateSafe.svelte";
 import {ApiClient} from "../../../shared/apiConnection";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type SafeCandidate = {
   address: string;
@@ -43,6 +43,7 @@ export type PromptConnectOrCreateContextData = {
     [address: string]: SafeCandidate;
   };
   selectedSafe?: SafeCandidate;
+  safeProxy?: GnosisSafeProxy;
   successAction?: (data: PromptConnectOrCreateContextData) => void;
 };
 
@@ -292,6 +293,12 @@ const processDefinition = (processId: string) =>
 
         addNewOwner: {
           id: "addNewOwner",
+          entry: () => {
+            window.o.publishEvent(<PlatformEvent>{
+              type: "shell.progress",
+              message: "Adding new owner ..",
+            });
+          },
           invoke: {
             src: async (context) => {
               if (typeof context.data.selectedSafe === "string") {
@@ -299,7 +306,7 @@ const processDefinition = (processId: string) =>
                   context.data.safeCandidates[context.data.selectedSafe];
               }
 
-              const safeProxy = new GnosisSafeProxy(
+              context.data.safeProxy = new GnosisSafeProxy(
                 RpcGateway.get(),
                 context.data.selectedSafe.address
               );
@@ -307,7 +314,7 @@ const processDefinition = (processId: string) =>
               var km = new KeyManager(null);
               await km.load();
 
-              const currentOwners = await safeProxy.getOwners();
+              const currentOwners = await context.data.safeProxy.getOwners();
               if (
                 currentOwners.find(
                   (o) => o.toLowerCase() == km.torusKeyAddress.toLowerCase()
@@ -315,7 +322,7 @@ const processDefinition = (processId: string) =>
               ) {
                 console.log("The new safe owner was already added.");
               } else {
-                const receipt = await safeProxy.addOwnerWithThreshold(
+                const receipt = await context.data.safeProxy.addOwnerWithThreshold(
                   context.data.importedAccount.privateKey,
                   km.torusKeyAddress,
                   1
@@ -334,9 +341,52 @@ const processDefinition = (processId: string) =>
           id: "updateRegistration",
           invoke: {
             src: async (context) => {
+              const apiClient = await window.o.apiClient.client.subscribeToResult();
+
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.progress",
+                message: "Importing your organisations ..",
+              });
+
+              const importedOrganisations = await apiClient.mutate({
+                mutation: ImportOrganisationsDocument
+              });
+              console.log("importedOrganisations:", importedOrganisations);
+
+              const orgas:{
+                id:number
+                circlesAddress:string
+                name:string
+                description?:string
+                avatarUrl?:string
+              }[] = importedOrganisations.data?.importOrganisationsOfAccount;
+
+              var km = new KeyManager(null);
+              await km.load();
+
+              for (let orga of orgas) {
+                window.o.publishEvent(<PlatformEvent>{
+                  type: "shell.progress",
+                  message: `Adding you as owner to ${orga.name} ..`
+                });
+                try {
+                  const safeProxy = new GnosisSafeProxy(RpcGateway.get(), orga.circlesAddress);
+                  await safeProxy.addOwnerWithThreshold(
+                    context.data.importedAccount.privateKey,
+                    km.torusKeyAddress,
+                    1
+                  );
+                } catch (e) {
+                  console.error(e);
+                }
+              }
+
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.progress",
+                message: "Updating your profile ..",
+              });
+
               const $me = await loadProfile();
-              const apiClient =
-                await window.o.apiClient.client.subscribeToResult();
               const result = await apiClient.mutate({
                 mutation: UpsertProfileDocument,
                 variables: {

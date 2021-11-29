@@ -140,12 +140,6 @@ const processDefinition = (processId: string) =>
             window.o.runProcess(connectSafe, {
               successAction: innerSuccessAction,
             });
-
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
-            const importedOrganisations = await apiClient.mutate({
-              mutation: ImportOrganisationsDocument
-            });
-            console.log("importedOrganisations:", importedOrganisations);
           },
           onDone: "success",
         },
