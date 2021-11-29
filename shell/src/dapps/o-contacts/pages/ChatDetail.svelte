@@ -44,6 +44,7 @@ async function reload() {
       //EventType.CrcMinting,
       EventType.CrcTrust,
       EventType.ChatMessage,
+      EventType.Erc20Transfer,
       //EventType.CrcSignup,
       //EventType.CrcTokenTransfer,
       //EventType.EthTransfer,

@@ -86,17 +86,25 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
       break;
     case EventType.CrcHubTransfer:
       message = `${displayName} sent you ${displayCirclesAmount(
-        mostRecentDisplayEvent.value,
-        null,
-        true,
-        ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+              mostRecentDisplayEvent.value,
+              null,
+              true,
+              ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
       )} ⦿`;
+      break;
+    case EventType.Erc20Transfer:
+      message = `${displayName} sent you ${displayCirclesAmount(
+              mostRecentDisplayEvent.value,
+              null,
+              true,
+              false
+      )} tokens`;
       break;
     case EventType.ChatMessage:
       message = `${displayName} wrote: ${mostRecentDisplayEvent.value}`;
       break;
     case EventType.InvitationRedeemed:
-      message = `${displayName} invited you to CirclesLand`;
+      message = `${displayName} redeemed your invitation`;
       break;
     case EventType.MembershipOffer:
       message = `${displayName} invited you to ${mostRecentDisplayEvent.value}`;
@@ -112,17 +120,26 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
     case EventType.CrcHubTransfer:
       message = `You sent ${displayName} 
       ${displayCirclesAmount(
-        mostRecentDisplayEvent.value,
-        null,
-        true,
-        ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+              mostRecentDisplayEvent.value,
+              null,
+              true,
+              ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
       )} ⦿`;
+      break;
+    case EventType.Erc20Transfer:
+      message = `You sent ${displayName}
+      ${displayCirclesAmount(
+              mostRecentDisplayEvent.value,
+              null,
+              true,
+              false
+      )} token`;
       break;
     case EventType.ChatMessage:
       message = `You wrote: ${mostRecentDisplayEvent.value}`;
       break;
     case EventType.InvitationRedeemed:
-      message = `${displayName} accepted your invitation to CirclesLand.`;
+      message = `${displayName} invited you to CirclesLand.`;
       break;
     case EventType.MembershipOffer:
       message = `You invited ${displayName} to ${mostRecentDisplayEvent.value}`;

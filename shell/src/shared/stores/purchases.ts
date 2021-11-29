@@ -6,39 +6,43 @@ import {ApiClient} from "../apiConnection";
 
 let purchasesById: { [id: number]: Purchase } = {};
 
-async function loadPurchases() {
-  let mySafeAddress = "";
-  me.subscribe($me => mySafeAddress = $me.circlesAddress)();
-  const result = await ApiClient.queryAggregate<Purchases>(AggregateType.Purchases, mySafeAddress);
+async function loadPurchases(safeAddress:string) {
+  const result = await ApiClient.queryAggregate<Purchases>(AggregateType.Purchases, safeAddress);
   result.purchases.forEach(o => purchasesById[o.id] = o);
   return result.purchases;
 }
 
+let shellEventSubscription: Subscription;
+let profileSubscription: () => void|undefined;
+
 export const {subscribe, set, update} = writable<Purchase[]>(null, function start(set) {
   // Subscribe to $me and reload the store when the profile changes
-  async function update() {
-    const purchases = await loadPurchases();
+  async function update(safeAddress:string) {
+    const purchases = await loadPurchases(safeAddress);
     set(purchases);
   }
 
-  let shellEventSubscription: Subscription;
+  if (!profileSubscription) {
+    profileSubscription = me.subscribe(async $me => {
+      if (shellEventSubscription) {
+        shellEventSubscription.unsubscribe();
+        shellEventSubscription = null;
+      }
 
-  const profileSubscription = me.subscribe(async $me => {
-    if (shellEventSubscription) {
-      shellEventSubscription.unsubscribe();
-      shellEventSubscription = null;
-    }
+      console.log(`purchases: Updating ..`);
+      await update($me.circlesAddress);
 
-    console.log(`purchases: Updating ..`);
-    await update();
-
-    shellEventSubscription = window.o.events.subscribe(async event => {
-      // TODO: Update when new purchases have been created
+      shellEventSubscription = window.o.events.subscribe(async event => {
+        // TODO: Update when new sales have been created
+      });
     });
-  });
+  }
 
   return function stop() {
-    profileSubscription();
+    if (profileSubscription) {
+      profileSubscription();
+      profileSubscription = null;
+    }
 
     if (shellEventSubscription) {
       shellEventSubscription.unsubscribe();
@@ -68,13 +72,16 @@ export const purchases = {
   },
   completePurchase: async (invoiceId:number) => {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
-    await apiClient.mutate({
+    const completedInvoice = await apiClient.mutate({
       mutation: CompletePurchaseDocument,
       variables: {
         invoiceId: invoiceId
       }
     });
-    const refreshedPurchases = await loadPurchases();
+    if (!completedInvoice.data?.completePurchase) {
+      throw new Error(`Couldn't complete the purchase.`);
+    }
+    const refreshedPurchases = await loadPurchases(completedInvoice.data.completePurchase.buyerAddress);
     set(refreshedPurchases);
   }
 }

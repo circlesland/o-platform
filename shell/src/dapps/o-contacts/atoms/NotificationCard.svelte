@@ -10,6 +10,7 @@
   import CrcTrust from "./chatListItems/CrcTrust.svelte";
   import ChatMessage from "./chatListItems/ChatMessage.svelte";
   import CrcHubTransfer from "./chatListItems/CrcHubTransfer.svelte";
+  import Erc20Transfer from "./chatListItems/Erc20Transfer.svelte";
   import InvitationRedeemed from "./chatListItems/InvitationRedeemed.svelte";
 
   export let event: ProfileEvent;
@@ -61,6 +62,8 @@
           <CrcTrust event={event} />
         {:else if event.type == EventType.CrcHubTransfer}
           <CrcHubTransfer event={event} />
+        {:else if event.type == EventType.Erc20Transfer}
+          <Erc20Transfer event={event} />
         {:else if event.type == EventType.InvitationRedeemed}
           <InvitationRedeemed event={event} />
         {/if}
