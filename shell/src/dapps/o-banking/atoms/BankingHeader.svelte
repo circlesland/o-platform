@@ -4,7 +4,7 @@ import PageHeader from "src/shared/atoms/PageHeader.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { me } from "../../../shared/stores/me";
-import { displayCirclesAmount } from "../../../shared/functions/displayCirclesAmount";
+
 import { Currency } from "../../../shared/currency";
 import { BN } from "ethereumjs-util";
 import { assetsBalances } from "../../../shared/stores/assetsBalances";
@@ -13,10 +13,23 @@ export let balance: string = "0";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
-  $: {
-    const sum = $assetsBalances.crcBalances.reduce((p,c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
-    balance = displayCirclesAmount(sum, null, true, ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined).toString();
-  }
+$: {
+  const sum = $assetsBalances.crcBalances
+    .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
+    .toString();
+  balance = Currency.instance()
+    .displayCirclesAmount(
+      sum,
+      null,
+      true,
+      ($me && $me.displayTimeCircles !== undefined
+        ? $me.displayTimeCircles
+        : true) ||
+        ($me && $me.displayTimeCircles !== undefined
+          ? $me.displayTimeCircles
+          : true) === undefined
+    )
+    .toString();
 }
 </script>
 
