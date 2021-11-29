@@ -2237,7 +2237,7 @@ export type AggregatesQuery = (
       & Pick<Offers, 'lastUpdatedAt'>
       & { offers: Array<(
         { __typename?: 'Offer' }
-        & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit'>
+        & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit' | 'timeCirclesPriceShare'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
@@ -2257,7 +2257,7 @@ export type AggregatesQuery = (
           & Pick<PurchaseLine, 'id' | 'amount'>
           & { offer: (
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
               & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
@@ -2289,7 +2289,7 @@ export type AggregatesQuery = (
           & Pick<SalesLine, 'id' | 'amount'>
           & { offer: (
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
               & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
@@ -3595,6 +3595,7 @@ export const AggregatesDocument = gql`
           pictureMimeType
           description
           pricePerUnit
+          timeCirclesPriceShare
         }
       }
       ... on CrcBalances {
@@ -3714,6 +3715,7 @@ export const AggregatesDocument = gql`
               description
               pictureUrl
               pricePerUnit
+              timeCirclesPriceShare
               createdByProfile {
                 type
                 id
@@ -3773,6 +3775,7 @@ export const AggregatesDocument = gql`
               description
               pictureUrl
               pricePerUnit
+              timeCirclesPriceShare
               createdByProfile {
                 type
                 id

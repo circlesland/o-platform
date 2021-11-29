@@ -991,6 +991,7 @@ query aggregates(
               description
               pictureUrl
               pricePerUnit
+              timeCirclesPriceShare
               createdByProfile {
                 type
                 id
@@ -1050,6 +1051,7 @@ query aggregates(
               description
               pictureUrl
               pricePerUnit
+              timeCirclesPriceShare
               createdByProfile {
                 type
                 id
