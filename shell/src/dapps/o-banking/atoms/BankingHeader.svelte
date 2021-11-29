@@ -1,25 +1,26 @@
 <script lang="ts">
-  import TopNav from "src/shared/atoms/TopNav.svelte";
-  import PageHeader from "src/shared/atoms/PageHeader.svelte";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import { me } from "../../../shared/stores/me";
+import TopNav from "src/shared/atoms/TopNav.svelte";
+import PageHeader from "src/shared/atoms/PageHeader.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { me } from "../../../shared/stores/me";
 
-  import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
-  import {BN} from "ethereumjs-util";
-  import {assetsBalances} from "../../../shared/stores/assetsBalances";
+import { Currency } from "../../../shared/currency";
+import { BN } from "ethereumjs-util";
+import { assetsBalances } from "../../../shared/stores/assetsBalances";
 
-  export let balance: string = "0";
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+export let balance: string = "0";
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
   $: {
     const sum = $assetsBalances.crcBalances.reduce((p,c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
     balance = displayCirclesAmount(sum, null, true, ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined).toString();
   }
+}
 </script>
 
-<TopNav {runtimeDapp} {routable} />
+<TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <PageHeader heightClass="h-60">
   <div class="self-center block text-center">
