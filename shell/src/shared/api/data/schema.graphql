@@ -423,6 +423,7 @@ type Organisation {
     cityGeonameid: Int
     createdAt: String!
     description: String
+    displayCurrency: DisplayCurrency
     id: Int!
     members: [ProfileOrOrganisation!]
     name: String!

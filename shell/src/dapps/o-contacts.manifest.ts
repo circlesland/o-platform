@@ -2,20 +2,20 @@ import ContactsView from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
 import Chat from "./o-contacts/pages/Chat.svelte";
 import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
-import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-import { me } from "../shared/stores/me";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { init } from "./o-banking/init";
+import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+import {me} from "../shared/stores/me";
+import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import {init} from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
-import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
 import {
   Contact,
   ContactDirection, EventType,
   Profile
 } from "../shared/api/data/types";
-import { transfer } from "./o-banking/processes/transfer";
-import { push } from "svelte-spa-router";
-import { setTrust } from "./o-banking/processes/setTrust";
+import {transfer} from "./o-banking/processes/transfer";
+import {push} from "svelte-spa-router";
+import {setTrust} from "./o-banking/processes/setTrust";
 import {contacts} from "../shared/stores/contacts";
 
 export interface DappState {
@@ -52,58 +52,60 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
     let $me: Profile = null;
     me.subscribe((e) => ($me = e))();
 
-    const recipientProfile:Contact = await contacts.findBySafeAddress(params.id ?? $me.circlesAddress);
-    const trustMetadata =
-      recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??
-      undefined;
-    let trustsYou = false;
-    let youTrust = false;
-
-    if (trustMetadata) {
-      const inTrust = trustMetadata.directions.indexOf(ContactDirection.In);
-      if (inTrust > -1) {
-        const trustLimit = trustMetadata.values[inTrust];
-        trustsYou = parseInt(trustLimit) > 0;
-      }
-      const outTrust = trustMetadata.directions.indexOf(ContactDirection.Out);
-      if (outTrust > -1) {
-        const trustLimit = trustMetadata.values[outTrust];
-        youTrust = parseInt(trustLimit) > 0;
-      }
-    }
-
     let actions = [];
 
-    if (recipientProfile?.contactAddress) {
-      actions = actions.concat([
-        {
-          key: "chat",
-          icon: "chat",
-          title: "Chat",
-          action: async () => {
-            push("#/friends/chat/" + recipientProfile.contactAddress);
-          },
-        },
-      ]);
-      if (
-        recipientProfile.contactAddress_Profile &&
-        recipientProfile.contactAddress_Profile.type == "PERSON"
-      ) {
-        actions = actions.concat((trustsYou ? [
+    if (params.id) {
+      const recipientProfile: Contact = await contacts.findBySafeAddress(params.id ?? $me.circlesAddress);
+      const trustMetadata =
+        recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??
+        undefined;
+      let trustsYou = false;
+      let youTrust = false;
+
+      if (trustMetadata) {
+        const inTrust = trustMetadata.directions.indexOf(ContactDirection.In);
+        if (inTrust > -1) {
+          const trustLimit = trustMetadata.values[inTrust];
+          trustsYou = parseInt(trustLimit) > 0;
+        }
+        const outTrust = trustMetadata.directions.indexOf(ContactDirection.Out);
+        if (outTrust > -1) {
+          const trustLimit = trustMetadata.values[outTrust];
+          youTrust = parseInt(trustLimit) > 0;
+        }
+      }
+
+
+      if (recipientProfile?.contactAddress) {
+        actions = actions.concat([
           {
-            key: "transfer",
-            icon: "sendmoney",
-            title: "Send Money",
+            key: "chat",
+            icon: "chat",
+            title: "Chat",
             action: async () => {
-              window.o.runProcess(transfer, {
-                safeAddress: $me.circlesAddress,
-                recipientAddress: recipientProfile.contactAddress,
-                privateKey: sessionStorage.getItem("circlesKey"),
-              });
+              push("#/friends/chat/" + recipientProfile.contactAddress);
             },
-          }] : []),
-          (youTrust
-            ? [{
+          },
+        ]);
+        if (
+          recipientProfile.contactAddress_Profile &&
+          recipientProfile.contactAddress_Profile.type == "PERSON"
+        ) {
+          actions = actions.concat((trustsYou ? [
+              {
+                key: "transfer",
+                icon: "sendmoney",
+                title: "Send Money",
+                action: async () => {
+                  window.o.runProcess(transfer, {
+                    safeAddress: $me.circlesAddress,
+                    recipientAddress: recipientProfile.contactAddress,
+                    privateKey: sessionStorage.getItem("circlesKey"),
+                  });
+                },
+              }] : []),
+            (youTrust
+              ? [{
                 key: "setTrust",
                 icon: "untrust",
                 title: "Untrust",
@@ -117,7 +119,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                   });
                 },
               }]
-            : [{
+              : [{
                 key: "setTrust",
                 icon: "trust",
                 title: "Trust",
@@ -130,11 +132,25 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                   });
                 },
               }])
-        );
+          );
+        }
       }
-    }
 
-    if (!recipientProfile) {
+      if (!recipientProfile) {
+        actions = actions.concat({
+          key: "setTrust",
+          icon: "trust",
+          title: "Trust",
+          action: async () => {
+            window.o.runProcess(setTrust, {
+              trustLimit: 100,
+              safeAddress: $me.circlesAddress,
+              privateKey: sessionStorage.getItem("circlesKey"),
+            });
+          },
+        });
+      }
+    } else {
       actions = actions.concat({
         key: "setTrust",
         icon: "trust",

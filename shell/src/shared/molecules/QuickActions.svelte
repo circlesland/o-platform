@@ -45,12 +45,12 @@ const eventDispatcher = createEventDispatcher();
   use:clickOutside
   on:click_outside="{() => eventDispatcher('clickedOutside')}">
   <div class="relative flex-shrink-0 w-full p-6 space-y-2">
-    {#each categories as catergory}
+    {#each categories as category}
       <div class="text-dark-lightest text-3xs sm:text-sm">
-        {catergory.title}
+        {category.title}
       </div>
       <div class="">
-        <DetailActionBar actions="{catergory.items}" />
+        <DetailActionBar actions="{category.items}" />
       </div>
     {/each}
   </div>

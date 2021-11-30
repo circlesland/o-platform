@@ -12,6 +12,12 @@ declare global {
     o: IShell
   }
 }
+
+export enum Role {
+  User = 'USER',
+  Admin = 'ADMIN'
+}
+
 export async function getProcessContext(): Promise<ProcessContext<any>> {
   return <ProcessContext<any>>{
     data: {}
