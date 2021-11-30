@@ -1,8 +1,10 @@
 <script lang="ts">
-  import {
-    InvoiceDocument, Profile,
-    Purchase, QueryInvoiceArgs,
-  } from "../../../shared/api/data/types";
+import {
+  InvoiceDocument,
+  Profile,
+  Purchase,
+  QueryInvoiceArgs,
+} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
@@ -10,13 +12,13 @@ import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { push } from "svelte-spa-router";
-import {saveBufferAs} from "../../../shared/saveBufferAs";
-import {ApiClient} from "../../../shared/apiConnection";
+import { saveBufferAs } from "../../../shared/saveBufferAs";
+import { ApiClient } from "../../../shared/apiConnection";
 
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import {purchases} from "../../../shared/stores/purchases";
+import { purchases } from "../../../shared/stores/purchases";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -80,31 +82,35 @@ onMount(async () => {
     },
   ];
 
-
   if (purchase.invoices && purchase.invoices.length) {
     const pickUpAction = {
       icon: "transactions",
       title: "I picked up the order",
       action: async () => {
-        const action = actions.find(o => o.title == "I picked up the order");
+        const action = actions.find((o) => o.title == "I picked up the order");
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await purchases.completePurchase(purchase.invoices[0].id);
         actions.push(unPickUpAction);
-      }
+      },
     };
     const unPickUpAction = {
       icon: "transactions",
       title: "I haven't picked up the order yet",
       action: async () => {
-        const action = actions.find(o => o.title == "I haven't picked up the order yet");
+        const action = actions.find(
+          (o) => o.title == "I haven't picked up the order yet"
+        );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await purchases.revokeCompletionStatus(purchase.invoices[0].id);
         actions.push(pickUpAction);
-      }
+      },
     };
     if (!purchase.invoices[0].buyerSignature) {
       actions.push(pickUpAction);
-    } else if (purchase.invoices[0].buyerSignature && !purchase.invoices[0].sellerSignature) {
+    } else if (
+      purchase.invoices[0].buyerSignature &&
+      !purchase.invoices[0].sellerSignature
+    ) {
       actions.push(unPickUpAction);
     }
     actions.push(
@@ -120,13 +126,16 @@ onMount(async () => {
         icon: "document",
         title: "Download Invoice",
         action: async () => {
-          for(let invoice of purchase.invoices) {
-            const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(InvoiceDocument, {
-              invoiceId: invoice.id
-            });
+          for (let invoice of purchase.invoices) {
+            const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
+              InvoiceDocument,
+              {
+                invoiceId: invoice.id,
+              }
+            );
             saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
           }
-        }
+        },
       }
     );
   }
@@ -225,7 +234,7 @@ onMount(async () => {
                 </div>
                 <div class="items-center">
                   <span class="whitespace-nowrap">
-                    {groupPurchase.item.item.offer.pricePerUnit} ⦿
+                    {groupPurchase.item.item.offer.pricePerUnit} €
                   </span>
                 </div>
               </div>

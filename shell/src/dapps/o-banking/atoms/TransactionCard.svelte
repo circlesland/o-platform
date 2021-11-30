@@ -8,7 +8,8 @@ import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {
   CrcHubTransfer,
   CrcMinting,
-  Erc20Transfer, EventType,
+  Erc20Transfer,
+  EventType,
   Profile,
   ProfileEvent,
 } from "../../../shared/api/data/types";
@@ -88,15 +89,15 @@ if (event && event.payload?.__typename == "CrcHubTransfer") {
   };
 
   message = hubTransfer.tags?.find(
-          (o) => o.typeId === "o-banking:transfer:message:1"
+    (o) => o.typeId === "o-banking:transfer:message:1"
   )?.value;
 
   if (event.payload?.__typename == EventType.CrcHubTransfer) {
     const ht = <CrcHubTransfer>event.payload;
     amount = Currency.instance().displayAmount(
-            event.payload && ht.flow ? ht.flow.toString() : "0",
-            event.timestamp,
-            $me.displayCurrency
+      event.payload && ht.flow ? ht.flow.toString() : "0",
+      event.timestamp,
+      $me.displayCurrency ? $me.displayCurrency : "EURS"
     );
   }
 
@@ -106,7 +107,9 @@ if (event && event.payload?.__typename == "CrcHubTransfer") {
 }
 
 if (event.payload?.__typename != EventType.Erc20Transfer) {
-  amount += ` ${Currency.currencySymbol[$me.displayCurrency]}`;
+  amount += ` ${
+    Currency.currencySymbol[$me.displayCurrency ? $me.displayCurrency : "EURS"]
+  }`;
 }
 
 targetProfile = event.direction === "in" ? fromProfile : toProfile;

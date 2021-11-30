@@ -149,7 +149,9 @@ function openDetail(transfer: ProfileEvent) {
             )}
           {/if}
           <span class="text-6xl font-primary"
-            >{transfer.type === "CrcHubTransfer" ? Currency.currencySymbol[$me.displayCurrency] : ""}</span>
+            >{Currency.currencySymbol[
+              $me.displayCurrency ? $me.displayCurrency : "EURS"
+            ]}</span>
         </span>
       </div>
       <UserImage profile="{targetProfile}" size="{36}" gradientRing="{true}" />

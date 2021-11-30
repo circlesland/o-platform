@@ -71,7 +71,7 @@ function orderItems(items) {
             span.font-semibold.cursor-pointer(on:click!="{() =>  addOneItem(item.item.id)}" class:hidden="{!editable}") +
           
           div.items-center
-            span.whitespace-nowrap {item.item.pricePerUnit} ⦿
+            span.whitespace-nowrap {item.item.pricePerUnit} €
 
 
 </template>

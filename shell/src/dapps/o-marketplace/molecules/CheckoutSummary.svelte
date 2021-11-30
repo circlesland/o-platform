@@ -102,8 +102,17 @@ function onkeydown(e: KeyboardEvent) {
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400"> Total: </span>
-        <span class="text-lg font-bold">
-          {$totalPrice.toFixed(2)} ⦿
+        <span class="w-20 text-lg font-bold text-right">
+          {$totalPrice.toFixed(2)} €
+        </span>
+      </div>
+      <div class="flex items-center justify-end w-full -mt-2">
+        <span class="mr-2 text-sm font-medium text-gray-400">
+          Total in Time Circles:
+        </span>
+
+        <span class="w-20 text-sm font-bold text-right">
+          {($totalPrice * 10).toFixed(2)} ⦿
         </span>
       </div>
     </div>

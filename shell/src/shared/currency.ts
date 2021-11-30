@@ -107,7 +107,7 @@ export class Currency {
     amount: string,
     date: string,
     displayCurrency: any,
-    from: string
+    from?: string
   ) {
     if (!amount) {
       throw new Error("argument missing: amount");
@@ -115,6 +115,8 @@ export class Currency {
     if (!me) {
       throw new Error("argument missing: amount");
     }
+    console.log("AMOUNT", amount);
+    console.log("displayCurrency", displayCurrency);
 
     const dateTime = date ? dayjs(date) : dayjs();
     let value: number;

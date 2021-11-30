@@ -6,6 +6,7 @@ import OfferCardField from "./OfferCardField.svelte";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../../shared/stores/me";
+import { Currency } from "../../../shared/currency";
 //import { upsertOffer } from "../processes/upsertOffer";
 import { truncateString } from "../../../shared/functions/truncateString";
 import Time from "svelte-time";
@@ -83,10 +84,8 @@ displayName =
           "
           class="rounded-t-xl" />
         <div
-          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-2xl leading-tight rounded-l-full font-heading top-2 bg-light-lightest">
-          {offer.pricePerUnit} ⦿
-          <!--{offer.pricePerUnit} C / {offer.unitTag.value}-->
-          <!-- <Time relative timestamp={offer.publishedAt} /> -->
+          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest">
+          {offer.pricePerUnit} <span class=" font-primary">€</span>
         </div>
       </div>
     </header>

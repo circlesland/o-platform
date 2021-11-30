@@ -104,7 +104,7 @@ function orderItems(items) {
               </div>
               <div class="items-center">
                 <span class="whitespace-nowrap">
-                  {groupPurchase.item.item.pricePerUnit} ⦿
+                  {groupPurchase.item.item.pricePerUnit} €
                 </span>
               </div>
             </div>

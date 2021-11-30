@@ -1,7 +1,5 @@
 <script lang="ts">
-  import {
-    Offer
-  } from "../../../shared/api/data/types";
+import { Offer } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
@@ -9,7 +7,7 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 import { cartContents } from "../stores/shoppingCartStore";
 import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
-import {offers} from "../../../shared/stores/offers";
+import { offers } from "../../../shared/stores/offers";
 
 let isLoading: boolean;
 let error: Error;
@@ -22,7 +20,7 @@ async function load() {
   if (!id) {
     offer = [];
     return;
-  };
+  }
 
   const o = await offers.findById(parseInt(id.toString()));
   offer = o ? [o] : [];
@@ -90,8 +88,7 @@ onMount(async () => {
                 class="w-full rounded-t-xl" />
               <div
                 class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest">
-                {o.pricePerUnit} C <!--/ {o.unitTag.value}-->
-                <!-- <Time relative timestamp={o.publishedAt} /> -->
+                {o.pricePerUnit} <span class=" font-primary">€</span>
               </div>
             </div>
           </header>
@@ -311,9 +308,7 @@ onMount(async () => {
             <button
               class="btn btn-square btn-light"
               on:click="{() =>
-                push(
-                  `#/friends/chat/${o.createdByProfile.circlesAddress}`
-                )}">
+                push(`#/friends/chat/${o.createdByProfile.circlesAddress}`)}">
               <Icons icon="chat" />
             </button>
           </div>
