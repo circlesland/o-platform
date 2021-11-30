@@ -121,7 +121,7 @@ onMount(async () => {
               </div>
             </div>
             -->
-            <div class="text-lg font-bold text-left uppercase">
+            <div class="text-4xl text-left uppercase font-heading">
               {o.title}
             </div>
 
