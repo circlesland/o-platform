@@ -65,7 +65,7 @@ function onkeydown(e: KeyboardEvent) {
         on:click="{() =>
           window.o.runProcess(logout, {
             successAction: () => {
-              window.o.runProcess(identify, { redirectTo: '/dashboard' });
+              window.o.runProcess(identify, { redirectTo: '/home' });
             },
           })}">Forgot your Pin?</span>
     </div>

@@ -5,13 +5,18 @@ import { loadProfile } from "../../o-passport/processes/identify/services/loadPr
 import {
   ClaimedInvitation,
   ClaimedInvitationDocument,
-  ClaimedInvitationQueryVariables, CrcSignup,
-  HubSignupTransactionDocument, HubSignupTransactionQueryVariables, InitAggregateState,
-  InitAggregateStateDocument, InitAggregateStateQueryVariables,
+  ClaimedInvitationQueryVariables,
+  CrcSignup,
+  HubSignupTransactionDocument,
+  HubSignupTransactionQueryVariables,
+  InitAggregateState,
+  InitAggregateStateDocument,
+  InitAggregateStateQueryVariables,
   InvitationTransactionDocument,
   InvitationTransactionQueryVariables,
   ProfileEvent,
-  SafeFundingTransactionDocument, SafeFundingTransactionQueryVariables,
+  SafeFundingTransactionDocument,
+  SafeFundingTransactionQueryVariables,
   WhoamiDocument,
   WhoamiQueryVariables,
 } from "../../../shared/api/data/types";
@@ -29,10 +34,10 @@ import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { KeyManager } from "../../o-passport/data/keyManager";
 import { unlockKey } from "./unlockKey/unlockKey";
-import {InitEvent, UbiData} from "./initEvent";
+import { InitEvent, UbiData } from "./initEvent";
 import { InitContext } from "./initContext";
 import { push } from "svelte-spa-router";
-import {ApiClient} from "../../../shared/apiConnection";
+import { ApiClient } from "../../../shared/apiConnection";
 
 export const initMachine = createMachine<InitContext, InitEvent>(
   {
@@ -99,7 +104,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           console.log("init.register");
 
           window.o.publishEvent({
-            type: "shell.openModalProcess"
+            type: "shell.openModalProcess",
           });
         },
         invoke: { src: "loadRegistration" },
@@ -180,13 +185,13 @@ export const initMachine = createMachine<InitContext, InitEvent>(
                   "assignEoaToContext",
                   () => {
                     window.o.publishEvent({
-                      type: "shell.openModalProcess"
+                      type: "shell.openModalProcess",
                     });
                     window.o.publishEvent(<any>{
                       type: "shell.progress",
-                      message: "Starting your session .."
+                      message: "Starting your session ..",
                     });
-                  }
+                  },
                 ],
                 target: "checkInvitation",
               },
@@ -407,7 +412,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         entry: [
           () => console.log("init.success"),
           () => {
-            push("#/dashboard");
+            push("#/home");
           },
         ],
         type: "final",
@@ -417,7 +422,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
   {
     services: {
       loadInitAggregateState: async (context) => {
-        const result = await ApiClient.query<InitAggregateState, InitAggregateStateQueryVariables>(InitAggregateStateDocument,{});
+        const result = await ApiClient.query<
+          InitAggregateState,
+          InitAggregateStateQueryVariables
+        >(InitAggregateStateDocument, {});
         if (result) {
           context.initAggregateState = result;
         }
@@ -426,9 +434,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         try {
           const sessionInfo = await getSessionInfo();
           if (sessionInfo.isLoggedOn) {
-            callback(<any>{type: "GOT_SESSION", session: sessionInfo});
+            callback(<any>{ type: "GOT_SESSION", session: sessionInfo });
           } else {
-            callback({type: "NO_SESSION"});
+            callback({ type: "NO_SESSION" });
           }
         } catch (e) {
           console.error(
@@ -447,7 +455,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         }
 
         try {
-          const email = await ApiClient.query<string, WhoamiQueryVariables>(WhoamiDocument, {});
+          const email = await ApiClient.query<string, WhoamiQueryVariables>(
+            WhoamiDocument,
+            {}
+          );
           const profile = await loadProfile(ctx.session.profileId);
 
           callback({
@@ -463,7 +474,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         } catch (e) {
           callback({
             type: "REGISTRATION_ERROR",
-            error: e
+            error: e,
           });
         }
       },
@@ -471,8 +482,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         if (!ctx.registration) throw new Error(`ctx.registration is not set`);
 
         try {
-          const claimedInvitation = await ApiClient.query<ClaimedInvitation, ClaimedInvitationQueryVariables>(
-            ClaimedInvitationDocument, {});
+          const claimedInvitation = await ApiClient.query<
+            ClaimedInvitation,
+            ClaimedInvitationQueryVariables
+          >(ClaimedInvitationDocument, {});
 
           if (claimedInvitation) {
             callback(<InitEvent>{
@@ -506,7 +519,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
               },
             });
           } else {
-            callback({type: "NO_PROFILE"});
+            callback({ type: "NO_PROFILE" });
           }
         } catch (e) {
           callback({ type: "PROFILE_ERROR", error: e });
@@ -550,7 +563,6 @@ export const initMachine = createMachine<InitContext, InitEvent>(
               balance: new BN(balance),
             },
           });
-
         } catch (e) {
           callback({ type: "EOA_ERROR", error: e });
         }
@@ -559,8 +571,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         if (!ctx.eoa) throw new Error(`ctx.eoa is not set`);
 
         // TODO: This is missing an error response
-        const invitationTransaction = await ApiClient.query<ProfileEvent, InvitationTransactionQueryVariables>(
-          InvitationTransactionDocument, {});
+        const invitationTransaction = await ApiClient.query<
+          ProfileEvent,
+          InvitationTransactionQueryVariables
+        >(InvitationTransactionDocument, {});
 
         if (invitationTransaction) {
           callback({
@@ -575,7 +589,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         try {
           const profile = await loadProfile();
           if (profile?.circlesAddress) {
-            const safeBalance = await RpcGateway.get().eth.getBalance(profile.circlesAddress);
+            const safeBalance = await RpcGateway.get().eth.getBalance(
+              profile.circlesAddress
+            );
             callback({
               type: "GOT_SAFE",
               safe: {
@@ -585,7 +601,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
               },
             });
           } else {
-            callback({type: "NO_SAFE"});
+            callback({ type: "NO_SAFE" });
           }
         } catch (e) {
           callback({
@@ -598,8 +614,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         if (!ctx.safe) throw new Error(`ctx.safe is not set`);
 
         // TODO: This is missing an error response
-        const safeFundingTransaction = await ApiClient.query<ProfileEvent, SafeFundingTransactionQueryVariables>(
-          SafeFundingTransactionDocument, {});
+        const safeFundingTransaction = await ApiClient.query<
+          ProfileEvent,
+          SafeFundingTransactionQueryVariables
+        >(SafeFundingTransactionDocument, {});
 
         if (safeFundingTransaction) {
           callback({
@@ -612,8 +630,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       },
       loadUbi: (ctx) => async (callback) => {
         // TODO: This is missing an error response
-        const hubSignupTransaction = await ApiClient.query<ProfileEvent, HubSignupTransactionQueryVariables>(
-          HubSignupTransactionDocument, {});
+        const hubSignupTransaction = await ApiClient.query<
+          ProfileEvent,
+          HubSignupTransactionQueryVariables
+        >(HubSignupTransactionDocument, {});
 
         if (hubSignupTransaction?.payload) {
           callback({
@@ -634,9 +654,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           RpcGateway.get(),
           ctx.safe.address
         );
-        const receipt = await (
-          await hub.signup(privateKey, safeProxy)
-        );
+        const receipt = await await hub.signup(privateKey, safeProxy);
         console.log(receipt);
       },
       validateInvitation: async (context, event) => {

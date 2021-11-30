@@ -16,7 +16,10 @@ import { createSafe } from "./createSafe/createSafe";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
-import {Profile, UpsertProfileDocument} from "../../../../shared/api/data/types";
+import {
+  Profile,
+  UpsertProfileDocument,
+} from "../../../../shared/api/data/types";
 
 export type IdentifyContextData = {
   oneTimeCode?: string;
@@ -116,10 +119,11 @@ const processDefinition = (processId: string) =>
         entry: (ctx) => console.log(`enter: identify.loadProfile`, ctx.data),
         invoke: {
           src: async (context) => {
-            const userProfile =  await loadProfile();
-            if (context.data.profile?.circlesAddress
-              && context.data.profile.circlesAddress != userProfile.circlesAddress) {
-
+            const userProfile = await loadProfile();
+            if (
+              context.data.profile?.circlesAddress &&
+              context.data.profile.circlesAddress != userProfile.circlesAddress
+            ) {
             } else {
               context.data.profile = userProfile;
             }
@@ -352,7 +356,7 @@ const processDefinition = (processId: string) =>
             > if someone can activate your citizenship.
           </p>
           <p class="pb-4 mt-4 text-xs text-light">
-            alternatively, <a href="#/dashboard/become-a-hub" class="btn-link">unlock yourself</a> and grow a new local community</a>
+            alternatively, <a href="#/home/become-a-hub" class="btn-link">unlock yourself</a> and grow a new local community</a>
           </p>
           <div class="mr-1 text-primary" />
         </div>

@@ -1,12 +1,9 @@
 <script lang="ts">
-  import {
-    identify,
-  } from "../../o-passport/processes/identify/identify2";
+import { identify } from "../../o-passport/processes/identify/identify2";
 
-  async function login() {
-    window.o.runProcess(identify, { redirectTo: "/dashboard" });
-  }
-
+async function login() {
+  window.o.runProcess(identify, { redirectTo: "/home" });
+}
 </script>
 
 <nav class="relative flex items-center justify-center w-full lg:space-x-16">
@@ -18,8 +15,7 @@
         aria-label="Our product"
         title="Our product"
         class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
-        >Chat</a
-      >
+        >Chat</a>
     </li>
     <li>
       <a
@@ -28,16 +24,14 @@
         aria-label="Our product"
         title="Our product"
         class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
-        >Forum</a
-      >
+        >Forum</a>
     </li>
   </ul>
   <a
     href="/"
     aria-label="Company"
     title="Company"
-    class="inline-flex items-center h-10 md:h-12 "
-  >
+    class="inline-flex items-center h-10 md:h-12 ">
     <img src="/circles.png" alt="CirclesLAND" class="h-8 md:h-12" />
   </a>
   <ul class="flex items-center hidden space-x-8 lg:flex">
@@ -48,8 +42,7 @@
         aria-label="About us"
         title="About us"
         class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
-        >Blog</a
-      >
+        >Blog</a>
     </li>
     <li>
       <a
@@ -58,12 +51,11 @@
         aria-label="Sign in"
         title="Sign in"
         class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
-        >Whitepaper</a
-      >
+        >Whitepaper</a>
     </li>
   </ul>
   <div class="absolute right-0 self-center w-12 justify-self-end">
-    <button class="btn-link" on:click={login}>Log in</button>
+    <button class="btn-link" on:click="{login}">Log in</button>
   </div>
   <!-- Mobile menu -->
 </nav>

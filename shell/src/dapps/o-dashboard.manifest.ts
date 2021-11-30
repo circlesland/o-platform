@@ -9,7 +9,7 @@ const index: Page<any, DappState> = {
   isSystem: true,
   routeParts: [],
   component: Home,
-  title: "Dashboard",
+  title: "Home",
   type: "page",
 };
 const invites: Page<any, DappState> = {
@@ -67,14 +67,14 @@ export interface DappState {
   // put state here
 }
 
-export const dashboard: DappManifest<DappState> = {
+export const home: DappManifest<DappState> = {
   type: "dapp",
-  dappId: "dashboard:1",
+  dappId: "home:1",
   isSingleton: true,
   isHidden: true,
   icon: "dashboard",
-  title: "Dashboard",
-  routeParts: ["=dashboard"],
+  title: "Home",
+  routeParts: ["=home"],
   defaultRoute: [],
   tag: Promise.resolve("alpha"),
   isEnabled: true,

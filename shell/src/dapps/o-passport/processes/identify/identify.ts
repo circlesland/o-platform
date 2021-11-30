@@ -1,4 +1,4 @@
-export const empty=true;
+export const empty = true;
 /*import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
@@ -348,7 +348,7 @@ const processDefinition = (processId: string) =>
             > if someone can activate your citizenship.
           </p>
           <p class="pb-4 mt-4 text-xs text-light">
-            alternatively, <a href="#/dashboard/become-a-hub" class="btn-link">unlock yourself</a> and grow a new local community</a>
+            alternatively, <a href="#/home/become-a-hub" class="btn-link">unlock yourself</a> and grow a new local community</a>
           </p>
           <div class="mr-1 text-primary" />
         </div>

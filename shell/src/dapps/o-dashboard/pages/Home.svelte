@@ -55,7 +55,7 @@ $: {
 DashboardHeader(runtimeDapp="{runtimeDapp}" routable="{routable}")
 div.mx-auto(class="md:w-2/3 xl:w-1/2")
   div.m-4.mb-20
-    section.mb-4(on:click!="{() => loadLink('/dashboard/invites')}")
+    section.mb-4(on:click!="{() => loadLink('/home/invites')}")
       button.btn.btn-primary.btn-block Create Invites
         
     div.grid.grid-cols-2.gap-4.text-base.auto-rows-fr.dashboard-grid(class='lg:grid-cols-3')
@@ -78,7 +78,7 @@ div.mx-auto(class="md:w-2/3 xl:w-1/2")
               Icons(icon="dashbanking")
             div.mt-4.text-3xl.font-heading.text-dark banking
       else
-        section.flex.items-center.justify-center.bg-white.rounded-lg.shadow-md.cursor-pointer.dashboard-card(on:click!="{() => loadLink(showFundHint ? '/dashboard' : '/banking/transactions')}")
+        section.flex.items-center.justify-center.bg-white.rounded-lg.shadow-md.cursor-pointer.dashboard-card(on:click!="{() => loadLink(showFundHint ? '/home' : '/banking/transactions')}")
           div.flex.flex-col.items-center.w-full.p-4.pt-6.justify-items-center
             div.pt-2.text-primary
               Icons(icon="dashbanking")
