@@ -51,9 +51,9 @@ function cardAction() {
           <UserImage
             profile="{params.imageProfile}"
             size="{12}"
-            profileLink={false} />
+            profileLink="{false}" />
         {:else if params.imageUrl}
-          <div class="m-auto mt-1 rounded-full w-11 h-11 sm:w-12 sm:h-12">
+          <div class="m-auto rounded-full w-11 h-11 sm:w-12 sm:h-12">
             <span
               on:click="{(e) => {
                 if (params.imageAction) params.imageAction(e);
