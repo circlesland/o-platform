@@ -119,7 +119,9 @@ function loadDetailPage(path) {
 }
 </script>
 
-<div on:click="{() => loadDetailPage(event.transaction_hash)}">
+<div
+  on:click="{() => loadDetailPage(event.transaction_hash)}"
+  class="cursor-pointer">
   <ItemCard
     params="{{
       edgeless: false,

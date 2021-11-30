@@ -92,19 +92,8 @@ onMount(async () => {
   }
 });
 function openDetail(transfer: ProfileEvent) {
-  if (transfer.type == "crc_hub_transfer") {
-    const hubTransfer = <CrcHubTransfer>transfer.payload;
-    if (transfer.direction == "in") {
-      if (hubTransfer.from.startsWith("0x00000")) {
-        return;
-      }
-      push(`#/friends/${hubTransfer.from}`);
-    } else {
-      if (hubTransfer.to.startsWith("0x00000")) {
-        return;
-      }
-      push(`#/friends/${hubTransfer.to}`);
-    }
+  if (transfer.type == "CrcHubTransfer") {
+    push(`#/friends/${targetProfile.circlesAddress}`);
   }
 }
 </script>
@@ -155,7 +144,11 @@ function openDetail(transfer: ProfileEvent) {
         </span>
       </div>
       <UserImage profile="{targetProfile}" size="{36}" gradientRing="{true}" />
-      <div>
+      <div
+        class="cursor-pointer"
+        on:click="{() => {
+          openDetail(transfer);
+        }}">
         {#if transfer.direction === "in"}
           <span class="mt-4 text-xl">
             from {displayableName
