@@ -108,7 +108,7 @@ function onkeydown(e: KeyboardEvent) {
       </div>
       <!-- <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">
-          Total in Time Circles:
+          Total in Time:
         </span>
 
         <span class="w-20 text-sm font-bold text-right">

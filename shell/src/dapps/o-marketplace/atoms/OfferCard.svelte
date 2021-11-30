@@ -113,6 +113,7 @@ displayName =
           </a>
         </div>
       </div>-->
+
       <div class="h-32">
         <div
           class="text-4xl leading-tight text-left uppercase break-all font-heading">
@@ -126,13 +127,11 @@ displayName =
         {/if}
       </div>
       <div class="text-xs text-right text-dark">
-        <div class="pt-2 text-sm">
-          <span class="text-xs">Store Pick Up at:</span><br />
-          Homo Circulus, Basic Income Lab GmbH<br />
-          Reifenstühlstrasse 6<br />
-          80469 München<br />
-          <span class="text-sm font-thin"
-            >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
+        <div class="relative ">
+          <div
+            class="absolute py-2 pl-4 pr-2 mt-2 text-xs rounded-l-full -right-4 bottom-2 bg-alert-lightest">
+            Store Pick Up Only
+          </div>
         </div>
       </div>
       <div class="flex flex-row space-x-4">
