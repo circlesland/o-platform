@@ -130,10 +130,10 @@ export class GnosisSafeProxy extends Web3Contract {
       value: safeTransaction.value,
       data: safeTransaction.data,
       operation: safeTransaction.operation,
-      safeTxGas: estimatedSafeTxGas,
-      baseGas: estimatedBaseGas,
-      gasToken: safeTransaction.gasToken,
-      refundReceiver: safeTransaction.refundReceiver,
+      safeTxGas: new BN("0"),
+      baseGas: new BN("0"),
+      gasToken: ZERO_ADDRESS,
+      refundReceiver: ZERO_ADDRESS,
       nonce: nonce,
     };
     console.log("executableTransaction:", executableTransaction);
@@ -160,7 +160,7 @@ export class GnosisSafeProxy extends Web3Contract {
         executableTransaction.operation,
         executableTransaction.safeTxGas,
         executableTransaction.baseGas,
-        gasPrice,
+        new BN("0"),
         executableTransaction.gasToken,
         executableTransaction.refundReceiver,
         signatures.signature
@@ -244,7 +244,7 @@ export class GnosisSafeProxy extends Web3Contract {
         safeTransaction.operation,
         safeTransaction.safeTxGas,
         safeTransaction.baseGas,
-        await RpcGateway.getGasPrice(),
+        new BN("0"),
         safeTransaction.gasToken,
         safeTransaction.refundReceiver,
         safeTransaction.nonce
@@ -347,7 +347,7 @@ export class GnosisSafeProxy extends Web3Contract {
         safeTransaction.operation,
         safeTransaction.safeTxGas ?? new BN("0"),
         safeTransaction.baseGas ?? new BN("0"),
-        await RpcGateway.getGasPrice(),
+        new BN("0"),
         safeTransaction.gasToken,
         safeTransaction.refundReceiver,
         signatures ?? "0x"
