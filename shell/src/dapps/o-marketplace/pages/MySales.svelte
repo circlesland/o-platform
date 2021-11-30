@@ -6,11 +6,10 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { push } from "svelte-spa-router";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import {sales} from "../../../shared/stores/sales";
+import { sales } from "../../../shared/stores/sales";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -103,35 +102,27 @@ export let routable: Routable;
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {/if}
               </div>
-              <div class="text-xs text-inactive">
-                <span
-                    class:text-inactive="{!sale.invoices[0].sellerSignature}"
-                    class:text-success="{sale.invoices[0].sellerSignature}">
-                  handed out
-                </span>
-                <!-- <Icons icon="check" size="{4}" customClass="inline" /> -->
+              <div
+                class="inline-block text-xs"
+                class:text-inactive="{!sale.invoices[0].sellerSignature &&
+                  !sale.invoices[0].buyerSignature}"
+                class:text-info="{(sale.invoices[0].sellerSignature &&
+                  !sale.invoices[0].buyerSignature) ||
+                  (!sale.invoices[0].sellerSignature &&
+                    sale.invoices[0].buyerSignature)}"
+                class:text-success="{sale.invoices[0].buyerSignature &&
+                  sale.invoices[0].sellerSignature}">
+                <span> picked up </span>
+                {#if sale.invoices[0].buyerSignature && sale.invoices[0].sellerSignature}
+                  <Icons icon="check" size="{4}" customClass="inline" />
+                {:else}
+                  <Icons icon="closex" size="{2}" customClass="inline" />
+                {/if}
               </div>
             </div>
           </div>
         </div>
       </section>
-      <!-- <SimpleItemCard
-        params="{{
-          imageUrl: sale.lines[0].offer.pictureUrl,
-          edgeless: true,
-
-          title: `${displayableName(
-            sale.buyerProfile.firstName,
-            sale.buyerProfile.lastName
-          )} - ${dayjs(sale.createdAt).format('DD.MM.YYYY')}`,
-          action: () => push(`#/marketplace/my-sales/${sale.id}`),
-          subTitle: `${sale.lines.map((line) => line.offer.title).join(', ')}`,
-          endTextBig: '',
-          endTextBigClass: 'text-2xl',
-          endTextSmall: 'paid, not yet picked up',
-          class: 'cursor-pointer',
-        }}" /> -->
-      <!-- <pre>{JSON.stringify(sale, null, 2)}</pre> -->
     {/each}
   {/if}
 </div>

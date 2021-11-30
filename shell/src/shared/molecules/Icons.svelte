@@ -436,6 +436,11 @@ const icons = {
 <path d="M26.6667 8L12 22.6667L5.33334 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
+  closex: `
+<svg class='w-${size} h-${size} ${customClass}' viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M17 1L1 17M1 1L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
   timeCircle: `
 <svg class='w-${size} h-${size} ${customClass}' viewBox="0 0 355 355" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M177.085 0C79.2909 0 0 79.2558 0 177.007C0 274.758 79.2909 354.014 177.085 354.014C274.88 354.014 354.171 274.758 354.171 177.007C354.171 79.2558 274.88 0 177.085 0ZM177.085 346.41C83.4713 346.41 7.60699 270.545 7.60699 177.007C7.60699 83.4686 83.4713 7.60362 177.085 7.60362C270.699 7.60362 346.564 83.4686 346.564 177.007C346.564 270.545 270.699 346.41 177.085 346.41Z" fill="url(#paint0_linear_1427_10583)"/>
