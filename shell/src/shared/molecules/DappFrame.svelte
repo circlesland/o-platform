@@ -861,13 +861,12 @@ async function handleUrlChanged() {
   });
 
   // Automatically open leftNav on desktop unless it's marketplace
-  if (dapp.dappId != "marketplace:1") {
-    if ($media.large) {
-      if (!layout.dialogs.center) {
-        window.o.publishEvent({
-          type: "shell.openNavigation",
-        });
-      }
+
+  if ($media.large) {
+    if (!layout.dialogs.center) {
+      window.o.publishEvent({
+        type: "shell.openNavigation",
+      });
     }
   }
 
