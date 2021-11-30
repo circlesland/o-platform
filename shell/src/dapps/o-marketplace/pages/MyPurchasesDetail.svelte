@@ -104,7 +104,7 @@ onMount(async () => {
     };
     if (!purchase.invoices[0].buyerSignature) {
       actions.push(pickUpAction);
-    } else {
+    } else if (purchase.invoices[0].buyerSignature && !purchase.invoices[0].sellerSignature) {
       actions.push(unPickUpAction);
     }
     actions.push(

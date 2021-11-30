@@ -91,9 +91,10 @@ if (event && event.payload?.__typename == "CrcHubTransfer") {
           (o) => o.typeId === "o-banking:transfer:message:1"
   )?.value;
 
-  if (event.payload?.__typename != EventType.Erc20Transfer) {
+  if (event.payload?.__typename == EventType.CrcHubTransfer) {
+    const ht = <CrcHubTransfer>event.payload;
     amount = Currency.instance().displayAmount(
-            event.payload && event.payload.flow ? event.payload.flow.toString() : "0",
+            event.payload && ht.flow ? ht.flow.toString() : "0",
             event.timestamp,
             $me.displayCurrency
     );

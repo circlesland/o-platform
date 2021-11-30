@@ -71,7 +71,7 @@
       };
       if (!sale.invoices[0].sellerSignature) {
         actions.push(pickUpAction);
-      } else {
+      } else if (sale.invoices[0].sellerSignature && !sale.invoices[0].buyerSignature) {
         actions.push(unPickUpAction);
       }
       actions.push(
