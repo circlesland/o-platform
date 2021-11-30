@@ -6,8 +6,7 @@ import OfferCardField from "./OfferCardField.svelte";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../../shared/stores/me";
-import { Currency } from "../../../shared/currency";
-//import { upsertOffer } from "../processes/upsertOffer";
+import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
 import Time from "svelte-time";
 
@@ -53,6 +52,11 @@ function loadDetailPage() {
 
 function buy() {
   window.o.runProcess(purchase, {});
+}
+
+function addToCart(item) {
+  $cartContents = $cartContents ? [...$cartContents, item] : [item];
+  push(`#/marketplace/cart`);
 }
 
 let now = new Date();
@@ -140,12 +144,20 @@ displayName =
             <Icons icon="star" />
           </button>
         </div>
+        <div class="">
+          <button
+            type="submit"
+            class="relative btn btn-primary btn-square"
+            on:click="{() => addToCart(offer)}">
+            <Icons icon="cart" />
+          </button>
+        </div>
         <div class="flex-grow">
           <button
             type="submit"
             class="relative btn btn-primary btn-block"
             on:click="{() => loadDetailPage()}">
-            Show detail
+            Details
             <div class="absolute mr-1 right-2">
               <Icons icon="eye" />
             </div>
