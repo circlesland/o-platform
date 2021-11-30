@@ -139,9 +139,8 @@ function orderItems(items) {
 
       <div class="pt-2 text-sm">Pick-Up Location for this Order is:</div>
       <div class="pt-2 text-sm">
-        <span class="font-bold">Homo Circulus, Basic Income Lab GmbH</span
-        ><br />
-        Reifenstühlstrasse 6<br />
+        <span class="font-bold">Basic Income Lab GmbH</span><br />
+        Reifenstuelstrasse 6<br />
         80469 München<br />
         <span class="text-sm font-thin"
           >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>

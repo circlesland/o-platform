@@ -75,7 +75,7 @@ function onkeydown(e: KeyboardEvent) {
         to {displayableName(profile.firstName, profile.lastName)}
       </span>
       <div class="mt-2 text-dark-lightest">
-        Reifenstühlstr. 6, 80469 München
+        Reifenstuelstrasse. 6, 80469 München
         <br />
         <span class="text-sm"
           >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
