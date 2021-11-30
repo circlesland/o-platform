@@ -9,16 +9,16 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-
 import {
   Offer,
-  QueryTagsInput, Tag,
+  QueryTagsInput,
+  Tag,
   TagsDocument,
 } from "../../../shared/api/data/types";
 import { me } from "../../../shared/stores/me";
-import {ApiClient} from "../../../shared/apiConnection";
+import { ApiClient } from "../../../shared/apiConnection";
 
-import {offers} from "../../../shared/stores/offers";
+import { offers } from "../../../shared/stores/offers";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -41,10 +41,13 @@ async function load() {
     return;
   }
 
-  const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(TagsDocument, {
-    typeId_in: ["o-marketplace:offer:category:1"]
-  });
-  categories = categoryResult.map(o => o.value);
+  const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(
+    TagsDocument,
+    {
+      typeId_in: ["o-marketplace:offer:category:1"],
+    }
+  );
+  categories = categoryResult.map((o) => o.value);
   isLoading = false;
 }
 
@@ -75,7 +78,7 @@ function loadCategoryPage(category: any) {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="px-4 mx-auto -mt-3 lg:w-2/3 xl:w-1/2">
+<div class="px-4 mx-auto -mt-3 lg:w-4/5 ">
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   <div
     class="grid grid-cols-1 mb-20 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
@@ -104,6 +107,12 @@ function loadCategoryPage(category: any) {
 @media (min-width: 640px) {
   .marketplace-grid {
     grid-template-columns: repeat(2, minmax(8rem, 1fr));
+  }
+}
+
+@media (min-width: 1300px) {
+  .marketplace-grid {
+    grid-template-columns: repeat(3, minmax(8rem, 1fr));
   }
 }
 
