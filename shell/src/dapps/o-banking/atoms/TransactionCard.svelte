@@ -8,7 +8,7 @@ import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {
   CrcHubTransfer,
   CrcMinting,
-  Erc20Transfer,
+  Erc20Transfer, EventType,
   Profile,
   ProfileEvent,
 } from "../../../shared/api/data/types";
@@ -91,7 +91,7 @@ if (event && event.payload?.__typename == "CrcHubTransfer") {
           (o) => o.typeId === "o-banking:transfer:message:1"
   )?.value;
 
-  if (event.payload?.__typename == "CrcHubTransfer") {
+  if (event.payload?.__typename != EventType.Erc20Transfer) {
     amount = Currency.instance().displayAmount(
             event.payload && event.payload.flow ? event.payload.flow.toString() : "0",
             event.timestamp,
@@ -104,7 +104,7 @@ if (event && event.payload?.__typename == "CrcHubTransfer") {
   }
 }
 
-if (event.payload?.__typename == "CrcHubTransfer") {
+if (event.payload?.__typename != EventType.Erc20Transfer) {
   amount += ` ${Currency.currencySymbol[$me.displayCurrency]}`;
 }
 
