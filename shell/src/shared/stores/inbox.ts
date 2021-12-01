@@ -206,7 +206,7 @@ export const inbox = {
       profile = $me;
     })();
 
-    if (profile?.circlesAddress) {
+    if (!profile?.circlesAddress) {
       set([]);
       return;
     }

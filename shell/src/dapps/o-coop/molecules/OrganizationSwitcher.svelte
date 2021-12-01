@@ -54,7 +54,7 @@ function switchProfile(profile: Profile | Organisation) {
     type: "shell.authenticated",
     profile: profile,
   });
-  // location.reload();
+  location.reload();
 }
 </script>
 
