@@ -302,6 +302,11 @@ async function init() {
           query: EventsDocument,
         })
         .subscribe((next) => {
+
+          if (next.type == "shell.authenticated") {
+            console.log("User changed:", next);
+          }
+
           if (next.data.events.type == "new_message") {
             window.o.publishEvent(<any>{
               type: "shell.refresh",

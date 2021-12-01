@@ -24,6 +24,8 @@ let safexDai = {
   title: "",
 };
 
+let balances = [];
+
 onMount(async () => {
   const safeAddress = $me.circlesAddress;
   const safeBalance = await RpcGateway.get().eth.getBalance(safeAddress);
@@ -31,6 +33,7 @@ onMount(async () => {
   await km.load();
   const eoaBalance = await RpcGateway.get().eth.getBalance(km.torusKeyAddress);
 
+  const safeBalanceBn = new BN(safeBalance);
   const safeBalanceAmount = Number.parseFloat(
     Web3.utils.fromWei(new BN(safeBalance).toString(), "ether")
   ).toFixed(2);
@@ -46,6 +49,12 @@ onMount(async () => {
   accountxDai.balance = eoaBalanceAmount;
   accountxDai.title = "Safe Owner";
   accountxDai.address = km.torusKeyAddress;
+
+  if (safeBalanceBn.gt(new BN("0"))) {
+    balances = [accountxDai, safexDai];
+  } else {
+    balances = [accountxDai];
+  }
 });
 </script>
 
@@ -74,7 +83,7 @@ onMount(async () => {
     <h1 class="uppercase font-heading">Xdai</h1>
   </div>
 
-  {#each [accountxDai, safexDai].sort( (a, b) => (parseFloat(a.balance) > parseFloat(b.balance) ? -1 : parseFloat(a.balance) < parseFloat(b.balance) ? 1 : 0) ) as token}
+  {#each balances.sort( (a, b) => (parseFloat(a.balance) > parseFloat(b.balance) ? -1 : parseFloat(a.balance) < parseFloat(b.balance) ? 1 : 0) ) as token}
     <ItemCard
       params="{{
         edgeless: false,
