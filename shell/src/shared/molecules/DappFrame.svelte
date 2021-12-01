@@ -195,18 +195,22 @@ async function onRoot() {
     } = {};
      */
 
-  const previousDapp = findDappById(root.dappId);
+  const previousDapp = findDappById(baseParams ? baseParams.dappId : root.dappId);
   const previousRuntimeDapp = previousDapp
     ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
     : null;
 
-  let nextRoute = findNextRoute(previousRuntimeDapp, root);
+  let nextRoute = findNextRoute(previousRuntimeDapp, baseParams && baseParams.dappId ? {
+    params: baseParams,
+    dappId: baseParams.dappId,
+    scrollY: 0
+  } : root);
 
   while (stack.length > 0) stack.pop();
 
   const path = nextRoute.routeParts.map((o) => o.replace("=", "")).join("/");
   onCloseModal();
-  await push(`#/${root.params.dappId}/${path}`);
+  await push(`#/${previousRuntimeDapp.dappId}/${path}`);
   window.scrollTo(0, root.scrollY);
 }
 
@@ -797,6 +801,16 @@ let currentParams: {
   "6": string | null;
 } = null;
 
+let baseParams: {
+  dappId: string;
+  "1": string | null;
+  "2": string | null;
+  "3": string | null;
+  "4": string | null;
+  "5": string | null;
+  "6": string | null;
+} = null;
+
 let firstUrlChangedCall = true;
 
 async function handleUrlChanged() {
@@ -845,6 +859,7 @@ async function handleUrlChanged() {
           scrollY: 0,
         });
         if (defaultRoute && defaultRoute.type === "page") {
+          baseParams = currentParams;
           showMainPage(runtimeDapp, <any>defaultRoute, findRouteResult.params);
         } else {
           // TODO: 404
@@ -855,6 +870,7 @@ async function handleUrlChanged() {
     } else {
       await hideCenter();
       navArgs.centerIsOpen = false;
+      baseParams = currentParams;
       showMainPage(runtimeDapp, page, findRouteResult.params);
     }
   }
@@ -883,14 +899,6 @@ async function handleUrlChanged() {
     firstUrlChangedCall = false;
     init();
   }
-
-  // If the user is not logged-on return to the homepage
-  /*
-    const session = await getSessionInfo();
-    if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
-      await push("/");
-      return;
-    }*/
 }
 
 function showModalProcess(processId?: string) {
@@ -993,6 +1001,7 @@ function showMainPage(
     `showMainPage(runtimeDapp: ${runtimeDapp.dappId}, routable: ${routable.title} (type: ${routable.type}), params: object)`,
     params
   );
+
   layout = {
     ...layout,
     main: {

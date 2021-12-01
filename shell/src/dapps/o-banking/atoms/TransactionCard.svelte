@@ -138,7 +138,7 @@ function loadDetailPage(path) {
       subTitle: message ? message : '',
       truncateMain: true,
       endTextBig: amount,
-      profileLink: false,
+      profileLink: true,
       endTextBigClass: amount.startsWith('-') ? 'text-alert' : undefined,
     }}">
     <div slot="itemCardEndSmallElement">
