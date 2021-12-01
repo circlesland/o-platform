@@ -39,33 +39,13 @@ $: {
 }
 
 async function setProfile(id: string) {
-  const _profile = await contacts.findBySafeAddress(id);
-  if (_profile.__typename == "Contact") {
-    contact = <Contact>{
-      ..._profile,
-      contactAddress_Profile: {
-        ..._profile.contactAddress_Profile,
-        memberships: _profile.contactAddress_Profile.memberships ? _profile.contactAddress_Profile.memberships : []
-      }
-    };
-  } else {
-    const p = <Profile>_profile;
-    contact = {
-      contactAddress: p.circlesAddress,
-      contactAddress_Profile: {
-        id: p.id,
-        avatarUrl: p.avatarUrl,
-        dream: p.dream,
-        country: p.country,
-        firstName: p.firstName,
-        lastName: p.lastName,
-        city: p.city,
-        memberships: p.memberships ? p.memberships : [],
-      },
-      metadata: null,
-      lastContactAt: null,
-    };
+  const c = await contacts.findBySafeAddress(id);
+  if (!c) {
+    return;
   }
+
+  contact = c;
+  profile = c.contactAddress_Profile;
 
   if ($me.circlesAddress !== contact.contactAddress) {
     commonTrusts = (await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(CommonTrustDocument, {
@@ -82,8 +62,10 @@ async function setProfile(id: string) {
         ? " " + contact.contactAddress_Profile.lastName
         : "")
     : contact.contactAddress;
-  displayName =
-    displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
+
+  displayName = displayName.length >= 22
+          ? displayName.substr(0, 22) + "..."
+          : displayName;
 
   profile = contact.contactAddress_Profile;
 
@@ -190,7 +172,7 @@ async function setProfile(id: string) {
                 </div>
               </div>
             </section>
-            {#if profile.memberships.length}
+            {#if profile.memberships && profile.memberships.length}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
@@ -226,7 +208,7 @@ async function setProfile(id: string) {
             {/if}
           {/if}
 
-          {#if !isMe && contact.contactAddress}
+          {#if !isMe && contact && contact.contactAddress}
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
