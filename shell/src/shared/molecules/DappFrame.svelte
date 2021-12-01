@@ -195,27 +195,68 @@ async function onRoot() {
     } = {};
      */
 
-  const previousDapp = findDappById(baseParams ? baseParams.dappId : root.dappId);
-  const previousRuntimeDapp = previousDapp
-    ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
-    : null;
+  let nextRoute: FindRouteResult;
+  let previousRuntimeDapp: RuntimeDapp<any>;
+  let path: string = "";
 
-  let nextRoute = findRoutableByParams(
-    previousRuntimeDapp,
-    baseParams /*stack[stack.length > 1 ? 1 : 0].params*/
-  );
-  if (!nextRoute.found) {
+  if (baseParams) {
+    // Go back to the page that's specified by "baseParams"
+    const previousDapp = findDappById(baseParams.dappId);
+    previousRuntimeDapp = previousDapp
+      ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
+      : null;
+
     nextRoute = findRoutableByParams(
-    previousRuntimeDapp,
-    root.params /*stack[stack.length > 1 ? 1 : 0].params*/
-  );
+      previousRuntimeDapp,
+      baseParams
+    );
+    if (nextRoute && nextRoute.found) {
+      path = nextRoute.routable.routeParts.map((o) => o.replace("=", "")).join("/");
+    }
+  } else {
+    const previousDapp = findDappById(root.dappId);
+    previousRuntimeDapp = previousDapp
+      ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
+      : null;
+    // no baseParams. Find the base page of the last route
+    const lastRoute = findRoutableByParams(
+      previousRuntimeDapp,
+      root.params
+    );
+    if (lastRoute && lastRoute.found && (<Page<any, any>>lastRoute.routable).basePage) {
+      path = (<Page<any, any>>lastRoute.routable).basePage.map((o) => o.replace("=", "")).join("/");
+    }
+    if (lastRoute && lastRoute.found && path == "") {
+      const defaultRoute = findRoutableByParams(
+        previousRuntimeDapp,
+        {
+          ...previousRuntimeDapp.defaultRoute.reduce((p, c, i) => {
+            p[(i + 1).toString()] = c
+            return p;
+          }, <{ [x: string]: string }>{}),
+          dappId: previousRuntimeDapp.dappId
+        }
+      );
+
+      if (defaultRoute && defaultRoute.found) {
+        path = (<Page<any, any>>defaultRoute.routable).routeParts.map((o) => o.replace("=", "")).join("/");
+      }
+    }
+  }
+
+  if (path == "") {
+    console.error(`couldn't find the next route:`, currentParams, stack);
+    return;
   }
 
   while (stack.length > 0) stack.pop();
 
-  const path = nextRoute.routable.routeParts.map((o) => o.replace("=", "")).join("/");
   onCloseModal();
-  await push(`#/${previousRuntimeDapp.dappId}/${path}`);
+
+  const dc = previousRuntimeDapp.dappId.indexOf(":");
+  const dappIdForRoute = previousRuntimeDapp.dappId.substr(0, dc > -1 ? dc : previousRuntimeDapp.dappId.length);
+  await push(`#/${dappIdForRoute}/${path}`);
+
   window.scrollTo(0, root.scrollY);
 }
 
@@ -864,7 +905,6 @@ async function handleUrlChanged() {
           scrollY: 0,
         });
         if (defaultRoute && defaultRoute.type === "page") {
-          baseParams = currentParams;
           showMainPage(runtimeDapp, <any>defaultRoute, findRouteResult.params);
         } else {
           // TODO: 404
