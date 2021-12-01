@@ -169,6 +169,7 @@ function goToProfile(e, path?: string) {
       title: displayName,
       subTitle: message,
       action: () => loadDetailPage(param.contactAddress),
+      profileLink: true
     }}">
     <div slot="itemCardEndSmallElement">
       {#if param.timestamp}
