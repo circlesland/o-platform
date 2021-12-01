@@ -88,6 +88,7 @@ async function onBack(navigate?:boolean) {
     await onRoot();
     return;
   }
+  lastStackLength = stack.length;
   stack.pop();
   const previous = stack[stack.length - 1];
   log("onBack() - new stack: ", JSON.stringify(stack, null, 2));
@@ -134,6 +135,7 @@ async function onBack(navigate?:boolean) {
     .reduce((p, c) => p + "/" + c, "");
 
   if (navigate) {
+    lastStackLength = stack.length;
     stack.pop();
     await pop().then(() => {
       handleUrlChanged();
@@ -148,6 +150,7 @@ async function onStay() {
     await onRoot();
     return;
   }
+  lastStackLength = stack.length;
   const previous = stack.pop();
   log("onStay() - new stack: ", JSON.stringify(stack, null, 2));
 
@@ -258,6 +261,7 @@ async function onRoot() {
 
   while (stack.length > 0) stack.pop();
 
+  lastStackLength = 0;
   onCloseModal();
 
   const dc = previousRuntimeDapp.dappId.indexOf(":");
@@ -844,6 +848,7 @@ function _findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
   }
 }
 
+let lastStackLength = 0;
 let currentParams: {
   dappId: string;
   "1": string | null;
@@ -912,13 +917,15 @@ async function handleUrlChanged() {
   // Check if the user navigated back using the browser's back-button
   console.log("Check")
   if (stack.length > 1) {
+
     const lastStackItem = stack[stack.length -2];
     const dc = lastStackItem.dappId.indexOf(":");
     const lastDappId = dc ? lastStackItem.dappId.substring(0, dc) : lastStackItem.dappId;
+
     if (lastDappId == currentParams.dappId) {
       // check if the other parameters match as well
       console.log("Check")
-      const match = Object.keys(currentParams).filter(o => o != "dappId").map((o, i) => {
+      const isSameRouteAsLastStackItem = Object.keys(currentParams).filter(o => o != "dappId").map((o, i) => {
         const key = o;
         const value = currentParams[key];
         if (!value)
@@ -932,7 +939,9 @@ async function handleUrlChanged() {
         return routeParts[i] == value || routeParts[i].startsWith(":");
       }).reduce((p,c) => p && c, true);
 
-      if (match) {
+      const navigatedForward = stack.length > lastStackLength;
+
+      if (isSameRouteAsLastStackItem && !navigatedForward) {
         onBack(false);
       }
     }
@@ -1035,6 +1044,7 @@ function showModalPage(
     );
   }
   if (pushToStack) {
+    lastStackLength = stack.length;
     stack.push({
       dappId: runtimeDapp.dappId,
       params: currentParams,
