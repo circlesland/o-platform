@@ -125,8 +125,9 @@ export const getItems = debounce(async () => {
     });
 
     if (res && !res.cancelled) {
-      if (res) {
-        items = [...res];
+      const r = await res;
+      if (r) {
+        items = [...r];
         dispatch("loaded", { items });
       } else {
         items = [];
