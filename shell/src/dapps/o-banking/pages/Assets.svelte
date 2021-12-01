@@ -97,9 +97,16 @@
       const bnB = new BN(b.token_balance);
       return bnA.gt(bnB) ? -1 : bnA.lt(bnB) ? 1 : 0;
     }).map(o => {
-      return {
-        ...o,
-        token_balance: o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2)
+      if (o.token_symbol == "EURS") {
+        return {
+          ...o,
+          token_balance: o.token_balance = (parseFloat(o.token_balance) / 100).toFixed(2)
+        }
+      } else {
+        return {
+          ...o,
+          token_balance: o.token_balance = parseFloat(RpcGateway.get().utils.fromWei(o.token_balance, "ether")).toFixed(2)
+        }
       }
     })
 
@@ -139,7 +146,7 @@
 
         <!-- all other ERC20s -->
         {#each erc20DisplayBalances as token}
-            {#if token && token.token_balance > 0}
+            {#if token}
                 <div>
                     <ItemCard
                             params={{
