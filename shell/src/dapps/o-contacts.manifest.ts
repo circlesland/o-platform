@@ -2,21 +2,23 @@ import ContactsView from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
 import Chat from "./o-contacts/pages/Chat.svelte";
 import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
-import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-import {me} from "../shared/stores/me";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-import {init} from "./o-banking/init";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { me } from "../shared/stores/me";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { init } from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
-import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import {
   Contact,
-  ContactDirection, EventType,
-  Profile, VerifySafeDocument
+  ContactDirection,
+  EventType,
+  Profile,
+  VerifySafeDocument,
 } from "../shared/api/data/types";
-import {transfer} from "./o-banking/processes/transfer";
-import {push} from "svelte-spa-router";
-import {setTrust} from "./o-banking/processes/setTrust";
-import {contacts} from "../shared/stores/contacts";
+import { transfer } from "./o-banking/processes/transfer";
+import { push } from "svelte-spa-router";
+import { setTrust } from "./o-banking/processes/setTrust";
+import { contacts } from "../shared/stores/contacts";
 
 export interface DappState {
   // put state here
@@ -55,7 +57,9 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
     let actions = [];
 
     if (params.id) {
-      const recipientProfile: Contact = await contacts.findBySafeAddress(params.id ?? $me.circlesAddress);
+      const recipientProfile: Contact = await contacts.findBySafeAddress(
+        params.id ?? $me.circlesAddress
+      );
       const trustMetadata =
         recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??
         undefined;
@@ -81,12 +85,13 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           icon: "check",
           title: "Verify",
           action: async () => {
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             await apiClient.mutate({
               mutation: VerifySafeDocument,
               variables: {
-                safeAddress: params.id
-              }
+                safeAddress: params.id,
+              },
             });
           },
         },
@@ -106,47 +111,55 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           recipientProfile.contactAddress_Profile &&
           recipientProfile.contactAddress_Profile.type == "PERSON"
         ) {
-          actions = actions.concat((trustsYou ? [
-              {
-                key: "transfer",
-                icon: "sendmoney",
-                title: "Send Money",
-                action: async () => {
-                  window.o.runProcess(transfer, {
-                    safeAddress: $me.circlesAddress,
-                    recipientAddress: recipientProfile.contactAddress,
-                    privateKey: sessionStorage.getItem("circlesKey"),
-                  });
-                },
-              }] : []),
-            (youTrust
-              ? [{
-                key: "setTrust",
-                icon: "untrust",
-                title: "Untrust",
-                colorClass: "text-alert",
-                action: async () => {
-                  window.o.runProcess(setTrust, {
-                    trustLimit: 0,
-                    trustReceiver: recipientProfile.contactAddress,
-                    safeAddress: $me.circlesAddress,
-                    privateKey: sessionStorage.getItem("circlesKey"),
-                  });
-                },
-              }]
-              : [{
-                key: "setTrust",
-                icon: "trust",
-                title: "Trust",
-                action: async () => {
-                  window.o.runProcess(setTrust, {
-                    trustLimit: 100,
-                    trustReceiver: recipientProfile.contactAddress,
-                    safeAddress: $me.circlesAddress,
-                    privateKey: sessionStorage.getItem("circlesKey"),
-                  });
-                },
-              }])
+          actions = actions.concat(
+            trustsYou
+              ? [
+                  {
+                    key: "transfer",
+                    icon: "sendmoney",
+                    title: "Send Money",
+                    action: async () => {
+                      window.o.runProcess(transfer, {
+                        safeAddress: $me.circlesAddress,
+                        recipientAddress: recipientProfile.contactAddress,
+                        privateKey: sessionStorage.getItem("circlesKey"),
+                      });
+                    },
+                  },
+                ]
+              : [],
+            youTrust
+              ? [
+                  {
+                    key: "setTrust",
+                    icon: "untrust",
+                    title: "Untrust",
+                    colorClass: "text-alert",
+                    action: async () => {
+                      window.o.runProcess(setTrust, {
+                        trustLimit: 0,
+                        trustReceiver: recipientProfile.contactAddress,
+                        safeAddress: $me.circlesAddress,
+                        privateKey: sessionStorage.getItem("circlesKey"),
+                      });
+                    },
+                  },
+                ]
+              : [
+                  {
+                    key: "setTrust",
+                    icon: "trust",
+                    title: "Trust",
+                    action: async () => {
+                      window.o.runProcess(setTrust, {
+                        trustLimit: 100,
+                        trustReceiver: recipientProfile.contactAddress,
+                        safeAddress: $me.circlesAddress,
+                        privateKey: sessionStorage.getItem("circlesKey"),
+                      });
+                    },
+                  },
+                ]
           );
         }
       }
@@ -169,7 +182,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       actions = actions.concat({
         key: "setTrust",
         icon: "trust",
-        title: "Trust",
+        title: "Trust new friend",
         action: async () => {
           window.o.runProcess(setTrust, {
             trustLimit: 100,
