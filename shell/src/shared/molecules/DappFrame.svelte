@@ -197,7 +197,7 @@ async function onRoot() {
 
   let nextRoute: FindRouteResult;
   let previousRuntimeDapp: RuntimeDapp<any>;
-  let path: string = "";
+  let path: string|null = null;
 
   if (baseParams) {
     // Go back to the page that's specified by "baseParams"
@@ -226,7 +226,7 @@ async function onRoot() {
     if (lastRoute && lastRoute.found && (<Page<any, any>>lastRoute.routable).basePage) {
       path = (<Page<any, any>>lastRoute.routable).basePage.map((o) => o.replace("=", "")).join("/");
     }
-    if (lastRoute && lastRoute.found && path == "") {
+    if (lastRoute && lastRoute.found && !path) {
       const defaultRoute = findRoutableByParams(
         previousRuntimeDapp,
         {
@@ -244,7 +244,7 @@ async function onRoot() {
     }
   }
 
-  if (path == "") {
+  if (path == null) {
     console.error(`couldn't find the next route:`, currentParams, stack);
     return;
   }
