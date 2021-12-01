@@ -7,13 +7,22 @@ import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import Svelecte, { addFormatter } from "svelecte";
 import {
   UpsertProfileDocument,
-  WhoamiDocument, WhoamiQueryVariables,
+  DisplayCurrency,
+  WhoamiDocument,
+  WhoamiQueryVariables,
 } from "../../../shared/api/data/types";
-import {ApiClient} from "../../../shared/apiConnection";
+import { ApiClient } from "../../../shared/apiConnection";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+
+let choices = [
+  { value: DisplayCurrency.Crc, name: "CRC" },
+  { value: DisplayCurrency.Eurs, name: "Euro" },
+  { value: DisplayCurrency.TimeCrc, name: "Time Circles" },
+];
 
 async function editProfile() {
   /*
@@ -65,7 +74,7 @@ async function editProfile() {
       country: $me.country,
       dream: $me.dream,
       newsletter: receiveNewsletter,
-      displayTimeCircles: displayTimeCircles,
+      displayCurrency: displayCurrency,
       status: "",
     },
   });
@@ -82,11 +91,14 @@ async function editProfile() {
 let email: string = "unknown";
 
 onMount(async () => {
-  email = await ApiClient.query<string,WhoamiQueryVariables>(WhoamiDocument, {});
+  email = await ApiClient.query<string, WhoamiQueryVariables>(
+    WhoamiDocument,
+    {}
+  );
 });
 
 let receiveNewsletter: boolean = $me.newsletter;
-let displayTimeCircles: boolean = ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true);
+let displayCurrency: string = $me.displayCurrency;
 const delayedTrigger = new DelayedTrigger(500, async () => {
   // TODO: Make call to upsertProfile shorter
   await editProfile();
@@ -104,7 +116,7 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
       </div>
     </Card>
   </section> -->
-  <section class="flex items-center justify-center mx-4 mb-2 -mt-2">
+  <section class="mx-4 mb-2 -mt-2">
     <Card>
       <div class="text-xs font-bold text-left text-primary">NEWSLETTER</div>
       <div class="w-full space-x-2 bg-white sm:space-x-6">
@@ -113,7 +125,7 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
             <div
               class="flex flex-row items-stretch w-full space-x-10 cursor-pointer justify-items-stretch">
               <div
-                class="self-center flex-grow text-sm text-left justify-self-start">
+                class="self-center flex-grow text-sm text-right justify-self-start">
                 Receive Newsletter
               </div>
               <div class="self-center justify-self-end">
@@ -133,31 +145,23 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
       </div>
     </Card>
   </section>
-  <section class="flex items-center justify-center mx-4 mb-2">
+  <section class="mx-4 mb-2 ">
     <Card>
-      <div class="text-xs font-bold text-left text-primary">
-        CIRCLES DISPLAY
+      <div class="text-xs font-bold text-left text-primary whitespace-nowrap">
+        CURRENCY DISPLAY
       </div>
       <div class="w-full space-x-2 bg-white sm:space-x-6">
         <div class="w-full form-control">
           <label class="label" for="displayTimeCircles">
-            <div
-              class="flex flex-row items-stretch w-full space-x-10 cursor-pointer justify-items-stretch">
-              <div
-                class="self-center flex-grow text-sm text-left justify-self-start">
-                Display Time Circles
-              </div>
-              <div class="self-center justify-self-end">
-                <input
-                  name="checkbox"
-                  id="displayTimeCircles"
-                  type="checkbox"
-                  class="inline-block toggle toggle-primary"
-                  bind:checked="{displayTimeCircles}"
-                  on:change="{() => delayedTrigger.trigger()}" />
-
-                <span class="toggle-mark"></span>
-              </div>
+            <div class="flex flex-row items-stretch justify-end w-full">
+              <select
+                class="self-end w-full max-w-xs select select-bordered"
+                bind:value="{displayCurrency}"
+                on:change="{() => delayedTrigger.trigger()}">
+                {#each choices as option, i}
+                  <option value="{option.value}">{option.name}</option>
+                {/each}
+              </select>
             </div>
           </label>
         </div>

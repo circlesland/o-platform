@@ -308,6 +308,7 @@ mutation upsertProfile(
   $circlesAddress: String
   $circlesSafeOwner: String
   $newsletter: Boolean
+  $displayCurrency: DisplayCurrency
   $displayTimeCircles: Boolean
   $cityGeonameid: Int
   $status: String!
@@ -325,6 +326,7 @@ mutation upsertProfile(
       circlesAddress: $circlesAddress
       circlesSafeOwner: $circlesSafeOwner
       newsletter: $newsletter
+      displayCurrency: $displayCurrency
       displayTimeCircles: $displayTimeCircles
       cityGeonameid: $cityGeonameid
       status: $status
@@ -341,6 +343,7 @@ mutation upsertProfile(
     circlesAddress
     circlesSafeOwner
     newsletter
+    displayCurrency
     displayTimeCircles
     cityGeonameid
     city {
@@ -420,8 +423,8 @@ mutation importOrganisations {
   }
 }
 
-mutation completePurchase($invoiceId: Int! $revoke: Boolean) {
-  completePurchase(invoiceId: $invoiceId revoke: $revoke) {
+mutation completePurchase($invoiceId: Int!, $revoke: Boolean) {
+  completePurchase(invoiceId: $invoiceId, revoke: $revoke) {
     id
     sellerAddress
     paymentTransactionHash
@@ -439,12 +442,11 @@ mutation completePurchase($invoiceId: Int! $revoke: Boolean) {
       lastName
       avatarUrl
     }
-
   }
 }
 
-mutation completeSale($invoiceId: Int! $revoke: Boolean) {
-  completeSale(invoiceId: $invoiceId revoke: $revoke) {
+mutation completeSale($invoiceId: Int!, $revoke: Boolean) {
+  completeSale(invoiceId: $invoiceId, revoke: $revoke) {
     id
     sellerAddress
     paymentTransactionHash
