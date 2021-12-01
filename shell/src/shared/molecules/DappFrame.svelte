@@ -200,15 +200,20 @@ async function onRoot() {
     ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
     : null;
 
-  let nextRoute = findNextRoute(previousRuntimeDapp, baseParams && baseParams.dappId ? {
-    params: baseParams,
-    dappId: baseParams.dappId,
-    scrollY: 0
-  } : root);
+  let nextRoute = findRoutableByParams(
+    previousRuntimeDapp,
+    baseParams /*stack[stack.length > 1 ? 1 : 0].params*/
+  );
+  if (!nextRoute.found) {
+    nextRoute = findRoutableByParams(
+    previousRuntimeDapp,
+    root.params /*stack[stack.length > 1 ? 1 : 0].params*/
+  );
+  }
 
   while (stack.length > 0) stack.pop();
 
-  const path = nextRoute.routeParts.map((o) => o.replace("=", "")).join("/");
+  const path = nextRoute.routable.routeParts.map((o) => o.replace("=", "")).join("/");
   onCloseModal();
   await push(`#/${previousRuntimeDapp.dappId}/${path}`);
   window.scrollTo(0, root.scrollY);
