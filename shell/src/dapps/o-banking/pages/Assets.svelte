@@ -93,8 +93,8 @@
       });
 
     erc20DisplayBalances = erc20DisplayBalances.sort((a,b) => {
-      const bnA = new BN(a.token_balance);
-      const bnB = new BN(b.token_balance);
+      const bnA = a.token_symbol == "EURS" ? new BN(a.token_balance).mul(new BN("1000000000000000000")) : new BN(a.token_balance);
+      const bnB = b.token_symbol == "EURS" ? new BN(b.token_balance).mul(new BN("1000000000000000000")) : new BN(b.token_balance);
       return bnA.gt(bnB) ? -1 : bnA.lt(bnB) ? 1 : 0;
     }).map(o => {
       if (o.token_symbol == "EURS") {
