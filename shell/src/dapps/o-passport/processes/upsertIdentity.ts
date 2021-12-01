@@ -12,13 +12,14 @@ import { promptChoice } from "./identify/prompts/promptChoice";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptCity } from "../../../shared/api/promptCity";
-import { City, UpsertProfileDocument } from "../../../shared/api/data/types";
+import {City, DisplayCurrency, UpsertProfileDocument} from "../../../shared/api/data/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 
 export type UpsertIdentityContextData = {
   id?: number;
   newsletter?: boolean;
   displayTimeCircles?: boolean;
+  displayCurrency?: DisplayCurrency;
   circlesAddress?: string;
   circlesSafeOwner?: string;
   firstName?: string;
@@ -219,6 +220,7 @@ const processDefinition = (processId: string) =>
                 avatarMimeType: context.data.avatarMimeType,
                 cityGeonameid: context.data.cityGeonameid,
                 status: "",
+                displayCurrency: context.data.displayCurrency
               },
             });
             return result.data.upsertProfile;

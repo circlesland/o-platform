@@ -2,7 +2,7 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext"
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import {ImportOrganisationsDocument, UpsertProfileDocument} from "../../../../shared/api/data/types";
+import {DisplayCurrency, UpsertProfileDocument} from "../../../../shared/api/data/types";
 import { promptChoice } from "../../../o-passport/processes/identify/prompts/promptChoice";
 import ButtonStackSelector from "@o-platform/o-editors/src/ButtonStackSelector.svelte";
 import { UpsertRegistrationContext } from "../registration/promptRegistration";
@@ -103,6 +103,7 @@ const processDefinition = (processId: string) =>
                 ...myProfile,
                 status: "eoa",
                 circlesAddress: safeProxy.address,
+                displayCurrency: DisplayCurrency.Eurs
               },
             });
 

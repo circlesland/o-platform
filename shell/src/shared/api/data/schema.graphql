@@ -846,6 +846,7 @@ input UpsertOrganisationInput {
     circlesAddress: String
     cityGeonameid: Int
     description: String
+    displayCurrency: DisplayCurrency
     id: Int
     name: String!
 }
@@ -859,6 +860,7 @@ input UpsertProfileInput {
     circlesTokenAddress: String
     cityGeonameid: Int
     country: String
+    displayCurrency: DisplayCurrency
     displayTimeCircles: Boolean
     dream: String
     emailAddress: String

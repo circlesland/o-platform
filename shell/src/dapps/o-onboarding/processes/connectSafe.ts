@@ -401,6 +401,7 @@ const processDefinition = (processId: string) =>
                   country: $me.country,
                   dream: $me.dream,
                   newsletter: $me.newsletter,
+                  displayCurrency: $me.displayCurrency,
                   status: $me.status ?? "registered",
                 },
               });
