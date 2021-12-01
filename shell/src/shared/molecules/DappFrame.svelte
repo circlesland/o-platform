@@ -780,23 +780,7 @@
         lastParamsJson = paramsJson;
       }
     }
-    // Open / Close Navigation on screen-size basis.
-    // OKay, this breaks a lot of things. sorry about that.
-    // if ($media.small) {
-    //   console.log("DUDE");
-    //   setNav({
-    //     ...currentNavArgs,
-    //     leftIsOpen: false,
-    //   });
-    // }
-    // if ($media.large) {
-    //   window.o.publishEvent({
-    //     type: "shell.openNavigation",
-    //   });
-    // }
   }
-
-  //let nextRoute = findNextRoute(previousRuntimeDapp, root);
 
   function _findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
     log(`findDefaultRoute(runtimeDapp: ${runtimeDapp.dappId})`);

@@ -11,7 +11,7 @@ import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
 import {
   Contact,
   ContactDirection, EventType,
-  Profile
+  Profile, VerifySafeDocument
 } from "../shared/api/data/types";
 import {transfer} from "./o-banking/processes/transfer";
 import {push} from "svelte-spa-router";
@@ -75,7 +75,22 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         }
       }
 
-
+      actions = actions.concat([
+        {
+          key: "verify",
+          icon: "check",
+          title: "Verify",
+          action: async () => {
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            await apiClient.mutate({
+              mutation: VerifySafeDocument,
+              variables: {
+                safeAddress: params.id
+              }
+            });
+          },
+        },
+      ]);
       if (recipientProfile?.contactAddress) {
         actions = actions.concat([
           {

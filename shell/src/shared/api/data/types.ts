@@ -291,7 +291,7 @@ export type EthTransfer = IEventPayload & {
   value: Scalars['String'];
 };
 
-export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | SaleEvent | WelcomeMessage;
+export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | SafeVerified | SaleEvent | WelcomeMessage;
 
 export enum EventType {
   ChatMessage = 'ChatMessage',
@@ -310,6 +310,7 @@ export enum EventType {
   MembershipOffer = 'MembershipOffer',
   MembershipRejected = 'MembershipRejected',
   OrganisationCreated = 'OrganisationCreated',
+  SafeVerified = 'SafeVerified',
   SaleEvent = 'SaleEvent',
   WelcomeMessage = 'WelcomeMessage'
 }
@@ -501,6 +502,7 @@ export type Mutation = {
   upsertProfile: Profile;
   upsertRegion: CreateOrganisationResult;
   upsertTag: Tag;
+  verifySafe: VerifySafeResult;
   verifySessionChallenge?: Maybe<ExchangeTokenResponse>;
 };
 
@@ -624,6 +626,11 @@ export type MutationUpsertRegionArgs = {
 
 export type MutationUpsertTagArgs = {
   data: UpsertTagInput;
+};
+
+
+export type MutationVerifySafeArgs = {
+  safeAddress: Scalars['String'];
 };
 
 
@@ -767,6 +774,18 @@ export type ProofPaymentResult = {
   acknowledged: Scalars['Boolean'];
 };
 
+export type PublicEvent = {
+  __typename?: 'PublicEvent';
+  block_number?: Maybe<Scalars['Int']>;
+  contact_address?: Maybe<Scalars['String']>;
+  contact_address_profile?: Maybe<Profile>;
+  payload?: Maybe<EventPayload>;
+  timestamp: Scalars['String'];
+  transaction_hash?: Maybe<Scalars['String']>;
+  transaction_index?: Maybe<Scalars['Int']>;
+  type: Scalars['String'];
+};
+
 export type Purchase = {
   __typename?: 'Purchase';
   createdAt: Scalars['String'];
@@ -829,6 +848,7 @@ export type Query = {
   tags: Array<Tag>;
   trustRelations: Array<TrustRelation>;
   ubiInfo: UbiInfo;
+  verifiedSafes: Array<PublicEvent>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
 };
@@ -926,6 +946,11 @@ export type QueryTrustRelationsArgs = {
   safeAddress: Scalars['String'];
 };
 
+
+export type QueryVerifiedSafesArgs = {
+  filter?: Maybe<VerifiedSafesFilter>;
+};
+
 export type QueryCitiesByGeonameIdInput = {
   geonameid: Array<Scalars['Int']>;
 };
@@ -991,6 +1016,14 @@ export type SafeAddressByOwnerResult = {
   __typename?: 'SafeAddressByOwnerResult';
   safeAddress: Scalars['String'];
   type: Scalars['String'];
+};
+
+export type SafeVerified = IEventPayload & {
+  __typename?: 'SafeVerified';
+  organisation: Scalars['String'];
+  organisation_profile?: Maybe<Organisation>;
+  safe_address: Scalars['String'];
+  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type Sale = {
@@ -1166,6 +1199,16 @@ export type UpsertTagInput = {
   id?: Maybe<Scalars['Int']>;
   typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
+};
+
+export type VerifiedSafesFilter = {
+  addresses?: Maybe<Array<Scalars['String']>>;
+  after?: Maybe<Scalars['String']>;
+};
+
+export type VerifySafeResult = {
+  __typename?: 'VerifySafeResult';
+  success: Scalars['Boolean'];
 };
 
 export type Version = {
@@ -1369,7 +1412,7 @@ export type SendMessageMutation = (
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
-      ) | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
+      ) | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'SafeVerified' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
     )> }
   ) }
 );
@@ -1591,6 +1634,19 @@ export type CompleteSaleMutation = (
   ) }
 );
 
+export type VerifySafeMutationVariables = Exact<{
+  safeAddress: Scalars['String'];
+}>;
+
+
+export type VerifySafeMutation = (
+  { __typename?: 'Mutation' }
+  & { verifySafe: (
+    { __typename?: 'VerifySafeResult' }
+    & Pick<VerifySafeResult, 'success'>
+  ) }
+);
+
 export type SessionInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1678,7 +1734,7 @@ export type HubSignupTransactionQuery = (
     & { payload?: Maybe<{ __typename?: 'ChatMessage' } | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | (
       { __typename?: 'CrcSignup' }
       & Pick<CrcSignup, 'token'>
-    ) | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
+    ) | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'SafeVerified' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
   )> }
 );
 
@@ -1910,7 +1966,7 @@ export type ProfileBySafeAddressQuery = (
       ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
         { __typename?: 'CrcTrust' }
         & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
-      ) | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
+      ) | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'SafeVerified' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
     )>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
@@ -2161,6 +2217,13 @@ export type StreamQuery = (
         & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
     ) | (
+      { __typename?: 'SafeVerified' }
+      & Pick<SafeVerified, 'safe_address'>
+      & { organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )> }
+    ) | (
       { __typename?: 'SaleEvent' }
       & Pick<SaleEvent, 'buyer'>
       & { buyer_profile?: Maybe<(
@@ -2385,6 +2448,21 @@ export type InvoiceQueryVariables = Exact<{
 export type InvoiceQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'invoice'>
+);
+
+export type VerifiedSafesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type VerifiedSafesQuery = (
+  { __typename?: 'Query' }
+  & { verifiedSafes: Array<(
+    { __typename?: 'PublicEvent' }
+    & Pick<PublicEvent, 'timestamp'>
+    & { payload?: Maybe<{ __typename?: 'ChatMessage' } | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | (
+      { __typename?: 'SafeVerified' }
+      & Pick<SafeVerified, 'organisation' | 'safe_address'>
+    ) | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
+  )> }
 );
 
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
@@ -2850,6 +2928,13 @@ export const CompleteSaleDocument = gql`
       lastName
       avatarUrl
     }
+  }
+}
+    `;
+export const VerifySafeDocument = gql`
+    mutation verifySafe($safeAddress: String!) {
+  verifySafe(safeAddress: $safeAddress) {
+    success
   }
 }
     `;
@@ -3679,6 +3764,15 @@ export const StreamDocument = gql`
           displayCurrency
         }
       }
+      ... on SafeVerified {
+        safe_address
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+      }
     }
   }
 }
@@ -3972,6 +4066,19 @@ export const InvoiceDocument = gql`
   invoice(invoiceId: $invoiceId)
 }
     `;
+export const VerifiedSafesDocument = gql`
+    query verifiedSafes {
+  verifiedSafes {
+    timestamp
+    payload {
+      ... on SafeVerified {
+        organisation
+        safe_address
+      }
+    }
+  }
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -4048,6 +4155,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     completeSale(variables: CompleteSaleMutationVariables): Promise<CompleteSaleMutation> {
       return withWrapper(() => client.request<CompleteSaleMutation>(print(CompleteSaleDocument), variables));
+    },
+    verifySafe(variables: VerifySafeMutationVariables): Promise<VerifySafeMutation> {
+      return withWrapper(() => client.request<VerifySafeMutation>(print(VerifySafeDocument), variables));
     },
     sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
       return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));
@@ -4138,6 +4248,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     invoice(variables: InvoiceQueryVariables): Promise<InvoiceQuery> {
       return withWrapper(() => client.request<InvoiceQuery>(print(InvoiceDocument), variables));
+    },
+    verifiedSafes(variables?: VerifiedSafesQueryVariables): Promise<VerifiedSafesQuery> {
+      return withWrapper(() => client.request<VerifiedSafesQuery>(print(VerifiedSafesDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

@@ -26,7 +26,7 @@ interface IEventPayload {
 
 union AggregatePayload = Contacts | CrcBalances | Erc20Balances | Members | Memberships | Offers | Purchases | Sales
 
-union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | SaleEvent | WelcomeMessage
+union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | SafeVerified | SaleEvent | WelcomeMessage
 
 union ProfileOrOrganisation = Organisation | Profile
 
@@ -387,6 +387,7 @@ type Mutation {
     upsertProfile(data: UpsertProfileInput!): Profile!
     upsertRegion(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
     upsertTag(data: UpsertTagInput!): Tag!
+    verifySafe(safeAddress: String!): VerifySafeResult!
     verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
 }
 
@@ -487,6 +488,17 @@ type ProofPaymentResult {
     acknowledged: Boolean!
 }
 
+type PublicEvent {
+    block_number: Int
+    contact_address: String
+    contact_address_profile: Profile
+    payload: EventPayload
+    timestamp: String!
+    transaction_hash: String
+    transaction_index: Int
+    type: String!
+}
+
 type Purchase {
     createdAt: String!
     createdByAddress: String!
@@ -535,6 +547,7 @@ type Query {
     tags(query: QueryTagsInput!): [Tag!]!
     trustRelations(safeAddress: String!): [TrustRelation!]!
     ubiInfo: UbiInfo!
+    verifiedSafes(filter: VerifiedSafesFilter): [PublicEvent!]!
     version: Version!
     whoami: String
 }
@@ -564,6 +577,13 @@ type RequestUpdateSafeResponse {
 type SafeAddressByOwnerResult {
     safeAddress: String!
     type: String!
+}
+
+type SafeVerified implements IEventPayload {
+    organisation: String!
+    organisation_profile: Organisation
+    safe_address: String!
+    transaction_hash: String
 }
 
 type Sale {
@@ -665,6 +685,10 @@ type UpdateSafeResponse {
     success: Boolean!
 }
 
+type VerifySafeResult {
+    success: Boolean!
+}
+
 type Version {
     major: Int!
     minor: Int!
@@ -721,6 +745,7 @@ enum EventType {
     MembershipOffer
     MembershipRejected
     OrganisationCreated
+    SafeVerified
     SaleEvent
     WelcomeMessage
 }
@@ -873,4 +898,9 @@ input UpsertTagInput {
     id: Int
     typeId: String!
     value: String
+}
+
+input VerifiedSafesFilter {
+    addresses: [String!]
+    after: String
 }

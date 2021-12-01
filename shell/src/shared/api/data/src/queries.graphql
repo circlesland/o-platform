@@ -867,6 +867,15 @@ query stream(
           displayCurrency
         }
       }
+      ...on SafeVerified {
+        safe_address
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+      }
     }
   }
 }
@@ -1158,4 +1167,16 @@ query mostRecentUbiSafeOfAccount($account: String!) {
 
 query invoice($invoiceId: Int!) {
   invoice(invoiceId: $invoiceId)
+}
+
+query verifiedSafes {
+  verifiedSafes {
+    timestamp
+    payload {
+      ...on SafeVerified {
+        organisation
+        safe_address
+      }
+    }
+  }
 }
