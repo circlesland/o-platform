@@ -18,7 +18,7 @@ import {
   findRoutableByParams,
   FindRouteResult,
 } from "../functions/findRoutableByParams";
-import { push } from "svelte-spa-router";
+import {pop, push} from "svelte-spa-router";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import {
@@ -76,7 +76,13 @@ const stack: {
   scrollY: number;
 }[] = [];
 
-async function onBack() {
+window.addEventListener('popstate', function(event) {
+  console.log("Popstate")
+});
+
+let pauseUrlChangeHandling  = false;
+
+async function onBack(navigate?:boolean) {
   log("onBack() - current stack: ", JSON.stringify(stack, null, 2));
   if (stack.length < 2) {
     await onRoot();
@@ -85,6 +91,10 @@ async function onBack() {
   stack.pop();
   const previous = stack[stack.length - 1];
   log("onBack() - new stack: ", JSON.stringify(stack, null, 2));
+
+  if (navigate) {
+    pauseUrlChangeHandling = true;
+  }
 
   const previousContext: {
     runtimeDapp: RuntimeDapp<any>;
@@ -123,8 +133,13 @@ async function onBack() {
     .filter((o) => !!o && o != "")
     .reduce((p, c) => p + "/" + c, "");
 
-  //stack.pop();
-  await push(`#/${previous.params.dappId}${path}`);
+  if (navigate) {
+    stack.pop();
+    await pop().then(() => {
+      handleUrlChanged();
+    });
+  }
+  // await push(`#/${previous.params.dappId}${path}`);
 }
 
 async function onStay() {
@@ -186,14 +201,6 @@ async function onRoot() {
   }
   const root = stack[0];
   log("onRoot() - new stack: ", JSON.stringify(stack, null, 2));
-
-  /*
-    const previousContext: {
-      runtimeDapp: RuntimeDapp<any>,
-      routable: Page<any, any>,
-      params: { [x: string]: any }
-    } = {};
-     */
 
   let nextRoute: FindRouteResult;
   let previousRuntimeDapp: RuntimeDapp<any>;
@@ -647,7 +654,7 @@ onMount(async () => {
     log("DappFrame event: ", event);
     switch (event.type) {
       case "shell.back":
-        onBack();
+        onBack(true);
         break;
       case "shell.root":
         onRoot();
@@ -861,6 +868,14 @@ let firstUrlChangedCall = true;
 
 async function handleUrlChanged() {
   log(`handleUrlChanged()`);
+
+  if (pauseUrlChangeHandling)
+  {
+    pauseUrlChangeHandling = false;
+    return;
+  }
+
+
   const navArgs = <GenerateNavManifestArgs>{};
   dapp = findDappById(params.dappId);
   runtimeDapp = dapp
@@ -893,6 +908,35 @@ async function handleUrlChanged() {
   );
 
   currentParams = JSON.parse(JSON.stringify(params));
+
+  // Check if the user navigated back using the browser's back-button
+  console.log("Check")
+  if (stack.length > 1) {
+    const lastStackItem = stack[stack.length -2];
+    const dc = lastStackItem.dappId.indexOf(":");
+    const lastDappId = dc ? lastStackItem.dappId.substring(0, dc) : lastStackItem.dappId;
+    if (lastDappId == currentParams.dappId) {
+      // check if the other parameters match as well
+      console.log("Check")
+      const match = Object.keys(currentParams).filter(o => o != "dappId").map((o, i) => {
+        const key = o;
+        const value = currentParams[key];
+        if (!value)
+          return true;
+
+        const routeParts = routable.routeParts.map(o => o.replace("=", ""));
+        if (routeParts[i].startsWith(":")) {
+          return lastStackItem.params[key] == value;
+          // find the old value and compare it to the new
+        }
+        return routeParts[i] == value || routeParts[i].startsWith(":");
+      }).reduce((p,c) => p && c, true);
+
+      if (match) {
+        onBack(false);
+      }
+    }
+  }
 
   if (findRouteResult.routable.type === "page") {
     const page: Page<any, any> = <any>findRouteResult.routable;
