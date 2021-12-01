@@ -15,8 +15,6 @@ import {
   InvitationTransactionDocument,
   InvitationTransactionQueryVariables,
   ProfileEvent,
-  SafeFundingTransactionDocument,
-  SafeFundingTransactionQueryVariables,
   WhoamiDocument,
   WhoamiQueryVariables,
 } from "../../../shared/api/data/types";
@@ -27,7 +25,6 @@ import { promptConnectOrCreate } from "./connectOrCreate/promptConnectOrCreate";
 import { promptRedeemInvitation } from "./invitation/promptRedeemInvitation";
 import { promptGetInvited } from "./invitation/promptGetInvited";
 import { acquireSession } from "../../o-passport/processes/identify/aquireSession/acquireSession2";
-import { fundSafeFromEoa } from "./fundSafeFromEoa/fundSafeFromEoa";
 import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
 import { HUB_ADDRESS } from "@o-platform/o-circles/dist/consts";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
@@ -72,33 +69,6 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           },
         },
       },
-      /*
-    checkAggregateState: {
-      invoke: {
-        src: "loadInitAggregateState",
-        onDone: [{
-          cond: (context) => !!context.initAggregateState.hubSignupTransaction,
-          actions: () => console.log("init.checkAggregateState.onDone: Got 'initAggregateState.hubSignupTransaction'. Going directly to 'success'."),
-          target: "success"
-        }, {
-          cond: (context) => !!context.initAggregateState.safeFundingTransaction,
-          actions: () => console.log("init.checkAggregateState.onDone: Got 'initAggregateState.safeFundingTransaction'. Going directly to 'signupForUbi'."),
-          target: "signupForUbi"
-        }, {
-          cond: (context) => !!context.initAggregateState.invitationTransaction && !context.initAggregateState.registration?.circlesAddress,
-          actions: () => console.log("init.checkAggregateState.onDone: Got 'initAggregateState.invitationTransaction' and no 'initAggregateState.registration.circlesAddress'. Going directly to '#connectOrCreate'."),
-          target: "#connectOrCreate"
-        }, {
-          cond: (context) => !!context.initAggregateState.invitationTransaction && !!context.initAggregateState.registration?.circlesAddress,
-          actions: () => console.log("init.checkAggregateState.onDone: Got 'initAggregateState.invitationTransaction' and 'initAggregateState.registration.circlesAddress'. Going directly to '#fundSafeFromEoa'."),
-          target: "#fundSafeFromEoa"
-        }, {
-          cond: (context) => !!context.initAggregateState.invitation,
-          actions: () => console.log("init.checkAggregateState.onDone: Got 'context.initAggregateState.invitation'. Going directly to '#'."),
-          target: "#"
-        }]
-      }
-    },*/
       register: {
         entry: () => {
           console.log("init.register");
@@ -270,7 +240,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
                   () => console.log("init.safe.load.GOT_SAFE"),
                   "assignSafeToContext",
                 ],
-                target: "checkInvitation",
+                target: "safeReady",
               },
             },
           },
@@ -294,38 +264,6 @@ export const initMachine = createMachine<InitContext, InitEvent>(
               SAFE_CREATED: {
                 actions: () =>
                   console.log("init.safe.connectOrCreate.SAFE_CREATED"),
-                target: "load",
-              },
-            },
-          },
-          checkInvitation: {
-            entry: () => console.log("init.safe.checkInvitation"),
-            invoke: { src: "loadSafeInvitationTransaction" },
-            on: {
-              SAFE_NOT_FUNDED: {
-                actions: () =>
-                  console.log("init.safe.checkInvitation.SAFE_NOT_FUNDED"),
-                target: "fundSafeFromEoa",
-              },
-              GOT_SAFE_FUNDED: {
-                actions: [
-                  () =>
-                    console.log("init.safe.checkInvitation.GOT_SAFE_FUNDED"),
-                  "assignSafeInvitationTransactionToContext",
-                ],
-                target: "safeReady",
-              },
-            },
-          },
-          fundSafeFromEoa: {
-            id: "fundSafeFromEoa",
-            entry: [
-              () => console.log("init.safe.fundSafeFromEoa"),
-              "fundSafeFromEoaAndRestart",
-            ],
-            on: {
-              FUNDED: {
-                actions: () => console.log("init.safe.fundSafeFromEoa.FUNDED"),
                 target: "load",
               },
             },
@@ -610,24 +548,6 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           });
         }
       },
-      loadSafeInvitationTransaction: (ctx) => async (callback) => {
-        if (!ctx.safe) throw new Error(`ctx.safe is not set`);
-
-        // TODO: This is missing an error response
-        const safeFundingTransaction = await ApiClient.query<
-          ProfileEvent,
-          SafeFundingTransactionQueryVariables
-        >(SafeFundingTransactionDocument, {});
-
-        if (safeFundingTransaction) {
-          callback({
-            type: "GOT_SAFE_FUNDED",
-            transaction: safeFundingTransaction,
-          });
-        } else {
-          callback({ type: "SAFE_NOT_FUNDED" });
-        }
-      },
       loadUbi: (ctx) => async (callback) => {
         // TODO: This is missing an error response
         const hubSignupTransaction = await ApiClient.query<
@@ -715,17 +635,6 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       promptRedeemInvitationAndRestart: () => {
         window.o.runProcess(promptRedeemInvitation, {});
       },
-      fundSafeFromEoaAndRestart: () => {
-        loadProfile().then((profile) => {
-          window.o.runProcess(fundSafeFromEoa, {
-            successAction: (data) => {
-              (<any>window).runInitMachine();
-            },
-            safeAddress: profile.circlesAddress,
-            eoaAddress: profile.circlesSafeOwner,
-          });
-        });
-      },
       assignSessionInfoToContext: assign({
         session: (ctx, event) => {
           return event.type == "GOT_SESSION" ? event.session : undefined;
@@ -763,17 +672,6 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           return event.type == "GOT_REDEEMED" ? event.transaction : undefined;
         },
       }),
-      assignSafeInvitationTransactionToContext: assign({
-        safeInvitationTransaction: (ctx, event) => {
-          return event.type == "GOT_SAFE_FUNDED"
-            ? event.transaction
-            : undefined;
-        },
-      }),
-      fundSafeFromEoa: () => {
-        // TODO: Transfer the invitation amount minus 0.02 xDai from the user's EOA to the safe
-        //       and index the transaction.
-      },
       assignUbiToContext: assign({
         ubi: (ctx, event) => (event.type == "GOT_UBI" ? event.ubi : undefined),
       }),

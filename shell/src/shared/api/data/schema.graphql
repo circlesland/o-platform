@@ -255,7 +255,6 @@ type InitAggregateState {
     invitation: ClaimedInvitation
     invitationTransaction: String
     registration: Profile
-    safeFundingTransaction: String
 }
 
 type InvitationCreated implements IEventPayload {
@@ -530,7 +529,6 @@ type Query {
     profilesById(ids: [Int!]!): [Profile!]!
     profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
     regions(pagination: PaginationArgs): [Organisation!]!
-    safeFundingTransaction: ProfileEvent
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
     tagById(id: Int!): Tag

@@ -32,7 +32,6 @@ query initAggregateState {
       claimedAt
     }
     invitationTransaction
-    safeFundingTransaction
     registration {
       id
       firstName
@@ -51,12 +50,6 @@ query claimedInvitation {
 
 query invitationTransaction {
   invitationTransaction {
-    transaction_hash
-  }
-}
-
-query safeFundingTransaction {
-  safeFundingTransaction {
     transaction_hash
   }
 }

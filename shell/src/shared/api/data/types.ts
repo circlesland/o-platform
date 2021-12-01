@@ -356,7 +356,6 @@ export type InitAggregateState = {
   invitation?: Maybe<ClaimedInvitation>;
   invitationTransaction?: Maybe<Scalars['String']>;
   registration?: Maybe<Profile>;
-  safeFundingTransaction?: Maybe<Scalars['String']>;
 };
 
 export type InvitationCreated = IEventPayload & {
@@ -824,7 +823,6 @@ export type Query = {
   profilesById: Array<Profile>;
   profilesBySafeAddress: Array<Profile>;
   regions: Array<Organisation>;
-  safeFundingTransaction?: Maybe<ProfileEvent>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
   tagById?: Maybe<Tag>;
@@ -1139,6 +1137,7 @@ export type UpsertOrganisationInput = {
   circlesAddress?: Maybe<Scalars['String']>;
   cityGeonameid?: Maybe<Scalars['Int']>;
   description?: Maybe<Scalars['String']>;
+  displayCurrency?: Maybe<DisplayCurrency>;
   id?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
 };
@@ -1152,6 +1151,7 @@ export type UpsertProfileInput = {
   circlesTokenAddress?: Maybe<Scalars['String']>;
   cityGeonameid?: Maybe<Scalars['Int']>;
   country?: Maybe<Scalars['String']>;
+  displayCurrency?: Maybe<DisplayCurrency>;
   displayTimeCircles?: Maybe<Scalars['Boolean']>;
   dream?: Maybe<Scalars['String']>;
   emailAddress?: Maybe<Scalars['String']>;
@@ -1634,7 +1634,7 @@ export type InitAggregateStateQuery = (
   { __typename?: 'Query' }
   & { initAggregateState?: Maybe<(
     { __typename?: 'InitAggregateState' }
-    & Pick<InitAggregateState, 'hubSignupTransaction' | 'invitationTransaction' | 'safeFundingTransaction'>
+    & Pick<InitAggregateState, 'hubSignupTransaction' | 'invitationTransaction'>
     & { invitation?: Maybe<(
       { __typename?: 'ClaimedInvitation' }
       & Pick<ClaimedInvitation, 'claimedAt'>
@@ -1662,17 +1662,6 @@ export type InvitationTransactionQueryVariables = Exact<{ [key: string]: never; 
 export type InvitationTransactionQuery = (
   { __typename?: 'Query' }
   & { invitationTransaction?: Maybe<(
-    { __typename?: 'ProfileEvent' }
-    & Pick<ProfileEvent, 'transaction_hash'>
-  )> }
-);
-
-export type SafeFundingTransactionQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SafeFundingTransactionQuery = (
-  { __typename?: 'Query' }
-  & { safeFundingTransaction?: Maybe<(
     { __typename?: 'ProfileEvent' }
     & Pick<ProfileEvent, 'transaction_hash'>
   )> }
@@ -2902,7 +2891,6 @@ export const InitAggregateStateDocument = gql`
       claimedAt
     }
     invitationTransaction
-    safeFundingTransaction
     registration {
       id
       firstName
@@ -2923,13 +2911,6 @@ export const ClaimedInvitationDocument = gql`
 export const InvitationTransactionDocument = gql`
     query invitationTransaction {
   invitationTransaction {
-    transaction_hash
-  }
-}
-    `;
-export const SafeFundingTransactionDocument = gql`
-    query safeFundingTransaction {
-  safeFundingTransaction {
     transaction_hash
   }
 }
@@ -4085,9 +4066,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     invitationTransaction(variables?: InvitationTransactionQueryVariables): Promise<InvitationTransactionQuery> {
       return withWrapper(() => client.request<InvitationTransactionQuery>(print(InvitationTransactionDocument), variables));
-    },
-    safeFundingTransaction(variables?: SafeFundingTransactionQueryVariables): Promise<SafeFundingTransactionQuery> {
-      return withWrapper(() => client.request<SafeFundingTransactionQuery>(print(SafeFundingTransactionDocument), variables));
     },
     hubSignupTransaction(variables?: HubSignupTransactionQueryVariables): Promise<HubSignupTransactionQuery> {
       return withWrapper(() => client.request<HubSignupTransactionQuery>(print(HubSignupTransactionDocument), variables));

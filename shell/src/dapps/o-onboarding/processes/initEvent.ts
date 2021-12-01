@@ -95,11 +95,6 @@ export type InitEvent = {
   type: "GOT_SAFE",
   safe: SafeData
 } | {
-  type: "SAFE_NOT_FUNDED"
-} | {
-  type: "GOT_SAFE_FUNDED",
-  transaction: ProfileEvent
-} | {
   type: "NO_UBI"
 } | {
   type: "GOT_UBI",
