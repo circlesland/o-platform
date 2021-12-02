@@ -5,7 +5,6 @@ import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGrap
 import { onMount } from "svelte";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import { Currency } from "../../../shared/currency";
 import {
   CrcHubTransfer,

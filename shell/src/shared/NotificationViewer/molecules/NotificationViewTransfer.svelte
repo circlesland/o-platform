@@ -1,9 +1,7 @@
 <script lang="ts">
 import NotificationProfile from "./NotificationProfile.svelte";
-import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { Currency } from "../../../shared/currency";
 import { CrcHubTransfer, ProfileEvent } from "../../api/data/types";
-import Icons from "src/shared/molecules/Icons.svelte";
 import { me } from "../../stores/me";
 
 export let event: ProfileEvent;
@@ -20,14 +18,15 @@ if (payload) {
 
 <div class="flex flex-col space-y-4">
   <div class="self-center text-6xl text-center text-success font-heading">
-    +{displayCirclesAmount(
+    +{Currency.instance().displayAmount(
       payload.flow,
       event.timestamp,
-      ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+      $me.displayCurrency
     )}
-    <Icons icon="circlessimple" size="10" />
-  </div>
 
+    <span class=" font-primary"
+      >{Currency.currencySymbol[$me.displayCurrency]}</span>
+  </div>
   <div class="self-center pb-2 text-2xl text-center font-heading">from</div>
   <div class="pb-4">
     <NotificationProfile profile="{payload.from_profile}" />

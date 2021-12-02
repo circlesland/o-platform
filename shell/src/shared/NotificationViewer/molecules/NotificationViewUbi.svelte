@@ -1,7 +1,7 @@
 <script lang="ts">
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { Currency } from "../../../shared/currency";
 import { me } from "../../stores/me";
-import Icons from "src/shared/molecules/Icons.svelte";
+
 import { CrcMinting, ProfileEvent } from "../../api/data/types";
 export let event: ProfileEvent;
 let payload: CrcMinting = <CrcMinting>event.payload;
@@ -10,11 +10,12 @@ let payload: CrcMinting = <CrcMinting>event.payload;
 <div class="mt-1 text-sm text-center text-dark-lightest">Ca-ching!</div>
 
 <div class="self-center text-6xl text-center text-success font-heading">
-  +{displayCirclesAmount(
+  +{Currency.instance().displayAmount(
     payload.value,
     event.timestamp,
-    true,
-    ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+    $me.displayCurrency
   )}
-  <Icons icon="circlessimple" size="10" />
+
+  <span class=" font-primary"
+    >{Currency.currencySymbol[$me.displayCurrency]}</span>
 </div>

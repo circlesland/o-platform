@@ -1,6 +1,7 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { Currency } from "../../../shared/currency";
+import { displayCirclesAmount } from "../../../shared/functions/displayCirclesAmount";
 import { me } from "../../../shared/stores/me";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {
@@ -85,19 +86,18 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
       } you`;
       break;
     case EventType.CrcHubTransfer:
-      message = `${displayName} sent you ${displayCirclesAmount(
-              mostRecentDisplayEvent.value,
-              null,
-              true,
-              ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
-      )} ⦿`;
+      message = `${displayName} sent you ${Currency.instance().displayAmount(
+        mostRecentDisplayEvent.value,
+        null,
+        $me.displayCurrency
+      )} ${Currency.currencySymbol[$me.displayCurrency]}`;
       break;
     case EventType.Erc20Transfer:
       message = `${displayName} sent you ${displayCirclesAmount(
-              mostRecentDisplayEvent.value,
-              null,
-              true,
-              false
+        mostRecentDisplayEvent.value,
+        null,
+        true,
+        false
       )} tokens`;
       break;
     case EventType.ChatMessage:
@@ -120,19 +120,24 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
     case EventType.CrcHubTransfer:
       message = `You sent ${displayName} 
       ${displayCirclesAmount(
-              mostRecentDisplayEvent.value,
-              null,
-              true,
-              ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+        mostRecentDisplayEvent.value,
+        null,
+        true,
+        ($me && $me.displayTimeCircles !== undefined
+          ? $me.displayTimeCircles
+          : true) ||
+          ($me && $me.displayTimeCircles !== undefined
+            ? $me.displayTimeCircles
+            : true) === undefined
       )} ⦿`;
       break;
     case EventType.Erc20Transfer:
       message = `You sent ${displayName}
       ${displayCirclesAmount(
-              mostRecentDisplayEvent.value,
-              null,
-              true,
-              false
+        mostRecentDisplayEvent.value,
+        null,
+        true,
+        false
       )} token`;
       break;
     case EventType.ChatMessage:
@@ -169,7 +174,7 @@ function goToProfile(e, path?: string) {
       title: displayName,
       subTitle: message,
       action: () => loadDetailPage(param.contactAddress),
-      profileLink: true
+      profileLink: true,
     }}">
     <div slot="itemCardEndSmallElement">
       {#if param.timestamp}
