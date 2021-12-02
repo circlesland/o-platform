@@ -143,6 +143,27 @@ function openDetail(transfer: ProfileEvent) {
             ]}</span>
         </span>
       </div>
+      {#if $me.displayCurrency && $me.displayCurrency != "TIME_CRC"}
+        <div class="self-end m-auto -mt-4 space-y-2 text-center max-w-max">
+          {Currency.instance().displayAmount(
+            transfer
+              ? (transfer.payload.value
+                  ? transfer.payload.value
+                  : transfer.payload.flow
+                ).toString()
+              : "0",
+            transfer.timestamp,
+            "TIME_CRC",
+            transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
+          )}
+          <span class=" font-primary"
+            >{Currency.currencySymbol["TIME_CRC"]}</span>
+
+          <small class="block whitespace-nowrap">
+            <!--{$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ''}-->
+          </small>
+        </div>
+      {/if}
       <UserImage profile="{targetProfile}" size="{36}" gradientRing="{true}" />
       <div
         class="cursor-pointer"
