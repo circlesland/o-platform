@@ -1,5 +1,5 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
@@ -7,8 +7,12 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import {QueryTagsInput, Tag, TagsDocument} from "../../../shared/api/data/types";
-import {ApiClient} from "../../../shared/apiConnection";
+import {
+  QueryTagsInput,
+  Tag,
+  TagsDocument,
+} from "../../../shared/api/data/types";
+import { ApiClient } from "../../../shared/apiConnection";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
@@ -21,10 +25,13 @@ async function load() {
   if (isLoading) return;
 
   isLoading = true;
-  const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(TagsDocument, {
-    typeId_in: ["o-marketplace:offer:category:1"]
-  });
-  categories = categoryResult.map(o => o.value);
+  const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(
+    TagsDocument,
+    {
+      typeId_in: ["o-marketplace:offer:category:1"],
+    }
+  );
+  categories = categoryResult.map((o) => o.value);
   isLoading = false;
 }
 

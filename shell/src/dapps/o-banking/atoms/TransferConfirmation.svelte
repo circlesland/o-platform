@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import Time from "svelte-time";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 
 import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";

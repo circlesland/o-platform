@@ -15,7 +15,7 @@ import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { push } from "svelte-spa-router";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { displayableName } from "../../../shared/functions/stringHelper";

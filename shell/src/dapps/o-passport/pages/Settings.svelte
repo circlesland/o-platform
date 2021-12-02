@@ -1,6 +1,6 @@
 <script lang="ts">
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
-import Card from "src/shared/atoms/Card.svelte";
+import Card from "../../../shared/atoms/Card.svelte";
 import { me } from "../../../shared/stores/me";
 import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
 import { onMount } from "svelte";

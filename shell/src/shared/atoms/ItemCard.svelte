@@ -1,5 +1,5 @@
 <script lang="ts">
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "./UserImage.svelte";
 import { isMobile } from "../functions/isMobile";
 
 export let params = {
@@ -51,7 +51,7 @@ function cardAction() {
           <UserImage
             profile="{params.imageProfile}"
             size="{12}"
-            profileLink={params.profileLink} />
+            profileLink="{params.profileLink}" />
         {:else if params.imageUrl}
           <div class="m-auto rounded-full w-11 h-11 sm:w-12 sm:h-12">
             <span

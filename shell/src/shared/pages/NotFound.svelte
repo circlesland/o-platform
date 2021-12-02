@@ -1,5 +1,5 @@
 <script lang="ts">
-import TopNav from "src/shared/atoms/TopNav.svelte";
+import TopNav from "../atoms/TopNav.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 

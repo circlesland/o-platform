@@ -1,9 +1,9 @@
 <script lang="ts">
 import NotificationProfile from "./NotificationProfile.svelte";
 import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { displayCirclesAmount } from "../../functions/displayCirclesAmount";
 import { CrcHubTransfer, ProfileEvent } from "../../api/data/types";
-import Icons from "src/shared/molecules/Icons.svelte";
+import Icons from "../../molecules/Icons.svelte";
 import { me } from "../../stores/me";
 
 export let event: ProfileEvent;
@@ -23,7 +23,12 @@ if (payload) {
     +{displayCirclesAmount(
       payload.flow,
       event.timestamp,
-      ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+      ($me && $me.displayTimeCircles !== undefined
+        ? $me.displayTimeCircles
+        : true) ||
+        ($me && $me.displayTimeCircles !== undefined
+          ? $me.displayTimeCircles
+          : true) === undefined
     )}
     <Icons icon="circlessimple" size="10" />
   </div>

@@ -1,8 +1,7 @@
 <script>
-import { clickOutside } from "src/shared/functions/clickOutside.ts";
+import { clickOutside } from "../functions/clickOutside";
 import { createEventDispatcher, onMount } from "svelte";
-
-import { dapps } from "src/loader";
+import { dapps } from "../../loader";
 import DetailActionBar from "./DetailActionBar.svelte";
 
 let categories = [

@@ -4,7 +4,7 @@ import { CurrencyTransferContext } from "./currencyTransferContext";
 import ProcessNavigation from "./ProcessNavigation.svelte";
 import Select from "../../../shell/src/shared/molecules/Select/Select.svelte";
 import Item from "./DropdownCurrencyItem.svelte";
-import Icons from "../../../shell/src/shared/molecules/Icons.svelte";
+
 import circlesIcon from "./dropdownItems/CirclesIcon.svelte";
 import xdaiIcon from "./dropdownItems/XdaiIcon.svelte";
 import { RpcGateway } from "../../o-circles/dist/rpcGateway";

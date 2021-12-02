@@ -1,19 +1,22 @@
 <script lang="ts">
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { createInvite } from "../../o-onboarding/processes/createInvite/createInvite";
 import {
   CreatedInvitation,
-  MyInvitationsDocument, MyInvitationsQueryVariables,
+  MyInvitationsDocument,
+  MyInvitationsQueryVariables,
 } from "../../../shared/api/data/types";
-import {ApiClient} from "../../../shared/apiConnection";
+import { ApiClient } from "../../../shared/apiConnection";
 
 let myInvitations: CreatedInvitation[] = [];
 
 async function reload() {
-  const invitations = await ApiClient.query<CreatedInvitation[], MyInvitationsQueryVariables>(
-          MyInvitationsDocument, {});
+  const invitations = await ApiClient.query<
+    CreatedInvitation[],
+    MyInvitationsQueryVariables
+  >(MyInvitationsDocument, {});
 
   myInvitations = invitations ?? [];
 }

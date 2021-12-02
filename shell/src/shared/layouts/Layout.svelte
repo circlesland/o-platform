@@ -3,7 +3,7 @@ import LeftDesktop from "./desktop/Left.svelte";
 import LeftMobile from "./mobile/Left.svelte";
 import RightDesktop from "./desktop/Right.svelte";
 import Center from "./Center.svelte";
-import NextNav from "src/shared/molecules/NextNav/NextNav.svelte";
+import NextNav from "../molecules/NextNav/NextNav.svelte";
 import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
 
 import { RuntimeLayout } from "./layout";

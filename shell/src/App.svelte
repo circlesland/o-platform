@@ -1,248 +1,258 @@
 <script context="module" lang="ts">
-  import {IShell} from "./shell";
-  import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
-  import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
-  import LoadingIndicator from "./shared/atoms/LoadingIndicator.svelte";
-  import Success from "./shared/atoms/Success.svelte";
-  import ErrorIndicator from "./shared/atoms/Error.svelte";
-  import {useMachine} from "xstate-svelte";
-  import {Subject, Subscription} from "rxjs";
-  import {ProcessEvent} from "@o-platform/o-process/dist/interfaces/processEvent";
-  import {AnyEventObject} from "xstate";
-  import {Bubble} from "@o-platform/o-process/dist/events/bubble";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {Process} from "@o-platform/o-process/dist/interfaces/process";
-  import {Sinker} from "@o-platform/o-process/dist/events/sinker";
-  import {shellEvents} from "./shared/shellEvents";
-  import {ApiConnection} from "./shared/apiConnection";
-  import {getProcessContext} from "./main";
-  import {Stopped} from "@o-platform/o-process/dist/events/stopped";
-  import {getSdk} from "./shared/api/data/types";
-  import {GraphQLClient} from "graphql-request";
-  import {me} from "./shared/stores/me"
+import { IShell } from "./shell";
+import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
+import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
+import { Generate } from "@o-platform/o-utils/dist/generate";
+import LoadingIndicator from "./shared/atoms/LoadingIndicator.svelte";
+import Success from "./shared/atoms/Success.svelte";
+import ErrorIndicator from "./shared/atoms/Error.svelte";
+import { useMachine } from "xstate-svelte";
+import { Subject, Subscription } from "rxjs";
+import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
+import { AnyEventObject } from "xstate";
+import { Bubble } from "@o-platform/o-process/dist/events/bubble";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { Process } from "@o-platform/o-process/dist/interfaces/process";
+import { Sinker } from "@o-platform/o-process/dist/events/sinker";
+import { shellEvents } from "./shared/shellEvents";
+import { ApiConnection } from "./shared/apiConnection";
+import { getProcessContext } from "./main";
+import { Stopped } from "@o-platform/o-process/dist/events/stopped";
+import { getSdk } from "./shared/api/data/types";
+import { GraphQLClient } from "graphql-request";
+import { me } from "./shared/stores/me";
 
-  const runningProcesses: {
-    [id: string]: Process;
-  } = {};
+const runningProcesses: {
+  [id: string]: Process;
+} = {};
 
-  const shell: IShell = {
-    stateMachines: {
-      findById(processId: string) {
-        return runningProcesses[processId];
-      },
-      async run<TContext>(
-        definition: ProcessDefinition<any, any>,
-        contextModifier?: (
-          processContext: ProcessContext<any>
-        ) => Promise<TContext>
-      ) {
-        const processId = Generate.randomHexString(8);
-        console.log(
-          `Starting process (id: ${processId}) with definition:`,
-          definition
-        );
+const shell: IShell = {
+  stateMachines: {
+    findById(processId: string) {
+      return runningProcesses[processId];
+    },
+    async run<TContext>(
+      definition: ProcessDefinition<any, any>,
+      contextModifier?: (
+        processContext: ProcessContext<any>
+      ) => Promise<TContext>
+    ) {
+      const processId = Generate.randomHexString(8);
+      console.log(
+        `Starting process (id: ${processId}) with definition:`,
+        definition
+      );
 
-        const machine = (<any>definition).stateMachine(
-          LoadingIndicator,
-          Success,
-          ErrorIndicator
-        );
-        const machineOptions = {
-          context: contextModifier
-            ? await contextModifier(await getProcessContext())
-            : await getProcessContext(),
-        };
-        const {service, state, send} = useMachine(machine, machineOptions);
+      const machine = (<any>definition).stateMachine(
+        LoadingIndicator,
+        Success,
+        ErrorIndicator
+      );
+      const machineOptions = {
+        context: contextModifier
+          ? await contextModifier(await getProcessContext())
+          : await getProcessContext(),
+      };
+      const { service, state, send } = useMachine(machine, machineOptions);
 
-        const outEvents = new Subject<ProcessEvent>();
-        const inEvents = new Subject<ProcessEvent>();
+      const outEvents = new Subject<ProcessEvent>();
+      const inEvents = new Subject<ProcessEvent>();
 
-        let lastInEvent: AnyEventObject;
+      let lastInEvent: AnyEventObject;
 
-        service.onTransition((state1, event) => {
-          // console.log(`Shellprocess state: ${state1.value}, event: ${event.type}`)
-          if (event.type == "error.platform" || event.type == "xstate.error") {
-            console.error(
-              `An error occurred during the execution of process '${definition.name}'::`,
-              event
-            );
-          }
-          if (event.type == "process.ipc.bubble") {
-            process.lastReceivedBubble = <Bubble>event;
-          }
-
-          //console.log(`window.o.stateMachines: forwarding event to the processEvents stream of process '${definition.name}':`, event);
-          if (event == lastInEvent) {
-            // TODO: Hack: Skip this event - it's 'reflected'
-            lastInEvent = null;
-            return;
-          }
-          outEvents.next(<any>{
-            stopped: false,
-            currentState: state1,
-            previousState: state1.history,
-            event: event,
-          });
-        });
-
-        service.onStop(() => {
-          outEvents.next({
-            stopped: true,
-          });
-
-          delete runningProcesses[processId];
-          window.o.publishEvent(new Stopped(processId));
-        });
-
-        function isProcessEvent(
-          event: PlatformEvent | ProcessEvent
-        ): event is ProcessEvent {
-          return (event as ProcessEvent).currentState !== null;
+      service.onTransition((state1, event) => {
+        // console.log(`Shellprocess state: ${state1.value}, event: ${event.type}`)
+        if (event.type == "error.platform" || event.type == "xstate.error") {
+          console.error(
+            `An error occurred during the execution of process '${definition.name}'::`,
+            event
+          );
+        }
+        if (event.type == "process.ipc.bubble") {
+          process.lastReceivedBubble = <Bubble>event;
         }
 
-        const process: Process = {
-          id: processId,
-          events: outEvents,
-          inEvents: inEvents,
-          lastReceivedBubble: null,
-          sendEvent: (event: PlatformEvent & { type: string }) => {
-            if (isProcessEvent(event)) {
-              lastInEvent = event;
-              inEvents.next(<any>{
-                event: event,
-              });
-            }
-            send(event);
-          },
-          sendAnswer(answer: PlatformEvent) {
-            if (!this.lastReceivedBubble || this.lastReceivedBubble.noReply) {
-              throw new Error(
-                "Cannot answer because no Bubble event was received before or the event hat the 'noReply' property set."
-              );
-            }
-            process.sendEvent(<Sinker>{
-              type: "process.ipc.sinker",
-              levels: this.lastReceivedBubble.levels ?? 0,
-              backTrace: this.lastReceivedBubble.trace,
-              wrappedEvent: answer,
-            });
-          },
-        };
+        //console.log(`window.o.stateMachines: forwarding event to the processEvents stream of process '${definition.name}':`, event);
+        if (event == lastInEvent) {
+          // TODO: Hack: Skip this event - it's 'reflected'
+          lastInEvent = null;
+          return;
+        }
+        outEvents.next(<any>{
+          stopped: false,
+          currentState: state1,
+          previousState: state1.history,
+          event: event,
+        });
+      });
 
-        service.start();
-
-        runningProcesses[processId] = process;
-
-        return process;
-      },
-    },
-    events: shellEvents.observable,
-    publishEvent: (event) => {
-      if (event.type == "shell.progress") {
-        console.log("Progress event: ", event);
-      }
-      return shellEvents.publish(event);
-    },
-    requestEvent: <TResult extends PlatformEvent>(requestEvent) => {
-      const timeoutPeriod = 100;
-      return new Promise<TResult>((resolve, reject) => {
-        let answerSubscription: Subscription;
-        let answered = false;
-
-        let timeout = setTimeout(() => {
-          if (answered) return;
-
-          reject(
-            new Error(
-              `The request event with the id ${requestEvent.id} wasn't answered within ${timeoutPeriod} ms`
-            )
-          );
-        }, timeoutPeriod);
-
-        answerSubscription = window.o.events.subscribe((event) => {
-          if (event.responseToId != requestEvent.id) {
-            return;
-          }
-
-          answerSubscription.unsubscribe();
-          clearTimeout(timeout);
-
-          resolve(<TResult>event);
+      service.onStop(() => {
+        outEvents.next({
+          stopped: true,
         });
 
-        window.o.publishEvent(requestEvent);
+        delete runningProcesses[processId];
+        window.o.publishEvent(new Stopped(processId));
       });
+
+      function isProcessEvent(
+        event: PlatformEvent | ProcessEvent
+      ): event is ProcessEvent {
+        return (event as ProcessEvent).currentState !== null;
+      }
+
+      const process: Process = {
+        id: processId,
+        events: outEvents,
+        inEvents: inEvents,
+        lastReceivedBubble: null,
+        sendEvent: (event: PlatformEvent & { type: string }) => {
+          if (isProcessEvent(event)) {
+            lastInEvent = event;
+            inEvents.next(<any>{
+              event: event,
+            });
+          }
+          send(event);
+        },
+        sendAnswer(answer: PlatformEvent) {
+          if (!this.lastReceivedBubble || this.lastReceivedBubble.noReply) {
+            throw new Error(
+              "Cannot answer because no Bubble event was received before or the event hat the 'noReply' property set."
+            );
+          }
+          process.sendEvent(<Sinker>{
+            type: "process.ipc.sinker",
+            levels: this.lastReceivedBubble.levels ?? 0,
+            backTrace: this.lastReceivedBubble.trace,
+            wrappedEvent: answer,
+          });
+        },
+      };
+
+      service.start();
+
+      runningProcesses[processId] = process;
+
+      return process;
     },
-  };
+  },
 
-  async function connectToApi() {
-    console.log(`Connecting to __AUTH_ENDPOINT__ ..`);
-    shell.authClient = new ApiConnection("__AUTH_ENDPOINT__/");
-
-    console.log(`Connecting to __API_ENDPOINT__ ..`);
-    shell.apiClient = new ApiConnection("__API_ENDPOINT__/", "include");
-
-    console.log(`Connecting to __CIRCLES_SUBGRAPH_ENDPOINT__ ..`);
-    shell.theGraphClient = new ApiConnection("__CIRCLES_SUBGRAPH_ENDPOINT__");
-  }
-
-  connectToApi().then(() => {
-    console.log(`Connected to __AUTH_ENDPOINT__ and __API_ENDPOINT__`);
-  });
-
-  declare global {
-    interface Window {
-      o: IShell;
-      runInitMachine: () => void;
+  events: shellEvents.observable,
+  publishEvent: (event) => {
+    if (event.type == "shell.progress") {
+      console.log("Progress event: ", event);
     }
-  }
+    return shellEvents.publish(event);
+  },
+  requestEvent: <TResult extends PlatformEvent>(requestEvent) => {
+    const timeoutPeriod = 100;
+    return new Promise<TResult>((resolve, reject) => {
+      let answerSubscription: Subscription;
+      let answered = false;
 
-  window.o = shell;
+      let timeout = setTimeout(() => {
+        if (answered) return;
+
+        reject(
+          new Error(
+            `The request event with the id ${requestEvent.id} wasn't answered within ${timeoutPeriod} ms`
+          )
+        );
+      }, timeoutPeriod);
+
+      answerSubscription = window.o.events.subscribe((event) => {
+        if (event.responseToId != requestEvent.id) {
+          return;
+        }
+
+        answerSubscription.unsubscribe();
+        clearTimeout(timeout);
+
+        resolve(<TResult>event);
+      });
+
+      window.o.publishEvent(requestEvent);
+    });
+  },
+};
+
+async function connectToApi() {
+  console.log(`Now Connecting to ${__SNOWPACK_ENV__.AUTH_ENDPOINT} ..`);
+  shell.authClient = new ApiConnection(`${__SNOWPACK_ENV__.AUTH_ENDPOINT}/`);
+  console.log(`Now Connecting to ${__SNOWPACK_ENV__.AUTH_ENDPOINT} ..`);
+  shell.apiClient = new ApiConnection(
+    `${__SNOWPACK_ENV__.API_ENDPOINT}/`,
+    "include"
+  );
+  console.log(
+    `Now Connecting to ${__SNOWPACK_ENV__.CIRCLES_SUBGRAPH_ENDPOINT} ..`
+  );
+  shell.theGraphClient = new ApiConnection(
+    `${__SNOWPACK_ENV__.CIRCLES_SUBGRAPH_ENDPOINT}`
+  );
+}
+
+connectToApi().then(() => {
+  console.log(
+    ` Connected to ${__SNOWPACK_ENV__.AUTH_ENDPOINT} and ${__SNOWPACK_ENV__.API_ENDPOINT}`
+  );
+});
+
+declare global {
+  interface Window {
+    o: IShell;
+    runInitMachine: () => void;
+  }
+}
+
+window.o = shell;
 </script>
 
 <script lang="ts">
-  import "./shared/css/tailwind.css";
+import "./shared/css/tailwind.css";
 
-  import Router from "svelte-spa-router";
-  import {SvelteToast} from "./shared/molecules/Toast";
-  import DappFrame from "src/shared/molecules/DappFrame.svelte";
-  import NotFound from "src/shared/pages/NotFound.svelte";
-  import {interpret} from "xstate";
-  import {initMachine} from "./dapps/o-onboarding/processes/init";
-  import {ubiMachine} from "./shared/ubiTimer2";
+import Router from "svelte-spa-router";
+import { SvelteToast } from "./shared/molecules/Toast";
+import DappFrame from "./shared/molecules/DappFrame.svelte";
+import NotFound from "./shared/pages/NotFound.svelte";
+import { interpret } from "xstate";
+import { initMachine } from "./dapps/o-onboarding/processes/init";
+import { ubiMachine } from "./shared/ubiTimer2";
 
-  let ubiMachineInterpreter: any;
+let ubiMachineInterpreter: any;
 
-  window.runInitMachine = () => {
-    interpret(initMachine)
-      .onEvent((event) => {
-        // console.log("InitMachine event:", event);
-      })
-      .onTransition((state) => {
-        // console.log("initMachine.transition:", state);
-      })
-      .start();
-  };
-  // window.runInitMachine();
+window.runInitMachine = () => {
+  interpret(initMachine)
+    .onEvent((event) => {
+      // console.log("InitMachine event:", event);
+    })
+    .onTransition((state) => {
+      // console.log("initMachine.transition:", state);
+    })
+    .start();
+};
+// window.runInitMachine();
 
-  let _routes = {
-    "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
-    "*": NotFound,
-  };
+let _routes = {
+  "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
+  "*": NotFound,
+};
 </script>
 
-<SvelteToast/>
+<SvelteToast />
 
-<Router routes="{_routes}" on:routeLoaded={() => {
+<Router
+  routes="{_routes}"
+  on:routeLoaded="{() => {
     if (!ubiMachineInterpreter && $me && $me.circlesAddress) {
-        ubiMachineInterpreter = interpret(ubiMachine)
-          .onEvent((event) => {
-            console.log("UBI machine event:", event);
-          })
-          .onTransition((state) => {
-            console.log("UBI machine transition:", state.value);
-          })
-          .start();
+      ubiMachineInterpreter = interpret(ubiMachine)
+        .onEvent((event) => {
+          console.log('UBI machine event:', event);
+        })
+        .onTransition((state) => {
+          console.log('UBI machine transition:', state.value);
+        })
+        .start();
     }
-}}/>
+  }}" />

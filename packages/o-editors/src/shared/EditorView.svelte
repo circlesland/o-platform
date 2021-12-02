@@ -1,5 +1,4 @@
 <script lang="ts">
-import NavSteps from "src/shared/molecules/NavSteps.svelte";
 import { EditorContext } from "./../editorContext";
 
 export let context: EditorContext;

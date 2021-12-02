@@ -1,5 +1,5 @@
 <script lang="ts">
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../atoms/UserImage.svelte";
 import { Profile, Organisation } from "../../api/data/types";
 
 export let profile: Profile | Organisation;

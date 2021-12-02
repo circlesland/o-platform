@@ -1,17 +1,18 @@
 <script lang="ts">
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {Subscription} from "rxjs";
-  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-  import ChatListCard from "../atoms/ChatListCard.svelte";
-  import {contacts} from "../../../shared/stores/contacts";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { Subscription } from "rxjs";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+import ChatListCard from "../atoms/ChatListCard.svelte";
+import { contacts } from "../../../shared/stores/contacts";
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  let error: string | undefined = undefined;
-  let shellEventSubscription: Subscription;
+let error: string | undefined = undefined;
+let shellEventSubscription: Subscription;
 </script>
+
 <template lang="pug">
   
 SimpleHeader(runtimeDapp="{runtimeDapp}" routable="{routable}")

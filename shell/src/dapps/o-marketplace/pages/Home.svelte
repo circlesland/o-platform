@@ -1,5 +1,5 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import OfferCard from "../atoms/OfferCard.svelte";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";

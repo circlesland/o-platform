@@ -2,7 +2,7 @@
 /*
  * Edge Case: if the very first items are both super long, it will break into a new line even before clicking on 'more'
  */
-import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
+import ActionListItem from "../atoms/ActionListItem.svelte";
 export let actions: {
   icon: string;
   title: string;

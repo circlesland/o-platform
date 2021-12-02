@@ -1,9 +1,7 @@
 <script lang="ts">
-import Icons from "src/shared/molecules/Icons.svelte";
-import { clickOutside } from "src/shared/functions/clickOutside.ts";
 import { onMount } from "svelte";
-import LinkPill from "src/shared/atoms/LinkPill.svelte";
-import { getRouteList } from "src/shared/functions/getRouteList";
+import LinkPill from "../atoms/LinkPill.svelte";
+import { getRouteList } from "../functions/getRouteList";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 
 export let runtimeDapp: RuntimeDapp<any>;

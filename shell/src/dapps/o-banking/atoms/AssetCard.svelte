@@ -1,8 +1,6 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
-import Card from "src/shared/atoms/Card.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import { AssetBalance } from "../../../shared/api/data/types";
 
 export let symbol: string;
 export let title: string;
@@ -28,6 +26,11 @@ $: {
       subTitle: description,
       truncateMain: true,
       endTextBig: Number.parseFloat(balance).toFixed(2),
-      endTextSmall: (variety == 0 || variety == 1) ? title : (variety ? variety + ' different ' + title : '')
+      endTextSmall:
+        variety == 0 || variety == 1
+          ? title
+          : variety
+          ? variety + ' different ' + title
+          : '',
     }}" />
 </div>

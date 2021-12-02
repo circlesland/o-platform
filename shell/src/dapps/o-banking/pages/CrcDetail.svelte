@@ -4,11 +4,9 @@ import { onMount } from "svelte";
 import { me } from "../../../shared/stores/me";
 import Card from "../../../shared/atoms/Card.svelte";
 
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
-import {
-  AssetBalance,
-} from "../../../shared/api/data/types";
-import {assetsBalances} from "../../../shared/stores/assetsBalances";
+import { displayCirclesAmount } from "../../../shared/functions/displayCirclesAmount";
+import { AssetBalance } from "../../../shared/api/data/types";
+import { assetsBalances } from "../../../shared/stores/assetsBalances";
 
 let loading = true;
 let balances: AssetBalance[] = [];
@@ -60,7 +58,12 @@ onMount(async () => {
                 token.token_balance ? token.token_balance : '0',
                 null,
                 true,
-                ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+                ($me && $me.displayTimeCircles !== undefined
+                  ? $me.displayTimeCircles
+                  : true) ||
+                  ($me && $me.displayTimeCircles !== undefined
+                    ? $me.displayTimeCircles
+                    : true) === undefined
               ),
             }}" />
         </div>

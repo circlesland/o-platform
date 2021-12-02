@@ -1,7 +1,7 @@
 <script lang="ts">
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { displayCirclesAmount } from "../../functions/displayCirclesAmount";
 import { me } from "../../stores/me";
-import Icons from "src/shared/molecules/Icons.svelte";
+import Icons from "../../molecules/Icons.svelte";
 import { CrcMinting, ProfileEvent } from "../../api/data/types";
 export let event: ProfileEvent;
 let payload: CrcMinting = <CrcMinting>event.payload;
@@ -14,7 +14,12 @@ let payload: CrcMinting = <CrcMinting>event.payload;
     payload.value,
     event.timestamp,
     true,
-    ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+    ($me && $me.displayTimeCircles !== undefined
+      ? $me.displayTimeCircles
+      : true) ||
+      ($me && $me.displayTimeCircles !== undefined
+        ? $me.displayTimeCircles
+        : true) === undefined
   )}
   <Icons icon="circlessimple" size="10" />
 </div>

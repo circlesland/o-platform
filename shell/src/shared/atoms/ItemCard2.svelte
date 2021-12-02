@@ -1,8 +1,5 @@
 <script lang="ts">
-import { Action } from "rxjs/internal/scheduler/Action";
-import { push } from "svelte-spa-router";
-import Icons from "src/shared/molecules/Icons.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "./atoms/UserImage.svelte";
 
 export let params = {
   imageUrl: null,

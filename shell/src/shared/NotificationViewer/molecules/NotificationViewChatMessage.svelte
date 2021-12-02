@@ -1,7 +1,6 @@
 <script lang="ts">
 import NotificationProfile from "./NotificationProfile.svelte";
-import NotificationCard from "src/dapps/o-contacts/atoms/NotificationCard.svelte";
-import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
+import NotificationCard from "../../../dapps/o-contacts/atoms/NotificationCard.svelte";
 import { ChatMessage, ProfileEvent } from "../../api/data/types";
 
 export let event: ProfileEvent;

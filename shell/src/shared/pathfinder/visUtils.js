@@ -1,5 +1,5 @@
 import { userDB } from "./userdb.js";
-import { AvataarGenerator } from "src/shared/avataarGenerator";
+import { AvataarGenerator } from "../avataarGenerator";
 
 export let labelFor = function (id) {
   let user = userDB[id.toLowerCase()];

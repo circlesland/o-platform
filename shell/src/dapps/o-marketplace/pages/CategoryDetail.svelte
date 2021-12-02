@@ -1,8 +1,6 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import {
-  Offer
-} from "../../../shared/api/data/types";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+import { Offer } from "../../../shared/api/data/types";
 import OfferCard from "../atoms/OfferCard.svelte";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";

@@ -1,5 +1,5 @@
 <script>
-import { clickOutside } from "src/shared/functions/clickOutside.ts";
+import { clickOutside } from "../../../shared/functions/clickOutside";
 import Hamburger from "./Hamburger.svelte";
 export let open = false;
 

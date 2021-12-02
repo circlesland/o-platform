@@ -1,16 +1,12 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { onDestroy, onMount } from "svelte";
-import { Contact, ContactsDocument } from "../../../shared/api/data/types";
+import { Contact } from "../../../shared/api/data/types";
 import ChatListCard from "../atoms/ChatListCard.svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import EventList from "../../../shared/molecules/Lists/EventList.svelte";
 
-import {EventType} from "../../../shared/api/data/types";
+import { EventType } from "../../../shared/api/data/types";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -42,16 +38,15 @@ const listArguments = {
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
-  <List limit="{100}"
-        queryArguments="{{
-          safeAddress: $me.circlesAddress,
-          types: [
-            EventType.ChatMessage
-          ]
-        }}"
-        views={{
-          [EventType.ChatMessage]: ChatListCard
-        }} />
+  <List
+    limit="{100}"
+    queryArguments="{{
+      safeAddress: $me.circlesAddress,
+      types: [EventType.ChatMessage],
+    }}"
+    views="{{
+      [EventType.ChatMessage]: ChatListCard,
+    }}" />
   <!--
   <List
     listItemComponent="{ChatListCard}"

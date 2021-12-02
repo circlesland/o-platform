@@ -1,12 +1,5 @@
 <script lang="ts">
-import { Offer } from "../../../shared/api/data/types";
-import { Purchase } from "../../../shared/api/data/types";
-import Icons from "../../../shared/molecules/Icons.svelte";
-import ItemCard from "src/shared/atoms/ItemCard.svelte";
-
-import { truncateString } from "../../../shared/functions/truncateString";
-
-//   export let offer: Offer;
+import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 
 export let params = {
   imageUrl: null,

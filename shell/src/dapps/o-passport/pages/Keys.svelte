@@ -1,7 +1,7 @@
 <script lang="ts">
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-import Card from "src/shared/atoms/Card.svelte";
+import Card from "../../../shared/atoms/Card.svelte";
 import * as bip39 from "bip39";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";

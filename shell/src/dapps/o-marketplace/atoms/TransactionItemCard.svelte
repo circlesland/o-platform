@@ -1,10 +1,8 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
-
 import { Offer } from "../../../shared/api/data/types";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import ItemCard from "src/shared/atoms/ItemCard.svelte";
-
+import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import { truncateString } from "../../../shared/functions/truncateString";
 
 export let offer: Offer;

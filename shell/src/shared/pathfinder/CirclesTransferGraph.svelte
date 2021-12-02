@@ -5,11 +5,11 @@ import { onMount } from "svelte";
 
 import { labelFor, createNodeContents } from "./visUtils.js";
 import { fillUsernames, fillTokens, tokenDB } from "./userdb.js";
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { displayCirclesAmount } from "../functions/displayCirclesAmount";
 import { me } from "../stores/me";
-import {TransitivePathStep} from "../../dapps/o-banking/processes/transferCircles";
+import { TransitivePathStep } from "../../dapps/o-banking/processes/transferCircles";
 
-export let transfers:TransitivePathStep[] = [];
+export let transfers: TransitivePathStep[] = [];
 export let height = "400px";
 export let onWhiteBackground = false;
 let graph;
@@ -72,18 +72,18 @@ onMount(() => {
   });
 });
 
-let retrieveUserAndTokenInfo = async function (steps:TransitivePathStep[]) {
+let retrieveUserAndTokenInfo = async function (steps: TransitivePathStep[]) {
   let tokens = [];
   for (let step of steps) {
     addresses.push(step.from);
     addresses.push(step.to);
-    tokens.push({token: step.token, tokenOwner: step.tokenOwner});
+    tokens.push({ token: step.token, tokenOwner: step.tokenOwner });
   }
   await fillUsernames(addresses);
   await fillTokens(tokens);
 };
 
-let drawGraph = async function (steps:TransitivePathStep[]) {
+let drawGraph = async function (steps: TransitivePathStep[]) {
   await retrieveUserAndTokenInfo(steps);
   nodes.clear();
   edges.clear();
@@ -104,9 +104,19 @@ let drawGraph = async function (steps:TransitivePathStep[]) {
         step.value,
         null,
         true,
-        ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+        ($me && $me.displayTimeCircles !== undefined
+          ? $me.displayTimeCircles
+          : true) ||
+          ($me && $me.displayTimeCircles !== undefined
+            ? $me.displayTimeCircles
+            : true) === undefined
       )} ${
-        ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
+        ($me && $me.displayTimeCircles !== undefined
+          ? $me.displayTimeCircles
+          : true) ||
+        ($me && $me.displayTimeCircles !== undefined
+          ? $me.displayTimeCircles
+          : true) === undefined
           ? "Time "
           : ""
       }Circles`,

@@ -1,5 +1,5 @@
 <script lang="ts">
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { cartContents, totalPrice } from "../stores/shoppingCartStore";
 import CartItems from "../molecules/CartItems.svelte";
 import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";

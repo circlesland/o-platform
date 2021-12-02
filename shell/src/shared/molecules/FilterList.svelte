@@ -1,5 +1,5 @@
 <script lang="ts">
-import { isMobile } from "src/shared/functions/isMobile";
+import { isMobile } from "../functions/isMobile";
 </script>
 
 {#if isMobile()}

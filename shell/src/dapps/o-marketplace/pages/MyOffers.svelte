@@ -1,17 +1,14 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import {
-  AggregateType,
-  Offer, Offers
-} from "../../../shared/api/data/types";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+import { AggregateType, Offer, Offers } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {of, Subscription} from "rxjs";
+import { of, Subscription } from "rxjs";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
-import {ApiClient} from "../../../shared/apiConnection";
+import { ApiClient } from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -28,7 +25,10 @@ async function load() {
     offers = [];
     return;
   }
-  const result = await ApiClient.queryAggregate<Offers>(AggregateType.Offers, $me.circlesAddress);
+  const result = await ApiClient.queryAggregate<Offers>(
+    AggregateType.Offers,
+    $me.circlesAddress
+  );
   offers = result.offers;
   isLoading = false;
 }

@@ -2,9 +2,9 @@
 import { upsertIdentity } from "../processes/upsertIdentity";
 import { me } from "../../../shared/stores/me";
 import { loadProfile } from "../processes/identify/services/loadProfile";
-import TopNav from "src/shared/atoms/TopNav.svelte";
-import PageHeader from "src/shared/atoms/PageHeader.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import TopNav from "../../../shared/atoms/TopNav.svelte";
+import PageHeader from "../../../shared/atoms/PageHeader.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { getCountryName } from "../../../shared/countries";

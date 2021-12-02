@@ -15,7 +15,7 @@ import { push } from "svelte-spa-router";
 import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
 
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { purchases } from "../../../shared/stores/purchases";

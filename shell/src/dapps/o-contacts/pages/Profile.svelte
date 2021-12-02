@@ -1,6 +1,6 @@
 <script lang="ts">
 import { getCountryName } from "../../../shared/countries";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
@@ -11,13 +11,16 @@ import {
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {
   CommonTrust,
-  CommonTrustDocument, CommonTrustQueryVariables,
+  CommonTrustDocument,
+  CommonTrustQueryVariables,
   Contact,
-  ContactDirection, ContactPoint, EventType,
+  ContactDirection,
+  ContactPoint,
+  EventType,
   Profile,
 } from "../../../shared/api/data/types";
-import {contacts} from "../../../shared/stores/contacts";
-import {ApiClient} from "../../../shared/apiConnection";
+import { contacts } from "../../../shared/stores/contacts";
+import { ApiClient } from "../../../shared/apiConnection";
 
 export let id: string;
 export let jumplist: Jumplist<any, any> | undefined;
@@ -35,7 +38,7 @@ let jumplistResult: JumplistItem[] = [];
 
 $: {
   isLoading = true;
-  setProfile(id).then(() => isLoading = false);
+  setProfile(id).then(() => (isLoading = false));
 }
 
 async function setProfile(id: string) {
@@ -48,10 +51,15 @@ async function setProfile(id: string) {
   profile = c.contactAddress_Profile;
 
   if ($me.circlesAddress !== contact.contactAddress) {
-    commonTrusts = (await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(CommonTrustDocument, {
-      safeAddress1: $me.circlesAddress.toLowerCase(),
-      safeAddress2: contact.contactAddress.toLowerCase()
-    })).filter((o) => o.profile);
+    commonTrusts = (
+      await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(
+        CommonTrustDocument,
+        {
+          safeAddress1: $me.circlesAddress.toLowerCase(),
+          safeAddress2: contact.contactAddress.toLowerCase(),
+        }
+      )
+    ).filter((o) => o.profile);
   } else {
     commonTrusts = [];
   }
@@ -63,9 +71,8 @@ async function setProfile(id: string) {
         : "")
     : contact.contactAddress;
 
-  displayName = displayName.length >= 22
-          ? displayName.substr(0, 22) + "..."
-          : displayName;
+  displayName =
+    displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 
   profile = contact.contactAddress_Profile;
 

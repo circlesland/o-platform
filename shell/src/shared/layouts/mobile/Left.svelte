@@ -1,7 +1,7 @@
 <script lang="ts">
 import { fly } from "svelte/transition";
 import { createEventDispatcher } from "svelte";
-import { clickOutside } from "src/shared/functions/clickOutside";
+import { clickOutside } from "../../functions/clickOutside";
 
 const eventDispatcher = createEventDispatcher();
 let x = -500;

@@ -59,7 +59,7 @@ cd ../../../../../..
 
 echo "Building 'shell' with dapps .."
 cd shell || exit
-npm run build
+# npm run build
 cd .. || exit
 
 
