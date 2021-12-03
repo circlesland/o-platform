@@ -2,6 +2,6 @@ import {SessionInfo, SessionInfoDocument, SessionInfoQueryVariables} from "../..
 import {ApiClient} from "../../../../../shared/apiConnection";
 
 export const getSessionInfo = async () => {
-  const sessionInfo = ApiClient.query<SessionInfo, SessionInfoQueryVariables>(SessionInfoDocument, {});
+  const sessionInfo = await ApiClient.query<SessionInfo, SessionInfoQueryVariables>(SessionInfoDocument, {});
   return sessionInfo;
 };

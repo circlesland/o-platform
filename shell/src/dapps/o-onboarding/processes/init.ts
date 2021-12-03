@@ -9,9 +9,6 @@ import {
   CrcSignup,
   HubSignupTransactionDocument,
   HubSignupTransactionQueryVariables,
-  InitAggregateState,
-  InitAggregateStateDocument,
-  InitAggregateStateQueryVariables,
   InvitationTransactionDocument,
   InvitationTransactionQueryVariables,
   ProfileEvent,
@@ -64,8 +61,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           },
           GOT_SESSION: {
             actions: "assignSessionInfoToContext",
-            target: "register",
-            // target: "checkAggregateState"
+            target: "register"
           },
         },
       },
@@ -359,15 +355,6 @@ export const initMachine = createMachine<InitContext, InitEvent>(
   },
   {
     services: {
-      loadInitAggregateState: async (context) => {
-        const result = await ApiClient.query<
-          InitAggregateState,
-          InitAggregateStateQueryVariables
-        >(InitAggregateStateDocument, {});
-        if (result) {
-          context.initAggregateState = result;
-        }
-      },
       loadSession: () => async (callback) => {
         try {
           const sessionInfo = await getSessionInfo();

@@ -193,6 +193,27 @@ async function setProfile(id: string) {
                 </div>
               </section>
             {/if}
+            {#if profile.memberships && profile.memberships.length}
+              <section class="justify-center mb-2 ">
+                <div class="flex flex-col w-full pt-2 space-y-1">
+                  <div class="text-left text-2xs text-dark-lightest">
+                    Verified by
+                  </div>
+                  <div class="flex flex-row flex-wrap mt-2 ">
+                    {#each profile.verifications as verification}
+                      {#if verification.verifierProfile}
+                        <div class="mt-2 mr-2">
+                          <UserImage
+                                  profile="{verification.verifierProfile}"
+                                  tooltip="{true}"
+                                  gradientRing="{true}" />
+                        </div>
+                      {/if}
+                    {/each}
+                  </div>
+                </div>
+              </section>
+            {/if}
             {#if profile && profile.dream}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">

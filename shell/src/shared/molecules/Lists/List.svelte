@@ -1,12 +1,5 @@
 <script lang="ts">
-import { me } from "../../../shared/stores/me";
-
 import { onMount } from "svelte";
-import {
-  ProfileEvent,
-  TransactionTimelineDocument,
-} from "../../../shared/api/data/types";
-
 import { inview } from "svelte-inview/dist/index";
 
 export let listItemComponent;

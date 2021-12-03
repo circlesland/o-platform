@@ -48,6 +48,10 @@ type AssetBalance {
     token_symbol: String
 }
 
+type Capability {
+    key: String!
+}
+
 type ChatMessage implements IEventPayload {
     from: String!
     from_profile: Profile
@@ -248,13 +252,6 @@ type GnosisSafeEthTransfer implements IEventPayload {
     to_profile: Profile
     transaction_hash: String!
     value: String!
-}
-
-type InitAggregateState {
-    hubSignupTransaction: String
-    invitation: ClaimedInvitation
-    invitationTransaction: String
-    registration: Profile
 }
 
 type InvitationCreated implements IEventPayload {
@@ -459,6 +456,7 @@ type Profile {
     newsletter: Boolean
     status: String
     type: String
+    verifications: [Verification!]
 }
 
 type ProfileAggregate {
@@ -530,7 +528,6 @@ type Query {
     events(filter: ProfileEventFilter, pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
     findSafeAddressByOwner(owner: String!): [SafeAddressByOwnerResult!]!
     hubSignupTransaction: ProfileEvent
-    initAggregateState: InitAggregateState
     invitationTransaction: ProfileEvent
     invoice(invoiceId: Int!): String
     mostRecentUbiSafeOfAccount(account: String!): String
@@ -547,7 +544,7 @@ type Query {
     tags(query: QueryTagsInput!): [Tag!]!
     trustRelations(safeAddress: String!): [TrustRelation!]!
     ubiInfo: UbiInfo!
-    verifiedSafes(filter: VerifiedSafesFilter): [PublicEvent!]!
+    verifications(filter: VerifiedSafesFilter, pagination: PaginationArgs): [Verification!]!
     version: Version!
     whoami: String
 }
@@ -628,6 +625,7 @@ type Server {
 }
 
 type SessionInfo {
+    capabilities: [Capability!]!
     hasProfile: Boolean
     isLoggedOn: Boolean!
     lastAcknowledgedAt: String
@@ -683,6 +681,16 @@ type UpdateSafeResponse {
     errorMessage: String
     newSafeAddress: String
     success: Boolean!
+}
+
+type Verification {
+    createdAt: String!
+    verificationRewardTransaction: ProfileEvent
+    verificationRewardTransactionHash: String!
+    verifiedProfile: Profile
+    verifiedSafeAddress: String!
+    verifierProfile: Organisation
+    verifierSafeAddress: String!
 }
 
 type VerifySafeResult {
@@ -902,5 +910,4 @@ input UpsertTagInput {
 
 input VerifiedSafesFilter {
     addresses: [String!]
-    after: String
 }
