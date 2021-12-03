@@ -108,7 +108,7 @@ async function setProfile(id: string) {
   capabilities = sessionInfo.capabilities;
   const canVerify = capabilities && capabilities.find(o => o.type == CapabilityType.Verify) !== undefined;
 
-  if (canVerify && profile.verifications.length == 0) {
+  if (canVerify && profile.verifications && profile.verifications.length == 0) {
     jumplistResult.push({
       key: "verify",
       icon: "check",
@@ -218,7 +218,7 @@ async function setProfile(id: string) {
                 </div>
               </section>
             {/if}
-            {#if profile.memberships && profile.memberships.length}
+            {#if profile.verifications && profile.verifications.length}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
