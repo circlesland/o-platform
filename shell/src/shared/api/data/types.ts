@@ -50,8 +50,13 @@ export type AssetBalance = {
 
 export type Capability = {
   __typename?: 'Capability';
-  key: Scalars['String'];
+  type?: Maybe<CapabilityType>;
 };
+
+export enum CapabilityType {
+  Invite = 'Invite',
+  Verify = 'Verify'
+}
 
 export type ChatMessage = IEventPayload & {
   __typename?: 'ChatMessage';
@@ -1670,7 +1675,7 @@ export type SessionInfoQuery = (
       & Pick<Profile, 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'avatarUrl'>
     )>, capabilities: Array<(
       { __typename?: 'Capability' }
-      & Pick<Capability, 'key'>
+      & Pick<Capability, 'type'>
     )> }
   ) }
 );
@@ -3091,7 +3096,7 @@ export const SessionInfoDocument = gql`
       avatarUrl
     }
     capabilities {
-      key
+      type
     }
   }
 }

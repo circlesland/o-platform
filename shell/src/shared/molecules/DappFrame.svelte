@@ -32,10 +32,9 @@
   import { media } from "../stores/media";
   import { me } from "../stores/me";
   import { getSessionInfo } from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
-  import {EventsDocument, SessionInfo} from "../api/data/types";
+  import {Capability, EventsDocument, SessionInfo} from "../api/data/types";
   import { log } from "../logUiEvent";
   import { contacts } from "../stores/contacts";
-  import {Subscription} from "rxjs";
 
   export let params: {
     dappId: string;
@@ -53,6 +52,7 @@
   let dapp: DappManifest<any>;
   let runtimeDapp: RuntimeDapp<any>;
   let routable: Routable;
+  let capabilities: Capability[];
   let modalContent: "process" | "page" | "quickActions" | "none" = "none";
   let layout: RuntimeLayout = <RuntimeLayout>{
     main: undefined,
@@ -339,13 +339,14 @@
    */
 
   let shellEventSubscription:Promise<PushSubscription>;
-  function subscribeToApiEvents(session:SessionInfo) {
+  function initSession(session:SessionInfo) {
     console.log(`subscribeToApiEvents(). Session: `, session);
+    capabilities = session.capabilities;
     if (session.isLoggedOn && session.hasProfile && !shellEventSubscription) {
       window.o.apiClient.client.subscribeToResult().then((apiClient) => {
         shellEventSubscription = apiClient
           .subscribe({
-            query: EventsDocument,
+            query: EventsDocument
           })
           .subscribe((next) => {
             if (next.data.events.type == "new_message") {
@@ -395,7 +396,7 @@
       return;
     }
 
-    subscribeToApiEvents(session);
+    initSession(session);
 
     if (!$me || !session.isLoggedOn) {
       await push("/");
@@ -419,6 +420,7 @@
           params: {
             routable: routable,
             runtimeDapp: runtimeDapp,
+            capabilities: capabilities
           },
         },
       },
@@ -684,7 +686,7 @@
           break;
         case "shell.authenticated":
           const session = await getSessionInfo();
-          subscribeToApiEvents(session);
+          initSession(session);
           break;
         case "shell.openModal":
           _scrollY = window.scrollY;
@@ -1012,10 +1014,11 @@
             ...params,
             jumplist: runtimeDapp.jumplist,
             runtimeDapp: runtimeDapp,
+            capabilities: capabilities
           },
           isOpen: true,
           runtimeDapp: runtimeDapp,
-          routable: routable,
+          routable: routable
         },
       },
     };
@@ -1047,6 +1050,7 @@
           ...params,
           runtimeDapp: runtimeDapp,
           routable: routable,
+          capabilities: capabilities
         },
         isOpen: true,
         runtimeDapp: runtimeDapp,
@@ -1109,4 +1113,4 @@
         on:clickedOutside="{() => {
     onRoot();
   }}"
-        sliderPages="{[]}" />
+  sliderPages="{[]}" />
