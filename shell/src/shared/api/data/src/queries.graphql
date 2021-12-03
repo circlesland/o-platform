@@ -122,6 +122,7 @@ query myProfile {
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        avatarUrl
         name
         city {
           geonameid
@@ -185,6 +186,7 @@ query profiles($id: [Int!]!) {
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        avatarUrl
         name
         city {
           geonameid
@@ -245,6 +247,7 @@ query profilesByName($searchString: String!) {
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        avatarUrl
         name
         city {
           geonameid
@@ -306,6 +309,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        avatarUrl
         name
         city {
           geonameid
@@ -354,6 +358,7 @@ query profilesByIds($id: [Int!]!) {
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        avatarUrl
         name
         city {
           geonameid
@@ -393,6 +398,7 @@ query trustRelations($safeAddress: String!) {
         verifierSafeAddress
         verifierProfile {
           circlesAddress
+          avatarUrl
           name
           city {
             geonameid
@@ -430,6 +436,7 @@ query profileById($id: Int!) {
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        avatarUrl
         name
         city {
           geonameid
@@ -509,6 +516,7 @@ query profileBySafeAddress($safeAddress: String!) {
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        avatarUrl
         name
         city {
           geonameid
@@ -672,6 +680,7 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
         verifierSafeAddress
         verifierProfile {
           circlesAddress
+          avatarUrl
           name
           city {
             geonameid
@@ -1135,6 +1144,7 @@ query aggregates(
               verifierSafeAddress
               verifierProfile {
                 circlesAddress
+                avatarUrl
                 name
                 city {
                   geonameid
@@ -1252,6 +1262,7 @@ query aggregates(
               verifierSafeAddress
               verifierProfile {
                 circlesAddress
+                avatarUrl
                 name
                 city {
                   geonameid
@@ -1310,6 +1321,7 @@ query aggregates(
                 verifierSafeAddress
                 verifierProfile {
                   circlesAddress
+                  avatarUrl
                   name
                   city {
                     geonameid
@@ -1355,10 +1367,13 @@ query verifications($pagination: PaginationArgs $filter: VerifiedSafesFilter) {
     createdAt
     verifierSafeAddress
     verifierProfile {
+      avatarUrl
       name
     }
     verifiedSafeAddress
     verifiedProfile {
+      circlesAddress
+      avatarUrl
       firstName
       lastName
     }

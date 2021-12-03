@@ -22,6 +22,7 @@ const listArguments = {};
     fetchQuery="{VerificationsDocument}"
     fetchQueryArguments="{listArguments}"
     selector="createdAt"
+    sortOrder={"DESC"}
     dataKey="verifications"
     dataLimit="{50}" />
 </div>

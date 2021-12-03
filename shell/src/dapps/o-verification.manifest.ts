@@ -12,6 +12,7 @@ const index: Page<any, ContactsDappState> = {
 };
 const detail: Page<any, ContactsDappState> = {
   routeParts: [":id"],
+  isSystem: true,
   component: VerificationDetail,
   title: "Verifications",
   type: "page",

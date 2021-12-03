@@ -1,31 +1,26 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import { Organisation } from "../../../shared/api/data/types";
+import {Verification} from "../../../shared/api/data/types";
+import {displayableName} from "../../../shared/functions/stringHelper";
 
-export let param: Organisation;
+export let param: Verification;
 
 function loadDetailPage(path) {
-  push(`#/coops/organisations/${path}`);
-}
-
-function goToProfile(e, path?: string) {
-  if (!path) return;
-  e.stopPropagation();
-  push(`#/coops/organisations/${path}`);
-  return false;
+  push(`#/verification/${path}`);
 }
 </script>
 
-<div on:click="{() => loadDetailPage(param.circlesAddress)}">
+<div on:click="{() => loadDetailPage(param.verifiedSafeAddress)}">
   <ItemCard
-    params="{{
-      edgeless: false,
-      imageProfile: param,
-      title: param.name,
-      subTitle: param.circlesAddress,
-      truncateMain: true,
-    }}">
+          params="{{
+            edgeless: false,
+            imageProfile: param.verifiedProfile,
+            title: displayableName(param.verifiedProfile.firstName, param.verifiedProfile.lastName),
+            subTitle: `Verified by ${param.verifierProfile.name} at ${param.createdAt}`,
+            truncateMain: true
+          }}">
+
     <div slot="itemCardEnd">
       <div class="self-end text-lg sm:text-3xl"></div>
     </div>

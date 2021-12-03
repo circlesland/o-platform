@@ -8,6 +8,7 @@ export const listItemType: any = undefined;
 export let fetchQuery: any;
 export let fetchQueryArguments;
 export let dataKey: string;
+export let sortOrder: 'ASC' | 'DESC' = 'DESC';
 export let dataLimit: number = 50;
 
 let posts: typeof listItemType[] = [];
@@ -15,8 +16,18 @@ let hasMore: boolean = true;
 let error: string;
 let scrollContent;
 let pagination = undefined;
+let initialized = false;
+
 const fetchData = async (paginationArg) => {
   fetchQueryArguments.pagination = paginationArg;
+  if (!fetchQueryArguments.pagination) {
+    fetchQueryArguments.pagination = {
+      order: "DESC",
+      limit: dataLimit,
+      continueAt: new Date()
+    }
+  }
+
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const timeline = await apiClient.query({
     query: fetchQuery,
@@ -34,13 +45,17 @@ const fetchData = async (paginationArg) => {
     posts = [...posts, ...newBatch];
 
     pagination = {
-      order: "DESC",
+      order: sortOrder,
       continueAt: newBatch[newBatch.length - 1][selector],
       limit: dataLimit,
     };
   } else {
     hasMore = false;
+    return;
   }
+
+  initialized = true;
+  hasMore = newBatch && newBatch.length == dataLimit;
 };
 
 const handleChange = (e) => {
@@ -71,5 +86,6 @@ const initBar = (bar) => {
     </div>
   </section>
 {/if}
-
-<div use:inview="{{}}" on:change="{handleChange}"></div>
+{#if initialized}
+  <div use:inview="{{}}" on:change="{handleChange}"></div>
+{/if}

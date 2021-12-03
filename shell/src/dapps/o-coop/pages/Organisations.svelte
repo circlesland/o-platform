@@ -27,5 +27,7 @@ const listArguments = {};
     fetchQuery="{OrganisationsDocument}"
     fetchQueryArguments="{listArguments}"
     dataKey="organisations"
+    selector="createdAt"
+    sortOrder={"DESC"}
     dataLimit="{50}" />
 </div>
