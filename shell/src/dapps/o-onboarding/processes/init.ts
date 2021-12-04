@@ -57,10 +57,14 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         invoke: { src: "loadSession" },
         on: {
           NO_SESSION: {
-            actions: "acquireSessionAndRestart",
+            actions: [
+              () => console.log("init.initial:NO_SESSION"),
+              "acquireSessionAndRestart"],
           },
           GOT_SESSION: {
-            actions: "assignSessionInfoToContext",
+            actions: [
+              () => console.log("init.initial:GOT_SESSION"),
+              "assignSessionInfoToContext"],
             target: "register"
           },
         },
@@ -77,13 +81,13 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         on: {
           NO_REGISTRATION: {
             actions: [
-              () => console.log("init.register.NO_REGISTRATION"),
+              () => console.log("init.register:NO_REGISTRATION"),
               "upsertRegistrationAndRestart",
             ],
           },
           REGISTRATION_ERROR: {
             actions: [
-              () => console.log("init.register.REGISTRATION_ERROR"),
+              () => console.log("init.register:REGISTRATION_ERROR"),
               (ctx, event) => {
                 console.error(event);
                 throw event.error;
