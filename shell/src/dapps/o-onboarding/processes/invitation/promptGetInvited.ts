@@ -28,7 +28,7 @@ const editorContent = {
   },
   checkInviteCode: {
     title: "Enter invitation code",
-    description: "Please enter you invitation code below to get started.",
+    description: "Please enter your invitation code below to get started.",
     submitButtonText: "Verify",
   },
 };

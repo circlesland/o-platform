@@ -21,6 +21,17 @@ $: selected = {};
 
 let field: PromptField<any>;
 
+onMount(async () => {
+  field = normalizePromptField(context.field);
+  const currentKey = field.get(context);
+  if (currentKey) {
+    selected = await context.params.choices.byKey(currentKey, context);
+  } else {
+    selected = undefined;
+  }
+  console.log("CONTEXT: ", context);
+});
+
 $: {
   context = context;
   if (context) {
@@ -31,8 +42,8 @@ $: {
 function submitHandler() {
   const event = new Continue();
   event.data = {};
-  event.data[field.name] = context.params.getKey(selected);
-  context.data[field.name] = context.params.getKey(selected);
+  event.data[(<any>field).name] = selected;
+  context.data[(<any>field).name] = selected;
   context.process.sendAnswer(event);
 }
 
