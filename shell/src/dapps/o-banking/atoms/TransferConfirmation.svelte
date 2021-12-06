@@ -10,6 +10,7 @@ import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelt
 import { loadProfile } from "../../../shared/functions/loadProfile";
 
 import Icons from "../../../shared/molecules/Icons.svelte";
+import { Currency } from "../../../shared/currency";
 
 export let context: any;
 let _context: any;
@@ -48,12 +49,12 @@ function onkeydown(e: KeyboardEvent) {
     class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
     <div>
       <span class="inline-block text-6xl font-heading {classes}">
-        {_context.data.tokens.amount}
-
-        <Icons
-          icon="{context.data.tokens.currency.toLowerCase()}"
-          size="{10}" />
+        {_context.data.tokens.amount} <span class=" font-primary">€</span>
       </span>
+      <div class="font-xs">
+        {_context.data.tokens.amount * 10}
+        <span class=" font-primary">{Currency.currencySymbol["TIME_CRC"]}</span>
+      </div>
     </div>
 
     <UserImage profile="{profile.profile}" size="{36}" gradientRing="{true}" />

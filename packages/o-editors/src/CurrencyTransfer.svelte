@@ -92,27 +92,13 @@ function onkeydown(e: KeyboardEvent) {
     <div class="relative w-full mt-1 rounded-md shadow-sm ">
       <div
         class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
-        <span class="text-base-300 sm:text-sm">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-8 h-8 m-auto"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1"
-              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-            ></path>
-          </svg>
-        </span>
+        <span class="text-2xl text-inactive "> € </span>
       </div>
       <input
         type="text"
         name="price"
         id="price"
-        class="block w-full pl-12 input input-bordered"
+        class="block w-full pl-8 input input-bordered"
         placeholder="0.00"
         autocomplete="off"
         bind:value="{amount}"
@@ -122,7 +108,7 @@ function onkeydown(e: KeyboardEvent) {
         bind:this="{inputField}"
         on:keydown="{onkeydown}" />
     </div>
-    <div class="themed">
+    <!-- <div class="themed">
       <label for="currency" class="sr-only">Currency</label>
       <Select
         name="currency"
@@ -139,7 +125,7 @@ function onkeydown(e: KeyboardEvent) {
         Icon="{Icon}"
         on:select="{handleSelect}"
         on:change="{() => (context.editorDirtyFlags[context.field] = true)}" />
-    </div>
+    </div> -->
   </div>
   <ProcessNavigation
     on:buttonClick="{() => sendAnswer(amount)}"
