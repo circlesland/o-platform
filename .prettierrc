@@ -5,6 +5,7 @@
   "semi": true,
   "singleQuote": false,
   "jsxBracketSameLine": true,
+  "bracketSameLine": true,
   "bracketSpacing": true,
   "svelteSortOrder": "options-scripts-markup-styles",
   "svelteStrictMode": true,
