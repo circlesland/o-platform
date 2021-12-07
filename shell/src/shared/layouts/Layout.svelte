@@ -140,7 +140,18 @@ function onkeydown(e: KeyboardEvent) {
       </div>
     </main>
   </div>
-
+  {#if layout.main && layout.main.runtimeDapp.featuredAction}
+    <div
+      class="absolute left-0 z-10 flex flex-col items-center justify-end w-full h-12 bottom-20">
+      <section class="mb-4">
+        <button
+          class="btn btn-primary"
+          on:click="{layout.main.runtimeDapp.featuredAction.action}">
+          {layout.main.runtimeDapp.featuredAction.text}
+        </button>
+      </section>
+    </div>
+  {/if}
   {#if navigation}
     <NextNav navigation="{navigation}" />
   {/if}

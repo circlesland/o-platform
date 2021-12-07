@@ -2,7 +2,7 @@ import Home from "./o-dashboard/pages/Home.svelte";
 import Invites from "./o-dashboard/pages/Invites.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
-
+import { push } from "svelte-spa-router";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
 const index: Page<any, DappState> = {
@@ -79,6 +79,12 @@ export const home: DappManifest<DappState> = {
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
+  featuredAction: {
+    text: "Invites",
+    action: () => {
+      push("/home/invites");
+    },
+  },
 
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here

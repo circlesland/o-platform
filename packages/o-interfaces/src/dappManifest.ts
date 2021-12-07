@@ -36,6 +36,12 @@ export interface DappManifest<TState extends { [x: string]: any }>
    */
   title: string;
 
+  featuredAction?: {
+    text: string;
+    icon?: string;
+    action: () => void;
+  };
+
   /**
    * Dapps can depend on other dapps.
    * When a auth depends on another auth, then the dependent auth cannot be initialized
