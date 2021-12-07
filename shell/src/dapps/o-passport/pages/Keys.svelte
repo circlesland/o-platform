@@ -85,14 +85,13 @@ let newKeyPassphrase: string = "";
               Key: {key.key !== null}<br />
               Is active: {key.isOwner}
             </div>
-
             {#if key.isOwner}
-              <!-- <button class="btn-primary" on:click={async () => {
+              <button class="btn-primary" on:click={async () => {
                 const result = await new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress)
-                .removeOwner(localStorage.getItem("circlesKey"), key.address);
+                .removeOwner(sessionStorage.getItem("circlesKey"), key.address);
                 console.log(result);
                 await init();
-              }}>Remove owner</button> -->
+              }}>Remove owner</button>
             {:else}
               <button
                 class="btn-primary"
@@ -101,7 +100,7 @@ let newKeyPassphrase: string = "";
                     RpcGateway.get(),
                     $me.circlesAddress
                   ).addOwnerWithThreshold(
-                    localStorage.getItem('circlesKey'),
+                    sessionStorage.getItem('circlesKey'),
                     key.address,
                     1
                   );

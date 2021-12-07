@@ -32,7 +32,7 @@
   import { media } from "../stores/media";
   import { me } from "../stores/me";
   import { getSessionInfo } from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
-  import { EventsDocument } from "../api/data/types";
+  import {Capability, EventsDocument, SessionInfo} from "../api/data/types";
   import { log } from "../logUiEvent";
   import { contacts } from "../stores/contacts";
 
@@ -52,6 +52,7 @@
   let dapp: DappManifest<any>;
   let runtimeDapp: RuntimeDapp<any>;
   let routable: Routable;
+  let capabilities: Capability[];
   let modalContent: "process" | "page" | "quickActions" | "none" = "none";
   let layout: RuntimeLayout = <RuntimeLayout>{
     main: undefined,
@@ -336,27 +337,18 @@
   /**
    * This function is called only one time after the first route.
    */
-  async function init() {
-    log(`init()`);
-    const session = await getSessionInfo();
-    if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
-      // TODO: Stash the current URL away and redirect the user to it after authentication
-      await push("/");
-      return;
-    }
 
-    if (session.isLoggedOn && session.hasProfile) {
+  let shellEventSubscription:Promise<PushSubscription>;
+  function initSession(session:SessionInfo) {
+    console.log(`subscribeToApiEvents(). Session: `, session);
+    capabilities = session.capabilities;
+    if (session.isLoggedOn && session.hasProfile && !shellEventSubscription) {
       window.o.apiClient.client.subscribeToResult().then((apiClient) => {
-        apiClient
+        shellEventSubscription = apiClient
           .subscribe({
-            query: EventsDocument,
+            query: EventsDocument
           })
           .subscribe((next) => {
-
-            if (next.type == "shell.authenticated") {
-              console.log("User changed:", next);
-            }
-
             if (next.data.events.type == "new_message") {
               window.o.publishEvent(<any>{
                 type: "shell.refresh",
@@ -393,6 +385,19 @@
         console.log("loaded contacts: ", data);
       });
     }
+  }
+
+  async function init() {
+    log(`init()`);
+    const session = await getSessionInfo();
+    if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
+      // TODO: Stash the current URL away and redirect the user to it after authentication
+      await push("/");
+      return;
+    }
+
+    initSession(session);
+
     if (!$me || !session.isLoggedOn) {
       await push("/");
       return;
@@ -415,6 +420,7 @@
           params: {
             routable: routable,
             runtimeDapp: runtimeDapp,
+            capabilities: capabilities
           },
         },
       },
@@ -677,6 +683,10 @@
           break;
         case "shell.contacts":
           onOpenContacts();
+          break;
+        case "shell.authenticated":
+          const session = await getSessionInfo();
+          initSession(session);
           break;
         case "shell.openModal":
           _scrollY = window.scrollY;
@@ -1004,10 +1014,11 @@
             ...params,
             jumplist: runtimeDapp.jumplist,
             runtimeDapp: runtimeDapp,
+            capabilities: capabilities
           },
           isOpen: true,
           runtimeDapp: runtimeDapp,
-          routable: routable,
+          routable: routable
         },
       },
     };
@@ -1039,6 +1050,7 @@
           ...params,
           runtimeDapp: runtimeDapp,
           routable: routable,
+          capabilities: capabilities
         },
         isOpen: true,
         runtimeDapp: runtimeDapp,
@@ -1101,4 +1113,4 @@
         on:clickedOutside="{() => {
     onRoot();
   }}"
-        sliderPages="{[]}" />
+  sliderPages="{[]}" />

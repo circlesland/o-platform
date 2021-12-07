@@ -8,6 +8,17 @@ $: me;
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+let name: string = "";
+
+$: {
+  if ($me) {
+    if ($me.__typename == "Profile") {
+      name = $me.firstName ? $me.firstName : "";
+    } else if ($me.__typename == "Organisation") {
+      name = $me.name ? $me.name : "";
+    }
+  }
+}
 </script>
 
 <TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -16,7 +27,7 @@ export let routable: Routable;
   <div class="self-center flex-grow text-center justify-self-start">
     <div class="text-xl">
       <h1 class="text-4xl text-white font-heading">
-        Welcome {$me ? $me.firstName : ""}
+        Welcome {name}
       </h1>
     </div>
   </div>

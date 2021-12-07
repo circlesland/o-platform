@@ -79,23 +79,6 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         }
       }
 
-      actions = actions.concat([
-        {
-          key: "verify",
-          icon: "check",
-          title: "Verify",
-          action: async () => {
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
-            await apiClient.mutate({
-              mutation: VerifySafeDocument,
-              variables: {
-                safeAddress: params.id,
-              },
-            });
-          },
-        },
-      ]);
       if (recipientProfile?.contactAddress) {
         actions = actions.concat([
           {

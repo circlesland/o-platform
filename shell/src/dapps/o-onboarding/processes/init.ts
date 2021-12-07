@@ -9,9 +9,6 @@ import {
   CrcSignup,
   HubSignupTransactionDocument,
   HubSignupTransactionQueryVariables,
-  InitAggregateState,
-  InitAggregateStateDocument,
-  InitAggregateStateQueryVariables,
   InvitationTransactionDocument,
   InvitationTransactionQueryVariables,
   ProfileEvent,
@@ -60,12 +57,15 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         invoke: { src: "loadSession" },
         on: {
           NO_SESSION: {
-            actions: "acquireSessionAndRestart",
+            actions: [
+              () => console.log("init.initial:NO_SESSION"),
+              "acquireSessionAndRestart"],
           },
           GOT_SESSION: {
-            actions: "assignSessionInfoToContext",
-            target: "register",
-            // target: "checkAggregateState"
+            actions: [
+              () => console.log("init.initial:GOT_SESSION"),
+              "assignSessionInfoToContext"],
+            target: "register"
           },
         },
       },
@@ -81,13 +81,13 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         on: {
           NO_REGISTRATION: {
             actions: [
-              () => console.log("init.register.NO_REGISTRATION"),
+              () => console.log("init.register:NO_REGISTRATION"),
               "upsertRegistrationAndRestart",
             ],
           },
           REGISTRATION_ERROR: {
             actions: [
-              () => console.log("init.register.REGISTRATION_ERROR"),
+              () => console.log("init.register:REGISTRATION_ERROR"),
               (ctx, event) => {
                 console.error(event);
                 throw event.error;
@@ -359,15 +359,6 @@ export const initMachine = createMachine<InitContext, InitEvent>(
   },
   {
     services: {
-      loadInitAggregateState: async (context) => {
-        const result = await ApiClient.query<
-          InitAggregateState,
-          InitAggregateStateQueryVariables
-        >(InitAggregateStateDocument, {});
-        if (result) {
-          context.initAggregateState = result;
-        }
-      },
       loadSession: () => async (callback) => {
         try {
           const sessionInfo = await getSessionInfo();

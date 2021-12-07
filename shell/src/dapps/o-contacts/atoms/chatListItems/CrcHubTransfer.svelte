@@ -1,6 +1,7 @@
 <script lang="ts">
 import DetailActionBar from "../../../../shared/molecules/DetailActionBar.svelte";
 import Icons from "../../../../shared/molecules/Icons.svelte";
+import { Currency } from "../../../../shared/currency";
 import {
   CrcHubTransfer,
   ProfileEvent,
@@ -26,7 +27,7 @@ values = getValues();
 onMount(async () => {
   values.actions = await banking.jumplist.items(
     {
-      id: event.contact_address
+      id: event.contact_address,
     },
     null
   );
@@ -56,19 +57,19 @@ function getValues(): {
   if (event.direction == "in") {
     title = `${
       event.contact_address_profile.firstName
-    } sent you ${displayCirclesAmount(
+    } sent you ${Currency.instance().displayAmount(
       hubTransfer.flow,
       null,
-      true,
-      ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
-    )} CRC`;
+      $me.displayCurrency
+    )} ${Currency.currencySymbol[$me.displayCurrency]}`;
   } else {
-    title = ` You sent ${displayCirclesAmount(
+    title = ` You sent ${Currency.instance().displayAmount(
       hubTransfer.flow,
       null,
-      true,
-      ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) || ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
-    )} CRC to ${event.contact_address_profile.firstName}`;
+      $me.displayCurrency
+    )} ${Currency.currencySymbol[$me.displayCurrency]} to ${
+      event.contact_address_profile.firstName
+    }`;
   }
 
   return {

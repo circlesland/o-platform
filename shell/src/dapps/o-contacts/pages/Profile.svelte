@@ -10,21 +10,22 @@ import {
 } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {
+  Capability, CapabilityType,
   CommonTrust,
   CommonTrustDocument,
   CommonTrustQueryVariables,
   Contact,
-  ContactDirection,
-  ContactPoint,
-  EventType,
-  Profile,
+  ContactDirection, ContactPoint, EventType,
+  Profile, VerifySafeDocument,
 } from "../../../shared/api/data/types";
-import { contacts } from "../../../shared/stores/contacts";
-import { ApiClient } from "../../../shared/apiConnection";
+import {contacts} from "../../../shared/stores/contacts";
+import {ApiClient} from "../../../shared/apiConnection";
+import {getSessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
 
 export let id: string;
 export let jumplist: Jumplist<any, any> | undefined;
 export let runtimeDapp: RuntimeDapp<any>;
+export let capabilities: Capability[] | undefined;
 
 let error: string | undefined = undefined;
 let displayName: string;
@@ -106,6 +107,28 @@ async function setProfile(id: string) {
 
   isMe = profile.id == ($me ? $me.id : 0);
   jumplistResult = await jumplist.items({ id: id }, runtimeDapp);
+
+
+  const sessionInfo = await getSessionInfo();
+  capabilities = sessionInfo.capabilities;
+  const canVerify = capabilities && capabilities.find(o => o.type == CapabilityType.Verify) !== undefined;
+
+  if (canVerify && profile.verifications && profile.verifications.length == 0) {
+    jumplistResult.push({
+      key: "verify",
+      icon: "check",
+      title: "Verify",
+      action: async () => {
+        const apiClient = await window.o.apiClient.client.subscribeToResult();
+        await apiClient.mutate({
+          mutation: VerifySafeDocument,
+          variables: {
+            safeAddress: id,
+          },
+        });
+      },
+    });
+  }
 }
 </script>
 
@@ -193,6 +216,27 @@ async function setProfile(id: string) {
                             profile="{membership.organisation}"
                             tooltip="{true}"
                             gradientRing="{true}" />
+                        </div>
+                      {/if}
+                    {/each}
+                  </div>
+                </div>
+              </section>
+            {/if}
+            {#if profile.verifications && profile.verifications.length}
+              <section class="justify-center mb-2 ">
+                <div class="flex flex-col w-full pt-2 space-y-1">
+                  <div class="text-left text-2xs text-dark-lightest">
+                    Verified by
+                  </div>
+                  <div class="flex flex-row flex-wrap mt-2 ">
+                    {#each profile.verifications as verification}
+                      {#if verification.verifierProfile}
+                        <div class="mt-2 mr-2">
+                          <UserImage
+                                  profile="{verification.verifierProfile}"
+                                  tooltip="{true}"
+                                  gradientRing="{true}" />
                         </div>
                       {/if}
                     {/each}

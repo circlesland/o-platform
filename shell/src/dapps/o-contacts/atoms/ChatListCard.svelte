@@ -1,5 +1,6 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
+import { Currency } from "../../../shared/currency";
 import { displayCirclesAmount } from "../../../shared/functions/displayCirclesAmount";
 import { me } from "../../../shared/stores/me";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
@@ -85,17 +86,11 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
       } you`;
       break;
     case EventType.CrcHubTransfer:
-      message = `${displayName} sent you ${displayCirclesAmount(
+      message = `${displayName} sent you ${Currency.instance().displayAmount(
         mostRecentDisplayEvent.value,
         null,
-        true,
-        ($me && $me.displayTimeCircles !== undefined
-          ? $me.displayTimeCircles
-          : true) ||
-          ($me && $me.displayTimeCircles !== undefined
-            ? $me.displayTimeCircles
-            : true) === undefined
-      )} ⦿`;
+        $me.displayCurrency
+      )} ${Currency.currencySymbol[$me.displayCurrency]}`;
       break;
     case EventType.Erc20Transfer:
       message = `${displayName} sent you ${displayCirclesAmount(

@@ -11,6 +11,9 @@ query sessionInfo {
       lastName
       avatarUrl
     }
+    capabilities {
+      type
+    }
   }
 }
 
@@ -22,20 +25,6 @@ query findSafeAddressByOwner($owner: String!) {
   findSafeAddressByOwner(owner: $owner) {
     type
     safeAddress
-  }
-}
-
-query initAggregateState {
-  initAggregateState {
-    hubSignupTransaction
-    invitation {
-      claimedAt
-    }
-    invitationTransaction
-    registration {
-      id
-      firstName
-    }
   }
 }
 
@@ -128,6 +117,23 @@ query myProfile {
         }
       }
     }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
 
@@ -165,6 +171,23 @@ query profiles($id: [Int!]!) {
         avatarUrl
         avatarMimeType
         displayCurrency
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
         city {
           geonameid
           name
@@ -219,6 +242,23 @@ query profilesByName($searchString: String!) {
       country
       name
     }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
 
@@ -264,6 +304,23 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
         }
       }
     }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
 
@@ -296,6 +353,23 @@ query profilesByIds($id: [Int!]!) {
       longitude
       population
     }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
 
@@ -319,6 +393,23 @@ query trustRelations($safeAddress: String!) {
       avatarUrl
       circlesAddress
       displayCurrency
+      verifications {
+        createdAt
+        verifierSafeAddress
+        verifierProfile {
+          circlesAddress
+          avatarUrl
+          name
+          city {
+            geonameid
+            name
+            country
+            latitude
+            longitude
+            population
+          }
+        }
+      }
     }
   }
 }
@@ -339,6 +430,23 @@ query profileById($id: Int!) {
       geonameid
       country
       name
+    }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
     }
   }
 }
@@ -393,6 +501,23 @@ query profileBySafeAddress($safeAddress: String!) {
         avatarUrl
         avatarMimeType
         displayCurrency
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
         city {
           geonameid
           name
@@ -550,6 +675,23 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
       avatarUrl
       circlesAddress
       displayCurrency
+      verifications {
+        createdAt
+        verifierSafeAddress
+        verifierProfile {
+          circlesAddress
+          avatarUrl
+          name
+          city {
+            geonameid
+            name
+            country
+            latitude
+            longitude
+            population
+          }
+        }
+      }
     }
   }
 }
@@ -997,6 +1139,23 @@ query aggregates(
                 }
               }
             }
+            verifications {
+              createdAt
+              verifierSafeAddress
+              verifierProfile {
+                circlesAddress
+                avatarUrl
+                name
+                city {
+                  geonameid
+                  name
+                  country
+                  latitude
+                  longitude
+                  population
+                }
+              }
+            }
           }
         }
       }
@@ -1098,6 +1257,23 @@ query aggregates(
             lastName
             avatarCid
             displayCurrency
+            verifications {
+              createdAt
+              verifierSafeAddress
+              verifierProfile {
+                circlesAddress
+                avatarUrl
+                name
+                city {
+                  geonameid
+                  name
+                  country
+                  latitude
+                  longitude
+                  population
+                }
+              }
+            }
           }
           total
           lines {
@@ -1140,6 +1316,23 @@ query aggregates(
               lastName
               avatarUrl
               displayCurrency
+              verifications {
+                createdAt
+                verifierSafeAddress
+                verifierProfile {
+                  circlesAddress
+                  avatarUrl
+                  name
+                  city {
+                    geonameid
+                    name
+                    country
+                    latitude
+                    longitude
+                    population
+                  }
+                }
+              }
             }
           }
         }
@@ -1169,14 +1362,20 @@ query invoice($invoiceId: Int!) {
   invoice(invoiceId: $invoiceId)
 }
 
-query verifiedSafes {
-  verifiedSafes {
-    timestamp
-    payload {
-      ...on SafeVerified {
-        organisation
-        safe_address
-      }
+query verifications($pagination: PaginationArgs $filter: VerifiedSafesFilter) {
+  verifications(pagination: $pagination filter: $filter) {
+    createdAt
+    verifierSafeAddress
+    verifierProfile {
+      avatarUrl
+      name
+    }
+    verifiedSafeAddress
+    verifiedProfile {
+      circlesAddress
+      avatarUrl
+      firstName
+      lastName
     }
   }
 }

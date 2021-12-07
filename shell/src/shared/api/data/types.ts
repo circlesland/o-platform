@@ -48,6 +48,16 @@ export type AssetBalance = {
   token_symbol?: Maybe<Scalars['String']>;
 };
 
+export type Capability = {
+  __typename?: 'Capability';
+  type?: Maybe<CapabilityType>;
+};
+
+export enum CapabilityType {
+  Invite = 'Invite',
+  Verify = 'Verify'
+}
+
 export type ChatMessage = IEventPayload & {
   __typename?: 'ChatMessage';
   from: Scalars['String'];
@@ -349,14 +359,6 @@ export type ICity = {
 
 export type IEventPayload = {
   transaction_hash?: Maybe<Scalars['String']>;
-};
-
-export type InitAggregateState = {
-  __typename?: 'InitAggregateState';
-  hubSignupTransaction?: Maybe<Scalars['String']>;
-  invitation?: Maybe<ClaimedInvitation>;
-  invitationTransaction?: Maybe<Scalars['String']>;
-  registration?: Maybe<Profile>;
 };
 
 export type InvitationCreated = IEventPayload & {
@@ -724,6 +726,7 @@ export type Profile = {
   newsletter?: Maybe<Scalars['Boolean']>;
   status?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
+  verifications?: Maybe<Array<Verification>>;
 };
 
 export type ProfileAggregate = {
@@ -831,7 +834,6 @@ export type Query = {
   events: Array<ProfileEvent>;
   findSafeAddressByOwner: Array<SafeAddressByOwnerResult>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
-  initAggregateState?: Maybe<InitAggregateState>;
   invitationTransaction?: Maybe<ProfileEvent>;
   invoice?: Maybe<Scalars['String']>;
   mostRecentUbiSafeOfAccount?: Maybe<Scalars['String']>;
@@ -848,7 +850,7 @@ export type Query = {
   tags: Array<Tag>;
   trustRelations: Array<TrustRelation>;
   ubiInfo: UbiInfo;
-  verifiedSafes: Array<PublicEvent>;
+  verifications: Array<Verification>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
 };
@@ -947,8 +949,9 @@ export type QueryTrustRelationsArgs = {
 };
 
 
-export type QueryVerifiedSafesArgs = {
+export type QueryVerificationsArgs = {
   filter?: Maybe<VerifiedSafesFilter>;
+  pagination?: Maybe<PaginationArgs>;
 };
 
 export type QueryCitiesByGeonameIdInput = {
@@ -1084,6 +1087,7 @@ export type Server = {
 
 export type SessionInfo = {
   __typename?: 'SessionInfo';
+  capabilities: Array<Capability>;
   hasProfile?: Maybe<Scalars['Boolean']>;
   isLoggedOn: Scalars['Boolean'];
   lastAcknowledgedAt?: Maybe<Scalars['String']>;
@@ -1201,9 +1205,19 @@ export type UpsertTagInput = {
   value?: Maybe<Scalars['String']>;
 };
 
+export type Verification = {
+  __typename?: 'Verification';
+  createdAt: Scalars['String'];
+  verificationRewardTransaction?: Maybe<ProfileEvent>;
+  verificationRewardTransactionHash: Scalars['String'];
+  verifiedProfile?: Maybe<Profile>;
+  verifiedSafeAddress: Scalars['String'];
+  verifierProfile?: Maybe<Organisation>;
+  verifierSafeAddress: Scalars['String'];
+};
+
 export type VerifiedSafesFilter = {
   addresses?: Maybe<Array<Scalars['String']>>;
-  after?: Maybe<Scalars['String']>;
 };
 
 export type VerifySafeResult = {
@@ -1659,6 +1673,9 @@ export type SessionInfoQuery = (
     & { profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'circlesAddress' | 'circlesSafeOwner' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )>, capabilities: Array<(
+      { __typename?: 'Capability' }
+      & Pick<Capability, 'type'>
     )> }
   ) }
 );
@@ -1681,24 +1698,6 @@ export type FindSafeAddressByOwnerQuery = (
   & { findSafeAddressByOwner: Array<(
     { __typename?: 'SafeAddressByOwnerResult' }
     & Pick<SafeAddressByOwnerResult, 'type' | 'safeAddress'>
-  )> }
-);
-
-export type InitAggregateStateQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type InitAggregateStateQuery = (
-  { __typename?: 'Query' }
-  & { initAggregateState?: Maybe<(
-    { __typename?: 'InitAggregateState' }
-    & Pick<InitAggregateState, 'hubSignupTransaction' | 'invitationTransaction'>
-    & { invitation?: Maybe<(
-      { __typename?: 'ClaimedInvitation' }
-      & Pick<ClaimedInvitation, 'claimedAt'>
-    )>, registration?: Maybe<(
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName'>
-    )> }
   )> }
 );
 
@@ -1776,6 +1775,17 @@ export type MyProfileQuery = (
           & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
         )> }
       ) }
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      )> }
     )>> }
   )> }
 );
@@ -1804,6 +1814,17 @@ export type ProfilesQuery = (
           & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
         )> }
       ) }
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      )> }
     )>> }
   )> }
 );
@@ -1848,7 +1869,18 @@ export type ProfilesByNameQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
-    )> }
+    )>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      )> }
+    )>> }
   )> }
 );
 
@@ -1876,6 +1908,17 @@ export type ProfilesByCirclesAddressQuery = (
           & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
         )> }
       ) }
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      )> }
     )>> }
   )> }
 );
@@ -1904,7 +1947,18 @@ export type ProfilesByIdsQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
-    )> }
+    )>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      )> }
+    )>> }
   )> }
 );
 
@@ -1924,6 +1978,18 @@ export type TrustRelationsQuery = (
     )>, otherSafeAddressProfile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      & { verifications?: Maybe<Array<(
+        { __typename?: 'Verification' }
+        & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+        & { verifierProfile?: Maybe<(
+          { __typename?: 'Organisation' }
+          & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+          & { city?: Maybe<(
+            { __typename?: 'City' }
+            & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+          )> }
+        )> }
+      )>> }
     )> }
   )> }
 );
@@ -1941,7 +2007,18 @@ export type ProfileByIdQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
-    )> }
+    )>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      )> }
+    )>> }
   )> }
 );
 
@@ -1979,6 +2056,17 @@ export type ProfileBySafeAddressQuery = (
           & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
         )> }
       ) }
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      )> }
     )>> }
   )> }
 );
@@ -2087,6 +2175,18 @@ export type CommonTrustQuery = (
     & { profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      & { verifications?: Maybe<Array<(
+        { __typename?: 'Verification' }
+        & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+        & { verifierProfile?: Maybe<(
+          { __typename?: 'Organisation' }
+          & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+          & { city?: Maybe<(
+            { __typename?: 'City' }
+            & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+          )> }
+        )> }
+      )>> }
     )> }
   )> }
 );
@@ -2294,6 +2394,17 @@ export type AggregatesQuery = (
                 & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
               )> }
             ) }
+          )>>, verifications?: Maybe<Array<(
+            { __typename?: 'Verification' }
+            & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+            & { verifierProfile?: Maybe<(
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+              & { city?: Maybe<(
+                { __typename?: 'City' }
+                & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+              )> }
+            )> }
           )>> }
         )> }
       )> }
@@ -2388,6 +2499,18 @@ export type AggregatesQuery = (
         )>, buyerProfile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarCid' | 'displayCurrency'>
+          & { verifications?: Maybe<Array<(
+            { __typename?: 'Verification' }
+            & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+            & { verifierProfile?: Maybe<(
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+              & { city?: Maybe<(
+                { __typename?: 'City' }
+                & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+              )> }
+            )> }
+          )>> }
         )>, lines: Array<(
           { __typename?: 'SalesLine' }
           & Pick<SalesLine, 'id' | 'amount'>
@@ -2405,6 +2528,18 @@ export type AggregatesQuery = (
           & { buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl' | 'displayCurrency'>
+            & { verifications?: Maybe<Array<(
+              { __typename?: 'Verification' }
+              & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+              & { verifierProfile?: Maybe<(
+                { __typename?: 'Organisation' }
+                & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+                & { city?: Maybe<(
+                  { __typename?: 'City' }
+                  & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+                )> }
+              )> }
+            )>> }
           )> }
         )> }
       )> }
@@ -2451,18 +2586,24 @@ export type InvoiceQuery = (
   & Pick<Query, 'invoice'>
 );
 
-export type VerifiedSafesQueryVariables = Exact<{ [key: string]: never; }>;
+export type VerificationsQueryVariables = Exact<{
+  pagination?: Maybe<PaginationArgs>;
+  filter?: Maybe<VerifiedSafesFilter>;
+}>;
 
 
-export type VerifiedSafesQuery = (
+export type VerificationsQuery = (
   { __typename?: 'Query' }
-  & { verifiedSafes: Array<(
-    { __typename?: 'PublicEvent' }
-    & Pick<PublicEvent, 'timestamp'>
-    & { payload?: Maybe<{ __typename?: 'ChatMessage' } | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'OrganisationCreated' } | (
-      { __typename?: 'SafeVerified' }
-      & Pick<SafeVerified, 'organisation' | 'safe_address'>
-    ) | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
+  & { verifications: Array<(
+    { __typename?: 'Verification' }
+    & Pick<Verification, 'createdAt' | 'verifierSafeAddress' | 'verifiedSafeAddress'>
+    & { verifierProfile?: Maybe<(
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'avatarUrl' | 'name'>
+    )>, verifiedProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'circlesAddress' | 'avatarUrl' | 'firstName' | 'lastName'>
+    )> }
   )> }
 );
 
@@ -2954,6 +3095,9 @@ export const SessionInfoDocument = gql`
       lastName
       avatarUrl
     }
+    capabilities {
+      type
+    }
   }
 }
     `;
@@ -2967,21 +3111,6 @@ export const FindSafeAddressByOwnerDocument = gql`
   findSafeAddressByOwner(owner: $owner) {
     type
     safeAddress
-  }
-}
-    `;
-export const InitAggregateStateDocument = gql`
-    query initAggregateState {
-  initAggregateState {
-    hubSignupTransaction
-    invitation {
-      claimedAt
-    }
-    invitationTransaction
-    registration {
-      id
-      firstName
-    }
   }
 }
     `;
@@ -3079,6 +3208,23 @@ export const MyProfileDocument = gql`
         }
       }
     }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
     `;
@@ -3117,6 +3263,23 @@ export const ProfilesDocument = gql`
         avatarUrl
         avatarMimeType
         displayCurrency
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
         city {
           geonameid
           name
@@ -3174,6 +3337,23 @@ export const ProfilesByNameDocument = gql`
       country
       name
     }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
     `;
@@ -3220,6 +3400,23 @@ export const ProfilesByCirclesAddressDocument = gql`
         }
       }
     }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
     `;
@@ -3254,6 +3451,23 @@ export const ProfilesByIdsDocument = gql`
       longitude
       population
     }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
     `;
@@ -3278,6 +3492,23 @@ export const TrustRelationsDocument = gql`
       avatarUrl
       circlesAddress
       displayCurrency
+      verifications {
+        createdAt
+        verifierSafeAddress
+        verifierProfile {
+          circlesAddress
+          avatarUrl
+          name
+          city {
+            geonameid
+            name
+            country
+            latitude
+            longitude
+            population
+          }
+        }
+      }
     }
   }
 }
@@ -3299,6 +3530,23 @@ export const ProfileByIdDocument = gql`
       geonameid
       country
       name
+    }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
     }
   }
 }
@@ -3354,6 +3602,23 @@ export const ProfileBySafeAddressDocument = gql`
         avatarUrl
         avatarMimeType
         displayCurrency
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
+    verifications {
+      createdAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
         city {
           geonameid
           name
@@ -3493,6 +3758,23 @@ export const CommonTrustDocument = gql`
       avatarUrl
       circlesAddress
       displayCurrency
+      verifications {
+        createdAt
+        verifierSafeAddress
+        verifierProfile {
+          circlesAddress
+          avatarUrl
+          name
+          city {
+            geonameid
+            name
+            country
+            latitude
+            longitude
+            population
+          }
+        }
+      }
     }
   }
 }
@@ -3893,6 +4175,23 @@ export const AggregatesDocument = gql`
                 }
               }
             }
+            verifications {
+              createdAt
+              verifierSafeAddress
+              verifierProfile {
+                circlesAddress
+                avatarUrl
+                name
+                city {
+                  geonameid
+                  name
+                  country
+                  latitude
+                  longitude
+                  population
+                }
+              }
+            }
           }
         }
       }
@@ -3994,6 +4293,23 @@ export const AggregatesDocument = gql`
             lastName
             avatarCid
             displayCurrency
+            verifications {
+              createdAt
+              verifierSafeAddress
+              verifierProfile {
+                circlesAddress
+                avatarUrl
+                name
+                city {
+                  geonameid
+                  name
+                  country
+                  latitude
+                  longitude
+                  population
+                }
+              }
+            }
           }
           total
           lines {
@@ -4036,6 +4352,23 @@ export const AggregatesDocument = gql`
               lastName
               avatarUrl
               displayCurrency
+              verifications {
+                createdAt
+                verifierSafeAddress
+                verifierProfile {
+                  circlesAddress
+                  avatarUrl
+                  name
+                  city {
+                    geonameid
+                    name
+                    country
+                    latitude
+                    longitude
+                    population
+                  }
+                }
+              }
             }
           }
         }
@@ -4068,15 +4401,21 @@ export const InvoiceDocument = gql`
   invoice(invoiceId: $invoiceId)
 }
     `;
-export const VerifiedSafesDocument = gql`
-    query verifiedSafes {
-  verifiedSafes {
-    timestamp
-    payload {
-      ... on SafeVerified {
-        organisation
-        safe_address
-      }
+export const VerificationsDocument = gql`
+    query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
+  verifications(pagination: $pagination, filter: $filter) {
+    createdAt
+    verifierSafeAddress
+    verifierProfile {
+      avatarUrl
+      name
+    }
+    verifiedSafeAddress
+    verifiedProfile {
+      circlesAddress
+      avatarUrl
+      firstName
+      lastName
     }
   }
 }
@@ -4170,9 +4509,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     findSafeAddressByOwner(variables: FindSafeAddressByOwnerQueryVariables): Promise<FindSafeAddressByOwnerQuery> {
       return withWrapper(() => client.request<FindSafeAddressByOwnerQuery>(print(FindSafeAddressByOwnerDocument), variables));
     },
-    initAggregateState(variables?: InitAggregateStateQueryVariables): Promise<InitAggregateStateQuery> {
-      return withWrapper(() => client.request<InitAggregateStateQuery>(print(InitAggregateStateDocument), variables));
-    },
     claimedInvitation(variables?: ClaimedInvitationQueryVariables): Promise<ClaimedInvitationQuery> {
       return withWrapper(() => client.request<ClaimedInvitationQuery>(print(ClaimedInvitationDocument), variables));
     },
@@ -4251,8 +4587,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     invoice(variables: InvoiceQueryVariables): Promise<InvoiceQuery> {
       return withWrapper(() => client.request<InvoiceQuery>(print(InvoiceDocument), variables));
     },
-    verifiedSafes(variables?: VerifiedSafesQueryVariables): Promise<VerifiedSafesQuery> {
-      return withWrapper(() => client.request<VerifiedSafesQuery>(print(VerifiedSafesDocument), variables));
+    verifications(variables?: VerificationsQueryVariables): Promise<VerificationsQuery> {
+      return withWrapper(() => client.request<VerificationsQuery>(print(VerificationsDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

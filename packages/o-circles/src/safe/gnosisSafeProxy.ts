@@ -71,6 +71,7 @@ export class GnosisSafeProxy extends Web3Contract {
     const txData = await this.contract.methods
       .removeOwner(sentinel, address, new BN("1"))
       .encodeABI();
+
     const receipt = await this.execTransaction(privateKey, {
       to: this.address,
       data: txData,
@@ -78,7 +79,7 @@ export class GnosisSafeProxy extends Web3Contract {
       refundReceiver: ZERO_ADDRESS,
       gasToken: ZERO_ADDRESS,
       operation: SafeOps.CALL,
-    });
+    }, true);
 
     return receipt;
   }

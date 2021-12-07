@@ -11,19 +11,6 @@ export type RegistrationData = {
   circlesSafeOwner: string;
 }
 
-export type InvitationData = {
-  id: string
-  createdByProfileId: number
-  createdAt: string,
-  redeemedAt?: string,
-  redeemedTo?: string
-}
-
-export type InvitationTransaction = {
-  txHash: string
-  value: BN
-}
-
 export type ProfileData = {
   id: number;
   firstName: string;

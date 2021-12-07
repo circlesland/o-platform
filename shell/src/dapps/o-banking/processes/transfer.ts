@@ -19,12 +19,14 @@ import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { SetTrustContext } from "./setTrust";
 import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
 import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
+
 import { me } from "../../../shared/stores/me";
 import {
   DirectPathDocument,
   DirectPathQuery,
   Profile,
-  ProfileBySafeAddressDocument, QueryDirectPathArgs
+  ProfileBySafeAddressDocument,
+  QueryDirectPathArgs,
 } from "../../../shared/api/data/types";
 import {
   convertTimeCirclesToCircles,
@@ -33,7 +35,8 @@ import {
 import { TransactionReceipt } from "web3-core";
 import TransferSummary from "../atoms/TransferSummary.svelte";
 import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
-import {ApiClient} from "../../../shared/apiConnection";
+import { ApiClient } from "../../../shared/apiConnection";
+import { Currency } from "../../../shared/currency";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -54,14 +57,20 @@ export type TransferContextData = {
   acceptSummary?: boolean;
 };
 
-
-export async function findDirectTransfers(from:string, to:string, amount:string) {
+export async function findDirectTransfers(
+  from: string,
+  to: string,
+  amount: string
+) {
   // Find all tokens which are trusted by "to"
-  const result = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(DirectPathDocument, {
-    from: from,
-    to: to,
-    amount: amount
-  });
+  const result = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(
+    DirectPathDocument,
+    {
+      from: from,
+      to: to,
+      amount: amount,
+    }
+  );
   console.log("Direct path: ", result);
 
   return result;
@@ -100,7 +109,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
     submitButtonText: "Next",
   },
   currency: {
-    title: "Please enter the Amount",
+    title: "Please enter the Amount in Euro",
     description: "",
     submitButtonText: "Submit",
   },
@@ -239,22 +248,26 @@ const processDefinition = (processId: string) =>
             context.data.maxFlows = {};
             console.log("CONEXT DATA", context.data);
             const p1 = new Promise<void>(async (resolve) => {
+              const amount =
+                context.data.tokens.currency == "crc"
+                  ? convertTimeCirclesToCircles(
+                      Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
+                      null
+                    ).toString()
+                  : context.data.tokens.amount;
 
-              const amount = context.data.tokens.currency == "crc"
-                ? convertTimeCirclesToCircles(
-                  Number.parseFloat(context.data.tokens.amount),
-                  null
-                ).toString()
-                : context.data.tokens.amount;
-
-              const circlesValueInWei = RpcGateway.get().utils
-                .toWei(amount.toString() ?? "0", "ether")
+              const circlesValueInWei = RpcGateway.get()
+                .utils.toWei(amount.toString() ?? "0", "ether")
                 .toString();
 
-              const flow = await findDirectTransfers(context.data.safeAddress, context.data.recipientAddress, circlesValueInWei);
+              const flow = await findDirectTransfers(
+                context.data.safeAddress,
+                context.data.recipientAddress,
+                circlesValueInWei
+              );
 
               // TODO: Re-implement pathfinder when available again
-/*
+              /*
 
               const flow = await requestPathToRecipient({
                 data: {
@@ -274,7 +287,8 @@ const processDefinition = (processId: string) =>
               context.data.transitivePath = flow;
               resolve();
             });
-            context.data.maxFlows["xdai"] = await RpcGateway.get().eth.getBalance(context.data.safeAddress);
+            context.data.maxFlows["xdai"] =
+              await RpcGateway.get().eth.getBalance(context.data.safeAddress);
             await p1;
           },
           onDone: "#checkAmount",
