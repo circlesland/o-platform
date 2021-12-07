@@ -8,8 +8,6 @@ import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationMani
 
 import { RuntimeLayout } from "./layout";
 
-import "simplebar";
-import "simplebar/dist/simplebar.css";
 import { createEventDispatcher } from "svelte";
 import { media } from "../stores/media";
 
@@ -28,11 +26,13 @@ $: {
   ) {
     document.body.style.overflow = "hidden";
     document.body.style.position = "fixed";
+    // document.getElementById("main").style.height = "100%";
     document.body.style.height = "100%";
     document.body.style.width = "100%";
   } else {
     document.body.style.overflow = "inherit";
     document.body.style.position = "inherit";
+    // document.getElementById("main").style.height = "inherit";
     document.body.style.height = "inherit";
     document.body.style.width = "inherit";
   }
@@ -55,7 +55,7 @@ function onkeydown(e: KeyboardEvent) {
 <svelte:window on:keydown="{onkeydown}" />
 {#if layout}
   <div class="absolute flex flex-row w-full overflow-auto">
-    <main class="relative z-30 w-full overflow-auto overflow-hidden">
+    <main id="main" class="relative z-30 w-full overflow-auto overflow-hidden">
       <div
         class="flex flex-row w-full bg-gray-100 mainContent"
         class:mb-16="{layout.dialogs.center &&
@@ -175,7 +175,7 @@ function onkeydown(e: KeyboardEvent) {
     -webkit-transition: all 0.35s ease-in-out;
     -moz-transition: all 0.35s ease-in-out;
     transition: all 0.35s ease-in-out;
-    margin: -9px -1px -41px -11px;
+    margin: 0;
   }
 }
 </style>
