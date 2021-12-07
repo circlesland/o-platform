@@ -29,9 +29,10 @@ $: {
   }
 }
 
+console.log("DAPP: ", runtimeDapp);
 function profileSwitcher() {
   // if (profile.memberships && profile.memberships.length > 0) {
-  console.log("O:ASUDLJKASDN");
+
   showSwitcher = !showSwitcher;
   // }
 }
@@ -60,17 +61,19 @@ function profileSwitcher() {
     </div>
 
     <div class="col-start-3 pr-1 place-self-center justify-self-end">
-      <div
-        class="relative mr-4 cursor-pointer justify-self-center"
-        on:click="{() => push(`#/marketplace/cart`)}">
-        {#if $cartContents && $cartContents.length > 0}
-          <div
-            class="absolute w-full text-center text-secondary -top-3 left-1 font-heading">
-            {$cartContents.length}
-          </div>
-        {/if}
-        <Icons icon="cart" size="{6}" />
-      </div>
+      {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1"}
+        <div
+          class="relative mr-4 cursor-pointer justify-self-center"
+          on:click="{() => push(`#/marketplace/cart`)}">
+          {#if $cartContents && $cartContents.length > 0}
+            <div
+              class="absolute w-full text-center text-secondary -top-3 left-1 font-heading">
+              {$cartContents.length}
+            </div>
+          {/if}
+          <Icons icon="cart" size="{6}" />
+        </div>
+      {/if}
 
       {#if profile}
         <div
