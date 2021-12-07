@@ -1,6 +1,9 @@
 {
   "private": true,
   "name": "o-platform",
+  "engines": {
+    "node": "16"
+  },
   "workspaces": {
     "packages": [
       "packages/*",
