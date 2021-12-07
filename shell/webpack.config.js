@@ -110,6 +110,7 @@ module.exports = {
     cachedAssets: VERBOSE,
   },
   output: {
+    hashFunction: "xxhash64",
     path: __dirname + "/public",
     filename: "bundle.js",
     chunkFilename: "bundle.[id].js",
