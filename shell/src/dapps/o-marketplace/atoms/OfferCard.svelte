@@ -91,6 +91,11 @@ displayName =
           class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest">
           {offer.pricePerUnit} <span class=" font-primary">€</span>
         </div>
+
+        <div
+          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
+          Store Pick Up Only
+        </div>
       </div>
     </header>
     <div
@@ -130,14 +135,7 @@ displayName =
           </div>
         {/if}
       </div>
-      <div class="text-xs text-right text-dark">
-        <div class="relative ">
-          <div
-            class="absolute py-2 pl-4 pr-2 mt-2 text-xs rounded-l-full -right-4 bottom-2 bg-alert-lightest">
-            Store Pick Up Only
-          </div>
-        </div>
-      </div>
+
       <div class="flex flex-row space-x-4">
         <div>
           <button class="btn btn-square btn-light">
