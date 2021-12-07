@@ -4,22 +4,31 @@ import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-
+import { Capability, CapabilityType } from "../../../shared/api/data/types";
+import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 import DashboardHeader from "../atoms/DashboardHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+export let capabilities: Capability[] | undefined = [];
 
 $: me;
 
 let disableBanking: boolean = false;
+let canVerify: boolean = false;
 
 let safeDeployThreshold: string = "200000000000000000";
 
 const init = async () => {
   const pk = sessionStorage.getItem("circlesKey");
   disableBanking = !pk;
+
+  const sessionInfo = await getSessionInfo();
+  capabilities = sessionInfo.capabilities;
+  canVerify =
+    capabilities &&
+    capabilities.find((o) => o.type == CapabilityType.Verify) !== undefined;
 };
 
 let showInviteButton = false;
@@ -84,6 +93,19 @@ function loadLink(link, external = false) {
           <div class="mt-4 text-3xl font-heading text-dark">market</div>
         </div>
       </section>
+      {#if canVerify}
+        <section
+          class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+          on:click="{() => loadLink('/verification')}">
+          <div
+            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            <div class="pt-2 text-primary">
+              <Icons icon="check" size="{12}" />
+            </div>
+            <div class="mt-4 text-3xl font-heading text-dark">verified</div>
+          </div>
+        </section>
+      {/if}
     </div>
   </div>
 </div>
