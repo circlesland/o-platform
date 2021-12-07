@@ -8,47 +8,45 @@ import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import * as yup from "yup";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptCity } from "../../../shared/api/promptCity";
-import {Profile, UpsertOrganisationDocument, UpsertRegionDocument} from "../../../shared/api/data/types";
-import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {GNOSIS_SAFE_ADDRESS, HUB_ADDRESS, PROXY_FACTORY_ADDRESS} from "@o-platform/o-circles/dist/consts";
-import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
-import {me} from "../../../shared/stores/me";
-import {GnosisSafeProxyFactory} from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
-import {show} from "@o-platform/o-process/dist/actions/show";
+import {
+  Profile,
+  UpsertRegionDocument,
+} from "../../../shared/api/data/types";
+import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import { me } from "../../../shared/stores/me";
+import { GnosisSafeProxyFactory } from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
+import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
-import {BN} from "ethereumjs-util";
+import { BN } from "ethereumjs-util";
 
 export type CreateRegionContextData = {
-  successAction: (data:CreateRegionContextData) => void,
-  id: number|undefined,
-  avatarMimeType: "image/png",
-  avatarUrl: string,
-  circlesAddress: string,
-  cityGeonameid: string,
-  description: string,
-  name: string,
-  organisationSafeProxy: GnosisSafeProxy
+  successAction: (data: CreateRegionContextData) => void;
+  id: number | undefined;
+  avatarMimeType: "image/png";
+  avatarUrl: string;
+  circlesAddress: string;
+  cityGeonameid: string;
+  description: string;
+  name: string;
+  organisationSafeProxy: GnosisSafeProxy;
 };
 
 export type CreateRegionContext = ProcessContext<CreateRegionContextData>;
 
-
 /**
  * Sends the specified "amount".
  */
-async function sendFundsFromEoa(to:string, amount: BN)
-{
-  let $me:Profile = null;
-  const unsub = me.subscribe(current => {
+async function sendFundsFromEoa(to: string, amount: BN) {
+  let $me: Profile = null;
+  const unsub = me.subscribe((current) => {
     $me = current;
   });
   unsub();
 
-  if (!$me)
-    throw new Error(`You're not logged on`);
-  if (!$me.circlesSafeOwner)
-    throw new Error(`You have no eoa`);
+  if (!$me) throw new Error(`You're not logged on`);
+  if (!$me.circlesSafeOwner) throw new Error(`You have no eoa`);
 
   const privateKey = sessionStorage.getItem("circlesKey");
   if (!privateKey) {
@@ -56,19 +54,22 @@ async function sendFundsFromEoa(to:string, amount: BN)
   }
 
   const web3 = RpcGateway.get();
-  const eoaBalance = new BN(
-    await web3.eth.getBalance($me.circlesSafeOwner)
-  );
+  const eoaBalance = new BN(await web3.eth.getBalance($me.circlesSafeOwner));
   const gas = 41000;
   const gasPrice = new BN(await web3.eth.getGasPrice());
   const totalFee = gasPrice.mul(new BN(gas.toString()));
-  const nonce = await web3.eth.getTransactionCount(
-    $me.circlesSafeOwner
-  );
+  const nonce = await web3.eth.getTransactionCount($me.circlesSafeOwner);
 
   const availableForTransfer = eoaBalance.sub(totalFee);
   if (availableForTransfer.lt(amount)) {
-    throw new Error(`You have not enough funds on '${$me.circlesSafeOwner}'. Max. transferable amount is ${web3.utils.fromWei(availableForTransfer, "ether")}`);
+    throw new Error(
+      `You have not enough funds on '${
+        $me.circlesSafeOwner
+      }'. Max. transferable amount is ${web3.utils.fromWei(
+        availableForTransfer,
+        "ether"
+      )}`
+    );
   }
 
   const account = web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -85,27 +86,22 @@ async function sendFundsFromEoa(to:string, amount: BN)
     throw new Error(`Couldn't send the invitation transaction`);
   }
 
-  const receipt = await web3.eth.sendSignedTransaction(
-    signedTx.rawTransaction
-  );
+  const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
   console.log(receipt);
 }
 
 /**
  * Sends the specified "amount".
  */
-async function sendFundsFromSafe(to:string, amount: BN)
-{
-  let $me:Profile = null;
-  const unsub = me.subscribe(current => {
+async function sendFundsFromSafe(to: string, amount: BN) {
+  let $me: Profile = null;
+  const unsub = me.subscribe((current) => {
     $me = current;
   });
   unsub();
 
-  if (!$me)
-    throw new Error(`You're not logged on`);
-  if (!$me.circlesSafeOwner)
-    throw new Error(`You have no eoa`);
+  if (!$me) throw new Error(`You're not logged on`);
+  if (!$me.circlesSafeOwner) throw new Error(`You have no eoa`);
 
   const privateKey = sessionStorage.getItem("circlesKey");
   if (!privateKey) {
@@ -113,19 +109,22 @@ async function sendFundsFromSafe(to:string, amount: BN)
   }
 
   const web3 = RpcGateway.get();
-  const eoaBalance = new BN(
-    await web3.eth.getBalance($me.circlesAddress)
-  );
+  const eoaBalance = new BN(await web3.eth.getBalance($me.circlesAddress));
   const gas = 41000;
   const gasPrice = new BN(await web3.eth.getGasPrice());
   const totalFee = gasPrice.mul(new BN(gas.toString()));
-  const nonce = await web3.eth.getTransactionCount(
-    $me.circlesAddress
-  );
+  const nonce = await web3.eth.getTransactionCount($me.circlesAddress);
 
   const availableForTransfer = eoaBalance.sub(totalFee);
   if (availableForTransfer.lt(amount)) {
-    throw new Error(`You have not enough funds on '${$me.circlesAddress}'. Max. transferable amount is ${web3.utils.fromWei(availableForTransfer, "ether")}`);
+    throw new Error(
+      `You have not enough funds on '${
+        $me.circlesAddress
+      }'. Max. transferable amount is ${web3.utils.fromWei(
+        availableForTransfer,
+        "ether"
+      )}`
+    );
   }
 
   const proxy = new GnosisSafeProxy(web3, $me.circlesAddress);
@@ -168,7 +167,7 @@ const processDefinition = (processId: string) =>
             description: "DESCRIPTION",
             placeholder: "City",
             submitButtonText: "Save",
-          }
+          },
         },
         navigation: {
           next: "#description",
@@ -185,7 +184,7 @@ const processDefinition = (processId: string) =>
             description: "DESCRIPTION",
             placeholder: "Description",
             submitButtonText: "Save",
-          }
+          },
         },
         dataSchema: yup
           .string()
@@ -215,18 +214,21 @@ const processDefinition = (processId: string) =>
         navigation: {
           next: "#checkDeploy",
           previous: "#description",
-          canSkip: () => true
+          canSkip: () => true,
         },
       }),
       checkDeploy: {
         id: "checkDeploy",
-        always:[{
-          cond: () => true,
-          target: "#deployOrganisation"
-        }, {
-          cond: () => false,
-          target: "#upsertRegion"
-        }]
+        always: [
+          {
+            cond: () => true,
+            target: "#deployOrganisation",
+          },
+          {
+            cond: () => false,
+            target: "#upsertRegion",
+          },
+        ],
       },
       deployOrganisation: {
         id: "deployOrganisation",
@@ -238,24 +240,28 @@ const processDefinition = (processId: string) =>
               throw new Error(`The private key is not unlocked`);
             }
 
-            let $me:Profile = null;
-            const unsub = me.subscribe(current => {
+            let $me: Profile = null;
+            const unsub = me.subscribe((current) => {
               $me = current;
             });
             unsub();
 
             if (!$me?.circlesAddress) {
-              throw new Error(`You need a fully set-up circles account to create an organisation.`)
+              throw new Error(
+                `You need a fully set-up circles account to create an organisation.`
+              );
             }
 
             const proxyFactory = new GnosisSafeProxyFactory(
               RpcGateway.get(),
-              PROXY_FACTORY_ADDRESS,
-              GNOSIS_SAFE_ADDRESS
+              "__SAFE_PROXY_FACTORY_ADDRESS__",
+              "__SAFE_ADDRESS__"
             );
 
-            context.data.organisationSafeProxy = await proxyFactory.deployNewSafeProxy(privateKey);
-            context.data.circlesAddress = context.data.organisationSafeProxy.address;
+            context.data.organisationSafeProxy =
+              await proxyFactory.deployNewSafeProxy(privateKey);
+            context.data.circlesAddress =
+              context.data.organisationSafeProxy.address;
 
             console.log(context.data.organisationSafeProxy);
           },
@@ -266,15 +272,15 @@ const processDefinition = (processId: string) =>
             },
             target: "#showError",
           },
-        }
+        },
       },
       fundOrganisation: {
         id: "fundOrganisation",
         entry: () => console.log(`fundOrganisation ...`),
         invoke: {
           src: async (context, event) => {
-            let $me:Profile = null;
-            const unsub = me.subscribe(current => {
+            let $me: Profile = null;
+            const unsub = me.subscribe((current) => {
               $me = current;
             });
             unsub();
@@ -291,7 +297,7 @@ const processDefinition = (processId: string) =>
             },
             target: "#showError",
           },
-        }
+        },
       },
       signupOrganisation: {
         id: "signupOrganisation",
@@ -303,9 +309,12 @@ const processDefinition = (processId: string) =>
               throw new Error(`The private key is not unlocked`);
             }
 
-            const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);
-            const receipt = await (await hub.signupOrganisation(privateKey, context.data.organisationSafeProxy));
-            console.log(receipt)
+            const hub = new CirclesHub(RpcGateway.get(), "__CIRCLES_HUB_ADDRESS__");
+            const receipt = await await hub.signupOrganisation(
+              privateKey,
+              context.data.organisationSafeProxy
+            );
+            console.log(receipt);
           },
           onDone: "#upsertRegion",
           onError: {
@@ -314,7 +323,7 @@ const processDefinition = (processId: string) =>
             },
             target: "#showError",
           },
-        }
+        },
       },
       upsertRegion: {
         id: "upsertRegion",
@@ -329,15 +338,16 @@ const processDefinition = (processId: string) =>
               cityGeonameid: context.data.cityGeonameid,
               description: context.data.description,
               name: context.data.name,
-              id: context.data.id
+              id: context.data.id,
             };
 
-            const apiClient = await window.o.apiClient.client.subscribeToResult();
+            const apiClient =
+              await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: UpsertRegionDocument,
               variables: {
-                organisation: organisation
-              }
+                organisation: organisation,
+              },
             });
           },
           onDone: "#success",

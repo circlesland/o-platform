@@ -1,11 +1,9 @@
-import {BN} from "ethereumjs-util";
-
 export const EMPTY_DATA = '0x'
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-export const GNOSIS_SAFE_ADDRESS = '0x2CB0ebc503dE87CFD8f0eCEED8197bF7850184ae';
-export const PROXY_FACTORY_ADDRESS = '0x8b4404DE0CaECE4b966a9959f134f0eFDa636156';
-export const HUB_ADDRESS = "0x29b9a7fBb8995b2423a71cC17cf9810798F6C543";
-export const HUB_BLOCK = new BN("12529458");
+//export const GNOSIS_SAFE_ADDRESS = '__SAFE_ADDRESS__';
+//export const PROXY_FACTORY_ADDRESS = '__SAFE_PROXY_FACTORY_ADDRESS__';
+//export const HUB_ADDRESS = "__CIRCLES_HUB_ADDRESS__";
+//export const HUB_BLOCK = new BN("__CIRCLES_HUB_BLOCK__");
 
 export const PROXY_FACTORY_ABI = [
   {

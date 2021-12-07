@@ -11,7 +11,6 @@ import { promptCity } from "../../../shared/api/promptCity";
 import {Profile, UpsertOrganisationDocument} from "../../../shared/api/data/types";
 import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {GNOSIS_SAFE_ADDRESS, HUB_ADDRESS, PROXY_FACTORY_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {me} from "../../../shared/stores/me";
 import {GnosisSafeProxyFactory} from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
@@ -250,8 +249,8 @@ const processDefinition = (processId: string) =>
 
             const proxyFactory = new GnosisSafeProxyFactory(
               RpcGateway.get(),
-              PROXY_FACTORY_ADDRESS,
-              GNOSIS_SAFE_ADDRESS
+              "__SAFE_PROXY_FACTORY_ADDRESS__",
+              "__SAFE_ADDRESS__"
             );
 
             context.data.organisationSafeProxy = await proxyFactory.deployNewSafeProxy(privateKey);
@@ -303,7 +302,7 @@ const processDefinition = (processId: string) =>
               throw new Error(`The private key is not unlocked`);
             }
 
-            const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);
+            const hub = new CirclesHub(RpcGateway.get(), "__CIRCLES_HUB_ADDRESS__");
             const receipt = await hub.signupOrganisation(privateKey, context.data.organisationSafeProxy);
             console.log(receipt)
           },

@@ -94,7 +94,7 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
         throw new Error(`Cannot get the ubi. The context.tokenAddress is empty.`);
 
       const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress);
-      const circlesAccount = new CirclesAccount($me.circlesAddress);
+      const circlesAccount = new CirclesAccount($me.circlesAddress, "__CIRCLES_HUB_ADDRESS__");
       const result = await circlesAccount.getUBI(privateKey, gnosisSafeProxy, context.tokenAddress);
       console.log(`Ubi request result (transactionHash):`, result.transactionHash);
       return result;

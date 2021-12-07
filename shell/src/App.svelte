@@ -211,6 +211,7 @@
   import {interpret} from "xstate";
   import {initMachine} from "./dapps/o-onboarding/processes/init";
   import {ubiMachine} from "./shared/ubiTimer2";
+  import * as bip39 from "bip39";
 
   let ubiMachineInterpreter: any;
 
@@ -224,8 +225,6 @@
       })
       .start();
   };
-  // window.runInitMachine();
-
   let _routes = {
     "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
     "*": NotFound,

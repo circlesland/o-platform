@@ -23,7 +23,6 @@ import { promptRedeemInvitation } from "./invitation/promptRedeemInvitation";
 import { promptGetInvited } from "./invitation/promptGetInvited";
 import { acquireSession } from "../../o-passport/processes/identify/aquireSession/acquireSession2";
 import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
-import { HUB_ADDRESS } from "@o-platform/o-circles/dist/consts";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { KeyManager } from "../../o-passport/data/keyManager";
@@ -558,7 +557,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         }
       },
       signupForUbi: (ctx) => async (callback) => {
-        const hub = new CirclesHub(RpcGateway.get(), HUB_ADDRESS);
+        const hub = new CirclesHub(RpcGateway.get(), "__CIRCLES_HUB_ADDRESS__");
         const privateKey = sessionStorage.getItem("circlesKey");
         if (!privateKey) throw new Error(`The private key is not unlocked`);
         const safeProxy = new GnosisSafeProxy(

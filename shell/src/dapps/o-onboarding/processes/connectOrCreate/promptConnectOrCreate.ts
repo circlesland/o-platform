@@ -10,10 +10,6 @@ import { loadProfile } from "../../../o-passport/processes/identify/services/loa
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { GnosisSafeProxyFactory } from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {
-  GNOSIS_SAFE_ADDRESS,
-  PROXY_FACTORY_ADDRESS,
-} from "@o-platform/o-circles/dist/consts";
 import { connectSafe } from "../connectSafe";
 
 export type PromptConnectOrCreateContextData = {
@@ -90,8 +86,8 @@ const processDefinition = (processId: string) =>
 
             const proxyFactory = new GnosisSafeProxyFactory(
               RpcGateway.get(),
-              PROXY_FACTORY_ADDRESS,
-              GNOSIS_SAFE_ADDRESS
+              "__SAFE_PROXY_FACTORY_ADDRESS__",
+              "__SAFE_ADDRESS__"
             );
             const safeProxy = await proxyFactory.deployNewSafeProxy(privateKey);
 

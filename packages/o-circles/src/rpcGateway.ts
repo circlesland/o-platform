@@ -4,9 +4,13 @@ import Web3 from "web3";
 import Common from "ethereumjs-common";
 
 export class RpcGateway {
-  static readonly gateway = "https://rpc.circles.land/";
+  private static gateway = ""; //"https://rpc.circles.land/";
   private static _web3?: Web3;
   private static _provider?: HttpProvider;
+
+  static setup(rpcEndpoint:string) {
+    this.gateway = rpcEndpoint;
+  }
 
   static get(): Web3 {
     if (!this._web3) {
@@ -75,6 +79,8 @@ export class RpcGateway {
   }
 
   static init() {
+    if (this.gateway == "")
+      throw new Error(`Call setup() first.`);
     if (!this._web3) {
       this._web3 = new Web3();
     }

@@ -7,7 +7,6 @@ import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
-import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {BN} from "ethereumjs-util";
 import {EditorViewContext} from "@o-platform/o-editors/src/shared/editorViewContext";
 import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
@@ -69,7 +68,7 @@ export async function fSetTrust(context: ProcessContext<SetTrustContextData>) : 
 
   return await new CirclesHub(
     RpcGateway.get(),
-    HUB_ADDRESS
+    "__CIRCLES_HUB_ADDRESS__"
   ).setTrust(
     context.data.privateKey,
     gnosisSafeProxy,

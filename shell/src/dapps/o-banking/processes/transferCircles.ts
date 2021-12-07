@@ -7,8 +7,6 @@ import {BN} from "ethereumjs-util";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
-import {HUB_ADDRESS} from "@o-platform/o-circles/dist/consts";
-import {Subscription} from "rxjs";
 import {TagTransactionDocument} from "../../../shared/api/data/types";
 import type {TransactionReceipt} from "web3-core";
 
@@ -67,7 +65,7 @@ export async function fTransferCircles (safeAddress:string, privateKey:string, p
       values.push(new BN(transfer.value));
     });
 
-    const transferTroughResult = await new CirclesHub(RpcGateway.get(), HUB_ADDRESS).transferTrough(
+    const transferTroughResult = await new CirclesHub(RpcGateway.get(), "__CIRCLES_HUB_ADDRESS__").transferTrough(
       privateKey,
       gnosisSafeProxy,
       tokenOwners,

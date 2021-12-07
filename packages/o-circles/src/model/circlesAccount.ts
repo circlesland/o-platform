@@ -1,7 +1,7 @@
 import {CirclesHub} from "../circles/circlesHub";
 import {CirclesToken} from "./circlesToken";
 import {GnosisSafeProxy} from "../safe/gnosisSafeProxy";
-import {HUB_ADDRESS, ZERO_ADDRESS} from "../consts";
+import {ZERO_ADDRESS} from "../consts";
 import {Erc20Token} from "../token/erc20Token";
 import {BN} from "ethereumjs-util";
 import {SafeOps} from "./safeOps";
@@ -22,10 +22,10 @@ export class CirclesAccount implements CirclesAccountModel
   private readonly web3 = RpcGateway.get();
   private readonly hub:CirclesHub;
 
-  constructor(safeAddress: string)
+  constructor(safeAddress: string, hubAddress:string)
   {
     this.safeAddress = safeAddress;
-    this.hub = new CirclesHub(this.web3, HUB_ADDRESS);
+    this.hub = new CirclesHub(this.web3, hubAddress);
   }
 
   async getUBI(privateKey: string, safe: GnosisSafeProxy, tokenAddress:string) : Promise<TransactionReceipt>
