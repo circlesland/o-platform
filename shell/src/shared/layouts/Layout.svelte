@@ -12,6 +12,7 @@ import { createEventDispatcher } from "svelte";
 import { media } from "../stores/media";
 
 let dapp = "homepage:!";
+let menuOpen: boolean = false;
 
 const eventDispatcher = createEventDispatcher();
 
@@ -24,14 +25,18 @@ $: {
     (layout.dialogs.center && layout.dialogs.center.isOpen) ||
     ($media.small && layout.dialogs.left && layout.dialogs.left.isOpen)
   ) {
+    menuOpen = true;
     document.body.style.overflow = "hidden";
     document.body.style.position = "fixed";
+
     // document.getElementById("main").style.height = "100%";
     document.body.style.height = "100%";
     document.body.style.width = "100%";
   } else {
+    menuOpen = false;
     document.body.style.overflow = "inherit";
     document.body.style.position = "inherit";
+
     // document.getElementById("main").style.height = "inherit";
     document.body.style.height = "inherit";
     document.body.style.width = "inherit";
@@ -55,7 +60,7 @@ function onkeydown(e: KeyboardEvent) {
 <svelte:window on:keydown="{onkeydown}" />
 {#if layout}
   <div class="absolute flex flex-row w-full overflow-auto">
-    <main id="main" class="relative z-30 w-full overflow-auto overflow-hidden">
+    <main id="main" class="relative w-full overflow-auto overflow-hidden">
       <div
         class="flex flex-row w-full bg-gray-100 mainContent"
         class:mb-16="{layout.dialogs.center &&
@@ -142,7 +147,8 @@ function onkeydown(e: KeyboardEvent) {
   </div>
   {#if layout.main && layout.main.runtimeDapp.featuredAction}
     <div
-      class="absolute left-0 z-10 flex flex-col items-center justify-end w-full h-12 bottom-20">
+      class="absolute left-0 z-10 flex flex-col items-center justify-end w-full h-12 bottom-20"
+      class:hidden="{menuOpen}">
       <section class="mb-4">
         <button
           class="btn btn-primary"
@@ -177,5 +183,11 @@ function onkeydown(e: KeyboardEvent) {
     transition: all 0.35s ease-in-out;
     margin: 0;
   }
+}
+main {
+  z-index: 9;
+}
+.menu-open main {
+  z-index: 12;
 }
 </style>
