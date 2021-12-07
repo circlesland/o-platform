@@ -1,6 +1,6 @@
 .history
-snowpack.key
-snowpack.crt
+localhost.key
+localhost.crt
 node_modules
 packages/o-events/dist/
 packages/o-interfaces/dist/

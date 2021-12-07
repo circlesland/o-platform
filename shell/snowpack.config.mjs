@@ -2,8 +2,8 @@
 
 import fs from "fs";
 
-const cert = fs.readFileSync("./snowpack.crt");
-const key = fs.readFileSync("./snowpack.key");
+const cert = fs.readFileSync("./localhost.crt");
+const key = fs.readFileSync("./localhost.key");
 
 // const mode = process.env.NODE_ENV || "development";
 // const prod = mode === "production";
@@ -144,5 +144,15 @@ export default {
   },
   buildOptions: {
     /* ... */
+  },
+  alias: {
+    components: {
+      "@o-platform": "../packages",
+    },
+    // "@o-platform/o-events": "../packages/o-events",
+    // "@o-platform/o-interfaces": "../packages/o-interfaces",
+    // "@o-platform/o-process": "../packages/o-process",
+    // "@o-platform/o-circles": "../packages/o-circles",
+    // "@o-platform/o-editors": "../packages/o-editors",
   },
 };
