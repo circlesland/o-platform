@@ -76,40 +76,30 @@ export class GnosisSafeProxyFactory extends Web3Contract {
 
     let proxyAddress = undefined;
     for (let logEntry of receipt.logs) {
-      if (logEntry.address != this.address) {
+      if (logEntry.address?.toLowerCase() != this.address?.toLowerCase()) {
         continue;
       }
 
-      const proxyCreationEvent = logEntry.topics.find(o => o == "0xa38789425dbeee0239e16ff2d2567e31720127fbc6430758c1a4efc6aef29f80");
-      if (!proxyCreationEvent) {
-        continue;
-      }
-      // 0x000000000000000000000000611604448ea75860d746093928aca6dbe4ce4e2d
-      // 611604448ea75860d746093928aca6dbe4ce4e2d
-      const address = logEntry.data.substr(26, 40)
-      /*
-            const proxyCreatedEvent = this.web3.eth.abi.decodeLog(
-              [
-                {
-                  name: "proxy",
-                  type: "address",
-                },
-              ],
-              logEntry.data,
-              logEntry.topics
-            );
+      const proxyCreatedEvent = this.web3.eth.abi.decodeLog(
+        [
+          {
+            name: "proxy",
+            type: "address",
+          },
+        ],
+        logEntry.data,
+        logEntry.topics
+      );
 
-            proxyAddress = proxyCreatedEvent["proxy"];
-            break;
-          }
-
-          if (!proxyAddress)
-       */
-
-      return new GnosisSafeProxy(this.web3, address);
+      proxyAddress = proxyCreatedEvent["proxy"];
+      break;
     }
-    throw new Error(
-      "The deployment of the safe failed. Couldn't determine the proxy address from the receipt's log."
-    );
+
+    if (!proxyAddress)
+      throw new Error(
+        "The deployment of the safe failed. Couldn't determine the proxy address from the receipt's log."
+      );
+
+    return new GnosisSafeProxy(this.web3, proxyAddress);
   }
 }

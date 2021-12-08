@@ -305,7 +305,7 @@ module.exports = {
     watchContentBase: true,
     compress: false,
     contentBase: [path.join(__dirname, "public")],
-    port: 5000,
+    port: process.env.DEPLOY_ENVIRONMENT !== "docker" ? 5000 : 8080,
     host: "localhost",
     open: true,
     https: false,
