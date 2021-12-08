@@ -77,7 +77,6 @@ reload();
                     : `${invitation.code}`,
                 subTitle: invitation.name,
                 truncateMain: true,
-                noShadow: true,
               }}">
               <div slot="itemCardStart">
                 <div
