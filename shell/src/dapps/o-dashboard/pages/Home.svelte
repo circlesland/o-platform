@@ -93,6 +93,7 @@ function loadLink(link, external = false) {
           <div class="mt-4 text-3xl font-heading text-dark">market</div>
         </div>
       </section>
+      <!--
       {#if canVerify}
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
@@ -105,7 +106,7 @@ function loadLink(link, external = false) {
             <div class="mt-4 text-3xl font-heading text-dark">verified</div>
           </div>
         </section>
-      {/if}
+      {/if}-->
     </div>
   </div>
 </div>
