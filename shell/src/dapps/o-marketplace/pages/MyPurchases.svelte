@@ -37,7 +37,7 @@ export let routable: Routable;
         on:click="{() => push(`#/marketplace/my-purchases/${purchase.id}`)}"
         class="mb-3 cursor-pointer">
         <div
-          class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-sm">
+          class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-md">
           <div>
             <div
               class="relative w-20 h-20 overflow-hidden rounded-l-lg image-wrapper">

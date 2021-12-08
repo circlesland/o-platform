@@ -17,7 +17,8 @@ export let routable: Routable;
 <div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
   {#if !$sales}
     <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
+      <div
+        class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow-md ">
         <div class="flex flex-col items-start">
           <div>Loading sales...</div>
         </div>
@@ -25,7 +26,8 @@ export let routable: Routable;
     </section>
   {:else if $sales && $sales.length === 0}
     <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
+      <div
+        class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow-md ">
         <div class="flex flex-col items-start">
           <div>No sales</div>
         </div>
@@ -37,7 +39,7 @@ export let routable: Routable;
         on:click="{() => push(`#/marketplace/my-sales/${sale.id}`)}"
         class="mb-3 cursor-pointer">
         <div
-          class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-sm">
+          class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-md">
           <div>
             <div
               class="relative w-20 h-20 overflow-hidden rounded-l-lg image-wrapper">

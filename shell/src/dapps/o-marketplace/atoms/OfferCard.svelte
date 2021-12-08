@@ -74,7 +74,7 @@ displayName =
   displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
-<section class="flex items-start pb-2 bg-white shadow rounded-xl">
+<section class="flex items-start pb-2 bg-white shadow-md rounded-xl">
   <div class="flex flex-col w-full ">
     <header
       class="cursor-pointer rounded-t-xl headerImageContainer"

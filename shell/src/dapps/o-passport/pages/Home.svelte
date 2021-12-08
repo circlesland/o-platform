@@ -1,47 +1,47 @@
 <script lang="ts">
-  import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
-  import PassportHeader from "../atoms/PassportHeader.svelte";
-  import { me } from "../../../shared/stores/me";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  import {Profile} from "../../../shared/api/data/types";
-  import {upsertIdentity} from "../processes/upsertIdentity";
+import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
+import PassportHeader from "../atoms/PassportHeader.svelte";
+import { me } from "../../../shared/stores/me";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { Profile } from "../../../shared/api/data/types";
+import { upsertIdentity } from "../processes/upsertIdentity";
 
-  let name;
-  let profile: Profile;
+let name;
+let profile: Profile;
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  $: name = profile?.circlesAddress ? profile.circlesAddress : "";
+$: name = profile?.circlesAddress ? profile.circlesAddress : "";
 
-  $: {
-    if ($me) {
-      profile = $me;
-    } else {
-      profile = undefined;
-    }
+$: {
+  if ($me) {
+    profile = $me;
+  } else {
+    profile = undefined;
   }
+}
 
-  const copy = () => {
-    const app = new CopyClipBoard({
-      target: document.getElementById("clipboard"),
-      props: { name },
-    });
-    app.$destroy();
-  };
+const copy = () => {
+  const app = new CopyClipBoard({
+    target: document.getElementById("clipboard"),
+    props: { name },
+  });
+  app.$destroy();
+};
 
-  function editProfile(dirtyFlags: { [x: string]: boolean }) {
-    window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
-  }
+function editProfile(dirtyFlags: { [x: string]: boolean }) {
+  window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
+}
 </script>
 
-<PassportHeader {runtimeDapp} {routable} />
+<PassportHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="flex flex-col mx-auto md:w-2/3 xl:w-1/2">
-  <div class="px-3 py-2 mx-4 -mt-2 bg-white rounded-lg shadow-sm">
-    <section class="justify-center mb-2">
-      <div class="flex flex-col w-full p-2 space-y-1">
+<div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
+  <div class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md">
+    <section class="justify-center">
+      <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">Passion</div>
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
@@ -51,15 +51,14 @@
             {#if profile && profile.dream}
               {profile.dream}
             {:else}No passion set.{/if}
-
           </div>
         </div>
       </div>
     </section>
     {#if profile && profile.circlesAddress}
-      <section class="justify-center mb-2">
-        <div class="flex flex-col w-full p-2 space-y-1">
-          <div class="mb-1 text-left text-2xs text-dark-lightest">Address</div>
+      <section class="justify-center">
+        <div class="flex flex-col w-full space-y-1">
+          <div class="text-left text-2xs text-dark-lightest">Address</div>
 
           <div class="flex items-center w-full space-x-2 sm:space-x-4">
             <div class="text-left">
@@ -70,7 +69,7 @@
                     type="text"
                     class="hidden"
                     bind:value="{name}" />
-                  {profile.circlesAddress ? profile.circlesAddress : ''}
+                  {profile.circlesAddress ? profile.circlesAddress : ""}
                 {/if}
                 <div
                   class="relative inline-block text-xs text-primary cursor-pointertext-center -bottom-1"
@@ -98,6 +97,5 @@
         </div>
       </section>
     {/if}
-
   </div>
 </div>

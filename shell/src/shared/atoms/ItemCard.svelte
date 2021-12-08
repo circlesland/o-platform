@@ -24,7 +24,7 @@ export let params = {
   noLink: false,
 };
 
-let textCutoff = isMobile() ? 20 : 42;
+let textCutoff = isMobile() ? 16 : 42;
 
 if (params.noTruncate) {
   textCutoff = 256;
@@ -43,7 +43,7 @@ function cardAction() {
   class:mb-3="{!params.inline}"
   class="{params.class ? params.class : ''}">
   <div
-    class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-sm"
+    class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-md"
     class:p-3="{!params.edgeless}">
     <slot name="itemCardStart">
       <div class="">
@@ -51,7 +51,7 @@ function cardAction() {
           <UserImage
             profile="{params.imageProfile}"
             size="{12}"
-            profileLink={params.profileLink} />
+            profileLink="{params.profileLink}" />
         {:else if params.imageUrl}
           <div class="m-auto rounded-full w-11 h-11 sm:w-12 sm:h-12">
             <span

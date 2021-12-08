@@ -345,15 +345,19 @@ button:focus {
   @apply rounded-xl;
 }
 
+.shadow-sharp {
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+}
+
 .shadow-sm {
-  filter: drop-shadow(0px 0px 3px #e2e3e8);
-  --tw-shadow: none;
-  box-shadow: 0px 0px 3px #e2e3e8;
+  filter: none;
+  --tw-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+  box-shadow: 0px 0px 8px #ebecf2;
 }
 
 .shadow-md {
-  filter: drop-shadow(0px 0px 8px #ebecf2);
-  --tw-shadow: none;
+  filter: none;
+  --tw-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
   box-shadow: 0px 0px 8px #ebecf2;
 }
 
