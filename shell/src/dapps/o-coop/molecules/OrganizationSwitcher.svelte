@@ -58,22 +58,33 @@ function switchProfile(profile: Profile | Organisation) {
 }
 </script>
 
-<template lang="pug">
-  div.cls(on:click!="{() => clickedOutside()}", use:clickOutside)
-  +if('myProfile && organisations')
-    div.flex.flex-col.z-10.absolute.right-0.top-0
-      div.self-end.text-primary.relative.right-14.top-5 Switch Profile
-      +each(`organisations as organisation`)
-        +if('organisation.value.circlesAddress != $me.circlesAddress')
-          div.relative.right-3.top-10.mb-4
-            div.flex.flex-row.items-center.px-4.py-2.space-x-2.rounded-full.bg-white.shadow-sm.text-lg.cursor-pointer(on:click!="{() => switchProfile(organisation.value)}")
-              UserImage(profile="{organisation.value}" size="{8}" profileLink="{false}" gradientRing="{true}")
-              div.text-dark-dark {organisation.label}
-          //- div.flex.flex-row.cursor-pointer.space-x-2.self-end(on:click!="{() => switchProfile(organisation.value)}")
-          //-   div.self-center.text-dark-dark {organisation.label}
-          //-   UserImage(profile="{organisation.value}" size="{8}" profileLink="{false}" gradientRing="{true}")
-
-</template>
+<div class="cls" on:click="{() => clickedOutside()}" use:clickOutside>
+  {#if myProfile && organisations}
+    <div class="absolute top-0 right-0 z-10 flex flex-col">
+      <div class="relative self-end text-primary right-14 top-5">
+        Switch Profile
+      </div>
+      {#each organisations as organisation}
+        {#if organisation.value.circlesAddress != $me.circlesAddress}
+          <div class="relative mb-4 right-3 top-10">
+            <div
+              class="flex flex-row items-center px-4 py-2 space-x-2 text-lg bg-white rounded-full shadow-md cursor-pointer"
+              on:click="{() => switchProfile(organisation.value)}">
+              <UserImage
+                profile="{organisation.value}"
+                size="{8}"
+                profileLink="{false}"
+                gradientRing="{true}" />
+              <div class="text-dark-dark">
+                {organisation.label}
+              </div>
+            </div>
+          </div>
+        {/if}
+      {/each}
+    </div>
+  {/if}
+</div>
 
 <style>
 .cls {
