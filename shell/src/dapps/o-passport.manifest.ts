@@ -1,6 +1,6 @@
 import Home from "./o-passport/pages/Home.svelte";
 import Account from "./o-passport/pages/Account.svelte";
-import Keys from "./o-passport/pages/Keys.svelte";
+
 import Settings from "./o-passport/pages/Settings.svelte";
 import Login from "./o-passport/pages/Login.svelte";
 import { logout } from "./o-passport/processes/logout";
@@ -26,12 +26,7 @@ const account: Page<any, DappState> = {
   title: "Accounts",
   type: "page",
 };
-const keys: Page<any, DappState> = {
-  routeParts: ["=keys"],
-  component: Keys,
-  title: "Keys",
-  type: "page",
-};
+
 const settings: Page<any, DappState> = {
   routeParts: ["=settings"],
   component: Settings,

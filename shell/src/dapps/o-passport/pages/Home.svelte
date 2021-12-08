@@ -1,5 +1,5 @@
 <script lang="ts">
-import CopyClipBoard from "../../../shared/atoms/CopyClipboard.svelte";
+import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
 import PassportHeader from "../atoms/PassportHeader.svelte";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
@@ -22,14 +22,6 @@ $: {
     profile = undefined;
   }
 }
-
-const copy = () => {
-  const app = new CopyClipBoard({
-    target: document.getElementById("clipboard"),
-    props: { name },
-  });
-  app.$destroy();
-};
 
 function editProfile(dirtyFlags: { [x: string]: boolean }) {
   window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
@@ -64,33 +56,26 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
             <div class="text-left">
               <div class="inline-block break-all" id="clipboard">
                 {#if profile}
-                  <input
-                    name="name"
-                    type="text"
-                    class="hidden"
-                    bind:value="{name}" />
                   {profile.circlesAddress ? profile.circlesAddress : ""}
+
+                  <CopyToClipboard text="{name}" let:copy>
+                    <svg
+                      on:click="{copy}"
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="inline w-4 h-4 stroke-current text-primary"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0
+                00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0
+                012 2"></path>
+                    </svg>
+                  </CopyToClipboard>
                 {/if}
-                <div
-                  class="relative inline-block text-xs text-primary cursor-pointertext-center -bottom-1"
-                  on:click="{copy}"
-                  alt="Copy to Clipboard">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4 stroke-current transform
-                    group-hover:rotate-[-4deg] transition"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2
-                      0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0
-                      012-2h2a2 2 0 012 2"></path>
-                  </svg>
-                </div>
               </div>
             </div>
           </div>
