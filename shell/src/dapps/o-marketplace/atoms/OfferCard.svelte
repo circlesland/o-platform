@@ -125,7 +125,7 @@ displayName =
 
       <div class="h-32">
         <div
-          class="text-4xl leading-tight text-left uppercase break-all font-heading">
+          class="text-4xl leading-tight text-left uppercase break-word font-heading">
           {offer.title}
         </div>
 

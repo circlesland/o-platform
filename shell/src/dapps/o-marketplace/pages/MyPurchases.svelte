@@ -52,28 +52,28 @@ export let routable: Routable;
             <div
               class="flex flex-row items-center justify-between px-3 text-left">
               <div class="flex-grow min-w-0">
-                <h2 class="overflow-hidden text-base overflow-ellipsis">
-                  {#if purchase.lines.length > 1}
-                    {purchase.lines[0].offer.title} ..
-                  {:else}
-                    {purchase.lines[0].offer.title}
-                  {/if}
+                <h2 class="overflow-hidden text-lg overflow-ellipsis">
+                  {displayableName(
+                    purchase.invoices[0].sellerProfile.firstName,
+                    purchase.invoices[0].sellerProfile.lastName
+                  )}
                 </h2>
               </div>
               <div
                 class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
                 <span class="inline-block">
-                  {dayjs(purchase.createdAt).format("DD.MM.YYYY")}</span>
+                  {dayjs(purchase.createdAt).format("DD.MM.YY")}</span>
               </div>
             </div>
             <div
               class="flex flex-row items-center justify-between px-3 text-left">
               <div class="flex-grow leading-none">
                 <h2 class="overflow-hidden text-sm overflow-ellipsis">
-                  {displayableName(
-                    purchase.invoices[0].sellerProfile.firstName,
-                    purchase.invoices[0].sellerProfile.lastName
-                  )}
+                  {#if purchase.lines.length > 1}
+                    {purchase.lines[0].offer.title}..
+                  {:else}
+                    {purchase.lines[0].offer.title}
+                  {/if}
                 </h2>
               </div>
             </div>
