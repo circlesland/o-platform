@@ -82,7 +82,9 @@ $: {
           (<any>answer).data.___cancelRequest
         ) {
           console.log("Cancel dialog answer:", answer);
-          if ((<any>answer).data.___cancelRequest.key === "no") {
+          if ((<any>answer).data.___cancelRequest.key === "yes") {
+            window.o.publishEvent({ type: "shell.root" });
+          } else if ((<any>answer).data.___cancelRequest.key === "no") {
             if (
               beforeCancelPrompt.navigation.canGoBack &&
               beforeCancelPrompt.dirtyFlags

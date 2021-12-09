@@ -196,8 +196,8 @@ export function generateNavManifest(
           text: "back",
           action: () =>
             window.o.publishEvent({
-              type: args.centerContainsProcess ? "process.back" : "shell.back"
-            })
+              type: args.centerContainsProcess ? "process.back" : "shell.back",
+            }),
         },
       };
     }
@@ -208,8 +208,10 @@ export function generateNavManifest(
           text: "skip",
           action: () =>
             window.o.publishEvent({
-              type: args.centerContainsProcess ? "process.skip" : "shell.forward"
-            })
+              type: args.centerContainsProcess
+                ? "process.skip"
+                : "shell.forward",
+            }),
         },
       };
     }
