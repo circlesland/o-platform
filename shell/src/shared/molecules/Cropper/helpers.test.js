@@ -1,6 +1,6 @@
 import * as helpers from "./helpers";
 
-describe("Helpers", () => {
+describe("Cropper Helpers", () => {
   describe("getCropSize", () => {
     test("when image width is higher than the height based on the aspect", () => {
       const cropSize = helpers.getCropSize(1200, 600, 4 / 3);

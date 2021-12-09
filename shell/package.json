@@ -10,7 +10,10 @@
     "local": "DEPLOY_ENVIRONMENT=ultralocal webpack-dev-server --config webpack.config.js --mode=development",
     "dmc": "DEPLOY_ENVIRONMENT=thorsten webpack-dev-server --config webpack.config.js --mode=development",
     "build": "cross-env NODE_ENV=production webpack",
-    "deploy": "npm run clean && npm i && npm run build && fission app publish --verbose"
+    "deploy": "npm run clean && npm i && npm run build && fission app publish --verbose",
+    "validate": "svelte-check",
+    "test": "jest src",
+    "test:watch": "jest src --watch"
   },
   "dependencies": {
     "@o-platform/o-editors": "0.1.0",
@@ -47,6 +50,15 @@
     "svelecte": "^3.2.1"
   },
   "devDependencies": {
+    "jest": "^27.4.3",
+    "ts-jest": "^27.1.1",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/svelte": "^3.0.3",
+    "svelte-jester": "^2.1.5",
+    "@types/jest": "^27.0.0",
+    "@babel/core": "^7.16.0",
+    "babel-jest": "^27.4.2",
+    "@babel/preset-env": "^7.16.4",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "@toruslabs/openlogin": "^1.0.0",
     "apollo-link-ws": "^1.0.20",
