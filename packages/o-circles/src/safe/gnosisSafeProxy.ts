@@ -61,7 +61,7 @@ export class GnosisSafeProxy extends Web3Contract {
       refundReceiver: ZERO_ADDRESS,
       gasToken: ZERO_ADDRESS,
       operation: SafeOps.CALL,
-    });
+    }, true);
 
     return receipt;
   }
