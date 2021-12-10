@@ -26,6 +26,7 @@ let __CIRCLES_HUB_BLOCK__ = "12529458";
 let __SAFE_PROXY_FACTORY_ADDRESS__ = "0x8b4404DE0CaECE4b966a9959f134f0eFDa636156";
 let __SAFE_ADDRESS__ = "0x2CB0ebc503dE87CFD8f0eCEED8197bF7850184ae";
 let __RPC_ENDPOINT__ = "https://rpc.circles.land";
+let __OPENLOGIN_CLIENT_ID__ = "BHG9boVJt-AxjEnMF3hEdR-CGVO7ust-Vgbu2UTvvamcg-Ora8EpJ-iYXWeskqFlUs7Q3j1sS3Ns4qxEH4311ck";
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __AUTH_ENDPOINT__ = "https://auth.circles.name";
@@ -78,6 +79,7 @@ console.log(`__CIRCLES_HUB_BLOCK__: ${__CIRCLES_HUB_BLOCK__}`);
 console.log(`__SAFE_PROXY_FACTORY_ADDRESS__: ${__SAFE_PROXY_FACTORY_ADDRESS__}`);
 console.log(`__SAFE_ADDRESS__: ${__SAFE_ADDRESS__}`);
 console.log(`__RPC_ENDPOINT__: ${__RPC_ENDPOINT__}`);
+console.log(`__OPENLOGIN_CLIENT_ID__: ${__OPENLOGIN_CLIENT_ID__}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
@@ -122,6 +124,24 @@ module.exports = {
         test: /\.ts|\.js|\.svelte$/,
         loader: "string-replace-loader",
         options: {
+          search: "__CIRCLES_HUB_ADDRESS__",
+          replace: __CIRCLES_HUB_ADDRESS__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__OPENLOGIN_CLIENT_ID__",
+          replace: __OPENLOGIN_CLIENT_ID__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
           search: "__SAFE_ADDRESS__",
           replace: __SAFE_ADDRESS__,
           flags: "g",
@@ -142,15 +162,6 @@ module.exports = {
         options: {
           search: "__CIRCLES_HUB_BLOCK__",
           replace: __CIRCLES_HUB_BLOCK__,
-          flags: "g",
-        },
-      },
-      {
-        test: /\.ts|\.js|\.svelte$/,
-        loader: "string-replace-loader",
-        options: {
-          search: "__CIRCLES_HUB_ADDRESS__",
-          replace: __CIRCLES_HUB_ADDRESS__,
           flags: "g",
         },
       },
