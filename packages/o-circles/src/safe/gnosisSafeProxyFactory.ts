@@ -76,7 +76,7 @@ export class GnosisSafeProxyFactory extends Web3Contract {
 
     let proxyAddress = undefined;
     for (let logEntry of receipt.logs) {
-      if (logEntry.address != this.address) {
+      if (logEntry.address?.toLowerCase() != this.address?.toLowerCase()) {
         continue;
       }
 

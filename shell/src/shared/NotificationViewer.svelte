@@ -43,6 +43,7 @@ async function trust(circlesAddress) {
   window.o.runProcess(setTrust, {
     trustLimit: 100,
     trustReceiver: circlesAddress,
+    hubAddress: "__CIRCLES_HUB_ADDRESS__",
     safeAddress: $me.circlesAddress,
     privateKey: sessionStorage.getItem("circlesKey"),
   });

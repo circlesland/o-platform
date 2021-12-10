@@ -123,6 +123,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                         trustLimit: 0,
                         trustReceiver: recipientProfile.contactAddress,
                         safeAddress: $me.circlesAddress,
+                        hubAddress: "__CIRCLES_HUB_ADDRESS__",
                         privateKey: sessionStorage.getItem("circlesKey"),
                       });
                     },
@@ -138,6 +139,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                         trustLimit: 100,
                         trustReceiver: recipientProfile.contactAddress,
                         safeAddress: $me.circlesAddress,
+                        hubAddress: "__CIRCLES_HUB_ADDRESS__",
                         privateKey: sessionStorage.getItem("circlesKey"),
                       });
                     },
@@ -156,6 +158,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             window.o.runProcess(setTrust, {
               trustLimit: 100,
               safeAddress: $me.circlesAddress,
+              hubAddress: "__CIRCLES_HUB_ADDRESS__",
               privateKey: sessionStorage.getItem("circlesKey"),
             });
           },
@@ -170,6 +173,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           window.o.runProcess(setTrust, {
             trustLimit: 100,
             safeAddress: $me.circlesAddress,
+            hubAddress: "__CIRCLES_HUB_ADDRESS__",
             privateKey: sessionStorage.getItem("circlesKey"),
           });
         },

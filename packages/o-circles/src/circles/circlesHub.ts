@@ -99,7 +99,7 @@ export class CirclesHub extends Web3Contract {
       refundReceiver: ZERO_ADDRESS,
       gasToken: ZERO_ADDRESS,
       operation: SafeOps.CALL,
-    });
+    }, true);
   }
 
   async signupOrganisation(
@@ -115,7 +115,7 @@ export class CirclesHub extends Web3Contract {
       refundReceiver: ZERO_ADDRESS,
       gasToken: ZERO_ADDRESS,
       operation: SafeOps.CALL,
-    });
+    }, true);
   }
 
   async setTrust(
@@ -133,7 +133,7 @@ export class CirclesHub extends Web3Contract {
       refundReceiver: ZERO_ADDRESS,
       gasToken: ZERO_ADDRESS,
       operation: SafeOps.CALL,
-    });
+    }, true);
 
     return await a;
   }
@@ -179,6 +179,6 @@ export class CirclesHub extends Web3Contract {
       refundReceiver: ZERO_ADDRESS,
       gasToken: ZERO_ADDRESS,
       operation: SafeOps.CALL,
-    });
+    }, true);
   }
 }

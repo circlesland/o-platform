@@ -171,6 +171,7 @@ export async function followTrust(profile: Profile | Organisation) {
       data: {
         safeAddress: profile.circlesAddress,
         trustLimit: 0,
+        hubAddress: "__CIRCLES_HUB_ADDRESS__",
         trustReceiver: address,
         privateKey: sessionStorage.getItem("circlesKey")
       },
@@ -185,6 +186,7 @@ export async function followTrust(profile: Profile | Organisation) {
       data: {
         safeAddress: profile.circlesAddress,
         trustLimit: 100,
+        hubAddress: "__CIRCLES_HUB_ADDRESS__",
         trustReceiver: address,
         privateKey: sessionStorage.getItem("circlesKey")
       },

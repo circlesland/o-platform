@@ -15,6 +15,7 @@ import type {TransactionReceipt} from "web3-core";
 
 export type SetTrustContextData = {
   safeAddress: string;
+  hubAddress: string;
   privateKey: string;
   trustReceiver?: string;
   trustLimit?: number;
