@@ -58,11 +58,11 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __FILES_ENDPOINT__ = "https://dev.files.circles.land";
   __APP_ID__ = "ultralocal.circles.land";
   __FILES_APP_ID__ = "dev.files.circles.land";
-  __CIRCLES_HUB_ADDRESS__ = "0xDaCd4289cF652C9356100FdDa88efdF28C362058".toLowerCase();
-  __CIRCLES_HUB_BLOCK__ = "1";
-  __SAFE_PROXY_FACTORY_ADDRESS__ = "0x5528544b97869ce105Be00fcCF250f659e787034".toLowerCase();
-  __SAFE_ADDRESS__ = "0x59beaA0ceD9a35D21D2FC94CACFCB54695e27304".toLowerCase();
-  __RPC_ENDPOINT__ = "http://localhost:8545";
+  __CIRCLES_HUB_ADDRESS__ = process.env.CIRCLES_HUB_ADDRESS;
+  __CIRCLES_HUB_BLOCK__ = process.env.CIRCLES_HUB_BLOCK;
+  __SAFE_PROXY_FACTORY_ADDRESS__ = process.env.SAFE_PROXY_FACTORY_ADDRESS;
+  __SAFE_ADDRESS__ = process.env.SAFE_ADDRESS;
+  __RPC_ENDPOINT__ = process.env.RPC_ENDPOINT;
 }
 
 console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
