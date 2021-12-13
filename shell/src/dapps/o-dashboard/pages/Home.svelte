@@ -28,7 +28,8 @@ const init = async () => {
   capabilities = sessionInfo.capabilities;
   canVerify =
     capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Verify) !== undefined;
+    capabilities.find((o) => o.type == CapabilityType.Verify) !== undefined &&
+    "__ALLOW_VERIFY__" == "true";
 };
 
 let showInviteButton = false;
@@ -93,7 +94,6 @@ function loadLink(link, external = false) {
           <div class="mt-4 text-3xl font-heading text-dark">market</div>
         </div>
       </section>
-      <!--
       {#if canVerify}
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
@@ -106,7 +106,7 @@ function loadLink(link, external = false) {
             <div class="mt-4 text-3xl font-heading text-dark">verified</div>
           </div>
         </section>
-      {/if}-->
+      {/if}
     </div>
   </div>
 </div>

@@ -27,6 +27,7 @@ let __SAFE_PROXY_FACTORY_ADDRESS__ = "0x8b4404DE0CaECE4b966a9959f134f0eFDa636156
 let __SAFE_ADDRESS__ = "0x2CB0ebc503dE87CFD8f0eCEED8197bF7850184ae";
 let __RPC_ENDPOINT__ = "https://rpc.circles.land";
 let __OPENLOGIN_CLIENT_ID__ = "BHG9boVJt-AxjEnMF3hEdR-CGVO7ust-Vgbu2UTvvamcg-Ora8EpJ-iYXWeskqFlUs7Q3j1sS3Ns4qxEH4311ck";
+let __ALLOW_VERIFY__ = !process.env.ALLOW_VERIFY ? "false" : "true";
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __AUTH_ENDPOINT__ = "https://auth.circles.name";
@@ -80,6 +81,7 @@ console.log(`__SAFE_PROXY_FACTORY_ADDRESS__: ${__SAFE_PROXY_FACTORY_ADDRESS__}`)
 console.log(`__SAFE_ADDRESS__: ${__SAFE_ADDRESS__}`);
 console.log(`__RPC_ENDPOINT__: ${__RPC_ENDPOINT__}`);
 console.log(`__OPENLOGIN_CLIENT_ID__: ${__OPENLOGIN_CLIENT_ID__}`);
+console.log(`__ALLOW_VERIFY__: ${__ALLOW_VERIFY__}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
@@ -120,6 +122,15 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__ALLOW_VERIFY__",
+          replace: __ALLOW_VERIFY__,
+          flags: "g",
+        },
+      },
       {
         test: /\.ts|\.js|\.svelte$/,
         loader: "string-replace-loader",

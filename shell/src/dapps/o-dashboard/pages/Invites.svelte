@@ -22,7 +22,8 @@ async function reload() {
   capabilities = sessionInfo.capabilities;
   canInvite =
     capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Invite) !== undefined;
+    capabilities.find((o) => o.type == CapabilityType.Invite) !== undefined &&
+    "__ALLOW_VERIFY__" == "true";
 
   const invitations = await ApiClient.query<
     CreatedInvitation[],

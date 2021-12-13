@@ -106,7 +106,9 @@ async function setProfile(id: string) {
 
   const sessionInfo = await getSessionInfo();
   capabilities = sessionInfo.capabilities;
-  const canVerify = capabilities && capabilities.find(o => o.type == CapabilityType.Verify) !== undefined;
+  const canVerify = capabilities
+          && capabilities.find(o => o.type == CapabilityType.Verify) !== undefined
+          && "__ALLOW_VERIFY__" == "true";
 
   if (canVerify && profile.verifications && profile.verifications.length == 0) {
     jumplistResult.push({
