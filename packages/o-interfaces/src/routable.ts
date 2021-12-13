@@ -9,5 +9,6 @@ export interface Routable {
   isSystem?: boolean;
   title: string;
   icon?: string;
+  anonymous?: boolean;
   navigation?: NavigationManifest;
 }
