@@ -10,16 +10,21 @@ import {
 } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {
-  Capability, CapabilityType,
+  Capability,
+  CapabilityType,
   CommonTrust,
-  CommonTrustDocument, CommonTrustQueryVariables,
+  CommonTrustDocument,
+  CommonTrustQueryVariables,
   Contact,
-  ContactDirection, ContactPoint, EventType,
-  Profile, VerifySafeDocument,
+  ContactDirection,
+  ContactPoint,
+  EventType,
+  Profile,
+  VerifySafeDocument,
 } from "../../../shared/api/data/types";
-import {contacts} from "../../../shared/stores/contacts";
-import {ApiClient} from "../../../shared/apiConnection";
-import {getSessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
+import { contacts } from "../../../shared/stores/contacts";
+import { ApiClient } from "../../../shared/apiConnection";
+import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 
 export let id: string;
 export let jumplist: Jumplist<any, any> | undefined;
@@ -38,7 +43,7 @@ let jumplistResult: JumplistItem[] = [];
 
 $: {
   isLoading = true;
-  setProfile(id).then(() => isLoading = false);
+  setProfile(id).then(() => (isLoading = false));
 }
 
 async function setProfile(id: string) {
@@ -51,10 +56,15 @@ async function setProfile(id: string) {
   profile = c.contactAddress_Profile;
 
   if ($me.circlesAddress !== contact.contactAddress) {
-    commonTrusts = (await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(CommonTrustDocument, {
-      safeAddress1: $me.circlesAddress.toLowerCase(),
-      safeAddress2: contact.contactAddress.toLowerCase()
-    })).filter((o) => o.profile);
+    commonTrusts = (
+      await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(
+        CommonTrustDocument,
+        {
+          safeAddress1: $me.circlesAddress.toLowerCase(),
+          safeAddress2: contact.contactAddress.toLowerCase(),
+        }
+      )
+    ).filter((o) => o.profile);
   } else {
     commonTrusts = [];
   }
@@ -66,9 +76,8 @@ async function setProfile(id: string) {
         : "")
     : contact.contactAddress;
 
-  displayName = displayName.length >= 22
-          ? displayName.substr(0, 22) + "..."
-          : displayName;
+  displayName =
+    displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 
   profile = contact.contactAddress_Profile;
 
@@ -103,12 +112,12 @@ async function setProfile(id: string) {
   isMe = profile.id == ($me ? $me.id : 0);
   jumplistResult = await jumplist.items({ id: id }, runtimeDapp);
 
-
   const sessionInfo = await getSessionInfo();
   capabilities = sessionInfo.capabilities;
-  const canVerify = capabilities
-          && capabilities.find(o => o.type == CapabilityType.Verify) !== undefined
-          && "__ALLOW_VERIFY__" == "true";
+  const canVerify =
+    capabilities &&
+    capabilities.find((o) => o.type == CapabilityType.Verify) !== undefined &&
+    "__ALLOW_VERIFY__" == "true";
 
   if (canVerify && profile.verifications && profile.verifications.length == 0) {
     jumplistResult.push({
@@ -231,9 +240,9 @@ async function setProfile(id: string) {
                       {#if verification.verifierProfile}
                         <div class="mt-2 mr-2">
                           <UserImage
-                                  profile="{verification.verifierProfile}"
-                                  tooltip="{true}"
-                                  gradientRing="{true}" />
+                            profile="{verification.verifierProfile}"
+                            tooltip="{true}"
+                            gradientRing="{true}" />
                         </div>
                       {/if}
                     {/each}

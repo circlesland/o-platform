@@ -159,7 +159,5 @@ export const homepage: DappManifest<DappState> = {
     login,
     externalChat,
     externalForum,
-    externalBlog,
-    externalWhitepaper,
   ],
 };

@@ -2,7 +2,7 @@
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import { createInvite } from "../../o-onboarding/processes/createInvite/createInvite";
+import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
 import { Capability, CapabilityType } from "../../../shared/api/data/types";
 import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 import {
@@ -72,11 +72,7 @@ reload();
               params="{{
                 edgeless: true,
                 inline: true,
-                title:
-                  invitation.claimedBy && invitation.claimedBy.firstName
-                    ? `Invitation claimed`
-                    : `${invitation.code}`,
-                subTitle: invitation.name,
+
                 truncateMain: true,
               }}">
               <div slot="itemCardStart">
@@ -108,7 +104,60 @@ reload();
                   {/if}
                 </div>
               </div>
-              <div slot="itemCardEnd">
+              <div slot="itemCardBody">
+                <div class="flex-col flex-grow">
+                  <div
+                    class="flex flex-row items-center justify-between text-left">
+                    <div class="flex-grow min-w-0">
+                      <h2
+                        class="overflow-hidden text-base whitespace-nowrap overflow-ellipsis">
+                        {invitation.claimedBy && invitation.claimedBy.firstName
+                          ? `Invitation claimed`
+                          : `${invitation.code}`}
+                        {#if invitation.code}
+                          <CopyToClipboard
+                            text="https://dev.circles.land/#/homepage/invite/{invitation.code}"
+                            let:copy>
+                            <svg
+                              on:click="{copy}"
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="inline w-4 h-4 cursor-pointer stroke-current text-primary"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor">
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0
+                00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0
+                012 2"></path>
+                            </svg>
+                          </CopyToClipboard>
+                        {/if}
+                      </h2>
+                    </div>
+                    <div class="self-end pl-2 text-right whitespace-nowrap">
+                      <span></span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-row items-center justify-between text-left">
+                    <div class="flex-grow leading-none">
+                      <span class="inline-block text-xs text-dark-lightest">
+                        {invitation.name}
+                      </span>
+                    </div>
+                    <div
+                      class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
+                      <slot name="itemCardEndSmallElement">
+                        <span class="inline-block"> </span>
+                      </slot>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div slot="itemCardEnd">
                 <div class="self-end mr-2 text-lg sm:text-3xl">
                   <a
                     href="mailto:hello@world.com?subject=Invitation to Circles Land&body=Hi {invitation.name}! here is an invitation code for Circles Land: {invitation.code}">
@@ -122,7 +171,7 @@ reload();
                     </button>
                   </a>
                 </div>
-              </div>
+              </div> -->
             </ItemCard>
             <!-- <InfoCard
             params="{{
