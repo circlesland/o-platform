@@ -45,6 +45,7 @@ export let params: {
   "5": string | null;
   "6": string | null;
 };
+
 let lastParamsJson: string = "";
 let identityChecked: boolean = false;
 let dappFrameState: any;
@@ -396,8 +397,12 @@ async function init() {
   const session = await getSessionInfo();
   if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
     // TODO: Stash the current URL away and redirect the user to it after authentication
-    await push("/");
-    return;
+    if (!routable.anonymous) {
+      await push("/");
+      return;
+    } else {
+      return;
+    }
   }
 
   initSession(session);

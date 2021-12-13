@@ -6,7 +6,7 @@
   "scripts": {
     "clean:all": "npx shx rm -rf public/bundle.* && npx shx rm -rf node_modules",
     "clean": "npx shx rm -rf public/bundle.*",
-    "dev": "DEPLOY_ENVIRONMENT=local webpack-dev-server --https --config webpack.config.js --mode=development",
+    "dev": "DEPLOY_ENVIRONMENT=local ALLOW_VERIFY=true webpack-dev-server --https --config webpack.config.js --mode=development",
     "local": "DEPLOY_ENVIRONMENT=ultralocal webpack-dev-server --config webpack.config.js --mode=development",
     "docker": "DEPLOY_ENVIRONMENT=docker webpack-dev-server --config webpack.config.js --mode=development",
     "dmc": "DEPLOY_ENVIRONMENT=thorsten webpack-dev-server --config webpack.config.js --mode=development",

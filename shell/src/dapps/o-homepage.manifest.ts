@@ -1,4 +1,5 @@
 import Home from "./o-homepage/pages/Home.svelte";
+import Invite from "./o-homepage/pages/Invite.svelte";
 import Citizens from "./o-homepage/pages/Citizens.svelte";
 import Countries from "./o-homepage/pages/Countries.svelte";
 import Imprint from "./o-homepage/pages/Imprint.svelte";
@@ -60,6 +61,16 @@ const index: Page<any, DappState> = {
   icon: "home",
   type: "page",
 };
+
+const invite: Page<{ inviteCode: string }, DappState> = {
+  isSystem: true,
+  anonymous: true,
+  routeParts: ["=invite", ":inviteCode"],
+  component: Invite,
+  title: "Circles Land",
+  type: "page",
+};
+
 const citizens: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["=citizens"],
@@ -98,6 +109,7 @@ const privacy: Page<any, DappState> = {
 const tos: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["=tos"],
+  anonymous: true,
   component: Tos,
   title: "Circles Land",
   type: "page",
@@ -136,6 +148,7 @@ export const homepage: DappManifest<DappState> = {
   },
   routables: [
     index,
+    invite,
     citizens,
     countries,
     imprint,

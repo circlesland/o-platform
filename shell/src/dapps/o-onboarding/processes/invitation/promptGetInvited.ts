@@ -2,15 +2,12 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
-import { createMachine } from "xstate";
+import { actions, createMachine } from "xstate";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import * as yup from "yup";
 import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import { ClaimInvitationDocument } from "../../../../shared/api/data/types";
-import { loadProfile } from "../../../o-passport/processes/identify/services/loadProfile";
-import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-import { BN } from "ethereumjs-util";
 
 export type PromptGetInvitedData = {
   needsInvitation: boolean;
@@ -19,6 +16,8 @@ export type PromptGetInvitedData = {
 };
 
 export type PromptGetInvitedContext = ProcessContext<PromptGetInvitedData>;
+
+const { assign } = actions;
 
 const editorContent = {
   info: {
@@ -35,7 +34,8 @@ const editorContent = {
 const processDefinition = (processId: string) =>
   createMachine<PromptGetInvitedContext, any>({
     id: `${processId}:promptGetInvited`,
-    initial: "info",
+    initial: "init",
+
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
@@ -59,6 +59,29 @@ const processDefinition = (processId: string) =>
         }
       },
       */
+
+      init: {
+        entry: [
+          assign((context: PromptGetInvitedContext) => {
+            const invite = localStorage.getItem("circlesInvite");
+            if (invite && invite != "") {
+              console.log("INVITE: ", invite);
+              context.data.inviteCode = invite;
+              return context;
+            }
+          }),
+        ],
+        always: [
+          {
+            cond: (context) => !context.data.inviteCode,
+            target: "inviteCode",
+          },
+          {
+            cond: (context) => !!context.data.inviteCode,
+            target: "redeemCode",
+          },
+        ],
+      },
 
       info: prompt({
         id: "info",
@@ -90,6 +113,7 @@ const processDefinition = (processId: string) =>
         id: "redeemCode",
         invoke: {
           src: async (context) => {
+            console.log("REDEEMING NOW", context.data.inviteCode);
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();
             const claimResult = await apiClient.mutate({
