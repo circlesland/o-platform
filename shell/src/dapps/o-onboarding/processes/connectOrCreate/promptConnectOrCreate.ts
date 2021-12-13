@@ -114,7 +114,7 @@ const processDefinition = (processId: string) =>
           onDone: "success",
           onError: {
             actions: (context, event) => {
-              console.error(`An error occurred while deploying your safe: ${JSON.stringify(event.data)}`);
+              console.error(`An error occurred while deploying your safe:`, event);
               throw new Error(event.data);
             },
             target: "success"

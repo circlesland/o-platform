@@ -92,7 +92,7 @@ const processDefinition = (processId: string) =>
           },
           onError: {
             actions: (context, event) => {
-              console.error(`The following error occurred while redeemin you claimed invitation: ${JSON.stringify(event.data)}`);
+              console.error(`The following error occurred while redeeming you claimed invitation:`, event.data);
             },
             target: "#info"
           },
