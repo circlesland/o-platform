@@ -1,12 +1,12 @@
 <script lang="ts">
-  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import ContactCard2 from "../atoms/ContactCard2.svelte";
-  import {contacts} from "../../../shared/stores/contacts";
+import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import ContactCard2 from "../atoms/ContactCard2.svelte";
+import { contacts } from "../../../shared/stores/contacts";
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -22,7 +22,7 @@
     </section>
   {:else}
     <!-- TODO: Possible actions: trust, transfer money -->
-    {#each $contacts.sort(o => o.contactAddress_Profile.f) as contact}
+    {#each $contacts.sort((o) => o.contactAddress_Profile.f) as contact}
       <!--<ContactCard contact="{contact}" />-->
       <ContactCard2 contact="{contact}" />
     {/each}

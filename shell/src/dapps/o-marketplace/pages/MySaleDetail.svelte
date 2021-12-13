@@ -49,7 +49,7 @@ async function load() {
     {
       icon: "chat",
       title: "Chat",
-      action: () => push(`#/friends/chat/${sale.buyerProfile.circlesAddress}`),
+      action: () => push(`#/contacts/chat/${sale.buyerProfile.circlesAddress}`),
     },
   ];
 
@@ -187,7 +187,8 @@ onMount(async () => {
       <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
         <div
           class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left cursor-pointer"
-          on:click="{() => push(`#/friends/${buyerProfile.circlesAddress}`)}">
+          on:click="{() =>
+            push(`#/contacts/profile/${buyerProfile.circlesAddress}`)}">
           <div class="inline-flex">
             <UserImage
               profile="{buyerProfile}"

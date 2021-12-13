@@ -126,7 +126,7 @@ function loadDetailPage(path) {
     params="{{
       edgeless: false,
       imageProfile: targetProfile,
-      profileLink: `#/friends/${targetProfile.circlesAddress}`,
+      profileLink: `#/contacts/profile/${targetProfile.circlesAddress}`,
       imageAlt:
         event.direction === 'in'
           ? fromProfile.circlesAddress

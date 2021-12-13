@@ -459,7 +459,7 @@ function onCloseNavigation() {
 }
 
 function onOpenContacts() {
-  push("#/friends/chat");
+  push("#/contacts/chat");
 }
 
 function onOpenModal() {
@@ -1114,6 +1114,7 @@ async function hideCenter() {
 }
 </script>
 
+{console.log("LAOYT: ", layout)}
 <Layout
   layout="{layout}"
   navigation="{navigation}"

@@ -14,7 +14,7 @@ let displayName: string = "";
 
 function linkToProfile(event) {
   if (profileLink) {
-    push(`#/friends/${profile.circlesAddress}`);
+    push(`#/contacts/profile/${profile.circlesAddress}`);
     event.stopPropagation();
   }
 }
@@ -23,7 +23,7 @@ $: {
     if (profile.__typename == "Profile") {
       if (profile.firstName) {
         displayName = `${profile.firstName} ${
-                profile.lastName ? profile.lastName : ""
+          profile.lastName ? profile.lastName : ""
         }`;
       } else {
         displayName = profile.circlesAddress;
@@ -32,7 +32,9 @@ $: {
       displayName = profile.name ? profile.name : "";
     }
     displayName =
-            displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
+      displayName.length >= 22
+        ? displayName.substr(0, 22) + "..."
+        : displayName;
   }
 }
 </script>

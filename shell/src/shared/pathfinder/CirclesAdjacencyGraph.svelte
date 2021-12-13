@@ -45,7 +45,7 @@ const options = {
 };
 
 function loadDetailPage(path) {
-  push(`#/friends/${path}`);
+  push(`#/contacts/profile/${path}`);
 }
 
 onMount(() => {

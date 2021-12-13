@@ -308,7 +308,7 @@ onMount(async () => {
             <button
               class="btn btn-square btn-light"
               on:click="{() =>
-                push(`#/friends/chat/${o.createdByProfile.circlesAddress}`)}">
+                push(`#/contacts/chat/${o.createdByProfile.circlesAddress}`)}">
               <Icons icon="chat" />
             </button>
           </div>

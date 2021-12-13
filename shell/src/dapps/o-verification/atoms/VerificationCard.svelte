@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 export let param: Verification;
 
 function loadDetailPage(path) {
-  push(`#/friends/${path}`);
+  push(`#/contacts/profile/${path}`);
 }
 </script>
 

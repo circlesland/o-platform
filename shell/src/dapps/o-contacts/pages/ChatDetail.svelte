@@ -1,25 +1,25 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import {
-    EventType,
-    Profile,
-    ProfileEvent,
-    SendMessageDocument,
-    SortOrder,
-    StreamDocument,
-    StreamQueryVariables,
-  } from "../../../shared/api/data/types";
-  import {me} from "../../../shared/stores/me";
-  import {push} from "svelte-spa-router";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {Subscription} from "rxjs";
-  import {contacts} from "../../../shared/stores/contacts";
+import { onMount } from "svelte";
+import {
+  EventType,
+  Profile,
+  ProfileEvent,
+  SendMessageDocument,
+  SortOrder,
+  StreamDocument,
+  StreamQueryVariables,
+} from "../../../shared/api/data/types";
+import { me } from "../../../shared/stores/me";
+import { push } from "svelte-spa-router";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { Subscription } from "rxjs";
+import { contacts } from "../../../shared/stores/contacts";
 
-  import NotificationCard from "../atoms/NotificationCard.svelte";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import {ApiClient} from "../../../shared/apiConnection";
+import NotificationCard from "../atoms/NotificationCard.svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { ApiClient } from "../../../shared/apiConnection";
 
-  export let id: string;
+export let id: string;
 
 let error: string | undefined = undefined;
 let chatHistory: ProfileEvent[] = [];
@@ -28,34 +28,38 @@ let contactProfile: Profile | null;
 let shellEventSubscription: Subscription;
 
 async function reload() {
-  contactProfile = (await contacts.findBySafeAddress(id)).contactAddress_Profile;
-  chatHistory = await ApiClient.query<ProfileEvent[], StreamQueryVariables>(StreamDocument, {
-    safeAddress: $me.circlesAddress,
-    pagination: {
-      order: SortOrder.Asc,
-      limit: 1000000,
-      continueAt: new Date(0).toJSON(),
-    },
-    filter: {
-      with: id,
-    },
-    types: [
-      EventType.CrcHubTransfer,
-      //EventType.CrcMinting,
-      EventType.CrcTrust,
-      EventType.ChatMessage,
-      EventType.Erc20Transfer,
-      //EventType.CrcSignup,
-      //EventType.CrcTokenTransfer,
-      //EventType.EthTransfer,
-      //EventType.GnosisSafeEthTransfer,
-      //EventType.InvitationCreated,
-      EventType.InvitationRedeemed,
-      //EventType.MembershipOffer,
-      //EventType.MembershipAccepted,
-      //EventType.MembershipRejected
-    ]
-  });
+  contactProfile = (await contacts.findBySafeAddress(id))
+    .contactAddress_Profile;
+  chatHistory = await ApiClient.query<ProfileEvent[], StreamQueryVariables>(
+    StreamDocument,
+    {
+      safeAddress: $me.circlesAddress,
+      pagination: {
+        order: SortOrder.Asc,
+        limit: 1000000,
+        continueAt: new Date(0).toJSON(),
+      },
+      filter: {
+        with: id,
+      },
+      types: [
+        EventType.CrcHubTransfer,
+        //EventType.CrcMinting,
+        EventType.CrcTrust,
+        EventType.ChatMessage,
+        EventType.Erc20Transfer,
+        //EventType.CrcSignup,
+        //EventType.CrcTokenTransfer,
+        //EventType.EthTransfer,
+        //EventType.GnosisSafeEthTransfer,
+        //EventType.InvitationCreated,
+        EventType.InvitationRedeemed,
+        //EventType.MembershipOffer,
+        //EventType.MembershipAccepted,
+        //EventType.MembershipRejected
+      ],
+    }
+  );
 
   window.o.publishEvent(<any>{
     type: "shell.scrollToBottom",
@@ -66,8 +70,7 @@ async function reload() {
 onMount(async () => {
   shellEventSubscription = window.o.events.subscribe(
     async (event: PlatformEvent) => {
-      if (event.type != "new_message"
-        && event.type != "blockchain_event") {
+      if (event.type != "new_message" && event.type != "blockchain_event") {
         return;
       }
       await reload();
@@ -95,10 +98,7 @@ const sendMessage = async (text) => {
   });
 
   if (result.data?.sendMessage?.success) {
-    chatHistory = [
-      ...chatHistory,
-      result.data.sendMessage.event
-    ];
+    chatHistory = [...chatHistory, result.data.sendMessage.event];
   }
 
   window.o.publishEvent(<any>{
@@ -149,7 +149,7 @@ function onkeydown(e: KeyboardEvent) {
 function goToProfile(e, path?: string) {
   if (!path) return;
   e.stopPropagation();
-  push(`#/friends/${path}`);
+  push(`#/contacts/profile/${path}`);
 }
 </script>
 

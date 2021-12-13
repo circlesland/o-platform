@@ -155,13 +155,13 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
 // displayName += ` | ${trustStatus}`;
 
 function loadDetailPage(path) {
-  push(`#/friends/chat/${path}`);
+  push(`#/contacts/chat/${path}`);
 }
 
 function goToProfile(e, path?: string) {
   if (!path) return;
   e.stopPropagation();
-  push(`#/friends/${path}`);
+  push(`#/contacts/profile/${path}`);
 }
 </script>
 

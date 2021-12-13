@@ -5,7 +5,7 @@ import { homepage } from "./dapps/o-homepage.manifest";
 import { marketplace } from "./dapps/o-marketplace.manifest";
 import { stats } from "./dapps/o-stats.manifest";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { friends } from "./dapps/o-contacts.manifest";
+import { contacts } from "./dapps/o-contacts.manifest";
 import { coop } from "./dapps/o-coop.manifest";
 import { verification } from "./dapps/o-verification.manifest";
 
@@ -16,7 +16,7 @@ export const dapps: DappManifest<any>[] = [
   home,
   marketplace,
   stats,
-  friends,
+  contacts,
   coop,
-  verification
+  verification,
 ];

@@ -18,7 +18,7 @@ import {
 import { transfer } from "./o-banking/processes/transfer";
 import { push } from "svelte-spa-router";
 import { setTrust } from "./o-banking/processes/setTrust";
-import { contacts } from "../shared/stores/contacts";
+import { contacts as contactStore } from "../shared/stores/contacts";
 
 export interface DappState {
   // put state here
@@ -27,7 +27,7 @@ export interface DappState {
 const index: Page<any, DappState> = {
   routeParts: [],
   component: ContactsView,
-  title: "Friends",
+  title: "Contacts",
   icon: "friends",
   type: "page",
 };
@@ -57,7 +57,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
     let actions = [];
 
     if (params.id) {
-      const recipientProfile: Contact = await contacts.findBySafeAddress(
+      const recipientProfile: Contact = await contactStore.findBySafeAddress(
         params.id ?? $me.circlesAddress
       );
       const trustMetadata =
@@ -86,7 +86,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             icon: "chat",
             title: "Chat",
             action: async () => {
-              push("#/friends/chat/" + recipientProfile.contactAddress);
+              push("#/contacts/chat/" + recipientProfile.contactAddress);
             },
           },
         ]);
@@ -188,7 +188,7 @@ export const profile: Page<any, ContactsDappState> = {
   type: "page",
   isSystem: true,
   position: "modal",
-  routeParts: [":id"],
+  routeParts: ["=profile", ":id"],
   title: "Profile",
   component: ProfilePage,
 };
@@ -218,13 +218,14 @@ export const chat: Page<any, ContactsDappState> = {
   type: "page",
 };
 
-export const friends: DappManifest<DappState> = {
+export const contacts: DappManifest<DappState> = {
   type: "dapp",
-  dappId: "friends:1",
+  dappId: "contacts:1",
   isSingleton: true,
+
   icon: "group",
-  title: "Friends",
-  routeParts: ["=friends"],
+  title: "Contacts",
+  routeParts: ["contacts"],
   defaultRoute: ["chat"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
@@ -244,9 +245,9 @@ export const friends: DappManifest<DappState> = {
     }
 
     return {
-      initialRoutable: index,
+      initialRoutable: chat,
       cancelDependencyLoading: false,
     };
   },
-  routables: [chat, chatdetail, profile],
+  routables: [index, profile, chat, chatdetail],
 };

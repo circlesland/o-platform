@@ -27,7 +27,7 @@ $: {
 }
 
 function loadDetailPage() {
-  push(`#/friends/${profile.id.toString()}`);
+  push(`#/contacts/profile/${profile.id.toString()}`);
 }
 </script>
 

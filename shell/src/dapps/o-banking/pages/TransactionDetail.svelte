@@ -92,7 +92,7 @@ onMount(async () => {
 });
 function openDetail(transfer: ProfileEvent) {
   if (transfer.type == "CrcHubTransfer") {
-    push(`#/friends/${targetProfile.circlesAddress}`);
+    push(`#/contacts/profile/${targetProfile.circlesAddress}`);
   }
 }
 </script>

@@ -63,13 +63,24 @@ function loadLink(link, external = false) {
       </section>
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click="{() => loadLink('/friends/chat')}">
+        on:click="{() => loadLink('/contacts')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
             <Icons icon="dashfriends" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">friends</div>
+          <div class="mt-4 text-3xl font-heading text-dark">contacts</div>
+        </div>
+      </section>
+      <section
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        on:click="{() => loadLink('/contacts/chat')}">
+        <div
+          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          <div class="pt-2 text-primary">
+            <Icons icon="dashchat" />
+          </div>
+          <div class="mt-4 text-3xl font-heading text-dark">chat</div>
         </div>
       </section>
       <section
