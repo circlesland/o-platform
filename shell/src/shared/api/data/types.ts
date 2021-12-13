@@ -2156,7 +2156,18 @@ export type OrganisationsByAddressQuery = (
       & { city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'country' | 'name'>
-      )> }
+      )>, verifications?: Maybe<Array<(
+        { __typename?: 'Verification' }
+        & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+        & { verifierProfile?: Maybe<(
+          { __typename?: 'Organisation' }
+          & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+          & { city?: Maybe<(
+            { __typename?: 'City' }
+            & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+          )> }
+        )> }
+      )>> }
     )>> }
   )> }
 );
@@ -3739,6 +3750,23 @@ export const OrganisationsByAddressDocument = gql`
           geonameid
           country
           name
+        }
+        verifications {
+          createdAt
+          verifierSafeAddress
+          verifierProfile {
+            circlesAddress
+            avatarUrl
+            name
+            city {
+              geonameid
+              name
+              country
+              latitude
+              longitude
+              population
+            }
+          }
         }
       }
     }

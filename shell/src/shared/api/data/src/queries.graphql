@@ -658,6 +658,23 @@ query organisationsByAddress($addresses: [String!]!) {
           country
           name
         }
+        verifications {
+          createdAt
+          verifierSafeAddress
+          verifierProfile {
+            circlesAddress
+            avatarUrl
+            name
+            city {
+              geonameid
+              name
+              country
+              latitude
+              longitude
+              population
+            }
+          }
+        }
       }
     }
   }
