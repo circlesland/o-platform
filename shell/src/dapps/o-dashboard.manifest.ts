@@ -79,11 +79,14 @@ export const home: DappManifest<DappState> = {
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
-  featuredAction: {
-    text: "Invites",
-    action: () => {
-      push("/home/invites");
-    },
+  featuredAction: async () => {
+    return {
+      text: "Invites",
+      icon: "",
+      action: () => {
+        push("/home/invites");
+      }
+    };
   },
 
   initialize: async (stack, runtimeDapp) => {

@@ -3,6 +3,12 @@ import { RuntimeDapp } from "./runtimeDapp";
 import { Routable } from "./routable";
 import { Jumplist } from "./routables/jumplist";
 
+export type FeaturedActionSpec = {
+  text: string;
+  icon?: string;
+  action: () => void;
+};
+
 export interface DappManifest<TState extends { [x: string]: any }>
   extends Routable {
   type: "dapp";
@@ -36,11 +42,7 @@ export interface DappManifest<TState extends { [x: string]: any }>
    */
   title: string;
 
-  featuredAction?: {
-    text: string;
-    icon?: string;
-    action: () => void;
-  };
+  featuredAction?: () => Promise<FeaturedActionSpec>;
 
   /**
    * Dapps can depend on other dapps.
