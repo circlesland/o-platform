@@ -2170,13 +2170,6 @@ export type OrganisationsByAddressQuery = (
       & { city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'country' | 'name'>
-      )> }
-    ) | (
-      { __typename?: 'Organisation' }
-      & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarMimeType' | 'displayCurrency' | 'avatarUrl'>
-      & { city?: Maybe<(
-        { __typename?: 'City' }
-        & Pick<City, 'geonameid' | 'country' | 'name'>
       )>, verifications?: Maybe<Array<(
         { __typename?: 'Verification' }
         & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
@@ -2189,6 +2182,13 @@ export type OrganisationsByAddressQuery = (
           )> }
         )> }
       )>> }
+    ) | (
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarMimeType' | 'displayCurrency' | 'avatarUrl'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'latitude' | 'longitude' | 'name' | 'population'>
+      )> }
     )>> }
   )> }
 );
