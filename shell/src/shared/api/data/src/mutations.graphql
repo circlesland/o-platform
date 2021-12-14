@@ -467,8 +467,14 @@ mutation completeSale($invoiceId: Int!, $revoke: Boolean) {
   }
 }
 
-mutation verifySafe($safeAddress:String!) {
+mutation verifySafe($safeAddress: String!) {
   verifySafe(safeAddress: $safeAddress) {
+    success
+  }
+}
+
+mutation revokeSafeVerification($safeAddress: String!) {
+  revokeSafeVerification(safeAddress: $safeAddress) {
     success
   }
 }

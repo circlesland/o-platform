@@ -4,6 +4,7 @@ import UserImage from "src/shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+import { showToast } from "../../../shared/toast";
 import {
   Jumplist,
   JumplistItem,
@@ -21,6 +22,7 @@ import {
   EventType,
   Profile,
   VerifySafeDocument,
+  RevokeSafeVerificationDocument,
 } from "../../../shared/api/data/types";
 import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
@@ -39,7 +41,9 @@ let isMe: boolean = false;
 let commonTrusts: CommonTrust[] = [];
 let profile: Profile;
 let contact: Contact;
+
 let jumplistResult: JumplistItem[] = [];
+let originalJumplistResult: JumplistItem[] = [];
 
 $: {
   isLoading = true;
@@ -110,8 +114,24 @@ async function setProfile(id: string) {
   }
 
   isMe = profile.id == ($me ? $me.id : 0);
-  jumplistResult = await jumplist.items({ id: id }, runtimeDapp);
 
+  originalJumplistResult = await jumplist.items({ id: id }, runtimeDapp);
+  jumplistResult = originalJumplistResult;
+
+  const verifyData = [
+    {
+      key: "verify",
+      icon: "check",
+      title: "Verify",
+      mutation: VerifySafeDocument,
+    },
+    {
+      key: "revoke",
+      icon: "trash",
+      title: "revoke Verification",
+      mutation: RevokeSafeVerificationDocument,
+    },
+  ];
   const sessionInfo = await getSessionInfo();
   capabilities = sessionInfo.capabilities;
   const canVerify =
@@ -119,21 +139,56 @@ async function setProfile(id: string) {
     capabilities.find((o) => o.type == CapabilityType.Verify) !== undefined &&
     "__ALLOW_VERIFY__" == "true";
 
-  if (canVerify && profile.verifications && profile.verifications.length == 0) {
-    jumplistResult.push({
-      key: "verify",
-      icon: "check",
-      title: "Verify",
-      action: async () => {
-        const apiClient = await window.o.apiClient.client.subscribeToResult();
-        await apiClient.mutate({
-          mutation: VerifySafeDocument,
-          variables: {
-            safeAddress: id,
-          },
-        });
-      },
-    });
+  const verifyProfile = {
+    key: "verify",
+    icon: "check",
+    title: "Verify",
+    action: async () => {
+      const apiClient = await window.o.apiClient.client.subscribeToResult();
+      await apiClient.mutate({
+        mutation: VerifySafeDocument,
+        variables: {
+          safeAddress: id,
+        },
+      });
+      showToast("success", "Account verified");
+
+      isLoading = true;
+      setProfile(id).then(() => (isLoading = false));
+    },
+  };
+
+  const unverifyProfile = {
+    key: "evoke",
+    icon: "trash",
+    colorClass: "text-success",
+    title: "Verified. click to revoke",
+    action: async () => {
+      const apiClient = await window.o.apiClient.client.subscribeToResult();
+      await apiClient.mutate({
+        mutation: RevokeSafeVerificationDocument,
+        variables: {
+          safeAddress: id,
+        },
+      });
+
+      showToast("success", "Account verified");
+
+      isLoading = true;
+      setProfile(id).then(() => (isLoading = false));
+    },
+  };
+
+  console.log("PROFILE INFO: ", profile);
+  if (canVerify && profile.verifications) {
+    console.log("VERIFICATION TEST: ", profile.verifications);
+    if (profile.verifications.length) {
+      console.log("push UNverify");
+      jumplistResult.push(unverifyProfile);
+    } else {
+      console.log("push verify");
+      jumplistResult.push(verifyProfile);
+    }
   }
 }
 </script>
@@ -283,6 +338,7 @@ async function setProfile(id: string) {
 
       {#if profile && jumplistResult && !isMe}
         <div class="sticky bottom-0 left-0 right-0 w-full pb-5 bg-white">
+          {console.log("JUmpi", jumplistResult)}
           <DetailActionBar actions="{jumplistResult}" />
         </div>
       {/if}

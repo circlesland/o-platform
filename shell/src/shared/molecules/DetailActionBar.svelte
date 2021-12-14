@@ -46,7 +46,7 @@ let moreItems = actions.length > 2 ? actions.splice(2) : undefined;
           small="{true}" />
       </div>
     {/if}
-    {#each actions as action, index}
+    {#each actions as action}
       <ActionListItem
         icon="{action.icon}"
         title="{action.title}"
