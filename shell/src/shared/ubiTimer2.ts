@@ -28,9 +28,17 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
     tokenAddress: null
   },
   states: {
+    waitFor60Seconds: {
+      entry: (context, event) => {
+        console.log("Waiting for 5 sec. until next UBI-retrieval try. Previous event was:", event);
+      },
+      after: {
+        60000: "checkLastPayout"
+      }
+    },
     waitFor5Seconds: {
       entry: (context, event) => {
-        console.log("Waiting for 60 sec. until next UBI-retrieval try. Previous event was:", event);
+        console.log("Waiting for 5 sec. until next UBI-retrieval try. Previous event was:", event);
       },
       after: {
         5000: "checkLastPayout"
@@ -49,7 +57,12 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
           cond: "previousPayoutIsOlderThan24Hours",
           target: "getUbi"
         }],
-        NO_PREVIOUS_PAYOUT: "getUbi"
+        NO_PREVIOUS_PAYOUT: [{
+          cond: "noUbiInfo",
+          target: "waitFor60Seconds"
+        }, {
+          target: "getUbi"
+        }]
       }
     },
     waitForNextUbiAt: {
@@ -68,6 +81,7 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
   }
 }, {
   guards: {
+    noUbiInfo: (ctx, event) => !ctx.tokenAddress,
     previousPayoutIsNewerThan24Hours: (ctx, event: {type: "GOT_PREVIOUS_PAYOUT", lastPayoutAt:Date, randomValue:string}) => Date.now() < event.lastPayoutAt.getTime() + (24 * 60 * 60 * 1000),
     previousPayoutIsOlderThan24Hours: (ctx, event: {type: "GOT_PREVIOUS_PAYOUT", lastPayoutAt:Date, randomValue:string}) => Date.now() >= event.lastPayoutAt.getTime() + (24 * 60 * 60 * 1000)
   },
@@ -101,13 +115,22 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
     },
     getUbiInfo: (context) => async (callback) => {
       const ubiInfo = await ApiClient.query<UbiInfo, UbiInfoQueryVariables>(UbiInfoDocument, {});
+      if (!ubiInfo) {
+        console.log(`No ubiInfo.`);
+        callback({
+          type: "GOT_PREVIOUS_PAYOUT",
+          lastPayoutAt: new Date(parseFloat(ubiInfo.lastUbiAt)),
+          randomValue: ubiInfo.randomValue
+        });
+        return;
+      }
       if (ubiInfo.tokenAddress) {
         context.tokenAddress = ubiInfo.tokenAddress;
       }
-      if (ubiInfo.lastTransactionAt) {
+      if (ubiInfo.lastUbiAt) {
         callback({
           type: "GOT_PREVIOUS_PAYOUT",
-          lastPayoutAt: new Date(parseFloat(ubiInfo.lastTransactionAt)),
+          lastPayoutAt: new Date(parseFloat(ubiInfo.lastUbiAt)),
           randomValue: ubiInfo.randomValue
         });
       } else {

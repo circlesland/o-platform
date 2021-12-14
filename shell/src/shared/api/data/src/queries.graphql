@@ -326,7 +326,8 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
 
 query ubiInfo {
   ubiInfo {
-    lastTransactionAt
+    lastUbiAt
+    safeAddress
     tokenAddress
     randomValue
   }
