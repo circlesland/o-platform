@@ -4,6 +4,8 @@ import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 import { push } from "svelte-spa-router";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { me } from "../shared/stores/me";
+import { Profile } from "../shared/api/data/types";
 
 const index: Page<any, DappState> = {
   isSystem: true,
@@ -80,13 +82,18 @@ export const home: DappManifest<DappState> = {
   isEnabled: true,
   hideFooter: true,
   featuredAction: async () => {
-    return {
-      text: "Invites",
-      icon: "",
-      action: () => {
-        push("/home/invites");
-      }
-    };
+    let $me: Profile = null;
+    me.subscribe((e) => ($me = e))();
+
+    if ($me.__typename == "Profile") {
+      return {
+        text: "Invites",
+        icon: "",
+        action: () => {
+          push("/home/invites");
+        },
+      };
+    }
   },
 
   initialize: async (stack, runtimeDapp) => {
