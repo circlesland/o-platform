@@ -20,6 +20,11 @@ export type AcceptMembershipResult = {
   success: Scalars['Boolean'];
 };
 
+export enum AccountType {
+  Organisation = 'Organisation',
+  Person = 'Person'
+}
+
 export type AddMemberResult = {
   __typename?: 'AddMemberResult';
   error?: Maybe<Scalars['String']>;
@@ -838,11 +843,10 @@ export type Query = {
   commonTrust: Array<CommonTrust>;
   directPath: TransitivePath;
   events: Array<ProfileEvent>;
-  findSafeAddressByOwner: Array<SafeAddressByOwnerResult>;
+  findSafeAddressByOwner: Array<UbiInfo>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
   invoice?: Maybe<Scalars['String']>;
-  mostRecentUbiSafeOfAccount?: Maybe<Scalars['String']>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
   organisations: Array<Organisation>;
@@ -902,11 +906,6 @@ export type QueryFindSafeAddressByOwnerArgs = {
 
 export type QueryInvoiceArgs = {
   invoiceId: Scalars['Int'];
-};
-
-
-export type QueryMostRecentUbiSafeOfAccountArgs = {
-  account: Scalars['String'];
 };
 
 
@@ -1165,8 +1164,9 @@ export type UbiInfo = {
   __typename?: 'UbiInfo';
   lastUbiAt?: Maybe<Scalars['String']>;
   randomValue?: Maybe<Scalars['String']>;
-  safeAddress?: Maybe<Scalars['String']>;
-  tokenAddress?: Maybe<Scalars['String']>;
+  safeAddress: Scalars['String'];
+  tokenAddress: Scalars['String'];
+  type: AccountType;
 };
 
 export type UpdateSafeInput = {
@@ -1723,8 +1723,8 @@ export type FindSafeAddressByOwnerQueryVariables = Exact<{
 export type FindSafeAddressByOwnerQuery = (
   { __typename?: 'Query' }
   & { findSafeAddressByOwner: Array<(
-    { __typename?: 'SafeAddressByOwnerResult' }
-    & Pick<SafeAddressByOwnerResult, 'type' | 'safeAddress'>
+    { __typename?: 'UbiInfo' }
+    & Pick<UbiInfo, 'type' | 'safeAddress' | 'lastUbiAt' | 'randomValue' | 'tokenAddress'>
   )> }
 );
 
@@ -2604,16 +2604,6 @@ export type DirectPathQuery = (
   ) }
 );
 
-export type MostRecentUbiSafeOfAccountQueryVariables = Exact<{
-  account: Scalars['String'];
-}>;
-
-
-export type MostRecentUbiSafeOfAccountQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'mostRecentUbiSafeOfAccount'>
-);
-
 export type InvoiceQueryVariables = Exact<{
   invoiceId: Scalars['Int'];
 }>;
@@ -3156,6 +3146,9 @@ export const FindSafeAddressByOwnerDocument = gql`
   findSafeAddressByOwner(owner: $owner) {
     type
     safeAddress
+    lastUbiAt
+    randomValue
+    tokenAddress
   }
 }
     `;
@@ -4454,11 +4447,6 @@ export const DirectPathDocument = gql`
   }
 }
     `;
-export const MostRecentUbiSafeOfAccountDocument = gql`
-    query mostRecentUbiSafeOfAccount($account: String!) {
-  mostRecentUbiSafeOfAccount(account: $account)
-}
-    `;
 export const InvoiceDocument = gql`
     query invoice($invoiceId: Int!) {
   invoice(invoiceId: $invoiceId)
@@ -4646,9 +4634,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     directPath(variables: DirectPathQueryVariables): Promise<DirectPathQuery> {
       return withWrapper(() => client.request<DirectPathQuery>(print(DirectPathDocument), variables));
-    },
-    mostRecentUbiSafeOfAccount(variables: MostRecentUbiSafeOfAccountQueryVariables): Promise<MostRecentUbiSafeOfAccountQuery> {
-      return withWrapper(() => client.request<MostRecentUbiSafeOfAccountQuery>(print(MostRecentUbiSafeOfAccountDocument), variables));
     },
     invoice(variables: InvoiceQueryVariables): Promise<InvoiceQuery> {
       return withWrapper(() => client.request<InvoiceQuery>(print(InvoiceDocument), variables));

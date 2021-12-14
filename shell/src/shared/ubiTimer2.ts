@@ -30,7 +30,7 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
   states: {
     waitFor60Seconds: {
       entry: (context, event) => {
-        console.log("Waiting for 5 sec. until next UBI-retrieval try. Previous event was:", event);
+        console.log("Waiting for 60 sec. until next UBI-retrieval try. Previous event was:", event);
       },
       after: {
         60000: "checkLastPayout"
@@ -124,7 +124,7 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
         });
         return;
       }
-      if (ubiInfo.tokenAddress) {
+      if (ubiInfo.safeAddress && ubiInfo.tokenAddress) {
         context.tokenAddress = ubiInfo.tokenAddress;
       }
       if (ubiInfo.lastUbiAt) {

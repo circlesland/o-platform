@@ -527,11 +527,10 @@ type Query {
     commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
     directPath(amount: String!, from: String!, to: String!): TransitivePath!
     events(filter: ProfileEventFilter, pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
-    findSafeAddressByOwner(owner: String!): [SafeAddressByOwnerResult!]!
+    findSafeAddressByOwner(owner: String!): [UbiInfo!]!
     hubSignupTransaction: ProfileEvent
     invitationTransaction: ProfileEvent
     invoice(invoiceId: Int!): String
-    mostRecentUbiSafeOfAccount(account: String!): String
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
     organisations(pagination: PaginationArgs): [Organisation!]!
@@ -675,8 +674,9 @@ type TrustRelation {
 type UbiInfo {
     lastUbiAt: String
     randomValue: String
-    safeAddress: String
-    tokenAddress: String
+    safeAddress: String!
+    tokenAddress: String!
+    type: AccountType!
 }
 
 type UpdateSafeResponse {
@@ -711,6 +711,11 @@ type WelcomeMessage implements IEventPayload {
     invitedBy: String!
     invitedBy_profile: Profile
     transaction_hash: String
+}
+
+enum AccountType {
+    Organisation
+    Person
 }
 
 enum AggregateType {

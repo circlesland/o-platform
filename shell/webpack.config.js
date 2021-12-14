@@ -29,6 +29,7 @@ let __RPC_ENDPOINT__ = "https://rpc.circles.land";
 let __OPENLOGIN_CLIENT_ID__ = "BHG9boVJt-AxjEnMF3hEdR-CGVO7ust-Vgbu2UTvvamcg-Ora8EpJ-iYXWeskqFlUs7Q3j1sS3Ns4qxEH4311ck";
 let __ALLOW_VERIFY__ = !process.env.ALLOW_VERIFY ? "false" : "true";
 let __ALLOW_CREATE_ORGANISATION__ = !process.env.ALLOW_CREATE_ORGANISATION ? "false" : "true";
+let __USE_MOCKS__ = !process.env.USE_MOCKS ? "false" : "true";
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __AUTH_ENDPOINT__ = "https://auth.circles.name";
@@ -82,6 +83,7 @@ console.log(`__SAFE_PROXY_FACTORY_ADDRESS__: ${__SAFE_PROXY_FACTORY_ADDRESS__}`)
 console.log(`__SAFE_ADDRESS__: ${__SAFE_ADDRESS__}`);
 console.log(`__RPC_ENDPOINT__: ${__RPC_ENDPOINT__}`);
 console.log(`__OPENLOGIN_CLIENT_ID__: ${__OPENLOGIN_CLIENT_ID__}`);
+console.log(`__USE_MOCKS__: ${__USE_MOCKS__}`);
 console.log(`__ALLOW_VERIFY__: ${__ALLOW_VERIFY__}`);
 console.log(`__ALLOW_CREATE_ORGANISATION__: ${__ALLOW_CREATE_ORGANISATION__}`);
 
@@ -124,6 +126,15 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__USE_MOCKS__",
+          replace: __USE_MOCKS__,
+          flags: "g",
+        },
+      },
       {
         test: /\.ts|\.js|\.svelte$/,
         loader: "string-replace-loader",

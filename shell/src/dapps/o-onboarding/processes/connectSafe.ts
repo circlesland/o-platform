@@ -62,7 +62,7 @@ const editorContent = {
   },
   addOwnerInfo: {
     title: "Add owner to safe",
-    description: `We'll add you new key as owner to your existing safe. Your previous key will stay an owner as well.`,
+    description: `We'll add your new key as owner to your existing safe. Your previous key will stay an owner as well.`,
     placeholder: "",
     submitButtonText: "Proceed",
   },
@@ -147,10 +147,8 @@ const processDefinition = (processId: string) =>
                 ""
               );
               const circlesGardenProfileRequest = `https://api.circles.garden/api/users/?${query}`;
-
-              const circlesGardenFetchPromise = fetch(
-                circlesGardenProfileRequest
-              ).then((result) => result.json());
+              const circlesGardenFetchPromise = fetch(circlesGardenProfileRequest)
+                .then((result) => result.json());
 
               const circlesLandProfileQueryPromise = ApiClient.query<Profile[], ProfilesByCirclesAddressQueryVariables>(
                 ProfilesByCirclesAddressDocument,{

@@ -25,6 +25,9 @@ query findSafeAddressByOwner($owner: String!) {
   findSafeAddressByOwner(owner: $owner) {
     type
     safeAddress
+    lastUbiAt
+    randomValue
+    tokenAddress
   }
 }
 
@@ -1370,10 +1373,6 @@ query directPath($from: String!, $to: String!, $amount: String!) {
       value
     }
   }
-}
-
-query mostRecentUbiSafeOfAccount($account: String!) {
-  mostRecentUbiSafeOfAccount(account: $account)
 }
 
 query invoice($invoiceId: Int!) {
