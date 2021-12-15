@@ -93,9 +93,11 @@ export let routable: Routable;
                  {#if sale.invoices[0].paymentTransactionHash}
                   <span>paid</span>
                     <Icons icon="check" size="{4}" customClass="inline" />
-                  {:else}
-                  <span>payment pending</span>
-                  {/if}
+                 {:else if sale.invoices[0].cancelledAt}
+                   <span>cancelled</span>
+                 {:else}
+                   <span>payment pending</span>
+                 {/if}
               </div>
               <div
                 class="inline-block text-xs "
