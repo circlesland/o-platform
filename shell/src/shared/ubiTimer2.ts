@@ -1,5 +1,5 @@
 import {assign, createMachine} from "xstate";
-import {UbiInfo, Profile, UbiInfoDocument, UbiInfoQueryVariables} from "./api/data/types";
+import {SafeInfo, Profile, SafeInfoDocument, SafeInfoQueryVariables} from "./api/data/types";
 import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {CirclesAccount} from "@o-platform/o-circles/dist/model/circlesAccount";
@@ -114,7 +114,7 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
       return result;
     },
     getUbiInfo: (context) => async (callback) => {
-      const ubiInfo = await ApiClient.query<UbiInfo, UbiInfoQueryVariables>(UbiInfoDocument, {});
+      const ubiInfo = await ApiClient.query<SafeInfo, SafeInfoQueryVariables>(SafeInfoDocument, {});
       if (!ubiInfo) {
         console.log(`No ubiInfo.`);
         callback({

@@ -9,10 +9,10 @@ import * as bip39 from "bip39";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Account } from "web3-core";
 import {
-  FindSafeAddressByOwnerDocument, FindSafeAddressByOwnerQueryVariables, ImportOrganisationsDocument,
+  FindSafesByOwnerDocument, FindSafesByOwnerQueryVariables, ImportOrganisationsDocument,
   Profile,
   ProfilesByCirclesAddressDocument, ProfilesByCirclesAddressQueryVariables,
-  SafeAddressByOwnerResult,
+  SafeAddressByOwnerResult, SafeInfo,
   UpsertProfileDocument,
 } from "../../../shared/api/data/types";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
@@ -133,8 +133,7 @@ const processDefinition = (processId: string) =>
             src: async (context) => {
 
               const foundSafeAddresses = await ApiClient.query<
-                SafeAddressByOwnerResult[], FindSafeAddressByOwnerQueryVariables
-                >(FindSafeAddressByOwnerDocument,{
+                SafeInfo[], FindSafesByOwnerQueryVariables>(FindSafesByOwnerDocument,{
                   owner: context.data.importedAccount.address.toLowerCase()
                 });
 
@@ -152,7 +151,7 @@ const processDefinition = (processId: string) =>
 
               const circlesLandProfileQueryPromise = ApiClient.query<Profile[], ProfilesByCirclesAddressQueryVariables>(
                 ProfilesByCirclesAddressDocument,{
-                  circlesAddresses: foundSafeAddresses.filter(o => o.type === "ubi").map(o => o.safeAddress)
+                  circlesAddresses: foundSafeAddresses.filter(o => o.type === "Person").map(o => o.safeAddress)
                 });
 
               const results = await Promise.all([
@@ -422,7 +421,7 @@ const processDefinition = (processId: string) =>
     {
       services: {
         findMostRecentUbiSafe: async (context, event) => {
-          const result = await ApiClient.query<string, FindSafeAddressByOwnerQueryVariables>(FindSafeAddressByOwnerDocument,{
+          const result = await ApiClient.query<string, FindSafesByOwnerQueryVariables>(FindSafesByOwnerDocument,{
             owner: context.data.importedAccount.address.toLowerCase(),
           });
         },

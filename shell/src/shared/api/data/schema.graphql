@@ -527,7 +527,7 @@ type Query {
     commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
     directPath(amount: String!, from: String!, to: String!): TransitivePath!
     events(filter: ProfileEventFilter, pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
-    findSafeAddressByOwner(owner: String!): [UbiInfo!]!
+    findSafesByOwner(owner: String!): [SafeInfo!]!
     hubSignupTransaction: ProfileEvent
     invitationTransaction: ProfileEvent
     invoice(invoiceId: Int!): String
@@ -538,12 +538,12 @@ type Query {
     profilesById(ids: [Int!]!): [Profile!]!
     profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
     regions(pagination: PaginationArgs): [Organisation!]!
+    safeInfo(safeAddress: String): SafeInfo
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!
     trustRelations(safeAddress: String!): [TrustRelation!]!
-    ubiInfo(safeAddress: String): UbiInfo
     verifications(filter: VerifiedSafesFilter, pagination: PaginationArgs): [Verification!]!
     version: Version!
     whoami: String
@@ -574,6 +574,14 @@ type RequestUpdateSafeResponse {
 type SafeAddressByOwnerResult {
     safeAddress: String!
     type: String!
+}
+
+type SafeInfo {
+    lastUbiAt: String
+    randomValue: String
+    safeAddress: String!
+    tokenAddress: String!
+    type: AccountType!
 }
 
 type SafeVerified implements IEventPayload {
@@ -669,14 +677,6 @@ type TrustRelation {
     otherSafeAddressProfile: Profile
     safeAddress: String!
     safeAddressProfile: Profile
-}
-
-type UbiInfo {
-    lastUbiAt: String
-    randomValue: String
-    safeAddress: String!
-    tokenAddress: String!
-    type: AccountType!
 }
 
 type UpdateSafeResponse {

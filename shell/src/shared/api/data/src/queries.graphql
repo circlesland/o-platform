@@ -21,8 +21,8 @@ query whoami {
   whoami
 }
 
-query findSafeAddressByOwner($owner: String!) {
-  findSafeAddressByOwner(owner: $owner) {
+query findSafesByOwner($owner: String!) {
+  findSafesByOwner(owner: $owner) {
     type
     safeAddress
     lastUbiAt
@@ -327,8 +327,8 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
   }
 }
 
-query ubiInfo {
-  ubiInfo {
+query safeInfo {
+  safeInfo {
     lastUbiAt
     safeAddress
     tokenAddress

@@ -843,7 +843,7 @@ export type Query = {
   commonTrust: Array<CommonTrust>;
   directPath: TransitivePath;
   events: Array<ProfileEvent>;
-  findSafeAddressByOwner: Array<UbiInfo>;
+  findSafesByOwner: Array<SafeInfo>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
   invitationTransaction?: Maybe<ProfileEvent>;
   invoice?: Maybe<Scalars['String']>;
@@ -854,12 +854,12 @@ export type Query = {
   profilesById: Array<Profile>;
   profilesBySafeAddress: Array<Profile>;
   regions: Array<Organisation>;
+  safeInfo?: Maybe<SafeInfo>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
   trustRelations: Array<TrustRelation>;
-  ubiInfo?: Maybe<UbiInfo>;
   verifications: Array<Verification>;
   version: Version;
   whoami?: Maybe<Scalars['String']>;
@@ -899,7 +899,7 @@ export type QueryEventsArgs = {
 };
 
 
-export type QueryFindSafeAddressByOwnerArgs = {
+export type QueryFindSafesByOwnerArgs = {
   owner: Scalars['String'];
 };
 
@@ -934,6 +934,11 @@ export type QueryRegionsArgs = {
 };
 
 
+export type QuerySafeInfoArgs = {
+  safeAddress?: Maybe<Scalars['String']>;
+};
+
+
 export type QuerySearchArgs = {
   query: SearchInput;
 };
@@ -951,11 +956,6 @@ export type QueryTagsArgs = {
 
 export type QueryTrustRelationsArgs = {
   safeAddress: Scalars['String'];
-};
-
-
-export type QueryUbiInfoArgs = {
-  safeAddress?: Maybe<Scalars['String']>;
 };
 
 
@@ -1029,6 +1029,15 @@ export type SafeAddressByOwnerResult = {
   __typename?: 'SafeAddressByOwnerResult';
   safeAddress: Scalars['String'];
   type: Scalars['String'];
+};
+
+export type SafeInfo = {
+  __typename?: 'SafeInfo';
+  lastUbiAt?: Maybe<Scalars['String']>;
+  randomValue?: Maybe<Scalars['String']>;
+  safeAddress: Scalars['String'];
+  tokenAddress: Scalars['String'];
+  type: AccountType;
 };
 
 export type SafeVerified = IEventPayload & {
@@ -1158,15 +1167,6 @@ export type TrustRelation = {
   otherSafeAddressProfile?: Maybe<Profile>;
   safeAddress: Scalars['String'];
   safeAddressProfile?: Maybe<Profile>;
-};
-
-export type UbiInfo = {
-  __typename?: 'UbiInfo';
-  lastUbiAt?: Maybe<Scalars['String']>;
-  randomValue?: Maybe<Scalars['String']>;
-  safeAddress: Scalars['String'];
-  tokenAddress: Scalars['String'];
-  type: AccountType;
 };
 
 export type UpdateSafeInput = {
@@ -1715,16 +1715,16 @@ export type WhoamiQuery = (
   & Pick<Query, 'whoami'>
 );
 
-export type FindSafeAddressByOwnerQueryVariables = Exact<{
+export type FindSafesByOwnerQueryVariables = Exact<{
   owner: Scalars['String'];
 }>;
 
 
-export type FindSafeAddressByOwnerQuery = (
+export type FindSafesByOwnerQuery = (
   { __typename?: 'Query' }
-  & { findSafeAddressByOwner: Array<(
-    { __typename?: 'UbiInfo' }
-    & Pick<UbiInfo, 'type' | 'safeAddress' | 'lastUbiAt' | 'randomValue' | 'tokenAddress'>
+  & { findSafesByOwner: Array<(
+    { __typename?: 'SafeInfo' }
+    & Pick<SafeInfo, 'type' | 'safeAddress' | 'lastUbiAt' | 'randomValue' | 'tokenAddress'>
   )> }
 );
 
@@ -1950,14 +1950,14 @@ export type ProfilesByCirclesAddressQuery = (
   )> }
 );
 
-export type UbiInfoQueryVariables = Exact<{ [key: string]: never; }>;
+export type SafeInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UbiInfoQuery = (
+export type SafeInfoQuery = (
   { __typename?: 'Query' }
-  & { ubiInfo?: Maybe<(
-    { __typename?: 'UbiInfo' }
-    & Pick<UbiInfo, 'lastUbiAt' | 'safeAddress' | 'tokenAddress' | 'randomValue'>
+  & { safeInfo?: Maybe<(
+    { __typename?: 'SafeInfo' }
+    & Pick<SafeInfo, 'lastUbiAt' | 'safeAddress' | 'tokenAddress' | 'randomValue'>
   )> }
 );
 
@@ -3141,9 +3141,9 @@ export const WhoamiDocument = gql`
   whoami
 }
     `;
-export const FindSafeAddressByOwnerDocument = gql`
-    query findSafeAddressByOwner($owner: String!) {
-  findSafeAddressByOwner(owner: $owner) {
+export const FindSafesByOwnerDocument = gql`
+    query findSafesByOwner($owner: String!) {
+  findSafesByOwner(owner: $owner) {
     type
     safeAddress
     lastUbiAt
@@ -3458,9 +3458,9 @@ export const ProfilesByCirclesAddressDocument = gql`
   }
 }
     `;
-export const UbiInfoDocument = gql`
-    query ubiInfo {
-  ubiInfo {
+export const SafeInfoDocument = gql`
+    query safeInfo {
+  safeInfo {
     lastUbiAt
     safeAddress
     tokenAddress
@@ -4560,8 +4560,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     whoami(variables?: WhoamiQueryVariables): Promise<WhoamiQuery> {
       return withWrapper(() => client.request<WhoamiQuery>(print(WhoamiDocument), variables));
     },
-    findSafeAddressByOwner(variables: FindSafeAddressByOwnerQueryVariables): Promise<FindSafeAddressByOwnerQuery> {
-      return withWrapper(() => client.request<FindSafeAddressByOwnerQuery>(print(FindSafeAddressByOwnerDocument), variables));
+    findSafesByOwner(variables: FindSafesByOwnerQueryVariables): Promise<FindSafesByOwnerQuery> {
+      return withWrapper(() => client.request<FindSafesByOwnerQuery>(print(FindSafesByOwnerDocument), variables));
     },
     claimedInvitation(variables?: ClaimedInvitationQueryVariables): Promise<ClaimedInvitationQuery> {
       return withWrapper(() => client.request<ClaimedInvitationQuery>(print(ClaimedInvitationDocument), variables));
@@ -4593,8 +4593,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
       return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));
     },
-    ubiInfo(variables?: UbiInfoQueryVariables): Promise<UbiInfoQuery> {
-      return withWrapper(() => client.request<UbiInfoQuery>(print(UbiInfoDocument), variables));
+    safeInfo(variables?: SafeInfoQueryVariables): Promise<SafeInfoQuery> {
+      return withWrapper(() => client.request<SafeInfoQuery>(print(SafeInfoDocument), variables));
     },
     profilesByIds(variables: ProfilesByIdsQueryVariables): Promise<ProfilesByIdsQuery> {
       return withWrapper(() => client.request<ProfilesByIdsQuery>(print(ProfilesByIdsDocument), variables));
