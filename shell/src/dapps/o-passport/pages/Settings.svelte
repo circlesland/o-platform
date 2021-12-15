@@ -145,7 +145,7 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
       </div>
     </Card>
   </section>
-  <section class="mx-4 mb-2">
+  <!-- <section class="mx-4 mb-2">
     <Card>
       <div class="text-xs font-bold text-left text-primary whitespace-nowrap">
         CURRENCY DISPLAY
@@ -167,5 +167,5 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
         </div>
       </div>
     </Card>
-  </section>
+  </section> -->
 </div>

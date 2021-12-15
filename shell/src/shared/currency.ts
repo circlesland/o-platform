@@ -107,7 +107,8 @@ export class Currency {
     amount: string,
     date: string,
     displayCurrency: any,
-    from?: string
+    from?: string,
+    raw?: boolean
   ) {
     if (!amount) {
       throw new Error("argument missing: amount");
@@ -143,7 +144,11 @@ export class Currency {
         );
       }
     }
-    return value.toFixed(2);
+    if (raw) {
+      return value;
+    } else {
+      return value.toFixed(2);
+    }
   }
 
   public displayCirclesAmount(

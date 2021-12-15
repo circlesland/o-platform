@@ -137,9 +137,7 @@ function openDetail(transfer: ProfileEvent) {
             )}
           {/if}
           <span class="text-6xl font-primary"
-            >{Currency.currencySymbol[
-              $me.displayCurrency ? $me.displayCurrency : "EURS"
-            ]}</span>
+            >{Currency.currencySymbol["EURS"]}</span>
         </span>
       </div>
       {#if $me.displayCurrency && $me.displayCurrency != "TIME_CRC"}
@@ -210,6 +208,27 @@ function openDetail(transfer: ProfileEvent) {
             <Time
               timestamp="{new Date(transfer.timestamp)}"
               format="D. MMMM YYYY HH:mm" />
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col w-full space-y-1">
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          Full amount in CRC
+        </div>
+        <div class="flex items-center w-full">
+          <div class="text-left ">
+            {Currency.instance().displayAmount(
+              transfer
+                ? (transfer.payload.value
+                    ? transfer.payload.value
+                    : transfer.payload.flow
+                  ).toString()
+                : "0",
+              transfer.timestamp,
+              "CRC",
+              null,
+              true
+            )}
           </div>
         </div>
       </div>
