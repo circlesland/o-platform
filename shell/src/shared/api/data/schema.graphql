@@ -273,6 +273,9 @@ type Invoice {
     buyerProfile: Profile
     buyerSignature: Boolean
     buyerSignedDate: String
+    cancelReason: String
+    cancelledAt: String
+    cancelledBy: Profile
     id: Int!
     lines: [InvoiceLine!]!
     paymentTransactionHash: String

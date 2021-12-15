@@ -80,17 +80,18 @@ export let routable: Routable;
             <div
               class="flex flex-row items-center justify-between px-3 mt-2 text-left">
               <div
-                class="inline-block text-xs "
-                class:text-alert-dark="{!purchase.invoices[0]
-                  .paymentTransactionHash}"
-                class:text-success="{purchase.invoices[0]
-                  .paymentTransactionHash}">
-                  {#if purchase.invoices[0].paymentTransactionHash}
+                class="inline-block text-xs"
+                class:text-alert-dark={purchase.invoices[0].cancelledAt}
+                class:text-success={purchase.invoices[0].paymentTransactionHash && !purchase.invoices[0].cancelledAt}
+                class:text-info={!purchase.invoices[0].paymentTransactionHash && !purchase.invoices[0].cancelledAt}>
+                {#if purchase.invoices[0].paymentTransactionHash}
                   <span>paid</span>
-                    <Icons icon="check" size="{4}" customClass="inline" />
-                  {:else}
+                  <Icons icon="check" size="{4}" customClass="inline" />
+                {:else if purchase.invoices[0].cancelledAt}
+                  <span>cancelled</span>
+                {:else}
                   <span>payment pending</span>
-                  {/if}
+                {/if}
               </div>
               <div
                 class="inline-block text-xs "

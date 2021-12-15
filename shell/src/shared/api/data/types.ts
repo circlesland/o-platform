@@ -388,6 +388,9 @@ export type Invoice = {
   buyerProfile?: Maybe<Profile>;
   buyerSignature?: Maybe<Scalars['Boolean']>;
   buyerSignedDate?: Maybe<Scalars['String']>;
+  cancelReason?: Maybe<Scalars['String']>;
+  cancelledAt?: Maybe<Scalars['String']>;
+  cancelledBy?: Maybe<Profile>;
   id: Scalars['Int'];
   lines: Array<InvoiceLine>;
   paymentTransactionHash?: Maybe<Scalars['String']>;
@@ -2370,7 +2373,7 @@ export type StreamQuery = (
         & Pick<Profile, 'type' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )>, invoice?: Maybe<(
         { __typename?: 'Invoice' }
-        & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
+        & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'cancelReason'>
         & { lines: Array<(
           { __typename?: 'InvoiceLine' }
           & Pick<InvoiceLine, 'amount'>
@@ -2518,7 +2521,7 @@ export type AggregatesQuery = (
           ) }
         )>, invoices: Array<(
           { __typename?: 'Invoice' }
-          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
+          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'cancelReason'>
           & { sellerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl' | 'displayCurrency'>
@@ -2562,7 +2565,7 @@ export type AggregatesQuery = (
           ) }
         )>, invoices: Array<(
           { __typename?: 'Invoice' }
-          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
+          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'cancelReason'>
           & { buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl' | 'displayCurrency'>
@@ -4073,6 +4076,8 @@ export const StreamDocument = gql`
           buyerSignedDate
           sellerSignature
           sellerSignedDate
+          cancelledAt
+          cancelReason
           lines {
             amount
             offer {
@@ -4315,6 +4320,8 @@ export const AggregatesDocument = gql`
             buyerSignedDate
             sellerSignature
             sellerSignedDate
+            cancelledAt
+            cancelReason
             sellerProfile {
               type
               id
@@ -4400,6 +4407,8 @@ export const AggregatesDocument = gql`
             buyerSignedDate
             sellerSignature
             sellerSignedDate
+            cancelledAt
+            cancelReason
             buyerProfile {
               type
               id

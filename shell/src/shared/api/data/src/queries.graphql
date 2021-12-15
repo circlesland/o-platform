@@ -999,6 +999,8 @@ query stream(
           buyerSignedDate
           sellerSignature
           sellerSignedDate
+          cancelledAt
+          cancelReason
           lines {
             amount
             offer {
@@ -1244,6 +1246,8 @@ query aggregates(
             buyerSignedDate
             sellerSignature
             sellerSignedDate
+            cancelledAt
+            cancelReason
             sellerProfile {
               type
               id
@@ -1329,6 +1333,8 @@ query aggregates(
             buyerSignedDate
             sellerSignature
             sellerSignedDate
+            cancelledAt
+            cancelReason
             buyerProfile {
               type
               id
