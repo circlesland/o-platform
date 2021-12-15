@@ -88,12 +88,14 @@ export let routable: Routable;
               class="flex flex-row items-center justify-between px-3 mt-2 text-left">
               <div
                 class="inline-block text-xs "
-                class:text-inactive="{!sale.invoices[0].paymentTransactionHash}"
+                class:text-alert-dark="{!sale.invoices[0].paymentTransactionHash}"
                 class:text-success="{sale.invoices[0].paymentTransactionHash}">
-                <span>paid</span>
-                {#if sale.invoices[0].paymentTransactionHash}
-                  <Icons icon="check" size="{4}" customClass="inline" />
-                {/if}
+                 {#if sale.invoices[0].paymentTransactionHash}
+                  <span>paid</span>
+                    <Icons icon="check" size="{4}" customClass="inline" />
+                  {:else}
+                  <span>payment pending</span>
+                  {/if}
               </div>
               <div
                 class="inline-block text-xs "
