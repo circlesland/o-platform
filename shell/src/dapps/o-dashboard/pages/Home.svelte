@@ -80,7 +80,7 @@ let profilesPromise = fetchProfilesCount();
 
 <DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  <div class="m-4 mb-20 -mt-4">
+  <div class="m-4 mb-40 -mt-4">
     <section
       class="p-4 mb-4 bg-white rounded-lg shadow-md cursor-pointer dashboard-card">
       <div class="w-full text-3xl text-center font-heading">CIRCLESLAND</div>
