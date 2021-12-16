@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import {writable} from "svelte/store";
 import {
   AcknowledgeDocument,
   Direction,
@@ -16,11 +16,11 @@ import {
   TrustRelationsDocument,
   TrustRelationsQueryVariables,
 } from "../api/data/types";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { me } from "./me";
-import { getSessionInfo } from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
-import { fSetTrust } from "../../dapps/o-banking/processes/setTrust";
-import { ApiClient } from "../apiConnection";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {me} from "./me";
+import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
+import {fSetTrust} from "../../dapps/o-banking/processes/setTrust";
+import {ApiClient} from "../apiConnection";
 
 let events: ProfileEvent[] = [];
 let following: boolean = false;
@@ -59,6 +59,7 @@ async function queryEvents(mySafeAddress: string) {
         EventType.MembershipOffer,
         EventType.MembershipAccepted,
         EventType.MembershipRejected,
+        EventType.WelcomeMessage
       ],
     }
   );
