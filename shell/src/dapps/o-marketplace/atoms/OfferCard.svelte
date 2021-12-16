@@ -88,8 +88,8 @@ displayName =
           "
           class="rounded-t-xl" />
         <div
-          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest">
-          {offer.pricePerUnit} <span class=" font-primary">€</span>
+          class="absolute right-0 py-2 pl-4 pr-2 pt-3 mt-2 text-lg font-enso rounded-l-full top-2 bg-light-lightest">
+          <span class="inline-block">{offer.pricePerUnit}</span> <span class="inline-block">€</span>
         </div>
 
         <div

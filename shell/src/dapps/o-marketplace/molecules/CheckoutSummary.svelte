@@ -7,6 +7,7 @@ import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelt
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";
 import { displayableName } from "../../../shared/functions/stringHelper";
+import { Currency } from "../../../shared/currency";
 
 export let context: any;
 let profile: Profile | Organisation;
@@ -35,9 +36,13 @@ function onkeydown(e: KeyboardEvent) {
   <div
     class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
     <div>
-      <span class="inline-block text-6xl font-heading {classes}">
-        {$totalPrice.toFixed(2)} <span class="font-primary">€</span>
-      </span>
+      <span class="inline-block text-6xl font-enso {classes}">
+        {$totalPrice.toFixed(2)}</span>
+      <span class="text-6xl font-enso">€</span>
+      <div>
+        <span class="font-primary text-dark-lightest"
+          >{$totalPrice * 10} {Currency.currencySymbol["TIME_CRC"]}</span>
+      </div>
     </div>
 
     <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />
@@ -78,6 +83,13 @@ function onkeydown(e: KeyboardEvent) {
           {$totalPrice.toFixed(2)} €
         </span>
       </div>
+      <div class="flex items-center justify-end w-full -mt-2">
+        <span class="mr-2 text-sm font-medium text-gray-400"
+          >Time Circles:</span>
+        <span class="w-20 text-lg text-right font-primary text-dark-lightest"
+          >{$totalPrice * 10} {Currency.currencySymbol["TIME_CRC"]}</span>
+      </div>
+
       <!-- <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">
           Total in Time:

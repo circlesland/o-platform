@@ -110,7 +110,7 @@ function openDetail(transfer: ProfileEvent) {
         </h1>
       </div>
       <div>
-        <span class="inline-block text-6xl font-heading {classes}">
+        <span class="inline-block text-6xl font-enso {classes}">
           {#if transfer.direction === "in"}
             +{Currency.instance().displayAmount(
               transfer
@@ -136,9 +136,10 @@ function openDetail(transfer: ProfileEvent) {
               transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
             )}
           {/if}
-          <span class="text-6xl font-primary"
+            </span>
+          <span class="text-6xl font-enso"
             >{Currency.currencySymbol["EURS"]}</span>
-        </span>
+      
       </div>
       {#if $me.displayCurrency && $me.displayCurrency != "TIME_CRC"}
         <div class="self-end m-auto -mt-4 space-y-2 text-center max-w-max">

@@ -15,11 +15,8 @@ $: {
   context = context;
 
   profile = context.data.sellerProfile;
-  console.log("CONTEXT BABY ", context);
-  console.log("PROFILE BABY ", profile);
 
   groupedItems = context.data ? orderItems(context.data.items) : {};
-  console.log("GROUPIES ", groupedItems);
 }
 
 let classes: string;
@@ -63,11 +60,9 @@ function orderItems(items) {
 
         <div>
           {context.data.sellerProfile.firstName}
-          {context.data.sellerProfile.firstName +
-            " " +
-            (context.data.sellerProfile.lastName
-              ? context.data.sellerProfile.lastName
-              : "")}
+          {context.data.sellerProfile.lastName
+            ? context.data.sellerProfile.lastName
+            : ""}
         </div>
       </div>
     </div>

@@ -1,3 +1,5 @@
+localhost.cert
+localhost.key
 .history
 node_modules
 packages/o-events/dist/

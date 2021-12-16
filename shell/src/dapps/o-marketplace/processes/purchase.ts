@@ -152,9 +152,9 @@ const processDefinition = (processId: string) =>
               const invoiceTotal = invoice.lines.reduce((p, c) => {
                 const amount = c.amount;
                 const pricePerUnit = parseFloat(c.offer.pricePerUnit);
-                return p + amount * pricePerUnit;
+                return p + amount * (pricePerUnit * 10);
               }, 0);
-
+              /* TODO: Cleanup Hardcoded Euro to timecircles conversion here */
               const amount = convertTimeCirclesToCircles(
                 invoiceTotal,
                 null

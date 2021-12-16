@@ -48,30 +48,49 @@ function orderItems(items) {
 }
 </script>
 
-<template lang="pug">
-+each(`groupedItems as {item}`)
-  div.flex.justify-between.items-center.mb-6.pb-6.border-b.w-full
-    div.flex.items-center.w-full
-      img.rounded-full.w-20.mask.mask-circle(src='{item.item.pictureUrl}' alt='{item.item.title}')
-      div.flex.flex-col.ml-2.space-y-2.w-full.items-start
-        div.flex.flex-row.justify-between.w-full
-          div(class="md:text-md") {item.item.title}
-
-          div.text-dark.cursor-pointer.self-center(on:click!="{() =>  removeAllItems(item.item.id)}" class:hidden="{!editable}")
-            Icons(icon="trash" size="4")
-            
-        div.flex.justify-end.items-center.w-full
-          div.flex-grow.text-sm.text-dark-lightest.text-left 1 {item.item.unitTag ? item.item.unitTag.value : "item"}
-            
-          div.pr-8.flex
-            div.span.font-semibold.cursor-pointer(on:click!="{() =>  removeOneItem(item.item.id)}" class:hidden="{!editable}") -
-            
-            input.bg-gray-100.border.h-6.w-8.rounded.text-sm.text-center.px-2.mx-2(type="text" value="{item.qty}" disabled="{!editable}" class="focus:outline-none")
-            
-            span.font-semibold.cursor-pointer(on:click!="{() =>  addOneItem(item.item.id)}" class:hidden="{!editable}") +
-          
-          div.items-center
-            span.whitespace-nowrap {item.item.pricePerUnit} €
-
-
-</template>
+{#each groupedItems as { item }}
+  <div class="flex items-center justify-between w-full pb-6 mb-6 border-b">
+    <div class="flex items-center w-full">
+      <img
+        class="w-20 rounded-full mask mask-circle"
+        src="{item.item.pictureUrl}"
+        alt="{item.item.title}" />
+      <div class="flex flex-col items-start w-full ml-2 space-y-2">
+        <div class="flex flex-row justify-between w-full">
+          <div class="md:text-md">{item.item.title}</div>
+          <div
+            class="self-center cursor-pointer text-dark"
+            on:click="{() => removeAllItems(item.item.id)}"
+            class:hidden="{!editable}">
+            <Icons icon="trash" size="4" />
+          </div>
+        </div>
+        <div class="flex items-center justify-end w-full">
+          <div class="flex-grow text-sm text-left text-dark-lightest">
+            1 {item.item.unitTag ? item.item.unitTag.value : "item"}
+          </div>
+          <div class="flex pr-8">
+            <div
+              class="font-semibold cursor-pointer span"
+              on:click="{() => removeOneItem(item.item.id)}"
+              class:hidden="{!editable}">
+              -
+            </div>
+            <input
+              class="w-8 h-6 px-2 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none"
+              type="text"
+              value="{item.qty}"
+              disabled="{!editable}" /><span
+              class="font-semibold cursor-pointer"
+              on:click="{() => addOneItem(item.item.id)}"
+              class:hidden="{!editable}">+</span>
+          </div>
+          <div class="items-center">
+            <span class="inline-block whitespace-nowrap"
+              >{item.item.pricePerUnit} <span class="font-enso"> €</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{/each}

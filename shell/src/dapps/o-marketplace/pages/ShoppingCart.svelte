@@ -16,33 +16,48 @@ function handleClickOutside(event) {
 }
 </script>
 
-<template lang="pug">
-div.p-5
-  header
-    div.w-full.text-center
-      h1.text-3xl.uppercase.font-heading Cart
-  +if('$cartContents && $cartContents.length > 0')  
-    div
-      div.w-full
-        div(class="md:flex")
-          div.w-full
-            div.pt-6(class="md:grid")
-                
-                CartItems(cartContents="{cartContents}")
-                
-                div.flex.justify-end.items-center
-                  span.text-sm.font-medium.text-gray-400.mr-2 Total:
-                  span.text-lg.font-bold {$totalPrice.toFixed(2)} €
-                  
-                div.flex.justify-center.items-center.mt-6
-                
-                  div.flex.flex-row.w-full.space-x-4
+<div class="p-5">
+  <header>
+    <div class="w-full text-center">
+      <h1 class="text-3xl uppercase font-heading">Cart</h1>
+    </div>
+  </header>
 
-                    div.flex-grow
-                      button.h-auto.btn-block.btn.btn-primary(on:click!="{() =>  checkout()}") Check Out
-    +else
-      p.text-center.mt-6 Your cart is empty!
-      div.w-full.mt-6
-          div
-          button.h-auto.btn-block.btn.btn-light(on:click!="{(event) =>  handleClickOutside(event)}") Continue Shopping
-</template>
+  {#if $cartContents && $cartContents.length > 0}
+    <div>
+      <div class="w-full">
+        <div class="md:flex">
+          <div class="w-full">
+            <div class="pt-6 md:grid">
+              <CartItems cartContents="{cartContents}" />
+              <div class="flex items-center justify-end">
+                <span class="mr-2 text-sm font-medium text-gray-400"
+                  >Total:</span
+                ><span class="text-lg font-bold"
+                  >{$totalPrice.toFixed(2)}
+                  <span class="font-enso">€</span></span>
+              </div>
+              <div class="flex items-center justify-center mt-6">
+                <div class="flex flex-row w-full space-x-4">
+                  <div class="flex-grow">
+                    <button
+                      class="h-auto btn-block btn btn-primary"
+                      on:click="{() => checkout()}">Check Out</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {:else}
+    <p class="mt-6 text-center">Your cart is empty!</p>
+    <div class="w-full mt-6">
+      <button
+        class="h-auto btn-block btn btn-light"
+        on:click="{(event) => handleClickOutside(event)}"
+        >Continue Shopping</button>
+    </div>
+  {/if}
+</div>

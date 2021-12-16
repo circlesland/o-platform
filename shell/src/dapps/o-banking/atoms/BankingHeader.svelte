@@ -32,11 +32,12 @@ $: {
 
 <PageHeader heightClass="h-60">
   <div class="self-center block text-center">
-    <span class="inline-block tracking-wide text-7xl font-heading">
+    <span class="inline-block tracking-wide text-7xl font-enso">
       {balanceEuro}
-      <span class="text-7xl font-primary"
+      </span>
+      <span class="text-7xl font-enso"
         >{Currency.currencySymbol["EURS"]}</span>
-    </span>
+    
   </div>
   <div class="self-end m-auto mt-2 space-y-2 text-center max-w-max">
     {balanceTime}

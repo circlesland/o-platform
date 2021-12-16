@@ -87,8 +87,9 @@ onMount(async () => {
                 "
                 class="w-full rounded-t-xl" />
               <div
-                class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-lg font-bold rounded-l-full top-2 bg-light-lightest">
-                {o.pricePerUnit} <span class=" font-primary">€</span>
+                class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
+                <span class="inline-block">{o.pricePerUnit}</span>
+                <span class="inline-block">€</span>
               </div>
             </div>
           </header>
@@ -102,7 +103,7 @@ onMount(async () => {
             </div>
             <div>
               {o.createdByProfile.firstName}
-              {o.createdByProfile.lastName}
+              {o.createdByProfile.lastName ? o.createdByProfile.lastName : ""}
             </div>
           </div>
 

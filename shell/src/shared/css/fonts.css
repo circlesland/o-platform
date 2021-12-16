@@ -1,3 +1,14 @@
+@font-face {
+  font-family: 'Enso';
+  font-style: normal;
+  font-weight: 300;
+  src: url('./../fonts/enso.woff');
+  /* IE9 Compat Modes */
+  src: local(''),
+  /* Super Modern Browsers */
+  url('./../fonts/enso.woff') format('woff');
+}
+
 /* poppins-300 - latin */
 @font-face {
   font-family: 'Poppins';

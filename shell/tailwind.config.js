@@ -116,6 +116,7 @@ module.exports = {
       },
       fontFamily: {
         primary: ["Poppins", "sans"],
+        enso: ["Enso", "sans"],
         heading: ["Ostrich Sans Heavy", "sans"],
         sans: ["Poppins", "sans"],
       },
