@@ -161,8 +161,8 @@ async function setProfile(id: string) {
   const unverifyProfile = {
     key: "evoke",
     icon: "trash",
-    colorClass: "text-success",
-    title: "Verified. click to revoke",
+    colorClass: "",
+    title: "Verified. click to Revoke",
     action: async () => {
       const apiClient = await window.o.apiClient.client.subscribeToResult();
       await apiClient.mutate({
@@ -172,22 +172,33 @@ async function setProfile(id: string) {
         },
       });
 
-      showToast("success", "Account verified");
+      showToast("error", "Account verification revoked");
 
       isLoading = true;
       setProfile(id).then(() => (isLoading = false));
     },
   };
+  const bannedProfile = {
+    key: "banned",
+    icon: "trash",
+    colorClass: "text-alert-dark",
+    title: "REVOKED",
+    action: () => {},
+  };
 
-  console.log("PROFILE INFO: ", profile);
   if (canVerify && profile.verifications) {
-    console.log("VERIFICATION TEST: ", profile.verifications);
-    if (profile.verifications.length) {
-      console.log("push UNverify");
-      jumplistResult.push(unverifyProfile);
+    if (
+      profile.verifications &&
+      profile.verifications[0] &&
+      profile.verifications[0].revokedAt
+    ) {
+      jumplistResult.push(bannedProfile);
     } else {
-      console.log("push verify");
-      jumplistResult.push(verifyProfile);
+      if (profile.verifications.length) {
+        jumplistResult.push(unverifyProfile);
+      } else {
+        jumplistResult.push(verifyProfile);
+      }
     }
   }
 }
@@ -326,7 +337,6 @@ async function setProfile(id: string) {
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
                   Address
                 </div>
-
                 <div class="flex items-center w-full text-2xs">
                   {contact.contactAddress}
                 </div>
@@ -338,7 +348,6 @@ async function setProfile(id: string) {
 
       {#if profile && jumplistResult && !isMe}
         <div class="sticky bottom-0 left-0 right-0 w-full pb-5 bg-white">
-          {console.log("JUmpi", jumplistResult)}
           <DetailActionBar actions="{jumplistResult}" />
         </div>
       {/if}
