@@ -73,7 +73,7 @@ function goToProfile(e, path?: string) {
 }
 </script>
 
-<div on:click="{() => loadDetailPage(safeAddress)}">
+<div on:click="{() => loadDetailPage(safeAddress)}" class="cursor-pointer">
   <ItemCard
     params="{{
       edgeless: false,
