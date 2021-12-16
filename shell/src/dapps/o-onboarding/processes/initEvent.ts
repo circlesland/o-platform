@@ -8,6 +8,7 @@ export type RegistrationData = {
   email: string;
   acceptedToSVersion: string;
   subscribedToNewsletter: boolean;
+  successorOfCirclesAddress: string;
   circlesSafeOwner: string;
 }
 
@@ -19,6 +20,8 @@ export type ProfileData = {
   passion?: string;
   avatarUrl?: string;
   circlesSafeOwner?: string;
+  circlesAddress?: string;
+  successorOfCirclesAddress?: string;
 }
 
 export type EoaData = {

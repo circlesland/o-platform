@@ -5,7 +5,7 @@ import {
   SafeData,
   UbiData
 } from "./initEvent";
-import {ClaimedInvitation, ProfileEvent, SessionInfo} from "../../../shared/api/data/types";
+import {ClaimedInvitation, ProfileEvent, SafeInfo, SessionInfo} from "../../../shared/api/data/types";
 
 export type InitContext = {
   session?: SessionInfo;

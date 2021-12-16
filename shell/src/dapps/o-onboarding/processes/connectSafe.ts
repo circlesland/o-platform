@@ -9,15 +9,11 @@ import * as bip39 from "bip39";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Account } from "web3-core";
 import {
-  FindSafesByOwnerDocument, FindSafesByOwnerQueryVariables, ImportOrganisationsDocument,
-  Profile,
-  ProfilesByCirclesAddressDocument, ProfilesByCirclesAddressQueryVariables,
-  SafeAddressByOwnerResult, SafeInfo,
+  FindSafesByOwnerDocument, FindSafesByOwnerQueryVariables, ImportOrganisationsDocument, SafeInfo,
   UpsertProfileDocument,
 } from "../../../shared/api/data/types";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
-import { BN } from "ethereumjs-util";
 import { KeyManager } from "../../o-passport/data/keyManager";
 import { loadProfile } from "../../o-passport/processes/identify/services/loadProfile";
 import SimpleDropDownEditor from "../../../../../packages/o-editors/src/SimpleDropDownEditor.svelte";
@@ -26,24 +22,17 @@ import DropDownCandidateSafe from "../views/atoms/DropDownCandidateSafe.svelte";
 import {ApiClient} from "../../../shared/apiConnection";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
-export type SafeCandidate = {
-  address: string;
-  balance?: BN;
-  circlesGardenProfile?: {
-    username: string;
-    avatar: string;
-  };
-  circlesLandProfile?: Profile;
-};
+export type ConnectSafeInfo = {
+  success: boolean,
+  errorMessage?: string,
+  importedAccount?: Account,
+  ownedSafes?: {[x:string]:SafeInfo & {isAlive: boolean}}
+}
 
 export type PromptConnectOrCreateContextData = {
   seedPhrase?: string;
-  importedAccount?: Account;
-  safeCandidates?: {
-    [address: string]: SafeCandidate;
-  };
-  selectedSafe?: SafeCandidate;
-  safeProxy?: GnosisSafeProxy;
+  availableSafes?: ConnectSafeInfo;
+  selectedSafe?: SafeInfo & {isAlive: boolean};
   successAction?: (data: PromptConnectOrCreateContextData) => void;
 };
 
@@ -66,7 +55,61 @@ const editorContent = {
     placeholder: "",
     submitButtonText: "Proceed",
   },
+  accountIsDeadInfo: {
+    title: "Safe deactivated",
+    description: "The selected safe received no UBI for more than 90 days and was deactivated. You can still use your Circles and transfer them to your new safe.",
+    placeholder: "",
+    submitButtonText: "Create new safe"
+  }
 };
+
+async function safeInfoFromSeedphrase(context:ConnectSafeContext) : Promise<ConnectSafeInfo> {
+  let keyFromMnemonic:string;
+  try {
+    keyFromMnemonic = "0x"
+      + bip39.mnemonicToEntropy(context.data.seedPhrase.replace(/\s\s+/g, " "));
+  } catch (e) {
+    return {
+      success: false,
+      errorMessage: `The seedphrase cannot be converted to a private key. Please double check it.`
+    };
+  }
+
+  const importedAccount = RpcGateway.get().eth.accounts.privateKeyToAccount(keyFromMnemonic);
+
+  const candidates = await ApiClient.query<
+    SafeInfo[], FindSafesByOwnerQueryVariables>(FindSafesByOwnerDocument,{
+    owner: importedAccount.address.toLowerCase()
+  });
+
+  if (candidates.length == 0) {
+    return {
+      success: false,
+      errorMessage: `Found no safes with a positive CRC balance that are owned by ${importedAccount.address.toLowerCase()}.`
+    };
+  }
+
+  const candidatesBySafeAddress = candidates.reduce((p,c) => {
+    p[c.safeAddress] = c;
+    return p;
+  }, <{[x:string]:SafeInfo}>{});
+
+  return {
+    success: true,
+    importedAccount: importedAccount,
+    ownedSafes: Object.values(candidatesBySafeAddress).map(o => {
+      const nowMinus90days = Date.now() - (90 * 24 * 60 * 60 * 1000);
+      return {
+        ...o,
+        isAlive: o.lastUbiAt && parseInt(o.lastUbiAt) > nowMinus90days
+      }
+    }).reduce((p,c) => {
+      p[c.safeAddress] = c;
+      return p;
+    }, <{[x:string]:SafeInfo & {isAlive: boolean}}>{})
+  };
+}
+
 const processDefinition = (processId: string) =>
   createMachine<PromptConnectOrCreateContext, any>(
     {
@@ -85,191 +128,98 @@ const processDefinition = (processId: string) =>
             view: editorContent.seedPhrase,
           },
           navigation: {
-            next: "#checkSeedphrase",
-          },
+            next: "#findSafe",
+          }
         }),
-
-        checkSeedphrase: {
-          id: "checkSeedphrase",
-          invoke: {
-            src: async (context) => {
-              context.messages["seedPhrase"] = "";
-
-              let keyFromMnemonic: string;
-
-              try {
-                keyFromMnemonic =
-                  "0x" +
-                  bip39.mnemonicToEntropy(
-                    context.data.seedPhrase.replace(/\s\s+/g, " ")
-                  );
-              } catch (e) {
-                context.messages[
-                  "seedPhrase"
-                ] = `The seedphrase cannot be converted to a private key. Please double check it.`;
-                throw e;
-              }
-
-              try {
-                context.data.importedAccount =
-                  RpcGateway.get().eth.accounts.privateKeyToAccount(
-                    keyFromMnemonic
-                  );
-              } catch (e) {
-                context.messages[
-                  "seedPhrase"
-                ] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
-                throw e;
-              }
-            },
-            onDone: "#findSafe",
-            onError: "#seedPhrase",
-          },
-        },
 
         findSafe: {
           id: "findSafe",
           invoke: {
             src: async (context) => {
-
-              const foundSafeAddresses = await ApiClient.query<
-                SafeInfo[], FindSafesByOwnerQueryVariables>(FindSafesByOwnerDocument,{
-                  owner: context.data.importedAccount.address.toLowerCase()
-                });
-
-              const query = foundSafeAddresses.reduce(
-                (p, c) =>
-                  p +
-                  `address[]=${RpcGateway.get().utils.toChecksumAddress(
-                    c.safeAddress
-                  )}&`,
-                ""
-              );
-              const circlesGardenProfileRequest = `https://api.circles.garden/api/users/?${query}`;
-              const circlesGardenFetchPromise = fetch(circlesGardenProfileRequest)
-                .then((result) => result.json());
-
-              const circlesLandProfileQueryPromise = ApiClient.query<Profile[], ProfilesByCirclesAddressQueryVariables>(
-                ProfilesByCirclesAddressDocument,{
-                  circlesAddresses: foundSafeAddresses.filter(o => o.type === "Person").map(o => o.safeAddress)
-                });
-
-              const results = await Promise.all([
-                circlesGardenFetchPromise,
-                circlesLandProfileQueryPromise,
-                //...balanceQueryPromises
-              ]);
-
-              const circlesGardenProfilesResult = results[0];
-              const circlesLandProfilesResult = results[1];
-
-              const balancesBySafeAddress: { [safeAddress: string]: BN } = {};
-              const circlesLandProfiles: Profile[] = circlesLandProfilesResult;
-
-              const circlesGardenProfiles =
-                circlesGardenProfilesResult.data?.map((o: any) => {
-                  return <Profile>{
-                    id: 0,
-                    firstName: o.username,
-                    lastName: "",
-                    circlesAddress: o.safeAddress.toLowerCase(),
-                    avatarUrl: o.avatarUrl,
-                  };
-                }) ?? [];
-
-              context.data.safeCandidates = {};
-              for (let candidateAddress of foundSafeAddresses) {
-                context.data.safeCandidates[candidateAddress.safeAddress] = {
-                  address: candidateAddress.safeAddress,
-                  balance: balancesBySafeAddress[candidateAddress.safeAddress],
-                  circlesGardenProfile: circlesGardenProfiles?.find(
-                    (o) => o.circlesAddress == candidateAddress.safeAddress
-                  ),
-                  circlesLandProfile: circlesLandProfiles.find(
-                    (o) => o.circlesAddress == candidateAddress.safeAddress
-                  ),
-                };
-              }
-
-              const candidates = Object.values(context.data.safeCandidates);
-              if (candidates.length == 0) {
-                context.messages[
-                  "seedPhrase"
-                ] = `Found no safes with a positive CRC balance that are owned by ${context.data.importedAccount.address.toLowerCase()}.`;
+              context.data.availableSafes = await safeInfoFromSeedphrase(context);
+              if (!context.data.availableSafes.success) {
+                context.messages["seedPhrase"] = context.data.availableSafes.errorMessage;
                 throw new Error(context.messages["seedPhrase"]);
               }
-
-              if (candidates.length == 1) {
-                context.data.selectedSafe = candidates[0];
+              const ownedSafes = Object.values(context.data.availableSafes.ownedSafes);
+              if (context.data.availableSafes.success && ownedSafes.length == 1) {
+                context.data.selectedSafe = ownedSafes[0];
               }
             },
-            onDone: [
-              {
-                cond: (context) => !!context.data.selectedSafe,
-                target: "#addNewOwnerInfo",
-              },
-              {
-                cond: (context) =>
-                  !context.data.selectedSafe &&
-                  Object.keys(context.data.safeCandidates).length > 1,
-                target: "#selectSafe",
-              },
+            onDone: [{
+              cond: (context) =>
+                !!context.data.selectedSafe && context.data.selectedSafe.isAlive,
+              target: "#addNewOwnerInfo"
+            }, {
+              cond: (context) =>
+                !!context.data.selectedSafe && !context.data.selectedSafe.isAlive,
+              target: "#accountIsDeadInfo"
+            }, {
+                target: "#selectSafe"
+              }
             ],
             onError: "#seedPhrase",
-          },
+          }
         },
 
         selectSafe: prompt<PromptConnectOrCreateContext, any>({
           id: "selectSafe",
           field: "selectedSafe",
           component: SimpleDropDownEditor,
-          params: <
-            DropdownSelectorParams<
-              PromptConnectOrCreateContext,
-              SafeCandidate,
-              string
-            >
-          >{
+          params: <DropdownSelectorParams<PromptConnectOrCreateContext, SafeInfo, string>> {
             view: {
               title: "We found multiple safes for your key",
-              description:
-                "Please select the one you want to connect with your circles.land profile",
+              description: "Please select the one you want to connect with your circles.land profile",
               submitButtonText: "Connect",
             },
             placeholder: "",
             submitButtonText: "Connect",
-            itemTemplate: DropDownCandidateSafe,
-            getKey: (o) => o.address,
+            itemTemplate: DropDownCandidateSafe, // TODO: This is not used by the SimpleDropDownEditor
+            getKey: (o) => o.safeAddress,
             getLabel: (o) => {
               if (
-                o.circlesLandProfile &&
-                o.circlesLandProfile.firstName &&
-                o.circlesLandProfile.firstName != ""
+                o.safeProfile &&
+                o.safeProfile.firstName &&
+                o.safeProfile.firstName != ""
               ) {
-                return `${o.circlesLandProfile.firstName} ${
-                  o.circlesLandProfile.lastName ?? ""
-                }`;
+                return `${o.safeProfile.firstName} ${o.safeProfile.lastName ?? ""}`;
               }
-              if (o.circlesGardenProfile) {
-                return o.circlesGardenProfile.username;
-              }
-              return o.address;
+              return o.safeAddress;
             },
-            keyProperty: "address",
+            keyProperty: "safeAddress",
             choices: {
               byKey: async (key: string, context) => {
-                return context.data.safeCandidates[key];
+                return context.data.availableSafes.ownedSafes[key];
               },
               find: async (filter: string, context) => {
-                return Object.values(context.data.safeCandidates);
+                return Object.values(context.data.availableSafes.ownedSafes);
               },
             },
           },
           navigation: {
-            next: "#addNewOwnerInfo",
+            next: [{
+              cond: (context) => !context.data.selectedSafe.isAlive,
+              target: "#accountIsDeadInfo"
+            }, {
+              target: "#addNewOwnerInfo"
+            }],
             previous: "#seedPhrase",
             canSkip: () => false,
             canGoBack: () => true,
+          },
+        }),
+
+        accountIsDeadInfo: prompt({
+          id: "accountIsDeadInfo",
+          field: "__",
+          component: HtmlViewer,
+          params: {
+            view: editorContent.accountIsDeadInfo,
+            html: () => editorContent.accountIsDeadInfo.description,
+            hideNav: false,
+          },
+          navigation: {
+            next: "#addNewOwner",
           },
         }),
 
@@ -300,18 +250,18 @@ const processDefinition = (processId: string) =>
             src: async (context) => {
               if (typeof context.data.selectedSafe === "string") {
                 context.data.selectedSafe =
-                  context.data.safeCandidates[context.data.selectedSafe];
+                  context.data.availableSafes[context.data.selectedSafe];
               }
 
-              context.data.safeProxy = new GnosisSafeProxy(
+              const safeProxy = new GnosisSafeProxy(
                 RpcGateway.get(),
-                context.data.selectedSafe.address
+                context.data.selectedSafe.safeAddress
               );
 
               var km = new KeyManager(null);
               await km.load();
 
-              const currentOwners = await context.data.safeProxy.getOwners();
+              const currentOwners = await safeProxy.getOwners();
               if (
                 currentOwners.find(
                   (o) => o.toLowerCase() == km.torusKeyAddress.toLowerCase()
@@ -319,15 +269,14 @@ const processDefinition = (processId: string) =>
               ) {
                 console.log("The new safe owner was already added.");
               } else {
-                const receipt = await context.data.safeProxy.addOwnerWithThreshold(
-                  context.data.importedAccount.privateKey,
+                const receipt = await safeProxy.addOwnerWithThreshold(
+                  context.data.availableSafes.importedAccount.privateKey,
                   km.torusKeyAddress,
                   1
                 );
 
                 console.log("Added new owner to safe: ", receipt);
               }
-              //safeProxy.addOwnerWithThreshold()
             },
             onDone: "updateRegistration",
             onError: "seedPhrase",
@@ -369,7 +318,7 @@ const processDefinition = (processId: string) =>
                 try {
                   const safeProxy = new GnosisSafeProxy(RpcGateway.get(), orga.circlesAddress);
                   await safeProxy.addOwnerWithThreshold(
-                    context.data.importedAccount.privateKey,
+                    context.data.availableSafes.importedAccount.privateKey,
                     km.torusKeyAddress,
                     1
                   );
@@ -384,17 +333,41 @@ const processDefinition = (processId: string) =>
               });
 
               const $me = await loadProfile();
+
+              let importedFirstName = context.data.selectedSafe.safeProfile?.firstName
+                ? context.data.selectedSafe.safeProfile?.firstName
+                : "";
+
+              if (RpcGateway.get().utils.isAddress(importedFirstName)) {
+                importedFirstName = "";
+              }
+
               const result = await apiClient.mutate({
                 mutation: UpsertProfileDocument,
                 variables: {
                   id: $me.id,
-                  circlesAddress: context.data.selectedSafe.address,
+                  successorOfCirclesAddress: !context.data.selectedSafe.isAlive
+                    ? context.data.selectedSafe.safeAddress?.toLowerCase()
+                    : undefined,
                   circlesSafeOwner: $me.circlesSafeOwner,
+                  circlesAddress: context.data.selectedSafe.isAlive
+                    ? context.data.selectedSafe.safeAddress.toLowerCase()
+                    : undefined,
                   avatarCid: $me.avatarCid,
-                  avatarUrl: $me.avatarUrl,
+                  avatarUrl: $me.avatarUrl
+                    ? $me.avatarUrl
+                    : context.data.selectedSafe.safeProfile?.avatarUrl
+                      ? context.data.selectedSafe.safeProfile?.avatarUrl
+                      : null,
                   avatarMimeType: $me.avatarMimeType,
-                  firstName: $me.firstName,
-                  lastName: $me.lastName,
+                  firstName: $me.firstName && $me.firstName != ""
+                    ? $me.firstName
+                    : importedFirstName,
+                  lastName: $me.lastName
+                    ? $me.lastName
+                    : context.data.selectedSafe.safeProfile?.lastName
+                      ? context.data.selectedSafe.safeProfile?.lastName
+                      : null,
                   country: $me.country,
                   dream: $me.dream,
                   newsletter: $me.newsletter,
@@ -415,15 +388,6 @@ const processDefinition = (processId: string) =>
               context.data.successAction(context.data);
             }
           },
-        },
-      },
-    },
-    {
-      services: {
-        findMostRecentUbiSafe: async (context, event) => {
-          const result = await ApiClient.query<string, FindSafesByOwnerQueryVariables>(FindSafesByOwnerDocument,{
-            owner: context.data.importedAccount.address.toLowerCase(),
-          });
         },
       },
     }

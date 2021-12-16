@@ -246,8 +246,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           connectOrCreate: {
             entry: [
               () => console.log("init.safe.connectOrCreate"),
-              () => {
+              (context) => {
                 window.o.runProcess(promptConnectOrCreate, {
+                  forceCreate: context.profile.successorOfCirclesAddress && !context.profile.circlesAddress,
                   successAction: (data) => {
                     (<any>window).runInitMachine();
                   },
@@ -397,6 +398,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
               circlesSafeOwner: profile.circlesSafeOwner,
               acceptedToSVersion: "", // TODO: Important in the context?
               subscribedToNewsletter: profile.newsletter,
+              successorOfCirclesAddress: profile.successorOfCirclesAddress
             },
           });
         } catch (e) {
@@ -443,7 +445,8 @@ export const initMachine = createMachine<InitContext, InitEvent>(
                 firstName: profile.firstName,
                 cityId: profile.cityGeonameid,
                 passion: profile.dream,
-                circlesSafeOwner: profile.circlesSafeOwner,
+                successorOfCirclesAddress: profile.successorOfCirclesAddress,
+                circlesSafeOwner: profile.circlesSafeOwner
               },
             });
           } else {
@@ -516,10 +519,17 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       loadSafe: (ctx) => async (callback) => {
         try {
           const profile = await loadProfile();
+          ctx.profile = <any>(ctx.profile ? {
+            ...ctx.profile,
+            successorOfCirclesAddress: profile.successorOfCirclesAddress,
+            circlesAddress: profile.circlesAddress
+          } : {
+            successorOfCirclesAddress: profile.successorOfCirclesAddress,
+            circlesAddress: profile.circlesAddress
+          });
+
           if (profile?.circlesAddress) {
-            const safeBalance = await RpcGateway.get().eth.getBalance(
-              profile.circlesAddress
-            );
+            const safeBalance = await RpcGateway.get().eth.getBalance(profile.circlesAddress);
             callback({
               type: "GOT_SAFE",
               safe: {
@@ -593,7 +603,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           },
         });
       },
-      promptGetInvitedAndRestart: () => {
+      promptGetInvitedAndRestart: (context) => {
         window.o.runProcess(promptGetInvited, {
           successAction: (data) => {
             (<any>window).runInitMachine();
@@ -617,6 +627,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       },
       promptConnectOrCreateAndRestart: (context) => {
         window.o.runProcess(promptConnectOrCreate, {
+          forceCreate: context.profile.successorOfCirclesAddress && !context.profile.circlesAddress,
           successAction: (data) => {
             (<any>window).runInitMachine();
           },

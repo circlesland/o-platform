@@ -59,7 +59,10 @@ export type PromptSpec<TContext extends ProcessContext<any>, TEvent> = {
       context: ProcessContext<TContext>,
       event: { type: string; [x: string]: any }
     ) => boolean;
-    next?: string;
+    next?: string | {
+      cond?: (context: TContext, event: { type: string; [x: string]: any; }) => boolean,
+      target: string
+    }[];
     skip?: string;
     canSkip?: (
       context: ProcessContext<TContext>,
@@ -190,7 +193,12 @@ export function prompt<
                 spec.navigation.canSkip(context, event)
               );
             },
-            target: spec.navigation?.skip ?? spec.navigation?.next ?? "show",
+            target: spec.navigation?.skip ?? (
+              !spec.navigation?.next
+                ? "show"
+                : Array.isArray(spec.navigation.next)
+                  ? spec.navigation.next
+                  : spec.navigation.next),
           },
           {
             target: "show",
@@ -261,11 +269,11 @@ export function prompt<
             return context;
           }),
         ],
-        always: [
-          {
-            target: spec.navigation?.next ?? "show",
-          },
-        ],
+        always: !spec.navigation?.next
+          ? "show"
+          : Array.isArray(spec.navigation.next)
+            ? spec.navigation.next
+            : spec.navigation.next,
       },
     },
   };

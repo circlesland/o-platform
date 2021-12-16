@@ -112,18 +112,7 @@ export class GnosisSafeProxy extends Web3Contract {
   ): Promise<TransactionReceipt> {
     this.validateSafeTransaction(safeTransaction);
 
-    const estimatedBaseGas = dontEstimate
-      ? new BN(this.web3.utils.toWei("1000000", "wei"))
-      : (await this.estimateBaseGasCosts(safeTransaction, 1)).add(
-          new BN(this.web3.utils.toWei("100000", "wei"))
-        );
-
-    const estimatedSafeTxGas = dontEstimate
-      ? new BN(this.web3.utils.toWei("1000000", "wei"))
-      : (await this.estimateSafeTxGasCosts(safeTransaction)).add(
-          new BN(this.web3.utils.toWei("100000", "wei"))
-        );
-
+    const baseGas = new BN(this.web3.utils.toWei("1000000", "wei"));
     const nonce = await this.getNonce();
 
     const executableTransaction = <SafeTransaction>{
@@ -170,14 +159,15 @@ export class GnosisSafeProxy extends Web3Contract {
     // console.log("EstimateGas:", gasPrice.toString())
 
     const gasEstimate = new BN(gasEstimationResult)
-      .add(estimatedBaseGas)
-      .add(estimatedSafeTxGas);
+      .add(baseGas)
+
     console.log("gasEstimate:", gasEstimate.toNumber());
 
     const execTransactionData = await this.toAbiMessage(
       executableTransaction,
       signatures.signature
     );
+
     console.log("execTransactionData:", execTransactionData);
 
     const acc = RpcGateway.get().eth.accounts.privateKeyToAccount(privateKey);

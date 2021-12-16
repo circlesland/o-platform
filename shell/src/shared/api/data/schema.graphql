@@ -459,6 +459,7 @@ type Profile {
     memberships: [Membership!]
     newsletter: Boolean
     status: String
+    successorOfCirclesAddress: String
     type: String
     verifications: [Verification!]
 }
@@ -583,6 +584,7 @@ type SafeInfo {
     lastUbiAt: String
     randomValue: String
     safeAddress: String!
+    safeProfile: Profile
     tokenAddress: String!
     type: AccountType!
 }
@@ -917,6 +919,7 @@ input UpsertProfileInput {
     lastName: String
     newsletter: Boolean
     status: String!
+    successorOfCirclesAddress: String
 }
 
 input UpsertTagInput {

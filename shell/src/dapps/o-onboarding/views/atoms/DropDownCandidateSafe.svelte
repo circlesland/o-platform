@@ -1,5 +1,7 @@
-<script>
-export let item = undefined;
+<script lang="ts">
+import {SafeInfo} from "../../../../shared/api/data/types";
+
+export let item:SafeInfo = undefined;
 export let isActive = false;
 export let isFirst = false;
 export let isHover = false;
@@ -9,13 +11,13 @@ let displayName = "";
 $: {
   const classes = [];
 
-  if (item.circlesLandProfile && item.circlesLandProfile.firstName && item.circlesLandProfile.firstName != "") {
-    displayName = `${item.circlesLandProfile.firstName} ${item.circlesLandProfile.lastName ? item.circlesLandProfile.lastName : ""}`
-  }
-  else if (item.circlesGardenProfile) {
-    displayName = item.circlesGardenProfile.username;
+  if (item.safeProfile &&
+      item.safeProfile.firstName &&
+      item.safeProfile.firstName != "")
+  {
+    displayName = `${item.safeProfile.firstName} ${item.safeProfile.lastName ?? ""}`;
   } else {
-    displayName = item.address;
+    displayName = item.safeAddress;
   }
 
   if (isActive) {
@@ -41,7 +43,7 @@ $: {
         {`${displayName}`}
       </div>
       <div class="text-xs text-left text-dark-lightest">
-        {item.address}
+        {item.safeAddress}
       </div>
     </div>
   </div>

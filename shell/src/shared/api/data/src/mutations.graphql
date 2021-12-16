@@ -312,6 +312,7 @@ mutation upsertProfile(
   $displayTimeCircles: Boolean
   $cityGeonameid: Int
   $status: String!
+  $successorOfCirclesAddress: String
 ) {
   upsertProfile(
     data: {
@@ -330,6 +331,7 @@ mutation upsertProfile(
       displayTimeCircles: $displayTimeCircles
       cityGeonameid: $cityGeonameid
       status: $status
+      successorOfCirclesAddress: $successorOfCirclesAddress
     }
   ) {
     id
@@ -345,6 +347,7 @@ mutation upsertProfile(
     newsletter
     displayCurrency
     displayTimeCircles
+    successorOfCirclesAddress
     cityGeonameid
     city {
       geonameid

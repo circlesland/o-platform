@@ -13,6 +13,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { connectSafe } from "../connectSafe";
 
 export type PromptConnectOrCreateContextData = {
+  forceCreate?: boolean;
   connectOrCreate: string;
   successAction?: (data: PromptConnectOrCreateContextData) => void;
 };
@@ -37,11 +38,20 @@ const editorContent = {
 const processDefinition = (processId: string) =>
   createMachine<PromptConnectOrCreateContext, any>({
     id: `${processId}:promptConnectOrCreate`,
-    initial: "connectOrCreate",
+    initial: "init",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<PromptConnectOrCreateContext, any>("error"),
+
+      init: {
+        always:[{
+          cond: context => context.data.forceCreate,
+          target: "#newSafe"
+        }, {
+          target: "#connectOrCreate"
+        }]
+      },
 
       connectOrCreate: promptChoice<UpsertRegistrationContext, any>({
         id: "connectOrCreate",

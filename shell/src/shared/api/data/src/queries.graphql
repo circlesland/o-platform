@@ -28,6 +28,48 @@ query findSafesByOwner($owner: String!) {
     lastUbiAt
     randomValue
     tokenAddress
+    safeProfile {
+      id
+      circlesAddress
+      circlesSafeOwner
+      successorOfCirclesAddress
+      firstName
+      lastName
+      dream
+      country
+      avatarUrl
+      avatarCid
+      avatarMimeType
+      newsletter
+      displayTimeCircles
+      displayCurrency
+      cityGeonameid
+      city {
+        geonameid
+        name
+        country
+        latitude
+        longitude
+        population
+      }
+      verifications {
+        createdAt
+        verifierSafeAddress
+        verifierProfile {
+          circlesAddress
+          avatarUrl
+          name
+          city {
+            geonameid
+            name
+            country
+            latitude
+            longitude
+            population
+          }
+        }
+      }
+    }
   }
 }
 
@@ -80,6 +122,7 @@ query myProfile {
     id
     circlesAddress
     circlesSafeOwner
+    successorOfCirclesAddress
     firstName
     lastName
     dream
@@ -145,6 +188,7 @@ query profiles($id: [Int!]!) {
     id
     circlesAddress
     circlesSafeOwner
+    successorOfCirclesAddress
     firstName
     lastName
     dream
@@ -233,6 +277,7 @@ query profilesByName($searchString: String!) {
     id
     circlesSafeOwner
     circlesAddress
+    successorOfCirclesAddress
     avatarUrl
     firstName
     lastName
@@ -269,6 +314,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
   profilesBySafeAddress(safeAddresses: $circlesAddresses) {
     id
     circlesAddress
+    successorOfCirclesAddress
     firstName
     lastName
     dream
@@ -340,6 +386,7 @@ query profilesByIds($id: [Int!]!) {
   profilesById(ids: $id) {
     id
     circlesAddress
+    successorOfCirclesAddress
     firstName
     lastName
     dream
@@ -385,6 +432,7 @@ query trustRelations($safeAddress: String!) {
       firstName
       lastName
       avatarUrl
+      successorOfCirclesAddress
       circlesAddress
       displayCurrency
     }
@@ -395,6 +443,7 @@ query trustRelations($safeAddress: String!) {
       firstName
       lastName
       avatarUrl
+      successorOfCirclesAddress
       circlesAddress
       displayCurrency
       verifications {
@@ -421,6 +470,7 @@ query trustRelations($safeAddress: String!) {
 query profileById($id: Int!) {
   profilesById(ids: [$id]) {
     id
+    successorOfCirclesAddress
     circlesSafeOwner
     circlesAddress
     avatarUrl
@@ -458,6 +508,7 @@ query profileById($id: Int!) {
 query profileBySafeAddress($safeAddress: String!) {
   profilesBySafeAddress(safeAddresses: [$safeAddress]) {
     id
+    successorOfCirclesAddress
     circlesSafeOwner
     circlesAddress
     avatarUrl
@@ -648,6 +699,7 @@ query organisationsByAddress($addresses: [String!]!) {
       }
       ... on Profile {
         id
+        successorOfCirclesAddress
         circlesSafeOwner
         circlesAddress
         avatarUrl
@@ -694,6 +746,7 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
       firstName
       lastName
       avatarUrl
+      successorOfCirclesAddress
       circlesAddress
       displayCurrency
       verifications {
@@ -775,6 +828,7 @@ query stream(
     safe_address
     contact_address
     contact_address_profile {
+      successorOfCirclesAddress
       circlesAddress
       firstName
       lastName
@@ -788,6 +842,7 @@ query stream(
         transaction_hash
         from
         from_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -797,6 +852,7 @@ query stream(
         }
         to
         to_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -809,6 +865,7 @@ query stream(
           token
           from
           from_profile {
+            successorOfCirclesAddress
             type
             firstName
             lastName
@@ -818,6 +875,7 @@ query stream(
           }
           to
           to_profile {
+            successorOfCirclesAddress
             type
             firstName
             lastName
@@ -849,6 +907,7 @@ query stream(
         token
         from
         from_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -858,6 +917,7 @@ query stream(
         }
         to
         to_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -877,6 +937,7 @@ query stream(
         transaction_hash
         from
         from_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -886,6 +947,7 @@ query stream(
         }
         to
         to_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -905,6 +967,7 @@ query stream(
       ... on ChatMessage {
         from
         from_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -914,6 +977,7 @@ query stream(
         }
         to
         to_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -958,6 +1022,7 @@ query stream(
       ... on WelcomeMessage {
         invitedBy
         invitedBy_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -975,6 +1040,7 @@ query stream(
         code
         redeemedBy
         redeemedBy_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -986,6 +1052,7 @@ query stream(
       ... on SaleEvent {
         buyer
         buyer_profile {
+          successorOfCirclesAddress
           type
           firstName
           lastName
@@ -1054,6 +1121,7 @@ query aggregates(
     type
     safe_address
     safe_address_profile {
+      successorOfCirclesAddress
       firstName
       lastName
       avatarUrl
@@ -1067,6 +1135,7 @@ query aggregates(
           id
           version
           createdByProfile {
+            successorOfCirclesAddress
             type
             id
             circlesAddress
@@ -1091,6 +1160,7 @@ query aggregates(
           token_address
           token_owner_address
           token_owner_profile {
+            successorOfCirclesAddress
             type
             firstName
             lastName
@@ -1107,6 +1177,7 @@ query aggregates(
           token_address
           token_owner_address
           token_owner_profile {
+            successorOfCirclesAddress
             type
             firstName
             lastName
@@ -1129,6 +1200,7 @@ query aggregates(
           lastContactAt
           contactAddress
           contactAddress_Profile {
+            successorOfCirclesAddress
             type
             id
             firstName
@@ -1186,6 +1258,7 @@ query aggregates(
         lastUpdatedAt
         members {
           ... on Profile {
+            successorOfCirclesAddress
             circlesAddress
           }
           ... on Organisation {
@@ -1206,6 +1279,7 @@ query aggregates(
           createdAt
           createdByAddress
           createdByProfile {
+            successorOfCirclesAddress
             type
             id
             firstName
@@ -1226,6 +1300,7 @@ query aggregates(
               pricePerUnit
               timeCirclesPriceShare
               createdByProfile {
+                successorOfCirclesAddress
                 type
                 id
                 circlesAddress
@@ -1249,6 +1324,7 @@ query aggregates(
             cancelledAt
             cancelReason
             sellerProfile {
+              successorOfCirclesAddress
               type
               id
               circlesAddress
@@ -1266,6 +1342,7 @@ query aggregates(
           id
           createdAt
           sellerProfile {
+            successorOfCirclesAddress
             type
             id
             circlesAddress
@@ -1275,6 +1352,7 @@ query aggregates(
             displayCurrency
           }
           buyerProfile {
+            successorOfCirclesAddress
             type
             id
             circlesAddress
@@ -1313,6 +1391,7 @@ query aggregates(
               pricePerUnit
               timeCirclesPriceShare
               createdByProfile {
+                successorOfCirclesAddress
                 type
                 id
                 circlesAddress
@@ -1336,6 +1415,7 @@ query aggregates(
             cancelledAt
             cancelReason
             buyerProfile {
+              successorOfCirclesAddress
               type
               id
               circlesAddress
