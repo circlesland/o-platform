@@ -90,7 +90,7 @@ let profilesPromise = fetchProfiles();
       <div class="w-full text-3xl text-center font-heading">CIRCLESLAND</div>
       <div class="flex flex-row items-stretch w-full justify-items-center">
         <div class="flex flex-col flex-grow">
-          <div class="text-3xl text-center font-heading text-primary">
+          <div class="text-6xl text-center font-heading text-primary">
             {#await profilesPromise}
               ...
             {:then result}
@@ -100,7 +100,7 @@ let profilesPromise = fetchProfiles();
           <div class="text-center font-primary text-dark">Total Citizens</div>
         </div>
         <div class="flex flex-col flex-grow">
-          <div class="text-3xl text-center font-heading text-primary">
+          <div class="text-6xl text-center font-heading text-primary">
             {#await verificationPromise}
               ...
             {:then result}
