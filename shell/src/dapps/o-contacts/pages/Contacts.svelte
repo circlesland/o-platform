@@ -35,7 +35,7 @@ function sortAlphabetically(a, b) {
   {:else}
     <!-- TODO: Possible actions: trust, transfer money -->
 
-    {#each $contacts.sort(sortAlphabetically) as contact}
+    {#each [...$contacts].sort(sortAlphabetically) as contact}
       <!--<ContactCard contact="{contact}" />-->
       <ContactCard contact="{contact}" />
     {/each}

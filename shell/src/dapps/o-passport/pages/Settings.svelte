@@ -118,7 +118,7 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
   </section> -->
   <section class="mx-4 mb-2 -mt-2">
     <Card>
-      <div class="text-xs font-bold text-left text-primary">NEWSLETTER</div>
+      <div class="text-xs font-bold text-left text-primary">NOTIFICATIONS</div>
       <div class="w-full space-x-2 bg-white sm:space-x-6">
         <div class="w-full form-control">
           <label class="label" for="newsletter">
@@ -126,7 +126,7 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
               class="flex flex-row items-stretch w-full space-x-10 cursor-pointer justify-items-stretch">
               <div
                 class="self-center flex-grow text-sm text-right justify-self-start">
-                Receive Newsletter
+                Receive E-Mail Notifications
               </div>
               <div class="self-center justify-self-end">
                 <input

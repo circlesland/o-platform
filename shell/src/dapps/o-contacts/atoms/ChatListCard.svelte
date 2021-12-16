@@ -175,7 +175,7 @@ function goToProfile(e, path?: string) {
       subTitle: message,
       action: () => loadDetailPage(param.contactAddress),
       profileLink: true,
-      mobileTextCutoff: 28,
+      mobileTextCutoff: 22,
     }}">
     <div slot="itemCardEndSmallElement">
       {#if param.timestamp}
