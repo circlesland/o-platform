@@ -7,6 +7,18 @@ import { contacts } from "../../../shared/stores/contacts";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+
+function sortAlphabetically(a, b) {
+  if (a.contactAddress_Profile.firstName.startsWith("0x")) {
+    return 1;
+  }
+  if (b.contactAddress_Profile.firstName.startsWith("0x")) {
+    return -1;
+  }
+  return a.contactAddress_Profile.firstName.localeCompare(
+    b.contactAddress_Profile.firstName
+  );
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -22,7 +34,8 @@ export let routable: Routable;
     </section>
   {:else}
     <!-- TODO: Possible actions: trust, transfer money -->
-    {#each $contacts.sort((o) => o.contactAddress_Profile.f) as contact}
+
+    {#each $contacts.sort(sortAlphabetically) as contact}
       <!--<ContactCard contact="{contact}" />-->
       <ContactCard2 contact="{contact}" />
     {/each}

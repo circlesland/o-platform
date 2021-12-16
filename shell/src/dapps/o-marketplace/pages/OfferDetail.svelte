@@ -127,7 +127,9 @@ onMount(async () => {
             </div>
 
             {#if o.description}
-              <div class="text-sm text-dark-lightest">{o.description}</div>
+              <div class="text-sm text-dark-lightest">
+                {@html o.description}
+              </div>
             {/if}
             <!-- {#if o.deliveryTermsTag} -->
             <div class="flex flex-col space-y-1 text-right">

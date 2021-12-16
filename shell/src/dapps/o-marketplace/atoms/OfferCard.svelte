@@ -88,8 +88,9 @@ displayName =
           "
           class="rounded-t-xl" />
         <div
-          class="absolute right-0 py-2 pl-4 pr-2 pt-3 mt-2 text-lg font-enso rounded-l-full top-2 bg-light-lightest">
-          <span class="inline-block">{offer.pricePerUnit}</span> <span class="inline-block">€</span>
+          class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
+          <span class="inline-block">{offer.pricePerUnit}</span>
+          <span class="inline-block">€</span>
         </div>
 
         <div
@@ -131,7 +132,7 @@ displayName =
 
         {#if offer.description}
           <div class="text-sm text-dark-lightest">
-            {truncateString(offer.description, 70)}
+            {@html truncateString(offer.description, 70)}
           </div>
         {/if}
       </div>
