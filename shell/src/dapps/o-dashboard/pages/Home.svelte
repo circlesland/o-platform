@@ -8,6 +8,10 @@ import { Capability, CapabilityType } from "../../../shared/api/data/types";
 import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 import DashboardHeader from "../atoms/DashboardHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
+import {
+  VerificationsDocument,
+  ProfilesDocument,
+} from "../../../shared/api/data/types";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -43,11 +47,72 @@ function loadLink(link, external = false) {
     push(link);
   }
 }
+
+async function fetchVerifications() {
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const result = await apiClient.query({
+    query: VerificationsDocument,
+  });
+  if (result.errors) {
+    throw new Error(
+      `Couldn't load a profile with circlesAddress '${
+        apiProfile.circlesAddress
+      }': ${JSON.stringify(result.errors)}`
+    );
+  }
+  return result;
+}
+let verificationPromise = fetchVerifications();
+
+async function fetchProfiles() {
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const result = await apiClient.query({
+    query: ProfilesDocument,
+  });
+  if (result.errors) {
+    throw new Error(
+      `Couldn't load a profile with circlesAddress '${
+        apiProfile.circlesAddress
+      }': ${JSON.stringify(result.errors)}`
+    );
+  }
+  return result;
+}
+
+let profilesPromise = fetchProfiles();
 </script>
 
 <DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-20 -mt-4">
+    <section
+      class="p-4 mb-4 bg-white rounded-lg shadow-md cursor-pointer dashboard-card">
+      <div class="w-full text-3xl text-center font-heading">CIRCLESLAND</div>
+      <div class="flex flex-row items-stretch w-full justify-items-center">
+        <div class="flex flex-col flex-grow">
+          <div class="text-3xl text-center font-heading text-primary">
+            {#await profilesPromise}
+              ...
+            {:then result}
+              {console.log("PROFIL ", result.data)}
+            {/await}
+          </div>
+          <div class="text-center font-primary text-dark">Total Citizens</div>
+        </div>
+        <div class="flex flex-col flex-grow">
+          <div class="text-3xl text-center font-heading text-primary">
+            {#await verificationPromise}
+              ...
+            {:then result}
+              {result.data.verifications.length}
+            {/await}
+          </div>
+          <div class="text-center font-primary text-dark">
+            Verified Citizens
+          </div>
+        </div>
+      </div>
+    </section>
     <div
       class="grid grid-cols-2 gap-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
       <section
