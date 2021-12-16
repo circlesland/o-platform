@@ -1758,7 +1758,7 @@ export type FindSafesByOwnerQuery = (
         & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
       )>, verifications?: Maybe<Array<(
         { __typename?: 'Verification' }
-        & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+        & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
         & { verifierProfile?: Maybe<(
           { __typename?: 'Organisation' }
           & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -1848,7 +1848,7 @@ export type MyProfileQuery = (
       ) }
     )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
-      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -1887,7 +1887,7 @@ export type ProfilesQuery = (
       ) }
     )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
-      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -1942,7 +1942,7 @@ export type ProfilesByNameQuery = (
       & Pick<City, 'geonameid' | 'country' | 'name'>
     )>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
-      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -1981,7 +1981,7 @@ export type ProfilesByCirclesAddressQuery = (
       ) }
     )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
-      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -2020,7 +2020,7 @@ export type ProfilesByIdsQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
     )>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
-      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -2051,7 +2051,7 @@ export type TrustRelationsQuery = (
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency'>
       & { verifications?: Maybe<Array<(
         { __typename?: 'Verification' }
-        & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+        & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
         & { verifierProfile?: Maybe<(
           { __typename?: 'Organisation' }
           & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -2080,7 +2080,7 @@ export type ProfileByIdQuery = (
       & Pick<City, 'geonameid' | 'country' | 'name'>
     )>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
-      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -2129,7 +2129,7 @@ export type ProfileBySafeAddressQuery = (
       ) }
     )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
-      & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -2222,7 +2222,7 @@ export type OrganisationsByAddressQuery = (
         & Pick<City, 'geonameid' | 'country' | 'name'>
       )>, verifications?: Maybe<Array<(
         { __typename?: 'Verification' }
-        & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+        & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
         & { verifierProfile?: Maybe<(
           { __typename?: 'Organisation' }
           & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -2259,7 +2259,7 @@ export type CommonTrustQuery = (
       & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency'>
       & { verifications?: Maybe<Array<(
         { __typename?: 'Verification' }
-        & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+        & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
         & { verifierProfile?: Maybe<(
           { __typename?: 'Organisation' }
           & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -2500,7 +2500,7 @@ export type AggregatesQuery = (
             ) }
           )>>, verifications?: Maybe<Array<(
             { __typename?: 'Verification' }
-            & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+            & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
             & { verifierProfile?: Maybe<(
               { __typename?: 'Organisation' }
               & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -2554,7 +2554,7 @@ export type AggregatesQuery = (
           & Pick<Profile, 'successorOfCirclesAddress' | 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarCid' | 'displayCurrency'>
           & { verifications?: Maybe<Array<(
             { __typename?: 'Verification' }
-            & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+            & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
             & { verifierProfile?: Maybe<(
               { __typename?: 'Organisation' }
               & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -2583,7 +2583,7 @@ export type AggregatesQuery = (
             & Pick<Profile, 'successorOfCirclesAddress' | 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl' | 'displayCurrency'>
             & { verifications?: Maybe<Array<(
               { __typename?: 'Verification' }
-              & Pick<Verification, 'createdAt' | 'verifierSafeAddress'>
+              & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
               & { verifierProfile?: Maybe<(
                 { __typename?: 'Organisation' }
                 & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
@@ -2668,7 +2668,7 @@ export type VerificationsQuery = (
   { __typename?: 'Query' }
   & { verifications: Array<(
     { __typename?: 'Verification' }
-    & Pick<Verification, 'createdAt' | 'verifierSafeAddress' | 'verifiedSafeAddress'>
+    & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress' | 'verifiedSafeAddress'>
     & { verifierProfile?: Maybe<(
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'avatarUrl' | 'name'>
@@ -3230,6 +3230,7 @@ export const FindSafesByOwnerDocument = gql`
       }
       verifications {
         createdAt
+        revokedAt
         verifierSafeAddress
         verifierProfile {
           circlesAddress
@@ -3346,6 +3347,7 @@ export const MyProfileDocument = gql`
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -3412,6 +3414,7 @@ export const ProfilesDocument = gql`
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -3477,6 +3480,7 @@ export const ProfilesByNameDocument = gql`
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -3541,6 +3545,7 @@ export const ProfilesByCirclesAddressDocument = gql`
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -3594,6 +3599,7 @@ export const ProfilesByIdsDocument = gql`
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -3637,6 +3643,7 @@ export const TrustRelationsDocument = gql`
       displayCurrency
       verifications {
         createdAt
+        revokedAt
         verifierSafeAddress
         verifierProfile {
           circlesAddress
@@ -3677,6 +3684,7 @@ export const ProfileByIdDocument = gql`
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -3759,6 +3767,7 @@ export const ProfileBySafeAddressDocument = gql`
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -3888,6 +3897,7 @@ export const OrganisationsByAddressDocument = gql`
         }
         verifications {
           createdAt
+          revokedAt
           verifierSafeAddress
           verifierProfile {
             circlesAddress
@@ -3924,6 +3934,7 @@ export const CommonTrustDocument = gql`
       displayCurrency
       verifications {
         createdAt
+        revokedAt
         verifierSafeAddress
         verifierProfile {
           circlesAddress
@@ -4362,6 +4373,7 @@ export const AggregatesDocument = gql`
             }
             verifications {
               createdAt
+              revokedAt
               verifierSafeAddress
               verifierProfile {
                 circlesAddress
@@ -4488,6 +4500,7 @@ export const AggregatesDocument = gql`
             displayCurrency
             verifications {
               createdAt
+              revokedAt
               verifierSafeAddress
               verifierProfile {
                 circlesAddress
@@ -4551,6 +4564,7 @@ export const AggregatesDocument = gql`
               displayCurrency
               verifications {
                 createdAt
+                revokedAt
                 verifierSafeAddress
                 verifierProfile {
                   circlesAddress
@@ -4597,6 +4611,7 @@ export const VerificationsDocument = gql`
     query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
   verifications(pagination: $pagination, filter: $filter) {
     createdAt
+    revokedAt
     verifierSafeAddress
     verifierProfile {
       avatarUrl
