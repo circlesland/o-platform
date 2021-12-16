@@ -5,7 +5,9 @@ export let text: string = null;
 </script>
 
 {#if text}
-  <span class="text-dark-lightest">{text}</span>
+  <span
+    class="flex flex-col self-center justify-center h-full text-dark-lightest"
+    >{text}</span>
 {:else if icon}
   <Icons icon="{icon}" />
 {/if}

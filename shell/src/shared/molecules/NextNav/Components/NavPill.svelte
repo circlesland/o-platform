@@ -19,14 +19,19 @@ export let props;
             <div
               class="absolute top-0 w-full text-center text-white font-heading"
               on:click="{() =>
-                window.o.runProcess(showNotifications, {
-                  events: $inbox.map((o) => o)
-                }, {}, {})}">
+                window.o.runProcess(
+                  showNotifications,
+                  {
+                    events: $inbox.map((o) => o),
+                  },
+                  {},
+                  {}
+                )}">
               {$inbox.length}
             </div>
           </div>
         {:else}
-          <div class="self-center">
+          <div class="flex flex-col self-center justify-center h-full">
             <svelte:component
               this="{props.left.component}"
               {...props.left.props}
@@ -50,7 +55,7 @@ export let props;
       class:bg-white="{props && props.right}"
       on:click="{props.right ? props.right.props.action : null}">
       {#if props && props.right}
-        <div class="self-center">
+        <div class="flex flex-col self-center justify-center h-full">
           <svelte:component
             this="{props.right.component}"
             {...props.right.props} />
