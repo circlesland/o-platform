@@ -146,20 +146,17 @@ function onkeydown(e: KeyboardEvent) {
     </main>
   </div>
   {#if layout.main && layout.main.runtimeDapp.featuredAction}
-    {#await layout.main.runtimeDapp.featuredAction()}
-    {:then action}
+    {#await layout.main.runtimeDapp.featuredAction() then action}
       {#if action}
-      <div
-        class="absolute left-0 z-10 flex flex-col items-center justify-end w-full h-12 bottom-20"
-        class:hidden="{menuOpen}">
-        <section class="mb-4">
-          <button
-            class="btn btn-primary"
-            on:click="{action.action}">
-            {action.text}
-          </button>
-        </section>
-      </div>
+        <div
+          class="fixed left-0 z-10 flex flex-col items-center justify-end w-full h-12 bottom-20"
+          class:hidden="{menuOpen}">
+          <section class="mb-4">
+            <button class="btn btn-primary" on:click="{action.action}">
+              {action.text}
+            </button>
+          </section>
+        </div>
       {/if}
     {/await}
   {/if}
