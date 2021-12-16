@@ -65,7 +65,9 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __CIRCLES_HUB_BLOCK__ = process.env.CIRCLES_HUB_BLOCK;
   __SAFE_PROXY_FACTORY_ADDRESS__ = process.env.SAFE_PROXY_FACTORY_ADDRESS;
   __SAFE_ADDRESS__ = process.env.SAFE_ADDRESS;
-  __RPC_ENDPOINT__ = process.env.RPC_ENDPOINT;
+  __RPC_ENDPOINT__ = process.env.RPC_ENDPOINT ?? "http://localhost:8545";
+  __ALLOW_VERIFY__ = "true";
+  __ALLOW_CREATE_ORGANISATION__ = "true";
 }
 
 console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);

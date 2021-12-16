@@ -60,6 +60,7 @@ query findSafesByOwner($owner: String!) {
       }
       verifications {
         createdAt
+        revokedAt
         verifierSafeAddress
         verifierProfile {
           circlesAddress
@@ -171,6 +172,7 @@ query myProfile {
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -236,6 +238,7 @@ query profiles($id: [Int!]!) {
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -298,6 +301,7 @@ query profilesByName($searchString: String!) {
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -361,6 +365,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -412,6 +417,7 @@ query profilesByIds($id: [Int!]!) {
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -454,6 +460,7 @@ query trustRelations($safeAddress: String!) {
       displayCurrency
       verifications {
         createdAt
+        revokedAt
         verifierSafeAddress
         verifierProfile {
           circlesAddress
@@ -493,6 +500,7 @@ query profileById($id: Int!) {
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -574,6 +582,7 @@ query profileBySafeAddress($safeAddress: String!) {
     }
     verifications {
       createdAt
+      revokedAt
       verifierSafeAddress
       verifierProfile {
         circlesAddress
@@ -722,6 +731,7 @@ query organisationsByAddress($addresses: [String!]!) {
         }
         verifications {
           createdAt
+          revokedAt
           verifierSafeAddress
           verifierProfile {
             circlesAddress
@@ -757,6 +767,7 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
       displayCurrency
       verifications {
         createdAt
+        revokedAt
         verifierSafeAddress
         verifierProfile {
           circlesAddress
@@ -1242,6 +1253,7 @@ query aggregates(
             }
             verifications {
               createdAt
+              revokedAt
               verifierSafeAddress
               verifierProfile {
                 circlesAddress
@@ -1368,6 +1380,7 @@ query aggregates(
             displayCurrency
             verifications {
               createdAt
+              revokedAt
               verifierSafeAddress
               verifierProfile {
                 circlesAddress
@@ -1431,6 +1444,7 @@ query aggregates(
               displayCurrency
               verifications {
                 createdAt
+                revokedAt
                 verifierSafeAddress
                 verifierProfile {
                   circlesAddress
@@ -1474,6 +1488,7 @@ query invoice($invoiceId: Int!) {
 query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
   verifications(pagination: $pagination, filter: $filter) {
     createdAt
+    revokedAt
     verifierSafeAddress
     verifierProfile {
       avatarUrl
