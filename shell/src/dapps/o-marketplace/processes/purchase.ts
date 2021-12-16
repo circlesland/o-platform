@@ -17,7 +17,7 @@ import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { convertTimeCirclesToCircles } from "../../../shared/functions/displayCirclesAmount";
+import { Currency } from "../../../shared/currency";
 
 import {
   fTransferCircles,
@@ -43,6 +43,8 @@ export type PurchaseContextData = {
 };
 
 export type PurchaseContext = ProcessContext<PurchaseContextData>;
+
+let currency = Currency.instance();
 
 const editorContent: { [x: string]: EditorViewContext } = {
   summary: {
@@ -152,13 +154,12 @@ const processDefinition = (processId: string) =>
               const invoiceTotal = invoice.lines.reduce((p, c) => {
                 const amount = c.amount;
                 const pricePerUnit = parseFloat(c.offer.pricePerUnit);
-                return p + amount * (pricePerUnit * 10);
+                return p + amount * pricePerUnit;
               }, 0);
               /* TODO: Cleanup Hardcoded Euro to timecircles conversion here */
-              const amount = convertTimeCirclesToCircles(
-                invoiceTotal,
-                null
-              ).toString();
+              const amount = currency
+                .convertEuroToCircles(invoiceTotal, null)
+                .toString();
 
               const circlesValueInWei = RpcGateway.get()
                 .utils.toWei(amount.toString() ?? "0", "ether")

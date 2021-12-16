@@ -58,6 +58,10 @@ export class Currency {
 
   public static currencySymbol = { CRC: "c", TIME_CRC: "⦿", EURS: "€" };
 
+  public convertEuroToCircles(amount: number, date: string) {
+    return this.convertTimeCirclesToCircles(amount * 10, date);
+  }
+
   public convertTimeCirclesToCircles(amount: number, date: string) {
     if (!amount) {
       throw new Error("argument missing: amount");
