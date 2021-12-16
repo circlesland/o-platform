@@ -21,6 +21,12 @@ query whoami {
   whoami
 }
 
+query profilesCount {
+  profilesCount
+}
+query verificationsCount {
+  verificationsCount
+}
 query findSafesByOwner($owner: String!) {
   findSafesByOwner(owner: $owner) {
     type
@@ -1099,7 +1105,7 @@ query stream(
           displayCurrency
         }
       }
-      ...on SafeVerified {
+      ... on SafeVerified {
         safe_address
         organisation_profile {
           name
@@ -1465,8 +1471,8 @@ query invoice($invoiceId: Int!) {
   invoice(invoiceId: $invoiceId)
 }
 
-query verifications($pagination: PaginationArgs $filter: VerifiedSafesFilter) {
-  verifications(pagination: $pagination filter: $filter) {
+query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
+  verifications(pagination: $pagination, filter: $filter) {
     createdAt
     verifierSafeAddress
     verifierProfile {

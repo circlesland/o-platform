@@ -9,8 +9,8 @@ import { getSessionInfo } from "../../o-passport/processes/identify/services/get
 import DashboardHeader from "../atoms/DashboardHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import {
-  VerificationsDocument,
-  ProfilesDocument,
+  VerificationsCountDocument,
+  ProfilesCountDocument,
 } from "../../../shared/api/data/types";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -48,38 +48,34 @@ function loadLink(link, external = false) {
   }
 }
 
-async function fetchVerifications() {
+async function fetchVerificationsCount() {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.query({
-    query: VerificationsDocument,
+    query: VerificationsCountDocument,
   });
   if (result.errors) {
     throw new Error(
-      `Couldn't load a profile with circlesAddress '${
-        apiProfile.circlesAddress
-      }': ${JSON.stringify(result.errors)}`
+      `Couldn't load profilesCount': ${JSON.stringify(result.errors)}`
     );
   }
   return result;
 }
-let verificationPromise = fetchVerifications();
+let verificationPromise = fetchVerificationsCount();
 
-async function fetchProfiles() {
+async function fetchProfilesCount() {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.query({
-    query: ProfilesDocument,
+    query: ProfilesCountDocument,
   });
   if (result.errors) {
     throw new Error(
-      `Couldn't load a profile with circlesAddress '${
-        apiProfile.circlesAddress
-      }': ${JSON.stringify(result.errors)}`
+      `Couldn't load profilesCount': ${JSON.stringify(result.errors)}`
     );
   }
   return result;
 }
 
-let profilesPromise = fetchProfiles();
+let profilesPromise = fetchProfilesCount();
 </script>
 
 <DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -94,7 +90,7 @@ let profilesPromise = fetchProfiles();
             {#await profilesPromise}
               ...
             {:then result}
-              {console.log("PROFIL ", result.data)}
+              {result.data.profilesCount ? result.data.profilesCount : ""}
             {/await}
           </div>
           <div class="text-center font-primary text-dark">Total Citizens</div>
@@ -104,7 +100,9 @@ let profilesPromise = fetchProfiles();
             {#await verificationPromise}
               ...
             {:then result}
-              {result.data.verifications.length}
+              {result.data.verificationsCount
+                ? result.data.verificationsCount
+                : ""}
             {/await}
           </div>
           <div class="text-center font-primary text-dark">
