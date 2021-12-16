@@ -81,7 +81,7 @@ function goToProfile(e, path?: string) {
       title: displayName,
       subTitle: message,
       truncateMain: true,
-      mobileTextCutoff: 28,
+      mobileTextCutoff: 24,
     }}">
     <div slot="itemCardEnd">
       <div class="self-end text-lg sm:text-3xl"></div>
