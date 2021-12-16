@@ -84,6 +84,14 @@ function onkeydown(e: KeyboardEvent) {
         </span>
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
+        <span class="mr-2 text-sm font-medium text-gray-400">
+          19% Sales Tax included:
+        </span>
+        <span class="w-20 text-lg text-right font-primary text-dark-lightest">
+          {((19 / 100) * $totalPrice).toFixed(2)} €
+        </span>
+      </div>
+      <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400"
           >Time Circles:</span>
         <span class="w-20 text-lg text-right font-primary text-dark-lightest"
