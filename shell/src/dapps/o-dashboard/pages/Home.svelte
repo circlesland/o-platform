@@ -32,7 +32,7 @@ const init = async () => {
   capabilities = sessionInfo.capabilities;
   canVerify =
     capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Verify) !== undefined &&
+    capabilities.find((o) => o.type == CapabilityType.Verify) &&
     "__ALLOW_VERIFY__" == "true";
 };
 

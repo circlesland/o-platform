@@ -27,7 +27,7 @@ let __SAFE_PROXY_FACTORY_ADDRESS__ = "0x8b4404DE0CaECE4b966a9959f134f0eFDa636156
 let __SAFE_ADDRESS__ = "0x3E5c63644E683549055b9Be8653de26E0B4CD36E";
 let __RPC_ENDPOINT__ = "https://rpc.circles.land";
 let __OPENLOGIN_CLIENT_ID__ = process.env.OPENLOGIN_CLIENT_ID ?? "BHqazms23gbTZQ2fYvvUaFzv718Ft8Ox1XwSEqVt81jtZJRQRb-N5cnThtZGSjZF9Dtj9MQxkEQTUo47I_wiihE";
-let __ALLOW_VERIFY__ = !process.env.ALLOW_VERIFY ? "false" : "true";
+let __ALLOW_VERIFY__ = "true";// !process.env.ALLOW_VERIFY ? "false" : "true";
 let __ALLOW_CREATE_ORGANISATION__ = !process.env.ALLOW_CREATE_ORGANISATION ? "false" : "true";
 let __USE_MOCKS__ = !process.env.USE_MOCKS ? "false" : "true";
 

@@ -136,7 +136,7 @@ async function setProfile(id: string) {
   capabilities = sessionInfo.capabilities;
   const canVerify =
     capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Verify) !== undefined &&
+    capabilities.find((o) => o.type == CapabilityType.Verify) &&
     "__ALLOW_VERIFY__" == "true";
 
   const verifyProfile = {
