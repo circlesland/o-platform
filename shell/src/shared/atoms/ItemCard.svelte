@@ -22,9 +22,10 @@ export let params = {
   profileLink: null,
   class: null,
   noLink: false,
+  mobileTextCutoff: 16,
 };
 
-let textCutoff = isMobile() ? 16 : 42;
+let textCutoff = isMobile() ? params.mobileTextCutoff : 42;
 
 if (params.noTruncate) {
   textCutoff = 256;

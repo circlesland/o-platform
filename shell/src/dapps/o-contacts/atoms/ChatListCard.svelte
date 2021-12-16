@@ -34,7 +34,7 @@ displayName =
   contactProfile.firstName +
   (contactProfile.lastName ? " " + contactProfile.lastName : "");
 displayName =
-  displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
+  displayName.length >= 28 ? displayName.substr(0, 28) + "..." : displayName;
 
 const trustMetadata: ContactPoint = param.metadata.find(
   (p) => p.name === "CrcTrust"
@@ -175,6 +175,7 @@ function goToProfile(e, path?: string) {
       subTitle: message,
       action: () => loadDetailPage(param.contactAddress),
       profileLink: true,
+      mobileTextCutoff: 28,
     }}">
     <div slot="itemCardEndSmallElement">
       {#if param.timestamp}

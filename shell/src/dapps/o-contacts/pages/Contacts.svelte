@@ -2,7 +2,7 @@
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import ContactCard2 from "../atoms/ContactCard2.svelte";
+import ContactCard from "../atoms/ContactCard.svelte";
 import { contacts } from "../../../shared/stores/contacts";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -37,7 +37,7 @@ function sortAlphabetically(a, b) {
 
     {#each $contacts.sort(sortAlphabetically) as contact}
       <!--<ContactCard contact="{contact}" />-->
-      <ContactCard2 contact="{contact}" />
+      <ContactCard contact="{contact}" />
     {/each}
   {/if}
 </div>

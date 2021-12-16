@@ -1,28 +1,50 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import { Contact } from "../../../shared/api/data/types";
+import {
+  ContactDirection,
+  ContactPoint,
+  ContactPointSource,
+} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 
-export let contact: Contact;
+export let contact: ContactPoint;
 
 let displayName: string;
 let safeAddress: string;
 let message: string;
 
 onMount(() => {
-  displayName = `${contact.contactAddressProfile.firstName} ${
-    contact.contactAddressProfile.lastName
-      ? contact.contactAddressProfile.lastName
+  displayName = `${contact.contactAddress_Profile.firstName} ${
+    contact.contactAddress_Profile.lastName
+      ? contact.contactAddress_Profile.lastName
       : ""
   }`;
+
   safeAddress = contact.contactAddress;
   message = "";
-  if (contact.trustsYou > 0 && contact.youTrust > 0) {
+
+  const trustMetadata: ContactPointSource = contact.metadata.find(
+    (p) => p.name === "CrcTrust"
+  );
+  let trustIn = 0;
+  let trustOut = 0;
+
+  if (trustMetadata) {
+    trustMetadata.directions.forEach((d, i) => {
+      if (d == ContactDirection.In) {
+        trustIn = parseInt(trustMetadata.values[i]);
+      } else if (d == ContactDirection.Out) {
+        trustOut = parseInt(trustMetadata.values[i]);
+      }
+    });
+  }
+
+  if (trustIn > 0 && trustOut > 0) {
     message += "mutual trust";
-  } else if (!contact.trustsYou && contact.youTrust > 0) {
+  } else if (!trustIn && trustOut > 0) {
     message += "trusted by you";
-  } else if (contact.trustsYou > 0 && !contact.youTrust) {
+  } else if (trustIn > 0 && !trustOut) {
     message += "is trusting you";
   } else {
     message += "not trusted";
@@ -55,10 +77,11 @@ function goToProfile(e, path?: string) {
   <ItemCard
     params="{{
       edgeless: false,
-      imageProfile: contact.contactAddressProfile,
+      imageProfile: contact.contactAddress_Profile,
       title: displayName,
       subTitle: message,
       truncateMain: true,
+      mobileTextCutoff: 28,
     }}">
     <div slot="itemCardEnd">
       <div class="self-end text-lg sm:text-3xl"></div>

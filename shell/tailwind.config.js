@@ -100,6 +100,8 @@ module.exports = {
 
         gradient1: "#1DD6A4",
         gradient2: "#41C7F1",
+        gradient3: "#000428",
+        gradient4: "#004e92",
         // gradient1: "#003399",
         // gradient2: "#1ED6A4",
 

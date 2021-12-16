@@ -8,7 +8,7 @@
     "clean": "npx shx rm -rf public/bundle.*",
     "dev": "DEPLOY_ENVIRONMENT=local ALLOW_VERIFY=true webpack-dev-server --https --config webpack.config.js --mode=development --cert ./localhost.cert --key ./localhost.key",
     "local": "DEPLOY_ENVIRONMENT=ultralocal ALLOW_VERIFY=true webpack-dev-server --config webpack.config.js --mode=development",
-    "docker": "DEPLOY_ENVIRONMENT=docker webpack-dev-server --config webpack.config.js --mode=development",
+    "docker": "DEPLOY_ENVIRONMENT=docker ALLOW_VERIFY=true webpack-dev-server --config webpack.config.js --mode=development",
     "mock": "DEPLOY_ENVIRONMENT=ultralocal ALLOW_VERIFY=true USE_MOCKS=true webpack-dev-server --config webpack.config.js --mode=development",
     "build": "cross-env NODE_ENV=production webpack",
     "deploy": "npm run clean && npm i && npm run build && fission app publish --verbose",

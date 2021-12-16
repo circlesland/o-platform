@@ -7,6 +7,7 @@ import NotificationViewTransfer from "./NotificationViewer/molecules/Notificatio
 import NotificationViewMembershipOffer from "./NotificationViewer/molecules/NotificationViewMembershipOffer.svelte";
 import NotificationViewMembershipAccepted from "./NotificationViewer/molecules/NotificationViewMembershipAccepted.svelte";
 import NotificationViewInvitationRedeemed from "./NotificationViewer/molecules/NotificationViewInvitationRedeemed.svelte";
+import NotificationViewWelcome from "./NotificationViewer/molecules/NotificationViewWelcome.svelte";
 import GenericEventCard from "./NotificationViewer/molecules/GenericEventCard.svelte";
 import { NotificationViewerContext } from "@o-platform/o-editors/src/notificationViewerContext";
 import ProcessNavigation from "../../../packages/o-editors/src/ProcessNavigation.svelte";
@@ -36,6 +37,10 @@ const components = [
   {
     type: EventType.InvitationRedeemed,
     component: NotificationViewInvitationRedeemed,
+  },
+  {
+    type: EventType.WelcomeMessage,
+    component: NotificationViewWelcome,
   },
 ];
 
