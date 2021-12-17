@@ -21,6 +21,7 @@ import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelect
 import DropDownCandidateSafe from "../views/atoms/DropDownCandidateSafe.svelte";
 import {ApiClient} from "../../../shared/apiConnection";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {BN} from "ethereumjs-util";
 
 export type ConnectSafeInfo = {
   success: boolean,
@@ -251,6 +252,17 @@ const processDefinition = (processId: string) =>
               if (typeof context.data.selectedSafe === "string") {
                 context.data.selectedSafe =
                   context.data.availableSafes[context.data.selectedSafe];
+              }
+
+              const oldOwnerBalance = await RpcGateway.get().eth.getBalance(context.data.availableSafes.importedAccount.address);
+              if (new BN(oldOwnerBalance).lt(new BN(RpcGateway.get().utils.toWei("0.001000000", "ether")))) {
+                const currentTorusEoa = RpcGateway.get().eth.accounts.privateKeyToAccount(sessionStorage.getItem("circlesKey"));
+                const sT = await currentTorusEoa.signTransaction({
+                  to: context.data.availableSafes.importedAccount.address,
+                  value: new BN(RpcGateway.get().utils.toWei("0.001000000", "ether"))
+                });
+
+                await RpcGateway.get().eth.sendSignedTransaction(sT.rawTransaction);
               }
 
               const safeProxy = new GnosisSafeProxy(
