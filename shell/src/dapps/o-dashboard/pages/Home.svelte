@@ -90,7 +90,7 @@ let profilesPromise = fetchProfilesCount();
             {#await profilesPromise}
               ...
             {:then result}
-              {result.data.profilesCount ? result.data.profilesCount - 1 : "0"}
+              {result.data.profilesCount ? result.data.profilesCount : "0"}
             {/await}
           </div>
           <div class="text-center font-primary text-dark">Total Citizens</div>
@@ -101,7 +101,7 @@ let profilesPromise = fetchProfilesCount();
               ...
             {:then result}
               {result.data.verificationsCount
-                ? result.data.verificationsCount - 1
+                ? result.data.verificationsCount
                 : "0"}
             {/await}
           </div>
