@@ -22,7 +22,7 @@ async function reload() {
   capabilities = sessionInfo.capabilities;
   canInvite =
     capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Invite)&&
+    capabilities.find((o) => o.type == CapabilityType.Invite) &&
     "__ALLOW_VERIFY__" == "true";
 
   const invitations = await ApiClient.query<
@@ -30,6 +30,9 @@ async function reload() {
     MyInvitationsQueryVariables
   >(MyInvitationsDocument, {});
 
+  if (!invitations || !invitations.length) {
+    canInvite = false;
+  }
   myInvitations = invitations ?? [];
 }
 reload();
