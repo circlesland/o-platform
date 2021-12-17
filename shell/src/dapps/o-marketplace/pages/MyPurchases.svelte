@@ -52,7 +52,8 @@ export let routable: Routable;
             <div
               class="flex flex-row items-center justify-between px-3 text-left">
               <div class="flex-grow min-w-0">
-                <h2 class="overflow-hidden text-lg overflow-ellipsis">
+                <h2
+                  class="overflow-hidden text-sm sm:text-lg overflow-ellipsis">
                   {displayableName(
                     purchase.invoices[0].sellerProfile.firstName,
                     purchase.invoices[0].sellerProfile.lastName
@@ -81,9 +82,12 @@ export let routable: Routable;
               class="flex flex-row items-center justify-between px-3 mt-2 text-left">
               <div
                 class="inline-block text-xs"
-                class:text-alert-dark={purchase.invoices[0].cancelledAt}
-                class:text-success={purchase.invoices[0].paymentTransactionHash && !purchase.invoices[0].cancelledAt}
-                class:text-info={!purchase.invoices[0].paymentTransactionHash && !purchase.invoices[0].cancelledAt}>
+                class:text-alert-dark="{purchase.invoices[0].cancelledAt}"
+                class:text-success="{purchase.invoices[0]
+                  .paymentTransactionHash && !purchase.invoices[0].cancelledAt}"
+                class:text-info="{!purchase.invoices[0]
+                  .paymentTransactionHash &&
+                  !purchase.invoices[0].cancelledAt}">
                 {#if purchase.invoices[0].paymentTransactionHash}
                   <span>paid</span>
                   <Icons icon="check" size="{4}" customClass="inline" />
