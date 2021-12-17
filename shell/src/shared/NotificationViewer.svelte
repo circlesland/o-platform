@@ -86,10 +86,7 @@ function getEventView() {
           type="submit"
           class="relative btn btn-light btn-block whitespace-nowrap"
           on:click="{() => submit()}">
-          Don't trust {data.payload.redeemedBy_profile.firstName}
-          <div class="absolute mr-1 right-2">
-            <Icons icon="buttonrightarrow" />
-          </div>
+          Don't trust
         </button>
       </div>
       <div class="flex-grow">
