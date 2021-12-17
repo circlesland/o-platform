@@ -80,7 +80,18 @@ const { subscribe, set, update } = writable<ProfileEvent[] | null>(
           set([]);
           return;
         }
-
+        if ((<any>event).type == "follow_trust") {
+          inbox.reload();
+          window.o.publishEvent(<any>{
+            type: "shell.refresh",
+            dapp: "chat:1"
+          });
+          window.o.publishEvent(<any>{
+            type: "shell.refresh",
+            dapp: "friends:1"
+          });
+          return;
+        }
         if ((<any>event).type == "blockchain_event") {
           inbox.reload();
           window.o.publishEvent(<any>{
