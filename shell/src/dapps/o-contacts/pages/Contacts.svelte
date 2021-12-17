@@ -37,7 +37,7 @@ function sortAlphabetically(a, b) {
 
     {#each [...$contacts].sort(sortAlphabetically) as contact}
       <!--<ContactCard contact="{contact}" />-->
-      <ContactCard contact="{contact}" />
+      <ContactCard contact="{contact}" hideUntrusted="{true}" />
     {/each}
   {/if}
 </div>

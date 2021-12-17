@@ -9,10 +9,12 @@ import {
 import { onMount } from "svelte";
 
 export let contact: ContactPoint;
+export let hideUntrusted: boolean = false;
 
 let displayName: string;
 let safeAddress: string;
 let message: string;
+let untrusted: boolean = false;
 
 onMount(() => {
   displayName = `${contact.contactAddress_Profile.firstName} ${
@@ -47,6 +49,7 @@ onMount(() => {
   } else if (trustIn > 0 && !trustOut) {
     message += "is trusting you";
   } else {
+    untrusted = hideUntrusted;
     message += "not trusted";
   }
 });
@@ -73,18 +76,20 @@ function goToProfile(e, path?: string) {
 }
 </script>
 
-<div on:click="{() => loadDetailPage(safeAddress)}" class="cursor-pointer">
-  <ItemCard
-    params="{{
-      edgeless: false,
-      imageProfile: contact.contactAddress_Profile,
-      title: displayName,
-      subTitle: message,
-      truncateMain: true,
-      mobileTextCutoff: 24,
-    }}">
-    <div slot="itemCardEnd">
-      <div class="self-end text-lg sm:text-3xl"></div>
-    </div>
-  </ItemCard>
-</div>
+{#if !untrusted}
+  <div on:click="{() => loadDetailPage(safeAddress)}" class="cursor-pointer">
+    <ItemCard
+      params="{{
+        edgeless: false,
+        imageProfile: contact.contactAddress_Profile,
+        title: displayName,
+        subTitle: message,
+        truncateMain: true,
+        mobileTextCutoff: 24,
+      }}">
+      <div slot="itemCardEnd">
+        <div class="self-end text-lg sm:text-3xl"></div>
+      </div>
+    </ItemCard>
+  </div>
+{/if}
