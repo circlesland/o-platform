@@ -257,12 +257,16 @@ const processDefinition = (processId: string) =>
               const oldOwnerBalance = await RpcGateway.get().eth.getBalance(context.data.availableSafes.importedAccount.address);
               if (new BN(oldOwnerBalance).lt(new BN(RpcGateway.get().utils.toWei("0.001000000", "ether")))) {
                 const currentTorusEoa = RpcGateway.get().eth.accounts.privateKeyToAccount(sessionStorage.getItem("circlesKey"));
-                const sT = await currentTorusEoa.signTransaction({
+                const signedTx = await currentTorusEoa.signTransaction({
+                  from: currentTorusEoa.address,
                   to: context.data.availableSafes.importedAccount.address,
-                  value: new BN(RpcGateway.get().utils.toWei("0.001000000", "ether"))
+                  value: new BN(RpcGateway.get().utils.toWei("0.001000000", "ether")),
+                  gasPrice: await RpcGateway.getGasPrice(),
+                  gas: 37000,
+                  nonce: await RpcGateway.get().eth.getTransactionCount(currentTorusEoa.address)
                 });
 
-                await RpcGateway.get().eth.sendSignedTransaction(sT.rawTransaction);
+                await RpcGateway.get().eth.sendSignedTransaction(signedTx.rawTransaction);
               }
 
               const safeProxy = new GnosisSafeProxy(
@@ -291,7 +295,12 @@ const processDefinition = (processId: string) =>
               }
             },
             onDone: "updateRegistration",
-            onError: "seedPhrase",
+            onError: {
+              actions:(context, event) => {
+                console.log(`An error occurred while adding the owner:`, event);
+              },
+              target: "seedPhrase"
+            },
           },
         },
 
