@@ -34,7 +34,7 @@ const initBar = (bar) => {
   class:blur_aside="{blur}">
   <div
     id="modalAsideContentContainer"
-    class="w-full p-2 mt-1 modalAsideContentContainer">
+    class="w-full p-2 pb-0 mt-1 modalAsideContentContainer">
     <div
       class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
       use:clickOutside

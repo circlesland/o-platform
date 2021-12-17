@@ -54,7 +54,7 @@ onMount(async () => {
 });
 </script>
 
-<div class="pb-4">
+<div class="">
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
@@ -300,13 +300,8 @@ onMount(async () => {
       <CreatorCard profile={o.createdBy} />
       <OfferCard {o} allowEdit={true} /> -->
       <div
-        class="sticky bottom-0 left-0 right-0 w-full px-4 mt-4 bg-white rounded-xl">
+        class="sticky bottom-0 left-0 right-0 w-full px-4 pb-4 mt-4 bg-white rounded-xl">
         <div class="flex flex-row space-x-4">
-          <div>
-            <button class="btn btn-square btn-light">
-              <Icons icon="star" />
-            </button>
-          </div>
           <div>
             <button
               class="btn btn-square btn-light"
