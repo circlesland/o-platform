@@ -4,7 +4,6 @@ import Icons from "../molecules/Icons.svelte";
 export let title: string = null;
 export let icon: string = null;
 export let colorClass: string = null;
-export let small: boolean = false;
 </script>
 
 <div

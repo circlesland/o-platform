@@ -32,7 +32,6 @@ let moreItems = actions.length > 2 ? actions.splice(2) : undefined;
           icon="{action.icon}"
           title="{action.title}"
           colorClass="{action.colorClass}"
-          small="{true}"
           on:click="{() => handleClick(action)}" />
       {/each}
     {/if}
@@ -40,10 +39,7 @@ let moreItems = actions.length > 2 ? actions.splice(2) : undefined;
   <div class="flex flex-row flex-wrap items-stretch -mr-2 text-dark">
     {#if moreItems}
       <div on:click="{() => (showMore = !showMore)}">
-        <ActionListItem
-          icon="{showMore ? 'morevertical' : 'more'}"
-          title=""
-          small="{true}" />
+        <ActionListItem icon="{showMore ? 'morevertical' : 'more'}" title="" />
       </div>
     {/if}
     {#each actions as action}
@@ -51,8 +47,7 @@ let moreItems = actions.length > 2 ? actions.splice(2) : undefined;
         icon="{action.icon}"
         title="{action.title}"
         colorClass="{action.colorClass}"
-        on:click="{() => handleClick(action)}"
-        small="{true}" />
+        on:click="{() => handleClick(action)}" />
     {/each}
   </div>
 {/if}
