@@ -39,7 +39,7 @@ async function reload() {
 reload();
 
 function sortAlphabetically(a, b) {
-  return a.code.localeCompare(b.code);
+  return a.name.localeCompare(b.name);
 }
 </script>
 
@@ -122,7 +122,7 @@ function sortAlphabetically(a, b) {
                         {invitation.claimedBy && invitation.claimedBy.firstName
                           ? `Invitation claimed`
                           : `${invitation.code}`}
-                        {#if invitation.code}
+                        {#if invitation.code && !invitation.claimedBy}
                           <CopyToClipboard
                             text="https://dev.circles.land/#/homepage/invite/{invitation.code}"
                             let:copy>
