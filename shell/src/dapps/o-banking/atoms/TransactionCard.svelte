@@ -4,7 +4,6 @@ import { me } from "../../../shared/stores/me";
 import { Currency } from "../../../shared/currency";
 import Date from "../../../shared/atoms/Date.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import { numberWithCommas } from "../../../shared/functions/stringHelper";
 
 import {
   CrcHubTransfer,
@@ -138,7 +137,7 @@ function loadDetailPage(path) {
         (!targetProfile.lastName ? '' : targetProfile.lastName),
       subTitle: message ? message : '',
       truncateMain: true,
-      endTextBig: numberWithCommas(amount),
+      endTextBig: amount,
       profileLink: true,
       mobileTextCutoff: 19,
       endTextBigClass: amount.startsWith('-') ? 'text-alert' : undefined,
