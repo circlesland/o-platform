@@ -72,7 +72,7 @@ const processDefinition = (processId: string) =>
             view: {
               title: "Welcome to Cirles Land",
               description:
-                "Please choose a sign-in option<br/> <small>By choosing one of the sign-in options you agree to our <a href='/' class='link' alt='privacy'>Privacy Terms</a>.</small>",
+                "Please choose a sign-in option<br/> <small>By choosing one of the sign-in options you agree to our <a href='https://coda.io/@circlesland/terms' target='_blank' class='link' alt='privacy'>Terms of Service</a>.</small>",
               placeholder: "",
               submitButtonText: "",
             },
@@ -110,14 +110,17 @@ const processDefinition = (processId: string) =>
 
         google: {
           id: "google",
-          entry: [() => {
-            window.o.publishEvent(<PlatformEvent>{
-              type: "shell.progress",
-              message: "Please wait, we're Signing you in",
-            })
-          }, (context) => {
-            context.dirtyFlags = {};
-          }],
+          entry: [
+            () => {
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.progress",
+                message: "Please wait, we're Signing you in",
+              });
+            },
+            (context) => {
+              context.dirtyFlags = {};
+            },
+          ],
           invoke: {
             src: async (context) => {
               /*
@@ -173,14 +176,17 @@ const processDefinition = (processId: string) =>
         },
         apple: {
           id: "apple",
-          entry: [() => {
-            window.o.publishEvent(<PlatformEvent>{
-              type: "shell.progress",
-              message: "Please wait, we're Signing you in",
-            })
-          }, (context) => {
-            context.dirtyFlags = {};
-          }],
+          entry: [
+            () => {
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.progress",
+                message: "Please wait, we're Signing you in",
+              });
+            },
+            (context) => {
+              context.dirtyFlags = {};
+            },
+          ],
           invoke: {
             src: async (context) => {
               const openLogin = await getOpenLogin();
@@ -216,14 +222,17 @@ const processDefinition = (processId: string) =>
         },
         github: {
           id: "github",
-          entry: [() => {
-            window.o.publishEvent(<PlatformEvent>{
-              type: "shell.progress",
-              message: "Please wait, we're Signing you in",
-            })
-          }, (context) => {
-            context.dirtyFlags = {};
-          }],
+          entry: [
+            () => {
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.progress",
+                message: "Please wait, we're Signing you in",
+              });
+            },
+            (context) => {
+              context.dirtyFlags = {};
+            },
+          ],
           invoke: {
             src: async (context) => {
               const openLogin = await getOpenLogin();
