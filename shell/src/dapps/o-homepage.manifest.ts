@@ -13,7 +13,7 @@ import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 
 const externalChat: Link<any, DappState> = {
   type: "link",
-  title: "Chat",
+  title: "Support",
   icon: "chat",
   routeParts: ["=chat"],
   openInNewTab: true,
@@ -25,7 +25,7 @@ const externalForum: Link<any, DappState> = {
   icon: "forum",
   routeParts: ["=forum"],
   openInNewTab: true,
-  url: () => "https://aboutcircles.com",
+  url: () => "https://aboutcircles.com/c/earth-circle-dao/13",
 };
 const login: Page<any, DappState> = {
   isSystem: true,
@@ -106,14 +106,14 @@ const privacy: Page<any, DappState> = {
   title: "Circles Land",
   type: "page",
 };
-const tos: Page<any, DappState> = {
-  isSystem: true,
+const tos: Link<any, DappState> = {
+  type: "link",
   routeParts: ["=tos"],
-  anonymous: true,
-  component: Tos,
-  title: "Circles Land",
-  type: "page",
+  title: "Terms of Service",
+  openInNewTab: true,
+  url: () => "https://coda.io/@circlesland/terms",
 };
+
 const learn: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["=learn"],
@@ -153,8 +153,6 @@ export const homepage: DappManifest<DappState> = {
     countries,
     imprint,
     milestones,
-    privacy,
-    tos,
     learn,
     login,
     externalChat,

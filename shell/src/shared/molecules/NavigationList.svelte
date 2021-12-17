@@ -34,25 +34,19 @@ $: {
   <div class="relative flex-shrink-0 w-auto pt-4 pb-12 space-y-2">
     <LinkPill
       props="{{
-        text: 'Legal Notice',
-        link: '/#/homepage/tos',
+        text: 'Privacy Policy',
+        link: 'https://coda.io/@circlesland/terms/privacy-policy-3',
         extern: true,
         isSmall: true,
       }}" />
     <LinkPill
       props="{{
-        text: 'Terms & Privacy',
-        link: '/#/homepage/tos',
+        text: 'Terms of Service',
+        link: 'https://coda.io/@circlesland/terms',
         extern: true,
         isSmall: true,
       }}" />
-    <LinkPill
-      props="{{
-        text: 'Help & Support',
-        link: '/#/homepage/tos',
-        extern: true,
-        isSmall: true,
-      }}" />
+
     {#if navigation}
       {#each navigation as navItem}
         <LinkPill

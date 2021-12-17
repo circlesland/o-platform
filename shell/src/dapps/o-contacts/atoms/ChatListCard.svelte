@@ -89,14 +89,13 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
       message = `${displayName} sent you ${Currency.instance().displayAmount(
         mostRecentDisplayEvent.value,
         null,
-        $me.displayCurrency
-      )} ${Currency.currencySymbol[$me.displayCurrency]}`;
+        "EURS"
+      )} ${Currency.currencySymbol[$me.displayCurrency]} €`;
       break;
     case EventType.Erc20Transfer:
       message = `${displayName} sent you ${displayCirclesAmount(
         mostRecentDisplayEvent.value,
         null,
-        true,
         false
       )} tokens`;
       break;
@@ -119,17 +118,11 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
       break;
     case EventType.CrcHubTransfer:
       message = `You sent ${displayName} 
-      ${displayCirclesAmount(
+      ${Currency.instance().displayAmount(
         mostRecentDisplayEvent.value,
         null,
-        true,
-        ($me && $me.displayTimeCircles !== undefined
-          ? $me.displayTimeCircles
-          : true) ||
-          ($me && $me.displayTimeCircles !== undefined
-            ? $me.displayTimeCircles
-            : true) === undefined
-      )} ⦿`;
+        "EURS"
+      )} €`;
       break;
     case EventType.Erc20Transfer:
       message = `You sent ${displayName}
@@ -175,7 +168,7 @@ function goToProfile(e, path?: string) {
       subTitle: message,
       action: () => loadDetailPage(param.contactAddress),
       profileLink: true,
-      mobileTextCutoff: 22,
+      mobileTextCutoff: 24,
     }}">
     <div slot="itemCardEndSmallElement">
       {#if param.timestamp}

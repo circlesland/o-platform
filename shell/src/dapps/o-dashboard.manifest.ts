@@ -25,7 +25,7 @@ const invites: Page<any, DappState> = {
 
 const externalChat: Link<any, DappState> = {
   type: "link",
-  title: "Support Chat",
+  title: "Support",
   icon: "chat",
   routeParts: [],
   openInNewTab: true,
@@ -37,7 +37,7 @@ const externalForum: Link<any, DappState> = {
   icon: "forum",
   routeParts: [],
   openInNewTab: true,
-  url: () => "https://aboutcircles.com",
+  url: () => "https://aboutcircles.com/c/earth-circle-dao/13",
 };
 const login: Page<any, DappState> = {
   isSystem: true,
