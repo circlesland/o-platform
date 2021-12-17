@@ -255,12 +255,12 @@ const processDefinition = (processId: string) =>
               }
 
               const oldOwnerBalance = await RpcGateway.get().eth.getBalance(context.data.availableSafes.importedAccount.address);
-              if (new BN(oldOwnerBalance).lt(new BN(RpcGateway.get().utils.toWei("0.001000000", "ether")))) {
+              if (new BN(oldOwnerBalance).lt(new BN(RpcGateway.get().utils.toWei("0.01", "ether")))) {
                 const currentTorusEoa = RpcGateway.get().eth.accounts.privateKeyToAccount(sessionStorage.getItem("circlesKey"));
                 const signedTx = await currentTorusEoa.signTransaction({
                   from: currentTorusEoa.address,
                   to: context.data.availableSafes.importedAccount.address,
-                  value: new BN(RpcGateway.get().utils.toWei("0.001000000", "ether")),
+                  value: new BN(RpcGateway.get().utils.toWei("0.01", "ether")),
                   gasPrice: await RpcGateway.getGasPrice(),
                   gas: 37000,
                   nonce: await RpcGateway.get().eth.getTransactionCount(currentTorusEoa.address)
