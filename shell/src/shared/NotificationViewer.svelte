@@ -69,6 +69,11 @@ function handleClick(action) {
   }
 }
 
+function trustAndSubmit() {
+  trust(data.payload.redeemedBy_profile.circlesAddress);
+  submit();
+}
+
 function getEventView() {
   const specificView = components.find((x) => x.type === data.type);
   if (!specificView) return GenericEventCard;
@@ -91,8 +96,7 @@ function getEventView() {
       </div>
       <div class="flex-grow">
         <button
-          on:click="{() =>
-            trust(data.payload.redeemedBy_profile.circlesAddress)}"
+          on:click="{() => trustAndSubmit()}"
           class="h-auto btn-block btn btn-primary whitespace-nowrap">
           Trust {data.payload.redeemedBy_profile.firstName}
         </button>
