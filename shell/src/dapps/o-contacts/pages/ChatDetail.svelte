@@ -118,7 +118,6 @@ function init(el) {
 }
 
 onMount(() => {
-  /*
   // TEMPORARY FIX UNTIL THE LIST IS WORKING BETTER
   setTimeout(function () {
     window.o.publishEvent(<any>{
@@ -126,7 +125,6 @@ onMount(() => {
       scrollNow: true,
     });
   }, 2500);
-   */
 });
 
 async function submitChat() {
