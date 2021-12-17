@@ -4,7 +4,7 @@ import PageHeader from "src/shared/atoms/PageHeader.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { me } from "../../../shared/stores/me";
-
+import { numberWithCommas } from "../../../shared/functions/stringHelper";
 import { Currency } from "../../../shared/currency";
 import { BN } from "ethereumjs-util";
 import { assetsBalances } from "../../../shared/stores/assetsBalances";
@@ -33,14 +33,12 @@ $: {
 <PageHeader heightClass="h-60">
   <div class="self-center block text-center">
     <span class="inline-block tracking-wide text-7xl font-enso">
-      {balanceEuro}
-      </span>
-      <span class="text-7xl font-enso"
-        >{Currency.currencySymbol["EURS"]}</span>
-    
+      {numberWithCommas(balanceEuro)}
+    </span>
+    <span class="text-7xl font-enso">{Currency.currencySymbol["EURS"]}</span>
   </div>
   <div class="self-end m-auto mt-2 space-y-2 text-center max-w-max">
-    {balanceTime}
+    {numberWithCommas(balanceTime)}
     <span class=" font-primary">{Currency.currencySymbol["TIME_CRC"]}</span>
     <!--
     {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ''}
