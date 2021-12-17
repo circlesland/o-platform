@@ -5,6 +5,7 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
 import { Capability, CapabilityType } from "../../../shared/api/data/types";
 import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
+
 import {
   CreatedInvitation,
   MyInvitationsDocument,
@@ -36,6 +37,10 @@ async function reload() {
   myInvitations = invitations ?? [];
 }
 reload();
+
+function sortAlphabetically(a, b) {
+  return a.code.localeCompare(b.code);
+}
 </script>
 
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
@@ -70,7 +75,7 @@ reload();
     <div class="w-full">
       <slot name="EditorMainComponent">
         <div class="flex flex-col w-full space-y-4">
-          {#each myInvitations as invitation, index}
+          {#each [...myInvitations].sort(sortAlphabetically) as invitation, index}
             <ItemCard
               params="{{
                 edgeless: true,
