@@ -638,18 +638,18 @@ function onProcessSkip() {
 }
 
 function onInputFocused() {
-  log("onInputFocused()");
-  if (isMobile()) {
-    document.body.classList.add("keyboard-open");
-  }
+  // log("onInputFocused()");
+  // if (isMobile()) {
+  //   document.body.classList.add("keyboard-open");
+  // }
   return;
 }
 
 function onInputBlurred() {
-  log("onInputBlurred()");
-  if (isMobile()) {
-    document.body.classList.remove("keyboard-open");
-  }
+  // log("onInputBlurred()");
+  // if (isMobile()) {
+  //   document.body.classList.remove("keyboard-open");
+  // }
   return;
 }
 

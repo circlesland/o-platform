@@ -87,7 +87,7 @@ export const home: DappManifest<DappState> = {
 
     if ($me.__typename == "Profile") {
       return {
-        text: "Invites",
+        text: "My Invites",
         icon: "",
         action: () => {
           push("/home/invites");

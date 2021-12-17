@@ -15,7 +15,7 @@ import debounce from "./utils/debounce";
 import Icons from "../../molecules/Icons.svelte";
 import DefaultClearIcon from "./ClearIcon.svelte";
 import { isMobile } from "src/shared/functions/isMobile";
-import {Observable} from "rxjs";
+import { Observable } from "rxjs";
 
 const dispatch = createEventDispatcher();
 export let container = undefined;
@@ -35,7 +35,7 @@ export let placeholder = "Select...";
 export let items = [];
 export let itemFilter = (label, filterText, option, options) => {
   if (options.filter) {
-    return label.toLowerCase().includes(filterText.toLowerCase())
+    return label.toLowerCase().includes(filterText.toLowerCase());
   } else {
     return true;
   }
@@ -140,7 +140,7 @@ export const getItems = debounce(async () => {
   } else if (evaluatedLoadOptions.subscribe) {
     return new Promise((resolve) => {
       const observable = evaluatedLoadOptions;
-      observable.subscribe(next => {
+      observable.subscribe((next) => {
         if (!next) {
           resolve();
         } else {
@@ -150,7 +150,6 @@ export const getItems = debounce(async () => {
       });
     });
   }
-
 }, loadOptionsInterval);
 
 $: disabled = isDisabled;
@@ -248,9 +247,14 @@ $: {
 
           if (!keepItem) return false;
           if (filterText.length < 1) return true;
-          return itemFilter(getOptionLabel(item, filterText), filterText, item, {
-            filter: (loadOptions && loadOptions().then)
-          });
+          return itemFilter(
+            getOptionLabel(item, filterText),
+            filterText,
+            item,
+            {
+              filter: loadOptions && loadOptions().then,
+            }
+          );
         })
       : [];
   }
@@ -573,15 +577,15 @@ function handleKeyDown(e) {
 
 function handleFocus() {
   isFocused = true;
-  if (isMobile()) {
-    document.body.classList.add("keyboard-open");
-  }
+  // if (isMobile()) {
+  //   document.body.classList.add("keyboard-open");
+  // }
 }
 function handleBlur() {
   isFocused = false;
-  if (isMobile()) {
-    document.body.classList.remove("keyboard-open");
-  }
+  // if (isMobile()) {
+  //   document.body.classList.remove("keyboard-open");
+  // }
 }
 function removeList() {
   resetFilter();

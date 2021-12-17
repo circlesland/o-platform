@@ -18,6 +18,7 @@ import { contacts } from "../../../shared/stores/contacts";
 import NotificationCard from "../atoms/NotificationCard.svelte";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
+import { isMobile } from "../../../shared/functions/isMobile";
 
 export let id: string;
 
@@ -158,22 +159,26 @@ function goToProfile(e, path?: string) {
     class="sticky top-0 z-50 grid w-full bg-white place-content-center rounded-t-xl">
     <div
       class="relative flex flex-col items-center self-center w-full m-auto text-center justify-self-center">
-      <div class="absolute " style="left: -56px; top:4px">
-        {#if contactProfile}
+      {#if contactProfile}
+        <div class="absolute " style="left: -56px; top:4px">
           <UserImage
             profile="{contactProfile}"
             size="{10}"
             gradientRing="{true}" />
-        {/if}
-      </div>
-      <div class="mt-2 text-3xl tracking-wide uppercase font-heading">
-        {#if contactProfile}
+        </div>
+        <div
+          class="mt-2 tracking-wide uppercase font-heading"
+          class:text-3xl="{!isMobile() ||
+            !contactProfile.firstName.startsWith('0x')}"
+          class:text-xs="{contactProfile.firstName.startsWith('0x')}">
           {contactProfile.firstName}
           {contactProfile.lastName ? contactProfile.lastName : ""}
-        {/if}
-      </div>
 
-      {#if contactProfile}
+          <!-- class:text-3xl="{!isMobile() &&
+            !contactProfile.firstName.startsWith('0x')}"
+          class:text-xs="{contactProfile.firstName.startsWith('0x')}" -->
+        </div>
+
         <div class="pb-2 text-xs">
           {#if contactProfile.youTrust > 0 && contactProfile.trustsYou > 0}
             Mutual trust

@@ -81,8 +81,8 @@ async function setProfile(id: string) {
         : "")
     : contact.contactAddress;
 
-  displayName =
-    displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
+  // displayName =
+  //   displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 
   profile = contact.contactAddress_Profile;
 
@@ -225,9 +225,9 @@ async function setProfile(id: string) {
 
         {#if profile && contact.contactAddress}
           <div
-            class="mt-4"
+            class="mt-4 break-words"
             class:text-3xl="{!isMobile() && !displayName.startsWith('0x')}"
-            class:text-sm="{displayName.startsWith('0x')}">
+            class:text-xs="{displayName.startsWith('0x')}">
             {displayName}
           </div>
         {/if}
