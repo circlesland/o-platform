@@ -1,6 +1,7 @@
 <script lang="ts">
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { Profile, Organisation } from "../../api/data/types";
+import { isMobile } from "../../functions/isMobile";
 
 export let profile: Profile | Organisation;
 export let targetCirclesAddress: string;
@@ -14,8 +15,8 @@ if (profile.__typename == "Profile") {
 } else {
   displayName = profile.name ? profile.name : "";
 }
-displayName =
-  displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
+// displayName =
+//   displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
 {#if profile && profile.circlesAddress}
@@ -23,7 +24,10 @@ displayName =
     class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
     <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />
 
-    <div class="mt-4 text-3xl">
+    <div
+      class="mt-4 break-words"
+      class:text-3xl="{!isMobile() && !displayName.startsWith('0x')}"
+      class:text-xs="{displayName.startsWith('0x')}">
       {displayName}
     </div>
 
