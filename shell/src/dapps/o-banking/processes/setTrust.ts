@@ -19,6 +19,7 @@ export type SetTrustContextData = {
   privateKey: string;
   trustReceiver?: string;
   trustLimit?: number;
+  successAction?: (data:SetTrustContextData) => void;
 };
 
 /**
@@ -172,6 +173,9 @@ const processDefinition = (processId: string) =>
         type: "final",
         id: "success",
         data: (context, event: PlatformEvent) => {
+          if (context.data.successAction) {
+            context.data.successAction(context.data);
+          }
           return "yeah!";
         },
       },

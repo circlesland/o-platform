@@ -16,6 +16,8 @@ import Icons from "./molecules/Icons.svelte";
 import { EventType } from "./api/data/types";
 import { setTrust } from "../dapps/o-banking/processes/setTrust";
 import { me } from "./stores/me";
+import {showNotifications} from "./processes/showNotifications";
+import {inbox} from "./stores/inbox";
 
 export let context: NotificationViewerContext;
 
@@ -45,13 +47,23 @@ const components = [
 ];
 
 async function trust(circlesAddress) {
-  window.o.runProcess(setTrust, {
-    trustLimit: 100,
-    trustReceiver: circlesAddress,
-    hubAddress: "__CIRCLES_HUB_ADDRESS__",
-    safeAddress: $me.circlesAddress,
-    privateKey: sessionStorage.getItem("circlesKey"),
+  window.o.publishEvent({
+    type: "shell.closeModal"
   });
+  setTimeout(() => {
+    window.o.runProcess(setTrust, {
+      trustLimit: 100,
+      trustReceiver: circlesAddress,
+      hubAddress: "__CIRCLES_HUB_ADDRESS__",
+      safeAddress: $me.circlesAddress,
+      privateKey: sessionStorage.getItem("circlesKey"),
+      successAction: (data) => {
+        window.o.runProcess(showNotifications, {
+          events: $inbox.map((o) => o)
+        });
+      }
+    });
+  }, 50);
 }
 
 function submit() {
