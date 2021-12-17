@@ -8,8 +8,7 @@ import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGrap
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { loadProfile } from "../../../shared/functions/loadProfile";
-
-import Icons from "../../../shared/molecules/Icons.svelte";
+import { displayableName } from "../../../shared/functions/stringHelper";
 import { Currency } from "../../../shared/currency";
 
 export let context: any;
@@ -22,10 +21,6 @@ $: {
 
 onMount(async () => {
   profile = await loadProfile(context.data.recipientAddress, $me);
-  //   console.log(
-  //     "loadProfile2: ",
-  //     (profile = await loadProfile(context.data.recipientAddress, $me))
-  //   );
 });
 
 let classes: string;
@@ -61,7 +56,10 @@ function onkeydown(e: KeyboardEvent) {
 
     <div>
       <span class="mt-4 text-xl">
-        to {profile.profile.firstName + " " + profile.profile.lastName}
+        to {displayableName(
+          profile.profile.firstName,
+          profile.profile.lastName
+        )}
       </span>
     </div>
     <div class="text-dark-lightest">
