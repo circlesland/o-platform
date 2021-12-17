@@ -103,12 +103,5 @@ export const home: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [
-    index,
-    invites,
-    externalChat,
-    externalForum,
-    externalBlog,
-    externalWhitepaper,
-  ],
+  routables: [index, invites, externalChat, externalForum],
 };

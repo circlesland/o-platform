@@ -28,6 +28,12 @@ $: {
       subTitle: description,
       truncateMain: true,
       endTextBig: Number.parseFloat(balance).toFixed(2),
-      endTextSmall: (variety == 0 || variety == 1) ? title : (variety ? variety + ' different ' + title : '')
+      endTextSmall:
+        variety == 0 || variety == 1
+          ? title
+          : variety
+          ? variety + ' different ' + title
+          : '',
+      mobileTextCutoff: 18,
     }}" />
 </div>

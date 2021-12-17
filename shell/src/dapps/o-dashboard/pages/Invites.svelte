@@ -53,7 +53,7 @@ reload();
           >.
         {:else}
           In order to be able to invite others, you'll have to get verified.<br /><br />
-          Once this has been done, you will receive 10 Invites.<br /><br />
+          Once this has been done, you will receive 9 Invites.<br /><br />
           As we are currently still in a testing phase, we are verifying new citizens
           manually.<br /><br />
           You can request to be verified in our

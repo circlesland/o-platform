@@ -139,6 +139,7 @@ function loadDetailPage(path) {
       truncateMain: true,
       endTextBig: amount,
       profileLink: true,
+      mobileTextCutoff: 19,
       endTextBigClass: amount.startsWith('-') ? 'text-alert' : undefined,
     }}">
     <div slot="itemCardEndSmallElement">

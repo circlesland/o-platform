@@ -16,7 +16,7 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
-import {Profile} from "../shared/api/data/types";
+import { Profile } from "../shared/api/data/types";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
@@ -112,7 +112,7 @@ const assets: Page<any, BankingDappState> = {
 const crcDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
   position: "modal",
-  routeParts: ["=assets", "=crc"],
+  routeParts: ["=assets", "=time"],
   basePage: ["assets"],
   component: CrcDetail,
   title: "Asset",
@@ -182,6 +182,6 @@ export const banking: DappManifest<BankingDappState> = {
     transactionSend,
     assets,
     crcDetail,
-    xdaiDetail
+    xdaiDetail,
   ],
 };

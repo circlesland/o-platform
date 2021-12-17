@@ -136,10 +136,9 @@ function openDetail(transfer: ProfileEvent) {
               transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
             )}
           {/if}
-            </span>
-          <span class="text-6xl font-enso"
-            >{Currency.currencySymbol["EURS"]}</span>
-      
+        </span>
+        <span class="text-6xl font-enso {classes}"
+          >{Currency.currencySymbol["EURS"]}</span>
       </div>
       {#if $me.displayCurrency && $me.displayCurrency != "TIME_CRC"}
         <div class="self-end m-auto -mt-4 space-y-2 text-center max-w-max">
@@ -169,20 +168,12 @@ function openDetail(transfer: ProfileEvent) {
           openDetail(transfer);
         }}">
         {#if transfer.direction === "in"}
-          <span class="mt-4 text-xl">
-            from {displayableName
-              ? displayableName.length >= 22
-                ? displayableName.substr(0, 22) + "..."
-                : displayableName
-              : ""}
+          <span class="mt-4 text-xl break-words">
+            from {displayableName ? displayableName : ""}
           </span>
         {:else}
-          <span class="mt-4 text-xl">
-            to {displayableName
-              ? displayableName.length >= 22
-                ? displayableName.substr(0, 22) + "..."
-                : displayableName
-              : ""}
+          <span class="mt-4 text-xl break-words">
+            to {displayableName ? displayableName : ""}
           </span>
         {/if}
       </div>

@@ -83,21 +83,21 @@ function getEventView() {
     <div class="flex flex-row items-center content-center w-full space-x-4">
       <div class="">
         <button
-          on:click="{() =>
-            trust(data.payload.redeemedBy_profile.circlesAddress)}"
-          class="h-auto btn-block btn btn-light whitespace-nowrap">
-          Trust {data.payload.redeemedBy_profile.firstName}
+          type="submit"
+          class="relative btn btn-light btn-block whitespace-nowrap"
+          on:click="{() => submit()}">
+          Don't trust {data.payload.redeemedBy_profile.firstName}
+          <div class="absolute mr-1 right-2">
+            <Icons icon="buttonrightarrow" />
+          </div>
         </button>
       </div>
       <div class="flex-grow">
         <button
-          type="submit"
-          class="relative btn btn-primary btn-block"
-          on:click="{() => submit()}">
-          No thanks
-          <div class="absolute mr-1 right-2">
-            <Icons icon="buttonrightarrow" />
-          </div>
+          on:click="{() =>
+            trust(data.payload.redeemedBy_profile.circlesAddress)}"
+          class="h-auto btn-block btn btn-primary whitespace-nowrap">
+          Trust {data.payload.redeemedBy_profile.firstName}
         </button>
       </div>
     </div>

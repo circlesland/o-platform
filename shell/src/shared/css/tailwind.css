@@ -414,7 +414,8 @@ button:focus {
   background-clip: padding-box, border-box;
 }
 
-.keyboard-open #nextnav {
+/* Temporarily de-activating this, as it will prevent ppl from clicking on 'skip' - need to find better solution. */
+/* .keyboard-open #nextnav {
   display: none;
 }
 
@@ -423,7 +424,8 @@ button:focus {
 }
 .keyboard-open .modalAsideContentContainer {
   margin-bottom: 0rem !important;
-}
+} */
+
 .tooltip {
   @apply absolute invisible;
 }

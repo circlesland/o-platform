@@ -27,6 +27,7 @@ import {
 import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
 import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
+import { isMobile } from "../../../shared/functions/isMobile";
 
 export let id: string;
 export let jumplist: Jumplist<any, any> | undefined;
@@ -223,7 +224,10 @@ async function setProfile(id: string) {
           profileLink="{false}" />
 
         {#if profile && contact.contactAddress}
-          <div class="mt-4 text-3xl">
+          <div
+            class="mt-4"
+            class:text-3xl="{!isMobile() && !displayName.startsWith('0x')}"
+            class:text-sm="{displayName.startsWith('0x')}">
             {displayName}
           </div>
         {/if}
