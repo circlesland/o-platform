@@ -136,99 +136,101 @@ export async function followTrust(profile: Profile | Organisation) {
   if (following) return;
   // Check the trust status of all members
   following = true;
+  try {
 
-  const orga = await ApiClient.query<Organisation[], OrganisationsByAddressQueryVariables>(OrganisationsByAddressDocument, {
-    addresses: [profile.circlesAddress]
-  });
+    const orga = await ApiClient.query<Organisation[], OrganisationsByAddressQueryVariables>(OrganisationsByAddressDocument, {
+      addresses: [profile.circlesAddress]
+    });
 
-  let allTrustRelations: any[] = [];
+    let allTrustRelations: any[] = [];
 
-  if (!orga || !orga.length) {
-    console.warn("Follow trust only works in organisation context.")
-    return;
-  }
-
-  const orgaTrustRelations = await ApiClient.query<TrustRelation[], TrustRelationsQueryVariables>(TrustRelationsDocument, {
-    safeAddress: profile.circlesAddress
-  });
-
-  const missingMemberTrusts: {[userAddress: string]: boolean} = {};
-  const currentTrust: { [userAddress: string]: boolean } = {};
-  const removeTrust: { [userAddress: string]: boolean } = {};
-  const addTrust: { [userAddress: string]: boolean } = {};
-
-  orga[0].members.forEach(m => {
-    if (m.__typename == "Profile" && !m.verifications?.length) {
+    if (!orga || !orga.length) {
+      console.warn("Follow trust only works in organisation context.")
       return;
     }
-    missingMemberTrusts[m.circlesAddress] = true;
-  });
 
-  orgaTrustRelations.forEach(t => {
-    delete missingMemberTrusts[t.otherSafeAddress];
-    removeTrust[t.otherSafeAddress] = true;
-    currentTrust[t.otherSafeAddress] = true;
-  });
-
-  Object.keys(missingMemberTrusts).forEach(mmt => {
-    addTrust[mmt] = true;
-  });
-
-  for (let member of orga[0].members) {
-    if (member.__typename == "Profile" && !member.verifications?.length) {
-      continue;
-    }
-    const memberTrustRelations = await ApiClient.query<TrustRelation[], TrustRelationsQueryVariables>(TrustRelationsDocument, {
-      safeAddress: member.circlesAddress
+    const orgaTrustRelations = await ApiClient.query<TrustRelation[], TrustRelationsQueryVariables>(TrustRelationsDocument, {
+      safeAddress: profile.circlesAddress
     });
-    const trusts = memberTrustRelations.filter(o => o.direction == "OUT" || o.direction == "MUTUAL");
-    trusts.forEach(t => {
-      if (!t.otherSafeAddressProfile.verifications?.length) {
+
+    const missingMemberTrusts: { [userAddress: string]: boolean } = {};
+    const currentTrust: { [userAddress: string]: boolean } = {};
+    const removeTrust: { [userAddress: string]: boolean } = {};
+    const addTrust: { [userAddress: string]: boolean } = {};
+
+    orga[0].members.forEach(m => {
+      if (m.__typename == "Profile" && !m.verifications?.length) {
         return;
       }
-      delete removeTrust[t.otherSafeAddress];
-      if (!currentTrust[t.otherSafeAddress]) {
-        addTrust[t.otherSafeAddress] = true;
+      missingMemberTrusts[m.circlesAddress] = true;
+    });
+
+    orgaTrustRelations.forEach(t => {
+      delete missingMemberTrusts[t.otherSafeAddress];
+      removeTrust[t.otherSafeAddress] = true;
+      currentTrust[t.otherSafeAddress] = true;
+    });
+
+    Object.keys(missingMemberTrusts).forEach(mmt => {
+      addTrust[mmt] = true;
+    });
+
+    for (let member of orga[0].members) {
+      if (member.__typename == "Profile" && !member.verifications?.length) {
+        continue;
       }
-    });
-    allTrustRelations = [...allTrustRelations, ...trusts];
-  }
+      const memberTrustRelations = await ApiClient.query<TrustRelation[], TrustRelationsQueryVariables>(TrustRelationsDocument, {
+        safeAddress: member.circlesAddress
+      });
+      const trusts = memberTrustRelations.filter(o => o.direction == "OUT" || o.direction == "MUTUAL");
+      trusts.forEach(t => {
+        if (!t.otherSafeAddressProfile.verifications?.length) {
+          return;
+        }
+        delete removeTrust[t.otherSafeAddress];
+        if (!currentTrust[t.otherSafeAddress]) {
+          addTrust[t.otherSafeAddress] = true;
+        }
+      });
+      allTrustRelations = [...allTrustRelations, ...trusts];
+    }
 
-  console.log("Add trust:", addTrust);
-  console.log("Remove trust:", removeTrust);
+    console.log("Add trust:", addTrust);
+    console.log("Remove trust:", removeTrust);
 
-  for(let address of Object.keys(removeTrust)) {
-    console.log(`Removing trust to ${address}`);
-    await fSetTrust({
-      data: {
-        safeAddress: profile.circlesAddress,
-        trustLimit: 0,
-        hubAddress: "__CIRCLES_HUB_ADDRESS__",
-        trustReceiver: address,
-        privateKey: sessionStorage.getItem("circlesKey")
-      },
-      messages:{},
-      dirtyFlags: {},
-      onlyThesePages:[]
-    });
+    for (let address of Object.keys(removeTrust)) {
+      console.log(`Removing trust to ${address}`);
+      await fSetTrust({
+        data: {
+          safeAddress: profile.circlesAddress,
+          trustLimit: 0,
+          hubAddress: "__CIRCLES_HUB_ADDRESS__",
+          trustReceiver: address,
+          privateKey: sessionStorage.getItem("circlesKey")
+        },
+        messages: {},
+        dirtyFlags: {},
+        onlyThesePages: []
+      });
+    }
+    for (let address of Object.keys(addTrust)) {
+      console.log(`Adding trust to ${address}`);
+      await fSetTrust({
+        data: {
+          safeAddress: profile.circlesAddress,
+          trustLimit: 100,
+          hubAddress: "__CIRCLES_HUB_ADDRESS__",
+          trustReceiver: address,
+          privateKey: sessionStorage.getItem("circlesKey")
+        },
+        messages: {},
+        dirtyFlags: {},
+        onlyThesePages: []
+      });
+    }
+  } finally {
+    following = false;
   }
-  for(let address of Object.keys(addTrust)) {
-    console.log(`Adding trust to ${address}`);
-    await fSetTrust({
-      data: {
-        safeAddress: profile.circlesAddress,
-        trustLimit: 100,
-        hubAddress: "__CIRCLES_HUB_ADDRESS__",
-        trustReceiver: address,
-        privateKey: sessionStorage.getItem("circlesKey")
-      },
-      messages:{},
-      dirtyFlags: {},
-      onlyThesePages:[]
-    });
-  }
-
-  following = false;
 }
 
 export const inbox = {
@@ -254,7 +256,10 @@ export const inbox = {
     });
     if (orga && orga.length) {
       console.log("Reloading in 30 sec.")
-      setTimeout(() => {
+      setInterval(() => {
+        if (following) {
+          return;
+        }
         window.location.reload();
       }, 30000);
     }
