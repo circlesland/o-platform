@@ -90,7 +90,7 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
         mostRecentDisplayEvent.value,
         null,
         "EURS"
-      )} ${Currency.currencySymbol[$me.displayCurrency]} €`;
+      )} ${Currency.currencySymbol[$me.displayCurrency]}`;
       break;
     case EventType.Erc20Transfer:
       message = `${displayName} sent you ${displayCirclesAmount(
