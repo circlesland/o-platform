@@ -61,15 +61,14 @@ const processDefinition = (processId: string) =>
       */
 
       init: {
-        entry: [
-          assign((context: PromptGetInvitedContext) => {
+        entry: [(context: PromptGetInvitedContext) => {
             const invite = localStorage.getItem("circlesInvite");
             if (invite && invite != "") {
               console.log("INVITE: ", invite);
               context.data.inviteCode = invite;
               return context;
             }
-          }),
+          }
         ],
         always: [
           {
@@ -147,6 +146,7 @@ const processDefinition = (processId: string) =>
         id: "success",
         type: "final",
         entry: (context, event: PlatformEvent) => {
+          localStorage.removeItem("circlesInvite");
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }

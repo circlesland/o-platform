@@ -7,14 +7,19 @@
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
+  export let inviteCode: any;
+
+  if (inviteCode) {
+    localStorage.setItem("circlesInvite", inviteCode);
+    window.runInitMachine();
+  }
 </script>
 
 <div class="flex flex-col overflow-hidden ">
-
-  <main class="h-screen overflow-hidden">
-    <TopNav {runtimeDapp} {routable} />
-    <div class="mt-11">
-      <VideoHeader />
+  <main className="h-screen overflow-hidden">
+    <TopNav {runtimeDapp} {routable}/>
+    <div className="mt-11">
+      <VideoHeader/>
     </div>
   </main>
   <!--<Progress />-->

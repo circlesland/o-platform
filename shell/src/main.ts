@@ -6,7 +6,7 @@ import App from "src/App.svelte";
 import * as bip39 from "bip39";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 dayjs.extend(relativeTime)
-RpcGateway.setup("__RPC_ENDPOINT__");
+RpcGateway.setup("__RPC_ENDPOINT__", parseInt("__FIXED_GAS_PRICE__"));
 
 // TODO: Use a service like 'https://github.com/ipfs/js-ipfs/blob/6870873f0696bb5d8d91fce4a4ef1f7420443993/packages/ipfs-message-port-server/src/server.js#L134'
 //       to share data between different app domains.

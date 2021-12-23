@@ -343,7 +343,8 @@ function setNav(navArgs: GenerateNavManifestArgs) {
  * This function is called only one time after the first route.
  */
 
-let shellEventSubscription: Promise<PushSubscription>;
+let shellEventSubscription: ZenObservable.Subscription;
+
 function initSession(session: SessionInfo) {
   console.log(`subscribeToApiEvents(). Session: `, session);
   capabilities = session.capabilities;
@@ -1113,8 +1114,6 @@ async function hideCenter() {
        */
 }
 </script>
-
-{console.log("LAOYT: ", layout)}
 <Layout
   layout="{layout}"
   navigation="{navigation}"

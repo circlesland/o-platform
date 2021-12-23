@@ -66,7 +66,7 @@ const invite: Page<{ inviteCode: string }, DappState> = {
   isSystem: true,
   anonymous: true,
   routeParts: ["=invite", ":inviteCode"],
-  component: Invite,
+  component: Home,
   title: "Circles Land",
   type: "page",
 };

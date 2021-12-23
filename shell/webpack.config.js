@@ -30,6 +30,7 @@ let __OPENLOGIN_CLIENT_ID__ = process.env.OPENLOGIN_CLIENT_ID ?? "BHqazms23gbTZQ
 let __ALLOW_VERIFY__ = "true";// !process.env.ALLOW_VERIFY ? "false" : "true";
 let __ALLOW_CREATE_ORGANISATION__ = !process.env.ALLOW_CREATE_ORGANISATION ? "false" : "true";
 let __USE_MOCKS__ = !process.env.USE_MOCKS ? "false" : "true";
+let __FIXED_GAS_PRICE__ = !process.env.FIXED_GAS_PRICE ? "0" : process.env.FIXED_GAS_PRICE;
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __AUTH_ENDPOINT__ = "https://auth.circles.name";
@@ -68,6 +69,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __RPC_ENDPOINT__ = process.env.RPC_ENDPOINT ?? "http://localhost:8545";
   __ALLOW_VERIFY__ = "true";
   __ALLOW_CREATE_ORGANISATION__ = "true";
+  __FIXED_GAS_PRICE__ = "1";
 }
 
 console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
@@ -88,6 +90,7 @@ console.log(`__OPENLOGIN_CLIENT_ID__: ${__OPENLOGIN_CLIENT_ID__}`);
 console.log(`__USE_MOCKS__: ${__USE_MOCKS__}`);
 console.log(`__ALLOW_VERIFY__: ${__ALLOW_VERIFY__}`);
 console.log(`__ALLOW_CREATE_ORGANISATION__: ${__ALLOW_CREATE_ORGANISATION__}`);
+console.log(`__FIXED_GAS_PRICE__: ${__FIXED_GAS_PRICE__}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
@@ -128,6 +131,15 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__FIXED_GAS_PRICE__",
+          replace: __FIXED_GAS_PRICE__,
+          flags: "g",
+        },
+      },
       {
         test: /\.ts|\.js|\.svelte$/,
         loader: "string-replace-loader",

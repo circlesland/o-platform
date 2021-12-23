@@ -1503,3 +1503,12 @@ query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
     }
   }
 }
+
+query findInvitationCreator($code:String!) {
+  findInvitationCreator(code:$code) {
+    circlesAddress
+    firstName
+    lastName
+    avatarUrl
+  }
+}
