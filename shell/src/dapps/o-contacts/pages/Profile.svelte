@@ -120,20 +120,6 @@ async function setProfile(id: string) {
   originalJumplistResult = await jumplist.items({ id: id }, runtimeDapp);
   jumplistResult = originalJumplistResult;
 
-  const verifyData = [
-    {
-      key: "verify",
-      icon: "check",
-      title: "Verify",
-      mutation: VerifySafeDocument,
-    },
-    {
-      key: "revoke",
-      icon: "trash",
-      title: "revoke Verification",
-      mutation: RevokeSafeVerificationDocument,
-    },
-  ];
   const sessionInfo = await getSessionInfo();
   capabilities = sessionInfo.capabilities;
   const canVerify =
@@ -161,7 +147,7 @@ async function setProfile(id: string) {
   };
 
   const unverifyProfile = {
-    key: "evoke",
+    key: "revoke",
     icon: "trash",
     colorClass: "",
     title: "Verified. click to Revoke",
