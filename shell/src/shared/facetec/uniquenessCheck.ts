@@ -1,6 +1,6 @@
 import {Config} from "./config";
 import {FaceTecSDK} from "./facetec-sdk/core-sdk/FaceTecSDK.js/FaceTecSDK";
-import {EnrollmentProcess} from "./scanProcessors/enrollmentProcess";
+import {EnrollmentProcess} from "./enrollmentProcess";
 import {call3ddbSearch} from "./facetec-api/call3ddbSearch";
 import {call3ddbEnroll} from "./facetec-api/call3ddbEnroll";
 import {callSessionToken} from "./facetec-api/callSessionToken";
