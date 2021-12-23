@@ -1,6 +1,6 @@
-import { FaceTecSDK } from "../facetec-sdk/core-sdk/FaceTecSDK.js/FaceTecSDK";
-import type { FaceTecSessionResult, FaceTecFaceScanResultCallback, FaceTecFaceScanProcessor } from "../facetec-sdk/core-sdk/FaceTecSDK.js/FaceTecPublicApi";
-import {callEnrollment3d} from "../facetec-api/callEnrollment3d";
+import { FaceTecSDK } from "./facetec-sdk/core-sdk/FaceTecSDK.js/FaceTecSDK";
+import type { FaceTecSessionResult, FaceTecFaceScanResultCallback, FaceTecFaceScanProcessor } from "./facetec-sdk/core-sdk/FaceTecSDK.js/FaceTecPublicApi";
+import {callEnrollment3d} from "./facetec-api/callEnrollment3d";
 
 export class EnrollmentProcess implements FaceTecFaceScanProcessor {
 

@@ -4,9 +4,7 @@ import {Page} from "@o-platform/o-interfaces/dist/routables/page";
 import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 import {ContactsDappState} from "./o-contacts.manifest";
 import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
-import {Profile} from "../shared/api/data/types";
-import {me} from "../shared/stores/me";
-import {UniquenessCheck} from "../shared/facetec/app";
+import {UniquenessCheck} from "../shared/facetec/uniquenessCheck";
 import {Environment} from "../shared/environment";
 
 const index: Page<any, ContactsDappState> = {
