@@ -61,14 +61,15 @@ const processDefinition = (processId: string) =>
       */
 
       init: {
-        entry: [(context: PromptGetInvitedContext) => {
+        entry: [
+          assign((context: PromptGetInvitedContext) => {
             const invite = localStorage.getItem("circlesInvite");
             if (invite && invite != "") {
               console.log("INVITE: ", invite);
               context.data.inviteCode = invite;
               return context;
             }
-          }
+          }),
         ],
         always: [
           {
