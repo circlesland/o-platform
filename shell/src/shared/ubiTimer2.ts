@@ -5,6 +5,7 @@ import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {CirclesAccount} from "@o-platform/o-circles/dist/model/circlesAccount";
 import {me} from "./stores/me";
 import {ApiClient} from "./apiConnection";
+import {Environment} from "./environment";
 
 export type UbiTimerContext = {
   nextUbiAt: number|null
@@ -108,7 +109,7 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
         throw new Error(`Cannot get the ubi. The context.tokenAddress is empty.`);
 
       const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress);
-      const circlesAccount = new CirclesAccount($me.circlesAddress, "__CIRCLES_HUB_ADDRESS__");
+      const circlesAccount = new CirclesAccount($me.circlesAddress, Environment.circlesHubAddress);
       const result = await circlesAccount.getUBI(privateKey, gnosisSafeProxy, context.tokenAddress);
       console.log(`Ubi request result (transactionHash):`, result.transactionHash);
       return result;

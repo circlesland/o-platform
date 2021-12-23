@@ -12,6 +12,7 @@ import {
   VerificationsCountDocument,
   ProfilesCountDocument,
 } from "../../../shared/api/data/types";
+import {Environment} from "../../../shared/environment";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -33,7 +34,7 @@ const init = async () => {
   canVerify =
     capabilities &&
     capabilities.find((o) => o.type == CapabilityType.Verify) &&
-    "__ALLOW_VERIFY__" == "true";
+    Environment.allowVerify;
 };
 
 let showInviteButton = false;

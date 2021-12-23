@@ -18,6 +18,7 @@ import { setTrust } from "../dapps/o-banking/processes/setTrust";
 import { me } from "./stores/me";
 import {showNotifications} from "./processes/showNotifications";
 import {inbox} from "./stores/inbox";
+import {Environment} from "./environment";
 
 export let context: NotificationViewerContext;
 
@@ -54,7 +55,7 @@ async function trust(circlesAddress) {
     window.o.runProcess(setTrust, {
       trustLimit: 100,
       trustReceiver: circlesAddress,
-      hubAddress: "__CIRCLES_HUB_ADDRESS__",
+      hubAddress: Environment.circlesHubAddress,
       safeAddress: $me.circlesAddress,
       privateKey: sessionStorage.getItem("circlesKey"),
       successAction: (data) => {

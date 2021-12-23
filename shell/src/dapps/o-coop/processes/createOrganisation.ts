@@ -17,6 +17,7 @@ import {GnosisSafeProxyFactory} from "@o-platform/o-circles/dist/safe/gnosisSafe
 import {show} from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
 import {BN} from "ethereumjs-util";
+import {Environment} from "../../../shared/environment";
 
 export type CreateOrganisationContextData = {
   successAction: (data:CreateOrganisationContextData) => void,
@@ -249,8 +250,8 @@ const processDefinition = (processId: string) =>
 
             const proxyFactory = new GnosisSafeProxyFactory(
               RpcGateway.get(),
-              "__SAFE_PROXY_FACTORY_ADDRESS__",
-              "__SAFE_ADDRESS__"
+              Environment.safeProxyFactoryAddress,
+              Environment.masterSafeAddress
             );
 
             context.data.organisationSafeProxy = await proxyFactory.deployNewSafeProxy(privateKey);
@@ -302,7 +303,7 @@ const processDefinition = (processId: string) =>
               throw new Error(`The private key is not unlocked`);
             }
 
-            const hub = new CirclesHub(RpcGateway.get(), "__CIRCLES_HUB_ADDRESS__");
+            const hub = new CirclesHub(RpcGateway.get(), Environment.circlesHubAddress);
             const receipt = await hub.signupOrganisation(privateKey, context.data.organisationSafeProxy);
             console.log(receipt)
           },

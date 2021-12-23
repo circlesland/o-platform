@@ -19,6 +19,7 @@ import { transfer } from "./o-banking/processes/transfer";
 import { push } from "svelte-spa-router";
 import { setTrust } from "./o-banking/processes/setTrust";
 import { contacts as contactStore } from "../shared/stores/contacts";
+import {Environment} from "../shared/environment";
 
 export interface DappState {
   // put state here
@@ -123,7 +124,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                         trustLimit: 0,
                         trustReceiver: recipientProfile.contactAddress,
                         safeAddress: $me.circlesAddress,
-                        hubAddress: "__CIRCLES_HUB_ADDRESS__",
+                        hubAddress: Environment.circlesHubAddress,
                         privateKey: sessionStorage.getItem("circlesKey"),
                       });
                     },
@@ -139,7 +140,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                         trustLimit: 100,
                         trustReceiver: recipientProfile.contactAddress,
                         safeAddress: $me.circlesAddress,
-                        hubAddress: "__CIRCLES_HUB_ADDRESS__",
+                        hubAddress: Environment.circlesHubAddress,
                         privateKey: sessionStorage.getItem("circlesKey"),
                       });
                     },
@@ -158,7 +159,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             window.o.runProcess(setTrust, {
               trustLimit: 100,
               safeAddress: $me.circlesAddress,
-              hubAddress: "__CIRCLES_HUB_ADDRESS__",
+              hubAddress: Environment.circlesHubAddress,
               privateKey: sessionStorage.getItem("circlesKey"),
             });
           },
@@ -173,7 +174,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           window.o.runProcess(setTrust, {
             trustLimit: 100,
             safeAddress: $me.circlesAddress,
-            hubAddress: "__CIRCLES_HUB_ADDRESS__",
+            hubAddress: Environment.circlesHubAddress,
             privateKey: sessionStorage.getItem("circlesKey"),
           });
         },

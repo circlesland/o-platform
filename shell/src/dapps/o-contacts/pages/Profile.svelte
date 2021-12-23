@@ -28,6 +28,7 @@ import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
 import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 import { isMobile } from "../../../shared/functions/isMobile";
+import {Environment} from "../../../shared/environment";
 
 export let id: string;
 export let jumplist: Jumplist<any, any> | undefined;
@@ -138,7 +139,7 @@ async function setProfile(id: string) {
   const canVerify =
     capabilities &&
     capabilities.find((o) => o.type == CapabilityType.Verify) &&
-    "__ALLOW_VERIFY__" == "true";
+    Environment.allowVerify;
 
   const verifyProfile = {
     key: "verify",

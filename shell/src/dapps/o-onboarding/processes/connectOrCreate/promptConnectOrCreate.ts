@@ -11,6 +11,7 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { GnosisSafeProxyFactory } from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { connectSafe } from "../connectSafe";
+import {Environment} from "../../../../shared/environment";
 
 export type PromptConnectOrCreateContextData = {
   forceCreate?: boolean;
@@ -96,8 +97,8 @@ const processDefinition = (processId: string) =>
 
             const proxyFactory = new GnosisSafeProxyFactory(
               RpcGateway.get(),
-              "__SAFE_PROXY_FACTORY_ADDRESS__",
-              "__SAFE_ADDRESS__"
+              Environment.safeProxyFactoryAddress,
+              Environment.masterSafeAddress
             );
             const safeProxy = await proxyFactory.deployNewSafeProxy(privateKey);
 

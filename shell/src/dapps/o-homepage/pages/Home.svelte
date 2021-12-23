@@ -16,9 +16,9 @@
 </script>
 
 <div class="flex flex-col overflow-hidden ">
-  <main className="h-screen overflow-hidden">
+  <main class="h-screen overflow-hidden">
     <TopNav {runtimeDapp} {routable}/>
-    <div className="mt-11">
+    <div class="mt-11">
       <VideoHeader/>
     </div>
   </main>

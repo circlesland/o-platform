@@ -1,5 +1,6 @@
 import OpenLogin, {OpenloginUserInfo} from "@toruslabs/openlogin";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {Environment} from "./environment";
 
 let openLogin: OpenLogin;
 
@@ -7,7 +8,7 @@ export type GetOpenLoginResult = OpenLogin|{login(args:any):{privKey:string}, ge
 
 export async function getOpenLogin(): Promise<GetOpenLoginResult> {
   // @ts-ignore - '__USE_MOCKS__' is replaced by the build process
-  if ("__USE_MOCKS__" == "true")
+  if (Environment.useMockLogin)
   {
     return <GetOpenLoginResult>{
       async login(params: any): Promise<{ privKey: string }> {
@@ -32,7 +33,7 @@ export async function getOpenLogin(): Promise<GetOpenLoginResult> {
 
   if (!openLogin) {
     openLogin = new OpenLogin({
-      clientId: "__OPENLOGIN_CLIENT_ID__",
+      clientId: Environment.openLoginClientId,
       network: "mainnet",
       uxMode: "popup", // default is redirect , popup mode is also supported
     });

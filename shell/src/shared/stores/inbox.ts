@@ -21,6 +21,7 @@ import {me} from "./me";
 import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 import {fSetTrust} from "../../dapps/o-banking/processes/setTrust";
 import {ApiClient} from "../apiConnection";
+import {Environment} from "../environment";
 
 let events: ProfileEvent[] = [];
 let following: boolean = false;
@@ -204,7 +205,7 @@ export async function followTrust(profile: Profile | Organisation) {
         data: {
           safeAddress: profile.circlesAddress,
           trustLimit: 0,
-          hubAddress: "__CIRCLES_HUB_ADDRESS__",
+          hubAddress: Environment.circlesHubAddress,
           trustReceiver: address,
           privateKey: sessionStorage.getItem("circlesKey")
         },
@@ -219,7 +220,7 @@ export async function followTrust(profile: Profile | Organisation) {
         data: {
           safeAddress: profile.circlesAddress,
           trustLimit: 100,
-          hubAddress: "__CIRCLES_HUB_ADDRESS__",
+          hubAddress: Environment.circlesHubAddress,
           trustReceiver: address,
           privateKey: sessionStorage.getItem("circlesKey")
         },

@@ -9,6 +9,7 @@ import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {TagTransactionDocument} from "../../../shared/api/data/types";
 import type {TransactionReceipt} from "web3-core";
+import {Environment} from "../../../shared/environment";
 
 export type TransferCirclesContextData = {
   safeAddress: string;
@@ -65,7 +66,7 @@ export async function fTransferCircles (safeAddress:string, privateKey:string, p
       values.push(new BN(transfer.value));
     });
 
-    const transferTroughResult = await new CirclesHub(RpcGateway.get(), "__CIRCLES_HUB_ADDRESS__").transferTrough(
+    const transferTroughResult = await new CirclesHub(RpcGateway.get(), Environment.circlesHubAddress).transferTrough(
       privateKey,
       gnosisSafeProxy,
       tokenOwners,
