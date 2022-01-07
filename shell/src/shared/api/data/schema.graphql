@@ -457,6 +457,7 @@ type Profile {
     lastName: String
     memberships: [Membership!]
     newsletter: Boolean
+    origin: ProfileOrigin
     status: String
     successorOfCirclesAddress: String
     type: String
@@ -777,6 +778,12 @@ enum EventType {
     SafeVerified
     SaleEvent
     WelcomeMessage
+}
+
+enum ProfileOrigin {
+    CirclesGarden
+    CirclesLand
+    Unknown
 }
 
 enum SortOrder {

@@ -33,8 +33,6 @@ export class UniquenessCheck {
       throw new Error(`No sessionId`);
     }
 
-    console.log("Enrollment process onSuccess:", enrollmentResult)
-
     const searchResultJson = await call3ddbSearch(
       enrollmentResult.sessionId,
       randomId,
