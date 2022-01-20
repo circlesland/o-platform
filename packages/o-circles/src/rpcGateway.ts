@@ -40,6 +40,7 @@ export class RpcGateway {
   };
 
   static async getGasPrice() {
+    /*
     const defaultGasPrice = 3;
 
     if (
@@ -76,6 +77,9 @@ export class RpcGateway {
     };
 
     return gasPriceInWei;
+     */
+
+    return new BN(await RpcGateway.get().eth.getGasPrice());
   }
 
   static init() {
