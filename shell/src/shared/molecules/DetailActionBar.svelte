@@ -21,7 +21,7 @@ function handleClick(action) {
   }
 }
 
-let moreItems = actions.length > 2 ? actions.splice(2) : undefined;
+let moreItems = actions && actions.length > 2 ? actions.splice(2) : undefined;
 </script>
 
 {#if actions}
@@ -42,6 +42,7 @@ let moreItems = actions.length > 2 ? actions.splice(2) : undefined;
         <ActionListItem icon="{showMore ? 'morevertical' : 'more'}" title="" />
       </div>
     {/if}
+
     {#each actions as action}
       <ActionListItem
         icon="{action.icon}"

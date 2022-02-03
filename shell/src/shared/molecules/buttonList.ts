@@ -1,6 +1,5 @@
 import ButtonContext from "../atoms/button/buttonContext";
 
-export default interface ButtonGroupContext {
-  style?: string; // stack | inline
+export default interface ButtonList {
   buttons: ButtonContext[];
 }

@@ -5,10 +5,7 @@ import { me } from "../../../shared/stores/me";
 import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { showToast } from "../../../shared/toast";
-import {
-  Jumplist,
-  JumplistItem,
-} from "@o-platform/o-interfaces/dist/routables/jumplist";
+
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {
   Capability,
@@ -28,9 +25,10 @@ import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
 import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 import { isMobile } from "../../../shared/functions/isMobile";
+import { UserActions, UserActionItem } from "../../../shared/userActions";
 
 export let id: string;
-export let jumplist: Jumplist<any, any> | undefined;
+
 export let runtimeDapp: RuntimeDapp<any>;
 export let capabilities: Capability[] | undefined;
 
@@ -43,8 +41,7 @@ let commonTrusts: CommonTrust[] = [];
 let profile: Profile;
 let contact: Contact;
 
-let jumplistResult: JumplistItem[] = [];
-let originalJumplistResult: JumplistItem[] = [];
+let detailActions: UserActionItem[];
 
 $: {
   isLoading = true;
@@ -86,6 +83,8 @@ async function setProfile(id: string) {
 
   profile = contact.contactAddress_Profile;
 
+  detailActions = await UserActions.getAvailableActions(profile);
+
   if (contact.metadata) {
     const trustMetadata: ContactPoint = contact.metadata.find(
       (p) => p.name === EventType.CrcTrust
@@ -115,9 +114,6 @@ async function setProfile(id: string) {
   }
 
   isMe = profile.id == ($me ? $me.id : 0);
-
-  originalJumplistResult = await jumplist.items({ id: id }, runtimeDapp);
-  jumplistResult = originalJumplistResult;
 
   const verifyData = [
     {
@@ -179,6 +175,8 @@ async function setProfile(id: string) {
       setProfile(id).then(() => (isLoading = false));
     },
   };
+  console.log("banni", unverifyProfile);
+
   const bannedProfile = {
     key: "banned",
     icon: "trash",
@@ -193,12 +191,12 @@ async function setProfile(id: string) {
       profile.verifications[0] &&
       profile.verifications[0].revokedAt
     ) {
-      jumplistResult.push(bannedProfile);
+      detailActions.push(bannedProfile);
     } else {
       if (profile.verifications.length) {
-        jumplistResult.push(unverifyProfile);
+        detailActions.push(unverifyProfile);
       } else {
-        jumplistResult.push(verifyProfile);
+        detailActions.push(verifyProfile);
       }
     }
   }
@@ -350,9 +348,9 @@ async function setProfile(id: string) {
         </div>
       </div>
 
-      {#if profile && jumplistResult && !isMe}
+      {#if profile && detailActions && !isMe}
         <div class="sticky bottom-0 left-0 right-0 w-full pb-5 bg-white">
-          <DetailActionBar actions="{jumplistResult}" />
+          <DetailActionBar actions="{detailActions}" />
         </div>
       {/if}
     </div>

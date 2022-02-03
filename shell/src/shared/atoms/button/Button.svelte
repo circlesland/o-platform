@@ -21,7 +21,7 @@ function handleClick(action) {
 }
 
 let iconClass =
-  "button-icon absolute right-2 top-2/4	transform -translate-y-2/4 ";
+  "button-icon absolute right-2 top-2/4	transform -translate-y-2/4";
 </script>
 
 <button

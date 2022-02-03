@@ -36,10 +36,6 @@ export interface UserActionItem {
 }
 
 export class UserActions {
-  // public static instance() {
-  //   return this._instance;
-  // }
-
   static async getSingleAction(targetUser: Profile, actionKey: string) {
     let actions = await this.getAvailableActions(targetUser);
 
