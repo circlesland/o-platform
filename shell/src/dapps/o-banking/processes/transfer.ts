@@ -331,7 +331,7 @@ const processDefinition = (processId: string) =>
 
               context.messages[
                 "tokens"
-              ] = `The chosen amount exceeds the maximum transferable amount of (${maxFlowInTc.toFixed(2)}).`;
+              ] = `The chosen amount exceeds the maximum transferable amount of (${maxFlowInTc.toFixed(2)}) €.`;
             },
             target: "#tokens",
           },
