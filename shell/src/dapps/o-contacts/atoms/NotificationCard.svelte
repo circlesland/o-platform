@@ -68,7 +68,8 @@ onMount(async () => {
 
     eventActions.forEach((action) => {
       let foundAction = userActions.find((o) => o.key === action.action);
-      if (foundAction) {
+      // TODO: Find a better way to hide untrust, but show 'trust'
+      if (foundAction && foundAction.title !== "Untrust") {
         usableUserActions[action.action] = foundAction;
       }
     });
