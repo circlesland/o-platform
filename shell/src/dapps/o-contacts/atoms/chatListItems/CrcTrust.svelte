@@ -65,7 +65,3 @@ function getValues(): {
   <Icons icon="{values.icon}" />
   <h1 class="uppercase font-heading">{values.title}</h1>
 </div>
-<div class="mt-2"></div>
-<div class="mt-4">
-  <DetailActionBar actions="{values.actions}" />
-</div>

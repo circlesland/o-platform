@@ -90,6 +90,3 @@ function getValues(): {
 <div class="mt-2">
   {values.text}
 </div>
-<div class="mt-4">
-  <DetailActionBar actions="{values.actions}" />
-</div>

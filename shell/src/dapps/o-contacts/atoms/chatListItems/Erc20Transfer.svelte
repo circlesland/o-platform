@@ -1,10 +1,7 @@
 <script lang="ts">
 import DetailActionBar from "../../../../shared/molecules/DetailActionBar.svelte";
 import Icons from "../../../../shared/molecules/Icons.svelte";
-import {
-  Erc20Transfer,
-  ProfileEvent,
-} from "../../../../shared/api/data/types";
+import { Erc20Transfer, ProfileEvent } from "../../../../shared/api/data/types";
 import { displayCirclesAmount } from "../../../../shared/functions/displayCirclesAmount";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";
@@ -25,7 +22,7 @@ values = getValues();
 onMount(async () => {
   values.actions = await banking.jumplist.items(
     {
-      id: event.contact_address
+      id: event.contact_address,
     },
     null
   );
@@ -81,7 +78,4 @@ function getValues(): {
 </div>
 <div class="mt-2">
   {values.text}
-</div>
-<div class="mt-4">
-  <DetailActionBar actions="{values.actions}" />
 </div>

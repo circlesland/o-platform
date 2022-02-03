@@ -2,6 +2,7 @@ import { UserActionItem } from "../../userActions";
 
 export default interface ButtonGroupLayout {
   orientation: "stack" | "inline";
+  alignment: "left" | "center" | "right";
   labels: {
     [x: string]: LabelOverride;
   };

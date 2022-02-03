@@ -52,7 +52,10 @@ function submit() {
 
 {#if actions}
   <div
-    class="flex justify-center w-full"
+    class="flex w-full"
+    class:justify-left="{layout.alignment == 'left'}"
+    class:justify-center="{layout.alignment == 'center'}"
+    class:justify-right="{layout.alignment == 'right'}"
     class:flex-col="{layout.orientation == 'stack'}"
     class:space-y-4="{layout.orientation == 'stack'}"
     class:flex-row="{layout.orientation == 'inline'}"
