@@ -5,11 +5,15 @@ import Common from "ethereumjs-common";
 
 export class RpcGateway {
   private static gateway = ""; //"https://rpc.circles.land/";
+  private static fixedGasPrice = 0; //"https://rpc.circles.land/";
   private static _web3?: Web3;
   private static _provider?: HttpProvider;
 
-  static setup(rpcEndpoint:string) {
+  static setup(rpcEndpoint:string, fixedGasPrice?:number) {
     this.gateway = rpcEndpoint;
+    if (fixedGasPrice) {
+      this.fixedGasPrice = fixedGasPrice;
+    }
   }
 
   static get(): Web3 {
@@ -43,9 +47,14 @@ export class RpcGateway {
     /*
     const defaultGasPrice = 3;
 
+    if (this.fixedGasPrice) {
+      console.warn(`Using fixed gas prices of ${this.fixedGasPrice}`);
+      return new BN(this.fixedGasPrice.toString());
+    }
+
     if (
       this._lastGasPrice &&
-      this._lastGasPrice.time > Date.now() - 60 * 1000
+      this._lastGasPrice.time > Date.now() - 10000
     ) {
       return this._lastGasPrice.gasPriceInWei;
     }
@@ -58,7 +67,7 @@ export class RpcGateway {
       const resultJson = await result.json();
       gasPriceInWei = new BN(
         RpcGateway.get()
-          .utils.toWei(resultJson.fast.toString(), "gwei")
+          .utils.toWei(resultJson.average.toString(), "gwei")
           .toString()
       );
     } catch (e) {

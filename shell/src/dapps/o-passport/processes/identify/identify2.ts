@@ -20,6 +20,7 @@ import {
   Profile,
   UpsertProfileDocument,
 } from "../../../../shared/api/data/types";
+import {Environment} from "../../../../shared/environment";
 
 export type IdentifyContextData = {
   oneTimeCode?: string;
@@ -102,7 +103,7 @@ const processDefinition = (processId: string) =>
           data: {
             data: (context, event) => {
               return {
-                appId: "__APP_ID__",
+                appId: Environment.appId,
                 code: context.data.oneTimeCode,
               };
             },
