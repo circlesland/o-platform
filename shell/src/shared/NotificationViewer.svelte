@@ -132,7 +132,7 @@ function submit() {
         actions="{userActions}"
         layout="{{
           orientation: 'inline',
-          alignment: 'left',
+          alignment: 'center',
           labels: {
             setTrust: (action) =>
               `${action.title} ${data.contact_address_profile.firstName}`,
