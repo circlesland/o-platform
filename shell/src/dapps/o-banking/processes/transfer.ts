@@ -37,9 +37,9 @@ import TransferSummary from "../atoms/TransferSummary.svelte";
 import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Currency } from "../../../shared/currency";
+import {get} from "svelte/store";
+import {format} from "svelte-i18n";
 
-// { _ } from "svelte-i18n";
-// import { get } from "svelte/store";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -90,20 +90,21 @@ export type TransferContext = ProcessContext<TransferContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelRecipientAddress: "Select the recipient you want to send money to",
-  tokensLabel: "Please enter the amount",
-  currencyCircles: "CRC",
-  currencyXdai: "xDai",
-  summaryLabel: "Summary",
-  messageLabel: "Purpose of transfer",
+  labelRecipientAddress: window.i18n("dapps.o-banking.processes.transfer.strings.tokensLabel"),
+  tokensLabel: window.i18n( "dapps.o-banking.processes.transfer.strings.tokensLabel"),
+  currencyCircles: window.i18n("dapps.o-banking.processes.transfer.strings.currencyCircles"),
+  currencyXdai: window.i18n("dapps.o-banking.processes.transfer.strings.currencyXdai"),
+  summaryLabel: window.i18n("dapps.o-banking.processes.transfer.strings.summaryLabel"),
+  messageLabel: window.i18n("dapps.o-banking.processes.transfer.strings.messageLabel")
 };
+
 
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
-    title: "Select the recipient you want to send money to",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.title"),
     description: "",
-    placeholder: "Recipient",
-    submitButtonText: "Enter Name",
+    placeholder: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.placeholder"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.submitButtonText"),
   },
   recipientSafeAddress: {
     title: "Enter the recipients safe address",
