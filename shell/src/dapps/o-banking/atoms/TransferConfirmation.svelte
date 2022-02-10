@@ -11,6 +11,10 @@ import { loadProfile } from "../../../shared/functions/loadProfile";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import { Currency } from "../../../shared/currency";
 
+import { _ } from "svelte-i18n";
+import { dappFrame } from "../../o-onboarding/components/dappFrame";
+import { dapps } from "../../../loader";
+
 export let context: any;
 let _context: any;
 let profile: any;
@@ -65,13 +69,13 @@ function onkeydown(e: KeyboardEvent) {
     <div class="text-dark-lightest">
       {_context.data.message && _context.data.message != undefined
         ? _context.data.message
-        : ""}
+        : ""}"
     </div>
 
     {#if _context.data && _context.data.transitivePath}
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          Payment Path
+          {$_("dapps.o-banking.atoms.transferConfirmation.paymentPath")}
         </div>
         <div class="flex items-center w-full">
           <CirclesTransferGraph
@@ -82,7 +86,7 @@ function onkeydown(e: KeyboardEvent) {
       </div>
     {/if}
     <div class="flex flex-col w-full space-y-1">
-      <div class="mb-1 text-left text-2xs text-dark-lightest">Date</div>
+      <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("common.date")}/div>
 
       <div class="flex items-center w-full">
         <div class="text-left ">
@@ -108,7 +112,7 @@ function onkeydown(e: KeyboardEvent) {
 
     <div class="flex flex-col w-full space-y-1">
       <div class="mb-1 text-left text-2xs text-dark-lightest">
-        Recipient Address
+        {$_("dapps.o-banking.atoms.transferConfirmation.recipientAddress")}
       </div>
 
       <div class="flex items-center w-full">

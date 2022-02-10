@@ -4,7 +4,11 @@
     "trusted": "trusted",
     "untrusted": "untrusted",
     "you": "you",
-    "tokens": "tokens"
+    "tokens": "tokens",
+    "from": "From",
+    "to": "To",
+    "block": "Block",
+    "date": "Date"
   },
   "dapps": {
     "o-banking": {
@@ -31,7 +35,8 @@
         "transactionDetail": {
           "paymentPath": "Payment Path",
           "fullAmountCrc": "Full amount in CRC",
-          "amountCircles": "Amount Circles"
+          "amountCircles": "Amount Circles",
+          "transactionHash": "Transaction Hash"
         }
       },
       "processes": {

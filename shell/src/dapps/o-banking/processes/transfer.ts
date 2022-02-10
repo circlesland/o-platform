@@ -29,7 +29,6 @@ import {
   QueryDirectPathArgs,
 } from "../../../shared/api/data/types";
 import {
-  convertCirclesToTimeCircles,
   convertTimeCirclesToCircles,
   displayCirclesAmount,
 } from "../../../shared/functions/displayCirclesAmount";
@@ -39,8 +38,8 @@ import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Currency } from "../../../shared/currency";
 
-import { _ } from "svelte-i18n";
-import { get } from "svelte/store";
+// { _ } from "svelte-i18n";
+// import { get } from "svelte/store";
 
 export type TransferContextData = {
   safeAddress: string;
@@ -91,7 +90,7 @@ export type TransferContext = ProcessContext<TransferContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelRecipientAddress: get(_)("dapps.o-banking.processes.transfer.strings.labelRecipientAddress"),
+  labelRecipientAddress: "Select the recipient you want to send money to",
   tokensLabel: "Please enter the amount",
   currencyCircles: "CRC",
   currencyXdai: "xDai",
@@ -265,14 +264,30 @@ const processDefinition = (processId: string) =>
                 .toString();
 
               const flow = await findDirectTransfers(
-                  context.data.safeAddress,
-                  context.data.recipientAddress,
-                  circlesValueInWei
+                context.data.safeAddress,
+                context.data.recipientAddress,
+                circlesValueInWei
               );
 
+              // TODO: Re-implement pathfinder when available again
+              /*
+
+              const flow = await requestPathToRecipient({
+                data: {
+                  recipientAddress: context.data.recipientAddress,
+                  amount:
+                    context.data.tokens.currency == "crc"
+                      ? convertTimeCirclesToCircles(
+                          Number.parseFloat(context.data.tokens.amount),
+                          null
+                        ).toString()
+                      : context.data.tokens.amount,
+                  safeAddress: context.data.safeAddress,
+                },
+              });
+ */
               context.data.maxFlows["crc"] = flow.flow;
               context.data.transitivePath = flow;
-
               resolve();
             });
             context.data.maxFlows["xdai"] =
@@ -293,24 +308,17 @@ const processDefinition = (processId: string) =>
                   context.data.tokens.currency.toLowerCase()
                 ]
               );
+              const amountInWei = new BN(
+                RpcGateway.get().utils.toWei(
+                  convertTimeCirclesToCircles(
+                    Number.parseFloat(context.data.tokens.amount),
+                    null
+                  ).toString(),
+                  "ether"
+                )
+              );
 
-              const amount =
-                  context.data.tokens.currency == "crc"
-                      ? convertTimeCirclesToCircles(
-                          Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
-                          null
-                      ).toString()
-                      : context.data.tokens.amount;
-
-              const circlesValueInWei = new BN(RpcGateway.get()
-                  .utils.toWei(amount.toString() ?? "0", "ether")
-                  .toString());
-
-              if (maxFlowInWei.lt(circlesValueInWei)) {
-                console.log(`The max flow is smaller than the entered value (${circlesValueInWei}). Max flow: ${maxFlowInWei}`);
-              }
-
-              return maxFlowInWei.gte(circlesValueInWei);
+              return maxFlowInWei.gte(amountInWei);
             },
             target: "#loadRecipientProfile",
           },
@@ -323,18 +331,24 @@ const processDefinition = (processId: string) =>
                   $me.displayTimeCircles === undefined;
               });
               unsubscribeMe();
-
-              const maxFlowInWei = new BN(
-                  context.data.maxFlows[
-                      context.data.tokens.currency.toLowerCase()
-                      ]
+              const formattedAmount = parseFloat(
+                displayCirclesAmount(
+                  context.data.tokens.amount.toString(),
+                  null,
+                  displayTimeCircles
+                ).toString()
               );
-
-              const maxFlowInTc = convertCirclesToTimeCircles(parseFloat(RpcGateway.get().utils.fromWei(maxFlowInWei, "ether")) / 10.1, null)
-
+              const formattedMax = parseFloat(
+                RpcGateway.get().utils.fromWei(
+                  context.data.maxFlows[
+                    context.data.tokens.currency.toLowerCase()
+                  ].toString(),
+                  "ether"
+                )
+              ).toFixed(2);
               context.messages[
                 "tokens"
-              ] = `The chosen amount exceeds the maximum transferable amount of (${maxFlowInTc.toFixed(2)}).`;
+              ] = `The chosen amount exceeds the maximum transferable amount of (${formattedMax}).`;
             },
             target: "#tokens",
           },
