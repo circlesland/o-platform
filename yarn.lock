@@ -7386,7 +7386,7 @@ fs.realpath@^1.0.0:
 
 fsevents@^1.2.7:
   version "1.2.13"
-  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-1.2.13.tgz#f325cb0455592428bcf11b383370ef70e3bfcc38"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz"
   integrity sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==
   dependencies:
     bindings "^1.5.0"
@@ -7394,7 +7394,7 @@ fsevents@^1.2.7:
 
 fsevents@^2.3.2, fsevents@~2.3.2:
   version "2.3.2"
-  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
 
 function-bind@^1.1.1:
@@ -14448,10 +14448,10 @@ supports-hyperlinks@^2.0.0:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
 
-svelecte@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.npmjs.org/svelecte/-/svelecte-3.2.1.tgz"
-  integrity sha512-6lMFgu96Z3WdBrbGcCWIKw0MaLUOgQW2+Y+MYj+XWWlDLWxEJxhU/WxavYsjwo8FCV0Dfj7efjQUIUcrw3D2sg==
+svelecte@^3.5.6:
+  version "3.5.6"
+  resolved "https://registry.npmjs.org/svelecte/-/svelecte-3.5.6.tgz"
+  integrity sha512-I7V5AeiIcF/hSme8Ld4w6/RO1ADsDklrm3UpE3Yng7xGRT+6onXw+yMGfr28EIiURLaOPXCsjr7f3e1MnYf6NQ==
   dependencies:
     svelte-tiny-virtual-list "^1.1.7"
 

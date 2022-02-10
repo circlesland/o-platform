@@ -88,8 +88,6 @@ export type TransferContext = ProcessContext<TransferContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelRecipientAddress: "Select the recipient you want to send money to",
-  tokensLabel: "Please enter the amount",
   currencyCircles: "CRC",
   currencyXdai: "xDai",
   summaryLabel: "Summary",
@@ -98,7 +96,7 @@ const strings = {
 
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
-    title: "Select the recipient you want to send money to",
+    title: "Enter the recipient you want to send money to",
     description: "",
     placeholder: "Recipient",
     submitButtonText: "Enter Name",
@@ -262,9 +260,9 @@ const processDefinition = (processId: string) =>
                 .toString();
 
               const flow = await findDirectTransfers(
-                  context.data.safeAddress,
-                  context.data.recipientAddress,
-                  circlesValueInWei
+                context.data.safeAddress,
+                context.data.recipientAddress,
+                circlesValueInWei
               );
 
               context.data.maxFlows["crc"] = flow.flow;
@@ -292,19 +290,23 @@ const processDefinition = (processId: string) =>
               );
 
               const amount =
-                  context.data.tokens.currency == "crc"
-                      ? convertTimeCirclesToCircles(
-                          Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
-                          null
-                      ).toString()
-                      : context.data.tokens.amount;
+                context.data.tokens.currency == "crc"
+                  ? convertTimeCirclesToCircles(
+                      Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
+                      null
+                    ).toString()
+                  : context.data.tokens.amount;
 
-              const circlesValueInWei = new BN(RpcGateway.get()
+              const circlesValueInWei = new BN(
+                RpcGateway.get()
                   .utils.toWei(amount.toString() ?? "0", "ether")
-                  .toString());
+                  .toString()
+              );
 
               if (maxFlowInWei.lt(circlesValueInWei)) {
-                console.log(`The max flow is smaller than the entered value (${circlesValueInWei}). Max flow: ${maxFlowInWei}`);
+                console.log(
+                  `The max flow is smaller than the entered value (${circlesValueInWei}). Max flow: ${maxFlowInWei}`
+                );
               }
 
               return maxFlowInWei.gte(circlesValueInWei);
@@ -322,16 +324,23 @@ const processDefinition = (processId: string) =>
               unsubscribeMe();
 
               const maxFlowInWei = new BN(
-                  context.data.maxFlows[
-                      context.data.tokens.currency.toLowerCase()
-                      ]
+                context.data.maxFlows[
+                  context.data.tokens.currency.toLowerCase()
+                ]
               );
 
-              const maxFlowInTc = convertCirclesToTimeCircles(parseFloat(RpcGateway.get().utils.fromWei(maxFlowInWei, "ether")) / 10.1, null)
+              const maxFlowInTc = convertCirclesToTimeCircles(
+                parseFloat(
+                  RpcGateway.get().utils.fromWei(maxFlowInWei, "ether")
+                ) / 10.1,
+                null
+              );
 
               context.messages[
                 "tokens"
-              ] = `The chosen amount exceeds the maximum transferable amount of (${maxFlowInTc.toFixed(2)}) €.`;
+              ] = `The chosen amount exceeds the maximum transferable amount of (${maxFlowInTc.toFixed(
+                2
+              )}) €.`;
             },
             target: "#tokens",
           },
