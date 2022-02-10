@@ -38,6 +38,9 @@ import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Currency } from "../../../shared/currency";
 
+import { _ } from "svelte-i18n";
+import { get } from "svelte/store";
+
 export type TransferContextData = {
   safeAddress: string;
   recipientAddress?: string;
@@ -87,7 +90,7 @@ export type TransferContext = ProcessContext<TransferContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelRecipientAddress: "Select the recipient you want to send money to",
+  labelRecipientAddress: get(_)("dapps.o-banking.processes.transfer.strings.labelRecipientAddress"),
   tokensLabel: "Please enter the amount",
   currencyCircles: "CRC",
   currencyXdai: "xDai",
