@@ -69,7 +69,7 @@ function onkeydown(e: KeyboardEvent) {
     <div class="text-dark-lightest">
       {_context.data.message && _context.data.message != undefined
         ? _context.data.message
-        : ""}"
+        : ""}
     </div>
 
     {#if _context.data && _context.data.transitivePath}
@@ -86,7 +86,7 @@ function onkeydown(e: KeyboardEvent) {
       </div>
     {/if}
     <div class="flex flex-col w-full space-y-1">
-      <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("common.date")}/div>
+      <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("common.date")}</div>
 
       <div class="flex items-center w-full">
         <div class="text-left ">
