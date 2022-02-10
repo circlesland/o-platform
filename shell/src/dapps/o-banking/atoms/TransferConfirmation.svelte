@@ -12,8 +12,6 @@ import { displayableName } from "../../../shared/functions/stringHelper";
 import { Currency } from "../../../shared/currency";
 
 import { _ } from "svelte-i18n";
-import { dappFrame } from "../../o-onboarding/components/dappFrame";
-import { dapps } from "../../../loader";
 
 export let context: any;
 let _context: any;
