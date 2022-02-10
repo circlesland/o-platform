@@ -29,6 +29,7 @@ import {
   QueryDirectPathArgs,
 } from "../../../shared/api/data/types";
 import {
+  convertCirclesToTimeCircles,
   convertTimeCirclesToCircles,
   displayCirclesAmount,
 } from "../../../shared/functions/displayCirclesAmount";
@@ -264,30 +265,14 @@ const processDefinition = (processId: string) =>
                 .toString();
 
               const flow = await findDirectTransfers(
-                context.data.safeAddress,
-                context.data.recipientAddress,
-                circlesValueInWei
+                  context.data.safeAddress,
+                  context.data.recipientAddress,
+                  circlesValueInWei
               );
 
-              // TODO: Re-implement pathfinder when available again
-              /*
-
-              const flow = await requestPathToRecipient({
-                data: {
-                  recipientAddress: context.data.recipientAddress,
-                  amount:
-                    context.data.tokens.currency == "crc"
-                      ? convertTimeCirclesToCircles(
-                          Number.parseFloat(context.data.tokens.amount),
-                          null
-                        ).toString()
-                      : context.data.tokens.amount,
-                  safeAddress: context.data.safeAddress,
-                },
-              });
- */
               context.data.maxFlows["crc"] = flow.flow;
               context.data.transitivePath = flow;
+
               resolve();
             });
             context.data.maxFlows["xdai"] =
@@ -308,17 +293,24 @@ const processDefinition = (processId: string) =>
                   context.data.tokens.currency.toLowerCase()
                 ]
               );
-              const amountInWei = new BN(
-                RpcGateway.get().utils.toWei(
-                  convertTimeCirclesToCircles(
-                    Number.parseFloat(context.data.tokens.amount),
-                    null
-                  ).toString(),
-                  "ether"
-                )
-              );
 
-              return maxFlowInWei.gte(amountInWei);
+              const amount =
+                  context.data.tokens.currency == "crc"
+                      ? convertTimeCirclesToCircles(
+                          Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
+                          null
+                      ).toString()
+                      : context.data.tokens.amount;
+
+              const circlesValueInWei = new BN(RpcGateway.get()
+                  .utils.toWei(amount.toString() ?? "0", "ether")
+                  .toString());
+
+              if (maxFlowInWei.lt(circlesValueInWei)) {
+                console.log(`The max flow is smaller than the entered value (${circlesValueInWei}). Max flow: ${maxFlowInWei}`);
+              }
+
+              return maxFlowInWei.gte(circlesValueInWei);
             },
             target: "#loadRecipientProfile",
           },
@@ -331,24 +323,18 @@ const processDefinition = (processId: string) =>
                   $me.displayTimeCircles === undefined;
               });
               unsubscribeMe();
-              const formattedAmount = parseFloat(
-                displayCirclesAmount(
-                  context.data.tokens.amount.toString(),
-                  null,
-                  displayTimeCircles
-                ).toString()
-              );
-              const formattedMax = parseFloat(
-                RpcGateway.get().utils.fromWei(
+
+              const maxFlowInWei = new BN(
                   context.data.maxFlows[
-                    context.data.tokens.currency.toLowerCase()
-                  ].toString(),
-                  "ether"
-                )
-              ).toFixed(2);
+                      context.data.tokens.currency.toLowerCase()
+                      ]
+              );
+
+              const maxFlowInTc = convertCirclesToTimeCircles(parseFloat(RpcGateway.get().utils.fromWei(maxFlowInWei, "ether")) / 10.1, null)
+
               context.messages[
                 "tokens"
-              ] = `The chosen amount exceeds the maximum transferable amount of (${formattedMax}).`;
+              ] = `The chosen amount exceeds the maximum transferable amount of (${maxFlowInTc.toFixed(2)}).`;
             },
             target: "#tokens",
           },
