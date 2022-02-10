@@ -106,7 +106,7 @@ let profilesPromise = fetchProfilesCount();
             {/await}
           </div>
           <div class="text-center font-primary text-dark">
-            Verified Citizens
+            Behindert
           </div>
         </div>
       </div>

@@ -212,6 +212,8 @@
   import {initMachine} from "./dapps/o-onboarding/processes/init";
   import {ubiMachine} from "./shared/ubiTimer2";
   import * as bip39 from "bip39";
+import { isLoading } from "svelte-i18n";
+
 
   let ubiMachineInterpreter: any;
 
@@ -230,7 +232,6 @@
     "*": NotFound,
   };
 </script>
-
 <SvelteToast/>
 
 <Router routes="{_routes}" on:routeLoaded={() => {

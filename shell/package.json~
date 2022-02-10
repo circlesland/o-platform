@@ -29,7 +29,7 @@
     "apollo-link": "^1.2.14",
     "apollo-link-http": "^1.5.17",
     "graphql": "^15.5.0",
-    "@dicebear/avatars": "^4.6.3",
+    "@dicebear/avatars": "^5.6.3",
     "@dicebear/avatars-avataaars-sprites": "^4.6.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "svelte-time": "^0.6.0",

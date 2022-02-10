@@ -7,6 +7,19 @@ import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 dayjs.extend(relativeTime)
 RpcGateway.setup("__RPC_ENDPOINT__");
 
+import { addMessages, init } from "svelte-i18n";
+
+const en = require("./i18n/lang/en.json") ;
+
+addMessages("en", en);
+
+init({
+    fallbackLocale: "en",
+    initialLocale: "en",
+});
+
+
+
 // TODO: Use a service like 'https://github.com/ipfs/js-ipfs/blob/6870873f0696bb5d8d91fce4a4ef1f7420443993/packages/ipfs-message-port-server/src/server.js#L134'
 //       to share data between different app domains.
 declare global {
