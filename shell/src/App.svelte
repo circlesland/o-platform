@@ -205,7 +205,7 @@
 <script lang="ts">
   import "./shared/css/tailwind.css";
 
-  import Router from "svelte-spa-router";
+  import Router, {push} from "svelte-spa-router";
   import {SvelteToast} from "./shared/molecules/Toast";
   import DappFrame from "src/shared/molecules/DappFrame.svelte";
   import NotFound from "src/shared/pages/NotFound.svelte";
@@ -213,6 +213,7 @@
   import {initMachine} from "./dapps/o-onboarding/processes/init";
   import {ubiMachine} from "./shared/ubiTimer2";
   import * as bip39 from "bip39";
+  import {performOauth} from "./dapps/o-humanode/processes/performOauth";
 
   let ubiMachineInterpreter: any;
 
@@ -230,6 +231,8 @@
     "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
     "*": NotFound,
   };
+
+
 </script>
 
 <SvelteToast/>
