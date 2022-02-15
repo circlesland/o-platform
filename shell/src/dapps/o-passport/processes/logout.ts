@@ -1,18 +1,19 @@
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { LogoutDocument } from "../data/api/types";
+
 import { push } from "svelte-spa-router";
-import * as bip39 from "bip39";
+import { LogoutDocument } from "../../../shared/api/data/types";
+import { getOpenLogin } from "../../../shared/openLogin";
 
 export type LogoutContextData = {
+  successAction: (data: LogoutContextData) => void;
   loginEmail: string;
   checkSeedPhrase?: string;
   lastName?: string;
+  reLogin?: boolean;
   avatar?: {
     bytes: Buffer;
     mimeType: string;
@@ -21,70 +22,40 @@ export type LogoutContextData = {
 
 export type LogoutContext = ProcessContext<LogoutContextData>;
 
-const strings = {
-  labelCheckSeedPhrase:
-    "Please enter your seedphrase to logout. If you haven't stored your seedphrase at a safe place yet, do it now and come back again later to log-out.",
+const editorContent = {
+  logout: {
+    title: "Log out",
+    description:
+      "Please enter your Secret Recovery Code to logout. If you haven't stored your Secret Recovery Code at a safe place yet, do it now and come back again later to log-out.",
+    submitButtonText: "Log out",
+  },
 };
-
 const processDefinition = (processId: string) =>
   createMachine<LogoutContext, any>({
     id: `${processId}:logout`,
-    initial: "checkSeedPhrase",
+    initial: "logout",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<LogoutContext, any>("error"),
-
-      checkSeedPhrase: prompt<LogoutContext, any>({
-        fieldName: "checkSeedPhrase",
-        component: TextareaEditor,
-        params: {
-          label: strings.labelCheckSeedPhrase,
-        },
-        navigation: {
-          next: "#compareSeedPhrase",
-        },
-      }),
-      compareSeedPhrase: {
-        id: "compareSeedPhrase",
-        always: [
-          {
-            cond: (context) => {
-              let seedPhrase =
-                localStorage.getItem("circlesKey") &&
-                localStorage.getItem("circlesKey") != "0x123"
-                  ? bip39.entropyToMnemonic(
-                      localStorage
-                        .getItem("circlesKey")
-                        .substr(
-                          2,
-                          localStorage.getItem("circlesKey").length - 2
-                        )
-                    )
-                  : "<no private key>";
-              const match = context.data.checkSeedPhrase.trim() == seedPhrase;
-              if (!match) {
-                context.messages["checkSeedPhrase"] =
-                  "The seedphrases don't match";
-              }
-              return match;
-            },
-            target: "#logout",
-          },
-          {
-            target: "#checkSeedPhrase",
-          },
-        ],
-      },
       logout: {
         id: "logout",
         invoke: {
           src: async (context) => {
+            const openLogin = await getOpenLogin();
+
+            sessionStorage.removeItem("circlesKey");
+            sessionStorage.removeItem("keyCache");
+            localStorage.removeItem("circlesKeys");
+            localStorage.removeItem("me");
+
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: LogoutDocument,
             });
+            await openLogin.logout({});
+
             return result.data.logout.success;
           },
           onDone: "#success",
@@ -94,12 +65,12 @@ const processDefinition = (processId: string) =>
       success: {
         type: "final",
         id: "success",
+        entry: (context) => {
+          if (context.data.successAction) {
+            context.data.successAction(context.data);
+          }
+        },
         data: (context, event: any) => {
-          localStorage.removeItem("safe");
-          localStorage.removeItem("circlesAccount");
-          localStorage.removeItem("circlesKey");
-          localStorage.removeItem("isCreatingSafe");
-          localStorage.removeItem("me");
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut",
           });

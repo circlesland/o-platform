@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { showToast } from "../toast";
-
-  export let name;
-
-  let textarea;
-
-  onMount(() => {
-    textarea.select();
-    document.execCommand("copy");
-    showToast("success", "Copied to Clipboard!");
-  });
+import { createEventDispatcher } from "svelte";
+import { showToast } from "../toast";
+export let text: string;
+const dispatch = createEventDispatcher<{ copy: string; fail: never }>();
+const copy = () => {
+  navigator.clipboard.writeText(text).then(
+    () => {
+      showToast("success", "Copied to Clipboard!");
+    },
+    (e) => dispatch("fail")
+  );
+};
 </script>
 
-<textarea bind:value={name} bind:this={textarea} />
+<slot copy="{copy}" />

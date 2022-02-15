@@ -1,0 +1,14 @@
+{
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "jsxBracketSameLine": true,
+  "bracketSpacing": true,
+  "svelteSortOrder": "options-scripts-markup-styles",
+  "svelteStrictMode": true,
+  "svelteBracketNewLine": false,
+  "svelteAllowShorthand": false,
+  "svelteIndentScriptAndStyle": false
+}

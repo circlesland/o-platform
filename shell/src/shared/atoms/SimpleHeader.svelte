@@ -1,11 +1,14 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
-  export let showBackArrow: boolean = false;
-  export let showHomeButton: boolean = true;
+  import PageHeader from "src/shared/atoms/PageHeader.svelte";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
+
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
+  export let headerString: string = null;
 </script>
 
-<TopNav {showHomeButton} {showBackArrow} />
+<TopNav {runtimeDapp} {routable} {headerString} />
 
-<div
-  class="h-24 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
-/>
+<PageHeader heightClass="h-8 mt-12" />

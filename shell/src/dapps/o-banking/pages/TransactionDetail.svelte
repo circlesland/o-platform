@@ -1,277 +1,271 @@
 <script lang="ts">
-  import { Transfer } from "../data/circles/queries";
-  import Time from "svelte-time";
-  import { mySafe } from "../stores/safe";
-  import BankingDetailHeader from "../atoms/BankingDetailHeader.svelte";
-  import { push } from "svelte-spa-router";
-  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
-  import { AvataarGenerator } from "../../../shared/avataarGenerator";
+import Time from "svelte-time";
+import { push } from "svelte-spa-router";
+import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+import { onMount } from "svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { me } from "../../../shared/stores/me";
+import { Currency } from "../../../shared/currency";
+import {
+  CrcHubTransfer,
+  CrcMinting,
+  Erc20Transfer,
+  Profile,
+  ProfileEvent,
+} from "../../../shared/api/data/types";
+import { transactions } from "../../../shared/stores/transactions";
+export let transactionHash: string;
+let transfer: ProfileEvent;
+let classes: string;
+let path: any;
+let fromProfile: Profile;
+let toProfile: Profile;
+let targetProfile: Profile;
+let message: string = "";
+let error: string;
+let displayableName: string = "";
 
-  export let params: {
-    _id: string;
-  };
+onMount(async () => {
+  transfer = await transactions.findByHash(transactionHash);
+  if (transfer && transfer.payload?.__typename == "CrcMinting") {
+    const minting = transfer.payload as CrcMinting;
 
-  let transfer: Transfer;
-  let pictureUrl: string;
-  let displayName: string;
-  let displayableFromName: string;
-  let classes: string;
-  let message: String;
-  let amountInWei: string;
-  let otherSafeAddress: string;
+    toProfile = minting.to_profile ?? {
+      id: 0,
+      firstName: minting.to,
+      lastName: "",
+      circlesAddress: minting.to,
+    };
+    fromProfile = toProfile;
+  }
+  if (transfer && transfer.payload?.__typename == "Erc20Transfer") {
+    const erc20Transfer = transfer.payload as Erc20Transfer;
+    fromProfile = erc20Transfer.from_profile ?? {
+      id: 0,
+      firstName: erc20Transfer.from,
+      lastName: "",
+      circlesAddress: erc20Transfer.from,
+    };
+    toProfile = erc20Transfer.to_profile ?? {
+      id: 0,
+      firstName: erc20Transfer.to,
+      lastName: "",
+      circlesAddress: erc20Transfer.to,
+    };
+  }
+  if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
+    const hubTransfer = transfer.payload as CrcHubTransfer;
+    fromProfile = hubTransfer.from_profile ?? {
+      id: 0,
+      firstName: hubTransfer.from,
+      lastName: "",
+      circlesAddress: hubTransfer.from,
+    };
+    toProfile = hubTransfer.to_profile ?? {
+      id: 0,
+      firstName: hubTransfer.to,
+      lastName: "",
+      circlesAddress: hubTransfer.to,
+    };
+    path = {
+      transfers: hubTransfer.transfers,
+    };
+  }
+  if (transfer) {
+    targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
+    classes = transfer.direction === "out" ? "text-alert" : "";
 
-  $: {
-    transfer = $mySafe.transfers.rows.find((o) => o._id == params._id);
-
-    if (transfer) {
-      displayableFromName = transfer.fromProfile
-        ? transfer.fromProfile.displayName
-        : transfer.from;
-
-      displayName =
-        transfer.direction === "in"
-          ? transfer.fromProfile
-            ? transfer.fromProfile.displayName
-            : transfer.from
-          : transfer.toProfile
-          ? transfer.toProfile.displayName
-          : transfer.to;
-
-      pictureUrl =
-        transfer.direction === "in"
-          ? transfer.fromProfile
-            ? transfer.fromProfile.avatarUrl
-            : undefined
-          : transfer.toProfile
-          ? transfer.toProfile.avatarUrl
-          : undefined;
-
-      classes =
-        transfer.direction === "in"
-          ? "transactionpositive"
-          : "transactionnegative";
-
-      displayableFromName =
-        displayableFromName === "0x0000000000000000000000000000000000000000"
-          ? "CirclesLand"
-          : displayableFromName;
-
-      message =
-        displayableFromName === "CirclesLand"
-          ? "Universal basic income"
-          : message;
-
-      amountInWei = RpcGateway.get().utils.fromWei(transfer.amount, "ether");
-
-      otherSafeAddress =
-        transfer.direction === "in" ? transfer.from : transfer.to;
-
-      if (!pictureUrl) {
-        pictureUrl = AvataarGenerator.generate(otherSafeAddress);
+    if (transfer.payload) {
+      if (transfer.payload?.__typename == "CrcMinting") {
+        message = "Universal Basic Income";
+      } else {
+        message = transfer.payload.tags?.find(
+          (o) => o.typeId === "o-banking:transfer:message:1"
+        )?.value;
       }
     }
+
+    displayableName =
+      targetProfile.firstName +
+      (!targetProfile.lastName ? "" : " " + targetProfile.lastName);
   }
+});
+function openDetail(transfer: ProfileEvent) {
+  if (transfer.type == "CrcHubTransfer") {
+    push(`#/contacts/profile/${targetProfile.circlesAddress}`);
+  }
+}
 </script>
 
-<BankingDetailHeader amount={transfer ? transfer.amount : 0} {classes} />
-{#if transfer}
-  <div class="mx-4 -mt-6">
-    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-      <div
-        class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div
-          class="flex flex-row justify-center w-full pt-2 space-x-2 bg-white sm:space-x-6"
-        >
-          <div
-            class="flex flex-col cursor-pointer"
-            on:click={() => {
-              if (!transfer.from.startsWith("0x000")) {
-                push("#/banking/trusts/" + transfer.from);
-              }
-            }}
-          >
-            <div class="avatar">
-              <div class="w-24 h-24 m-auto rounded-full">
-                <img
-                  alt={displayableFromName}
-                  src={transfer.fromProfile && transfer.fromProfile.avatarUrl
-                    ? transfer.fromProfile.avatarUrl
-                    : transfer.from.startsWith("0x000")
-                    ? "/images/common/circles.png"
-                    : pictureUrl}
-                />
-              </div>
-            </div>
-            <div class="block mt-2 text-center">
-              {displayableFromName}
-            </div>
-          </div>
-
-          <div class="self-center text-xl text-light">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-12 h-12"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </div>
-          <div
-            class="flex flex-col cursor-pointer"
-            on:click={() => {
-              if (!transfer.to.startsWith("0x000")) {
-                push("#/banking/trusts/" + transfer.to);
-              }
-            }}
-          >
-            <div class="avatar">
-              <div class="w-24 h-24 m-auto rounded-full">
-                <img
-                  alt={transfer.toProfile
-                    ? transfer.toProfile.displayName
-                    : transfer.to}
-                  src={transfer.toProfile && transfer.toProfile.avatarUrl
-                    ? transfer.toProfile.avatarUrl
-                    : pictureUrl}
-                />
-              </div>
-            </div>
-            <div class="block mt-2 text-center">
-              {transfer.toProfile
-                ? transfer.toProfile.displayName
-                : transfer.to}
-            </div>
-          </div>
-        </div>
-        <div>
-          {transfer.message ? transfer.message : ""}
-        </div>
+<div class="p-5">
+  <!--<pre>
+    {JSON.stringify(transfer, null, 2)}
+  </pre>-->
+  {#if transfer}
+    <div
+      class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
+      <div class="w-full text-center">
+        <h1 class="text-3xl uppercase font-heading">
+          {transfer.direction === "in" ? "received" : "sent"}
+        </h1>
       </div>
-    </section>
+      <div>
+        <span class="inline-block text-6xl font-enso {classes}">
+          {#if transfer.direction === "in"}
+            +{Currency.instance().displayAmount(
+              transfer
+                ? (transfer.payload.value
+                    ? transfer.payload.value
+                    : transfer.payload.flow
+                  ).toString()
+                : "0",
+              transfer.timestamp,
+              $me.displayCurrency,
+              transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
+            )}
+          {:else}
+            -{Currency.instance().displayAmount(
+              transfer
+                ? (transfer.payload.value
+                    ? transfer.payload.value
+                    : transfer.payload.flow
+                  ).toString()
+                : "0",
+              transfer.timestamp,
+              $me.displayCurrency,
+              transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
+            )}
+          {/if}
+        </span>
+        <span class="text-6xl font-enso {classes}"
+          >{Currency.currencySymbol["EURS"]}</span>
+      </div>
+      {#if $me.displayCurrency && $me.displayCurrency != "TIME_CRC"}
+        <div class="self-end m-auto -mt-4 space-y-2 text-center max-w-max">
+          {Currency.instance().displayAmount(
+            transfer
+              ? (transfer.payload.value
+                  ? transfer.payload.value
+                  : transfer.payload.flow
+                ).toString()
+              : "0",
+            transfer.timestamp,
+            "TIME_CRC",
+            transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
+          )}
+          <span class=" font-primary"
+            >{Currency.currencySymbol["TIME_CRC"]}</span>
 
-    <section
-      class="flex flex-col items-center justify-center mb-2 text-circlesdarkblue"
-    >
-      <div
-        class="flex flex-col w-full pt-4 pb-1 pl-4 pr-4 space-y-2 bg-white rounded-sm shadow"
-      >
-        <div class="text-xs font-bold text-left text-primary font-circles">
-          TRANSACTION DETAILS
+          <small class="block whitespace-nowrap">
+            <!--{$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ''}-->
+          </small>
         </div>
-        <div class="flex flex-col w-full space-y-2">
-          <div class="flex flex-col w-full">
-            <div
-              class="w-full h-full overflow-auto bg-white"
-              id="journal-scroll"
-            >
-              <table class="w-full">
-                <tbody class="">
-                  <tr
-                    class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
-                  >
-                    <td class="pl-5 pr-3 whitespace-no-wrap">
-                      <div class="text-gray-400">Date</div>
-                    </td>
-
-                    <td class="px-2 py-2 whitespace-no-wrap">
-                      <div class="font-medium leading-5 text-gray-500">
-                        <Time
-                          timestamp={new Date(transfer.time * 1000)}
-                          format="D. MMMM YYYY HH:mm"
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
-                  >
-                    <td class="pl-5 pr-3 whitespace-no-wrap">
-                      <div class="text-gray-400">From</div>
-                    </td>
-
-                    <td class="px-2 py-2 whitespace-no-wrap">
-                      <div class="font-medium leading-5 text-gray-500">
-                        {displayableFromName}
-                      </div>
-                      <div class="leading-5 text-gray-900">
-                        {transfer.fromProfile ? `${transfer.from}` : ""}
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
-                  >
-                    <td class="pl-5 pr-3 whitespace-no-wrap">
-                      <div class="text-gray-400">To</div>
-                    </td>
-
-                    <td class="px-2 py-2 whitespace-no-wrap">
-                      <div class="font-medium leading-5 text-gray-500">
-                        {transfer.toProfile
-                          ? transfer.toProfile.displayName
-                          : transfer.to}
-                      </div>
-                      <div class="leading-5 text-gray-900">
-                        {transfer.toProfile ? `${transfer.to}` : ""}
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
-                  >
-                    <td class="pl-5 pr-3 whitespace-no-wrap">
-                      <div class="text-gray-400">Amount</div>
-                    </td>
-
-                    <td class="px-2 py-2 whitespace-no-wrap">
-                      <div class="font-medium leading-5 text-gray-500">
-                        {amountInWei}
-                        {amountInWei > 1 ? " Cirlces" : " Circle"}
-                      </div>
-                    </td>
-                  </tr>
-                  {#if message}
-                    <tr
-                      class="relative py-1 text-xs transform scale-100 border-b border-gray-300 cursor-default"
-                    >
-                      <td class="pl-5 pr-3 whitespace-no-wrap">
-                        <div class="text-gray-400">Message</div>
-                      </td>
-
-                      <td class="px-2 py-2 whitespace-no-wrap">
-                        <div class="font-medium leading-5 text-gray-500">
-                          {message}
-                        </div>
-                      </td>
-                    </tr>
-                  {/if}
-                  <tr
-                    class="relative py-1 text-xs transform scale-100 cursor-default"
-                  >
-                    <td class="pl-5 pr-3 whitespace-no-wrap">
-                      <div class="text-gray-400">Block</div>
-                    </td>
-
-                    <td class="px-2 py-2 whitespace-no-wrap">
-                      <div class="font-medium leading-5 text-gray-500">
-                        {transfer.firstBlock}
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+      {/if}
+      <UserImage profile="{targetProfile}" size="{36}" gradientRing="{true}" />
+      <div
+        class="cursor-pointer"
+        on:click="{() => {
+          openDetail(transfer);
+        }}">
+        {#if transfer.direction === "in"}
+          <span class="mt-4 text-xl break-words">
+            from {displayableName ? displayableName : ""}
+          </span>
+        {:else}
+          <span class="mt-4 text-xl break-words">
+            to {displayableName ? displayableName : ""}
+          </span>
+        {/if}
+      </div>
+      <div class="text-dark-lightest">
+        {message && message != undefined ? message : ""}
+      </div>
+      {#if path && path.transfers}
+        <div class="flex flex-col w-full space-y-1">
+          <div class="mb-1 text-left text-2xs text-dark-lightest">
+            Payment Path
+          </div>
+          <div class="flex items-center w-full">
+            <CirclesTransferGraph
+              transfers="{path.transfers}"
+              height="70px"
+              onWhiteBackground="{true}" />
+          </div>
+        </div>
+      {/if}
+      <div class="flex flex-col w-full space-y-1">
+        <div class="mb-1 text-left text-2xs text-dark-lightest">Date</div>
+        <div class="flex items-center w-full">
+          <div class="text-left ">
+            <Time
+              timestamp="{new Date(transfer.timestamp)}"
+              format="D. MMMM YYYY HH:mm" />
           </div>
         </div>
       </div>
-    </section>
-  </div>
-{/if}
+      <div class="flex flex-col w-full space-y-1">
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          Full amount in CRC
+        </div>
+        <div class="flex items-center w-full">
+          <div class="text-left ">
+            {Currency.instance().displayAmount(
+              transfer
+                ? (transfer.payload.value
+                    ? transfer.payload.value
+                    : transfer.payload.flow
+                  ).toString()
+                : "0",
+              transfer.timestamp,
+              "CRC",
+              null,
+              true
+            )}
+          </div>
+        </div>
+      </div>
+      <!-- <div class="flex flex-col w-full space-y-1">
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          Amount Circles
+        </div>
+        <div class="flex items-center w-full">
+          <div class="text-left ">
+            {displayCirclesAmount(
+              transfer ? (transfer.payload.value ? transfer.payload.value : transfer.payload.flow).toString() : "0",
+              transfer.timestamp
+            )}
+            Circles
+          </div>
+        </div>
+      </div> -->
+      <div class="flex flex-col w-full space-y-1">
+        <div class="mb-1 text-left text-2xs text-dark-lightest">From</div>
+        <div class="flex items-center w-full">
+          <div class="text-left break-all">{fromProfile.circlesAddress}</div>
+        </div>
+      </div>
+      <div class="flex flex-col w-full space-y-1">
+        <div class="mb-1 text-left text-2xs text-dark-lightest">To</div>
+        <div class="flex items-center w-full">
+          <div class="text-left break-all">{toProfile.circlesAddress}</div>
+        </div>
+      </div>
+      <div class="flex flex-col w-full space-y-1">
+        <div class="mb-1 text-left text-2xs text-dark-lightest">Block</div>
+        <div class="flex items-center w-full">
+          <div class="text-left break-all">{transfer.block_number}</div>
+        </div>
+      </div>
+      <div class="flex flex-col w-full space-y-1">
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          Transaction Hash
+        </div>
+        <div class="flex items-center w-full text-primarydark">
+          <div class="text-left break-all">
+            {transfer.transaction_hash ? transfer.transaction_hash : ""}
+          </div>
+        </div>
+      </div>
+    </div>
+  {/if}
+</div>

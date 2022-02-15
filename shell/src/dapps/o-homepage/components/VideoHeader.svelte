@@ -1,86 +1,111 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import UAParser from "ua-parser-js";
+  import Icons from "src/shared/molecules/Icons.svelte";
 
   let parser = new UAParser();
-  let player;
-  let mobile = parser.getResult().device["type"] == "mobile";
+  let player: any;
+  let isFullscreen: boolean = false;
+  let isMobile: boolean = parser.getResult().device["type"] == "mobile";
   $: player = document.querySelector("vm-player");
 
   onMount(() => {
     window.player = document.querySelector("vm-player");
     player = document.querySelector("vm-player");
 
-    // Listening to an event.
-    // if (mobile) {
-    player.addEventListener("vmPlay", (event) => {
-      player.enterFullscreen();
+    player.addEventListener("vmPlay", event => {
+      document.getElementById("video-overlay").style.display = "none";
     });
-    player.addEventListener("vmPlaybackEnded", (event) => {
-      player.exitFullscreen();
+
+    player.addEventListener("vmPausedChange", event => {
+      if (event.detail == true) {
+        player.exitFullscreen();
+      }
+      document.getElementById("video-overlay").style.display = "block";
     });
-    // }
+
+    document.addEventListener("fullscreenchange", event => {
+      // document.fullscreenElement will point to the element that
+      // is in fullscreen mode if there is one. If there isn't one,
+      // the value of the property is null.
+      if (document.fullscreenElement) {
+        isFullscreen = true;
+        document.getElementById("video-overlay").style.display = "none";
+      } else {
+        document.getElementById("video-overlay").style.display = "block";
+        isFullscreen = false;
+        player.pause();
+      }
+    });
+    document.addEventListener("webkitfullscreenchange", function(event) {
+      // The event object doesn't carry information about the fullscreen state of the browser,
+      // but it is possible to retrieve it through the fullscreen API
+      if (document.fullscreenElement) {
+        isFullscreen = true;
+        document.getElementById("video-overlay").style.display = "none";
+      } else {
+        document.getElementById("video-overlay").style.display = "block";
+        isFullscreen = false;
+
+        player.pause();
+      }
+    });
   });
+
   function playVideo() {
-    player.play();
-    document.getElementById("video-overlay").style.visibility = "hidden";
+    player.enterFullscreen();
+    // This is weird, but safari won't play if it at the same time toggles into fullscreen mode.
+    setTimeout(function() {
+      player.play();
+    }, 300);
   }
 </script>
 
 <div
-  class="relative flex items-center content-center justify-center block overflow-hidden font-circles"
->
+  id="video-overlay"
+  class="relative flex items-center content-center justify-center h-screen overflow-hidden"
+  style=" background-position: center; background:
+  url('/images/homepage/circles-home.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover; -moz-background-size: cover;
+  -o-background-size: cover; background-size: cover; ">
   <div
-    id="video-overlay"
-    class="grid absolute grid-row z-30 items-stretch content-center text-center video-overlay h-full min-h-full w-full"
-    on:click={() => playVideo()}
-  >
-    <h1 class=" px-5 text-md md:text-6xl font-bold text-white ">
-      Be free to live the life you deserve
+    class="absolute z-30 flex flex-col items-stretch content-center w-full h-full min-h-full pb-40 text-center video-overlay"
+    on:click="{() => playVideo()}">
+    <h1 class="px-5 text-4xl text-white font-heading md:text-6xl mt-11">
+      BE FREE
     </h1>
-    <h2 class="px-5 pt-4 text-sm sm:text-3xl font-thin text-gray-200 ">
-      together we build today the universal basic income economy of tomorrow.
+    <h2 class="flex-grow px-5 pt-4 text-xl font-thin text-white sm:text-3xl ">
+      Together we build the universal basic income economy today
     </h2>
-    <button class="inline-block " on:click={() => playVideo()}>
+    <button class="flex-grow" on:click="{() => playVideo()}">
       <div class="inline-flex mt-2">
-        <div
-          class="flex items-center pl-1 justify-center w-10 h-10 sm:w-16 sm:h-16 transition duration-300 transform bg-gray-100 bg-opacity-50 rounded-full shadow-2xl group-hover:scale-110"
-        >
-          <svg
-            class="w-8 h-8 sm:w-10 sm:h-10 text-white"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M16.53,11.152l-8-5C8.221,5.958,7.833,5.949,7.515,6.125C7.197,6.302,7,6.636,7,7v10 c0,0.364,0.197,0.698,0.515,0.875C7.667,17.958,7.833,18,8,18c0.184,0,0.368-0.051,0.53-0.152l8-5C16.822,12.665,17,12.345,17,12 S16.822,11.335,16.53,11.152z"
-            />
-          </svg>
-        </div>
+        <Icons icon="playbutton" />
       </div>
-      <div class="pt-0 sm:pt-2 text-center text-gray-200 text-opacity-50">
-        play
-      </div>
+      <div class="pt-0 text-lg text-center text-white sm:pt-2">play video</div>
     </button>
   </div>
+</div>
+<div
+  id="container"
+  class="z-50 w-full h-screen max-w-full min-w-full min-h-full">
+  <vm-player class="h-screen">
+    <vm-vimeo
+      video-id="548283844"
+      class="h-screen"
+      cross-origin="true"></vm-vimeo>
+    <!--  -->
 
-  <div id="container" class="z-10 w-full max-w-full min-w-full min-h-full ">
-    <vm-player>
-      <vm-vimeo video-id="548283844" cross-origin="true" />
-      <!-- poster="/images/homepage/befree.jpg" -->
-
-      <vm-default-ui />
-      <vm-click-to-play />
-    </vm-player>
-  </div>
+    <vm-default-ui>
+      <vm-click-to-play></vm-click-to-play>
+      <!-- We setup the default controls and pass in any options.  -->
+      <vm-default-controls></vm-default-controls>
+    </vm-default-ui>
+  </vm-player>
 </div>
 
 <style>
   #container {
     width: 100%;
     max-width: 960px;
-  }
-  .video-overlay {
-    --tw-bg-opacity: 0.5;
-    background-color: rgba(30, 58, 138, var(--tw-bg-opacity));
   }
 </style>

@@ -1,4 +1,5 @@
-import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
+export const empty = true;
+/*import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
@@ -9,12 +10,15 @@ import { upsertIdentity } from "../upsertIdentity";
 import { loadProfile } from "./services/loadProfile";
 import { getSessionInfo } from "./services/getSessionInfo";
 import { promptChoice } from "./prompts/promptChoice";
+import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { acquireSession } from "./aquireSession/acquireSession";
-import { connectSafe } from "./connectSafe/connectSafe";
+import { connectSafe } from "./connectSafe/connectSafe2";
 import { createSafe } from "./createSafe/createSafe";
-import { UpsertProfileDocument } from "../../data/api/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Profile } from "../../../o-banking/data/api/types";
+import { prompt } from "@o-platform/o-process/dist/states/prompt";
+import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
+import {UpsertProfileDocument} from "../../../../shared/api/data/types";
 
 export type IdentifyContextData = {
   oneTimeCode?: string;
@@ -34,10 +38,18 @@ export type IdentifyContextData = {
 };
 
 const strings = {
-  choiceLabel:
-    "In the circles world, instead of bank account numbers (IBAN’s) you have 'safe addresses' to identify your account number. <br/><br/><span class='text-primary'>Do you want to create a new safe account or connect your existing safe from circles.garden?<span>",
   choiceYesLabel: "Connect",
   choiceNoLabel: "Create New",
+};
+
+const editorContent = {
+  connectOrCreate: {
+    title: "Connect or Create?",
+    description:
+      "Do you already have a circles Safe address or would you like to create one?",
+    placeholder: "",
+    submitButtonText: "",
+  },
 };
 
 export type IdentifyContext = ProcessContext<IdentifyContextData>;
@@ -113,21 +125,21 @@ const processDefinition = (processId: string) =>
               // Has safe and key?
               cond: (context) =>
                 !!context.data.profile.circlesAddress &&
-                !!localStorage.getItem("circlesKey"),
-              target: "#success",
+                !!sessionStorage.getItem("circlesKey"),
+              target: "#checkSafeAddress",
             },
             {
               // Has no safe but is creating one?
               cond: (context) =>
                 !context.data.profile.circlesAddress &&
                 !!localStorage.getItem("isCreatingSafe"),
-              target: "#success",
+              target: "#checkSafeAddress",
             },
             {
               // Has safe but no key?
               cond: (context) =>
                 !!context.data.profile.circlesAddress &&
-                !localStorage.getItem("circlesKey"),
+                !sessionStorage.getItem("circlesKey"),
               target: "#connectSafe",
             },
             {
@@ -141,7 +153,8 @@ const processDefinition = (processId: string) =>
 
       connectOrCreate: promptChoice({
         id: "connectOrCreate",
-        promptLabel: strings.choiceLabel,
+        component: ChoiceSelector,
+        params: { view: editorContent.connectOrCreate },
         options: [
           {
             key: "connect",
@@ -230,16 +243,17 @@ const processDefinition = (processId: string) =>
               mutation: UpsertProfileDocument,
               variables: {
                 ...context.data.profile,
-                circlesSafeOwner: localStorage.getItem("circlesKey")
+                circlesSafeOwner: sessionStorage.getItem("circlesKey")
                   ? RpcGateway.get().eth.accounts.privateKeyToAccount(
-                      localStorage.getItem("circlesKey")
+                      sessionStorage.getItem("circlesKey")
                     ).address
                   : undefined,
+                status: "",
               },
             });
             context.data.profile = result.data.upsertProfile;
           },
-          onDone: "#success",
+          onDone: "#checkSafeAddress",
           onError: "#error",
         },
       },
@@ -265,18 +279,102 @@ const processDefinition = (processId: string) =>
         },
       },
 
+      checkSafeAddress: {
+        id: "checkSafeAddress",
+        always: [
+          {
+            cond: (context) => !!context.data.profile.circlesAddress,
+            actions: (context) => {
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.authenticated",
+                profile: context.data.profile,
+              });
+              if (context.data.privateKey) {
+                localStorage.setItem("circlesKey", context.data.privateKey);
+              }
+            },
+            target: "#success",
+          },
+          {
+            target: "#getInvite",
+            actions: (context) => {
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.authenticated",
+                profile: context.data.profile,
+              });
+              if (context.data.privateKey) {
+                localStorage.setItem("circlesKey", context.data.privateKey);
+              }
+            },
+          },
+        ],
+      },
+
+      getInvite: prompt({
+        id: "getInvite",
+        entry: (context) => {
+          const profileLink = `${window.location.protocol}//${window.location.host}/#/contacts/profile/${context.data.profile.id}`;
+          (<any>context.data).__getInviteHtml = `
+          <section class="mb-8">
+      <div class="w-full px-2 pb-4 -mt-3 bg-white rounded-sm">
+        <div class="px-4 py-2 mr-4 -ml-3 text-center " />
+        <div style="text-align: center">
+          <p
+            class="w-64 m-auto mt-2 text-2xl font-bold  text-gradient"
+          >
+            You're almost there.
+          </p>
+          <p class="mt-4 text">
+            To activate your citizenship you need to be invited.<br/>
+            Send your profile link to a CirclesLand citizen to unlock your basic income.
+          </p>
+          <div class="mt-4 mb-4 text-xs break-all" id="clipboard">
+            <input type="text" class="hidden" value="${profileLink}" />
+            <div class="inline-block text-2xl">
+              <button class="btn btn-primary" 
+                >Copy profile Link</button
+              >
+            </div>
+
+            <div class="block mt-2 text-sm text-light ">
+              ${profileLink}
+            </div>
+          </div>
+          <p class="text">
+            If you don't know anybody who has Circles yet, ask nicely in our <a
+              href="https://discord.gg/4DBbRCMnFZ"
+              target="_blank"
+              class="btn-link">Discord</a
+            > if someone can activate your citizenship.
+          </p>
+          <p class="pb-4 mt-4 text-xs text-light">
+            alternatively, <a href="#/home/become-a-hub" class="btn-link">unlock yourself</a> and grow a new local community</a>
+          </p>
+          <div class="mr-1 text-primary" />
+        </div>
+      </div>
+    </section>`;
+        },
+        component: HtmlViewer,
+        params: {
+          html: (context) => (<any>context.data).__getInviteHtml,
+          submitButtonText: "Close",
+          hideNav: true,
+        },
+        field: "__getInviteHtml",
+        navigation: {
+          next: "#getInvite",
+          canGoBack: () => false,
+          canSkip: () => false,
+        },
+      }),
+
       success: {
         type: "final",
         id: "success",
         entry: (context) => {
           console.log(`enter: identify.success`, context.data);
-          window.o.publishEvent(<PlatformEvent>{
-            type: "shell.authenticated",
-            profile: context.data.profile,
-          });
-          if (context.data.privateKey) {
-            localStorage.setItem("circlesKey", context.data.privateKey);
-          }
+
           if (context.data.redirectTo) {
             setTimeout(async () => {
               if (context.data.redirectTo.startsWith("http")) {
@@ -302,3 +400,4 @@ export const identify: ProcessDefinition<void, IdentifyContextData> = {
   name: "identify",
   stateMachine: <any>processDefinition,
 };
+*/

@@ -19,8 +19,19 @@ export interface RuntimeDapp<TState extends {[x:string]:any}> extends DappManife
    */
   outEvents?:Topic<PlatformEvent>,
 
+  /**
+   * Contains the url params from the router (if any - is set by the DappFrame.svelte component)
+   */
+  params?: {[x:string]:any};
+  /**
+   * Can contain dapp specific shared state.
+   */
+  state: TState;
+
+/*
   state: BehaviorSubject<StatePropagation<TState>>
 
   emitSignal: (signal:Signal) => void;
   emitState: (state:TState) => void;
+ */
 }

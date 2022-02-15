@@ -1,7 +1,68 @@
 import ApolloClient, {DefaultOptions} from "apollo-client";
-import {InMemoryCache, NormalizedCacheObject} from "apollo-cache-inmemory";
+import {InMemoryCache, IntrospectionFragmentMatcher, NormalizedCacheObject} from "apollo-cache-inmemory";
 import {HttpLink} from "apollo-link-http";
 import {AsyncBroadcast} from "@o-platform/o-utils/dist/asyncBroadcast";
+import {WebSocketLink} from 'apollo-link-ws';
+import {split} from 'apollo-link';
+import {getMainDefinition} from 'apollo-utilities';
+import {DocumentNode, OperationDefinitionNode} from "graphql/language/ast";
+import {
+    AggregatesDocument,
+    AggregateType, ProfileAggregate,
+    ProfileAggregateFilter,
+    QueryAggregatesArgs
+} from "./api/data/types";
+
+export class ApiClient {
+    static async queryAggregate<TPayloadType>(type: AggregateType, safeAddress: string, filter?: ProfileAggregateFilter) {
+        const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+            types: [type],
+            safeAddress: safeAddress,
+            filter: filter
+        });
+        const foundAggregate = aggregates.find(o => o.type == type)?.payload;
+        if (!foundAggregate) {
+            throw new Error(`Couldn't find the ${type} in the query result.`);
+        }
+        return <TPayloadType><any>foundAggregate;
+    }
+
+    /**
+     * Executes a graphQL query against the api.
+     * @param query
+     * @param args
+     */
+    static async query<TResult, TArgs>(query: DocumentNode, args: TArgs) : Promise<TResult> {
+        const queryDef:any = query.definitions.length == 1 ? query.definitions[0] : null;
+        if (!queryDef) {
+            throw new Error(`The query contains none or more than one definition. Only 1 definition per query is supported.`)
+        }
+        if (!queryDef.selectionSet){
+            throw new Error(`The query definition doesn't contain a 'selectionSet'.`)
+        }
+        if (queryDef.selectionSet.selections?.length != 1) {
+            throw new Error(`The query definition contains none or more than one selection. Only 1 selection is supported.`)
+        }
+
+        const selection = queryDef.selectionSet.selections[0];
+        const dataProp:string = selection.name.value;
+        if (!dataProp) {
+            throw new Error(`The selection doesn't have a name. Cannot find the data-holding property of the graphql response.`)
+        }
+
+        const apiClient = await window.o.apiClient.client.subscribeToResult();
+        const result = await apiClient.query({
+            query: query,
+            variables: args
+        });
+
+        if (result.errors?.length > 0) {
+            throw new Error(`Something went wrong while querying the api: ${result.errors.map((o) => o.message).join("\n")}`);
+        }
+
+        return <TResult>result.data[dataProp];
+    }
+}
 
 export class ApiConnection
 {
@@ -9,15 +70,18 @@ export class ApiConnection
     private readonly _credentialsPolicy: string|undefined;
     private _client:ApolloClient<NormalizedCacheObject>|undefined;
 
+    reset() {
+        if (this._client)
+        {
+            this._client.stop();
+        }
+        this._client = null;
+    }
+
     readonly client = new AsyncBroadcast<void, ApolloClient<NormalizedCacheObject>>(async () =>
     {
         if (!this._client)
         {
-            if (this._client)
-            {
-                this._client.stop();
-            }
-
             this._client = await this.connect();
         }
 
@@ -28,15 +92,6 @@ export class ApiConnection
     {
         this._apiEndpointUrl = apiEndpointUrl;
         this._credentialsPolicy = credentialsPolicy;
-    }
-
-    destroy()
-    {
-        if (this._client)
-        {
-            this._client.stop();
-            this._client = undefined;
-        }
     }
 
     private static readonly _defaultOptions:DefaultOptions = {
@@ -50,23 +105,69 @@ export class ApiConnection
         },
     };
 
-    public connect() : ApolloClient<NormalizedCacheObject> {
-        console.log("apollo client is connecting to: ", this._apiEndpointUrl);
-
+    public async connect() : Promise<ApolloClient<NormalizedCacheObject>> {
         const httpLink = new HttpLink({
             fetch: fetch,
             uri: this._apiEndpointUrl,
             credentials: this._credentialsPolicy
         });
+        const result = await (await fetch(this._apiEndpointUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                variables: {},
+                query: `{
+                            __schema {
+                              types {
+                                kind
+                                name
+                                possibleTypes {
+                                  name
+                                }
+                              }
+                            }
+                          }`,
+            }),
+        })).json();
 
-        const client = new ApolloClient({
-            link: httpLink,
-            cache: new InMemoryCache(),
-            defaultOptions: ApiConnection._defaultOptions
+        // here we're filtering out any type information unrelated to unions or interfaces
+        result.data.__schema.types = result.data.__schema.types.filter(
+          type => type.possibleTypes !== null,
+        );
+
+        const fragmentMatcher = new IntrospectionFragmentMatcher({
+            introspectionQueryResultData: result.data
         });
 
-        console.log("apollo client is now connected to: ", this._apiEndpointUrl);
+        const wsAddr = this._apiEndpointUrl.replace("http://", "ws://").replace("https://", "wss://");
+        const wsLink = new WebSocketLink({
+            uri: wsAddr,
+            options: {
+                reconnect: true,
+                connectionParams: {
+                }
+            },
+        });
 
-        return client;
+        const link = split(({ query }) => {
+            const mainDefinition:any = getMainDefinition(query);
+            if (mainDefinition.operation) {
+                const { kind, operation } = <OperationDefinitionNode>getMainDefinition(query);
+                return kind === 'OperationDefinition' && operation === 'subscription';
+            } else {
+                throw new Error(`A FragmentDefinitionNode was returned when a OperationDefinitionNode was expected.`)
+            }
+          },
+          wsLink,
+          httpLink,
+        );
+
+        return new ApolloClient({
+            link: link,
+            cache: new InMemoryCache({
+                fragmentMatcher
+            }),
+            defaultOptions: ApiConnection._defaultOptions
+        });
     }
 }

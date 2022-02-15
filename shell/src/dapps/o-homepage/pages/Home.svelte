@@ -1,36 +1,21 @@
 <script lang="ts">
-  import Header from "../components/Header.svelte";
+  import "../../../shared/css/tailwind.css";
+  import TopNav from "src/shared/atoms/TopNav.svelte";
+  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import VideoHeader from "../components/VideoHeader.svelte";
-  import Mission from "../components/Mission.svelte";
-  import Steps from "../components/Steps.svelte";
-  import Milestones from "../components/Milestones.svelte";
-  import Countries from "../components/Countries.svelte";
-  import Citizens from "../components/Citizens.svelte";
-  import Progress from "../components/Progress.svelte";
-  import Aside from "../components/Aside.svelte";
-  import Footer from "../components/Footer.svelte";
-  import IntroAnimation from "../components/IntroAnimation.svelte";
+
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 </script>
 
-<div class="flex flex-col h-screen">
-  <Header />
-  <main class="flex-1 overflow-y-auto">
-    <VideoHeader />
-    <div class="flex flex-wrap md:flex-nowrap">
-      <div class="w-full">
-        <!-- <IntroAnimation /> -->
-        <Mission />
-        <Steps />
-        <!-- <Dreams /> -->
-        <!-- <Citizens />
-        <Countries />
-        <Milestones /> -->
-      </div>
-      <!-- <div class="md:w-1/4">
-        <Aside />
-      </div> -->
+<div class="flex flex-col overflow-hidden ">
+
+  <main class="h-screen overflow-hidden">
+    <TopNav {runtimeDapp} {routable} />
+    <div class="mt-11">
+      <VideoHeader />
     </div>
-    <Footer />
   </main>
   <!--<Progress />-->
 </div>

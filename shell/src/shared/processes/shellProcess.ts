@@ -5,12 +5,28 @@ import {createMachine, actions} from "xstate";
 import {Bubble} from "@o-platform/o-process/dist/events/bubble";
 import {show} from "@o-platform/o-process/dist/actions/show";
 import {ipcSinker} from "@o-platform/o-process/dist/triggers/ipcSinker";
+import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+import {Generate} from "@o-platform/o-utils/dist/generate";
 const {send} = actions;
 
 export class ShellProcessContext extends ProcessContext<any> {
   childProcessId: string;
   childProcessDefinition:ProcessDefinition<any,any>
   childContext? :{[x:string]:any};
+}
+
+export function runShellProcess(processDefinition:ProcessDefinition<any, any>, contextData:{[x:string]:any}) : PlatformEvent & {id: string} {
+  const modifier = async (ctx) => {
+    ctx.childProcessDefinition = processDefinition;
+    ctx.childContext = {
+      data: contextData
+    };
+    return ctx;
+  };
+  const requestEvent:any = new RunProcess(shellProcess, true, modifier);
+  requestEvent.id = Generate.randomHexString(8);
+
+  return requestEvent;
 }
 
 /**
@@ -35,15 +51,16 @@ const processDefinition = () => {
           id: childProcessId,
           src: context => {
             const sm = context.childProcessDefinition.stateMachine(childProcessId);
-            console.log(`invoking child process: ${sm.id}`)
+            // console.log(`invoking child process: ${sm.id}`)
             return <any>sm; // TODO: Fix 'any'
           },
           data: (context) => {
             const newChildContext:ProcessContext<any> = {
+              // onlyWhenDirty: context.childContext.skipIfNotDirty,
+              onlyThesePages: context.childContext.onlyThesePages,
               data:{},
               messages:{},
-              dirtyFlags:{},
-              environment:{}
+              dirtyFlags:{}
             };
             if (context.childContext) {
               Object.keys(context.childContext).forEach(key => {
@@ -94,10 +111,15 @@ const processDefinition = () => {
       },
       showError: {
         entry: [
-          (context, event) => console.log("ShellProcess encountered an error:", event),
+          // (context, event) => console.log("ShellProcess encountered an error:", event),
           <any>show({ // TODO: fix <any> cast
             component: Error,
-            params: {}
+            params: {},
+            field: {
+              name: "",
+              get:() => undefined,
+              set:(o:any) => {}
+            }
           }
         )],
         on: {
@@ -110,17 +132,17 @@ const processDefinition = () => {
       },
       cancelled: {
         id: "cancelled",
-        entry: () => console.log("shellProcess: cancelled"),
+        // entry: () => console.log("shellProcess: cancelled"),
         type: 'final',
         data: () => false
       },
       finished: {
-        entry: () => console.log("shellProcess: finished"),
+        // entry: () => console.log("shellProcess: finished"),
         type: 'final',
         data: () => true// TODO: Don't discard the result
       },
       error: {
-        entry: () => console.log("shellProcess: error"),
+        // entry: () => console.log("shellProcess: error"),
         type: 'final',
         data: () => false// TODO: Don't discard the result
       }

@@ -1,6 +1,6 @@
 <div class="w-full bg-white">
   <div
-    class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20 font-circles "
+    class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20  "
   >
     <div class="flex flex-col items-center justify-between lg:flex-row">
       <div class="mb-10 lg:max-w-lg lg:pr-5 lg:mb-0">
@@ -13,7 +13,7 @@
             </p>
           </div>
           <h2
-            class="max-w-lg mb-6 text-3xl font-bold tracking-tight font-circles text-secondary sm:text-4xl sm:leading-none"
+            class="max-w-lg mb-6 text-3xl font-bold tracking-tight   sm:text-4xl sm:leading-none"
           >
             CirclesLand is here to unlock all our potential
           </h2>
@@ -25,7 +25,7 @@
           <a
             href="https://blog.circles.land/whitepaper/"
             aria-label=""
-            class="inline-flex items-center mt-6 font-semibold transition-colors duration-200 text-primary hover:text-secondary"
+            class="inline-flex items-center mt-6 font-semibold transition-colors duration-200 text-primary hover:"
           >
             Learn more
             <svg

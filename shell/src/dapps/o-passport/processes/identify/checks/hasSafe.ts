@@ -1,5 +1,5 @@
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {IdentifyContext} from "../identify";
+import {IdentifyContext} from "../identify2";
 
 export type HasSafeSpec = {
   id: string

@@ -1,132 +1,187 @@
 <script lang="ts">
-  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-  import { mySafe } from "../stores/safe";
-  import { BN } from "ethereumjs-util";
-  import AssetCard from "../atoms/AssetCard.svelte";
-  import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import Card from "src/shared/atoms/Card.svelte";
+import AssetCard from "../atoms/AssetCard.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { me } from "../../../shared/stores/me";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { KeyManager } from "../../o-passport/data/keyManager";
+import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import Web3 from "web3";
+import { AssetBalance } from "../../../shared/api/data/types";
+import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+import { assetsBalances } from "../../../shared/stores/assetsBalances";
+import { BN } from "ethereumjs-util";
 
-  let xdai: { [x: string]: any } = {
-    symbol: "xdai",
-    icon: "",
-    title: "xDAI",
-    balance: "0",
-    variety: 1,
-  };
-  /*
-  let safexDai = {
-    symbol: "xdai",
-    icon: "",
-    balance: "0",
-    variety: 1,
-  };
-   */
-  let circles = {
-    symbol: "crc",
-    icon: "",
-    title: "Circles",
-    balance: "0",
-    variety: 1,
-  };
-  $: {
-    if ($mySafe && $mySafe.accountxDai) {
-      xdai = {
-        symbol: "xdai",
-        icon: "",
-        title: "xDAI",
-        balance: "ß",
-        variety: 1,
-      };
-      xdai.balance =
-        parseFloat(
-          RpcGateway.get()
-            .utils.fromWei($mySafe.accountxDai, "ether")
-            .toString()
-        ) +
-        parseFloat(
-          RpcGateway.get()
-            .utils.fromWei($mySafe.xDaiBalance, "ether")
-            .toString()
-        );
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
+let loading: boolean = true;
+
+let xdai = {
+  symbol: "xdai",
+  icon: "",
+  title: "xDAI",
+  balance: "ß",
+  variety: 1,
+  description: "1 xDai  ~ 1 USD",
+};
+
+let circles = {
+  symbol: "time",
+  icon: "",
+  balance: "ß",
+  variety: 0,
+  title: "TimeCircles",
+  description: "1 Circle = 1€",
+  details: [],
+};
+
+let erc20DisplayBalances: AssetBalance[] = [];
+
+async function updateXdaiBalance() {
+  const safeBalance = await RpcGateway.get().eth.getBalance($me.circlesAddress);
+  const km = new KeyManager($me.circlesAddress);
+  await km.load();
+  const eoaBalance = await RpcGateway.get().eth.getBalance(km.torusKeyAddress);
+
+  xdai.balance = Number.parseFloat(
+    Web3.utils.fromWei(
+      new BN(safeBalance).add(new BN(eoaBalance)).toString(),
+      "ether"
+    )
+  ).toFixed(2);
+}
+
+$: {
+  const balances = $assetsBalances;
+
+  circles.details = balances.crcBalances;
+  circles.balance = displayCirclesAmount(
+    circles.details
+      .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
+      .toString(),
+    null,
+    ($me && $me.displayTimeCircles !== undefined
+      ? $me.displayTimeCircles
+      : true) ||
+      ($me && $me.displayTimeCircles !== undefined
+        ? $me.displayTimeCircles
+        : true) === undefined
+  );
+  circles.variety = circles.details.length;
+
+  erc20DisplayBalances = <any>balances.erc20Balances.map((o: any) => {
+    const copy = JSON.parse(JSON.stringify(o));
+    if (copy.token_address == "0x9ee40742182707467f78344f6b287be8704f27e2") {
+      copy.token_symbol = "EURS";
+      copy.token_image = "/logos/eurs.png";
+    } else if (
+      copy.token_address == "0x63e62989d9eb2d37dfdb1f93a22f063635b07d51"
+    ) {
+      copy.token_symbol = "MIVA";
+      copy.token_image = "/logos/miva.png";
+    } else if (
+      copy.token_address == "0x62f5caa239a97b21aa61502963cf8c33f8182e79"
+    ) {
+      copy.token_symbol = "ARTIS";
+      copy.token_image = "/logos/artis.png";
+    } else if (
+      copy.token_address == "0x5227e8810281482f25454a8f00ea871589fc040e"
+    ) {
+      copy.token_symbol = "HUMAN";
+      copy.token_image = "/logos/hmn.png";
+    } else if (
+      copy.token_address == "0x04e7c72a70975b3d2f35ec7f6b474451f43d4ea0"
+    ) {
+      copy.token_symbol = "HUMAN (Test token)";
+      copy.token_image = "/logos/hmn.png";
     }
-    if ($mySafe && $mySafe.acceptedTokens) {
-      circles = {
-        symbol: "crc",
-        icon: "",
-        title: "Circles",
-        balance: $mySafe.balance,
-        variety: Object.values($mySafe.acceptedTokens.tokens).filter((o) =>
-          new BN(o.balance).gt(new BN("0"))
-        ).length,
-      };
+    return copy;
+  });
+
+  erc20DisplayBalances = erc20DisplayBalances
+    .sort((a, b) => {
+      const bnA =
+        a.token_symbol == "EURS"
+          ? new BN(a.token_balance).mul(new BN("1000000000000000000"))
+          : new BN(a.token_balance);
+      const bnB =
+        b.token_symbol == "EURS"
+          ? new BN(b.token_balance).mul(new BN("1000000000000000000"))
+          : new BN(b.token_balance);
+      return bnA.gt(bnB) ? -1 : bnA.lt(bnB) ? 1 : 0;
+    })
+    .map((o) => {
+      if (o.token_symbol == "EURS") {
+        return {
+          ...o,
+          token_balance: (o.token_balance = (
+            parseFloat(o.token_balance) / 100
+          ).toFixed(2)),
+        };
+      } else {
+        return {
+          ...o,
+          token_balance: (o.token_balance = parseFloat(
+            RpcGateway.get().utils.fromWei(o.token_balance, "ether")
+          ).toFixed(2)),
+        };
+      }
+    });
+
+  updateXdaiBalance().then((o) => {
+    if (loading) {
+      loading = false;
     }
-  }
+  });
+}
+
+loading = false;
 </script>
 
-<SimpleHeader />
+<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="mx-4 -mt-6">
-  <section class="justify-center mb-2">
-    <div class="flex flex-col infocard shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-info text-xs font-circles font-bold text-left">
-        WHAT IS THIS?
-      </div>
-
-      <div class="text-sm md:text-base">
-        Since everyone has their own personalized Circles money, you will always
-        only be able to receive and hold Circles of those you directly trust.
-        <br /><br />To see which personalized Circles you are currently holding,
-        click onto the Circles Card.
-        <br /><br />xDai is the currency that is used to invite others and pay
-        transaction fees.
-      </div>
-    </div>
-  </section>
-
-  {#if !$mySafe || !$mySafe.token || !$mySafe.acceptedTokens}
-    <section class="flex items-center justify-center mb-2 text-circlesdarkblue">
-      <div class="flex items-center bg-white shadow p-4 w-full space-x-2 ">
+<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+  {#if loading}
+    <section class="flex items-center justify-center mb-2 ">
+      <Card>
         <div class="flex flex-col items-start">
           <div>Loading Tokens...</div>
         </div>
-      </div>
+      </Card>
     </section>
   {:else}
     {#each [circles, xdai] as token}
       <AssetCard
-        symbol={token.symbol}
-        title={token.title}
-        balance={token.balance}
-        variety={token.variety}
-        colorClass="text-primary"
-      />
+        symbol="{token.symbol}"
+        title="{token.title}"
+        balance="{token.balance}"
+        variety="{token.variety}"
+        description="{token.description}"
+        details="{token.details}" />
     {/each}
-  {/if}
-  <!--
-  {#if $mySafe && $mySafe.acceptedTokens && $mySafe.acceptedTokens.tokens}
-    {#each [$mySafe.token].concat(Object.values($mySafe.acceptedTokens.tokens).filter((o) => o.limit > 0)) as token (token._id)}
-      <TokenCard
-        {token}
-        label="ACCEPTING TOKENS FROM"
-        colorClass="text-secondary"
-      />
-    {/each}
-  {/if}
--->
-  <!--
-  {#each [xdai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token (token._id)}
-    <TokenCard
-      {token}
-      label="ACCOUNT XDAI BALANCE (used to pay for transactions)"
-      colorClass="text-light"
-    />
-  {/each}
 
-  {#each [safexDai].filter((token) => !new BN(token.balance).eq(new BN("0"))) as token (token._id)}
-    <TokenCard
-      {token}
-      label="SAFE XDAI BALANCE (used to invite new people)"
-      colorClass="text-light"
-    />
-  {/each}
--->
+    <!-- all other ERC20s -->
+    {#each erc20DisplayBalances as token}
+      {#if token}
+        <div>
+          <ItemCard
+            params="{{
+              edgeless: false,
+              imageProfile: {
+                avatarUrl: token.token_image,
+                circlesAddress: token.token_address,
+              },
+              title: token.token_symbol ? token.token_symbol : 'ERC-20',
+              subTitle: token.token_address,
+              shadowSmall: true,
+              noLink: true,
+              endTextBig: token.token_balance,
+              mobileTextCutoff: 28,
+            }}" />
+        </div>
+      {/if}
+    {/each}
+  {/if}
 </div>

@@ -1,13 +1,13 @@
 import Web3 from "web3";
 import type {AbiItem} from "web3-utils";
-import {ERC20_ABI, HUB_BLOCK, ZERO_ADDRESS} from "../consts";
+import {ERC20_ABI, ZERO_ADDRESS} from "../consts";
 import type {GnosisSafeProxy} from "../safe/gnosisSafeProxy";
 import {BN} from "ethereumjs-util";
-import {ExecResult, Web3Contract} from "../web3Contract";
+import {Web3Contract} from "../web3Contract";
 import {SafeOps} from "../model/safeOps";
 import {Observable, Subject} from "rxjs";
 import {BlockchainEvent} from "@o-platform/o-events/dist/blockchainEvent";
-import {PromiEvent, TransactionReceipt} from "web3-core";
+import {TransactionReceipt} from "web3-core";
 
 export class Erc20Token extends Web3Contract
 {
@@ -33,7 +33,7 @@ export class Erc20Token extends Web3Contract
     return {
       event: "Transfer",
       filter: f,
-      fromBlock: fromBlock ?? HUB_BLOCK,
+      fromBlock: fromBlock,
       toBlock: toBlock ?? "latest"
     };
   }
@@ -65,7 +65,7 @@ export class Erc20Token extends Web3Contract
     return subject;
   }
 
-  async transfer(privateKey: string, safeProxy: GnosisSafeProxy, to: string, amount: BN) : Promise<ExecResult>
+  async transfer(privateKey: string, safeProxy: GnosisSafeProxy, to: string, amount: BN) : Promise<TransactionReceipt>
   {
     const txData = this.contract.methods.transfer(to, amount).encodeABI();
 

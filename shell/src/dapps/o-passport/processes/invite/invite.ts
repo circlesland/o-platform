@@ -3,23 +3,32 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { promptChoice } from "../identify/prompts/promptChoice";
+import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transfer } from "../../../o-banking/processes/transfer";
 import { loadProfile } from "../identify/services/loadProfile";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {Profile} from "../../data/api/types";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import {Profile} from "../../../../shared/api/data/types";
 
 export type InviteContextData = {
   safeAddress?: string;
   inviteProfileId?: number;
   inviteProfile?: Profile;
   circlesSafeOwner?: string;
-
 };
 
 export const INVITE_VALUE = 0.1;
 
 export type InviteContext = ProcessContext<InviteContextData>;
+
+const editorContent = {
+  amount: {
+    title: "How many invites do you want to send?",
+    description: "",
+    placeholder: "",
+    submitButtonText: "",
+  },
+};
 
 const processDefinition = (processId: string) =>
   createMachine<InviteContext, any>({
@@ -48,7 +57,8 @@ const processDefinition = (processId: string) =>
 
       amount: promptChoice({
         id: "amount",
-        promptLabel: "How many invites do you want to send?",
+        component: ChoiceSelector,
+        params: { view: editorContent.amount },
         options: [
           {
             key: "1",

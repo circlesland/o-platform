@@ -6,12 +6,16 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { BN } from "ethereumjs-util";
+import {CreateTagInput} from "../../../shared/api/data/types";
+import {TransactionReceipt} from "web3-core";
 
 export type TransferXdaiContextData = {
   safeAddress: string;
   recipientAddress: string;
   amount: string;
   privateKey: string;
+  receipt:TransactionReceipt;
+  message?:string;
 };
 
 /**
@@ -63,25 +67,32 @@ const processDefinition = (processId: string) =>
                 "ether"
               )
             );
-            const resultObservable = await gnosisSafeProxy.transferEth(
+            const receipt = await gnosisSafeProxy.transferEth(
               context.data.privateKey,
               ethAmount,
               context.data.recipientAddress
             );
 
-            return resultObservable.toPromise();
+            const transactionTags: CreateTagInput[] = [];
+            if (context.data.message) {
+              transactionTags.push({
+                typeId: "o-banking:transfer:message:1",
+                value: context.data.message
+              });
+            }
+            return receipt;
           },
           onDone: "#success",
           onError: "#error",
         },
       },
       success: {
-        id: "success",
-        type: "final",
+        id: 'success',
+        type: 'final',
         data: (context, event: PlatformEvent) => {
-          return "yeah!";
-        },
-      },
+          return context.data;
+        }
+      }
     },
   });
 

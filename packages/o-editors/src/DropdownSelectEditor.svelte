@@ -1,145 +1,185 @@
 <script lang="ts">
-  import Select from "svelte-select";
-  import { ChoiceSelectorContext } from "./choiceSelectorContext";
-  import ProcessNavigation from "./ProcessNavigation.svelte";
-  import { Continue } from "@o-platform/o-process/dist/events/continue";
-  import { onMount } from "svelte";
-  import Item from "./DropdownSelectItem.svelte";
+import Select from "../../../shell/src/shared/molecules/Select/Select.svelte";
+import ProcessNavigation from "./ProcessNavigation.svelte";
+import { EditorContext } from "./editorContext";
+import { Continue } from "@o-platform/o-process/dist/events/continue";
+import { onMount } from "svelte";
+import Item from "./DropdownSelectItem.svelte";
+import {
+  normalizePromptField,
+  PromptField,
+} from "@o-platform/o-process/dist/states/prompt";
+import { DropdownSelectorContext } from "./DropdownSelectEditorContext";
 
-  export let context: ChoiceSelectorContext;
+/*
+ * allow arbitrary values in dropdownselecteditor
+ * allow to add new tags in dropdownselecteditor
+ * add a "most-recent" list to the dropdownselecteditor
+ */
 
-  $: selected = {};
-  let selectedLabel: String;
-  let graphql = false;
-  let optionIdentifier = "value";
-  let getOptionLabel = (option) => option.label;
-  let getSelectionLabel = (option) => option.label;
+export let context: DropdownSelectorContext<any, any, any>;
 
-  onMount(() => {
-    graphql = context.params.graphql;
-    getOptionLabel = context.params.getOptionLabel
-      ? context.params.getOptionLabel
-      : getOptionLabel;
-    getSelectionLabel = context.params.getSelectionLabel
-      ? context.params.getSelectionLabel
-      : getSelectionLabel;
+$: selected = {};
 
-    if (graphql) {
-      selected = context.data[context.fieldName];
-    } else {
-      selected = context.params.choices.find(
-        (o) => o.value === context.data[context.fieldName]
-      );
-    }
-  });
+let inputField: any;
+let _context: EditorContext;
+let selectComponent: Select;
+let field: PromptField<any>;
+let filterText: string;
+let showSafeAddressInput: boolean = false;
+let fieldId = context.isSensitive
+  ? Math.random().toString().replace(".", "")
+  : context.field;
 
-  function handleSelect(event) {
-    selected = event.detail;
-    selectedLabel = event.detail.label;
-    context.editorDirtyFlags[context.fieldName] = true;
-  }
+$: {
+  _context = context;
+}
 
-  export function handleClear() {
+onMount(async () => {
+  field = normalizePromptField(context.field);
+  const currentKey = field.get(context);
+  if (currentKey) {
+    selected = await context.params.choices.byKey(currentKey, context);
+  } else {
     selected = undefined;
-    context.editorDirtyFlags[context.fieldName] = true;
-  }
-
-  function submitHandler() {
-    const event = new Continue();
-    event.data = {};
-    event.data[context.fieldName] = selected.value;
-    context.data[context.fieldName] = selected.value;
-    context.process.sendAnswer(event);
-  }
-
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Enter" && selected && selected.value) {
-      submitHandler();
+    if (context.params.showResultsOnLoad) {
+      filterText = "0x";
+      setTimeout(() => {
+        filterText = "";
+        selectComponent.getItems();
+      }, 1);
     }
   }
+  console.log("CONTEXT: ", context);
+});
+
+function handleSelect(event) {
+  selected = event.detail;
+  context.editorDirtyFlags[field.name] = true;
+}
+
+export function handleClear() {
+  selected = undefined;
+  context.editorDirtyFlags[field.name] = true;
+}
+
+function submitHandler() {
+  const event = new Continue();
+
+  event.data = {};
+  event.data[field.name] = context.params.getKey(selected);
+  context.data[field.name] = context.params.getKey(selected);
+  context.process.sendAnswer(event);
+}
+
+const submitSafeAddressInput = () => {
+  const answer = new Continue();
+  answer.data = context.data;
+  context.process.sendAnswer(answer);
+};
+
+function onkeydown(e: KeyboardEvent) {
+  if (e.key == "Enter" && selected) {
+    submitHandler();
+  }
+}
+function toggleInputView() {
+  showSafeAddressInput = !showSafeAddressInput;
+}
 </script>
 
-<div class="form-control justify-self-center">
-  <label class="label" for={context.fieldName}>
-    <span class="label-text">{@html context.params.label}</span>
-  </label>
-
-  {#if !!context.params.asyncChoices}
-    <div class="themed" on:keydown={onkeydown}>
-      <Select
-        name="value"
-        isFocused={true}
-        selectedValue={selected}
-        loadOptions={context.params.asyncChoices}
-        noOptionsMessage=""
-        placeholder="Search..."
-        listAutoWidth={false}
-        listPlacement="top"
-        containerClasses="min-w-full asyncList  max-w-xs"
-        isCreatable={true}
-        on:clear={handleClear}
-        {optionIdentifier}
-        {getSelectionLabel}
-        {getOptionLabel}
-        {Item}
-        on:select={handleSelect}
-      />
+{#if field}
+  <div class="flex flex-col items-end form-control justify-self-center">
+    <div class="h-12 text-base themed">
+      {#if showSafeAddressInput}
+        <div
+          class="flex flex-row items-start space-x-4 form-control justify-self-center"
+          style="margin-bottom: 1.4rem;">
+          <input
+            on:keydown="{onkeydown}"
+            id="{fieldId}"
+            name="{fieldId}"
+            autocomplete="{fieldId}"
+            type="text"
+            placeholder="Enter Safe Address"
+            class="flex-grow h-12 input input-lg input-bordered"
+            class:input-error="{context.messages[context.field]}"
+            bind:value="{_context.data[context.field]}"
+            on:focus
+            on:blur
+            on:change="{() =>
+              (context.editorDirtyFlags[context.field] = true)}" />
+          <div>
+            <ProcessNavigation
+              on:buttonClick="{submitSafeAddressInput}"
+              context="{context}"
+              type="small" />
+          </div>
+        </div>
+      {:else}
+        <Select
+          name="searchTerm"
+          autoComplete="off"
+          isFocused="{false}"
+          selectedValue="{selected}"
+          loadOptions="{(searchString) =>
+            context.params.choices.find(searchString, context)}"
+          noOptionsMessage=""
+          placeholder="Search..."
+          listAutoWidth="{false}"
+          inlineSubmit="{true}"
+          listPlacement="top"
+          containerClasses="min-w-full asyncList  max-w-xs"
+          on:clear="{handleClear}"
+          optionIdentifier="{context.params.keyProperty}"
+          getSelectionLabel="{context.params.getLabel}"
+          getOptionLabel="{context.params.getLabel}"
+          Item="{context.params.itemTemplate
+            ? context.params.itemTemplate
+            : Item}"
+          on:select="{handleSelect}"
+          bind:this="{selectComponent}"
+          bind:filterText
+          on:buttonClick="{submitHandler}" />
+      {/if}
+      {#if context.params.allowAlternativeInput}
+        <div
+          class="absolute text-xs text-right cursor-pointer text-primary left-16"
+          style="z-index: 999999999999; right: 5.5rem; bottom: 0.2rem;"
+          on:click="{toggleInputView}">
+          {showSafeAddressInput
+            ? "Click to search for Circles Profile"
+            : "Click to enter Circles Safe Address"}
+        </div>
+      {/if}
     </div>
-  {:else}
-    <div class="themed-select">
-      <Select
-        name="value"
-        isFocused={true}
-        selectedValue={selected}
-        items={context.params.choices}
-        showChevron={true}
-        listAutoWidth={false}
-        listPlacement="top"
-        containerClasses="min-w-full max-w-xs"
-        on:select={handleSelect}
-      />
-    </div>
-  {/if}
-  {#if context.messages[context.fieldName]}
-    <label class="text-right label" for="form-error">
-      <span id="form-error" class="label-text-alt text-error "
-        >{context.messages[context.fieldName]}</span
-      >
-    </label>
-  {/if}
-</div>
-<ProcessNavigation on:buttonClick={submitHandler} {context} />
+    {#if context.messages[context.field]}
+      <label class="text-right label" for="form-error">
+        <span id="form-error" class="label-text-alt text-error"
+          >{context.messages[context.field]}</span>
+      </label>
+    {/if}
+  </div>
+{/if}
 
+<!-- <ProcessNavigation on:buttonClick={submitHandler} {context} type="small" /> -->
 <style>
-  .themed {
-    width: 100%;
-    padding: 0 !important;
-    --listMaxHeight: 400px;
-    /* --listMaxWidth: 10rem; */
-    --listBackground: transparent;
-    --listShadow: none;
-    --borderRadius: 0.5rem;
-    --border: none;
-    --height: 4rem;
-    --inputTop: 3px;
-    --inputFontSize: 18px;
-    --inputPadding: 0.5rem 0.5rem 0.5rem 1rem;
-    height: 3.5rem;
-    @apply input-lg input-bordered;
-  }
-
-  .themed-select {
-    padding: 0 !important;
-    --listMaxHeight: 400px;
-    --listMaxWidth: 10rem;
-    width: 100%;
-    --borderRadius: 0.5rem;
-    --border: none;
-    --height: 4rem;
-    --inputTop: 3px;
-    --inputFontSize: 18px;
-    --inputPadding: 0.5rem 0.5rem 0.5rem 1rem;
-    height: 3.5rem;
-    @apply input-lg input-bordered;
-  }
+.themed {
+  width: 100%;
+  padding: 0 !important;
+  --listMaxHeight: 19rem;
+  --listBackground: transparent;
+  --listShadow: none;
+  --borderRadius: var(--rounded-btn, 0.5rem);
+  --border: 1px solid hsla(var(--bc, 215 28% 17%) / var(--tw-border-opacity));
+  --height: auto;
+  --inputTop: 3px;
+  --inputFontSize: 18px;
+  --inputPadding: 0.5rem 0.5rem 0.5rem 1rem;
+  --itemHoverBG: "#cccccc";
+  --clearSelectTop: 3.25rem;
+  --clearSelectHeight: 2.5rem;
+  --clearSelectRight: 4.5rem;
+  height: auto;
+}
 </style>

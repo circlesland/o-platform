@@ -1,5 +1,4 @@
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {SessionInfoDocument} from "../../../data/api/types";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
@@ -21,7 +20,7 @@ export function hasKey<
       validate: {
         always:[{
           cond: () => {
-            const key = localStorage.getItem("circlesKey");
+            const key = sessionStorage.getItem("circlesKey");
             if (!key)
               return false;
 

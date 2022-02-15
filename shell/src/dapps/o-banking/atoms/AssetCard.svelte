@@ -1,52 +1,45 @@
 <script lang="ts">
-  import { push } from "svelte-spa-router";
+import { push } from "svelte-spa-router";
+import Card from "src/shared/atoms/Card.svelte";
+import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+import { AssetBalance } from "../../../shared/api/data/types";
+import { Currency } from "../../../shared/currency";
 
-  export let symbol: string;
-  export let title: string;
-  export let balance: string;
-  export let variety: number;
+export let symbol: string;
+export let title: string;
+export let balance: string;
+export let variety: number;
+export let description: string;
 
-  let pictureUrl: string;
+let pictureUrl: string;
+let varietyDetail;
 
-  $: {
-    pictureUrl = symbol;
-  }
-
-  function loadDetailPage() {
-    push("#/banking/assets/" + symbol);
-  }
+$: {
+  pictureUrl = symbol;
+  varietyDetail =
+    variety == 0 || variety == 1
+      ? title
+      : variety
+      ? variety + " different " + title
+      : "";
+}
 </script>
 
-<section
-  class="flex items-center justify-center mb-2 text-circlesdarkblue "
-  on:click={() => loadDetailPage()}
->
-  <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-    <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
-      <div class="mr-2 text-center">
-        <div class="avatar">
-          <div class="rounded-full w-12 h-12 sm:w-12 sm:h-12 m-auto">
-            <img src="/logos/{symbol}.png" alt={symbol} class="w-12 h-12" />
-          </div>
-        </div>
-      </div>
-
-      <div class="text-left flex-grow truncate relative">
-        <div class="max-w-full truncateThis cursor-pointer">
-          <h2 class="text-2xl sm:text-3xl truncate ">
-            {title}
-            {variety > 1 ? " (" + variety + ")" : ""}
-          </h2>
-        </div>
-      </div>
-
-      <div class="flex flex-1 flex-col justify-items-end">
-        <div class="self-end text-transactionpositive text-2xl sm:text-3xl">
-          <span>
-            {Number.parseFloat(balance).toFixed(2)}
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<div
+  on:click="{() => push(`#/banking/assets/${symbol}`)}"
+  class="cursor-pointer">
+  <ItemCard
+    params="{{
+      edgeless: false,
+      imageUrl: `/logos/${symbol}.png`,
+      title: title,
+      subTitle: varietyDetail || description,
+      truncateMain: true,
+      endTextBig: Number.parseFloat(balance).toFixed(2),
+      endTextSmall:
+        variety == 0 || variety == 1
+          ? title
+          : `${Number.parseFloat(balance / 10).toFixed(2)} €`,
+      mobileTextCutoff: 18,
+    }}" />
+</div>

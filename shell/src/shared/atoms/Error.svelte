@@ -35,8 +35,8 @@
   });
 </script>
 
-<div class="bg-white rounded-lg p-5 w-full">
-  <div class="alert alert-error mb-2 mt-2">
+<div class="w-full p-5 bg-white rounded-lg">
+  <div class="mt-2 mb-2 alert alert-error">
     <div class="flex-1">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@
       id="errormessage"
       type="text"
       value={error.stack}
-      class="errormessage textarea  textarea-bordered overflow-y-scroll input-error w-full mt-5 mb-5 max-h-72"
+      class="w-full mt-5 mb-5 overflow-y-scroll errormessage textarea textarea-bordered input-error max-h-72"
     />
   {:else}
     No error details available. See the console for more details.

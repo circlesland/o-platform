@@ -1,99 +1,46 @@
-import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-passport/pages/Home.svelte";
 import Account from "./o-passport/pages/Account.svelte";
-import Keys from "./o-passport/pages/Keys.svelte";
+
 import Settings from "./o-passport/pages/Settings.svelte";
 import Login from "./o-passport/pages/Login.svelte";
-import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { logout } from "./o-passport/processes/logout";
-import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-import {shellProcess, ShellProcessContext} from "../shared/processes/shellProcess";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 
-const index: PageManifest = {
-  isDefault: true,
-  routeParts: ["profile"],
+const index: Page<any, DappState> = {
+  routeParts: ["=profile"],
   component: Home,
   title: "Profile",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const profile: PageManifest = {
-  isDefault: false,
+const profile: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["profile", ":profileId"],
+  routeParts: ["=profile", ":profileId"],
   component: Home,
   title: "Profile",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-
-const account: PageManifest = {
-  isDefault: false,
-  routeParts: ["account"],
+const account: Page<any, DappState> = {
+  routeParts: ["=accounts"],
   component: Account,
   title: "Accounts",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
 
-const keys: PageManifest = {
-  isDefault: false,
-  routeParts: ["keys"],
-  component: Keys,
-  title: "Keys",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
-};
-
-const settings: PageManifest = {
-  isDefault: false,
-  routeParts: ["settings"],
+const settings: Page<any, DappState> = {
+  routeParts: ["=settings"],
   component: Settings,
   title: "Settings",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
 
 // Same as 'index' but accepts a ':code' parameter that will be passed to 'Home'
-const login : PageManifest = {
-  isDefault: false,
+const login: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["login", ":code"],
+  routeParts: ["=login", ":code"],
   component: Login,
   title: "Login with Circles",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    }
-  ]
+  type: "page",
 };
 
 export interface DappState {
@@ -101,37 +48,40 @@ export interface DappState {
 }
 
 export const passport: DappManifest<DappState> = {
+  type: "dapp",
   dappId: "passport:1",
   isSingleton: true,
-  dependencies: [],
   isHidden: false,
-  icon: faPeopleArrows,
+  icon: "passport",
   title: "Passport",
-  routeParts: ["passport"],
+  routeParts: ["=passport"],
+  defaultRoute: ["passport"],
   tag: Promise.resolve("alpha"),
-  actions: [
-    {
-      key: "logout",
-      label: "Logout",
-      event: () => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = logout;
-            return ctx;
-          }
-        );
-      },
+  jumplist: {
+    type: "jumplist",
+    title: "Actions",
+    isSystem: false,
+    routeParts: ["=actions"],
+    items: async () => {
+      return [
+        {
+          key: "logout",
+          title: "Logout",
+          icon: "logout",
+          action: () => {
+            window.o.runProcess(logout, {});
+          },
+        },
+      ];
     },
-  ],
+  },
   isEnabled: true,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
-      initialPage: index,
+      initialRoutable: index,
       cancelDependencyLoading: false,
     };
   },
-  pages: [index, profile, account, keys, settings, login],
+  routables: [index, profile, account, settings, login],
 };

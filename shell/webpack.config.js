@@ -4,17 +4,32 @@ const TerserPlugin = require("terser-webpack-plugin");
 const path = require("path");
 const sveltePreprocess = require("svelte-preprocess");
 const webpack = require("webpack");
+const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
+const DEBUG = !process.argv.includes("--release");
+const VERBOSE = process.argv.includes("--verbose");
 
 let __CIRCLES_GARDEN_API__ = "https://api.circles.garden/api/users/";
 let __AUTH_ENDPOINT__ = "https://auth.circles.name";
 let __API_ENDPOINT__ = "https://api.circles.land";
 let __FILES_ENDPOINT__ = "https://files.circles.land";
+let __CIRCLES_SUBGRAPH_ENDPOINT__ =
+  "https://api.thegraph.com/subgraphs/name/circlesubi/circles";
+let __PATHFINDER_ENDPOINT__ = "https://rpc.circles.land/pathfinder";
 let __APP_ID__ = "circles.land";
 let __FILES_APP_ID__ = "files.circles.land";
-let __SAFE_SCHEMA_VERSION__ = "1";
+let __SAFE_SCHEMA_VERSION__ = "2";
+let __CIRCLES_HUB_ADDRESS__ = "0x29b9a7fBb8995b2423a71cC17cf9810798F6C543";
+let __CIRCLES_HUB_BLOCK__ = "12529458";
+let __SAFE_PROXY_FACTORY_ADDRESS__ = "0x8b4404DE0CaECE4b966a9959f134f0eFDa636156";
+let __SAFE_ADDRESS__ = "0x3E5c63644E683549055b9Be8653de26E0B4CD36E";
+let __RPC_ENDPOINT__ = "https://rpc.circles.land";
+let __OPENLOGIN_CLIENT_ID__ = process.env.OPENLOGIN_CLIENT_ID ?? "BHqazms23gbTZQ2fYvvUaFzv718Ft8Ox1XwSEqVt81jtZJRQRb-N5cnThtZGSjZF9Dtj9MQxkEQTUo47I_wiihE";
+let __ALLOW_VERIFY__ = "true";// !process.env.ALLOW_VERIFY ? "false" : "true";
+let __ALLOW_CREATE_ORGANISATION__ = !process.env.ALLOW_CREATE_ORGANISATION ? "false" : "true";
+let __USE_MOCKS__ = !process.env.USE_MOCKS ? "false" : "true";
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __AUTH_ENDPOINT__ = "https://auth.circles.name";
@@ -28,12 +43,6 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __FILES_ENDPOINT__ = "https://dev.files.circles.land";
   __APP_ID__ = "dev.circles.land";
   __FILES_APP_ID__ = "dev.files.circles.land";
-} else if (process.env.DEPLOY_ENVIRONMENT === "thorsten") {
-  __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
-  __API_ENDPOINT__ = "https://thorsten.api.circles.land";
-  __FILES_ENDPOINT__ = "https://dev.files.circles.land";
-  __APP_ID__ = "thorsten.circles.land";
-  __FILES_APP_ID__ = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "local") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "https://local.api.circles.land";
@@ -46,6 +55,19 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __FILES_ENDPOINT__ = "https://dev.files.circles.land";
   __APP_ID__ = "ultralocal.circles.land";
   __FILES_APP_ID__ = "dev.files.circles.land";
+} else if (process.env.DEPLOY_ENVIRONMENT === "docker") {
+  __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
+  __API_ENDPOINT__ = "http://localhost:8989";
+  __FILES_ENDPOINT__ = "https://dev.files.circles.land";
+  __APP_ID__ = "ultralocal.circles.land";
+  __FILES_APP_ID__ = "dev.files.circles.land";
+  __CIRCLES_HUB_ADDRESS__ = process.env.CIRCLES_HUB_ADDRESS;
+  __CIRCLES_HUB_BLOCK__ = process.env.CIRCLES_HUB_BLOCK;
+  __SAFE_PROXY_FACTORY_ADDRESS__ = process.env.SAFE_PROXY_FACTORY_ADDRESS;
+  __SAFE_ADDRESS__ = process.env.SAFE_ADDRESS;
+  __RPC_ENDPOINT__ = process.env.RPC_ENDPOINT ?? "http://localhost:8545";
+  __ALLOW_VERIFY__ = "true";
+  __ALLOW_CREATE_ORGANISATION__ = "true";
 }
 
 console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
@@ -55,12 +77,23 @@ console.log(`__APP_ID__: ${__APP_ID__}`);
 console.log(`__FILES_APP_ID__: ${__FILES_APP_ID__}`);
 console.log(`__CIRCLES_GARDEN_API__: ${__CIRCLES_GARDEN_API__}`);
 console.log(`__SAFE_SCHEMA_VERSION__: ${__SAFE_SCHEMA_VERSION__}`);
+console.log(`__PATHFINDER_ENDPOINT__: ${__PATHFINDER_ENDPOINT__}`);
+console.log(`__CIRCLES_SUBGRAPH_ENDPOINT__: ${__CIRCLES_SUBGRAPH_ENDPOINT__}`);
+console.log(`__CIRCLES_HUB_ADDRESS__: ${__CIRCLES_HUB_ADDRESS__}`);
+console.log(`__CIRCLES_HUB_BLOCK__: ${__CIRCLES_HUB_BLOCK__}`);
+console.log(`__SAFE_PROXY_FACTORY_ADDRESS__: ${__SAFE_PROXY_FACTORY_ADDRESS__}`);
+console.log(`__SAFE_ADDRESS__: ${__SAFE_ADDRESS__}`);
+console.log(`__RPC_ENDPOINT__: ${__RPC_ENDPOINT__}`);
+console.log(`__OPENLOGIN_CLIENT_ID__: ${__OPENLOGIN_CLIENT_ID__}`);
+console.log(`__USE_MOCKS__: ${__USE_MOCKS__}`);
+console.log(`__ALLOW_VERIFY__: ${__ALLOW_VERIFY__}`);
+console.log(`__ALLOW_CREATE_ORGANISATION__: ${__ALLOW_CREATE_ORGANISATION__}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
 module.exports = {
   mode,
-  devtool: prod ? false : "source-map",
+  devtool: prod ? false : "inline-cheap-module-source-map",
   entry: {
     bundle: ["./src/main.ts"],
   },
@@ -75,6 +108,17 @@ module.exports = {
     extensions: [".mjs", ".tsx", ".ts", ".js", ".svelte", ".svx"],
     mainFields: ["svelte", "browser", "module", "main"],
   },
+  stats: {
+    colors: true,
+    reasons: DEBUG,
+    hash: VERBOSE,
+    version: VERBOSE,
+    timings: true,
+    chunks: VERBOSE,
+    chunkModules: VERBOSE,
+    cached: VERBOSE,
+    cachedAssets: VERBOSE,
+  },
   output: {
     path: __dirname + "/public",
     filename: "bundle.js",
@@ -84,6 +128,96 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__USE_MOCKS__",
+          replace: __USE_MOCKS__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__ALLOW_VERIFY__",
+          replace: __ALLOW_VERIFY__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__ALLOW_CREATE_ORGANISATION__",
+          replace: __ALLOW_CREATE_ORGANISATION__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__CIRCLES_HUB_ADDRESS__",
+          replace: __CIRCLES_HUB_ADDRESS__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__OPENLOGIN_CLIENT_ID__",
+          replace: __OPENLOGIN_CLIENT_ID__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__SAFE_ADDRESS__",
+          replace: __SAFE_ADDRESS__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__SAFE_PROXY_FACTORY_ADDRESS__",
+          replace: __SAFE_PROXY_FACTORY_ADDRESS__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__CIRCLES_HUB_BLOCK__",
+          replace: __CIRCLES_HUB_BLOCK__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__PATHFINDER_ENDPOINT__",
+          replace: __PATHFINDER_ENDPOINT__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__CIRCLES_SUBGRAPH_ENDPOINT__",
+          replace: __CIRCLES_SUBGRAPH_ENDPOINT__,
+          flags: "g",
+        },
+      },
       {
         test: /\.ts|\.svelte$/,
         loader: "string-replace-loader",
@@ -108,6 +242,15 @@ module.exports = {
         options: {
           search: "__SAFE_SCHEMA_VERSION__",
           replace: __SAFE_SCHEMA_VERSION__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__RPC_ENDPOINT__",
+          replace: __RPC_ENDPOINT__,
           flags: "g",
         },
       },
@@ -148,7 +291,7 @@ module.exports = {
         },
       },
       {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         use: "ts-loader",
         exclude: [/node_modules/],
       },
@@ -172,17 +315,7 @@ module.exports = {
           options: {
             emitCss: true,
             hotReload: true,
-            preprocess: sveltePreprocess({
-              // https://github.com/kaisermann/svelte-preprocess/#user-content-options
-              // sourceMap: true,
-              postcss: {
-                plugins: [
-                  require("tailwindcss"),
-                  require("autoprefixer"),
-                  require("postcss-nesting"),
-                ],
-              },
-            }),
+            preprocess: sveltePreprocess({}),
           },
         },
       },
@@ -201,6 +334,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new CaseSensitivePathsPlugin(),
     new MiniCssExtractPlugin({
       filename: "[name].css",
       chunkFilename: "bundle.[name].css",
@@ -215,14 +349,11 @@ module.exports = {
   },
   devServer: {
     watchContentBase: true,
-    compress: true,
+    compress: false,
     contentBase: [path.join(__dirname, "public")],
-    port: 5000,
-    host:
-      process.env.DEPLOY_ENVIRONMENT === "thorsten"
-        ? "192.168.178.35"
-        : "localhost",
+    port: process.env.DEPLOY_ENVIRONMENT !== "docker" ? 5000 : 8080,
+    host: "localhost",
     open: true,
-    https: process.env.DEPLOY_ENVIRONMENT === "thorsten" ? true : false,
+    https: false,
   },
 };

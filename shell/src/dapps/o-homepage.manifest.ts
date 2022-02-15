@@ -1,5 +1,5 @@
-import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Home from "./o-homepage/pages/Home.svelte";
+import Invite from "./o-homepage/pages/Invite.svelte";
 import Citizens from "./o-homepage/pages/Citizens.svelte";
 import Countries from "./o-homepage/pages/Countries.svelte";
 import Imprint from "./o-homepage/pages/Imprint.svelte";
@@ -7,135 +7,119 @@ import Milestones from "./o-homepage/pages/Milestones.svelte";
 import Privacy from "./o-homepage/pages/Privacy.svelte";
 import Tos from "./o-homepage/pages/Tos.svelte";
 import Learn from "./o-homepage/pages/Learn.svelte";
-import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 
-const login: PageManifest = {
-  isDefault: false,
+const externalChat: Link<any, DappState> = {
+  type: "link",
+  title: "Support",
+  icon: "chat",
+  routeParts: ["=chat"],
+  openInNewTab: true,
+  url: () => "https://discord.gg/CS6xq7jECR",
+};
+const externalForum: Link<any, DappState> = {
+  type: "link",
+  title: "Forum",
+  icon: "forum",
+  routeParts: ["=forum"],
+  openInNewTab: true,
+  url: () => "https://aboutcircles.com/c/earth-circle-dao/13",
+};
+const login: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["login"],
+  routeParts: ["=login"],
   component: Home,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
 
-const index: PageManifest = {
-  isDefault: true,
+const externalBlog: Link<any, DappState> = {
+  type: "link",
+  title: "Blog",
+  icon: "blog",
+  routeParts: ["=blog"],
+  openInNewTab: true,
+  url: () => "https://blog.circles.land/",
+};
+
+const externalWhitepaper: Link<any, DappState> = {
+  type: "link",
+  title: "Whitepaper",
+  icon: "whitepaper",
+  routeParts: ["=whitepaper"],
+  openInNewTab: true,
+  url: () => "https://blog.circles.land/whitepaper/",
+};
+
+const index: Page<any, DappState> = {
   isSystem: true,
-  routeParts: [""],
+  routeParts: [],
   component: Home,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  icon: "home",
+  type: "page",
 };
-const citizens: PageManifest = {
-  isDefault: true,
+
+const invite: Page<{ inviteCode: string }, DappState> = {
   isSystem: true,
-  routeParts: ["citizens"],
+  anonymous: true,
+  routeParts: ["=invite", ":inviteCode"],
+  component: Invite,
+  title: "Circles Land",
+  type: "page",
+};
+
+const citizens: Page<any, DappState> = {
+  isSystem: true,
+  routeParts: ["=citizens"],
   component: Citizens,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const countries: PageManifest = {
-  isDefault: true,
+const countries: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["countries"],
+  routeParts: ["=countries"],
   component: Countries,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const imprint: PageManifest = {
-  isDefault: true,
+const imprint: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["imprint"],
+  routeParts: ["=imprint"],
   component: Imprint,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const milestones: PageManifest = {
-  isDefault: true,
+const milestones: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["milestones"],
+  routeParts: ["=milestones"],
   component: Milestones,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const privacy: PageManifest = {
-  isDefault: true,
+const privacy: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["privacy"],
+  routeParts: ["=privacy"],
   component: Privacy,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
-const tos: PageManifest = {
-  isDefault: true,
-  isSystem: true,
-  routeParts: ["tos"],
-  component: Tos,
-  title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+const tos: Link<any, DappState> = {
+  type: "link",
+  routeParts: ["=tos"],
+  title: "Terms of Service",
+  openInNewTab: true,
+  url: () => "https://coda.io/@circlesland/terms",
 };
-const learn: PageManifest = {
-  isDefault: true,
+
+const learn: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["learn"],
+  routeParts: ["=learn"],
   component: Learn,
   title: "Circles Land",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "page",
 };
 
 export interface DappState {
@@ -143,24 +127,35 @@ export interface DappState {
 }
 
 export const homepage: DappManifest<DappState> = {
+  type: "dapp",
   dappId: "homepage:1",
+  noAuthentication: true,
   isSingleton: true,
-  dependencies: [],
   isHidden: true,
-  icon: faPeopleArrows,
+  icon: "home",
   title: "Circles Land",
   routeParts: [],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: false,
   isFullWidth: true,
-  actions: [],
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
-      initialPage: index,
+      initialRoutable: index,
       cancelDependencyLoading: false,
     };
   },
-  pages: [index, citizens, countries, imprint, milestones, privacy, tos, learn, login],
+  routables: [
+    index,
+    invite,
+    citizens,
+    countries,
+    imprint,
+    milestones,
+    learn,
+    login,
+    externalChat,
+    externalForum,
+  ],
 };

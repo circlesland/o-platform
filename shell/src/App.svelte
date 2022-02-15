@@ -1,594 +1,247 @@
-<script lang="ts">
-  import "./shared/css/base.css";
-  import "./shared/css/components.css";
-  import "./shared/css/utilities.css";
+<script context="module" lang="ts">
+  import {IShell} from "./shell";
+  import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
+  import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
+  import {Generate} from "@o-platform/o-utils/dist/generate";
+  import LoadingIndicator from "./shared/atoms/LoadingIndicator.svelte";
+  import Success from "./shared/atoms/Success.svelte";
+  import ErrorIndicator from "./shared/atoms/Error.svelte";
+  import {useMachine} from "xstate-svelte";
+  import {Subject, Subscription} from "rxjs";
+  import {ProcessEvent} from "@o-platform/o-process/dist/interfaces/processEvent";
+  import {AnyEventObject} from "xstate";
+  import {Bubble} from "@o-platform/o-process/dist/events/bubble";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Process} from "@o-platform/o-process/dist/interfaces/process";
+  import {Sinker} from "@o-platform/o-process/dist/events/sinker";
+  import {shellEvents} from "./shared/shellEvents";
+  import {ApiConnection} from "./shared/apiConnection";
+  import {getProcessContext} from "./main";
+  import {Stopped} from "@o-platform/o-process/dist/events/stopped";
+  import {getSdk} from "./shared/api/data/types";
+  import {GraphQLClient} from "graphql-request";
+  import {me} from "./shared/stores/me"
 
-  import routes from "./loader";
-  import { getLastLoadedDapp } from "./loader";
-  import { getLastLoadedPage } from "./loader";
+  const runningProcesses: {
+    [id: string]: Process;
+  } = {};
 
-  import Router, { push, location } from "svelte-spa-router";
-  import Modal from "./shared/molecules/Modal.svelte";
-  import ProcessContainer from "./shared/molecules/ProcessContainer.svelte";
-  import NavItem from "./shared/atoms/NavItem.svelte";
-  import { Process } from "@o-platform/o-process/dist/interfaces/process";
-  import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import { NavigateTo } from "@o-platform/o-events/dist/shell/navigateTo";
-  import { ProgressSignal } from "@o-platform/o-events/dist/signals/progressSignal";
-  import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "./shared/processes/shellProcess";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
-  import { Subscription } from "rxjs";
-  import { Prompt } from "@o-platform/o-process/dist/events/prompt";
-  import { Back } from "@o-platform/o-process/dist/events/back";
-  import { Skip } from "@o-platform/o-process/dist/events/skip";
-  import {
-    Cancel,
-    CancelRequest,
-  } from "@o-platform/o-process/dist/events/cancel";
-  import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
-  import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
-  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-  import {
-    identify,
-    IdentifyContextData,
-  } from "./dapps/o-passport/processes/identify/identify";
-  import { SvelteToast } from "./shared/molecules/Toast";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { ContextAction } from "@o-platform/o-events/dist/shell/contextAction";
-  import { XDaiThresholdTrigger } from "./xDaiThresholdTrigger";
-  import { me } from "./shared/stores/me";
-  import { INVITE_VALUE } from "./dapps/o-passport/processes/invite/invite";
-  import {
-    deploySafe,
-    HubSignupContextData,
-  } from "./dapps/o-banking/processes/deploySafe";
-  import Progress from "./dapps/o-homepage/components/Progress.svelte";
-
-  let isOpen: boolean = false;
-  let processWaiting: boolean = false;
-  let beforeCancelPrompt: Prompt; // Is set when the "do you want to cancel?" prompt is shown
-  let modalProcess: Process;
-  let modalProcessEventSubscription: Subscription;
-  let publicUrls = {
-    "/": true,
-    "/miva": true,
-    "/citizens": true,
-    "/countries": true,
-    "/banking/find-my-safe": true,
-    "/milestones": true,
-  };
-
-  let progressIndicator: {
-    message: string;
-    percent: number;
-  };
-
-  let contextActions: {
-    key: string;
-    icon?: string;
-    label: string;
-    event: (runtimeDapp: RuntimeDapp<any>) => PlatformEvent;
-  }[];
-
-  window.o.events.subscribe(async (event: PlatformEvent) => {
-    if (event.type === "shell.closeModal") {
-      isOpen = false;
-      lastPrompt = null;
-    }
-    if (event.type === "shell.openModal") {
-      isOpen = true;
-    }
-    if (event.type == "shell.runProcess") {
-      const runProcessEvent = <RunProcess<any>>event;
-      const runningProcess = await window.o.stateMachines.run(
-        runProcessEvent.definition,
-        runProcessEvent.contextModifier
-      );
-
-      if (runProcessEvent.inWindow) {
-        // If the process should be started modal, let App.svelte's ProcessContainer handle it.
-        modalProcess = runningProcess;
-        isOpen = true;
-        modalProcessEventSubscription = modalProcess.events.subscribe(
-          (processEvent: ProcessEvent) => {
-            if (
-              processEvent.event &&
-              processEvent.event.type == "process.ipc.bubble" &&
-              (<any>processEvent.event).wrappedEvent.type == "process.prompt"
-            ) {
-              console.log(
-                "lastPrompt:",
-                (<any>processEvent.event).wrappedEvent
-              );
-              lastPrompt = <Prompt>(<any>processEvent.event).wrappedEvent;
-            }
-          }
+  const shell: IShell = {
+    stateMachines: {
+      findById(processId: string) {
+        return runningProcesses[processId];
+      },
+      async run<TContext>(
+        definition: ProcessDefinition<any, any>,
+        contextModifier?: (
+          processContext: ProcessContext<any>
+        ) => Promise<TContext>
+      ) {
+        const processId = Generate.randomHexString(8);
+        console.log(
+          `Starting process (id: ${processId}) with definition:`,
+          definition
         );
-      } else {
-        // If not, send an event with the process id.
-        const startedEvent = new ProcessStarted(runningProcess.id);
-        startedEvent.responseToId = runProcessEvent.id;
-        window.o.publishEvent(startedEvent);
-      }
-    }
-    if (event.type === "shell.begin") {
-    }
-    if (event.type === "shell.navigateTo") {
-      push("#" + (<NavigateTo>event).route);
-    }
-    if (event.type === "shell.done") {
-      progressIndicator = null;
-    }
-    if (event.type === "shell.progress") {
-      const progressEvent: ProgressSignal = <ProgressSignal>event;
-      progressIndicator = {
-        message: progressEvent.message,
-        percent: progressEvent.percent,
-      };
-    }
-    if (event.type === "shell.contextAction") {
-      contextActions.push((<ContextAction>event).action);
-    }
-  });
 
-  function modalWantsToClose() {
-    // Use this to cancel the close request etc.
-    if (modalProcess && isOpen) {
-      modalProcess.sendEvent(new CancelRequest());
-    }
-    if (!modalProcess && isOpen) {
-      isOpen = false;
-    }
-  }
+        const machine = (<any>definition).stateMachine(
+          LoadingIndicator,
+          Success,
+          ErrorIndicator
+        );
+        const machineOptions = {
+          context: contextModifier
+            ? await contextModifier(await getProcessContext())
+            : await getProcessContext(),
+        };
+        const {service, state, send} = useMachine(machine, machineOptions);
 
-  function conditionsFailed(event) {
-    // TODO: Cannot currently remember what this callback does. Lookup documentation.
-  }
+        const outEvents = new Subject<ProcessEvent>();
+        const inEvents = new Subject<ProcessEvent>();
 
-  let lastPrompt: Prompt | undefined = undefined;
+        let lastInEvent: AnyEventObject;
 
-  function routeLoading(args) {
-    processWaiting = false;
-    if (!publicUrls[args.detail.location] && !$me) {
-      setTimeout(() => {
-        window.location.href = "/#/login";
-      }, 0);
-    }
-  }
+        service.onTransition((state1, event) => {
+          // console.log(`Shellprocess state: ${state1.value}, event: ${event.type}`)
+          if (event.type == "error.platform" || event.type == "xstate.error") {
+            console.error(
+              `An error occurred during the execution of process '${definition.name}'::`,
+              event
+            );
+          }
+          if (event.type == "process.ipc.bubble") {
+            process.lastReceivedBubble = <Bubble>event;
+          }
 
-  let lastLoadedPage: PageManifest;
-  let lastLoadedDapp: DappManifest<any>;
+          //console.log(`window.o.stateMachines: forwarding event to the processEvents stream of process '${definition.name}':`, event);
+          if (event == lastInEvent) {
+            // TODO: Hack: Skip this event - it's 'reflected'
+            lastInEvent = null;
+            return;
+          }
+          outEvents.next(<any>{
+            stopped: false,
+            currentState: state1,
+            previousState: state1.history,
+            event: event,
+          });
+        });
 
-  function routeLoaded() {
-    // Pretty self explanatory. For more lookup the svelte-spa-router docs,
-    lastLoadedPage = getLastLoadedPage();
-    lastLoadedDapp = getLastLoadedDapp();
+        service.onStop(() => {
+          outEvents.next({
+            stopped: true,
+          });
 
-    console.log("LAST PAGE: ", lastLoadedPage);
-    // Clear the context actions after every route change
-    contextActions = [];
-  }
+          delete runningProcesses[processId];
+          window.o.publishEvent(new Stopped(processId));
+        });
 
-  async function login(appId: string, code?: string) {
-    if (isOpen) {
-      isOpen = false;
-      lastPrompt = null;
-      if (modalProcess) {
-        modalProcess.sendEvent(new Cancel());
-      }
-      return;
-    }
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = identify;
-        ctx.childContext = {
-          data: <IdentifyContextData>{
-            redirectTo: "/dashboard",
+        function isProcessEvent(
+          event: PlatformEvent | ProcessEvent
+        ): event is ProcessEvent {
+          return (event as ProcessEvent).currentState !== null;
+        }
+
+        const process: Process = {
+          id: processId,
+          events: outEvents,
+          inEvents: inEvents,
+          lastReceivedBubble: null,
+          sendEvent: (event: PlatformEvent & { type: string }) => {
+            if (isProcessEvent(event)) {
+              lastInEvent = event;
+              inEvents.next(<any>{
+                event: event,
+              });
+            }
+            send(event);
+          },
+          sendAnswer(answer: PlatformEvent) {
+            if (!this.lastReceivedBubble || this.lastReceivedBubble.noReply) {
+              throw new Error(
+                "Cannot answer because no Bubble event was received before or the event hat the 'noReply' property set."
+              );
+            }
+            process.sendEvent(<Sinker>{
+              type: "process.ipc.sinker",
+              levels: this.lastReceivedBubble.levels ?? 0,
+              backTrace: this.lastReceivedBubble.trace,
+              wrappedEvent: answer,
+            });
           },
         };
-        return ctx;
+
+        service.start();
+
+        runningProcesses[processId] = process;
+
+        return process;
+      },
+    },
+    events: shellEvents.observable,
+    publishEvent: (event) => {
+      if (event.type == "shell.progress") {
+        console.log("Progress event: ", event);
       }
-    );
+      return shellEvents.publish(event);
+    },
+    requestEvent: <TResult extends PlatformEvent>(requestEvent) => {
+      const timeoutPeriod = 100;
+      return new Promise<TResult>((resolve, reject) => {
+        let answerSubscription: Subscription;
+        let answered = false;
 
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
-  }
+        let timeout = setTimeout(() => {
+          if (answered) return;
 
-  let layoutClasses = "";
+          reject(
+            new Error(
+              `The request event with the id ${requestEvent.id} wasn't answered within ${timeoutPeriod} ms`
+            )
+          );
+        }, timeoutPeriod);
 
-  let balanceThresholdTrigger: XDaiThresholdTrigger;
-  let triggered = false;
-
-  $: {
-    /* Avoid scrolling background on open modal */
-
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "visible";
-    }
-
-    if ($me && $me.circlesSafeOwner && !balanceThresholdTrigger) {
-      if (!!localStorage.getItem("isCreatingSafe")) {
-        balanceThresholdTrigger = new XDaiThresholdTrigger(
-          $me.circlesSafeOwner,
-          INVITE_VALUE - 0.005,
-          async (address, threshold) => {
-            console.log("The safe creation balance threshold was reached!");
-            const requestEvent = new RunProcess<ShellProcessContext>(
-              shellProcess,
-              true,
-              async (ctx) => {
-                ctx.childProcessDefinition = deploySafe;
-                ctx.childContext = {
-                  data: <HubSignupContextData>{
-                    privateKey: localStorage.getItem("circlesKey"),
-                  },
-                };
-                return ctx;
-              }
-            );
-
-            requestEvent.id = Generate.randomHexString(8);
-            window.o.publishEvent(requestEvent);
+        answerSubscription = window.o.events.subscribe((event) => {
+          if (event.responseToId != requestEvent.id) {
+            return;
           }
-        );
-      } else if (
-        !triggered &&
-        (!!localStorage.getItem("fundsSafe") ||
-          !!localStorage.getItem("signsUpAtCircles"))
-      ) {
-        const requestEvent = new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = deploySafe;
-            ctx.childContext = {
-              data: <HubSignupContextData>{
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
 
-        requestEvent.id = Generate.randomHexString(8);
+          answerSubscription.unsubscribe();
+          clearTimeout(timeout);
+
+          resolve(<TResult>event);
+        });
+
         window.o.publishEvent(requestEvent);
-        triggered = true;
-      }
-    }
+      });
+    },
+  };
 
-    layoutClasses =
-      (lastLoadedDapp && lastLoadedDapp.isFullWidth) ||
-      (lastLoadedPage && lastLoadedPage.isFullWidth)
-        ? ""
-        : "md:w-2/3 xl:w-1/2";
+  async function connectToApi() {
+    console.log(`Connecting to __AUTH_ENDPOINT__ ..`);
+    shell.authClient = new ApiConnection("__AUTH_ENDPOINT__/");
+
+    console.log(`Connecting to __API_ENDPOINT__ ..`);
+    shell.apiClient = new ApiConnection("__API_ENDPOINT__/", "include");
+
+    console.log(`Connecting to __CIRCLES_SUBGRAPH_ENDPOINT__ ..`);
+    shell.theGraphClient = new ApiConnection("__CIRCLES_SUBGRAPH_ENDPOINT__");
   }
+
+  connectToApi().then(() => {
+    console.log(`Connected to __AUTH_ENDPOINT__ and __API_ENDPOINT__`);
+  });
+
+  declare global {
+    interface Window {
+      o: IShell;
+      runInitMachine: () => void;
+    }
+  }
+
+  window.o = shell;
 </script>
 
-<div class="flex flex-col h-screen ">
-  <!-- TODO: Note: All headers are now part of their dapps
-  <header class="z-10 w-full mx-auto md:w-2/3 xl:w-1/2">
-  </header> -->
+<script lang="ts">
+  import "./shared/css/tailwind.css";
 
-  <SvelteToast />
-  <main class="z-30 flex-1 overflow-y-visible" class:blur={isOpen}>
-    <div class="w-full mx-auto {layoutClasses}">
-      <Router
-        {routes}
-        on:conditionsFailed={conditionsFailed}
-        on:routeLoading={routeLoading}
-        on:routeLoaded={routeLoaded}
-      />
-    </div>
-  </main>
+  import Router from "svelte-spa-router";
+  import {SvelteToast} from "./shared/molecules/Toast";
+  import DappFrame from "src/shared/molecules/DappFrame.svelte";
+  import NotFound from "src/shared/pages/NotFound.svelte";
+  import {interpret} from "xstate";
+  import {initMachine} from "./dapps/o-onboarding/processes/init";
+  import {ubiMachine} from "./shared/ubiTimer2";
+  import * as bip39 from "bip39";
 
-  {#if lastLoadedDapp && lastLoadedPage && !lastLoadedDapp.hideFooter && !lastLoadedPage.hideFooter}
-    {#if lastLoadedDapp.dappId === "homepage:1"}
-      <footer
-        class="sticky bottom-0 z-50 w-full h-12 pb-16 bg-white border-t border-base-300"
-        class:isOpen
-      >
-        <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
-          <!-- NOT MODAL START -->
-          <div
-            class="grid  {lastPrompt &&
-            (lastPrompt.navigation.canGoBack || lastPrompt.navigation.canSkip)
-              ? 'grid-cols-3'
-              : 'grid-cols-5'}"
-            class:px-4={!isOpen}
-          >
-            {#each lastLoadedDapp.pages
-              .filter((o) => !o.isSystem)
-              .slice(0, 2) as page}
-              <a
-                href="#/{lastLoadedDapp.routeParts.join('/') +
-                  '/' +
-                  page.routeParts.join('/')}"
-                class="w-full text-center justify-self-center tab focus:text-teal-500 hover:text-teal-500 "
-                class:hidden={isOpen}
-              >
-                <NavItem
-                  isSelected={lastLoadedPage.routeParts[0] ===
-                    page.title.toLowerCase()}
-                  label={page.title}
-                />
-              </a>
-            {/each}
-            {#if !processWaiting}
-              {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
-                <button
-                  class="btn btn-outline btn-white ml-7 sm:ml-9"
-                  on:click={() => modalProcess.sendAnswer(new Back())}
-                  >BACK</button
-                >
-              {/if}
-              <button
-                class="w-16 h-16 mx-2 justify-self-center min-w-min"
-                class:bg-white={!isOpen}
-                class:shadow-lg={!isOpen}
-                class:col-start-3={!lastPrompt ||
-                  (lastPrompt && !lastPrompt.navigation.canGoBack)}
-                class:col-end-3={beforeCancelPrompt ||
-                  !lastPrompt ||
-                  (lastPrompt && !lastPrompt.navigation.canGoBack)}
-              >
-                {#if !isOpen}
-                  <div
-                    class="absolute transition-none shadow-md joinnowbutton btn btn-primary bottom-2 left-1/2"
-                    on:click={() => login()}
-                  >
-                    <svg
-                      class="inline w-6 h-6 mr-3"
-                      viewBox="0 0 229 255"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M118.5 237C150.437 237 179.424 224.366 200.734 203.822C209.904 197.627 215.933 187.136 215.933 175.236C215.933 156.198 200.499 140.764 181.461 140.764C170.572 140.764 160.863 145.812 154.545 153.695L154.457 153.627C145.313 163.112 132.476 169.012 118.261 169.012C90.4957 169.012 67.9879 146.504 67.9879 118.739C67.9879 90.9745 90.4957 68.4667 118.261 68.4667C132.339 68.4667 145.067 74.254 154.193 83.5795L154.29 83.5037C160.581 90.2293 169.535 94.4328 179.471 94.4328C198.51 94.4328 213.944 78.9988 213.944 59.9601C213.944 48.1884 208.043 37.7949 199.039 31.5755C177.899 11.9794 149.599 0 118.5 0C53.0543 0 0 53.0543 0 118.5C0 183.946 53.0543 237 118.5 237Z"
-                        fill="white"
-                      />
-                      <ellipse
-                        cx="118.979"
-                        cy="118.739"
-                        rx="26.5727"
-                        ry="26.3333"
-                        fill="white"
-                      />
-                    </svg>
-                    Join Now
-                  </div>
-                {:else}
-                  <img
-                    class="w-full -mt-4"
-                    src="/images/common/close.png"
-                    alt="close"
-                    on:click={() => {
-                      isOpen = !isOpen;
-                      if (!isOpen) {
-                        lastPrompt = null;
-                        if (modalProcess) {
-                          modalProcess.sendEvent(new Cancel());
-                        }
-                      }
-                    }}
-                  />
-                {/if}
-              </button>
-              {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
-                <button
-                  class="btn btn-outline btn-white mr-7 sm:mr-9"
-                  on:click={() => modalProcess.sendAnswer(new Skip())}
-                  >SKIP</button
-                >
-              {/if}
-            {/if}
-            {#if lastLoadedDapp}
-              {#each lastLoadedDapp.pages
-                .filter((o) => !o.isSystem)
-                .splice(2) as page}
-                <a
-                  href="#/{lastLoadedDapp.routeParts.join('/') +
-                    '/' +
-                    page.routeParts.join('/')}"
-                  class="text-center justify-self-center tab"
-                  class:hidden={isOpen}
-                >
-                  <NavItem
-                    isSelected={lastLoadedPage.title == page.title}
-                    label={page.title}
-                  />
-                </a>
-              {/each}
-            {/if}
-            <!-- NOT MODAL END -->
-          </div>
-        </div>
-      </footer>
-    {:else}
-      <footer
-        class="sticky bottom-0 z-50 w-full h-12 pb-16 bg-white border-t border-base-300"
-        class:isOpen
-      >
-        <div class="w-full mx-auto md:w-2/3 xl:w-1/2 ">
-          <!-- NOT MODAL START -->
-          <div
-            class="grid  {lastPrompt &&
-            (lastPrompt.navigation.canGoBack || lastPrompt.navigation.canSkip)
-              ? 'grid-cols-3'
-              : 'grid-cols-5'}"
-            class:px-4={!isOpen}
-          >
-            {#each lastLoadedDapp.pages
-              .filter((o) => !o.isSystem)
-              .slice(0, 2) as page}
-              <a
-                href="#/{lastLoadedDapp.routeParts.join('/') +
-                  '/' +
-                  page.routeParts.join('/')}"
-                class="w-full text-center justify-self-center tab focus:text-teal-500 hover:text-teal-500 "
-                class:hidden={isOpen}
-              >
-                <NavItem
-                  isSelected={lastLoadedPage.routeParts[0] ===
-                    page.title.toLowerCase()}
-                  label={page.title}
-                />
-              </a>
-            {/each}
+  let ubiMachineInterpreter: any;
 
-            {#if !processWaiting}
-              {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canGoBack}
-                <button
-                  class="btn btn-outline btn-white ml-7 sm:ml-9"
-                  on:click={() => modalProcess.sendAnswer(new Back())}
-                  >BACK</button
-                >
-              {/if}
-              <button
-                class="w-16 h-16 mx-2 -m-4 justify-self-center btn-circle min-w-min circles-button "
-                class:bg-white={!isOpen}
-                class:shadow-lg={!isOpen}
-                class:col-start-3={!lastPrompt ||
-                  (lastPrompt && !lastPrompt.navigation.canGoBack)}
-                class:col-end-3={beforeCancelPrompt ||
-                  !lastPrompt ||
-                  (lastPrompt && !lastPrompt.navigation.canGoBack)}
-                on:click={() => {
-                  isOpen = !isOpen;
-                  if (!isOpen) {
-                    lastPrompt = null;
-                    if (modalProcess) {
-                      modalProcess.sendEvent(new Cancel());
-                    }
-                  }
-                }}
-              >
-                {#if !isOpen}
-                  <img
-                    class="w-full"
-                    src="/images/common/circles.png"
-                    alt="open"
-                  />
-                {:else}
-                  <img
-                    class="w-full"
-                    src="/images/common/close.png"
-                    alt="close"
-                  />
-                {/if}
-              </button>
-              {#if !beforeCancelPrompt && lastPrompt && lastPrompt.navigation.canSkip}
-                <button
-                  class="btn btn-outline btn-white mr-7 sm:mr-9"
-                  on:click={() => modalProcess.sendAnswer(new Skip())}
-                  >SKIP</button
-                >
-              {/if}
-            {/if}
-            {#if lastLoadedDapp}
-              {#each lastLoadedDapp.pages
-                .filter((o) => !o.isSystem)
-                .splice(2) as page}
-                <a
-                  href="#/{lastLoadedDapp.routeParts.join('/') +
-                    '/' +
-                    page.routeParts.join('/')}"
-                  class="text-center justify-self-center tab"
-                  class:hidden={isOpen}
-                >
-                  <NavItem
-                    isSelected={lastLoadedPage.routeParts[0] ===
-                      page.title.toLowerCase()}
-                    label={page.title}
-                  />
-                </a>
-              {/each}
-            {/if}
-            <!-- NOT MODAL END -->
-          </div>
-        </div>
-      </footer>
-    {/if}
-  {/if}
-</div>
+  window.runInitMachine = () => {
+    interpret(initMachine)
+      .onEvent((event) => {
+        // console.log("InitMachine event:", event);
+      })
+      .onTransition((state) => {
+        // console.log("initMachine.transition:", state);
+      })
+      .start();
+  };
+  let _routes = {
+    "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
+    "*": NotFound,
+  };
+</script>
 
-<Modal bind:isOpen on:closeRequest={modalWantsToClose}>
-  <div class="font-primary">
-    {#if modalProcess}
-      <ProcessContainer
-        bind:beforeCancelPrompt
-        bind:waiting={processWaiting}
-        process={modalProcess}
-        on:stopped={() => {
-          isOpen = false;
-          lastPrompt = null;
-          modalProcess = null;
-        }}
-      />
-    {:else}
-      <!-- No process -->
-      {#if getLastLoadedDapp()}
-        <div class="space-y-4">
-          {#each getLastLoadedDapp().actions.concat(contextActions) as action}
-            <button
-              on:click={() =>
-                window.o.publishEvent(action.event(getLastLoadedDapp()))}
-              class="w-full btn {action.key == 'logout'
-                ? 'btn-error'
-                : 'btn-primary btn-outline bg-white'}  ">{action.label}</button
-            >
-          {/each}
-        </div>
-      {/if}
-    {/if}
-  </div>
-</Modal>
+<SvelteToast/>
 
-<style>
-  .tab:hover,
-  .tab:focus,
-  .tab:active {
-    @apply text-light;
-  }
-  .tab:hover {
-    @apply text-secondary;
-  }
-  .isOpen {
-    background: transparent;
-    border: none;
-  }
-  /* Background Blurring for firefox and other non supportive browsers */
-  @supports not (
-    (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
-  ) {
-    .blur {
-      filter: blur(4px);
-      -webkit-transition: all 0.35s ease-in-out;
-      -moz-transition: all 0.35s ease-in-out;
-      transition: all 0.35s ease-in-out;
+<Router routes="{_routes}" on:routeLoaded={() => {
+    if (!ubiMachineInterpreter && $me && $me.circlesAddress) {
+        ubiMachineInterpreter = interpret(ubiMachine)
+          .onEvent((event) => {
+            console.log("UBI machine event:", event);
+          })
+          .onTransition((state) => {
+            console.log("UBI machine transition:", state.value);
+          })
+          .start();
     }
-    /* Firefox fix for sticky bottom prev-sibling height */
-    main {
-      padding-bottom: 4rem;
-    }
-  }
-  .joinnowbutton {
-    transform: translate(-50%, 0) !important;
-    animation: none !important;
-  }
-  .joinnowbutton:active:focus,
-  .joinnowbutton:active:hover {
-    transform: translate(-50%, 0);
-    animation: none !important;
-  }
-</style>
+}}/>

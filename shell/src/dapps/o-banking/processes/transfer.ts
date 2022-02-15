@@ -3,30 +3,49 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
-import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import CurrencyTransfer from "@o-platform/o-editors/src/CurrencyTransfer.svelte";
 import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { transferXdai } from "./transferXdai";
-import { transferCircles } from "./transferCircles";
+import { transferCircles, TransitivePath } from "./transferCircles";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import gql from "graphql-tag";
-import { Choice } from "@o-platform/o-editors/src/choiceSelectorContext";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
+import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import * as yup from "yup";
 import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { BN } from "ethereumjs-util";
-import { loadProfileByProfileId } from "../data/loadProfileByProfileId";
-import { ApiProfile } from "../data/apiProfile";
-import { loadProfileBySafeAddress } from "../data/loadProfileBySafeAddress";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
+import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
+import { SetTrustContext } from "./setTrust";
+import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
+import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
+
+import { me } from "../../../shared/stores/me";
+import {
+  DirectPathDocument,
+  DirectPathQuery,
+  Profile,
+  ProfileBySafeAddressDocument,
+  QueryDirectPathArgs,
+} from "../../../shared/api/data/types";
+import {
+  convertCirclesToTimeCircles,
+  convertTimeCirclesToCircles,
+  displayCirclesAmount,
+} from "../../../shared/functions/displayCirclesAmount";
+import { TransactionReceipt } from "web3-core";
+import TransferSummary from "../atoms/TransferSummary.svelte";
+import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
+import { ApiClient } from "../../../shared/apiConnection";
+import { Currency } from "../../../shared/currency";
 
 export type TransferContextData = {
   safeAddress: string;
   recipientAddress?: string;
   recipientProfileId?: number;
-  recipientProfile?: ApiProfile;
+  recipientProfile?: Profile;
+  transitivePath: TransitivePath;
+  receipt: TransactionReceipt;
   message?: string;
   tokens?: {
     currency: string;
@@ -38,6 +57,25 @@ export type TransferContextData = {
   summaryHtml?: string;
   acceptSummary?: boolean;
 };
+
+export async function findDirectTransfers(
+  from: string,
+  to: string,
+  amount: string
+) {
+  // Find all tokens which are trusted by "to"
+  const result = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(
+    DirectPathDocument,
+    {
+      from: from,
+      to: to,
+      amount: amount,
+    }
+  );
+  console.log("Direct path: ", result);
+
+  return result;
+}
 
 /**
  * This is the context on which the process will work.
@@ -56,6 +94,41 @@ const strings = {
   currencyXdai: "xDai",
   summaryLabel: "Summary",
   messageLabel: "Purpose of transfer",
+};
+
+const editorContent: { [x: string]: EditorViewContext } = {
+  recipient: {
+    title: "Select the recipient you want to send money to",
+    description: "",
+    placeholder: "Recipient",
+    submitButtonText: "Enter Name",
+  },
+  recipientSafeAddress: {
+    title: "Enter the recipients safe address",
+    description: "Here you can enter the recipients safe address directly.",
+    placeholder: "Safe Address",
+    submitButtonText: "Next",
+  },
+  currency: {
+    title: "Please enter the Amount in Euro",
+    description: "",
+    submitButtonText: "Submit",
+  },
+  message: {
+    title: "Transfer Message",
+    description: "",
+    submitButtonText: "Submit",
+  },
+  confirm: {
+    title: "You are about to transfer",
+    description: "",
+    submitButtonText: "Send Money",
+  },
+  success: {
+    title: "Transfer successful",
+    description: "",
+    submitButtonText: "Close",
+  },
 };
 
 const currencyLookup = {
@@ -103,67 +176,60 @@ const processDefinition = (processId: string) =>
           },
         ],
       },
-
       checkRecipientAddress: {
         id: "checkRecipientAddress",
         always: [
           {
             cond: (context) => !!context.data.recipientAddress,
-            target: "#findMaxFlow",
+            target: "#tokens",
           },
           {
             target: "#recipientAddress",
           },
         ],
       },
-      recipientAddress: prompt<TransferContext, any>({
-        fieldName: "recipientAddress",
-        component: DropdownSelectEditor,
+      recipientAddress: promptCirclesSafe<SetTrustContext, any>({
+        field: "recipientAddress",
+        onlyWhenDirty: false,
         params: {
-          label: strings.labelRecipientAddress,
-          graphql: true,
-          asyncChoices: async (searchText?: string) => {
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
-            const result = await apiClient.query({
-              query: gql`
-                query search($searchString: String!) {
-                  search(query: { searchString: $searchString }) {
-                    id
-                    circlesAddress
-                    firstName
-                    lastName
-                    dream
-                    country
-                    avatarUrl
-                  }
-                }
-              `,
-              variables: {
-                searchString: searchText ?? "",
-              },
-            });
-
-            return result.data.search && result.data.search.length > 0
-              ? result.data.search
-                    .filter(o => o.circlesAddress)
-                    .map((o) => {
-                      return <Choice>{
-                        value: RpcGateway.get().utils.toChecksumAddress(o.circlesAddress),
-                        label: `${o.firstName} ${o.lastName ? o.lastName : ""}`,
-                        avatarUrl: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.circlesAddress),
-                      };
-                    })
-                  .filter((o) => o.value)
-              : [];
-          },
-          optionIdentifier: "value",
-          getOptionLabel: (option) => option.label,
-          getSelectionLabel: (option) => option.label,
+          view: editorContent.recipient,
+          placeholder: editorContent.recipient.placeholder,
+          submitButtonText: "Check send limit",
         },
-        dataSchema: yup.string().required("Please enter a valid eth-address."),
+        navigation: {
+          next: "#tokens",
+        },
+      }),
+      tokens: prompt<TransferContext, any>({
+        field: "tokens",
+        component: CurrencyTransfer,
+        params: {
+          view: editorContent.currency,
+          currencies: [
+            {
+              value: "crc",
+              label: strings.currencyCircles,
+              __typename: "Currency",
+            },
+            {
+              value: "xdai",
+              label: strings.currencyXdai,
+              __typename: "Currency",
+            },
+          ],
+        },
+        dataSchema: yup.object().shape({
+          amount: yup
+            .number()
+            .min(0.1, "Please enter at least 0.1")
+            .typeError("Please enter a valid Number.")
+            .required("Please enter a valid amount.")
+            .positive("Please enter a valid amount."),
+          currency: yup.string().required("Please select a valid currency."),
+        }),
         navigation: {
           next: "#findMaxFlow",
+          previous: "#recipientAddress",
         },
       }),
       findMaxFlow: {
@@ -181,58 +247,39 @@ const processDefinition = (processId: string) =>
               throw new Error(`No recipient address on context`);
             }
             context.data.maxFlows = {};
-            const p1 = new Promise<void>(async (resolve, reject) => {
-              const flow = await requestPathToRecipient({
-                data: {
-                  recipientAddress: context.data.recipientAddress,
-                  amount: "9999999000000000000000000",
-                  safeAddress: context.data.safeAddress,
-                },
-              });
+            console.log("CONEXT DATA", context.data);
+            const p1 = new Promise<void>(async (resolve) => {
+              const amount =
+                context.data.tokens.currency == "crc"
+                  ? convertTimeCirclesToCircles(
+                      Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
+                      null
+                    ).toString()
+                  : context.data.tokens.amount;
+
+              const circlesValueInWei = RpcGateway.get()
+                .utils.toWei(amount.toString() ?? "0", "ether")
+                .toString();
+
+              const flow = await findDirectTransfers(
+                  context.data.safeAddress,
+                  context.data.recipientAddress,
+                  circlesValueInWei
+              );
+
               context.data.maxFlows["crc"] = flow.flow;
+              context.data.transitivePath = flow;
+
               resolve();
             });
-            const p2 = await RpcGateway.trigger(async (web3) => {
-              context.data.maxFlows["xdai"] = await web3.eth.getBalance(
-                web3.utils.toChecksumAddress(context.data.safeAddress)
-              );
-            }, 1000);
-
-            await Promise.all([p1, p2]);
+            context.data.maxFlows["xdai"] =
+              await RpcGateway.get().eth.getBalance(context.data.safeAddress);
+            await p1;
           },
-          onDone: "#tokens",
+          onDone: "#checkAmount",
           onError: "#error",
         },
       },
-      tokens: prompt<TransferContext, any>({
-        fieldName: "tokens",
-        component: CurrencyTransfer,
-        params: {
-          label: strings.tokensLabel,
-          currencies: [
-            {
-              value: "crc",
-              label: strings.currencyCircles,
-            },
-            {
-              value: "xdai",
-              label: strings.currencyXdai,
-            },
-          ],
-        },
-        dataSchema: yup.object().shape({
-          amount: yup
-            .number()
-            .typeError("Please enter a valid Number.")
-            .required("Please enter a valid amount.")
-            .positive("Please enter a valid amount."),
-          currency: yup.string().required("Please select a valid currency."),
-        }),
-        navigation: {
-          next: "#checkAmount",
-          previous: "#recipientAddress",
-        },
-      }),
       checkAmount: {
         id: "checkAmount",
         always: [
@@ -243,39 +290,53 @@ const processDefinition = (processId: string) =>
                   context.data.tokens.currency.toLowerCase()
                 ]
               );
-              const amountInWei = new BN(
-                RpcGateway.get().utils.toWei(
-                  context.data.tokens.amount,
-                  "ether"
-                )
-              );
-              return maxFlowInWei.gte(amountInWei);
+
+              const amount =
+                  context.data.tokens.currency == "crc"
+                      ? convertTimeCirclesToCircles(
+                          Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
+                          null
+                      ).toString()
+                      : context.data.tokens.amount;
+
+              const circlesValueInWei = new BN(RpcGateway.get()
+                  .utils.toWei(amount.toString() ?? "0", "ether")
+                  .toString());
+
+              if (maxFlowInWei.lt(circlesValueInWei)) {
+                console.log(`The max flow is smaller than the entered value (${circlesValueInWei}). Max flow: ${maxFlowInWei}`);
+              }
+
+              return maxFlowInWei.gte(circlesValueInWei);
             },
             target: "#loadRecipientProfile",
           },
           {
             actions: (context) => {
-              const formattedAmount = parseFloat(context.data.tokens.amount).toFixed(2);
-              const formattedMax = parseFloat(RpcGateway.get().utils.fromWei(context.data.maxFlows[context.data.tokens.currency.toLowerCase()].toString(), "ether")).toFixed(2);
-              context.messages["tokens"] = `The chosen amount (${formattedAmount}) exceeds the maximum transferable amount of (${formattedMax}).`;
+              let displayTimeCircles = true;
+              const unsubscribeMe = me.subscribe(($me) => {
+                displayTimeCircles =
+                  $me.displayTimeCircles ||
+                  $me.displayTimeCircles === undefined;
+              });
+              unsubscribeMe();
+
+              const maxFlowInWei = new BN(
+                  context.data.maxFlows[
+                      context.data.tokens.currency.toLowerCase()
+                      ]
+              );
+
+              const maxFlowInTc = convertCirclesToTimeCircles(parseFloat(RpcGateway.get().utils.fromWei(maxFlowInWei, "ether")) / 10.1, null)
+
+              context.messages[
+                "tokens"
+              ] = `The chosen amount exceeds the maximum transferable amount of (${maxFlowInTc.toFixed(2)}) €.`;
             },
             target: "#tokens",
           },
         ],
       },
-      message: prompt<TransferContext, any>({
-        fieldName: "message",
-        component: TextareaEditor,
-        params: {
-          label: strings.messageLabel,
-          maxLength: "100",
-        },
-        navigation: {
-          previous: "#tokens",
-          next: "#loadRecipientProfile",
-          canSkip: () => true,
-        },
-      }),
       loadRecipientProfile: {
         id: "loadRecipientProfile",
         invoke: {
@@ -293,79 +354,42 @@ const processDefinition = (processId: string) =>
               // No profile found
             }
           },
-          onDone: "#prepareSummary",
+          onDone: [
+            {
+              cond: (context) => !!context.data.recipientProfile,
+              target: "#message",
+            },
+            {
+              target: "#acceptSummary",
+            },
+          ],
           onError: "#error",
         },
       },
-      prepareSummary: {
-        id: "prepareSummary",
-        invoke: {
-          src: async (context) => {
-            const lastName = context.data.recipientProfile.lastName
-              ? context.data.recipientProfile.lastName
-              : "";
-            const to = context.data.recipientProfile
-              ? context.data.recipientProfile.firstName + " " + lastName
-              : context.data.recipientAddress;
-
-            let toAvatarUrl = context.data.recipientProfile
-              ? context.data.recipientProfile.avatarUrl
-              : null;
-
-            if (context.data.tokens?.currency?.toLowerCase() != "xdai") {
-              toAvatarUrl = toAvatarUrl
-                  ? toAvatarUrl
-                  : AvataarGenerator.generate(context.data.recipientAddress);
-            } else {
-              toAvatarUrl = toAvatarUrl
-                  ? toAvatarUrl
-                  : AvataarGenerator.default();
-            }
-
-            if (!context.data.tokens) {
-              throw new Error(`No currency or amount selected`);
-            } else {
-              context.data.summaryHtml = `<span>You are about to transfer</span>
-                <strong class='text-primary text-5xl block mt-2'>
-                    ${context.data.tokens.amount}
-                    ${
-                      currencyLookup[context.data.tokens.currency.toUpperCase()]
-                    }</strong>
-                <span class='block mt-2'>
-                to 
-                </span>
-                <div class="avatar self-center justify-self-center text-center mt-4">
-                  <div class="w-36 h-36 rounded-full mb-4">
-                    <img
-                      src=${toAvatarUrl}
-                      alt=${to}
-                    />
-                  </div>
-                </div>
-                <div class="self-center flex-grow justify-self-start text-center">
-                  <h2>
-                    ${to}
-                  </h2>
-                </div>
-                <strong class='text-primary block mt-4'>
-                Do you want to continue?
-                </strong>`;
-            }
-          },
-          onDone: "#acceptSummary",
-          onError: "#error",
-        },
-      },
-      acceptSummary: prompt<TransferContext, any>({
-        fieldName: "acceptSummary",
-        component: HtmlViewer,
+      message: prompt<TransferContext, any>({
+        field: "message",
+        component: TextareaEditor,
         params: {
-          label: strings.summaryLabel,
-          submitButtonText: "Send Money",
-          html: (context) => context.data.summaryHtml,
+          view: editorContent.message,
+          maxLength: "100",
         },
         navigation: {
           previous: "#tokens",
+          next: "#acceptSummary",
+          canSkip: () => true,
+        },
+      }),
+
+      acceptSummary: prompt<TransferContext, any>({
+        field: "acceptSummary",
+        component: TransferConfirmation,
+        params: {
+          view: editorContent.confirm,
+          submitButtonText: editorContent.confirm.submitButtonText,
+          html: () => "",
+        },
+        navigation: {
+          previous: "#message",
           next: "#checkChoice",
         },
       }),
@@ -391,6 +415,12 @@ const processDefinition = (processId: string) =>
         on: <any>{
           ...ipc("callCirclesTransfer"),
         },
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: `Sending Circles ..`,
+          });
+        },
         invoke: {
           src: transferCircles.stateMachine(
             `${processId}:transfer:transferCircles`
@@ -400,14 +430,26 @@ const processDefinition = (processId: string) =>
               return {
                 safeAddress: context.data.safeAddress,
                 recipientAddress: context.data.recipientAddress,
-                amount: context.data.tokens.amount,
-                privateKey: localStorage.getItem("circlesKey"),
+                amount: convertTimeCirclesToCircles(
+                  Number.parseFloat(context.data.tokens.amount),
+                  null
+                ),
+                privateKey: sessionStorage.getItem("circlesKey"),
+                message: context.data.message,
+                transitivePath: context.data.transitivePath,
               };
             },
             messages: {},
             dirtyFlags: {},
           },
-          onDone: "#success",
+          onDone: {
+            target: "#showSuccess",
+            actions: (context, event) => {
+              context.data.transitivePath = event.data.transitivePath;
+              context.data.receipt = event.data.receipt;
+              console.log("Transfer CRC returned:", event.data);
+            },
+          },
           onError: "#error",
         },
       },
@@ -424,16 +466,38 @@ const processDefinition = (processId: string) =>
                 safeAddress: context.data.safeAddress,
                 recipientAddress: context.data.recipientAddress,
                 amount: context.data.tokens.amount,
-                privateKey: localStorage.getItem("circlesKey"),
+                privateKey: sessionStorage.getItem("circlesKey"),
+                message: context.data.message,
               };
             },
             messages: {},
             dirtyFlags: {},
           },
-          onDone: "#success",
+          onDone: {
+            target: "#showSuccess",
+            actions: (context, event) => {
+              context.data.receipt = event.data.receipt;
+            },
+          },
           onError: "#error",
         },
       },
+      showSuccess: prompt({
+        id: "showSuccess",
+        field: "__",
+        entry: (context) => {
+          context.dirtyFlags = {};
+        },
+        component: TransferSummary,
+        params: {
+          view: editorContent.success,
+          html: () => "",
+          hideNav: false,
+        },
+        navigation: {
+          next: "#success",
+        },
+      }),
       success: {
         id: "success",
         type: "final",

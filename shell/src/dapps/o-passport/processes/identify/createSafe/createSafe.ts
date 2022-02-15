@@ -1,10 +1,9 @@
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { prompt, PromptSpec } from "@o-platform/o-process/dist/states/prompt";
+import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
-import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import TextViewer from "@o-platform/o-editors/src/TextViewer.svelte";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import * as yup from "yup";
@@ -15,6 +14,7 @@ export type CreateSafeContextData = {
   seedPhrase?: string;
   checkSeedPhrase?: string;
   checkWordIndex?: number;
+  successAction:(data:CreateSafeContextData) => void
 };
 
 export type CreateSafeContext = ProcessContext<CreateSafeContextData>;
@@ -23,19 +23,63 @@ export type CreateSafeContext = ProcessContext<CreateSafeContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  choiceLabel:
-    "Do you want to create a new private key or connect an existing Circles Seedphrase?",
   choiceConnect: "Connect",
   choiceCreate: "Create",
-  labelEditSeedphrase: "Please enter your seedphrase below:",
-  labelExportSeedphrase:
-    "The following 24 word sentence is your seedphrase, which is like a non-changeable password. It is your full responsibility to save and protect your seedphrase. If you loose or forget it, all your funds are lost forever.<br/><strong class='text-primary block mt-3'>Make a backup now</strong>",
-  buttonExportSeedphrase: "I made a backup",
+  labelExportSeedphrase: `Your Secret Recovery Code is the
+<span class="text-alert">only key</span>
+which can access your safe. It is your
+<span class="text-alert">full responsibility</span>
+to
+<span class="text-alert">protect</span>
+this code like a
+<span class="text-alert">password</span>
+.
+<br />
+<br />
+<span class="text-xs">
+  If you loose it or forget it, all your
+  <span class="text-alert">money is lost forever</span>
+  .
+</span>`,
+  buttonExportSeedphrase: "I stored it securely",
   // labelCheckSeedphrase: (context: CreateSafeContext) => `Please enter the ${context.data.checkWordIndex == 0 ? (context.data.checkWordIndex + 1).toString() + "st" : (context.data.checkWordIndex + 1).toString() + "nd"} word of your seedphrase:`,
-  labelCheckSeedphrase: `Keep in mind, everyone who knows your seedphrase can access all your funds! Did you store your seedphrase in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your seedphrase password</strong>`,
-  buttonCheckSeedphrase: "It is stored safely",
+  labelCheckSeedphrase: `Keep in mind, everyone who knows your Secret Recovery Code can access all your funds! Did you store your Secret Recovery Code in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your Secret Recovery Code</strong>`,
+  buttonCheckSeedphrase: "Really, I did it!",
 };
 
+const editorContent = {
+  seedphrase: {
+    title: `READ CAREFULLY<br/>Secret Recovery Code`,
+    titleClass: "text-alert",
+    description: `Your Secret Recovery Code is the
+<span class="text-alert">only key</span>
+which can access your safe. It is your
+<span class="text-alert">full responsibility</span>
+to
+<span class="text-alert">protect</span>
+this code like a
+<span class="text-alert">password</span>
+.
+<br />
+<br />
+<span class="text-xs">
+  If you loose it or forget it, all your
+  <span class="text-alert">money is lost forever</span>
+  .
+</span>`,
+    submitButtonText: "Next",
+  },
+  seedphraseCheck: {
+    title: `SAFE Code SECURELY`,
+    titleClass: "text-alert",
+    description: `
+    Keep in mind, <span class="text-alert">everyone who knows</span> your Secret Recovery Code can <span class="text-alert">access all you money</span>.
+    <br />
+    <br />
+    <span class="text-xs">Please save your Secret Recovery Code in your notes <span class="text-alert">(not secure)</span>, a password manager <span class="text-alert">(secure)</span> or write it down on a paper and put it in your safe <span class="text-alert">(most secure)</span>.`,
+    submitButtonText: "I stored my Code securly",
+  },
+};
 function randomIntFromInterval(min, max) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -71,12 +115,12 @@ const processDefinition = (processId: string) =>
       },
       backupSeedphrase: prompt<CreateSafeContext, any>({
         id: "backupSeedphrase",
-        fieldName: "seedPhrase",
+        field: "seedPhrase",
         component: TextViewer,
         params: {
-          label: strings.labelExportSeedphrase,
+          view: editorContent.seedphrase,
           isReadonly: true,
-          submitButtonText: strings.buttonExportSeedphrase,
+          submitButtonText: editorContent.seedphrase.submitButtonText,
           hideCharacterCount: true,
           canCopy: true,
         },
@@ -88,14 +132,16 @@ const processDefinition = (processId: string) =>
       }),
       askForBackup: prompt<CreateSafeContext, any>({
         id: "askForBackup",
-        fieldName: "checkSeedPhrase",
+        field: "checkSeedPhrase",
         component: TextareaEditor,
         params: {
-          label: strings.labelCheckSeedphrase,
+          view: editorContent.seedphraseCheck,
           hideCharacterCount: true,
-          submitButtonText: strings.buttonCheckSeedphrase,
+          submitButtonText: editorContent.seedphraseCheck.submitButtonText,
         },
-        dataSchema: yup.string().required("Please enter your seedphrase."),
+        dataSchema: yup
+          .string()
+          .required("Please enter your Secret Recovery Code."),
         navigation: {
           next: "#verifyCheckSeedPhrase",
           previous: "#backupSeedphrase",
@@ -130,6 +176,11 @@ const processDefinition = (processId: string) =>
       success: {
         id: "success",
         type: "final",
+        entry: (context) => {
+          if (context.data.successAction) {
+            context.data.successAction(context.data)
+          }
+        }
       },
     },
   });

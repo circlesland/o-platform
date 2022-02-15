@@ -1,19 +1,7 @@
-import {SessionInfoDocument} from "../../../data/api/types";
+import {SessionInfo, SessionInfoDocument, SessionInfoQueryVariables} from "../../../../../shared/api/data/types";
+import {ApiClient} from "../../../../../shared/apiConnection";
 
 export const getSessionInfo = async () => {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: SessionInfoDocument
-  });
-
-  if (result.errors && result.errors.length > 0) {
-    result.errors.forEach(o => console.error(o));
-    throw new Error(`Couldn't query the session info.`);
-  }
-
-  return {
-    isLoggedOn: result.data.sessionInfo.isLoggedOn,
-    hasProfile: result.data.sessionInfo.hasProfile,
-    profileId: result.data.sessionInfo.profileId
-  };
+  const sessionInfo = await ApiClient.query<SessionInfo, SessionInfoQueryVariables>(SessionInfoDocument, {});
+  return sessionInfo;
 };

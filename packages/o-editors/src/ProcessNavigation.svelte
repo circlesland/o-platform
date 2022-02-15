@@ -1,46 +1,45 @@
 <script lang="ts">
-  import { Continue } from "@o-platform/o-process/dist/events/continue";
-  import { EditorContext } from "./editorContext";
-  import { createEventDispatcher } from "svelte";
+import { EditorContext } from "./editorContext";
+import { createEventDispatcher } from "svelte";
+import Icons from "../../../shell/src/shared/molecules/Icons.svelte";
 
-  const dispatch = createEventDispatcher();
+const dispatch = createEventDispatcher();
 
-  export let context: EditorContext;
-  $: {
-    console.log(context);
-  }
+export let context: EditorContext;
+export let type: string = "large";
+export let noSticky: boolean = false;
 </script>
 
 <div
-  class="flex flex-col mt-4 space-x-0 space-y-4 md:space-x-4 md:space-y-0 md:flex-row"
->
+  class="bottom-0 left-0 right-0 flex flex-col flex-grow w-full py-2 space-x-0 space-y-4 bg-white md:space-x-4 md:space-y-0 md:flex-row"
+  class:mt-6="{type != 'small'}"
+  class:sticky="{!noSticky}">
   <div class="flex-1">
-    <button
-      type="submit"
-      on:click={() => {
-        dispatch("buttonClick");
-        /* const answer = new Continue();
-        answer.data = context.data;
-        context.process.submit(answer);
-        */
-      }}
-      class="btn btn-primary btn-block"
-      >{context.params.submitButtonText
-        ? context.params.submitButtonText
-        : "Submit"}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        class="inline-block w-6 h-6 ml-2 stroke-current"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 5l7 7-7 7"
-        />
-      </svg>
-    </button>
+    {#if !context.params.hideNav}
+      {#if type == "large"}
+        <button
+          type="submit"
+          on:click="{() => {
+            dispatch('buttonClick');
+          }}"
+          class="relative btn btn-primary btn-block"
+          >{context.params.view && context.params.view.submitButtonText
+            ? context.params.view.submitButtonText
+            : "Submit"}
+          <div class="absolute right-2">
+            <Icons icon="buttonrightarrow" />
+          </div>
+        </button>
+      {:else if type == "small"}
+        <button
+          type="submit"
+          on:click="{() => {
+            dispatch('buttonClick');
+          }}"
+          class="btn btn-primary btn-square"
+          ><Icons icon="submitsmall" />
+        </button>
+      {/if}
+    {/if}
   </div>
 </div>

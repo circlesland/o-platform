@@ -1,307 +1,187 @@
-import { faPeopleArrows } from "@fortawesome/free-solid-svg-icons";
 import Transactions from "./o-banking/pages/Transactions.svelte";
-import TransactionDetail from "./o-banking/pages/TransactionDetail.svelte";
 import Assets from "./o-banking/pages/Assets.svelte";
-import AssetDetail from "./o-banking/pages/AssetDetail.svelte";
-import Trusts from "./o-banking/pages/Trusts.svelte";
-import ProfilePage from "./o-banking/pages/Profile.svelte";
-import Graph from "./o-banking/pages/Graph.svelte";
-import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-import {
-  shellProcess,
-  ShellProcessContext,
-} from "../shared/processes/shellProcess";
-import { setTrust } from "./o-banking/processes/setTrust";
+import CrcDetail from "./o-banking/pages/CrcDetail.svelte";
+import XDaiDetail from "./o-banking/pages/XDaiDetail.svelte";
+
+import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
+
 import { transfer } from "./o-banking/processes/transfer";
-import { init, tryGetCurrentSafe } from "./o-banking/init";
-import {me, Profile} from "../shared/stores/me";
-import FindMySafe from "./o-banking/pages/FindMySafe.svelte";
+import { init } from "./o-banking/init";
+import { me } from "../shared/stores/me";
 
-const transactions: PageManifest = {
-  isDefault: true,
-  routeParts: ["transactions"],
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
+import { Profile } from "../shared/api/data/types";
+
+const transactions: Page<any, BankingDappState> = {
+  routeParts: ["=transactions"],
   component: Transactions,
   title: "Transactions",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
+  icon: "transactions",
+  type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "list",
+        // action: () => processNavigation.back(),
+      },
     },
-  ],
+  },
 };
 
-const profile: PageManifest = {
-  isDefault: false,
-  isSystem: true,
-  routeParts: ["profile", ":id"],
-  component: ProfilePage,
-  hideFooter: false,
-  title: "Profile",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+const profileJumplist: Jumplist<any, BankingDappState> = {
+  type: "jumplist",
+  title: "Actions",
+  isSystem: false,
+  routeParts: ["=actions"],
+  items: async (params, runtimeDapp) => {
+    const getRecipientAddress = async () => {
+      if (RpcGateway.get().utils.isAddress(params.id)) {
+        return params.id;
+      } else if (Number.isInteger(params.id)) {
+        const profile = await loadProfileByProfileId(parseInt(params.id));
+        if (profile) {
+          return profile.circlesAddress;
+        }
+      }
+      return undefined;
+    };
+
+    const recipientSafeAddress = params.id
+      ? await getRecipientAddress()
+      : undefined;
+
+    let circlesAddress;
+    const unsub = me.subscribe((o) => {
+      circlesAddress = o?.circlesAddress;
+    });
+    unsub();
+
+    return [
+      {
+        key: "transfer",
+        icon: "sendmoney",
+        title: "Send Money",
+        action: async () => {
+          window.o.runProcess(transfer, {
+            safeAddress: circlesAddress,
+            recipientAddress: recipientSafeAddress,
+            privateKey: sessionStorage.getItem("circlesKey"),
+          });
+        },
+      },
+    ];
+  },
 };
 
-const transactionDetail: PageManifest = {
-  isDefault: false,
+const transactionDetail: Page<{ transactionHash: string }, BankingDappState> = {
+  type: "page",
   isSystem: true,
-  routeParts: ["transactions", ":_id"],
-  component: TransactionDetail,
-  title: "TransactionDetail",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  position: "modal",
+  routeParts: ["=transactions", ":transactionHash"],
+  title: "Transaction",
+  component: TransactionDetailPage,
+  jumplist: profileJumplist,
 };
-
-const transactionSend: PageManifest = {
-  isDefault: false,
+const transactionSend: Trigger<
+  { to: string; amount: string; message: string },
+  BankingDappState
+> = {
   isSystem: true,
-  routeParts: ["transactions", "send", ":to", ":amount", ":message"],
-  component: Transactions,
+  routeParts: ["=transactions", "=send", ":to", ":amount", ":message"],
   title: "Transactions",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  type: "trigger",
+  eventFactory: (params) => {
+    // TODO: Implement payment smartlink
+    throw new Error(`Not implemented`);
+  },
 };
-
-const tokens: PageManifest = {
-  isDefault: false,
-  routeParts: ["assets"],
+const assets: Page<any, BankingDappState> = {
+  routeParts: ["=assets"],
   component: Assets,
   title: "Assets",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  icon: "assets",
+  type: "page",
 };
-
-const tokenDetail: PageManifest = {
-  isDefault: false,
+const crcDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
-  routeParts: ["assets", ":symbol"],
-  component: AssetDetail,
-  title: "TokenDetail",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  position: "modal",
+  routeParts: ["=assets", "=time"],
+  basePage: ["assets"],
+  component: CrcDetail,
+  title: "Asset",
+  type: "page",
 };
-
-const trusts: PageManifest = {
-  isDefault: false,
-  routeParts: ["trusts"],
-  component: Trusts,
-  title: "Trusts",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
-};
-
-const sendInvite: PageManifest = {
-  isDefault: false,
-  routeParts: ["trusts", "invite", ":inviteAccountAddress"],
+const xdaiDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
-  component: Trusts,
-  title: "Trusts",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
-};
-
-const trustDetail: PageManifest = {
-  isDefault: false,
-  isSystem: true,
-  routeParts: ["trusts", ":id"],
-  component: ProfilePage,
-  title: "TrustDetail",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
-};
-
-const findMySafe: PageManifest = {
-  isDefault: false,
-  isSystem: true,
-  routeParts: ["find-my-safe"],
-  component: FindMySafe,
-  hideFooter: true,
-  title: "FindMySafe",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
-};
-
-const graph: PageManifest = {
-  isDefault: false,
-  routeParts: ["graph"],
-  component: Graph,
-  title: "Graph",
-  available: [
-    (detail) => {
-      // Can navigate to?
-      // Sure!
-      return true;
-    },
-  ],
+  position: "modal",
+  routeParts: ["=assets", "=xdai"],
+  basePage: ["assets"],
+  component: XDaiDetail,
+  title: "Asset",
+  type: "page",
 };
 
 export interface DappState {
   // put state here
 }
 
-export const banking: DappManifest<DappState> = {
+export class BankingDappState {
+  /**
+   * The currently displayed profile (e.g. in the profile detail)
+   */
+  currentProfileId?: number;
+  /**
+   * The address of the currently displayed safe (e.g. in the profile detail)
+   */
+  currentSafeAddress?: string;
+
+  trusted?: boolean;
+}
+
+export const banking: DappManifest<BankingDappState> = {
   dappId: "banking:1",
+  type: "dapp",
   isSingleton: true,
-  dependencies: [],
   isHidden: false,
-  icon: faPeopleArrows,
+  icon: "banking",
   title: "Banking",
   routeParts: ["banking"],
+  defaultRoute: ["transactions"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
-  actions: [
-    /*{
-      key: "getUbi",
-      label: "Get UBI",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = getUbi;
-            ctx.childContext = {
-              data: {
-                safeAddress: tryGetCurrentSafe()?.safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
-      },
-    },
-    {
-      key: "hubSignup",
-      label: "Signup at Circles Hub",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = hubSignup;
-            return ctx;
-          }
-        );
-      },
-    },*/
-    {
-      key: "setTrust",
-      label: "Trust someone",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = setTrust;
-            ctx.childContext = {
-              data: {
-                trustLimit: 100,
-                safeAddress: tryGetCurrentSafe().safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
-      },
-    },
-    {
-      key: "transfer",
-      label: "Send Money",
-      event: (runtimeDapp: RuntimeDapp<any>) => {
-        return new RunProcess<ShellProcessContext>(
-          shellProcess,
-          true,
-          async (ctx) => {
-            ctx.childProcessDefinition = transfer;
-            ctx.childContext = {
-              data: {
-                safeAddress: tryGetCurrentSafe().safeAddress,
-                privateKey: localStorage.getItem("circlesKey"),
-              },
-            };
-            return ctx;
-          }
-        );
-      },
-    },
-  ],
+  jumplist: profileJumplist,
+
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     const myProfileResult = await new Promise<Profile>((resolve) => {
-      me.subscribe(myProfile => {
+      const unsub = me.subscribe((myProfile) => {
         resolve(myProfile);
       });
+      unsub();
     });
 
-    if(myProfileResult){
+    if (myProfileResult) {
       await init();
     }
 
     return {
-      initialPage: transactions,
+      initialRoutable: transactions,
       cancelDependencyLoading: false,
     };
   },
-  pages: [
+  routables: [
     transactions,
     transactionDetail,
     transactionSend,
-    trusts,
-    tokens,
-    tokenDetail,
-    trustDetail,
-    graph,
-    sendInvite,
-    profile,
-    findMySafe
+    assets,
+    crcDetail,
+    xdaiDetail,
   ],
 };

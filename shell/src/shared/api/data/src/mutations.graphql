@@ -1,0 +1,483 @@
+mutation createPurchase($lines: [PurchaseLineInput!]!) {
+  purchase(lines: $lines) {
+    id
+    buyerAddress
+    buyerProfile {
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
+    sellerAddress
+    sellerProfile {
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
+    purchaseId
+    lines {
+      id
+      amount
+      offer {
+        id
+        version
+        createdByAddress
+        createdByProfile {
+          id
+          circlesAddress
+          firstName
+          lastName
+          avatarUrl
+        }
+        pricePerUnit
+        title
+        description
+      }
+    }
+  }
+}
+
+mutation exchangeToken {
+  exchangeToken {
+    success
+    errorMessage
+  }
+}
+
+mutation requestSessionChallenge($address: String!) {
+  requestSessionChallenge(address: $address)
+}
+
+mutation verifySessionChallenge($challenge: String!, $signature: String!) {
+  verifySessionChallenge(challenge: $challenge, signature: $signature) {
+    success
+    errorMessage
+  }
+}
+
+mutation authenticateAt($appId: String!) {
+  authenticateAt(appId: $appId) {
+    appId
+    success
+    errorMessage
+    challengeType
+    delegateAuthCode
+    validTo
+  }
+}
+
+mutation claimInvitation($code: String!) {
+  claimInvitation(code: $code) {
+    success
+    claimedInvitation {
+      createdAt
+      createdByProfileId
+      claimedAt
+      claimedByProfileId
+    }
+  }
+}
+
+mutation acknowledge($until: String!) {
+  acknowledge(until: $until)
+}
+
+mutation sendMessage(
+  $fromSafeAddress: String
+  $toSafeAddress: String!
+  $content: String!
+) {
+  sendMessage(
+    fromSafeAddress: $fromSafeAddress
+    toSafeAddress: $toSafeAddress
+    content: $content
+  ) {
+    success
+    error
+    event {
+      block_number
+      direction
+      safe_address
+      safe_address_profile {
+        id
+        firstName
+        lastName
+        avatarUrl
+        circlesAddress
+      }
+      timestamp
+      transaction_hash
+      transaction_index
+      type
+      value
+      tags {
+        id
+        typeId
+        value
+      }
+      payload {
+        ... on ChatMessage {
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          text
+        }
+        ... on CrcHubTransfer {
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          flow
+          transfers {
+            token
+            from
+            from_profile {
+              id
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+            }
+            to
+            to_profile {
+              id
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+            }
+            value
+          }
+        }
+        ... on EthTransfer {
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+        ... on GnosisSafeEthTransfer {
+          from
+          from_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          to
+          to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          value
+        }
+        ... on CrcTrust {
+          address
+          address_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          can_send_to
+          can_send_to_profile {
+            id
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+          }
+          limit
+        }
+      }
+    }
+  }
+}
+
+mutation addMember($groupId: String!, $memberAddress: String!) {
+  addMember(groupId: $groupId, memberAddress: $memberAddress) {
+    error
+    success
+  }
+}
+mutation removeMember($groupId: String!, $memberAddress: String!) {
+  removeMember(groupId: $groupId, memberAddress: $memberAddress) {
+    error
+    success
+  }
+}
+
+mutation redeemClaimedInvitation {
+  redeemClaimedInvitation {
+    success
+    error
+    transactionHash
+  }
+}
+
+mutation createInvitations($for: [String!]!) {
+  createInvitations(for: $for) {
+    success
+    error
+    createdInviteEoas {
+      name
+      address
+    }
+  }
+}
+
+mutation consumeDepositedChallenge($delegateAuthCode: String!) {
+  consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
+    success
+    challenge
+  }
+}
+
+mutation logout {
+  logout {
+    success
+  }
+}
+
+mutation tagTransaction($transactionHash: String!, $tag: CreateTagInput!) {
+  tagTransaction(transactionHash: $transactionHash, tag: $tag) {
+    success
+    error
+    tag {
+      id
+      typeId
+      value
+    }
+  }
+}
+
+mutation upsertProfile(
+  $id: Int
+  $firstName: String!
+  $lastName: String
+  $dream: String
+  $country: String
+  $avatarUrl: String
+  $avatarCid: String
+  $avatarMimeType: String
+  $circlesAddress: String
+  $circlesSafeOwner: String
+  $newsletter: Boolean
+  $displayCurrency: DisplayCurrency
+  $displayTimeCircles: Boolean
+  $cityGeonameid: Int
+  $status: String!
+  $successorOfCirclesAddress: String
+) {
+  upsertProfile(
+    data: {
+      id: $id
+      firstName: $firstName
+      lastName: $lastName
+      dream: $dream
+      country: $country
+      avatarUrl: $avatarUrl
+      avatarCid: $avatarCid
+      avatarMimeType: $avatarMimeType
+      circlesAddress: $circlesAddress
+      circlesSafeOwner: $circlesSafeOwner
+      newsletter: $newsletter
+      displayCurrency: $displayCurrency
+      displayTimeCircles: $displayTimeCircles
+      cityGeonameid: $cityGeonameid
+      status: $status
+      successorOfCirclesAddress: $successorOfCirclesAddress
+    }
+  ) {
+    id
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    circlesAddress
+    circlesSafeOwner
+    newsletter
+    displayCurrency
+    displayTimeCircles
+    successorOfCirclesAddress
+    cityGeonameid
+    city {
+      geonameid
+      country
+      name
+      latitude
+      longitude
+      population
+      feature_code
+    }
+    status
+  }
+}
+
+mutation upsertOrganisation($organisation: UpsertOrganisationInput!) {
+  upsertOrganisation(organisation: $organisation) {
+    success
+    error
+    organisation {
+      id
+      avatarMimeType
+      avatarUrl
+      circlesAddress
+      circlesSafeOwner
+      cityGeonameid
+      city {
+        geonameid
+        country
+        name
+        latitude
+        longitude
+        population
+        feature_code
+      }
+      createdAt
+      description
+      name
+    }
+  }
+}
+
+mutation upsertRegion($organisation: UpsertOrganisationInput!) {
+  upsertRegion(organisation: $organisation) {
+    success
+    error
+    organisation {
+      id
+      avatarMimeType
+      avatarUrl
+      circlesAddress
+      circlesSafeOwner
+      cityGeonameid
+      city {
+        geonameid
+        country
+        name
+        latitude
+        longitude
+        population
+        feature_code
+      }
+      createdAt
+      description
+      name
+    }
+  }
+}
+
+mutation importOrganisations {
+  importOrganisationsOfAccount {
+    id
+    circlesAddress
+    name
+    description
+    avatarUrl
+  }
+}
+
+mutation completePurchase($invoiceId: Int!, $revoke: Boolean) {
+  completePurchase(invoiceId: $invoiceId, revoke: $revoke) {
+    id
+    sellerAddress
+    paymentTransactionHash
+    buyerAddress
+    pickupCode
+    buyerSignature
+    buyerSignedDate
+    sellerSignature
+    sellerSignedDate
+    sellerProfile {
+      type
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
+  }
+}
+
+mutation completeSale($invoiceId: Int!, $revoke: Boolean) {
+  completeSale(invoiceId: $invoiceId, revoke: $revoke) {
+    id
+    sellerAddress
+    paymentTransactionHash
+    buyerAddress
+    pickupCode
+    buyerSignature
+    buyerSignedDate
+    sellerSignature
+    sellerSignedDate
+    sellerProfile {
+      type
+      id
+      circlesAddress
+      firstName
+      lastName
+      avatarUrl
+    }
+  }
+}
+
+mutation verifySafe($safeAddress: String!) {
+  verifySafe(safeAddress: $safeAddress) {
+    success
+  }
+}
+
+mutation revokeSafeVerification($safeAddress: String!) {
+  revokeSafeVerification(safeAddress: $safeAddress) {
+    success
+  }
+}

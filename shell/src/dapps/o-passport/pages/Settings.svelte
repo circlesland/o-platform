@@ -1,13 +1,31 @@
 <script lang="ts">
-  import PassportHeader from "../atoms/PassportHeader.svelte";
-  import { me } from "../../../shared/stores/me";
-  import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
-  import { onMount } from "svelte";
-  import { UpsertProfileDocument, WhoamiDocument } from "../data/api/types";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+import Card from "src/shared/atoms/Card.svelte";
+import { me } from "../../../shared/stores/me";
+import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
+import { onMount } from "svelte";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import Svelecte, { addFormatter } from "svelecte";
+import {
+  UpsertProfileDocument,
+  DisplayCurrency,
+  WhoamiDocument,
+  WhoamiQueryVariables,
+} from "../../../shared/api/data/types";
+import { ApiClient } from "../../../shared/apiConnection";
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  async function editProfile() {
-    /*
+let choices = [
+  { value: DisplayCurrency.Crc, name: "CRC" },
+  { value: DisplayCurrency.Eurs, name: "Euro" },
+  { value: DisplayCurrency.TimeCrc, name: "Time Circles" },
+];
+
+async function editProfile() {
+  /*
     const requestEvent = new RunProcess<ShellProcessContext>(
             shellProcess,
             true,
@@ -40,81 +58,75 @@
 
     window.o.publishEvent(requestEvent);
      */
-    // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.mutate({
-      mutation: UpsertProfileDocument,
-      variables: {
-        id: $me.id,
-        circlesAddress: $me.circlesAddress,
-        circlesSafeOwner: $me.circlesSafeOwner,
-        avatarCid: $me.avatarCid,
-        avatarUrl: $me.avatarUrl,
-        avatarMimeType: $me.avatarMimeType,
-        firstName: $me.firstName,
-        lastName: $me.lastName,
-        country: $me.country,
-        dream: $me.dream,
-        newsletter: receiveNewsletter,
-      },
-    });
-    if (result.errors) {
-      return;
-    }
-    window.o.publishEvent(<PlatformEvent>{
-      type: "shell.authenticated",
-      profile: result.data.upsertProfile,
-    });
+  // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const result = await apiClient.mutate({
+    mutation: UpsertProfileDocument,
+    variables: {
+      id: $me.id,
+      circlesAddress: $me.circlesAddress,
+      circlesSafeOwner: $me.circlesSafeOwner,
+      avatarCid: $me.avatarCid,
+      avatarUrl: $me.avatarUrl,
+      avatarMimeType: $me.avatarMimeType,
+      firstName: $me.firstName,
+      lastName: $me.lastName,
+      country: $me.country,
+      dream: $me.dream,
+      newsletter: receiveNewsletter,
+      displayCurrency: displayCurrency,
+      status: "",
+    },
+  });
+  if (result.errors) {
+    return;
   }
-
-  let email: string = "unknown";
-
-  onMount(async () => {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.query({
-      query: WhoamiDocument,
-    });
-    if (result.errors) {
-      return;
-    }
-    email = result.data.whoami;
+  console.log("RESULT ", result);
+  window.o.publishEvent(<PlatformEvent>{
+    type: "shell.authenticated",
+    profile: result.data.upsertProfile,
   });
+}
 
-  let receiveNewsletter: boolean = $me.newsletter;
-  const delayedTrigger = new DelayedTrigger(500, async () => {
-    // TODO: Make call to upsertProfile shorter
-    await editProfile();
-  });
+let email: string = "unknown";
+
+onMount(async () => {
+  email = await ApiClient.query<string, WhoamiQueryVariables>(
+    WhoamiDocument,
+    {}
+  );
+});
+
+let receiveNewsletter: boolean = $me.newsletter;
+let displayCurrency: string = $me.displayCurrency;
+const delayedTrigger = new DelayedTrigger(500, async () => {
+  // TODO: Make call to upsertProfile shorter
+  await editProfile();
+});
 </script>
 
-<PassportHeader />
+<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="mx-4 -mt-6">
-  <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-primary text-xs font-circles font-bold text-left">
-        EMAIL
+<div class="mx-auto md:w-2/3 xl:w-1/2">
+  <!-- <section class="flex items-center justify-center mx-4 mb-2 -mt-2">
+    <Card>
+      <div class="text-xs font-bold text-left text-primary">EMAIL</div>
+      <div class="flex items-center w-full space-x-2 bg-white sm:space-x-6">
+        <div class="mr-2 text-center">{email}</div>
       </div>
-      <div class="flex items-center bg-white w-full space-x-2 sm:space-x-6">
-        <div class="mr-2 text-center">
-          {email}
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="flex items-center justify-center mb-2 text-circlesdarkblue ">
-    <div class="flex flex-col bg-white shadow p-4 w-full space-y-2 rounded-sm">
-      <div class="text-primary text-xs font-circles font-bold text-left">
-        NEWSLETTER
-      </div>
-      <div class="bg-white w-full space-x-2 sm:space-x-6">
-        <div class="form-control w-full">
+    </Card>
+  </section> -->
+  <section class="mx-4 mb-2 -mt-2">
+    <Card>
+      <div class="text-xs font-bold text-left text-primary">NOTIFICATIONS</div>
+      <div class="w-full space-x-2 bg-white sm:space-x-6">
+        <div class="w-full form-control">
           <label class="label" for="newsletter">
             <div
-              class="w-full flex items-stretch justify-items-stretch flex-row cursor-pointer space-x-10"
-            >
-              <div class="self-center flex-grow justify-self-start text-left">
-                Receive Newsletter
+              class="flex flex-row items-stretch w-full space-x-10 cursor-pointer justify-items-stretch">
+              <div
+                class="self-center flex-grow text-sm text-right justify-self-start">
+                Receive E-Mail Notifications
               </div>
               <div class="self-center justify-self-end">
                 <input
@@ -122,16 +134,38 @@
                   id="newsletter"
                   type="checkbox"
                   class="inline-block toggle toggle-primary"
-                  bind:checked={receiveNewsletter}
-                  on:change={() => delayedTrigger.trigger()}
-                />
+                  bind:checked="{receiveNewsletter}"
+                  on:change="{() => delayedTrigger.trigger()}" />
 
-                <span class="toggle-mark" />
+                <span class="toggle-mark"></span>
               </div>
             </div>
           </label>
         </div>
       </div>
-    </div>
+    </Card>
   </section>
+  <!-- <section class="mx-4 mb-2">
+    <Card>
+      <div class="text-xs font-bold text-left text-primary whitespace-nowrap">
+        CURRENCY DISPLAY
+      </div>
+      <div class="w-full space-x-2 bg-white sm:space-x-6">
+        <div class="w-full form-control">
+          <label class="label" for="displayTimeCircles">
+            <div class="flex flex-row items-stretch justify-end w-full">
+              <select
+                class="self-end w-full max-w-xs select select-bordered"
+                bind:value="{displayCurrency}"
+                on:change="{() => delayedTrigger.trigger()}">
+                {#each choices as option, i}
+                  <option value="{option.value}">{option.name}</option>
+                {/each}
+              </select>
+            </div>
+          </label>
+        </div>
+      </div>
+    </Card>
+  </section> -->
 </div>

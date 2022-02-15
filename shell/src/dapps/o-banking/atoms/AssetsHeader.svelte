@@ -1,11 +1,10 @@
 <script lang="ts">
   import TopNav from "src/shared/atoms/TopNav.svelte";
-
-  export let showBackArrow: boolean = false;
 </script>
 
-<TopNav showHomeButton={true} {showBackArrow} />
+<TopNav {runtimeDapp} {routable} />
 
 <div
-  class="h-24 flex flex-col items-stretch navbar bg-gradient-to-r from-gradient1 to-gradient2 text-white"
+  class="flex flex-col items-stretch h-24 text-white bg-cover navbar bg-primary-dark"
+  style="background-image: url(/images/common/nice-bg.jpg);"
 />

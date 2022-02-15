@@ -1,137 +1,76 @@
 <script lang="ts">
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
-  import { upsertIdentity } from "../processes/upsertIdentity";
-  import { me } from "../../../shared/stores/me";
-  import { Profile } from "../data/api/types";
-  import { loadProfile } from "../processes/identify/services/loadProfile";
-  import TopNav from "src/shared/atoms/TopNav.svelte";
-  import {AvataarGenerator} from "../../../shared/avataarGenerator";
+import { upsertIdentity } from "../processes/upsertIdentity";
+import { me } from "../../../shared/stores/me";
+import { loadProfile } from "../processes/identify/services/loadProfile";
+import TopNav from "src/shared/atoms/TopNav.svelte";
+import PageHeader from "src/shared/atoms/PageHeader.svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { getCountryName } from "../../../shared/countries";
+import { Profile, Organisation } from "../../../shared/api/data/types";
 
-  let profile: Profile;
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
+let profile: Profile | Organisation;
+let displayName: string;
 
-  export let params: {
-    profileId?: string;
-  };
+export let params: {
+  profileId?: string;
+};
 
-  async function execLoadProfile(profileId?: string) {
-    if (profileId && parseInt(profileId)) {
-      profile = await loadProfile(parseInt(profileId));
-    }
+async function execLoadProfile(profileId?: string) {
+  if (profileId && parseInt(profileId)) {
+    profile = await loadProfile(parseInt(profileId));
   }
+}
 
-
-  let avatarUrl:string = "";
-  $: {
-    if (params && params.profileId) {
-      execLoadProfile(params ? params.profileId : $me.id.toString());
-    } else if ($me) {
-      profile = $me;
-    }
-
-    if (profile && profile.avatarUrl) {
-      avatarUrl = profile.avatarUrl
-    }
-    else if (profile)
-    {
-      avatarUrl = AvataarGenerator.generate(profile.circlesAddress)
-    }
-    else
-    {
-      avatarUrl = AvataarGenerator.default();
-    }
+let avatarUrl: string = "";
+$: {
+  if (params && params.profileId) {
+    execLoadProfile(params ? params.profileId : $me.id.toString());
+  } else if ($me) {
+    profile = $me;
   }
+  console.log("PROFILE: ", profile);
 
-  function editProfileField(dirtyFlags: { [x: string]: boolean }) {
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = {
-          id: upsertIdentity.id,
-          name: upsertIdentity.name,
-          stateMachine: (processId?: string) =>
-            (<any>upsertIdentity).stateMachine(processId, true),
-        };
-        ctx.childContext = {
-          data: {
-            id: profile.id,
-            circlesAddress: profile.circlesAddress,
-            circlesSafeOwner: profile.circlesSafeOwner,
-            avatarCid: profile.avatarCid,
-            avatarUrl: profile.avatarUrl,
-            avatarMimeType: profile.avatarMimeType,
-            firstName: profile.firstName,
-            lastName: profile.lastName,
-            country: profile.country,
-            dream: profile.dream,
-          },
-          dirtyFlags: dirtyFlags,
-        };
-        return ctx;
-      }
-    );
-
-    window.o.publishEvent(requestEvent);
+  if (profile.__typename == "Profile") {
+    displayName =
+      profile.firstName + (profile.lastName ? " " + profile.lastName : "");
+  } else {
+    displayName = profile.name ? " " + profile.name : "";
   }
+}
+
+function editProfileField(onlyThesePages: string[]) {
+  window.o.runProcess(upsertIdentity, profile, {}, onlyThesePages);
+}
 </script>
 
-<TopNav />
+<TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div
-  class="h-60 flex flex-col w-full items-stretch justify-items-stretch  bg-gradient-to-r from-gradient1 to-gradient2 text-white"
->
-  <div class="self-center text-center block">
-    <div class="avatar">
-      <div class="w-36 h-36 rounded-full mb-4">
-        <img
-          src={avatarUrl}
-          alt={profile
-            ? profile.lastName
-              ? `${profile.firstName} ${profile.lastName}`
-              : profile.firstName
-            : "avatar"}
-        />
-      </div>
-      <button
-        class="link link-primary text-primary text-2xs self-start relative top-1 right-2"
-        on:click={() => editProfileField({ avatarUrl: true })}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-3 w-3 relative top-0 right-0"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-          />
-        </svg>
-      </button>
+<PageHeader heightClass="h-72">
+  <div class="self-center block mt-2 text-center">
+    <div
+      class="mb-4"
+      on:click="{() => editProfileField(['file', 'avatarUrl'])}">
+      <UserImage profile="{profile}" size="{36}" profileLink="{false}" />
     </div>
-    <div class="">
-      <h2>
-        {profile ? profile.firstName : ""}
-        {profile && profile.lastName ? profile.lastName : ""}
-        <button
-          class="link link-primary text-primary text-2xs self-start -mt-2 -mr-3"
-          on:click={() => editProfileField({ firstName: true, lastName: true })}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-3 w-3 relative top-0 right-0"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-            />
-          </svg>
-        </button>
+
+    <div on:click="{() => editProfileField(['firstName', 'lastName'])}">
+      <h2 class="text-4xl cursor-pointer font-heading">
+        {displayName}
       </h2>
     </div>
   </div>
-</div>
+  {#if profile && profile.city}
+    <div
+      class="mt-1 text-sm text-center cursor-pointer"
+      on:click="{() => editProfileField(['cityGeonameid'])}">
+      {profile.city ? profile.city.name : ""}
+      {profile.city
+        ? ", " + profile.city.country
+        : ", " + getCountryName(profile)}
+    </div>
+  {/if}
+</PageHeader>

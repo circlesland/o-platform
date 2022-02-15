@@ -1,4 +1,6 @@
 export interface IProcessContext {
+  //onlyWhenDirty: boolean;
+  onlyThesePages: string[];
   /**
    * Contains the data that collected or manipulated during the process.
    * This data is available to every step.
@@ -11,16 +13,6 @@ export interface IProcessContext {
    */
   dirtyFlags: { [propertyName: string]: boolean };
   messages: { [propertyName: string]: string };
-  /**
-   * Environment data which might be injected by the shell.
-   * This should not be used to parameterize processes because
-   * external callers can pre-set the whole 'data' property for this case.
-   */
-  environment: {
-    progressView?: any,
-    successView?: any,
-    errorView?: any
-  };
 }
 
 export interface TProcessContext<Data extends {[key:string]:any}> extends IProcessContext {
@@ -30,6 +22,7 @@ export interface TProcessContext<Data extends {[key:string]:any}> extends IProce
 export class ProcessContext<T extends {[key:string]:any}> implements TProcessContext<T> {
   data: T = <any>{};
   dirtyFlags: { [p: string]: boolean } = {};
-  environment: { progressView?: any; successView?: any; errorView?: any } = {};
+  //onlyWhenDirty: boolean = false;
+  onlyThesePages: string[] = [];
   messages: { [p: string]: string } = {};
 }

@@ -1,86 +1,91 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { getLastLoadedDapp, getLastLoadedPage } from "../../loader";
-  import { PageManifest } from "@o-platform/o-interfaces/dist/pageManifest";
-  import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import {
+  cartContents,
+  totalPrice,
+} from "../../dapps/o-marketplace/stores/shoppingCartStore";
+import { me } from "../stores/me";
 
-  export let showHomeButton: boolean = true;
-  export let showWebsiteButton: boolean = false;
-  export let showBackArrow: boolean = false;
+import { Profile } from "../api/data/types";
+import UserImage from "./UserImage.svelte";
+import { push } from "svelte-spa-router";
+import OrganizationSwitcher from "../../dapps/o-coop/molecules/OrganizationSwitcher.svelte";
+import Icons from "../molecules/Icons.svelte";
 
-  let lastLoadedPage: PageManifest;
-  let lastLoadedDapp: DappManifest<any>;
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
+export let headerString: string = null;
 
-  onMount(() => {
-    lastLoadedPage = getLastLoadedPage();
-    lastLoadedDapp = getLastLoadedDapp();
-  });
+let profile: Profile;
+let showSwitcher = false;
+$: name = profile?.circlesAddress ? profile.circlesAddress : "";
+
+$: {
+  if ($me) {
+    profile = $me;
+  } else {
+    profile = undefined;
+  }
+}
+
+console.log("DAPP: ", runtimeDapp);
+function profileSwitcher() {
+  // if (profile.memberships && profile.memberships.length > 0) {
+
+  showSwitcher = !showSwitcher;
+  // }
+}
 </script>
 
-{#if lastLoadedDapp && lastLoadedPage}
+<div class="fixed top-0 left-0 z-50 w-full">
   <div
-    class="navbar flex-row  justify-between  bg-gradient-to-r from-gradient1 to-gradient2 text-white sticky -top-0.5 z-10"
-  >
-    <div class="pt-0 pl-2 flex flex-row w-full justify-between ">
-      <div
-        class="self-start cursor-pointer"
-        on:click|once={() => history.back()}
-      >
-        {#if showBackArrow}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6 inline-block mr-1 -mt-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            />
-          </svg>
-        {/if}
-        <span class="text-lg font-circles">
-          {#if lastLoadedDapp.title != lastLoadedPage.title}
-            {lastLoadedDapp.title} /
+    class="grid w-full grid-cols-3 p-2 mx-auto text-white navbar bg-dark-dark justify-items-stretch">
+    <div class="justify-self-start whitespace-nowrap">
+      <img
+        src="/logos/circles.png"
+        class="w-8 h-8"
+        alt="Circles Land"
+        on:click="{() => push(`/`)}" />
+      <span class="ml-2 text-2xl uppercase font-heading text-light">
+        {runtimeDapp ? runtimeDapp.title : "<<No dapp>>"}
+      </span>
+    </div>
+
+    <div class="justify-self-center">
+      {#if headerString}
+        <span class="text-md">{headerString}</span>
+      {:else if (routable ? routable.title : "<<No dapp>>") != (runtimeDapp ? runtimeDapp.title : "<<No dapp>>")}
+        <span class="text-md">{routable.title}</span>
+      {/if}
+    </div>
+
+    <div class="col-start-3 pr-1 place-self-center justify-self-end">
+      {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1"}
+        <div
+          class="relative mr-4 cursor-pointer justify-self-center"
+          on:click="{() => push(`#/marketplace/cart`)}">
+          {#if $cartContents && $cartContents.length > 0}
+            <div
+              class="absolute w-full text-center text-secondary -top-3 left-1 font-heading">
+              {$cartContents.length}
+            </div>
           {/if}
-          {lastLoadedPage.title}
-        </span>
-      </div>
-      {#if showHomeButton}
-        <div class="self-start">
-          <button
-            class=" text-white"
-            on:click={() => (window.location = "/#/dashboard")}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
-          </button>
+          <Icons icon="cart" size="{6}" />
         </div>
       {/if}
-      {#if showWebsiteButton}
-        <div class="self-start">
-          <button
-            class=" text-white"
-            on:click|once={() => (window.location = "/")}
-            >Website
-          </button>
+
+      {#if profile}
+        <div
+          class="cursor-pointer justify-self-center"
+          on:click="{() => profileSwitcher()}">
+          <UserImage profile="{profile}" size="{8}" profileLink="{false}" />
         </div>
+        {#if showSwitcher}
+          <OrganizationSwitcher
+            on:click_outside="{() => (showSwitcher = !showSwitcher)}" />
+        {/if}
       {/if}
     </div>
   </div>
-{/if}
+</div>

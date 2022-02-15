@@ -33,7 +33,7 @@ export function showToast(
   message: String,
   dismissable: Boolean = true
 ) {
-  console.log(type);
+    // console.log(type);
   if (type && type == "success") {
     toast.push(
       `<div class="flex flex-row"><div class="justify-center text-success"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-2 stroke-current self-center " fill="none" viewBox="0 0 24 24" stroke="currentColor">

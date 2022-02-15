@@ -1,33 +1,9 @@
 <script lang="ts">
-  import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-  import {
-    shellProcess,
-    ShellProcessContext,
-  } from "../../../shared/processes/shellProcess";
-  import { Generate } from "@o-platform/o-utils/dist/generate";
-  import {
-    identify,
-    IdentifyContextData,
-  } from "../../o-passport/processes/identify/identify";
+import { identify } from "../../o-passport/processes/identify/identify2";
 
-  async function login() {
-    const requestEvent = new RunProcess<ShellProcessContext>(
-      shellProcess,
-      true,
-      async (ctx) => {
-        ctx.childProcessDefinition = identify;
-        ctx.childContext = {
-          data: <IdentifyContextData>{
-            redirectTo: "/dashboard",
-          },
-        };
-        return ctx;
-      }
-    );
-
-    requestEvent.id = Generate.randomHexString(8);
-    window.o.publishEvent(requestEvent);
-  }
+async function login() {
+  window.o.runProcess(identify, { redirectTo: "/home" });
+}
 </script>
 
 <nav class="relative flex items-center justify-center w-full lg:space-x-16">
@@ -38,9 +14,8 @@
         target="_blank"
         aria-label="Our product"
         title="Our product"
-        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
-        >Chat</a
-      >
+        class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
+        >Chat</a>
     </li>
     <li>
       <a
@@ -48,17 +23,15 @@
         target="_blank"
         aria-label="Our product"
         title="Our product"
-        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
-        >Forum</a
-      >
+        class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
+        >Forum</a>
     </li>
   </ul>
   <a
     href="/"
     aria-label="Company"
     title="Company"
-    class="inline-flex items-center h-10 md:h-12 -ml-14 lg:-ml-0"
-  >
+    class="inline-flex items-center h-10 md:h-12 ">
     <img src="/circles.png" alt="CirclesLAND" class="h-8 md:h-12" />
   </a>
   <ul class="flex items-center hidden space-x-8 lg:flex">
@@ -68,9 +41,8 @@
         target="_blank"
         aria-label="About us"
         title="About us"
-        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
-        >Blog</a
-      >
+        class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
+        >Blog</a>
     </li>
     <li>
       <a
@@ -78,13 +50,12 @@
         target="_blank"
         aria-label="Sign in"
         title="Sign in"
-        class="font-bold tracking-wide transition-colors duration-200 text-secondary hover:text-primary"
-        >Whitepaper</a
-      >
+        class="font-bold tracking-wide transition-colors duration-200  hover:text-primary"
+        >Whitepaper</a>
     </li>
   </ul>
   <div class="absolute right-0 self-center w-12 justify-self-end">
-    <button class="btn-link" on:click={login}>Log in</button>
+    <button class="btn-link" on:click="{login}">Log in</button>
   </div>
   <!-- Mobile menu -->
 </nav>

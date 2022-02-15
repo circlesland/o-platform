@@ -3,7 +3,7 @@
   import Sidebar from "../atoms/Sidebar.svelte";
 
   let open = false;
+
 </script>
 
-<Sidebar bind:open />
 <Navbar bind:sidebar={open} />
