@@ -6,9 +6,9 @@
   "scripts": {
     "clean:all": "npx shx rm -rf public/bundle.* && npx shx rm -rf node_modules",
     "clean": "npx shx rm -rf public/bundle.*",
-    "dev": "DEPLOY_ENVIRONMENT=local ALLOW_VERIFY=true webpack-dev-server --https --config webpack.config.js --mode=development --cert ./localhost.cert --key ./localhost.key",
+    "dev": "DEPLOY_ENVIRONMENT=local ALLOW_VERIFY=true webpack-dev-server --https --config webpack.config.js --mode=development",
     "local": "DEPLOY_ENVIRONMENT=ultralocal ALLOW_VERIFY=true webpack-dev-server --config webpack.config.js --mode=development",
-    "docker": "DEPLOY_ENVIRONMENT=docker ALLOW_VERIFY=true webpack-dev-server --config webpack.config.js --mode=development",
+    "docker": "SAFE_ADDRESS=0x5528544b97869ce105be00fccf250f659e787034 SAFE_PROXY_FACTORY_ADDRESS=0xdd227f14669e47fe72748a16adb0b26cc2afaa1d CIRCLES_HUB_BLOCK=2 CIRCLES_HUB_ADDRESS=0x59beaa0ced9a35d21d2fc94cacfcb54695e27304 RPC_ENDPOINT=http://localhost:8545 DEPLOY_ENVIRONMENT=docker webpack-dev-server --config webpack.config.js --mode=development",
     "mock": "DEPLOY_ENVIRONMENT=ultralocal ALLOW_VERIFY=true USE_MOCKS=true webpack-dev-server --config webpack.config.js --mode=development",
     "build": "cross-env NODE_ENV=production webpack",
     "deploy": "npm run clean && npm i && npm run build && fission app publish --verbose",
@@ -46,10 +46,11 @@
     "bip39": "^3.0.3",
     "yup": "^0.32.11",
     "vis-data": "^7.1.2",
-    "vis-network": "^9.0.1",
-    "svelecte": "^3.2.1"
+    "vis-network": "^9.0.1"
   },
   "devDependencies": {
+    "qr-scanner": "^1.4.0",
+    "svelecte": "^3.5.6",
     "jest": "^27.4.3",
     "ts-jest": "^27.1.1",
     "@testing-library/jest-dom": "^5.16.1",

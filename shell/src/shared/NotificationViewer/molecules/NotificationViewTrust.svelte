@@ -1,9 +1,10 @@
 <script lang="ts">
 import NotificationProfile from "./NotificationProfile.svelte";
-import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
+import { NotificationViewerContext } from "@o-platform/o-editors/src/notificationViewerContext";
 import { CrcTrust, ProfileEvent } from "../../api/data/types";
 
 export let event: ProfileEvent;
+export let context: NotificationViewerContext;
 
 let payload: CrcTrust = <CrcTrust>event.payload;
 </script>
@@ -28,4 +29,3 @@ let payload: CrcTrust = <CrcTrust>event.payload;
     </div>
   {/if}
 </div>
-<!-- <NotificationViewMutualFriends eventData="{eventData}" /> -->

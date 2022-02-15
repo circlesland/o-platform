@@ -12,6 +12,7 @@ import {
   MyInvitationsQueryVariables,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import {Environment} from "../../../shared/environment";
 
 export let capabilities: Capability[] | undefined = [];
 
@@ -24,7 +25,7 @@ async function reload() {
   canInvite =
     capabilities &&
     capabilities.find((o) => o.type == CapabilityType.Invite) &&
-    "__ALLOW_VERIFY__" == "true";
+    Environment.allowVerify;
 
   const invitations = await ApiClient.query<
     CreatedInvitation[],

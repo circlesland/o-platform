@@ -1,4 +1,5 @@
 <script lang="ts">
+import { onMount } from "svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import NotificationViewChatMessage from "./NotificationViewer/molecules/NotificationViewChatMessage.svelte";
 import NotificationViewUbi from "./NotificationViewer/molecules/NotificationViewUbi.svelte";
@@ -10,24 +11,43 @@ import NotificationViewInvitationRedeemed from "./NotificationViewer/molecules/N
 import NotificationViewWelcome from "./NotificationViewer/molecules/NotificationViewWelcome.svelte";
 import GenericEventCard from "./NotificationViewer/molecules/GenericEventCard.svelte";
 import { NotificationViewerContext } from "@o-platform/o-editors/src/notificationViewerContext";
-import ProcessNavigation from "../../../packages/o-editors/src/ProcessNavigation.svelte";
-import Icons from "./molecules/Icons.svelte";
-
+import { UserActions, UserActionItem } from "./userActions";
+import { createEventDispatcher } from "svelte";
+import ButtonGroup from "./molecules/ButtonGroup/ButtonGroup.svelte";
 import { EventType } from "./api/data/types";
-import { setTrust } from "../dapps/o-banking/processes/setTrust";
-import { me } from "./stores/me";
-import {showNotifications} from "./processes/showNotifications";
-import {inbox} from "./stores/inbox";
 
 export let context: NotificationViewerContext;
 
 let data: any = context.data[context.field];
 
+let userActions: UserActionItem[] = [];
+
+const dispatch = createEventDispatcher();
+
 const components = [
-  { type: EventType.ChatMessage, component: NotificationViewChatMessage },
-  { type: EventType.CrcMinting, component: NotificationViewUbi },
-  { type: EventType.CrcTrust, component: NotificationViewTrust },
-  { type: EventType.CrcHubTransfer, component: NotificationViewTransfer },
+  {
+    type: EventType.ChatMessage,
+    component: NotificationViewChatMessage,
+    actions: [{ action: "chat", label: "Answer" }],
+  },
+  {
+    type: EventType.CrcMinting,
+    component: NotificationViewUbi,
+  },
+  {
+    type: EventType.CrcTrust,
+    component: NotificationViewTrust,
+    actions: [
+      {
+        action: "setTrust",
+      },
+    ],
+  },
+  {
+    type: EventType.CrcHubTransfer,
+    component: NotificationViewTransfer,
+    actions: [{ action: "chat", label: "Say Thanks" }],
+  },
   {
     type: EventType.MembershipOffer,
     component: NotificationViewMembershipOffer,
@@ -39,6 +59,12 @@ const components = [
   {
     type: EventType.InvitationRedeemed,
     component: NotificationViewInvitationRedeemed,
+    actions: [
+      {
+        action: "setTrust",
+        label: `Trust ${data.contact_address_profile.firstName}`,
+      },
+    ],
   },
   {
     type: EventType.WelcomeMessage,
@@ -46,75 +72,86 @@ const components = [
   },
 ];
 
-async function trust(circlesAddress) {
-  window.o.publishEvent({
-    type: "shell.closeModal"
-  });
-  setTimeout(() => {
-    window.o.runProcess(setTrust, {
-      trustLimit: 100,
-      trustReceiver: circlesAddress,
-      hubAddress: "__CIRCLES_HUB_ADDRESS__",
-      safeAddress: $me.circlesAddress,
-      privateKey: sessionStorage.getItem("circlesKey"),
-      successAction: (data) => {
-        window.o.runProcess(showNotifications, {
-          events: $inbox.map((o) => o)
-        });
+function getEventView() {
+  const specificView = components.find((x) => x.type === data.type);
+  if (!specificView) return GenericEventCard;
+  return specificView.component;
+}
+async function getEventActions() {
+  const specificView = components.find((x) => x.type === data.type);
+  if (!specificView) return null;
+  return specificView.actions ? specificView.actions : null;
+}
+
+onMount(async () => {
+  let dismissAction: UserActionItem = {
+    key: "dismiss",
+    title: "OK",
+    action: () => dispatch("submit"),
+  };
+
+  let eventActions = await getEventActions();
+
+  if (eventActions) {
+    userActions = await UserActions.getAvailableActions(
+      data.contact_address_profile
+    );
+
+    let usableUserActions = {};
+
+    eventActions.forEach((action) => {
+      let foundAction = userActions.find((o) => o.key === action.action);
+      if (foundAction) {
+        usableUserActions[action.action] = foundAction;
       }
     });
-  }, 50);
-}
+
+    userActions = Object.values(usableUserActions);
+  }
+  userActions.unshift(dismissAction);
+  userActions = userActions;
+});
 
 function submit() {
   const answer = new Continue();
   answer.data = context.data;
   context.process.sendAnswer(answer);
 }
-
-function handleClick(action) {
-  if (action.event) {
-    window.o.publishEvent(action.event);
-  }
-  if (action.action) {
-    action.action();
-  }
-}
-
-function trustAndSubmit() {
-  trust(data.payload.redeemedBy_profile.circlesAddress);
-  submit();
-}
-
-function getEventView() {
-  const specificView = components.find((x) => x.type === data.type);
-  if (!specificView) return GenericEventCard;
-  return specificView.component;
-}
 </script>
 
 <div>
-  <svelte:component this="{getEventView()}" event="{data}" />
+  <svelte:component
+    this="{getEventView()}"
+    event="{data}"
+    context="{context}"
+    on:submit="{submit}" />
 
-  {#if data.type == EventType.InvitationRedeemed}
-    <div class="flex flex-row items-center content-center w-full space-x-4">
-      <div class="">
-        <button
-          type="submit"
-          class="relative btn btn-light btn-block whitespace-nowrap"
-          on:click="{() => submit()}">
-          Don't trust
-        </button>
-      </div>
-      <div class="flex-grow">
-        <button
-          on:click="{() => trustAndSubmit()}"
-          class="h-auto btn-block btn btn-primary whitespace-nowrap">
-          Trust {data.payload.redeemedBy_profile.firstName}
-        </button>
-      </div>
+  {#if userActions}
+    <div class="pt-4">
+      <ButtonGroup
+        actions="{userActions}"
+        layout="{{
+          orientation: 'inline',
+          alignment: 'center',
+          labels: {
+            setTrust: (action) =>
+              `${action.title} ${data.contact_address_profile.firstName}`,
+            chat: (action) => {
+              if (data.type == EventType.CrcHubTransfer) {
+                return 'Say Thanks';
+              } else if (data.type == EventType.ChatMessage) {
+                return 'Answer';
+              } else {
+                return null;
+              }
+            },
+          },
+          colors: {
+            default: 'primary',
+            overrides: (action) => (action.key == 'dismiss' ? 'light' : null),
+          },
+        }}"
+        on:submit="{submit}" />
     </div>
-  {:else}
-    <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
   {/if}
 </div>

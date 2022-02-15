@@ -38,5 +38,3 @@ if (payload) {
     </div>
   {/if}
 </div>
-
-<!-- <NotificationViewMutualFriends eventData="{eventData}" /> -->

@@ -4,6 +4,22 @@ import { inbox } from "../../../stores/inbox";
 import Icons from "../../Icons.svelte";
 
 export let props;
+
+function clickHandler() {
+  if ($inbox.length && $inbox.length && props.center.props.icon !== "close") {
+    window.o.runProcess(
+      showNotifications,
+      {
+        events: $inbox.map((o) => o),
+      },
+      {}
+    );
+  } else {
+    if (props && props.left) {
+      props.left.props.action();
+    }
+  }
+}
 </script>
 
 <div class="h-12 col-start-2 place-self-center">
@@ -11,22 +27,15 @@ export let props;
     <div
       class="flex justify-center flex-shrink-0 w-20 h-12 -mr-4 rounded-l-full cursor-pointer"
       class:bg-white="{props && props.left}"
-      on:click="{props && props.left ? props.left.props.action : null}">
+      on:click="{clickHandler}">
       {#if props && props.left}
         {#if $inbox.length && $inbox.length && props.center.props.icon !== "close"}
-          <div class="relative self-center text-secondary">
+          <div
+            class="relative self-center text-secondary"
+            on:click="{clickHandler}">
             <Icons icon="notificationbubble" />
             <div
-              class="absolute top-0 w-full text-center text-white font-heading"
-              on:click="{() =>
-                window.o.runProcess(
-                  showNotifications,
-                  {
-                    events: $inbox.map((o) => o),
-                  },
-                  {},
-                  {}
-                )}">
+              class="absolute top-0 w-full text-center text-white font-heading">
               {$inbox.length}
             </div>
           </div>

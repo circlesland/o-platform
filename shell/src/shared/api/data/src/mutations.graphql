@@ -260,17 +260,6 @@ mutation redeemClaimedInvitation {
   }
 }
 
-mutation createInvitations($for: [String!]!) {
-  createInvitations(for: $for) {
-    success
-    error
-    createdInviteEoas {
-      name
-      address
-    }
-  }
-}
-
 mutation consumeDepositedChallenge($delegateAuthCode: String!) {
   consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
     success

@@ -22,6 +22,7 @@ let resizeCanvas;
 let ctx;
 let image;
 let uploadFile;
+let fileSelected = false;
 let cropData = {
   detail: {
     pixels: { x: 0, y: 0, width: aspectWidth, height: aspectHeight },
@@ -36,9 +37,8 @@ let files = {
 
 let imageStore = { value: null, isValid: false };
 
-console.log("CONTEXT: ", context);
-
 function handleFilesSelect(e) {
+  console.log("CONTEXT: ", e);
   const { acceptedFiles, fileRejections } = e.detail;
   files.accepted = [...files.accepted, ...acceptedFiles];
   files.rejected = [...files.rejected, ...fileRejections];
@@ -51,6 +51,7 @@ function handleFilesSelect(e) {
     };
   } else {
     addedfile(files.accepted[0]);
+    fileSelected = true;
   }
 }
 
@@ -224,6 +225,8 @@ function submit() {
       </Dropzone>
     {/if}
   </div>
-  <br />
-  <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+  {#if fileSelected}
+    <br />
+    <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+  {/if}
 </div>

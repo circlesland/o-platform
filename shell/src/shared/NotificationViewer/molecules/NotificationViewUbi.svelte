@@ -3,7 +3,9 @@ import { Currency } from "../../../shared/currency";
 import { me } from "../../stores/me";
 
 import { CrcMinting, ProfileEvent } from "../../api/data/types";
+
 export let event: ProfileEvent;
+
 let payload: CrcMinting = <CrcMinting>event.payload;
 </script>
 

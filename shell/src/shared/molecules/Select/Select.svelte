@@ -18,6 +18,7 @@ import { isMobile } from "src/shared/functions/isMobile";
 import { Observable } from "rxjs";
 
 const dispatch = createEventDispatcher();
+
 export let container = undefined;
 export let input = undefined;
 export let Item = ItemComponent;
@@ -637,6 +638,7 @@ async function loadList() {
     optionIdentifier,
     noOptionsMessage,
     hideEmptyState,
+    container,
     isVirtualList,
     selectedValue,
     isMulti,
@@ -725,6 +727,7 @@ async function loadList() {
 
 onMount(() => {
   if (isFocused) input.focus();
+
   if (listOpen) loadList();
 
   if (items && items.length > 0) {

@@ -31,6 +31,7 @@ import { InitEvent, UbiData } from "./initEvent";
 import { InitContext } from "./initContext";
 import { push } from "svelte-spa-router";
 import { ApiClient } from "../../../shared/apiConnection";
+import {Environment} from "../../../shared/environment";
 
 export const initMachine = createMachine<InitContext, InitEvent>(
   {
@@ -567,7 +568,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         }
       },
       signupForUbi: (ctx) => async (callback) => {
-        const hub = new CirclesHub(RpcGateway.get(), "__CIRCLES_HUB_ADDRESS__");
+        const hub = new CirclesHub(RpcGateway.get(), Environment.circlesHubAddress);
         const privateKey = sessionStorage.getItem("circlesKey");
         if (!privateKey) throw new Error(`The private key is not unlocked`);
         const safeProxy = new GnosisSafeProxy(
