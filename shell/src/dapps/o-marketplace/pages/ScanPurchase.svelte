@@ -65,9 +65,9 @@ async function setResult(label, result) {
   if (foundSale) {
     scanner.stop();
     console.log("SALES BEFORE", sales);
-    await sales.completeSale(sale.invoices[0].id);
+    // await sales.completeSale(sale.invoices[0].id);
     console.log("SALES AFTER", sales);
-    push(`#/marketplace/my-sales/${foundSale.id}`);
+    // push(`#/marketplace/my-sales/${foundSale.id}`);
   }
 }
 // ####### Web Cam Scanning #######
