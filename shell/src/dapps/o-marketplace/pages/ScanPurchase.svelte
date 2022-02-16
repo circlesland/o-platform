@@ -70,7 +70,7 @@ function startScanner() {
 onMount(() => {
   scanner = new QrScanner(video, (result) => setResult(camQrResult, result), {
     onDecodeError: (error) => {
-      console.log("CAMQRRESULT", camQrResult);
+      // console.log("CAMQRRESULT", camQrResult); keep this off, it'll drive you crazy!
     },
     highlightScanRegion: true,
     highlightCodeOutline: true,
@@ -78,6 +78,7 @@ onMount(() => {
 
   startScanner();
 
+  // TODO: Maybe we want a 'you don't have a camera message? ... nahh
   // QrScanner.hasCamera().then(
   //   (hasCamera) => (camHasCamera.textContent = hasCamera)
   // );
