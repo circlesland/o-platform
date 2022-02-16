@@ -7,6 +7,7 @@ import { push } from "svelte-spa-router";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { purchases } from "../../../shared/stores/purchases";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -19,7 +20,7 @@ export let routable: Routable;
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>Loading purchases...</div>
+          <div>{$_("dapps.o-marketplace.pages.myPurchases.loadingPurchases")}</div>
         </div>
       </div>
     </section>
@@ -27,7 +28,7 @@ export let routable: Routable;
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>No purchases</div>
+          <div>{$_("dapps.o-marketplace.pages.myPurchases.noPurchases")}</div>
         </div>
       </div>
     </section>
@@ -89,28 +90,29 @@ export let routable: Routable;
                   .paymentTransactionHash &&
                   !purchase.invoices[0].cancelledAt}">
                 {#if purchase.invoices[0].paymentTransactionHash}
-                  <span>paid</span>
+                  <span>{$_("dapps.o-marketplace.pages.myPurchases.paid")}</span>
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {:else if purchase.invoices[0].cancelledAt}
-                  <span>cancelled</span>
+                  <span>{$_("dapps.o-marketplace.pages.myPurchases.cancelled")}</span>
                 {:else}
-                  <span>payment pending</span>
+                  <span>{$_("dapps.o-marketplace.pages.myPurchases.paymentPending")}</span>
                 {/if}
               </div>
               <div
                 class="inline-block text-xs "
                 class:text-inactive="{!purchase.invoices[0].pickupCode}"
                 class:text-success="{purchase.invoices[0].pickupCode}">
-                <span>pick-up code</span>
+                <span>{$_("dapps.o-marketplace.pages.myPurchases.pickupCode")}</span>
                 {#if purchase.invoices[0].pickupCode}
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {/if}
               </div>
               <div
                 class="inline-block text-xs"
+
                 class:text-inactive="{!purchase.invoices[0].sellerSignature}"
                 class:text-success="{purchase.invoices[0].sellerSignature}">
-                <span> picked up </span>
+                <span>{$_("dapps.o-marketplace.pages.myPurchases.pickedUp")}</span>
                 {#if purchase.invoices[0].sellerSignature}
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {:else}

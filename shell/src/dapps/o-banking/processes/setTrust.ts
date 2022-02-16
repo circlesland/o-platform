@@ -36,30 +36,30 @@ export type SetTrustContext = ProcessContext<SetTrustContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
-    title: "Select the person you want to trust",
-    description: "",
-    placeholder: "Select",
-    submitButtonText: "Set trust",
+    title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.title"),
+    description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.description"),
+    placeholder: window.i18n("dapps.o-banking.setTrust.editorContent.recipient.placeholder"),
+    submitButtonText: window.i18n("dapps.o-banking.setTrust.editorContent.recipient.submitButtonText"),
   },
   limit: {
-    title: "Please enter the Amount",
-    description: "",
-    submitButtonText: "Submit",
+    title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.limit.title"),
+    description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.limit.description"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.limit.submitButtonText"),
   },
   message: {
-    title: "Transfer Message",
-    description: "",
-    submitButtonText: "Submit",
+    title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.message.title"),
+    description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.message.description"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.message.submitButtonText"),
   },
   confirm: {
-    title: "Confirm",
-    description: "",
-    submitButtonText: "Confirm",
+    title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.confirm.title"),
+    description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.confirm.description"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.confirm.submitButtonText"),
   },
   success: {
-    title: "Trust successful",
-    description: "",
-    submitButtonText: "Close",
+    title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.success.title"),
+    description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.success.description"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.success.submitButtonText"),
   },
 };
 
@@ -122,7 +122,7 @@ const processDefinition = (processId: string) =>
               context.data.safeAddress.toLowerCase(),
             actions: (context) => {
               context.messages["trustReceiver"] =
-                '"As soon as you trust yourself, you will know how to live." --Johann Wolfgang von Goethe';
+                window.i18n("dapps.o-banking.processes.setTrust.checkTrustLimit.contectMessage");
             },
             target: "#trustReceiver",
           },
@@ -145,7 +145,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Updating trust ..`,
+            message: window.i18n("dapps.o-banking.processes.setTrust.setTrust.message"),
           });
         },
         invoke: {
@@ -162,7 +162,7 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: editorContent.success,
-          html: () => `<p>Trust changed</p>`,
+          html: () => window.i18n("dapps.o-banking.processes.setTrust.showSuccess.html")          ,
           submitButtonText: editorContent.success.submitButtonText,
           hideNav: false,
         },
@@ -177,7 +177,7 @@ const processDefinition = (processId: string) =>
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
-          return "yeah!";
+          return window.i18n("dapps.o-banking.proccesses.setTrust.success.return");
         },
       },
     },

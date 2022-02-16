@@ -42,7 +42,7 @@ const processDefinition = (processId: string) =>
         type: "final",
         id: "success",
         data: (context, event: PlatformEvent) => {
-          return "yeah!";
+          return window.i18n("dapps.o-banking.processes.showTransaction.success.return");
         },
       },
     },

@@ -12,6 +12,8 @@ import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";
 import { banking } from "../../../o-banking.manifest";
 
+import { _ } from "svelte-i18n";
+
 export let event: ProfileEvent;
 
 let values: {
@@ -40,10 +42,10 @@ function getValues(): {
   icon: string;
   actions: JumplistItem[];
 } {
-  let icon = "sendmoney";
-  let title = "";
-  let titleClass = "";
-  let text = "";
+  let icon = `${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.icon")}`;
+  let title = `${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.title")}`;
+  let titleClass = `${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.titleClass")}`;
+  let text = `${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.text")}`;
   let actions: JumplistItem[] = [];
 
   const hubTransfer = <CrcHubTransfer>event.payload;
@@ -57,17 +59,17 @@ function getValues(): {
   if (event.direction == "in") {
     title = `${
       event.contact_address_profile.firstName
-    } sent you ${Currency.instance().displayAmount(
+    } ${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.ifIn")} ${Currency.instance().displayAmount(
       hubTransfer.flow,
       null,
       $me.displayCurrency
     )} ${Currency.currencySymbol[$me.displayCurrency]}`;
   } else {
-    title = ` You sent ${Currency.instance().displayAmount(
+    title = ` ${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.ifOut.youSent")} ${Currency.instance().displayAmount(
       hubTransfer.flow,
       null,
       $me.displayCurrency
-    )} ${Currency.currencySymbol[$me.displayCurrency]} to ${
+    )} ${Currency.currencySymbol[$me.displayCurrency]} ${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.ifOut.to")} ${
       event.contact_address_profile.firstName
     }`;
   }

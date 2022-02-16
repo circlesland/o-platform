@@ -9,6 +9,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {QueryTagsInput, Tag, TagsDocument} from "../../../shared/api/data/types";
 import {ApiClient} from "../../../shared/apiConnection";
+import { _ } from "svelte-i18n";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
@@ -60,7 +61,7 @@ function loadCategoryPage(category: any) {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>Loading offers...</div>
+          <div>{$_("dapps.o-marketplace.pages.categories.loadingOffers")}</div>
         </div>
       </div>
     </section>
@@ -69,7 +70,7 @@ function loadCategoryPage(category: any) {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>An error occurred while loading the recent activities:</b>
+            <b>{$_("dapps.o-marketplace.pages.categories.error")}</b>
           </div>
         </div>
       </div>
@@ -98,7 +99,7 @@ function loadCategoryPage(category: any) {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>No offers</div>
+          <div>{$_("dapps.o-marketplace.pages.categories.noOffers")}</div>
         </div>
       </div>
     </section>

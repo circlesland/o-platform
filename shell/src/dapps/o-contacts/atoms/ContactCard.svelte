@@ -8,6 +8,8 @@ import {
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 
+import { _ } from "svelte-i18n";
+
 export let contact: ContactPoint;
 export let hideUntrusted: boolean = false;
 
@@ -43,14 +45,14 @@ onMount(() => {
   }
 
   if (trustIn > 0 && trustOut > 0) {
-    message += "mutual trust";
+    message += `${$_("dapps.o-contacts.atoms.contactCard.mutualTrust")}`;
   } else if (!trustIn && trustOut > 0) {
-    message += "trusted by you";
+    message += `${$_("dapps.o-contacts.atoms.contactCard.trustedByYou")}`;
   } else if (trustIn > 0 && !trustOut) {
-    message += "is trusting you";
+    message += `${$_("dapps.o-contacts.atoms.contactCard.isTrustingYou")}`;
   } else {
     untrusted = hideUntrusted;
-    message += "not trusted";
+    message += `${$_("dapps.o-contacts.atoms.contactCard.notTrusted")}`;
   }
 });
 

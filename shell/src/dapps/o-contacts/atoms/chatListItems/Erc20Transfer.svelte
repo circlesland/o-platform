@@ -7,6 +7,8 @@ import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";
 import { banking } from "../../../o-banking.manifest";
 
+import { _ } from "svelte-i18n";
+
 export let event: ProfileEvent;
 
 let values: {
@@ -35,10 +37,10 @@ function getValues(): {
   icon: string;
   actions: JumplistItem[];
 } {
-  let icon = "sendmoney";
-  let title = "";
-  let titleClass = "";
-  let text = "";
+  let icon = `${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.icon")}`;
+  let title = `${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.title")}`;
+  let titleClass = `${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.titleClass")}`;
+  let text = `${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.text")}`;
   let actions: JumplistItem[] = [];
 
   const transfer = <Erc20Transfer>event.payload;
@@ -46,19 +48,19 @@ function getValues(): {
   if (event.direction == "in") {
     title = `${
       event.contact_address_profile.firstName
-    } sent you ${displayCirclesAmount(
+    } ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifIn.title.sentYou")} ${displayCirclesAmount(
       transfer.value,
       null,
       true,
       false
-    )} tokens`;
+    )} ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifIn.title.tokens")}`;
   } else {
-    title = ` You sent ${displayCirclesAmount(
+    title = ` ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifOut.youSent")} ${displayCirclesAmount(
       transfer.value,
       null,
       true,
       false
-    )} tokens to ${event.contact_address_profile.firstName}`;
+    )} ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifOut.tokensTo")} ${event.contact_address_profile.firstName}`;
   }
 
   return {

@@ -27,6 +27,8 @@ import { getSessionInfo } from "../../o-passport/processes/identify/services/get
 import { isMobile } from "../../../shared/functions/isMobile";
 import { UserActions, UserActionItem } from "../../../shared/userActions";
 
+import { _ } from "svelte-i18n";
+
 export let id: string;
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -103,13 +105,13 @@ async function setProfile(id: string) {
     }
 
     if (trustIn > 0 && trustOut > 0) {
-      trustMessage = "mutual trust";
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.mutualTrust")}`;
     } else if (!trustIn && trustOut > 0) {
-      trustMessage = "trusted by you";
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.trustedByYou")}`;
     } else if (trustIn > 0 && !trustOut) {
-      trustMessage = "is trusting you";
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.isTrustingYou")}`;
     } else {
-      trustMessage = "not trusted";
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.notTrusted")}`;
     }
   }
 
@@ -119,13 +121,13 @@ async function setProfile(id: string) {
     {
       key: "verify",
       icon: "check",
-      title: "Verify",
+      title: `${$_("dapps.o-contacts.pages.profile.verify")}`,
       mutation: VerifySafeDocument,
     },
     {
       key: "revoke",
       icon: "trash",
-      title: "revoke Verification",
+      title: `${$_("dapps.o-contacts.pages.profile.revoke")}`,
       mutation: RevokeSafeVerificationDocument,
     },
   ];
@@ -139,7 +141,7 @@ async function setProfile(id: string) {
   const verifyProfile = {
     key: "verify",
     icon: "check",
-    title: "Verify",
+    title: `${$_("dapps.o-contacts.pages.profile.verify")}`,
     action: async () => {
       const apiClient = await window.o.apiClient.client.subscribeToResult();
       await apiClient.mutate({
@@ -148,7 +150,7 @@ async function setProfile(id: string) {
           safeAddress: id,
         },
       });
-      showToast("success", "Account verified");
+      showToast("success", `${$_("dapps.o-contacts.pages.profile.accountVeryfied")}`);
 
       isLoading = true;
       setProfile(id).then(() => (isLoading = false));
@@ -159,7 +161,7 @@ async function setProfile(id: string) {
     key: "evoke",
     icon: "trash",
     colorClass: "",
-    title: "Verified. click to Revoke",
+    title: `${$_("dapps.o-contacts.pages.profile.verifiedClickToRevoke")}`,
     action: async () => {
       const apiClient = await window.o.apiClient.client.subscribeToResult();
       await apiClient.mutate({
@@ -169,7 +171,7 @@ async function setProfile(id: string) {
         },
       });
 
-      showToast("error", "Account verification revoked");
+      showToast("error", `${$_("dapps.o-contacts.pages.profile.accountVerificationRevoked")}`);
 
       isLoading = true;
       setProfile(id).then(() => (isLoading = false));
@@ -181,7 +183,7 @@ async function setProfile(id: string) {
     key: "banned",
     icon: "trash",
     colorClass: "text-alert-dark",
-    title: "REVOKED",
+    title: `${$_("dapps.o-contacts.pages.profile.revokedUppercase")}`,
     action: () => {},
   };
 
@@ -211,7 +213,7 @@ async function setProfile(id: string) {
   <div class="p-5 pb-0">
     <header class="grid overflow-hidden bg-white h-72 ">
       <div class="w-full text-center">
-        <h1 class="text-3xl uppercase font-heading">PROFILE</h1>
+        <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-contacts.pages.profile.profile")}</h1>
       </div>
       <div
         class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
@@ -246,7 +248,7 @@ async function setProfile(id: string) {
             {#if trustMessage}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
-                  <div class="text-left text-2xs text-dark-lightest">Trust</div>
+                  <div class="text-left text-2xs text-dark-lightest">{$_("dapps.o-contacts.pages.profile.trust")}</div>
                   <div class="flex flex-wrap content-start">
                     {trustMessage}
                   </div>
@@ -256,7 +258,7 @@ async function setProfile(id: string) {
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="text-left text-2xs text-dark-lightest">
-                  Mutual Friends
+                  {$_("dapps.o-contacts.pages.profile.mutualFriends")}
                 </div>
                 <div class="flex flex-row flex-wrap mt-2 ">
                   {#if commonTrusts.length}
@@ -271,7 +273,7 @@ async function setProfile(id: string) {
                       {/if}
                     {/each}
                   {:else}
-                    No mutual friends
+                    {$_("dapps.o-contacts.pages.profile.noMutualFriends")}
                   {/if}
                 </div>
               </div>
@@ -280,7 +282,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    Member at
+                    {$_("dapps.o-contacts.pages.profile.memberAt")}
                   </div>
                   <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.memberships as membership}
@@ -301,7 +303,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    Verified by
+                    {$_("dapps.o-contacts.pages.profile.verifiedBy")}
                   </div>
                   <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.verifications as verification}
@@ -322,7 +324,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    Passion
+                    {$_("dapps.o-contacts.pages.profile.passion")}
                   </div>
 
                   <div class="flex items-center w-full text-lg">
@@ -337,7 +339,7 @@ async function setProfile(id: string) {
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
-                  Address
+                  {$_("dapps.o-contacts.pages.profile.address")}
                 </div>
                 <div class="flex items-center w-full text-2xs">
                   {contact.contactAddress}

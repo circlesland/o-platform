@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { _ } from "svelte-i18n";
+
+
   export const citizens = [
     {
       name: "Martin Köppelmann",
@@ -202,14 +205,14 @@
   ];
 </script>
 
-<div class="p-4 m-4 uppercase ">Most recent citizens</div>
+<div class="p-4 m-4 uppercase ">{$_("dapps.o-homepage.components.citizenCards.mostRecentCitizen")}</div>
 <div class="pt-6 pb-12 m-auto mt-6 text-center">
   <a
     href="/#/citizens"
     aria-label="
     "
     class="text-xl font-semibold transition-colors duration-200 text-primary hover:">
-    Show more citizens
+    {$_("dapps.o-homepage.components.citizenCards.showMoreCitizen")}
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">
       <path
         d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"></path>
@@ -228,13 +231,12 @@
       <div class="flex flex-col py-2 ml-4">
         <p class="text-lg font-semibold ">{c.name}</p>
         <p class="text-sm text-left text-primary">
-          citizen {c.position} from {c.country}
+          {$_("dapps.o-homepage.components.citizenCards.citizen")} {c.position} {$_("dapps.o-homepage.components.citizenCards.from")} {c.country}
         </p>
       </div>
     </div>
     <div class="pt-2 text-sm text-gray-500 ">
-      my passion is ... {c.dream} ... and I will accept every month 240 Circles
-      pursuing it
+      {$_("dapps.o-homepage.components.citizenCards.passion1")} {c.dream} {$_("dapps.o-homepage.components.citizenCards.passion2")}
     </div>
   </div>
 {/each}
@@ -244,7 +246,7 @@
     aria-label="
     "
     class="flex items-center w-full py-12 mx-auto mt-6 text-xl font-semibold text-center transition-colors duration-200 text-primary hover:">
-    Show more citizens
+    {$_("dapps.o-homepage.components.citizenCards.showMoreCitizen")}
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">
       <path
         d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"></path>

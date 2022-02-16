@@ -1,3 +1,7 @@
+<script>
+  import { _ } from "svelte-i18n";
+</script>
+
 <footer class="text-white bg-secondary-dark">
   <div
     class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8"
@@ -6,53 +10,53 @@
       <div>
         <img src="/circles.png" alt="CirclesLand" class="w-16" />
         <div class="mt-6 lg:max-w-sm">
-          <p class="text-sm text-white">Be free to live the life you deserve</p>
+          <p class="text-sm text-white">{$_("dapps.o-homepage.components.footer.beFree")}</p>
         </div>
       </div>
       <!-- <div>
         <p class="font-semibold tracking-wide text-gray-300 uppercase">
-          Navigation
+          {$_("dapps.o-homepage.components.footer.navigation")}
         </p>
         <ul class="mt-2 space-y-2">
           <li>
             <a
               href="/"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Home</a
+              >{$_("dapps.o-homepage.components.footer.home")}</a
             >
           </li>
           <li>
             <a
               href="/#/citizens"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Citizens</a
+              >{$_("dapps.o-homepage.components.footer.citizens")}</a
             >
           </li>
           <li>
             <a
               href="/#/countries"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Countries</a
+              >{$_("dapps.o-homepage.components.footer.countries")}</a
             >
           </li>
           <li>
             <a
               href="/#/milestones"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Milestones</a
+              >{$_("dapps.o-homepage.components.footer.milestones")}</a
             >
           </li>
         </ul>
       </div> -->
       <div>
-        <p class="font-semibold tracking-wide text-gray-300 uppercase">Links</p>
+        <p class="font-semibold tracking-wide text-gray-300 uppercase">{$_("dapps.o-homepage.components.footer.links")}</p>
         <ul class="mt-2 space-y-2">
           <li>
             <a
               href="https://blog.circles.land/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Blog</a
+              >{$_("dapps.o-homepage.components.footer.blog")}</a
             >
           </li>
           <li>
@@ -60,7 +64,7 @@
               href="https://aboutcircles.com/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Forum</a
+              >{$_("dapps.o-homepage.components.footer.forum")}</a
             >
           </li>
           <li>
@@ -68,7 +72,7 @@
               href="https://discord.com/invite/CS6xq7jECR"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Chat</a
+              >{$_("dapps.o-homepage.components.footer.chat")}</a
             >
           </li>
           <li>
@@ -76,14 +80,14 @@
               href="https://blog.circles.land/whitepaper/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Whitepaper</a
+              >{$_("dapps.o-homepage.components.footer.whitepaper")}</a
             >
           </li>
         </ul>
       </div>
       <div>
         <p class="font-semibold tracking-wide text-gray-300 uppercase">
-          Social
+          {$_("dapps.o-homepage.components.footer.social")}
         </p>
         <div class="flex items-center mt-1 space-x-3">
           <a
@@ -114,7 +118,7 @@
               href="https://blog.circles.land/terms-of-service/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Terms Of Service</a
+              >{$_("dapps.o-homepage.components.footer.termsOfService")}</a
             >
           </li>
           <li>
@@ -122,7 +126,7 @@
               href="https://blog.circles.land/privacy/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Data Privacy</a
+              >{$_("dapps.o-homepage.components.footer.dataPrivacy")}</a
             >
           </li>
           <li>
@@ -130,7 +134,7 @@
               href="https://blog.circles.land//legal-notice/"
               target="_blank"
               class="text-white transition-colors duration-300 hover:text-deep-purple-accent-400"
-              >Impressum - Legal</a
+              >{$_("dapps.o-homepage.components.footer.impressum")}</a
             >
           </li>
         </ul>

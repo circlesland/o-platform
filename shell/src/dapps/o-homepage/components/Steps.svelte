@@ -1,3 +1,7 @@
+<script>
+  import { _ } from "svelte-i18n";
+</script>
+
 <div class="bg-white">
   <div
     class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-48"
@@ -7,7 +11,7 @@
         <p
           class="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider uppercase rounded-full text-primary"
         >
-          HOW DOES IT WORK?
+          {$_("dapps.o-homepage.components.steps.howDoesItWork")}
         </p>
       </div>
       <h2
@@ -37,12 +41,10 @@
             />
           </svg>
         </span>
-        Become a citizen of CirclesLand
+          {$_("dapps.o-homepage.components.steps.becomeCitizen")}
       </h2>
       <p class="text-base text-gray-600 md:text-lg">
-        Introducing the next generation of your 100% opensource, digital and
-        borderless country-as-a-service platform, unlocking your new Circles
-        universal basic income to secure the most basic needs for all of us.
+        {$_("dapps.o-homepage.components.steps.introducing")}
       </p>
     </div>
     <div class="grid grid-cols-1 gap-8 row-gap-8 lg:grid-cols-3">
@@ -53,11 +55,10 @@
           <img src="/illustrations/passport.svg" alt="Passport" />
         </div>
         <h6 class="mt-8 mb-2 text-lg font-semibold leading-5 uppercase ">
-          1. Create Passport
+          {$_("dapps.o-homepage.components.steps.createPassport")}
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          While signing up you create a self-sovereign und portable identity
-          passport.
+          {$_("dapps.o-homepage.components.steps.createPassportDescription")}
         </p>
       </div>
       <div class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center ">
@@ -67,11 +68,10 @@
           <img src="/illustrations/invite.svg" alt="Invite" />
         </div>
         <h6 class="mb-2 text-lg font-semibold leading-5 uppercase ">
-          2. Get invited
+          {$_("dapps.o-homepage.components.steps.getInvited")}
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          To receive your very first personalized Circles you need to get
-          invited by another citizen.
+          {$_("dapps.o-homepage.components.steps.getInvitedDescription")}
         </p>
       </div>
       <div class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center ">
@@ -79,11 +79,10 @@
           <img src="/illustrations/ubi.svg" alt="Invite" />
         </div>
         <h6 class="mb-2 text-lg font-semibold leading-5 uppercase ">
-          3. Unlock UBI
+          {$_("dapps.o-homepage.components.steps.unlockUbi")}
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          Once you got successfully invited, you receive every month universal
-          basic income in Circles.
+          {$_("dapps.o-homepage.components.steps.unlockUbiDescription")}
         </p>
       </div>
     </div>

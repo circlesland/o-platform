@@ -20,6 +20,8 @@ import UserImage from "src/shared/atoms/UserImage.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { isMobile } from "../../../shared/functions/isMobile";
 
+import { _ } from "svelte-i18n";
+
 export let id: string;
 
 let error: string | undefined = undefined;
@@ -179,11 +181,11 @@ function goToProfile(e, path?: string) {
 
         <div class="pb-2 text-xs">
           {#if contactProfile.youTrust > 0 && contactProfile.trustsYou > 0}
-            Mutual trust
+            {$_("dapps.o-contacts.pages.chatDetail.mutualTrust")}
           {:else if contactProfile.youTrust > 0 && !contactProfile.trustsYou}
-            You trust {contactProfile.contactAddressProfile.firstName}
+          {$_("dapps.o-contacts.pages.chatDetail.youTrust")} {contactProfile.contactAddressProfile.firstName}
           {:else if contactProfile.trustsYou > 0}
-            {contactProfile.contactAddressProfile.firstName} trusts you
+            {contactProfile.contactAddressProfile.firstName} {$_("dapps.o-contacts.pages.chatDetail.trustsYou")}
           {/if}
         </div>
       {/if}
@@ -212,7 +214,7 @@ function goToProfile(e, path?: string) {
           autocomplete="off"
           autocorrect="off"
           spellcheck="false"
-          placeholder="Your Message"
+          placeholder="{$_("dapps.o-contacts.pages.chatDetail.placeholder")}"
           class="order-1 w-full input input-bordered" />
         <!-- <textarea
         on:keydown="{onkeydown}"

@@ -5,6 +5,23 @@ import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processMa
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {ApiConnection} from "./shared/apiConnection";
 
+import {en} from "./i18n/lang/en";
+import {_, dictionary, format, init, locale} from "svelte-i18n";
+import {get} from "svelte/store";
+
+const i18n = (id: string, options?: any) => {
+  dictionary.set(en);
+  locale.set("en");
+
+  init({
+    fallbackLocale: "en",
+    initialLocale: "en",
+  });
+
+  return get(format)(id, options);
+};
+(<any>window).i18n = i18n;
+
 export interface IShell {
   depositedEvent?: PlatformEvent; // TODO: Hack. This field should be checked by a freshly initializing dapp. The value must be cleared whenever a dapp was loaded (success or error).
   contactUsername?: string;

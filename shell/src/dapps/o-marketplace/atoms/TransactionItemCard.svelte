@@ -7,6 +7,8 @@ import ItemCard from "src/shared/atoms/ItemCard.svelte";
 
 import { truncateString } from "../../../shared/functions/truncateString";
 
+import  { _ } from "svelte-i18n";
+
 export let offer: Offer;
 
 let params = {
@@ -41,7 +43,7 @@ function loadDetailPage() {
           <div class="px-2">
             <Icons icon="home" />
           </div>
-          <span class="block mt-1 text-3xs">sending</span>
+          <span class="block mt-1 text-3xs">{$_("dapps.o-marketplace.atoms.transactionItemCard.sending")}</span>
         </div>
       </div>
     </div>

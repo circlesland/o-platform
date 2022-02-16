@@ -9,6 +9,8 @@ import { clickOutside } from "../../../shared/functions/clickOutside";
 import { createEventDispatcher } from "svelte";
 import { displayableName } from "../../../shared/functions/stringHelper";
 
+import { _ } from "svelte-i18n";
+
 let myProfile: Profile;
 let organisations: [] = [];
 let profile: Profile;
@@ -65,7 +67,7 @@ function switchProfile(profile: Profile | Organisation) {
   {#if myProfile && organisations}
     <div class="absolute top-0 right-0 z-10 flex flex-col">
       <div class="relative self-end text-primary right-14 top-5">
-        Switch Profile
+        {$_("dapps.o-coop.molecules.switchProfile")}
       </div>
       {#each organisations as organisation}
         {#if organisation.value.circlesAddress != $me.circlesAddress}

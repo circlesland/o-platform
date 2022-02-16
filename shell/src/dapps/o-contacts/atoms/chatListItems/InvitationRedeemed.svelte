@@ -1,4 +1,5 @@
 <script lang="ts">
+
 import DetailActionBar from "../../../../shared/molecules/DetailActionBar.svelte";
 import Icons from "../../../../shared/molecules/Icons.svelte";
 import {
@@ -31,10 +32,10 @@ function getValues(): {
   icon: string;
   actions: JumplistItem[];
 } {
-  let icon = "trust";
-  let title = "";
-  let titleClass = "";
-  let text = "";
+ let icon = `${$_("dapps.o-contacts.atoms.chatListItems.invitationRedeemed.getValues.icon")}`;
+    let title = `${$_("dapps.o-contacts.atoms.chatListItems.invitationRedeemed.getValues.title")}`;
+    let titleClass = `${$_("dapps.o-contacts.atoms.chatListItems.invitationRedeemed.getValues.titleClass")}`;
+    let text = `${$_("dapps.o-contacts.atoms.chatListItems.invitationRedeemed.getValues.text")}`;
   let actions: JumplistItem[] = [];
 
   const invitationRedeemed = <InvitationRedeemed>event.payload;
@@ -48,6 +49,7 @@ function getValues(): {
     actions,
   };
 }
+
 </script>
 
 <div

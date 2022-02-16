@@ -1,20 +1,22 @@
 <script>
+  import { _ } from "svelte-i18n";
+import { component_subscribe } from "svelte/internal";
+import { countries } from "../../../shared/countries";
 </script>
 
 <div class="py-16 mx-auto lg:max-w-xl sm:text-center">
   <p
     class="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider uppercase rounded-full text-primary bg-teal-accent-400"
   >
-    Leaderboard ranking
+    {$_("dapps.o-homepage.components.countries.leaderBoardRanking")}
   </p>
   <h2
     class="max-w-lg mb-6 text-3xl font-bold tracking-tight text-center   sm:text-4xl sm:leading-none"
   >
-    All over the world
+    {$_("dapps.o-homepage.components.countries.allOverTheWorld")}
   </h2>
   <p class="text-base text-gray-700 md:text-lg">
-    See whos countries are most progressively advancing the universal basic
-    income economy in their home countries.
+    {$_("dapps.o-homepage.components.countries.seeAdvancedCountries")}
   </p>
 </div>
 
@@ -26,10 +28,10 @@
       <thead class="bg-gray-50">
         <tr class="text-left text-gray-600">
           <th class="px-6 py-4 text-sm font-semibold text-left uppercase">
-            Country
+            {$_("dapps.o-homepage.components.countries.country")}
           </th>
           <th class="px-6 py-4 text-sm font-semibold text-right uppercase">
-            Citizens
+            {$_("dapps.o-homepage.components.countries.citizens")}
           </th>
         </tr>
       </thead>
@@ -84,7 +86,7 @@
     aria-label=""
     class="text-xl font-semibold transition-colors duration-200 text-primary hover:"
   >
-    Show all countries
+      {$_("dapps.o-homepage.components.countries.showAllCountries")}
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">
       <path
         d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"

@@ -46,12 +46,12 @@ async function sendFundsFromEoa(to: string, amount: BN) {
   });
   unsub();
 
-  if (!$me) throw new Error(`You're not logged on`);
-  if (!$me.circlesSafeOwner) throw new Error(`You have no eoa`);
+  if (!$me) throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.notLoggedOn"));
+  if (!$me.circlesSafeOwner) throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.noEoa"));
 
   const privateKey = sessionStorage.getItem("circlesKey");
   if (!privateKey) {
-    throw new Error(`The private key is not unlocked`);
+    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.notUnlockedKey"));
   }
 
   const web3 = RpcGateway.get();
@@ -64,9 +64,9 @@ async function sendFundsFromEoa(to: string, amount: BN) {
   const availableForTransfer = eoaBalance.sub(totalFee);
   if (availableForTransfer.lt(amount)) {
     throw new Error(
-      `You have not enough funds on '${
+      `${window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.notEnoughPart1")}'${
         $me.circlesSafeOwner
-      }'. Max. transferable amount is ${web3.utils.fromWei(
+      }'${window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.notEnoughPart2")}${web3.utils.fromWei(
         availableForTransfer,
         "ether"
       )}`
@@ -84,7 +84,7 @@ async function sendFundsFromEoa(to: string, amount: BN) {
   });
 
   if (!signedTx?.rawTransaction) {
-    throw new Error(`Couldn't send the invitation transaction`);
+    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.couldNotSendInvitation"));
   }
 
   const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
@@ -101,12 +101,12 @@ async function sendFundsFromSafe(to: string, amount: BN) {
   });
   unsub();
 
-  if (!$me) throw new Error(`You're not logged on`);
-  if (!$me.circlesSafeOwner) throw new Error(`You have no eoa`);
+  if (!$me) throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.notLoggedOn"));
+  if (!$me.circlesSafeOwner) throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.noEoa"));
 
   const privateKey = sessionStorage.getItem("circlesKey");
   if (!privateKey) {
-    throw new Error(`The private key is not unlocked`);
+    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.notUnlockedKey"));
   }
 
   const web3 = RpcGateway.get();
@@ -119,9 +119,9 @@ async function sendFundsFromSafe(to: string, amount: BN) {
   const availableForTransfer = eoaBalance.sub(totalFee);
   if (availableForTransfer.lt(amount)) {
     throw new Error(
-      `You have not enough funds on '${
+      `${window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.notEnoughPart1")}${
         $me.circlesAddress
-      }'. Max. transferable amount is ${web3.utils.fromWei(
+      }'${window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.notEnoughPart2")}${web3.utils.fromWei(
         availableForTransfer,
         "ether"
       )}`
@@ -148,13 +148,13 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: "What is the name of your organisation?",
-            description: "DESCRIPTION",
-            placeholder: "Name",
-            submitButtonText: "Save",
+            title: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.name.title"),
+            description: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.name.description"),
+            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.name.placeholder"),
+            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.name.submitButtonText"),
           },
         },
-        dataSchema: yup.string().required("Please enter an organisation name."),
+        dataSchema: yup.string().required(window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.name.enterOrganisationName")),
         navigation: {
           next: "#country",
         },
@@ -164,10 +164,10 @@ const processDefinition = (processId: string) =>
         field: "cityGeonameid",
         params: {
           view: {
-            title: "Where is your organisation located?",
-            description: "DESCRIPTION",
-            placeholder: "City",
-            submitButtonText: "Save",
+            title: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.country.title"),
+            description: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.country.description"),
+            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.country.placeholder"),
+            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.country.submitButtonText"),
           },
         },
         navigation: {
@@ -181,17 +181,17 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         params: {
           view: {
-            title: "Describe your organisation in a few sentences?",
-            description: "DESCRIPTION",
-            placeholder: "Description",
-            submitButtonText: "Save",
+            title: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.description.title"),
+            description: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.description.description"),
+            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.description.placeholder"),
+            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.description.submitButtonContext"),
           },
         },
         dataSchema: yup
           .string()
           .nullable()
           .notRequired()
-          .max(150, "The maximum amount of characters allowed is 150."),
+          .max(150, window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.description.maxChars")),
         navigation: {
           next: "#avatarUrl",
           canSkip: () => true,
@@ -206,10 +206,10 @@ const processDefinition = (processId: string) =>
         },
         params: {
           view: {
-            title: "Profile Image",
-            description: "Show the World who you are",
-            placeholder: "Upload Image",
-            submitButtonText: "Upload Image",
+            title: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.avatar,title"),
+            description: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.avatar.description"),
+            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.avatar.placeholder"),
+            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionContext.avatar.submitButtonText"),
           },
         },
         navigation: {
@@ -238,7 +238,7 @@ const processDefinition = (processId: string) =>
           src: async (context) => {
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(`The private key is not unlocked`);
+              throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionsContext.deployOrganisation.notUnlockedKey"));
             }
 
             let $me: Profile = null;
@@ -249,7 +249,7 @@ const processDefinition = (processId: string) =>
 
             if (!$me?.circlesAddress) {
               throw new Error(
-                `You need a fully set-up circles account to create an organisation.`
+                window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.createRegionsContext.deployOrganisation.needFullAccountSetup")
               );
             }
 
@@ -307,7 +307,7 @@ const processDefinition = (processId: string) =>
           src: async (context, event) => {
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(`The private key is not unlocked`);
+              throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createRegions.notUnlockedKey"));
             }
 
             const hub = new CirclesHub(RpcGateway.get(), Environment.circlesHubAddress);

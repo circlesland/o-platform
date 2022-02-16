@@ -14,6 +14,8 @@ import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import { assetsBalances } from "../../../shared/stores/assetsBalances";
 import { BN } from "ethereumjs-util";
 
+import { _ } from "svelte-i18n";
+
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 let loading: boolean = true;
@@ -147,7 +149,7 @@ loading = false;
     <section class="flex items-center justify-center mb-2 ">
       <Card>
         <div class="flex flex-col items-start">
-          <div>Loading Tokens...</div>
+          <div>{$_("dapps.o-banking.pages.assets.loadingTokens")}</div>
         </div>
       </Card>
     </section>
