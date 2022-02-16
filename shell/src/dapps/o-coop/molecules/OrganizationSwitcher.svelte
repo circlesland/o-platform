@@ -7,6 +7,7 @@ import { Profile, Organisation } from "../../../shared/api/data/types";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { clickOutside } from "../../../shared/functions/clickOutside";
 import { createEventDispatcher } from "svelte";
+import { displayableName } from "../../../shared/functions/stringHelper";
 
 let myProfile: Profile;
 let organisations: [] = [];
@@ -28,9 +29,11 @@ onMount(async () => {
       //.filter((o) => o.isAdmin)
       .map((o) => o.organisation);
     organisations = <any>[myProfile, ...myMemberships].map((o) => {
-      const displayName = (<any>o).firstName
-        ? (<any>o).firstName + " " + (<any>o).lastName
-        : (<any>o).name;
+      const displayName = displayableName(
+        (<any>o).firstName ? (<any>o).firstName : (<any>o).name,
+        (<any>o).lastName ? (<any>o).lastName : ""
+      );
+
       return {
         value: o,
         label: displayName,
