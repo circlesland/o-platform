@@ -12,7 +12,7 @@ import {
   MyInvitationsQueryVariables,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
-import {Environment} from "../../../shared/environment";
+import { Environment } from "../../../shared/environment";
 
 export let capabilities: Capability[] | undefined = [];
 
@@ -125,7 +125,7 @@ function sortAlphabetically(a, b) {
                           : `${invitation.code}`}
                         {#if invitation.code && !invitation.claimedBy}
                           <CopyToClipboard
-                            text="https://dev.circles.land/#/homepage/invite/{invitation.code}"
+                            text="{Environment.externalUrl}/#/homepage/invite/{invitation.code}"
                             let:copy>
                             <svg
                               on:click="{copy}"

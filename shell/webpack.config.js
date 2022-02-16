@@ -14,6 +14,7 @@ const VERBOSE = process.argv.includes("--verbose");
 let __CIRCLES_GARDEN_API__ = "https://api.circles.garden/api/users/";
 let __AUTH_ENDPOINT__ = "https://auth.circles.name";
 let __API_ENDPOINT__ = "https://api.circles.land";
+let __EXTERNAL_URL__ = "https://circles.land";
 let __FILES_ENDPOINT__ = "https://files.circles.land";
 let __CIRCLES_SUBGRAPH_ENDPOINT__ =
   "https://api.thegraph.com/subgraphs/name/circlesubi/circles";
@@ -44,24 +45,28 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __API_ENDPOINT__ = "https://api.circles.land";
   __FILES_ENDPOINT__ = "https://files.circles.land";
   __APP_ID__ = "circles.land";
+  __EXTERNAL_URL__ = "https://circles.land";
   __FILES_APP_ID__ = "files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "dev") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "https://dev.api.circles.land";
   __FILES_ENDPOINT__ = "https://dev.files.circles.land";
   __APP_ID__ = "dev.circles.land";
+  __EXTERNAL_URL__ = "https://dev.circles.land";
   __FILES_APP_ID__ = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "local") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "https://local.api.circles.land";
   __FILES_ENDPOINT__ = "https://dev.files.circles.land";
   __APP_ID__ = "local.circles.land";
+  __EXTERNAL_URL__ = "https://localhost:5000";
   __FILES_APP_ID__ = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "ultralocal") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "http://localhost:8989";
   __FILES_ENDPOINT__ = "https://dev.files.circles.land";
   __APP_ID__ = "ultralocal.circles.land";
+  __EXTERNAL_URL__ = "https://localhost:5000";
   __FILES_APP_ID__ = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "docker") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
@@ -80,9 +85,10 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
 }
 
 console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
-console.log(`__API_ENDPOINT__: ${__API_ENDPOINT__}`);
+console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
 console.log(`__FILES_ENDPOINT__: ${__FILES_ENDPOINT__}`);
 console.log(`__APP_ID__: ${__APP_ID__}`);
+console.log(`__EXTERNAL_URL__: ${__EXTERNAL_URL__}`);
 console.log(`__FILES_APP_ID__: ${__FILES_APP_ID__}`);
 console.log(`__CIRCLES_GARDEN_API__: ${__CIRCLES_GARDEN_API__}`);
 console.log(`__SAFE_SCHEMA_VERSION__: ${__SAFE_SCHEMA_VERSION__}`);
@@ -294,6 +300,15 @@ module.exports = {
         options: {
           search: "__FILES_ENDPOINT__",
           replace: __FILES_ENDPOINT__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__EXTERNAL_URL__",
+          replace: __EXTERNAL_URL__,
           flags: "g",
         },
       },
