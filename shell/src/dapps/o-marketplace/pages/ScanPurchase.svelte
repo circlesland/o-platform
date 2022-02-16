@@ -30,10 +30,11 @@ async function loadSale(id) {
     return;
   }
 
-  await sales.completeSale(sale.invoices[0].id);
-  // showToast("success", "Purchase marked as delivered");
-  // push("#/marketplace/my-sales");
-  return sale;
+  sales.completeSale(sale.invoices[0].id).then(function () {
+    push("#/marketplace/my-sales");
+    showToast("success", "Purchase marked as delivered");
+    return sale;
+  });
 }
 
 async function setResult(label, result) {
