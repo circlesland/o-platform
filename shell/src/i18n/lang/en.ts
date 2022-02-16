@@ -455,7 +455,86 @@ export const en = {
             "totalCitizens": "total citizens"
           },
           "countries": {
-            
+            "leaderBoardRanking": "Leaderboard ranking",
+            "allOverTheWorld": "All over the World",
+            "seeAdvancedCountries": "See whos countries are most progressively advancing the universal basic income economy in their home countries.",
+            "country": "Country",
+            "citizens": "Citizens",
+            "showAllCountries": "Show all countries"
+          },
+          "dreams": {
+            "ourCitizens": "our citizens",
+            "followingTheirPassions": "Following their passions",
+            "seePassionsOtherCitizens": "See the passion other Circlesland citizens are pursuing, when they receive their universal basic income in Circles",
+            "isDreaming": "...is dreaming of 'building the universal basic income economy of tomorrow, building the universal basic income economy'"
+          },
+          "footer": {
+            "beFree": "Be free to live th life you deserve",
+            "navigation": "Navigation",
+            "home": "Home",
+            "citizens": "Citizens",
+            "countries": "Countries",
+            "milestones": "Milestones",
+            "links": "Links",
+            "blog": "Blog",
+            "forum": "Forum",
+            "chat": "Chat",
+            "whitepaper": "Whitepaper",
+            "social": "Social",
+            "termsOfService": "Terms Of Service",
+            "dataPrivacy": "Data Privacy",
+            "impressum": "Impressum - Legal"
+          },
+          "introAnimation": {
+            "thisIsCirclesLand": "This is CirclesLand",
+            "circlesLandunlocks": "CirclesLand is here to unlock all our potential",
+            "introducing": "Introducing the next generation of a fully opensource, digital and borderless country-as-a-service platform, starting with Circles a new universal basic income currency to secure our most basic needs.",
+            "learnMore": "Learn more"
+          },
+          "milestones": {
+            "citizen": "citizen",
+            "reachedOn": "reached on ",
+            "citizenToReach": "citizen to reach milestone",
+            "showAllMilestones": "show all milestones"
+          },
+          "mission": {
+            "yourPassionIsTheMotor": "Your passion is the motor into a thriving new economy empowering all",
+            "byStarting": "By starting to follow your passion and accepting Circles as payment for it, you create your own joyful space towards an eventful, manifold and fulfilled life for everyone."
+          },
+          "progress": {
+            "joinNow": "Join Now"
+          },
+          "steps": {
+            "howDoesItWork": "HOW DOES IT WORK?",
+            "becomeCitizen": "Become a citizen of CirclesLand",
+            "intoducing": "Introducing the next generation of your 100% opensource, digital and borderless country-as-a-service platform, unlocking your new Circles universal basic income to secure the most basic needs for all of us.",
+            "createPassport": "1. Create Passport",
+            "createPassportDescription": "While signing up you create a self-sovereign and portable identity passport.",
+            "getInvited": "2. Get invited",
+            "getinvitedDescription": "To receive your very first personalized Circles you need to get invited by another citizen.",
+            "unlockUbi": "3. Unlock UBI",
+            "unlockUbiDescription": "Once you got successfully invited, you receive every month universal basic invome in Circles."
+          },
+          "videoHeader": {
+            "beFree": "BE FREE",
+            "togetherWeBuild": "Together we build the universal basic income economy today",
+            "playVideo": "play video"
+          }
+        },
+        "pages": {
+          "imprint": {
+            "imprint": "imprint"
+          },
+          "learn": {
+            "youGotUs": "You got us!",
+            "excuse1": "We're currently actively working on this.",
+            "excuse2": "All Data will be re-set when we launch.",
+            "login": "Login"
+          },
+          "privacy": {
+            "youGotUs": "You got us!",
+            "excuse1": "We're currently actively working on this.",
+            "excuse2": "All Data will be re-set when we launch.",
           }
         }
       },
