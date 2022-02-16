@@ -6,6 +6,8 @@
   import ChatListCard from "../atoms/ChatListCard.svelte";
   import {contacts} from "../../../shared/stores/contacts";
 
+  import { _ } from "svelte-i18n";
+
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
 
@@ -21,13 +23,13 @@ div.px-4.mx-auto.-mt-3.mb-20(class='md:w-2/3 xl:w-1/2')
     section.flex.items-center.justify-center.mb-2
       div.flex.items-center.w-full.p-4.space-x-2.bg-white.shadow
         div.flex.flex-col.items-start
-          div Loading conversations...
+          div {$_("dapps.o-contacts.pages.chat.loadingConversations")}
     +elseif('error')
       section.flex.items-center.justify-center.mb-2
         div.flex.items-center.w-full.p-4.space-x-2.bg-white.shadow
           div.flex.flex-col.items-start
             div
-              b An error occurred while loading the recent activities:
+              b {$_("dapps.o-contacts.pages.chat.error")}
               | {error}
     +else
       +if('contacts')

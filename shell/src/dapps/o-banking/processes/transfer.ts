@@ -90,7 +90,7 @@ export type TransferContext = ProcessContext<TransferContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelRecipientAddress: window.i18n("dapps.o-banking.processes.transfer.strings.tokensLabel"),
+  labelRecipientAddress: window.i18n("dapps.o-banking.processes.transfer.strings.labelRecipientAddress"),
   tokensLabel: window.i18n( "dapps.o-banking.processes.transfer.strings.tokensLabel"),
   currencyCircles: window.i18n("dapps.o-banking.processes.transfer.strings.currencyCircles"),
   currencyXdai: window.i18n("dapps.o-banking.processes.transfer.strings.currencyXdai"),
@@ -102,35 +102,35 @@ const strings = {
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
     title: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.title"),
-    description: "",
+    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.description"),
     placeholder: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.placeholder"),
     submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.submitButtonText"),
   },
   recipientSafeAddress: {
-    title: "Enter the recipients safe address",
-    description: "Here you can enter the recipients safe address directly.",
-    placeholder: "Safe Address",
-    submitButtonText: "Next",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.title"),
+    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.description"),
+    placeholder: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.placeholder"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.submitButtonText"),
   },
   currency: {
-    title: "Please enter the Amount in Euro",
-    description: "",
-    submitButtonText: "Submit",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.title"),
+    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.description"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.submitButtonText"),
   },
   message: {
-    title: "Transfer Message",
-    description: "",
-    submitButtonText: "Submit",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.title"),
+    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.description"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.submitButtonText"),
   },
   confirm: {
-    title: "You are about to transfer",
-    description: "",
-    submitButtonText: "Send Money",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.title"),
+    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.description"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.submitButtonText"),
   },
   success: {
-    title: "Transfer successful",
-    description: "",
-    submitButtonText: "Close",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
+    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.description"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
   },
 };
 
@@ -197,7 +197,7 @@ const processDefinition = (processId: string) =>
         params: {
           view: editorContent.recipient,
           placeholder: editorContent.recipient.placeholder,
-          submitButtonText: "Check send limit",
+          submitButtonText: window.i18n("dapps.o-banking.processes.transfer.recipientAdress.submitButtonText"),
         },
         navigation: {
           next: "#tokens",
@@ -224,11 +224,11 @@ const processDefinition = (processId: string) =>
         dataSchema: yup.object().shape({
           amount: yup
             .number()
-            .min(0.1, "Please enter at least 0.1")
-            .typeError("Please enter a valid Number.")
-            .required("Please enter a valid amount.")
-            .positive("Please enter a valid amount."),
-          currency: yup.string().required("Please select a valid currency."),
+            .min(0.1, window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.min"))
+            .typeError(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.typeError"))
+            .required(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.required"))
+            .positive(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.positiv")),
+          currency: yup.string().required(window.i18n("dapps.o-banking.processes.transfer.tokens.currency")),
         }),
         navigation: {
           next: "#findMaxFlow",
@@ -240,14 +240,14 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Calculating the maximum transfer amount ..`,
+            message: window.i18n("dapps.o-banking.processes.transfer.findMaxFlow.entry.message"),
           });
         },
         invoke: {
           id: "findMaxFlow",
           src: async (context) => {
             if (!context.data.recipientAddress) {
-              throw new Error(`No recipient address on context`);
+              throw new Error(window.i18n("dapps.o-banking.processes.transfer.findMaxFlow.invoke"));
             }
             context.data.maxFlows = {};
             console.log("CONEXT DATA", context.data);
@@ -349,7 +349,7 @@ const processDefinition = (processId: string) =>
               ).toFixed(2);
               context.messages[
                 "tokens"
-              ] = `The chosen amount exceeds the maximum transferable amount of (${formattedMax}).`;
+              ] = window.i18n("dapps.o-banking.processes.transfer.checkAmount.contextMessages", { values: { formattedMax: formattedMax}});
             },
             target: "#tokens",
           },

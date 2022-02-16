@@ -13,6 +13,8 @@ import {
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 
+import { _ } from "svelte-i18n";
+
 export let capabilities: Capability[] | undefined = [];
 
 let myInvitations: CreatedInvitation[] = [];
@@ -46,26 +48,25 @@ function sortAlphabetically(a, b) {
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <slot name="EditorTitle">
     <div class="w-full text-center">
-      <h1 class="text-3xl uppercase font-heading">Invites</h1>
+      <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-dashboard.pages.invites.invites")}</h1>
     </div>
   </slot>
   <slot name="EditorDescription">
     <div class="w-full text-center">
       <span class="text-dark-lightest">
         {#if canInvite}
-          Here are your Codes to invite other people. <u
-            >Can only be claimed once</u
+          {$_("dapps.o-dashboard.pages.invites.canInvite")}<u
+            >{$_("dapps.o-dashboard.pages.invites.onlyOnce")}</u
           >.
         {:else}
-          In order to be able to invite others, you'll have to get verified.<br /><br />
-          Once this has been done, you will receive 9 Invites.<br /><br />
-          As we are currently still in a testing phase, we are verifying new citizens
-          manually.<br /><br />
-          You can request to be verified in our
+          {$_("dapps.o-dashboard.pages.invites.canNotInvite1")}<br /><br />
+          {$_("dapps.o-dashboard.pages.invites.canNotInvite2")}<br /><br />
+          {$_("dapps.o-dashboard.pages.invites.canNotInvite3")}<br /><br />
+          {$_("dapps.o-dashboard.pages.invites.canNotInvite4")}
           <a
             href="https://discord.gg/UgCVqFnx"
             target="_blank"
-            class="link link-primary">Discord Channel</a
+            class="link link-primary">{$_("dapps.o-dashboard.pages.invites.discord")}</a
           >.
         {/if}
       </span>
@@ -91,7 +92,7 @@ function sortAlphabetically(a, b) {
                   <span
                     class="px-2 ml-12 text-xs bg-white rounded shadow-sm tooltip">
                     {#if !invitation.claimedBy}
-                      Invitation has not yet been claimed
+                      {$_("dapps.o-dashboard.pages.invites.invitationNotClaimed")}
                     {/if}
                   </span>
                   {#if invitation.claimedBy && invitation.claimedBy.firstName}

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { identify } from "../../o-passport/processes/identify/identify2";
+import { _ } from "svelte-i18n";
 
 async function login() {
   window.o.runProcess(identify, { redirectTo: "/home" });
@@ -15,7 +16,7 @@ async function login() {
         aria-label="Our product"
         title="Our product"
         class="font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-        >Chat</a>
+        >{$_("dapps.o-hompage.atoms.menu.chat")}</a>
     </li>
     <li>
       <a
@@ -24,7 +25,7 @@ async function login() {
         aria-label="Our product"
         title="Our product"
         class="font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-        >Forum</a>
+        >{$_("dapps.o-hompage.atoms.menu.forum")}</a>
     </li>
   </ul>
   <a
@@ -42,7 +43,7 @@ async function login() {
         aria-label="About us"
         title="About us"
         class="font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-        >Blog</a>
+        >{$_("dapps.o-hompage.atoms.menu.blog")}</a>
     </li>
     <li>
       <a
@@ -51,11 +52,11 @@ async function login() {
         aria-label="Sign in"
         title="Sign in"
         class="font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-        >Whitepaper</a>
+        >{$_("dapps.o-hompage.atoms.menu.whitepaper")}</a>
     </li>
   </ul>
   <div class="absolute right-0 self-center w-12 justify-self-end">
-    <button class="btn-link" on:click="{login}">Log in</button>
+    <button class="btn-link" on:click="{login}">{$_("dapps.o-hompage.atoms.menu.logIn")}</button>
   </div>
   <!-- Mobile menu -->
 </nav>

@@ -31,13 +31,13 @@ const processDefinition = (processId: string) =>
         onlyWhenDirty: false,
         params: {
           view: {
-            title: "Select the person you want to add",
-            description: "",
-            placeholder: "Select",
-            submitButtonText: "Add",
+            title: window.i18n("dapps.o-coop.processes.addMembers.memberAddress.title"),
+            description: window.i18n("dapps.o-coop.addMembers.memberAddress.description"),
+            placeholder: window.i18n("dapps.o-coop.addMembers.memberAddress.placeholder"),
+            submitButtonText: window.i18n("dapps.o-coop.addMembers.memberAddress.submitButtonText"),
           },
-          placeholder: "Select",
-          submitButtonText: "Add",
+          placeholder: window.i18n("dapps.o-coop.addMembers.memberAddress.placeholder"),
+          submitButtonText: window.i18n("dapps.o-coop.addMembers.memberAddress.submitButtonText"),
         },
         navigation: {
           next: "#addMember",

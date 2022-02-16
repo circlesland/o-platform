@@ -13,6 +13,8 @@ import {
 } from "../../../shared/api/data/types";
 import DateView from "../../../shared/atoms/Date.svelte";
 
+import { _ } from "svelte-i18n";
+
 export let param: Contact;
 
 let displayName: string;
@@ -50,15 +52,15 @@ if (trustMetadata) {
     }
   });
 }
-let trustStatus = "";
+let trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.trustStatus")}`;
 if (trustIn > 0 && trustOut > 0) {
-  trustStatus = "mutual trust";
+  trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.mutualTrust")}`;
 } else if (!trustIn && trustOut > 0) {
-  trustStatus = "trusted by you";
+  trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.trustedByYou")}`;
 } else if (trustIn > 0 && !trustOut) {
-  trustStatus = "is trusting you";
+  trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.isTrustingYou")}`;
 } else {
-  trustStatus = "not trusted";
+  trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.notTrusted")}`;
 }
 
 const unixTimestamp = parseInt(param.lastContactAt);
@@ -82,42 +84,42 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
   switch (mostRecentDisplayEvent.type) {
     case EventType.CrcTrust:
       message = `${displayName} ${
-        mostRecentDisplayEvent.value > 0 ? "trusted" : "untrusted"
-      } you`;
+        mostRecentDisplayEvent.value > 0 ? `${$_("dapps.o-contacts.atoms.chatListCard.trusted")}` : `${$_("dapps.o-contacts.atoms.chatListCard.untrusted")}`
+      } ${$_("dapps.o-contacts.atoms.chatListCard.you")}`;
       break;
     case EventType.CrcHubTransfer:
-      message = `${displayName} sent you ${Currency.instance().displayAmount(
+      message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.sentYou")} ${Currency.instance().displayAmount(
         mostRecentDisplayEvent.value,
         null,
         "EURS"
       )} ${Currency.currencySymbol[$me.displayCurrency]} €`;
       break;
     case EventType.Erc20Transfer:
-      message = `${displayName} sent you ${displayCirclesAmount(
+      message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.sentYou")} ${displayCirclesAmount(
         mostRecentDisplayEvent.value,
         null,
         false
-      )} tokens`;
+      )} ${$_("dapps.o-contacts.atoms.chatListCard.tokens")}`;
       break;
     case EventType.ChatMessage:
-      message = `${displayName} wrote: ${mostRecentDisplayEvent.value}`;
+      message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.wrote")} ${mostRecentDisplayEvent.value}`;
       break;
     case EventType.InvitationRedeemed:
-      message = `${displayName} redeemed your invitation`;
+      message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.redeemedYourInvitation")}`;
       break;
     case EventType.MembershipOffer:
-      message = `${displayName} invited you to ${mostRecentDisplayEvent.value}`;
+      message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.invitedYouTo")} ${mostRecentDisplayEvent.value}`;
       break;
   }
 } else {
   switch (mostRecentDisplayEvent.type) {
     case EventType.CrcTrust:
-      message = `You ${
-        mostRecentDisplayEvent.value > 0 ? "trusted" : "untrusted"
+      message = `${$_("dapps.o-contacts.atoms.chatListCard.You")} ${
+        mostRecentDisplayEvent.value > 0 ? `${$_("dapps.o-contacts.atoms.chatListCard.trusted")}` : `${$_("dapps.o-contacts.atoms.chatListCard.untrusted")}`
       } ${displayName}`;
       break;
     case EventType.CrcHubTransfer:
-      message = `You sent ${displayName} 
+      message = `${$_("dapps.o-contacts.atoms.chatListCard.youSent")} ${displayName} 
       ${Currency.instance().displayAmount(
         mostRecentDisplayEvent.value,
         null,
@@ -125,22 +127,22 @@ if (mostRecentDisplayEvent.direction == ContactDirection.In) {
       )} €`;
       break;
     case EventType.Erc20Transfer:
-      message = `You sent ${displayName}
+      message = `${$_("dapps.o-contacts.atoms.chatListCard.youSent")} ${displayName}
       ${displayCirclesAmount(
         mostRecentDisplayEvent.value,
         null,
         true,
         false
-      )} token`;
+      )} ${$_("dapps.o-contacts.atoms.chatListCard.token")}`;
       break;
     case EventType.ChatMessage:
-      message = `You wrote: ${mostRecentDisplayEvent.value}`;
+      message = `${$_("dapps.o-contacts.atoms.chatListCard.youWrote")} ${mostRecentDisplayEvent.value}`;
       break;
     case EventType.InvitationRedeemed:
-      message = `${displayName} invited you to CirclesLand.`;
+      message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.invitedYouToCirclesLand")}`;
       break;
     case EventType.MembershipOffer:
-      message = `You invited ${displayName} to ${mostRecentDisplayEvent.value}`;
+      message = `${$_("dapps.o-contacts.atoms.chatListCard.youInvited")} ${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.to")} ${mostRecentDisplayEvent.value}`;
       break;
   }
 }

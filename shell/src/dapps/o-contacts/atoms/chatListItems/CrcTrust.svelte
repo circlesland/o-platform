@@ -6,6 +6,8 @@ import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";
 import { contacts } from "../../../o-contacts.manifest";
 
+import { _ } from "svelte-i18n";
+
 export let event: ProfileEvent;
 
 let values: {
@@ -32,23 +34,23 @@ function getValues(): {
   icon: string;
   actions: JumplistItem[];
 } {
-  let icon = "trust";
-  let title = "";
-  let titleClass = "";
+  let icon = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.icon")}`;
+  let title = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.title")}`;
+  let titleClass = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.titleClass")}`;
   let actions: JumplistItem[] = [];
 
   const crcTrust = <CrcTrust>event.payload;
 
   if (event.direction == "in" && crcTrust.limit == 0) {
-    title = `${event.contact_address_profile.firstName} untrusted you`;
+    title = `${event.contact_address_profile.firstName} ${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.untrustedYou")}`;
     titleClass = "text-alert";
   } else if (event.direction == "in" && crcTrust.limit > 0) {
-    title = `${event.contact_address_profile.firstName} trusted you`;
+    title = `${event.contact_address_profile.firstName} ${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.trustedYou")}`;
   } else if (event.direction == "out" && crcTrust.limit == 0) {
-    title = `You untrusted ${event.contact_address_profile.firstName}`;
+    title = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.youUntrusted")} ${event.contact_address_profile.firstName}`;
     titleClass = "text-alert";
   } else if (event.direction == "out" && crcTrust.limit > 0) {
-    title = `You trusted ${event.contact_address_profile.firstName}`;
+    title = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.youTrusted")} ${event.contact_address_profile.firstName}`;
   }
 
   return {

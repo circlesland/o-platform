@@ -12,6 +12,7 @@ import {
   VerificationsCountDocument,
   ProfilesCountDocument,
 } from "../../../shared/api/data/types";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -93,7 +94,7 @@ let profilesPromise = fetchProfilesCount();
               {result.data.profilesCount ? result.data.profilesCount : "0"}
             {/await}
           </div>
-          <div class="text-center font-primary text-dark">Total Citizens</div>
+          <div class="text-center font-primary text-dark">{$_("dapps.o-dashboard.pages.home.totalCitizens")}</div>
         </div>
         <div class="flex flex-col flex-grow">
           <div class="text-6xl text-center font-heading text-primary">
@@ -106,7 +107,7 @@ let profilesPromise = fetchProfilesCount();
             {/await}
           </div>
           <div class="text-center font-primary text-dark">
-            Verified Citizens
+            {$_("dapps.o-dashboard.pages.home.verifiedCitizens")}
           </div>
         </div>
       </div>
@@ -121,7 +122,7 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashpassport" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">passport</div>
+          <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.passport")}</div>
         </div>
       </section>
       <section
@@ -132,7 +133,7 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashfriends" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">contacts</div>
+          <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.contacts")}</div>
         </div>
       </section>
       <section
@@ -143,7 +144,7 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashchat" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">chat</div>
+          <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.chat")}</div>
         </div>
       </section>
       <section
@@ -154,7 +155,7 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashbanking" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">banking</div>
+          <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.banking")}</div>
         </div>
       </section>
       <section
@@ -165,7 +166,7 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashmarket" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">market</div>
+          <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.market")}</div>
         </div>
       </section>
       {#if canVerify}
@@ -177,7 +178,7 @@ let profilesPromise = fetchProfilesCount();
             <div class="pt-2 text-primary">
               <Icons icon="check" size="{12}" />
             </div>
-            <div class="mt-4 text-3xl font-heading text-dark">verified</div>
+            <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.verified")}</div>
           </div>
         </section>
       {/if}
