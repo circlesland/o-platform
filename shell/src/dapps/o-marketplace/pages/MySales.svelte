@@ -1,5 +1,5 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import dayjs from "dayjs";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
@@ -89,16 +89,19 @@ export let routable: Routable;
               class="flex flex-row items-center justify-between px-3 mt-2 text-left">
               <div
                 class="inline-block text-xs "
-                class:text-alert-dark="{!sale.invoices[0].paymentTransactionHash}"
+                class:text-alert-dark="{!sale.invoices[0]
+                  .paymentTransactionHash}"
                 class:text-success="{sale.invoices[0].paymentTransactionHash}">
-                  {#if sale.invoices[0].paymentTransactionHash}
+
+                {#if sale.invoices[0].paymentTransactionHash}
                   <span>{$_("dapps.o-marketplace.pages.mySales.paid")}</span>
-                    <Icons icon="check" size="{4}" customClass="inline" />
+                  <Icons icon="check" size="{4}" customClass="inline" />
                   {:else if sale.invoices[0].cancelledAt}
                     <span>{$_("dapps.o-marketplace.pages.mySales.cancelled")}</span>
                   {:else}
                     <span>{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
                   {/if}
+
               </div>
               <div
                 class="inline-block text-xs "
@@ -111,16 +114,11 @@ export let routable: Routable;
               </div>
               <div
                 class="inline-block text-xs"
-                class:text-inactive="{!sale.invoices[0].sellerSignature &&
-                  !sale.invoices[0].buyerSignature}"
-                class:text-info="{(sale.invoices[0].sellerSignature &&
-                  !sale.invoices[0].buyerSignature) ||
-                  (!sale.invoices[0].sellerSignature &&
-                    sale.invoices[0].buyerSignature)}"
-                class:text-success="{sale.invoices[0].buyerSignature &&
-                  sale.invoices[0].sellerSignature}">
-                <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
-                {#if sale.invoices[0].buyerSignature && sale.invoices[0].sellerSignature}
+
+                class:text-inactive="{!sale.invoices[0].sellerSignature}"
+                class:text-success="{sale.invoices[0].sellerSignature}">
+             <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
+                {#if sale.invoices[0].sellerSignature}
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {:else}
                   <Icons icon="closex" size="{2}" customClass="inline" />

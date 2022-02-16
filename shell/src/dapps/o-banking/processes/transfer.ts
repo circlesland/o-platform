@@ -96,6 +96,7 @@ const strings = {
   currencyXdai: window.i18n("dapps.o-banking.processes.transfer.strings.currencyXdai"),
   summaryLabel: window.i18n("dapps.o-banking.processes.transfer.strings.summaryLabel"),
   messageLabel: window.i18n("dapps.o-banking.processes.transfer.strings.messageLabel")
+
 };
 
 
@@ -319,7 +320,27 @@ const processDefinition = (processId: string) =>
                 )
               );
 
-              return maxFlowInWei.gte(amountInWei);
+              const amount =
+                context.data.tokens.currency == "crc"
+                  ? convertTimeCirclesToCircles(
+                      Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
+                      null
+                    ).toString()
+                  : context.data.tokens.amount;
+
+              const circlesValueInWei = new BN(
+                RpcGateway.get()
+                  .utils.toWei(amount.toString() ?? "0", "ether")
+                  .toString()
+              );
+
+              if (maxFlowInWei.lt(circlesValueInWei)) {
+                console.log(
+                  `The max flow is smaller than the entered value (${circlesValueInWei}). Max flow: ${maxFlowInWei}`
+                );
+              }
+
+              return maxFlowInWei.gte(circlesValueInWei);
             },
             target: "#loadRecipientProfile",
           },
@@ -332,6 +353,7 @@ const processDefinition = (processId: string) =>
                   $me.displayTimeCircles === undefined;
               });
               unsubscribeMe();
+
               const formattedAmount = parseFloat(
                 displayCirclesAmount(
                   context.data.tokens.amount.toString(),
@@ -350,6 +372,7 @@ const processDefinition = (processId: string) =>
               context.messages[
                 "tokens"
               ] = window.i18n("dapps.o-banking.processes.transfer.checkAmount.contextMessages", { values: { formattedMax: formattedMax}});
+
             },
             target: "#tokens",
           },

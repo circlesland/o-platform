@@ -147,6 +147,7 @@ const processDefinition = (processId: string) =>
         id: "success",
         type: "final",
         entry: (context, event: PlatformEvent) => {
+          localStorage.removeItem("circlesInvite");
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }

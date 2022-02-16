@@ -26,7 +26,7 @@ $: {
 </script>
 
 <section
-  class="flex mb-4 mr-1 items-center justify-center  border rounded-sm shadow-sm customItem  {itemClasses}">
+  class="flex mb-4 mr-1 items-center justify-center  border rounded-lg shadow-sm customItem  {itemClasses}">
   <div
     class="flex items-center w-full px-3 pt-1 space-x-2 sm:space-x-6 item-body ">
     <div class="text-center">
@@ -41,9 +41,12 @@ $: {
     </div>
 
     <div class="relative flex-grow text-left truncate">
-      <div class="max-w-full -mt-1 leading-8 cursor-pointer "
-           class:text-dark-lightest={!item.id || item.id < 1}>
-        {`${item.firstName} ${item.lastName ? item.lastName : ""}`}
+      <div
+        class="max-w-full -mt-1 leading-8 cursor-pointer "
+        class:text-dark-lightest="{!item.id || item.id < 1}">
+        {`${item.firstName ? item.firstName : item.value} ${
+          item.lastName ? item.lastName : ""
+        }`}
       </div>
     </div>
   </div>

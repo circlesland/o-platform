@@ -17,4 +17,3 @@ let payload: ChatMessage = <ChatMessage>event.payload;
 
   <NotificationCard event="{event}" />
 </div>
-<!-- <NotificationViewMutualFriends eventData="{eventData}" /> -->

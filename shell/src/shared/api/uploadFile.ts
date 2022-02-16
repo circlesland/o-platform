@@ -4,6 +4,7 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
 import {authenticateSso} from "../../dapps/o-passport/processes/authenticateSso";
+import {Environment} from "../environment";
 
 export type UploadFileContextData = {
   appId:string,
@@ -59,7 +60,7 @@ createMachine<UploadFileContext, any>({
       invoke: {
         id: "upload",
         src: async (context, event) => {
-          const response = await fetch("__FILES_ENDPOINT__/upload", {
+          const response = await fetch(`${Environment.filesEndpointUrl}/upload`, {
             "headers": {
               "content-type": "application/json",
               "authorization": event.data.jwt

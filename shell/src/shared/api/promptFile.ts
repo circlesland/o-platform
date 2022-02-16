@@ -15,6 +15,7 @@ import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import { Generate } from "@o-platform/o-utils/dist/generate";
 import { StateNodeConfig } from "xstate/lib/types";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
+import {Environment} from "../environment";
 
 type UploadPictureSpec<TContext extends ProcessContext<any>> = {
   id?: string;
@@ -193,7 +194,7 @@ export function promptFile<
           data: {
             data: () => {
               return {
-                appId: "__FILES_APP_ID__",
+                appId: Environment.filesAppId ,
                 fileName: file.fileName ?? "",
                 mimeType: file.mimeType,
                 bytes: file.bytes,

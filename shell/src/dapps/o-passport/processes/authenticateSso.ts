@@ -4,6 +4,7 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import {AuthenticateAtDocument, ConsumeDepositedChallengeDocument} from "../../../shared/api/data/types";
 import {ChallengeDocument, VerifyDocument} from "../data/auth/types";
+import {Environment} from "../../../shared/environment";
 
 export type AuthenticateSsoContextData = {
   appId:string,
@@ -58,7 +59,7 @@ createMachine<AuthenticateSsoContext, any>({
           const result = await authClient.mutate({
             mutation: ChallengeDocument,
             variables: {
-              byAppId: "__APP_ID__",
+              byAppId: Environment.appId,
               forAppId: context.data.appId,
               subject: context.data.delegateAuthCode
             }

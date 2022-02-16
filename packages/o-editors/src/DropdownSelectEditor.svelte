@@ -128,7 +128,9 @@ function toggleInputView() {
           placeholder="Search..."
           listAutoWidth="{false}"
           inlineSubmit="{true}"
+          isCreatable="{false}"
           listPlacement="top"
+          scrollContainer="{document.getElementById('modalScrollable')}"
           containerClasses="min-w-full asyncList  max-w-xs"
           on:clear="{handleClear}"
           optionIdentifier="{context.params.keyProperty}"
@@ -144,7 +146,7 @@ function toggleInputView() {
       {/if}
       {#if context.params.allowAlternativeInput}
         <div
-          class="absolute text-xs text-right cursor-pointer text-primary left-16"
+          class="sticky text-xs text-right cursor-pointer text-primary left-16"
           style="z-index: 999999999999; right: 5.5rem; bottom: 0.2rem;"
           on:click="{toggleInputView}">
           {showSafeAddressInput

@@ -12,6 +12,7 @@ import {
   MyInvitationsQueryVariables,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import { Environment } from "../../../shared/environment";
 
 import { _ } from "svelte-i18n";
 
@@ -26,7 +27,7 @@ async function reload() {
   canInvite =
     capabilities &&
     capabilities.find((o) => o.type == CapabilityType.Invite) &&
-    "__ALLOW_VERIFY__" == "true";
+    Environment.allowVerify;
 
   const invitations = await ApiClient.query<
     CreatedInvitation[],
@@ -125,7 +126,7 @@ function sortAlphabetically(a, b) {
                           : `${invitation.code}`}
                         {#if invitation.code && !invitation.claimedBy}
                           <CopyToClipboard
-                            text="https://dev.circles.land/#/homepage/invite/{invitation.code}"
+                            text="{Environment.externalUrl}/#/homepage/invite/{invitation.code}"
                             let:copy>
                             <svg
                               on:click="{copy}"

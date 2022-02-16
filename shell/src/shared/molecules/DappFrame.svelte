@@ -35,6 +35,7 @@ import { getSessionInfo } from "../../dapps/o-passport/processes/identify/servic
 import { Capability, EventsDocument, SessionInfo } from "../api/data/types";
 import { log } from "../logUiEvent";
 import { contacts } from "../stores/contacts";
+import {performOauth} from "../../dapps/o-humanode/processes/performOauth";
 
 export let params: {
   dappId: string;
@@ -343,7 +344,8 @@ function setNav(navArgs: GenerateNavManifestArgs) {
  * This function is called only one time after the first route.
  */
 
-let shellEventSubscription: Promise<PushSubscription>;
+let shellEventSubscription: ZenObservable.Subscription;
+
 function initSession(session: SessionInfo) {
   console.log(`subscribeToApiEvents(). Session: `, session);
   capabilities = session.capabilities;
@@ -653,8 +655,70 @@ function onInputBlurred() {
   return;
 }
 
+
+function armOauthListener() {
+
+    function parseQuery(queryString) {
+        var query = {};
+        var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+        for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].split('=');
+            query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+        }
+        return query;
+    }
+
+    if (location.search) {
+        // Handle OAuth callbacks:
+        // 1. Find out from where the oauth interaction was started (see state)
+        // 2. Send the user back to its origin
+        // 3. Re-open the flow to show a success- or cancelled-message
+        const paramsMap:any = parseQuery(location.search);
+
+        if (paramsMap && paramsMap.state) {
+            const splittedState = paramsMap.state.split("-");
+            if (splittedState.length != 2) {
+                // invalid
+                alert("Couldn't parse the 'state' from the oauth response");
+            } else {
+                // possibly valid
+                // TODO: allow app-id + routeParts in the second part of the 'state'
+                if (splittedState[1] == "dashboard") {
+                    push("/home").then(() => {
+                        setTimeout(() => {
+                            window.o.runProcess(performOauth, {
+                                origin: "dashboard",
+                                oauthRequest: {
+                                    clientId: "1087329459459-3t3i510j124ni65r96g4fjoflnelnj3v.apps.googleusercontent.com",
+                                    redirectUri: "https://localhost:5000/",
+                                    scope: "https://www.googleapis.com/auth/drive",
+                                    accessType: "offline",
+                                    responseType: "code",
+                                    prompt: "consent"
+                                },
+                                oauthResponse: {
+                                    error: paramsMap?.error,
+                                    state: paramsMap?.state
+                                },
+                                successAction: () => {
+
+                                },
+                            });
+                        });
+                    });
+                } else {
+                    alert("Couldn't parse the 'state' from the oauth response");
+                    // invalid
+                }
+            }
+        }
+    }
+}
+
 onMount(async () => {
   log("onMount()");
+
+      armOauthListener();
 
   await window.o.events.subscribe(<any>(async (event) => {
     log("DappFrame event: ", event);
@@ -1113,8 +1177,6 @@ async function hideCenter() {
        */
 }
 </script>
-
-{console.log("LAOYT: ", layout)}
 <Layout
   layout="{layout}"
   navigation="{navigation}"

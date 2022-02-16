@@ -12,7 +12,7 @@ $: {
   if (isActive) {
     classes.push("active border-primary");
   } else {
-    classes.push("border-light-lightest");
+    classes.push("border-light");
   }
   if (isFirst) {
     classes.push("first");

@@ -101,7 +101,7 @@ const processDefinition = (processId: string) =>
           data: {
             data: (context, event) => {
               return {
-                appId: "__APP_ID__",
+                appId: Environment.appId,
                 code: context.data.oneTimeCode,
               };
             },

@@ -12,6 +12,7 @@ import {EditorViewContext} from "@o-platform/o-editors/src/shared/editorViewCont
 import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
 import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
 import type {TransactionReceipt} from "web3-core";
+import {Environment} from "../../../shared/environment";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -70,7 +71,7 @@ export async function fSetTrust(context: ProcessContext<SetTrustContextData>) : 
 
   return await new CirclesHub(
     RpcGateway.get(),
-    "__CIRCLES_HUB_ADDRESS__"
+    Environment.circlesHubAddress
   ).setTrust(
     context.data.privateKey,
     gnosisSafeProxy,

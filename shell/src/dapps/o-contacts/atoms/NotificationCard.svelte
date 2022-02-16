@@ -1,86 +1,146 @@
 <script lang="ts" context="module">
-  export type NotificationCardStyle = {
-    backgroundClass: string,
-    titleClass: string
-  };
+export type NotificationCardStyle = {
+  backgroundClass: string;
+  titleClass: string;
+};
 </script>
+
 <script lang="ts">
-  import Date from "../../../shared/atoms/Date.svelte";
-  import {EventType, ProfileEvent} from "../../../shared/api/data/types";
-  import CrcTrust from "./chatListItems/CrcTrust.svelte";
-  import ChatMessage from "./chatListItems/ChatMessage.svelte";
-  import CrcHubTransfer from "./chatListItems/CrcHubTransfer.svelte";
-  import Erc20Transfer from "./chatListItems/Erc20Transfer.svelte";
-  import InvitationRedeemed from "./chatListItems/InvitationRedeemed.svelte";
+import { onMount } from "svelte";
+import Date from "../../../shared/atoms/Date.svelte";
+import { EventType, ProfileEvent } from "../../../shared/api/data/types";
+import CrcTrust from "./chatListItems/CrcTrust.svelte";
+import ChatMessage from "./chatListItems/ChatMessage.svelte";
+import CrcHubTransfer from "./chatListItems/CrcHubTransfer.svelte";
+import Erc20Transfer from "./chatListItems/Erc20Transfer.svelte";
+import InvitationRedeemed from "./chatListItems/InvitationRedeemed.svelte";
+import { UserActions, UserActionItem } from "../../../shared/userActions";
+import ButtonGroup from "../../../shared/molecules/ButtonGroup/ButtonGroup.svelte";
 
-  export let event: ProfileEvent;
+export let event: ProfileEvent;
 
-  function determineCardStyle(event?: ProfileEvent): string {
-    if (!event)
-      return "border-light-lighter";
+let userActions: UserActionItem[] = [];
 
-    switch (event.type) {
-      case EventType.CrcHubTransfer:
-        if (event.direction == "in" || event.direction == "self") {
-          return "border-light-lighter";
-        } else if (event.direction == "out") {
-          return "border-primary-dark";
-        }
-        break;
-      case EventType.CrcTrust:
-        const textClass = (<any>event.payload).limit == 0 ? "text-alert" : "";
-        if (event.direction == "in" || event.direction == "self") {
-          return "border-primary-lighter";
-        } else if (event.direction == "out") {
-          return "border-alert-lightest";
-        }
-        break;
-      case EventType.InvitationCreated:
-      case EventType.InvitationRedeemed:
-      case EventType.MembershipOffer:
-      case EventType.MembershipAccepted:
-      case EventType.MembershipRejected:
-      default:
-        return "border-light-lighter";
-    }
+const components = [
+  {
+    type: EventType.ChatMessage,
+    component: ChatMessage,
+  },
+  {
+    type: EventType.CrcTrust,
+    component: CrcTrust,
+    actions: [
+      {
+        action: "setTrust",
+      },
+    ],
+  },
+  {
+    type: EventType.CrcHubTransfer,
+    component: CrcHubTransfer,
+    // actions: [{ action: "chat", label: "Say Thanks" }],
+  },
+  {
+    type: EventType.Erc20Transfer,
+    component: Erc20Transfer,
+  },
+  {
+    type: EventType.InvitationRedeemed,
+    component: InvitationRedeemed,
+    actions: [
+      {
+        action: "setTrust",
+        label: `Trust ${event.contact_address_profile.firstName}`,
+      },
+    ],
+  },
+];
+
+onMount(async () => {
+  let eventActions = await getEventActions();
+
+  if (eventActions) {
+    userActions = await UserActions.getAvailableActions(
+      event.contact_address_profile
+    );
+
+    let usableUserActions = {};
+
+    eventActions.forEach((action) => {
+      let foundAction = userActions.find((o) => o.key === action.action);
+      // TODO: Find a better way to hide untrust, but show 'trust'
+      if (foundAction && foundAction.title !== "Untrust") {
+        usableUserActions[action.action] = foundAction;
+      }
+    });
+
+    userActions = Object.values(usableUserActions);
   }
+  userActions = userActions;
+});
+
+function getEventView() {
+  const specificView = components.find((x) => x.type === event.type);
+  if (!specificView) return null;
+  return specificView.component;
+}
+async function getEventActions() {
+  const specificView = components.find((x) => x.type === event.type);
+  if (!specificView) return null;
+  return specificView.actions ? specificView.actions : null;
+}
 </script>
 
-{#if event.type == EventType.ChatMessage}
-  <ChatMessage event={event} />
-{:else}
 <div class="px-2 sm:px-6">
-  <div class="flex flex-row w-full p-px space-x-2">
+  <div
+    class="flex flex-row w-full p-px space-x-2"
+    class:pr-12="{event.direction == 'out'}"
+    class:pl-12="{event.direction == 'in'}">
     <div
-      class="flex flex-col flex-grow space-y-1 bg-gradient-to-r from-gradient1 to-gradient2 rounded-xl">
+      class="flex flex-col flex-grow space-y-1 rounded-xl"
+      class:bg-inactive="{event.type != EventType.ChatMessage}">
       <div
-        class="relative w-full p-4 pt-3 pb-6 text-xs sm:text-sm message chatText {determineCardStyle(event).backgroundClass}">
-        <div class="absolute bottom-2 right-3 text-2xs">
-          <Date time="{event.timestamp}" />
-        </div>
-        {#if event.type == EventType.CrcTrust}
-          <CrcTrust event={event} />
-        {:else if event.type == EventType.CrcHubTransfer}
-          <CrcHubTransfer event={event} />
-        {:else if event.type == EventType.Erc20Transfer}
-          <Erc20Transfer event={event} />
-        {:else if event.type == EventType.InvitationRedeemed}
-          <InvitationRedeemed event={event} />
+        class="relative w-full text-xs sm:text-sm message chatText"
+        class:p-4="{event.type != EventType.ChatMessage}">
+        {#if event.type != EventType.ChatMessage}
+          <div class="absolute bottom-2 right-3 text-2xs">
+            <Date time="{event.timestamp}" />
+          </div>
+        {/if}
+        <svelte:component this="{getEventView()}" event="{event}" />
+        {#if userActions && userActions.length}
+          <div class="pt-4">
+            <ButtonGroup
+              actions="{userActions}"
+              layout="{{
+                orientation: 'inline',
+                alignment: 'left',
+                labels: {
+                  setTrust: (action) =>
+                    `${action.title} ${event.contact_address_profile.firstName}`,
+                },
+                colors: {
+                  default: 'light',
+                  overrides: (action) =>
+                    action.key == 'dismiss' ? 'light' : null,
+                },
+              }}" />
+          </div>
         {/if}
       </div>
     </div>
   </div>
 </div>
-{/if}
+
 <style>
-  .chatText {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    -ms-word-break: break-all;
-    word-break: break-word;
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
-  }
+.chatText {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
 </style>
