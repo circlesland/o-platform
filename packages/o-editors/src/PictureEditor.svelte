@@ -9,7 +9,6 @@ import { normalizePromptField } from "@o-platform/o-process/dist/states/prompt";
 
 export let context: EditorContext;
 
-let maxSize: number = 10000000;
 let crop = { x: 0, y: 0 };
 
 let zoom = 1;
@@ -194,7 +193,6 @@ function submit() {
       <Dropzone
         on:drop="{handleFilesSelect}"
         multiple="{false}"
-        maxSize="{maxSize}"
         accept="image/png,image/jpeg,image/jpg">
         <div class="flex justify-center px-6 pt-5 pb-6 mt-1 ">
           <div class="space-y-1 text-center">
