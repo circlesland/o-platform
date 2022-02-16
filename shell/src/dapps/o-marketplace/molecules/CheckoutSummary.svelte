@@ -8,6 +8,7 @@ import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import { Currency } from "../../../shared/currency";
+import { _ } from "svelte-i18n";
 
 export let context: any;
 let profile: Profile | Organisation;
@@ -49,7 +50,7 @@ function onkeydown(e: KeyboardEvent) {
 
     <div>
       <span class="mt-4 text-xl">
-        to {displayableName(profile.firstName, profile.lastName)}
+        {$_("dapps.o-marketplace.molecules.checkoutSummary.to")} {displayableName(profile.firstName, profile.lastName)}
       </span>
       <div class="mt-2 text-dark-lightest">
         Reifenstuelstrasse. 6, 80469 München
@@ -62,7 +63,7 @@ function onkeydown(e: KeyboardEvent) {
     {#if context.data && context.data.transitivePath}
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          Payment Path
+          {$_("dapps.o-marketplace.molecules.checkoutSummary.paymentPath")}
         </div>
         <div class="flex items-center w-full">
           <CirclesTransferGraph
@@ -78,14 +79,14 @@ function onkeydown(e: KeyboardEvent) {
         <CartItems cartContents="{cartContents}" editable="{false}" />
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
-        <span class="mr-2 text-sm font-medium text-gray-400"> Total: </span>
+        <span class="mr-2 text-sm font-medium text-gray-400"> {$_("dapps.o-marketplace.molecules.checkoutSummary.total")} </span>
         <span class="w-20 text-lg font-bold text-right">
           {$totalPrice.toFixed(2)} €
         </span>
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">
-          19% Sales Tax included:
+          {$_("dapps.o-marketplace.molecules.checkoutSummary.tax")}
         </span>
         <span class="w-20 text-lg text-right font-primary text-dark-lightest">
           {((19 / 100) * $totalPrice).toFixed(2)} €
@@ -112,20 +113,18 @@ function onkeydown(e: KeyboardEvent) {
     <div class="flex flex-col w-full space-y-2 text-left">
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
         <h1 class="p-2 text-white uppercase bg-dark-dark ">
-          Important Information
+          {$_("dapps.o-marketplace.molecules.checkoutSummary.importantInformation")}
         </h1>
       </div>
       <div>
-        After a successful purchase, we will show you a <span
-          class="text-primary-dark">PickUp Code</span
-        >, which you will need to
-        <span class="text-primary-dark">show to the seller</span> when you pick up
-        your Order at the Store.
+        {$_("dapps.o-marketplace.molecules.checkoutSummary.howToPickup1")}<span
+          class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutSummary.howToPickup2")}</span
+        >{$_("dapps.o-marketplace.molecules.checkoutSummary.howToPickup3")}
+        <span class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutSummary.howToPickup4")}</span>{$_("dapps.o-marketplace.molecules.checkoutSummary.howToPickup5")}
       </div>
       <div class="pt-2 text-sm">
-        To see your <span class="text-primary-dark">PickUp Code</span> at any
-        time after the purchase, go to
-        <span class="text-primary-dark">My purchases</span> and click on the Purchase.
+        {$_("dapps.o-marketplace.molecules.checkoutSummary.toSeeCode1")}<span class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutSummary.toSeeCode2")}</span>{$_("dapps.o-marketplace.molecules.checkoutSummary.toSeeCode3")}
+        <span class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutSummary.toSeeCode4")}</span>{$_("dapps.o-marketplace.molecules.checkoutSummary.toSeeCode5")}
       </div>
     </div>
   </div>

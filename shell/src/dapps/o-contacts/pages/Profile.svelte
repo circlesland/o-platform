@@ -215,7 +215,7 @@ async function setProfile(id: string) {
   <div class="p-5 pb-0">
     <header class="grid overflow-hidden bg-white h-72 ">
       <div class="w-full text-center">
-        <h1 class="text-3xl uppercase font-heading">PROFILE</h1>
+        <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-contacts.pages.profile.profile")}</h1>
       </div>
       <div
         class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
@@ -260,7 +260,7 @@ async function setProfile(id: string) {
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="text-left text-2xs text-dark-lightest">
-                  {$_("dapps.o-contacts.pages.profile.mutualFriend")}
+                  {$_("dapps.o-contacts.pages.profile.mutualFriends")}
                 </div>
                 <div class="flex flex-row flex-wrap mt-2 ">
                   {#if commonTrusts.length}

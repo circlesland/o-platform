@@ -23,6 +23,7 @@ import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
 import { purchases } from "../../../shared/stores/purchases";
 import { sales } from "../../../shared/stores/sales";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -48,7 +49,7 @@ async function load() {
   actions = [
     {
       icon: "chat",
-      title: "Chat",
+      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.chat"),
       action: () => push(`#/contacts/chat/${sale.buyerProfile.circlesAddress}`),
     },
   ];
@@ -56,9 +57,9 @@ async function load() {
   if (sale.invoices && sale.invoices.length) {
     const pickUpAction = {
       icon: "transactions",
-      title: "I handed out the order",
+      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
       action: async () => {
-        const action = actions.find((o) => o.title == "I handed out the order");
+        const action = actions.find((o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"));
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await sales.completeSale(sale.invoices[0].id);
         actions.push(unPickUpAction);
@@ -66,10 +67,10 @@ async function load() {
     };
     const unPickUpAction = {
       icon: "transactions",
-      title: "I haven't handed out the order yet",
+      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == "I haven't handed out the order yet"
+          (o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await sales.revokeSale(sale.invoices[0].id);
@@ -87,7 +88,7 @@ async function load() {
     actions.push(
       {
         icon: "transactions",
-        title: "Transaction",
+        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.transaction"),
         action: () =>
           push(
             `#/banking/transactions/${sale.invoices[0].paymentTransactionHash}`
@@ -95,7 +96,7 @@ async function load() {
       },
       {
         icon: "document",
-        title: "Download Invoice",
+        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"),
         action: async () => {
           for (let invoice of sale.invoices) {
             const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
@@ -162,12 +163,12 @@ onMount(async () => {
 <div class="p-5">
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
-      <h1 class="text-3xl uppercase font-heading">Sale Details</h1>
+      <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-marketplace.pages.mySaleDetail.saleDetails")}</h1>
     </div>
     <div class="w-full text-center">
       {#if sale}
         <span class="text-dark-lightest"
-          >Sale Date: <Date time="{sale.createdAt}" /></span>
+          >{$_("dapps.o-marketplace.pages.mySaleDetail.saleDate")}<Date time="{sale.createdAt}" /></span>
       {/if}
     </div>
   </header>
@@ -175,7 +176,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>Loading sales...</div>
+          <div>{$_("dapps.o-marketplace.pages.mySaleDetail.loadingSales")}</div>
         </div>
       </div>
     </section>
@@ -248,14 +249,14 @@ onMount(async () => {
       <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
         <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
           <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
-            Pick-Up Code
+            {$_("dapps.o-marketplace.pages.mySaleDetail.pickupCode")}
           </h1>
         </div>
 
         <div class="w-full text-center">
           {#if !invoice.pickupCode}
             <h1 class="text-3xl uppercase font-heading">
-              No pickup code yet ..
+              {$_("dapps.o-marketplace.pages.mySaleDetail.noCode")}
             </h1>
           {:else}
             <h1 class="text-6xl uppercase font-heading">

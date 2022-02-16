@@ -278,7 +278,8 @@ export const en = {
             "memberAt": "Member at",
             "verifiedBy": "Verified by",
             "passion": "Passion",
-            "address": "Address"
+            "address": "Address",
+            "profile": "PROFILE"
           },
           "chat": {
             "loadingConversations": "Loading conversations...",
@@ -538,7 +539,114 @@ export const en = {
           }
         }
       },
-      "o-maketplace": "",
+      "o-marketplace": {
+        "atoms": {
+          "offerCard": {
+            "pickUpOnly": "Store Pick Up Only",
+            "details": "Details"
+          },
+          "transactionItemCard": {
+            "sending": "sending"
+          }
+        },
+        "molecules": {
+          "checkoutConfirm": {
+            "importantInformation": "Important Information",
+            "yourPickupCode": "Your Pick-Up Code",
+            "howToPickup1": "After your transaction has been completely verified ",
+            "howToPickup2": "(wich may take a couple minutes)",
+            "howToPickup3": ", you will get a ",
+            "howToPickup4": "PickUp Code",
+            "howToPickup5": ", wich you will need to ",
+            "howToPickup6": "show to the seller",
+            "howToPickup7": " when you pick up your Order at the Store.",
+            "toSeeCode1": "To see your ",
+            "toSeeCode2": "PickUp Code",
+            "toSeeCode3": " at any time after the purchase, go to ",
+            "toSeeCode4": "My purchases",
+            "toSeeCode5": " and click on the Purchase",
+            "pickupLocation": "Pick-Up Location for this Order is:"
+          },
+          "checkoutSummary": {
+            "to": "to",
+            "paymentPath": "Payment Path",
+            "total": "Total:",
+            "tax": "19% Sales Tax included:",
+            "importantInformation": "Important Information",
+            "howToPickup1": "After a successful purchase, we will show you a ",
+            "howToPickup2": "PickUp Code",
+            "howToPickup3": ", wich you will need to ",
+            "howToPickup4": "show to the seller",
+            "howToPickup5": " when you pick up your Order at the Store.",
+            "toSeeCode1": "To see your ",
+            "toSeeCode2": "PickUp Code",
+            "toSeeCode3": " at any time after the purchase, go to ",
+            "toSeeCode4": "My purchases",
+            "toSeeCode5": " and click on the Purchase"
+          }
+        },
+        "pages": {
+          "categories": {
+            "loadingOffers": "Loading offers...",
+            "error": "An error occured while loading the recent activities:",
+            "noOffers": "No Offers"
+          },
+          "categoryDetail": {
+            "loadingOffers": "Loading offers...",
+            "error": "An error occured while loading the recent activities:",
+            "noOffers": "No Offers"
+          },
+          "myOffers": {
+            "loadingOffers": "Loading offers...",
+            "error": "An error occured while loading the recent activities:",
+            "noOffers": "No Offers"
+          },
+          "myPurchases": {
+            "loadingPurchases": "Loading purchases...",
+            "noPurchases": "No purchases",
+            "paid": "paid",
+            "cancelled": "cancelled",
+            "paymentPending": "payment pending",
+            "pickupCode": "pick-up code",
+            "pickedUp": " picked up "
+          },
+          "myPurchaseDetail": {
+            "chat": "Chat",
+            "iPickedUp": "I picked up the order",
+            "iHaventPickedUp": "I haven't picked up the order yet",
+            "transaction": "Transaction",
+            "downloadInvoice": "Download Invoice",
+            "purchaseDetails": "Purchase Details",
+            "purchaseDate": "Purchase Date: ",
+            "loadingPurchases": "Loading purchases...",
+            "yourPickupCode": "Your Pick-Up Code",
+            "showThisCode": "show this code to the seller when you pick up your Order at the Store.",
+            "noCode": "No pickup code yet ..",
+            "location": "Pick-Up Location for this Order is:"
+          },
+          "mySaleDetail": {
+            "chat": "Chat",
+            "iHandedOut": "I handed out the order",
+            "iHaventHandedOut": "I haven't handed out the order yet",
+            "transaction": "Transaction",
+            "downloadInvoice": "Download Invoice",
+            "saleDetails": "Sale Details",
+            "saleDate": "Sale Date: ",
+            "loadingSales": "Loading sales...",
+            "pickupCode": "Pick-Up Code",
+            "noCode": "No pickup code yte .."
+          },
+          "mySales": {
+            "loadingSales": "Loading sales...",
+            "noSales": "No sales",
+            "paid": "paid",
+            "cancelled": "cancelled",
+            "paymentPending": "payment pending",
+            "pickupCode": "pick-up code",
+            "pickedUp": " picked up "
+          }
+        }
+      },
       "o-onboardeing": "",
       "o-passport": "",
       "o-stats": "",

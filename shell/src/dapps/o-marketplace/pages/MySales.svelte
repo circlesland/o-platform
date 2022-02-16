@@ -7,6 +7,7 @@ import { push } from "svelte-spa-router";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { sales } from "../../../shared/stores/sales";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -20,7 +21,7 @@ export let routable: Routable;
       <div
         class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow-md ">
         <div class="flex flex-col items-start">
-          <div>Loading sales...</div>
+          <div>{$_("dapps.o-marketplace.pages.mySales.loadingSales")}</div>
         </div>
       </div>
     </section>
@@ -29,7 +30,7 @@ export let routable: Routable;
       <div
         class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow-md ">
         <div class="flex flex-col items-start">
-          <div>No sales</div>
+          <div>{$_("dapps.o-marketplace.pages.mySales.noSales")}</div>
         </div>
       </div>
     </section>
@@ -90,20 +91,20 @@ export let routable: Routable;
                 class="inline-block text-xs "
                 class:text-alert-dark="{!sale.invoices[0].paymentTransactionHash}"
                 class:text-success="{sale.invoices[0].paymentTransactionHash}">
-                 {#if sale.invoices[0].paymentTransactionHash}
-                  <span>paid</span>
+                  {#if sale.invoices[0].paymentTransactionHash}
+                  <span>{$_("dapps.o-marketplace.pages.mySales.paid")}</span>
                     <Icons icon="check" size="{4}" customClass="inline" />
-                 {:else if sale.invoices[0].cancelledAt}
-                   <span>cancelled</span>
-                 {:else}
-                   <span>payment pending</span>
-                 {/if}
+                  {:else if sale.invoices[0].cancelledAt}
+                    <span>{$_("dapps.o-marketplace.pages.mySales.cancelled")}</span>
+                  {:else}
+                    <span>{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
+                  {/if}
               </div>
               <div
                 class="inline-block text-xs "
                 class:text-inactive="{!sale.invoices[0].pickupCode}"
                 class:text-success="{sale.invoices[0].pickupCode}">
-                <span>pick-up code</span>
+                <span>{$_("dapps.o-marketplace.pages.mySales.pickupCode")}</span>
                 {#if sale.invoices[0].pickupCode}
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {/if}
@@ -118,7 +119,7 @@ export let routable: Routable;
                     sale.invoices[0].buyerSignature)}"
                 class:text-success="{sale.invoices[0].buyerSignature &&
                   sale.invoices[0].sellerSignature}">
-                <span> picked up </span>
+                <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
                 {#if sale.invoices[0].buyerSignature && sale.invoices[0].sellerSignature}
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {:else}

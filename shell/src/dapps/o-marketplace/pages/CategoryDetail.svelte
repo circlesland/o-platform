@@ -9,6 +9,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -79,7 +80,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>Loading offers...</div>
+          <div>{$_("dapps.o-marketplace.pages.categoryDetail.loadingOffers")}</div>
         </div>
       </div>
     </section>
@@ -88,7 +89,7 @@ onMount(async () => {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>An error occurred while loading the recent activities:</b>
+            <b>{$_("dapps.o-marketplace.pages.categoryDetail.error")}</b>
           </div>
         </div>
       </div>
@@ -104,7 +105,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>No offers</div>
+          <div>{$_("dapps.o-marketplace.pages.categoryDetail.noOffers")}</div>
         </div>
       </div>
     </section>
