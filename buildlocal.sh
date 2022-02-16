@@ -59,7 +59,8 @@ cd ../../../../../..
 
 echo "Building 'shell' with dapps .."
 cd shell || exit
-npm run build
+npx devcert-cli generate localhost
+# npm run build
 cd .. || exit
 
 
@@ -69,3 +70,5 @@ search_replace="s/$search/$replace/g"
 cp -f ./shell/public/index.template.html ./shell/public/index.html
 sed -i.bak "$search_replace" ./shell/public/index.html
 rm -f ./shell/public/index.html.bak
+
+cd shell || exit
