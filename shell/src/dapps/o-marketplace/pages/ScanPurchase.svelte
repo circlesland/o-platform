@@ -1,9 +1,24 @@
 <script type="ts">
+import {
+  AggregateType,
+  CompleteSaleDocument,
+  InvoiceDocument,
+  Profile,
+  QueryInvoiceArgs,
+  Sale,
+} from "../../../shared/api/data/types";
 import QrScanner from "qr-scanner";
 import { onMount } from "svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { sales } from "../../../shared/stores/sales";
+import { push } from "svelte-spa-router";
+
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
 let videoContainer = document.getElementById("video-container");
-let camHasCamera = document.getElementById("cam-has-camera");
 
 let camHasFlash = document.getElementById("cam-has-flash");
 let flashToggle = document.getElementById("flash-toggle");
@@ -11,8 +26,31 @@ let flashState = document.getElementById("flash-state");
 
 let fileSelector = document.getElementById("file-selector");
 let fileQrResult = document.getElementById("file-qr-result");
+let isLoading = false;
+let sale: Sale;
 
-function setResult(label, result) {
+let video: HTMLVideoElement;
+let startButton;
+let stopButton;
+let scanner: QrScanner;
+let camQrResult: HTMLElement;
+let camList: HTMLElement;
+let camHasCamera: HTMLElement;
+
+$: {
+  camQrResult = camQrResult;
+}
+
+async function loadSale(id) {
+  sale = await sales.findByPickupCode(id);
+  console.log("SALE: ", sale);
+  if (!sale) {
+    return;
+  }
+  return sale;
+}
+
+async function setResult(label, result) {
   label.textContent = result.data;
 
   label.style.color = "teal";
@@ -21,26 +59,22 @@ function setResult(label, result) {
     () => (label.style.color = "inherit"),
     100
   );
-  scanner.stop();
+  const foundSale = await loadSale(result.data);
+  console.log("FOUND", foundSale);
+
+  if (foundSale) {
+    scanner.stop();
+    console.log("SALES BEFORE", sales);
+    await sales.completeSale(sale.invoices[0].id);
+    console.log("SALES AFTER", sales);
+    push(`#/marketplace/my-sales/${foundSale.id}`);
+  }
 }
-
-let video: HTMLVideoElement;
-let startButton;
-let stopButton;
-let scanner: QrScanner;
-let camQrResult: HTMLElement;
-let camList: HTMLElement;
-
-$: {
-  camQrResult = camQrResult;
-}
-
 // ####### Web Cam Scanning #######
 onMount(() => {
   scanner = new QrScanner(video, (result) => setResult(camQrResult, result), {
     onDecodeError: (error) => {
       // console.log("CAMQRRESULT", camQrResult);
-      // No result.. i'm looping here like A LOT!
     },
     highlightScanRegion: true,
     highlightCodeOutline: true,
@@ -61,30 +95,25 @@ onMount(() => {
     );
   });
 
-  QrScanner.hasCamera().then(
-    (hasCamera) => (camHasCamera.textContent = hasCamera)
-  );
+  // QrScanner.hasCamera().then(
+  //   (hasCamera) => (camHasCamera.textContent = hasCamera)
+  // );
 
   scanner.setInversionMode("both");
-  // for debugging
-  window.scanner = scanner;
 
   camList.addEventListener("change", (event) => {
-    scanner.setCamera(event.target.value).then(updateFlashAvailability);
-  });
-
-  flashToggle.addEventListener("click", () => {
-    scanner
-      .toggleFlash()
-      .then(
-        () => (flashState.textContent = scanner.isFlashOn() ? "on" : "off")
-      );
+    scanner.setCamera(event.target.value);
   });
 });
 </script>
 
+<SimpleHeader
+  runtimeDapp="{runtimeDapp}"
+  routable="{routable}"
+  headerString="Scan Code" />
+
 <h1>Scan from WebCam:</h1>
-<div id="video-container" class="style-1">
+<div id="video-container" class="default-style">
   <video id="qr-video" bind:this="{video}"><track kind="captions" /></video>
 </div>
 
@@ -105,9 +134,28 @@ onMount(() => {
   line-height: 0;
 }
 
-#video-container.style-1 .scan-region-highlight-svg,
-#video-container.style-1 .code-outline-highlight {
+#video-container.example-style-1 .scan-region-highlight-svg,
+#video-container.example-style-1 .code-outline-highlight {
   stroke: #64a2f3 !important;
+}
+
+#video-container.example-style-2 {
+  position: relative;
+  width: max-content;
+  height: max-content;
+  overflow: hidden;
+}
+#video-container.example-style-2 .scan-region-highlight {
+  border-radius: 30px;
+  outline: rgba(0, 0, 0, 0.25) solid 50vmax;
+}
+#video-container.example-style-2 .scan-region-highlight-svg {
+  display: none;
+}
+#video-container.example-style-2 .code-outline-highlight {
+  stroke: rgba(255, 255, 255, 0.5) !important;
+  stroke-width: 15 !important;
+  stroke-dasharray: none !important;
 }
 
 hr {
