@@ -14,7 +14,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { push } from "svelte-spa-router";
 import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
-
+import QrCode from "svelte-qrcode";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
@@ -265,6 +265,11 @@ onMount(async () => {
             <h1 class="text-6xl uppercase font-heading">
               {invoice.pickupCode}
             </h1>
+            <div class="container">
+              <center>
+                <QrCode value="{invoice.pickupCode}" />
+              </center>
+            </div>
           {/if}
         </div>
 

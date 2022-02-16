@@ -1,5 +1,5 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import dayjs from "dayjs";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
@@ -88,16 +88,17 @@ export let routable: Routable;
               class="flex flex-row items-center justify-between px-3 mt-2 text-left">
               <div
                 class="inline-block text-xs "
-                class:text-alert-dark="{!sale.invoices[0].paymentTransactionHash}"
+                class:text-alert-dark="{!sale.invoices[0]
+                  .paymentTransactionHash}"
                 class:text-success="{sale.invoices[0].paymentTransactionHash}">
-                 {#if sale.invoices[0].paymentTransactionHash}
+                {#if sale.invoices[0].paymentTransactionHash}
                   <span>paid</span>
-                    <Icons icon="check" size="{4}" customClass="inline" />
-                 {:else if sale.invoices[0].cancelledAt}
-                   <span>cancelled</span>
-                 {:else}
-                   <span>payment pending</span>
-                 {/if}
+                  <Icons icon="check" size="{4}" customClass="inline" />
+                {:else if sale.invoices[0].cancelledAt}
+                  <span>cancelled</span>
+                {:else}
+                  <span>payment pending</span>
+                {/if}
               </div>
               <div
                 class="inline-block text-xs "
