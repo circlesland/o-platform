@@ -98,7 +98,8 @@ const createValueSlot = (arr) => {
         class="pin-item"
         id="{`pin${i}`}"
         type="password"
-        pattern="\d{1}"
+        inputmode="numeric"
+        pattern="[0-9]{6}"
         maxlength="1"
         on:keydown|preventDefault="{(event) => changeHandler(event, i)}"
         placeholder="" />
