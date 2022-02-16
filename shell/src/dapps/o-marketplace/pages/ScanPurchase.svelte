@@ -9,7 +9,7 @@ import {
 } from "../../../shared/api/data/types";
 import QrScanner from "qr-scanner";
 import { onMount } from "svelte";
-import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { sales } from "../../../shared/stores/sales";
@@ -89,7 +89,7 @@ onMount(() => {
       cameras.forEach((camera) => {
         const option = document.createElement("option");
         option.value = camera.id;
-        option.text = camera.label;
+        option.text = `Camera: ${camera.label}`;
         camList.add(option);
       })
     );
@@ -107,27 +107,36 @@ onMount(() => {
 });
 </script>
 
-<SimpleHeader
-  runtimeDapp="{runtimeDapp}"
-  routable="{routable}"
-  headerString="Scan Code" />
+<section class="flex flex-col items-center justify-center p-6 space-y-4">
+  <div class="w-full text-center">
+    <h1 class="text-3xl uppercase font-heading">Scan to hand out purchase</h1>
+  </div>
 
-<h1>Scan from WebCam:</h1>
-<div id="video-container" class="default-style">
-  <video id="qr-video" bind:this="{video}"><track kind="captions" /></video>
-</div>
+  <div class="w-full">
+    <div id="video-container" class="default-style">
+      <video id="qr-video" bind:this="{video}"><track kind="captions" /></video>
+    </div>
 
-<div>
-  <b>Preferred camera:</b>
-  <select id="cam-list" bind:this="{camList}">
-    <option value="environment" selected>Environment Facing (default)</option>
-    <option value="user">User Facing</option>
-  </select>
-</div>
+    <div class="mt-4">
+      <select
+        id="cam-list"
+        bind:this="{camList}"
+        class="w-full border select input">
+        <option value="environment" selected
+          >Camera: Environment Facing (default)</option>
+        <option value="user">Camera: User Facing</option>
+      </select>
+    </div>
 
-<br />
-<b>Detected QR code: </b>
-<span id="cam-qr-result" bind:this="{camQrResult}">None</span>
+    <div class="mt-4 text-center">
+      <b>Detected QR code: </b>
+      <span id="cam-qr-result" bind:this="{camQrResult}">None</span>
+    </div>
+  </div>
+  <!-- <slot name="EditorActionButtons">
+    <div class="w-full">BUTTONS</div>
+  </slot> -->
+</section>
 
 <style>
 #video-container {

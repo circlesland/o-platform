@@ -29,7 +29,6 @@ $: {
   }
 }
 
-console.log("DAPP: ", runtimeDapp);
 function profileSwitcher() {
   // if (profile.memberships && profile.memberships.length > 0) {
 
@@ -76,6 +75,14 @@ function profileSwitcher() {
       {/if}
 
       {#if profile}
+        {#if profile.__typename === "Organisation"}
+          <div
+            class="mr-4 text-white cursor-pointer"
+            on:click="{() => push(`#/marketplace/scan-purchase`)}">
+            <Icons icon="qrcode" size="{6}" />
+          </div>
+        {/if}
+
         <div
           class="cursor-pointer justify-self-center"
           on:click="{() => profileSwitcher()}">

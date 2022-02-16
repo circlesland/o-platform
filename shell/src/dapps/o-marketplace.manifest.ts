@@ -77,6 +77,8 @@ const myPurchases: Page<any, DappState> = {
   type: "page",
 };
 const scanPurchase: Page<any, DappState> = {
+  isSystem: true,
+  position: "modal",
   routeParts: ["=scan-purchase"],
   component: ScanPurchase,
   title: "Scan purchase Code",
