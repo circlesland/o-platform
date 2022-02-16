@@ -1,4 +1,5 @@
 <script>
+  import { _ } from "svelte-i18n";
 </script>
 
 <div class="py-16 mx-auto lg:max-w-xl sm:text-center">
