@@ -3,6 +3,7 @@ import { identify } from "../../o-passport/processes/identify/identify2";
 import { me } from "../../../shared/stores/me";
 import { onMount } from "svelte";
 import { location } from "svelte-spa-router";
+import { _ } from "svelte-i18n";
 
 $: {
   console.log($me); // TODO: This is just to init the store. There could be a better solution to do this :)
@@ -78,7 +79,7 @@ async function login() {
         fill="white"></path>
       <ellipse cx="118.979" cy="118.739" rx="26.5727" ry="26.3333" fill="white"
       ></ellipse>
-    </svg> Join Now
+    </svg> {$_("dapps.o-homepage.components.progress,joinNow")}
   </button>
   <div class="flex overflow-hidden text-xs bg-gray-300 h-11">
     <div

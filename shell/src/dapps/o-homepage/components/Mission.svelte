@@ -1,3 +1,7 @@
+<script>
+  import { _ } from "svelte-i18n";
+</script>
+
 <div class="w-full bg-white">
   <div
     class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20 "
@@ -11,12 +15,10 @@
           <h2
             class="max-w-lg mb-6 text-3xl font-bold tracking-tight sm:text-4xl sm:leading-none"
           >
-            Your passion is the motor into a thriving new economy empowering all
+            {$_("dapps.o-homepage.components.mission.yourPassionIsTheMotor")}
           </h2>
           <p class="text-base text-gray-600 md:text-lg">
-            By starting to follow your passion and accepting Circles as payment
-            for it, you create your own joyful space towards an eventful,
-            manifold and fulfilled life for everyone.
+            {$_("dapps.o-homepage.components.mission.byStarting")}
           </p>
         </div>
       </div>

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { _ } from "svelte-i18n";
+
   const milestones = [
     {
       goal: "1",
@@ -159,8 +161,8 @@
           <div class="flex flex-col py-2 ml-4">
             <span class="text-lg font-semibold text-primary">{m.citizens}</span>
             <p class="text-sm text-left text-primary">
-              citizen
-              {#if m.success}reached on {m.date}{/if}
+              {$_("dapps.o-homepage.components.milestones.citizen")}
+              {#if m.success}{$_("dapps.o-homepage.components.milestones.reachedOn")}{m.date}{/if}
             </p>
           </div>
         {:else if m.active}
@@ -175,7 +177,7 @@
 
           <div class="flex flex-col py-2 ml-4">
             <p class="text-lg font-semibold ">{m.citizens}</p>
-            <p class="text-sm text-left ">citizen to reach milestone</p>
+            <p class="text-sm text-left ">{$_("dapps.o-homepage.components.milestones.citizenToReach")}</p>
           </div>
         {:else}
           <div class="">
@@ -190,7 +192,7 @@
           <div class="flex flex-col py-2 ml-4">
             <p class="text-lg font-semibold text-gray-500 ">{m.citizens}</p>
             <p class="text-sm text-left text-gray-500">
-              citizen to reach milestone
+              {$_("dapps.o-homepage.components.milestones.citizenToReach")}
             </p>
           </div>
         {/if}
@@ -205,7 +207,7 @@
     aria-label="
     "
     class="text-xl font-semibold transition-colors duration-200 text-primary hover:">
-    Show all milestones
+    {$_("dapps.o-homepage.components.milestones.showAllMilestones")}
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">
       <path
         d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"></path>

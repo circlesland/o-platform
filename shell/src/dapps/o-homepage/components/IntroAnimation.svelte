@@ -1,3 +1,7 @@
+<script>
+  import { _ } from "svelte-i18n";
+</script>
+
 <div class="w-full bg-white">
   <div
     class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20  "
@@ -9,25 +13,23 @@
             <p
               class="inline-block py-px mb-4 text-xs font-semibold tracking-wider uppercase rounded-full text-primary bg-teal-accent-400"
             >
-              This is Circlesland
+              {$_("dapps.o-homepage.components.introAnimation.thisIsCirclesLand")}
             </p>
           </div>
           <h2
             class="max-w-lg mb-6 text-3xl font-bold tracking-tight   sm:text-4xl sm:leading-none"
           >
-            CirclesLand is here to unlock all our potential
+            {$_("dapps.o-homepage.components.introAnimation.circlesLandUnlocks")}
           </h2>
           <p class="text-base text-gray-500 md:text-lg">
-            Introducing the next generation of a fully opensource, digital and
-            borderless country-as-a-service platform, starting with Circles a
-            new universal basic income currency to secure our most basic needs.
+            {$_("dapps.o-homepage.components.introAnimation.introducing")}
           </p>
           <a
             href="https://blog.circles.land/whitepaper/"
             aria-label=""
             class="inline-flex items-center mt-6 font-semibold transition-colors duration-200 text-primary hover:"
           >
-            Learn more
+            {$_("dapps.o-homepage.components.introAnimation.learnMore")}
             <svg
               class="inline-block w-3 ml-2"
               fill="currentColor"

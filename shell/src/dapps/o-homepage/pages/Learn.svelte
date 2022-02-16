@@ -1,6 +1,7 @@
 <script lang="ts">
 import { identify } from "../../o-passport/processes/identify/identify2";
 import { me } from "../../../shared/stores/me";
+import { _ } from "svelte-i18n";
 
 $: {
   console.log($me); // TODO: This is just to init the store. There could be a better solution to do this :)
@@ -16,10 +17,9 @@ function login() {
 <div class="flex flex-col h-screen text-white bg-primary-dark">
   <main class="z-30 flex-1 overflow-y-visible">
     <div class="flex flex-col text-center justify-items-center pt-11">
-      <h1 class="font-bold ">You got us!</h1>
+      <h1 class="font-bold ">{$_("dapps.o-homepage.pages.learn.youGotUs")}</h1>
       <h2 class="font-thin  pt-11">
-        We're currently actively working on this.<br />All Data will be re-set
-        when we launch.
+        {$_("dapps.o-homepage.pages.learn.excuse1")}<br />{$_("dapps.o-homepage.pages.learn.excuse2")}
       </h2>
     </div>
   </main>
@@ -30,7 +30,7 @@ function login() {
           width="15px"
           class="mr-3"
           src="/images/common/circles.png"
-          alt="circles.land" /> Login
+          alt="circles.land" /> {$_("dapps.o-homepage.pages.learn.login")}
       </button>
     </div>
   </footer>
