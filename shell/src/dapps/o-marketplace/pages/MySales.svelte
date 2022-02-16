@@ -111,16 +111,10 @@ export let routable: Routable;
               </div>
               <div
                 class="inline-block text-xs"
-                class:text-inactive="{!sale.invoices[0].sellerSignature &&
-                  !sale.invoices[0].buyerSignature}"
-                class:text-info="{(sale.invoices[0].sellerSignature &&
-                  !sale.invoices[0].buyerSignature) ||
-                  (!sale.invoices[0].sellerSignature &&
-                    sale.invoices[0].buyerSignature)}"
-                class:text-success="{sale.invoices[0].buyerSignature &&
-                  sale.invoices[0].sellerSignature}">
+                class:text-inactive="{!sale.invoices[0].sellerSignature}"
+                class:text-success="{sale.invoices[0].sellerSignature}">
                 <span> picked up </span>
-                {#if sale.invoices[0].buyerSignature && sale.invoices[0].sellerSignature}
+                {#if sale.invoices[0].sellerSignature}
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {:else}
                   <Icons icon="closex" size="{2}" customClass="inline" />

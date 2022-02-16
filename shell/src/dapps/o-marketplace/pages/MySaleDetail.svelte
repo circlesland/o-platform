@@ -21,7 +21,7 @@ import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { displayableName } from "../../../shared/functions/stringHelper";
 import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
-import { purchases } from "../../../shared/stores/purchases";
+import QrCode from "svelte-qrcode";
 import { sales } from "../../../shared/stores/sales";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -78,10 +78,7 @@ async function load() {
     };
     if (!sale.invoices[0].sellerSignature) {
       actions.push(pickUpAction);
-    } else if (
-      sale.invoices[0].sellerSignature &&
-      !sale.invoices[0].buyerSignature
-    ) {
+    } else if (sale.invoices[0].sellerSignature) {
       actions.push(unPickUpAction);
     }
     actions.push(
@@ -261,6 +258,11 @@ onMount(async () => {
             <h1 class="text-6xl uppercase font-heading">
               {invoice.pickupCode}
             </h1>
+            <div class="container">
+              <center>
+                <QrCode value="{invoice.pickupCode}" color="#081B4A" />
+              </center>
+            </div>
           {/if}
         </div>
       </div>

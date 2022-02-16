@@ -1,85 +1,55 @@
 <script type="ts">
-import {
-  AggregateType,
-  CompleteSaleDocument,
-  InvoiceDocument,
-  Profile,
-  QueryInvoiceArgs,
-  Sale,
-} from "../../../shared/api/data/types";
+import { Sale } from "../../../shared/api/data/types";
 import QrScanner from "qr-scanner";
 import { onMount } from "svelte";
-
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { sales } from "../../../shared/stores/sales";
 import { push } from "svelte-spa-router";
+import { showToast } from "../../../shared/toast";
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
-
-let videoContainer = document.getElementById("video-container");
-
-let camHasFlash = document.getElementById("cam-has-flash");
-let flashToggle = document.getElementById("flash-toggle");
-let flashState = document.getElementById("flash-state");
-
-let fileSelector = document.getElementById("file-selector");
-let fileQrResult = document.getElementById("file-qr-result");
-let isLoading = false;
 let sale: Sale;
-
 let video: HTMLVideoElement;
-let startButton;
-let stopButton;
 let scanner: QrScanner;
 let camQrResult: HTMLElement;
 let camList: HTMLElement;
 let camHasCamera: HTMLElement;
+let statusText: string = "";
 
 $: {
   camQrResult = camQrResult;
 }
 
 async function loadSale(id) {
+  scanner.stop();
+  statusText = "verifying Order...";
   sale = await sales.findByPickupCode(id);
+  console.log("ID: ", id);
   console.log("SALE: ", sale);
   if (!sale) {
+    statusText = "invalid Order Code, please try a different one.";
+    startScanner();
     return;
   }
+
+  await sales.completeSale(sale.invoices[0].id);
+  // showToast("success", "Purchase marked as delivered");
+  // push("#/marketplace/my-sales");
   return sale;
 }
 
 async function setResult(label, result) {
   label.textContent = result.data;
-
   label.style.color = "teal";
+
   clearTimeout(label.highlightTimeout);
   label.highlightTimeout = setTimeout(
     () => (label.style.color = "inherit"),
     100
   );
-  const foundSale = await loadSale(result.data);
-  console.log("FOUND", foundSale);
 
-  if (foundSale) {
-    scanner.stop();
-    console.log("SALES BEFORE", sales);
-    // await sales.completeSale(sale.invoices[0].id);
-    console.log("SALES AFTER", sales);
-    // push(`#/marketplace/my-sales/${foundSale.id}`);
-  }
+  loadSale(result.data);
 }
-// ####### Web Cam Scanning #######
-onMount(() => {
-  scanner = new QrScanner(video, (result) => setResult(camQrResult, result), {
-    onDecodeError: (error) => {
-      // console.log("CAMQRRESULT", camQrResult);
-    },
-    highlightScanRegion: true,
-    highlightCodeOutline: true,
-  });
 
+function startScanner() {
   scanner.start().then(() => {
     // List cameras after the scanner started to avoid listCamera's stream and the scanner's stream being requested
     // at the same time which can result in listCamera's unconstrained stream also being offered to the scanner.
@@ -94,12 +64,23 @@ onMount(() => {
       })
     );
   });
+  scanner.setInversionMode("both");
+}
+// ####### Web Cam Scanning #######
+onMount(() => {
+  scanner = new QrScanner(video, (result) => setResult(camQrResult, result), {
+    onDecodeError: (error) => {
+      console.log("CAMQRRESULT", camQrResult);
+    },
+    highlightScanRegion: true,
+    highlightCodeOutline: true,
+  });
+
+  startScanner();
 
   // QrScanner.hasCamera().then(
   //   (hasCamera) => (camHasCamera.textContent = hasCamera)
   // );
-
-  scanner.setInversionMode("both");
 
   camList.addEventListener("change", (event) => {
     scanner.setCamera(event.target.value);
@@ -110,6 +91,9 @@ onMount(() => {
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <div class="w-full text-center">
     <h1 class="text-3xl uppercase font-heading">Scan to hand out purchase</h1>
+  </div>
+  <div class="w-full text-center">
+    <span class="text-dark-lightest">{statusText}</span>
   </div>
 
   <div class="w-full">

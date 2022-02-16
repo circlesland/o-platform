@@ -105,14 +105,7 @@ onMount(async () => {
         actions.push(pickUpAction);
       },
     };
-    if (!purchase.invoices[0].buyerSignature) {
-      actions.push(pickUpAction);
-    } else if (
-      purchase.invoices[0].buyerSignature &&
-      !purchase.invoices[0].sellerSignature
-    ) {
-      actions.push(unPickUpAction);
-    }
+
     actions.push(
       {
         icon: "transactions",
@@ -267,7 +260,7 @@ onMount(async () => {
             </h1>
             <div class="container">
               <center>
-                <QrCode value="{invoice.pickupCode}" />
+                <QrCode value="{invoice.pickupCode}" color="#081B4A" />
               </center>
             </div>
           {/if}
