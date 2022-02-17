@@ -14536,10 +14536,10 @@ supports-hyperlinks@^2.0.0:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
 
-svelecte@^3.5.6:
-  version "3.5.6"
-  resolved "https://registry.npmjs.org/svelecte/-/svelecte-3.5.6.tgz"
-  integrity sha512-I7V5AeiIcF/hSme8Ld4w6/RO1ADsDklrm3UpE3Yng7xGRT+6onXw+yMGfr28EIiURLaOPXCsjr7f3e1MnYf6NQ==
+svelecte@^3.2.1:
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/svelecte/-/svelecte-3.5.7.tgz#105c17b8a662be5ab9932b1df2d3bc97936202a9"
+  integrity sha512-nydoiYe/nDKc83/q02o9kXvViNd/LfDLFhXX/IdAX4cgfJonRh8f4A+YtsrA7cpxvViR5qjoqIDqXbdG9JwbkQ==
   dependencies:
     svelte-tiny-virtual-list "^1.1.7"
 
@@ -14552,6 +14552,11 @@ svelte-dev-helper@^1.1.9:
   version "1.1.9"
   resolved "https://registry.npmjs.org/svelte-dev-helper/-/svelte-dev-helper-1.1.9.tgz"
   integrity sha1-fRh9tcbNu9ZNdaMvkbiZi94yc8M=
+
+svelte-easy-crop@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.npmjs.org/svelte-easy-crop/-/svelte-easy-crop-1.0.7.tgz"
+  integrity sha512-7+AJJsS38dRYDxdfpOvykRzZyRD0/NsthZTS/Ig5KWYM8W63ILWBhx1cu6i0RBA4898rfJMlTDldE81pfEw3yw==
 
 svelte-file-dropzone@^0.0.15:
   version "0.0.15"

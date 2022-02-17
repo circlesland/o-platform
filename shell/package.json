@@ -47,13 +47,12 @@
     "bip39": "^3.0.3",
     "yup": "^0.32.11",
     "vis-data": "^7.1.2",
-
     "vis-network": "^9.0.1",
     "svelecte": "^3.2.1",
     "svelte-i18n": "3.3.13"
-
   },
   "devDependencies": {
+    "svelte-easy-crop": "^1.0.7",
     "qr-scanner": "^1.4.0",
     "svelte-qrcode": "^1.0.0",
     "svelecte": "^3.5.6",
@@ -111,5 +110,7 @@
     "pdfkit": "^0.13.0",
     "@types/pdfkit": "^0.12.3"
   },
-  "browserslist": ["defaults"]
+  "browserslist": [
+    "defaults"
+  ]
 }
