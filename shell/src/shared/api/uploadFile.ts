@@ -40,8 +40,11 @@ const processDefinition = (processId: string) =>
               `${Environment.apiEndpointUrl}/upload`,
               {
                 headers: {
-                  "content-type": "application/json",
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  Cache: "no-cache",
                 },
+                credentials: "include",
                 method: "POST",
                 body: JSON.stringify({
                   fileName: `${Generate.randomHexString(14)}.jpg`,
