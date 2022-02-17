@@ -10,10 +10,6 @@ export class Environment {
     return "__API_ENDPOINT__";
   }
 
-  public static get filesEndpointUrl(): string {
-    return "__FILES_ENDPOINT__";
-  }
-
   public static get appId(): string {
     return "__APP_ID__";
   }
