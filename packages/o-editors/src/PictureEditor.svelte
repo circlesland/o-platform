@@ -31,15 +31,6 @@ $: {
   }
 }
 
-function onFileSelected(e) {
-  let imageFile = e.target.files[0];
-  let reader = new FileReader();
-  reader.onload = (e) => {
-    image = e.target.result;
-  };
-  reader.readAsDataURL(imageFile);
-}
-
 function handleFilesSelect(e) {
   const { acceptedFiles, fileRejections } = e.detail;
   files.accepted = [...files.accepted, ...acceptedFiles];
@@ -96,6 +87,7 @@ async function submit() {
     bytes: croppedImage,
   };
   context.process.sendAnswer(answer);
+  console.log("SOLLTE EIGENTLICH WAS MACHEN...");
 }
 </script>
 
