@@ -80,7 +80,7 @@ onMount(async () => {
 
     if (transfer.payload) {
       if (transfer.payload?.__typename == "CrcMinting") {
-        message = "Universal Basic Income";
+        message = window.i18n("dapps.o-banking.pages.transactionDetail.ubi");
       } else {
         message = transfer.payload.tags?.find(
           (o) => o.typeId === "o-banking:transfer:message:1"
@@ -172,11 +172,11 @@ function openDetail(transfer: ProfileEvent) {
         }}">
         {#if transfer.direction === "in"}
           <span class="mt-4 text-xl break-words">
-            from {displayableName ? displayableName : ""}
+            {$_("dapps.o-banking.pages.transactionDetail.from")} {displayableName ? displayableName : ""}
           </span>
         {:else}
           <span class="mt-4 text-xl break-words">
-            to {displayableName ? displayableName : ""}
+            {$_("dapps.o-banking.pages.transactionDetail.to")} {displayableName ? displayableName : ""}
           </span>
         {/if}
       </div>

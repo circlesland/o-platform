@@ -3,6 +3,7 @@ import { cartContents, totalPrice } from "../stores/shoppingCartStore";
 import CartItems from "../molecules/CartItems.svelte";
 import { push } from "svelte-spa-router";
 import { purchase } from "../processes/purchase";
+import { _ } from "svelte-i18n";
 
 function checkout() {
   window.o.runProcess(purchase, cartContents);
@@ -19,7 +20,7 @@ function handleClickOutside(event) {
 <div class="p-5">
   <header>
     <div class="w-full text-center">
-      <h1 class="text-3xl uppercase font-heading">Cart</h1>
+      <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-marketplace.pages.shoppingCart.cart")}</h1>
     </div>
   </header>
 
@@ -32,7 +33,7 @@ function handleClickOutside(event) {
               <CartItems cartContents="{cartContents}" />
               <div class="flex items-center justify-end">
                 <span class="mr-2 text-sm font-medium text-gray-400"
-                  >Total:</span
+                  >{$_("dapps.o-marketplace.pages.shoppingCart.total")}</span
                 ><span class="text-lg font-bold"
                   >{$totalPrice.toFixed(2)}
                   <span class="font-enso">€</span></span>
@@ -42,7 +43,7 @@ function handleClickOutside(event) {
                   <div class="flex-grow">
                     <button
                       class="h-auto btn-block btn btn-primary"
-                      on:click="{() => checkout()}">Check Out</button>
+                      on:click="{() => checkout()}">{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}</button>
                   </div>
                 </div>
               </div>
@@ -52,12 +53,12 @@ function handleClickOutside(event) {
       </div>
     </div>
   {:else}
-    <p class="mt-6 text-center">Your cart is empty!</p>
+    <p class="mt-6 text-center">{$_("dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty")}</p>
     <div class="w-full mt-6">
       <button
         class="h-auto btn-block btn btn-light"
         on:click="{(event) => handleClickOutside(event)}"
-        >Continue Shopping</button>
+        >{$_("dapps.o-marketplace.pages.shoppingCart.continueShopping")}</button>
     </div>
   {/if}
 </div>

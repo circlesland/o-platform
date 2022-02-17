@@ -48,16 +48,16 @@ let currency = Currency.instance();
 
 const editorContent: { [x: string]: EditorViewContext } = {
   summary: {
-    title: "Check out",
-    description: "You are about to transfer",
-    placeholder: "",
-    submitButtonText: "Buy now",
+    title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.title"),
+    description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.description"),
+    placeholder: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.placeholder"),
+    submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
   },
   success: {
-    title: "Check out successful",
-    description: "Thank you for your purchase.",
-    placeholder: "",
-    submitButtonText: "Close",
+    title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.title"),
+    description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.description"),
+    placeholder: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.placeholder"),
+    submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
   },
 };
 
@@ -99,7 +99,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Processing your purchase ..`,
+            message: window.i18n("dapps.o-marketplace.processes.purchases.createPurchase.message"),
           });
         },
         invoke: {
@@ -143,7 +143,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Checking transferable circles amount ..`,
+            message: window.i18n("dapps.o-marketplace.processes.purchases.calculatePaths.message"),
           });
         },
         invoke: {
@@ -216,7 +216,7 @@ const processDefinition = (processId: string) =>
                   const pi_i = context.data.invoices.indexOf(pi_);
                   invoices = invoices.splice(pi_i, 1);
                 });
-                const errorMessage = `You don't have enough trust paths to the following sellers: ${invoices
+                const errorMessage = window.i18n("dapps.o-marketplace.processes.purchases.calculatePaths.errorMessage") + `${invoices
                   .map((o) => o.sellerAddress)
                   .join(", ")}`;
                 window.o.lastError = new Error(errorMessage);
@@ -240,7 +240,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Sending Circles ..`,
+            message: window.i18n("dapps.o-marketplace.processes.purchases.pay.message"),
           });
         },
         invoke: {
@@ -251,7 +251,7 @@ const processDefinition = (processId: string) =>
               currentInvoice.invoice.buyerAddress,
               sessionStorage.getItem("circlesKey"),
               currentInvoice.path,
-              `Payment of invoice ${currentInvoice.invoice.id}`
+              window.i18n("dapps.o-marketplace.processes.purchases.pay.paymentOfInvoice") + `${currentInvoice.invoice.id}`
             );
 
             context.data.paidInvoices.push(currentInvoice);

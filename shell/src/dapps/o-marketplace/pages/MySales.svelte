@@ -117,7 +117,7 @@ export let routable: Routable;
 
                 class:text-inactive="{!sale.invoices[0].sellerSignature}"
                 class:text-success="{sale.invoices[0].sellerSignature}">
-             <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
+              <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
                 {#if sale.invoices[0].sellerSignature}
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {:else}

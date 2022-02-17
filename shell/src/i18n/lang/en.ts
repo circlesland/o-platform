@@ -32,7 +32,10 @@ export const en = {
           "transactionDetail": {
             "paymentPath": "Payment Path",
             "fullAmountCrc": "Full amount in CRC",
-            "amountCircles": "Amount Circles"
+            "amountCircles": "Amount Circles",
+            "from": "from",
+            "to": "to",
+            "ubi": "Universal Basic Income"
           }
         },
         "processes": {
@@ -644,6 +647,118 @@ export const en = {
             "paymentPending": "payment pending",
             "pickupCode": "pick-up code",
             "pickedUp": " picked up "
+          },
+          "offerDetail": {
+            "loadingOffers": "Loading offers...",
+            "error": "An error occured while loading the recent activities:",
+            "storePickup": "Store Pick Up at:",
+            "location": "Location",
+            "addToCart": "Add to Cart",
+            "notFound": "Not found"
+          },
+          "scanPurchase": {
+            "verifyingOrder": "verifying Order...",
+            "invalitOrderCode": "invalid Order Code, please try a different one.",
+            "purchaseMarkedAsDelivered": "Purchase marked as delivered",
+            "scanToHandOut": "Scan to hand out purchase",
+            "cameraDefault": "Camera: Environment Facing (default)",
+            "cameraUserFacing": "Camera: User Facing",
+            "detectedQrCode": "Detected QR Code: ",
+            "none": "None"
+          },
+          "shoppingCart": {
+            "cart": "Cart",
+            "total": "Total:",
+            "checkOut": "Check Out",
+            "yourCartIsEmpty": "Your cart is empty!",
+            "continueShopping": "Continue Shopping"
+          }
+        },
+        "processes": {
+          "purchases": {
+            "editorContent": {
+              "summary": {
+                "title": "Check out",
+                "description": "Your are about to transfer",
+                "placeholder": " ",
+                "submitButtonText": "Buy now"
+              },
+              "success": {
+                "title": "Check out successful",
+                "description": "Thank you for your purchase.",
+                "placeholder": " ",
+                "submitButtonText": "Close"
+              }
+            },
+            "createPurchase": {
+              "message": "Processing your purchase .."
+            },
+            "calculatePaths": {
+              "message": "Checking transferable circle amount ..",
+              "errorMessage": "Your don't have enough trust paths to the following sellers: "
+            },
+            "pay": {
+              "message": "Sending Circles ..",
+              "paymentOfInvoice": "Payment of invoice "
+            }
+          },
+          "upsertOffer": {
+            "editorContent": {
+              "title": {
+                "title": "Title",
+                "description": "Enter the title of what you are selling. keep it short & sweet.",
+                "placeholder": "Title",
+                "submitButtonText": "Next"
+              },
+              "description": {
+                "title": "Description",
+                "descrption": "Describe your item in detail. Make it sound sexy. Try to make it fit into 500 Characters.",
+                "placeholder": "Item description",
+                "submitButtonText": "Next"
+              },
+              "offerLocation": {
+                "title": "Item location",
+                "description": "Select the City from which this item is being sold.",
+                "placeholder": "City",
+                "subnitButtonText": "Next"
+              },
+              "offerCategory": {
+                "title": "Select a Category",
+                "description": "Choose a category for your listing so it's easier to find.",
+                "placeholder": "Category",
+                "submitButtonText": "Next"
+              },
+              "offerUnit": {
+                "title": "Select a Unit",
+                "descrrption": "Choose a unit for your listing so it's easy to understand the amount.",
+                "placeholder": "Unit",
+                "submitButtonText": "Next"
+              },
+              "offerPrice": {
+                "title": "Price",
+                "description": "Please enter the amount of circles your want for your item.",
+                "placeholder": "Price",
+                "submitButtonText": "Next"
+              },
+              "offerUnitAmount": {
+                "title": "Amount",
+                "description": "Please enter how many of these items you are selling.",
+                "placeholder": "e.g. 1",
+                "submitButtonText": "Next"
+              },
+              "offerDelivery": {
+                "title": "Delivery",
+                "desctiption": "Please choose the delivery method for your offer.",
+                "placeholder": " ",
+                "submitButtonText": "Next"
+              },
+              "offerImage": {
+                "title": "Add a Picture",
+                "description": "Adding a Picture to your offer increases the change of being sold by 90%",
+                "placeholder": " ",
+                "submitButtonText": "Publish Offer"
+              }
+            }
           }
         }
       },
