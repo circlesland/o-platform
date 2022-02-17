@@ -50,7 +50,11 @@ const components = [
     actions: [
       {
         action: "setTrust",
-        label: `Trust ${event.contact_address_profile.firstName}`,
+        label: `Trust ${
+          event.contact_address_profile
+            ? event.contact_address_profile.firstName
+            : ""
+        }`,
       },
     ],
   },
