@@ -43,28 +43,28 @@ export type LoginWithTorusContext = ProcessContext<LoginWithTorusContextData>;
 const loginOptions = [
   {
     key: "google",
-    label: "Login with Google",
+    label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.google.label"),
     target: "#google",
     class: "btn btn-outline",
     icon: "google",
   },
   {
     key: "apple",
-    label: "Login with Apple",
+    label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.apple.label"),
     target: "#apple",
     class: "btn btn-outline",
     icon: "apple",
   },
   {
     key: "github",
-    label: "Login with Github",
+    label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.github.label"),
     target: "#github",
     class: "btn btn-outline",
     icon: "github",
   } /*
           {
             key: "email",
-            label: "Login with E-Mail",
+            label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.email.label"),
             target: "#email",
             class: "btn-info",
           }*/,
@@ -108,8 +108,8 @@ const processDefinition = (processId: string) =>
           component: HtmlViewer,
           params: {
             view: {
-              title: "Welcome",
-              submitButtonText: "Next",
+              title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.title"),
+              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.submitButtonText"),
             },
             html: (context) => `<img style="max-width:128px;" src="${
               !context.data.inviterProfile.avatarUrl 
@@ -117,8 +117,8 @@ const processDefinition = (processId: string) =>
                 : context.data.inviterProfile.avatarUrl}" /> <b>${context.data.inviterProfile.firstName
               }  ${context.data.inviterProfile.lastName 
               ? "" + context.data.inviterProfile.lastName 
-              : ""}</b> invited you to CirclesLand.<br/><br/>Click 'Next' to Login`,
-            submitButtonText: "Login",
+              : ""}${window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.htmlContext")}`,
+            submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.loginButton"),
             hideNav: false,
           },
           navigation: {
@@ -157,11 +157,10 @@ const processDefinition = (processId: string) =>
           component: ButtonStackSelector,
           params: {
             view: {
-              title: "Welcome to Cirles Land",
-              description:
-                "Please choose a sign-in option<br/> <small>By choosing one of the sign-in options you agree to our <a href='https://coda.io/@circlesland/terms' target='_blank' class='link' alt='privacy'>Terms of Service</a>.</small>",
-              placeholder: "",
-              submitButtonText: "",
+              title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.title"),
+              description: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.description"),
+              placeholder: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.placeholder"),
+              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.submitButtonText"),
             },
           },
           options: loginOptions,
@@ -173,7 +172,7 @@ const processDefinition = (processId: string) =>
             () => {
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.progress",
-                message: "Please wait, we're Signing you in",
+                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
               });
             },
             (context) => {
@@ -239,7 +238,7 @@ const processDefinition = (processId: string) =>
             () => {
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.progress",
-                message: "Please wait, we're Signing you in",
+                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
               });
             },
             (context) => {
@@ -285,7 +284,7 @@ const processDefinition = (processId: string) =>
             () => {
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.progress",
-                message: "Please wait, we're Signing you in",
+                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
               });
             },
             (context) => {
@@ -373,16 +372,15 @@ const processDefinition = (processId: string) =>
           isSensitive: true,
           params: {
             view: {
-              title: "Set a PIN to protect your account",
-              description:
-                "The pin will be used to encrypt your private key on your device. NOTE: This won't help against a sophisticated attacker but prevents casual theft. ",
-              placeholder: "Enter Pin",
-              submitButtonText: "Store private key on this device",
+              title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.title"),
+              description: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.description"),
+              placeholder: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.placeholder"),
+              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.submitButtonText"),
             },
           },
           dataSchema: yup
             .string()
-            .required("Please enter a pin to protect your private key."),
+            .required(window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.stringRequired")),
           navigation: {
             next: "#storeKey",
           },
@@ -394,17 +392,16 @@ const processDefinition = (processId: string) =>
           isSensitive: true,
           params: {
             view: {
-              title: "Please enter your pin",
-              description:
-                "The pin will be used to decrypt your private key on your device.",
-              placeholder: "Enter Pin",
-              submitButtonText: "Unlock",
+              title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.title"),
+              description: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.description"),
+              placeholder: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.placeholder"),
+              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.submitButtonText"),
             },
           },
           dataSchema: yup
             .string()
             .required(
-              "Please enter a encryptingPin to protect your private key."
+              window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.stringRequired")
             ),
           navigation: {
             next: "#unlockKey",
@@ -426,14 +423,14 @@ const processDefinition = (processId: string) =>
                   context.data.decryptionPin
                 );
               } catch (e) {
-                context.messages["decryptionPin"] = `Invalid Pin`;
+                context.messages["decryptionPin"] = window.i18n("dapps.o-onboarding.processes.loginWithTorus.invalidPin");
                 throw e;
               }
 
               if (!privateKey || privateKey == "") {
                 delete context.data.decryptionPin;
                 delete context.data.privateKey;
-                context.messages["decryptionPin"] = "Invalid Pin";
+                context.messages["decryptionPin"] = window.i18n("dapps.o-onboarding.processes.loginWithTorus.invalidPin");
                 throw new Error(context.messages["decryptionPin"]);
               }
 

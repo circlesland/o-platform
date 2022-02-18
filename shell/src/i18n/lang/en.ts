@@ -762,8 +762,242 @@ export const en = {
           }
         }
       },
-      "o-onboardeing": "",
-      "o-passport": "",
+      "o-onboarding": {
+        "processes": {
+          "connectOrCreate": {
+            "promptConnectOrCreate": {
+              "editorContent": {
+                "info": {
+                  "title": "Create Safer",
+                  "descriptopn": "In the next steps you can create your account on the blockchain ..",
+                  "submitButtonText": "Next"
+                },
+                "connectOrCfreate": {
+                  "title": "Connect or create?",
+                  "description": "Choose your screnario",
+                  "placeholder": " ",
+                  "submitButtonText": " "
+                }
+              },
+              "processDefinition": {
+                "connectOrCreate": {
+                  "options": {
+                    "newSafe": "I'm new, create everything for me",
+                    "importSafe": "I already have a safe"
+                  }
+                },
+                "newSafe": {
+                  "message": "Please wait while we create your Safe on the Blockchain."
+                },
+                "privateKeyNotUnlocked": "The private key is not unlocked",
+                "couldNotUpdate": "Couldn't update the profile with the generated eoa: ${result}",
+                "errorWhileDeploying": "An error occured while deploying your safe:",
+              }
+            }
+          },
+          "invitation": {
+            "buyInvitation": {
+              "editorContent": {
+                "info": {
+                  "title": "Get invited",
+                  "description": "Find somebody who can give you an invite code to join.",
+                  "submitButtonText": "I have a code"
+                },
+                "checkInviteCode": {
+                  "title": "Enter invitation code",
+                  "description": "Please enter you invitation code below to get started.",
+                  "submitButtonText": "Verify"
+                },
+                "dataShcemaRequired": "Please enter a valid invitation code to proceed",
+                "couldNotClaimInvitation": "Couldn't claim an invitation: {contextMessages}"
+              }
+            },
+            "promptGetInvited": {
+              "editorContent": {
+                "info": {
+                  "title": "Get Invited",
+                  "description": "find somebody who can give you an invite code to join.",
+                  "submitButtonText": "I have a code"
+                },
+                "checkInviteCode": {
+                  "title": "Enter invitation code",
+                  "description": "Please enter you invitation code below to get started.",
+                  "submitButtonText": "Verify"
+                }
+              },
+              "dataSchemaRequired": "Please enter a valid invitation code to proceed.",
+              "couldNotClaimInvitation": "Couldn't claim an invitation: {contextMessages}"
+            },
+            "promptRedeemInvitation": {
+              "editorContent": {
+                "info": {
+                  "title": "Redeem your invitation",
+                  "description": "We will now redeem your invitation. This could take a while...",
+                  "submitButtonText": "Next"
+                },
+                "waitUntilRedeemed": {
+                  "title": "Please Wait",
+                  "description": "Please wait until your invitation transaction got confirmed and try again in a frew seconds.",
+                  "submitButtonText": "Try again"
+                }
+              },
+              "redeemInvitation": {
+                "message": "Please wait, redeeming your Invitation...",
+                "error": "Couldn't redeem an invitation: {contextMessages}",
+                "onError": "The following error occurred while redeeming you claimed invitation:"
+              },
+              "checkIfRedeemed": {
+                "notYetRedeemed": "Invitation is not yet redeemed."
+              }
+            }
+          },
+          "registration": {
+            "promptRegistration": {
+              "editorContent": {
+                "newsletter": {
+                  "title": "Newsletter",
+                  "description": "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
+                  "placeholder": " ",
+                  "submitButtonText": " ",
+                }
+              },
+              "noThanks": "No thanks",
+              "yesPlease": "Yes please",
+
+            }
+          },
+          "unlockKey": {
+            "unlockKey": {
+              "enterDecryptionPinParams": {
+                "title": "Please enter your pin",
+                "description": "The pin will be used to decrypt your private key on your device.",
+                "placeholder": "Enter Pin",
+                "submitButtonText": "Unlock"
+              },
+              "dataSchemaRequired": "Please enter a encryptingPin to protect your private key.",
+              "couldNotDecrypt": "Couldn't decrypt your key. Have you entered the correct pin?"
+            }
+          },
+          "connectSafe": {
+            "editorContent": {
+              "seedPhrase": {
+                "title": "CONNECT RECOVERY CODE",
+                "description": "Please enter your 24 secret recovery code (seedphrase) <br /><br /><span class='text-xs'>Your secret recovery code will be stored only in your device</span>",
+                "placeholder": "Recovery Code",
+                "submitButtonText": "Connectr recovery code"
+              },
+              "addOwnerInfo": {
+                "title": "Add owner to safe",
+                "description": "We'll add your new key as owner to your existing safe. Your previous key will stay an owner as well.",
+                "placeholder": " ",
+                "submitButtonText": "Proceed"
+              },
+              "accountIsDeadInfo": {
+                "title": "Safe deactivated",
+                "description": "The selected safe received no UBI for more than 90 days and was deactivated. You can still use your Circles and transfer them to your new safe.",
+                "placeholder": " ",
+                "submitButtonText": "Create new safe"
+              }
+            },
+            "safeInfoFromSeedphrase": {
+              "seedphraseError": "The seedphrase cannot be converted to a private key. Please double check it.",
+              "foundNoSafes": "Found no safes with a positive CRC balance that are owned by "
+            },
+            "selectSafe": {
+              "title": "We found multiple safes for your key",
+              "description": "Please select the one you want to connect with your circles.land profile",
+              "submitButtonText": "Connect",
+              "placeholder": " "
+            },
+            "addNewOwnerInfo": "We will add a new owner to your safe. No worries we keep your old key as owner too.",
+            "addNewOwner": "Adding new owner ..",
+            "updateRegistration": {
+              "importingYourOrganisations": "Importing your organisations ..",
+              "addingYouAsAwoner": "Adding you as owner to {orgaName} .."
+            },
+            "publishEvent": "Updating your profile .."
+          },
+          "fromCirclesLand": {
+            "seedPhraseParams": {
+              "label": "Please enter your seedphrase",
+              "placeholder": "Seedphrase",
+              "submitButtonText": "Store on this device"
+            },
+            "checkSeedphrase": {
+              "errors": {
+                "cannotConvertToPrivateKey": "The seedphrase cannot be converted to a private key. Please double check it.",
+                "cannotConvertToEthereum": "The key that was generated from the seedphrase cannot be converted to an ethereum account.",
+                "errorWhileTryingToFindSafe": "An error occurred while we tried to find your safe: {error}",
+                "couldNotFindSafe": "We couldn't find a safe for your account {accountAddress}"
+              }
+            },
+            "chooseSafeAddress": {
+              "label": "We found multiple safes for your account. Please select the one you want to connect.",
+              "placeholder": "Click to select a safe",
+              "submitButtonText": "Connect"
+            },
+            "checkSafeAddress": {
+              "error": "Couldn't determine the owner of safe {addressToCheck}. Is the address right?"
+            }
+          },
+          "loginWithTorus": {
+            "loginOptions": {
+              "google": {
+                "label": "Login with Google"
+              },
+              "apple": {
+                "label": "Login with Apple"
+              },
+              "github": {
+                "label": "Login with Github"
+              },
+              "email": {
+                "label": "Login with E-Mail"
+              }
+            },
+            "showInviteMessage": {
+              "title": "Welcome",
+              "submitButtonText": "Next",
+              "htmlContext": "</b> invited you to CirclesLand.<br/><br/>Click 'Next' to Login",
+              "loginButton": "Login"
+            },
+            "chooseFlowParams": {
+              "title": "Welcome to Circles Land",
+              "description": "Please choose a sign-in option<br/> <small>By choosing one of the sign-in options you agree to our <a href='https://coda.io/@circlesland/terms' target='_blank' class='link' alt='privacy'>Terms of Service</a>.</small>",
+              "placeholder": " ",
+              "submitButtonText": " "
+            },
+            "pleaseWaitWeSigningYouIn": "Please wait, we're Signing you in",
+            "enterEncryptionPinParams": {
+              "title": "Set a PIN to protect your account",
+              "description": "The pin will be used to encrypt your private key on your device. NOTE: This won't help against a sophisticated attacker but prevents casual theft. ",
+              "placeholder": "Enter Pin",
+              "submitButtonText": "Store private key on this device",
+              "stringRequired": "Please enter a pin to protect your private key."
+            },
+            "enterDecryptionPinParams": {
+              "title": "Please enter your pin",
+              "description": "The pin will be used to decrypt your private key on your device.",
+              "placeholder": "Enter Pin",
+              "submitButtonText": "Unlock",
+              "stringRequired": "Please enter a encryptingPin to protect your private key"
+            },
+            "invalidPn": "Invalid Pin"
+          }
+        }
+      },
+      "o-passport": {
+        "atoms": {
+          "accountCard": {
+            "secretRecoveryCode": "Secret recovery code"
+          }
+        },
+        "pages": {
+          "account": {
+            "subTitle": "Main Account holder"
+          }
+        }
+      },
       "o-stats": "",
       "o-verification": ""
     },

@@ -7,6 +7,7 @@ import { me } from "../../../shared/stores/me";
 import { KeyManager } from "../data/keyManager";
 import AccountCard from "../atoms/AccountCard.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -38,7 +39,7 @@ $: {
           ? `${$me.firstName} ${$me.lastName}`
           : $me.firstName
         : '',
-      subTitle: 'Main Account holder',
+      subTitle: "Main Account holder",
       truncateMain: true,
     }}">
     <div slot="itemCardEnd">

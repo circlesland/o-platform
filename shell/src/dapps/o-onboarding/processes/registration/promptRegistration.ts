@@ -18,11 +18,10 @@ export type UpsertRegistrationContext = ProcessContext<UpsertRegistrationContext
 
 const editorContent: { [x: string]: EditorViewContext } = {
   newsletter: {
-    title: "Newsletter",
-    description:
-      "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
-    placeholder: "",
-    submitButtonText: "",
+    title: window.i18n("dapps.o-onboarding.processes.registration.promptRegistratoin.editorContent.newsletter.title"),
+    description: window.i18n("dapps.o-onboarding.processes.registration.promptRegistratoin.editorContent.newsletter.description"),
+    placeholder: window.i18n("dapps.o-onboarding.processes.registration.promptRegistratoin.editorContent.newsletter.placeholder"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.registration.promptRegistratoin.editorContent.newsletter.submitButtontext"),
   },
 };
 
@@ -42,7 +41,7 @@ const processDefinition = (processId: string) =>
         options: [
           {
             key: "dontSubscribe",
-            label: "No thanks",
+            label: window.i18n("dapps.o-onboarding.processes.registration.promptRegistratoin.noThanks"),
             target: "#upsertRegistration",
             action: (context) => {
               context.data.newsletter = false;
@@ -50,7 +49,7 @@ const processDefinition = (processId: string) =>
           },
           {
             key: "subscribe",
-            label: "Yes please",
+            label: window.i18n("dapps.o-onboarding.processes.registration.promptRegistratoin.yesPlease"),
             target: "#upsertRegistration",
             action: (context) => {
               context.data.newsletter = true;

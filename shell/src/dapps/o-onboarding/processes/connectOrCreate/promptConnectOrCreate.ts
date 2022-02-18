@@ -24,16 +24,15 @@ export type PromptConnectOrCreateContext =
 
 const editorContent = {
   info: {
-    title: "Create a safe",
-    description:
-      "In the next steps you can create your account on the blockchain ..",
-    submitButtonText: "Next",
+    title: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.title"),
+    description: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.description"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.submitButtonText"),
   },
   connectOrCreate: {
-    title: "Connect or create?",
-    description: "Choose your scenario",
-    placeholder: "",
-    submitButtonText: "",
+    title: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.title"),
+    description: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.description"),
+    placeholder: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.placeolder"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.submitButtonText"),
   },
 };
 const processDefinition = (processId: string) =>
@@ -61,14 +60,14 @@ const processDefinition = (processId: string) =>
         options: [
           {
             key: "newSafe",
-            label: "I'm new, create everything for me",
+            label: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.connectOrCreate.newSafe"),
             target: "#newSafe",
             class: "btn btn-outline",
             action: (context) => {},
           },
           {
             key: "importSafe",
-            label: "I already have a safe",
+            label: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.importSafe"),
             target: "#importSafe",
             class: "btn btn-outline",
             action: (context) => {},
@@ -83,7 +82,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: "Please wait while we create your Safe on the Blockchain.",
+            message: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.newSafe.message"),
           });
         },
         invoke: {
@@ -92,7 +91,7 @@ const processDefinition = (processId: string) =>
 
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(`The private key is not unlocked.`);
+              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.privatKeyNotUnlocked"));
             }
 
             const proxyFactory = new GnosisSafeProxyFactory(
@@ -116,16 +115,14 @@ const processDefinition = (processId: string) =>
 
             if (result.errors) {
               throw new Error(
-                `Couldn't update the profile with the generated eoa: ${JSON.stringify(
-                  result.errors
-                )}`
+                window.i18n("dapps.o-onboarding.processes.connectOrCreate.promtConnectOrCreate.couldNotUpdate", {values: {result: JSON.stringify(result.errors)}})
               );
             }
           },
           onDone: "success",
           onError: {
             actions: (context, event) => {
-              console.error(`An error occurred while deploying your safe:`, event);
+              console.error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promtConnectOrCreate.errorWhileDeploying"), event);
               throw new Error(event.data);
             },
             target: "success"
@@ -140,7 +137,7 @@ const processDefinition = (processId: string) =>
 
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(`The private key is not unlocked.`);
+              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promtConnectOrCreate.privateKeyNotUnlocked"));
             }
 
             const innerSuccessAction = context.data.successAction;

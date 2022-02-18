@@ -42,25 +42,22 @@ export type PromptConnectOrCreateContext =
 
 const editorContent = {
   seedPhrase: {
-    title: "CONNECT RECOVERY CODE",
-    description: `Please enter your 24 secret recovery code (seedphrase) 
-      <br />
-      <br />
-      <span class="text-xs">Your secret recovery code will be stored only in your device</span>`,
-    placeholder: "Recovery Code",
-    submitButtonText: "Connect recovery code",
+    title: window.i18n("dapps.o-onboarding.connectSafe.editorContext.seedPhrase.title"),
+    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.seedPhrase.description"),
+    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.seedPhrase.placeholder"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.seedPhrase.submitButtonText"),
   },
   addOwnerInfo: {
-    title: "Add owner to safe",
-    description: `We'll add your new key as owner to your existing safe. Your previous key will stay an owner as well.`,
-    placeholder: "",
-    submitButtonText: "Proceed",
+    title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.addOwnerInfo.title"),
+    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.addOwnerInfo.description"),
+    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.addOwnerInfo.placeholder"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.addOwnerInfo.submitButtonText"),
   },
   accountIsDeadInfo: {
-    title: "Safe deactivated",
-    description: "The selected safe received no UBI for more than 90 days and was deactivated. You can still use your Circles and transfer them to your new safe.",
-    placeholder: "",
-    submitButtonText: "Create new safe"
+    title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.accountIsDeadInfo.title"),
+    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.accountIsDeadInfo.description"),
+    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.accountIsDeadInfo.placeholder"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.accountIsDeadInfo.submitButtonText")
   }
 };
 
@@ -72,7 +69,7 @@ async function safeInfoFromSeedphrase(context:ConnectSafeContext) : Promise<Conn
   } catch (e) {
     return {
       success: false,
-      errorMessage: `The seedphrase cannot be converted to a private key. Please double check it.`
+      errorMessage: window.i18n("dapps.o-onboarding.processes.connectSafe.safeInfoFromSeedphrase.seedphraseError")
     };
   }
 
@@ -86,7 +83,7 @@ async function safeInfoFromSeedphrase(context:ConnectSafeContext) : Promise<Conn
   if (candidates.length == 0) {
     return {
       success: false,
-      errorMessage: `Found no safes with a positive CRC balance that are owned by ${importedAccount.address.toLowerCase()}.`
+      errorMessage: window.i18n("dapps.o-onboarding.processes.connectSafe.safeInfoFromSeedphrase.foundNoSafes") + `${importedAccount.address.toLowerCase()}.`
     };
   }
 
@@ -169,12 +166,12 @@ const processDefinition = (processId: string) =>
           component: SimpleDropDownEditor,
           params: <DropdownSelectorParams<PromptConnectOrCreateContext, SafeInfo, string>> {
             view: {
-              title: "We found multiple safes for your key",
-              description: "Please select the one you want to connect with your circles.land profile",
-              submitButtonText: "Connect",
+              title: window.i18n("dapps.o-onboarding.processes.selectSafe.title"),
+              description: window.i18n("dapps.o-onboarding.processes.selectSafe.description"),
+              submitButtonText: window.i18n("dapps.o-onboarding.processes.selectSafe.submitButtonText"),
             },
-            placeholder: "",
-            submitButtonText: "Connect",
+            placeholder: window.i18n("dapps.o-onboarding.processes.selectSafe.placeholder"),
+            submitButtonText: window.i18n("dapps.o-onboarding.processes.selectSafe.submitButtonText"),
             itemTemplate: DropDownCandidateSafe, // TODO: This is not used by the SimpleDropDownEditor
             getKey: (o) => o.safeAddress,
             getLabel: (o) => {
@@ -231,7 +228,7 @@ const processDefinition = (processId: string) =>
           params: {
             view: editorContent.addOwnerInfo,
             html: () =>
-              "We will add a new owner to your safe. No worries we keep your old key as owner too.",
+              window.i18n("dapps.o-onboarding.processes.connectSafe.addOwnerInfo"),
             hideNav: false,
           },
           navigation: {
@@ -244,7 +241,7 @@ const processDefinition = (processId: string) =>
           entry: () => {
             window.o.publishEvent(<PlatformEvent>{
               type: "shell.progress",
-              message: "Adding new owner ..",
+              message: window.i18n("dapps.o-onboarding.processes.connectSafe.addNewOwner"),
             });
           },
           invoke: {
@@ -312,7 +309,7 @@ const processDefinition = (processId: string) =>
 
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.progress",
-                message: "Importing your organisations ..",
+                message: window.i18n("dapps.o-onboarding.processes.connectSafe.updateRegistration.importingYourOrganisations"),
               });
 
               const importedOrganisations = await apiClient.mutate({
@@ -334,7 +331,7 @@ const processDefinition = (processId: string) =>
               for (let orga of orgas) {
                 window.o.publishEvent(<PlatformEvent>{
                   type: "shell.progress",
-                  message: `Adding you as owner to ${orga.name} ..`
+                  message: window.i18n("dapps.o-onboarding.processes.connectSafe.updateRegistration.addingYouAsOwner", {values: {orgaName: orga.name}}),
                 });
                 try {
                   const safeProxy = new GnosisSafeProxy(RpcGateway.get(), orga.circlesAddress);
@@ -350,7 +347,7 @@ const processDefinition = (processId: string) =>
 
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.progress",
-                message: "Updating your profile ..",
+                message: window.i18n("dapps.o-onboarding.processes.connectSafe.publishEvent"),
               });
 
               const $me = await loadProfile();

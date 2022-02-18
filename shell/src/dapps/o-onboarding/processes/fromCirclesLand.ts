@@ -45,9 +45,9 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         isSensitive: true,
         params: {
-          label: "Please enter your seedphrase",
-          placeholder: "Seedphrase",
-          submitButtonText: "Store on this device",
+          label: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.seedPhraseParams.label"),
+          placeholder: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.seedPhraseParams.placeholder"),
+          submitButtonText: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.seedPhraseParams.submitButtonText"),
         },
         navigation: {
           next: "#checkSeedphrase",
@@ -71,7 +71,7 @@ const processDefinition = (processId: string) =>
             } catch (e) {
               context.messages[
                 "seedPhrase"
-              ] = `The seedphrase cannot be converted to a private key. Please double check it.`;
+              ] = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.cannotConvertToPrivateKey");
               throw e;
             }
 
@@ -83,7 +83,7 @@ const processDefinition = (processId: string) =>
             } catch (e) {
               context.messages[
                 "seedPhrase"
-              ] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
+              ] = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.cannotConvertToEthereum");
               throw e;
             }
 
@@ -115,9 +115,7 @@ const processDefinition = (processId: string) =>
               });
 
               if (foundSafes.errors && foundSafes.errors.length) {
-                const msg = `An error occurred while we tried to find your safe: ${JSON.stringify(
-                  foundSafes.errors
-                )}`;
+                const msg = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.errorWhileTryingToFindSafe", { values: { error: JSON.stringify(foundSafes.errors)}});
                 context.messages["seedPhrase"] = msg;
                 throw new Error(msg);
               }
@@ -127,7 +125,7 @@ const processDefinition = (processId: string) =>
                 .map((o) => o.id);
 
               if (!context.data.foundSafeAddresses.length) {
-                const msg = `We couldn't find a safe for your account ${account.address}`;
+                const msg = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.couldNotFindSafe", { values: { accountAdress: account.address }});
                 context.messages["seedPhrase"] = msg;
                 throw new Error(msg);
               }
@@ -171,10 +169,9 @@ const processDefinition = (processId: string) =>
         field: "chooseSafeAddress",
         component: DropdownSelectEditor,
         params: <DropdownSelectorParams<ConnectSafeContext, string, string>>{
-          label:
-            "We found multiple safes for your account. Please select the one you want to connect.",
-          placeholder: "Click to select a safe",
-          submitButtonText: "Connect",
+          label: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.chooseSafeAddress.label"),
+          placeholder: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.chooseSafeAddress.placeholder"),
+          submitButtonText: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.chooseSafeAddress.submitButtonText"),
           itemTemplate: DropDownString,
           getKey: (safeAddress: any) => safeAddress.value,
           getLabel: (safeAddress: any) => safeAddress.label,
@@ -215,7 +212,7 @@ const processDefinition = (processId: string) =>
             } catch (e) {
               context.messages[
                 "chooseSafeAddress"
-              ] = `Couldn't determine the owner of safe ${addressToCheck}. Is the address right?`;
+              ] = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSafeAddress.error", { values: { addressToCheck: addressToCheck}});
 
               throw e;
             }

@@ -81,7 +81,7 @@ const processDefinition = (processId: string) =>
         },
         dataSchema: yup
           .string()
-          .required("Please enter a valid invitation code to proceed."),
+          .required(window.i18n("dapps.o-onboarding.processes.invitation")),
         navigation: {
           next: "#redeemCode",
         },
@@ -103,14 +103,14 @@ const processDefinition = (processId: string) =>
                 .map((o) => o.message)
                 .join(" \n");
               throw new Error(
-                `Couldn't claim an invitation: ${context.messages["inviteCode"]}`
+                window.i18n("dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.couldNotClaimInvitation", {values: {contextMessages: context.messages["inviteCode"]}})
               );
             }
             if (!claimResult.data.claimInvitation.success) {
               context.messages["inviteCode"] =
                 claimResult.data.claimInvitation.error;
               throw new Error(
-                `Couldn't claim an invitation: ${context.messages["inviteCode"]}`
+                window.i18n("dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.couldNotClaimInvitation", {values: {contextMessages: context.messages["inviteCode"]}})
               );
             }
           },
