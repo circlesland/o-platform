@@ -916,7 +916,7 @@ export const en = {
                 "title": "CONNECT RECOVERY CODE",
                 "description": "Please enter your 24 secret recovery code (seedphrase) <br /><br /><span class='text-xs'>Your secret recovery code will be stored only in your device</span>",
                 "placeholder": "Recovery Code",
-                "submitButtonText": "Connectr recovery code"
+                "submitButtonText": "Connect recovery code"
               },
               "addOwnerInfo": {
                 "title": "Add owner to safe",
