@@ -11,7 +11,7 @@ import {
   Offer,
   CreatePurchaseDocument,
   PurchaseLineInput,
-  Invoice,
+  Invoice, AnnouncePaymentDocument,
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
@@ -20,13 +20,15 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Currency } from "../../../shared/currency";
 
 import {
-  fTransferCircles,
+  fTransferCircles, fTransferCirclesHashOnly,
   TransitivePath,
 } from "../../o-banking/processes/transferCircles";
 
 import { cartContents } from "../stores/shoppingCartStore";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { findDirectTransfers } from "../../o-banking/processes/transfer";
+import {Environment} from "../../../shared/environment";
+import {ApiClient} from "../../../shared/apiConnection";
 
 export type PurchaseContextData = {
   items: Offer[];
@@ -171,19 +173,6 @@ const processDefinition = (processId: string) =>
                 circlesValueInWei
               );
 
-              /*
-              const flow = await requestPathToRecipient({
-                data: {
-                  safeAddress: invoice.buyerAddress,
-                  recipientAddress: invoice.sellerAddress,
-                  amount: convertTimeCirclesToCircles(
-                    invoiceTotal,
-                    null
-                  ).toString(),
-                },
-              });
-               */
-
               if (flow.transfers.length > 0) {
                 context.data.payableInvoices.push({
                   invoice: invoice,
@@ -246,6 +235,27 @@ const processDefinition = (processId: string) =>
         invoke: {
           src: async (context) => {
             const currentInvoice = context.data.payableInvoices.pop();
+
+            // TODO: Calculate the transaction hash and send it to the api so that it can wait for this specific tx
+            const txHash = await fTransferCirclesHashOnly(
+                currentInvoice.invoice.buyerAddress,
+                sessionStorage.getItem("circlesKey"),
+                currentInvoice.path
+            );
+
+            console.log(`Announcing txHash: ${txHash}`);
+
+
+            const apiClient =
+                await window.o.apiClient.client.subscribeToResult();
+
+            const announceResult = await apiClient.mutate({
+              mutation: AnnouncePaymentDocument,
+              variables: {
+                transactionHash: txHash,
+                invoiceId: currentInvoice.invoice.id
+              }
+            });
 
             const receipt = await fTransferCircles(
               currentInvoice.invoice.buyerAddress,
