@@ -31,7 +31,7 @@ const editorContent = {
   waitUntilRedeemed: {
     title: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.title"),
     description:window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.description"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.submitBUttonText"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.submitButtonText"),
   },
 };
 const processDefinition = (processId: string) =>

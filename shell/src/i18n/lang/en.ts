@@ -1118,7 +1118,7 @@ export const en = {
             },
             "connectSafe": {
               "connectSafe2": {
-                "editorContemt": {
+                "editorContent": {
                   "seedPhrase": {
                     "title": "CONNECT RECOVERY CODE",
                     "description": "Please enter your 24 secret recovery code (seedphrase)<br /><br /><span class='text-xs'>Your secret recovery code will be stored only in your device</span>",

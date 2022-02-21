@@ -42,7 +42,7 @@ export type PromptConnectOrCreateContext =
 
 const editorContent = {
   seedPhrase: {
-    title: window.i18n("dapps.o-onboarding.connectSafe.editorContent.seedPhrase.title"),
+    title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.title"),
     description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.description"),
     placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.placeholder"),
     submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.submitButtonText"),

@@ -18,10 +18,10 @@ export type UpsertRegistrationContext = ProcessContext<UpsertRegistrationContext
 
 const editorContent: { [x: string]: EditorViewContext } = {
   newsletter: {
-    title: window.i18n("dapps.o-onboarding.processes.registration.promptRegistrationn.editorContent.newsletter.title"),
+    title: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.title"),
     description: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.description"),
     placeholder: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.placeholder"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.submitButtontext"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.submitButtonText"),
   },
 };
 

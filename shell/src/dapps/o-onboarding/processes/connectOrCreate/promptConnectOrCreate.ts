@@ -31,7 +31,7 @@ const editorContent = {
   connectOrCreate: {
     title: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.title"),
     description: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.description"),
-    placeholder: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.placeolder"),
+    placeholder: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.placeholder"),
     submitButtonText: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.submitButtonText"),
   },
 };
