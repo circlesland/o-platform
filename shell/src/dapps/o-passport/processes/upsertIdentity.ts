@@ -64,7 +64,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
   imageView: {
     title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.title"),
     description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.description"),
-    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.placeolder"),
+    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.placeholder"),
     submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.submitButtonText"),
   },
   newsletter: {

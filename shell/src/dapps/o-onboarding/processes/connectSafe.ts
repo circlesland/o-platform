@@ -42,22 +42,22 @@ export type PromptConnectOrCreateContext =
 
 const editorContent = {
   seedPhrase: {
-    title: window.i18n("dapps.o-onboarding.connectSafe.editorContext.seedPhrase.title"),
-    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.seedPhrase.description"),
-    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.seedPhrase.placeholder"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.seedPhrase.submitButtonText"),
+    title: window.i18n("dapps.o-onboarding.connectSafe.editorContent.seedPhrase.title"),
+    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.description"),
+    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.placeholder"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.submitButtonText"),
   },
   addOwnerInfo: {
-    title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.addOwnerInfo.title"),
-    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.addOwnerInfo.description"),
-    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.addOwnerInfo.placeholder"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.addOwnerInfo.submitButtonText"),
+    title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.title"),
+    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.description"),
+    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.placeholder"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.submitButtonText"),
   },
   accountIsDeadInfo: {
-    title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.accountIsDeadInfo.title"),
-    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.accountIsDeadInfo.description"),
-    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.accountIsDeadInfo.placeholder"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContext.accountIsDeadInfo.submitButtonText")
+    title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.title"),
+    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.description"),
+    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.placeholder"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.submitButtonText")
   }
 };
 

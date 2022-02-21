@@ -38,8 +38,8 @@ const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
     title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.title"),
     description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.description"),
-    placeholder: window.i18n("dapps.o-banking.setTrust.editorContent.recipient.placeholder"),
-    submitButtonText: window.i18n("dapps.o-banking.setTrust.editorContent.recipient.submitButtonText"),
+    placeholder: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.placeholder"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.submitButtonText"),
   },
   limit: {
     title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.limit.title"),

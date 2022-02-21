@@ -15,7 +15,7 @@ export async function loadProfileByProfileId(profileId: number) : Promise<Profil
             : undefined;
 
     if (!apiProfile) {
-        throw new Error(`Couldn't find a profile with id '${profileId}'.`);
+        throw new Error(window.i18n("shared.api.loadProfileByProfileId.error", { values: { profileId: profileId }}));
     }
 
     return {

@@ -143,7 +143,7 @@ export function promptFile<
         component: PictureEditor,
         params: {
           view: spec.params.view,
-          submitButtonText: "Save Image",
+          submitButtonText: window.i18n("shared.api.promptFile.saveImage"),
           cropShape: spec.params?.cropShape ?? null,
         },
         navigation: {
@@ -171,7 +171,7 @@ export function promptFile<
           },
           {
             actions: (context: TContext) => {
-              context.messages[field.name] = `Please specify a valid file.`;
+              context.messages[field.name] = window.i18n("shared.api.promptFile.pleaseSpecifyValidFile");
             },
             target: `#${id("checkPreviewFile")}`,
           },
@@ -186,7 +186,7 @@ export function promptFile<
           console.log(`uploadFile entry`);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Uploading your file ..`,
+            message: window.i18n("shared.api.promptFile.uploadingFile"),
           });
         },
         invoke: {
@@ -219,19 +219,13 @@ export function promptFile<
       errorUploadingFile: prompt<TContext, any>({
         field: "errorUploadingFile",
         entry: (context) => {
-          context.data.errorUploadingFile = `
-          <b>Oops.</b><br/>
-          We couldn't upload your file.<br/>
-          <br/>
-          Please make sure that your file doesn't exceed the maximum allowed file size of 4 MB.<br/>
-          Either choose a different file or skip it for now.
-        `;
+          context.data.errorUploadingFile = window.i18n("shared.api.promptFile.contextDataErrorUploadFile");
           context.dirtyFlags[field.name] = true;
         },
         component: HtmlViewer,
         isSensitive: true,
         params: {
-          submitButtonText: "Try again",
+          submitButtonText: window.i18n("shared.api.promptFile.tryAgain"),
           html: (context) => context.data.errorUploadingFile,
         },
         navigation: {

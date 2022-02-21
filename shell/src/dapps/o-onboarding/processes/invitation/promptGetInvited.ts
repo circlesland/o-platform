@@ -21,14 +21,14 @@ const { assign } = actions;
 
 const editorContent = {
   info: {
-    title: window.i18n("dapps.o-onboarding.processes.invitation.promtGetInvited.editorContent.info.title"),
-    description: window.i18n("dapps.o-onboarding.processes.invitation.promtGetInvited.editorContent.info.description"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promtGetInvited.editorContent.info.submitButtonText"),
+    title: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.title"),
+    description: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.description"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.submitButtonText"),
   },
   checkInviteCode: {
-    title: window.i18n("dapps.o-onboarding.processes.invitation.promtGetInvited.editorContent.checkInviteCode.title"),
-    description: window.i18n("dapps.o-onboarding.processes.invitation.promtGetInvited.editorContent.checkInviteCode.description"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promtGetInvited.editorContent.checkInviteCode.submitButtonText"),
+    title: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.title"),
+    description: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.description"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.submitButtonText"),
   },
 };
 const processDefinition = (processId: string) =>

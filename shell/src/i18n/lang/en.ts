@@ -801,10 +801,10 @@ export const en = {
               "editorContent": {
                 "info": {
                   "title": "Create Safer",
-                  "descriptopn": "In the next steps you can create your account on the blockchain ..",
+                  "description": "In the next steps you can create your account on the blockchain ..",
                   "submitButtonText": "Next"
                 },
-                "connectOrCfreate": {
+                "connectOrCreate": {
                   "title": "Connect or create?",
                   "description": "Choose your screnario",
                   "placeholder": " ",
@@ -1190,7 +1190,7 @@ export const en = {
                 "pleaseEnterSecretCode": "Please enter your Secret Recovery Code."
               }
             },
-            "identidy2": {
+            "identify2": {
               "strings": {
                 "choiceYesLabel": "Connect",
                 "choiceNoLabel": "Create New"
@@ -1245,7 +1245,7 @@ export const en = {
                 "placeholder": "Last name",
                 "submitButtonText": "Save"
               },
-              "deram": {
+              "dream": {
                 "title": "Share you passion",
                 "description": "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
                 "placeholder": "Your passion",
@@ -1310,6 +1310,28 @@ export const en = {
         }
       }
     },
-    "shared": {}
+    shared: {
+      "api": {
+        "loadProfileByProfileId": {
+          "error": "Couldn't find a profile with id '{profileId}'."
+        },
+        "promptFile": {
+          "saveImage": "Save Image",
+          "pleaseSpecifyValidFile": "Please specify a valid file.",
+          "uploadingFile": "Uploading your file ..",
+          "contextDataErrorUploadFile": "<b>Oops.</b><br/>We couldn't upload your file.<br/><br/>Please make sure that your file doesn't exceed the maximum allowed file size of 4 MB.<br/>Either choose a different file or skip it for now.",
+          "tryAgain": "Try again"
+        },
+        "uploadFile": {
+          "noOkStatusFromFileServer": "Got a not-ok status from the file server: {status}",
+          "couldNotUpload": "Could'nt upload the file"
+        }
+      },
+      "atoms": {
+        "copyClipboard": {
+          "copiedToClipboard": "Copied to Clipboard!"
+        }
+      }
+    }
   }
 } 

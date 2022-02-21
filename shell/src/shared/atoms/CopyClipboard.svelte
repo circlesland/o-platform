@@ -6,7 +6,7 @@ const dispatch = createEventDispatcher<{ copy: string; fail: never }>();
 const copy = () => {
   navigator.clipboard.writeText(text).then(
     () => {
-      showToast("success", "Copied to Clipboard!");
+      showToast("success", window.i18n("shared.atoms.copyClipboard.copiedToClipboard"));
     },
     (e) => dispatch("fail")
   );

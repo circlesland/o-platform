@@ -85,7 +85,7 @@ let seedphrase =
             class="flex flex-col w-full mt-4 space-y-1"
             transition:slide="{{ duration: 300 }}">
             <div class="mb-1 text-left text-2xs text-dark-lightest">
-              {$_("dapps.o-passport.atoms.accountCard.sedretRecoveryCode")}
+              {$_("dapps.o-passport.atoms.accountCard.secretRecoveryCode")}
             </div>
             <div class="flex items-center w-full">
               <div class="text-sm text-left break-all">

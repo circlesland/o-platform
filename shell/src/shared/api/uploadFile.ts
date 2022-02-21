@@ -56,13 +56,7 @@ const processDefinition = (processId: string) =>
 
             const jsonResponse = await response.json();
             if (jsonResponse.status != "ok") {
-              throw new Error(
-                `Got a not-ok status from the file server: ${JSON.stringify(
-                  jsonResponse,
-                  null,
-                  2
-                )}`
-              );
+              throw new Error(window.i18n("shared.api.uploadFile.noOkStatusFromFileServer", { values: { status: JSON.stringify(jsonResponse, null, 2)}}));
             }
             delete context.data.bytes;
             context.data.hash = jsonResponse.hash;
@@ -77,7 +71,7 @@ const processDefinition = (processId: string) =>
         // entry: () => console.log(`Enter: uploadFile.error`),
         type: "final",
         data: () => {
-          return new Error("Couldn't upload the file");
+          return new Error(window.i18n("shared.api.uploadFile.couldNotUpload"));
         },
       },
       success: {
