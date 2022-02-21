@@ -36,7 +36,7 @@ function onkeydown(e: KeyboardEvent) {
 {#if context.data && profile}
   <div
     class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
-    <div>
+    <!-- <div>
       <span class="inline-block text-6xl font-enso {classes}">
         {$totalPrice.toFixed(2)}</span>
       <span class="text-6xl font-enso">€</span>
@@ -44,9 +44,9 @@ function onkeydown(e: KeyboardEvent) {
         <span class="font-primary text-dark-lightest"
           >{$totalPrice * 10} {Currency.currencySymbol["TIME_CRC"]}</span>
       </div>
-    </div>
+    </div> -->
 
-    <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />
+    <!-- <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />
 
     <div>
       <span class="mt-4 text-xl">
@@ -58,7 +58,7 @@ function onkeydown(e: KeyboardEvent) {
         <span class="text-sm"
           >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
       </div>
-    </div>
+    </div> -->
 
     {#if context.data && context.data.transitivePath}
       <div class="flex flex-col w-full space-y-1">
@@ -79,7 +79,9 @@ function onkeydown(e: KeyboardEvent) {
         <CartItems cartContents="{cartContents}" editable="{false}" />
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
-        <span class="mr-2 text-sm font-medium text-gray-400"> {$_("dapps.o-marketplace.molecules.checkoutSummary.total")} </span>
+        <span class="mr-2 text-sm font-medium text-gray-400">
+          {$_("dapps.o-marketplace.molecules.checkoutSummary.total")}
+        </span>
         <span class="w-20 text-lg font-bold text-right">
           {$totalPrice.toFixed(2)} €
         </span>
@@ -113,18 +115,17 @@ function onkeydown(e: KeyboardEvent) {
     <div class="flex flex-col w-full space-y-2 text-left">
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
         <h1 class="p-2 text-white uppercase bg-dark-dark ">
-          {$_("dapps.o-marketplace.molecules.checkoutSummary.importantInformation")}
+          {$_(
+            "dapps.o-marketplace.molecules.checkoutSummary.storePickupLocation"
+          )}
         </h1>
       </div>
       <div>
-        {$_("dapps.o-marketplace.molecules.checkoutSummary.howToPickup1")}<span
-          class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutSummary.howToPickup2")}</span
-        >{$_("dapps.o-marketplace.molecules.checkoutSummary.howToPickup3")}
-        <span class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutSummary.howToPickup4")}</span>{$_("dapps.o-marketplace.molecules.checkoutSummary.howToPickup5")}
-      </div>
-      <div class="pt-2 text-sm">
-        {$_("dapps.o-marketplace.molecules.checkoutSummary.toSeeCode1")}<span class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutSummary.toSeeCode2")}</span>{$_("dapps.o-marketplace.molecules.checkoutSummary.toSeeCode3")}
-        <span class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutSummary.toSeeCode4")}</span>{$_("dapps.o-marketplace.molecules.checkoutSummary.toSeeCode5")}
+        {@html $_("dapps.o-marketplace.molecules.checkoutSummary.storeAddress")}
+        <br />
+        <span class="text-sm font-thin">
+          {@html $_("dapps.o-marketplace.molecules.checkoutSummary.storeHours")}
+        </span>
       </div>
     </div>
   </div>

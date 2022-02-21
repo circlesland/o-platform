@@ -92,6 +92,11 @@ onMount(async () => {
                 <span class="inline-block">{o.pricePerUnit}</span>
                 <span class="inline-block">€</span>
               </div>
+
+              <div
+                class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
+                {$_("dapps.o-marketplace.atoms.offerCard.pickUpOnly")}
+              </div>
             </div>
           </header>
           <div
@@ -135,7 +140,11 @@ onMount(async () => {
             <!-- {#if o.deliveryTermsTag} -->
             <div class="flex flex-col space-y-1 text-right">
               <div class="pt-2 text-sm">
-                <span class="text-xs">{$_("dapps.o-marketplace.pages.offerDetail.storePickup")}</span><br />
+                <span class="text-xs"
+                  >{$_(
+                    "dapps.o-marketplace.pages.offerDetail.storePickup"
+                  )}</span
+                ><br />
                 Basic Income Lab GmbH<br />
                 Reifenstuelstrasse 6<br />
                 80469 München<br />
@@ -146,7 +155,9 @@ onMount(async () => {
             <!-- {/if} -->
             {#if o.city}
               <div class="flex flex-col space-y-1">
-                <div class="text-2xs">{$_("dapps.o-marketplace.pages.offerDetail.location")}</div>
+                <div class="text-2xs">
+                  {$_("dapps.o-marketplace.pages.offerDetail.location")}
+                </div>
                 <div class="text-sm text-dark-lightest">{o.city.name}</div>
               </div>
             {/if}

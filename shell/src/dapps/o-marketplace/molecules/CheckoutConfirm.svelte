@@ -49,7 +49,7 @@ function orderItems(items) {
 
 {#if context.data && profile && groupedItems}
   <div class="mt-2">
-    <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
+    <!-- <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
       <div
         class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left ">
         <div class="inline-flex">
@@ -66,7 +66,7 @@ function orderItems(items) {
             : ""}
         </div>
       </div>
-    </div>
+    </div> -->
     {#each groupedItems as groupPurchase, i}
       <div class="flex items-center justify-between w-full pb-6 mb-6 border-b">
         <div class="flex items-center w-full">
@@ -112,24 +112,45 @@ function orderItems(items) {
     <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
         <h1 class="p-2 text-white uppercase bg-dark-dark">
-          {$_("dapps.o-marketplace.molecules.checkoutConfirm.importantInformation")}<br />
-          <div class="text-sm">{$_("dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode")}</div>
+          <div class="text-sm">
+            {$_("dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode")}
+          </div>
         </h1>
       </div>
 
       <div>
         {$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1")}
-        <span class="text-sm">{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup2")}</span>{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup3")}
-        <span class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup4")}</span>{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup5")}
-        <span class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup6")}</span>{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup7")}
+        <span class="text-sm"
+          >{$_(
+            "dapps.o-marketplace.molecules.checkoutConfirm.howToPickup2"
+          )}</span
+        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup3")}
+        <span class="text-primary-dark"
+          >{$_(
+            "dapps.o-marketplace.molecules.checkoutConfirm.howToPickup4"
+          )}</span
+        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup5")}
+        <span class="text-primary-dark"
+          >{$_(
+            "dapps.o-marketplace.molecules.checkoutConfirm.howToPickup6"
+          )}</span
+        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup7")}
       </div>
       <div class="pt-2 text-sm">
-        {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span class="text-primary-dark">{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2")}</span>{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
+        {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span
+          class="text-primary-dark"
+          >{$_(
+            "dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2"
+          )}</span
+        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
         <a href="#/marketplace/my-purchases" alt="My Purchases" class="btn-link"
-          >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}</a>{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
+          >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}</a
+        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
       </div>
 
-      <div class="pt-2 text-sm">{$_("dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation")}</div>
+      <div class="pt-2 text-sm">
+        {$_("dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation")}
+      </div>
       <div class="pt-2 text-sm">
         <span class="font-bold">Basic Income Lab GmbH</span><br />
         Reifenstuelstrasse 6<br />

@@ -59,7 +59,11 @@ async function load() {
       icon: "transactions",
       title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
       action: async () => {
-        const action = actions.find((o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"));
+        const action = actions.find(
+          (o) =>
+            o.title ==
+            window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut")
+        );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await sales.completeSale(sale.invoices[0].id);
         actions.push(unPickUpAction);
@@ -67,10 +71,16 @@ async function load() {
     };
     const unPickUpAction = {
       icon: "transactions",
-      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"),
+      title: window.i18n(
+        "dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"
+      ),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut")
+          (o) =>
+            o.title ==
+            window.i18n(
+              "dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"
+            )
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await sales.revokeSale(sale.invoices[0].id);
@@ -85,7 +95,9 @@ async function load() {
     actions.push(
       {
         icon: "transactions",
-        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.transaction"),
+        title: window.i18n(
+          "dapps.o-marketplace.pages.mySaleDetail.transaction"
+        ),
         action: () =>
           push(
             `#/banking/transactions/${sale.invoices[0].paymentTransactionHash}`
@@ -93,7 +105,9 @@ async function load() {
       },
       {
         icon: "document",
-        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"),
+        title: window.i18n(
+          "dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"
+        ),
         action: async () => {
           for (let invoice of sale.invoices) {
             const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
@@ -160,12 +174,15 @@ onMount(async () => {
 <div class="p-5">
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
-      <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-marketplace.pages.mySaleDetail.saleDetails")}</h1>
+      <h1 class="text-3xl uppercase font-heading">
+        {$_("dapps.o-marketplace.pages.mySaleDetail.saleDetails")}
+      </h1>
     </div>
     <div class="w-full text-center">
       {#if sale}
         <span class="text-dark-lightest"
-          >{$_("dapps.o-marketplace.pages.mySaleDetail.saleDate")}<Date time="{sale.createdAt}" /></span>
+          >{$_("dapps.o-marketplace.pages.mySaleDetail.saleDate")}<Date
+            time="{sale.createdAt}" /></span>
       {/if}
     </div>
   </header>
@@ -242,32 +259,7 @@ onMount(async () => {
         </div>
       {/each}
     </div>
-    {#each sale.invoices as invoice}
-      <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
-        <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
-          <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
-            {$_("dapps.o-marketplace.pages.mySaleDetail.pickupCode")}
-          </h1>
-        </div>
 
-        <div class="w-full text-center">
-          {#if !invoice.pickupCode}
-            <h1 class="text-3xl uppercase font-heading">
-              {$_("dapps.o-marketplace.pages.mySaleDetail.noCode")}
-            </h1>
-          {:else}
-            <h1 class="text-6xl uppercase font-heading">
-              {invoice.pickupCode}
-            </h1>
-            <div class="container">
-              <center>
-                <QrCode value="{invoice.pickupCode}" color="#081B4A" />
-              </center>
-            </div>
-          {/if}
-        </div>
-      </div>
-    {/each}
     <DetailActionBar actions="{actions}" />
   {/if}
 </div>
