@@ -1,7 +1,7 @@
 <script lang="ts">
 import Time from "svelte-time";
 import { push } from "svelte-spa-router";
-import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import { onMount } from "svelte";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
@@ -172,18 +172,20 @@ function openDetail(transfer: ProfileEvent) {
         }}">
         {#if transfer.direction === "in"}
           <span class="mt-4 text-xl break-words">
-            {$_("dapps.o-banking.pages.transactionDetail.from")} {displayableName ? displayableName : ""}
+            {$_("dapps.o-banking.pages.transactionDetail.from")}
+            {displayableName ? displayableName : ""}
           </span>
         {:else}
           <span class="mt-4 text-xl break-words">
-            {$_("dapps.o-banking.pages.transactionDetail.to")} {displayableName ? displayableName : ""}
+            {$_("dapps.o-banking.pages.transactionDetail.to")}
+            {displayableName ? displayableName : ""}
           </span>
         {/if}
       </div>
       <div class="text-dark-lightest">
         {message && message != undefined ? message : ""}
       </div>
-      {#if path && path.transfers}
+      <!-- {#if path && path.transfers}
         <div class="flex flex-col w-full space-y-1">
           <div class="mb-1 text-left text-2xs text-dark-lightest">
             {$_("dapps.o-banking.pages.transactionDetail.paymentPath")}
@@ -195,9 +197,11 @@ function openDetail(transfer: ProfileEvent) {
               onWhiteBackground="{true}" />
           </div>
         </div>
-      {/if}
+      {/if} -->
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("common.date")}</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          {$_("common.date")}
+        </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
             <Time
@@ -242,19 +246,25 @@ function openDetail(transfer: ProfileEvent) {
         </div>
       </div> -->
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("common.from")}</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          {$_("common.from")}
+        </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{fromProfile.circlesAddress}</div>
         </div>
       </div>
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("common.to")}</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          {$_("common.to")}
+        </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{toProfile.circlesAddress}</div>
         </div>
       </div>
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("common.block")}</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          {$_("common.block")}
+        </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{transfer.block_number}</div>
         </div>

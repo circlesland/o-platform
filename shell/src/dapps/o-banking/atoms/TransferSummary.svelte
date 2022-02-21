@@ -4,13 +4,12 @@ import Time from "svelte-time";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 import { Currency } from "../../../shared/currency";
-import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import { Profile } from "../../../shared/api/data/types";
 import { loadProfile } from "../../../shared/functions/loadProfile";
 import { displayableName } from "../../../shared/functions/stringHelper";
 
 import { _ } from "svelte-i18n";
-
 
 export let context: any;
 let _context: any;
@@ -61,7 +60,7 @@ let now = new Date();
         : ""}
     </div>
 
-    {#if _context.data && _context.data.transitivePath}
+    <!-- {#if _context.data && _context.data.transitivePath}
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
           {$_("dapps.o-banking.atoms.transferSummary.paymentPath")}
@@ -73,9 +72,11 @@ let now = new Date();
             onWhiteBackground="{true}" />
         </div>
       </div>
-    {/if}
+    {/if} -->
     <div class="flex flex-col w-full space-y-1">
-      <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("common.date")}</div>
+      <div class="mb-1 text-left text-2xs text-dark-lightest">
+        {$_("common.date")}
+      </div>
 
       <div class="flex items-center w-full">
         <div class="text-left ">
@@ -113,7 +114,9 @@ let now = new Date();
     </div>
 
     <div class="flex flex-col w-full space-y-1">
-      <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("common.block")}</div>
+      <div class="mb-1 text-left text-2xs text-dark-lightest">
+        {$_("common.block")}
+      </div>
 
       <div class="flex items-center w-full">
         <div class="text-left break-all">

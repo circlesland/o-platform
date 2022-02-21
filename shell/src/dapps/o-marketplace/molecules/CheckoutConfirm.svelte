@@ -1,7 +1,7 @@
 <script lang="ts">
 import UserImage from "src/shared/atoms/UserImage.svelte";
 
-import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";

@@ -86,9 +86,15 @@ onMount(async () => {
   if (purchase.invoices && purchase.invoices.length) {
     const pickUpAction = {
       icon: "transactions",
-      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp"),
+      title: window.i18n(
+        "dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp"
+      ),
       action: async () => {
-        const action = actions.find((o) => o.title == window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp"));
+        const action = actions.find(
+          (o) =>
+            o.title ==
+            window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp")
+        );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await purchases.completePurchase(purchase.invoices[0].id);
         actions.push(unPickUpAction);
@@ -96,10 +102,16 @@ onMount(async () => {
     };
     const unPickUpAction = {
       icon: "transactions",
-      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"),
+      title: window.i18n(
+        "dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"
+      ),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp")
+          (o) =>
+            o.title ==
+            window.i18n(
+              "dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"
+            )
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await purchases.revokeCompletionStatus(purchase.invoices[0].id);
@@ -110,7 +122,9 @@ onMount(async () => {
     actions.push(
       {
         icon: "transactions",
-        title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
+        title: window.i18n(
+          "dapps.o-marketplace.pages.myPurchaseDetail.transaction"
+        ),
         action: () =>
           push(
             `#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`
@@ -118,7 +132,9 @@ onMount(async () => {
       },
       {
         icon: "document",
-        title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"),
+        title: window.i18n(
+          "dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"
+        ),
         action: async () => {
           for (let invoice of purchase.invoices) {
             const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
@@ -155,12 +171,15 @@ onMount(async () => {
 <div class="p-5">
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
-      <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDetails")}</h1>
+      <h1 class="text-3xl uppercase font-heading">
+        {$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDetails")}
+      </h1>
     </div>
     <div class="w-full text-center">
       {#if purchase}
         <span class="text-dark-lightest"
-          >{$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDate")}<Date time="{purchase.createdAt}" /></span>
+          >{$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDate")}<Date
+            time="{purchase.createdAt}" /></span>
       {/if}
     </div>
   </header>
@@ -168,7 +187,9 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.myPurchaseDetail.loadingPurchases")}</div>
+          <div>
+            {$_("dapps.o-marketplace.pages.myPurchaseDetail.loadingPurchases")}
+          </div>
         </div>
       </div>
     </section>
@@ -266,7 +287,9 @@ onMount(async () => {
           {/if}
         </div>
 
-        <div class="pt-2 text-sm">{$_("dapps.o-marketplace.pages.myPurchaseDetail.location")}</div>
+        <div class="pt-2 text-sm">
+          {$_("dapps.o-marketplace.pages.myPurchaseDetail.location")}
+        </div>
         <div class="pt-2 text-sm">
           <span class="font-bold">Basic Income Lab GmbH</span><br />
           Reifenstuelstrasse 6<br />

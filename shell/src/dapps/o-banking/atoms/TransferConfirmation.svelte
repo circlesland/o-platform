@@ -4,7 +4,7 @@ import Time from "svelte-time";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 
-import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { loadProfile } from "../../../shared/functions/loadProfile";
@@ -70,7 +70,7 @@ function onkeydown(e: KeyboardEvent) {
         : ""}
     </div>
 
-    {#if _context.data && _context.data.transitivePath}
+    <!-- {#if _context.data && _context.data.transitivePath}
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
           {$_("dapps.o-banking.atoms.transferConfirmation.paymentPath")}
@@ -82,9 +82,11 @@ function onkeydown(e: KeyboardEvent) {
             onWhiteBackground="{true}" />
         </div>
       </div>
-    {/if}
+    {/if} -->
     <div class="flex flex-col w-full space-y-1">
-      <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("common.date")}</div>
+      <div class="mb-1 text-left text-2xs text-dark-lightest">
+        {$_("common.date")}
+      </div>
 
       <div class="flex items-center w-full">
         <div class="text-left ">
