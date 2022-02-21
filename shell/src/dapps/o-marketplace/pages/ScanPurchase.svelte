@@ -21,19 +21,27 @@ $: {
 
 async function loadSale(id) {
   scanner.stop();
-  statusText = window.i18n("dapps.o-marketplace.pages.scanPurchase.verifyingOrder");
+  statusText = window.i18n(
+    "dapps.o-marketplace.pages.scanPurchase.verifyingOrder"
+  );
   sale = await sales.findByPickupCode(id);
-  console.log("ID: ", id);
-  console.log("SALE: ", sale);
+
   if (!sale) {
-    statusText = window.i18n("dapps.o-marketplace.pages.scanPurchase.invalidOrderCode");
+    statusText = window.i18n(
+      "dapps.o-marketplace.pages.scanPurchase.invalidOrderCode"
+    );
     startScanner();
     return;
   }
 
   sales.completeSale(sale.invoices[0].id).then(function () {
-    push("#/marketplace/my-sales");
-    showToast("success", window.i18n("dapps.o-marketplace.pages.scanPurchase.purchaseMarkedAsDelivered"));
+    push(`#/marketplace/my-sales/${sale.id}`);
+    showToast(
+      "success",
+      window.i18n(
+        "dapps.o-marketplace.pages.scanPurchase.purchaseMarkedAsDelivered"
+      )
+    );
     return sale;
   });
 }
@@ -93,7 +101,9 @@ onMount(() => {
 
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <div class="w-full text-center">
-    <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-marketplace.pages.scanPurchase.scanToHandOut")}</h1>
+    <h1 class="text-3xl uppercase font-heading">
+      {$_("dapps.o-marketplace.pages.scanPurchase.scanToHandOut")}
+    </h1>
   </div>
   <div class="w-full text-center">
     <span class="text-dark-lightest">{statusText}</span>
@@ -111,13 +121,17 @@ onMount(() => {
         class="w-full border select input">
         <option value="environment" selected
           >{$_("dapps.o-marketplace.pages.scanPurchase.cameraDefault")}</option>
-        <option value="user">{$_("dapps.o-marketplace.pages.scanPurchase.cameraUserFacing")}</option>
+        <option value="user"
+          >{$_(
+            "dapps.o-marketplace.pages.scanPurchase.cameraUserFacing"
+          )}</option>
       </select>
     </div>
 
     <div class="mt-4 text-center">
       <b>{$_("dapps.o-marketplace.pages.scanPurchase.detectedQrCode")}</b>
-      <span id="cam-qr-result" bind:this="{camQrResult}">{$_("dapps.o-marketplace.pages.scanPurchase.none")}</span>
+      <span id="cam-qr-result" bind:this="{camQrResult}"
+        >{$_("dapps.o-marketplace.pages.scanPurchase.none")}</span>
     </div>
   </div>
   <!-- <slot name="EditorActionButtons">
