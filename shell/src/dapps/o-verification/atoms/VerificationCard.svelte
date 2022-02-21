@@ -21,9 +21,7 @@ function loadDetailPage(path) {
         param.verifiedProfile.firstName,
         param.verifiedProfile.lastName
       ),
-      subTitle: `Verified by ${param.verifierProfile.name} on ${dayjs(
-        param.createdAt
-      ).format('DD.MM.YYYY')}`,
+      subTitle: window.i18n("dapps.o-verification.atoms.verificationCard.subdtitle", { values: { name: param.verifierProfile.name, date: dayjs(param.createdAt).format('DD.MM.YYYY')}}),
       truncateMain: true,
     }}">
     <div slot="itemCardEnd">
@@ -31,3 +29,6 @@ function loadDetailPage(path) {
     </div>
   </ItemCard>
 </div>
+`Verified by ${param.verifierProfile.name} on ${dayjs(
+  param.createdAt
+).format('DD.MM.YYYY')}`

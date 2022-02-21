@@ -995,12 +995,289 @@ export const en = {
         "pages": {
           "account": {
             "subTitle": "Main Account holder"
+          },
+          "exchangeToken": {
+            "pleaseWait": "Please wait. We're logging you in."
+          },
+          "home": {
+            "passion": "Passion",
+            "noPassionSet": "No passion set.",
+            "address": "Address"
+          },
+          "settings": {
+            "notifications": "NOTIFICATIONS",
+            "receiveEmailNotifications": "Receive E-Mail Notifications",
+            "currencyDisplay": "CURRENCY DISPLAY"
+          }
+        },
+        "processes": {
+          "identify": {
+            "aquireSession": {
+              "authenkticate": {
+                "authenticate2": {
+                  "strings": {
+                    "labelLoginEmail": "Welcome to CirclesLand. <br/><span class='text-base text-light-dark font-normal block mt-3'>A pleasure you found your way here. Please provide your email address to Sign-In</span>",
+                    "labelVerificationCode": "Please enter pin<br/><span class='text-base text-light-dark font-normal block mt-3'>We have send you a 6 digit login pin to your mail ${email}.</span><br/><span class='text-light-dark text-xs font-normal'> It may take a moment. Also check your spam folder</span>",
+                    "placeholder": "email"
+                  },
+                  "editorContent": {
+                    "email": {
+                      "title": "Welcome to CirclesLand",
+                      "description": "A pleasure you found your way here. Please provide your email address to Sign-In.",
+                      "placeholder": "Email address",
+                      "submitButtonText": "Let me in"
+                    },
+                    "terms_privacy": {
+                      "title": "Terms & Privavy",
+                      "description": "CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/><span class='text-xs'>For details read our <a href='https://blog.circles.land/terms-of-service' class='text-primary' target='_blank' alt='privacy policy & terms of service'>privacy policy & terms of service</a></span>",
+                      "submitButtonText": "I read and accept them"
+                    },
+                    "verification": {
+                      "title": "Welcome to CirclesLand",
+                      "description": "A pleasure you found your way here. Please provide your email address to Sign-In",
+                      "placeholder": "Email address",
+                      "submitButtonText": "Let me in"
+                    },
+                    "code": {
+                      "title": "Please enter encryptingPin",
+                      "description": "We have send you a 6 digit login encryptingPin to your mail.<br/><br/><span class='text-xs'>It may take a moment. Also check your spam folder.</span>",
+                      "placeholder": "Enter Pin",
+                      "submitButtonText": "Login"
+                    }
+                  },
+                  "acquireSession": {
+                    "message": "Requesting the challenge",
+                    "errors": {
+                      "contextsPropertyNotSet": "The context's 'eoaAddress' property is not set but required by this step",
+                      "privateKeyNotUnlocked": "The private key is not unlocked",
+                      "couldNotGetSession": "Couldn't get a session using a signed challenge."
+                    }
+                  },
+                  "errorRequestingChallenge": {
+                    "error": "An error occurred while requesting an auth-challenge.",
+                    "submitButtonText": "Try again"
+                  }
+                }
+              },
+              "acquireSession2": {
+                "acquireSession": {
+                  "message": "Sarting the session ..",
+                  "error": {
+                    "contextsPropertyNotSet": "The context's 'eoaAddress' property is not set but required by this step",
+                    "privateKeyNotUnlocked": "The private key is not unlocked",
+                    "couldNotGetSession": "Couldn't get a session using a signed challenge."
+                  },
+                  "errorRequestingChallenge": {
+                    "error": "An error occurred while requesting an auth-challenge.",
+                    "submitButtonText": "Try again"
+                  }
+                }
+              }
+            },
+            "checks": {
+              "hasKey": {
+                "error": "Couldn't load the private key from the localStorage."
+              }
+            },
+            "conds": {
+              "hasKey": {
+                "error": "Couldn't load the private key from the localStorage."
+              }
+            },
+            "connectSafe": {
+              "connectSafe2": {
+                "editorContemt": {
+                  "seedPhrase": {
+                    "title": "CONNECT RECOVERY CODE",
+                    "description": "Please enter your 24 secret recovery code (seedphrase)<br /><br /><span class='text-xs'>Your secret recovery code will be stored only in your device</span>",
+                    "placeholder": "Recovery Code",
+                    "submitButtonText": "Connect recovery code"
+                  },
+                  "selectExistingKey": {
+                    "title": "PLEASE CHOOSE A KEY",
+                    "description": "We found the some keys on your device. Please select the one you want to use:",
+                    "placeholder": "Recovery Code",
+                    "submitButtonText": "Use Key"
+                  },
+                  "unlockPin": {
+                    "title": "Please entern encryptingPin",
+                    "description": "Please enter the encryptingPin for your key",
+                    "placeholder": "Enter Pin",
+                    "submitButtonText": "Login"
+                  }
+                },
+                "unlockKeyPin": {
+                  "label": "Plase enter the PIN for key '{eoaName}'",
+                  "submitButtonText": "Unlock",
+                  "dataSchema": "Please enter your one time token."
+                },
+                "unlockKey": {
+                  "errors": {
+                    "wtf": "WTF?!",
+                    "wrongPin": "Wrong pin?"
+                  }
+                },
+                "checkSeedphrase": {
+                  "contextMessage1": "The seedphrase cannot be converted to a private key. Please double check it.",
+                  "contextMessage2": "The key that was generated from the seedphrase cannot be converted to an ethereum account.",
+                  "contextMessage3": "An error occurred while we tried to find your safe: {error}",
+                  "contextMessage4": "We couldn't find a safe for your account {accountAddress}"
+                },
+                "safeAddress": {
+                  "label": "We found multiple safes for your account. Please select the one you want to connect.",
+                  "placeholder": "Click to select safe",
+                  "submitButtonText": "Connect"
+                },
+                "checkSafeAddress": {
+                  "contextMessage": "Couldn't determine the owner of safe {contextDataSafeAddress}. Is the address right?"
+                }
+              }
+            },
+            "createSafe": {
+              "createSafe": {
+                "strings": {
+                  "choiceConnect": "Connect",
+                  "choiceCreate": "Create",
+                  "labelExportSeedphrase": "Your Secret Recovery Code is the<span class='text-alert'>only key</span> which can access your safe. It is your <span class='text-alert'>full responsibility</span> to <span class='text-alert'>protect</span> this code like a <span class='text-alert'>password</span>.<br /><br /><span class='text-xs'>If you loose it or forget it, all your <span class='text-alert'>money is lost forever</span>.</span>",
+                  "buttonExportSeedphrase": "I stored it scurely",
+                  "labelCheckSeedphrase": "Keep in mind, everyone who knows your Secret Recovery Code can access all your funds! Did you store your Secret Recovery Code in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your Secret Recovery Code</strong>",
+                  "buttonCheckSeedphrase": "Really, I did it!"
+                },
+                "editorContent": {
+                  "seedphrase": {
+                    "title": "READ CAREFULLY<br/>Secret Recovery Code",
+                    "description": "Your Secret Recovery Code is the<span class='text-alert'>only key</span>which can access your safe. It is your<span class='text-alert'>full responsibility</span>to<span class='text-alert'>protect</span>this code like a<span class='text-alert'>password</span>.<br /><br /><span class='text-xs'>If you loose it or forget it, all your<span class='text-alert'>money is lost forever</span>.</span>",
+                    "submitButtonText": "Next"
+                  },
+                  "seedphraseCheck": {
+                    "title": "SAFE Code SECURELY",
+                    "description": "Keep in mind, <span class='text-alert'>everyone who knows</span> your Secret Recovery Code can <span class='text-alert'>access all you money</span>.<br /><br /><span class='text-xs'>Please save your Secret Recovery Code in your notes <span class='text-alert'>(not secure)</span>, a password manager <span class='text-alert'>(secure)</span> or write it down on a paper and put it in your safe <span class='text-alert'>(most secure)</span>.",
+                    "submitButtonText": "I stored my Code securely"
+                  } 
+                },
+                "pleaseEnterSecretCode": "Please enter your Secret Recovery Code."
+              }
+            },
+            "identidy2": {
+              "strings": {
+                "choiceYesLabel": "Connect",
+                "choiceNoLabel": "Create New"
+              },
+              "editorContent": {
+                "title": "Connect or Create?",
+                "description": "Do you already have a circles Safe address or would you like to create one?"
+              },
+              "getInvite": {
+                "htmlContext": "<section class='mb-8'><div class='w-full px-2 pb-4 -mt-3 bg-white rounded-sm'><div class='px-4 py-2 mr-4 -ml-3 text-center ' /><div style='text-align: center'><p class='w-64 m-auto mt-2 text-2xl font-bold  text-gradient'>You're almost there.</p><p class='mt-4 text'>To activate your citizenship you need to be invited.<br/>Send your profile link to a CirclesLand citizen to unlock your basic income.</p><div class='mt-4 mb-4 text-xs break-all' id='clipboard'><input type='text' class='hidden' value='${profileLink}' /><div class='inline-block text-2xl'><button class='btn btn-primary'>Copy profile Link</button></div><div class='block mt-2 text-sm text-light '>${profileLink}</div></div><p class='text'>If you don't know anybody who has Circles yet, ask nicely in our <a href='https://discord.gg/4DBbRCMnFZ' target='_blank' class='btn-link'>Discord</a> if someone can activate your citizenship.</p><p class='pb-4 mt-4 text-xs text-light'>alternatively, <a href='#/home/become-a-hub' class='btn-link'>unlock yourself</a> and grow a new local community</a></p><div class='mr-1 text-primary' /></div></div></section>",
+                "submitButtonText": "Close"
+              }
+            }
+          },
+          "invite": {
+            "invite": {
+              "editorContent": {
+                "amount": {
+                  "title": "How many invites do you want to send?"
+                }
+              },
+              "promptChoice": {
+                "labelOneInvite": "1 invite",
+                "labelFiveInvites": "5 invites",
+                "labelTwentyfiveInvites": "25 invites"
+              }
+            }
+          },
+          "authenticateSso": {
+            "couldNotRequestAuthCode": "Couldn't request a delegate authentication code from the api: {error}",
+            "couldNotRequestChallenge": "Couldn't request a challenge from the auth-server: {error}",
+            "authCodeAlreadyExpired": "The {context} is already expired."
+          },
+          "logout": {
+            "editorContent": {
+              "title": "Log out",
+              "description": "Please enter your Secret Recovery Code to logout. If you haven't stored your Secret Recovery Code at a safe place yet, do it now and come back again later to log-out.",
+              "submitButtonText": "Log out"
+            }
+          },
+          "upsertIdentity": {
+            "editorContent": {
+              "firstName": {
+                "title": "What is your first name?",
+                "description": "Welcome, you are finally a citizan of CirclesLand. Glad to have you here.",
+                "placeholder": "First Name",
+                "submitButtonText": "Save"
+              },
+              "lastName": {
+                "title": "What is your last name?",
+                "description": "Display your full name in your profile to become more trust worthy.",
+                "placeholder": "Last name",
+                "submitButtonText": "Save"
+              },
+              "deram": {
+                "title": "Share you passion",
+                "description": "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
+                "placeholder": "Your passion",
+                "submitButtonText": "Start growing"
+              },
+              "city": {
+                "title": "Vote for your City",
+                "description": "Advance your city in the basic income ranking and push the political discourse in your area.",
+                "placeholder": "Last name",
+                "submitButtonText": "Submit vote"
+              },
+              "imageView": {
+                "title": "Profile Image",
+                "description": "Show the World who you are",
+                "placeholder": "Upload Image",
+                "submitButtonText": "Upload Image",
+              },
+              "newsletter": {
+                "title": "Newsletter",
+                "description": "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?"
+              }
+            },
+            "requiredName": "Please enter your first name.",
+            "maximumChars": "The maximum amount of characters allowed is 150."
           }
         }
       },
-      "o-stats": "",
-      "o-verification": ""
+      "o-stats": {
+        "pages": {
+          "home": {
+            "loadingStats": "Loading stats ...",
+            "anErrorOccurred": "An error occurred while loading the status:",
+            "globalStats": "Global stats",
+            "myStats": "My stats",
+            "noStats": "No stats"
+          }
+        }
+      },
+      "o-verification": {
+        "atoms": {
+          "verificationCard": {
+            "subtitle": "Verified by {name} on {date}"
+          }
+        },
+        "pages": {
+          "verificationDetail": {
+            "profile": "PROFILE",
+            "trust": "Trust",
+            "isTrustingYou": "is trusting you",
+            "description": "Description",
+            "address": "Address",
+            "members": "Members",
+            "loading": "...loading"
+          }
+        },
+        "processes": {
+          "verify": {
+              "title": "Select the person you want to add",
+              "placeholder": "Select",
+              "submitButtonText": "Add"
+          }
+        }
+      }
     },
     "shared": {}
   }
-}
+} 

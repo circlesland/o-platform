@@ -24,10 +24,9 @@ export type LogoutContext = ProcessContext<LogoutContextData>;
 
 const editorContent = {
   logout: {
-    title: "Log out",
-    description:
-      "Please enter your Secret Recovery Code to logout. If you haven't stored your Secret Recovery Code at a safe place yet, do it now and come back again later to log-out.",
-    submitButtonText: "Log out",
+    title: window.i18n("dapps.o-passport.processes.logout.editorContent.title"),
+    description: window.i18n("dapps.o-passport.processes.logout.editorContent.description"), 
+    submitButtonText: window.i18n("dapps.o-passport.processes.logout.editorContent.submitButtonText"),
   },
 };
 const processDefinition = (processId: string) =>

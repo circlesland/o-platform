@@ -40,15 +40,14 @@ export type IdentifyContextData = {
 };
 
 const strings = {
-  choiceYesLabel: "Connect",
-  choiceNoLabel: "Create New",
+  choiceYesLabel: window.i18n("dapps.o-passport.processes.identify.identify2.strings.choiceYesLabel"),
+  choiceNoLabel: window.i18n("dapps.o-passport.processes.identify.identify2.strings.choiceNoLabel"),
 };
 
 const editorContent = {
   connectOrCreate: {
-    title: "Connect or Create?",
-    description:
-      "Do you already have a circles Safe address or would you like to create one?",
+    title: window.i18n("dapps.o-passport.processes.identify.identify2.editorContent.title"),
+    description: window.i18n("dapps.o-passport.processes.identify.identify2.editorContent.description"),
     placeholder: "",
     submitButtonText: "",
   },
@@ -323,51 +322,12 @@ const processDefinition = (processId: string) =>
         id: "getInvite",
         entry: (context) => {
           const profileLink = `${window.location.protocol}//${window.location.host}/#/contacts/profile/${context.data.profile.id}`;
-          (<any>context.data).__getInviteHtml = `
-          <section class="mb-8">
-      <div class="w-full px-2 pb-4 -mt-3 bg-white rounded-sm">
-        <div class="px-4 py-2 mr-4 -ml-3 text-center " />
-        <div style="text-align: center">
-          <p
-            class="w-64 m-auto mt-2 text-2xl font-bold  text-gradient"
-          >
-            You're almost there.
-          </p>
-          <p class="mt-4 text">
-            To activate your citizenship you need to be invited.<br/>
-            Send your profile link to a CirclesLand citizen to unlock your basic income.
-          </p>
-          <div class="mt-4 mb-4 text-xs break-all" id="clipboard">
-            <input type="text" class="hidden" value="${profileLink}" />
-            <div class="inline-block text-2xl">
-              <button class="btn btn-primary" 
-                >Copy profile Link</button
-              >
-            </div>
-
-            <div class="block mt-2 text-sm text-light ">
-              ${profileLink}
-            </div>
-          </div>
-          <p class="text">
-            If you don't know anybody who has Circles yet, ask nicely in our <a
-              href="https://discord.gg/4DBbRCMnFZ"
-              target="_blank"
-              class="btn-link">Discord</a
-            > if someone can activate your citizenship.
-          </p>
-          <p class="pb-4 mt-4 text-xs text-light">
-            alternatively, <a href="#/home/become-a-hub" class="btn-link">unlock yourself</a> and grow a new local community</a>
-          </p>
-          <div class="mr-1 text-primary" />
-        </div>
-      </div>
-    </section>`;
+          (<any>context.data).__getInviteHtml = window.i18n("dapps.o-passport.processes.identify.identify2.getInvite.htmlContext");
         },
         component: HtmlViewer,
         params: {
           html: (context) => (<any>context.data).__getInviteHtml,
-          submitButtonText: "Close",
+          submitButtonText: window.i18n("dapps.o-passport.processes.identify.identify2.getInvite.submitButtonText"),
           hideNav: true,
         },
         field: "__getInviteHtml",

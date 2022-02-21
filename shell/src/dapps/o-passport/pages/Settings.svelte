@@ -15,6 +15,8 @@ import {
   WhoamiQueryVariables,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import { _ } from "svelte-i18n";
+
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
@@ -118,7 +120,7 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
   </section> -->
   <section class="mx-4 mb-2 -mt-2">
     <Card>
-      <div class="text-xs font-bold text-left text-primary">NOTIFICATIONS</div>
+      <div class="text-xs font-bold text-left text-primary">{$_("dapps.o-passport.pages.settings.notifications")}</div>
       <div class="w-full space-x-2 bg-white sm:space-x-6">
         <div class="w-full form-control">
           <label class="label" for="newsletter">
@@ -126,7 +128,7 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
               class="flex flex-row items-stretch w-full space-x-10 cursor-pointer justify-items-stretch">
               <div
                 class="self-center flex-grow text-sm text-right justify-self-start">
-                Receive E-Mail Notifications
+                {$_("dapps.o-passport.pages.settings.receiveEmailNotifications")}
               </div>
               <div class="self-center justify-self-end">
                 <input
@@ -148,7 +150,7 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
   <!-- <section class="mx-4 mb-2">
     <Card>
       <div class="text-xs font-bold text-left text-primary whitespace-nowrap">
-        CURRENCY DISPLAY
+        {$_("dapps.o-passport.pages.settings.currencyDisplay")}
       </div>
       <div class="w-full space-x-2 bg-white sm:space-x-6">
         <div class="w-full form-control">

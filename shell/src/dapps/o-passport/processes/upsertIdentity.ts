@@ -37,44 +37,39 @@ export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
   firstName: {
-    title: "What is your first name?",
-    description:
-      "Welcome, you are finally a citizen of CirclesLand. Glad to have you here.",
-    placeholder: "First name",
-    submitButtonText: "Save",
+    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
+    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"), 
+    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.placeholder"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"),
   },
   lastName: {
-    title: "What is your last name?",
-    description:
-      "Display your full name in your profile to become more trust worthy.",
-    placeholder: "Last name",
-    submitButtonText: "Save",
+    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.title"),
+    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.description"),
+    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.placeholder"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.submitButtonText"),
   },
   dream: {
-    title: "Share your passion",
-    description:
-      "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
-    placeholder: "Your passion",
-    submitButtonText: "Start growing",
+    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.dream.title"),
+    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.dream.description"),
+    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.dream.placeholder"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.dream.submitButtonText"),
     maxLength: "150",
   },
   city: {
-    title: "Vote for your City",
-    description:
-      "Advance your city in the basic income ranking and push the political discourse in your area.",
-    placeholder: "Last name",
-    submitButtonText: "Submit vote",
+    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.title"),
+    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.description"),
+    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.placeholder"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.submitButtonText"),
   },
   imageView: {
-    title: "Profile Image",
-    description: "Show the World who you are",
-    placeholder: "Upload Image",
-    submitButtonText: "Upload Image",
+    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.title"),
+    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.description"),
+    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.placeolder"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.submitButtonText"),
   },
   newsletter: {
-    title: "Newsletter",
-    description:
-      "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
+    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.title"),
+    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.description"),
     placeholder: "",
     submitButtonText: "",
   },
@@ -95,7 +90,7 @@ const processDefinition = (processId: string) =>
         params: {
           view: editorContent.firstName,
         },
-        dataSchema: yup.string().required("Please enter your first name."),
+        dataSchema: yup.string().required(window.i18n("dapps.o-passport.processes.upsertIdentity.requiredName")),
         navigation: {
           next: "#lastName",
         },
@@ -132,7 +127,7 @@ const processDefinition = (processId: string) =>
           .string()
           .nullable()
           .notRequired()
-          .max(150, "The maximum amount of characters allowed is 150."),
+          .max(150, window.i18n("dapps.o-passport.processes.upsertIdentity.maximumChars")),
         navigation: {
           next: "#avatarUrl",
           canSkip: () => true,

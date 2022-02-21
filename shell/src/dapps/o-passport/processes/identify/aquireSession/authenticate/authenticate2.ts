@@ -27,40 +27,35 @@ export type AuthenticateContext = ProcessContext<AuthenticateContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelLoginEmail:
-    "Welcome to CirclesLand. <br/><span class='text-base text-light-dark font-normal block mt-3'>A pleasure you found your way here. Please provide your email address to Sign-In</span>",
+  labelLoginEmail: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.srtings.labelLoginEmail"),
   labelVerificationCode: (email: string) =>
-    `Please enter pin<br/><span class='text-base text-light-dark font-normal block mt-3'>We have send you a 6 digit login pin to your mail ${email}.</span><br/><span class='text-light-dark text-xs font-normal'> It may take a moment. Also check your spam folder</span>`,
-  placeholder: "email",
+  window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.srtings.labeVerificationCode"),
+  placeholder: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.srtings.placeholder"),
 };
 
 const editorContent = {
   email: {
-    title: "Welcome to CirclesLand",
-    description:
-      "A pleasure you found your way here. Please provide your email address to Sign-In.",
-    placeholder: "Email address",
-    submitButtonText: "Let me in",
+    title: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.email.title"),
+    description: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.email.description"),
+    placeholder: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.email.placeholder"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.email.submitButtonText"),
   },
   terms_privacy: {
-    title: "Terms & Privacy",
-    description:
-      "CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/><span class='text-xs'>For details read our <a href='https://blog.circles.land/terms-of-service' class='text-primary' target='_blank' alt='privacy policy & terms of service'>privacy policy & terms of service</a></span>",
-    submitButtonText: "I read and accept them",
+    title: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.terms_privacy.title"),
+    description: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.terms_privacy.description"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.terms_privacy.submitButtonText"),
   },
   verification: {
-    title: "Welcome to CirclesLand",
-    description:
-      "A pleasure you found your way here. Please provide your email address to Sign-In",
-    placeholder: "Email address",
-    submitButtonText: "Let me in",
+    title: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.verification.title"),
+    description: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.verification.description"),
+    placeholder: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.verification.placeholder"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.verification.submitButtonText"),
   },
   code: {
-    title: "Please enter encryptingPin",
-    description:
-      "We have send you a 6 digit login encryptingPin to your mail.<br/><br/><span class='text-xs'>It may take a moment. Also check your spam folder.</span>",
-    placeholder: "Enter Pin",
-    submitButtonText: "Login",
+    title: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.code.title"),
+    description: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.code.description"),
+    placeholder: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.code.placeholder"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.editorContent.code.submitButtonText"),
   }
 };
 
@@ -99,13 +94,13 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Requesting the challenge`,
+            message: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.acquireSession.message"),
           });
         },
         invoke: {
           src: async (context) => {
             if (!context.data.eoaAddress) {
-              throw new Error(`The context's 'eoaAddress' property is not set but required by this step`);
+              throw new Error(window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.acquireSession.errors.contextsPropertyNotSet"));
             }
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();
@@ -124,7 +119,7 @@ const processDefinition = (processId: string) =>
             const challenge = result.data.requestSessionChallenge;
             const pk = sessionStorage.getItem("circlesKey");
             if (!pk) {
-              throw new Error(`The private key is not unlocked`)
+              throw new Error(window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.acquireSession.errors.privateKeyNotUnlocked"))
             }
             const acc = RpcGateway.get().eth.accounts.privateKeyToAccount(pk);
             const {message, signature} = acc.sign(challenge);
@@ -142,7 +137,7 @@ const processDefinition = (processId: string) =>
               throw new Error(JSON.stringify(sessionResult.data.errors));
             }
             if (!sessionResult.data.verifySessionChallenge?.success) {
-              throw new Error(`Couldn't get a session using a signed challenge.`)
+              throw new Error(window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.acquireSession.errors.couldNotGetSession"))
             }
           },
           onDone: "#success",
@@ -153,12 +148,12 @@ const processDefinition = (processId: string) =>
       errorRequestingChallenge: prompt<AuthenticateContext, any>({
         field: "errorRequestingChallenge",
         entry: (context) => {
-          context.data.errorRequestingChallenge = `An error occurred while requesting an auth-challenge.`;
+          context.data.errorRequestingChallenge = window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.errorRequestingChallenge.error");
         },
         component: HtmlViewer,
         isSensitive: true,
         params: {
-          submitButtonText: "Try again",
+          submitButtonText: window.i18n("dapps.o-passport.processes.identify.aquireSession.authenticate.authenticate2.errorRequestingChallenge.submitButtonText"),
           html: (context) => context.data.errorSendingAuthMail,
         },
         navigation: {

@@ -41,7 +41,7 @@ createMachine<AuthenticateSsoContext, any>({
             },
           });
           if (result.errors && result.errors.length > 0){
-            throw new Error(`Couldn't request a delegate authentication code from the api: ${JSON.stringify(result.errors, null, 2)}`);
+            throw new Error(window.i18n("dapps.o-passport.processes.authenticateSso.couldNotRequestAuthCode", { values: { error: JSON.stringify(result.errors, null, 2)}}));
           }
           context.data.delegateAuthCode = result.data.authenticateAt.delegateAuthCode;
           context.data.delegateAuthCodeValidTo = result.data.authenticateAt.validTo;
@@ -65,7 +65,7 @@ createMachine<AuthenticateSsoContext, any>({
             }
           });
           if (result.errors && result.errors.length > 0 || !result.data?.challenge?.success){
-            throw new Error(`Couldn't request a challenge from the auth-server: ${JSON.stringify(result.errors ?? [], null, 2)}`);
+            throw new Error(window.i18n("dapps.o-passport.processes.authenticateSso.couldNotRequestChallenge", { values: { error: JSON.stringify(result.errors ?? [], null, 2)}}));
           }
         },
         onDone: "consumeChallenge",
@@ -78,7 +78,7 @@ createMachine<AuthenticateSsoContext, any>({
       invoke: {
         src: async (context) => {
           if(new Date(context.data.delegateAuthCodeValidTo) < new Date()){
-            throw new Error(`The context.data.delegateAuthCode is already expired.`);
+            throw new Error(window.i18n("dapps.o-passport.processes.athenticateSso.authCodeAlreadyExpired", { values: { context: context.data.delegateAuthCode}}));
           }
 
           const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -89,7 +89,7 @@ createMachine<AuthenticateSsoContext, any>({
             }
           });
           if (result.errors && result.errors.length > 0 || !result.data?.consumeDepositedChallenge?.success){
-            throw new Error(`Couldn't request a challenge from the auth-server: ${JSON.stringify(result.errors ?? [], null, 2)}`);
+            throw new Error(window.i18n("dapps.o-passport.processes.authenticateSso.couldNotRequestChallenge", { values: { error: JSON.stringify(result.errors ?? [], null, 2)}}));
           }
           context.data.challenge = result.data.consumeDepositedChallenge.challenge;
         },

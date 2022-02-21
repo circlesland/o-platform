@@ -23,7 +23,7 @@ export type InviteContext = ProcessContext<InviteContextData>;
 
 const editorContent = {
   amount: {
-    title: "How many invites do you want to send?",
+    title: window.i18n("dapps.o-passport.processes.invite.invite.editorContent.amount.title"),
     description: "",
     placeholder: "",
     submitButtonText: "",
@@ -62,17 +62,17 @@ const processDefinition = (processId: string) =>
         options: [
           {
             key: "1",
-            label: "1 invite",
+            label: window.i18n("dapps.o-passport.processes.invite.invite.promptChoice.labelOneInvite"),
             target: "#transfer",
           },
           {
             key: "5",
-            label: "5 invites",
+            label: window.i18n("dapps.o-passport.processes.invite.invite.promptChoice.labelFiveInvite"),
             target: "#transfer",
           },
           {
             key: "25",
-            label: "25 invites",
+            label: window.i18n("dapps.o-passport.processes.invite.invite.promptChoice.labelTwentyfiveInvite"),
             target: "#transfer",
           },
         ],

@@ -33,13 +33,10 @@ export type ConnectSafeContext = ProcessContext<ConnectSafeContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
   seedPhrase: {
-    title: "CONNECT RECOVERY CODE",
-    description: `Please enter your 24 secret recovery code (seedphrase) 
-      <br />
-      <br />
-      <span class="text-xs">Your secret recovery code will be stored only in your device</span>`,
-    placeholder: "Recovery Code",
-    submitButtonText: "Connect recovery code",
+    title: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.title"),
+    description: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.description"),
+    placeholder: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.placeholder"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.submitButtonText"),
   },
   selectExistingKey: {
     title: "PLEASE CHOOSE A KEY",
@@ -112,11 +109,11 @@ const processDefinition = (processId: string) =>
           )[0];
           return {
             view: editorContent.unlockPin,
-            label: `Please enter the PIN for key '${eoa.name}'`,
-            submitButtonText: "Unlock",
+            label: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKeyPin.label", { values: { eoaName: eoa.name}}),
+            submitButtonText: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKeyPin.submitButtonText"),
           };
         },
-        dataSchema: yup.string().required("Please enter your one time token."),
+        dataSchema: yup.string().required(window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKeyPin.dataSchema")),
         navigation: {
           next: "#unlockKey",
         },
@@ -128,7 +125,7 @@ const processDefinition = (processId: string) =>
             const key = Object.values(context.data.availableKeys).filter(
               (o) => o.isOwner && o.encryptedPrivateKey
             )[0];
-            if (!key) throw new Error(`WTF?!`);
+            if (!key) throw new Error(window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKey.error.wtf"));
 
             const km = new KeyManager(context.data.safeAddress);
             await km.load();
@@ -138,7 +135,7 @@ const processDefinition = (processId: string) =>
             );
 
             if (!decryptedKey) {
-              throw new Error(`Wrong pin?`);
+              throw new Error(window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKey.error.wrongPin"));
             }
 
             sessionStorage.setItem("circlesKey", decryptedKey);
@@ -175,7 +172,7 @@ const processDefinition = (processId: string) =>
             } catch (e) {
               context.messages[
                 "seedPhrase"
-              ] = `The seedphrase cannot be converted to a private key. Please double check it.`;
+              ] = window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage1");
               throw e;
             }
 
@@ -187,7 +184,7 @@ const processDefinition = (processId: string) =>
             } catch (e) {
               context.messages[
                 "seedPhrase"
-              ] = `The key that was generated from the seedphrase cannot be converted to an ethereum account.`;
+              ] = window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage2");
               throw e;
             }
 
@@ -210,9 +207,7 @@ const processDefinition = (processId: string) =>
               });
 
               if (foundSafes.errors && foundSafes.errors.length) {
-                const msg = `An error occurred while we tried to find your safe: ${JSON.stringify(
-                  foundSafes.errors
-                )}`;
+                const msg = window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage3", { values: { error: JSON.stringify(foundSafes.errors)}});
                 context.messages["seedPhrase"] = msg;
                 throw new Error(msg);
               }
@@ -220,7 +215,7 @@ const processDefinition = (processId: string) =>
               context.data.foundSafeAddresses =
                 foundSafes.data.user?.safeAddresses ?? [];
               if (!context.data.foundSafeAddresses.length) {
-                const msg = `We couldn't find a safe for your account ${account.address}`;
+                const msg = window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage4", { values: { accountAddress: account.address}});
                 context.messages["seedPhrase"] = msg;
                 throw new Error(msg);
               }
@@ -262,10 +257,9 @@ const processDefinition = (processId: string) =>
         field: "safeAddress",
         component: DropdownSelectEditor,
         params: <DropdownSelectorParams<ConnectSafeContext, string, string>>{
-          label:
-            "We found multiple safes for your account. Please select the one you want to connect.",
-          placeholder: "Click to select a safe",
-          submitButtonText: "Connect",
+          label: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.safeAddress.label"),
+          placeholder: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.safeAddress.placeholder"),
+          submitButtonText: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.safeAddress.submitButtonText"),
           itemTemplate: DropDownString,
           getKey: (safeAddress: any) => safeAddress.value,
           getLabel: (safeAddress: any) => safeAddress.label,
@@ -303,7 +297,7 @@ const processDefinition = (processId: string) =>
               }
               context.messages[
                 "safeAddress"
-              ] = `Couldn't determine the owner of safe ${context.data.safeAddress}. Is the address right?`;
+              ] = window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSafeAddress.contextMessage", { values: { contextDataSafeAddress: context.data.safeAddress}});
               throw e;
             }
           },

@@ -13,6 +13,7 @@ import { loadOrganisationsBySafeAddress } from "../../../shared/api/loadOrganisa
 import { getCountryName } from "../../../shared/countries";
 import { onMount } from "svelte";
 import ContactCard from "../../o-contacts/atoms/ContactCard.svelte";
+import { _ } from "svelte-i18n";
 
 export let id: string;
 export let jumplist: Jumplist<any, any> | undefined;
@@ -96,7 +97,7 @@ let promise = getJumplist();
   <div class="p-5">
     <header class="grid overflow-hidden bg-white h-72 ">
       <div class="w-full text-center">
-        <h1 class="text-3xl uppercase font-heading">PROFILE</h1>
+        <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-verification.pages.verificationDetail.profile")}</h1>
       </div>
       <div
         class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
@@ -129,10 +130,10 @@ let promise = getJumplist();
             {#if profile.trustsYou}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
-                  <div class="text-left text-2xs text-dark-lightest">Trust</div>
+                  <div class="text-left text-2xs text-dark-lightest">{$_("dapps.o-verification.pages.verificationDetail.trust")}</div>
                   <div class="flex flex-wrap content-start">
                     {#if profile.trustsYou > 0}
-                      is trusting you
+                      {$_("dapps.o-verification.pages.verificationDetail.isTrustingYou")}
                     {/if}
                   </div>
                 </div>
@@ -142,7 +143,7 @@ let promise = getJumplist();
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="text-left text-2xs text-dark-lightest">
-                  Description
+                  {$_("dapps.o-verification.pages.verificationDetail.description")}
                 </div>
 
                 <div class="flex items-center w-full text-lg">
@@ -213,7 +214,7 @@ let promise = getJumplist();
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
-                  Address
+                  {$_("dapps.o-verification.pages.verificationDetail.address")}
                 </div>
 
                 <div class="flex items-center w-full text-2xs">
@@ -226,7 +227,7 @@ let promise = getJumplist();
           <section class="justify-center">
             <div class="flex flex-col w-full pt-2 space-y-1">
               <div class="mb-1 text-left text-2xs text-dark-lightest">
-                Members
+                {$_("dapps.o-verification.pages.verificationDetail.members")}
               </div>
 
               <div class="flex items-center w-full text-2xs">
@@ -243,7 +244,7 @@ let promise = getJumplist();
         <div
           class="sticky bottom-0 left-0 right-0 w-full py-2 mt-2 bg-white rounded-xl">
           {#await promise}
-            <p>...loading</p>
+            <p>{$_("dapps.o-verification.pages.verificationDetail.loading")}</p>
           {:then jumpListItems}
             <DetailActionBar actions="{jumpListItems}" />
           {/await}
