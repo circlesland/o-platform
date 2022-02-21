@@ -23,97 +23,102 @@ let toProfile: Profile = <any>{};
 let error: string;
 let message: string | undefined = undefined;
 let targetProfile: Profile = <any>{};
-let amount: string = "";
+let amount: string | number = "";
 
-if (event && event.payload?.__typename == "CrcMinting") {
-  const minting = event.payload as CrcMinting;
+$: {
+  if (event && event.payload?.__typename == "CrcMinting") {
+    const minting = event.payload as CrcMinting;
 
-  toProfile = minting.to_profile ?? {
-    id: 0,
-    firstName: minting.to.substr(0, 24) + "...",
-    lastName: "",
-    circlesAddress: minting.to,
-  };
+    toProfile = minting.to_profile ?? {
+      id: 0,
+      firstName: minting.to.substr(0, 24) + "...",
+      lastName: "",
+      circlesAddress: minting.to,
+    };
 
-  fromProfile = toProfile;
+    fromProfile = toProfile;
 
-  amount = Currency.instance().displayAmount(
-    event.payload && event.payload.value ? event.payload.value.toString() : "0",
-    event.timestamp,
-    $me.displayCurrency
-  );
-
-  message = "Universal basic income";
-}
-
-if (event && event.payload?.__typename == "Erc20Transfer") {
-  const ercTransfer = event.payload as Erc20Transfer;
-  fromProfile = ercTransfer.from_profile ?? {
-    id: 0,
-    firstName: "Circles Land",
-    lastName: "",
-    avatarUrl: "/logos/erc20.png",
-    circlesAddress: ercTransfer.from,
-  };
-
-  toProfile = ercTransfer.to_profile ?? {
-    id: 0,
-    firstName: ercTransfer.to.substr(0, 24) + "...",
-    lastName: "",
-    circlesAddress: ercTransfer.to,
-  };
-  amount = parseFloat(
-    RpcGateway.get().utils.fromWei(ercTransfer.value, "ether")
-  ).toFixed(2);
-  message = "ERC-20 Transfer";
-}
-
-if (event && event.payload?.__typename == "CrcHubTransfer") {
-  const hubTransfer = event.payload as CrcHubTransfer;
-  fromProfile = hubTransfer.from_profile ?? {
-    id: 0,
-    firstName: hubTransfer.from.substr(0, 24) + "...",
-    lastName: "",
-    circlesAddress: hubTransfer.from,
-  };
-
-  toProfile = hubTransfer.to_profile ?? {
-    id: 0,
-    firstName: hubTransfer.to.substr(0, 24) + "...",
-    lastName: "",
-    circlesAddress: hubTransfer.to,
-  };
-
-  path = {
-    transfers: hubTransfer.transfers,
-  };
-
-  message = hubTransfer.tags?.find(
-    (o) => o.typeId === "o-banking:transfer:message:1"
-  )?.value;
-
-  if (event.payload?.__typename == EventType.CrcHubTransfer) {
-    const ht = <CrcHubTransfer>event.payload;
     amount = Currency.instance().displayAmount(
-      event.payload && ht.flow ? ht.flow.toString() : "0",
+      event.payload && event.payload.value
+        ? event.payload.value.toString()
+        : "0",
       event.timestamp,
-      $me.displayCurrency ? $me.displayCurrency : "EURS"
+      $me.displayCurrency
     );
+
+    message = "Universal basic income";
   }
 
-  if (event.direction == "out") {
-    amount = "-" + amount;
+  if (event && event.payload?.__typename == "Erc20Transfer") {
+    const ercTransfer = event.payload as Erc20Transfer;
+    fromProfile = ercTransfer.from_profile ?? {
+      id: 0,
+      firstName: "Circles Land",
+      lastName: "",
+      avatarUrl: "/logos/erc20.png",
+      circlesAddress: ercTransfer.from,
+    };
+
+    toProfile = ercTransfer.to_profile ?? {
+      id: 0,
+      firstName: ercTransfer.to.substr(0, 24) + "...",
+      lastName: "",
+      circlesAddress: ercTransfer.to,
+    };
+    amount = parseFloat(
+      RpcGateway.get().utils.fromWei(ercTransfer.value, "ether")
+    ).toFixed(2);
+    message = "ERC-20 Transfer";
   }
+
+  if (event && event.payload?.__typename == "CrcHubTransfer") {
+    const hubTransfer = event.payload as CrcHubTransfer;
+    fromProfile = hubTransfer.from_profile ?? {
+      id: 0,
+      firstName: hubTransfer.from.substr(0, 24) + "...",
+      lastName: "",
+      circlesAddress: hubTransfer.from,
+    };
+
+    toProfile = hubTransfer.to_profile ?? {
+      id: 0,
+      firstName: hubTransfer.to.substr(0, 24) + "...",
+      lastName: "",
+      circlesAddress: hubTransfer.to,
+    };
+
+    path = {
+      transfers: hubTransfer.transfers,
+    };
+
+    message = hubTransfer.tags?.find(
+      (o) => o.typeId === "o-banking:transfer:message:1"
+    )?.value;
+
+    if (event.payload?.__typename == EventType.CrcHubTransfer) {
+      const ht = <CrcHubTransfer>event.payload;
+      amount = Currency.instance().displayAmount(
+        event.payload && ht.flow ? ht.flow.toString() : "0",
+        event.timestamp,
+        $me.displayCurrency ? $me.displayCurrency : "EURS"
+      );
+    }
+
+    if (event.direction == "out") {
+      amount = "-" + amount;
+    }
+  }
+
+  if (event.payload?.__typename != EventType.Erc20Transfer) {
+    amount += ` ${
+      Currency.currencySymbol[
+        $me.displayCurrency ? $me.displayCurrency : "EURS"
+      ]
+    }`;
+  }
+
+  targetProfile = event.direction === "in" ? fromProfile : toProfile;
 }
-
-if (event.payload?.__typename != EventType.Erc20Transfer) {
-  amount += ` ${
-    Currency.currencySymbol[$me.displayCurrency ? $me.displayCurrency : "EURS"]
-  }`;
-}
-
-targetProfile = event.direction === "in" ? fromProfile : toProfile;
-
 function loadDetailPage(path) {
   push(`#/banking/transactions/${path}`);
 }
