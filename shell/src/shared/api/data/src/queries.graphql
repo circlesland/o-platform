@@ -324,6 +324,50 @@ query profilesByName($searchString: String!) {
   }
 }
 
+query getRecentProfiles($pagination: PaginationArgs) {
+  recentProfiles(pagination: $pagination) {
+    id
+    circlesAddress
+    origin
+    successorOfCirclesAddress
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    cityGeonameid
+    displayCurrency
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
+  }
+}
+
 query profilesByCirclesAddress($circlesAddresses: [String!]!) {
   profilesBySafeAddress(safeAddresses: $circlesAddresses) {
     id
@@ -1535,8 +1579,8 @@ query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
   }
 }
 
-query findInvitationCreator($code:String!) {
-  findInvitationCreator(code:$code) {
+query findInvitationCreator($code: String!) {
+  findInvitationCreator(code: $code) {
     circlesAddress
     firstName
     lastName

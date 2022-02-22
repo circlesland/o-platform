@@ -872,6 +872,7 @@ export type Query = {
   organisations: Array<Organisation>;
   organisationsByAddress: Array<Organisation>;
   profilesById: Array<Profile>;
+  recentProfiles: Array<Profile>;
   profilesBySafeAddress: Array<Profile>;
   profilesCount: Scalars['Int'];
   recentProfiles: Array<Profile>;
@@ -949,6 +950,11 @@ export type QueryOrganisationsByAddressArgs = {
 
 export type QueryProfilesByIdArgs = {
   ids: Array<Scalars['Int']>;
+};
+
+
+export type QueryRecentProfilesArgs = {
+  pagination?: Maybe<PaginationArgs>;
 };
 
 
@@ -1965,6 +1971,34 @@ export type ProfilesByNameQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
+    )>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      )> }
+    )>> }
+  )> }
+);
+
+export type GetRecentProfilesQueryVariables = Exact<{
+  pagination?: Maybe<PaginationArgs>;
+}>;
+
+
+export type GetRecentProfilesQuery = (
+  { __typename?: 'Query' }
+  & { recentProfiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'origin' | 'successorOfCirclesAddress' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'cityGeonameid' | 'displayCurrency'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
     )>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
@@ -3537,6 +3571,51 @@ export const ProfilesByNameDocument = gql`
   }
 }
     `;
+export const GetRecentProfilesDocument = gql`
+    query getRecentProfiles($pagination: PaginationArgs) {
+  recentProfiles(pagination: $pagination) {
+    id
+    circlesAddress
+    origin
+    successorOfCirclesAddress
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    cityGeonameid
+    displayCurrency
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
+  }
+}
+    `;
 export const ProfilesByCirclesAddressDocument = gql`
     query profilesByCirclesAddress($circlesAddresses: [String!]!) {
   profilesBySafeAddress(safeAddresses: $circlesAddresses) {
@@ -4826,6 +4905,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     profilesByName(variables: ProfilesByNameQueryVariables): Promise<ProfilesByNameQuery> {
       return withWrapper(() => client.request<ProfilesByNameQuery>(print(ProfilesByNameDocument), variables));
+    },
+    getRecentProfiles(variables?: GetRecentProfilesQueryVariables): Promise<GetRecentProfilesQuery> {
+      return withWrapper(() => client.request<GetRecentProfilesQuery>(print(GetRecentProfilesDocument), variables));
     },
     profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
       return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));

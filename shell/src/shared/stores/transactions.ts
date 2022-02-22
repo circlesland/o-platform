@@ -1,18 +1,23 @@
-import {writable} from "svelte/store";
+import { writable } from "svelte/store";
 import {
-  EventType, PaginationArgs,
-  ProfileEvent, ProfileEventFilter, QueryEventsArgs, SortOrder, StreamDocument
+  EventType,
+  PaginationArgs,
+  ProfileEvent,
+  ProfileEventFilter,
+  QueryEventsArgs,
+  SortOrder,
+  StreamDocument,
 } from "../api/data/types";
-import {me} from "./me";
-import {Subscription} from "rxjs";
-import {ApiClient} from "../apiConnection";
+import { me } from "./me";
+import { Subscription } from "rxjs";
+import { ApiClient } from "../apiConnection";
 
 let order: SortOrder = SortOrder.Desc;
 let dataKey: string = "events";
 let limit: number = 25;
 let selector = "timestamp";
 let fetchQuery: any = StreamDocument;
-let eventsByHash: { [hash:string]: ProfileEvent } = {};
+let eventsByHash: { [hash: string]: ProfileEvent } = {};
 let hasMore: boolean = true;
 let pagination: PaginationArgs = {
   order: order,
@@ -22,25 +27,29 @@ let pagination: PaginationArgs = {
 const transactionEventTypes = [
   EventType.CrcHubTransfer,
   EventType.CrcMinting,
-  EventType.Erc20Transfer
+  EventType.Erc20Transfer,
 ];
-async function fetchData(queryArguments:QueryEventsArgs) {
+
+async function fetchData(queryArguments: QueryEventsArgs) {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const timeline: any = await apiClient.query({
     query: fetchQuery,
     variables: {
-      ...queryArguments
+      ...queryArguments,
     },
   });
+
   if (timeline.errors) {
-    throw new Error(`Couldn't load data for the following reasons: ${JSON.stringify(
-      timeline.errors
-    )}`);
+    throw new Error(
+      `Couldn't load data for the following reasons: ${JSON.stringify(
+        timeline.errors
+      )}`
+    );
   }
 
   let newBatch = await timeline.data[dataKey];
   if (newBatch.length > 0) {
-    newBatch.forEach(e => eventsByHash[e.transaction_hash] = e);
+    newBatch.forEach((e) => (eventsByHash[e.transaction_hash] = e));
 
     pagination = {
       order: order,
@@ -57,18 +66,18 @@ async function loadTransactions(safeAddress: string) {
     safeAddress: safeAddress,
     types: transactionEventTypes,
     pagination: pagination,
-    filter: undefined
+    filter: undefined,
   };
 
   await fetchData(args);
 
-  return Object.values(eventsByHash)
-    .sort((a,b) =>
-      a.block_number > b.block_number
-        ? -1
-        : a.block_number < b.block_number
-          ? 1
-          : 0);
+  return Object.values(eventsByHash).sort((a, b) =>
+    a.block_number > b.block_number
+      ? -1
+      : a.block_number < b.block_number
+      ? 1
+      : 0
+  );
 }
 
 async function updateTransactions(safeAddress: string) {
@@ -80,18 +89,18 @@ async function updateTransactions(safeAddress: string) {
       limit: limit,
       continueAt: new Date().toJSON(),
     },
-    filter: undefined
+    filter: undefined,
   };
 
   await fetchData(args);
 
-  return Object.values(eventsByHash)
-    .sort((a,b) =>
-      a.block_number > b.block_number
-        ? -1
-        : a.block_number < b.block_number
-        ? 1
-        : 0);
+  return Object.values(eventsByHash).sort((a, b) =>
+    a.block_number > b.block_number
+      ? -1
+      : a.block_number < b.block_number
+      ? 1
+      : 0
+  );
 }
 
 let isInitialized = false;
@@ -103,20 +112,23 @@ const { subscribe, set, update } = writable<ProfileEvent[]>(
     async function _update(safeAddress: string) {
       const events = await updateTransactions(safeAddress);
       // set(events);
-      update((currentTransactions:ProfileEvent[]) => {
-        const existingHashes = currentTransactions.reduce((p,c) => {
+      update((currentTransactions: ProfileEvent[]) => {
+        const existingHashes = currentTransactions.reduce((p, c) => {
           p[c.transaction_hash] = true;
           return p;
-        }, <{[hash:string]:any}>{});
-        const newEvents = events.filter(o => !existingHashes[o.transaction_hash]);
-        newEvents.forEach(e => currentTransactions.unshift(e));
+        }, <{ [hash: string]: any }>{});
+        const newEvents = events.filter(
+          (o) => !existingHashes[o.transaction_hash]
+        );
+        newEvents.forEach((e) => currentTransactions.unshift(e));
 
-        return currentTransactions.sort((a,b) =>
+        return currentTransactions.sort((a, b) =>
           a.block_number > b.block_number
             ? -1
             : a.block_number < b.block_number
             ? 1
-            : 0);
+            : 0
+        );
       });
     }
     async function initialize(safeAddress: string) {
@@ -127,7 +139,7 @@ const { subscribe, set, update } = writable<ProfileEvent[]>(
 
     let shellEventSubscription: Subscription;
 
-    const profileSubscription = me.subscribe(async $me => {
+    const profileSubscription = me.subscribe(async ($me) => {
       if (shellEventSubscription) {
         shellEventSubscription.unsubscribe();
         shellEventSubscription = null;
@@ -142,7 +154,7 @@ const { subscribe, set, update } = writable<ProfileEvent[]>(
       if (!isInitialized) {
         await initialize($me.circlesAddress);
       }
-      shellEventSubscription = window.o.events.subscribe(async event => {
+      shellEventSubscription = window.o.events.subscribe(async (event) => {
         if (event.type == "blockchain_event") {
           console.log(`transactions: Updating because of blockchain event ..`);
           await _update($me.circlesAddress);
@@ -158,16 +170,17 @@ const { subscribe, set, update } = writable<ProfileEvent[]>(
         shellEventSubscription = null;
       }
     };
-  });
+  }
+);
 
 export const transactions = {
   subscribe: (a) => {
-    console.log("Subscribing to transactions")
+    console.log("Subscribing to transactions");
     return subscribe(a);
   },
   fetchMore: async () => {
-    let safeAddress:string|null = null;
-    const unsub = me.subscribe($me => safeAddress = $me.circlesAddress);
+    let safeAddress: string | null = null;
+    const unsub = me.subscribe(($me) => (safeAddress = $me.circlesAddress));
     unsub();
     const events = await loadTransactions(safeAddress);
     set(events);
@@ -176,10 +189,13 @@ export const transactions = {
   findByHash: async (transactionHash: string) => {
     let foundTx = eventsByHash[transactionHash];
     if (!foundTx) {
-      let safeAddress:string;
-      me.subscribe($me => safeAddress = $me.circlesAddress)()
+      let safeAddress: string;
+      me.subscribe(($me) => (safeAddress = $me.circlesAddress))();
 
-      const foundEvents = await ApiClient.query<ProfileEvent[], QueryEventsArgs>(fetchQuery, {
+      const foundEvents = await ApiClient.query<
+        ProfileEvent[],
+        QueryEventsArgs
+      >(fetchQuery, {
         safeAddress: safeAddress,
         types: transactionEventTypes,
         pagination: {
@@ -188,8 +204,8 @@ export const transactions = {
           continueAt: new Date().toJSON(),
         },
         filter: <ProfileEventFilter>{
-          transactionHash: transactionHash
-        }
+          transactionHash: transactionHash,
+        },
       });
 
       if (foundEvents && foundEvents.length > 0) {
@@ -199,5 +215,5 @@ export const transactions = {
     }
 
     return foundTx;
-  }
-}
+  },
+};

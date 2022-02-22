@@ -1,24 +1,28 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import {
-  ProfileEvent
-} from "../../api/data/types";
+import { ProfileEvent } from "../../api/data/types";
 
 import { inview } from "svelte-inview/dist/index";
 import GenericEventCard from "../../NotificationViewer/molecules/GenericEventCard.svelte";
-import {Readable} from "svelte/store";
+import { Readable } from "svelte/store";
 
 export let views: { [type: string]: any } = {};
-export let store: Readable<ProfileEvent[]> & {fetchMore: () => Promise<boolean>};
+export let store: Readable<ProfileEvent[]> & {
+  fetchMore: () => Promise<boolean>;
+};
+
+$: {
+  store = store;
+}
 
 let isLoading = true;
 let hasMore = true;
 let scrollContent;
-let events:ProfileEvent[] = [];
+let events: ProfileEvent[] = [];
 
 onMount(() => {
   isLoading = true;
-  return store.subscribe(data => {
+  return store.subscribe((data) => {
     events = data;
     isLoading = false;
   });
@@ -40,7 +44,7 @@ const initBar = (bar) => {
     {#if views[event.type]}
       <svelte:component this="{views[event.type]}" event="{event}" />
     {:else}
-      <GenericEventCard event={event} />
+      <GenericEventCard event="{event}" />
     {/if}
   {/each}
 {:else}

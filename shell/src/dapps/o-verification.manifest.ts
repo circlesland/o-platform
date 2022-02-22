@@ -1,15 +1,16 @@
 import Verifications from "./o-verification/pages/Verifications.svelte";
 import VerificationDetail from "./o-verification/pages/VerificationDetail.svelte";
-import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-import {ContactsDappState} from "./o-contacts.manifest";
-import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
-import {UniquenessCheck} from "../shared/facetec/uniquenessCheck";
-import {Environment} from "../shared/environment";
-import {performOauth} from "./o-humanode/processes/performOauth";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import RecentProfiles from "./o-verification/pages/RecentProfiles.svelte";
+import { ContactsDappState } from "./o-contacts.manifest";
+import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { UniquenessCheck } from "../shared/facetec/uniquenessCheck";
+import { Environment } from "../shared/environment";
+import { performOauth } from "./o-humanode/processes/performOauth";
 
-const index: Page<any, ContactsDappState> = {
-  routeParts: [],
+const verifications: Page<any, ContactsDappState> = {
+  routeParts: ["=verifications"],
   component: Verifications,
   title: "Verifications",
   type: "page",
@@ -19,6 +20,13 @@ const detail: Page<any, ContactsDappState> = {
   isSystem: true,
   component: VerificationDetail,
   title: "Verifications",
+  type: "page",
+};
+
+const recentProfiles: Page<any, ContactsDappState> = {
+  routeParts: ["=recentProfiles"],
+  component: RecentProfiles,
+  title: "Recent Profiles",
   type: "page",
 };
 
@@ -40,16 +48,15 @@ const verificationJumplist: Jumplist<any, ContactsDappState> = {
             window.o.runProcess(performOauth, {
               origin: "dashboard",
               oauthRequest: {
-                clientId: "1087329459459-3t3i510j124ni65r96g4fjoflnelnj3v.apps.googleusercontent.com",
+                clientId:
+                  "1087329459459-3t3i510j124ni65r96g4fjoflnelnj3v.apps.googleusercontent.com",
                 redirectUri: "https://localhost:5000/",
                 scope: "https://www.googleapis.com/auth/drive",
                 accessType: "offline",
                 responseType: "code",
-                prompt: "consent"
+                prompt: "consent",
               },
-              successAction: () => {
-
-              },
+              successAction: () => {},
             });
           },
         },
@@ -68,20 +75,21 @@ export const verification: DappManifest<DappState> = {
   type: "dapp",
   dappId: "verification:1",
   isSingleton: true,
-  isHidden: true,
+  isHidden: false,
   icon: "check",
   title: "verification",
-  routeParts: [],
-  defaultRoute: [],
+  routeParts: ["=verification"],
+  defaultRoute: ["verifications"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
+
   jumplist: verificationJumplist,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {
-      initialRoutable: index,
+      initialRoutable: verifications,
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, detail],
+  routables: [verifications, recentProfiles, detail],
 };

@@ -8,7 +8,7 @@ export const listItemType: any = undefined;
 export let fetchQuery: any;
 export let fetchQueryArguments;
 export let dataKey: string;
-export let sortOrder: 'ASC' | 'DESC' = 'DESC';
+export let sortOrder: "ASC" | "DESC" = "DESC";
 export let dataLimit: number = 50;
 
 let posts: typeof listItemType[] = [];
@@ -24,8 +24,8 @@ const fetchData = async (paginationArg) => {
     fetchQueryArguments.pagination = {
       order: "DESC",
       limit: dataLimit,
-      continueAt: new Date()
-    }
+      continueAt: new Date(),
+    };
   }
 
   const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -46,6 +46,7 @@ const fetchData = async (paginationArg) => {
 
     pagination = {
       order: sortOrder,
+      // continueAtId: newBatch[newBatch.length - 1][selector],
       continueAt: newBatch[newBatch.length - 1][selector],
       limit: dataLimit,
     };
@@ -53,7 +54,8 @@ const fetchData = async (paginationArg) => {
     hasMore = false;
     return;
   }
-
+  console.log("BATCH ", newBatch);
+  console.log("LAST: ", newBatch[newBatch.length - 1][selector]);
   initialized = true;
   hasMore = newBatch && newBatch.length == dataLimit;
 };

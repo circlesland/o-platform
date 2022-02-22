@@ -827,6 +827,10 @@ input OffersAggregateFilter {
 }
 
 input PaginationArgs {
+  continueAt: String
+  continueAtId: Int
+  order: SortOrder!
+  limit: Int!
     continueAt: String!
     limit: Int!
     order: SortOrder!

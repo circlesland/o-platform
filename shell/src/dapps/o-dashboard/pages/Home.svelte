@@ -12,7 +12,7 @@ import {
   VerificationsCountDocument,
   ProfilesCountDocument,
 } from "../../../shared/api/data/types";
-import {Environment} from "../../../shared/environment";
+import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -95,7 +95,9 @@ let profilesPromise = fetchProfilesCount();
               {result.data.profilesCount ? result.data.profilesCount : "0"}
             {/await}
           </div>
-          <div class="text-center font-primary text-dark">{$_("dapps.o-dashboard.pages.home.totalCitizens")}</div>
+          <div class="text-center font-primary text-dark">
+            {$_("dapps.o-dashboard.pages.home.totalCitizens")}
+          </div>
         </div>
         <div class="flex flex-col flex-grow">
           <div class="text-6xl text-center font-heading text-primary">
@@ -114,7 +116,7 @@ let profilesPromise = fetchProfilesCount();
       </div>
     </section>
     <div
-      class="text-base grid grid-cols-2 gap-4 auto-rows-fr dashboard-grid lg:grid-cols-3">
+      class="grid grid-cols-2 gap-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/passport/profile')}">
@@ -123,7 +125,9 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashpassport" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.passport")}</div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.passport")}
+          </div>
         </div>
       </section>
       <section
@@ -134,7 +138,9 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashfriends" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.contacts")}</div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.contacts")}
+          </div>
         </div>
       </section>
       <section
@@ -145,7 +151,9 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashchat" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.chat")}</div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.chat")}
+          </div>
         </div>
       </section>
       <section
@@ -156,7 +164,9 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashbanking" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.banking")}</div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.banking")}
+          </div>
         </div>
       </section>
       <section
@@ -167,19 +177,23 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashmarket" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.market")}</div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.market")}
+          </div>
         </div>
       </section>
       {#if canVerify}
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-          on:click="{() => loadLink('/verification')}">
+          on:click="{() => loadLink('/verification/verifications')}">
           <div
             class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
               <Icons icon="check" size="{12}" />
             </div>
-            <div class="mt-4 text-3xl font-heading text-dark">{$_("dapps.o-dashboard.pages.home.verified")}</div>
+            <div class="mt-4 text-3xl font-heading text-dark">
+              {$_("dapps.o-dashboard.pages.home.verified")}
+            </div>
           </div>
         </section>
       {/if}
