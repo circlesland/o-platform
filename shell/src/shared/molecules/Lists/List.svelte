@@ -54,15 +54,12 @@ const fetchData = async (paginationArg) => {
     hasMore = false;
     return;
   }
-  console.log("BATCH ", newBatch);
-  console.log("LAST: ", newBatch[newBatch.length - 1][selector]);
+
   initialized = true;
   hasMore = newBatch && newBatch.length == dataLimit;
 };
 
 const handleChange = (e) => {
-  console.log("hasMore: ", hasMore);
-  console.log("e.detail.inView: ", e.detail.inView);
   if (e.detail.inView && hasMore) fetchData(pagination);
 };
 onMount(async () => {

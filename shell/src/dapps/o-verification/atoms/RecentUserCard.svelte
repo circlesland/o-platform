@@ -11,6 +11,7 @@ export let param: Profile;
 function loadDetailPage(path) {
   push(`#/contacts/profile/${path}`);
 }
+console.log(param);
 </script>
 
 <div on:click="{() => loadDetailPage(param.circlesAddress)}">
@@ -18,8 +19,8 @@ function loadDetailPage(path) {
     params="{{
       edgeless: false,
       imageProfile: param,
-      title: displayableName(param.firstName, param.lastName),
-      subTitle: console.log(param.verifications),
+      title: `${displayableName(param.firstName, param.lastName)} `,
+      subTitle: 'verification unknown',
     }}">
     <div slot="itemCardEnd">
       <div class="self-end text-lg sm:text-3xl"></div>
