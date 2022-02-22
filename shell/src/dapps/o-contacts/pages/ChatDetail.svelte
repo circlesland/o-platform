@@ -39,7 +39,7 @@ async function reload() {
       safeAddress: $me.circlesAddress,
       pagination: {
         order: SortOrder.Asc,
-        limit: 1000000,
+        limit: 250,
         continueAt: new Date(0).toJSON(),
       },
       filter: {
@@ -51,6 +51,7 @@ async function reload() {
         EventType.CrcTrust,
         EventType.ChatMessage,
         EventType.Erc20Transfer,
+        EventType.PurchaseEvent,
         //EventType.CrcSignup,
         //EventType.CrcTokenTransfer,
         //EventType.EthTransfer,
