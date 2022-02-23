@@ -20,8 +20,8 @@ const editorContent: { [x: string]: EditorViewContext } = {
   newsletter: {
     title: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.title"),
     description: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.description"),
-    placeholder: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.placeholder"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.submitButtonText"),
+    placeholder: "",
+    submitButtonText: "",
   },
 };
 

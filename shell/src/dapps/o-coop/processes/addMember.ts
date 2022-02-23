@@ -32,7 +32,7 @@ const processDefinition = (processId: string) =>
         params: {
           view: {
             title: window.i18n("dapps.o-coop.processes.addMembers.memberAddress.title"),
-            description: window.i18n("dapps.o-coop.addMembers.memberAddress.description"),
+            description: "",
             placeholder: window.i18n("dapps.o-coop.addMembers.memberAddress.placeholder"),
             submitButtonText: window.i18n("dapps.o-coop.addMembers.memberAddress.submitButtonText"),
           },

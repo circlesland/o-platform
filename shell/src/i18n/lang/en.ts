@@ -1,11 +1,14 @@
 export const en = {
   en: {
     common: {
-      empty: " ",
       trusted: "trusted",
       untrusted: "untrusted",
       you: "you",
       tokens: "tokens",
+      date: "Date",
+      from: "from",
+      to: "to",
+      block: "Block"
     },
     dapps: {
       "o-banking": {
@@ -19,6 +22,7 @@ export const en = {
             amount: "Amount",
             recipientAddress: "Recipient Address",
             transactionHash: "Transaction Hash",
+            block: "Block"
           },
         },
         pages: {
@@ -43,28 +47,23 @@ export const en = {
             editorContent: {
               recipient: {
                 title: "Select the person you want to trust",
-                description: " ",
                 placeholder: "Select",
                 submitButtonText: "Set Trust",
               },
               limit: {
                 title: "Please enter ther Amount",
-                description: " ",
                 submitButtonText: "Submit",
               },
               message: {
                 title: "Transfer Message",
-                description: " ",
                 submitButtonText: "Submit",
               },
               confirm: {
                 title: "Confirm",
-                description: " ",
                 submitButtonText: "Confirm",
               },
               success: {
                 title: "Trust successful",
-                description: " ",
                 submitButtonText: "Close",
               },
             },
@@ -110,7 +109,6 @@ export const en = {
             editorContent: {
               recipient: {
                 title: "Select the recipient you want to send money to",
-                description: " ",
                 placeholder: "Recipient",
                 submitButtonText: "Enter Name",
               },
@@ -123,22 +121,18 @@ export const en = {
               },
               currency: {
                 title: "Please enter ther Amount in Euro",
-                description: " ",
                 submitButtonText: "Submit",
               },
               message: {
                 title: "Transfer Message",
-                description: " ",
                 submitButtonText: "Submit",
               },
               confirm: {
                 title: "You are about to transfer",
-                description: " ",
                 submitButtonText: "Send Money",
               },
               success: {
                 title: "Transfer successful",
-                description: " ",
                 submitButtonText: "Close",
               },
             },
@@ -178,9 +172,6 @@ export const en = {
             crcHubTransfer: {
               getValues: {
                 icon: "sendmoney",
-                title: " ",
-                titleClass: " ",
-                text: " ",
                 ifIn: "Sent you",
                 ifOut: {
                   youSent: "You sent",
@@ -191,8 +182,6 @@ export const en = {
             crcTrust: {
               getValues: {
                 icon: "trust",
-                title: " ",
-                titleClass: " ",
                 untrustedYou: "untrusted you",
                 trustedYou: "trusted you",
                 youUntrusted: "You untrusted",
@@ -202,9 +191,6 @@ export const en = {
             erc20Transfer: {
               getValues: {
                 icon: "sendmoney",
-                title: " ",
-                titleClass: " ",
-                text: " ",
                 ifIn: {
                   title: {
                     sentYou: "sent you",
@@ -220,9 +206,6 @@ export const en = {
             invitationRedeemed: {
               getValues: {
                 icon: "trust",
-                title: " ",
-                titleClass: " ",
-                text: " ",
                 invitationRedeemed: {
                   title: "redeemed your invitation.",
                 },
@@ -230,7 +213,6 @@ export const en = {
             },
           },
           chatListCard: {
-            trustStatus: " ",
             mutualTrust: "mutual trust",
             trustedByYou: "trusted by you",
             isTrustingYou: "is trusting you",
@@ -313,7 +295,6 @@ export const en = {
           addMembers: {
             memberAddress: {
               title: "Select the person you want to add",
-              description: " ",
               placeholder: "Select",
               submitButtonText: "Add",
             },
@@ -702,13 +683,11 @@ export const en = {
               summary: {
                 title: "Check out",
                 description: "Please review your order",
-                placeholder: " ",
                 submitButtonText: "Buy now",
               },
               success: {
                 title: "Check out successful",
                 description: "Thank you for your purchase.",
-                placeholder: " ",
                 submitButtonText: "Close",
               },
             },
@@ -780,14 +759,12 @@ export const en = {
                 title: "Delivery",
                 desctiption:
                   "Please choose the delivery method for your offer.",
-                placeholder: " ",
                 submitButtonText: "Next",
               },
               offerImage: {
                 title: "Add a Picture",
                 description:
                   "Adding a Picture to your offer increases the change of being sold by 90%",
-                placeholder: " ",
                 submitButtonText: "Publish Offer",
               },
             },
@@ -806,9 +783,7 @@ export const en = {
                 },
                 "connectOrCreate": {
                   "title": "Connect or create?",
-                  "description": "Choose your screnario",
-                  "placeholder": " ",
-                  "submitButtonText": " "
+                  "description": "Choose your screnario"
                 }
               },
               "processDefinition": {
@@ -888,9 +863,7 @@ export const en = {
               "editorContent": {
                 "newsletter": {
                   "title": "Newsletter",
-                  "description": "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
-                  "placeholder": " ",
-                  "submitButtonText": " ",
+                  "description": "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?"
                 }
               },
               "noThanks": "No thanks",
@@ -921,13 +894,11 @@ export const en = {
               "addOwnerInfo": {
                 "title": "Add owner to safe",
                 "description": "We'll add your new key as owner to your existing safe. Your previous key will stay an owner as well.",
-                "placeholder": " ",
                 "submitButtonText": "Proceed"
               },
               "accountIsDeadInfo": {
                 "title": "Safe deactivated",
                 "description": "The selected safe received no UBI for more than 90 days and was deactivated. You can still use your Circles and transfer them to your new safe.",
-                "placeholder": " ",
                 "submitButtonText": "Create new safe"
               }
             },
@@ -938,8 +909,7 @@ export const en = {
             "selectSafe": {
               "title": "We found multiple safes for your key",
               "description": "Please select the one you want to connect with your circles.land profile",
-              "submitButtonText": "Connect",
-              "placeholder": " "
+              "submitButtonText": "Connect"
             },
             "addNewOwnerInfo": "We will add a new owner to your safe. No worries we keep your old key as owner too.",
             "addNewOwner": "Adding new owner ..",
@@ -995,9 +965,7 @@ export const en = {
             },
             "chooseFlowParams": {
               "title": "Welcome to Circles Land",
-              "description": "Please choose a sign-in option<br/> <small>By choosing one of the sign-in options you agree to our <a href='https://coda.io/@circlesland/terms' target='_blank' class='link' alt='privacy'>Terms of Service</a>.</small>",
-              "placeholder": " ",
-              "submitButtonText": " "
+              "description": "Please choose a sign-in option<br/> <small>By choosing one of the sign-in options you agree to our <a href='https://coda.io/@circlesland/terms' target='_blank' class='link' alt='privacy'>Terms of Service</a>.</small>"
             },
             "pleaseWaitWeSigningYouIn": "Please wait, we're Signing you in",
             "enterEncryptionPinParams": {

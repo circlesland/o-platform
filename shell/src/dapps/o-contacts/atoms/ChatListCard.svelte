@@ -52,7 +52,7 @@ if (trustMetadata) {
     }
   });
 }
-let trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.trustStatus")}`;
+let trustStatus = "";
 if (trustIn > 0 && trustOut > 0) {
   trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.mutualTrust")}`;
 } else if (!trustIn && trustOut > 0) {

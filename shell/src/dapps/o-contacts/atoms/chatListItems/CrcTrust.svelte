@@ -35,8 +35,8 @@ function getValues(): {
   actions: JumplistItem[];
 } {
   let icon = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.icon")}`;
-  let title = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.title")}`;
-  let titleClass = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.titleClass")}`;
+  let title = "";
+  let titleClass = "";
   let actions: JumplistItem[] = [];
 
   const crcTrust = <CrcTrust>event.payload;

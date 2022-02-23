@@ -38,9 +38,9 @@ function getValues(): {
   actions: JumplistItem[];
 } {
   let icon = `${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.icon")}`;
-  let title = `${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.title")}`;
-  let titleClass = `${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.titleClass")}`;
-  let text = `${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.text")}`;
+  let title = "";
+  let titleClass = "";
+  let text = "";
   let actions: JumplistItem[] = [];
 
   const transfer = <Erc20Transfer>event.payload;

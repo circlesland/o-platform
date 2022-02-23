@@ -37,28 +37,28 @@ export type SetTrustContext = ProcessContext<SetTrustContextData>;
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
     title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.title"),
-    description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.description"),
+    description: "",
     placeholder: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.placeholder"),
     submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.submitButtonText"),
   },
   limit: {
     title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.limit.title"),
-    description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.limit.description"),
+    description: "",
     submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.limit.submitButtonText"),
   },
   message: {
     title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.message.title"),
-    description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.message.description"),
+    description: "",
     submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.message.submitButtonText"),
   },
   confirm: {
     title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.confirm.title"),
-    description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.confirm.description"),
+    description: "",
     submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.confirm.submitButtonText"),
   },
   success: {
     title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.success.title"),
-    description: window.i18n("dapps.o-banking.processes.setTrust.editorContent.success.description"),
+    description: "",
     submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.success.submitButtonText"),
   },
 };

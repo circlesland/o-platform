@@ -103,7 +103,7 @@ const strings = {
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
     title: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.title"),
-    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.description"),
+    description: "",
     placeholder: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.placeholder"),
     submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.submitButtonText"),
   },
@@ -115,22 +115,22 @@ const editorContent: { [x: string]: EditorViewContext } = {
   },
   currency: {
     title: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.title"),
-    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.description"),
+    description: "",
     submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.submitButtonText"),
   },
   message: {
     title: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.title"),
-    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.description"),
+    description: "",
     submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.submitButtonText"),
   },
   confirm: {
     title: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.title"),
-    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.description"),
+    description: "",
     submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.submitButtonText"),
   },
   success: {
     title: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
-    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.description"),
+    description: "",
     submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
   },
 };

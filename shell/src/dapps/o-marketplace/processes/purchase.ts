@@ -52,13 +52,13 @@ const editorContent: { [x: string]: EditorViewContext } = {
   summary: {
     title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.title"),
     description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.description"),
-    placeholder: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.placeholder"),
+    placeholder: "",
     submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
   },
   success: {
     title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.title"),
     description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.description"),
-    placeholder: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.placeholder"),
+    placeholder: "",
     submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
   },
 };

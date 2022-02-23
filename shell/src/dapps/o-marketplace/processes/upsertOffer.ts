@@ -82,13 +82,13 @@ const editorContent: { [x: string]: EditorViewContext } = {
   offerDelivery: {
     title: window.i18n("dapps.o-marketpace.processes.upsertOffer.editorContent.offerDelivery.title"),
     description: window.i18n("dapps.o-marketpace.processes.upsertOffer.editorContent.offerDelivery.description"),
-    placeholder: window.i18n("dapps.o-marketpace.processes.upsertOffer.editorContent.offerDelivery.placeholder"),
+    placeholder: "",
     submitButtonText: window.i18n("dapps.o-marketpace.processes.upsertOffer.editorContent.offerDelivery.submitButtonText"),
   },
   offerImage: {
     title: window.i18n("dapps.o-marketpace.processes.upsertOffer.editorContent.offerImage.title"),
     description: window.i18n("dapps.o-marketpace.processes.upsertOffer.editorContent.offerImage.description"),
-    placeholder: window.i18n("dapps.o-marketpace.processes.upsertOffer.editorContent.offerImage.placeholder"),
+    placeholder: "",
     submitButtonText: window.i18n("dapps.o-marketpace.processes.upsertOffer.editorContent.offerImage.submitButtonText"),
   },
 };

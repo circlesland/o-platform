@@ -50,13 +50,13 @@ const editorContent = {
   addOwnerInfo: {
     title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.title"),
     description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.description"),
-    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.placeholder"),
+    placeholder: "",
     submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.submitButtonText"),
   },
   accountIsDeadInfo: {
     title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.title"),
     description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.description"),
-    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.placeholder"),
+    placeholder: "",
     submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.submitButtonText")
   }
 };
@@ -170,7 +170,7 @@ const processDefinition = (processId: string) =>
               description: window.i18n("dapps.o-onboarding.processes.selectSafe.description"),
               submitButtonText: window.i18n("dapps.o-onboarding.processes.selectSafe.submitButtonText"),
             },
-            placeholder: window.i18n("dapps.o-onboarding.processes.selectSafe.placeholder"),
+            placeholder: "",
             submitButtonText: window.i18n("dapps.o-onboarding.processes.selectSafe.submitButtonText"),
             itemTemplate: DropDownCandidateSafe, // TODO: This is not used by the SimpleDropDownEditor
             getKey: (o) => o.safeAddress,

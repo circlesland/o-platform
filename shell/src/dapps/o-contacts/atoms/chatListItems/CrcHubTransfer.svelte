@@ -43,9 +43,9 @@ function getValues(): {
   actions: JumplistItem[];
 } {
   let icon = `${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.icon")}`;
-  let title = `${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.title")}`;
-  let titleClass = `${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.titleClass")}`;
-  let text = `${$_("dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.text")}`;
+  let title = "";
+  let titleClass = "";
+  let text = "";
   let actions: JumplistItem[] = [];
 
   const hubTransfer = <CrcHubTransfer>event.payload;

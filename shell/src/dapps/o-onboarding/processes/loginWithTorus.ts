@@ -159,8 +159,8 @@ const processDefinition = (processId: string) =>
             view: {
               title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.title"),
               description: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.description"),
-              placeholder: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.placeholder"),
-              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.submitButtonText"),
+              placeholder: "",
+              submitButtonText: "",
             },
           },
           options: loginOptions,

@@ -115,7 +115,7 @@ let now = new Date();
 
     <div class="flex flex-col w-full space-y-1">
       <div class="mb-1 text-left text-2xs text-dark-lightest">
-        {$_("common.block")}
+        {$_("dapps.o-banking.atoms.transferSummary.block")}
       </div>
 
       <div class="flex items-center w-full">
