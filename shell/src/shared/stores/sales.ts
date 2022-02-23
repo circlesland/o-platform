@@ -116,7 +116,7 @@ export const sales = {
       },
     });
     if (!completedInvoice.data?.completeSale) {
-      throw new Error(`Couldn't complete the sale.`);
+      throw new Error(window.i18n("shared.stores.sales.errors.couldNotComplete"));
     }
     const refreshedPurchases = await loadSales(
       completedInvoice.data.completeSale.sellerAddress
@@ -133,7 +133,7 @@ export const sales = {
       },
     });
     if (!completedInvoice.data?.completeSale) {
-      throw new Error(`Couldn't revoke the completion status.`);
+      throw new Error(window.i18n("shared.stores.sales.errors.couldNoRevoke"));
     }
     const refreshedPurchases = await loadSales(
       completedInvoice.data.completeSale.sellerAddress

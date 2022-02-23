@@ -56,7 +56,7 @@ export class UserActions {
       $me = o;
     });
     unsub();
-    if (!$me) throw new Error(`Couldn't load your profile`);
+    if (!$me) throw new Error(window.i18n("shared.userActions.errors.couldNotLoadYourProfile"));
 
     const recipientProfile: Contact = await contactStore.findBySafeAddress(
       targetUser.circlesAddress ?? $me.circlesAddress
@@ -84,7 +84,7 @@ export class UserActions {
           {
             key: "chat",
             icon: "chat",
-            title: "Chat",
+            title: window.i18n("shared.userActions.chat"),
             action: async () => {
               push("#/contacts/chat/" + recipientProfile.contactAddress);
             },
@@ -103,7 +103,7 @@ export class UserActions {
                 {
                   key: "transfer",
                   icon: "sendmoney",
-                  title: "Send Money",
+                  title: window.i18n("shared.userActions.sendMoney"),
                   action: async () => {
                     window.o.runProcess(transfer, {
                       safeAddress: $me.circlesAddress,
@@ -119,7 +119,7 @@ export class UserActions {
                 {
                   key: "setTrust",
                   icon: "untrust",
-                  title: "Untrust",
+                  title: window.i18n("shared.userActions.untrust"),
                   colorClass: "text-alert",
                   action: async () => {
                     window.o.runProcess(setTrust, {
@@ -136,7 +136,7 @@ export class UserActions {
                 {
                   key: "setTrust",
                   icon: "trust",
-                  title: "Trust",
+                  title: window.i18n("shared.userActions.trust"),
                   action: async () => {
                     window.o.runProcess(setTrust, {
                       trustLimit: 100,

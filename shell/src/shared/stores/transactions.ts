@@ -40,11 +40,7 @@ async function fetchData(queryArguments: QueryEventsArgs) {
   });
 
   if (timeline.errors) {
-    throw new Error(
-      `Couldn't load data for the following reasons: ${JSON.stringify(
-        timeline.errors
-      )}`
-    );
+    throw new Error(window.i18n("shared.stores.transactions.errors.couldNotLoadData", { values: { error: JSON.stringify(timeline.errors)}}));
   }
 
   let newBatch = await timeline.data[dataKey];

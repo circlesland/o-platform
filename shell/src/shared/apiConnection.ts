@@ -22,7 +22,7 @@ export class ApiClient {
         });
         const foundAggregate = aggregates.find(o => o.type == type)?.payload;
         if (!foundAggregate) {
-            throw new Error(`Couldn't find the ${type} in the query result.`);
+            throw new Error(window.i18n("shared.apiConnection.errors.couldNotFindType", { values: { type: type}}));
         }
         return <TPayloadType><any>foundAggregate;
     }
@@ -35,19 +35,19 @@ export class ApiClient {
     static async query<TResult, TArgs>(query: DocumentNode, args: TArgs) : Promise<TResult> {
         const queryDef:any = query.definitions.length == 1 ? query.definitions[0] : null;
         if (!queryDef) {
-            throw new Error(`The query contains none or more than one definition. Only 1 definition per query is supported.`)
+            throw new Error(window.i18n("shared.apiConnection.errors.noOrMoreThanOneDefinitions"))
         }
         if (!queryDef.selectionSet){
-            throw new Error(`The query definition doesn't contain a 'selectionSet'.`)
+            throw new Error(window.i18n("shared.apiConnection.errors.noSelectionSet"))
         }
         if (queryDef.selectionSet.selections?.length != 1) {
-            throw new Error(`The query definition contains none or more than one selection. Only 1 selection is supported.`)
+            throw new Error(window.i18n("shared.apiConnection.errors.noOrMoreThanOneSelection"))
         }
 
         const selection = queryDef.selectionSet.selections[0];
         const dataProp:string = selection.name.value;
         if (!dataProp) {
-            throw new Error(`The selection doesn't have a name. Cannot find the data-holding property of the graphql response.`)
+            throw new Error(window.i18n("shared.apiConnection.errors.selectionHasNoName"))
         }
 
         const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -57,7 +57,7 @@ export class ApiClient {
         });
 
         if (result.errors?.length > 0) {
-            throw new Error(`Something went wrong while querying the api: ${result.errors.map((o) => o.message).join("\n")}`);
+            throw new Error(window.i18n("shared.apiConnection.errors.someThingWemtWrong", { values: { error: result.errors.map((o) => o.message).join("\n")}}));
         }
 
         return <TResult>result.data[dataProp];
@@ -155,7 +155,7 @@ export class ApiConnection
                 const { kind, operation } = <OperationDefinitionNode>getMainDefinition(query);
                 return kind === 'OperationDefinition' && operation === 'subscription';
             } else {
-                throw new Error(`A FragmentDefinitionNode was returned when a OperationDefinitionNode was expected.`)
+                throw new Error(window.i18n("shared.apiConnection.errors.returnedFragmentDefinitionNode"))
             }
           },
           wsLink,

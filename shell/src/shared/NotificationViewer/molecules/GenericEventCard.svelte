@@ -11,8 +11,8 @@ export let event: ProfileEvent;
   <ItemCard
     params="{{
       edgeless: false,
-      title: `Error: Couldn't find a view for event type '${event.type}'.`,
-      subTitle: "...but look on the bright side: we're all healthy :)",
+      title: window.i18n("shared.molecules.notificationViewer.molecules.genericEventCard.title", { values: { eventType: event.type}}),
+      subTitle: window.i18n("shared.molecules.notificationViewer.molecules.genericEventCard.subTitle"),
       noTruncate: true,
     }}">
     <div slot="itemCardEnd">

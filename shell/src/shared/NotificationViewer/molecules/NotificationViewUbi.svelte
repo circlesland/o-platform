@@ -4,12 +4,14 @@ import { me } from "../../stores/me";
 
 import { CrcMinting, ProfileEvent } from "../../api/data/types";
 
+import { _ } from "svelte-i18n";
+
 export let event: ProfileEvent;
 
 let payload: CrcMinting = <CrcMinting>event.payload;
 </script>
 
-<div class="mt-1 text-sm text-center text-dark-lightest">Ca-ching!</div>
+<div class="mt-1 text-sm text-center text-dark-lightest">{$_("shared.melecules.notificationViewer.molecules.notificationViewUbi.ca-ching")}</div>
 
 <div class="self-center text-6xl text-center text-success font-heading">
   +{Currency.instance().displayAmount(

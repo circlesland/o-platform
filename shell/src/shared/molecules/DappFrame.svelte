@@ -105,16 +105,10 @@ async function onBack() {
     previous.params
   );
   if (!routable.found) {
-    throw new Error(
-      `The page from the back stack couldn't be found: ${JSON.stringify(
-        previous
-      )}`
-    );
+    throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackNotFound", { values: { error: JSON.stringify(previous)}}));
   }
   if (routable.routable.type != "page") {
-    throw new Error(
-      `The page from the back stack is not a page: ${JSON.stringify(previous)}`
-    );
+    throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage", { values: { error: JSON.stringify(previous)}}));
   }
   previousContext.routable = <Page<any, any>>routable;
   previousContext.params = previous.params;
@@ -155,16 +149,10 @@ async function onStay() {
     previous.params
   );
   if (!routable.found) {
-    throw new Error(
-      `The page from the back stack couldn't be found: ${JSON.stringify(
-        previous
-      )}`
-    );
+    throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackNotFound", { values: { error: JSON.stringify(previous)}}));
   }
   if (routable.routable.type != "page") {
-    throw new Error(
-      `The page from the back stack is not a page: ${JSON.stringify(previous)}`
-    );
+    throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage", { values: { error: JSON.stringify(previous)}}));
   }
   previousContext.routable = <Page<any, any>>routable;
   previousContext.params = previous.params;
@@ -304,24 +292,16 @@ function findNextRoute(
   if (!nextRoute) {
     const defaultRoute = _findDefaultRoute(previousRuntimeDapp);
     if (!defaultRoute.found) {
-      throw new Error(
-        `The page from the back stack couldn't be found: ${JSON.stringify(
-          root
-        )}`
-      );
+      throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackNotFound", { values: { error: JSON.stringify(root)}}));
     }
     if (defaultRoute.routable.type != "page") {
-      throw new Error(
-        `The page from the back stack is not a page: ${JSON.stringify(root)}`
-      );
+      throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage", { values: { error: JSON.stringify(root)}}));
     }
     nextRoute = defaultRoute.routable;
   }
 
   if (!nextRoute) {
-    throw new Error(
-      `Couldn't find the root. Stack item was: ${JSON.stringify(root)}`
-    );
+    throw new Error(window.i18n("shared.melocules.dappFrame.errors.couldNotFindRoot", { values: { item: JSON.stringify(root)}}));
   }
   return nextRoute;
 }
@@ -943,13 +923,7 @@ async function handleUrlChanged() {
 
   const findRouteResult = findRoutableByParams(runtimeDapp, params);
   if (!findRouteResult.found) {
-    throw new Error(
-      `Couldn't find a routable for params: \n${JSON.stringify(
-        params,
-        null,
-        2
-      )}`
-    );
+    throw new Error(window.i18n("shared.molecules.dappFrame.errors.couldNotFindParams", { values: { params: JSON.stringify(params, null, 2)}}));
   }
 
   routable = findRouteResult.routable;

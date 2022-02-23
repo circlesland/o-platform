@@ -2,6 +2,7 @@
 import {CommonTrust, CommonTrustDocument, CommonTrustQueryVariables, Profile} from "src/shared/api/data/types";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import {ApiClient} from "../../apiConnection";
+import { _ } from "svelte-i18n";
 export const profile: Profile = undefined;
 export const eventData: any = undefined;
 
@@ -13,7 +14,7 @@ async function getMutualFriends() : Promise<CommonTrust[]> {
     });
     return mutualFriends;
   } else {
-    throw new Error("no Data...");
+    throw new Error(window.i18n("shared.melecules.notificationViewer.molecules.notificationViewMutualFriends.error"));
   }
 }
 
@@ -21,11 +22,11 @@ let promise = getMutualFriends();
 </script>
 
 {#await promise}
-  <p>...loading mutual Friends</p>
+  <p>{$_("shared.melecules.notificationViewer.molecules.notificationViewMutualFriends.loadingMutualFriends")}</p>
 {:then mutualFriends}
   {#if mutualFriends.data && mutualFriends.data.commonTrust}
     <div>
-      <div class="text-left text-2xs text-dark-lightest">Mutual Friends</div>
+      <div class="text-left text-2xs text-dark-lightest">{$_("shared.melecules.notificationViewer.molecules.notificationViewMutualFriends.mutualFriends")}</div>
 
       <div class="flex flex-row flex-wrap mt-2 ">
         {#if mutualFriends.data.commonTrust.length > 0}
@@ -40,7 +41,7 @@ let promise = getMutualFriends();
             {/if}
           {/each}
         {:else}
-          <span>No mutual Friends.</span>
+          <span>{$_("shared.melecules.notificationViewer.molecules.notificationViewMutualFriends.noMutualFriends")}</span>
         {/if}
       </div>
     </div>

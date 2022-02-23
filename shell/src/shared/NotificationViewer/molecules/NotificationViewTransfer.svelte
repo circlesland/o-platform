@@ -3,6 +3,7 @@ import NotificationProfile from "./NotificationProfile.svelte";
 import { Currency } from "../../../shared/currency";
 import { CrcHubTransfer, ProfileEvent } from "../../api/data/types";
 import { me } from "../../stores/me";
+import { _ } from "svelte-i18n";
 
 export let event: ProfileEvent;
 
@@ -27,7 +28,7 @@ if (payload) {
     <span class=" font-primary"
       >{Currency.currencySymbol[$me.displayCurrency]}</span>
   </div>
-  <div class="self-center pb-2 text-2xl text-center font-heading">from</div>
+  <div class="self-center pb-2 text-2xl text-center font-heading">{$_("shared.melecules.notificationViewer.molecules.notificationViewTransfer.from")}</div>
   <div class="pb-4">
     <NotificationProfile profile="{payload.from_profile}" />
   </div>

@@ -99,14 +99,14 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
       });
       unsub();
       if (!$me)
-        throw new Error(`Couldn't load your profile`);
+        throw new Error(window.i18n("shared.ubiTimer2.errors.couldNotLoadYourProfile"));
 
       const privateKey = sessionStorage.getItem("circlesKey");
       if (!privateKey)
-        throw new Error(`Your private key is locked.`);
+        throw new Error(window.i18n("shared.ubiTimer2.errors.yourPrivateKeyIsLocked"));
 
       if (!context.tokenAddress)
-        throw new Error(`Cannot get the ubi. The context.tokenAddress is empty.`);
+        throw new Error(window.i18n("shared.ubiTimer2.errors.cannotGetUbi"));
 
       const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress);
       const circlesAccount = new CirclesAccount($me.circlesAddress, Environment.circlesHubAddress);

@@ -1,5 +1,6 @@
 <script>
 	import { onMount, tick } from 'svelte';
+	import { _ } from "svelte-i18n";
 
 	// props
 	export let items = undefined;
@@ -157,7 +158,7 @@
 	<svelte-virtual-list-contents bind:this={contents} style="padding-top: {top}px; padding-bottom: {bottom}px;">
 		{#each visible as row (row.index)}
 			<svelte-virtual-list-row>
-				<slot item={row.data} i={row.index} {hoverItemIndex}>Missing template</slot>
+				<slot item={row.data} i={row.index} {hoverItemIndex}>{$_("shared.molecules.select.virtualList.missingTemplate")}</slot>
 			</svelte-virtual-list-row>
 		{/each}
 	</svelte-virtual-list-contents>

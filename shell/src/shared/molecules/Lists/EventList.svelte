@@ -4,7 +4,8 @@ import { ProfileEvent } from "../../api/data/types";
 
 import { inview } from "svelte-inview/dist/index";
 import GenericEventCard from "../../NotificationViewer/molecules/GenericEventCard.svelte";
-import { Readable } from "svelte/store";
+import {Readable} from "svelte/store";
+import { _ } from "svelte-i18n";
 
 export let views: { [type: string]: any } = {};
 export let store: Readable<ProfileEvent[]> & {
@@ -52,7 +53,7 @@ const initBar = (bar) => {
     <div
       class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
       <div class="flex flex-col items-start text-center">
-        <div>Loading...</div>
+        <div>{$_("shared.molecules.lists.eventList.loading")}</div>
       </div>
     </div>
   </section>

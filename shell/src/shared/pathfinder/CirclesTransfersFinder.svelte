@@ -1,5 +1,6 @@
 <script>
   import { toAddress, computeFlow } from "./utility";
+  import { _ } from "svelte-i18n";
 
   let transferFrom;
   let transferTo = "0xb235B56b91eccb9DbdF811D7b5C45c363AcaE98D";
@@ -26,6 +27,6 @@
     class="w-full mb-4 input input-lg input-bordered"
   />
 
-  <button class="btn btn-block btn-primary" on:click={compute}>Show now</button>
+  <button class="btn btn-block btn-primary" on:click={compute}>{$_("shared.pathfinder.circlesTransferFinder.showNow")}</button>
 
 </main>

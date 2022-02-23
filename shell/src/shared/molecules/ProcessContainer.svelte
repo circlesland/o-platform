@@ -60,7 +60,7 @@ const dispatch = createEventDispatcher();
 
 const editorContent = {
   cancel: {
-    title: "Do you really want to cancel?",
+    title: window.i18n("shared.molecules.processContainer.editorContent.title"),
     description: "",
   },
 };
@@ -190,12 +190,12 @@ function subscribeToProcess() {
             choices: [
               {
                 key: "yes",
-                label: "Yes",
+                label: window.i18n("shared.molecules.processContainer.yes"),
                 target: "#yes",
               },
               {
                 key: "no",
-                label: "No",
+                label: window.i18n("shared.molecules.processContainer.no"),
                 target: "#no",
               },
             ],
@@ -220,7 +220,7 @@ function subscribeToProcess() {
         const cancelCancel = {
           ___cancelRequest: {
             key: "no",
-            label: "No",
+            label: window.i18n("shared.molecules.processContainer.no"),
             target: "#no",
           },
         };
@@ -334,7 +334,7 @@ function sinkEvent(event) {
   if (!lastBubble) {
     // TODO: This is error prone without event-ids
     throw new Error(
-      "Can only sink events in response to a previously bubbled event."
+      window.i18n("shared.molecules.processContainer.error")
     );
   }
   ensureProcess((p) => {
@@ -349,7 +349,7 @@ function sinkEvent(event) {
 
 const cancel = {
   data: {
-    label: "Cancel",
+    label: window.i18n("shared.molecules.processContainer.cancel"),
   },
   design: {
     icon: faTimes,

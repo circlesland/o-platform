@@ -28,7 +28,7 @@ const components = [
   {
     type: EventType.ChatMessage,
     component: NotificationViewChatMessage,
-    actions: [{ action: "chat", label: "Answer" }],
+    actions: [{ action: "chat", label: window.i18n("shared.notificationViewer.answer") }],
   },
   {
     type: EventType.CrcMinting,
@@ -46,7 +46,7 @@ const components = [
   {
     type: EventType.CrcHubTransfer,
     component: NotificationViewTransfer,
-    actions: [{ action: "chat", label: "Say Thanks" }],
+    actions: [{ action: "chat", label: window.i18n("shared.notificationViewer.sayThanks") }],
   },
   {
     type: EventType.MembershipOffer,
@@ -62,7 +62,7 @@ const components = [
     actions: [
       {
         action: "setTrust",
-        label: `Trust ${data.contact_address_profile.firstName}`,
+        label: window.i18n("shared.notificationViewer.trust", { values: { profile: data.contact_address_profile.firstName}}),
       },
     ],
   },
@@ -86,7 +86,7 @@ async function getEventActions() {
 onMount(async () => {
   let dismissAction: UserActionItem = {
     key: "dismiss",
-    title: "OK",
+    title: window.i18n("shared.notificationViewer.ok"),
     action: () => dispatch("submit"),
   };
 
@@ -138,9 +138,9 @@ function submit() {
               `${action.title} ${data.contact_address_profile.firstName}`,
             chat: (action) => {
               if (data.type == EventType.CrcHubTransfer) {
-                return 'Say Thanks';
+                return window.i18n("shared.notificationViewer.sayThanks");
               } else if (data.type == EventType.ChatMessage) {
-                return 'Answer';
+                return window.i18n("shared.notificationViewer.aswer");
               } else {
                 return null;
               }

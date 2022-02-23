@@ -1330,7 +1330,214 @@ export const en = {
       "atoms": {
         "copyClipboard": {
           "copiedToClipboard": "Copied to Clipboard!"
+        },
+        "error": {
+          "processEncounteredAnError": "The Process encountered an error",
+          "noErrorDetailsAvailable":" No error details availabel. See the console for more details.",
+          "pleaseTryToRoload": "Please try to reload the page or contact us on Dirscord ",
+          "ifTheProblemPersists": " if the problem persists"
+        },
+        "facetec": {
+          "enrollmentProcess": {
+            "sessionWasNotCompleted": "Session was not completed successfully, cancelling.  Session Status: ",
+            "noSessionId": "No sessionId",
+            "unexoectedApiResponse": "Unexpected API response, cancelling out.",
+            "noSessionResult": "No _sessionResult."
+          }
+        },
+        "functions": {
+          "generateNavManifest": {
+            "back": "back",
+            "skip": "skip"
+          }
         }
+      },
+      "molecules": {
+        "lists": {
+          "eventList": {
+            "loading": "Loading..."
+          },
+          "list": {
+            "loading": "Loading..."
+          },
+        },
+        "nextNav": {
+          "components": {
+            "loginPill": {
+              "signInNow": "SIGN IN NOW"
+            }
+          }
+        },
+        "select": {
+          "virtualList": {
+            "missingTemplate": "Missing template"
+          }
+        },
+        "dappFrame": {
+          "errors": {
+            "pageFromBackStackNotFound": "The page from the back stack couldn't be found: {error}",
+            "pageFromBackStackIsNoPage": "The page from the back stack is not a page: {error}",
+            "couldNotFindRoot": "Couldn't find the root. Stack item was: {item}",
+            "couldNotFindParams": "Couldn't find a routable for params: \\n{params}"
+          }
+        },
+        "filterList": {
+          "home": "Home",
+          "logout": "Logout"
+        },
+        "processContainer": {
+          "ediorContent": {
+            "title": "Do you really want to cancel?"
+          },
+          "yes": "Yes",
+          "no": "No",
+          "error": "Can only sink evens in response to a previously bubbled event.",
+          "cancel": "Cancel"
+        },
+        "processNav": {
+          "close": "Close"
+        },
+        "prompt": {
+          "nothingToDisplay": "Hmm... Nothing to display here. Seems like the 'prompt' attribute of the Prompt.svelte component is not set."
+        },
+        "text": {
+          "noText": ">> No Text <<"
+        },
+        "notificationViewer": {
+          "molecules": {
+            "genericEventCard": {
+              "title": "Error: Couldn't find a view for event type '{eventType}'.",
+              "subTitle": "...but look on the bright side: we're all healthy :)"
+            },
+            "notificationProfile": {
+              "passion": "Passion"
+            },
+            "notificationViewChatMessage": {
+              "from": "from"
+            },
+            "notificationViewInvitationRedeemed": {
+              "acceptedYourInvitation": "Accepted your invitation to Circles.Land"
+            },
+            "notificationViewMembershipAccepted": {
+              "acceptedYourInvitation": "Accepted your invitation to"
+            },
+            "notificationViewMembershipOffer": {
+              "invitedYouTo": "invited you to"
+            },
+            "notificationViewMutualFriends": {
+              "error": "no Data...",
+              "loadingMutualFriends": "...loading mutual Friends",
+              "mutualFriends": "Mutual Friends",
+              "noMutualFriends": "No mutual Friends."
+            },
+            "notificationViewTransfer": {
+              "from": "from"
+            },
+            "notificationViewTrust": {
+              "hasRemovedTheirTrustToYou": " has removed their trust to you.",
+              "isTrustingYouNow": " is trusting you now."
+            },
+            "notificationViewUbi": {
+              "ca-ching": "Ca-ching!"
+            },
+            "notificationViewWelcome": {
+              "welcomeToCirclesLand": "Welcome to CirclesLand",
+              "duSchoenerMensch": "du schöner Mensch"
+            }
+          }
+        }
+      },
+      "pages": {
+        "notFound": {
+          "404": "404.",
+          "sorryCouldNotFindPage": "Sorry, we couldn't find this page.",
+          "doNotWorry": "Don't worry, sometimes even we make mistakes. You can find plenty of other things on our homepage.",
+          "backToHome": "Back to Home"
+        }
+      },
+      "pathfinder": {
+        "app": {
+          "visualizingFlowOf": "Visualizing flow of {flow}"
+        },
+        "circlesTransferFinder": {
+          "showNow": "Show now"
+        }
+      },
+      "processes": {
+        "showNotifications": {
+          "strings": {
+            "crcHubTransfer": "Received",
+            "crcTrust": "New trust",
+            "crc_untrust": "Trust removed",
+            "chatMessage": "New Message",
+            "crcMinting": "Received new Basic Income",
+            "membershipOffer": "Invitation to Organisation",
+            "membershipAccepted": "Invitation Accepted"
+          },
+          "editorContent": {
+            "title": "What is you first name?",
+            "submitButtonText": "OK"
+          },
+          "submitButtonText": "Got it",
+          "yeah": "yeah!"
+        }
+      },
+      "stores": {
+        "purchases": {
+          "errors": {
+            "couldNotComplete": "Couldn't complete the puchase.",
+            "couldNotRevoke": "Couldn't revoke the completion status."
+          }
+        },
+        "sales": {
+          "errors": {
+            "couldNotComplete": "Couldn't complete the sale.",
+            "couldNotRevoke": "Couldn't revoke the completion status."
+          }
+        },
+        "tsanactions": {
+          "errors": {
+            "couldNotLoadData": "Couldn't load data for the following reasons: {error}"
+          }
+        }
+      },
+      "apiConnection": {
+        "errors": {
+          "couldNotFindType": "Couldn't fine the {type} in the query result.",
+          "noOrMoreThanOneDefinitions": "The query contains none or more than one definition. Only 1 definition per query is supported.",
+          "noSelectionSet": "The query definition doesn't contain a 'selectionSet'.",
+          "noOrMoreThanOneSelection": "The query definition contains none or more than one selection. Only 1 selection is supported.",
+          "selectionHasNoName": "The selection doesn't have a name. Cannot find the data-holding property of the graphql response.",
+          "someThingWentWrong": "Something went wrong while querying the api: {error}",
+          "returnedFragmentDefinitionNode": "A FragmentDefinitionNode was returned when a OperationDefinitionNode was expected."
+        }
+      },
+      "currency": {
+        "errors": {
+          "argumentMissing": "argument missing: amount"
+        }
+      },
+      "notificationViewer": {
+        "answer": "Answer",
+        "sayThanks": "Say Thanks",
+        "trust": "Trust {profile}",
+        "ok": "OK"
+      },
+      "ubiTimer2": {
+        "errors": {
+          "couldNotLoadYourProfile": "Couldn't load your profile",
+          "yourPrivateKeyIsLocked": "Your private key is locked.",
+          "cannotGetUbi": "Cannot get the ubi. The context.tokenAddress is empty."
+        }
+      },
+      "userActions": {
+        "errors": {
+          "couldNotLoadYourProfile": "Couldn't load yourt profile",
+        },
+        "chat": "Chat",
+        "sendMoney": "Send Money",
+        "untrust": "Untrust",
+        "trust": "Trust"
       }
     }
   }
