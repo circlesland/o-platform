@@ -141,7 +141,7 @@ function submit() {
               if (data.type == EventType.CrcHubTransfer) {
                 return window.i18n("shared.notificationViewer.sayThanks");
               } else if (data.type == EventType.ChatMessage) {
-                return window.i18n("shared.notificationViewer.aswer");
+                return window.i18n("shared.notificationViewer.answer");
               } else {
                 return null;
               }

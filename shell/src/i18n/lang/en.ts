@@ -1386,7 +1386,7 @@ export const en = {
           "logout": "Logout"
         },
         "processContainer": {
-          "ediorContent": {
+          "editorContent": {
             "title": "Do you really want to cancel?"
           },
           "yes": "Yes",
@@ -1438,7 +1438,7 @@ export const en = {
               "isTrustingYouNow": " is trusting you now."
             },
             "notificationViewUbi": {
-              "ca-ching": "Ca-ching!"
+              "caChing": "Ca-ching!"
             },
             "notificationViewWelcome": {
               "welcomeToCirclesLand": "Welcome to CirclesLand",
