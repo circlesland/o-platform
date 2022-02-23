@@ -1168,6 +1168,7 @@ query stream(
             firstName
             circlesAddress
           }
+          pickupCode
           lines {
             amount
             offer {

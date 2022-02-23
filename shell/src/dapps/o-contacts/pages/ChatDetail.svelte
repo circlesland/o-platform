@@ -52,6 +52,7 @@ async function reload() {
         EventType.ChatMessage,
         EventType.Erc20Transfer,
         EventType.PurchaseEvent,
+        EventType.SaleEvent,
         //EventType.CrcSignup,
         //EventType.CrcTokenTransfer,
         //EventType.EthTransfer,
