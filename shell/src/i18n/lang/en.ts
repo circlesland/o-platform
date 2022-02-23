@@ -1344,12 +1344,6 @@ export const en = {
             "unexoectedApiResponse": "Unexpected API response, cancelling out.",
             "noSessionResult": "No _sessionResult."
           }
-        },
-        "functions": {
-          "generateNavManifest": {
-            "back": "back",
-            "skip": "skip"
-          }
         }
       },
       "molecules": {
@@ -1445,6 +1439,12 @@ export const en = {
               "duSchoenerMensch": "du schöner Mensch"
             }
           }
+        }
+      },
+      "functions": {
+        "generateNavManifest": {
+          "back": "back",
+          "skip": "skip"
         }
       },
       "pages": {
