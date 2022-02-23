@@ -1162,6 +1162,22 @@ query stream(
           }
         }
       }
+      ... on PurchaseEvent {
+        invoice {
+          sellerProfile {
+            firstName
+            circlesAddress
+          }
+          lines {
+            amount
+            offer {
+              pictureUrl
+              title
+              description
+            }
+          }
+        }
+      }
       ... on OrganisationCreated {
         organisation
         organisation_profile {

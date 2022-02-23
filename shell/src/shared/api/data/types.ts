@@ -2462,7 +2462,23 @@ export type StreamQuery = (
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
-    ) | { __typename?: 'PurchaseEvent' } | (
+    ) | (
+      { __typename?: 'PurchaseEvent' }
+      & { invoice?: Maybe<(
+        { __typename?: 'Invoice' }
+        & { sellerProfile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'firstName' | 'circlesAddress'>
+        )>, lines: Array<(
+          { __typename?: 'InvoiceLine' }
+          & Pick<InvoiceLine, 'amount'>
+          & { offer: (
+            { __typename?: 'Offer' }
+            & Pick<Offer, 'pictureUrl' | 'title' | 'description'>
+          ) }
+        )> }
+      )> }
+    ) | (
       { __typename?: 'SafeVerified' }
       & Pick<SafeVerified, 'safe_address'>
       & { organisation_profile?: Maybe<(
@@ -4354,6 +4370,22 @@ export const StreamDocument = gql`
               id
               title
               pictureUrl
+            }
+          }
+        }
+      }
+      ... on PurchaseEvent {
+        invoice {
+          sellerProfile {
+            firstName
+            circlesAddress
+          }
+          lines {
+            amount
+            offer {
+              pictureUrl
+              title
+              description
             }
           }
         }
