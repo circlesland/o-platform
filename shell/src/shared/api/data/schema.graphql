@@ -847,6 +847,7 @@ type ProofPaymentResult {
 
 type AnnouncePaymentResult {
   invoiceId: Int!
+  pickupCode: String!
   transactionHash: String!
 }
 
