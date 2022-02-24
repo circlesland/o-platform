@@ -47,6 +47,7 @@ export enum AggregateType {
 export type AnnouncePaymentResult = {
   __typename?: 'AnnouncePaymentResult';
   invoiceId: Scalars['Int'];
+  pickupCode: Scalars['String'];
   transactionHash: Scalars['String'];
 };
 
@@ -1729,7 +1730,7 @@ export type AnnouncePaymentMutation = (
   { __typename?: 'Mutation' }
   & { announcePayment: (
     { __typename?: 'AnnouncePaymentResult' }
-    & Pick<AnnouncePaymentResult, 'transactionHash' | 'invoiceId'>
+    & Pick<AnnouncePaymentResult, 'transactionHash' | 'invoiceId' | 'pickupCode'>
   ) }
 );
 
@@ -2466,6 +2467,7 @@ export type StreamQuery = (
       { __typename?: 'PurchaseEvent' }
       & { invoice?: Maybe<(
         { __typename?: 'Invoice' }
+        & Pick<Invoice, 'pickupCode'>
         & { sellerProfile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'firstName' | 'circlesAddress'>
@@ -3246,6 +3248,7 @@ export const AnnouncePaymentDocument = gql`
   announcePayment(invoiceId: $invoiceId, transactionHash: $transactionHash) {
     transactionHash
     invoiceId
+    pickupCode
   }
 }
     `;
@@ -4380,6 +4383,7 @@ export const StreamDocument = gql`
             firstName
             circlesAddress
           }
+          pickupCode
           lines {
             amount
             offer {

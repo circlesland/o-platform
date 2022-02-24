@@ -475,5 +475,6 @@ mutation announcePayment($invoiceId: Int! $transactionHash: String!) {
   announcePayment(invoiceId: $invoiceId transactionHash: $transactionHash) {
     transactionHash
     invoiceId
+    pickupCode
   }
 }

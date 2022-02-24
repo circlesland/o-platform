@@ -34,6 +34,7 @@ export type PurchaseContextData = {
   items: Offer[];
   sellerProfile?: Profile;
   invoices: Invoice[];
+  pickupCode: string;
   payableInvoices: {
     invoice: Invoice;
     path: TransitivePath;
@@ -54,13 +55,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
     description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.description"),
     placeholder: "",
     submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
-  },
-  success: {
-    title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.title"),
-    description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.description"),
-    placeholder: "",
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
-  },
+  }
 };
 
 const processDefinition = (processId: string) =>
@@ -257,6 +252,9 @@ const processDefinition = (processId: string) =>
               }
             });
 
+            context.data.pickupCode = announceResult.data.announcePayment.pickupCode;
+            console.log(`Your pickup code is: ${context.data.pickupCode}`)
+
             const receipt = await fTransferCircles(
               currentInvoice.invoice.buyerAddress,
               sessionStorage.getItem("circlesKey"),
@@ -303,11 +301,19 @@ const processDefinition = (processId: string) =>
         },
         field: "__",
         component: CheckoutConfirm,
-        params: {
-          view: editorContent.success,
-          html: () => ``,
-          submitButtonText: editorContent.success.submitButtonText,
-          hideNav: false,
+        params: (context) => {
+          return {
+            view: {
+              title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.title"),
+              description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.description"),
+              placeholder: "",
+              submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
+            },
+            html: ``,
+            pickupCode: context.data.pickupCode,
+            submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
+            hideNav: false
+          }
         },
         navigation: {
           next: "#success",

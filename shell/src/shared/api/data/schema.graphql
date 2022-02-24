@@ -42,6 +42,7 @@ type AddMemberResult {
 
 type AnnouncePaymentResult {
     invoiceId: Int!
+    pickupCode: String!
     transactionHash: String!
 }
 

@@ -7,6 +7,7 @@ import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";
 import Account from "../../o-passport/pages/Account.svelte";
 import { _ } from "svelte-i18n";
+import QrCode from "svelte-qrcode";
 
 export let context: any;
 let profile: Profile | Organisation;
@@ -146,6 +147,17 @@ function orderItems(items) {
         <a href="#/marketplace/my-purchases" alt="My Purchases" class="btn-link"
           >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}</a
         >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
+      </div>
+
+      <div class="w-full text-center">
+        <h1 class="text-6xl uppercase font-heading">
+          {context.params.pickupCode}
+        </h1>
+        <div class="container">
+          <center>
+            <QrCode value="{context.params.pickupCode}" color="#081B4A" />
+          </center>
+        </div>
       </div>
 
       <div class="pt-2 text-sm">
