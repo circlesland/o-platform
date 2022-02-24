@@ -110,7 +110,7 @@ function orderItems(items) {
       </div>
     {/each}
 
-    <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
+    <div class="flex flex-col w-full mb-6 space-y-4 text-left ">
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
         <h1 class="p-2 text-white uppercase bg-dark-dark">
           <div class="text-sm">
@@ -121,23 +121,16 @@ function orderItems(items) {
 
       <div>
         {$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1")}
-        <span class="text-sm"
-          >{$_(
-            "dapps.o-marketplace.molecules.checkoutConfirm.howToPickup2"
-          )}</span
-        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup3")}
-        <span class="text-primary-dark"
-          >{$_(
-            "dapps.o-marketplace.molecules.checkoutConfirm.howToPickup4"
-          )}</span
-        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup5")}
-        <span class="text-primary-dark"
-          >{$_(
-            "dapps.o-marketplace.molecules.checkoutConfirm.howToPickup6"
-          )}</span
-        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup7")}
       </div>
-      <div class="pt-2 text-sm">
+
+      <div class="w-full mt-6 text-center">
+        <div class="container">
+          <center>
+            <QrCode value="{context.params.pickupCode}" color="#081B4A" />
+          </center>
+        </div>
+      </div>
+      <div class="text-sm">
         {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span
           class="text-primary-dark"
           >{$_(
@@ -147,17 +140,6 @@ function orderItems(items) {
         <a href="#/marketplace/my-purchases" alt="My Purchases" class="btn-link"
           >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}</a
         >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
-      </div>
-
-      <div class="w-full text-center">
-        <h1 class="text-6xl uppercase font-heading">
-          {context.params.pickupCode}
-        </h1>
-        <div class="container">
-          <center>
-            <QrCode value="{context.params.pickupCode}" color="#081B4A" />
-          </center>
-        </div>
       </div>
 
       <div class="pt-2 text-sm">

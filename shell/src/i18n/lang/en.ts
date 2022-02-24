@@ -8,7 +8,7 @@ export const en = {
       date: "Date",
       from: "from",
       to: "to",
-      block: "Block"
+      block: "Block",
     },
     dapps: {
       "o-banking": {
@@ -22,7 +22,7 @@ export const en = {
             amount: "Amount",
             recipientAddress: "Recipient Address",
             transactionHash: "Transaction Hash",
-            block: "Block"
+            block: "Block",
           },
         },
         pages: {
@@ -40,7 +40,7 @@ export const en = {
             from: "from",
             to: "to",
             ubi: "Universal Basic Income",
-            transactionHash: "Transaction Hash"
+            transactionHash: "Transaction Hash",
           },
         },
         processes: {
@@ -561,13 +561,8 @@ export const en = {
           checkoutConfirm: {
             yourPickupCode: "Your Pick-Up Code",
             howToPickup1:
-              "After your transaction has been completely verified ",
-            howToPickup2: "(wich may take a couple minutes)",
-            howToPickup3: ", you will get a ",
-            howToPickup4: "PickUp Code",
-            howToPickup5: ", wich you will need to ",
-            howToPickup6: "show to the seller",
-            howToPickup7: " when you pick up your Order at the Store.",
+              "This is your PickUp Code. Show it to the lovely person at our shop to receive your items.",
+
             toSeeCode1: "To see your ",
             toSeeCode2: "PickUp Code",
             toSeeCode3: " at any time after the purchase, go to ",
@@ -773,741 +768,833 @@ export const en = {
         },
       },
       "o-onboarding": {
-        "processes": {
-          "connectOrCreate": {
-            "promptConnectOrCreate": {
-              "editorContent": {
-                "info": {
-                  "title": "Create Safer",
-                  "description": "In the next steps you can create your account on the blockchain ..",
-                  "submitButtonText": "Next"
+        processes: {
+          connectOrCreate: {
+            promptConnectOrCreate: {
+              editorContent: {
+                info: {
+                  title: "Create Safer",
+                  description:
+                    "In the next steps you can create your account on the blockchain ..",
+                  submitButtonText: "Next",
                 },
-                "connectOrCreate": {
-                  "title": "Connect or create?",
-                  "description": "Choose your screnario"
-                }
+                connectOrCreate: {
+                  title: "Connect or create?",
+                  description: "Choose your screnario",
+                },
               },
-              "processDefinition": {
-                "connectOrCreate": {
-                  "options": {
-                    "newSafe": "I'm new, create everything for me",
-                    "importSafe": "I already have a safe"
-                  }
+              processDefinition: {
+                connectOrCreate: {
+                  options: {
+                    newSafe: "I'm new, create everything for me",
+                    importSafe: "I already have a safe",
+                  },
                 },
-                "newSafe": {
-                  "message": "Please wait while we create your Safe on the Blockchain."
+                newSafe: {
+                  message:
+                    "Please wait while we create your Safe on the Blockchain.",
                 },
-                "privateKeyNotUnlocked": "The private key is not unlocked",
-                "couldNotUpdate": "Couldn't update the profile with the generated eoa: ${result}",
-                "errorWhileDeploying": "An error occured while deploying your safe:",
-              }
-            }
+                privateKeyNotUnlocked: "The private key is not unlocked",
+                couldNotUpdate:
+                  "Couldn't update the profile with the generated eoa: ${result}",
+                errorWhileDeploying:
+                  "An error occured while deploying your safe:",
+              },
+            },
           },
-          "invitation": {
-            "buyInvitation": {
-              "editorContent": {
-                "info": {
-                  "title": "Get invited",
-                  "description": "Find somebody who can give you an invite code to join.",
-                  "submitButtonText": "I have a code"
+          invitation: {
+            buyInvitation: {
+              editorContent: {
+                info: {
+                  title: "Get invited",
+                  description:
+                    "Find somebody who can give you an invite code to join.",
+                  submitButtonText: "I have a code",
                 },
-                "checkInviteCode": {
-                  "title": "Enter invitation code",
-                  "description": "Please enter you invitation code below to get started.",
-                  "submitButtonText": "Verify"
+                checkInviteCode: {
+                  title: "Enter invitation code",
+                  description:
+                    "Please enter you invitation code below to get started.",
+                  submitButtonText: "Verify",
                 },
-                "dataShcemaRequired": "Please enter a valid invitation code to proceed",
-                "couldNotClaimInvitation": "Couldn't claim an invitation: {contextMessages}"
-              }
+                dataShcemaRequired:
+                  "Please enter a valid invitation code to proceed",
+                couldNotClaimInvitation:
+                  "Couldn't claim an invitation: {contextMessages}",
+              },
             },
-            "promptGetInvited": {
-              "editorContent": {
-                "info": {
-                  "title": "Get Invited",
-                  "description": "find somebody who can give you an invite code to join.",
-                  "submitButtonText": "I have a code"
+            promptGetInvited: {
+              editorContent: {
+                info: {
+                  title: "Get Invited",
+                  description:
+                    "find somebody who can give you an invite code to join.",
+                  submitButtonText: "I have a code",
                 },
-                "checkInviteCode": {
-                  "title": "Enter invitation code",
-                  "description": "Please enter you invitation code below to get started.",
-                  "submitButtonText": "Verify"
-                }
-              },
-              "dataSchemaRequired": "Please enter a valid invitation code to proceed.",
-              "couldNotClaimInvitation": "Couldn't claim an invitation: {contextMessages}"
-            },
-            "promptRedeemInvitation": {
-              "editorContent": {
-                "info": {
-                  "title": "Redeem your invitation",
-                  "description": "We will now redeem your invitation. This could take a while...",
-                  "submitButtonText": "Next"
+                checkInviteCode: {
+                  title: "Enter invitation code",
+                  description:
+                    "Please enter you invitation code below to get started.",
+                  submitButtonText: "Verify",
                 },
-                "waitUntilRedeemed": {
-                  "title": "Please Wait",
-                  "description": "Please wait until your invitation transaction got confirmed and try again in a frew seconds.",
-                  "submitButtonText": "Try again"
-                }
               },
-              "redeemInvitation": {
-                "message": "Please wait, redeeming your Invitation...",
-                "error": "Couldn't redeem an invitation: {contextMessages}",
-                "onError": "The following error occurred while redeeming you claimed invitation:"
+              dataSchemaRequired:
+                "Please enter a valid invitation code to proceed.",
+              couldNotClaimInvitation:
+                "Couldn't claim an invitation: {contextMessages}",
+            },
+            promptRedeemInvitation: {
+              editorContent: {
+                info: {
+                  title: "Redeem your invitation",
+                  description:
+                    "We will now redeem your invitation. This could take a while...",
+                  submitButtonText: "Next",
+                },
+                waitUntilRedeemed: {
+                  title: "Please Wait",
+                  description:
+                    "Please wait until your invitation transaction got confirmed and try again in a frew seconds.",
+                  submitButtonText: "Try again",
+                },
               },
-              "checkIfRedeemed": {
-                "notYetRedeemed": "Invitation is not yet redeemed."
-              }
-            }
+              redeemInvitation: {
+                message: "Please wait, redeeming your Invitation...",
+                error: "Couldn't redeem an invitation: {contextMessages}",
+                onError:
+                  "The following error occurred while redeeming you claimed invitation:",
+              },
+              checkIfRedeemed: {
+                notYetRedeemed: "Invitation is not yet redeemed.",
+              },
+            },
           },
-          "registration": {
-            "promptRegistration": {
-              "editorContent": {
-                "newsletter": {
-                  "title": "Newsletter",
-                  "description": "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?"
-                }
+          registration: {
+            promptRegistration: {
+              editorContent: {
+                newsletter: {
+                  title: "Newsletter",
+                  description:
+                    "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
+                },
               },
-              "noThanks": "No thanks",
-              "yesPlease": "Yes please",
-
-            }
+              noThanks: "No thanks",
+              yesPlease: "Yes please",
+            },
           },
-          "unlockKey": {
-            "unlockKey": {
-              "enterDecryptionPinParams": {
-                "title": "Please enter your pin",
-                "description": "The pin will be used to decrypt your private key on your device.",
-                "placeholder": "Enter Pin",
-                "submitButtonText": "Unlock"
+          unlockKey: {
+            unlockKey: {
+              enterDecryptionPinParams: {
+                title: "Please enter your pin",
+                description:
+                  "The pin will be used to decrypt your private key on your device.",
+                placeholder: "Enter Pin",
+                submitButtonText: "Unlock",
               },
-              "dataSchemaRequired": "Please enter a encryptingPin to protect your private key.",
-              "couldNotDecrypt": "Couldn't decrypt your key. Have you entered the correct pin?"
-            }
+              dataSchemaRequired:
+                "Please enter a encryptingPin to protect your private key.",
+              couldNotDecrypt:
+                "Couldn't decrypt your key. Have you entered the correct pin?",
+            },
           },
-          "connectSafe": {
-            "editorContent": {
-              "seedPhrase": {
-                "title": "CONNECT RECOVERY CODE",
-                "description": "Please enter your 24 secret recovery code (seedphrase) <br /><br /><span class='text-xs'>Your secret recovery code will be stored only in your device</span>",
-                "placeholder": "Recovery Code",
-                "submitButtonText": "Connect recovery code"
+          connectSafe: {
+            editorContent: {
+              seedPhrase: {
+                title: "CONNECT RECOVERY CODE",
+                description:
+                  "Please enter your 24 secret recovery code (seedphrase) <br /><br /><span class='text-xs'>Your secret recovery code will be stored only in your device</span>",
+                placeholder: "Recovery Code",
+                submitButtonText: "Connect recovery code",
               },
-              "addOwnerInfo": {
-                "title": "Add owner to safe",
-                "description": "We'll add your new key as owner to your existing safe. Your previous key will stay an owner as well.",
-                "submitButtonText": "Proceed"
+              addOwnerInfo: {
+                title: "Add owner to safe",
+                description:
+                  "We'll add your new key as owner to your existing safe. Your previous key will stay an owner as well.",
+                submitButtonText: "Proceed",
               },
-              "accountIsDeadInfo": {
-                "title": "Safe deactivated",
-                "description": "The selected safe received no UBI for more than 90 days and was deactivated. You can still use your Circles and transfer them to your new safe.",
-                "submitButtonText": "Create new safe"
-              }
+              accountIsDeadInfo: {
+                title: "Safe deactivated",
+                description:
+                  "The selected safe received no UBI for more than 90 days and was deactivated. You can still use your Circles and transfer them to your new safe.",
+                submitButtonText: "Create new safe",
+              },
             },
-            "safeInfoFromSeedphrase": {
-              "seedphraseError": "The seedphrase cannot be converted to a private key. Please double check it.",
-              "foundNoSafes": "Found no safes with a positive CRC balance that are owned by "
+            safeInfoFromSeedphrase: {
+              seedphraseError:
+                "The seedphrase cannot be converted to a private key. Please double check it.",
+              foundNoSafes:
+                "Found no safes with a positive CRC balance that are owned by ",
             },
-            "selectSafe": {
-              "title": "We found multiple safes for your key",
-              "description": "Please select the one you want to connect with your circles.land profile",
-              "submitButtonText": "Connect"
+            selectSafe: {
+              title: "We found multiple safes for your key",
+              description:
+                "Please select the one you want to connect with your circles.land profile",
+              submitButtonText: "Connect",
             },
-            "addNewOwnerInfo": "We will add a new owner to your safe. No worries we keep your old key as owner too.",
-            "addNewOwner": "Adding new owner ..",
-            "updateRegistration": {
-              "importingYourOrganisations": "Importing your organisations ..",
-              "addingYouAsAwoner": "Adding you as owner to {orgaName} .."
+            addNewOwnerInfo:
+              "We will add a new owner to your safe. No worries we keep your old key as owner too.",
+            addNewOwner: "Adding new owner ..",
+            updateRegistration: {
+              importingYourOrganisations: "Importing your organisations ..",
+              addingYouAsAwoner: "Adding you as owner to {orgaName} ..",
             },
-            "publishEvent": "Updating your profile .."
+            publishEvent: "Updating your profile ..",
           },
-          "fromCirclesLand": {
-            "seedPhraseParams": {
-              "label": "Please enter your seedphrase",
-              "placeholder": "Seedphrase",
-              "submitButtonText": "Store on this device"
+          fromCirclesLand: {
+            seedPhraseParams: {
+              label: "Please enter your seedphrase",
+              placeholder: "Seedphrase",
+              submitButtonText: "Store on this device",
             },
-            "checkSeedphrase": {
-              "errors": {
-                "cannotConvertToPrivateKey": "The seedphrase cannot be converted to a private key. Please double check it.",
-                "cannotConvertToEthereum": "The key that was generated from the seedphrase cannot be converted to an ethereum account.",
-                "errorWhileTryingToFindSafe": "An error occurred while we tried to find your safe: {error}",
-                "couldNotFindSafe": "We couldn't find a safe for your account {accountAddress}"
-              }
+            checkSeedphrase: {
+              errors: {
+                cannotConvertToPrivateKey:
+                  "The seedphrase cannot be converted to a private key. Please double check it.",
+                cannotConvertToEthereum:
+                  "The key that was generated from the seedphrase cannot be converted to an ethereum account.",
+                errorWhileTryingToFindSafe:
+                  "An error occurred while we tried to find your safe: {error}",
+                couldNotFindSafe:
+                  "We couldn't find a safe for your account {accountAddress}",
+              },
             },
-            "chooseSafeAddress": {
-              "label": "We found multiple safes for your account. Please select the one you want to connect.",
-              "placeholder": "Click to select a safe",
-              "submitButtonText": "Connect"
+            chooseSafeAddress: {
+              label:
+                "We found multiple safes for your account. Please select the one you want to connect.",
+              placeholder: "Click to select a safe",
+              submitButtonText: "Connect",
             },
-            "checkSafeAddress": {
-              "error": "Couldn't determine the owner of safe {addressToCheck}. Is the address right?"
-            }
+            checkSafeAddress: {
+              error:
+                "Couldn't determine the owner of safe {addressToCheck}. Is the address right?",
+            },
           },
-          "loginWithTorus": {
-            "loginOptions": {
-              "google": {
-                "label": "Login with Google"
+          loginWithTorus: {
+            loginOptions: {
+              google: {
+                label: "Login with Google",
               },
-              "apple": {
-                "label": "Login with Apple"
+              apple: {
+                label: "Login with Apple",
               },
-              "github": {
-                "label": "Login with Github"
+              github: {
+                label: "Login with Github",
               },
-              "email": {
-                "label": "Login with E-Mail"
-              }
+              email: {
+                label: "Login with E-Mail",
+              },
             },
-            "showInviteMessage": {
-              "title": "Welcome",
-              "submitButtonText": "Next",
-              "htmlContext": "</b> invited you to CirclesLand.<br/><br/>Click 'Next' to Login",
-              "loginButton": "Login"
+            showInviteMessage: {
+              title: "Welcome",
+              submitButtonText: "Next",
+              htmlContext:
+                "</b> invited you to CirclesLand.<br/><br/>Click 'Next' to Login",
+              loginButton: "Login",
             },
-            "chooseFlowParams": {
-              "title": "Welcome to Circles Land",
-              "description": "Please choose a sign-in option<br/> <small>By choosing one of the sign-in options you agree to our <a href='https://coda.io/@circlesland/terms' target='_blank' class='link' alt='privacy'>Terms of Service</a>.</small>"
+            chooseFlowParams: {
+              title: "Welcome to Circles Land",
+              description:
+                "Please choose a sign-in option<br/> <small>By choosing one of the sign-in options you agree to our <a href='https://coda.io/@circlesland/terms' target='_blank' class='link' alt='privacy'>Terms of Service</a>.</small>",
             },
-            "pleaseWaitWeSigningYouIn": "Please wait, we're Signing you in",
-            "enterEncryptionPinParams": {
-              "title": "Set a PIN to protect your account",
-              "description": "The pin will be used to encrypt your private key on your device. NOTE: This won't help against a sophisticated attacker but prevents casual theft. ",
-              "placeholder": "Enter Pin",
-              "submitButtonText": "Store private key on this device",
-              "stringRequired": "Please enter a pin to protect your private key."
+            pleaseWaitWeSigningYouIn: "Please wait, we're Signing you in",
+            enterEncryptionPinParams: {
+              title: "Set a PIN to protect your account",
+              description:
+                "The pin will be used to encrypt your private key on your device. NOTE: This won't help against a sophisticated attacker but prevents casual theft. ",
+              placeholder: "Enter Pin",
+              submitButtonText: "Store private key on this device",
+              stringRequired: "Please enter a pin to protect your private key.",
             },
-            "enterDecryptionPinParams": {
-              "title": "Please enter your pin",
-              "description": "The pin will be used to decrypt your private key on your device.",
-              "placeholder": "Enter Pin",
-              "submitButtonText": "Unlock",
-              "stringRequired": "Please enter a encryptingPin to protect your private key"
+            enterDecryptionPinParams: {
+              title: "Please enter your pin",
+              description:
+                "The pin will be used to decrypt your private key on your device.",
+              placeholder: "Enter Pin",
+              submitButtonText: "Unlock",
+              stringRequired:
+                "Please enter a encryptingPin to protect your private key",
             },
-            "invalidPn": "Invalid Pin"
-          }
-        }
+            invalidPn: "Invalid Pin",
+          },
+        },
       },
       "o-passport": {
-        "atoms": {
-          "accountCard": {
-            "secretRecoveryCode": "Secret recovery code"
-          }
+        atoms: {
+          accountCard: {
+            secretRecoveryCode: "Secret recovery code",
+          },
         },
-        "pages": {
-          "account": {
-            "subTitle": "Main Account holder"
+        pages: {
+          account: {
+            subTitle: "Main Account holder",
           },
-          "exchangeToken": {
-            "pleaseWait": "Please wait. We're logging you in."
+          exchangeToken: {
+            pleaseWait: "Please wait. We're logging you in.",
           },
-          "home": {
-            "passion": "Passion",
-            "noPassionSet": "No passion set.",
-            "address": "Address"
+          home: {
+            passion: "Passion",
+            noPassionSet: "No passion set.",
+            address: "Address",
           },
-          "settings": {
-            "notifications": "NOTIFICATIONS",
-            "receiveEmailNotifications": "Receive E-Mail Notifications",
-            "currencyDisplay": "CURRENCY DISPLAY"
-          }
+          settings: {
+            notifications: "NOTIFICATIONS",
+            receiveEmailNotifications: "Receive E-Mail Notifications",
+            currencyDisplay: "CURRENCY DISPLAY",
+          },
         },
-        "processes": {
-          "identify": {
-            "aquireSession": {
-              "authenkticate": {
-                "authenticate2": {
-                  "strings": {
-                    "labelLoginEmail": "Welcome to CirclesLand. <br/><span class='text-base text-light-dark font-normal block mt-3'>A pleasure you found your way here. Please provide your email address to Sign-In</span>",
-                    "labelVerificationCode": "Please enter pin<br/><span class='text-base text-light-dark font-normal block mt-3'>We have send you a 6 digit login pin to your mail ${email}.</span><br/><span class='text-light-dark text-xs font-normal'> It may take a moment. Also check your spam folder</span>",
-                    "placeholder": "email"
+        processes: {
+          identify: {
+            aquireSession: {
+              authenkticate: {
+                authenticate2: {
+                  strings: {
+                    labelLoginEmail:
+                      "Welcome to CirclesLand. <br/><span class='text-base text-light-dark font-normal block mt-3'>A pleasure you found your way here. Please provide your email address to Sign-In</span>",
+                    labelVerificationCode:
+                      "Please enter pin<br/><span class='text-base text-light-dark font-normal block mt-3'>We have send you a 6 digit login pin to your mail ${email}.</span><br/><span class='text-light-dark text-xs font-normal'> It may take a moment. Also check your spam folder</span>",
+                    placeholder: "email",
                   },
-                  "editorContent": {
-                    "email": {
-                      "title": "Welcome to CirclesLand",
-                      "description": "A pleasure you found your way here. Please provide your email address to Sign-In.",
-                      "placeholder": "Email address",
-                      "submitButtonText": "Let me in"
+                  editorContent: {
+                    email: {
+                      title: "Welcome to CirclesLand",
+                      description:
+                        "A pleasure you found your way here. Please provide your email address to Sign-In.",
+                      placeholder: "Email address",
+                      submitButtonText: "Let me in",
                     },
-                    "terms_privacy": {
-                      "title": "Terms & Privavy",
-                      "description": "CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/><span class='text-xs'>For details read our <a href='https://blog.circles.land/terms-of-service' class='text-primary' target='_blank' alt='privacy policy & terms of service'>privacy policy & terms of service</a></span>",
-                      "submitButtonText": "I read and accept them"
+                    terms_privacy: {
+                      title: "Terms & Privavy",
+                      description:
+                        "CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/><span class='text-xs'>For details read our <a href='https://blog.circles.land/terms-of-service' class='text-primary' target='_blank' alt='privacy policy & terms of service'>privacy policy & terms of service</a></span>",
+                      submitButtonText: "I read and accept them",
                     },
-                    "verification": {
-                      "title": "Welcome to CirclesLand",
-                      "description": "A pleasure you found your way here. Please provide your email address to Sign-In",
-                      "placeholder": "Email address",
-                      "submitButtonText": "Let me in"
+                    verification: {
+                      title: "Welcome to CirclesLand",
+                      description:
+                        "A pleasure you found your way here. Please provide your email address to Sign-In",
+                      placeholder: "Email address",
+                      submitButtonText: "Let me in",
                     },
-                    "code": {
-                      "title": "Please enter encryptingPin",
-                      "description": "We have send you a 6 digit login encryptingPin to your mail.<br/><br/><span class='text-xs'>It may take a moment. Also check your spam folder.</span>",
-                      "placeholder": "Enter Pin",
-                      "submitButtonText": "Login"
-                    }
+                    code: {
+                      title: "Please enter encryptingPin",
+                      description:
+                        "We have send you a 6 digit login encryptingPin to your mail.<br/><br/><span class='text-xs'>It may take a moment. Also check your spam folder.</span>",
+                      placeholder: "Enter Pin",
+                      submitButtonText: "Login",
+                    },
                   },
-                  "acquireSession": {
-                    "message": "Requesting the challenge",
-                    "errors": {
-                      "contextsPropertyNotSet": "The context's 'eoaAddress' property is not set but required by this step",
-                      "privateKeyNotUnlocked": "The private key is not unlocked",
-                      "couldNotGetSession": "Couldn't get a session using a signed challenge."
-                    }
+                  acquireSession: {
+                    message: "Requesting the challenge",
+                    errors: {
+                      contextsPropertyNotSet:
+                        "The context's 'eoaAddress' property is not set but required by this step",
+                      privateKeyNotUnlocked: "The private key is not unlocked",
+                      couldNotGetSession:
+                        "Couldn't get a session using a signed challenge.",
+                    },
                   },
-                  "errorRequestingChallenge": {
-                    "error": "An error occurred while requesting an auth-challenge.",
-                    "submitButtonText": "Try again"
-                  }
-                }
+                  errorRequestingChallenge: {
+                    error:
+                      "An error occurred while requesting an auth-challenge.",
+                    submitButtonText: "Try again",
+                  },
+                },
               },
-              "acquireSession2": {
-                "acquireSession": {
-                  "message": "Sarting the session ..",
-                  "error": {
-                    "contextsPropertyNotSet": "The context's 'eoaAddress' property is not set but required by this step",
-                    "privateKeyNotUnlocked": "The private key is not unlocked",
-                    "couldNotGetSession": "Couldn't get a session using a signed challenge."
+              acquireSession2: {
+                acquireSession: {
+                  message: "Sarting the session ..",
+                  error: {
+                    contextsPropertyNotSet:
+                      "The context's 'eoaAddress' property is not set but required by this step",
+                    privateKeyNotUnlocked: "The private key is not unlocked",
+                    couldNotGetSession:
+                      "Couldn't get a session using a signed challenge.",
                   },
-                  "errorRequestingChallenge": {
-                    "error": "An error occurred while requesting an auth-challenge.",
-                    "submitButtonText": "Try again"
-                  }
-                }
-              }
-            },
-            "checks": {
-              "hasKey": {
-                "error": "Couldn't load the private key from the localStorage."
-              }
-            },
-            "conds": {
-              "hasKey": {
-                "error": "Couldn't load the private key from the localStorage."
-              }
-            },
-            "connectSafe": {
-              "connectSafe2": {
-                "editorContent": {
-                  "seedPhrase": {
-                    "title": "CONNECT RECOVERY CODE",
-                    "description": "Please enter your 24 secret recovery code (seedphrase)<br /><br /><span class='text-xs'>Your secret recovery code will be stored only in your device</span>",
-                    "placeholder": "Recovery Code",
-                    "submitButtonText": "Connect recovery code"
+                  errorRequestingChallenge: {
+                    error:
+                      "An error occurred while requesting an auth-challenge.",
+                    submitButtonText: "Try again",
                   },
-                  "selectExistingKey": {
-                    "title": "PLEASE CHOOSE A KEY",
-                    "description": "We found the some keys on your device. Please select the one you want to use:",
-                    "placeholder": "Recovery Code",
-                    "submitButtonText": "Use Key"
-                  },
-                  "unlockPin": {
-                    "title": "Please entern encryptingPin",
-                    "description": "Please enter the encryptingPin for your key",
-                    "placeholder": "Enter Pin",
-                    "submitButtonText": "Login"
-                  }
                 },
-                "unlockKeyPin": {
-                  "label": "Plase enter the PIN for key '{eoaName}'",
-                  "submitButtonText": "Unlock",
-                  "dataSchema": "Please enter your one time token."
-                },
-                "unlockKey": {
-                  "errors": {
-                    "wtf": "WTF?!",
-                    "wrongPin": "Wrong pin?"
-                  }
-                },
-                "checkSeedphrase": {
-                  "contextMessage1": "The seedphrase cannot be converted to a private key. Please double check it.",
-                  "contextMessage2": "The key that was generated from the seedphrase cannot be converted to an ethereum account.",
-                  "contextMessage3": "An error occurred while we tried to find your safe: {error}",
-                  "contextMessage4": "We couldn't find a safe for your account {accountAddress}"
-                },
-                "safeAddress": {
-                  "label": "We found multiple safes for your account. Please select the one you want to connect.",
-                  "placeholder": "Click to select safe",
-                  "submitButtonText": "Connect"
-                },
-                "checkSafeAddress": {
-                  "contextMessage": "Couldn't determine the owner of safe {contextDataSafeAddress}. Is the address right?"
-                }
-              }
-            },
-            "createSafe": {
-              "createSafe": {
-                "strings": {
-                  "choiceConnect": "Connect",
-                  "choiceCreate": "Create",
-                  "labelExportSeedphrase": "Your Secret Recovery Code is the<span class='text-alert'>only key</span> which can access your safe. It is your <span class='text-alert'>full responsibility</span> to <span class='text-alert'>protect</span> this code like a <span class='text-alert'>password</span>.<br /><br /><span class='text-xs'>If you loose it or forget it, all your <span class='text-alert'>money is lost forever</span>.</span>",
-                  "buttonExportSeedphrase": "I stored it scurely",
-                  "labelCheckSeedphrase": "Keep in mind, everyone who knows your Secret Recovery Code can access all your funds! Did you store your Secret Recovery Code in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your Secret Recovery Code</strong>",
-                  "buttonCheckSeedphrase": "Really, I did it!"
-                },
-                "editorContent": {
-                  "seedphrase": {
-                    "title": "READ CAREFULLY<br/>Secret Recovery Code",
-                    "description": "Your Secret Recovery Code is the<span class='text-alert'>only key</span>which can access your safe. It is your<span class='text-alert'>full responsibility</span>to<span class='text-alert'>protect</span>this code like a<span class='text-alert'>password</span>.<br /><br /><span class='text-xs'>If you loose it or forget it, all your<span class='text-alert'>money is lost forever</span>.</span>",
-                    "submitButtonText": "Next"
-                  },
-                  "seedphraseCheck": {
-                    "title": "SAFE Code SECURELY",
-                    "description": "Keep in mind, <span class='text-alert'>everyone who knows</span> your Secret Recovery Code can <span class='text-alert'>access all you money</span>.<br /><br /><span class='text-xs'>Please save your Secret Recovery Code in your notes <span class='text-alert'>(not secure)</span>, a password manager <span class='text-alert'>(secure)</span> or write it down on a paper and put it in your safe <span class='text-alert'>(most secure)</span>.",
-                    "submitButtonText": "I stored my Code securely"
-                  } 
-                },
-                "pleaseEnterSecretCode": "Please enter your Secret Recovery Code."
-              }
-            },
-            "identify2": {
-              "strings": {
-                "choiceYesLabel": "Connect",
-                "choiceNoLabel": "Create New"
               },
-              "editorContent": {
-                "title": "Connect or Create?",
-                "description": "Do you already have a circles Safe address or would you like to create one?"
+            },
+            checks: {
+              hasKey: {
+                error: "Couldn't load the private key from the localStorage.",
               },
-              "getInvite": {
-                "htmlContext": "<section class='mb-8'><div class='w-full px-2 pb-4 -mt-3 bg-white rounded-sm'><div class='px-4 py-2 mr-4 -ml-3 text-center ' /><div style='text-align: center'><p class='w-64 m-auto mt-2 text-2xl font-bold  text-gradient'>You're almost there.</p><p class='mt-4 text'>To activate your citizenship you need to be invited.<br/>Send your profile link to a CirclesLand citizen to unlock your basic income.</p><div class='mt-4 mb-4 text-xs break-all' id='clipboard'><input type='text' class='hidden' value='${profileLink}' /><div class='inline-block text-2xl'><button class='btn btn-primary'>Copy profile Link</button></div><div class='block mt-2 text-sm text-light '>${profileLink}</div></div><p class='text'>If you don't know anybody who has Circles yet, ask nicely in our <a href='https://discord.gg/4DBbRCMnFZ' target='_blank' class='btn-link'>Discord</a> if someone can activate your citizenship.</p><p class='pb-4 mt-4 text-xs text-light'>alternatively, <a href='#/home/become-a-hub' class='btn-link'>unlock yourself</a> and grow a new local community</a></p><div class='mr-1 text-primary' /></div></div></section>",
-                "submitButtonText": "Close"
-              }
-            }
+            },
+            conds: {
+              hasKey: {
+                error: "Couldn't load the private key from the localStorage.",
+              },
+            },
+            connectSafe: {
+              connectSafe2: {
+                editorContent: {
+                  seedPhrase: {
+                    title: "CONNECT RECOVERY CODE",
+                    description:
+                      "Please enter your 24 secret recovery code (seedphrase)<br /><br /><span class='text-xs'>Your secret recovery code will be stored only in your device</span>",
+                    placeholder: "Recovery Code",
+                    submitButtonText: "Connect recovery code",
+                  },
+                  selectExistingKey: {
+                    title: "PLEASE CHOOSE A KEY",
+                    description:
+                      "We found the some keys on your device. Please select the one you want to use:",
+                    placeholder: "Recovery Code",
+                    submitButtonText: "Use Key",
+                  },
+                  unlockPin: {
+                    title: "Please entern encryptingPin",
+                    description: "Please enter the encryptingPin for your key",
+                    placeholder: "Enter Pin",
+                    submitButtonText: "Login",
+                  },
+                },
+                unlockKeyPin: {
+                  label: "Plase enter the PIN for key '{eoaName}'",
+                  submitButtonText: "Unlock",
+                  dataSchema: "Please enter your one time token.",
+                },
+                unlockKey: {
+                  errors: {
+                    wtf: "WTF?!",
+                    wrongPin: "Wrong pin?",
+                  },
+                },
+                checkSeedphrase: {
+                  contextMessage1:
+                    "The seedphrase cannot be converted to a private key. Please double check it.",
+                  contextMessage2:
+                    "The key that was generated from the seedphrase cannot be converted to an ethereum account.",
+                  contextMessage3:
+                    "An error occurred while we tried to find your safe: {error}",
+                  contextMessage4:
+                    "We couldn't find a safe for your account {accountAddress}",
+                },
+                safeAddress: {
+                  label:
+                    "We found multiple safes for your account. Please select the one you want to connect.",
+                  placeholder: "Click to select safe",
+                  submitButtonText: "Connect",
+                },
+                checkSafeAddress: {
+                  contextMessage:
+                    "Couldn't determine the owner of safe {contextDataSafeAddress}. Is the address right?",
+                },
+              },
+            },
+            createSafe: {
+              createSafe: {
+                strings: {
+                  choiceConnect: "Connect",
+                  choiceCreate: "Create",
+                  labelExportSeedphrase:
+                    "Your Secret Recovery Code is the<span class='text-alert'>only key</span> which can access your safe. It is your <span class='text-alert'>full responsibility</span> to <span class='text-alert'>protect</span> this code like a <span class='text-alert'>password</span>.<br /><br /><span class='text-xs'>If you loose it or forget it, all your <span class='text-alert'>money is lost forever</span>.</span>",
+                  buttonExportSeedphrase: "I stored it scurely",
+                  labelCheckSeedphrase:
+                    "Keep in mind, everyone who knows your Secret Recovery Code can access all your funds! Did you store your Secret Recovery Code in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your Secret Recovery Code</strong>",
+                  buttonCheckSeedphrase: "Really, I did it!",
+                },
+                editorContent: {
+                  seedphrase: {
+                    title: "READ CAREFULLY<br/>Secret Recovery Code",
+                    description:
+                      "Your Secret Recovery Code is the<span class='text-alert'>only key</span>which can access your safe. It is your<span class='text-alert'>full responsibility</span>to<span class='text-alert'>protect</span>this code like a<span class='text-alert'>password</span>.<br /><br /><span class='text-xs'>If you loose it or forget it, all your<span class='text-alert'>money is lost forever</span>.</span>",
+                    submitButtonText: "Next",
+                  },
+                  seedphraseCheck: {
+                    title: "SAFE Code SECURELY",
+                    description:
+                      "Keep in mind, <span class='text-alert'>everyone who knows</span> your Secret Recovery Code can <span class='text-alert'>access all you money</span>.<br /><br /><span class='text-xs'>Please save your Secret Recovery Code in your notes <span class='text-alert'>(not secure)</span>, a password manager <span class='text-alert'>(secure)</span> or write it down on a paper and put it in your safe <span class='text-alert'>(most secure)</span>.",
+                    submitButtonText: "I stored my Code securely",
+                  },
+                },
+                pleaseEnterSecretCode:
+                  "Please enter your Secret Recovery Code.",
+              },
+            },
+            identify2: {
+              strings: {
+                choiceYesLabel: "Connect",
+                choiceNoLabel: "Create New",
+              },
+              editorContent: {
+                title: "Connect or Create?",
+                description:
+                  "Do you already have a circles Safe address or would you like to create one?",
+              },
+              getInvite: {
+                htmlContext:
+                  "<section class='mb-8'><div class='w-full px-2 pb-4 -mt-3 bg-white rounded-sm'><div class='px-4 py-2 mr-4 -ml-3 text-center ' /><div style='text-align: center'><p class='w-64 m-auto mt-2 text-2xl font-bold  text-gradient'>You're almost there.</p><p class='mt-4 text'>To activate your citizenship you need to be invited.<br/>Send your profile link to a CirclesLand citizen to unlock your basic income.</p><div class='mt-4 mb-4 text-xs break-all' id='clipboard'><input type='text' class='hidden' value='${profileLink}' /><div class='inline-block text-2xl'><button class='btn btn-primary'>Copy profile Link</button></div><div class='block mt-2 text-sm text-light '>${profileLink}</div></div><p class='text'>If you don't know anybody who has Circles yet, ask nicely in our <a href='https://discord.gg/4DBbRCMnFZ' target='_blank' class='btn-link'>Discord</a> if someone can activate your citizenship.</p><p class='pb-4 mt-4 text-xs text-light'>alternatively, <a href='#/home/become-a-hub' class='btn-link'>unlock yourself</a> and grow a new local community</a></p><div class='mr-1 text-primary' /></div></div></section>",
+                submitButtonText: "Close",
+              },
+            },
           },
-          "invite": {
-            "invite": {
-              "editorContent": {
-                "amount": {
-                  "title": "How many invites do you want to send?"
-                }
+          invite: {
+            invite: {
+              editorContent: {
+                amount: {
+                  title: "How many invites do you want to send?",
+                },
               },
-              "promptChoice": {
-                "labelOneInvite": "1 invite",
-                "labelFiveInvites": "5 invites",
-                "labelTwentyfiveInvites": "25 invites"
-              }
-            }
-          },
-          "authenticateSso": {
-            "couldNotRequestAuthCode": "Couldn't request a delegate authentication code from the api: {error}",
-            "couldNotRequestChallenge": "Couldn't request a challenge from the auth-server: {error}",
-            "authCodeAlreadyExpired": "The {context} is already expired."
-          },
-          "logout": {
-            "editorContent": {
-              "title": "Log out",
-              "description": "Please enter your Secret Recovery Code to logout. If you haven't stored your Secret Recovery Code at a safe place yet, do it now and come back again later to log-out.",
-              "submitButtonText": "Log out"
-            }
-          },
-          "upsertIdentity": {
-            "editorContent": {
-              "firstName": {
-                "title": "What is your first name?",
-                "description": "Welcome, you are finally a citizan of CirclesLand. Glad to have you here.",
-                "placeholder": "First Name",
-                "submitButtonText": "Save"
+              promptChoice: {
+                labelOneInvite: "1 invite",
+                labelFiveInvites: "5 invites",
+                labelTwentyfiveInvites: "25 invites",
               },
-              "lastName": {
-                "title": "What is your last name?",
-                "description": "Display your full name in your profile to become more trust worthy.",
-                "placeholder": "Last name",
-                "submitButtonText": "Save"
-              },
-              "dream": {
-                "title": "Share you passion",
-                "description": "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
-                "placeholder": "Your passion",
-                "submitButtonText": "Start growing"
-              },
-              "city": {
-                "title": "Vote for your City",
-                "description": "Advance your city in the basic income ranking and push the political discourse in your area.",
-                "placeholder": "Last name",
-                "submitButtonText": "Submit vote"
-              },
-              "imageView": {
-                "title": "Profile Image",
-                "description": "Show the World who you are",
-                "placeholder": "Upload Image",
-                "submitButtonText": "Upload Image",
-              },
-              "newsletter": {
-                "title": "Newsletter",
-                "description": "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?"
-              }
             },
-            "requiredName": "Please enter your first name.",
-            "maximumChars": "The maximum amount of characters allowed is 150."
-          }
-        }
+          },
+          authenticateSso: {
+            couldNotRequestAuthCode:
+              "Couldn't request a delegate authentication code from the api: {error}",
+            couldNotRequestChallenge:
+              "Couldn't request a challenge from the auth-server: {error}",
+            authCodeAlreadyExpired: "The {context} is already expired.",
+          },
+          logout: {
+            editorContent: {
+              title: "Log out",
+              description:
+                "Please enter your Secret Recovery Code to logout. If you haven't stored your Secret Recovery Code at a safe place yet, do it now and come back again later to log-out.",
+              submitButtonText: "Log out",
+            },
+          },
+          upsertIdentity: {
+            editorContent: {
+              firstName: {
+                title: "What is your first name?",
+                description:
+                  "Welcome, you are finally a citizan of CirclesLand. Glad to have you here.",
+                placeholder: "First Name",
+                submitButtonText: "Save",
+              },
+              lastName: {
+                title: "What is your last name?",
+                description:
+                  "Display your full name in your profile to become more trust worthy.",
+                placeholder: "Last name",
+                submitButtonText: "Save",
+              },
+              dream: {
+                title: "Share you passion",
+                description:
+                  "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
+                placeholder: "Your passion",
+                submitButtonText: "Start growing",
+              },
+              city: {
+                title: "Vote for your City",
+                description:
+                  "Advance your city in the basic income ranking and push the political discourse in your area.",
+                placeholder: "Last name",
+                submitButtonText: "Submit vote",
+              },
+              imageView: {
+                title: "Profile Image",
+                description: "Show the World who you are",
+                placeholder: "Upload Image",
+                submitButtonText: "Upload Image",
+              },
+              newsletter: {
+                title: "Newsletter",
+                description:
+                  "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
+              },
+            },
+            requiredName: "Please enter your first name.",
+            maximumChars: "The maximum amount of characters allowed is 150.",
+          },
+        },
       },
       "o-stats": {
-        "pages": {
-          "home": {
-            "loadingStats": "Loading stats ...",
-            "anErrorOccurred": "An error occurred while loading the status:",
-            "globalStats": "Global stats",
-            "myStats": "My stats",
-            "noStats": "No stats"
-          }
-        }
+        pages: {
+          home: {
+            loadingStats: "Loading stats ...",
+            anErrorOccurred: "An error occurred while loading the status:",
+            globalStats: "Global stats",
+            myStats: "My stats",
+            noStats: "No stats",
+          },
+        },
       },
       "o-verification": {
-        "atoms": {
-          "verificationCard": {
-            "subtitle": "Verified by {name} on {date}"
-          }
+        atoms: {
+          verificationCard: {
+            subtitle: "Verified by {name} on {date}",
+          },
         },
-        "pages": {
-          "verificationDetail": {
-            "profile": "PROFILE",
-            "trust": "Trust",
-            "isTrustingYou": "is trusting you",
-            "description": "Description",
-            "address": "Address",
-            "members": "Members",
-            "loading": "...loading"
-          }
+        pages: {
+          verificationDetail: {
+            profile: "PROFILE",
+            trust: "Trust",
+            isTrustingYou: "is trusting you",
+            description: "Description",
+            address: "Address",
+            members: "Members",
+            loading: "...loading",
+          },
         },
-        "processes": {
-          "verify": {
-              "title": "Select the person you want to add",
-              "placeholder": "Select",
-              "submitButtonText": "Add"
-          }
-        }
-      }
+        processes: {
+          verify: {
+            title: "Select the person you want to add",
+            placeholder: "Select",
+            submitButtonText: "Add",
+          },
+        },
+      },
     },
     shared: {
-      "api": {
-        "loadProfileByProfileId": {
-          "error": "Couldn't find a profile with id '{profileId}'."
+      api: {
+        loadProfileByProfileId: {
+          error: "Couldn't find a profile with id '{profileId}'.",
         },
-        "promptFile": {
-          "saveImage": "Save Image",
-          "pleaseSpecifyValidFile": "Please specify a valid file.",
-          "uploadingFile": "Uploading your file ..",
-          "contextDataErrorUploadFile": "<b>Oops.</b><br/>We couldn't upload your file.<br/><br/>Please make sure that your file doesn't exceed the maximum allowed file size of 4 MB.<br/>Either choose a different file or skip it for now.",
-          "tryAgain": "Try again"
+        promptFile: {
+          saveImage: "Save Image",
+          pleaseSpecifyValidFile: "Please specify a valid file.",
+          uploadingFile: "Uploading your file ..",
+          contextDataErrorUploadFile:
+            "<b>Oops.</b><br/>We couldn't upload your file.<br/><br/>Please make sure that your file doesn't exceed the maximum allowed file size of 4 MB.<br/>Either choose a different file or skip it for now.",
+          tryAgain: "Try again",
         },
-        "uploadFile": {
-          "noOkStatusFromFileServer": "Got a not-ok status from the file server: {status}",
-          "couldNotUpload": "Could'nt upload the file"
-        }
+        uploadFile: {
+          noOkStatusFromFileServer:
+            "Got a not-ok status from the file server: {status}",
+          couldNotUpload: "Could'nt upload the file",
+        },
       },
-      "atoms": {
-        "copyClipboard": {
-          "copiedToClipboard": "Copied to Clipboard!"
+      atoms: {
+        copyClipboard: {
+          copiedToClipboard: "Copied to Clipboard!",
         },
-        "error": {
-          "processEncounteredAnError": "The Process encountered an error",
-          "noErrorDetailsAvailable":" No error details availabel. See the console for more details.",
-          "pleaseTryToRoload": "Please try to reload the page or contact us on Dirscord ",
-          "ifTheProblemPersists": " if the problem persists"
+        error: {
+          processEncounteredAnError: "The Process encountered an error",
+          noErrorDetailsAvailable:
+            " No error details availabel. See the console for more details.",
+          pleaseTryToRoload:
+            "Please try to reload the page or contact us on Dirscord ",
+          ifTheProblemPersists: " if the problem persists",
         },
-        "facetec": {
-          "enrollmentProcess": {
-            "sessionWasNotCompleted": "Session was not completed successfully, cancelling.  Session Status: ",
-            "noSessionId": "No sessionId",
-            "unexoectedApiResponse": "Unexpected API response, cancelling out.",
-            "noSessionResult": "No _sessionResult."
-          }
-        }
-      },
-      "molecules": {
-        "lists": {
-          "eventList": {
-            "loading": "Loading..."
-          },
-          "list": {
-            "loading": "Loading..."
+        facetec: {
+          enrollmentProcess: {
+            sessionWasNotCompleted:
+              "Session was not completed successfully, cancelling.  Session Status: ",
+            noSessionId: "No sessionId",
+            unexoectedApiResponse: "Unexpected API response, cancelling out.",
+            noSessionResult: "No _sessionResult.",
           },
         },
-        "nextNav": {
-          "components": {
-            "loginPill": {
-              "signInNow": "SIGN IN NOW"
-            }
-          }
-        },
-        "select": {
-          "virtualList": {
-            "missingTemplate": "Missing template"
-          }
-        },
-        "dappFrame": {
-          "errors": {
-            "pageFromBackStackNotFound": "The page from the back stack couldn't be found: {error}",
-            "pageFromBackStackIsNoPage": "The page from the back stack is not a page: {error}",
-            "couldNotFindRoot": "Couldn't find the root. Stack item was: {item}",
-            "couldNotFindParams": "Couldn't find a routable for params: \\n{params}"
-          }
-        },
-        "filterList": {
-          "home": "Home",
-          "logout": "Logout"
-        },
-        "processContainer": {
-          "editorContent": {
-            "title": "Do you really want to cancel?"
+      },
+      molecules: {
+        lists: {
+          eventList: {
+            loading: "Loading...",
           },
-          "yes": "Yes",
-          "no": "No",
-          "error": "Can only sink evens in response to a previously bubbled event.",
-          "cancel": "Cancel"
+          list: {
+            loading: "Loading...",
+          },
         },
-        "processNav": {
-          "close": "Close"
+        nextNav: {
+          components: {
+            loginPill: {
+              signInNow: "SIGN IN NOW",
+            },
+          },
         },
-        "prompt": {
-          "nothingToDisplay": "Hmm... Nothing to display here. Seems like the 'prompt' attribute of the Prompt.svelte component is not set."
+        select: {
+          virtualList: {
+            missingTemplate: "Missing template",
+          },
         },
-        "text": {
-          "noText": ">> No Text <<"
+        dappFrame: {
+          errors: {
+            pageFromBackStackNotFound:
+              "The page from the back stack couldn't be found: {error}",
+            pageFromBackStackIsNoPage:
+              "The page from the back stack is not a page: {error}",
+            couldNotFindRoot: "Couldn't find the root. Stack item was: {item}",
+            couldNotFindParams:
+              "Couldn't find a routable for params: \\n{params}",
+          },
         },
-        "notificationViewer": {
-          "molecules": {
-            "genericEventCard": {
-              "title": "Error: Couldn't find a view for event type '{eventType}'.",
-              "subTitle": "...but look on the bright side: we're all healthy :)"
+        filterList: {
+          home: "Home",
+          logout: "Logout",
+        },
+        processContainer: {
+          editorContent: {
+            title: "Do you really want to cancel?",
+          },
+          yes: "Yes",
+          no: "No",
+          error:
+            "Can only sink evens in response to a previously bubbled event.",
+          cancel: "Cancel",
+        },
+        processNav: {
+          close: "Close",
+        },
+        prompt: {
+          nothingToDisplay:
+            "Hmm... Nothing to display here. Seems like the 'prompt' attribute of the Prompt.svelte component is not set.",
+        },
+        text: {
+          noText: ">> No Text <<",
+        },
+        notificationViewer: {
+          molecules: {
+            genericEventCard: {
+              title:
+                "Error: Couldn't find a view for event type '{eventType}'.",
+              subTitle: "...but look on the bright side: we're all healthy :)",
             },
-            "notificationProfile": {
-              "passion": "Passion"
+            notificationProfile: {
+              passion: "Passion",
             },
-            "notificationViewChatMessage": {
-              "from": "from"
+            notificationViewChatMessage: {
+              from: "from",
             },
-            "notificationViewInvitationRedeemed": {
-              "acceptedYourInvitation": "Accepted your invitation to Circles.Land"
+            notificationViewInvitationRedeemed: {
+              acceptedYourInvitation:
+                "Accepted your invitation to Circles.Land",
             },
-            "notificationViewMembershipAccepted": {
-              "acceptedYourInvitation": "Accepted your invitation to"
+            notificationViewMembershipAccepted: {
+              acceptedYourInvitation: "Accepted your invitation to",
             },
-            "notificationViewMembershipOffer": {
-              "invitedYouTo": "invited you to"
+            notificationViewMembershipOffer: {
+              invitedYouTo: "invited you to",
             },
-            "notificationViewMutualFriends": {
-              "error": "no Data...",
-              "loadingMutualFriends": "...loading mutual Friends",
-              "mutualFriends": "Mutual Friends",
-              "noMutualFriends": "No mutual Friends."
+            notificationViewMutualFriends: {
+              error: "no Data...",
+              loadingMutualFriends: "...loading mutual Friends",
+              mutualFriends: "Mutual Friends",
+              noMutualFriends: "No mutual Friends.",
             },
-            "notificationViewTransfer": {
-              "from": "from"
+            notificationViewTransfer: {
+              from: "from",
             },
-            "notificationViewTrust": {
-              "hasRemovedTheirTrustToYou": " has removed their trust to you.",
-              "isTrustingYouNow": " is trusting you now."
+            notificationViewTrust: {
+              hasRemovedTheirTrustToYou: " has removed their trust to you.",
+              isTrustingYouNow: " is trusting you now.",
             },
-            "notificationViewUbi": {
-              "caChing": "Ca-ching!"
+            notificationViewUbi: {
+              caChing: "Ca-ching!",
             },
-            "notificationViewWelcome": {
-              "welcomeToCirclesLand": "Welcome to CirclesLand",
-              "duSchoenerMensch": "du schöner Mensch"
-            }
-          }
-        }
+            notificationViewWelcome: {
+              welcomeToCirclesLand: "Welcome to CirclesLand",
+              duSchoenerMensch: "du schöner Mensch",
+            },
+          },
+        },
       },
-      "functions": {
-        "generateNavManifest": {
-          "back": "back",
-          "skip": "skip"
-        }
+      functions: {
+        generateNavManifest: {
+          back: "back",
+          skip: "skip",
+        },
       },
-      "pages": {
-        "notFound": {
+      pages: {
+        notFound: {
           "404": "404.",
-          "sorryCouldNotFindPage": "Sorry, we couldn't find this page.",
-          "doNotWorry": "Don't worry, sometimes even we make mistakes. You can find plenty of other things on our homepage.",
-          "backToHome": "Back to Home"
-        }
-      },
-      "pathfinder": {
-        "app": {
-          "visualizingFlowOf": "Visualizing flow of {flow}"
+          sorryCouldNotFindPage: "Sorry, we couldn't find this page.",
+          doNotWorry:
+            "Don't worry, sometimes even we make mistakes. You can find plenty of other things on our homepage.",
+          backToHome: "Back to Home",
         },
-        "circlesTransferFinder": {
-          "showNow": "Show now"
-        }
       },
-      "processes": {
-        "showNotifications": {
-          "strings": {
-            "crcHubTransfer": "Received",
-            "crcTrust": "New trust",
-            "crc_untrust": "Trust removed",
-            "chatMessage": "New Message",
-            "crcMinting": "Received new Basic Income",
-            "membershipOffer": "Invitation to Organisation",
-            "membershipAccepted": "Invitation Accepted"
+      pathfinder: {
+        app: {
+          visualizingFlowOf: "Visualizing flow of {flow}",
+        },
+        circlesTransferFinder: {
+          showNow: "Show now",
+        },
+      },
+      processes: {
+        showNotifications: {
+          strings: {
+            crcHubTransfer: "Received",
+            crcTrust: "New trust",
+            crc_untrust: "Trust removed",
+            chatMessage: "New Message",
+            crcMinting: "Received new Basic Income",
+            membershipOffer: "Invitation to Organisation",
+            membershipAccepted: "Invitation Accepted",
           },
-          "editorContent": {
-            "title": "What is you first name?",
-            "submitButtonText": "OK"
+          editorContent: {
+            title: "What is you first name?",
+            submitButtonText: "OK",
           },
-          "submitButtonText": "Got it",
-          "yeah": "yeah!"
-        }
-      },
-      "stores": {
-        "purchases": {
-          "errors": {
-            "couldNotComplete": "Couldn't complete the puchase.",
-            "couldNotRevoke": "Couldn't revoke the completion status."
-          }
+          submitButtonText: "Got it",
+          yeah: "yeah!",
         },
-        "sales": {
-          "errors": {
-            "couldNotComplete": "Couldn't complete the sale.",
-            "couldNotRevoke": "Couldn't revoke the completion status."
-          }
+      },
+      stores: {
+        purchases: {
+          errors: {
+            couldNotComplete: "Couldn't complete the puchase.",
+            couldNotRevoke: "Couldn't revoke the completion status.",
+          },
         },
-        "tsanactions": {
-          "errors": {
-            "couldNotLoadData": "Couldn't load data for the following reasons: {error}"
-          }
-        }
-      },
-      "apiConnection": {
-        "errors": {
-          "couldNotFindType": "Couldn't fine the {type} in the query result.",
-          "noOrMoreThanOneDefinitions": "The query contains none or more than one definition. Only 1 definition per query is supported.",
-          "noSelectionSet": "The query definition doesn't contain a 'selectionSet'.",
-          "noOrMoreThanOneSelection": "The query definition contains none or more than one selection. Only 1 selection is supported.",
-          "selectionHasNoName": "The selection doesn't have a name. Cannot find the data-holding property of the graphql response.",
-          "someThingWentWrong": "Something went wrong while querying the api: {error}",
-          "returnedFragmentDefinitionNode": "A FragmentDefinitionNode was returned when a OperationDefinitionNode was expected."
-        }
-      },
-      "currency": {
-        "errors": {
-          "argumentMissing": "argument missing: amount"
-        }
-      },
-      "notificationViewer": {
-        "answer": "Answer",
-        "sayThanks": "Say Thanks",
-        "trust": "Trust {profile}",
-        "ok": "OK"
-      },
-      "ubiTimer2": {
-        "errors": {
-          "couldNotLoadYourProfile": "Couldn't load your profile",
-          "yourPrivateKeyIsLocked": "Your private key is locked.",
-          "cannotGetUbi": "Cannot get the ubi. The context.tokenAddress is empty."
-        }
-      },
-      "userActions": {
-        "errors": {
-          "couldNotLoadYourProfile": "Couldn't load yourt profile",
+        sales: {
+          errors: {
+            couldNotComplete: "Couldn't complete the sale.",
+            couldNotRevoke: "Couldn't revoke the completion status.",
+          },
         },
-        "chat": "Chat",
-        "sendMoney": "Send Money",
-        "untrust": "Untrust",
-        "trust": "Trust"
-      }
-    }
-  }
-} 
+        tsanactions: {
+          errors: {
+            couldNotLoadData:
+              "Couldn't load data for the following reasons: {error}",
+          },
+        },
+      },
+      apiConnection: {
+        errors: {
+          couldNotFindType: "Couldn't fine the {type} in the query result.",
+          noOrMoreThanOneDefinitions:
+            "The query contains none or more than one definition. Only 1 definition per query is supported.",
+          noSelectionSet:
+            "The query definition doesn't contain a 'selectionSet'.",
+          noOrMoreThanOneSelection:
+            "The query definition contains none or more than one selection. Only 1 selection is supported.",
+          selectionHasNoName:
+            "The selection doesn't have a name. Cannot find the data-holding property of the graphql response.",
+          someThingWentWrong:
+            "Something went wrong while querying the api: {error}",
+          returnedFragmentDefinitionNode:
+            "A FragmentDefinitionNode was returned when a OperationDefinitionNode was expected.",
+        },
+      },
+      currency: {
+        errors: {
+          argumentMissing: "argument missing: amount",
+        },
+      },
+      notificationViewer: {
+        answer: "Answer",
+        sayThanks: "Say Thanks",
+        trust: "Trust {profile}",
+        ok: "OK",
+      },
+      ubiTimer2: {
+        errors: {
+          couldNotLoadYourProfile: "Couldn't load your profile",
+          yourPrivateKeyIsLocked: "Your private key is locked.",
+          cannotGetUbi:
+            "Cannot get the ubi. The context.tokenAddress is empty.",
+        },
+      },
+      userActions: {
+        errors: {
+          couldNotLoadYourProfile: "Couldn't load yourt profile",
+        },
+        chat: "Chat",
+        sendMoney: "Send Money",
+        untrust: "Untrust",
+        trust: "Trust",
+      },
+    },
+  },
+};

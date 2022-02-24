@@ -276,9 +276,6 @@ onMount(async () => {
               {$_("dapps.o-marketplace.pages.myPurchaseDetail.noCode")}
             </h1>
           {:else}
-            <h1 class="text-6xl uppercase font-heading">
-              {invoice.pickupCode}
-            </h1>
             <div class="container">
               <center>
                 <QrCode value="{invoice.pickupCode}" color="#081B4A" />
