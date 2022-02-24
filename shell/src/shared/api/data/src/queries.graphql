@@ -1162,8 +1162,12 @@ query stream(
           }
         }
       }
-      ... on PurchaseEvent {
+      ... on Purchased {
         invoice {
+          purchaseId
+          sellerSignature
+          sellerSignedDate
+          cancelledAt
           sellerProfile {
             firstName
             circlesAddress

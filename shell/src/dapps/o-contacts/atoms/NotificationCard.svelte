@@ -10,6 +10,7 @@ import { onMount } from "svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import { EventType, ProfileEvent } from "../../../shared/api/data/types";
 import CrcTrust from "./chatListItems/CrcTrust.svelte";
+import Purchase from "./chatListItems/Purchase.svelte";
 import ChatMessage from "./chatListItems/ChatMessage.svelte";
 import CrcHubTransfer from "./chatListItems/CrcHubTransfer.svelte";
 import Erc20Transfer from "./chatListItems/Erc20Transfer.svelte";
@@ -22,6 +23,10 @@ export let event: ProfileEvent;
 let userActions: UserActionItem[] = [];
 
 const components = [
+  {
+    type: EventType.Purchased,
+    component: Purchase,
+  },
   {
     type: EventType.ChatMessage,
     component: ChatMessage,
@@ -85,6 +90,7 @@ onMount(async () => {
 
 function getEventView() {
   const specificView = components.find((x) => x.type === event.type);
+
   if (!specificView) return null;
   return specificView.component;
 }
