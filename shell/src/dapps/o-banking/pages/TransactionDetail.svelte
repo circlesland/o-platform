@@ -271,7 +271,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-banking.pages.transationDetail.transactionHash")}
+          {$_("dapps.o-banking.pages.transactionDetail.transactionHash")}
         </div>
         <div class="flex items-center w-full text-primarydark">
           <div class="text-left break-all">

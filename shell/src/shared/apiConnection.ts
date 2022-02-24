@@ -57,7 +57,7 @@ export class ApiClient {
         });
 
         if (result.errors?.length > 0) {
-            throw new Error(window.i18n("shared.apiConnection.errors.someThingWemtWrong", { values: { error: result.errors.map((o) => o.message).join("\n")}}));
+            throw new Error(window.i18n("shared.apiConnection.errors.someThingWentWrong", { values: { error: result.errors.map((o) => o.message).join("\n")}}));
         }
 
         return <TResult>result.data[dataProp];
