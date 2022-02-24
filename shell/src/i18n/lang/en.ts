@@ -226,7 +226,7 @@ export const en = {
             tokens: "tokens",
             token: "token",
             wrote: "wrote:",
-            redeemedYourInvatition: "redeemed your invatition",
+            redeemedYourInvitation: "redeemed your invatition",
             invitedYouTo: "invited you to",
             youSent: "You sent",
             youWrote: "You wrote:",
