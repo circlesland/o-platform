@@ -1,3 +1,105 @@
+type Mutation {
+  announcePayment(
+    invoiceId: Int!
+    transactionHash: String!
+  ): AnnouncePaymentResult!
+  purchase(lines: [PurchaseLineInput!]!): [Invoice!]!
+  completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
+  completeSale(invoiceId: Int!, revoke: Boolean): Invoice!
+  exchangeToken: ExchangeTokenResponse!
+  authenticateAt(appId: String!): DelegateAuthInit!
+  depositChallenge(jwt: String!): DepositChallengeResponse!
+  consumeDepositedChallenge(
+    delegateAuthCode: String!
+  ): ConsumeDepositedChallengeResponse!
+  logout: LogoutResponse!
+  upsertProfile(data: UpsertProfileInput!): Profile!
+  requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
+  updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
+  upsertTag(data: UpsertTagInput!): Tag!
+  upsertOrganisation(
+    organisation: UpsertOrganisationInput!
+  ): CreateOrganisationResult!
+  upsertRegion(
+    organisation: UpsertOrganisationInput!
+  ): CreateOrganisationResult!
+  addMember(groupId: String!, memberAddress: String!): AddMemberResult
+  acceptMembership(membershipId: Int!): AcceptMembershipResult
+  removeMember(groupId: String!, memberAddress: String!): RemoveMemberResult
+  rejectMembership(membershipId: Int!): RejectMembershipResult
+  acknowledge(until: String!): Boolean!
+  requestInvitationOffer(for: String!): Offer!
+  createTestInvitation: CreateInvitationResult!
+  claimInvitation(code: String!): ClaimInvitationResult!
+  redeemClaimedInvitation: RedeemClaimedInvitationResult!
+  tagTransaction(
+    transactionHash: String!
+    tag: CreateTagInput!
+  ): TagTransactionResult!
+  sendMessage(
+    fromSafeAddress: String
+    toSafeAddress: String!
+    content: String!
+  ): SendMessageResult!
+  requestSessionChallenge(address: String!): String!
+  verifySessionChallenge(
+    challenge: String!
+    signature: String!
+  ): ExchangeTokenResponse
+  importOrganisationsOfAccount: [Organisation!]!
+  verifySafe(safeAddress: String!): VerifySafeResult!
+  revokeSafeVerification(safeAddress: String!): VerifySafeResult!
+}
+
+type Query {
+  whoami: String
+  version: Version!
+  sessionInfo: SessionInfo!
+  claimedInvitation: ClaimedInvitation
+  invitationTransaction: ProfileEvent
+  hubSignupTransaction: ProfileEvent
+  safeInfo(safeAddress: String): SafeInfo
+  verifications(
+    pagination: PaginationArgs
+    filter: VerifiedSafesFilter
+  ): [Verification!]!
+  events(
+    types: [EventType!]!
+    safeAddress: String!
+    pagination: PaginationArgs!
+    filter: ProfileEventFilter
+  ): [ProfileEvent!]!
+  aggregates(
+    types: [AggregateType!]!
+    safeAddress: String!
+    filter: ProfileAggregateFilter
+  ): [ProfileAggregate!]!
+  organisations(pagination: PaginationArgs): [Organisation!]!
+  regions(pagination: PaginationArgs): [Organisation!]!
+  organisationsByAddress(addresses: [String!]!): [Organisation!]!
+  myInvitations: [CreatedInvitation!]!
+  commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
+  trustRelations(safeAddress: String!): [TrustRelation!]!
+  myProfile: Profile
+  profilesById(ids: [Int!]!): [Profile!]!
+  recentProfiles(pagination: PaginationArgs): [Profile!]!
+  profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
+  findSafesByOwner(owner: String!): [SafeInfo!]!
+  search(query: SearchInput!): [Profile!]!
+  profilesCount: Int!
+  verificationsCount: Int!
+  cities(query: QueryCitiesInput!): [City!]!
+  tags(query: QueryTagsInput!): [Tag!]!
+  tagById(id: Int!): Tag
+  directPath(from: String!, to: String!, amount: String!): TransitivePath!
+  invoice(invoiceId: Int!): String
+  findInvitationCreator(code: String!): Profile
+}
+
+type Subscription {
+  events: NotificationEvent!
+}
+
 type Server {
   version: String!
 }
@@ -28,7 +130,7 @@ type Profile {
   displayTimeCircles: Boolean
   cityGeonameid: Int
   city: City
-  lastEvent: ProfileEvent # The last event that concerns the safeAddress
+  lastEvent: ProfileEvent
   claimedInvitation: ClaimedInvitation
   memberships: [Membership!]
   displayCurrency: DisplayCurrency
@@ -45,13 +147,10 @@ type Membership {
   createdAt: String!
   createdBy: Profile
   createdByProfileId: Int!
-
   acceptedAt: String
   rejectedAt: String
-
   validTo: String
   isAdmin: Boolean!
-
   organisation: Organisation!
 }
 
@@ -69,7 +168,7 @@ type Organisation {
   city: City
   offers: [Offer!]
   members: [ProfileOrOrganisation!]
-  trustsYou: Int # The trust relative to the safeAddress
+  trustsYou: Int
 }
 
 union ProfileOrOrganisation = Profile | Organisation
@@ -85,6 +184,7 @@ input QueryProfileInput {
   country: String
   circlesAddress: [String!]
 }
+
 input SearchInput {
   searchString: String!
 }
@@ -136,6 +236,7 @@ type DepositChallengeResponse {
   success: Boolean!
   errorMessage: String
 }
+
 input DepositChallenge {
   jwt: String!
 }
@@ -238,94 +339,70 @@ type City implements ICity {
 }
 
 type Offer {
-  # TODO: Keep offers immutable and add a version no.
   id: Int!
   version: Int!
-
   createdByProfile: Profile
   createdByAddress: String!
   createdAt: String!
-
   title: String!
   pictureUrl: String!
   pictureMimeType: String!
   description: String
-
-  pricePerUnit: String! # The price in euro
-  timeCirclesPriceShare: Int! # How many percent of the price can be payed in time circles
+  pricePerUnit: String!
+  timeCirclesPriceShare: Int!
 }
 
 type Sale {
   id: Int!
-
   sellerAddress: String!
   sellerProfile: Profile
-
   buyerAddress: String!
   buyerProfile: Profile
   createdAt: String!
-
   total: String!
   lines: [SalesLine!]!
-
   paymentTransaction: ProfileEvent
-
   invoices: [Invoice!]!
 }
 
 type SalesLine {
   id: Int!
-
   amount: Int!
   offer: Offer!
 }
 
 type Purchase {
   id: Int!
-
   createdByProfile: Profile
   createdByAddress: String!
   createdAt: String!
-
   total: String!
   lines: [PurchaseLine!]!
-
   paymentTransaction: ProfileEvent
-
   invoices: [Invoice!]!
 }
 
 type PurchaseLine {
   id: Int!
-
   amount: Int!
   offer: Offer!
 }
 
 type Invoice {
   id: Int!
-
   purchaseId: Int!
   purchase: Purchase
-
   sellerAddress: String!
   sellerProfile: Profile
-
   buyerAddress: String!
   buyerProfile: Profile
-
   lines: [InvoiceLine!]!
-
   pickupCode: String
-
   buyerSignature: Boolean
   buyerSignedDate: String
-
   sellerSignature: Boolean
   sellerSignedDate: String
-
   paymentTransactionHash: String
-
   cancelledAt: String
   cancelReason: String
   cancelledBy: Profile
@@ -333,7 +410,6 @@ type Invoice {
 
 type InvoiceLine {
   id: Int!
-
   amount: Int!
   offer: Offer!
 }
@@ -351,7 +427,6 @@ interface IAggregatePayload {
   lastUpdatedAt: String
 }
 
-# ${user} just signed up with token ${token}
 type CrcSignup implements IEventPayload {
   transaction_hash: String!
   user: String!
@@ -359,7 +434,6 @@ type CrcSignup implements IEventPayload {
   token: String!
 }
 
-# ${can_send_to} trusts ${address} with limit ${limit}
 type CrcTrust implements IEventPayload {
   transaction_hash: String!
   address: String!
@@ -379,7 +453,6 @@ type Erc20Transfer implements IEventPayload {
   value: String!
 }
 
-# ${from} sent ${value} CRC to ${to}
 type CrcTokenTransfer implements IEventPayload {
   transaction_hash: String!
   from: String!
@@ -390,7 +463,6 @@ type CrcTokenTransfer implements IEventPayload {
   value: String!
 }
 
-# ${from} sent ${value} CRC to ${to}
 type CrcHubTransfer implements IEventPayload {
   transaction_hash: String!
   from: String!
@@ -402,7 +474,6 @@ type CrcHubTransfer implements IEventPayload {
   tags: [Tag!]!
 }
 
-# ${to} received a ubi payout of ${value} CRC
 type CrcMinting implements IEventPayload {
   transaction_hash: String!
   from: String!
@@ -413,7 +484,6 @@ type CrcMinting implements IEventPayload {
   token: String!
 }
 
-# ${from} sent ${value} xdai to ${to}
 type EthTransfer implements IEventPayload {
   transaction_hash: String!
   from: String!
@@ -424,7 +494,6 @@ type EthTransfer implements IEventPayload {
   tags: [Tag!]!
 }
 
-# ${from} sent ${value} xdai to ${to}
 type GnosisSafeEthTransfer implements IEventPayload {
   transaction_hash: String!
   initiator: String!
@@ -436,7 +505,6 @@ type GnosisSafeEthTransfer implements IEventPayload {
   tags: [Tag!]!
 }
 
-# ${from} wrote: ${text}
 type ChatMessage implements IEventPayload {
   transaction_hash: String
   from: String!
@@ -446,7 +514,6 @@ type ChatMessage implements IEventPayload {
   text: String!
 }
 
-# ${createdBy} invited you to join ${organisation}. Do you want to accept the invitation?
 type MembershipOffer implements IEventPayload {
   transaction_hash: String
   createdBy: String!
@@ -456,8 +523,6 @@ type MembershipOffer implements IEventPayload {
   organisation_profile: Organisation
 }
 
-# !isAdmin: You|${createdBy} added ${member} as a member to ${organisation}
-# isAdmin: You|${createdBy} added ${member} as an admin to ${organisation}
 type MemberAdded implements IEventPayload {
   transaction_hash: String
   createdBy: String!
@@ -469,7 +534,6 @@ type MemberAdded implements IEventPayload {
   organisation_profile: Organisation
 }
 
-# ${member} accepted your|${createdBy}'s invitation to ${organisation}
 type MembershipAccepted implements IEventPayload {
   transaction_hash: String
   createdBy: String!
@@ -480,7 +544,6 @@ type MembershipAccepted implements IEventPayload {
   organisation_profile: Organisation
 }
 
-# ${member} rejected your invitation to ${organisation}
 type MembershipRejected implements IEventPayload {
   transaction_hash: String
   member: String!
@@ -489,14 +552,12 @@ type MembershipRejected implements IEventPayload {
   organisation_profile: Organisation
 }
 
-# You created a new invitation with the name ${name}
 type InvitationCreated implements IEventPayload {
   transaction_hash: String
   name: String!
   code: String!
 }
 
-# ${redeemedBy} redeemed your invitation ${name} with code ${code}
 type InvitationRedeemed implements IEventPayload {
   transaction_hash: String
   name: String!
@@ -505,23 +566,18 @@ type InvitationRedeemed implements IEventPayload {
   redeemedBy_profile: Profile
 }
 
-# Welcome!
-# ${member} invited you to circles.
-# Do you want to trust ${member}?
 type WelcomeMessage implements IEventPayload {
   transaction_hash: String
   invitedBy: String!
   invitedBy_profile: Profile
 }
 
-# You created the ${name} organisation
 type OrganisationCreated implements IEventPayload {
   transaction_hash: String
   organisation: String!
   organisation_profile: Organisation
 }
 
-# ${buyer} purchased ${amount} ${offer}(s)
 type SaleEvent implements IEventPayload {
   transaction_hash: String
   buyer: String!
@@ -529,7 +585,6 @@ type SaleEvent implements IEventPayload {
   invoice: Invoice
 }
 
-# ${seller} sold ${amount} ${offer}(s)
 type Purchased implements IEventPayload {
   transaction_hash: String
   seller: String!
@@ -537,7 +592,6 @@ type Purchased implements IEventPayload {
   invoice: Invoice
 }
 
-# ${organisation} verified your safe ${safe_address}
 type SafeVerified implements IEventPayload {
   transaction_hash: String
   organisation: String!
@@ -601,13 +655,11 @@ enum AggregateType {
   Sales
 }
 
-# All crc holdings of the user
 type CrcBalances implements IAggregatePayload {
   lastUpdatedAt: String!
   balances: [AssetBalance!]!
 }
 
-# All crc holdings of the user
 type Erc20Balances implements IAggregatePayload {
   lastUpdatedAt: String!
   balances: [AssetBalance!]!
@@ -714,11 +766,9 @@ type CreatedInvitation {
   createdBy: Profile
   createdByProfileId: Int!
   createdAt: String!
-
   claimedBy: Profile
   claimedByProfileId: Int
   claimedAt: String
-
   name: String!
   address: String!
   balance: String!
@@ -729,7 +779,6 @@ type ClaimedInvitation {
   createdBy: Profile
   createdByProfileId: Int!
   createdAt: String!
-
   claimedBy: Profile
   claimedByProfileId: Int!
   claimedAt: String!
@@ -851,89 +900,18 @@ type AnnouncePaymentResult {
   transactionHash: String!
 }
 
-type Mutation {
-  announcePayment(
-    invoiceId: Int!
-    transactionHash: String!
-  ): AnnouncePaymentResult!
-  purchase(lines: [PurchaseLineInput!]!): [Invoice!]!
-  completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
-  completeSale(invoiceId: Int!, revoke: Boolean): Invoice!
-
-  exchangeToken: ExchangeTokenResponse!
-  authenticateAt(appId: String!): DelegateAuthInit!
-  depositChallenge(jwt: String!): DepositChallengeResponse!
-  consumeDepositedChallenge(
-    delegateAuthCode: String!
-  ): ConsumeDepositedChallengeResponse!
-  logout: LogoutResponse!
-  upsertProfile(data: UpsertProfileInput!): Profile!
-  requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
-  updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
-  upsertTag(data: UpsertTagInput!): Tag!
-
-  upsertOrganisation(
-    organisation: UpsertOrganisationInput!
-  ): CreateOrganisationResult!
-  upsertRegion(
-    organisation: UpsertOrganisationInput!
-  ): CreateOrganisationResult!
-
-  addMember(groupId: String!, memberAddress: String!): AddMemberResult
-  acceptMembership(membershipId: Int!): AcceptMembershipResult
-  removeMember(groupId: String!, memberAddress: String!): RemoveMemberResult
-  rejectMembership(membershipId: Int!): RejectMembershipResult
-
-  acknowledge(until: String!): Boolean!
-
-  requestInvitationOffer(for: String!): Offer!
-
-  # Creates as many new EOAs as there are strings in the array.
-  # createInvitations(for: [String!]!): CreateInvitationResult!
-  createTestInvitation: CreateInvitationResult!
-
-  claimInvitation(code: String!): ClaimInvitationResult!
-  redeemClaimedInvitation: RedeemClaimedInvitationResult!
-
-  tagTransaction(
-    transactionHash: String!
-    tag: CreateTagInput!
-  ): TagTransactionResult!
-  sendMessage(
-    fromSafeAddress: String
-    toSafeAddress: String!
-    content: String!
-  ): SendMessageResult!
-
-  requestSessionChallenge(address: String!): String!
-  verifySessionChallenge(
-    challenge: String!
-    signature: String!
-  ): ExchangeTokenResponse
-
-  importOrganisationsOfAccount: [Organisation!]!
-
-  verifySafe(safeAddress: String!): VerifySafeResult!
-
-  revokeSafeVerification(safeAddress: String!): VerifySafeResult!
-}
-
 type VerifySafeResult {
   success: Boolean!
 }
 
 type Verification {
   createdAt: String!
-
   verifierSafeAddress: String!
   verifierProfile: Organisation
-
   verifiedSafeAddress: String!
   verifiedProfile: Profile
-
   revokedAt: String
   revokedProfile: Profile
-
   verificationRewardTransactionHash: String!
   verificationRewardTransaction: ProfileEvent
 }
@@ -966,23 +944,28 @@ input ProfileEventFilter {
 input ContactAggregateFilter {
   addresses: [String!]!
 }
+
 input CrcBalanceAggregateFilter {
   tokenAddresses: [String!]!
 }
+
 input OffersAggregateFilter {
   createdByAddresses: [String!]
   offerIds: [Int!]
 }
+
 input PurchasesAggregateFilter {
   createdByAddresses: [String!]
   purchaseIds: [Int!]
   pickupCode: String
 }
+
 input SalesAggregateFilter {
   createdByAddresses: [String!]
   salesIds: [Int!]
   pickupCode: String
 }
+
 input ProfileAggregateFilter {
   contacts: ContactAggregateFilter
   crcBalance: CrcBalanceAggregateFilter
@@ -1014,66 +997,6 @@ input VerifiedSafesFilter {
   addresses: [String!]
 }
 
-type Query {
-  whoami: String
-  version: Version!
-  sessionInfo: SessionInfo!
-
-  # Tries to find a claimed invitation for the logged-on user.
-  # A user can claim and redeem only one invitation ever.
-  claimedInvitation: ClaimedInvitation
-  invitationTransaction: ProfileEvent
-  hubSignupTransaction: ProfileEvent
-  safeInfo(safeAddress: String): SafeInfo
-
-  verifications(
-    pagination: PaginationArgs
-    filter: VerifiedSafesFilter
-  ): [Verification!]!
-
-  events(
-    types: [EventType!]!
-    safeAddress: String!
-    pagination: PaginationArgs!
-    filter: ProfileEventFilter
-  ): [ProfileEvent!]!
-  aggregates(
-    types: [AggregateType!]!
-    safeAddress: String!
-    filter: ProfileAggregateFilter
-  ): [ProfileAggregate!]!
-
-  organisations(pagination: PaginationArgs): [Organisation!]!
-  regions(pagination: PaginationArgs): [Organisation!]!
-  organisationsByAddress(addresses: [String!]!): [Organisation!]!
-
-  # Gets the created (noty invitations of the currently logged on user
-  myInvitations: [CreatedInvitation!]!
-  commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
-  trustRelations(safeAddress: String!): [TrustRelation!]!
-  myProfile: Profile
-  profilesById(ids: [Int!]!): [Profile!]!
-  recentProfiles(pagination: PaginationArgs): [Profile!]!
-  profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
-
-  findSafesByOwner(owner: String!): [SafeInfo!]!
-
-  search(query: SearchInput!): [Profile!]!
-
-  profilesCount: Int!
-
-  verificationsCount: Int!
-
-  cities(query: QueryCitiesInput!): [City!]!
-  tags(query: QueryTagsInput!): [Tag!]!
-  tagById(id: Int!): Tag
-
-  directPath(from: String!, to: String!, amount: String!): TransitivePath!
-  invoice(invoiceId: Int!): String
-
-  findInvitationCreator(code: String!): Profile
-}
-
 type TransitiveTransfer {
   from: String!
   to: String!
@@ -1086,14 +1009,4 @@ type TransitivePath {
   requestedAmount: String!
   flow: String!
   transfers: [TransitiveTransfer!]!
-}
-
-type Subscription {
-  events: NotificationEvent!
-}
-
-schema {
-  query: Query
-  mutation: Mutation
-  subscription: Subscription
 }
