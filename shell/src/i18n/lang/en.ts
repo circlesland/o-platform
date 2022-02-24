@@ -40,6 +40,7 @@ export const en = {
             from: "from",
             to: "to",
             ubi: "Universal Basic Income",
+            transactionHash: "Transaction Hash"
           },
         },
         processes: {
