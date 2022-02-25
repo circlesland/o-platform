@@ -144,31 +144,28 @@ onMount(() => {
   line-height: 0;
 }
 
-#video-container.example-style-1 .scan-region-highlight-svg,
-#video-container.example-style-1 .code-outline-highlight {
+:global(#video-container.example-style-1
+    .scan-region-highlight-svg, #video-container.example-style-1
+    .code-outline-highlight) {
   stroke: #64a2f3 !important;
 }
 
-#video-container.example-style-2 {
+:global(#video-container.example-style-2) {
   position: relative;
   width: max-content;
   height: max-content;
   overflow: hidden;
 }
-#video-container.example-style-2 .scan-region-highlight {
+:global(#video-container.example-style-2 .scan-region-highlight) {
   border-radius: 30px;
   outline: rgba(0, 0, 0, 0.25) solid 50vmax;
 }
-#video-container.example-style-2 .scan-region-highlight-svg {
+:global(#video-container.example-style-2 .scan-region-highlight-svg) {
   display: none;
 }
-#video-container.example-style-2 .code-outline-highlight {
+:global(#video-container.example-style-2 .code-outline-highlight) {
   stroke: rgba(255, 255, 255, 0.5) !important;
   stroke-width: 15 !important;
   stroke-dasharray: none !important;
-}
-
-hr {
-  margin-top: 32px;
 }
 </style>

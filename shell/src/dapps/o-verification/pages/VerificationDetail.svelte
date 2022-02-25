@@ -1,11 +1,6 @@
 <script lang="ts">
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import {
-  CommonTrustDocument,
-  Organisation,
-} from "../../../shared/api/data/types";
-import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { Organisation } from "../../../shared/api/data/types";
+
 import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
@@ -16,8 +11,6 @@ import ContactCard from "../../o-contacts/atoms/ContactCard.svelte";
 import { _ } from "svelte-i18n";
 
 export let id: string;
-export let jumplist: Jumplist<any, any> | undefined;
-export let runtimeDapp: RuntimeDapp<any>;
 
 let isLoading = true;
 let profile: Organisation;
@@ -50,29 +43,6 @@ async function loadProfile() {
 
 async function setOrganisation(apiProfile: Organisation) {
   const trust = undefined;
-  // isEditable = $me && $me.id === apiProfile.id;
-
-  if ($me.circlesAddress !== apiProfile.circlesAddress) {
-    /*
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      const result = await apiClient.query({
-        query: CommonTrustDocument,
-        variables: {
-          circlesAddress1: $me.circlesAddress.toLowerCase(),
-          circlesAddress2: apiProfile.circlesAddress.toLowerCase(),
-        },
-      });
-      if (result.errors) {
-        throw new Error(
-                `Couldn't load a profile with circlesAddress '${
-                        apiProfile.circlesAddress
-                }': ${JSON.stringify(result.errors)}`
-        );
-      }*/
-    //commonTrusts = result.data.commonTrust.filter(o => o.profile);
-  } else {
-    //commonTrusts = [];
-  }
 
   profile = apiProfile;
 }
@@ -80,13 +50,6 @@ async function setOrganisation(apiProfile: Organisation) {
 onMount(() => loadProfile());
 
 function editProfile() {}
-
-// async function getJumplist() {
-//   const jumpListItems = await jumplist.items({ id: id }, runtimeDapp);
-//   return jumpListItems;
-// }
-
-// let promise = getJumplist();
 </script>
 
 {#if isLoading}
@@ -175,47 +138,6 @@ function editProfile() {}
                 </div>
               </div>
             </section>
-
-            <!-- <section class="justify-center mb-2 ">
-              <div class="flex flex-col w-full py-2 space-y-1">
-                <div class="mb-1 text-left text-2xs text-dark-lightest">
-                  Address
-                </div>
-
-                <div class="flex items-center w-full">
-                  <div class="inline-block break-all" id="clipboard">
-                    {#if profile}
-                      <input
-                        name="name"
-                        type="text"
-                        class="hidden"
-                        bind:value="{name}" />
-                      {profile.circlesAddress ? profile.circlesAddress : ''}
-                    {/if}
-                    <div
-                      class="relative inline-block text-primary cursor-pointertext-center -bottom-1"
-                      on:click="{copy}"
-                      alt="Copy to Clipboard">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 stroke-current transform
-                        group-hover:rotate-[-4deg] transition"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0
-                          002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0
-                          002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section> -->
           {/if}
 
           {#if !isMe && profile.circlesAddress}
@@ -247,17 +169,6 @@ function editProfile() {}
           </section>
         </div>
       </div>
-      <!-- 
-      {#if jumplist && !isMe}
-        <div
-          class="sticky bottom-0 left-0 right-0 w-full py-2 mt-2 bg-white rounded-xl">
-          {#await promise}
-            <p>{$_("dapps.o-verification.pages.verificationDetail.loading")}</p>
-          {:then jumpListItems}
-            <DetailActionBar actions="{jumpListItems}" />
-          {/await}
-        </div>
-      {/if} -->
     </div>
   </div>
 {/if}

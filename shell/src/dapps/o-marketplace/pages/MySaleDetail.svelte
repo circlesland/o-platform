@@ -1,19 +1,14 @@
 <script lang="ts">
 import {
-  AggregateType,
-  CompleteSaleDocument,
   InvoiceDocument,
   Profile,
   QueryInvoiceArgs,
   Sale,
-  Sales,
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
-import { me } from "../../../shared/stores/me";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
+
 import { push } from "svelte-spa-router";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
@@ -25,8 +20,6 @@ import QrCode from "svelte-qrcode";
 import { sales } from "../../../shared/stores/sales";
 import { _ } from "svelte-i18n";
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
 export let id: string;
 
 let isLoading: boolean;
@@ -195,9 +188,6 @@ onMount(async () => {
       </div>
     </section>
   {:else if groupedItems}
-    <!-- <CartItems cartContents="{sale.lines}" editable="{false}" /> -->
-    <!-- <pre>{JSON.stringify(sale, null, 2)}</pre> -->
-
     <div class="mt-6">
       <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
         <div

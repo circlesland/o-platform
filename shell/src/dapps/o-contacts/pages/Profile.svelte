@@ -6,7 +6,6 @@ import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { showToast } from "../../../shared/toast";
 
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import {
   Capability,
   CapabilityType,
@@ -31,7 +30,6 @@ import { _ } from "svelte-i18n";
 
 export let id: string;
 
-export let runtimeDapp: RuntimeDapp<any>;
 export let capabilities: Capability[] | undefined;
 
 let error: string | undefined = undefined;
@@ -150,7 +148,10 @@ async function setProfile(id: string) {
           safeAddress: id,
         },
       });
-      showToast("success", `${$_("dapps.o-contacts.pages.profile.accountVeryfied")}`);
+      showToast(
+        "success",
+        `${$_("dapps.o-contacts.pages.profile.accountVeryfied")}`
+      );
 
       isLoading = true;
       setProfile(id).then(() => (isLoading = false));
@@ -171,7 +172,10 @@ async function setProfile(id: string) {
         },
       });
 
-      showToast("error", `${$_("dapps.o-contacts.pages.profile.accountVerificationRevoked")}`);
+      showToast(
+        "error",
+        `${$_("dapps.o-contacts.pages.profile.accountVerificationRevoked")}`
+      );
 
       isLoading = true;
       setProfile(id).then(() => (isLoading = false));
@@ -213,7 +217,9 @@ async function setProfile(id: string) {
   <div class="p-5 pb-0">
     <header class="grid overflow-hidden bg-white h-72 ">
       <div class="w-full text-center">
-        <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-contacts.pages.profile.profile")}</h1>
+        <h1 class="text-3xl uppercase font-heading">
+          {$_("dapps.o-contacts.pages.profile.profile")}
+        </h1>
       </div>
       <div
         class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
@@ -248,7 +254,9 @@ async function setProfile(id: string) {
             {#if trustMessage}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
-                  <div class="text-left text-2xs text-dark-lightest">{$_("dapps.o-contacts.pages.profile.trust")}</div>
+                  <div class="text-left text-2xs text-dark-lightest">
+                    {$_("dapps.o-contacts.pages.profile.trust")}
+                  </div>
                   <div class="flex flex-wrap content-start">
                     {trustMessage}
                   </div>

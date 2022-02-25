@@ -9,8 +9,7 @@ import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 import { me } from "../../../shared/stores/me";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
+
 import { push } from "svelte-spa-router";
 import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
@@ -21,8 +20,6 @@ import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { purchases } from "../../../shared/stores/purchases";
 import { _ } from "svelte-i18n";
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
 export let id: string;
 
 let isLoading: boolean;

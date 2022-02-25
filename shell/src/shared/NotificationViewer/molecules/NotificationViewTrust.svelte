@@ -1,11 +1,9 @@
 <script lang="ts">
 import NotificationProfile from "./NotificationProfile.svelte";
-import { NotificationViewerContext } from "@o-platform/o-editors/src/notificationViewerContext";
 import { CrcTrust, ProfileEvent } from "../../api/data/types";
 import { _ } from "svelte-i18n";
 
 export let event: ProfileEvent;
-export let context: NotificationViewerContext;
 
 let payload: CrcTrust = <CrcTrust>event.payload;
 </script>
@@ -20,14 +18,18 @@ let payload: CrcTrust = <CrcTrust>event.payload;
       {event.contact_address_profile
         ? event.contact_address_profile.firstName
         : event.contact_address_profile.circlesAddress}
-        {$_("shared.melecules.notificationViewer.molecules.notificationViewTrust.hasRemovedTheirTustToYou")}
+      {$_(
+        "shared.melecules.notificationViewer.molecules.notificationViewTrust.hasRemovedTheirTustToYou"
+      )}
     </div>
   {:else}
     <div class="text-center text-dark-lightest">
       {event.contact_address_profile
         ? event.contact_address_profile.firstName
         : event.contact_address_profile.circlesAddress}
-        {$_("shared.melecules.notificationViewer.molecules.notificationViewTrust.isTrustingYouNow")}
+      {$_(
+        "shared.melecules.notificationViewer.molecules.notificationViewTrust.isTrustingYouNow"
+      )}
     </div>
   {/if}
 </div>

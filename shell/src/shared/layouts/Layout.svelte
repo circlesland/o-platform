@@ -191,7 +191,7 @@ function onkeydown(e: KeyboardEvent) {
 main {
   z-index: 9;
 }
-.menu-open main {
+:global(.menu-open main) {
   z-index: 12;
 }
 </style>

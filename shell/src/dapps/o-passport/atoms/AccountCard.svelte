@@ -121,7 +121,7 @@ svg {
   transition: transform 0.2s ease-in;
 }
 
-[aria-expanded="true"] svg {
+:global([aria-expanded="true"] svg) {
   transform: rotate(0.25turn);
 }
 </style>
