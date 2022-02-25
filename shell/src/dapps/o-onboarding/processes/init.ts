@@ -31,7 +31,7 @@ import { InitEvent, UbiData } from "./initEvent";
 import { InitContext } from "./initContext";
 import { push } from "svelte-spa-router";
 import { ApiClient } from "../../../shared/apiConnection";
-import {Environment} from "../../../shared/environment";
+import { Environment } from "../../../shared/environment";
 
 export const initMachine = createMachine<InitContext, InitEvent>(
   {
@@ -59,13 +59,15 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           NO_SESSION: {
             actions: [
               () => console.log("init.initial:NO_SESSION"),
-              "acquireSessionAndRestart"],
+              "acquireSessionAndRestart",
+            ],
           },
           GOT_SESSION: {
             actions: [
               () => console.log("init.initial:GOT_SESSION"),
-              "assignSessionInfoToContext"],
-            target: "register"
+              "assignSessionInfoToContext",
+            ],
+            target: "register",
           },
         },
       },
@@ -249,7 +251,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
               () => console.log("init.safe.connectOrCreate"),
               (context) => {
                 window.o.runProcess(promptConnectOrCreate, {
-                  forceCreate: context.profile.successorOfCirclesAddress && !context.profile.circlesAddress,
+                  forceCreate:
+                    context.profile.successorOfCirclesAddress &&
+                    !context.profile.circlesAddress,
                   successAction: (data) => {
                     (<any>window).runInitMachine();
                   },
@@ -281,20 +285,13 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         invoke: { src: "loadProfile" },
         on: {
           NO_PROFILE: {
-            actions: [
-              () => console.log("init.profile.NO_PROFILE"),
-              "upsertIdentityAndRestart",
-            ],
+            actions: ["upsertIdentityAndRestart"],
           },
           PROFILE_CREATED: {
-            actions: () => console.log("init.profile.PROFILE_CREATED"),
             target: "profile",
           },
           GOT_PROFILE: {
-            actions: [
-              () => console.log("init.profile.NO_PROFILE"),
-              "assignProfileToContext",
-            ],
+            actions: ["assignProfileToContext"],
             target: "ubi",
           },
         },
@@ -399,7 +396,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
               circlesSafeOwner: profile.circlesSafeOwner,
               acceptedToSVersion: "", // TODO: Important in the context?
               subscribedToNewsletter: profile.newsletter,
-              successorOfCirclesAddress: profile.successorOfCirclesAddress
+              successorOfCirclesAddress: profile.successorOfCirclesAddress,
             },
           });
         } catch (e) {
@@ -447,7 +444,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
                 cityId: profile.cityGeonameid,
                 passion: profile.dream,
                 successorOfCirclesAddress: profile.successorOfCirclesAddress,
-                circlesSafeOwner: profile.circlesSafeOwner
+                circlesSafeOwner: profile.circlesSafeOwner,
               },
             });
           } else {
@@ -520,17 +517,21 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       loadSafe: (ctx) => async (callback) => {
         try {
           const profile = await loadProfile();
-          ctx.profile = <any>(ctx.profile ? {
-            ...ctx.profile,
-            successorOfCirclesAddress: profile.successorOfCirclesAddress,
-            circlesAddress: profile.circlesAddress
-          } : {
-            successorOfCirclesAddress: profile.successorOfCirclesAddress,
-            circlesAddress: profile.circlesAddress
-          });
+          ctx.profile = <any>(ctx.profile
+            ? {
+                ...ctx.profile,
+                successorOfCirclesAddress: profile.successorOfCirclesAddress,
+                circlesAddress: profile.circlesAddress,
+              }
+            : {
+                successorOfCirclesAddress: profile.successorOfCirclesAddress,
+                circlesAddress: profile.circlesAddress,
+              });
 
           if (profile?.circlesAddress) {
-            const safeBalance = await RpcGateway.get().eth.getBalance(profile.circlesAddress);
+            const safeBalance = await RpcGateway.get().eth.getBalance(
+              profile.circlesAddress
+            );
             callback({
               type: "GOT_SAFE",
               safe: {
@@ -568,7 +569,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         }
       },
       signupForUbi: (ctx) => async (callback) => {
-        const hub = new CirclesHub(RpcGateway.get(), Environment.circlesHubAddress);
+        const hub = new CirclesHub(
+          RpcGateway.get(),
+          Environment.circlesHubAddress
+        );
         const privateKey = sessionStorage.getItem("circlesKey");
         if (!privateKey) throw new Error(`The private key is not unlocked`);
         const safeProxy = new GnosisSafeProxy(
@@ -628,7 +632,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       },
       promptConnectOrCreateAndRestart: (context) => {
         window.o.runProcess(promptConnectOrCreate, {
-          forceCreate: context.profile.successorOfCirclesAddress && !context.profile.circlesAddress,
+          forceCreate:
+            context.profile.successorOfCirclesAddress &&
+            !context.profile.circlesAddress,
           successAction: (data) => {
             (<any>window).runInitMachine();
           },
