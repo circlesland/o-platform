@@ -8,7 +8,7 @@ import {
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
-
+import Icons from "../../../shared/molecules/Icons.svelte";
 import { push } from "svelte-spa-router";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
@@ -178,6 +178,46 @@ onMount(async () => {
             time="{sale.createdAt}" /></span>
       {/if}
     </div>
+    {#if sale && sale.invoices}
+      <div
+        class="flex flex-row items-center justify-between px-3 mt-2 text-left">
+        <div
+          class="inline-block text-xs "
+          class:text-alert-dark="{!sale.invoices[0].paymentTransactionHash}"
+          class:text-success="{sale.invoices[0].paymentTransactionHash}">
+          {#if sale.invoices[0].paymentTransactionHash}
+            <span>{$_("dapps.o-marketplace.pages.mySales.paid")}</span>
+            <Icons icon="check" size="{4}" customClass="inline" />
+          {:else if sale.invoices[0].cancelledAt}
+            <span>{$_("dapps.o-marketplace.pages.mySales.cancelled")}</span>
+          {:else}
+            <span
+              >{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
+          {/if}
+        </div>
+
+        <div
+          class="inline-block text-xs "
+          class:text-inactive="{!sale.invoices[0].pickupCode}"
+          class:text-success="{sale.invoices[0].pickupCode}">
+          <span>{$_("dapps.o-marketplace.pages.mySales.pickupCode")}</span>
+          {#if sale.invoices[0].pickupCode}
+            <Icons icon="check" size="{4}" customClass="inline" />
+          {/if}
+        </div>
+        <div
+          class="inline-block text-xs"
+          class:text-inactive="{!sale.invoices[0].sellerSignature}"
+          class:text-success="{sale.invoices[0].sellerSignature}">
+          <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
+          {#if sale.invoices[0].sellerSignature}
+            <Icons icon="check" size="{4}" customClass="inline" />
+          {:else}
+            <Icons icon="closex" size="{2}" customClass="inline" />
+          {/if}
+        </div>
+      </div>
+    {/if}
   </header>
   {#if isLoading}
     <section class="flex items-center justify-center mb-2 ">
