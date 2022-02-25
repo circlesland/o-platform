@@ -35,7 +35,7 @@ import { getSessionInfo } from "../../dapps/o-passport/processes/identify/servic
 import { Capability, EventsDocument, SessionInfo } from "../api/data/types";
 import { log } from "../logUiEvent";
 import { contacts } from "../stores/contacts";
-import {performOauth} from "../../dapps/o-humanode/processes/performOauth";
+import { performOauth } from "../../dapps/o-humanode/processes/performOauth";
 
 export let params: {
   dappId: string;
@@ -80,14 +80,14 @@ const stack: {
 }[] = [];
 
 async function onBack() {
-  log("onBack() - current stack: ", JSON.stringify(stack, null, 2));
+  // log("onBack() - current stack: ", JSON.stringify(stack, null, 2));
   if (stack.length < 2) {
     await onRoot();
     return;
   }
   stack.pop();
   const previous = stack[stack.length - 1];
-  log("onBack() - new stack: ", JSON.stringify(stack, null, 2));
+  // log("onBack() - new stack: ", JSON.stringify(stack, null, 2));
 
   const previousContext: {
     runtimeDapp: RuntimeDapp<any>;
@@ -105,15 +105,25 @@ async function onBack() {
     previous.params
   );
   if (!routable.found) {
-    throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackNotFound", { values: { error: JSON.stringify(previous)}}));
+    throw new Error(
+      window.i18n(
+        "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
+        { values: { error: JSON.stringify(previous) } }
+      )
+    );
   }
   if (routable.routable.type != "page") {
-    throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage", { values: { error: JSON.stringify(previous)}}));
+    throw new Error(
+      window.i18n(
+        "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
+        { values: { error: JSON.stringify(previous) } }
+      )
+    );
   }
   previousContext.routable = <Page<any, any>>routable;
   previousContext.params = previous.params;
 
-  console.log("onBack() - TODO: set the following context: ", previousContext);
+  // console.log("onBack() - TODO: set the following context: ", previousContext);
   const path = Object.keys(previous.params)
     .filter((o) => parseInt(o) != Number.NaN && o >= 0 && o <= 6)
     .map((o) => previous.params[o])
@@ -125,13 +135,13 @@ async function onBack() {
 }
 
 async function onStay() {
-  log("onStay() - current stack: ", JSON.stringify(stack, null, 2));
+  // log("onStay() - current stack: ", JSON.stringify(stack, null, 2));
   if (stack.length < 1) {
     await onRoot();
     return;
   }
   const previous = stack.pop();
-  log("onStay() - new stack: ", JSON.stringify(stack, null, 2));
+  // log("onStay() - new stack: ", JSON.stringify(stack, null, 2));
 
   const previousContext: {
     runtimeDapp: RuntimeDapp<any>;
@@ -149,10 +159,20 @@ async function onStay() {
     previous.params
   );
   if (!routable.found) {
-    throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackNotFound", { values: { error: JSON.stringify(previous)}}));
+    throw new Error(
+      window.i18n(
+        "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
+        { values: { error: JSON.stringify(previous) } }
+      )
+    );
   }
   if (routable.routable.type != "page") {
-    throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage", { values: { error: JSON.stringify(previous)}}));
+    throw new Error(
+      window.i18n(
+        "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
+        { values: { error: JSON.stringify(previous) } }
+      )
+    );
   }
   previousContext.routable = <Page<any, any>>routable;
   previousContext.params = previous.params;
@@ -170,13 +190,13 @@ async function onStay() {
 }
 
 async function onRoot() {
-  log("onRoot() - current stack: ", JSON.stringify(stack, null, 2));
+  // log("onRoot() - current stack: ", JSON.stringify(stack, null, 2));
   if (stack.length == 0) {
     await onCloseModal();
     return;
   }
   const root = stack[0];
-  log("onRoot() - new stack: ", JSON.stringify(stack, null, 2));
+  // log("onRoot() - new stack: ", JSON.stringify(stack, null, 2));
 
   /*
       const previousContext: {
@@ -292,22 +312,36 @@ function findNextRoute(
   if (!nextRoute) {
     const defaultRoute = _findDefaultRoute(previousRuntimeDapp);
     if (!defaultRoute.found) {
-      throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackNotFound", { values: { error: JSON.stringify(root)}}));
+      throw new Error(
+        window.i18n(
+          "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
+          { values: { error: JSON.stringify(root) } }
+        )
+      );
     }
     if (defaultRoute.routable.type != "page") {
-      throw new Error(window.i18n("shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage", { values: { error: JSON.stringify(root)}}));
+      throw new Error(
+        window.i18n(
+          "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
+          { values: { error: JSON.stringify(root) } }
+        )
+      );
     }
     nextRoute = defaultRoute.routable;
   }
 
   if (!nextRoute) {
-    throw new Error(window.i18n("shared.melocules.dappFrame.errors.couldNotFindRoot", { values: { item: JSON.stringify(root)}}));
+    throw new Error(
+      window.i18n("shared.melocules.dappFrame.errors.couldNotFindRoot", {
+        values: { item: JSON.stringify(root) },
+      })
+    );
   }
   return nextRoute;
 }
 
 function setNav(navArgs: GenerateNavManifestArgs) {
-  log(`setNav(navArgs: GenerateNavManifestArgs)`, navArgs);
+  // log(`setNav(navArgs: GenerateNavManifestArgs)`, navArgs);
 
   if (navArgs.centerIsOpen && !preModalNavArgs) {
     preModalNavArgs = currentNavArgs;
@@ -327,7 +361,7 @@ function setNav(navArgs: GenerateNavManifestArgs) {
 let shellEventSubscription: ZenObservable.Subscription;
 
 function initSession(session: SessionInfo) {
-  console.log(`subscribeToApiEvents(). Session: `, session);
+  // console.log(`subscribeToApiEvents(). Session: `, session);
   capabilities = session.capabilities;
   if (session.isLoggedOn && session.hasProfile && !shellEventSubscription) {
     window.o.apiClient.client.subscribeToResult().then((apiClient) => {
@@ -369,13 +403,13 @@ function initSession(session: SessionInfo) {
     // Load the contacts so that they're ready when the user
     // enters the dashboard..
     contacts.subscribe((data) => {
-      console.log("loaded contacts: ", data);
+      // console.log("loaded contacts: ", data);
     });
   }
 }
 
 async function init() {
-  log(`init()`);
+  // log(`init()`);
   const session = await getSessionInfo();
   if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
     // TODO: Stash the current URL away and redirect the user to it after authentication
@@ -398,7 +432,7 @@ async function init() {
 }
 
 function onOpenNavigation() {
-  log("onOpenNavigation()");
+  // log("onOpenNavigation()");
   layout = {
     ...layout,
     dialogs: {
@@ -426,7 +460,7 @@ function onOpenNavigation() {
 }
 
 function onCloseNavigation() {
-  log("onCloseNavigation()");
+  // log("onCloseNavigation()");
   layout.dialogs.left = {
     ...layout.dialogs.left,
     isOpen: false,
@@ -445,7 +479,7 @@ function onOpenContacts() {
 }
 
 function onOpenModal() {
-  log("onOpenModal()");
+  // log("onOpenModal()");
   showModalPage(
     false,
     runtimeDapp,
@@ -469,7 +503,7 @@ function onHome() {
 }
 
 async function onCloseModal() {
-  log("onCloseModal()");
+  // log("onCloseModal()");
 
   await hideCenter();
 
@@ -481,7 +515,7 @@ async function onCloseModal() {
 }
 
 function onRequestCloseModal() {
-  log("onRequestCloseModal()");
+  // log("onRequestCloseModal()");
   if (!runningProcess) {
     onBack();
     return;
@@ -498,7 +532,7 @@ function onRequestCloseModal() {
 }
 
 function onProcessCancelRequest() {
-  log("onProcessCancelRequest()");
+  // log("onProcessCancelRequest()");
   if (!runningProcess) {
     return;
   }
@@ -513,7 +547,7 @@ function onProcessCancelRequest() {
 }
 
 async function onRunProcess(event: any) {
-  log("onRunProcess(event: any)", event);
+  // log("onRunProcess(event: any)", event);
   const runProcessEvent = <RunProcess<any>>event;
   const runningProcess = await window.o.stateMachines.run(
     runProcessEvent.definition,
@@ -526,7 +560,7 @@ async function onRunProcess(event: any) {
 }
 
 async function onProcessStopped() {
-  log("onProcessStopped()");
+  // log("onProcessStopped()");
   // TODO: How to handle onProcessStopped() vs. onRoot()? Exit to the root page when a process stopped or go back to the last card?
   //       Below is the "to last card" solution
   await onRoot();
@@ -553,7 +587,7 @@ async function onProcessStopped() {
 }
 
 function onProcessContinued() {
-  log("onProcessContinued()");
+  // log("onProcessContinued()");
   setNav({
     notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
@@ -564,7 +598,7 @@ function onProcessContinued() {
 }
 
 function onProcessCanGoBack() {
-  log("onProcessCanGoBack()");
+  // log("onProcessCanGoBack()");
   setNav({
     notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
@@ -577,7 +611,7 @@ function onProcessCanGoBack() {
 }
 
 function onProcessCanSkip() {
-  log("onProcessCanSkip()");
+  // log("onProcessCanSkip()");
   setNav({
     notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
@@ -590,7 +624,7 @@ function onProcessCanSkip() {
 }
 
 function onProcessBack() {
-  log("onProcessBack()");
+  // log("onProcessBack()");
   if (!runningProcess) {
     return;
   }
@@ -605,7 +639,7 @@ function onProcessBack() {
 }
 
 function onProcessSkip() {
-  log("onProcessSkip()");
+  // log("onProcessSkip()");
   if (!runningProcess) {
     return;
   }
@@ -635,73 +669,72 @@ function onInputBlurred() {
   return;
 }
 
-
 function armOauthListener() {
-
-    function parseQuery(queryString) {
-        var query = {};
-        var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
-        for (var i = 0; i < pairs.length; i++) {
-            var pair = pairs[i].split('=');
-            query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
-        }
-        return query;
+  function parseQuery(queryString) {
+    var query = {};
+    var pairs = (
+      queryString[0] === "?" ? queryString.substr(1) : queryString
+    ).split("&");
+    for (var i = 0; i < pairs.length; i++) {
+      var pair = pairs[i].split("=");
+      query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || "");
     }
+    return query;
+  }
 
-    if (location.search) {
-        // Handle OAuth callbacks:
-        // 1. Find out from where the oauth interaction was started (see state)
-        // 2. Send the user back to its origin
-        // 3. Re-open the flow to show a success- or cancelled-message
-        const paramsMap:any = parseQuery(location.search);
+  if (location.search) {
+    // Handle OAuth callbacks:
+    // 1. Find out from where the oauth interaction was started (see state)
+    // 2. Send the user back to its origin
+    // 3. Re-open the flow to show a success- or cancelled-message
+    const paramsMap: any = parseQuery(location.search);
 
-        if (paramsMap && paramsMap.state) {
-            const splittedState = paramsMap.state.split("-");
-            if (splittedState.length != 2) {
-                // invalid
-                alert("Couldn't parse the 'state' from the oauth response");
-            } else {
-                // possibly valid
-                // TODO: allow app-id + routeParts in the second part of the 'state'
-                if (splittedState[1] == "dashboard") {
-                    push("/home").then(() => {
-                        setTimeout(() => {
-                            window.o.runProcess(performOauth, {
-                                origin: "dashboard",
-                                oauthRequest: {
-                                    clientId: "1087329459459-3t3i510j124ni65r96g4fjoflnelnj3v.apps.googleusercontent.com",
-                                    redirectUri: "https://localhost:5000/",
-                                    scope: "https://www.googleapis.com/auth/drive",
-                                    accessType: "offline",
-                                    responseType: "code",
-                                    prompt: "consent"
-                                },
-                                oauthResponse: {
-                                    error: paramsMap?.error,
-                                    state: paramsMap?.state
-                                },
-                                successAction: () => {
-
-                                },
-                            });
-                        });
-                    });
-                } else {
-                    alert("Couldn't parse the 'state' from the oauth response");
-                    // invalid
-                }
-            }
+    if (paramsMap && paramsMap.state) {
+      const splittedState = paramsMap.state.split("-");
+      if (splittedState.length != 2) {
+        // invalid
+        alert("Couldn't parse the 'state' from the oauth response");
+      } else {
+        // possibly valid
+        // TODO: allow app-id + routeParts in the second part of the 'state'
+        if (splittedState[1] == "dashboard") {
+          push("/home").then(() => {
+            setTimeout(() => {
+              window.o.runProcess(performOauth, {
+                origin: "dashboard",
+                oauthRequest: {
+                  clientId:
+                    "1087329459459-3t3i510j124ni65r96g4fjoflnelnj3v.apps.googleusercontent.com",
+                  redirectUri: "https://localhost:5000/",
+                  scope: "https://www.googleapis.com/auth/drive",
+                  accessType: "offline",
+                  responseType: "code",
+                  prompt: "consent",
+                },
+                oauthResponse: {
+                  error: paramsMap?.error,
+                  state: paramsMap?.state,
+                },
+                successAction: () => {},
+              });
+            });
+          });
+        } else {
+          alert("Couldn't parse the 'state' from the oauth response");
+          // invalid
         }
+      }
     }
+  }
 }
 
 onMount(async () => {
-  log("onMount()");
+  // log("onMount()");
 
-      armOauthListener();
+  armOauthListener();
 
   await window.o.events.subscribe(<any>(async (event) => {
-    log("DappFrame event: ", event);
+    // log("DappFrame event: ", event);
     switch (event.type) {
       case "shell.back":
         onBack();
@@ -785,10 +818,10 @@ onMount(async () => {
     dirtyFlags: { [x: string]: boolean } | undefined,
     onlyThesePages?: string[]
   ) {
-    log(
-      `window.o.runProcess(processDefinition: ${processDefinition.name}) `,
-      contextData
-    );
+    // log(
+    //   `window.o.runProcess(processDefinition: ${processDefinition.name}) `,
+    //   contextData
+    // );
     const modifier = async (ctx) => {
       ctx.childProcessDefinition = processDefinition;
       ctx.childContext = {
@@ -819,7 +852,7 @@ onMount(async () => {
 });
 
 function showQuickActions() {
-  log(`showQuickActions()`);
+  // log(`showQuickActions()`);
   // setCloseAsNavCenter();
   showModalPage(
     false,
@@ -844,7 +877,7 @@ $: {
 }
 
 function _findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
-  log(`findDefaultRoute(runtimeDapp: ${runtimeDapp.dappId})`);
+  // log(`findDefaultRoute(runtimeDapp: ${runtimeDapp.dappId})`);
 
   // If no nextRoutable could be found then look for a default in the dapp
   const defaultRoutable = findRoutableByParams(runtimeDapp, {
@@ -870,10 +903,10 @@ function _findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
         ...defaultRoutable.params,
       },
     };
-    log(
-      `findDefaultRoute(runtimeDapp: ${runtimeDapp.dappId}) - found: `,
-      result
-    );
+    // log(
+    //   `findDefaultRoute(runtimeDapp: ${runtimeDapp.dappId}) - found: `,
+    //   result
+    // );
     return result;
   } else {
     return <FindRouteResult>{
@@ -905,7 +938,7 @@ let baseParams: {
 let firstUrlChangedCall = true;
 
 async function handleUrlChanged() {
-  log(`handleUrlChanged()`);
+  // log(`handleUrlChanged()`);
   const navArgs = <GenerateNavManifestArgs>{};
   dapp = findDappById(params.dappId);
   runtimeDapp = dapp
@@ -914,22 +947,26 @@ async function handleUrlChanged() {
 
   if (!runtimeDapp) {
     // throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
-    log(
-      `handleUrlChanged() - Couldn't find a dapp with the id: ${params.dappId} - going to /`
-    );
+    // log(
+    //   `handleUrlChanged() - Couldn't find a dapp with the id: ${params.dappId} - going to /`
+    // );
     await push("/");
     return;
   }
 
   const findRouteResult = findRoutableByParams(runtimeDapp, params);
   if (!findRouteResult.found) {
-    throw new Error(window.i18n("shared.molecules.dappFrame.errors.couldNotFindParams", { values: { params: JSON.stringify(params, null, 2)}}));
+    throw new Error(
+      window.i18n("shared.molecules.dappFrame.errors.couldNotFindParams", {
+        values: { params: JSON.stringify(params, null, 2) },
+      })
+    );
   }
 
   routable = findRouteResult.routable;
-  log(
-    `handleUrlChanged() - Found routable: ${routable.title} (type: ${routable.type})`
-  );
+  // log(
+  //   `handleUrlChanged() - Found routable: ${routable.title} (type: ${routable.type})`
+  // );
 
   currentParams = JSON.parse(JSON.stringify(params));
 
@@ -986,7 +1023,7 @@ async function handleUrlChanged() {
 }
 
 function showModalProcess(processId?: string) {
-  log(`showModalProcess(processId: ${processId ? processId : "undefined"})`);
+  // log(`showModalProcess(processId: ${processId ? processId : "undefined"})`);
   modalContent = "process";
   const process = window.o.stateMachines.findById(processId);
   showModalPage(
@@ -1018,10 +1055,10 @@ function showModalPage(
   routable: Page<any, any>,
   params: { [x: string]: any }
 ) {
-  log(
-    `showModalPage(pushToStack: ${pushToStack}) - current stack:`,
-    JSON.stringify(stack, null, 2)
-  );
+  // log(
+  //   `showModalPage(pushToStack: ${pushToStack}) - current stack:`,
+  //   JSON.stringify(stack, null, 2)
+  // );
   if (stack.length > 0) {
     const last = stack[stack.length - 1];
     pushToStack = !(
@@ -1036,10 +1073,10 @@ function showModalPage(
       scrollY: window.scrollY,
     });
   }
-  log(
-    `showModalPage(pushToStack: ${pushToStack}) - new stack:`,
-    JSON.stringify(stack, null, 2)
-  );
+  // log(
+  //   `showModalPage(pushToStack: ${pushToStack}) - new stack:`,
+  //   JSON.stringify(stack, null, 2)
+  // );
 
   modalContent = "page";
   if (routable.type == "page" && routable.component !== ProcessContainer) {
@@ -1082,10 +1119,10 @@ function showMainPage(
   routable: Page<any, any>,
   params: { [x: string]: any }
 ) {
-  log(
-    `showMainPage(runtimeDapp: ${runtimeDapp.dappId}, routable: ${routable.title} (type: ${routable.type}), params: object)`,
-    params
-  );
+  // log(
+  //   `showMainPage(runtimeDapp: ${runtimeDapp.dappId}, routable: ${routable.title} (type: ${routable.type}), params: object)`,
+  //   params
+  // );
 
   layout = {
     ...layout,
@@ -1110,7 +1147,7 @@ function showMainPage(
 }
 
 async function hideCenter() {
-  log(`hideCenter()`);
+  // log(`hideCenter()`);
 
   modalContent = "none";
   layout = {
@@ -1151,6 +1188,7 @@ async function hideCenter() {
        */
 }
 </script>
+
 <Layout
   layout="{layout}"
   navigation="{navigation}"

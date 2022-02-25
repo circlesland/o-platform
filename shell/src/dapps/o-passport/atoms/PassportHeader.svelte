@@ -32,7 +32,6 @@ $: {
   } else if ($me) {
     profile = $me;
   }
-  console.log("PROFILE: ", profile);
 
   if (profile.__typename == "Profile") {
     displayName =
