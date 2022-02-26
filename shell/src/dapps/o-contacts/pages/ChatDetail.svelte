@@ -33,14 +33,14 @@ let shellEventSubscription: Subscription;
 async function reload() {
   contactProfile = (await contacts.findBySafeAddress(id))
     .contactAddress_Profile;
-  chatHistory = await ApiClient.query<ProfileEvent[], StreamQueryVariables>(
+  chatHistory = (await ApiClient.query<ProfileEvent[], StreamQueryVariables>(
     StreamDocument,
     {
       safeAddress: $me.circlesAddress,
       pagination: {
-        order: SortOrder.Asc,
+        order: SortOrder.Desc,
         limit: 250,
-        continueAt: new Date(0).toJSON(),
+        continueAt: new Date().toJSON(),
       },
       filter: {
         with: id,
@@ -64,8 +64,7 @@ async function reload() {
         //EventType.MembershipRejected
       ],
     }
-  );
-  console.log("HISTORY", chatHistory);
+  )).reverse();
 
   window.o.publishEvent(<any>{
     type: "shell.scrollToBottom",
