@@ -53,7 +53,7 @@
         />
       </svg>
       <label for="input" class="break-all"
-        ><h4><strong>{$_("shared.api.atoms.error.processEncounteredAnError")}</strong></h4>
+        ><h4><strong>{$_("shared.atoms.error.processEncounteredAnError")}</strong></h4>
         {#if error && error.message}
           {error.message}
         {/if}
@@ -70,14 +70,14 @@
       class="w-full mt-5 mb-5 overflow-y-scroll errormessage textarea textarea-bordered input-error max-h-72"
     />
   {:else}
-    {$_("shared.api.atoms.error.noErrorDetailsAvailable")}
+    {$_("shared.atoms.error.noErrorDetailsAvailable")}
   {/if}
   <a href="https://discord.gg/SACzRXa35v">
-    {$_("shared.api.atoms.error.pleaseTryToReload")}<a
+    {$_("shared.atoms.error.pleaseTryToReload")}<a
       href="https://discord.gg/4DBbRCMnFZ"
       target="_blank"
       class="btn-link">https://discord.gg/4DBbRCMnFZ</a
-    >{$_("shared.api.atoms.error.ifTheProblemPersists")}
+    >{$_("shared.atoms.error.ifTheProblemPersists")}
   </a>
 </div>
 
