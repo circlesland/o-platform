@@ -121,6 +121,7 @@ type Profile {
   circlesTokenAddress: String
   firstName: String!
   lastName: String
+  emailAddress: String
   dream: String
   country: String
   avatarUrl: String
@@ -397,6 +398,7 @@ type Invoice {
   buyerAddress: String!
   buyerProfile: Profile
   lines: [InvoiceLine!]!
+  invoiceNo: String!
   pickupCode: String
   buyerSignature: Boolean
   buyerSignedDate: String
@@ -896,8 +898,8 @@ type ProofPaymentResult {
 
 type AnnouncePaymentResult {
   invoiceId: Int!
-  pickupCode: String!
   transactionHash: String!
+  pickupCode: String!
 }
 
 type VerifySafeResult {

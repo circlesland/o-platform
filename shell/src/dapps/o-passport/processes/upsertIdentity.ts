@@ -29,6 +29,7 @@ export type UpsertIdentityContextData = {
   circlesSafeOwner?: string;
   firstName?: string;
   lastName?: string;
+  emailAddress?: string;
   country?: string;
   dream?: string;
   cityGeonameid?: number;
@@ -185,7 +186,6 @@ const processDefinition = (processId: string) =>
         navigation: {
           next: "#country",
           previous: "#lastName",
-          canSkip: () => true,
         },
       }),
       country: promptCity<UpsertIdentityContext, any>({
@@ -293,6 +293,7 @@ const processDefinition = (processId: string) =>
                 circlesSafeOwner: safeOwnerAddress.toLowerCase(),
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
+                emailAddress: context.data.emailAddress,
                 dream: context.data.dream,
                 newsletter: context.data.newsletter ?? false,
                 displayTimeCircles: context.data.displayTimeCircles ?? true,

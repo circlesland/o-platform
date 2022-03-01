@@ -289,6 +289,7 @@ mutation upsertProfile(
   $id: Int
   $firstName: String!
   $lastName: String
+  $emailAddress: String
   $dream: String
   $country: String
   $avatarUrl: String
@@ -308,6 +309,7 @@ mutation upsertProfile(
       id: $id
       firstName: $firstName
       lastName: $lastName
+      emailAddress: $emailAddress
       dream: $dream
       country: $country
       avatarUrl: $avatarUrl
@@ -326,6 +328,7 @@ mutation upsertProfile(
     id
     firstName
     lastName
+    emailAddress
     dream
     country
     avatarUrl
@@ -471,8 +474,8 @@ mutation revokeSafeVerification($safeAddress: String!) {
   }
 }
 
-mutation announcePayment($invoiceId: Int! $transactionHash: String!) {
-  announcePayment(invoiceId: $invoiceId transactionHash: $transactionHash) {
+mutation announcePayment($invoiceId: Int!, $transactionHash: String!) {
+  announcePayment(invoiceId: $invoiceId, transactionHash: $transactionHash) {
     transactionHash
     invoiceId
     pickupCode

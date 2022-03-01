@@ -1,12 +1,13 @@
 <script lang="ts">
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
-import Card from "src/shared/atoms/Card.svelte";
+
 import { me } from "../../../shared/stores/me";
 import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { showToast } from "../../../shared/toast";
 import Svelecte, { addFormatter } from "svelecte";
 import {
   UpsertProfileDocument,
@@ -26,40 +27,11 @@ let choices = [
   { value: DisplayCurrency.TimeCrc, name: "Time Circles" },
 ];
 
-async function editProfile() {
-  /*
-    const requestEvent = new RunProcess<ShellProcessContext>(
-            shellProcess,
-            true,
-            async (ctx) => {
-              ctx.childProcessDefinition = {
-                id: upsertIdentity.id,
-                name: upsertIdentity.name,
-                stateMachine: (processId?: string) =>
-                        (<any>upsertIdentity).stateMachine(processId, true),
-              };
-              ctx.childContext = {
-                data: {
-                  id: $me.id,
-                  circlesAddress: $me.circlesAddress,
-                  circlesSafeOwner: $me.circlesSafeOwner,
-                  avatarCid: $me.avatarCid,
-                  avatarUrl: $me.avatarUrl,
-                  avatarMimeType: $me.avatarMimeType,
-                  firstName: $me.firstName,
-                  lastName: $me.lastName,
-                  country: $me.country,
-                  dream: $me.dream,
-                  newsletter: receiveNewsletter
-                },
-                dirtyFlags: {},
-              };
-              return ctx;
-            }
-    );
+let receiveNewsletter: boolean = $me.newsletter;
+let emailAddress: string = $me.emailAddress;
+let displayCurrency: string = $me.displayCurrency;
 
-    window.o.publishEvent(requestEvent);
-     */
+async function editProfile() {
   // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.mutate({
@@ -76,6 +48,7 @@ async function editProfile() {
       country: $me.country,
       dream: $me.dream,
       newsletter: receiveNewsletter,
+      emailAddress: emailAddress,
       displayCurrency: displayCurrency,
       status: "",
     },
@@ -83,25 +56,28 @@ async function editProfile() {
   if (result.errors) {
     return;
   }
-  console.log("RESULT ", result);
+
   window.o.publishEvent(<PlatformEvent>{
     type: "shell.authenticated",
     profile: result.data.upsertProfile,
   });
+
+  showToast(
+    "success",
+    `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
+  );
 }
 
-let email: string = "unknown";
+// let email: string = "unknown";
 
-onMount(async () => {
-  email = await ApiClient.query<string, WhoamiQueryVariables>(
-    WhoamiDocument,
-    {}
-  );
-});
+// onMount(async () => {
+//   email = await ApiClient.query<string, WhoamiQueryVariables>(
+//     WhoamiDocument,
+//     {}
+//   );
+// });
 
-let receiveNewsletter: boolean = $me.newsletter;
-let displayCurrency: string = $me.displayCurrency;
-const delayedTrigger = new DelayedTrigger(500, async () => {
+const delayedTrigger = new DelayedTrigger(200, async () => {
   // TODO: Make call to upsertProfile shorter
   await editProfile();
 });
@@ -119,34 +95,70 @@ const delayedTrigger = new DelayedTrigger(500, async () => {
     </Card>
   </section> -->
   <section class="mx-4 mb-2 -mt-2">
-    <Card>
-      <div class="text-xs font-bold text-left text-primary">{$_("dapps.o-passport.pages.settings.notifications")}</div>
-      <div class="w-full space-x-2 bg-white sm:space-x-6">
-        <div class="w-full form-control">
-          <label class="label" for="newsletter">
-            <div
-              class="flex flex-row items-stretch w-full space-x-10 cursor-pointer justify-items-stretch">
+    <div
+      class="flex flex-col w-full px-3 py-2 space-x-2 bg-white rounded-lg shadow-md ">
+      <div class="flex flex-col space-y-2">
+        <div class="text-left">
+          {$_("dapps.o-passport.pages.settings.notifications")}
+        </div>
+        <div class="space-x-2 sm:space-x-6">
+          <div class="w-full form-control">
+            <label class="label" for="newsletter">
               <div
-                class="self-center flex-grow text-sm text-right justify-self-start">
-                {$_("dapps.o-passport.pages.settings.receiveEmailNotifications")}
-              </div>
-              <div class="self-center justify-self-end">
-                <input
-                  name="checkbox"
-                  id="newsletter"
-                  type="checkbox"
-                  class="inline-block toggle toggle-primary"
-                  bind:checked="{receiveNewsletter}"
-                  on:change="{() => delayedTrigger.trigger()}" />
+                class="flex flex-row items-stretch w-full space-x-2 cursor-pointer justify-items-stretch">
+                <div class="self-center justify-self-center">
+                  {$_("common.no")}
+                </div>
+                <div class="self-center justify-self-center">
+                  <input
+                    name="checkbox"
+                    id="newsletter"
+                    type="checkbox"
+                    class="inline-block toggle toggle-dark-lightest"
+                    bind:checked="{receiveNewsletter}"
+                    on:change="{() => delayedTrigger.trigger()}" />
 
-                <span class="toggle-mark"></span>
+                  <span class="toggle-mark"></span>
+                </div>
+                <div class="self-center justify-self-center">
+                  {$_("common.yes")}
+                </div>
               </div>
-            </div>
-          </label>
+            </label>
+          </div>
         </div>
       </div>
-    </Card>
+    </div>
   </section>
+  <section class="mx-4 mt-4 mb-2">
+    <div
+      class="flex flex-col w-full px-3 py-2 space-x-2 bg-white rounded-lg shadow-md ">
+      <div class="flex flex-col space-y-2">
+        <div class="text-left">
+          {$_("dapps.o-passport.pages.settings.emailAddress")}
+        </div>
+        <div class="space-x-2 sm:space-x-6">
+          <div class="w-full form-control">
+            <label class="label" for="newsletter">
+              <div
+                class="flex flex-row items-stretch w-full justify-items-stretch">
+                <div class="self-center flex-grow justify-self-center">
+                  <input
+                    name="emailAddress"
+                    id="emailAddress"
+                    type="email"
+                    class="w-full input input-bordered"
+                    on:change="{() => delayedTrigger.trigger()}"
+                    bind:value="{emailAddress}" />
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- <section class="mx-4 mb-2">
     <Card>
       <div class="text-xs font-bold text-left text-primary whitespace-nowrap">
