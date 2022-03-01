@@ -20,7 +20,7 @@ export let routable: Routable;
           <header class="mb-6">
             <h2
               class="text-4xl font-bold leading-none text-gray-400 select-none lg:text-6xl">
-              {$_("shared.pages.notFount.404")}
+              {$_("shared.pages.notFount.notfound")}
             </h2>
             <h3
               class="text-xl font-light leading-normal lg:text-3xl md:text-3xl">

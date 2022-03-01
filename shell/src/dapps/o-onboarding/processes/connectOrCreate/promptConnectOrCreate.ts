@@ -60,14 +60,14 @@ const processDefinition = (processId: string) =>
         options: [
           {
             key: "newSafe",
-            label: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.connectOrCreate.newSafe"),
+            label: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefenition.connectOrCreate.options.newSafe"),
             target: "#newSafe",
             class: "btn btn-outline",
             action: (context) => {},
           },
           {
             key: "importSafe",
-            label: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.importSafe"),
+            label: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefenition.connectOrCreate.options.importSafe"),
             target: "#importSafe",
             class: "btn btn-outline",
             action: (context) => {},

@@ -61,7 +61,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInfitation.message"),
+            message: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.message"),
           });
         },
         invoke: {
