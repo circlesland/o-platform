@@ -1,6 +1,7 @@
 import { passport } from "./dapps/o-passport.manifest";
 import { banking } from "./dapps/o-banking.manifest";
 import { home } from "./dapps/o-dashboard.manifest";
+import { events } from "./dapps/o-events.manifest";
 import { homepage } from "./dapps/o-homepage.manifest";
 import { marketplace } from "./dapps/o-marketplace.manifest";
 import { stats } from "./dapps/o-stats.manifest";
@@ -14,6 +15,7 @@ export const dapps: DappManifest<any>[] = [
   passport,
   banking,
   home,
+  events,
   marketplace,
   stats,
   contacts,
