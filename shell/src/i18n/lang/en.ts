@@ -1277,10 +1277,17 @@ export const en = {
                 placeholder: "Last name",
                 submitButtonText: "Save",
               },
+              emailAddress: {
+                title: "Please enter your E-Mail Address",
+                description:
+                  "We'll keep this safe and you will have full control over what kind of E-Mails we will send you.",
+                placeholder: "E-Mail Address",
+                submitButtonText: "Save",
+              },
               dream: {
                 title: "Share you passion",
                 description:
-                  "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
+                  "What will you do if you receive a monthly Basic income for free?",
                 placeholder: "Your passion",
                 submitButtonText: "Start growing",
               },
