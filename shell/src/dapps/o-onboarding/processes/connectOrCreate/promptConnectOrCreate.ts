@@ -82,7 +82,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.newSafe.message"),
+            message: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefenition.newSafe.message"),
           });
         },
         invoke: {
@@ -91,7 +91,7 @@ const processDefinition = (processId: string) =>
 
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.privatKeyNotUnlocked"));
+              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.privatKeyNotUnlocked"));
             }
 
             const proxyFactory = new GnosisSafeProxyFactory(
@@ -115,14 +115,14 @@ const processDefinition = (processId: string) =>
 
             if (result.errors) {
               throw new Error(
-                window.i18n("dapps.o-onboarding.processes.connectOrCreate.promtConnectOrCreate.couldNotUpdate", {values: {result: JSON.stringify(result.errors)}})
+                window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.couldNotUpdate", {values: {result: JSON.stringify(result.errors)}})
               );
             }
           },
           onDone: "success",
           onError: {
             actions: (context, event) => {
-              console.error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promtConnectOrCreate.errorWhileDeploying"), event);
+              console.error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.errorWhileDeploying"), event);
               throw new Error(event.data);
             },
             target: "success"
@@ -137,7 +137,7 @@ const processDefinition = (processId: string) =>
 
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promtConnectOrCreate.privateKeyNotUnlocked"));
+              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinitionprivateKeyNotUnlocked"));
             }
 
             const innerSuccessAction = context.data.successAction;
