@@ -19,8 +19,9 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 
   <div class="flex flex-col justify-between">
     <div
-      class="order-2 w-1/2 text-2xl leading-tight text-left break-words mt-14 party-text sm:text-4xl lg:mt-40 md:text-4rem font-heading md:order-1">
-      Wir feiern <span class="whitespace-nowrap">dein erstes mal</span>
+      class="order-2 w-1/2 mt-12 text-xl leading-tight text-left break-words party-text sm:text-4xl lg:mt-40 md:text-4rem font-heading md:order-1">
+      Wir feiern <div class="visible sm:hidden"></div>
+      <span class="whitespace-nowrap">dein erstes mal</span>
     </div>
 
     <div class="order-1 w-full text-center mt-36 sm:mt-60 md:mt-20 md:order-2">
@@ -29,15 +30,15 @@ import Icons from "../../../shared/molecules/Icons.svelte";
         >REGISTER NOW</button>
     </div>
   </div>
-  <div class="absolute w-full pr-8 bottom-2 sm:bottom-4">
+  <div class="absolute w-full pr-8 bottom-20 sm:bottom-4">
     <div
       class="grid w-full grid-cols-2 place-items-stretch justify-items-stretch place-content-end">
       <div
-        class="self-end text-3xl leading-tight text-left sm:text-4rem font-omedium">
+        class="self-end text-2xl leading-tight text-left sm:text-4rem font-omedium">
         ALTE UTTING<br />19TH MARCH<br />START 2 PM
       </div>
       <div
-        class="pr-2 text-3xl leading-tight text-right break-words sm:pr-8 place-self-end sm:text-4rem font-omedium">
+        class="pr-2 text-2xl leading-tight text-right break-words sm:pr-8 place-self-end sm:text-4rem font-omedium">
         <span class="whitespace-nowrap">Dein Krypto</span> grundeinkommen
         <span class="whitespace-nowrap">schon heute</span>
         <div class="visible sm:hidden"></div>
