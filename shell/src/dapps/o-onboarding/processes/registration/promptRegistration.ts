@@ -9,6 +9,9 @@ import {UpsertProfileDocument} from "../../../../shared/api/data/types";
 
 export type UpsertRegistrationContextData = {
   id?: number;
+  emailAddress: string;
+  firstName: string;
+  avatarUrl: string;
   newsletter?: boolean;
   successAction?: (data:UpsertRegistrationContextData) => void;
   errorAction?: (data:UpsertRegistrationContextData) => void;
@@ -62,6 +65,9 @@ const processDefinition = (processId: string) =>
       }),
       upsertRegistration: {
         id: "upsertRegistration",
+        entry: (context) => {
+          console.log("upsertRegistration.entry:", context);
+        },
         invoke: {
           src: async (context) => {
             const apiClient =
@@ -71,7 +77,9 @@ const processDefinition = (processId: string) =>
               mutation: UpsertProfileDocument,
               variables: {
                 id: context.data.id,
-                firstName: "",
+                emailAddress: context.data.emailAddress,
+                firstName: context.data.firstName ?? "",
+                avatarUrl: context.data.avatarUrl,
                 newsletter: context.data.newsletter ?? false,
                 status: "registered",
               },

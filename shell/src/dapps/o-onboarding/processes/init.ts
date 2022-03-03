@@ -39,6 +39,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
     initial: "initial",
     context: {
       session: null,
+      openLoginUserInfo: null,
       registration: null,
       invitation: null,
       profile: null,
@@ -597,21 +598,26 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       acquireSessionAndRestart: () => {
         window.o.runProcess(acquireSession, {
           successAction: (data) => {
-            (<any>window).runInitMachine();
+            (<any>window).runInitMachine({
+              openLoginUserInfo: data.userInfo
+            });
           },
         });
       },
-      upsertRegistrationAndRestart: () => {
+      upsertRegistrationAndRestart: (context) => {
         window.o.runProcess(upsertRegistration, {
+          emailAddress: context.openLoginUserInfo?.email,
+          firstName: context.openLoginUserInfo?.name,
+          avatarUrl: context.openLoginUserInfo?.profileImage,
           successAction: (data) => {
-            (<any>window).runInitMachine();
+            (<any>window).runInitMachine(context);
           },
         });
       },
       promptGetInvitedAndRestart: (context) => {
         window.o.runProcess(promptGetInvited, {
           successAction: (data) => {
-            (<any>window).runInitMachine();
+            (<any>window).runInitMachine(context);
           },
         });
       },
@@ -619,14 +625,14 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         window.o.runProcess(upsertIdentity, {
           id: context.registration.profileId,
           successAction: (data) => {
-            (<any>window).runInitMachine();
+            (<any>window).runInitMachine(context);
           },
         });
       },
       unlockEoaAndRestart: (context) => {
         window.o.runProcess(unlockKey, {
           successAction: (data) => {
-            (<any>window).runInitMachine();
+            (<any>window).runInitMachine(context);
           },
         });
       },
@@ -636,7 +642,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
             context.profile.successorOfCirclesAddress &&
             !context.profile.circlesAddress,
           successAction: (data) => {
-            (<any>window).runInitMachine();
+            (<any>window).runInitMachine(context);
           },
         });
       },

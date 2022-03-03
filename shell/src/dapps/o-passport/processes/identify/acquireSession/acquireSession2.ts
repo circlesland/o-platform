@@ -134,11 +134,14 @@ const processDefinition = (processId: string) =>
         id: "success",
         entry: (context) => {
           if (context.data.successAction) {
-            context.data.successAction(context.data);
-
             // The websocket connection was already established previously without session-cookie.
             // Since we now have one the connection should re-established the next time its used.
-            window.o.apiClient.reset();
+            try {
+              window.o.apiClient.reset();
+            } catch (e) {
+              console.error(e);
+            }
+            context.data.successAction(context.data);
           }
         },
         type: "final"

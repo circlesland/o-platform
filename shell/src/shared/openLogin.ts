@@ -7,7 +7,6 @@ let openLogin: OpenLogin;
 export type GetOpenLoginResult = OpenLogin|{login(args:any):{privKey:string}, getUserInfo():{userInfo:any}, logout():Promise<void>};
 
 export async function getOpenLogin(): Promise<GetOpenLoginResult> {
-  // @ts-ignore - '__USE_MOCKS__' is replaced by the build process
   if (Environment.useMockLogin)
   {
     return <GetOpenLoginResult>{
@@ -19,13 +18,13 @@ export async function getOpenLogin(): Promise<GetOpenLoginResult> {
       },
       async getUserInfo(): Promise<OpenloginUserInfo> {
         return {
-          email: "deine.muuda@kocht.ohne_salz",
-          name: "Meine mudda kocht ohne Salz",
-          typeOfLogin: "Muddas Login",
-          profileImage: "Bild vong Deine Mudda",
-          aggregateVerifier: "Nix",
-          verifier: "Ich",
-          verifierId: "Nada"
+          email: "email@some.hostname.of.some.mailserver.somewhere",
+          name: "Oauth profile name",
+          typeOfLogin: "google",
+          profileImage: "https://some.url.to.somewhere",
+          aggregateVerifier: "not-verified",
+          verifier: "not-verified",
+          verifierId: "not-verified"
         }
       }
     };

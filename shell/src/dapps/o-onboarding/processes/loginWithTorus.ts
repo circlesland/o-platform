@@ -205,10 +205,11 @@ const processDefinition = (processId: string) =>
                   display: "touch",
                 },
               });
+
               const userInfo = await openLogin.getUserInfo();
               return {
                 privateKey: privateKey.privKey,
-                userInfo: userInfo,
+                userInfo: userInfo
               };
             },
             onDone: {

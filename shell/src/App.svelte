@@ -216,18 +216,16 @@
 
   import {performOauth} from "./dapps/o-humanode/processes/performOauth";
   import { isLoading } from "svelte-i18n";
+  import {InitContext} from "./dapps/o-onboarding/processes/initContext";
 
   let ubiMachineInterpreter: any;
 
-  window.runInitMachine = () => {
-    interpret(initMachine)
-      .onEvent((event) => {
-        // console.log("InitMachine event:", event);
-      })
-      .onTransition((state) => {
-        // console.log("initMachine.transition:", state);
-      })
-      .start();
+  window.runInitMachine = (context?:InitContext) => {
+    if (context) {
+      interpret(initMachine.withContext(context)).start();
+    } else {
+      interpret(initMachine).start();
+    }
   };
   let _routes = {
     "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,

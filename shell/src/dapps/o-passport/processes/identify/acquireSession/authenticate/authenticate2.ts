@@ -83,6 +83,8 @@ const processDefinition = (processId: string) =>
           onDone: {
             actions:(context, event) => {
               context.data.eoaAddress = event.data;
+              console.log(`B1: event.data`, event.data);
+              console.log(`B2: context.data.eoaAddress`, context.data.eoaAddress);
             },
             target:"#acquireSession"
           },
@@ -91,7 +93,8 @@ const processDefinition = (processId: string) =>
       },
       acquireSession: {
         id: "acquireSession",
-        entry: () => {
+        entry: (context, event) => {
+          console.log(`C1: event`, event)
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
             message: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.acquireSession.message"),
