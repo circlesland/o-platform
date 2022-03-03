@@ -19,7 +19,7 @@ let payload: CrcTrust = <CrcTrust>event.payload;
         ? event.contact_address_profile.firstName
         : event.contact_address_profile.circlesAddress}
       {$_(
-        "shared.molecules.notificationViewer.molecules.notificationViewTrust.hasRemovedTheirTustToYou"
+        "shared.molecules.notificationViewer.molecules.notificationViewTrust.hasRemovedTheirTrustToYou"
       )}
     </div>
   {:else}
