@@ -14,7 +14,7 @@ async function getMutualFriends() : Promise<CommonTrust[]> {
     });
     return mutualFriends;
   } else {
-    throw new Error(window.i18n("shared.melecules.notificationViewer.molecules.notificationViewMutualFriends.error"));
+    throw new Error(window.i18n("shared.molecules.notificationViewer.molecules.notificationViewMutualFriends.error"));
   }
 }
 
@@ -22,11 +22,11 @@ let promise = getMutualFriends();
 </script>
 
 {#await promise}
-  <p>{$_("shared.melecules.notificationViewer.molecules.notificationViewMutualFriends.loadingMutualFriends")}</p>
+  <p>{$_("shared.molecules.notificationViewer.molecules.notificationViewMutualFriends.loadingMutualFriends")}</p>
 {:then mutualFriends}
   {#if mutualFriends.data && mutualFriends.data.commonTrust}
     <div>
-      <div class="text-left text-2xs text-dark-lightest">{$_("shared.melecules.notificationViewer.molecules.notificationViewMutualFriends.mutualFriends")}</div>
+      <div class="text-left text-2xs text-dark-lightest">{$_("shared.molecules.notificationViewer.molecules.notificationViewMutualFriends.mutualFriends")}</div>
 
       <div class="flex flex-row flex-wrap mt-2 ">
         {#if mutualFriends.data.commonTrust.length > 0}
@@ -41,7 +41,7 @@ let promise = getMutualFriends();
             {/if}
           {/each}
         {:else}
-          <span>{$_("shared.melecules.notificationViewer.molecules.notificationViewMutualFriends.noMutualFriends")}</span>
+          <span>{$_("shared.molecules.notificationViewer.molecules.notificationViewMutualFriends.noMutualFriends")}</span>
         {/if}
       </div>
     </div>

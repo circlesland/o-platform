@@ -19,7 +19,7 @@ let payload: CrcTrust = <CrcTrust>event.payload;
         ? event.contact_address_profile.firstName
         : event.contact_address_profile.circlesAddress}
       {$_(
-        "shared.melecules.notificationViewer.molecules.notificationViewTrust.hasRemovedTheirTustToYou"
+        "shared.molecules.notificationViewer.molecules.notificationViewTrust.hasRemovedTheirTustToYou"
       )}
     </div>
   {:else}
@@ -28,7 +28,7 @@ let payload: CrcTrust = <CrcTrust>event.payload;
         ? event.contact_address_profile.firstName
         : event.contact_address_profile.circlesAddress}
       {$_(
-        "shared.melecules.notificationViewer.molecules.notificationViewTrust.isTrustingYouNow"
+        "shared.molecules.notificationViewer.molecules.notificationViewTrust.isTrustingYouNow"
       )}
     </div>
   {/if}
