@@ -19,7 +19,7 @@ import NotificationCard from "../atoms/NotificationCard.svelte";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { isMobile } from "../../../shared/functions/isMobile";
-
+// import * as ECIES from "bitcore-ecies";
 import { _ } from "svelte-i18n";
 
 export let id: string;
@@ -123,12 +123,13 @@ function init(el) {
 
 onMount(() => {
   // TEMPORARY FIX UNTIL THE LIST IS WORKING BETTER
+  // TODO: The problem this tries to fix only appears to happen when there are action buttons in the view
   setTimeout(function () {
     window.o.publishEvent(<any>{
       type: "shell.scrollToBottom",
       scrollNow: true,
     });
-  }, 2500);
+  }, 1200);
 });
 
 async function submitChat() {

@@ -24,6 +24,7 @@
     "@o-platform/o-process": "0.1.0",
     "@o-platform/o-interfaces": "0.1.0",
     "@o-platform/o-circles": "0.1.0",
+    "bitcore-ecies": "^1.0.3",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "@apollo/client": "^3.4.16",

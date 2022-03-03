@@ -64,13 +64,13 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-passport.processes.identify.aquireSession.acquireSession2.acquireSession.message"),
+            message: window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.message"),
           });
         },
         invoke: {
           src: async (context) => {
             if (!context.data.eoaAddress) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.aquireSession.acquireSession2.acquireSession.error.contextsPropertyNotSet"));
+              throw new Error(window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.contextsPropertyNotSet"));
             }
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();
@@ -89,7 +89,7 @@ const processDefinition = (processId: string) =>
             const challenge = result.data.requestSessionChallenge;
             const pk = sessionStorage.getItem("circlesKey");
             if (!pk) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.aquireSession.acquireSession2.acquireSession.error.privatKeyNotUnlocked"))
+              throw new Error(window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.privatKeyNotUnlocked"))
             }
             const acc = RpcGateway.get().eth.accounts.privateKeyToAccount(pk);
             const {message, signature} = acc.sign(challenge);
@@ -107,7 +107,7 @@ const processDefinition = (processId: string) =>
               throw new Error(JSON.stringify(sessionResult.data.errors));
             }
             if (!sessionResult.data.verifySessionChallenge?.success) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.aquireSession.acquireSession2.acquireSession.error.couldNotGetSession"))
+              throw new Error(window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.couldNotGetSession"))
             }
           },
           onDone: "#success",
@@ -118,12 +118,12 @@ const processDefinition = (processId: string) =>
       errorRequestingChallenge: prompt<AuthenticateContext, any>({
         field: "errorRequestingChallenge",
         entry: (context) => {
-          context.data.errorRequestingChallenge = window.i18n("dapps.o-passport.processes.identify.aquireSession.acquireSession2.acquireSession.errorRequestingChallenge.error");
+          context.data.errorRequestingChallenge = window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.errorRequestingChallenge.error");
         },
         component: HtmlViewer,
         isSensitive: true,
         params: {
-          submitButtonText: window.i18n("dapps.o-passport.processes.identify.aquireSession.acquireSession2.acquireSession.errorRequestingChallenge.submitButtonText"),
+          submitButtonText: window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.errorRequestingChallenge.submitButtonText"),
           html: (context) => context.data.errorSendingAuthMail,
         },
         navigation: {

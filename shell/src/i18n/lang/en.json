@@ -1011,7 +1011,7 @@
         },
         "processes": {
           "identify": {
-            "aquireSession": {
+            "acquireSession": {
               "authenkticate": {
                 "authenticate2": {
                   "strings": {

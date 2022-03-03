@@ -21,7 +21,7 @@ import { upsertRegistration } from "./registration/promptRegistration";
 import { promptConnectOrCreate } from "./connectOrCreate/promptConnectOrCreate";
 import { promptRedeemInvitation } from "./invitation/promptRedeemInvitation";
 import { promptGetInvited } from "./invitation/promptGetInvited";
-import { acquireSession } from "../../o-passport/processes/identify/aquireSession/acquireSession2";
+import { acquireSession } from "../../o-passport/processes/identify/acquireSession/acquireSession2";
 import { CirclesHub } from "@o-platform/o-circles/dist/circles/circlesHub";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";

@@ -54,7 +54,7 @@ export const en = {
                 submitButtonText: "Set Trust",
               },
               limit: {
-                title: "Please enter ther Amount",
+                title: "Please enter the Amount",
                 submitButtonText: "Submit",
               },
               message: {
@@ -123,7 +123,7 @@ export const en = {
                 submitButtonText: "Next",
               },
               currency: {
-                title: "Please enter ther Amount in Euro",
+                title: "Please enter the amount in Euro",
                 submitButtonText: "Submit",
               },
               message: {
@@ -147,9 +147,9 @@ export const en = {
                 min: "Please enter at least 0.1",
                 typeError: "Please enter a valid number.",
                 required: "Please enter a valid amount.",
-                positive: "Please enter a valid amounr.",
+                positive: "Please enter a valid amount.",
               },
-              currency: "Please select a vlid currency",
+              currency: "Please select a valid currency",
             },
             findMaxFlow: {
               entry: {
@@ -161,10 +161,10 @@ export const en = {
             },
             checkAmount: {
               contextMessages:
-                "The chosen amount exceeds the maximum transfarable amount of ({formattedMax}).",
+                "The chosen amount exceeds the maximum transferable amount of ({formattedMax}).",
             },
           },
-          trasnferXdai: {
+          transferXdai: {
             entry: {
               message: "Processing xDai transfer ..",
             },
@@ -230,7 +230,7 @@ export const en = {
             tokens: "tokens",
             token: "token",
             wrote: "wrote:",
-            redeemedYourInvitation: "redeemed your invatition",
+            redeemedYourInvitation: "redeemed your invitation",
             invitedYouTo: "invited you to",
             youSent: "You sent",
             youWrote: "You wrote:",
@@ -260,9 +260,9 @@ export const en = {
             trustedByYou: "trusted by you",
             isTrustingYou: "is trusting you",
             notTrusted: "not trusted",
-            verify: "Veryfy",
-            revoke: "revoke Verification",
-            accountVeryfied: "Account verified",
+            verify: "Verify",
+            revoke: "Revoke verification",
+            accountVerified: "Account verified",
             verifiedClickToRevoke: "Verified. click to Revoke",
             accountVerificationRevoked: "Account verification revoked",
             revokedUppercase: "REVOKED",
@@ -277,7 +277,7 @@ export const en = {
           },
           chat: {
             loadingConversations: "Loading conversations...",
-            error: "An error occured while loading the recent activities:",
+            error: "An error occurred while loading the recent activities:",
           },
         },
       },
@@ -334,8 +334,8 @@ export const en = {
               avatar: {
                 title: "Profile Image",
                 description: "Show the World who you are",
-                placeholder: "Uplade Image",
-                submitButtonText: "Uplade Image",
+                placeholder: "Upload Image",
+                submitButtonText: "Upload Image",
               },
               deployOrganisation: {
                 notUnlockedKey: "The private key is not unlocked",
@@ -352,8 +352,8 @@ export const en = {
             noEoa: "Your have no eoa",
             notUnlockedKey: "The privat key is not unlocked",
             notEnoughPart1: "You have not enough funds on ",
-            notEnoughPart2: ". Max. transfarable amount is ",
-            couldNotSendInvitation: "Couldn't send the invitaion transaction",
+            notEnoughPart2: ". Max. transferable amount is ",
+            couldNotSendInvitation: "Couldn't send the invitation transaction",
             createRegionContext: {
               name: {
                 title: "What is the name of you organisation?",
@@ -378,8 +378,8 @@ export const en = {
               avatar: {
                 title: "Profile Image",
                 description: "Show the World who you are",
-                placeholder: "Uplade Image",
-                submitButtonText: "Uplade Image",
+                placeholder: "Upload Image",
+                submitButtonText: "Upload Image",
               },
               deployOrganisation: {
                 notUnlockedKey: "The private key is not unlocked",
@@ -449,7 +449,7 @@ export const en = {
             from: "from",
             passion1: "my passion is ...",
             passion2:
-              "... and i will accept every month 240 Circles purusing it",
+              "... and i will accept every month 240 Circles pursuing it",
           },
           citizens: {
             totalCitizens: "total citizens",
@@ -458,7 +458,7 @@ export const en = {
             leaderBoardRanking: "Leaderboard ranking",
             allOverTheWorld: "All over the World",
             seeAdvancedCountries:
-              "See whos countries are most progressively advancing the universal basic income economy in their home countries.",
+              "See which countries are most progressively advancing the universal basic income economy.",
             country: "Country",
             citizens: "Citizens",
             showAllCountries: "Show all countries",
@@ -490,7 +490,7 @@ export const en = {
           },
           introAnimation: {
             thisIsCirclesLand: "This is CirclesLand",
-            circlesLandunlocks:
+            circlesLandUnlocks:
               "CirclesLand is here to unlock all our potential",
             introducing:
               "Introducing the next generation of a fully opensource, digital and borderless country-as-a-service platform, starting with Circles a new universal basic income currency to secure our most basic needs.",
@@ -514,17 +514,17 @@ export const en = {
           steps: {
             howDoesItWork: "HOW DOES IT WORK?",
             becomeCitizen: "Become a citizen of CirclesLand",
-            intoducing:
+            introducing:
               "Introducing the next generation of your 100% opensource, digital and borderless country-as-a-service platform, unlocking your new Circles universal basic income to secure the most basic needs for all of us.",
             createPassport: "1. Create Passport",
             createPassportDescription:
               "While signing up you create a self-sovereign and portable identity passport.",
             getInvited: "2. Get invited",
-            getinvitedDescription:
+            getInvitedDescription:
               "To receive your very first personalized Circles you need to get invited by another citizen.",
             unlockUbi: "3. Unlock UBI",
             unlockUbiDescription:
-              "Once you got successfully invited, you receive every month universal basic invome in Circles.",
+              "Once you got successfully invited, you receive every month universal basic income in Circles.",
           },
           videoHeader: {
             beFree: "BE FREE",
@@ -592,17 +592,17 @@ export const en = {
         pages: {
           categories: {
             loadingOffers: "Loading offers...",
-            error: "An error occured while loading the recent activities:",
+            error: "An error occurred while loading the recent activities:",
             noOffers: "No Offers",
           },
           categoryDetail: {
             loadingOffers: "Loading offers...",
-            error: "An error occured while loading the recent activities:",
+            error: "An error occurred while loading the recent activities:",
             noOffers: "No Offers",
           },
           myOffers: {
             loadingOffers: "Loading offers...",
-            error: "An error occured while loading the recent activities:",
+            error: "An error occurred while loading the recent activities:",
             noOffers: "No Offers",
           },
           myPurchases: {
@@ -652,7 +652,7 @@ export const en = {
           },
           offerDetail: {
             loadingOffers: "Loading offers...",
-            error: "An error occured while loading the recent activities:",
+            error: "An error occurred while loading the recent activities:",
             storePickup: "Store Pick Up at:",
             location: "Location",
             addToCart: "Add to Cart",
@@ -660,7 +660,7 @@ export const en = {
           },
           scanPurchase: {
             verifyingOrder: "verifying Order...",
-            invalitOrderCode: "invalid Order Code, please try a different one.",
+            invalidOrderCode: "invalid Order Code, please try a different one.",
             purchaseMarkedAsDelivered: "Purchase marked as delivered",
             scanToHandOut: "Scan to hand out purchase",
             cameraDefault: "Camera: Environment Facing (default)",
@@ -714,7 +714,7 @@ export const en = {
               },
               description: {
                 title: "Description",
-                descrption:
+                description:
                   "Describe your item in detail. Make it sound sexy. Try to make it fit into 500 Characters.",
                 placeholder: "Item description",
                 submitButtonText: "Next",
@@ -724,7 +724,7 @@ export const en = {
                 description:
                   "Select the City from which this item is being sold.",
                 placeholder: "City",
-                subnitButtonText: "Next",
+                submitButtonText: "Next",
               },
               offerCategory: {
                 title: "Select a Category",
@@ -735,7 +735,7 @@ export const en = {
               },
               offerUnit: {
                 title: "Select a Unit",
-                descrrption:
+                description:
                   "Choose a unit for your listing so it's easy to understand the amount.",
                 placeholder: "Unit",
                 submitButtonText: "Next",
@@ -756,7 +756,7 @@ export const en = {
               },
               offerDelivery: {
                 title: "Delivery",
-                desctiption:
+                description:
                   "Please choose the delivery method for your offer.",
                 submitButtonText: "Next",
               },
@@ -783,10 +783,10 @@ export const en = {
                 },
                 connectOrCreate: {
                   title: "Connect or create?",
-                  description: "Choose your screnario",
+                  description: "Choose your scenario",
                 },
               },
-              processDefenition: {
+              processDefinition: {
                 connectOrCreate: {
                   options: {
                     newSafe: "I'm new, create everything for me",
@@ -801,7 +801,7 @@ export const en = {
                 couldNotUpdate:
                   "Couldn't update the profile with the generated eoa: ${result}",
                 errorWhileDeploying:
-                  "An error occured while deploying your safe:",
+                  "An error occurred while deploying your safe:",
               },
             },
           },
@@ -820,7 +820,7 @@ export const en = {
                     "Please enter you invitation code below to get started.",
                   submitButtonText: "Verify",
                 },
-                dataShcemaRequired:
+                dataSchemaRequired:
                   "Please enter a valid invitation code to proceed",
                 couldNotClaimInvitation:
                   "Couldn't claim an invitation: {contextMessages}",
@@ -857,7 +857,7 @@ export const en = {
                 waitUntilRedeemed: {
                   title: "Please Wait",
                   description:
-                    "Please wait until your invitation transaction got confirmed and try again in a frew seconds.",
+                    "Please wait until your invitation transaction got confirmed and try again in a few seconds.",
                   submitButtonText: "Try again",
                 },
               },
@@ -939,7 +939,7 @@ export const en = {
             addNewOwner: "Adding new owner ..",
             updateRegistration: {
               importingYourOrganisations: "Importing your organisations ..",
-              addingYouAsAwoner: "Adding you as owner to {orgaName} ..",
+              addingYouAsOwner: "Adding you as owner to {orgaName} ..",
             },
             publishEvent: "Updating your profile ..",
           },
@@ -1017,7 +1017,7 @@ export const en = {
               stringRequired:
                 "Please enter a encryptingPin to protect your private key",
             },
-            invalidiPn: "Invalid Pin",
+            invalidPin: "Invalid Pin",
           },
         },
       },
@@ -1049,8 +1049,8 @@ export const en = {
         },
         processes: {
           identify: {
-            aquireSession: {
-              authenkticate: {
+            acquireSession: {
+              authenticate: {
                 authenticate2: {
                   strings: {
                     labelLoginEmail:
@@ -1068,7 +1068,7 @@ export const en = {
                       submitButtonText: "Let me in",
                     },
                     terms_privacy: {
-                      title: "Terms & Privavy",
+                      title: "Terms & Privacy",
                       description:
                         "CirclesLand is built on a blockchain, which by design is a transparent and permanent decentralized database. With your signup you agree that your profile, transactions and friend connections will be irrevocably public.<br/><br/><span class='text-xs'>For details read our <a href='https://blog.circles.land/terms-of-service' class='text-primary' target='_blank' alt='privacy policy & terms of service'>privacy policy & terms of service</a></span>",
                       submitButtonText: "I read and accept them",
@@ -1107,7 +1107,7 @@ export const en = {
               },
               acquireSession2: {
                 acquireSession: {
-                  message: "Sarting the session ..",
+                  message: "Starting the session ..",
                   error: {
                     contextsPropertyNotSet:
                       "The context's 'eoaAddress' property is not set but required by this step",
@@ -1151,14 +1151,14 @@ export const en = {
                     submitButtonText: "Use Key",
                   },
                   unlockPin: {
-                    title: "Please entern encryptingPin",
-                    description: "Please enter the encryptingPin for your key",
-                    placeholder: "Enter Pin",
+                    title: "Please enter PIN",
+                    description: "Please enter the PIN for your key",
+                    placeholder: "Enter PIN",
                     submitButtonText: "Login",
                   },
                 },
                 unlockKeyPin: {
-                  label: "Plase enter the PIN for key '{eoaName}'",
+                  label: "Please enter the PIN for key '{eoaName}'",
                   submitButtonText: "Unlock",
                   dataSchema: "Please enter your one time token.",
                 },
@@ -1197,7 +1197,7 @@ export const en = {
                   choiceCreate: "Create",
                   labelExportSeedphrase:
                     "Your Secret Recovery Code is the<span class='text-alert'>only key</span> which can access your safe. It is your <span class='text-alert'>full responsibility</span> to <span class='text-alert'>protect</span> this code like a <span class='text-alert'>password</span>.<br /><br /><span class='text-xs'>If you loose it or forget it, all your <span class='text-alert'>money is lost forever</span>.</span>",
-                  buttonExportSeedphrase: "I stored it scurely",
+                  buttonExportSeedphrase: "I stored it securely",
                   labelCheckSeedphrase:
                     "Keep in mind, everyone who knows your Secret Recovery Code can access all your funds! Did you store your Secret Recovery Code in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your Secret Recovery Code</strong>",
                   buttonCheckSeedphrase: "Really, I did it!",
@@ -1247,7 +1247,7 @@ export const en = {
               promptChoice: {
                 labelOneInvite: "1 invite",
                 labelFiveInvites: "5 invites",
-                labelTwentyfiveInvites: "25 invites",
+                labelTwentyFiveInvites: "25 invites",
               },
             },
           },
@@ -1271,7 +1271,7 @@ export const en = {
               firstName: {
                 title: "What is your first name?",
                 description:
-                  "Welcome, you are finally a citizan of CirclesLand. Glad to have you here.",
+                  "Welcome, you are finally a citizen of CirclesLand. Glad to have you here.",
                 placeholder: "First Name",
                 submitButtonText: "Save",
               },
@@ -1366,7 +1366,7 @@ export const en = {
         uploadFile: {
           noOkStatusFromFileServer:
             "Got a not-ok status from the file server: {status}",
-          couldNotUpload: "Could'nt upload the file",
+          couldNotUpload: "Couldn't upload the file",
         },
       },
       atoms: {
@@ -1376,9 +1376,9 @@ export const en = {
         error: {
           processEncounteredAnError: "The Process encountered an error",
           noErrorDetailsAvailable:
-            " No error details availabel. See the console for more details.",
-          pleaseTryToRoload:
-            "Please try to reload the page or contact us on Dirscord ",
+            " No error details available. See the console for more details.",
+          pleaseTryToReload:
+            "Please try to reload the page or contact us on Discord ",
           ifTheProblemPersists: " if the problem persists",
         },
         facetec: {
@@ -1386,7 +1386,7 @@ export const en = {
             sessionWasNotCompleted:
               "Session was not completed successfully, cancelling.  Session Status: ",
             noSessionId: "No sessionId",
-            unexoectedApiResponse: "Unexpected API response, cancelling out.",
+            unexpectedApiResponse: "Unexpected API response, cancelling out.",
             noSessionResult: "No _sessionResult.",
           },
         },
@@ -1538,7 +1538,7 @@ export const en = {
       stores: {
         purchases: {
           errors: {
-            couldNotComplete: "Couldn't complete the puchase.",
+            couldNotComplete: "Couldn't complete the purchase.",
             couldNotRevoke: "Couldn't revoke the completion status.",
           },
         },
@@ -1548,7 +1548,7 @@ export const en = {
             couldNotRevoke: "Couldn't revoke the completion status.",
           },
         },
-        tsanactions: {
+        transactions: {
           errors: {
             couldNotLoadData:
               "Couldn't load data for the following reasons: {error}",
