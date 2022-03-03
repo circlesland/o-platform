@@ -351,6 +351,9 @@ function setNav(navArgs: GenerateNavManifestArgs) {
     showLogin: dapp.dappId == "homepage:1" && !layout.dialogs.center,
   };
   navigation = generateNavManifest(args, null);
+  if (dapp.dappId == "events:1") {
+    navigation = null;
+  }
   currentNavArgs = args;
 }
 
@@ -439,7 +442,7 @@ function onOpenNavigation() {
       ...layout.dialogs,
       left: {
         isOpen: true,
-        component: NavigationList,
+        component: dapp.dappId == "events:1" ? null : NavigationList,
         routable: routable,
         runtimeDapp: runtimeDapp,
         params: {
@@ -1012,7 +1015,7 @@ async function handleUrlChanged() {
     }
   }
 
-  if (!navigation) {
+  if (!navigation && dapp.dappId != "events:1") {
     navigation = generateNavManifest(navArgs, null);
   }
 

@@ -6,6 +6,7 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 const index: Page<any, DappState> = {
   isSystem: true,
   routeParts: [],
+  anonymous: true,
   component: Event,
   title: "Event",
   type: "page",
@@ -20,13 +21,14 @@ export const events: DappManifest<DappState> = {
   dappId: "events:1",
   noAuthentication: true,
   isSingleton: true,
+  anonymous: true,
   isHidden: true,
   icon: "home",
   title: "Circles Land Events",
   routeParts: ["events"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
-  hideFooter: false,
+  hideFooter: true,
   isFullWidth: true,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
