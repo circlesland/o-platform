@@ -154,7 +154,6 @@ const processDefinition = (processId: string) =>
                 (context.data.safe = {
                   address: context.data.foundSafeAddresses[0],
                   origin: "Imported",
-                  balance: new BN("0"),
                 }),
               target: "#checkSafeAddress",
             },
@@ -204,7 +203,6 @@ const processDefinition = (processId: string) =>
 
               context.data.safe = {
                 address: addressToCheck,
-                balance: new BN("0"),
                 origin: "Imported",
               };
 

@@ -1608,3 +1608,36 @@ query findInvitationCreator($code: String!) {
     avatarUrl
   }
 }
+
+query init {
+  sessionInfo {
+    profile {
+      # init.registration
+      id
+      emailAddress
+      circlesSafeOwner
+      # init.safe
+      circlesAddress
+      # init.profile
+      firstName
+      lastName
+      city {
+        geonameid
+        name
+      }
+      dream
+      avatarUrl
+      # init.invitation
+      claimedInvitation {
+        claimedAt
+      }
+      # init.eoaInvitationTransaction
+      invitationTransaction {
+        timestamp
+        transaction_hash
+      }
+      # init.ubi
+      circlesTokenAddress
+    }
+  }
+}

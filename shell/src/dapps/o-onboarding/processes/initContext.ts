@@ -17,6 +17,5 @@ export type InitContext = {
   eoa?: EoaData;
   eoaInvitationTransaction?: ProfileEvent;
   safe?: SafeData;
-  safeInvitationTransaction?: ProfileEvent;
   ubi?: UbiData,
 };

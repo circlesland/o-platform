@@ -8,10 +8,10 @@ import {
   ClaimedInvitationQueryVariables,
   CrcSignup,
   HubSignupTransactionDocument,
-  HubSignupTransactionQueryVariables,
+  HubSignupTransactionQueryVariables, InitDocument, InitQuery, InitQueryVariables,
   InvitationTransactionDocument,
-  InvitationTransactionQueryVariables,
-  ProfileEvent,
+  InvitationTransactionQueryVariables, Profile,
+  ProfileEvent, StreamQueryVariables,
   WhoamiDocument,
   WhoamiQueryVariables,
 } from "../../../shared/api/data/types";
@@ -36,7 +36,7 @@ import { Environment } from "../../../shared/environment";
 export const initMachine = createMachine<InitContext, InitEvent>(
   {
     id: `init`,
-    initial: "initial",
+    initial: "prepare",
     context: {
       session: null,
       openLoginUserInfo: null,
@@ -46,13 +46,90 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       eoa: null,
       eoaInvitationTransaction: null,
       safe: null,
-      safeInvitationTransaction: null,
       ubi: null,
     },
     on: {
       CANCEL: "cancelled",
     },
     states: {
+      prepare: {
+        entry:() => {
+          window.o.publishEvent({
+            type: "shell.openModalProcess",
+          });
+        },
+        invoke: {
+          src: async(context) => {
+            const initResult:any = await ApiClient.query<Profile, InitQueryVariables>(InitDocument, {});
+            console.log("initResult:", initResult);
+
+            if (initResult.profile.circlesSafeOwner) {
+              context.eoa = {
+                address: initResult.profile.circlesSafeOwner,
+                origin: "Created",
+                balance: undefined,
+                privateKey: undefined
+              };
+              context.registration = {
+                email: initResult.profile.emailAddress,
+                profileId: initResult.profile.id,
+                subscribedToNewsletter: initResult.profile.newsletter,
+                circlesSafeOwner: initResult.profile.circlesSafeOwner,
+                acceptedToSVersion: undefined,
+                successorOfCirclesAddress: undefined
+              };
+              context.profile = {
+                id: initResult.profile.id,
+                circlesAddress: initResult.profile.circlesAddress,
+                avatarUrl: initResult.profile.avatarUrl,
+                circlesSafeOwner: initResult.profile.circlesSafeOwner,
+                cityId: undefined,
+                firstName: initResult.profile.firstName,
+                lastName: initResult.profile.lastName,
+                passion: initResult.profile.dream
+              };
+              context.safe = {
+                address: initResult.profile.circlesAddress,
+                origin: "Created"
+              };
+              context.invitation = {
+                ...initResult.profile.claimedInvitation
+              };
+              context.eoaInvitationTransaction = {
+                ...initResult.profile.invitationTransaction
+              };
+              context.ubi = {
+                tokenAddress: initResult.profile.circlesTokenAddress
+              };
+            }
+          },
+          onDone: [{
+            cond: context => !!context.safe?.address && !!context.ubi?.tokenAddress,
+            actions: () => console.log(`!!context.safe?.address && !!context.ubi?.tokenAddress  -->  init.finalize`),
+            target: "finalize"
+          }, {
+            cond: context => !!context.safe?.address && !!context.profile?.firstName && context.profile?.firstName != "",
+            actions: () => console.log(`!!context.safe?.address && !!context.profile?.firstName && context.profile?.firstName != ""  -->  init.ubi`),
+            target: "ubi"
+          }, {
+            cond: context => !!context.invitation?.claimedAt && !!context.safe?.address,
+            actions: () => console.log(`!!context.invitation?.claimedAt && !!context.safe?.address  -->  init.profile`),
+            target: "profile"
+          }, {
+            cond: context => !!context.registration?.circlesSafeOwner && !!context.invitation?.claimedAt,
+            actions: () => console.log(`!!context.registration?.circlesSafeOwner && !!context.invitation?.claimedAt  -->  init.eoa.redeemInvitation`),
+            target: "eoa.redeemInvitation"
+          }, {
+            cond: context => !!context.registration?.profileId && !!context.registration?.circlesSafeOwner,
+            actions: () => console.log(`!!context.registration?.profileId && !!context.registration?.circlesSafeOwner  -->  init.invitation`),
+            target: "invitation"
+          }, {
+            actions: () => console.log(`catch-all  -->  init.initial`),
+            target: "initial"
+          }],
+          onError: "initial"
+        }
+      },
       initial: {
         entry: [() => console.log("init.initial")],
         invoke: { src: "loadSession" },
@@ -530,15 +607,11 @@ export const initMachine = createMachine<InitContext, InitEvent>(
               });
 
           if (profile?.circlesAddress) {
-            const safeBalance = await RpcGateway.get().eth.getBalance(
-              profile.circlesAddress
-            );
             callback({
               type: "GOT_SAFE",
               safe: {
                 address: profile.circlesAddress,
-                origin: "Created", // TODO: Find correct origin,
-                balance: new BN(safeBalance),
+                origin: "Created", // TODO: Find correct origin
               },
             });
           } else {

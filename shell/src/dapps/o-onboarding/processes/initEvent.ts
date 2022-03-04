@@ -34,7 +34,6 @@ export type EoaData = {
 export type SafeData = {
   address: string;
   origin: Origin;
-  balance?: BN;
 }
 
 export type UbiData = {
