@@ -34,8 +34,7 @@ $: {
   }
 
   if (profile.__typename == "Profile") {
-    displayName =
-      profile.firstName + (profile.lastName ? " " + profile.lastName : "");
+    displayName = profile.displayName;
   } else {
     displayName = profile.name ? " " + profile.name : "";
   }

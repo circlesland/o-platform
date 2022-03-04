@@ -88,9 +88,7 @@ onMount(async () => {
       }
     }
 
-    displayableName =
-      targetProfile.firstName +
-      (!targetProfile.lastName ? "" : " " + targetProfile.lastName);
+    displayableName = targetProfile.displayName;
   }
 });
 function openDetail(transfer: ProfileEvent) {

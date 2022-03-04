@@ -11,11 +11,9 @@ let displayName = "";
 $: {
   const classes = [];
 
-  if (item.safeProfile &&
-      item.safeProfile.firstName &&
-      item.safeProfile.firstName != "")
+  if (item.safeProfile)
   {
-    displayName = `${item.safeProfile.firstName} ${item.safeProfile.lastName ?? ""}`;
+    displayName = item.safeProfile.displayName;
   } else {
     displayName = item.safeAddress;
   }

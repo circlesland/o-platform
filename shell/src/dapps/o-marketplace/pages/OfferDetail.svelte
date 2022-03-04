@@ -108,8 +108,7 @@ onMount(async () => {
                 gradientRing="{false}" />
             </div>
             <div>
-              {o.createdByProfile.firstName}
-              {o.createdByProfile.lastName ? o.createdByProfile.lastName : ""}
+              {o.createdByProfile.displayName}
             </div>
           </div>
 

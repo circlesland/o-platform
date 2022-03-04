@@ -55,10 +55,7 @@ export let routable: Routable;
               <div class="flex-grow min-w-0">
                 <h2
                   class="overflow-hidden text-sm sm:text-lg overflow-ellipsis">
-                  {displayableName(
-                    purchase.invoices[0].sellerProfile.firstName,
-                    purchase.invoices[0].sellerProfile.lastName
-                  )}
+                  {purchase.invoices[0].sellerProfile.displayName}
                 </h2>
               </div>
               <div

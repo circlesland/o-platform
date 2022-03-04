@@ -242,7 +242,7 @@ onMount(async () => {
           </div>
 
           <div>
-            {displayableName(buyerProfile.firstName, buyerProfile.lastName)}
+            {buyerProfile.displayName}
           </div>
         </div>
       </div>

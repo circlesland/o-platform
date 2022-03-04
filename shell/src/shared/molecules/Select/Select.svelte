@@ -176,11 +176,7 @@ $: {
   // This is some Hardcoded shit to display the currently selected Value into the placeholder of the input.
   // Since we have different types of results, we need to call different keys..
   if (selectedValue && selectedValue.__typename == "Profile") {
-    displayableSelectedValue = selectedValue.firstName;
-    if (selectedValue.lastName) {
-      displayableSelectedValue =
-        displayableSelectedValue + " " + selectedValue.lastName;
-    }
+    displayableSelectedValue = selectedValue.displayName;
   } else if (selectedValue && selectedValue.__typename == "City") {
     displayableSelectedValue = selectedValue.name;
     if (selectedValue.country) {

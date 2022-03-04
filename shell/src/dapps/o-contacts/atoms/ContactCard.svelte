@@ -19,12 +19,7 @@ let message: string;
 let untrusted: boolean = false;
 
 onMount(() => {
-  displayName = `${contact.contactAddress_Profile.firstName} ${
-    contact.contactAddress_Profile.lastName
-      ? contact.contactAddress_Profile.lastName
-      : ""
-  }`;
-
+  displayName = contact.contactAddress_Profile.displayName;
   safeAddress = contact.contactAddress;
   message = "";
 

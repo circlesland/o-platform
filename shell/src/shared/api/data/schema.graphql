@@ -461,6 +461,7 @@ type Profile {
     contacts: [Contact!]
     country: String
     displayCurrency: DisplayCurrency
+    displayName: String
     displayTimeCircles: Boolean
     dream: String
     emailAddress: String

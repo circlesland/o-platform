@@ -58,10 +58,7 @@ function onkeydown(e: KeyboardEvent) {
 
     <div>
       <span class="mt-4 text-xl">
-        to {displayableName(
-          profile.profile.firstName,
-          profile.profile.lastName
-        )}
+        to {profile.displayName}
       </span>
     </div>
     <div class="text-dark-lightest">

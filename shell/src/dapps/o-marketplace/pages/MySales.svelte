@@ -56,10 +56,7 @@ export let routable: Routable;
               class="flex flex-row items-center justify-between px-3 text-left">
               <div class="flex-grow min-w-0">
                 <h2 class="overflow-hidden text-base text-lg overflow-ellipsis">
-                  {displayableName(
-                    sale.buyerProfile.firstName,
-                    sale.buyerProfile.lastName
-                  )}
+                  {sale.buyerProfile.displayName}
                 </h2>
               </div>
               <div

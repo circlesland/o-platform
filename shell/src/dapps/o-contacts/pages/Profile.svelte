@@ -71,12 +71,7 @@ async function setProfile(id: string) {
     commonTrusts = [];
   }
 
-  displayName = contact.contactAddress_Profile.firstName
-    ? contact.contactAddress_Profile.firstName +
-      (contact.contactAddress_Profile.lastName
-        ? " " + contact.contactAddress_Profile.lastName
-        : "")
-    : contact.contactAddress;
+  displayName = contact.contactAddress_Profile.displayName;
 
   // displayName =
   //   displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;

@@ -174,16 +174,7 @@ const processDefinition = (processId: string) =>
             submitButtonText: window.i18n("dapps.o-onboarding.processes.selectSafe.submitButtonText"),
             itemTemplate: DropDownCandidateSafe, // TODO: This is not used by the SimpleDropDownEditor
             getKey: (o) => o.safeAddress,
-            getLabel: (o) => {
-              if (
-                o.safeProfile &&
-                o.safeProfile.firstName &&
-                o.safeProfile.firstName != ""
-              ) {
-                return `${o.safeProfile.firstName} ${o.safeProfile.lastName ?? ""}`;
-              }
-              return o.safeAddress;
-            },
+            getLabel: (o) => o.safeProfile ? o.safeProfile.displayName : o.safeAddress,
             keyProperty: "safeAddress",
             choices: {
               byKey: async (key: string, context) => {

@@ -67,9 +67,7 @@ function dateOlderThanSevenDays(unixTime: number) {
   return sevendaysago > unixTime * 1000;
 }
 
-let displayName = `${offer.createdByProfile.firstName} ${
-  offer.createdByProfile.lastName ? offer.createdByProfile.lastName : ""
-}`;
+let displayName = `${offer.createdByProfile.displayName}`;
 
 displayName =
   displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;

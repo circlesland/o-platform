@@ -37,13 +37,12 @@
         <img
           class="rounded-full"
           src="{profile && profile.avatarUrl ? profile.avatarUrl : ''}"
-          alt="{profile ? (profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.firstName) : 'avatar'}" />
+          alt="Avatar of {profile.displayName}" />
       </div>
     </div>
     <div class="self-center flex-grow text-center justify-self-start">
       <h2>
-        {profile ? profile.firstName : ''}
-        {profile && profile.lastName ? profile.lastName : ''}
+        {profile ? profile.displayName : ''}
       </h2>
     </div>
   {/if}

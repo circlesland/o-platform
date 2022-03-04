@@ -1,6 +1,7 @@
 import {readable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {Profile} from "../api/data/types";
+import {displayableName} from "../functions/stringHelper";
 
 export const me = readable<Profile|null>(null, function start(set) {
   const subscription = window.o.events.subscribe((event: PlatformEvent & {
@@ -22,6 +23,9 @@ export const me = readable<Profile|null>(null, function start(set) {
   if (cachedProfile) {
     try {
       const profile = JSON.parse(cachedProfile);
+      if (!profile.displayName) {
+        profile.displayName = displayableName(profile.firstName, profile.lastName);
+      }
       set(profile);
     } catch (e) {
       console.warn(`Parsing of the cached profile from localStorage(me) failed:`, e);

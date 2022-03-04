@@ -10,9 +10,7 @@ export let showPassion: boolean = true;
 let displayName: string;
 
 if (profile.__typename == "Profile") {
-  displayName = `${profile.firstName} ${
-    profile.lastName ? profile.lastName : ""
-  }`;
+  displayName = profile.displayName;
 } else {
   displayName = profile.name ? profile.name : "";
 }

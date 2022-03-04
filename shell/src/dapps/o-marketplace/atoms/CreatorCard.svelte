@@ -13,9 +13,7 @@ let id: number;
 $: {
   if (profile) {
     // <!-- TODO: Possible actions: trust (also: send money if they still trust $mySafe) -->
-    displayName = profile
-      ? profile.firstName + " " + profile.lastName
-      : profile.circlesAddress;
+    displayName = profile.displayName;
     pictureUrl = profile ? profile.avatarUrl : undefined;
     safeAddress = profile.circlesAddress;
     id = profile.id;

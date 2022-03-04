@@ -17,10 +17,7 @@ function loadDetailPage(path) {
     params="{{
       edgeless: false,
       imageProfile: param.verifiedProfile,
-      title: displayableName(
-        param.verifiedProfile.firstName,
-        param.verifiedProfile.lastName
-      ),
+      title: param.verifiedProfile.displayName,
       subTitle: window.i18n("dapps.o-verification.atoms.verificationCard.subtitle", { values: { name: param.verifierProfile.name, date: dayjs(param.createdAt).format('DD.MM.YYYY')}}),
       truncateMain: true,
     }}">

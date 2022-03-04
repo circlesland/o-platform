@@ -44,9 +44,7 @@ async function setProfile(apiProfile: Profile, $me) {
       lastName: apiProfile.lastName,
       circlesAddress: apiProfile.circlesAddress,
       circlesSafeOwner: apiProfile.circlesSafeOwner,
-      displayName: `${apiProfile.firstName} ${
-        apiProfile.lastName ? apiProfile.lastName : ""
-      }`,
+      displayName: apiProfile.displayName,
       trusting: undefined,
       trustedBy: undefined,
       cityGeonameid: apiProfile.cityGeonameid,

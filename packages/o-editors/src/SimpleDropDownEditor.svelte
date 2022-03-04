@@ -56,12 +56,7 @@ function itemRenderer(item:SafeInfo, isSelected) {
   let avatar;
   let name;
   if (item.safeProfile) {
-    name = item.safeProfile.firstName
-      ? item.safeProfile.firstName +
-        (item.safeProfile.lastName
-          ? " " + item.safeProfile.lastName
-          : "")
-      : item.safeAddress;
+    name = item.safeProfile.displayName;
     avatar = item.safeProfile.avatarUrl
       ? item.safeProfile.avatarUrl
       : "/images/market/circles-no-image.jpg";

@@ -114,10 +114,7 @@ const processDefinition = (processId: string) =>
             html: (context) => `<img style="max-width:128px;" src="${
               !context.data.inviterProfile.avatarUrl 
                 ? AvataarGenerator.generate(context.data.inviterProfile.circlesAddress) 
-                : context.data.inviterProfile.avatarUrl}" /> <b>${context.data.inviterProfile.firstName
-              }  ${context.data.inviterProfile.lastName 
-              ? "" + context.data.inviterProfile.lastName 
-              : ""}${window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.htmlContext")}`,
+                : context.data.inviterProfile.avatarUrl}" /> <b>${context.data.inviterProfile.displayName}${window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.htmlContext")}`,
             submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.loginButton"),
             hideNav: false,
           },

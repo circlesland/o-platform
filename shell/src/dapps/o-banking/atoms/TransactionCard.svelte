@@ -136,10 +136,7 @@ function loadDetailPage(path) {
         event.direction === 'in'
           ? fromProfile.circlesAddress
           : toProfile.circlesAddress,
-      title:
-        targetProfile.firstName +
-        ' ' +
-        (!targetProfile.lastName ? '' : targetProfile.lastName),
+      title: targetProfile.displayName,
       subTitle: message ? message : '',
       truncateMain: true,
       endTextBig: amount,

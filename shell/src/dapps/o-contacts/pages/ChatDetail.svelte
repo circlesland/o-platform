@@ -174,8 +174,7 @@ function goToProfile(e, path?: string) {
           class:text-3xl="{!isMobile() ||
             !contactProfile.firstName.startsWith('0x')}"
           class:text-xs="{contactProfile.firstName.startsWith('0x')}">
-          {contactProfile.firstName}
-          {contactProfile.lastName ? contactProfile.lastName : ""}
+          {contactProfile.displayName}
 
           <!-- class:text-3xl="{!isMobile() &&
             !contactProfile.firstName.startsWith('0x')}"

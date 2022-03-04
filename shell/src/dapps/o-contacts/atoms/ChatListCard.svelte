@@ -32,11 +32,9 @@ if (param.contactAddress_Profile) {
   };
 }
 
-displayName =
-  contactProfile.firstName +
-  (contactProfile.lastName ? " " + contactProfile.lastName : "");
-displayName =
-  displayName.length >= 28 ? displayName.substr(0, 28) + "..." : displayName;
+displayName = contactProfile.displayName.length >= 28
+        ? contactProfile.displayName.substr(0, 28) + "..."
+        : contactProfile.displayName;
 
 const trustMetadata: ContactPoint = param.metadata.find(
   (p) => p.name === "CrcTrust"

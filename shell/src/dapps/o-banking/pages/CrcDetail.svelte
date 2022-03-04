@@ -43,13 +43,7 @@ onMount(async () => {
                 : {
                     circlesAddress: token.token_owner_address,
                   },
-              title: token.token_owner_profile
-                ? `${token.token_owner_profile.firstName} ${
-                    token.token_owner_profile.lastName
-                      ? token.token_owner_profile.lastName
-                      : ''
-                  }`
-                : token.token_owner_address,
+              title: token.token_owner_profile.displayName,
               subTitle: token.token_owner_profile
                 ? token.token_owner_address
                 : '',
