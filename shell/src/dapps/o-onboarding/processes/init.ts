@@ -102,6 +102,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
             }
           },
           onDone: [{
+            cond: context => !!context.eoa && !sessionStorage.getItem("circlesKey") && !!localStorage.getItem("circlesKeys"),
+            actions: () => console.log(`!!context.eoa && !sessionStorage.getItem("circlesKey")  -->  tryUnlockEoa`),
+            target: "eoa.tryUnlockEoa"
+          },{
             cond: context => !!context.safe?.address && !!context.ubi?.tokenAddress,
             actions: () => console.log(`!!context.safe?.address && !!context.ubi?.tokenAddress  -->  init.finalize`),
             target: "finalize"

@@ -44,6 +44,17 @@ export const me = readable<Profile|null>(null, function start(set) {
     */
   }
 
+  /*
+  setInterval(() => {
+    const cachedProfile = localStorage.getItem("me");
+    if (!cachedProfile)
+      return;
+
+    const p:Profile = JSON.parse(cachedProfile);
+    set(p);
+  }, 10000);
+   */
+
   return function stop() {
     subscription.unsubscribe();
   };

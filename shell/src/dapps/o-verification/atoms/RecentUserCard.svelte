@@ -17,7 +17,6 @@ $: {
 function loadDetailPage(path) {
   push(`#/contacts/profile/${path}`);
 }
-console.log(param);
 </script>
 
 <div on:click="{() => loadDetailPage(param.circlesAddress)}">
