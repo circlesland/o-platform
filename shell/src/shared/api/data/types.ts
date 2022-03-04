@@ -1770,7 +1770,7 @@ export type InitQuery = (
     { __typename?: 'SessionInfo' }
     & { profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'emailAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'circlesTokenAddress'>
+      & Pick<Profile, 'id' | 'emailAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'circlesTokenAddress'>
       & { city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'name'>
@@ -1871,7 +1871,7 @@ export type FindSafesByOwnerQuery = (
     & Pick<SafeInfo, 'type' | 'safeAddress' | 'lastUbiAt' | 'randomValue' | 'tokenAddress'>
     & { safeProfile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'cityGeonameid'>
+      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'cityGeonameid'>
       & { city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
@@ -1890,7 +1890,7 @@ export type MyInvitationsQuery = (
     & Pick<CreatedInvitation, 'createdAt' | 'claimedAt' | 'name' | 'address' | 'balance' | 'code'>
     & { claimedBy?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'circlesAddress' | 'circlesSafeOwner' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
+      & Pick<Profile, 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
     )> }
   )> }
 );
@@ -1902,7 +1902,7 @@ export type MyProfileQuery = (
   { __typename?: 'Query' }
   & { myProfile?: Maybe<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'displayCurrency' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
@@ -1911,14 +1911,14 @@ export type MyProfileQuery = (
       & Pick<Membership, 'isAdmin'>
       & { organisation: (
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl'>
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl'>
       ) }
     )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
       )> }
     )>> }
   )> }
@@ -1933,7 +1933,7 @@ export type ProfilesQuery = (
   { __typename?: 'Query' }
   & { profilesById: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'displayCurrency'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -1942,7 +1942,7 @@ export type ProfilesQuery = (
       & Pick<Membership, 'isAdmin'>
       & { organisation: (
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl'>
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -1953,7 +1953,7 @@ export type ProfilesQuery = (
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -1999,7 +1999,7 @@ export type ProfilesByNameQuery = (
   { __typename?: 'Query' }
   & { search: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'origin' | 'circlesSafeOwner' | 'circlesAddress' | 'successorOfCirclesAddress' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'country' | 'displayCurrency'>
+    & Pick<Profile, 'id' | 'origin' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'successorOfCirclesAddress' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'country'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2008,7 +2008,7 @@ export type ProfilesByNameQuery = (
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2027,7 +2027,7 @@ export type GetRecentProfilesQuery = (
   { __typename?: 'Query' }
   & { recentProfiles: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'origin' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'origin' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2036,7 +2036,7 @@ export type GetRecentProfilesQuery = (
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2055,7 +2055,7 @@ export type ProfilesByCirclesAddressQuery = (
   { __typename?: 'Query' }
   & { profilesBySafeAddress: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'origin' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'origin' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2064,7 +2064,7 @@ export type ProfilesByCirclesAddressQuery = (
       & Pick<Membership, 'isAdmin'>
       & { organisation: (
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl'>
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2075,7 +2075,7 @@ export type ProfilesByCirclesAddressQuery = (
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2094,7 +2094,7 @@ export type ProfilesByIdsQuery = (
   { __typename?: 'Query' }
   & { profilesById: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'origin' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'origin' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2103,7 +2103,7 @@ export type ProfilesByIdsQuery = (
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2125,16 +2125,16 @@ export type TrustRelationsQuery = (
     & Pick<TrustRelation, 'safeAddress' | 'direction' | 'otherSafeAddress'>
     & { safeAddressProfile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'origin' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress'>
+      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'origin' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency'>
     )>, otherSafeAddressProfile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress'>
+      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency'>
       & { verifications?: Maybe<Array<(
         { __typename?: 'Verification' }
         & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
         & { verifierProfile?: Maybe<(
           { __typename?: 'Organisation' }
-          & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+          & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
           & { city?: Maybe<(
             { __typename?: 'City' }
             & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2154,7 +2154,7 @@ export type ProfileByIdQuery = (
   { __typename?: 'Query' }
   & { profilesById: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'successorOfCirclesAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream'>
+    & Pick<Profile, 'id' | 'successorOfCirclesAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
@@ -2163,7 +2163,7 @@ export type ProfileByIdQuery = (
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2182,7 +2182,7 @@ export type ProfileBySafeAddressQuery = (
   { __typename?: 'Query' }
   & { profilesBySafeAddress: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'successorOfCirclesAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream'>
+    & Pick<Profile, 'id' | 'successorOfCirclesAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
@@ -2191,7 +2191,7 @@ export type ProfileBySafeAddressQuery = (
       & Pick<Membership, 'isAdmin'>
       & { organisation: (
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl'>
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2202,7 +2202,7 @@ export type ProfileBySafeAddressQuery = (
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2248,7 +2248,7 @@ export type OrganisationsQuery = (
   { __typename?: 'Query' }
   & { organisations: Array<(
     { __typename?: 'Organisation' }
-    & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarUrl'>
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'createdAt' | 'name' | 'avatarUrl'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2263,7 +2263,7 @@ export type RegionsQuery = (
   { __typename?: 'Query' }
   & { regions: Array<(
     { __typename?: 'Organisation' }
-    & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarUrl'>
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'createdAt' | 'name' | 'avatarUrl'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2280,20 +2280,20 @@ export type OrganisationsByAddressQuery = (
   { __typename?: 'Query' }
   & { organisationsByAddress: Array<(
     { __typename?: 'Organisation' }
-    & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarUrl'>
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'createdAt' | 'name' | 'avatarUrl'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
     )>, members?: Maybe<Array<(
       { __typename?: 'Organisation' }
-      & Pick<Organisation, 'id' | 'circlesAddress' | 'createdAt' | 'name' | 'avatarUrl'>
+      & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'createdAt' | 'name' | 'avatarUrl'>
       & { city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'name' | 'country'>
       )> }
     ) | (
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'successorOfCirclesAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream'>
+      & Pick<Profile, 'id' | 'successorOfCirclesAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream'>
       & { city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'country' | 'name'>
@@ -2302,7 +2302,7 @@ export type OrganisationsByAddressQuery = (
         & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
         & { verifierProfile?: Maybe<(
           { __typename?: 'Organisation' }
-          & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+          & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
           & { city?: Maybe<(
             { __typename?: 'City' }
             & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2326,7 +2326,7 @@ export type CommonTrustQuery = (
     & Pick<CommonTrust, 'type' | 'safeAddress1' | 'safeAddress2'>
     & { profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress'>
+      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency'>
     )> }
   )> }
 );
@@ -2346,35 +2346,35 @@ export type StreamQuery = (
     & Pick<ProfileEvent, 'timestamp' | 'transaction_hash' | 'block_number' | 'safe_address' | 'contact_address' | 'direction' | 'type'>
     & { contact_address_profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'successorOfCirclesAddress' | 'circlesAddress' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
+      & Pick<Profile, 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
     )>, payload?: Maybe<(
       { __typename?: 'ChatMessage' }
       & Pick<ChatMessage, 'from' | 'to' | 'text'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
     ) | (
       { __typename?: 'CrcHubTransfer' }
       & Pick<CrcHubTransfer, 'transaction_hash' | 'from' | 'to' | 'flow'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )>, transfers: Array<(
         { __typename?: 'CrcTokenTransfer' }
         & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
         & { from_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
         )>, to_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
         )> }
       )>, tags: Array<(
         { __typename?: 'Tag' }
@@ -2385,10 +2385,10 @@ export type StreamQuery = (
       & Pick<CrcMinting, 'transaction_hash' | 'token' | 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
     ) | (
       { __typename?: 'CrcSignup' }
@@ -2401,10 +2401,10 @@ export type StreamQuery = (
       & Pick<Erc20Transfer, 'transaction_hash' | 'from' | 'to' | 'value'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )>, to_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
     ) | (
       { __typename?: 'EthTransfer' }
@@ -2420,7 +2420,7 @@ export type StreamQuery = (
       & Pick<InvitationRedeemed, 'name' | 'code' | 'redeemedBy'>
       & { redeemedBy_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
     ) | (
       { __typename?: 'MemberAdded' }
@@ -2434,27 +2434,27 @@ export type StreamQuery = (
       & Pick<MembershipAccepted, 'createdBy' | 'member' | 'organisation'>
       & { organisation_profile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
     ) | (
       { __typename?: 'MembershipOffer' }
       & Pick<MembershipOffer, 'createdBy' | 'organisation' | 'isAdmin'>
       & { organisation_profile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
     ) | (
       { __typename?: 'MembershipRejected' }
       & Pick<MembershipRejected, 'member' | 'organisation'>
       & { organisation_profile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
     ) | (
       { __typename?: 'NewUser' }
       & { profile: (
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       ) }
     ) | (
       { __typename?: 'OrganisationCreated' }
@@ -2467,7 +2467,7 @@ export type StreamQuery = (
       { __typename?: 'Purchased' }
       & { seller_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )>, purchase: (
         { __typename?: 'Purchase' }
         & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress' | 'total'>
@@ -2483,10 +2483,10 @@ export type StreamQuery = (
           & Pick<Invoice, 'id' | 'pickupCode' | 'paymentTransactionHash' | 'cancelledAt' | 'invoiceNo' | 'sellerSignature' | 'buyerSignature'>
           & { buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
-            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
           )>, sellerProfile?: Maybe<(
             { __typename?: 'Profile' }
-            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
           )> }
         )>> }
       ) }
@@ -2502,7 +2502,7 @@ export type StreamQuery = (
       & Pick<SaleEvent, 'buyer'>
       & { buyer_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )>, invoice?: Maybe<(
         { __typename?: 'Invoice' }
         & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'cancelReason'>
@@ -2520,7 +2520,7 @@ export type StreamQuery = (
       & Pick<WelcomeMessage, 'invitedBy'>
       & { invitedBy_profile?: Maybe<(
         { __typename?: 'Profile' }
-        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
     )> }
   )> }
@@ -2540,7 +2540,7 @@ export type AggregatesQuery = (
     & Pick<ProfileAggregate, 'type' | 'safe_address'>
     & { safe_address_profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
     )>, payload: (
       { __typename?: 'Contacts' }
       & Pick<Contacts, 'lastUpdatedAt'>
@@ -2552,7 +2552,7 @@ export type AggregatesQuery = (
           & Pick<ContactPoint, 'name' | 'directions' | 'values' | 'timestamps'>
         )>, contactAddress_Profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
           & { city?: Maybe<(
             { __typename?: 'City' }
             & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2561,7 +2561,7 @@ export type AggregatesQuery = (
             & Pick<Membership, 'isAdmin'>
             & { organisation: (
               { __typename?: 'Organisation' }
-              & Pick<Organisation, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl'>
+              & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl'>
               & { city?: Maybe<(
                 { __typename?: 'City' }
                 & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2572,7 +2572,7 @@ export type AggregatesQuery = (
             & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
             & { verifierProfile?: Maybe<(
               { __typename?: 'Organisation' }
-              & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+              & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
               & { city?: Maybe<(
                 { __typename?: 'City' }
                 & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2589,7 +2589,7 @@ export type AggregatesQuery = (
         & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
         & { token_owner_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
         )> }
       )> }
     ) | (
@@ -2600,7 +2600,7 @@ export type AggregatesQuery = (
         & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
         & { token_owner_profile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
         )> }
       )> }
     ) | (
@@ -2608,17 +2608,17 @@ export type AggregatesQuery = (
       & Pick<Members, 'lastUpdatedAt'>
       & { members: Array<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'circlesAddress'>
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency'>
       ) | (
         { __typename?: 'Profile' }
-        & Pick<Profile, 'successorOfCirclesAddress' | 'circlesAddress'>
+        & Pick<Profile, 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency'>
       )> }
     ) | (
       { __typename?: 'Memberships' }
       & Pick<Memberships, 'lastUpdatedAt'>
       & { organisations: Array<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'circlesAddress'>
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency'>
       )> }
     ) | (
       { __typename?: 'Offers' }
@@ -2628,7 +2628,7 @@ export type AggregatesQuery = (
         & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit' | 'timeCirclesPriceShare'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
         )> }
       )> }
     ) | (
@@ -2639,7 +2639,7 @@ export type AggregatesQuery = (
         & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress' | 'total'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
         )>, lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount'>
@@ -2648,7 +2648,7 @@ export type AggregatesQuery = (
             & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
-              & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+              & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
             )> }
           )> }
         )>>, invoices?: Maybe<Array<(
@@ -2656,7 +2656,7 @@ export type AggregatesQuery = (
           & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'cancelReason'>
           & { sellerProfile?: Maybe<(
             { __typename?: 'Profile' }
-            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
           )> }
         )>> }
       )> }
@@ -2668,16 +2668,16 @@ export type AggregatesQuery = (
         & Pick<Sale, 'id' | 'createdAt' | 'total'>
         & { sellerProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
         )>, buyerProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
           & { verifications?: Maybe<Array<(
             { __typename?: 'Verification' }
             & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
             & { verifierProfile?: Maybe<(
               { __typename?: 'Organisation' }
-              & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+              & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
               & { city?: Maybe<(
                 { __typename?: 'City' }
                 & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2692,7 +2692,7 @@ export type AggregatesQuery = (
             & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
-              & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+              & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
             )> }
           ) }
         )>>, invoices?: Maybe<Array<(
@@ -2700,13 +2700,13 @@ export type AggregatesQuery = (
           & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'cancelReason'>
           & { buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
-            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
             & { verifications?: Maybe<Array<(
               { __typename?: 'Verification' }
               & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
               & { verifierProfile?: Maybe<(
                 { __typename?: 'Organisation' }
-                & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+                & Pick<Organisation, 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
                 & { city?: Maybe<(
                   { __typename?: 'City' }
                   & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -2765,7 +2765,7 @@ export type VerificationsQuery = (
       & Pick<Organisation, 'avatarUrl' | 'name'>
     )>, verifiedProfile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
     )> }
   )> }
 );
@@ -2779,7 +2779,7 @@ export type FindInvitationCreatorQuery = (
   { __typename?: 'Query' }
   & { findInvitationCreator?: Maybe<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'circlesAddress' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
+    & Pick<Profile, 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
   )> }
 );
 
@@ -3271,6 +3271,7 @@ export const InitDocument = gql`
       emailAddress
       circlesSafeOwner
       circlesAddress
+      displayCurrency
       displayName
       firstName
       lastName
@@ -3363,6 +3364,7 @@ export const FindSafesByOwnerDocument = gql`
     safeProfile {
       id
       circlesAddress
+      displayCurrency
       circlesSafeOwner
       displayName
       firstName
@@ -3389,6 +3391,7 @@ export const MyInvitationsDocument = gql`
     claimedAt
     claimedBy {
       circlesAddress
+      displayCurrency
       circlesSafeOwner
       displayName
       firstName
@@ -3407,6 +3410,7 @@ export const MyProfileDocument = gql`
   myProfile {
     id
     circlesAddress
+    displayCurrency
     circlesSafeOwner
     successorOfCirclesAddress
     displayName
@@ -3435,6 +3439,7 @@ export const MyProfileDocument = gql`
       organisation {
         id
         circlesAddress
+        displayCurrency
         circlesSafeOwner
         name
         description
@@ -3447,6 +3452,7 @@ export const MyProfileDocument = gql`
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        displayCurrency
         avatarUrl
         name
       }
@@ -3459,6 +3465,7 @@ export const ProfilesDocument = gql`
   profilesById(ids: $id) {
     id
     circlesAddress
+    displayCurrency
     circlesSafeOwner
     successorOfCirclesAddress
     displayName
@@ -3477,6 +3484,7 @@ export const ProfilesDocument = gql`
       organisation {
         id
         circlesAddress
+        displayCurrency
         circlesSafeOwner
         name
         description
@@ -3494,6 +3502,7 @@ export const ProfilesDocument = gql`
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        displayCurrency
         avatarUrl
         name
         city {
@@ -3539,6 +3548,7 @@ export const ProfilesByNameDocument = gql`
     origin
     circlesSafeOwner
     circlesAddress
+    displayCurrency
     successorOfCirclesAddress
     avatarUrl
     displayName
@@ -3558,6 +3568,7 @@ export const ProfilesByNameDocument = gql`
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        displayCurrency
         avatarUrl
         name
         city {
@@ -3575,6 +3586,7 @@ export const GetRecentProfilesDocument = gql`
   recentProfiles(pagination: $pagination) {
     id
     circlesAddress
+    displayCurrency
     origin
     successorOfCirclesAddress
     displayName
@@ -3594,6 +3606,7 @@ export const GetRecentProfilesDocument = gql`
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        displayCurrency
         avatarUrl
         name
         city {
@@ -3611,6 +3624,7 @@ export const ProfilesByCirclesAddressDocument = gql`
   profilesBySafeAddress(safeAddresses: $circlesAddresses) {
     id
     circlesAddress
+    displayCurrency
     origin
     successorOfCirclesAddress
     displayName
@@ -3628,6 +3642,7 @@ export const ProfilesByCirclesAddressDocument = gql`
       organisation {
         id
         circlesAddress
+        displayCurrency
         circlesSafeOwner
         name
         description
@@ -3645,6 +3660,7 @@ export const ProfilesByCirclesAddressDocument = gql`
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        displayCurrency
         avatarUrl
         name
         city {
@@ -3662,6 +3678,7 @@ export const ProfilesByIdsDocument = gql`
   profilesById(ids: $id) {
     id
     circlesAddress
+    displayCurrency
     origin
     successorOfCirclesAddress
     displayName
@@ -3680,6 +3697,7 @@ export const ProfilesByIdsDocument = gql`
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        displayCurrency
         avatarUrl
         name
         city {
@@ -3705,6 +3723,7 @@ export const TrustRelationsDocument = gql`
       avatarUrl
       successorOfCirclesAddress
       circlesAddress
+      displayCurrency
     }
     direction
     otherSafeAddress
@@ -3716,12 +3735,14 @@ export const TrustRelationsDocument = gql`
       avatarUrl
       successorOfCirclesAddress
       circlesAddress
+      displayCurrency
       verifications {
         createdAt
         revokedAt
         verifierSafeAddress
         verifierProfile {
           circlesAddress
+          displayCurrency
           avatarUrl
           name
           city {
@@ -3742,6 +3763,7 @@ export const ProfileByIdDocument = gql`
     successorOfCirclesAddress
     circlesSafeOwner
     circlesAddress
+    displayCurrency
     avatarUrl
     displayName
     firstName
@@ -3758,6 +3780,7 @@ export const ProfileByIdDocument = gql`
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        displayCurrency
         avatarUrl
         name
         city {
@@ -3777,6 +3800,7 @@ export const ProfileBySafeAddressDocument = gql`
     successorOfCirclesAddress
     circlesSafeOwner
     circlesAddress
+    displayCurrency
     avatarUrl
     displayName
     firstName
@@ -3792,6 +3816,7 @@ export const ProfileBySafeAddressDocument = gql`
       organisation {
         id
         circlesAddress
+        displayCurrency
         circlesSafeOwner
         name
         description
@@ -3809,6 +3834,7 @@ export const ProfileBySafeAddressDocument = gql`
       verifierSafeAddress
       verifierProfile {
         circlesAddress
+        displayCurrency
         avatarUrl
         name
         city {
@@ -3842,6 +3868,7 @@ export const OrganisationsDocument = gql`
   organisations(pagination: $pagination) {
     id
     circlesAddress
+    displayCurrency
     createdAt
     name
     avatarUrl
@@ -3858,6 +3885,7 @@ export const RegionsDocument = gql`
   regions {
     id
     circlesAddress
+    displayCurrency
     createdAt
     name
     avatarUrl
@@ -3874,6 +3902,7 @@ export const OrganisationsByAddressDocument = gql`
   organisationsByAddress(addresses: $addresses) {
     id
     circlesAddress
+    displayCurrency
     createdAt
     name
     avatarUrl
@@ -3886,6 +3915,7 @@ export const OrganisationsByAddressDocument = gql`
       ... on Organisation {
         id
         circlesAddress
+        displayCurrency
         createdAt
         name
         avatarUrl
@@ -3900,6 +3930,7 @@ export const OrganisationsByAddressDocument = gql`
         successorOfCirclesAddress
         circlesSafeOwner
         circlesAddress
+        displayCurrency
         avatarUrl
         displayName
         firstName
@@ -3916,6 +3947,7 @@ export const OrganisationsByAddressDocument = gql`
           verifierSafeAddress
           verifierProfile {
             circlesAddress
+            displayCurrency
             avatarUrl
             name
             city {
@@ -3944,6 +3976,7 @@ export const CommonTrustDocument = gql`
       avatarUrl
       successorOfCirclesAddress
       circlesAddress
+      displayCurrency
     }
   }
 }
@@ -3964,6 +3997,7 @@ export const StreamDocument = gql`
     contact_address_profile {
       successorOfCirclesAddress
       circlesAddress
+      displayCurrency
       displayName
       firstName
       lastName
@@ -3982,6 +4016,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         to
         to_profile {
@@ -3991,6 +4026,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         flow
         transfers {
@@ -4003,6 +4039,7 @@ export const StreamDocument = gql`
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
           }
           to
           to_profile {
@@ -4012,6 +4049,7 @@ export const StreamDocument = gql`
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
           }
           value
         }
@@ -4042,6 +4080,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         to
         to_profile {
@@ -4051,6 +4090,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         value
       }
@@ -4070,6 +4110,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         to
         to_profile {
@@ -4079,6 +4120,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         value
       }
@@ -4098,6 +4140,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         to
         to_profile {
@@ -4107,6 +4150,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         text
       }
@@ -4117,6 +4161,7 @@ export const StreamDocument = gql`
           name
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         isAdmin
       }
@@ -4128,6 +4173,7 @@ export const StreamDocument = gql`
           name
           avatarUrl
           circlesAddress
+          displayCurrency
         }
       }
       ... on MembershipRejected {
@@ -4137,6 +4183,7 @@ export const StreamDocument = gql`
           name
           avatarUrl
           circlesAddress
+          displayCurrency
         }
       }
       ... on WelcomeMessage {
@@ -4148,6 +4195,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
       }
       ... on InvitationCreated {
@@ -4165,6 +4213,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
       }
       ... on SaleEvent {
@@ -4176,6 +4225,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         invoice {
           id
@@ -4203,6 +4253,7 @@ export const StreamDocument = gql`
           lastName
           avatarUrl
           circlesAddress
+          displayCurrency
         }
         purchase {
           id
@@ -4227,6 +4278,7 @@ export const StreamDocument = gql`
               lastName
               avatarUrl
               circlesAddress
+              displayCurrency
             }
             sellerProfile {
               id
@@ -4235,6 +4287,7 @@ export const StreamDocument = gql`
               lastName
               avatarUrl
               circlesAddress
+              displayCurrency
             }
             paymentTransactionHash
             cancelledAt
@@ -4251,6 +4304,7 @@ export const StreamDocument = gql`
           avatarUrl
           circlesAddress
           displayCurrency
+          displayCurrency
         }
       }
       ... on MemberAdded {
@@ -4263,6 +4317,7 @@ export const StreamDocument = gql`
           avatarUrl
           circlesAddress
           displayCurrency
+          displayCurrency
         }
       }
       ... on SafeVerified {
@@ -4271,6 +4326,7 @@ export const StreamDocument = gql`
           name
           avatarUrl
           circlesAddress
+          displayCurrency
           displayCurrency
         }
       }
@@ -4283,6 +4339,7 @@ export const StreamDocument = gql`
           dream
           avatarUrl
           circlesAddress
+          displayCurrency
         }
       }
     }
@@ -4301,6 +4358,7 @@ export const AggregatesDocument = gql`
       lastName
       avatarUrl
       circlesAddress
+      displayCurrency
     }
     payload {
       ... on Offers {
@@ -4315,6 +4373,7 @@ export const AggregatesDocument = gql`
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
           }
           createdByAddress
           createdAt
@@ -4338,6 +4397,7 @@ export const AggregatesDocument = gql`
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
           }
           token_balance
         }
@@ -4354,6 +4414,7 @@ export const AggregatesDocument = gql`
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
           }
           token_balance
         }
@@ -4376,6 +4437,7 @@ export const AggregatesDocument = gql`
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
             city {
               geonameid
               name
@@ -4386,6 +4448,7 @@ export const AggregatesDocument = gql`
               organisation {
                 id
                 circlesAddress
+                displayCurrency
                 circlesSafeOwner
                 name
                 description
@@ -4403,6 +4466,7 @@ export const AggregatesDocument = gql`
               verifierSafeAddress
               verifierProfile {
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 name
                 city {
@@ -4421,9 +4485,11 @@ export const AggregatesDocument = gql`
           ... on Profile {
             successorOfCirclesAddress
             circlesAddress
+            displayCurrency
           }
           ... on Organisation {
             circlesAddress
+            displayCurrency
           }
         }
       }
@@ -4431,6 +4497,7 @@ export const AggregatesDocument = gql`
         lastUpdatedAt
         organisations {
           circlesAddress
+          displayCurrency
         }
       }
       ... on Purchases {
@@ -4446,6 +4513,7 @@ export const AggregatesDocument = gql`
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
           }
           total
           lines {
@@ -4466,6 +4534,7 @@ export const AggregatesDocument = gql`
                 lastName
                 avatarUrl
                 circlesAddress
+                displayCurrency
               }
             }
           }
@@ -4488,6 +4557,7 @@ export const AggregatesDocument = gql`
               lastName
               avatarUrl
               circlesAddress
+              displayCurrency
             }
           }
         }
@@ -4504,6 +4574,7 @@ export const AggregatesDocument = gql`
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
           }
           buyerProfile {
             id
@@ -4512,12 +4583,14 @@ export const AggregatesDocument = gql`
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
             verifications {
               createdAt
               revokedAt
               verifierSafeAddress
               verifierProfile {
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 name
                 city {
@@ -4547,6 +4620,7 @@ export const AggregatesDocument = gql`
                 lastName
                 avatarUrl
                 circlesAddress
+                displayCurrency
               }
             }
           }
@@ -4569,12 +4643,14 @@ export const AggregatesDocument = gql`
               lastName
               avatarUrl
               circlesAddress
+              displayCurrency
               verifications {
                 createdAt
                 revokedAt
                 verifierSafeAddress
                 verifierProfile {
                   circlesAddress
+                  displayCurrency
                   avatarUrl
                   name
                   city {
@@ -4629,6 +4705,7 @@ export const VerificationsDocument = gql`
       lastName
       avatarUrl
       circlesAddress
+      displayCurrency
     }
   }
 }
@@ -4637,6 +4714,7 @@ export const FindInvitationCreatorDocument = gql`
     query findInvitationCreator($code: String!) {
   findInvitationCreator(code: $code) {
     circlesAddress
+    displayCurrency
     displayName
     firstName
     lastName

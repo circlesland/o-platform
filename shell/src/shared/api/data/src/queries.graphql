@@ -7,6 +7,7 @@ query init {
             circlesSafeOwner
             # init.safe
             circlesAddress
+            displayCurrency
             # init.profile
             displayName
             firstName
@@ -96,6 +97,7 @@ query findSafesByOwner($owner: String!) {
         safeProfile {
             id
             circlesAddress
+            displayCurrency
             circlesSafeOwner
             displayName
             firstName
@@ -121,6 +123,7 @@ query myInvitations {
         claimedAt
         claimedBy {
             circlesAddress
+            displayCurrency
             circlesSafeOwner
             displayName
             firstName
@@ -138,6 +141,7 @@ query myProfile {
     myProfile {
         id
         circlesAddress
+        displayCurrency
         circlesSafeOwner
         successorOfCirclesAddress
         displayName
@@ -166,6 +170,7 @@ query myProfile {
             organisation {
                 id
                 circlesAddress
+                displayCurrency
                 circlesSafeOwner
                 name
                 description
@@ -178,6 +183,7 @@ query myProfile {
             verifierSafeAddress
             verifierProfile {
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 name
             }
@@ -189,6 +195,7 @@ query profiles($id: [Int!]!) {
     profilesById(ids: $id) {
         id
         circlesAddress
+        displayCurrency
         circlesSafeOwner
         successorOfCirclesAddress
         displayName
@@ -207,6 +214,7 @@ query profiles($id: [Int!]!) {
             organisation {
                 id
                 circlesAddress
+                displayCurrency
                 circlesSafeOwner
                 name
                 description
@@ -224,6 +232,7 @@ query profiles($id: [Int!]!) {
             verifierSafeAddress
             verifierProfile {
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 name
                 city {
@@ -266,6 +275,7 @@ query profilesByName($searchString: String!) {
         origin
         circlesSafeOwner
         circlesAddress
+        displayCurrency
         successorOfCirclesAddress
         avatarUrl
         displayName
@@ -285,6 +295,7 @@ query profilesByName($searchString: String!) {
             verifierSafeAddress
             verifierProfile {
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 name
                 city {
@@ -301,6 +312,7 @@ query getRecentProfiles($pagination: PaginationArgs) {
     recentProfiles(pagination: $pagination) {
         id
         circlesAddress
+        displayCurrency
         origin
         successorOfCirclesAddress
         displayName
@@ -320,6 +332,7 @@ query getRecentProfiles($pagination: PaginationArgs) {
             verifierSafeAddress
             verifierProfile {
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 name
                 city {
@@ -336,6 +349,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
     profilesBySafeAddress(safeAddresses: $circlesAddresses) {
         id
         circlesAddress
+        displayCurrency
         origin
         successorOfCirclesAddress
         displayName
@@ -353,6 +367,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
             organisation {
                 id
                 circlesAddress
+                displayCurrency
                 circlesSafeOwner
                 name
                 description
@@ -370,6 +385,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
             verifierSafeAddress
             verifierProfile {
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 name
                 city {
@@ -386,6 +402,7 @@ query profilesByIds($id: [Int!]!) {
     profilesById(ids: $id) {
         id
         circlesAddress
+        displayCurrency
         origin
         successorOfCirclesAddress
         displayName
@@ -404,6 +421,7 @@ query profilesByIds($id: [Int!]!) {
             verifierSafeAddress
             verifierProfile {
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 name
                 city {
@@ -428,6 +446,7 @@ query trustRelations($safeAddress: String!) {
             avatarUrl
             successorOfCirclesAddress
             circlesAddress
+            displayCurrency
         }
         direction
         otherSafeAddress
@@ -439,12 +458,14 @@ query trustRelations($safeAddress: String!) {
             avatarUrl
             successorOfCirclesAddress
             circlesAddress
+            displayCurrency
             verifications {
                 createdAt
                 revokedAt
                 verifierSafeAddress
                 verifierProfile {
                     circlesAddress
+                    displayCurrency
                     avatarUrl
                     name
                     city {
@@ -464,6 +485,7 @@ query profileById($id: Int!) {
         successorOfCirclesAddress
         circlesSafeOwner
         circlesAddress
+        displayCurrency
         avatarUrl
         displayName
         firstName
@@ -480,6 +502,7 @@ query profileById($id: Int!) {
             verifierSafeAddress
             verifierProfile {
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 name
                 city {
@@ -498,6 +521,7 @@ query profileBySafeAddress($safeAddress: String!) {
         successorOfCirclesAddress
         circlesSafeOwner
         circlesAddress
+        displayCurrency
         avatarUrl
         displayName
         firstName
@@ -513,6 +537,7 @@ query profileBySafeAddress($safeAddress: String!) {
             organisation {
                 id
                 circlesAddress
+                displayCurrency
                 circlesSafeOwner
                 name
                 description
@@ -530,6 +555,7 @@ query profileBySafeAddress($safeAddress: String!) {
             verifierSafeAddress
             verifierProfile {
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 name
                 city {
@@ -584,6 +610,7 @@ query organisations($pagination: PaginationArgs) {
     organisations(pagination: $pagination) {
         id
         circlesAddress
+        displayCurrency
         createdAt
         name
         avatarUrl
@@ -599,6 +626,7 @@ query regions {
     regions {
         id
         circlesAddress
+        displayCurrency
         createdAt
         name
         avatarUrl
@@ -614,6 +642,7 @@ query organisationsByAddress($addresses: [String!]!) {
     organisationsByAddress(addresses: $addresses) {
         id
         circlesAddress
+        displayCurrency
         createdAt
         name
         avatarUrl
@@ -626,6 +655,7 @@ query organisationsByAddress($addresses: [String!]!) {
             ... on Organisation {
                 id
                 circlesAddress
+                displayCurrency
                 createdAt
                 name
                 avatarUrl
@@ -640,6 +670,7 @@ query organisationsByAddress($addresses: [String!]!) {
                 successorOfCirclesAddress
                 circlesSafeOwner
                 circlesAddress
+                displayCurrency
                 avatarUrl
                 displayName
                 firstName
@@ -656,6 +687,7 @@ query organisationsByAddress($addresses: [String!]!) {
                     verifierSafeAddress
                     verifierProfile {
                         circlesAddress
+                        displayCurrency
                         avatarUrl
                         name
                         city {
@@ -683,6 +715,7 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
             avatarUrl
             successorOfCirclesAddress
             circlesAddress
+            displayCurrency
         }
     }
 }
@@ -745,6 +778,7 @@ query stream(
         contact_address_profile {
             successorOfCirclesAddress
             circlesAddress
+            displayCurrency
             displayName
             firstName
             lastName
@@ -763,6 +797,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 to
                 to_profile {
@@ -772,6 +807,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 flow
                 transfers {
@@ -784,6 +820,7 @@ query stream(
                         lastName
                         avatarUrl
                         circlesAddress
+                        displayCurrency
                     }
                     to
                     to_profile {
@@ -793,6 +830,7 @@ query stream(
                         lastName
                         avatarUrl
                         circlesAddress
+                        displayCurrency
                     }
                     value
                 }
@@ -823,6 +861,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 to
                 to_profile {
@@ -832,6 +871,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 value
             }
@@ -851,6 +891,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 to
                 to_profile {
@@ -860,6 +901,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 value
             }
@@ -879,6 +921,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 to
                 to_profile {
@@ -888,6 +931,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 text
             }
@@ -898,6 +942,7 @@ query stream(
                     name
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 isAdmin
             }
@@ -909,6 +954,7 @@ query stream(
                     name
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
             }
             ... on MembershipRejected {
@@ -918,6 +964,7 @@ query stream(
                     name
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
             }
             ... on WelcomeMessage {
@@ -929,6 +976,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
             }
             ... on InvitationCreated {
@@ -946,6 +994,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
             }
             ... on SaleEvent {
@@ -957,6 +1006,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 invoice {
                     id
@@ -984,6 +1034,7 @@ query stream(
                     lastName
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
                 purchase {
                     id
@@ -1008,6 +1059,7 @@ query stream(
                             lastName
                             avatarUrl
                             circlesAddress
+                            displayCurrency
                         }
                         sellerProfile {
                             id
@@ -1016,6 +1068,7 @@ query stream(
                             lastName
                             avatarUrl
                             circlesAddress
+                            displayCurrency
                         }
                         paymentTransactionHash
                         cancelledAt
@@ -1032,6 +1085,7 @@ query stream(
                     avatarUrl
                     circlesAddress
                     displayCurrency
+                    displayCurrency
                 }
             }
             ... on MemberAdded {
@@ -1044,6 +1098,7 @@ query stream(
                     avatarUrl
                     circlesAddress
                     displayCurrency
+                    displayCurrency
                 }
             }
             ... on SafeVerified {
@@ -1052,6 +1107,7 @@ query stream(
                     name
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                     displayCurrency
                 }
             }
@@ -1064,6 +1120,7 @@ query stream(
                     dream
                     avatarUrl
                     circlesAddress
+                    displayCurrency
                 }
             }
         }
@@ -1085,6 +1142,7 @@ query aggregates(
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
         }
         payload {
             ... on Offers {
@@ -1099,6 +1157,7 @@ query aggregates(
                         lastName
                         avatarUrl
                         circlesAddress
+                        displayCurrency
                     }
                     createdByAddress
                     createdAt
@@ -1122,6 +1181,7 @@ query aggregates(
                         lastName
                         avatarUrl
                         circlesAddress
+                        displayCurrency
                     }
                     token_balance
                 }
@@ -1138,6 +1198,7 @@ query aggregates(
                         lastName
                         avatarUrl
                         circlesAddress
+                        displayCurrency
                     }
                     token_balance
                 }
@@ -1160,6 +1221,7 @@ query aggregates(
                         lastName
                         avatarUrl
                         circlesAddress
+                        displayCurrency
                         city {
                             geonameid
                             name
@@ -1170,6 +1232,7 @@ query aggregates(
                             organisation {
                                 id
                                 circlesAddress
+                                displayCurrency
                                 circlesSafeOwner
                                 name
                                 description
@@ -1187,6 +1250,7 @@ query aggregates(
                             verifierSafeAddress
                             verifierProfile {
                                 circlesAddress
+                                displayCurrency
                                 avatarUrl
                                 name
                                 city {
@@ -1205,9 +1269,11 @@ query aggregates(
                     ... on Profile {
                         successorOfCirclesAddress
                         circlesAddress
+                        displayCurrency
                     }
                     ... on Organisation {
                         circlesAddress
+                        displayCurrency
                     }
                 }
             }
@@ -1215,6 +1281,7 @@ query aggregates(
                 lastUpdatedAt
                 organisations {
                     circlesAddress
+                    displayCurrency
                 }
             }
             ... on Purchases {
@@ -1230,6 +1297,7 @@ query aggregates(
                         lastName
                         avatarUrl
                         circlesAddress
+                        displayCurrency
                     }
                     total
                     lines {
@@ -1250,6 +1318,7 @@ query aggregates(
                                 lastName
                                 avatarUrl
                                 circlesAddress
+                                displayCurrency
                             }
                         }
                     }
@@ -1272,6 +1341,7 @@ query aggregates(
                             lastName
                             avatarUrl
                             circlesAddress
+                            displayCurrency
                         }
                     }
                 }
@@ -1288,6 +1358,7 @@ query aggregates(
                         lastName
                         avatarUrl
                         circlesAddress
+                        displayCurrency
                     }
                     buyerProfile {
                         id
@@ -1296,12 +1367,14 @@ query aggregates(
                         lastName
                         avatarUrl
                         circlesAddress
+                        displayCurrency
                         verifications {
                             createdAt
                             revokedAt
                             verifierSafeAddress
                             verifierProfile {
                                 circlesAddress
+                                displayCurrency
                                 avatarUrl
                                 name
                                 city {
@@ -1331,6 +1404,7 @@ query aggregates(
                                 lastName
                                 avatarUrl
                                 circlesAddress
+                                displayCurrency
                             }
                         }
                     }
@@ -1353,12 +1427,14 @@ query aggregates(
                             lastName
                             avatarUrl
                             circlesAddress
+                            displayCurrency
                             verifications {
                                 createdAt
                                 revokedAt
                                 verifierSafeAddress
                                 verifierProfile {
                                     circlesAddress
+                                    displayCurrency
                                     avatarUrl
                                     name
                                     city {
@@ -1410,6 +1486,7 @@ query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
             lastName
             avatarUrl
             circlesAddress
+            displayCurrency
         }
     }
 }
@@ -1417,6 +1494,7 @@ query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
 query findInvitationCreator($code: String!) {
     findInvitationCreator(code: $code) {
         circlesAddress
+        displayCurrency
         displayName
         firstName
         lastName
