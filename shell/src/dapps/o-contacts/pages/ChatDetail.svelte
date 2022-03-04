@@ -39,7 +39,7 @@ async function reload() {
       safeAddress: $me.circlesAddress,
       pagination: {
         order: SortOrder.Desc,
-        limit: 250,
+        limit: 50,
         continueAt: new Date().toJSON(),
       },
       filter: {
@@ -47,21 +47,22 @@ async function reload() {
       },
       types: [
         EventType.CrcHubTransfer,
-        //EventType.CrcMinting,
         EventType.CrcTrust,
         EventType.ChatMessage,
         EventType.Erc20Transfer,
         EventType.Purchased,
         EventType.SaleEvent,
+        EventType.InvitationRedeemed,
+        //EventType.CrcMinting,
         //EventType.CrcSignup,
         //EventType.CrcTokenTransfer,
         //EventType.EthTransfer,
         //EventType.GnosisSafeEthTransfer,
         //EventType.InvitationCreated,
-        EventType.InvitationRedeemed,
         //EventType.MembershipOffer,
         //EventType.MembershipAccepted,
         //EventType.MembershipRejected
+        //EventType.NewUser,
       ],
     }
   )).reverse();

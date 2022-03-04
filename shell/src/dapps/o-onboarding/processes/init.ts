@@ -8,12 +8,10 @@ import {
   ClaimedInvitationQueryVariables,
   CrcSignup,
   HubSignupTransactionDocument,
-  HubSignupTransactionQueryVariables, InitDocument, InitQuery, InitQueryVariables,
+  HubSignupTransactionQueryVariables, InitDocument, InitQueryVariables,
   InvitationTransactionDocument,
   InvitationTransactionQueryVariables, Profile,
-  ProfileEvent, StreamQueryVariables,
-  WhoamiDocument,
-  WhoamiQueryVariables,
+  ProfileEvent
 } from "../../../shared/api/data/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
@@ -460,16 +458,12 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         }
 
         try {
-          const email = await ApiClient.query<string, WhoamiQueryVariables>(
-            WhoamiDocument,
-            {}
-          );
           const profile = await loadProfile(ctx.session.profileId);
 
           callback({
             type: "GOT_REGISTRATION",
             registration: {
-              email: email,
+              email: profile.emailAddress,
               profileId: profile.id,
               circlesSafeOwner: profile.circlesSafeOwner,
               acceptedToSVersion: "", // TODO: Important in the context?

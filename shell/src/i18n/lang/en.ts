@@ -776,7 +776,7 @@ export const en = {
             promptConnectOrCreate: {
               editorContent: {
                 info: {
-                  title: "Create Safer",
+                  title: "Create Safe",
                   description:
                     "In the next steps you can create your account on the blockchain ..",
                   submitButtonText: "Next",

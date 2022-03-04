@@ -26,7 +26,7 @@ interface IEventPayload {
 
 union AggregatePayload = Contacts | CrcBalances | Erc20Balances | Members | Memberships | Offers | Purchases | Sales
 
-union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | OrganisationCreated | Purchased | SafeVerified | SaleEvent | WelcomeMessage
+union EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | NewUser | OrganisationCreated | Purchased | SafeVerified | SaleEvent | WelcomeMessage
 
 union ProfileOrOrganisation = Organisation | Profile
 
@@ -401,6 +401,11 @@ type Mutation {
     verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
 }
 
+type NewUser implements IEventPayload {
+    profile: Profile!
+    transaction_hash: String
+}
+
 type NotificationEvent {
     type: String!
 }
@@ -571,19 +576,17 @@ type Query {
     organisationsByAddress(addresses: [String!]!): [Organisation!]!
     profilesById(ids: [Int!]!): [Profile!]!
     profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
-    profilesCount: Int!
     recentProfiles(pagination: PaginationArgs): [Profile!]!
     regions(pagination: PaginationArgs): [Organisation!]!
     safeInfo(safeAddress: String): SafeInfo
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
+    stats: Stats!
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!
     trustRelations(safeAddress: String!): [TrustRelation!]!
     verifications(filter: VerifiedSafesFilter, pagination: PaginationArgs): [Verification!]!
-    verificationsCount: Int!
     version: Version!
-    whoami: String
 }
 
 type RedeemClaimedInvitationResult {
@@ -677,6 +680,11 @@ type SessionInfo {
     lastAcknowledgedAt: String
     profile: Profile
     profileId: Int
+}
+
+type Stats {
+    profilesCount: Int!
+    verificationsCount: Int!
 }
 
 type Subscription {
@@ -804,6 +812,7 @@ enum EventType {
     MembershipAccepted
     MembershipOffer
     MembershipRejected
+    NewUser
     OrganisationCreated
     Purchased
     SafeVerified

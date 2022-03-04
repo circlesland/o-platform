@@ -1,5 +1,10 @@
 import { readable } from "svelte/store";
-import { AggregateType, Contact, Contacts, Profile } from "../api/data/types";
+import {
+  AggregateType,
+  Contact,
+  Contacts,
+  Profile,
+} from "../api/data/types";
 import { me } from "./me";
 import { Subscription } from "rxjs";
 import { ZERO_ADDRESS } from "@o-platform/o-circles/dist/consts";
@@ -15,8 +20,6 @@ async function loadContacts(safeAddress: string) {
   const contactsList: Contact[] = contacts.contacts.filter((o: Contact) => {
     return o.contactAddress !== ZERO_ADDRESS && o.contactAddress != safeAddress;
   });
-
-  contactsList.forEach((o) => (contactsBySafeAddress[o.contactAddress] = o));
 
   return contactsList.sort((a, b) => {
     return a.lastContactAt > b.lastContactAt

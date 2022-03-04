@@ -1,11 +1,6 @@
-query sessionInfo {
+query init {
     sessionInfo {
-        isLoggedOn
-        hasProfile
-        profileId
-        lastAcknowledgedAt
         profile {
-            origin
             # init.registration
             id
             emailAddress
@@ -22,74 +17,29 @@ query sessionInfo {
             }
             dream
             avatarUrl
-        }
-        capabilities {
-            type
+            # init.invitation
+            claimedInvitation {
+                claimedAt
+            }
+            # init.eoaInvitationTransaction
+            invitationTransaction {
+                timestamp
+                transaction_hash
+            }
+            # init.ubi
+            circlesTokenAddress
         }
     }
 }
 
-query whoami {
-    whoami
-}
-
-query profilesCount {
-    profilesCount
-}
-query verificationsCount {
-    verificationsCount
-}
-query findSafesByOwner($owner: String!) {
-    findSafesByOwner(owner: $owner) {
-        type
-        safeAddress
-        lastUbiAt
-        randomValue
-        tokenAddress
-        safeProfile {
-            id
-            origin
-            circlesAddress
-            circlesSafeOwner
-            successorOfCirclesAddress
-            displayName
-            firstName
-            lastName
-            dream
-            country
-            avatarUrl
-            avatarCid
-            avatarMimeType
-            newsletter
-            displayTimeCircles
-            displayCurrency
-            cityGeonameid
-            city {
-                geonameid
-                name
-                country
-                latitude
-                longitude
-                population
-            }
-            verifications {
-                createdAt
-                revokedAt
-                verifierSafeAddress
-                verifierProfile {
-                    circlesAddress
-                    avatarUrl
-                    name
-                    city {
-                        geonameid
-                        name
-                        country
-                        latitude
-                        longitude
-                        population
-                    }
-                }
-            }
+query sessionInfo {
+    sessionInfo {
+        isLoggedOn
+        hasProfile
+        profileId
+        lastAcknowledgedAt
+        capabilities {
+            type
         }
     }
 }
@@ -115,6 +65,51 @@ query hubSignupTransaction {
         payload {
             ... on CrcSignup {
                 token
+            }
+        }
+    }
+}
+
+query safeInfo {
+    safeInfo {
+        lastUbiAt
+        safeAddress
+        tokenAddress
+        randomValue
+    }
+}
+
+query stats {
+    stats {
+        profilesCount
+        verificationsCount
+    }
+}
+
+query findSafesByOwner($owner: String!) {
+    findSafesByOwner(owner: $owner) {
+        type
+        safeAddress
+        lastUbiAt
+        randomValue
+        tokenAddress
+        safeProfile {
+            id
+            circlesAddress
+            circlesSafeOwner
+            displayName
+            firstName
+            lastName
+            dream
+            avatarUrl
+            cityGeonameid
+            city {
+                geonameid
+                name
+                country
+                latitude
+                longitude
+                population
             }
         }
     }
@@ -175,16 +170,6 @@ query myProfile {
                 name
                 description
                 avatarUrl
-                avatarMimeType
-                displayCurrency
-                city {
-                    geonameid
-                    name
-                    country
-                    latitude
-                    longitude
-                    population
-                }
             }
         }
         verifications {
@@ -195,14 +180,6 @@ query myProfile {
                 circlesAddress
                 avatarUrl
                 name
-                city {
-                    geonameid
-                    name
-                    country
-                    latitude
-                    longitude
-                    population
-                }
             }
         }
     }
@@ -211,7 +188,6 @@ query myProfile {
 query profiles($id: [Int!]!) {
     profilesById(ids: $id) {
         id
-        origin
         circlesAddress
         circlesSafeOwner
         successorOfCirclesAddress
@@ -219,20 +195,12 @@ query profiles($id: [Int!]!) {
         firstName
         lastName
         dream
-        country
         avatarUrl
-        avatarCid
-        avatarMimeType
-        cityGeonameid
-        status
         displayCurrency
         city {
             geonameid
             name
             country
-            latitude
-            longitude
-            population
         }
         memberships {
             isAdmin
@@ -243,15 +211,10 @@ query profiles($id: [Int!]!) {
                 name
                 description
                 avatarUrl
-                avatarMimeType
-                displayCurrency
                 city {
                     geonameid
                     name
                     country
-                    latitude
-                    longitude
-                    population
                 }
             }
         }
@@ -267,9 +230,6 @@ query profiles($id: [Int!]!) {
                     geonameid
                     name
                     country
-                    latitude
-                    longitude
-                    population
                 }
             }
         }
@@ -313,12 +273,11 @@ query profilesByName($searchString: String!) {
         lastName
         dream
         country
-        cityGeonameid
         displayCurrency
         city {
             geonameid
-            country
             name
+            country
         }
         verifications {
             createdAt
@@ -332,9 +291,6 @@ query profilesByName($searchString: String!) {
                     geonameid
                     name
                     country
-                    latitude
-                    longitude
-                    population
                 }
             }
         }
@@ -353,17 +309,10 @@ query getRecentProfiles($pagination: PaginationArgs) {
         dream
         country
         avatarUrl
-        avatarCid
-        avatarMimeType
-        cityGeonameid
-        displayCurrency
         city {
             geonameid
             name
             country
-            latitude
-            longitude
-            population
         }
         verifications {
             createdAt
@@ -377,9 +326,6 @@ query getRecentProfiles($pagination: PaginationArgs) {
                     geonameid
                     name
                     country
-                    latitude
-                    longitude
-                    population
                 }
             }
         }
@@ -396,19 +342,11 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
         firstName
         lastName
         dream
-        country
         avatarUrl
-        avatarCid
-        avatarMimeType
-        cityGeonameid
-        displayCurrency
         city {
             geonameid
             name
             country
-            latitude
-            longitude
-            population
         }
         memberships {
             isAdmin
@@ -419,15 +357,10 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
                 name
                 description
                 avatarUrl
-                avatarMimeType
-                displayCurrency
                 city {
                     geonameid
                     name
                     country
-                    latitude
-                    longitude
-                    population
                 }
             }
         }
@@ -443,21 +376,9 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
                     geonameid
                     name
                     country
-                    latitude
-                    longitude
-                    population
                 }
             }
         }
-    }
-}
-
-query safeInfo {
-    safeInfo {
-        lastUbiAt
-        safeAddress
-        tokenAddress
-        randomValue
     }
 }
 
@@ -471,19 +392,11 @@ query profilesByIds($id: [Int!]!) {
         firstName
         lastName
         dream
-        country
         avatarUrl
-        avatarCid
-        avatarMimeType
-        cityGeonameid
-        displayCurrency
         city {
             geonameid
             name
             country
-            latitude
-            longitude
-            population
         }
         verifications {
             createdAt
@@ -497,9 +410,6 @@ query profilesByIds($id: [Int!]!) {
                     geonameid
                     name
                     country
-                    latitude
-                    longitude
-                    population
                 }
             }
         }
@@ -518,7 +428,6 @@ query trustRelations($safeAddress: String!) {
             avatarUrl
             successorOfCirclesAddress
             circlesAddress
-            displayCurrency
         }
         direction
         otherSafeAddress
@@ -528,10 +437,8 @@ query trustRelations($safeAddress: String!) {
             firstName
             lastName
             avatarUrl
-            origin
             successorOfCirclesAddress
             circlesAddress
-            displayCurrency
             verifications {
                 createdAt
                 revokedAt
@@ -544,9 +451,6 @@ query trustRelations($safeAddress: String!) {
                         geonameid
                         name
                         country
-                        latitude
-                        longitude
-                        population
                     }
                 }
             }
@@ -561,14 +465,10 @@ query profileById($id: Int!) {
         circlesSafeOwner
         circlesAddress
         avatarUrl
-        origin
         displayName
         firstName
         lastName
         dream
-        country
-        cityGeonameid
-        displayCurrency
         city {
             geonameid
             country
@@ -586,9 +486,6 @@ query profileById($id: Int!) {
                     geonameid
                     name
                     country
-                    latitude
-                    longitude
-                    population
                 }
             }
         }
@@ -604,12 +501,8 @@ query profileBySafeAddress($safeAddress: String!) {
         avatarUrl
         displayName
         firstName
-        origin
         lastName
         dream
-        country
-        cityGeonameid
-        displayCurrency
         city {
             geonameid
             country
@@ -646,15 +539,10 @@ query profileBySafeAddress($safeAddress: String!) {
                 name
                 description
                 avatarUrl
-                avatarMimeType
-                displayCurrency
                 city {
                     geonameid
                     name
                     country
-                    latitude
-                    longitude
-                    population
                 }
             }
         }
@@ -670,9 +558,6 @@ query profileBySafeAddress($safeAddress: String!) {
                     geonameid
                     name
                     country
-                    latitude
-                    longitude
-                    population
                 }
             }
         }
@@ -682,7 +567,6 @@ query profileBySafeAddress($safeAddress: String!) {
 query tags($typeId_in: [String!]!, $value_like: String) {
     tags(query: { typeId_in: $typeId_in, value_like: $value_like }) {
         id
-        typeId
         value
     }
 }
@@ -690,7 +574,6 @@ query tags($typeId_in: [String!]!, $value_like: String) {
 query tagById($id: Int!) {
     tagById(id: $id) {
         id
-        typeId
         value
     }
 }
@@ -725,15 +608,11 @@ query organisations($pagination: PaginationArgs) {
         circlesAddress
         createdAt
         name
-        avatarMimeType
         avatarUrl
-        displayCurrency
         city {
             geonameid
-            latitude
-            longitude
             name
-            population
+            country
         }
     }
 }
@@ -744,15 +623,11 @@ query regions {
         circlesAddress
         createdAt
         name
-        avatarMimeType
         avatarUrl
-        displayCurrency
         city {
             geonameid
-            latitude
-            longitude
             name
-            population
+            country
         }
     }
 }
@@ -763,15 +638,11 @@ query organisationsByAddress($addresses: [String!]!) {
         circlesAddress
         createdAt
         name
-        avatarMimeType
         avatarUrl
-        displayCurrency
         city {
             geonameid
-            latitude
-            longitude
             name
-            population
+            country
         }
         members {
             ... on Organisation {
@@ -779,20 +650,15 @@ query organisationsByAddress($addresses: [String!]!) {
                 circlesAddress
                 createdAt
                 name
-                avatarMimeType
-                displayCurrency
                 avatarUrl
                 city {
                     geonameid
-                    latitude
-                    longitude
                     name
-                    population
+                    country
                 }
             }
             ... on Profile {
                 id
-                origin
                 successorOfCirclesAddress
                 circlesSafeOwner
                 circlesAddress
@@ -801,9 +667,6 @@ query organisationsByAddress($addresses: [String!]!) {
                 firstName
                 lastName
                 dream
-                country
-                cityGeonameid
-                displayCurrency
                 city {
                     geonameid
                     country
@@ -821,9 +684,6 @@ query organisationsByAddress($addresses: [String!]!) {
                             geonameid
                             name
                             country
-                            latitude
-                            longitude
-                            population
                         }
                     }
                 }
@@ -839,32 +699,12 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
         safeAddress2
         profile {
             id
-            origin
             displayName
             firstName
             lastName
             avatarUrl
             successorOfCirclesAddress
             circlesAddress
-            displayCurrency
-            verifications {
-                createdAt
-                revokedAt
-                verifierSafeAddress
-                verifierProfile {
-                    circlesAddress
-                    avatarUrl
-                    name
-                    city {
-                        geonameid
-                        name
-                        country
-                        latitude
-                        longitude
-                        population
-                    }
-                }
-            }
         }
     }
 }
@@ -872,7 +712,6 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
 query tags($typeId_in: [String!]!, $value_like: String) {
     tags(query: { typeId_in: $typeId_in, value_like: $value_like }) {
         id
-        typeId
         value
     }
 }
@@ -880,7 +719,6 @@ query tags($typeId_in: [String!]!, $value_like: String) {
 query tagById($id: Int!) {
     tagById(id: $id) {
         id
-        typeId
         value
     }
 }
@@ -928,13 +766,11 @@ query stream(
         contact_address
         contact_address_profile {
             successorOfCirclesAddress
-            origin
             circlesAddress
             displayName
             firstName
             lastName
             avatarUrl
-            displayCurrency
         }
         direction
         type
@@ -943,60 +779,47 @@ query stream(
                 transaction_hash
                 from
                 from_profile {
-                    successorOfCirclesAddress
-                    origin
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
                 to
                 to_profile {
-                    successorOfCirclesAddress
-                    origin
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
                 flow
                 transfers {
                     token
                     from
                     from_profile {
-                        successorOfCirclesAddress
-                        origin
-                        type
+                        id
                         displayName
                         firstName
                         lastName
                         avatarUrl
                         circlesAddress
-                        displayCurrency
                     }
                     to
                     to_profile {
-                        successorOfCirclesAddress
-                        origin
-                        type
+                        id
                         displayName
                         firstName
                         lastName
                         avatarUrl
                         circlesAddress
-                        displayCurrency
                     }
                     value
                 }
                 tags {
                     id
-                    typeId
                     value
                 }
             }
@@ -1016,27 +839,21 @@ query stream(
                 token
                 from
                 from_profile {
-                    successorOfCirclesAddress
-                    origin
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
                 to
                 to_profile {
-                    successorOfCirclesAddress
-                    origin
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
                 value
             }
@@ -1050,27 +867,21 @@ query stream(
                 transaction_hash
                 from
                 from_profile {
-                    successorOfCirclesAddress
-                    origin
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
                 to
                 to_profile {
-                    successorOfCirclesAddress
-                    origin
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
                 value
             }
@@ -1084,27 +895,21 @@ query stream(
             ... on ChatMessage {
                 from
                 from_profile {
-                    successorOfCirclesAddress
-                    origin
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
                 to
                 to_profile {
-                    successorOfCirclesAddress
-                    origin
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
                 text
             }
@@ -1115,7 +920,6 @@ query stream(
                     name
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
                 isAdmin
             }
@@ -1127,7 +931,6 @@ query stream(
                     name
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
             }
             ... on MembershipRejected {
@@ -1137,20 +940,17 @@ query stream(
                     name
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
             }
             ... on WelcomeMessage {
                 invitedBy
                 invitedBy_profile {
-                    successorOfCirclesAddress
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
             }
             ... on InvitationCreated {
@@ -1162,27 +962,23 @@ query stream(
                 code
                 redeemedBy
                 redeemedBy_profile {
-                    successorOfCirclesAddress
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
             }
             ... on SaleEvent {
                 buyer
                 buyer_profile {
-                    successorOfCirclesAddress
-                    type
+                    id
                     displayName
                     firstName
                     lastName
                     avatarUrl
                     circlesAddress
-                    displayCurrency
                 }
                 invoice {
                     id
@@ -1209,8 +1005,11 @@ query stream(
                     sellerSignedDate
                     cancelledAt
                     sellerProfile {
+                        id
                         displayName
                         firstName
+                        lastName
+                        avatarUrl
                         circlesAddress
                     }
                     pickupCode
@@ -1254,6 +1053,17 @@ query stream(
                     displayCurrency
                 }
             }
+            ... on NewUser {
+                profile {
+                    id
+                    displayName
+                    firstName
+                    lastName
+                    dream
+                    avatarUrl
+                    circlesAddress
+                }
+            }
         }
     }
 }
@@ -1267,14 +1077,12 @@ query aggregates(
         type
         safe_address
         safe_address_profile {
-            origin
-            successorOfCirclesAddress
+            id
             displayName
             firstName
             lastName
             avatarUrl
             circlesAddress
-            displayCurrency
         }
         payload {
             ... on Offers {
@@ -1283,16 +1091,12 @@ query aggregates(
                     id
                     version
                     createdByProfile {
-                        origin
-                        successorOfCirclesAddress
-                        type
                         id
-                        circlesAddress
                         displayName
                         firstName
                         lastName
                         avatarUrl
-                        displayCurrency
+                        circlesAddress
                     }
                     createdByAddress
                     createdAt
@@ -1310,15 +1114,12 @@ query aggregates(
                     token_address
                     token_owner_address
                     token_owner_profile {
-                        origin
-                        successorOfCirclesAddress
-                        type
+                        id
                         displayName
                         firstName
                         lastName
                         avatarUrl
                         circlesAddress
-                        displayCurrency
                     }
                     token_balance
                 }
@@ -1329,15 +1130,12 @@ query aggregates(
                     token_address
                     token_owner_address
                     token_owner_profile {
-                        origin
-                        successorOfCirclesAddress
-                        type
+                        id
                         displayName
                         firstName
                         lastName
                         avatarUrl
                         circlesAddress
-                        displayCurrency
                     }
                     token_balance
                 }
@@ -1354,16 +1152,12 @@ query aggregates(
                     lastContactAt
                     contactAddress
                     contactAddress_Profile {
-                        origin
-                        successorOfCirclesAddress
-                        type
                         id
                         displayName
                         firstName
                         lastName
                         avatarUrl
                         circlesAddress
-                        displayCurrency
                         city {
                             geonameid
                             name
@@ -1378,15 +1172,10 @@ query aggregates(
                                 name
                                 description
                                 avatarUrl
-                                avatarMimeType
-                                displayCurrency
                                 city {
                                     geonameid
                                     name
                                     country
-                                    latitude
-                                    longitude
-                                    population
                                 }
                             }
                         }
@@ -1402,9 +1191,6 @@ query aggregates(
                                     geonameid
                                     name
                                     country
-                                    latitude
-                                    longitude
-                                    population
                                 }
                             }
                         }
@@ -1436,15 +1222,12 @@ query aggregates(
                     createdAt
                     createdByAddress
                     createdByProfile {
-                        origin
-                        successorOfCirclesAddress
-                        type
                         id
                         displayName
                         firstName
                         lastName
-                        avatarCid
-                        displayCurrency
+                        avatarUrl
+                        circlesAddress
                     }
                     total
                     lines {
@@ -1459,16 +1242,12 @@ query aggregates(
                             pricePerUnit
                             timeCirclesPriceShare
                             createdByProfile {
-                                origin
-                                successorOfCirclesAddress
-                                type
                                 id
-                                circlesAddress
                                 displayName
                                 firstName
                                 lastName
                                 avatarUrl
-                                displayCurrency
+                                circlesAddress
                             }
                         }
                     }
@@ -1485,16 +1264,12 @@ query aggregates(
                         cancelledAt
                         cancelReason
                         sellerProfile {
-                            origin
-                            successorOfCirclesAddress
-                            type
                             id
-                            circlesAddress
                             displayName
                             firstName
                             lastName
                             avatarUrl
-                            displayCurrency
+                            circlesAddress
                         }
                     }
                 }
@@ -1505,26 +1280,20 @@ query aggregates(
                     id
                     createdAt
                     sellerProfile {
-                        successorOfCirclesAddress
-                        type
                         id
-                        circlesAddress
                         displayName
                         firstName
                         lastName
-                        avatarCid
-                        displayCurrency
+                        avatarUrl
+                        circlesAddress
                     }
                     buyerProfile {
-                        successorOfCirclesAddress
-                        type
                         id
-                        circlesAddress
                         displayName
                         firstName
                         lastName
-                        avatarCid
-                        displayCurrency
+                        avatarUrl
+                        circlesAddress
                         verifications {
                             createdAt
                             revokedAt
@@ -1537,9 +1306,6 @@ query aggregates(
                                     geonameid
                                     name
                                     country
-                                    latitude
-                                    longitude
-                                    population
                                 }
                             }
                         }
@@ -1557,15 +1323,12 @@ query aggregates(
                             pricePerUnit
                             timeCirclesPriceShare
                             createdByProfile {
-                                successorOfCirclesAddress
-                                type
                                 id
-                                circlesAddress
                                 displayName
                                 firstName
                                 lastName
                                 avatarUrl
-                                displayCurrency
+                                circlesAddress
                             }
                         }
                     }
@@ -1582,15 +1345,12 @@ query aggregates(
                         cancelledAt
                         cancelReason
                         buyerProfile {
-                            successorOfCirclesAddress
-                            type
                             id
-                            circlesAddress
                             displayName
                             firstName
                             lastName
                             avatarUrl
-                            displayCurrency
+                            circlesAddress
                             verifications {
                                 createdAt
                                 revokedAt
@@ -1603,9 +1363,6 @@ query aggregates(
                                         geonameid
                                         name
                                         country
-                                        latitude
-                                        longitude
-                                        population
                                     }
                                 }
                             }
@@ -1645,11 +1402,12 @@ query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
         }
         verifiedSafeAddress
         verifiedProfile {
-            circlesAddress
-            avatarUrl
+            id
             displayName
             firstName
             lastName
+            avatarUrl
+            circlesAddress
         }
     }
 }
@@ -1661,39 +1419,5 @@ query findInvitationCreator($code: String!) {
         firstName
         lastName
         avatarUrl
-    }
-}
-
-query init {
-    sessionInfo {
-        profile {
-            # init.registration
-            id
-            emailAddress
-            circlesSafeOwner
-            # init.safe
-            circlesAddress
-            # init.profile
-            displayName
-            firstName
-            lastName
-            city {
-                geonameid
-                name
-            }
-            dream
-            avatarUrl
-            # init.invitation
-            claimedInvitation {
-                claimedAt
-            }
-            # init.eoaInvitationTransaction
-            invitationTransaction {
-                timestamp
-                transaction_hash
-            }
-            # init.ubi
-            circlesTokenAddress
-        }
     }
 }

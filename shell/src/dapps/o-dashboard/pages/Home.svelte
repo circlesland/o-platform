@@ -4,14 +4,10 @@ import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { Capability, CapabilityType } from "../../../shared/api/data/types";
+import {Capability, CapabilityType, StatsDocument} from "../../../shared/api/data/types";
 import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 import DashboardHeader from "../atoms/DashboardHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import {
-  VerificationsCountDocument,
-  ProfilesCountDocument,
-} from "../../../shared/api/data/types";
 import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
 
@@ -50,34 +46,19 @@ function loadLink(link, external = false) {
   }
 }
 
-async function fetchVerificationsCount() {
+async function fetchStats() {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.query({
-    query: VerificationsCountDocument,
+    query: StatsDocument,
   });
   if (result.errors) {
     throw new Error(
-      `Couldn't load profilesCount': ${JSON.stringify(result.errors)}`
+      `Couldn't load stats': ${JSON.stringify(result.errors)}`
     );
   }
   return result;
 }
-let verificationPromise = fetchVerificationsCount();
-
-async function fetchProfilesCount() {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: ProfilesCountDocument,
-  });
-  if (result.errors) {
-    throw new Error(
-      `Couldn't load profilesCount': ${JSON.stringify(result.errors)}`
-    );
-  }
-  return result;
-}
-
-let profilesPromise = fetchProfilesCount();
+let statsPromise = fetchStats();
 </script>
 
 <DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -89,10 +70,10 @@ let profilesPromise = fetchProfilesCount();
       <div class="flex flex-row items-stretch w-full justify-items-center">
         <div class="flex flex-col flex-grow">
           <div class="text-6xl text-center font-heading text-primary">
-            {#await profilesPromise}
+            {#await statsPromise}
               ...
             {:then result}
-              {result.data.profilesCount ? result.data.profilesCount : "0"}
+              {result.data.stats.profilesCount ? result.data.stats.profilesCount : "0"}
             {/await}
           </div>
           <div class="text-center font-primary text-dark">
@@ -101,11 +82,11 @@ let profilesPromise = fetchProfilesCount();
         </div>
         <div class="flex flex-col flex-grow">
           <div class="text-6xl text-center font-heading text-primary">
-            {#await verificationPromise}
+            {#await statsPromise}
               ...
             {:then result}
-              {result.data.verificationsCount
-                ? result.data.verificationsCount
+              {result.data.stats.verificationsCount
+                ? result.data.stats.verificationsCount
                 : "0"}
             {/await}
           </div>
