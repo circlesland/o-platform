@@ -1,10 +1,8 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import {CrcMinting, NewUser, Profile, ProfileEvent} from "../../../shared/api/data/types";
+import {NewUser, Profile, ProfileEvent} from "../../../shared/api/data/types";
 import { displayableName } from "../../../shared/functions/stringHelper";
-import { onMount } from "svelte";
-import { verification } from "../../o-verification.manifest";
 
 export let param: Profile;
 export let event: ProfileEvent;

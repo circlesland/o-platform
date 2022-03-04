@@ -1,6 +1,6 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
-import { ProfileEvent, Purchase } from "../../../../shared/api/data/types";
+import {Profile, ProfileEvent, Purchase, Purchased} from "../../../../shared/api/data/types";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";
 
@@ -11,16 +11,18 @@ import { _ } from "svelte-i18n";
 export let event: ProfileEvent;
 
 let purchase: Purchase;
+let sellerProfile: Profile;
 
-if (event && event.payload) {
-  purchase = event.payload.invoice;
+if (event && event.payload.__typename == "Purchased") {
+  purchase = (<Purchased>event.payload).purchase;
+  sellerProfile = (<Purchased>event.payload).seller_profile;
 }
-console.log("EVENT", purchase);
+
 </script>
 
-{#if event && event.payload}
+{#if purchase}
   <section
-    on:click="{() => push(`#/marketplace/my-purchases/${purchase.purchaseId}`)}"
+    on:click="{() => push(`#/marketplace/my-purchases/${purchase.id}`)}"
     class="mb-3 cursor-pointer">
     <div
       class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-md">

@@ -22,15 +22,15 @@ let pagination: PaginationArgs = {
   continueAt: new Date().toJSON(),
 };
 const transactionEventTypes = [
-  EventType.NewUser
+  EventType.Purchased
 ];
 
 async function fetchData(queryArguments: QueryEventsArgs) {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const timeline: any = await apiClient.query({
     query: fetchQuery,
-    variables: {
-      ...queryArguments,
+    variables: <QueryEventsArgs>{
+      ...queryArguments
     },
   });
 
@@ -40,7 +40,7 @@ async function fetchData(queryArguments: QueryEventsArgs) {
 
   let newBatch = timeline.data[dataKey];
   if (newBatch.length > 0) {
-    newBatch.forEach((e) => (eventsByContactAddress[e.contact_address] = e));
+    newBatch.forEach((e) => (eventsByContactAddress[e.payload.purchase.id] = e));
 
     pagination = {
       order: order,
@@ -65,14 +65,14 @@ async function loadEvents() {
   await fetchData(args);
 
   return Object.values(eventsByContactAddress).sort((a, b) => {
-    const _a = new Date(a.timestamp).getTime();
-    const _b = new Date(b.timestamp).getTime();
-    return _a > _b
-      ? -1
-      : _a < _b
-        ? 1
-        : 0;
-  });
+      const _a = new Date(a.timestamp).getTime();
+      const _b = new Date(b.timestamp).getTime();
+      return _a > _b
+        ? -1
+        : _a < _b
+          ? 1
+          : 0;
+    });
 }
 
 
@@ -80,7 +80,7 @@ const { subscribe, set } = writable<ProfileEvent[]>(
   [],
 );
 
-export const newUsers = {
+export const myPurchases = {
   subscribe: (a) => {
     return subscribe(a);
   },

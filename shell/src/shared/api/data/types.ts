@@ -759,7 +759,6 @@ export type Profile = {
   firstName: Scalars['String'];
   id: Scalars['Int'];
   invitationTransaction?: Maybe<ProfileEvent>;
-  lastEvent?: Maybe<ProfileEvent>;
   lastName?: Maybe<Scalars['String']>;
   memberships?: Maybe<Array<Membership>>;
   newsletter?: Maybe<Scalars['Boolean']>;
@@ -870,7 +869,7 @@ export type PurchaseLineInput = {
 
 export type Purchased = IEventPayload & {
   __typename?: 'Purchased';
-  invoice?: Maybe<Invoice>;
+  purchase: Purchase;
   seller: Scalars['String'];
   seller_profile?: Maybe<Profile>;
   transaction_hash?: Maybe<Scalars['String']>;
@@ -2187,16 +2186,6 @@ export type ProfileBySafeAddressQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
-    )>, lastEvent?: Maybe<(
-      { __typename?: 'ProfileEvent' }
-      & Pick<ProfileEvent, 'block_number' | 'direction' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
-      & { payload?: Maybe<{ __typename?: 'ChatMessage' } | (
-        { __typename?: 'CrcHubTransfer' }
-        & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
-      ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
-        { __typename?: 'CrcTrust' }
-        & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
-      ) | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'NewUser' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'SafeVerified' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
     )>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
@@ -2476,21 +2465,31 @@ export type StreamQuery = (
       )> }
     ) | (
       { __typename?: 'Purchased' }
-      & { invoice?: Maybe<(
-        { __typename?: 'Invoice' }
-        & Pick<Invoice, 'purchaseId' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'pickupCode'>
-        & { sellerProfile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )>, lines?: Maybe<Array<(
-          { __typename?: 'InvoiceLine' }
-          & Pick<InvoiceLine, 'amount'>
+      & { seller_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, purchase: (
+        { __typename?: 'Purchase' }
+        & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress' | 'total'>
+        & { lines?: Maybe<Array<(
+          { __typename?: 'PurchaseLine' }
+          & Pick<PurchaseLine, 'amount'>
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
             & Pick<Offer, 'pictureUrl' | 'title' | 'description'>
           )> }
+        )>>, invoices?: Maybe<Array<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'id' | 'pickupCode' | 'paymentTransactionHash' | 'cancelledAt' | 'invoiceNo' | 'sellerSignature' | 'buyerSignature'>
+          & { buyerProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          )>, sellerProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+          )> }
         )>> }
-      )> }
+      ) }
     ) | (
       { __typename?: 'SafeVerified' }
       & Pick<SafeVerified, 'safe_address'>
@@ -3788,28 +3787,6 @@ export const ProfileBySafeAddressDocument = gql`
       country
       name
     }
-    lastEvent {
-      block_number
-      direction
-      safe_address
-      timestamp
-      transaction_hash
-      transaction_index
-      type
-      value
-      payload {
-        ... on CrcHubTransfer {
-          from
-          to
-          flow
-        }
-        ... on CrcTrust {
-          address
-          can_send_to
-          limit
-        }
-      }
-    }
     memberships {
       isAdmin
       organisation {
@@ -4219,20 +4196,19 @@ export const StreamDocument = gql`
         }
       }
       ... on Purchased {
-        invoice {
-          purchaseId
-          sellerSignature
-          sellerSignedDate
-          cancelledAt
-          sellerProfile {
-            id
-            displayName
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          pickupCode
+        seller_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+        }
+        purchase {
+          id
+          createdAt
+          createdByAddress
+          total
           lines {
             amount
             offer {
@@ -4240,6 +4216,31 @@ export const StreamDocument = gql`
               title
               description
             }
+          }
+          invoices {
+            id
+            pickupCode
+            buyerProfile {
+              id
+              displayName
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+            }
+            sellerProfile {
+              id
+              displayName
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+            }
+            paymentTransactionHash
+            cancelledAt
+            invoiceNo
+            sellerSignature
+            buyerSignature
           }
         }
       }

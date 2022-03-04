@@ -473,7 +473,6 @@ type Profile {
     firstName: String!
     id: Int!
     invitationTransaction: ProfileEvent
-    lastEvent: ProfileEvent
     lastName: String
     memberships: [Membership!]
     newsletter: Boolean
@@ -547,7 +546,7 @@ type PurchaseLine {
 }
 
 type Purchased implements IEventPayload {
-    invoice: Invoice
+    purchase: Purchase!
     seller: String!
     seller_profile: Profile
     transaction_hash: String

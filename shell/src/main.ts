@@ -1,9 +1,9 @@
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import {IShell} from "./shell";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {Environment} from "./shared/environment";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime)
 RpcGateway.setup(Environment.xdaiRpcGatewayUrl);
 

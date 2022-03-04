@@ -508,28 +508,6 @@ query profileBySafeAddress($safeAddress: String!) {
             country
             name
         }
-        lastEvent {
-            block_number
-            direction
-            safe_address
-            timestamp
-            transaction_hash
-            transaction_index
-            type
-            value
-            payload {
-                ... on CrcHubTransfer {
-                    from
-                    to
-                    flow
-                }
-                ... on CrcTrust {
-                    address
-                    can_send_to
-                    limit
-                }
-            }
-        }
         memberships {
             isAdmin
             organisation {
@@ -999,20 +977,19 @@ query stream(
                 }
             }
             ... on Purchased {
-                invoice {
-                    purchaseId
-                    sellerSignature
-                    sellerSignedDate
-                    cancelledAt
-                    sellerProfile {
-                        id
-                        displayName
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                    }
-                    pickupCode
+                seller_profile {
+                    id
+                    displayName
+                    firstName
+                    lastName
+                    avatarUrl
+                    circlesAddress
+                }
+                purchase {
+                    id
+                    createdAt
+                    createdByAddress
+                    total
                     lines {
                         amount
                         offer {
@@ -1020,6 +997,31 @@ query stream(
                             title
                             description
                         }
+                    }
+                    invoices {
+                        id
+                        pickupCode
+                        buyerProfile {
+                            id
+                            displayName
+                            firstName
+                            lastName
+                            avatarUrl
+                            circlesAddress
+                        }
+                        sellerProfile {
+                            id
+                            displayName
+                            firstName
+                            lastName
+                            avatarUrl
+                            circlesAddress
+                        }
+                        paymentTransactionHash
+                        cancelledAt
+                        invoiceNo
+                        sellerSignature
+                        buyerSignature
                     }
                 }
             }
