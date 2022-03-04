@@ -141,7 +141,7 @@ export class ApiConnection
 
         const wsAddr = this._apiEndpointUrl.replace("http://", "ws://").replace("https://", "wss://");
         const wsLink = new WebSocketLink({
-            uri: wsAddr,
+            uri: wsAddr + "/graphql",
             options: {
                 reconnect: true,
                 connectionParams: {
