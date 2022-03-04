@@ -1761,7 +1761,17 @@ export type SessionInfoQuery = (
     & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId' | 'lastAcknowledgedAt'>
     & { profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'origin' | 'circlesAddress' | 'circlesSafeOwner' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
+      & Pick<Profile, 'origin' | 'id' | 'emailAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'circlesTokenAddress'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'name'>
+      )>, claimedInvitation?: Maybe<(
+        { __typename?: 'ClaimedInvitation' }
+        & Pick<ClaimedInvitation, 'claimedAt'>
+      )>, invitationTransaction?: Maybe<(
+        { __typename?: 'ProfileEvent' }
+        & Pick<ProfileEvent, 'timestamp' | 'transaction_hash'>
+      )> }
     )>, capabilities: Array<(
       { __typename?: 'Capability' }
       & Pick<Capability, 'type'>
@@ -1884,7 +1894,7 @@ export type MyProfileQuery = (
   { __typename?: 'Query' }
   & { myProfile?: Maybe<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'displayCurrency' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'displayCurrency' | 'cityGeonameid'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
@@ -3303,12 +3313,27 @@ export const SessionInfoDocument = gql`
     lastAcknowledgedAt
     profile {
       origin
-      circlesAddress
+      id
+      emailAddress
       circlesSafeOwner
+      circlesAddress
       displayName
       firstName
       lastName
+      city {
+        geonameid
+        name
+      }
+      dream
       avatarUrl
+      claimedInvitation {
+        claimedAt
+      }
+      invitationTransaction {
+        timestamp
+        transaction_hash
+      }
+      circlesTokenAddress
     }
     capabilities {
       type
@@ -3446,6 +3471,7 @@ export const MyProfileDocument = gql`
     displayName
     firstName
     lastName
+    emailAddress
     dream
     country
     avatarUrl

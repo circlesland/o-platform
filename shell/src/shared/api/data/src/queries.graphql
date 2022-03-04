@@ -6,11 +6,21 @@ query sessionInfo {
         lastAcknowledgedAt
         profile {
             origin
-            circlesAddress
+            # init.registration
+            id
+            emailAddress
             circlesSafeOwner
+            # init.safe
+            circlesAddress
+            # init.profile
             displayName
             firstName
             lastName
+            city {
+                geonameid
+                name
+            }
+            dream
             avatarUrl
         }
         capabilities {
@@ -138,6 +148,7 @@ query myProfile {
         displayName
         firstName
         lastName
+        emailAddress
         dream
         country
         avatarUrl
