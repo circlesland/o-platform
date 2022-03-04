@@ -13,6 +13,7 @@ func buildActions(targetUser)
 
 */
 import {
+  AggregateType,
   Contact,
   ContactDirection,
   EventType,
@@ -25,6 +26,7 @@ import { me } from "./stores/me";
 import { push } from "svelte-spa-router";
 import { transfer } from "../dapps/o-banking/processes/transfer";
 import { setTrust } from "../dapps/o-banking/processes/setTrust";
+import {EventCache} from "./stores/eventCache";
 
 export interface UserActionItem {
   key: string;
@@ -58,9 +60,12 @@ export class UserActions {
     unsub();
     if (!$me) throw new Error(window.i18n("shared.userActions.errors.couldNotLoadYourProfile"));
 
-    const recipientProfile: Contact = await contactStore.findBySafeAddress(
-      targetUser.circlesAddress ?? $me.circlesAddress
-    );
+    let recipientProfile: Contact = EventCache.tryGet(<any>AggregateType.Contacts, targetUser.circlesAddress ?? $me.circlesAddress);
+    if (!recipientProfile) {
+      recipientProfile = await contactStore.findBySafeAddress(
+        targetUser.circlesAddress ?? $me.circlesAddress
+      );
+    }
 
     const trustMetadata =
       recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??

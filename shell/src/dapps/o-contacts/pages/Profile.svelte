@@ -18,7 +18,7 @@ import {
   EventType,
   Profile,
   VerifySafeDocument,
-  RevokeSafeVerificationDocument,
+  RevokeSafeVerificationDocument, AggregateType, SessionInfo,
 } from "../../../shared/api/data/types";
 import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
@@ -27,6 +27,7 @@ import { isMobile } from "../../../shared/functions/isMobile";
 import { UserActions, UserActionItem } from "../../../shared/userActions";
 
 import { _ } from "svelte-i18n";
+import {EventCache} from "../../../shared/stores/eventCache";
 
 export let id: string;
 
@@ -49,7 +50,10 @@ $: {
 }
 
 async function setProfile(id: string) {
-  const c = await contacts.findBySafeAddress(id);
+  const c = EventCache.tryGet(<any>AggregateType.Contacts, id)
+          ? EventCache.tryGet(<any>AggregateType.Contacts, id)
+          : await contacts.findBySafeAddress(id);
+
   if (!c) {
     return;
   }
@@ -77,8 +81,6 @@ async function setProfile(id: string) {
   //   displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 
   profile = contact.contactAddress_Profile;
-
-  detailActions = await UserActions.getAvailableActions(profile);
 
   if (contact.metadata) {
     const trustMetadata: ContactPoint = contact.metadata.find(
@@ -109,6 +111,13 @@ async function setProfile(id: string) {
   }
 
   isMe = profile.id == ($me ? $me.id : 0);
+  isLoading = false;
+
+  const detailActionsPromise = UserActions.getAvailableActions(profile);
+  const sessionInfoPromise = getSessionInfo();
+  const promiseResults = await Promise.all([detailActionsPromise, sessionInfoPromise]);
+  detailActions = <UserActionItem[]>promiseResults[0];
+  const sessionInfo = <SessionInfo>promiseResults[1];
 
   const verifyData = [
     {
@@ -124,7 +133,6 @@ async function setProfile(id: string) {
       mutation: RevokeSafeVerificationDocument,
     },
   ];
-  const sessionInfo = await getSessionInfo();
   capabilities = sessionInfo.capabilities;
   const canVerify =
     capabilities &&
