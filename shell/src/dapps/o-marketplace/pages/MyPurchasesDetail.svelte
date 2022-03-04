@@ -1,26 +1,29 @@
 <script lang="ts">
-import {
-  InvoiceDocument,
-  Profile,
-  Purchase,
-  QueryInvoiceArgs,
-} from "../../../shared/api/data/types";
-import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import { me } from "../../../shared/stores/me";
+  import {
+    EventType,
+    InvoiceDocument,
+    Profile,
+    ProfileEvent,
+    Purchase, Purchased,
+    QueryInvoiceArgs,
+  } from "../../../shared/api/data/types";
+  import {onMount} from "svelte";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
+  import {me} from "../../../shared/stores/me";
 
-import { push } from "svelte-spa-router";
-import { saveBufferAs } from "../../../shared/saveBufferAs";
-import { ApiClient } from "../../../shared/apiConnection";
-import QrCode from "svelte-qrcode";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import Date from "../../../shared/atoms/Date.svelte";
-import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import { purchases } from "../../../shared/stores/purchases";
-import { _ } from "svelte-i18n";
+  import {push} from "svelte-spa-router";
+  import {saveBufferAs} from "../../../shared/saveBufferAs";
+  import {ApiClient} from "../../../shared/apiConnection";
+  import QrCode from "svelte-qrcode";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import Date from "../../../shared/atoms/Date.svelte";
+  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+  import {purchases} from "../../../shared/stores/purchases";
+  import {_} from "svelte-i18n";
+  import {EventCache} from "../../../shared/stores/eventCache";
 
-export let id: string;
+  export let id: string;
 
 let isLoading: boolean;
 let error: Error;
@@ -39,7 +42,18 @@ async function load() {
     return;
   }
 
-  purchase = await purchases.findById(parseInt(id));
+  const cached:ProfileEvent = EventCache.tryGet(EventType.Purchased, id);
+  if (cached) {
+    purchase = (<Purchased>cached.payload).purchase;
+    sellerProfile = (<Purchased>cached.payload).seller_profile;
+  }
+  if (!purchase) {
+    purchase = <any> await purchases.findById(parseInt(id));
+    if (purchase?.lines) {
+      sellerProfile = purchase.lines[0].offer.createdByProfile;
+    }
+  }
+  groupedItems = purchase ? orderItems(purchase.lines) : {};
   isLoading = false;
 }
 
@@ -68,10 +82,6 @@ function totalPrice(items) {
 
 onMount(async () => {
   await load();
-
-  groupedItems = purchase ? orderItems(purchase.lines) : {};
-  sellerProfile = purchase?.lines[0].offer.createdByProfile;
-
   actions = [
     {
       icon: "chat",

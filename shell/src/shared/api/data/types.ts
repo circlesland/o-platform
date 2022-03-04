@@ -2476,7 +2476,7 @@ export type StreamQuery = (
           & Pick<PurchaseLine, 'amount'>
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
-            & Pick<Offer, 'pictureUrl' | 'title' | 'description'>
+            & Pick<Offer, 'pictureUrl' | 'title' | 'description' | 'pricePerUnit'>
           )> }
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
@@ -4266,6 +4266,7 @@ export const StreamDocument = gql`
               pictureUrl
               title
               description
+              pricePerUnit
             }
           }
           invoices {
