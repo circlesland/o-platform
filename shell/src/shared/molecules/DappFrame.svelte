@@ -31,7 +31,6 @@ import { Process } from "@o-platform/o-process/dist/interfaces/process";
 import { isMobile } from "../functions/isMobile";
 import { media } from "../stores/media";
 import { me } from "../stores/me";
-import { getSessionInfo } from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 import { Capability, EventsDocument, SessionInfo } from "../api/data/types";
 import { log } from "../logUiEvent";
 import { contacts } from "../stores/contacts";
@@ -413,7 +412,7 @@ function initSession(session: SessionInfo) {
 
 async function init() {
   // log(`init()`);
-  const session = await getSessionInfo();
+  const session = await me.getSessionInfo();
   if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
     // TODO: Stash the current URL away and redirect the user to it after authentication
     if (!routable.anonymous) {
@@ -772,7 +771,7 @@ onMount(async () => {
         onOpenContacts();
         break;
       case "shell.authenticated":
-        const session = await getSessionInfo();
+        const session = await me.getSessionInfo();
         initSession(session);
         break;
       case "shell.openModal":

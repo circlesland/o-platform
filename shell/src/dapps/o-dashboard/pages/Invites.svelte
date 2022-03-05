@@ -4,7 +4,6 @@ import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
 import { Capability, CapabilityType } from "../../../shared/api/data/types";
-import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 
 import {
   CreatedInvitation,
@@ -15,6 +14,7 @@ import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
 
 import { _ } from "svelte-i18n";
+import {me} from "../../../shared/stores/me";
 
 export let capabilities: Capability[] | undefined = [];
 
@@ -22,7 +22,7 @@ let myInvitations: CreatedInvitation[] = [];
 let canInvite = false;
 
 async function reload() {
-  const sessionInfo = await getSessionInfo();
+  const sessionInfo = await me.getSessionInfo();
   capabilities = sessionInfo.capabilities;
   canInvite =
     capabilities &&

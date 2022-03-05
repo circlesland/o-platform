@@ -17,8 +17,7 @@ export let store: Readable<ProfileEvent[]> & {
 let isLoading = true;
 let hasMore = true;
 let events: ProfileEvent[] = [];
-let isInitialized: boolean = false;
-let firstElement: HTMLElement;
+let initialScrollToBottom: boolean = false;
 let lastElement: HTMLElement;
 
 onMount(() => {
@@ -39,13 +38,13 @@ const handleChange = async (e) => {
   // This function will be called at least once directly after the page loaded.
   // After that it will be called whenever the marker-element scrolls into view again.
   if (e.detail.inView && hasMore) {
-    if (!isInitialized && events.length > 0 && reverse) {
+    if (!initialScrollToBottom && events.length > 0 && reverse) {
       // store is initialized but list is not
       setTimeout(() => {
         scrollToBottom();
         lastBottomPosition = lastElement.offsetTop;
       });
-      isInitialized = true;
+      initialScrollToBottom = true;
     } else {
       // store and list were already initialized before
       hasMore = await store.next();
@@ -58,13 +57,13 @@ const handleChange = async (e) => {
       }
       lastBottomPosition = lastElement.offsetTop;
     }
-    if (!isInitialized && reverse) {
+    if (!initialScrollToBottom && reverse) {
       // list wasn't initialized before
       setTimeout(() => {
         scrollToBottom()
         lastBottomPosition = lastElement.offsetTop;
       });
-      isInitialized = true;
+      initialScrollToBottom = true;
     }
   }
 };
@@ -75,7 +74,6 @@ const handleChange = async (e) => {
   <div use:inview="{{}}" on:change="{handleChange}"></div>
 {/if}
 {#if store}
-  <div bind:this={firstElement}></div>
   {#each events as event, i}
     {#if views[event.type]}
       <svelte:component this="{views[event.type]}" event="{event}" />

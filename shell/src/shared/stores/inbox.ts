@@ -18,7 +18,6 @@ import {
 } from "../api/data/types";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {me} from "./me";
-import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 import {fSetTrust} from "../../dapps/o-banking/processes/setTrust";
 import {ApiClient} from "../apiConnection";
 import {Environment} from "../environment";
@@ -30,7 +29,7 @@ async function queryEvents(mySafeAddress: string) {
   // TODO: Get last acknowledged
   // TODO: Get my safe address
 
-  const sessionInfo = await getSessionInfo();
+  const sessionInfo = await me.getSessionInfo();
 
   let pagination: PaginationArgs = {
     order: SortOrder.Asc,

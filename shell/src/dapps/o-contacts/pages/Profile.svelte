@@ -111,7 +111,7 @@ async function setProfile(id: string) {
   isLoading = false;
 
   const detailActionsPromise = UserActions.getAvailableActions(profile);
-  const sessionInfoPromise = getSessionInfo();
+  const sessionInfoPromise = me.getSessionInfo();
   const promiseResults = await Promise.all([detailActionsPromise, sessionInfoPromise]);
   detailActions = <UserActionItem[]>promiseResults[0];
   const sessionInfo = <SessionInfo>promiseResults[1];

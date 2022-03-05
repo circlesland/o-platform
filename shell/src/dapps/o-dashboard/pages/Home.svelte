@@ -5,7 +5,6 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import {Capability, CapabilityType, StatsDocument} from "../../../shared/api/data/types";
-import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 import DashboardHeader from "../atoms/DashboardHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { Environment } from "../../../shared/environment";
@@ -26,7 +25,7 @@ const init = async () => {
   const pk = sessionStorage.getItem("circlesKey");
   disableBanking = !pk;
 
-  const sessionInfo = await getSessionInfo();
+  const sessionInfo = await me.getSessionInfo();
   capabilities = sessionInfo.capabilities;
   canVerify =
     capabilities &&

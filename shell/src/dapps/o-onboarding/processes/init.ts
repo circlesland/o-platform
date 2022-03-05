@@ -1,5 +1,4 @@
 import { assign, createMachine, send } from "xstate";
-import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 import { BN } from "ethereumjs-util";
 import { loadProfile } from "../../o-passport/processes/identify/services/loadProfile";
 import {
@@ -30,6 +29,7 @@ import { InitContext } from "./initContext";
 import { push } from "svelte-spa-router";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
+import {me} from "../../../shared/stores/me";
 
 export const initMachine = createMachine<InitContext, InitEvent>(
   {
@@ -439,7 +439,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
     services: {
       loadSession: () => async (callback) => {
         try {
-          const sessionInfo = await getSessionInfo();
+          const sessionInfo = await me.getSessionInfo();
           if (sessionInfo.isLoggedOn) {
             callback(<any>{ type: "GOT_SESSION", session: sessionInfo });
           } else {

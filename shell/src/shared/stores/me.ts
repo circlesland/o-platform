@@ -1,9 +1,22 @@
 import {readable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {Profile} from "../api/data/types";
+import {Profile, SessionInfo} from "../api/data/types";
 import {displayableName} from "../functions/stringHelper";
+import {Subscriber} from "svelte/types/runtime/store";
+import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 
-export const me = readable<Profile|null>(null, function start(set) {
+let sessionInfo: SessionInfo | undefined = undefined;
+
+export const me = {
+  subscribe: (subscriber: Subscriber<Profile|null>) => _me.subscribe(subscriber),
+  getSessionInfo: async () => {
+    if (!sessionInfo) {
+      sessionInfo = await getSessionInfo();
+    }
+    return sessionInfo;
+  }
+};
+const _me = readable<Profile|null>(null, function start(set) {
   const subscription = window.o.events.subscribe((event: PlatformEvent & {
     profile: Profile
   }) => {
@@ -13,6 +26,7 @@ export const me = readable<Profile|null>(null, function start(set) {
       return;
     }
     if (event.type == "shell.authenticated" && event.profile) {
+      sessionInfo = undefined;
       if (!event.profile.displayName) {
         event.profile.displayName = displayableName(event.profile.firstName, event.profile.lastName);
       }
