@@ -18,6 +18,8 @@ let isLoading = true;
 let hasMore = true;
 let events: ProfileEvent[] = [];
 let isInitialized: boolean = false;
+let firstElement: HTMLElement;
+let lastElement: HTMLElement;
 
 onMount(() => {
   isLoading = true;
@@ -27,7 +29,6 @@ onMount(() => {
     } else {
       events = data;
     }
-    console.log("events:", events);
     isLoading = false;
   });
 });
@@ -38,20 +39,19 @@ const handleChange = async (e) => {
   // This function will be called at least once directly after the page loaded.
   // After that it will be called whenever the marker-element scrolls into view again.
   if (e.detail.inView && hasMore) {
-    if (!isInitialized && events.length > 0) {
-      // When the underlying store is already initialized but the list is not
+    if (!isInitialized && events.length > 0 && reverse) {
+      // store is initialized but list is not
       setTimeout(() => {
         scrollToBottom();
         lastBottomPosition = lastElement.offsetTop;
       });
       isInitialized = true;
     } else {
-      // When the source and list are already initialized
+      // store and list were already initialized before
       hasMore = await store.next();
-      const scrollPosition = lastBottomPosition > 0
-        ? lastElement.offsetTop - lastBottomPosition
-        : -1;
-      if (reverse && scrollPosition > 0) {
+      const scrollPosition = lastElement.offsetTop - lastBottomPosition;
+
+      if (reverse) {
         setTimeout(() => {
           scrollToPosition(scrollPosition);
         });
@@ -59,7 +59,7 @@ const handleChange = async (e) => {
       lastBottomPosition = lastElement.offsetTop;
     }
     if (!isInitialized && reverse) {
-      // `either store nor list are initialized
+      // list wasn't initialized before
       setTimeout(() => {
         scrollToBottom()
         lastBottomPosition = lastElement.offsetTop;
@@ -69,12 +69,6 @@ const handleChange = async (e) => {
   }
 };
 
-let firstElement: HTMLElement;
-let lastElement: HTMLElement;
-$: {
-  console.log("firstElement", firstElement)
-  console.log("lastElement", lastElement)
-}
 </script>
 
 {#if store && reverse}

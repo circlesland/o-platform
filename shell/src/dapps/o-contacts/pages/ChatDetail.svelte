@@ -4,10 +4,7 @@
     EventType,
     Profile,
     ProfileEvent,
-    SendMessageDocument,
-    SortOrder,
-    StreamDocument,
-    StreamQueryVariables,
+    SendMessageDocument
   } from "../../../shared/api/data/types";
   import {me} from "../../../shared/stores/me";
   import {push} from "svelte-spa-router";
@@ -17,7 +14,6 @@
 
   import NotificationCard from "../atoms/NotificationCard.svelte";
   import UserImage from "src/shared/atoms/UserImage.svelte";
-  import {ApiClient} from "../../../shared/apiConnection";
   import {isMobile} from "../../../shared/functions/isMobile";
   // import * as ECIES from "bitcore-ecies";
   import {_} from "svelte-i18n";
@@ -33,43 +29,7 @@
   let shellEventSubscription: Subscription;
 
   async function reload() {
-    contactProfile = (await contacts.findBySafeAddress(id))
-            .contactAddress_Profile;
-    /*
-  chatHistory = (await ApiClient.query<ProfileEvent[], StreamQueryVariables>(
-    StreamDocument,
-    {
-      safeAddress: $me.circlesAddress,
-      pagination: {
-        order: SortOrder.Desc,
-        limit: 50,
-        continueAt: new Date().toJSON(),
-      },
-      filter: {
-        with: id,
-      },
-      types: [
-        EventType.CrcHubTransfer,
-        EventType.CrcTrust,
-        EventType.ChatMessage,
-        EventType.Erc20Transfer,
-        EventType.Purchased,
-        EventType.SaleEvent,
-        EventType.InvitationRedeemed,
-        //EventType.CrcMinting,
-        //EventType.CrcSignup,
-        //EventType.CrcTokenTransfer,
-        //EventType.EthTransfer,
-        //EventType.GnosisSafeEthTransfer,
-        //EventType.InvitationCreated,
-        //EventType.MembershipOffer,
-        //EventType.MembershipAccepted,
-        //EventType.MembershipRejected
-        //EventType.NewUser,
-      ],
-    }
-  )).reverse();
-   */
+    contactProfile = (await contacts.findBySafeAddress(id)).contactAddress_Profile;
   }
 
   onMount(async () => {
