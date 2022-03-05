@@ -74,6 +74,7 @@ export type ChatMessage = IEventPayload & {
   __typename?: 'ChatMessage';
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
+  id: Scalars['Int'];
   text: Scalars['String'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
@@ -2349,7 +2350,7 @@ export type StreamQuery = (
       & Pick<Profile, 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
     )>, payload?: Maybe<(
       { __typename?: 'ChatMessage' }
-      & Pick<ChatMessage, 'from' | 'to' | 'text'>
+      & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
       & { from_profile?: Maybe<(
         { __typename?: 'Profile' }
         & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
@@ -2473,10 +2474,10 @@ export type StreamQuery = (
         & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress' | 'total'>
         & { lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
-          & Pick<PurchaseLine, 'amount'>
+          & Pick<PurchaseLine, 'id' | 'amount'>
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
-            & Pick<Offer, 'pictureUrl' | 'title' | 'description' | 'pricePerUnit'>
+            & Pick<Offer, 'id' | 'pictureUrl' | 'title' | 'description' | 'pricePerUnit'>
           )> }
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
@@ -4132,6 +4133,7 @@ export const StreamDocument = gql`
         value
       }
       ... on ChatMessage {
+        id
         from
         from_profile {
           id
@@ -4261,8 +4263,10 @@ export const StreamDocument = gql`
           createdByAddress
           total
           lines {
+            id
             amount
             offer {
+              id
               pictureUrl
               title
               description

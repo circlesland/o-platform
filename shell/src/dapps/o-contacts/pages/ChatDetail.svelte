@@ -1,38 +1,41 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import {
-  EventType,
-  Profile,
-  ProfileEvent,
-  SendMessageDocument,
-  SortOrder,
-  StreamDocument,
-  StreamQueryVariables,
-} from "../../../shared/api/data/types";
-import { me } from "../../../shared/stores/me";
-import { push } from "svelte-spa-router";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import { contacts } from "../../../shared/stores/contacts";
+  import {onMount} from "svelte";
+  import {
+    EventType,
+    Profile,
+    ProfileEvent,
+    SendMessageDocument,
+    SortOrder,
+    StreamDocument,
+    StreamQueryVariables,
+  } from "../../../shared/api/data/types";
+  import {me} from "../../../shared/stores/me";
+  import {push} from "svelte-spa-router";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
+  import {contacts} from "../../../shared/stores/contacts";
 
-import NotificationCard from "../atoms/NotificationCard.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import { ApiClient } from "../../../shared/apiConnection";
-import { isMobile } from "../../../shared/functions/isMobile";
-// import * as ECIES from "bitcore-ecies";
-import { _ } from "svelte-i18n";
+  import NotificationCard from "../atoms/NotificationCard.svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import {ApiClient} from "../../../shared/apiConnection";
+  import {isMobile} from "../../../shared/functions/isMobile";
+  // import * as ECIES from "bitcore-ecies";
+  import {_} from "svelte-i18n";
+  import EventList from "../../../shared/molecules/Lists/EventList.svelte";
+  import {myChats} from "../../../shared/stores/myChat";
 
-export let id: string;
+  export let id: string;
 
-let error: string | undefined = undefined;
-let chatHistory: ProfileEvent[] = [];
+  let error: string | undefined = undefined;
+  let chatHistory: ProfileEvent[] = [];
 
-let contactProfile: Profile | null;
-let shellEventSubscription: Subscription;
+  let contactProfile: Profile | null;
+  let shellEventSubscription: Subscription;
 
-async function reload() {
-  contactProfile = (await contacts.findBySafeAddress(id))
-    .contactAddress_Profile;
+  async function reload() {
+    contactProfile = (await contacts.findBySafeAddress(id))
+            .contactAddress_Profile;
+    /*
   chatHistory = (await ApiClient.query<ProfileEvent[], StreamQueryVariables>(
     StreamDocument,
     {
@@ -66,96 +69,86 @@ async function reload() {
       ],
     }
   )).reverse();
-
-  window.o.publishEvent(<any>{
-    type: "shell.scrollToBottom",
-    scrollNow: false,
-  });
-}
-
-onMount(async () => {
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (event.type != "new_message" && event.type != "blockchain_event") {
-        return;
-      }
-      await reload();
-    }
-  );
-  await reload();
-
-  return () => shellEventSubscription.unsubscribe();
-});
-
-let inputField: any;
-let chatmessage: string;
-
-const sendMessage = async (text) => {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-  // If we're acting as organisation then we need to specify a "fromSafeAddress"
-  const result = await apiClient.mutate({
-    mutation: SendMessageDocument,
-    variables: {
-      fromSafeAddress: $me.circlesAddress,
-      toSafeAddress: id,
-      content: text,
-    },
-  });
-
-  if (result.data?.sendMessage?.success) {
-    chatHistory = [...chatHistory, result.data.sendMessage.event];
+   */
+    window.o.publishEvent(<any>{
+      type: "shell.scrollToBottom",
+      scrollNow: false,
+    });
   }
 
-  window.o.publishEvent(<any>{
-    type: "shell.scrollToBottom",
-    scrollNow: true,
-  });
-  window.o.publishEvent(<any>{
-    type: "shell.refresh",
-    dapp: "chat:1",
-    data: null,
-  });
-};
+  onMount(async () => {
+    shellEventSubscription = window.o.events.subscribe(
+            async (event: PlatformEvent) => {
+              if (event.type != "new_message" && event.type != "blockchain_event") {
+                return;
+              }
+              await reload();
+            }
+    );
+    await reload();
 
-function init(el) {
-  el.focus();
-}
+    return () => shellEventSubscription.unsubscribe();
+  });
 
-onMount(() => {
-  // TEMPORARY FIX UNTIL THE LIST IS WORKING BETTER
-  // TODO: The problem this tries to fix only appears to happen when there are action buttons in the view
-  setTimeout(function () {
+  let inputField: any;
+  let chatmessage: string;
+
+  const sendMessage = async (text) => {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+
+    // If we're acting as organisation then we need to specify a "fromSafeAddress"
+    const result = await apiClient.mutate({
+      mutation: SendMessageDocument,
+      variables: {
+        fromSafeAddress: $me.circlesAddress,
+        toSafeAddress: id,
+        content: text,
+      },
+    });
+
+    if (result.data?.sendMessage?.success) {
+      chatHistory = [...chatHistory, result.data.sendMessage.event];
+    }
+
     window.o.publishEvent(<any>{
       type: "shell.scrollToBottom",
       scrollNow: true,
     });
-  }, 1200);
-});
 
-async function submitChat() {
-  if (!chatmessage) {
-    return;
+    window.o.publishEvent(<any>{
+      type: "shell.refresh",
+      dapp: "chat:1",
+      data: null,
+    });
+  };
+
+  function init(el) {
+    el.focus();
   }
 
-  sendMessage(chatmessage);
+  async function submitChat() {
+    if (!chatmessage) {
+      return;
+    }
 
-  chatmessage = null;
-  // let textarea = document.querySelector("textarea");
-  // textarea.style.cssText = "height:auto; padding:0 padding-top: 2px;";
-}
+    sendMessage(chatmessage);
 
-function onkeydown(e: KeyboardEvent) {
-  if (e.key == "Enter" && !e.shiftKey) {
-    submitChat();
+    chatmessage = null;
+    // let textarea = document.querySelector("textarea");
+    // textarea.style.cssText = "height:auto; padding:0 padding-top: 2px;";
   }
-}
 
-function goToProfile(e, path?: string) {
-  if (!path) return;
-  e.stopPropagation();
-  push(`#/contacts/profile/${path}`);
-}
+  function onkeydown(e: KeyboardEvent) {
+    if (e.key == "Enter" && !e.shiftKey) {
+      submitChat();
+    }
+  }
+
+  function goToProfile(e, path?: string) {
+    if (!path) return;
+    e.stopPropagation();
+    push(`#/contacts/profile/${path}`);
+  }
 </script>
 
 <div id="chatlist">
@@ -199,12 +192,22 @@ function goToProfile(e, path?: string) {
 
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
   <div class="flex flex-col pb-0 space-y-4 sm:space-y-8">
-    {#each chatHistory as event}
-      <NotificationCard event="{event}" />
-    {/each}
-    <div id="endOfList"></div>
+    {#if contactProfile}
+    <EventList
+            reverse={true}
+            store={myChats.with(contactProfile.circlesAddress)}
+            views="{{
+              [EventType.CrcHubTransfer]: NotificationCard,
+              [EventType.CrcTrust]: NotificationCard,
+              [EventType.ChatMessage]: NotificationCard,
+              [EventType.Erc20Transfer]: NotificationCard,
+              [EventType.Purchased]: NotificationCard,
+              [EventType.SaleEvent]: NotificationCard,
+              [EventType.InvitationRedeemed]: NotificationCard
+    }}" />
+    {/if}
   </div>
-  {#if contactProfile && contactProfile.type != null}
+  {#if contactProfile && contactProfile.id > -1}
     <div
       class:hidden="{!contactProfile || !contactProfile.id}"
       class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2 rounded-b-xl">

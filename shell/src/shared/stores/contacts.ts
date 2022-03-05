@@ -4,7 +4,7 @@ import {me} from "./me";
 import {Subscription} from "rxjs";
 import {ZERO_ADDRESS} from "@o-platform/o-circles/dist/consts";
 import {ApiClient} from "../apiConnection";
-import {EventCache} from "./eventCache";
+//
 
 let contactsBySafeAddress: { [address: string]: Contact } = {};
 
@@ -30,7 +30,6 @@ export const { subscribe } = readable<Contact[]>([], function start(set) {
   // Subscribe to $me and reload the store when the profile changes
   async function update(safeAddress: string) {
     const contacts = await loadContacts(safeAddress);
-    contacts.forEach(o => EventCache.addOrUpdate(<any>AggregateType.Contacts, o.contactAddress, o));
     set(contacts);
   }
 

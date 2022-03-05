@@ -1,13 +1,11 @@
 <script lang="ts">
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {GetRecentProfilesDocument} from "../../../shared/api/data/types";
   import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
   import RecentUserCard from "../atoms/RecentUserCard.svelte";
-  import List from "../../../shared/molecules/Lists/List.svelte";
   import EventList from "../../../shared/molecules/Lists/EventList.svelte";
-  import {newUsers} from "../../../shared/stores/newUsers";
   import {EventType} from "../../../shared/api/data/types";
+  import {newUsers} from "../../../shared/stores/newUsers";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;

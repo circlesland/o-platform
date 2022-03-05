@@ -17,6 +17,7 @@ import { transactions } from "../../../shared/stores/transactions";
 
 import { _ } from "svelte-i18n";
 
+
 export let transactionHash: string;
 let transfer: ProfileEvent;
 let classes: string;
@@ -30,6 +31,7 @@ let displayableName: string = "";
 
 onMount(async () => {
   transfer = await transactions.findByHash(transactionHash);
+
   if (transfer && transfer.payload?.__typename == "CrcMinting") {
     const minting = transfer.payload as CrcMinting;
 

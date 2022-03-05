@@ -27,7 +27,7 @@ import { isMobile } from "../../../shared/functions/isMobile";
 import { UserActions, UserActionItem } from "../../../shared/userActions";
 
 import { _ } from "svelte-i18n";
-import {EventCache} from "../../../shared/stores/eventCache";
+
 
 export let id: string;
 
@@ -50,10 +50,7 @@ $: {
 }
 
 async function setProfile(id: string) {
-  const c = EventCache.tryGet(<any>AggregateType.Contacts, id)
-          ? EventCache.tryGet(<any>AggregateType.Contacts, id)
-          : await contacts.findBySafeAddress(id);
-
+  const c = await contacts.findBySafeAddress(id);
   if (!c) {
     return;
   }

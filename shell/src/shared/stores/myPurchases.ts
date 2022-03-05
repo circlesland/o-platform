@@ -1,14 +1,23 @@
 import {
-  EventType,
+  EventPayload,
+  EventType, ProfileEvent,
   Purchased,
   SortOrder,
 } from "../api/data/types";
-import {ScrollWindowQuery} from "./scrollWindowQuery";
+import {PagedEventQuery, PagedEventQueryIndexEntry} from "./pagedEventQuery";
 
-export const myPurchases = new ScrollWindowQuery<Purchased>(
-  EventType.Purchased,
-  SortOrder.Desc,
-  25,
-  "timestamp",
-  (e) => e.purchase.id.toString()
-);
+export class MyPurchases extends PagedEventQuery {
+  constructor(sortOrder:SortOrder, pageSize = 20) {
+    super([EventType.Purchased], sortOrder, pageSize);
+  }
+
+  getPrimaryKey(eventPayload: EventPayload): string {
+    return (<Purchased>eventPayload).purchase.id.toString();
+  }
+
+  protected getIndexedValues(event: ProfileEvent): PagedEventQueryIndexEntry[] {
+    return [];
+  }
+}
+
+export const myPurchases = new MyPurchases(SortOrder.Desc);

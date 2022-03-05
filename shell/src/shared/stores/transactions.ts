@@ -11,6 +11,7 @@ import {
 import { me } from "./me";
 import { Subscription } from "rxjs";
 import { ApiClient } from "../apiConnection";
+//
 
 let order: SortOrder = SortOrder.Desc;
 let dataKey: string = "events";
@@ -45,7 +46,9 @@ async function fetchData(queryArguments: QueryEventsArgs) {
 
   let newBatch = await timeline.data[dataKey];
   if (newBatch.length > 0) {
-    newBatch.forEach((e) => (eventsByHash[e.transaction_hash] = e));
+    newBatch.forEach((e) => {
+      eventsByHash[e.transaction_hash] = e;
+    });
 
     pagination = {
       order: order,

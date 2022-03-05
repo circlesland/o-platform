@@ -913,6 +913,7 @@ query stream(
                 value
             }
             ... on ChatMessage {
+                id
                 from
                 from_profile {
                     id
@@ -1042,8 +1043,10 @@ query stream(
                     createdByAddress
                     total
                     lines {
+                        id
                         amount
                         offer {
+                            id
                             pictureUrl
                             title
                             description

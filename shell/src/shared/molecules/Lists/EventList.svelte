@@ -4,50 +4,91 @@ import { ProfileEvent } from "../../api/data/types";
 
 import { inview } from "svelte-inview/dist/index";
 import GenericEventCard from "../../NotificationViewer/molecules/GenericEventCard.svelte";
+import {scrollToTop, scrollToBottom, scrollToPosition} from "../../layouts/Center.svelte";
 import {Readable} from "svelte/store";
 import { _ } from "svelte-i18n";
 
 export let views: { [type: string]: any } = {};
+export let reverse: boolean = false;
 export let store: Readable<ProfileEvent[]> & {
-  fetchMore: () => Promise<boolean>;
+  next: () => Promise<boolean>;
 };
-
-$: {
-  store = store;
-}
 
 let isLoading = true;
 let hasMore = true;
-let scrollContent;
 let events: ProfileEvent[] = [];
+let isInitialized: boolean = false;
 
 onMount(() => {
   isLoading = true;
   return store.subscribe((data) => {
-    events = data;
+    if (events && events.length) {
+      isInitialized = true;
+    }
+    if (reverse) {
+      events = data.map(o => o).reverse();
+    } else {
+      events = data;
+    }
     isLoading = false;
+    if (!isInitialized) {
+      if (reverse) {
+        setTimeout(() => {
+          scrollToBottom()
+        });
+      } else {
+        setTimeout(() => {
+          scrollToTop()
+        });
+      }
+    } else {
+      if (scrollToAfterLoading) {
+        setTimeout(() => {
+          const pos = lastElement.offsetTop - lastElementOffsetTop;
+          lastElementOffsetTop = lastElement.offsetTop;
+          scrollToPosition(pos);
+          scrollToAfterLoading = false;
+        });
+      }
+    }
   });
 });
 
+let scrollToAfterLoading:boolean = false;
+
 const handleChange = async (e) => {
   if (e.detail.inView && hasMore) {
-    hasMore = await store.fetchMore();
+    scrollToAfterLoading = reverse && isInitialized;
+    hasMore = await store.next();
+    isInitialized = true;
   }
 };
 
-const initBar = (bar) => {
-  scrollContent = bar;
-};
+let firstElement: HTMLElement;
+let lastElement: HTMLElement;
+let lastElementOffsetTop: number = 0;
+$: {
+  console.log("firstElement", firstElement)
+  console.log("lastElement", lastElement)
+  if(lastElement) {
+    lastElementOffsetTop = lastElement.offsetTop;
+  }
+}
 </script>
 
+{#if store && reverse}
+  <div use:inview="{{}}" on:change="{handleChange}"></div>
+{/if}
 {#if store}
-  {#each events as event}
+  <div bind:this={firstElement}></div>
+  {#each events as event, i}
     {#if views[event.type]}
       <svelte:component this="{views[event.type]}" event="{event}" />
     {:else}
       <GenericEventCard event="{event}" />
     {/if}
   {/each}
+  <div bind:this={lastElement}></div>
 {:else}
   <section class="flex items-center justify-center mb-2 ">
     <div
@@ -58,6 +99,6 @@ const initBar = (bar) => {
     </div>
   </section>
 {/if}
-{#if store}
+{#if store && !reverse}
   <div use:inview="{{}}" on:change="{handleChange}"></div>
 {/if}

@@ -61,6 +61,7 @@ type Capability {
 type ChatMessage implements IEventPayload {
     from: String!
     from_profile: Profile
+    id: Int!
     text: String!
     to: String!
     to_profile: Profile

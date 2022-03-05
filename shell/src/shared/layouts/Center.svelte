@@ -1,23 +1,32 @@
+<script context="module" lang="ts">
+  let scrollContent;
+  export function scrollToBottom() {
+    scrollToPosition(100000);
+  }
+  export function scrollToTop() {
+    scrollToPosition(0);
+  }
+  export function scrollToPosition(position:number) {
+    if (!scrollContent) {
+      return;
+    }
+    const scrollElement = scrollContent.getScrollElement();
+    scrollElement.scrollTo(0, position);
+  }
+</script>
 <script lang="ts">
 import { createEventDispatcher, getContext } from "svelte";
 import { clickOutside } from "./../functions/clickOutside";
 import SvelteSimplebar from "./../molecules/SimpleBar/SvelteSimpleBar.svelte";
 
 export let blur: boolean = false;
-
-let scrollContent;
-
 const eventDispatcher = createEventDispatcher();
 
 const sub = window.o.events.subscribe((event) => {
   if (event.type == "shell.scrollToBottom") {
-    gotoBottom("modalScrollable");
+    scrollToBottom();
   }
 });
-
-function gotoBottom(id) {
-  scrollContent.getScrollElement().scrollTo(0, 100000);
-}
 
 const initBar = (bar) => {
   scrollContent = bar;

@@ -21,7 +21,7 @@
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import {purchases} from "../../../shared/stores/purchases";
   import {_} from "svelte-i18n";
-  import {EventCache} from "../../../shared/stores/eventCache";
+
 
   export let id: string;
 
@@ -42,17 +42,11 @@ async function load() {
     return;
   }
 
-  const cached:ProfileEvent = EventCache.tryGet(EventType.Purchased, id);
-  if (cached) {
-    purchase = (<Purchased>cached.payload).purchase;
-    sellerProfile = (<Purchased>cached.payload).seller_profile;
+  purchase = <any> await purchases.findById(parseInt(id));
+  if (purchase?.lines) {
+    sellerProfile = purchase.lines[0].offer.createdByProfile;
   }
-  if (!purchase) {
-    purchase = <any> await purchases.findById(parseInt(id));
-    if (purchase?.lines) {
-      sellerProfile = purchase.lines[0].offer.createdByProfile;
-    }
-  }
+
   groupedItems = purchase ? orderItems(purchase.lines) : {};
   isLoading = false;
 }
@@ -61,9 +55,9 @@ function orderItems(items) {
   const orderedCart = {};
   items.forEach((item) => {
     console.log("ITI: ", item);
-    orderedCart[item.id] = {
+    orderedCart[item.offer.id] = {
       item: item,
-      qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
+      qty: orderedCart[item.offer.id] ? orderedCart[item.offer.id].qty + 1 : 1,
     };
   });
 
