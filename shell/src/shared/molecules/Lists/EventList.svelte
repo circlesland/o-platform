@@ -22,57 +22,58 @@ let isInitialized: boolean = false;
 onMount(() => {
   isLoading = true;
   return store.subscribe((data) => {
-    if (events && events.length) {
-      isInitialized = true;
-    }
     if (reverse) {
       events = data.map(o => o).reverse();
     } else {
       events = data;
     }
+    console.log("events:", events);
     isLoading = false;
-    if (!isInitialized) {
-      if (reverse) {
-        setTimeout(() => {
-          scrollToBottom()
-        });
-      } else {
-        setTimeout(() => {
-          scrollToTop()
-        });
-      }
-    } else {
-      if (scrollToAfterLoading) {
-        setTimeout(() => {
-          const pos = lastElement.offsetTop - lastElementOffsetTop;
-          lastElementOffsetTop = lastElement.offsetTop;
-          scrollToPosition(pos);
-          scrollToAfterLoading = false;
-        });
-      }
-    }
   });
 });
 
-let scrollToAfterLoading:boolean = false;
+let lastBottomPosition = 0;
 
 const handleChange = async (e) => {
+  // This function will be called at least once directly after the page loaded.
+  // After that it will be called whenever the marker-element scrolls into view again.
   if (e.detail.inView && hasMore) {
-    scrollToAfterLoading = reverse && isInitialized;
-    hasMore = await store.next();
-    isInitialized = true;
+    if (!isInitialized && events.length > 0) {
+      // When the underlying store is already initialized but the list is not
+      setTimeout(() => {
+        scrollToBottom();
+        lastBottomPosition = lastElement.offsetTop;
+      });
+      isInitialized = true;
+    } else {
+      // When the source and list are already initialized
+      hasMore = await store.next();
+      const scrollPosition = lastBottomPosition > 0
+        ? lastElement.offsetTop - lastBottomPosition
+        : -1;
+      if (reverse && scrollPosition > 0) {
+        setTimeout(() => {
+          scrollToPosition(scrollPosition);
+        });
+      }
+      lastBottomPosition = lastElement.offsetTop;
+    }
+    if (!isInitialized && reverse) {
+      // `either store nor list are initialized
+      setTimeout(() => {
+        scrollToBottom()
+        lastBottomPosition = lastElement.offsetTop;
+      });
+      isInitialized = true;
+    }
   }
 };
 
 let firstElement: HTMLElement;
 let lastElement: HTMLElement;
-let lastElementOffsetTop: number = 0;
 $: {
   console.log("firstElement", firstElement)
   console.log("lastElement", lastElement)
-  if(lastElement) {
-    lastElementOffsetTop = lastElement.offsetTop;
-  }
 }
 </script>
 

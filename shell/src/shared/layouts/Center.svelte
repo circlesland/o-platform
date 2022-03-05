@@ -1,10 +1,12 @@
 <script context="module" lang="ts">
   let scrollContent;
   export function scrollToBottom() {
-    scrollToPosition(100000);
+    scrollToPosition(1000000000);
+    console.log("ScrollToBotton");
   }
   export function scrollToTop() {
     scrollToPosition(0);
+    console.log("ScrollToTop");
   }
   export function scrollToPosition(position:number) {
     if (!scrollContent) {

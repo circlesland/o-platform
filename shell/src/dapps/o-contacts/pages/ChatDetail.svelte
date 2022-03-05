@@ -70,10 +70,6 @@
     }
   )).reverse();
    */
-    window.o.publishEvent(<any>{
-      type: "shell.scrollToBottom",
-      scrollNow: false,
-    });
   }
 
   onMount(async () => {
