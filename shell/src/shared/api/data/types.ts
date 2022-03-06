@@ -1769,13 +1769,31 @@ export type InitQuery = (
   { __typename?: 'Query' }
   & { sessionInfo: (
     { __typename?: 'SessionInfo' }
-    & { profile?: Maybe<(
+    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId' | 'lastAcknowledgedAt'>
+    & { capabilities: Array<(
+      { __typename?: 'Capability' }
+      & Pick<Capability, 'type'>
+    )>, profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'emailAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'circlesTokenAddress'>
+      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'circlesTokenAddress'>
       & { city?: Maybe<(
         { __typename?: 'City' }
-        & Pick<City, 'geonameid' | 'name'>
-      )>, claimedInvitation?: Maybe<(
+        & Pick<City, 'geonameid' | 'name' | 'country'>
+      )>, memberships?: Maybe<Array<(
+        { __typename?: 'Membership' }
+        & Pick<Membership, 'isAdmin'>
+        & { organisation: (
+          { __typename?: 'Organisation' }
+          & Pick<Organisation, 'id' | 'circlesAddress' | 'name' | 'description' | 'avatarUrl'>
+        ) }
+      )>>, verifications?: Maybe<Array<(
+        { __typename?: 'Verification' }
+        & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+        & { verifierProfile?: Maybe<(
+          { __typename?: 'Organisation' }
+          & Pick<Organisation, 'circlesAddress' | 'avatarUrl' | 'name'>
+        )> }
+      )>>, claimedInvitation?: Maybe<(
         { __typename?: 'ClaimedInvitation' }
         & Pick<ClaimedInvitation, 'claimedAt'>
       )>, invitationTransaction?: Maybe<(
@@ -3267,21 +3285,57 @@ export const AnnouncePaymentDocument = gql`
 export const InitDocument = gql`
     query init {
   sessionInfo {
+    isLoggedOn
+    hasProfile
+    profileId
+    lastAcknowledgedAt
+    capabilities {
+      type
+    }
     profile {
       id
-      emailAddress
-      circlesSafeOwner
       circlesAddress
       displayCurrency
+      circlesSafeOwner
+      successorOfCirclesAddress
       displayName
       firstName
       lastName
+      emailAddress
+      dream
+      country
+      avatarUrl
+      avatarCid
+      avatarMimeType
+      newsletter
+      displayTimeCircles
+      displayCurrency
+      cityGeonameid
       city {
         geonameid
         name
+        country
       }
-      dream
-      avatarUrl
+      memberships {
+        isAdmin
+        organisation {
+          id
+          circlesAddress
+          name
+          description
+          avatarUrl
+        }
+      }
+      verifications {
+        createdAt
+        revokedAt
+        verifierSafeAddress
+        verifierProfile {
+          circlesAddress
+          avatarUrl
+          name
+        }
+      }
       claimedInvitation {
         claimedAt
       }

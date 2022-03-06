@@ -1,23 +1,56 @@
 query init {
     sessionInfo {
+        isLoggedOn
+        hasProfile
+        profileId
+        lastAcknowledgedAt
+        capabilities {
+            type
+        }
         profile {
-            # init.registration
             id
-            emailAddress
-            circlesSafeOwner
-            # init.safe
             circlesAddress
             displayCurrency
-            # init.profile
+            circlesSafeOwner
+            successorOfCirclesAddress
             displayName
             firstName
             lastName
+            emailAddress
+            dream
+            country
+            avatarUrl
+            avatarCid
+            avatarMimeType
+            newsletter
+            displayTimeCircles
+            displayCurrency
+            cityGeonameid
             city {
                 geonameid
                 name
+                country
             }
-            dream
-            avatarUrl
+            memberships {
+                isAdmin
+                organisation {
+                    id
+                    circlesAddress
+                    name
+                    description
+                    avatarUrl
+                }
+            }
+            verifications {
+                createdAt
+                revokedAt
+                verifierSafeAddress
+                verifierProfile {
+                    circlesAddress
+                    avatarUrl
+                    name
+                }
+            }
             # init.invitation
             claimedInvitation {
                 claimedAt

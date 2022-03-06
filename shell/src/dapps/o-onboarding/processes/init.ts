@@ -62,6 +62,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
             console.log("initResult:", initResult);
 
             if (initResult.profile.circlesSafeOwner) {
+              context.session = initResult;
               context.eoa = {
                 address: initResult.profile.circlesSafeOwner,
                 origin: "Created",
@@ -76,16 +77,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
                 acceptedToSVersion: undefined,
                 successorOfCirclesAddress: undefined
               };
-              context.profile = {
-                id: initResult.profile.id,
-                circlesAddress: initResult.profile.circlesAddress,
-                avatarUrl: initResult.profile.avatarUrl,
-                circlesSafeOwner: initResult.profile.circlesSafeOwner,
-                cityId: undefined,
-                firstName: initResult.profile.firstName,
-                lastName: initResult.profile.lastName,
-                passion: initResult.profile.dream
-              };
+              context.profile = initResult.profile;
               context.safe = {
                 address: initResult.profile.circlesAddress,
                 origin: "Created"
@@ -661,7 +653,8 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       sendAuthenticatedEvent: async (context) => {
         window.o.publishEvent(<PlatformEvent>{
           type: "shell.authenticated",
-          profile: await loadProfile(),
+          profile: context.profile,
+          sessionInfo: context.session
         });
       },
     },

@@ -19,6 +19,7 @@ export const me = {
 const _me = readable<Profile|null>(null, function start(set) {
   const subscription = window.o.events.subscribe((event: PlatformEvent & {
     profile: Profile
+    sessionInfo: SessionInfo|undefined
   }) => {
     if (event.type == "shell.loggedOut") {
       localStorage.removeItem("me");
@@ -26,7 +27,7 @@ const _me = readable<Profile|null>(null, function start(set) {
       return;
     }
     if (event.type == "shell.authenticated" && event.profile) {
-      sessionInfo = undefined;
+      sessionInfo = event.sessionInfo;
       if (!event.profile.displayName) {
         event.profile.displayName = displayableName(event.profile.firstName, event.profile.lastName);
       }
