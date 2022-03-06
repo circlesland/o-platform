@@ -30,6 +30,9 @@ export const { subscribe } = readable<Contact[]>([], function start(set) {
   // Subscribe to $me and reload the store when the profile changes
   async function update(safeAddress: string) {
     const contacts = await loadContacts(safeAddress);
+    contacts.forEach(c => {
+      contactsBySafeAddress[c.contactAddress] = c;
+    });
     set(contacts);
   }
 
