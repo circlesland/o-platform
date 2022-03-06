@@ -877,6 +877,7 @@ input ProfileAggregateFilter {
 input ProfileEventFilter {
     direction: Direction
     from: String
+    purchased: PurchasedEventFilter
     to: String
     transactionHash: String
     with: String
@@ -885,6 +886,10 @@ input ProfileEventFilter {
 input PurchaseLineInput {
     amount: Int!
     offerId: Int!
+}
+
+input PurchasedEventFilter {
+    id: Int!
 }
 
 input PurchasesAggregateFilter {

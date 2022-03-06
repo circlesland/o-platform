@@ -17,7 +17,7 @@ export type PagedEventQueryIndexEntry = {
 }
 
 export interface ObjectCache<T> {
-  findByPrimaryKey(type:string, primaryKey:string) : T|undefined;
+  findByPrimaryKey(type:string, primaryKey:string) : Promise<T|undefined>;
   findByIndexKey(type:string, indexName:string, indexKey:string) : T[];
 }
 
@@ -40,6 +40,8 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
 
   abstract getPrimaryKey(eventPayload:EventPayload) : string;
   protected abstract getIndexedValues(event:ProfileEvent) : PagedEventQueryIndexEntry[];
+
+  abstract findSingleItemFallback(types:string[], primaryKey:string) : Promise<ProfileEvent|undefined>;
 
   constructor(eventTypes: EventType[], order: SortOrder, pageSize: number, filter?: ProfileEventFilter) {
     this.eventTypes = eventTypes;
@@ -113,17 +115,7 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
 
     let nextPage:ProfileEvent[] = nextPageQueryResult.data.events;
     if (nextPage.length > 0) {
-      nextPage.forEach((e) => {
-        const primaryKey = `${e.type}_${this.getPrimaryKey(e.payload)}`;
-        this._primaryCache[primaryKey] = e;
-
-        this.getIndexedValues(e).forEach(o => {
-          const indexKey = `${e.type}_${o.indexName}_${o.indexKey}`;
-          this._indexCache[indexKey] = this._indexCache[indexKey]
-                                     ? this._indexCache[indexKey].concat([primaryKey])
-                                     : [primaryKey];
-        });
-      });
+      nextPage.forEach((e) => this.addToCache(e));
 
       const lastElementOfPage = nextPage[nextPage.length - 1];
       const continueAt = this.getPageDelimiterValue(lastElementOfPage);
@@ -150,6 +142,18 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
     return eventList.length >= this.pageSize;
   }
 
+  addToCache(e: ProfileEvent) {
+    const primaryKey = `${e.type}_${this.getPrimaryKey(e.payload)}`;
+    this._primaryCache[primaryKey] = e;
+
+    this.getIndexedValues(e).forEach(o => {
+      const indexKey = `${e.type}_${o.indexName}_${o.indexKey}`;
+      this._indexCache[indexKey] = this._indexCache[indexKey]
+        ? this._indexCache[indexKey].concat([primaryKey])
+        : [primaryKey];
+    });
+  }
+
   subscribe(run: Subscriber<any>) {
     return this._subscribe(run);
   }
@@ -158,8 +162,8 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
     return await this.next();
   }
 
-  findByPrimaryKey(type:EventType, primaryKey:string) : ProfileEvent|undefined {
-    return this._primaryCache[`${type}_${primaryKey}`];
+  async findByPrimaryKey(type:EventType, primaryKey:string) : Promise<ProfileEvent|undefined> {
+    return  this._primaryCache[`${type}_${primaryKey}`];
   }
 
   findByIndexKey(type:EventType, indexName:string, indexKey:string) : ProfileEvent[] {

@@ -17,6 +17,10 @@ export class NewUsers extends PagedEventQuery {
       indexKey: newUserProfile.profile.circlesAddress
     }];
   }
+
+  findSingleItemFallback(types: string[], primaryKey: string): Promise<ProfileEvent | undefined> {
+    return undefined;
+  }
 }
 
 export const newUsers = new NewUsers(SortOrder.Desc);

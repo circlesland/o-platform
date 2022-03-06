@@ -1,24 +1,26 @@
 <script lang="ts">
-import Time from "svelte-time";
-import { push } from "svelte-spa-router";
-// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-import { onMount } from "svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import { me } from "../../../shared/stores/me";
-import { Currency } from "../../../shared/currency";
-import {
-  CrcHubTransfer,
-  CrcMinting,
-  Erc20Transfer,
-  Profile,
-  ProfileEvent,
-} from "../../../shared/api/data/types";
-import { transactions } from "../../../shared/stores/transactions";
+  import Time from "svelte-time";
+  import {push} from "svelte-spa-router";
+  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+  import {onMount} from "svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import {me} from "../../../shared/stores/me";
+  import {Currency} from "../../../shared/currency";
+  import {
+    CrcHubTransfer,
+    CrcMinting,
+    Erc20Transfer,
+    EventType,
+    Profile,
+    ProfileEvent,
+  } from "../../../shared/api/data/types";
 
-import { _ } from "svelte-i18n";
+  import {_} from "svelte-i18n";
+  import {myTransactions} from "../../../shared/stores/myTransactions";
 
 
-export let transactionHash: string;
+  export let transactionHash: string;
+
 let transfer: ProfileEvent;
 let classes: string;
 let path: any;
@@ -30,8 +32,13 @@ let error: string;
 let displayableName: string = "";
 
 onMount(async () => {
-  transfer = await transactions.findByHash(transactionHash);
-
+  transfer = await myTransactions.findByPrimaryKey(EventType.CrcHubTransfer, transactionHash);
+  if (!transfer) {
+    transfer = await myTransactions.findByPrimaryKey(EventType.CrcMinting, transactionHash);
+  }
+  if (!transfer) {
+      transfer = await myTransactions.findSingleItemFallback([EventType.CrcHubTransfer, EventType.CrcMinting], transactionHash);
+  }
   if (transfer && transfer.payload?.__typename == "CrcMinting") {
     const minting = transfer.payload as CrcMinting;
 

@@ -3,8 +3,8 @@
     EventType,
     InvoiceDocument,
     Profile,
-    ProfileEvent,
-    Purchase, Purchased,
+    Purchase,
+    Purchased,
     QueryInvoiceArgs,
   } from "../../../shared/api/data/types";
   import {onMount} from "svelte";
@@ -21,6 +21,7 @@
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
   import {purchases} from "../../../shared/stores/purchases";
   import {_} from "svelte-i18n";
+  import {myPurchases} from "../../../shared/stores/myPurchases";
 
 
   export let id: string;
@@ -42,9 +43,17 @@ async function load() {
     return;
   }
 
-  purchase = <any> await purchases.findById(parseInt(id));
-  if (purchase?.lines) {
-    sellerProfile = purchase.lines[0].offer.createdByProfile;
+  const cachedEvent = await myPurchases.findByPrimaryKey(EventType.Purchased, parseInt(id).toString());
+  if (cachedEvent && cachedEvent.type == EventType.Purchased) {
+    purchase = (<Purchased>cachedEvent.payload).purchase;
+    sellerProfile = (<Purchased>cachedEvent.payload).seller_profile;
+  }
+  if (!purchase) {
+    const loadedEvent = await myPurchases.findSingleItemFallback([EventType.Purchased], parseInt(id).toString());
+    if (loadedEvent && loadedEvent.type == EventType.Purchased) {
+      purchase = (<Purchased>loadedEvent.payload).purchase;
+      sellerProfile = (<Purchased>loadedEvent.payload).seller_profile;
+    }
   }
 
   groupedItems = purchase ? orderItems(purchase.lines) : {};
@@ -194,7 +203,7 @@ onMount(async () => {
         </div>
       </div>
     </section>
-  {:else if groupedItems}
+  {:else if groupedItems && sellerProfile}
     <!-- <CartItems cartContents="{purchase.lines}" editable="{false}" /> -->
     <!-- <pre>{JSON.stringify(purchase, null, 2)}</pre> -->
 

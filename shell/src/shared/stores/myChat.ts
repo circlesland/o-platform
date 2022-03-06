@@ -32,6 +32,10 @@ export class MyChat extends PagedEventQuery {
   protected getIndexedValues(event: ProfileEvent): PagedEventQueryIndexEntry[] {
     return [];
   }
+
+  findSingleItemFallback(types: string[], primaryKey: string): Promise<ProfileEvent | undefined> {
+    return undefined;
+  }
 }
 
 export class MyChats {

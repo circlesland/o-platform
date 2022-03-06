@@ -815,6 +815,7 @@ export type ProfileEvent = {
 export type ProfileEventFilter = {
   direction?: Maybe<Direction>;
   from?: Maybe<Scalars['String']>;
+  purchased?: Maybe<PurchasedEventFilter>;
   to?: Maybe<Scalars['String']>;
   transactionHash?: Maybe<Scalars['String']>;
   with?: Maybe<Scalars['String']>;
@@ -874,6 +875,10 @@ export type Purchased = IEventPayload & {
   seller: Scalars['String'];
   seller_profile?: Maybe<Profile>;
   transaction_hash?: Maybe<Scalars['String']>;
+};
+
+export type PurchasedEventFilter = {
+  id: Scalars['Int'];
 };
 
 export type Purchases = IAggregatePayload & {
