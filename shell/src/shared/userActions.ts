@@ -97,7 +97,7 @@ export class UserActions {
       /* PERSON */
       if (
         recipientProfile.contactAddress_Profile &&
-        recipientProfile.contactAddress_Profile.type == ProfileType.Person
+        recipientProfile.contactAddress_Profile.type == ProfileType.Person.toString()
       ) {
         actions = actions.concat(
           trustsYou

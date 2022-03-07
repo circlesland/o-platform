@@ -12,6 +12,7 @@ const dispatch = createEventDispatcher();
 let buttons: ButtonContext[] = [];
 
 $: {
+  buttons = [];
   actions.forEach((action, i) => {
     buttons.push({
       label: action.title,

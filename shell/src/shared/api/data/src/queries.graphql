@@ -1253,6 +1253,7 @@ query aggregates(
                     lastContactAt
                     contactAddress
                     contactAddress_Profile {
+                        type
                         id
                         displayName
                         firstName
