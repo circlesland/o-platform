@@ -13,6 +13,30 @@
     const scrollElement = scrollContent.getScrollElement();
     scrollElement.scrollTo(0, position);
   }
+
+  let scrollPositionStack:number[] = [];
+
+  export function scrollPositionStackPopulated() : boolean {
+    console .log("scrollPositionStackPopulated", scrollPositionStack.length);
+    return scrollPositionStack.length > 0;
+  }
+
+  export function pushScrollPosition() {
+    if (scrollContent) {
+      const pos = scrollContent.getScrollElement().scrollTop;
+      scrollPositionStack.push(pos);
+    }
+  }
+  export function popScrollPosition() {
+    if (scrollContent) {
+      const pos = scrollPositionStack.pop();
+      scrollToPosition(pos);
+    }
+  }
+  export function clearScrollPosition() {
+    scrollPositionStack = [];
+  }
+
 </script>
 <script lang="ts">
 import { createEventDispatcher, getContext } from "svelte";

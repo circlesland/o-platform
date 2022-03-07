@@ -35,6 +35,7 @@ import { Capability, EventsDocument, SessionInfo } from "../api/data/types";
 import { log } from "../logUiEvent";
 import { contacts } from "../stores/contacts";
 import { performOauth } from "../../dapps/o-humanode/processes/performOauth";
+import {clearScrollPosition, popScrollPosition, pushScrollPosition} from "../layouts/Center.svelte";
 
 export let params: {
   dappId: string;
@@ -131,6 +132,7 @@ async function onBack() {
 
   //stack.pop();
   await push(`#/${previous.params.dappId}${path}`);
+  setTimeout(() => popScrollPosition());
 }
 
 async function onStay() {
@@ -508,6 +510,8 @@ async function onCloseModal() {
   // log("onCloseModal()");
 
   await hideCenter();
+  clearScrollPosition();
+  lastModalPage = null;
 
   setNav({
     ...preModalNavArgs,
@@ -1082,6 +1086,9 @@ function showModalPage(
 
   modalContent = "page";
   if (routable.type == "page" && routable.component !== ProcessContainer) {
+    if (lastModalPage) {
+      pushScrollPosition();
+    }
     lastModalPage = {
       runtimeDapp,
       routable,
@@ -1151,6 +1158,7 @@ function showMainPage(
 async function hideCenter() {
   // log(`hideCenter()`);
 
+  clearScrollPosition();
   modalContent = "none";
   layout = {
     ...layout,
