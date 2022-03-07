@@ -379,8 +379,9 @@ function initSession(session: SessionInfo) {
 
             const chatStore = myChats.with(next.data.events.from);
             const message = await chatStore.findSingleItemFallback([EventType.ChatMessage], next.data.events.itemId);
-            console.log("Loaded message:", message);
             chatStore.refresh();
+
+            await contacts.findBySafeAddress(next.data.events.from, true);
 
             var audio = new Audio("blblblbl.mp3");
             audio.play();

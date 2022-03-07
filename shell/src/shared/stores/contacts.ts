@@ -26,7 +26,9 @@ async function loadContacts(safeAddress: string) {
   });
 }
 
+let _set:(val:any) => void;
 export const { subscribe } = readable<Contact[]>([], function start(set) {
+  _set = set;
   // Subscribe to $me and reload the store when the profile changes
   async function update(safeAddress: string) {
     const contacts = await loadContacts(safeAddress);
@@ -76,7 +78,7 @@ export const { subscribe } = readable<Contact[]>([], function start(set) {
 
 export const contacts = {
   subscribe: subscribe,
-  findBySafeAddress: async (safeAddress: string) => {
+  findBySafeAddress: async (safeAddress: string, reload:boolean = false) => {
     let _$me: Profile;
     me.subscribe(($me) => (_$me = $me))();
     if (_$me.circlesAddress == safeAddress) {
@@ -88,7 +90,7 @@ export const contacts = {
       };
     }
     let contact = contactsBySafeAddress[safeAddress];
-    if (!contact) {
+    if (!contact || reload) {
       const filteredContacts = await ApiClient.queryAggregate<Contacts>(
         AggregateType.Contacts,
         _$me.circlesAddress,
@@ -103,6 +105,17 @@ export const contacts = {
         contact = filteredContacts.contacts[0];
         contactsBySafeAddress[contact.contactAddress] = contact;
       }
+
+      const newList = Object.values(contactsBySafeAddress).sort((a, b) => {
+        return a.lastContactAt > b.lastContactAt
+          ? -1
+          : a.lastContactAt < b.lastContactAt
+            ? 1
+            : 0;
+      });
+
+      console.log("newList", newList);
+      _set(newList);
     }
 
     return contact;
