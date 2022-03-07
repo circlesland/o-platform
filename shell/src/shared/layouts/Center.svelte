@@ -29,6 +29,7 @@
   }
 
   export function pushScrollPosition() {
+    poppedScrollPosition = false;
     
     if (scrollContent) {
       const pos = scrollContent.getScrollElement().scrollTop;
