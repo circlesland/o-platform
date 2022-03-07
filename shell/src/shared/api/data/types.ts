@@ -2202,20 +2202,7 @@ export type TagsQuery = (
   { __typename?: 'Query' }
   & { tags: Array<(
     { __typename?: 'Tag' }
-    & Pick<Tag, 'id' | 'value'>
-  )> }
-);
-
-export type TagByIdQueryVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-
-export type TagByIdQuery = (
-  { __typename?: 'Query' }
-  & { tagById?: Maybe<(
-    { __typename?: 'Tag' }
-    & Pick<Tag, 'id' | 'value'>
+    & Pick<Tag, 'typeId' | 'id' | 'value'>
   )> }
 );
 
@@ -2311,6 +2298,19 @@ export type CommonTrustQuery = (
   )> }
 );
 
+export type TagByIdQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type TagByIdQuery = (
+  { __typename?: 'Query' }
+  & { tagById?: Maybe<(
+    { __typename?: 'Tag' }
+    & Pick<Tag, 'id' | 'typeId' | 'value'>
+  )> }
+);
+
 export type StreamQueryVariables = Exact<{
   types: Array<EventType> | EventType;
   safeAddress: Scalars['String'];
@@ -2358,7 +2358,7 @@ export type StreamQuery = (
         )> }
       )>, tags: Array<(
         { __typename?: 'Tag' }
-        & Pick<Tag, 'id' | 'value'>
+        & Pick<Tag, 'id' | 'typeId' | 'value'>
       )> }
     ) | (
       { __typename?: 'CrcMinting' }
@@ -3771,14 +3771,7 @@ export const ProfileBySafeAddressDocument = gql`
 export const TagsDocument = gql`
     query tags($typeId_in: [String!]!, $value_like: String) {
   tags(query: {typeId_in: $typeId_in, value_like: $value_like}) {
-    id
-    value
-  }
-}
-    `;
-export const TagByIdDocument = gql`
-    query tagById($id: Int!) {
-  tagById(id: $id) {
+    typeId
     id
     value
   }
@@ -3902,6 +3895,15 @@ export const CommonTrustDocument = gql`
   }
 }
     `;
+export const TagByIdDocument = gql`
+    query tagById($id: Int!) {
+  tagById(id: $id) {
+    id
+    typeId
+    value
+  }
+}
+    `;
 export const StreamDocument = gql`
     query stream($types: [EventType!]!, $safeAddress: String!, $pagination: PaginationArgs!, $filter: ProfileEventFilter) {
   events(
@@ -3977,6 +3979,7 @@ export const StreamDocument = gql`
         }
         tags {
           id
+          typeId
           value
         }
       }
@@ -4795,9 +4798,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     tags(variables: TagsQueryVariables): Promise<TagsQuery> {
       return withWrapper(() => client.request<TagsQuery>(print(TagsDocument), variables));
     },
-    tagById(variables: TagByIdQueryVariables): Promise<TagByIdQuery> {
-      return withWrapper(() => client.request<TagByIdQuery>(print(TagByIdDocument), variables));
-    },
     organisations(variables?: OrganisationsQueryVariables): Promise<OrganisationsQuery> {
       return withWrapper(() => client.request<OrganisationsQuery>(print(OrganisationsDocument), variables));
     },
@@ -4809,6 +4809,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     commonTrust(variables: CommonTrustQueryVariables): Promise<CommonTrustQuery> {
       return withWrapper(() => client.request<CommonTrustQuery>(print(CommonTrustDocument), variables));
+    },
+    tagById(variables: TagByIdQueryVariables): Promise<TagByIdQuery> {
+      return withWrapper(() => client.request<TagByIdQuery>(print(TagByIdDocument), variables));
     },
     stream(variables: StreamQueryVariables): Promise<StreamQuery> {
       return withWrapper(() => client.request<StreamQuery>(print(StreamDocument), variables));

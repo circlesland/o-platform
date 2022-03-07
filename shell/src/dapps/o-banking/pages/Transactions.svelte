@@ -7,7 +7,6 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { EventType} from "../../../shared/api/data/types";
 
 import EventList from "../../../shared/molecules/Lists/EventList.svelte";
-import {transactions} from "../../../shared/stores/transactions";
 import {myTransactions} from "../../../shared/stores/myTransactions";
 
 export let runtimeDapp: RuntimeDapp<any>;

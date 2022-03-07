@@ -603,13 +603,7 @@ query profileBySafeAddress($safeAddress: String!) {
 
 query tags($typeId_in: [String!]!, $value_like: String) {
     tags(query: { typeId_in: $typeId_in, value_like: $value_like }) {
-        id
-        value
-    }
-}
-
-query tagById($id: Int!) {
-    tagById(id: $id) {
+        typeId
         id
         value
     }
@@ -753,16 +747,10 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
     }
 }
 
-query tags($typeId_in: [String!]!, $value_like: String) {
-    tags(query: { typeId_in: $typeId_in, value_like: $value_like }) {
-        id
-        value
-    }
-}
-
 query tagById($id: Int!) {
     tagById(id: $id) {
         id
+        typeId
         value
     }
 }
@@ -870,6 +858,7 @@ query stream(
                 }
                 tags {
                     id
+                    typeId
                     value
                 }
             }

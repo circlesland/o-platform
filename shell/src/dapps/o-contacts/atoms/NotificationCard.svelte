@@ -17,6 +17,7 @@ import Erc20Transfer from "./chatListItems/Erc20Transfer.svelte";
 import InvitationRedeemed from "./chatListItems/InvitationRedeemed.svelte";
 import { UserActions, UserActionItem } from "../../../shared/userActions";
 import ButtonGroup from "../../../shared/molecules/ButtonGroup/ButtonGroup.svelte";
+import TransactionCard from "../../o-banking/atoms/TransactionCard.svelte";
 
 export let event: ProfileEvent;
 
@@ -108,7 +109,7 @@ async function getEventActions() {
     class:pl-12="{event.direction == 'in'}">
     <div
       class="flex flex-col flex-grow space-y-1 rounded-xl"
-      class:bg-inactive="{event.type != EventType.ChatMessage}">
+      class:bg-gray-100="{event.type != EventType.ChatMessage}">
       <div
         class="relative w-full text-xs sm:text-sm message chatText"
         class:p-4="{event.type != EventType.ChatMessage}">
