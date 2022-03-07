@@ -3,6 +3,10 @@ import "../../../shared/css/tailwind.css";
 import TopNav from "src/shared/atoms/TopNav.svelte";
 import { push } from "svelte-spa-router";
 import Icons from "../../../shared/molecules/Icons.svelte";
+
+function register() {
+  window.runInitMachine();
+}
 </script>
 
 <div
@@ -27,7 +31,7 @@ import Icons from "../../../shared/molecules/Icons.svelte";
     <div class="order-1 w-full text-center mt-36 sm:mt-60 md:mt-20 md:order-2">
       <button
         class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
-        >REGISTER NOW</button>
+        on:click="{() => register()}">REGISTER NOW</button>
     </div>
   </div>
   <div class="absolute w-full pr-8 bottom-20 sm:bottom-4">
