@@ -1,12 +1,18 @@
 <script context="module" lang="ts">
   let scrollContent;
   export function scrollToBottom() {
+    
     scrollToPosition(1000000000);
+    poppedScrollPosition = false;
   }
   export function scrollToTop() {
+    
+
     scrollToPosition(0);
+    poppedScrollPosition = false;
   }
   export function scrollToPosition(position:number) {
+    
     if (!scrollContent) {
       return;
     }
@@ -15,26 +21,34 @@
   }
 
   let scrollPositionStack:number[] = [];
+  export let poppedScrollPosition = false;
 
   export function scrollPositionStackPopulated() : boolean {
-    console .log("scrollPositionStackPopulated", scrollPositionStack.length);
+    
     return scrollPositionStack.length > 0;
   }
 
   export function pushScrollPosition() {
+    
     if (scrollContent) {
       const pos = scrollContent.getScrollElement().scrollTop;
       scrollPositionStack.push(pos);
+      
     }
   }
   export function popScrollPosition() {
+    poppedScrollPosition = true;
+    
     if (scrollContent) {
       const pos = scrollPositionStack.pop();
       scrollToPosition(pos);
+      
     }
   }
   export function clearScrollPosition() {
     scrollPositionStack = [];
+    poppedScrollPosition = false;
+    
   }
 
 </script>

@@ -4,7 +4,7 @@ import { ProfileEvent } from "../../api/data/types";
 
 import { inview } from "svelte-inview/dist/index";
 import GenericEventCard from "../../NotificationViewer/molecules/GenericEventCard.svelte";
-import {scrollToTop, scrollToBottom, scrollToPosition, popScrollPosition, scrollPositionStackPopulated} from "../../layouts/Center.svelte";
+import {poppedScrollPosition, scrollToTop, scrollToBottom, scrollToPosition, popScrollPosition, scrollPositionStackPopulated} from "../../layouts/Center.svelte";
 import {Readable} from "svelte/store";
 import { _ } from "svelte-i18n";
 
@@ -41,10 +41,8 @@ const handleChange = async (e) => {
     if (!initialScrollToBottom && events.length > 0 && reverse) {
       // store is initialized but list is not
       setTimeout(() => {
-        if (!scrollPositionStackPopulated()) {
+        if (!poppedScrollPosition) {
           scrollToBottom();
-        } else {
-          popScrollPosition();
         }
         lastBottomPosition = lastElement.offsetTop;
       });

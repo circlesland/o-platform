@@ -1078,6 +1078,7 @@ function showModalPage(
       params: currentParams,
       scrollY: window.scrollY,
     });
+    pushScrollPosition();
   }
   // log(
   //   `showModalPage(pushToStack: ${pushToStack}) - new stack:`,
@@ -1086,9 +1087,6 @@ function showModalPage(
 
   modalContent = "page";
   if (routable.type == "page" && routable.component !== ProcessContainer) {
-    if (lastModalPage) {
-      pushScrollPosition();
-    }
     lastModalPage = {
       runtimeDapp,
       routable,
