@@ -19,7 +19,13 @@ export let event: ProfileEvent;
         class="absolute bottom-2 right-3 text-2xs"
         class:text-light-dark="{event.direction == 'out'}"
         class:text-dark-lighter="{event.direction == 'in'}">
-        <Date time="{event.timestamp}" />
+        {#if !event._isError && event._isTemp}
+          sending ..
+        {:else if event._isError}
+          <span class="text-error">Couldn't send the message</span>
+        {:else}
+          <Date time="{event.timestamp}" />
+        {/if}
       </div>
       {@html event.payload.text}
     </div>

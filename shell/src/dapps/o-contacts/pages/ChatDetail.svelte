@@ -1,6 +1,7 @@
 <script lang="ts">
   import {onMount} from "svelte";
   import {
+    ChatMessage,
     EventType,
     Profile,
     ProfileEvent,
@@ -19,6 +20,7 @@
   import {_} from "svelte-i18n";
   import EventList from "../../../shared/molecules/Lists/EventList.svelte";
   import {myChats} from "../../../shared/stores/myChat";
+  import {Generate} from "@o-platform/o-utils/dist/generate";
 
   export let id: string;
 
@@ -51,22 +53,63 @@
 
   const sendMessage = async (text) => {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const randomId = Generate.randomHexString();
+
+    const tempEvent = <ProfileEvent>{
+      _isTemp: true,
+      contact_address: contactProfile.circlesAddress,
+      contact_address_profile: contactProfile,
+      timestamp: new Date(),
+      type: "ChatMessage",
+      direction: "out",
+      safe_address: $me.circlesAddress,
+      safe_address_profile: $me,
+      payload: <ChatMessage>{
+        __typename: "ChatMessage",
+        id: randomId,
+        from: $me.circlesAddress,
+        to: contactProfile.circlesAddress,
+        text: text,
+        from_profile: $me,
+        to_profile: contactProfile
+      }
+    };
+    myChats.with(contactProfile.circlesAddress).addToCache(tempEvent);
+    myChats.with(contactProfile.circlesAddress).refresh(true);
 
     // If we're acting as organisation then we need to specify a "fromSafeAddress"
-    const result = await apiClient.mutate({
-      mutation: SendMessageDocument,
-      variables: {
-        fromSafeAddress: $me.circlesAddress,
-        toSafeAddress: id,
-        content: text,
-      },
-    });
+    try {
+      const result = await apiClient.mutate({
+        mutation: SendMessageDocument,
+        variables: {
+          fromSafeAddress: $me.circlesAddress,
+          toSafeAddress: id,
+          content: text,
+        },
+      });
 
-    if (result.data?.sendMessage?.success) {
-      myChats.with(contactProfile.circlesAddress).addToCache(result.data.sendMessage.event);
-      myChats.with(contactProfile.circlesAddress).refresh();
+      if (result.data?.sendMessage?.success) {
+        myChats.with(contactProfile.circlesAddress).addToCache({
+          ...result.data.sendMessage.event,
+          payload: {
+            ...result.data.sendMessage.event.payload,
+            id: randomId
+          }
+        });
+        myChats.with(contactProfile.circlesAddress).refresh();
+      } else {
+        throw new Error("Couldn't send the message");
+      }
+      await contacts.findBySafeAddress(contactProfile.circlesAddress, true);
+    } catch (e) {
+      myChats.with(contactProfile.circlesAddress).addToCache(<any>{
+        _isError: true,
+        ...tempEvent
+      });
+      myChats.with(contactProfile.circlesAddress).refresh(true);
     }
 
+    /*
     window.o.publishEvent(<any>{
       type: "shell.scrollToBottom",
       scrollNow: true,
@@ -77,8 +120,8 @@
       dapp: "chat:1",
       data: null,
     });
+     */
 
-    await contacts.findBySafeAddress(contactProfile.circlesAddress, true);
   };
 
   function init(el) {
