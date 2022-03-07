@@ -39,7 +39,8 @@ $: {
   </div>
   <div class="self-end m-auto mt-2 space-y-2 text-center max-w-max">
     {balanceTime}
-    <span class=" font-primary">{Currency.currencySymbol["TIME_CRC"]}</span>
+    <span class="font-primary"
+      ><img src="/logos/time.png" class="inline w-6 h-6" /></span>
     <!--
     {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ''}
       <small class="block whitespace-nowrap">

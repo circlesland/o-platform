@@ -4,7 +4,8 @@ import { me } from "../../../shared/stores/me";
 import { Currency } from "../../../shared/currency";
 import Date from "../../../shared/atoms/Date.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-
+import relativeTimeString from "../../../shared/functions/relativeTimeString";
+import { displayableName } from "../../../shared/functions/stringHelper";
 import {
   CrcHubTransfer,
   CrcMinting,
@@ -22,8 +23,10 @@ let fromProfile: Profile = <any>{};
 let toProfile: Profile = <any>{};
 let error: string;
 let message: string | undefined = undefined;
+let messageString: string = "";
 let targetProfile: Profile = <any>{};
 let amount: string | number = "";
+let amountTime: string | number = "";
 
 $: {
   if (event && event.payload?.__typename == "CrcMinting") {
@@ -45,6 +48,16 @@ $: {
       event.timestamp,
       $me.displayCurrency
     );
+    amountTime = Currency.instance()
+      .displayAmount(
+        event.payload && event.payload.value
+          ? event.payload.value.toString()
+          : "0",
+        event.timestamp,
+        "TIME_CRC",
+        null
+      )
+      .toString();
 
     message = "Universal basic income";
   }
@@ -117,6 +130,13 @@ $: {
     }`;
   }
 
+  if (event.timestamp) {
+    messageString = relativeTimeString(event.timestamp, 7);
+  }
+  if (message) {
+    messageString += ` - ${message}`;
+  }
+
   targetProfile = event.direction === "in" ? fromProfile : toProfile;
 }
 function loadDetailPage(path) {
@@ -136,8 +156,12 @@ function loadDetailPage(path) {
         event.direction === 'in'
           ? fromProfile.circlesAddress
           : toProfile.circlesAddress,
-      title: targetProfile.displayName,
-      subTitle: message ? message : '',
+
+      title: displayableName(
+        targetProfile.firstName,
+        targetProfile.lastName ? targetProfile.lastName : null
+      ),
+      subTitle: messageString ? messageString : '',
       truncateMain: true,
       endTextBig: amount,
       profileLink: true,
@@ -145,8 +169,12 @@ function loadDetailPage(path) {
       endTextBigClass: amount.startsWith('-') ? 'text-alert' : undefined,
     }}">
     <div slot="itemCardEndSmallElement">
-      {#if event.timestamp}
-        <Date time="{event.timestamp}" />
+      {#if amountTime}
+        <div class="pt-1">
+          <span class="pt-4">{amountTime}</span>
+          <span class="font-primary"
+            ><img src="/logos/time.png" class="inline w-4 h-4" /></span>
+        </div>
       {/if}
     </div>
   </ItemCard>
