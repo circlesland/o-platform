@@ -40,8 +40,17 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
 
   abstract getPrimaryKey(eventPayload:EventPayload) : string;
   protected abstract getIndexedValues(event:ProfileEvent) : PagedEventQueryIndexEntry[];
+  protected abstract maintainExternalCaches(event:ProfileEvent) : void;
 
   abstract findSingleItemFallback(types:string[], primaryKey:string) : Promise<ProfileEvent|undefined>;
+
+  get scrollPosition() : number {
+    return this._scrollPosition;
+  }
+  set scrollPosition(val:number) {
+    this._scrollPosition = val;
+  }
+  private _scrollPosition:number;
 
   constructor(eventTypes: EventType[], order: SortOrder, pageSize: number, filter?: ProfileEventFilter) {
     this.eventTypes = eventTypes;
@@ -115,7 +124,10 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
 
     let nextPage:ProfileEvent[] = nextPageQueryResult.data.events;
     if (nextPage.length > 0) {
-      nextPage.forEach((e) => this.addToCache(e));
+      nextPage.forEach((e) => {
+        this.addToCache(e);
+        this.maintainExternalCaches(e);
+      });
 
       const lastElementOfPage = nextPage[nextPage.length - 1];
       const continueAt = this.getPageDelimiterValue(lastElementOfPage);

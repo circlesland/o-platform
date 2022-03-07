@@ -1,5 +1,7 @@
 import {EventPayload, EventType, ProfileEvent, ProfileEventFilter, SortOrder,} from "../api/data/types";
 import {PagedEventQuery, PagedEventQueryIndexEntry} from "./pagedEventQuery";
+import {myPurchases} from "./myPurchases";
+import {myTransactions} from "./myTransactions";
 
 export class MyChat extends PagedEventQuery {
   constructor(withCirclesAddress:string, sortOrder:SortOrder, pageSize = 20) {
@@ -35,6 +37,14 @@ export class MyChat extends PagedEventQuery {
 
   findSingleItemFallback(types: string[], primaryKey: string): Promise<ProfileEvent | undefined> {
     return undefined;
+  }
+
+  protected maintainExternalCaches(event: ProfileEvent): void {
+    if (event.payload.__typename == EventType.Purchased) {
+      myPurchases.addToCache(event);
+    } else if (event.payload.__typename == EventType.CrcHubTransfer) {
+      myTransactions.addToCache(event);
+    }
   }
 }
 

@@ -53,6 +53,9 @@ export class MyTransactions extends PagedEventQuery {
       return event;
     }
   }
+
+  protected maintainExternalCaches(event: ProfileEvent): void {
+  }
 }
 
 export const myTransactions = new MyTransactions(SortOrder.Desc);

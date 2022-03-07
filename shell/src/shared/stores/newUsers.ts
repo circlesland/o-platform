@@ -21,6 +21,9 @@ export class NewUsers extends PagedEventQuery {
   findSingleItemFallback(types: string[], primaryKey: string): Promise<ProfileEvent | undefined> {
     return undefined;
   }
+
+  protected maintainExternalCaches(event: ProfileEvent): void {
+  }
 }
 
 export const newUsers = new NewUsers(SortOrder.Desc);
