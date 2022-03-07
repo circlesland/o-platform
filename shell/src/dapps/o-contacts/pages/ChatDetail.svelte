@@ -63,7 +63,8 @@
     });
 
     if (result.data?.sendMessage?.success) {
-      chatHistory = [...chatHistory, result.data.sendMessage.event];
+      myChats.with(contactProfile.circlesAddress).addToCache(result.data.sendMessage.event);
+      myChats.with(contactProfile.circlesAddress).refresh();
     }
 
     window.o.publishEvent(<any>{

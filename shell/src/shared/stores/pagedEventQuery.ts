@@ -127,6 +127,11 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
       };
     }
 
+    const itemCount = this.refresh();
+    return itemCount >= this.pageSize;
+  }
+
+  refresh() {
     const eventList = Object.values(this._primaryCache).sort((a, b) => {
       const _a = new Date(a.timestamp).getTime();
       const _b = new Date(b.timestamp).getTime();
@@ -138,8 +143,7 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
     });
 
     this._set(eventList);
-
-    return eventList.length >= this.pageSize;
+    return eventList.length;
   }
 
   addToCache(e: ProfileEvent) {

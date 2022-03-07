@@ -1461,7 +1461,7 @@ export type SendMessageMutation = (
         & Pick<Tag, 'id' | 'typeId' | 'value'>
       )>>, payload?: Maybe<(
         { __typename?: 'ChatMessage' }
-        & Pick<ChatMessage, 'from' | 'to' | 'text'>
+        & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
         & { from_profile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
@@ -1469,57 +1469,7 @@ export type SendMessageMutation = (
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
         )> }
-      ) | (
-        { __typename?: 'CrcHubTransfer' }
-        & Pick<CrcHubTransfer, 'from' | 'to' | 'flow'>
-        & { from_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )>, to_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )>, transfers: Array<(
-          { __typename?: 'CrcTokenTransfer' }
-          & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
-          & { from_profile?: Maybe<(
-            { __typename?: 'Profile' }
-            & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-          )>, to_profile?: Maybe<(
-            { __typename?: 'Profile' }
-            & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-          )> }
-        )> }
-      ) | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | (
-        { __typename?: 'CrcTrust' }
-        & Pick<CrcTrust, 'address' | 'can_send_to' | 'limit'>
-        & { address_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )>, can_send_to_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )> }
-      ) | { __typename?: 'Erc20Transfer' } | (
-        { __typename?: 'EthTransfer' }
-        & Pick<EthTransfer, 'from' | 'to' | 'value'>
-        & { from_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )>, to_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )> }
-      ) | (
-        { __typename?: 'GnosisSafeEthTransfer' }
-        & Pick<GnosisSafeEthTransfer, 'from' | 'to' | 'value'>
-        & { from_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )>, to_profile?: Maybe<(
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
-        )> }
-      ) | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'NewUser' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'SafeVerified' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
+      ) | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'NewUser' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'SafeVerified' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' }> }
     )> }
   ) }
 );
@@ -2945,6 +2895,7 @@ export const SendMessageDocument = gql`
       }
       payload {
         ... on ChatMessage {
+          id
           from
           from_profile {
             id
@@ -2962,102 +2913,6 @@ export const SendMessageDocument = gql`
             circlesAddress
           }
           text
-        }
-        ... on CrcHubTransfer {
-          from
-          from_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          to
-          to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          flow
-          transfers {
-            token
-            from
-            from_profile {
-              id
-              firstName
-              lastName
-              avatarUrl
-              circlesAddress
-            }
-            to
-            to_profile {
-              id
-              firstName
-              lastName
-              avatarUrl
-              circlesAddress
-            }
-            value
-          }
-        }
-        ... on EthTransfer {
-          from
-          from_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          to
-          to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          value
-        }
-        ... on GnosisSafeEthTransfer {
-          from
-          from_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          to
-          to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          value
-        }
-        ... on CrcTrust {
-          address
-          address_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          can_send_to
-          can_send_to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          limit
         }
       }
     }
