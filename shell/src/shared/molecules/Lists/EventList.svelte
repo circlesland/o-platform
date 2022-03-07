@@ -32,7 +32,7 @@ onMount(() => {
               : data.map(o => o));
 
     if (data.metadata?.itemAdded) {
-      setTimeout(() => scrollToBottom());
+      setTimeout(() => reverse ? scrollToBottom() : scrollToTop());
     }
 
     isLoading = false;
