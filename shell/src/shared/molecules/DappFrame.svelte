@@ -379,7 +379,7 @@ function initSession(session: SessionInfo) {
 
             const chatStore = myChats.with(next.data.events.from);
             const message = await chatStore.findSingleItemFallback([EventType.ChatMessage], next.data.events.itemId);
-            chatStore.refresh();
+            chatStore.refresh(true);
 
             await contacts.findBySafeAddress(next.data.events.from, true);
 

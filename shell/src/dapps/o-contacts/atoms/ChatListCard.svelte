@@ -21,8 +21,6 @@ let displayName: string;
 let message: string;
 let contactProfile: Profile;
 $: {
-  console.log(param);
-
   // God Help us all...
   if (param.contactAddress_Profile) {
     contactProfile = param.contactAddress_Profile;

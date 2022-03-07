@@ -100,6 +100,7 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
         ? new Date().toJSON()
         : new Date(0).toJSON()
     };
+    this.refresh();
   }
 
   async next() : Promise<boolean> {
@@ -144,7 +145,7 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
     return newEventCount >= this.pageSize;
   }
 
-  refresh() {
+  refresh(newItem:boolean = false) {
     const eventList = Object.values(this._primaryCache).sort((a, b) => {
       const _a = new Date(a.timestamp).getTime();
       const _b = new Date(b.timestamp).getTime();
@@ -155,7 +156,12 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
           : 0;
     });
 
-    this._set(eventList);
+    this._set({
+      events: eventList,
+      metadata: {
+        itemAdded: newItem
+      }});
+
     return eventList.length;
   }
 

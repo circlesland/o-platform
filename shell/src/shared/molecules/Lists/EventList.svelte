@@ -22,14 +22,19 @@ let lastElement: HTMLElement;
 
 onMount(() => {
   isLoading = true;
-  return store.subscribe((data) => {
-    if (reverse) {
-      events = data.map(o => o).reverse();
+  return store.subscribe((data:any) => {
+    events = reverse
+      ? (data.metadata
+              ? data.events.map(o => o).reverse()
+              : data.map(o => o).reverse())
+      : (data.metadata
+              ? data.events.map(o => o)
+              : data.map(o => o));
+
+    if (data.metadata?.itemAdded) {
       setTimeout(() => scrollToBottom());
-    } else {
-      events = data;
-      setTimeout(() => scrollToTop());
     }
+
     isLoading = false;
   });
 });
