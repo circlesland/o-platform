@@ -1,5 +1,7 @@
 subscription events {
   events {
     type
+    from
+    itemId
   }
 }

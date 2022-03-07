@@ -1,7 +1,16 @@
-import {EventPayload, EventType, ProfileEvent, ProfileEventFilter, SortOrder,} from "../api/data/types";
+import {
+  EventPayload,
+  EventType,
+  Profile,
+  ProfileEvent,
+  ProfileEventFilter,
+  QueryEventsArgs,
+  SortOrder,
+} from "../api/data/types";
 import {PagedEventQuery, PagedEventQueryIndexEntry} from "./pagedEventQuery";
 import {myPurchases} from "./myPurchases";
 import {myTransactions} from "./myTransactions";
+import {me} from "./me";
 
 export class MyChat extends PagedEventQuery {
   constructor(withCirclesAddress:string, sortOrder:SortOrder, pageSize = 20) {
@@ -35,7 +44,36 @@ export class MyChat extends PagedEventQuery {
     return [];
   }
 
-  findSingleItemFallback(types: string[], primaryKey: string): Promise<ProfileEvent | undefined> {
+  async findSingleItemFallback(types: string[], primaryKey: string): Promise<ProfileEvent | undefined> {
+    let $me:Profile;
+    me.subscribe(m => $me = m)();
+    const args = <QueryEventsArgs>{
+      safeAddress: $me.circlesAddress,
+      types: [EventType.ChatMessage],
+      pagination: {
+        order: SortOrder.Desc,
+        limit: 1,
+        continueAt: new Date().toJSON()
+      },
+      filter: {
+        with: this.filter.with,
+        chatMessage: {
+          id: parseInt(primaryKey)
+        }
+      },
+    };
+
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const queryResult: any = await apiClient.query({
+      query: this.query,
+      variables: args,
+    });
+
+    if (queryResult?.data?.events?.length > 0) {
+      const message = queryResult.data.events[0];
+      this.addToCache(message);
+      return message;
+    }
     return undefined;
   }
 
@@ -51,7 +89,7 @@ export class MyChat extends PagedEventQuery {
 export class MyChats {
   readonly myChats:{[withCirclesAddress:string]:MyChat} = {};
 
-  with (circlesAddress:string) {
+  with (circlesAddress:string) : MyChat {
     if (!this.myChats[circlesAddress]) {
       this.myChats[circlesAddress] = new MyChat(circlesAddress, SortOrder.Desc, 20);
     }

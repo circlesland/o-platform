@@ -81,6 +81,10 @@ export type ChatMessage = IEventPayload & {
   transaction_hash?: Maybe<Scalars['String']>;
 };
 
+export type ChatMessageEventFilter = {
+  id: Scalars['Int'];
+};
+
 export type City = ICity & {
   __typename?: 'City';
   country: Scalars['String'];
@@ -677,6 +681,8 @@ export type NewUser = IEventPayload & {
 
 export type NotificationEvent = {
   __typename?: 'NotificationEvent';
+  from: Scalars['String'];
+  itemId: Scalars['Int'];
   type: Scalars['String'];
 };
 
@@ -813,6 +819,7 @@ export type ProfileEvent = {
 };
 
 export type ProfileEventFilter = {
+  chatMessage?: Maybe<ChatMessageEventFilter>;
   direction?: Maybe<Direction>;
   from?: Maybe<Scalars['String']>;
   purchased?: Maybe<PurchasedEventFilter>;
@@ -1658,7 +1665,10 @@ export type CompletePurchaseMutation = (
   & { completePurchase: (
     { __typename?: 'Invoice' }
     & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
-    & { sellerProfile?: Maybe<(
+    & { purchase?: Maybe<(
+      { __typename?: 'Purchase' }
+      & Pick<Purchase, 'id'>
+    )>, sellerProfile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
     )> }
@@ -2770,7 +2780,7 @@ export type EventsSubscription = (
   { __typename?: 'Subscription' }
   & { events: (
     { __typename?: 'NotificationEvent' }
-    & Pick<NotificationEvent, 'type'>
+    & Pick<NotificationEvent, 'type' | 'from' | 'itemId'>
   ) }
 );
 
@@ -3091,6 +3101,9 @@ export const CompletePurchaseDocument = gql`
     buyerSignedDate
     sellerSignature
     sellerSignedDate
+    purchase {
+      id
+    }
     sellerProfile {
       type
       id
@@ -4656,6 +4669,8 @@ export const EventsDocument = gql`
     subscription events {
   events {
     type
+    from
+    itemId
   }
 }
     `;

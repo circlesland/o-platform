@@ -31,11 +31,12 @@ import { Process } from "@o-platform/o-process/dist/interfaces/process";
 import { isMobile } from "../functions/isMobile";
 import { media } from "../stores/media";
 import { me } from "../stores/me";
-import { Capability, EventsDocument, SessionInfo } from "../api/data/types";
+import {Capability, EventsDocument, EventType, SessionInfo} from "../api/data/types";
 import { log } from "../logUiEvent";
 import { contacts } from "../stores/contacts";
 import { performOauth } from "../../dapps/o-humanode/processes/performOauth";
-import {clearScrollPosition, popScrollPosition, pushScrollPosition} from "../layouts/Center.svelte";
+import {clearScrollPosition, popScrollPosition, pushScrollPosition, scrollToBottom} from "../layouts/Center.svelte";
+import {myChats} from "../stores/myChat";
 
 export let params: {
   dappId: string;
@@ -373,16 +374,14 @@ function initSession(session: SessionInfo) {
         .subscribe({
           query: EventsDocument,
         })
-        .subscribe((next) => {
+        .subscribe(async (next) => {
           if (next.data.events.type == "new_message") {
-            window.o.publishEvent(<any>{
-              type: "shell.refresh",
-              dapp: "friends:1",
-              data: null,
-            });
-            window.o.publishEvent(<any>{
-              type: "new_message",
-            });
+
+            const chatStore = myChats.with(next.data.events.from);
+            const message = await chatStore.findSingleItemFallback([EventType.ChatMessage], next.data.events.itemId);
+            console.log("Loaded message:", message);
+            chatStore.refresh();
+
             var audio = new Audio("blblblbl.mp3");
             audio.play();
           } else {

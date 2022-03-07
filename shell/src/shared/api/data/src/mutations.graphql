@@ -334,6 +334,9 @@ mutation completePurchase($invoiceId: Int!, $revoke: Boolean) {
     buyerSignedDate
     sellerSignature
     sellerSignedDate
+    purchase {
+      id
+    }
     sellerProfile {
       type
       id

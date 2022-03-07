@@ -408,6 +408,8 @@ type NewUser implements IEventPayload {
 }
 
 type NotificationEvent {
+    from: String!
+    itemId: Int!
     type: String!
 }
 
@@ -843,6 +845,10 @@ enum TrustDirection {
     OUT
 }
 
+input ChatMessageEventFilter {
+    id: Int!
+}
+
 input ContactAggregateFilter {
     addresses: [String!]!
 }
@@ -881,6 +887,7 @@ input ProfileAggregateFilter {
 }
 
 input ProfileEventFilter {
+    chatMessage: ChatMessageEventFilter
     direction: Direction
     from: String
     purchased: PurchasedEventFilter

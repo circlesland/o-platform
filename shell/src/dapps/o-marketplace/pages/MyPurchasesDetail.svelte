@@ -19,7 +19,6 @@
   import UserImage from "src/shared/atoms/UserImage.svelte";
   import Date from "../../../shared/atoms/Date.svelte";
   import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import {purchases} from "../../../shared/stores/purchases";
   import {_} from "svelte-i18n";
   import {myPurchases} from "../../../shared/stores/myPurchases";
 
@@ -106,7 +105,7 @@ onMount(async () => {
             window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
-        await purchases.completePurchase(purchase.invoices[0].id);
+        await myPurchases.completePurchase(purchase.invoices[0].id);
         actions.push(unPickUpAction);
       },
     };
@@ -124,7 +123,7 @@ onMount(async () => {
             )
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
-        await purchases.revokeCompletionStatus(purchase.invoices[0].id);
+        await myPurchases.revokeCompletionStatus(purchase.invoices[0].id);
         actions.push(pickUpAction);
       },
     };

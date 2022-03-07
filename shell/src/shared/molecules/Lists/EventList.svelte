@@ -25,8 +25,10 @@ onMount(() => {
   return store.subscribe((data) => {
     if (reverse) {
       events = data.map(o => o).reverse();
+      setTimeout(() => scrollToBottom());
     } else {
       events = data;
+      setTimeout(() => scrollToTop());
     }
     isLoading = false;
   });
@@ -42,6 +44,8 @@ const handleChange = async (e) => {
       // store is initialized but list is not
       setTimeout(() => {
         if (!poppedScrollPosition) {
+          // only scroll to the bottom if the current scroll position
+          // is not a custom scroll position from the Center's scrollPositionStack
           scrollToBottom();
         }
         lastBottomPosition = lastElement.offsetTop;

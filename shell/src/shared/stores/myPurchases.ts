@@ -1,9 +1,11 @@
 import {
+  AggregateType,
+  CompletePurchaseDocument,
   EventPayload,
   EventType,
   ProfileEvent,
   ProfileEventFilter,
-  Purchased,
+  Purchased, Purchases,
   QueryEventsArgs,
   SortOrder,
 } from "../api/data/types";
@@ -12,7 +14,7 @@ import {me} from "./me";
 import {ApiClient} from "../apiConnection";
 
 export class MyPurchases extends PagedEventQuery {
-  constructor(sortOrder:SortOrder, pageSize = 20) {
+  constructor(sortOrder: SortOrder, pageSize = 20) {
     super([EventType.Purchased], sortOrder, pageSize);
   }
 
@@ -28,10 +30,8 @@ export class MyPurchases extends PagedEventQuery {
     let safeAddress: string;
     me.subscribe(($me) => (safeAddress = $me.circlesAddress))();
 
-    const foundEvents = await ApiClient.query<
-      ProfileEvent[],
-      QueryEventsArgs
-      >(this.query, {
+    const foundEvents = await ApiClient.query<ProfileEvent[],
+      QueryEventsArgs>(this.query, {
       safeAddress: safeAddress,
       types: [EventType.Purchased],
       pagination: {
@@ -54,6 +54,39 @@ export class MyPurchases extends PagedEventQuery {
   }
 
   protected maintainExternalCaches(event: ProfileEvent): void {
+  }
+
+  async completePurchase(invoiceId: number) {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const completedInvoice = await apiClient.mutate({
+      mutation: CompletePurchaseDocument,
+      variables: {
+        invoiceId: invoiceId
+      }
+    });
+    if (!completedInvoice.data?.completePurchase) {
+      throw new Error(window.i18n("shared.stores.purchases.errors.couldNotComplete"));
+    }
+
+    await this.findSingleItemFallback([AggregateType.Purchases], completedInvoice.data.purchase.id);
+    this.refresh();
+  }
+
+  async revokeCompletionStatus(invoiceId: number) {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const completedInvoice = await apiClient.mutate({
+      mutation: CompletePurchaseDocument,
+      variables: {
+        invoiceId: invoiceId,
+        revoke: true
+      }
+    });
+    if (!completedInvoice.data?.completePurchase) {
+      throw new Error(window.i18n("shared.stores.purchases.errors.couldNotRevoke"));
+    }
+
+    await this.findSingleItemFallback([AggregateType.Purchases], completedInvoice.data.purchase.id);
+    this.refresh();
   }
 }
 
