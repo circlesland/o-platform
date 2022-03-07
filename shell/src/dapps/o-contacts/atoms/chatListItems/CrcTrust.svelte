@@ -1,5 +1,4 @@
 <script lang="ts">
-import DetailActionBar from "../../../../shared/molecules/DetailActionBar.svelte";
 import Icons from "../../../../shared/molecules/Icons.svelte";
 import { CrcTrust, ProfileEvent } from "../../../../shared/api/data/types";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";

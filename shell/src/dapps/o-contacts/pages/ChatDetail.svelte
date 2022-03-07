@@ -77,6 +77,8 @@
       dapp: "chat:1",
       data: null,
     });
+
+    await contacts.findBySafeAddress(contactProfile.circlesAddress, true);
   };
 
   function init(el) {
