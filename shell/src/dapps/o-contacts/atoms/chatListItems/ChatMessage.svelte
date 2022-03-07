@@ -4,10 +4,6 @@ import { ChatMessage, ProfileEvent } from "../../../../shared/api/data/types";
 
 export let event: ProfileEvent;
 
-function getValues() {
-  const chatMessage = <ChatMessage>event.payload;
-  return chatMessage.text;
-}
 </script>
 
 <div>
@@ -25,7 +21,7 @@ function getValues() {
         class:text-dark-lighter="{event.direction == 'in'}">
         <Date time="{event.timestamp}" />
       </div>
-      {@html getValues()}
+      {@html event.payload.text}
     </div>
   </div>
 </div>

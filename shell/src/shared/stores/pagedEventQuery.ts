@@ -139,8 +139,9 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
       };
     }
 
-    const itemCount = this.refresh();
-    return itemCount >= this.pageSize;
+    const totalEventCount = this.refresh();
+    const newEventCount = nextPage.length;
+    return newEventCount >= this.pageSize;
   }
 
   refresh() {
