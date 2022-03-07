@@ -483,7 +483,7 @@ type Profile {
     sales: [Sale!]
     status: String
     successorOfCirclesAddress: String
-    type: String
+    type: ProfileType
     verifications: [Verification!]
 }
 
@@ -824,6 +824,12 @@ enum ProfileOrigin {
     CirclesGarden
     CirclesLand
     Unknown
+}
+
+enum ProfileType {
+    ORGANISATION
+    PERSON
+    REGION
 }
 
 enum SortOrder {

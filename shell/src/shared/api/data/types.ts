@@ -769,7 +769,7 @@ export type Profile = {
   sales?: Maybe<Array<Sale>>;
   status?: Maybe<Scalars['String']>;
   successorOfCirclesAddress?: Maybe<Scalars['String']>;
-  type?: Maybe<Scalars['String']>;
+  type?: Maybe<ProfileType>;
   verifications?: Maybe<Array<Verification>>;
 };
 
@@ -827,6 +827,12 @@ export enum ProfileOrigin {
   CirclesGarden = 'CirclesGarden',
   CirclesLand = 'CirclesLand',
   Unknown = 'Unknown'
+}
+
+export enum ProfileType {
+  Organisation = 'ORGANISATION',
+  Person = 'PERSON',
+  Region = 'REGION'
 }
 
 export type ProofPaymentResult = {
@@ -2320,7 +2326,7 @@ export type StreamQuery = (
     & Pick<ProfileEvent, 'timestamp' | 'transaction_hash' | 'block_number' | 'safe_address' | 'contact_address' | 'direction' | 'type'>
     & { contact_address_profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
+      & Pick<Profile, 'type' | 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
     )>, payload?: Maybe<(
       { __typename?: 'ChatMessage' }
       & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
@@ -3910,6 +3916,7 @@ export const StreamDocument = gql`
     safe_address
     contact_address
     contact_address_profile {
+      type
       successorOfCirclesAddress
       circlesAddress
       displayCurrency

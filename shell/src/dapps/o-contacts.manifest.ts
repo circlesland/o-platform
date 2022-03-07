@@ -8,7 +8,7 @@ import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 import {init} from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
 import {Jumplist, JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
-import {Contact, ContactDirection, EventType, Profile, ProfileOrigin,} from "../shared/api/data/types";
+import {Contact, ContactDirection, EventType, Profile, ProfileOrigin, ProfileType,} from "../shared/api/data/types";
 import {transfer} from "./o-banking/processes/transfer";
 import {push} from "svelte-spa-router";
 import {setTrust} from "./o-banking/processes/setTrust";
@@ -135,7 +135,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         ]);
         if (
           recipientProfile.contactAddress_Profile &&
-          recipientProfile.contactAddress_Profile.type == "PERSON"
+          recipientProfile.contactAddress_Profile.type == ProfileType.Person
         ) {
           actions = actions.concat(
             trustsYou

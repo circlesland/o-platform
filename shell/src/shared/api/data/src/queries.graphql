@@ -809,6 +809,7 @@ query stream(
         safe_address
         contact_address
         contact_address_profile {
+            type
             successorOfCirclesAddress
             circlesAddress
             displayCurrency

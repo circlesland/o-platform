@@ -17,7 +17,7 @@ import {
   Contact,
   ContactDirection,
   EventType,
-  Profile,
+  Profile, ProfileType,
   VerifySafeDocument,
 } from "./api/data/types";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -97,7 +97,7 @@ export class UserActions {
       /* PERSON */
       if (
         recipientProfile.contactAddress_Profile &&
-        recipientProfile.contactAddress_Profile.type == "PERSON"
+        recipientProfile.contactAddress_Profile.type == ProfileType.Person
       ) {
         actions = actions.concat(
           trustsYou
