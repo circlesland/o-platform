@@ -57,6 +57,7 @@ async function setProfile(id: string) {
 
   contact = c;
   profile = c.contactAddress_Profile;
+  detailActions = [];
 
   if ($me.circlesAddress !== contact.contactAddress) {
     commonTrusts = (

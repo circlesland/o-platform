@@ -16,11 +16,11 @@
   import NotificationCard from "../atoms/NotificationCard.svelte";
   import UserImage from "src/shared/atoms/UserImage.svelte";
   import {isMobile} from "../../../shared/functions/isMobile";
-  // import * as ECIES from "bitcore-ecies";
   import {_} from "svelte-i18n";
   import EventList from "../../../shared/molecules/Lists/EventList.svelte";
   import {myChats} from "../../../shared/stores/myChat";
   import {Generate} from "@o-platform/o-utils/dist/generate";
+  // import * as ECIES from "bitcore-ecies";
 
   export let id: string;
 
@@ -108,20 +108,6 @@
       });
       myChats.with(contactProfile.circlesAddress).refresh(true);
     }
-
-    /*
-    window.o.publishEvent(<any>{
-      type: "shell.scrollToBottom",
-      scrollNow: true,
-    });
-
-    window.o.publishEvent(<any>{
-      type: "shell.refresh",
-      dapp: "chat:1",
-      data: null,
-    });
-     */
-
   };
 
   function init(el) {
