@@ -82,6 +82,10 @@ $: {
       RpcGateway.get().utils.fromWei(ercTransfer.value, "ether")
     ).toFixed(2);
     message = "ERC-20 Transfer";
+
+    amountTime = Currency.instance()
+      .displayAmount(amount ? amount : "0", event.timestamp, "TIME_CRC", null)
+      .toString();
   }
 
   if (event && event.payload?.__typename == "CrcHubTransfer") {
@@ -108,6 +112,8 @@ $: {
       (o) => o.typeId === "o-banking:transfer:message:1"
     )?.value;
 
+    console.log("MESSAGE", message);
+
     if (event.payload?.__typename == EventType.CrcHubTransfer) {
       const ht = <CrcHubTransfer>event.payload;
       amount = Currency.instance().displayAmount(
@@ -115,6 +121,15 @@ $: {
         event.timestamp,
         $me.displayCurrency ? $me.displayCurrency : "EURS"
       );
+
+      amountTime = Currency.instance()
+        .displayAmount(
+          event.payload && ht.flow ? ht.flow.toString() : "0",
+          event.timestamp,
+          "TIME_CRC",
+          null
+        )
+        .toString();
     }
 
     if (event.direction == "out") {
