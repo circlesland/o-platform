@@ -378,16 +378,18 @@ function initSession(session: SessionInfo) {
         })
         .subscribe(async (next) => {
           if (next.data.events.type == "new_message") {
-
             const chatStore = myChats.with(next.data.events.from);
             const message = await chatStore.findSingleItemFallback([EventType.ChatMessage], next.data.events.itemId);
             chatStore.refresh(true);
-
             await contacts.findBySafeAddress(next.data.events.from, true);
-
           } else if (next.data.events.type == "blockchain_event") {
             const transaction = await myTransactions.findSingleItemFallback(myTransactions.eventTypes, next.data.events.transaction_hash);
             myTransactions.refresh(true);
+
+            const chatStore = myChats.with(next.data.events.from);
+            const message = await chatStore.findSingleItemFallback([EventType.CrcHubTransfer], next.data.events.transaction_hash);
+            chatStore.refresh(true);
+
             console.log("blockchain_event transaction:", transaction);
             console.log("assetBalances:", assetBalances);
             assetBalances.update();

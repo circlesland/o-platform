@@ -432,6 +432,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
                         .filter((o) => !!o && o != "")
                         .reduce((p, c) => p + "/" + c, "");
 
+                      if (path == "") {
+                        return;
+                      }
                       //stack.pop();
                       push(`#/${params.dappId}${path}`);
                     }
