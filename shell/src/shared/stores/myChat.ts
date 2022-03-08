@@ -49,7 +49,7 @@ export class MyChat extends PagedEventQuery {
     me.subscribe(m => $me = m)();
     const args = <QueryEventsArgs>{
       safeAddress: $me.circlesAddress,
-      types: [EventType.ChatMessage],
+      types: types,
       pagination: {
         order: SortOrder.Desc,
         limit: 1,
@@ -57,9 +57,14 @@ export class MyChat extends PagedEventQuery {
       },
       filter: {
         with: this.filter.with,
-        chatMessage: {
-          id: parseInt(primaryKey)
-        }
+        ... types.indexOf(EventType.ChatMessage) > 0 ? {
+          chatMessage: {
+            id: parseInt(primaryKey)
+          }
+        } : {},
+        ... types.indexOf(EventType.CrcHubTransfer) > 0 ? {
+          transactionHash: primaryKey
+        } : {}
       },
     };
 
