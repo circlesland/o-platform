@@ -31,7 +31,7 @@ import { Process } from "@o-platform/o-process/dist/interfaces/process";
 import { isMobile } from "../functions/isMobile";
 import { media } from "../stores/media";
 import { me } from "../stores/me";
-import {Capability, EventsDocument, EventType, SessionInfo} from "../api/data/types";
+import {Capability, EventsDocument, EventType, NotificationEvent, SessionInfo} from "../api/data/types";
 import { log } from "../logUiEvent";
 import { contacts } from "../stores/contacts";
 import { performOauth } from "../../dapps/o-humanode/processes/performOauth";
@@ -366,6 +366,7 @@ function setNav(navArgs: GenerateNavManifestArgs) {
  */
 
 let shellEventSubscription: ZenObservable.Subscription;
+var blblblbl = new Audio("blblblbl.mp3");
 
 function initSession(session: SessionInfo) {
   // console.log(`subscribeToApiEvents(). Session: `, session);
@@ -377,29 +378,52 @@ function initSession(session: SessionInfo) {
           query: EventsDocument,
         })
         .subscribe(async (next) => {
-          if (next.data.events.type == "new_message") {
-            const chatStore = myChats.with(next.data.events.from);
-            const message = await chatStore.findSingleItemFallback([EventType.ChatMessage], next.data.events.itemId);
+          const event:NotificationEvent = next.data.events;
+          let playBlblblbl = false;
+
+          if (event.type == "new_message") {
+            const chatStore = myChats.with(event.from);
+            const message = await chatStore.findSingleItemFallback([EventType.ChatMessage], event.itemId.toString());
             chatStore.refresh(true);
-            await contacts.findBySafeAddress(next.data.events.from, true);
-          } else if (next.data.events.type == "blockchain_event") {
-            const transaction = await myTransactions.findSingleItemFallback(myTransactions.eventTypes, next.data.events.transaction_hash);
+            await contacts.findBySafeAddress(event.from, true);
+            playBlblblbl = true;
+          } else if (event.type == EventType.CrcHubTransfer) {
+            const transaction = await myTransactions.findSingleItemFallback(myTransactions.eventTypes, event.transaction_hash);
             myTransactions.refresh(true);
-
-            const chatStore = myChats.with(next.data.events.from);
-            const message = await chatStore.findSingleItemFallback([EventType.CrcHubTransfer], next.data.events.transaction_hash);
-            chatStore.refresh(true);
-
-            console.log("blockchain_event transaction:", transaction);
-            console.log("assetBalances:", assetBalances);
             assetBalances.update();
 
-            await contacts.findBySafeAddress(next.data.events.from, true);
+            if (event.from == $me.circlesAddress) {
+              await contacts.findBySafeAddress(event.to, true);
+              const chatStore = myChats.with(event.to);
+              const message = await chatStore.findSingleItemFallback([EventType.CrcHubTransfer], event.transaction_hash);
+              chatStore.refresh(true);
+            } else {
+              await contacts.findBySafeAddress(event.from, true);
+              const chatStore = myChats.with(event.from);
+              const message = await chatStore.findSingleItemFallback([EventType.CrcHubTransfer], event.transaction_hash);
+              chatStore.refresh(true);
+              playBlblblbl = true;
+            }
+          } else if (event.type == EventType.CrcTrust) {
+            if (event.from == $me.circlesAddress) {
+              const contact = await contacts.findBySafeAddress(event.to, true);
+              console.log("CrcTrust update to:", contact);
+            } else {
+              const contact = await contacts.findBySafeAddress(event.from, true);
+              console.log("CrcTrust update from:", contact);
+              const chatStore = myChats.with(contact.contactAddress);
+              const message = await chatStore.findSingleItemFallback([EventType.CrcTrust], event.transaction_hash);
+              chatStore.refresh(true);
+              playBlblblbl = true;
+            }
           }
-          inbox.reload();
 
-          var audio = new Audio("blblblbl.mp3");
-          audio.play();
+          inbox.reload().then(() => {
+            if (!playBlblblbl)
+              return;
+
+            blblblbl.play();
+          });
         });
     });
 

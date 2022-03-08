@@ -44,6 +44,7 @@ export const coop: DappManifest<DappState> = {
   defaultRoute: ["organisations"],
   tag: Promise.resolve("alpha"),
   // jumplist: {
+  // jumplist: {
   //   type: "jumplist",
   //   title: "Actions",
   //   isSystem: false,

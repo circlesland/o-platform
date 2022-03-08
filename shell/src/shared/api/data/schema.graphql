@@ -408,8 +408,9 @@ type NewUser implements IEventPayload {
 }
 
 type NotificationEvent {
-    from: String
+    from: String!
     itemId: Int
+    to: String!
     transaction_hash: String
     type: String!
 }

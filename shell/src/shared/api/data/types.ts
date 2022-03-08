@@ -681,8 +681,9 @@ export type NewUser = IEventPayload & {
 
 export type NotificationEvent = {
   __typename?: 'NotificationEvent';
-  from?: Maybe<Scalars['String']>;
+  from: Scalars['String'];
   itemId?: Maybe<Scalars['Int']>;
+  to: Scalars['String'];
   transaction_hash?: Maybe<Scalars['String']>;
   type: Scalars['String'];
 };
@@ -2781,7 +2782,7 @@ export type EventsSubscription = (
   { __typename?: 'Subscription' }
   & { events: (
     { __typename?: 'NotificationEvent' }
-    & Pick<NotificationEvent, 'type' | 'from' | 'itemId' | 'transaction_hash'>
+    & Pick<NotificationEvent, 'type' | 'from' | 'to' | 'itemId' | 'transaction_hash'>
   ) }
 );
 
@@ -4671,6 +4672,7 @@ export const EventsDocument = gql`
   events {
     type
     from
+    to
     itemId
     transaction_hash
   }

@@ -1,5 +1,4 @@
 import Verifications from "./o-verification/pages/Verifications.svelte";
-import VerificationDetail from "./o-verification/pages/VerificationDetail.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import RecentProfiles from "./o-verification/pages/RecentProfiles.svelte";
@@ -12,13 +11,6 @@ import { performOauth } from "./o-humanode/processes/performOauth";
 const verifications: Page<any, ContactsDappState> = {
   routeParts: ["=verifications"],
   component: Verifications,
-  title: "Verifications",
-  type: "page",
-};
-const detail: Page<any, ContactsDappState> = {
-  routeParts: [":id"],
-  isSystem: true,
-  component: VerificationDetail,
   title: "Verifications",
   type: "page",
 };
@@ -82,7 +74,6 @@ export const verification: DappManifest<DappState> = {
   defaultRoute: ["verifications"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
-
   jumplist: verificationJumplist,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
@@ -91,5 +82,5 @@ export const verification: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [verifications, recentProfiles, detail],
+  routables: [verifications, recentProfiles],
 };
