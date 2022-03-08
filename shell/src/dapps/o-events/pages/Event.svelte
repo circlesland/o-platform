@@ -23,12 +23,12 @@ function register() {
 
   <div class="flex flex-col justify-between">
     <div
-      class="order-2 w-1/2 mt-12 text-xl leading-tight text-left break-words party-text sm:text-4xl lg:mt-40 md:text-4rem font-heading md:order-1">
+      class="invisible w-1/2 mt-12 text-xl leading-tight text-left break-words party-text sm:text-4xl lg:mt-40 md:text-4rem font-heading md:visible">
       Wir feiern <div class="visible sm:hidden"></div>
       <span class="whitespace-nowrap">dein erstes mal</span>
     </div>
 
-    <div class="order-1 w-full text-center mt-36 sm:mt-60 md:mt-20 md:order-2">
+    <div class="w-full text-center mt-36 sm:mt-60 md:mt-20 md:order-2">
       <button
         class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
         on:click="{() => register()}">REGISTER NOW</button>
@@ -37,9 +37,15 @@ function register() {
   <div class="absolute w-full pr-8 bottom-20 sm:bottom-4">
     <div
       class="grid w-full grid-cols-2 place-items-stretch justify-items-stretch place-content-end">
-      <div
-        class="self-end text-2xl leading-tight text-left sm:text-4rem font-omedium">
-        ALTE UTTING<br />19TH MARCH<br />START 2 PM
+      <div class="self-end">
+        <div
+          class="visible w-1/2 mb-6 text-xl leading-tight text-left break-words party-text sm:text-4xl font-heading md:invisible">
+          Wir feiern <div class="visible sm:hidden"></div>
+          <span class="whitespace-nowrap">dein erstes mal</span>
+        </div>
+        <div class="text-2xl leading-tight text-left sm:text-4rem font-omedium">
+          ALTE UTTING<br />19TH MARCH<br />START 2 PM
+        </div>
       </div>
       <div
         class="pr-2 text-2xl leading-tight text-right break-words sm:pr-8 place-self-end sm:text-4rem font-omedium">
