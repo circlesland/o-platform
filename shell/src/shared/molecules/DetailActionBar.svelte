@@ -11,6 +11,7 @@ export let actions: {
 }[];
 
 let showMore = false;
+let moreItems = undefined;
 
 function handleClick(action) {
   if (action.event) {
@@ -21,7 +22,10 @@ function handleClick(action) {
   }
 }
 
-let moreItems = actions && actions.length > 2 ? actions.splice(2) : undefined;
+$: {
+  moreItems = actions && actions.length > 2 ? actions.splice(2) : undefined;
+  console.log("actions", actions);
+}
 </script>
 
 {#if actions}
