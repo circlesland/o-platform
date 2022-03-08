@@ -7,7 +7,7 @@ import { me } from "../../../shared/stores/me";
 
 import { Currency } from "../../../shared/currency";
 import { BN } from "ethereumjs-util";
-import { assetsBalances } from "../../../shared/stores/assetsBalances";
+import { assetBalances } from "../../../shared/stores/assetsBalances";
 import Icons from "../../../shared/molecules/Icons.svelte";
 
 export let balanceEuro: string = "0";
@@ -16,7 +16,7 @@ export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
 $: {
-  const sum = $assetsBalances.crcBalances
+  const sum = $assetBalances.crcBalances
     .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
     .toString();
   balanceEuro = Currency.instance()

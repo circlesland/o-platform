@@ -6,7 +6,7 @@ import Card from "../../../shared/atoms/Card.svelte";
 
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import { AssetBalance } from "../../../shared/api/data/types";
-import { assetsBalances } from "../../../shared/stores/assetsBalances";
+import {assetBalances} from "../../../shared/stores/assetsBalances";
 
 import { _ } from "svelte-i18n";
 
@@ -14,7 +14,7 @@ let loading = true;
 let balances: AssetBalance[] = [];
 
 onMount(async () => {
-  balances = $assetsBalances.crcBalances;
+  balances = $assetBalances.crcBalances;
   loading = false;
 });
 </script>

@@ -38,6 +38,7 @@ import { performOauth } from "../../dapps/o-humanode/processes/performOauth";
 import {clearScrollPosition, popScrollPosition, pushScrollPosition, scrollToBottom} from "../layouts/Center.svelte";
 import {myChats} from "../stores/myChat";
 import {myTransactions} from "../stores/myTransactions";
+import {assetBalances} from "../stores/assetsBalances";
 
 export let params: {
   dappId: string;
@@ -390,6 +391,8 @@ function initSession(session: SessionInfo) {
             const transaction = await myTransactions.findSingleItemFallback(myTransactions.eventTypes, next.data.events.transaction_hash);
             myTransactions.refresh(true);
             console.log("blockchain_event transaction:", transaction);
+            console.log("assetBalances:", assetBalances);
+            assetBalances.update();
           }
           inbox.reload();
         });

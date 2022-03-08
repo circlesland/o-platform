@@ -11,7 +11,7 @@ import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount"
 import Web3 from "web3";
 import { AssetBalance } from "../../../shared/api/data/types";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import { assetsBalances } from "../../../shared/stores/assetsBalances";
+import { assetBalances } from "../../../shared/stores/assetsBalances";
 import { BN } from "ethereumjs-util";
 
 import { _ } from "svelte-i18n";
@@ -56,7 +56,7 @@ async function updateXdaiBalance() {
 }
 
 $: {
-  const balances = $assetsBalances;
+  const balances = $assetBalances;
 
   circles.details = balances.crcBalances;
   circles.balance = displayCirclesAmount(
