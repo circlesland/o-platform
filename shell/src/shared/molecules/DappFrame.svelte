@@ -37,6 +37,7 @@ import { contacts } from "../stores/contacts";
 import { performOauth } from "../../dapps/o-humanode/processes/performOauth";
 import {clearScrollPosition, popScrollPosition, pushScrollPosition, scrollToBottom} from "../layouts/Center.svelte";
 import {myChats} from "../stores/myChat";
+import {myTransactions} from "../stores/myTransactions";
 
 export let params: {
   dappId: string;
@@ -385,20 +386,10 @@ function initSession(session: SessionInfo) {
 
             var audio = new Audio("blblblbl.mp3");
             audio.play();
-          } else {
-            window.o.publishEvent(<any>{
-              type: "blockchain_event",
-            });
-            window.o.publishEvent(<any>{
-              type: "shell.refresh",
-              dapp: "friends:1",
-              data: null,
-            });
-            window.o.publishEvent(<any>{
-              type: "shell.refresh",
-              dapp: "banking:1",
-              data: null,
-            });
+          } else if (next.data.events.type == "blockchain_event") {
+            const transaction = await myTransactions.findSingleItemFallback(myTransactions.eventTypes, next.data.events.transaction_hash);
+            myTransactions.refresh(true);
+            console.log("blockchain_event transaction:", transaction);
           }
           inbox.reload();
         });

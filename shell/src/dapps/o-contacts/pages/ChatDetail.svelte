@@ -9,10 +9,7 @@
   } from "../../../shared/api/data/types";
   import {me} from "../../../shared/stores/me";
   import {push} from "svelte-spa-router";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {Subscription} from "rxjs";
   import {contacts} from "../../../shared/stores/contacts";
-
   import NotificationCard from "../atoms/NotificationCard.svelte";
   import UserImage from "src/shared/atoms/UserImage.svelte";
   import {isMobile} from "../../../shared/functions/isMobile";
@@ -23,29 +20,10 @@
   // import * as ECIES from "bitcore-ecies";
 
   export let id: string;
-
-  let error: string | undefined = undefined;
-  let chatHistory: ProfileEvent[] = [];
-
   let contactProfile: Profile | null;
-  let shellEventSubscription: Subscription;
-
-  async function reload() {
-    contactProfile = (await contacts.findBySafeAddress(id)).contactAddress_Profile;
-  }
 
   onMount(async () => {
-    shellEventSubscription = window.o.events.subscribe(
-            async (event: PlatformEvent) => {
-              if (event.type != "new_message" && event.type != "blockchain_event") {
-                return;
-              }
-              await reload();
-            }
-    );
-    await reload();
-
-    return () => shellEventSubscription.unsubscribe();
+    contactProfile = (await contacts.findBySafeAddress(id)).contactAddress_Profile;
   });
 
   let inputField: any;

@@ -3,5 +3,6 @@ subscription events {
     type
     from
     itemId
+    transaction_hash
   }
 }
