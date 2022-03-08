@@ -112,8 +112,6 @@ $: {
       (o) => o.typeId === "o-banking:transfer:message:1"
     )?.value;
 
-    console.log("MESSAGE", message);
-
     if (event.payload?.__typename == EventType.CrcHubTransfer) {
       const ht = <CrcHubTransfer>event.payload;
       amount = Currency.instance().displayAmount(
