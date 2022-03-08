@@ -417,7 +417,16 @@ async function init() {
   if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
     // TODO: Stash the current URL away and redirect the user to it after authentication
     if (!routable.anonymous) {
-      sessionStorage.setItem("desiredRoute", JSON.stringify(params));
+
+      const path = Object.keys(params)
+        .filter((o) => parseInt(o) != Number.NaN && parseInt(o) >= 0 && parseInt(o) <= 6)
+        .map((o) => params[o])
+        .filter((o) => !!o && o != "")
+        .reduce((p, c) => p + "/" + c, "");
+
+      if (!(path == "" || path == "#" || path == "#/" || path == "/#/")) {
+        sessionStorage.setItem("desiredRoute", JSON.stringify(params));
+      }
       await push("/");
       return;
     } else {

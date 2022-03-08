@@ -7,6 +7,12 @@
     window.runInitMachine();
   }
 
+  setTimeout(() => {
+    if (sessionStorage.getItem("desiredRoute")) {
+      login();
+    }
+  }, 30);
+
   console.log("PROPS ", props);
 </script>
 

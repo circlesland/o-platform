@@ -432,7 +432,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
                         .filter((o) => !!o && o != "")
                         .reduce((p, c) => p + "/" + c, "");
 
-                      if (path == "") {
+                      if (path == "" || path == "#" || path == "#/" || path == "/#/") {
                         return;
                       }
                       //stack.pop();
