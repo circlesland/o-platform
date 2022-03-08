@@ -420,7 +420,28 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         entry: [
           () => console.log("init.success"),
           () => {
-            push("#/home");
+            push("#/home").then(() => {
+              setTimeout(() => {
+                if (sessionStorage.getItem("circlesKey")) {
+                  try {
+                    if (sessionStorage.getItem("desiredRoute")) {
+                      const params = JSON.parse(sessionStorage.getItem("desiredRoute"));
+                      const path = Object.keys(params)
+                        .filter((o) => parseInt(o) != Number.NaN && parseInt(o) >= 0 && parseInt(o) <= 6)
+                        .map((o) => params[o])
+                        .filter((o) => !!o && o != "")
+                        .reduce((p, c) => p + "/" + c, "");
+
+                      //stack.pop();
+                      push(`#/${params.dappId}${path}`);
+                    }
+                  } catch (e) {
+                  } finally {
+                    sessionStorage.removeItem("desiredRoute");
+                  }
+                }
+              });
+            });
           },
         ],
         type: "final",

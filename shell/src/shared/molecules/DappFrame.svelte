@@ -385,8 +385,6 @@ function initSession(session: SessionInfo) {
 
             await contacts.findBySafeAddress(next.data.events.from, true);
 
-            var audio = new Audio("blblblbl.mp3");
-            audio.play();
           } else if (next.data.events.type == "blockchain_event") {
             const transaction = await myTransactions.findSingleItemFallback(myTransactions.eventTypes, next.data.events.transaction_hash);
             myTransactions.refresh(true);
@@ -395,6 +393,9 @@ function initSession(session: SessionInfo) {
             assetBalances.update();
           }
           inbox.reload();
+
+          var audio = new Audio("blblblbl.mp3");
+          audio.play();
         });
     });
 
@@ -404,6 +405,8 @@ function initSession(session: SessionInfo) {
       // console.log("loaded contacts: ", data);
     });
   }
+
+  inbox.reload();
 }
 
 async function init() {
@@ -412,6 +415,7 @@ async function init() {
   if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
     // TODO: Stash the current URL away and redirect the user to it after authentication
     if (!routable.anonymous) {
+      sessionStorage.setItem("desiredRoute", JSON.stringify(params));
       await push("/");
       return;
     } else {
@@ -424,8 +428,6 @@ async function init() {
   if (!$me || !session.isLoggedOn) {
     await push("/");
     return;
-  } else {
-    inbox.reload();
   }
 }
 
@@ -865,14 +867,11 @@ function showQuickActions() {
   );
 }
 
-let startProcessing: boolean = true;
 $: {
-  if (startProcessing) {
-    const paramsJson = JSON.stringify(params);
-    if (lastParamsJson !== paramsJson) {
-      handleUrlChanged();
-      lastParamsJson = paramsJson;
-    }
+  const paramsJson = JSON.stringify(params);
+  if (lastParamsJson !== paramsJson) {
+    handleUrlChanged();
+    lastParamsJson = paramsJson;
   }
 }
 
@@ -950,6 +949,7 @@ async function handleUrlChanged() {
     // log(
     //   `handleUrlChanged() - Couldn't find a dapp with the id: ${params.dappId} - going to /`
     // );
+    sessionStorage.removeItem("desiredRoute");
     await push("/");
     return;
   }

@@ -45,6 +45,8 @@ async function loadBalances(safeAddress: string) {
 let _set:(value:any) => void;
 
 async function _update(safeAddress:string) {
+  if (!_set)
+    return;
   const balances = await loadBalances(safeAddress);
   _set({
     crcBalances: balances.crcBalances,
