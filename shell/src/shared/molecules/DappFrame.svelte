@@ -393,6 +393,8 @@ function initSession(session: SessionInfo) {
             console.log("blockchain_event transaction:", transaction);
             console.log("assetBalances:", assetBalances);
             assetBalances.update();
+
+            await contacts.findBySafeAddress(next.data.events.from, true);
           }
           inbox.reload();
 
