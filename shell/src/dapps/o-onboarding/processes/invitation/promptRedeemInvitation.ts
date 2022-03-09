@@ -9,7 +9,7 @@ import { push } from "svelte-spa-router";
 import * as yup from "yup";
 import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {
-  ClaimInvitationDocument, EventsDocument,
+  ClaimInvitationDocument, EventsDocument, EventType,
   InvitationTransactionDocument,
   RedeemClaimedInvitationDocument,
 } from "../../../../shared/api/data/types";
@@ -130,7 +130,8 @@ const processDefinition = (processId: string) =>
               });
               let subscription: ZenObservable.Subscription;
               const subscriptionHandler = next => {
-                if (next.data.events.type == "blockchain_event") {
+                if (next.data.events.type == EventType.EthTransfer
+                  || next.data.events.type == EventType.GnosisSafeEthTransfer) {
                   if (subscription) {
                     subscription.unsubscribe();
                   }
