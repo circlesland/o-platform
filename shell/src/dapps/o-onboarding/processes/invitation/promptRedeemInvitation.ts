@@ -112,7 +112,7 @@ const processDefinition = (processId: string) =>
               claimResult.errors?.length ||
               !claimResult.data.invitationTransaction?.transaction_hash
             ) {
-              throw new Error(window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitartion.checkIfRedemmed.notYetRedeemed"));
+              throw new Error(window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.checkIfRedeemed.notYetRedeemed"));
             }
           },
           onDone: "#success",
