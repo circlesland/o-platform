@@ -572,6 +572,7 @@ type Query {
     findInvitationCreator(code: String!): Profile
     findSafesByOwner(owner: String!): [SafeInfo!]!
     hubSignupTransaction: ProfileEvent
+    init: SessionInfo!
     invitationTransaction: ProfileEvent
     invoice(invoiceId: Int!): String
     myInvitations: [CreatedInvitation!]!

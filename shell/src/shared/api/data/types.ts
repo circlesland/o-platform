@@ -919,6 +919,7 @@ export type Query = {
   findInvitationCreator?: Maybe<Profile>;
   findSafesByOwner: Array<SafeInfo>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
+  init: SessionInfo;
   invitationTransaction?: Maybe<ProfileEvent>;
   invoice?: Maybe<Scalars['String']>;
   myInvitations: Array<CreatedInvitation>;
@@ -1740,7 +1741,7 @@ export type InitQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InitQuery = (
   { __typename?: 'Query' }
-  & { sessionInfo: (
+  & { init: (
     { __typename?: 'SessionInfo' }
     & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId' | 'lastAcknowledgedAt'>
     & { capabilities: Array<(
@@ -3165,7 +3166,7 @@ export const AnnouncePaymentDocument = gql`
     `;
 export const InitDocument = gql`
     query init {
-  sessionInfo {
+  init {
     isLoggedOn
     hasProfile
     profileId

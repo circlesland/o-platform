@@ -60,6 +60,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           src: async(context) => {
             const initResult:any = await ApiClient.query<Profile, InitQueryVariables>(InitDocument, {});
             console.log("initResult:", initResult);
+            context.session = initResult;
 
             if (initResult.profile.circlesSafeOwner) {
               context.session = initResult;
@@ -455,7 +456,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
     services: {
       loadSession: () => async (callback) => {
         try {
-          const sessionInfo = await me.getSessionInfo();
+          const sessionInfo = await me.getSessionInfo(true);
           if (sessionInfo.isLoggedOn) {
             callback(<any>{ type: "GOT_SESSION", session: sessionInfo });
           } else {

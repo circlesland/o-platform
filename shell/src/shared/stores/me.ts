@@ -9,8 +9,8 @@ let sessionInfo: SessionInfo | undefined = undefined;
 
 export const me = {
   subscribe: (subscriber: Subscriber<Profile|null>) => _me.subscribe(subscriber),
-  getSessionInfo: async () => {
-    if (!sessionInfo) {
+  getSessionInfo: async (reload:boolean = false) => {
+    if (!sessionInfo || reload) {
       sessionInfo = await getSessionInfo();
     }
     return sessionInfo;

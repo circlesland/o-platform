@@ -104,7 +104,7 @@ const processDefinition = (processId: string) =>
         },
         dataSchema: yup
           .string()
-          .required(window.i18n("dapps.o-onboarding.processes.invitation.promtGetInvited.dataSchemaRequired")),
+          .required(window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.dataSchemaRequired")),
         navigation: {
           next: "#redeemCode",
         },
