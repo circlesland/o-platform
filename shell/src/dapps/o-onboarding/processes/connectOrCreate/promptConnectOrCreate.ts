@@ -82,7 +82,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefenition.newSafe.message"),
+            message: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.newSafe.message"),
           });
         },
         invoke: {
