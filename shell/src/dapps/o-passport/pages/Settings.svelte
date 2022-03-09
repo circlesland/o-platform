@@ -15,6 +15,7 @@ import {
   WhoamiDocument,
   WhoamiQueryVariables,
 } from "../../../shared/api/data/types";
+import { upsertIdentity } from "../processes/upsertIdentity";
 import { ApiClient } from "../../../shared/apiConnection";
 import { _ } from "svelte-i18n";
 
@@ -81,6 +82,10 @@ const delayedTrigger = new DelayedTrigger(200, async () => {
   // TODO: Make call to upsertProfile shorter
   await editProfile();
 });
+
+function editProfileField(onlyThesePages: string[]) {
+  window.o.runProcess(upsertIdentity, $me, {}, onlyThesePages);
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -103,7 +108,7 @@ const delayedTrigger = new DelayedTrigger(200, async () => {
         </div>
         <div class="space-x-2 sm:space-x-6">
           <div class="w-full form-control">
-            <label class="label" for="newsletter">
+            <label class="pl-0 label" for="newsletter">
               <div
                 class="flex flex-row items-stretch w-full space-x-2 cursor-pointer justify-items-stretch">
                 <div class="self-center justify-self-center">
@@ -114,7 +119,7 @@ const delayedTrigger = new DelayedTrigger(200, async () => {
                     name="checkbox"
                     id="newsletter"
                     type="checkbox"
-                    class="inline-block toggle toggle-dark-lightest"
+                    class="inline-block toggle toggle-primary"
                     bind:checked="{receiveNewsletter}"
                     on:change="{() => delayedTrigger.trigger()}" />
 
@@ -137,20 +142,20 @@ const delayedTrigger = new DelayedTrigger(200, async () => {
         <div class="text-left">
           {$_("dapps.o-passport.pages.settings.emailAddress")}
         </div>
-        <div class="space-x-2 sm:space-x-6">
+        <div class="">
           <div class="w-full form-control">
-            <label class="label" for="newsletter">
+            <label class="pl-0 label" for="newsletter">
               <div
-                class="flex flex-row items-stretch w-full justify-items-stretch">
-                <div class="self-center flex-grow justify-self-center">
-                  <input
+                class="w-full text-left cursor-pointer"
+                on:click="{() => editProfileField(['emailAddress'])}">
+                {emailAddress}
+                <!-- <input
                     name="emailAddress"
                     id="emailAddress"
                     type="email"
                     class="w-full input input-bordered"
-                    on:change="{() => delayedTrigger.trigger()}"
-                    bind:value="{emailAddress}" />
-                </div>
+                    on:click="{() => editProfileField(['emailAddress'])}"
+                    bind:value="{emailAddress}" /> -->
               </div>
             </label>
           </div>

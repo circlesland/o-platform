@@ -1,11 +1,18 @@
 <script lang="ts">
 import "../../../shared/css/tailwind.css";
-import TopNav from "src/shared/atoms/TopNav.svelte";
+
 import { push } from "svelte-spa-router";
+import { me } from "../../../shared/stores/me";
+import { upsertIdentity } from "../../../dapps/o-passport/processes/upsertIdentity";
+
 import Icons from "../../../shared/molecules/Icons.svelte";
 
 function register() {
   window.runInitMachine();
+}
+
+function editProfileField(onlyThesePages: string[]) {
+  window.o.runProcess(upsertIdentity, $me, {}, onlyThesePages);
 }
 </script>
 
@@ -29,9 +36,16 @@ function register() {
     </div>
 
     <div class="w-full text-center mt-36 sm:mt-60 md:mt-20 md:order-2">
-      <button
-        class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
-        on:click="{() => register()}">REGISTER NOW</button>
+      {#if $me}
+        <button
+          class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
+          on:click="{() => editProfileField(['emailAddress'])}"
+          >REGISTER NOW</button>
+      {:else}
+        <button
+          class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
+          on:click="{() => register()}">REGISTER NOW</button>
+      {/if}
     </div>
   </div>
   <div class="absolute w-full pr-8 bottom-20 sm:bottom-4">

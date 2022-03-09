@@ -1042,7 +1042,7 @@ export const en = {
           settings: {
             notifications: "Would you like to receive our Newsletter?",
             emailAddress: "Email Address",
-            receiveNewsletter: "ReceiveNewsletter",
+            receiveNewsletter: "Yes",
             currencyDisplay: "CURRENCY DISPLAY",
             settingsSaved: "Settings Saved",
           },
@@ -1295,6 +1295,12 @@ export const en = {
                   "Advance your city in the basic income ranking and push the political discourse in your area.",
                 placeholder: "Last name",
                 submitButtonText: "Submit vote",
+              },
+              emailAddress: {
+                title: "Enter your E-Mail Address",
+                description:
+                  "Don't worry, We will only send you important updates.",
+                submitButtonText: "Save",
               },
               imageView: {
                 title: "Profile Image",
