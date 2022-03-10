@@ -260,6 +260,12 @@ const processDefinition = (processId: string) =>
             context.data.pickupCode = announceResult.data.announcePayment.pickupCode;
             console.log(`Your pickup code is: ${context.data.pickupCode}`)
 
+            context.data.invoices = <Invoice[]>context.data.invoices;
+            if (context.data.invoices.length > 0) {
+              await myPurchases.findSingleItemFallback([EventType.Purchased], context.data.invoices[0].purchaseId.toString());
+            }
+            myPurchases.refresh();
+
             const receipt = await fTransferCircles(
               currentInvoice.invoice.buyerAddress,
               sessionStorage.getItem("circlesKey"),
