@@ -27,6 +27,7 @@ import { isMobile } from "../../../shared/functions/isMobile";
 import { UserActions, UserActionItem } from "../../../shared/userActions";
 
 import { _ } from "svelte-i18n";
+import {Environment} from "../../../shared/environment";
 
 
 export let id: string;
@@ -135,7 +136,7 @@ async function setProfile(id: string) {
   const canVerify =
     capabilities &&
     capabilities.find((o) => o.type == CapabilityType.Verify) &&
-    "__ALLOW_VERIFY__" == "true";
+    Environment.allowVerify;
 
   const verifyProfile = {
     key: "verify",
@@ -192,15 +193,14 @@ async function setProfile(id: string) {
     action: () => {},
   };
 
-  if (canVerify && profile.verifications) {
+  if (canVerify) {
     if (
-      profile.verifications &&
-      profile.verifications[0] &&
+      profile.verifications?.length &&
       profile.verifications[0].revokedAt
     ) {
       detailActions.push(bannedProfile);
     } else {
-      if (profile.verifications.length) {
+      if (profile.verifications?.length) {
         detailActions.push(unverifyProfile);
       } else {
         detailActions.push(verifyProfile);
