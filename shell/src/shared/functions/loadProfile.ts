@@ -3,6 +3,7 @@ import { loadProfileBySafeAddress } from "../api/loadProfileBySafeAddress";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import {CommonTrust, CommonTrustDocument, CommonTrustQueryVariables, Profile} from "../api/data/types";
 import {ApiClient} from "../apiConnection";
+import {me} from "../stores/me";
 
 export async function loadProfile(id: string, $me) {
   if (!id) {
@@ -38,6 +39,8 @@ async function setProfile(apiProfile: Profile, $me) {
       id: apiProfile.id,
       avatarUrl: apiProfile.avatarUrl,
       dream: apiProfile.dream,
+      emailAddress: apiProfile.emailAddress,
+      askedForEmailAddress: apiProfile.askedForEmailAddress,
       country: apiProfile.country,
       safeAddress: apiProfile.circlesAddress,
       firstName: apiProfile.firstName,

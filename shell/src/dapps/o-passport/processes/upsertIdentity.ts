@@ -30,6 +30,7 @@ export type UpsertIdentityContextData = {
   firstName?: string;
   lastName?: string;
   emailAddress?: string;
+  askedForEmailAddress?: boolean;
   country?: string;
   dream?: string;
   cityGeonameid?: number;

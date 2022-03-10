@@ -198,7 +198,7 @@ const processDefinition = (processId: string) =>
         params: {
           view: editorContent.recipient,
           placeholder: editorContent.recipient.placeholder,
-          submitButtonText: window.i18n("dapps.o-banking.processes.transfer.recipientAdress.submitButtonText"),
+          submitButtonText: window.i18n("dapps.o-banking.processes.transfer.recipientAddress.submitButtonText"),
         },
         navigation: {
           next: "#tokens",

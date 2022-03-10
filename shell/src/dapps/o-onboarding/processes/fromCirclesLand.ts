@@ -125,7 +125,7 @@ const processDefinition = (processId: string) =>
                 .map((o) => o.id);
 
               if (!context.data.foundSafeAddresses.length) {
-                const msg = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.couldNotFindSafe", { values: { accountAdress: account.address }});
+                const msg = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.couldNotFindSafe", { values: { accountAddress: account.address }});
                 context.messages["seedPhrase"] = msg;
                 throw new Error(msg);
               }
