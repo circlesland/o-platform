@@ -29,7 +29,6 @@ import {
   QueryDirectPathArgs,
 } from "../../../shared/api/data/types";
 import {
-  convertCirclesToTimeCircles,
   convertTimeCirclesToCircles,
   displayCirclesAmount,
 } from "../../../shared/functions/displayCirclesAmount";
@@ -38,6 +37,9 @@ import TransferSummary from "../atoms/TransferSummary.svelte";
 import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Currency } from "../../../shared/currency";
+import {get} from "svelte/store";
+import {format} from "svelte-i18n";
+
 
 export type TransferContextData = {
   safeAddress: string;
@@ -88,46 +90,48 @@ export type TransferContext = ProcessContext<TransferContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelRecipientAddress: "Select the recipient you want to send money to",
-  tokensLabel: "Please enter the amount",
-  currencyCircles: "CRC",
-  currencyXdai: "xDai",
-  summaryLabel: "Summary",
-  messageLabel: "Purpose of transfer",
+  labelRecipientAddress: window.i18n("dapps.o-banking.processes.transfer.strings.labelRecipientAddress"),
+  tokensLabel: window.i18n( "dapps.o-banking.processes.transfer.strings.tokensLabel"),
+  currencyCircles: window.i18n("dapps.o-banking.processes.transfer.strings.currencyCircles"),
+  currencyXdai: window.i18n("dapps.o-banking.processes.transfer.strings.currencyXdai"),
+  summaryLabel: window.i18n("dapps.o-banking.processes.transfer.strings.summaryLabel"),
+  messageLabel: window.i18n("dapps.o-banking.processes.transfer.strings.messageLabel")
+
 };
+
 
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
-    title: "Select the recipient you want to send money to",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.title"),
     description: "",
-    placeholder: "Recipient",
-    submitButtonText: "Enter Name",
+    placeholder: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.placeholder"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.submitButtonText"),
   },
   recipientSafeAddress: {
-    title: "Enter the recipients safe address",
-    description: "Here you can enter the recipients safe address directly.",
-    placeholder: "Safe Address",
-    submitButtonText: "Next",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.title"),
+    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.description"),
+    placeholder: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.placeholder"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.submitButtonText"),
   },
   currency: {
-    title: "Please enter the Amount in Euro",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.title"),
     description: "",
-    submitButtonText: "Submit",
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.submitButtonText"),
   },
   message: {
-    title: "Transfer Message",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.title"),
     description: "",
-    submitButtonText: "Submit",
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.submitButtonText"),
   },
   confirm: {
-    title: "You are about to transfer",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.title"),
     description: "",
-    submitButtonText: "Send Money",
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.submitButtonText"),
   },
   success: {
-    title: "Transfer successful",
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
     description: "",
-    submitButtonText: "Close",
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
   },
 };
 
@@ -194,7 +198,7 @@ const processDefinition = (processId: string) =>
         params: {
           view: editorContent.recipient,
           placeholder: editorContent.recipient.placeholder,
-          submitButtonText: "Check send limit",
+          submitButtonText: window.i18n("dapps.o-banking.processes.transfer.recipientAdress.submitButtonText"),
         },
         navigation: {
           next: "#tokens",
@@ -221,11 +225,11 @@ const processDefinition = (processId: string) =>
         dataSchema: yup.object().shape({
           amount: yup
             .number()
-            .min(0.1, "Please enter at least 0.1")
-            .typeError("Please enter a valid Number.")
-            .required("Please enter a valid amount.")
-            .positive("Please enter a valid amount."),
-          currency: yup.string().required("Please select a valid currency."),
+            .min(0.1, window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.min"))
+            .typeError(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.typeError"))
+            .required(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.required"))
+            .positive(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.positiv")),
+          currency: yup.string().required(window.i18n("dapps.o-banking.processes.transfer.tokens.currency")),
         }),
         navigation: {
           next: "#findMaxFlow",
@@ -237,14 +241,14 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Calculating the maximum transfer amount ..`,
+            message: window.i18n("dapps.o-banking.processes.transfer.findMaxFlow.entry.message"),
           });
         },
         invoke: {
           id: "findMaxFlow",
           src: async (context) => {
             if (!context.data.recipientAddress) {
-              throw new Error(`No recipient address on context`);
+              throw new Error(window.i18n("dapps.o-banking.processes.transfer.findMaxFlow.invoke"));
             }
             context.data.maxFlows = {};
             console.log("CONEXT DATA", context.data);
@@ -262,14 +266,30 @@ const processDefinition = (processId: string) =>
                 .toString();
 
               const flow = await findDirectTransfers(
-                  context.data.safeAddress,
-                  context.data.recipientAddress,
-                  circlesValueInWei
+                context.data.safeAddress,
+                context.data.recipientAddress,
+                circlesValueInWei
               );
 
+              // TODO: Re-implement pathfinder when available again
+              /*
+
+              const flow = await requestPathToRecipient({
+                data: {
+                  recipientAddress: context.data.recipientAddress,
+                  amount:
+                    context.data.tokens.currency == "crc"
+                      ? convertTimeCirclesToCircles(
+                          Number.parseFloat(context.data.tokens.amount),
+                          null
+                        ).toString()
+                      : context.data.tokens.amount,
+                  safeAddress: context.data.safeAddress,
+                },
+              });
+ */
               context.data.maxFlows["crc"] = flow.flow;
               context.data.transitivePath = flow;
-
               resolve();
             });
             context.data.maxFlows["xdai"] =
@@ -290,21 +310,34 @@ const processDefinition = (processId: string) =>
                   context.data.tokens.currency.toLowerCase()
                 ]
               );
+              const amountInWei = new BN(
+                RpcGateway.get().utils.toWei(
+                  convertTimeCirclesToCircles(
+                    Number.parseFloat(context.data.tokens.amount),
+                    null
+                  ).toString(),
+                  "ether"
+                )
+              );
 
               const amount =
-                  context.data.tokens.currency == "crc"
-                      ? convertTimeCirclesToCircles(
-                          Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
-                          null
-                      ).toString()
-                      : context.data.tokens.amount;
+                context.data.tokens.currency == "crc"
+                  ? convertTimeCirclesToCircles(
+                      Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
+                      null
+                    ).toString()
+                  : context.data.tokens.amount;
 
-              const circlesValueInWei = new BN(RpcGateway.get()
+              const circlesValueInWei = new BN(
+                RpcGateway.get()
                   .utils.toWei(amount.toString() ?? "0", "ether")
-                  .toString());
+                  .toString()
+              );
 
               if (maxFlowInWei.lt(circlesValueInWei)) {
-                console.log(`The max flow is smaller than the entered value (${circlesValueInWei}). Max flow: ${maxFlowInWei}`);
+                console.log(
+                  `The max flow is smaller than the entered value (${circlesValueInWei}). Max flow: ${maxFlowInWei}`
+                );
               }
 
               return maxFlowInWei.gte(circlesValueInWei);
@@ -321,17 +354,25 @@ const processDefinition = (processId: string) =>
               });
               unsubscribeMe();
 
-              const maxFlowInWei = new BN(
-                  context.data.maxFlows[
-                      context.data.tokens.currency.toLowerCase()
-                      ]
+              const formattedAmount = parseFloat(
+                displayCirclesAmount(
+                  context.data.tokens.amount.toString(),
+                  null,
+                  displayTimeCircles
+                ).toString()
               );
-
-              const maxFlowInTc = convertCirclesToTimeCircles(parseFloat(RpcGateway.get().utils.fromWei(maxFlowInWei, "ether")) / 10.1, null)
-
+              const formattedMax = parseFloat(
+                RpcGateway.get().utils.fromWei(
+                  context.data.maxFlows[
+                    context.data.tokens.currency.toLowerCase()
+                  ].toString(),
+                  "ether"
+                )
+              ).toFixed(2);
               context.messages[
                 "tokens"
-              ] = `The chosen amount exceeds the maximum transferable amount of (${maxFlowInTc.toFixed(2)}) €.`;
+              ] = window.i18n("dapps.o-banking.processes.transfer.checkAmount.contextMessages", { values: { formattedMax: formattedMax}});
+
             },
             target: "#tokens",
           },

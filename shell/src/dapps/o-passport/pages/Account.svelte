@@ -33,12 +33,8 @@ $: {
     params="{{
       edgeless: false,
       imageProfile: $me,
-      title: $me
-        ? $me.lastName
-          ? `${$me.firstName} ${$me.lastName}`
-          : $me.firstName
-        : '',
-      subTitle: 'Main Account holder',
+      title: $me.displayName,
+      subTitle: `${window.i18n("dapps.o-passport.pages.account.subTitle")}`,
       truncateMain: true,
     }}">
     <div slot="itemCardEnd">

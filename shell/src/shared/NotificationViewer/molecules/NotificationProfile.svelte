@@ -2,6 +2,7 @@
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import { Profile, Organisation } from "../../api/data/types";
 import { isMobile } from "../../functions/isMobile";
+import { _ } from "svelte-i18n";
 
 export let profile: Profile | Organisation;
 export let targetCirclesAddress: string;
@@ -9,9 +10,7 @@ export let showPassion: boolean = true;
 let displayName: string;
 
 if (profile.__typename == "Profile") {
-  displayName = `${profile.firstName} ${
-    profile.lastName ? profile.lastName : ""
-  }`;
+  displayName = profile.displayName;
 } else {
   displayName = profile.name ? profile.name : "";
 }
@@ -41,7 +40,7 @@ if (profile.__typename == "Profile") {
 
   {#if showPassion && profile.dream}
     <div>
-      <div class="text-left text-2xs text-dark-lightest">Passion</div>
+      <div class="text-left text-2xs text-dark-lightest">{$_("shared.molecules.notificationViewer.molecules.notificationProfile.passion")}</div>
       <div class="text-lg">
         {profile.dream}
       </div>

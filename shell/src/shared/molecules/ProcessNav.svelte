@@ -6,7 +6,7 @@
 
   const close = {
     data: {
-      label: "Close",
+      label: window.i18n("shared.molecules.processNav.close"),
     },
     design: {
       icon: faTimes,

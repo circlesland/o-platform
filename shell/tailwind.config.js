@@ -24,6 +24,13 @@ module.exports = {
 
   theme: {
     extend: {
+      fontSize: {
+        "4rem": "4rem",
+        "5rem": "5rem",
+        "10xl": "9rem",
+        "11xl": "10rem",
+        "12xl": "14rem",
+      },
       borderColor: ["dark-lightest"],
       typography: {
         "text-base": {
@@ -120,6 +127,8 @@ module.exports = {
         primary: ["Poppins", "sans"],
         enso: ["Enso", "sans"],
         heading: ["Ostrich Sans Heavy", "sans"],
+        omedium: ["Ostrich Sans Medium", "sans"],
+        olight: ["Ostrich Sans Light", "sans"],
         sans: ["Poppins", "sans"],
       },
     },

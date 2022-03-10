@@ -1,155 +1,120 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import {
-  EventType,
-  Profile,
-  ProfileEvent,
-  SendMessageDocument,
-  SortOrder,
-  StreamDocument,
-  StreamQueryVariables,
-} from "../../../shared/api/data/types";
-import { me } from "../../../shared/stores/me";
-import { push } from "svelte-spa-router";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import { contacts } from "../../../shared/stores/contacts";
+  import {onMount} from "svelte";
+  import {
+    ChatMessage,
+    EventType,
+    Profile,
+    ProfileEvent,
+    SendMessageDocument
+  } from "../../../shared/api/data/types";
+  import {me} from "../../../shared/stores/me";
+  import {push} from "svelte-spa-router";
+  import {contacts} from "../../../shared/stores/contacts";
+  import NotificationCard from "../atoms/NotificationCard.svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import {isMobile} from "../../../shared/functions/isMobile";
+  import {_} from "svelte-i18n";
+  import EventList from "../../../shared/molecules/Lists/EventList.svelte";
+  import {myChats} from "../../../shared/stores/myChat";
+  import {Generate} from "@o-platform/o-utils/dist/generate";
+  // import * as ECIES from "bitcore-ecies";
 
-import NotificationCard from "../atoms/NotificationCard.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import { ApiClient } from "../../../shared/apiConnection";
-import { isMobile } from "../../../shared/functions/isMobile";
+  export let id: string;
+  let contactProfile: Profile | null;
 
-export let id: string;
-
-let error: string | undefined = undefined;
-let chatHistory: ProfileEvent[] = [];
-
-let contactProfile: Profile | null;
-let shellEventSubscription: Subscription;
-
-async function reload() {
-  contactProfile = (await contacts.findBySafeAddress(id))
-    .contactAddress_Profile;
-  chatHistory = await ApiClient.query<ProfileEvent[], StreamQueryVariables>(
-    StreamDocument,
-    {
-      safeAddress: $me.circlesAddress,
-      pagination: {
-        order: SortOrder.Asc,
-        limit: 1000000,
-        continueAt: new Date(0).toJSON(),
-      },
-      filter: {
-        with: id,
-      },
-      types: [
-        EventType.CrcHubTransfer,
-        //EventType.CrcMinting,
-        EventType.CrcTrust,
-        EventType.ChatMessage,
-        EventType.Erc20Transfer,
-        //EventType.CrcSignup,
-        //EventType.CrcTokenTransfer,
-        //EventType.EthTransfer,
-        //EventType.GnosisSafeEthTransfer,
-        //EventType.InvitationCreated,
-        EventType.InvitationRedeemed,
-        //EventType.MembershipOffer,
-        //EventType.MembershipAccepted,
-        //EventType.MembershipRejected
-      ],
-    }
-  );
-
-  window.o.publishEvent(<any>{
-    type: "shell.scrollToBottom",
-    scrollNow: false,
+  onMount(async () => {
+    contactProfile = (await contacts.findBySafeAddress(id)).contactAddress_Profile;
   });
-}
 
-onMount(async () => {
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (event.type != "new_message" && event.type != "blockchain_event") {
-        return;
+  let inputField: any;
+  let chatmessage: string;
+
+  const sendMessage = async (text) => {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const randomId = Generate.randomHexString();
+
+    const tempEvent = <ProfileEvent>{
+      _isTemp: true,
+      contact_address: contactProfile.circlesAddress,
+      contact_address_profile: contactProfile,
+      timestamp: new Date(),
+      type: "ChatMessage",
+      direction: "out",
+      safe_address: $me.circlesAddress,
+      safe_address_profile: $me,
+      payload: <ChatMessage>{
+        __typename: "ChatMessage",
+        id: randomId,
+        from: $me.circlesAddress,
+        to: contactProfile.circlesAddress,
+        text: text,
+        from_profile: $me,
+        to_profile: contactProfile
       }
-      await reload();
+    };
+    myChats.with(contactProfile.circlesAddress).addToCache(tempEvent);
+    myChats.with(contactProfile.circlesAddress).refresh(true);
+
+    // If we're acting as organisation then we need to specify a "fromSafeAddress"
+    try {
+      const result = await apiClient.mutate({
+        mutation: SendMessageDocument,
+        variables: {
+          fromSafeAddress: $me.circlesAddress,
+          toSafeAddress: id,
+          content: text,
+        },
+      });
+
+      if (result.data?.sendMessage?.success) {
+        myChats.with(contactProfile.circlesAddress).addToCache({
+          ...result.data.sendMessage.event,
+          payload: {
+            ...result.data.sendMessage.event.payload,
+            id: randomId
+          }
+        });
+        myChats.with(contactProfile.circlesAddress).refresh();
+      } else {
+        throw new Error("Couldn't send the message");
+      }
+      await contacts.findBySafeAddress(contactProfile.circlesAddress, true);
+    } catch (e) {
+      myChats.with(contactProfile.circlesAddress).addToCache(<any>{
+        _isError: true,
+        ...tempEvent
+      });
+      myChats.with(contactProfile.circlesAddress).refresh(true);
     }
-  );
-  await reload();
+  };
 
-  return () => shellEventSubscription.unsubscribe();
-});
-
-let inputField: any;
-let chatmessage: string;
-
-const sendMessage = async (text) => {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-
-  // If we're acting as organisation then we need to specify a "fromSafeAddress"
-  const result = await apiClient.mutate({
-    mutation: SendMessageDocument,
-    variables: {
-      fromSafeAddress: $me.circlesAddress,
-      toSafeAddress: id,
-      content: text,
-    },
-  });
-
-  if (result.data?.sendMessage?.success) {
-    chatHistory = [...chatHistory, result.data.sendMessage.event];
+  function init(el) {
+    el.focus();
   }
 
-  window.o.publishEvent(<any>{
-    type: "shell.scrollToBottom",
-    scrollNow: true,
-  });
-  window.o.publishEvent(<any>{
-    type: "shell.refresh",
-    dapp: "chat:1",
-    data: null,
-  });
-};
+  async function submitChat() {
+    if (!chatmessage) {
+      return;
+    }
 
-function init(el) {
-  el.focus();
-}
+    sendMessage(chatmessage);
 
-onMount(() => {
-  // TEMPORARY FIX UNTIL THE LIST IS WORKING BETTER
-  setTimeout(function () {
-    window.o.publishEvent(<any>{
-      type: "shell.scrollToBottom",
-      scrollNow: true,
-    });
-  }, 2500);
-});
-
-async function submitChat() {
-  if (!chatmessage) {
-    return;
+    chatmessage = null;
+    // let textarea = document.querySelector("textarea");
+    // textarea.style.cssText = "height:auto; padding:0 padding-top: 2px;";
   }
 
-  sendMessage(chatmessage);
-
-  chatmessage = null;
-  // let textarea = document.querySelector("textarea");
-  // textarea.style.cssText = "height:auto; padding:0 padding-top: 2px;";
-}
-
-function onkeydown(e: KeyboardEvent) {
-  if (e.key == "Enter" && !e.shiftKey) {
-    submitChat();
+  function onkeydown(e: KeyboardEvent) {
+    if (e.key == "Enter" && !e.shiftKey) {
+      submitChat();
+    }
   }
-}
 
-function goToProfile(e, path?: string) {
-  if (!path) return;
-  e.stopPropagation();
-  push(`#/contacts/profile/${path}`);
-}
+  function goToProfile(e, path?: string) {
+    if (!path) return;
+    e.stopPropagation();
+    push(`#/contacts/profile/${path}`);
+  }
 </script>
 
 <div id="chatlist">
@@ -169,8 +134,7 @@ function goToProfile(e, path?: string) {
           class:text-3xl="{!isMobile() ||
             !contactProfile.firstName.startsWith('0x')}"
           class:text-xs="{contactProfile.firstName.startsWith('0x')}">
-          {contactProfile.firstName}
-          {contactProfile.lastName ? contactProfile.lastName : ""}
+          {contactProfile.displayName}
 
           <!-- class:text-3xl="{!isMobile() &&
             !contactProfile.firstName.startsWith('0x')}"
@@ -179,11 +143,13 @@ function goToProfile(e, path?: string) {
 
         <div class="pb-2 text-xs">
           {#if contactProfile.youTrust > 0 && contactProfile.trustsYou > 0}
-            Mutual trust
+            {$_("dapps.o-contacts.pages.chatDetail.mutualTrust")}
           {:else if contactProfile.youTrust > 0 && !contactProfile.trustsYou}
-            You trust {contactProfile.contactAddressProfile.firstName}
+            {$_("dapps.o-contacts.pages.chatDetail.youTrust")}
+            {contactProfile.contactAddressProfile.firstName}
           {:else if contactProfile.trustsYou > 0}
-            {contactProfile.contactAddressProfile.firstName} trusts you
+            {contactProfile.contactAddressProfile.firstName}
+            {$_("dapps.o-contacts.pages.chatDetail.trustsYou")}
           {/if}
         </div>
       {/if}
@@ -192,12 +158,22 @@ function goToProfile(e, path?: string) {
 
   <!-- TODO: Add ChatNotificationCard type - check how many we need! -->
   <div class="flex flex-col pb-0 space-y-4 sm:space-y-8">
-    {#each chatHistory as event}
-      <NotificationCard event="{event}" />
-    {/each}
-    <div id="endOfList"></div>
+    {#if contactProfile}
+    <EventList
+            reverse={true}
+            store={myChats.with(contactProfile.circlesAddress)}
+            views="{{
+              [EventType.CrcHubTransfer]: NotificationCard,
+              [EventType.CrcTrust]: NotificationCard,
+              [EventType.ChatMessage]: NotificationCard,
+              [EventType.Erc20Transfer]: NotificationCard,
+              [EventType.Purchased]: NotificationCard,
+              [EventType.SaleEvent]: NotificationCard,
+              [EventType.InvitationRedeemed]: NotificationCard
+    }}" />
+    {/if}
   </div>
-  {#if contactProfile && contactProfile.type != null}
+  {#if contactProfile && contactProfile.id > -1}
     <div
       class:hidden="{!contactProfile || !contactProfile.id}"
       class="sticky bottom-0 flex flex-row order-1 w-full p-2 pb-0 space-x-4 bg-white sm:p-6 sm:pt-2 rounded-b-xl">
@@ -212,7 +188,7 @@ function goToProfile(e, path?: string) {
           autocomplete="off"
           autocorrect="off"
           spellcheck="false"
-          placeholder="Your Message"
+          placeholder="{$_('dapps.o-contacts.pages.chatDetail.placeholder')}"
           class="order-1 w-full input input-bordered" />
         <!-- <textarea
         on:keydown="{onkeydown}"

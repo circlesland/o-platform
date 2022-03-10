@@ -1,14 +1,13 @@
 <script lang="ts">
 import DetailActionBar from "../../../../shared/molecules/DetailActionBar.svelte";
 import Icons from "../../../../shared/molecules/Icons.svelte";
-import {
-  Erc20Transfer,
-  ProfileEvent,
-} from "../../../../shared/api/data/types";
+import { Erc20Transfer, ProfileEvent } from "../../../../shared/api/data/types";
 import { displayCirclesAmount } from "../../../../shared/functions/displayCirclesAmount";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";
 import { banking } from "../../../o-banking.manifest";
+
+import { _ } from "svelte-i18n";
 
 export let event: ProfileEvent;
 
@@ -25,7 +24,7 @@ values = getValues();
 onMount(async () => {
   values.actions = await banking.jumplist.items(
     {
-      id: event.contact_address
+      id: event.contact_address,
     },
     null
   );
@@ -38,7 +37,7 @@ function getValues(): {
   icon: string;
   actions: JumplistItem[];
 } {
-  let icon = "sendmoney";
+  let icon = `${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.icon")}`;
   let title = "";
   let titleClass = "";
   let text = "";
@@ -49,19 +48,19 @@ function getValues(): {
   if (event.direction == "in") {
     title = `${
       event.contact_address_profile.firstName
-    } sent you ${displayCirclesAmount(
+    } ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifIn.title.sentYou")} ${displayCirclesAmount(
       transfer.value,
       null,
       true,
       false
-    )} tokens`;
+    )} ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifIn.title.tokens")}`;
   } else {
-    title = ` You sent ${displayCirclesAmount(
+    title = ` ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifOut.youSent")} ${displayCirclesAmount(
       transfer.value,
       null,
       true,
       false
-    )} tokens to ${event.contact_address_profile.firstName}`;
+    )} ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifOut.tokensTo")} ${event.contact_address_profile.firstName}`;
   }
 
   return {
@@ -81,7 +80,4 @@ function getValues(): {
 </div>
 <div class="mt-2">
   {values.text}
-</div>
-<div class="mt-4">
-  <DetailActionBar actions="{values.actions}" />
 </div>

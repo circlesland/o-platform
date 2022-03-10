@@ -1,11 +1,13 @@
 <script lang="ts">
 import UserImage from "src/shared/atoms/UserImage.svelte";
 
-import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";
 import Account from "../../o-passport/pages/Account.svelte";
+import { _ } from "svelte-i18n";
+import QrCode from "svelte-qrcode";
 
 export let context: any;
 let profile: Profile | Organisation;
@@ -48,7 +50,7 @@ function orderItems(items) {
 
 {#if context.data && profile && groupedItems}
   <div class="mt-2">
-    <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
+    <!-- <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
       <div
         class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left ">
         <div class="inline-flex">
@@ -65,7 +67,7 @@ function orderItems(items) {
             : ""}
         </div>
       </div>
-    </div>
+    </div> -->
     {#each groupedItems as groupPurchase, i}
       <div class="flex items-center justify-between w-full pb-6 mb-6 border-b">
         <div class="flex items-center w-full">
@@ -108,31 +110,41 @@ function orderItems(items) {
       </div>
     {/each}
 
-    <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
+    <div class="flex flex-col w-full mb-6 space-y-4 text-left ">
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
         <h1 class="p-2 text-white uppercase bg-dark-dark">
-          Important Information<br />
-          <div class="text-sm">Your Pick-Up Code</div>
+          <div class="text-sm">
+            {$_("dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode")}
+          </div>
         </h1>
       </div>
 
       <div>
-        After your transaction has been completely verified
-        <span class="text-sm">(which may take a couple minutes)</span>, you will
-        get a
-        <span class="text-primary-dark">PickUp Code</span>, which you will need
-        to
-        <span class="text-primary-dark">show to the seller</span> when you pick up
-        your Order at the Store.
-      </div>
-      <div class="pt-2 text-sm">
-        To see your <span class="text-primary-dark">PickUp Code</span> at any
-        time after the purchase, go to
-        <a href="#/marketplace/my-purchases" alt="My Purchases" class="btn-link"
-          >My purchases</a> and click on the Purchase.
+        {$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1")}
       </div>
 
-      <div class="pt-2 text-sm">Pick-Up Location for this Order is:</div>
+      <div class="w-full mt-6 text-center">
+        <div class="container">
+          <center>
+            <QrCode value="{context.params.pickupCode}" color="#081B4A" />
+          </center>
+        </div>
+      </div>
+      <div class="text-sm">
+        {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span
+          class="text-primary-dark"
+          >{$_(
+            "dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2"
+          )}</span
+        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
+        <a href="#/marketplace/my-purchases" alt="My Purchases" class="btn-link"
+          >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}</a
+        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
+      </div>
+
+      <div class="pt-2 text-sm">
+        {$_("dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation")}
+      </div>
       <div class="pt-2 text-sm">
         <span class="font-bold">Basic Income Lab GmbH</span><br />
         Reifenstuelstrasse 6<br />

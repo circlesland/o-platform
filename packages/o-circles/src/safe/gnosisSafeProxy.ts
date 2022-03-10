@@ -105,11 +105,11 @@ export class GnosisSafeProxy extends Web3Contract {
     return await this.execTransaction(privateKey, safeTransaction);
   }
 
-  async execTransaction(
-    privateKey: string,
-    safeTransaction: SafeTransaction,
-    dontEstimate?: boolean
-  ): Promise<TransactionReceipt> {
+  async execTransactionTxData(
+      privateKey: string,
+      safeTransaction: SafeTransaction,
+      dontEstimate?: boolean
+  ): Promise<string> {
     this.validateSafeTransaction(safeTransaction);
 
     const baseGas = new BN(this.web3.utils.toWei("1000000", "wei"));
@@ -129,58 +129,67 @@ export class GnosisSafeProxy extends Web3Contract {
     console.log("executableTransaction:", executableTransaction);
 
     const transactionHash = await this.getTransactionHash(
-      executableTransaction
+        executableTransaction
     );
     console.log("Transaction hash to sign: ", transactionHash);
 
     const signatures = GnosisSafeProxy.signTransactionHash(
-      this.web3,
-      privateKey,
-      transactionHash
+        this.web3,
+        privateKey,
+        transactionHash
     );
 
     const gasPrice = await RpcGateway.getGasPrice();
     console.log("Gas price:", gasPrice.toString());
 
     const gasEstimationResult = await this.contract.methods
-      .execTransaction(
-        executableTransaction.to,
-        executableTransaction.value,
-        executableTransaction.data,
-        executableTransaction.operation,
-        executableTransaction.safeTxGas,
-        executableTransaction.baseGas,
-        new BN("0"),
-        executableTransaction.gasToken,
-        executableTransaction.refundReceiver,
-        signatures.signature
-      )
-      .estimateGas();
+        .execTransaction(
+            executableTransaction.to,
+            executableTransaction.value,
+            executableTransaction.data,
+            executableTransaction.operation,
+            executableTransaction.safeTxGas,
+            executableTransaction.baseGas,
+            new BN("0"),
+            executableTransaction.gasToken,
+            executableTransaction.refundReceiver,
+            signatures.signature
+        )
+        .estimateGas();
     // console.log("EstimateGas:", gasPrice.toString())
 
     const gasEstimate = new BN(gasEstimationResult)
-      .add(baseGas)
+        .add(baseGas)
 
     console.log("gasEstimate:", gasEstimate.toNumber());
 
     const execTransactionData = await this.toAbiMessage(
-      executableTransaction,
-      signatures.signature
+        executableTransaction,
+        signatures.signature
     );
 
     console.log("execTransactionData:", execTransactionData);
 
     const acc = RpcGateway.get().eth.accounts.privateKeyToAccount(privateKey);
     const signedTransactionData = await Web3Contract.signRawTransaction(
-      acc.address,
-      privateKey,
-      this.address,
-      execTransactionData,
-      gasEstimate,
-      new BN("0")
+        acc.address,
+        privateKey,
+        this.address,
+        execTransactionData,
+        gasEstimate,
+        new BN("0")
     );
 
     console.log("signedRawTransaction:", signedTransactionData);
+    return signedTransactionData;
+  }
+
+  async execTransaction(
+    privateKey: string,
+    safeTransaction: SafeTransaction,
+    dontEstimate?: boolean
+  ): Promise<TransactionReceipt> {
+    const signedTransactionData = await this.execTransactionTxData(privateKey, safeTransaction, dontEstimate);
     return Web3Contract.sendSignedRawTransaction(signedTransactionData);
   }
 

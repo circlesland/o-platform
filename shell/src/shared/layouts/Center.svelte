@@ -1,23 +1,71 @@
+<script context="module" lang="ts">
+  let scrollContent;
+  export function scrollToBottom() {
+    
+    scrollToPosition(1000000000);
+    poppedScrollPosition = false;
+  }
+  export function scrollToTop() {
+    
+
+    scrollToPosition(0);
+    poppedScrollPosition = false;
+  }
+  export function scrollToPosition(position:number) {
+    
+    if (!scrollContent) {
+      return;
+    }
+    const scrollElement = scrollContent.getScrollElement();
+    scrollElement.scrollTo(0, position);
+  }
+
+  let scrollPositionStack:number[] = [];
+  export let poppedScrollPosition = false;
+
+  export function scrollPositionStackPopulated() : boolean {
+    
+    return scrollPositionStack.length > 0;
+  }
+
+  export function pushScrollPosition() {
+    poppedScrollPosition = false;
+    
+    if (scrollContent) {
+      const pos = scrollContent.getScrollElement().scrollTop;
+      scrollPositionStack.push(pos);
+      
+    }
+  }
+  export function popScrollPosition() {
+    poppedScrollPosition = true;
+    
+    if (scrollContent) {
+      const pos = scrollPositionStack.pop();
+      scrollToPosition(pos);
+      
+    }
+  }
+  export function clearScrollPosition() {
+    scrollPositionStack = [];
+    poppedScrollPosition = false;
+    
+  }
+
+</script>
 <script lang="ts">
 import { createEventDispatcher, getContext } from "svelte";
 import { clickOutside } from "./../functions/clickOutside";
 import SvelteSimplebar from "./../molecules/SimpleBar/SvelteSimpleBar.svelte";
 
 export let blur: boolean = false;
-
-let scrollContent;
-
 const eventDispatcher = createEventDispatcher();
 
 const sub = window.o.events.subscribe((event) => {
   if (event.type == "shell.scrollToBottom") {
-    gotoBottom("modalScrollable");
+    scrollToBottom();
   }
 });
-
-function gotoBottom(id) {
-  scrollContent.getScrollElement().scrollTo(0, 100000);
-}
 
 const initBar = (bar) => {
   scrollContent = bar;

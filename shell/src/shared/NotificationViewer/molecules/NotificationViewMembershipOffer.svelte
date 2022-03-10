@@ -3,6 +3,8 @@ import NotificationProfile from "./NotificationProfile.svelte";
 
 import { MembershipOffer, ProfileEvent } from "../../api/data/types";
 
+import { _ } from "svelte-i18n";
+
 export let event: ProfileEvent;
 
 let payload: MembershipOffer = <MembershipOffer>event.payload;
@@ -13,7 +15,7 @@ let payload: MembershipOffer = <MembershipOffer>event.payload;
     <NotificationProfile profile="{event.contact_address_profile}" />
   </div>
   <div class="self-center pb-2 text-2xl text-center font-heading">
-    invited you to
+    {$_("shared.molecules.notificationViewer.molecules.notificationViewMembershipOffer.invitedYouTo")}
   </div>
 
   <NotificationProfile profile="{payload.organisation_profile}" />

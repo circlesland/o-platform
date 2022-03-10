@@ -20,7 +20,7 @@ export let layout: RuntimeLayout;
 export let navigation: NavigationManifest;
 
 $: {
-  console.log("LayoutChanged:", layout);
+  // console.log("LayoutChanged:", layout);
   if (
     (layout.dialogs.center && layout.dialogs.center.isOpen) ||
     ($media.small && layout.dialogs.left && layout.dialogs.left.isOpen)
@@ -191,7 +191,7 @@ function onkeydown(e: KeyboardEvent) {
 main {
   z-index: 9;
 }
-.menu-open main {
+:global(.menu-open main) {
   z-index: 12;
 }
 </style>

@@ -1,28 +1,29 @@
 <script lang="ts">
-import {
-  InvoiceDocument,
-  Profile,
-  Purchase,
-  QueryInvoiceArgs,
-} from "../../../shared/api/data/types";
-import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import { me } from "../../../shared/stores/me";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { push } from "svelte-spa-router";
-import { saveBufferAs } from "../../../shared/saveBufferAs";
-import { ApiClient } from "../../../shared/apiConnection";
+  import {
+    EventType,
+    InvoiceDocument,
+    Profile,
+    Purchase,
+    Purchased,
+    QueryInvoiceArgs,
+  } from "../../../shared/api/data/types";
+  import {onMount} from "svelte";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
+  import {me} from "../../../shared/stores/me";
 
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import Date from "../../../shared/atoms/Date.svelte";
-import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import { purchases } from "../../../shared/stores/purchases";
+  import {push} from "svelte-spa-router";
+  import {saveBufferAs} from "../../../shared/saveBufferAs";
+  import {ApiClient} from "../../../shared/apiConnection";
+  import QrCode from "svelte-qrcode";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import Date from "../../../shared/atoms/Date.svelte";
+  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+  import {_} from "svelte-i18n";
+  import {myPurchases} from "../../../shared/stores/myPurchases";
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
-export let id: string;
+
+  export let id: string;
 
 let isLoading: boolean;
 let error: Error;
@@ -41,7 +42,20 @@ async function load() {
     return;
   }
 
-  purchase = await purchases.findById(parseInt(id));
+  const cachedEvent = await myPurchases.findByPrimaryKey(EventType.Purchased, parseInt(id).toString());
+  if (cachedEvent && cachedEvent.type == EventType.Purchased) {
+    purchase = (<Purchased>cachedEvent.payload).purchase;
+    sellerProfile = (<Purchased>cachedEvent.payload).seller_profile;
+  }
+  if (!purchase) {
+    const loadedEvent = await myPurchases.findSingleItemFallback([EventType.Purchased], parseInt(id).toString());
+    if (loadedEvent && loadedEvent.type == EventType.Purchased) {
+      purchase = (<Purchased>loadedEvent.payload).purchase;
+      sellerProfile = (<Purchased>loadedEvent.payload).seller_profile;
+    }
+  }
+
+  groupedItems = purchase ? orderItems(purchase.lines) : {};
   isLoading = false;
 }
 
@@ -49,9 +63,9 @@ function orderItems(items) {
   const orderedCart = {};
   items.forEach((item) => {
     console.log("ITI: ", item);
-    orderedCart[item.id] = {
+    orderedCart[item.offer.id] = {
       item: item,
-      qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
+      qty: orderedCart[item.offer.id] ? orderedCart[item.offer.id].qty + 1 : 1,
     };
   });
 
@@ -70,14 +84,10 @@ function totalPrice(items) {
 
 onMount(async () => {
   await load();
-
-  groupedItems = purchase ? orderItems(purchase.lines) : {};
-  sellerProfile = purchase?.lines[0].offer.createdByProfile;
-
   actions = [
     {
       icon: "chat",
-      title: "Chat",
+      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.chat"),
       action: () => push(`#/contacts/chat/${sellerProfile.circlesAddress}`),
     },
   ];
@@ -85,38 +95,45 @@ onMount(async () => {
   if (purchase.invoices && purchase.invoices.length) {
     const pickUpAction = {
       icon: "transactions",
-      title: "I picked up the order",
+      title: window.i18n(
+        "dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp"
+      ),
       action: async () => {
-        const action = actions.find((o) => o.title == "I picked up the order");
+        const action = actions.find(
+          (o) =>
+            o.title ==
+            window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp")
+        );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
-        await purchases.completePurchase(purchase.invoices[0].id);
+        await myPurchases.completePurchase(purchase.invoices[0].id);
         actions.push(unPickUpAction);
       },
     };
     const unPickUpAction = {
       icon: "transactions",
-      title: "I haven't picked up the order yet",
+      title: window.i18n(
+        "dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"
+      ),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == "I haven't picked up the order yet"
+          (o) =>
+            o.title ==
+            window.i18n(
+              "dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"
+            )
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
-        await purchases.revokeCompletionStatus(purchase.invoices[0].id);
+        await myPurchases.revokeCompletionStatus(purchase.invoices[0].id);
         actions.push(pickUpAction);
       },
     };
-    if (!purchase.invoices[0].buyerSignature) {
-      actions.push(pickUpAction);
-    } else if (
-      purchase.invoices[0].buyerSignature &&
-      !purchase.invoices[0].sellerSignature
-    ) {
-      actions.push(unPickUpAction);
-    }
+
     actions.push(
       {
         icon: "transactions",
-        title: "Transaction",
+        title: window.i18n(
+          "dapps.o-marketplace.pages.myPurchaseDetail.transaction"
+        ),
         action: () =>
           push(
             `#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`
@@ -124,7 +141,9 @@ onMount(async () => {
       },
       {
         icon: "document",
-        title: "Download Invoice",
+        title: window.i18n(
+          "dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"
+        ),
         action: async () => {
           for (let invoice of purchase.invoices) {
             const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
@@ -161,12 +180,15 @@ onMount(async () => {
 <div class="p-5">
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
-      <h1 class="text-3xl uppercase font-heading">Purchase Details</h1>
+      <h1 class="text-3xl uppercase font-heading">
+        {$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDetails")}
+      </h1>
     </div>
     <div class="w-full text-center">
       {#if purchase}
         <span class="text-dark-lightest"
-          >Purchase Date: <Date time="{purchase.createdAt}" /></span>
+          >{$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDate")}<Date
+            time="{purchase.createdAt}" /></span>
       {/if}
     </div>
   </header>
@@ -174,11 +196,13 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>Loading purchases...</div>
+          <div>
+            {$_("dapps.o-marketplace.pages.myPurchaseDetail.loadingPurchases")}
+          </div>
         </div>
       </div>
     </section>
-  {:else if groupedItems}
+  {:else if groupedItems && sellerProfile}
     <!-- <CartItems cartContents="{purchase.lines}" editable="{false}" /> -->
     <!-- <pre>{JSON.stringify(purchase, null, 2)}</pre> -->
 
@@ -248,10 +272,9 @@ onMount(async () => {
       <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
         <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
           <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
-            Your Pick-Up Code
+            {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupCode")}
             <div class="text-sm text-center">
-              show this code to the seller when you pick up your Order at the
-              Store.
+              {$_("dapps.o-marketplace.pages.myPurchaseDetail.showThisCode")}
             </div>
           </h1>
         </div>
@@ -259,16 +282,20 @@ onMount(async () => {
         <div class="w-full text-center">
           {#if !invoice.pickupCode}
             <h1 class="text-3xl uppercase font-heading">
-              No pickup code yet ..
+              {$_("dapps.o-marketplace.pages.myPurchaseDetail.noCode")}
             </h1>
           {:else}
-            <h1 class="text-6xl uppercase font-heading">
-              {invoice.pickupCode}
-            </h1>
+            <div class="container">
+              <center>
+                <QrCode value="{invoice.pickupCode}" color="#081B4A" />
+              </center>
+            </div>
           {/if}
         </div>
 
-        <div class="pt-2 text-sm">Pick-Up Location for this Order is:</div>
+        <div class="pt-2 text-sm">
+          {$_("dapps.o-marketplace.pages.myPurchaseDetail.location")}
+        </div>
         <div class="pt-2 text-sm">
           <span class="font-bold">Basic Income Lab GmbH</span><br />
           Reifenstuelstrasse 6<br />

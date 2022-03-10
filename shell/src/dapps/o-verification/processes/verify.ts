@@ -29,13 +29,13 @@ const processDefinition = (processId: string) =>
         onlyWhenDirty: false,
         params: {
           view: {
-            title: "Select the person you want to add",
+            title: window.i18n("dapps.o-verification.processes.verify.title"),
             description: "",
-            placeholder: "Select",
-            submitButtonText: "Add",
+            placeholder: window.i18n("dapps.o-verification.processes.verify.placeholder"),
+            submitButtonText: window.i18n("dapps.o-verification.processes.verify.submitButtonText"),
           },
-          placeholder: "Select",
-          submitButtonText: "Add",
+          placeholder: window.i18n("dapps.o-verification.processes.verify.placeholder"),
+          submitButtonText: window.i18n("dapps.o-verification.processes.verify.submitButtontext"),
         },
         navigation: {
           next: "#addMember",

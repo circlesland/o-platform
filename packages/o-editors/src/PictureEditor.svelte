@@ -1,42 +1,35 @@
 <script lang="ts">
 import { EditorContext } from "./editorContext";
-import { onMount } from "svelte";
-import Cropper from "../../../shell/src/shared/molecules/Cropper/Cropper.svelte";
+import getCroppedImg from "../../../shell/src/shared/molecules/Cropper/canvasUtils";
 import Dropzone from "svelte-file-dropzone";
 import ProcessNavigation from "./ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { normalizePromptField } from "@o-platform/o-process/dist/states/prompt";
+import Cropper from "svelte-easy-crop";
 
 export let context: EditorContext;
 
-let maxSize: number = 10000000;
 let crop = { x: 0, y: 0 };
-
 let zoom = 1;
-let aspect = 1 / 1;
-let aspectWidth = 337;
-let aspectHeight = 337;
-let cropShape = "round";
-let cropCanvas;
-let resizeCanvas;
-let ctx;
-let image;
-let uploadFile;
-let cropData = {
-  detail: {
-    pixels: { x: 0, y: 0, width: aspectWidth, height: aspectHeight },
-  },
-};
-$: uploadMessage = "";
+let aspect = 1;
 
+let cropShape = "round";
+let pixelCrop, croppedImage;
 let files = {
   accepted: [],
   rejected: [],
 };
+let fileSelected = false;
 
-let imageStore = { value: null, isValid: false };
+$: uploadMessage = "";
+$: image = null;
 
-console.log("CONTEXT: ", context);
+$: {
+  if (context.params.cropShape && context.params.cropShape == "rect") {
+    cropShape = context.params.cropShape;
+    aspect = 4 / 3;
+  }
+}
 
 function handleFilesSelect(e) {
   const { acceptedFiles, fileRejections } = e.detail;
@@ -50,150 +43,60 @@ function handleFilesSelect(e) {
       rejected: [],
     };
   } else {
-    addedfile(files.accepted[0]);
+    let imageFile = files.accepted[0];
+    let reader = new FileReader();
+    image = null;
+    reader.onload = (e) => {
+      image = e.target.result;
+    };
+
+    reader.readAsDataURL(imageFile);
+    fileSelected = true;
   }
 }
 
-onMount(async () => {
-  ctx = cropCanvas.getContext("2d");
-  // cropCanvas = document.createElement("cropCanvas");
-});
+let profilePicture, style;
 
-const addedfile = (file) => {
-  const reader = new FileReader();
-  const field = normalizePromptField(context.field);
-  reader.addEventListener("loadend", (e) => {
-    uploadFile = Buffer.from(<ArrayBuffer>reader.result);
-    context.editorDirtyFlags[field.name] = true;
-  });
+function previewCrop(e) {
+  pixelCrop = e.detail.pixels;
+  const { x, y, width } = e.detail.pixels;
+  const scale = 200 / width;
+  profilePicture.style = `margin: ${-y * scale}px 0 0 ${-x * scale}px; width: ${
+    profilePicture.naturalWidth * scale
+  }px;`;
+}
 
-  reader.readAsArrayBuffer(file);
-  files.accepted = [];
-};
-
-function clearImage() {
+function reset() {
+  files = {
+    accepted: [],
+    rejected: [],
+  };
+  croppedImage = null;
+  image = null;
   const field = normalizePromptField(context.field);
   context.editorDirtyFlags[field.name] = true;
-  imageStore.value = null;
-  uploadFile = null;
-  image = null;
 }
 
-function cropImage(detail) {
-  try {
-    cropData = detail;
-    image = new Image();
-    image.src = `data:image/*;base64,${uploadFile.toString("base64")}`;
-
-    image.onload = function () {
-      const scaleX = image.naturalWidth / image.width;
-      const scaleY = image.naturalHeight / image.height;
-
-      cropCanvas.width = detail.detail.pixels.width;
-      cropCanvas.height = detail.detail.pixels.height;
-
-      // const ctx = cropCanvas.getContext("2d");
-
-      ctx.drawImage(
-        image,
-        detail.detail.pixels.x * scaleX,
-        detail.detail.pixels.y * scaleY,
-        detail.detail.pixels.width * scaleX,
-        detail.detail.pixels.height * scaleY,
-        0,
-        0,
-        detail.detail.pixels.width,
-        detail.detail.pixels.height
-      );
-
-      resizeCanvas.width = aspectWidth;
-      resizeCanvas.height = aspectHeight;
-      const resizeCanvasCtx = resizeCanvas.getContext("2d");
-      resizeCanvasCtx.drawImage(cropCanvas, 0, 0, aspectWidth, aspectHeight);
-
-      resizeCanvas.toBlob(
-        (blob) => {
-          const reader = new FileReader();
-
-          reader.addEventListener("loadend", () => {
-            imageStore.value = Buffer.from(<ArrayBuffer>reader.result);
-            imageStore.isValid = true;
-          });
-
-          reader.readAsArrayBuffer(blob);
-        },
-        "image/jpg",
-        72
-      );
-
-      return true;
-    };
-  } catch (e) {
-    console.error("ERROR ", e);
-  }
-}
-
-$: {
-  if (imageStore && imageStore.value) {
-    imageStore.isValid = true;
-    setTimeout(() => {});
-  }
-  if (context.params.cropShape && context.params.cropShape == "rect") {
-    cropShape = context.params.cropShape;
-    aspect = 4 / 3;
-    aspectWidth = 600;
-    aspectHeight = 450;
-  }
-}
-
-function submit() {
+async function submit() {
+  croppedImage = await getCroppedImg(image, pixelCrop);
   const answer = new Continue();
   answer.data = context.data;
   const field = normalizePromptField(context.field);
   answer.data[field.name] = {
     mimeType: "image/jpeg",
-    bytes: imageStore.value,
+    bytes: croppedImage,
   };
   context.process.sendAnswer(answer);
+  console.log("SOLLTE EIGENTLICH WAS MACHEN...");
 }
 </script>
 
 <div>
   <div class="w-full h-full">
-    <canvas
-      style="display:none"
-      bind:this="{cropCanvas}"
-      id="cropCanvas"
-      width="{aspectWidth}"
-      height="{aspectHeight}"></canvas>
-    <canvas
-      style="display:none"
-      bind:this="{resizeCanvas}"
-      id="resizeCanvas"
-      width="{aspectWidth}"
-      height="{aspectHeight}"></canvas>
-    {#if uploadFile}
-      <div class="relative" style="top: -30px;">
-        <span
-          on:click="{() => clearImage()}"
-          class="float-right cursor-pointer">
-          clear
-        </span>
-      </div>
-      <div class="relative w-full h-96">
-        <Cropper
-          image="{`data:image/png;base64,${uploadFile.toString('base64')}`}"
-          bind:crop
-          bind:zoom
-          bind:aspect
-          bind:cropShape
-          on:cropcomplete="{cropImage}" />
-      </div>
-    {:else}
+    {#if !image}
       <Dropzone
         on:drop="{handleFilesSelect}"
         multiple="{false}"
-        maxSize="{maxSize}"
         accept="image/png,image/jpeg,image/jpg">
         <div class="flex justify-center px-6 pt-5 pb-6 mt-1 ">
           <div class="space-y-1 text-center">
@@ -217,13 +120,54 @@ function submit() {
               </label>
               <p class="pl-1">or drag and drop</p>
             </div>
-            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+            <p class="text-xs text-gray-500">PNG, JPG, GIF</p>
             <p class="text-error">{uploadMessage}</p>
           </div>
         </div>
       </Dropzone>
+    {:else}
+      <div style="position: relative; width: 100%; height: 300px;">
+        <Cropper
+          image="{image}"
+          bind:crop
+          bind:zoom
+          bind:aspect
+          bind:cropShape
+          on:cropcomplete="{previewCrop}" />
+      </div>
+      <div class="" style="mt-2">
+        <span on:click="{() => reset()}" class="float-right cursor-pointer">
+          clear image
+        </span>
+      </div>
+      <!-- we need this, otherwise the zoom doesnt work. though it needs to stay hidden. -->
+      <div class="hidden prof-pic-wrapper">
+        <img
+          bind:this="{profilePicture}"
+          class="prof-pic"
+          src="{image}"
+          alt="Profile example"
+          style="{style}" />
+      </div>
     {/if}
   </div>
-  <br />
-  <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+
+  {#if fileSelected}
+    <br />
+    <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
+  {/if}
 </div>
+
+<style>
+.prof-pic-wrapper {
+  height: 200px;
+  width: 200px;
+  position: relative;
+  border: solid;
+  overflow: hidden;
+}
+
+.prof-pic {
+  position: absolute;
+}
+</style>

@@ -1,9 +1,17 @@
 <script lang="ts">
+  import { _ } from "svelte-i18n";
+
   export let props;
 
   async function login() {
     window.runInitMachine();
   }
+
+  setTimeout(() => {
+    if (sessionStorage.getItem("desiredRoute")) {
+      login();
+    }
+  }, 30);
 
   console.log("PROPS ", props);
 </script>
@@ -16,6 +24,6 @@
       <svelte:component this="{props.component}" {...props.props} />
     </div>
 
-    <div class="-ml-4 text-xl justify-self-start font-heading">SIGN IN NOW</div>
+    <div class="-ml-4 text-xl justify-self-start font-heading">{$_("shared.molecules.nextNav.components.loginPill.signInNow")}</div>
   </div>
 </div>

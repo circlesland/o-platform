@@ -11,7 +11,7 @@ import {
   Offer,
   CreatePurchaseDocument,
   PurchaseLineInput,
-  Invoice,
+  Invoice, AnnouncePaymentDocument,
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
@@ -20,18 +20,21 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Currency } from "../../../shared/currency";
 
 import {
-  fTransferCircles,
+  fTransferCircles, fTransferCirclesHashOnly,
   TransitivePath,
 } from "../../o-banking/processes/transferCircles";
 
 import { cartContents } from "../stores/shoppingCartStore";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { findDirectTransfers } from "../../o-banking/processes/transfer";
+import {Environment} from "../../../shared/environment";
+import {ApiClient} from "../../../shared/apiConnection";
 
 export type PurchaseContextData = {
   items: Offer[];
   sellerProfile?: Profile;
   invoices: Invoice[];
+  pickupCode: string;
   payableInvoices: {
     invoice: Invoice;
     path: TransitivePath;
@@ -48,17 +51,11 @@ let currency = Currency.instance();
 
 const editorContent: { [x: string]: EditorViewContext } = {
   summary: {
-    title: "Check out",
-    description: "You are about to transfer",
+    title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.title"),
+    description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.description"),
     placeholder: "",
-    submitButtonText: "Buy now",
-  },
-  success: {
-    title: "Check out successful",
-    description: "Thank you for your purchase.",
-    placeholder: "",
-    submitButtonText: "Close",
-  },
+    submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
+  }
 };
 
 const processDefinition = (processId: string) =>
@@ -99,7 +96,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Processing your purchase ..`,
+            message: window.i18n("dapps.o-marketplace.processes.purchases.createPurchase.message"),
           });
         },
         invoke: {
@@ -143,7 +140,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Checking transferable circles amount ..`,
+            message: window.i18n("dapps.o-marketplace.processes.purchases.calculatePaths.message"),
           });
         },
         invoke: {
@@ -170,19 +167,6 @@ const processDefinition = (processId: string) =>
                 invoice.sellerAddress,
                 circlesValueInWei
               );
-
-              /*
-              const flow = await requestPathToRecipient({
-                data: {
-                  safeAddress: invoice.buyerAddress,
-                  recipientAddress: invoice.sellerAddress,
-                  amount: convertTimeCirclesToCircles(
-                    invoiceTotal,
-                    null
-                  ).toString(),
-                },
-              });
-               */
 
               if (flow.transfers.length > 0) {
                 context.data.payableInvoices.push({
@@ -216,7 +200,7 @@ const processDefinition = (processId: string) =>
                   const pi_i = context.data.invoices.indexOf(pi_);
                   invoices = invoices.splice(pi_i, 1);
                 });
-                const errorMessage = `You don't have enough trust paths to the following sellers: ${invoices
+                const errorMessage = window.i18n("dapps.o-marketplace.processes.purchases.calculatePaths.errorMessage") + `${invoices
                   .map((o) => o.sellerAddress)
                   .join(", ")}`;
                 window.o.lastError = new Error(errorMessage);
@@ -240,18 +224,42 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Sending Circles ..`,
+            message: window.i18n("dapps.o-marketplace.processes.purchases.pay.message"),
           });
         },
         invoke: {
           src: async (context) => {
             const currentInvoice = context.data.payableInvoices.pop();
 
+            // TODO: Calculate the transaction hash and send it to the api so that it can wait for this specific tx
+            const txHash = await fTransferCirclesHashOnly(
+                currentInvoice.invoice.buyerAddress,
+                sessionStorage.getItem("circlesKey"),
+                currentInvoice.path
+            );
+
+            console.log(`Announcing txHash: ${txHash}`);
+
+
+            const apiClient =
+                await window.o.apiClient.client.subscribeToResult();
+
+            const announceResult = await apiClient.mutate({
+              mutation: AnnouncePaymentDocument,
+              variables: {
+                transactionHash: txHash,
+                invoiceId: currentInvoice.invoice.id
+              }
+            });
+
+            context.data.pickupCode = announceResult.data.announcePayment.pickupCode;
+            console.log(`Your pickup code is: ${context.data.pickupCode}`)
+
             const receipt = await fTransferCircles(
               currentInvoice.invoice.buyerAddress,
               sessionStorage.getItem("circlesKey"),
               currentInvoice.path,
-              `Payment of invoice ${currentInvoice.invoice.id}`
+              window.i18n("dapps.o-marketplace.processes.purchases.pay.paymentOfInvoice") + `${currentInvoice.invoice.id}`
             );
 
             context.data.paidInvoices.push(currentInvoice);
@@ -293,11 +301,19 @@ const processDefinition = (processId: string) =>
         },
         field: "__",
         component: CheckoutConfirm,
-        params: {
-          view: editorContent.success,
-          html: () => ``,
-          submitButtonText: editorContent.success.submitButtonText,
-          hideNav: false,
+        params: (context) => {
+          return {
+            view: {
+              title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.title"),
+              description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.description"),
+              placeholder: "",
+              submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
+            },
+            html: ``,
+            pickupCode: context.data.pickupCode,
+            submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
+            hideNav: false
+          }
         },
         navigation: {
           next: "#success",

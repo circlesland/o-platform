@@ -11,7 +11,7 @@ import { loadProfile } from "./services/loadProfile";
 import { getSessionInfo } from "./services/getSessionInfo";
 import { promptChoice } from "./prompts/promptChoice";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
-import { acquireSession } from "./aquireSession/acquireSession";
+import { acquireSession } from "./acquireSession/acquireSession";
 import { connectSafe } from "./connectSafe/connectSafe2";
 import { createSafe } from "./createSafe/createSafe";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
@@ -101,7 +101,7 @@ const processDefinition = (processId: string) =>
           data: {
             data: (context, event) => {
               return {
-                appId: "__APP_ID__",
+                appId: Environment.appId,
                 code: context.data.oneTimeCode,
               };
             },

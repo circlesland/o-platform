@@ -9,7 +9,7 @@ import { push } from "svelte-spa-router";
 import * as yup from "yup";
 import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {
-  ClaimInvitationDocument, EventsDocument,
+  ClaimInvitationDocument, EventsDocument, EventType,
   InvitationTransactionDocument,
   RedeemClaimedInvitationDocument,
 } from "../../../../shared/api/data/types";
@@ -24,16 +24,14 @@ export type PromptRedeemInvitationContext =
 
 const editorContent = {
   info: {
-    title: "Redeem your invitation",
-    description:
-      "We will now redeem your invitation. This could take a while...",
-    submitButtonText: "Next",
+    title: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.info.title"),
+    description:window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.info.description"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.info.submitButtonText"),
   },
   waitUntilRedeemed: {
-    title: "Please wait",
-    description:
-      "Please wait until your invitation transaction got confirmed and try again in a few seconds.",
-    submitButtonText: "Try again",
+    title: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.title"),
+    description:window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.description"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.submitButtonText"),
   },
 };
 const processDefinition = (processId: string) =>
@@ -63,7 +61,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: "Please wait, redeeming your Invitation...",
+            message: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.message"),
           });
         },
         invoke: {
@@ -80,19 +78,19 @@ const processDefinition = (processId: string) =>
                 .map((o) => o.message)
                 .join(" \n");
               throw new Error(
-                `Couldn't redeem an invitation: ${context.messages["inviteCode"]}`
+                window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.error", {values: {contextMessages: context.messages["inviteCode"]}})
               );
             }
             if (!claimResult.data?.redeemClaimedInvitation?.success) {
               context.messages["__"] = claimResult.data.error;
               throw new Error(
-                `Couldn't redeem an invitation: ${context.messages["inviteCode"]}`
+                window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.error", {values: {contextMessages: context.messages["inviteCode"]}})
               );
             }
           },
           onError: {
             actions: (context, event) => {
-              console.error(`The following error occurred while redeeming you claimed invitation:`, event.data);
+              console.error(window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.onError"), event.data);
             },
             target: "#info"
           },
@@ -114,7 +112,7 @@ const processDefinition = (processId: string) =>
               claimResult.errors?.length ||
               !claimResult.data.invitationTransaction?.transaction_hash
             ) {
-              throw new Error("Invitation is not yet redeemed.");
+              throw new Error(window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.checkIfRedeemed.notYetRedeemed"));
             }
           },
           onDone: "#success",
@@ -132,7 +130,8 @@ const processDefinition = (processId: string) =>
               });
               let subscription: ZenObservable.Subscription;
               const subscriptionHandler = next => {
-                if (next.data.events.type == "blockchain_event") {
+                if (next.data.events.type == EventType.EthTransfer
+                  || next.data.events.type == EventType.GnosisSafeEthTransfer) {
                   if (subscription) {
                     subscription.unsubscribe();
                   }

@@ -2,13 +2,11 @@
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { CurrencyTransferContext } from "./currencyTransferContext";
 import ProcessNavigation from "./ProcessNavigation.svelte";
-import Select from "../../../shell/src/shared/molecules/Select/Select.svelte";
-import Item from "./DropdownCurrencyItem.svelte";
-import Icons from "../../../shell/src/shared/molecules/Icons.svelte";
+
 import circlesIcon from "./dropdownItems/CirclesIcon.svelte";
 import xdaiIcon from "./dropdownItems/XdaiIcon.svelte";
 import { RpcGateway } from "../../o-circles/dist/rpcGateway";
-import { onMount } from "svelte";
+
 export let context: CurrencyTransferContext;
 
 let Icon = circlesIcon;
@@ -108,42 +106,8 @@ function onkeydown(e: KeyboardEvent) {
         bind:this="{inputField}"
         on:keydown="{onkeydown}" />
     </div>
-    <!-- <div class="themed">
-      <label for="currency" class="sr-only">Currency</label>
-      <Select
-        name="currency"
-        selectedValue="{selectedCurrency}"
-        items="{context.params.currencies}"
-        showIndicator="{true}"
-        listAutoWidth="{false}"
-        listPlacement="top"
-        staticList="{true}"
-        isClearable="{false}"
-        isSearchable="{false}"
-        containerClasses="w-28 min-w-full rounded-md"
-        Item="{Item}"
-        Icon="{Icon}"
-        on:select="{handleSelect}"
-        on:change="{() => (context.editorDirtyFlags[context.field] = true)}" />
-    </div> -->
   </div>
   <ProcessNavigation
     on:buttonClick="{() => sendAnswer(amount)}"
     context="{context}" />
 </div>
-
-<style>
-.themed {
-  --borderRadius: 5px;
-  --indicatorTop: 16px;
-  --padding: 0 16px 0 0;
-  --inputPadding: 0;
-  --inputPosition: absolute;
-  --inputTop: 0.25rem;
-  --text-align: right;
-  --selectedItemBottom: 0;
-  --selectedItemTop: 0.4rem;
-  --selectedItemOverflowX: clip;
-  --selectedItemMaxWidth: 100%;
-}
-</style>

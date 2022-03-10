@@ -9,7 +9,7 @@ export const hasKey = () => {
     const account = RpcGateway.get().eth.accounts.privateKeyToAccount(key);
     return !!account;
   } catch (e) {
-    console.error(`Couldn't load the private key from the localStorage.`)
+    console.error(window.i18n("dapps.o-passport.processes.identify.conds.hasKey.error"))
     return false;
   }
 }

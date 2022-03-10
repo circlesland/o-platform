@@ -21,6 +21,7 @@
   import {getSdk} from "./shared/api/data/types";
   import {GraphQLClient} from "graphql-request";
   import {me} from "./shared/stores/me"
+  import {Environment} from "./shared/environment";
 
   const runningProcesses: {
     [id: string]: Process;
@@ -177,18 +178,18 @@
   };
 
   async function connectToApi() {
-    console.log(`Connecting to __AUTH_ENDPOINT__ ..`);
-    shell.authClient = new ApiConnection("__AUTH_ENDPOINT__/");
+    console.log(`Connecting to ${Environment.authEndpointUrl} ..`);
+    shell.authClient = new ApiConnection(Environment.authEndpointUrl);
 
-    console.log(`Connecting to __API_ENDPOINT__ ..`);
-    shell.apiClient = new ApiConnection("__API_ENDPOINT__/", "include");
+    console.log(`Connecting to ${Environment.apiEndpointUrl} ..`);
+    shell.apiClient = new ApiConnection(Environment.apiEndpointUrl, "include");
 
-    console.log(`Connecting to __CIRCLES_SUBGRAPH_ENDPOINT__ ..`);
-    shell.theGraphClient = new ApiConnection("__CIRCLES_SUBGRAPH_ENDPOINT__");
+    console.log(`Connecting to ${Environment.circlesSubgraphEndpoint} ..`);
+    shell.theGraphClient = new ApiConnection(Environment.circlesSubgraphEndpoint);
   }
 
   connectToApi().then(() => {
-    console.log(`Connected to __AUTH_ENDPOINT__ and __API_ENDPOINT__`);
+    console.log(`Connected to ${Environment.authEndpointUrl} and ${Environment.apiEndpointUrl}`);
   });
 
   declare global {
@@ -204,7 +205,7 @@
 <script lang="ts">
   import "./shared/css/tailwind.css";
 
-  import Router from "svelte-spa-router";
+  import Router, {push} from "svelte-spa-router";
   import {SvelteToast} from "./shared/molecules/Toast";
   import DappFrame from "src/shared/molecules/DappFrame.svelte";
   import NotFound from "src/shared/pages/NotFound.svelte";
@@ -213,24 +214,26 @@
   import {ubiMachine} from "./shared/ubiTimer2";
   import * as bip39 from "bip39";
 
+  import {performOauth} from "./dapps/o-humanode/processes/performOauth";
+  import { isLoading } from "svelte-i18n";
+  import {InitContext} from "./dapps/o-onboarding/processes/initContext";
+
   let ubiMachineInterpreter: any;
 
-  window.runInitMachine = () => {
-    interpret(initMachine)
-      .onEvent((event) => {
-        // console.log("InitMachine event:", event);
-      })
-      .onTransition((state) => {
-        // console.log("initMachine.transition:", state);
-      })
-      .start();
+  window.runInitMachine = (context?:InitContext) => {
+    if (context) {
+      interpret(initMachine.withContext(context)).start();
+    } else {
+      interpret(initMachine).start();
+    }
   };
   let _routes = {
     "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
     "*": NotFound,
   };
-</script>
 
+
+</script>
 <SvelteToast/>
 
 <Router routes="{_routes}" on:routeLoaded={() => {

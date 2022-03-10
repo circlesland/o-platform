@@ -14,6 +14,15 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
 import { getOpenLogin } from "../../../shared/openLogin";
+import {
+  FindInvitationCreatorDocument,
+  Profile,
+  ProfilesDocument,
+  ProfilesQueryVariables,
+  QueryFindInvitationCreatorArgs
+} from "../../../shared/api/data/types";
+import {ApiClient} from "../../../shared/apiConnection";
+import {AvataarGenerator} from "../../../shared/avataarGenerator";
 
 export type LoginWithTorusContextData = {
   chooseFlow?: {
@@ -25,22 +34,97 @@ export type LoginWithTorusContextData = {
   encryptionPin?: string;
   decryptionPin?: string;
   accountAddress?: string;
+  inviterProfile?: Profile;
   successAction?: (data: LoginWithTorusContextData) => void;
 };
 
 export type LoginWithTorusContext = ProcessContext<LoginWithTorusContextData>;
 
+const loginOptions = [
+  {
+    key: "google",
+    label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.google.label"),
+    target: "#google",
+    class: "btn btn-outline",
+    icon: "google",
+  },
+  {
+    key: "apple",
+    label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.apple.label"),
+    target: "#apple",
+    class: "btn btn-outline",
+    icon: "apple",
+  },
+  {
+    key: "github",
+    label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.github.label"),
+    target: "#github",
+    class: "btn btn-outline",
+    icon: "github",
+  } /*
+          {
+            key: "email",
+            label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.email.label"),
+            target: "#email",
+            class: "btn-info",
+          }*/,
+];
+
 const processDefinition = (processId: string) =>
   createMachine<LoginWithTorusContext, any>(
     {
       id: `${processId}:loginWithTorus`,
-      initial: "init",
+      initial: "decideWelcomeMessage",
       states: {
         // Include a default 'error' state that propagates the error by re-throwing it in an action.
         // TODO: Check if this works as intended
         ...fatalError<LoginWithTorusContext, any>("error"),
 
+        decideWelcomeMessage: {
+          invoke: {
+            src: async (context) => {
+              const invitationCode = localStorage.getItem("circlesInvite");
+              if (invitationCode) {
+                context.data.inviterProfile = await ApiClient.query<Profile, QueryFindInvitationCreatorArgs>(
+                  FindInvitationCreatorDocument,
+                  {
+                    code: invitationCode
+                  }
+                );
+              }
+            },
+            onDone: [{
+              cond: (context) => !!context.data.inviterProfile,
+              target: "showInviterMessage"
+            }, {
+              target: "init"
+            }]
+          }
+        },
+
+        showInviterMessage: prompt({
+          id: "showInviterMessage",
+          field: "__",
+          component: HtmlViewer,
+          params: {
+            view: {
+              title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.title"),
+              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.submitButtonText"),
+            },
+            html: (context) => `<img style="max-width:128px;" src="${
+              !context.data.inviterProfile.avatarUrl 
+                ? AvataarGenerator.generate(context.data.inviterProfile.circlesAddress) 
+                : context.data.inviterProfile.avatarUrl}" /> <b>${context.data.inviterProfile.displayName}${window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.htmlContext")}`,
+            submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.loginButton"),
+            hideNav: false,
+          },
+          navigation: {
+            next: "#init",
+          },
+        }),
+
         init: {
+          id: "init",
           invoke: {
             src: async (context) => {
               const keyManager = new KeyManager(null);
@@ -70,42 +154,13 @@ const processDefinition = (processId: string) =>
           component: ButtonStackSelector,
           params: {
             view: {
-              title: "Welcome to Cirles Land",
-              description:
-                "Please choose a sign-in option<br/> <small>By choosing one of the sign-in options you agree to our <a href='https://coda.io/@circlesland/terms' target='_blank' class='link' alt='privacy'>Terms of Service</a>.</small>",
+              title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.title"),
+              description: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.description"),
               placeholder: "",
               submitButtonText: "",
             },
           },
-          options: [
-            {
-              key: "google",
-              label: "Login with Google",
-              target: "#google",
-              class: "btn btn-outline",
-              icon: "google",
-            },
-            {
-              key: "apple",
-              label: "Login with Apple",
-              target: "#apple",
-              class: "btn btn-outline",
-              icon: "apple",
-            },
-            {
-              key: "github",
-              label: "Login with Github",
-              target: "#github",
-              class: "btn btn-outline",
-              icon: "github",
-            } /*
-          {
-            key: "email",
-            label: "Login with E-Mail",
-            target: "#email",
-            class: "btn-info",
-          }*/,
-          ],
+          options: loginOptions,
         }),
 
         google: {
@@ -114,7 +169,7 @@ const processDefinition = (processId: string) =>
             () => {
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.progress",
-                message: "Please wait, we're Signing you in",
+                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
               });
             },
             (context) => {
@@ -147,10 +202,11 @@ const processDefinition = (processId: string) =>
                   display: "touch",
                 },
               });
+
               const userInfo = await openLogin.getUserInfo();
               return {
                 privateKey: privateKey.privKey,
-                userInfo: userInfo,
+                userInfo: userInfo
               };
             },
             onDone: {
@@ -180,7 +236,7 @@ const processDefinition = (processId: string) =>
             () => {
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.progress",
-                message: "Please wait, we're Signing you in",
+                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
               });
             },
             (context) => {
@@ -226,7 +282,7 @@ const processDefinition = (processId: string) =>
             () => {
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.progress",
-                message: "Please wait, we're Signing you in",
+                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
               });
             },
             (context) => {
@@ -314,16 +370,15 @@ const processDefinition = (processId: string) =>
           isSensitive: true,
           params: {
             view: {
-              title: "Set a PIN to protect your account",
-              description:
-                "The pin will be used to encrypt your private key on your device. NOTE: This won't help against a sophisticated attacker but prevents casual theft. ",
-              placeholder: "Enter Pin",
-              submitButtonText: "Store private key on this device",
+              title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.title"),
+              description: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.description"),
+              placeholder: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.placeholder"),
+              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.submitButtonText"),
             },
           },
           dataSchema: yup
             .string()
-            .required("Please enter a pin to protect your private key."),
+            .required(window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.stringRequired")),
           navigation: {
             next: "#storeKey",
           },
@@ -335,17 +390,16 @@ const processDefinition = (processId: string) =>
           isSensitive: true,
           params: {
             view: {
-              title: "Please enter your pin",
-              description:
-                "The pin will be used to decrypt your private key on your device.",
-              placeholder: "Enter Pin",
-              submitButtonText: "Unlock",
+              title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.title"),
+              description: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.description"),
+              placeholder: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.placeholder"),
+              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.submitButtonText"),
             },
           },
           dataSchema: yup
             .string()
             .required(
-              "Please enter a encryptingPin to protect your private key."
+              window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.stringRequired")
             ),
           navigation: {
             next: "#unlockKey",
@@ -367,14 +421,14 @@ const processDefinition = (processId: string) =>
                   context.data.decryptionPin
                 );
               } catch (e) {
-                context.messages["decryptionPin"] = `Invalid Pin`;
+                context.messages["decryptionPin"] = window.i18n("dapps.o-onboarding.processes.loginWithTorus.invalidPin");
                 throw e;
               }
 
               if (!privateKey || privateKey == "") {
                 delete context.data.decryptionPin;
                 delete context.data.privateKey;
-                context.messages["decryptionPin"] = "Invalid Pin";
+                context.messages["decryptionPin"] = window.i18n("dapps.o-onboarding.processes.loginWithTorus.invalidPin");
                 throw new Error(context.messages["decryptionPin"]);
               }
 

@@ -1,18 +1,21 @@
+<script>
+  import { _ } from "svelte-i18n";
+</script>
+
 <div class="bg-white">
   <div
     class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
     <div class="mx-auto mb-10 lg:max-w-xl sm:text-center">
       <p
         class="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider uppercase rounded-full text-primary bg-teal-accent-400">
-        our citizens
+        {$_("dapps.o-homepage.components.dreams.ourCitizens")}
       </p>
       <h2
         class="max-w-lg mb-6 text-3xl font-bold tracking-tight text-center sm:text-4xl sm:leading-none">
-        Following their passions
+        {$_("dapps.o-homepage.components.dreams.followingTheirPassions")}
       </h2>
       <p class="text-base text-gray-700 md:text-lg">
-        See the passion other Circlesland citizens are pursuing, when they
-        receive their universal basic income in Circles
+        {$_("dapps.o-homepage.components.dreams.seePassionsOtherCitizens")}
       </p>
     </div>
     <div
@@ -33,8 +36,7 @@
           <p class="text-lg font-bold ">Oliver Aguilerra</p>
           <p class="mb-5 text-xs text-primary">Citizen 15 from Germany</p>
           <div class="flex items-center space-x-3 sm:justify-center">
-            ...is dreaming of "building the universal basic income economy of
-            tomorrow, building the universal basic income"
+            {$_("dapps.o-homepage.components.dreams.isDreaming")}
           </div>
         </div>
       </div>
@@ -55,8 +57,7 @@
           <p class="text-lg font-bold ">Marta Clermont</p>
           <p class="mb-5 text-xs text-primary">Citizen 16 from France</p>
           <div class="flex items-center space-x-3 sm:justify-center">
-            ...is dreaming of "building the universal basic income economy of
-            tomorrow"
+            {$_("dapps.o-homepage.components.dreams.isDreaming")}
           </div>
         </div>
       </div>
@@ -78,8 +79,7 @@
           <p class="text-lg font-bold ">Alice Melbourne</p>
           <p class="mb-5 text-xs text-primary">Citizen 17 from Australia</p>
           <div class="flex items-center space-x-3 sm:justify-center">
-            ...is dreaming of "building the universal basic income economy of
-            tomorrow, building the universal basic income economy"
+            {$_("dapps.o-homepage.components.dreams.isDreaming")}
           </div>
         </div>
       </div>
@@ -100,7 +100,7 @@
           <p class="text-lg font-bold ">Doris Auer</p>
           <p class="mb-5 text-xs text-primary">Citizen 18 from Denmark</p>
           <div class="flex items-center space-x-3 sm:justify-center">
-            ...is dreaming of "building the universal basic income"
+            {$_("dapps.o-homepage.components.dreams.isDreaming")}
           </div>
         </div>
       </div>
@@ -121,8 +121,7 @@
           <p class="text-lg font-bold ">John Doe</p>
           <p class="mb-5 text-xs text-primary">Citizen 19 from Nigeria</p>
           <div class="flex items-center space-x-3 sm:justify-center">
-            ...is dreaming of "building the universal basic income economy of
-            tomorrow, building the universal basic income economy of tomorrow"
+            {$_("dapps.o-homepage.components.dreams.isDreaming")}
           </div>
         </div>
       </div>
@@ -143,9 +142,7 @@
           <p class="text-lg font-bold ">Li Pon</p>
           <p class="mb-5 text-xs text-primary">Citizen 20 from Japan</p>
           <div class="flex items-center space-x-3 sm:justify-center">
-            ...is dreaming of "building the universal basic income economy of
-            tomorrow, building the universal basic income economy of tomorrow,
-            building the universal basic income economy of tomorrow"
+            {$_("dapps.o-homepage.components.dreams.isDreaming")}
           </div>
         </div>
       </div>

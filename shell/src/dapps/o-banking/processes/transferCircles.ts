@@ -9,6 +9,7 @@ import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {CirclesHub} from "@o-platform/o-circles/dist/circles/circlesHub";
 import {TagTransactionDocument} from "../../../shared/api/data/types";
 import type {TransactionReceipt} from "web3-core";
+import {Environment} from "../../../shared/environment";
 
 export type TransferCirclesContextData = {
   safeAddress: string;
@@ -49,6 +50,33 @@ export type TransitivePath = {
   transfers: TransitivePathStep[]
 }
 
+export async function fTransferCirclesHashOnly(safeAddress:string, privateKey:string, path:TransitivePath) {
+  const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), safeAddress);
+
+  const tokenOwners = [];
+  const sources = [];
+  const destinations = [];
+  const values = [];
+
+  path.transfers.forEach(transfer => {
+    tokenOwners.push(transfer.tokenOwner);
+    sources.push(transfer.from);
+    destinations.push(transfer.to);
+    values.push(new BN(transfer.value));
+  });
+
+  const transferTroughTxHash = await new CirclesHub(RpcGateway.get(), Environment.circlesHubAddress).transferTroughTxHash(
+      privateKey,
+      gnosisSafeProxy,
+      tokenOwners,
+      sources,
+      destinations,
+      values
+  );
+
+  return transferTroughTxHash;
+}
+
 export async function fTransferCircles (safeAddress:string, privateKey:string, path:TransitivePath, message:string) {
   const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), safeAddress);
 
@@ -65,7 +93,7 @@ export async function fTransferCircles (safeAddress:string, privateKey:string, p
       values.push(new BN(transfer.value));
     });
 
-    const transferTroughResult = await new CirclesHub(RpcGateway.get(), "__CIRCLES_HUB_ADDRESS__").transferTrough(
+    const transferTroughResult = await new CirclesHub(RpcGateway.get(), Environment.circlesHubAddress).transferTrough(
       privateKey,
       gnosisSafeProxy,
       tokenOwners,

@@ -7,7 +7,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { EventType} from "../../../shared/api/data/types";
 
 import EventList from "../../../shared/molecules/Lists/EventList.svelte";
-import {transactions} from "../../../shared/stores/transactions";
+import {myTransactions} from "../../../shared/stores/myTransactions";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -18,7 +18,7 @@ export let routable: Routable;
 
 <div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
   <EventList
-    store={transactions}
+    store={myTransactions}
     views="{{
       [EventType.CrcHubTransfer]: TransactionCard,
       [EventType.CrcMinting]: TransactionCard,

@@ -5,6 +5,7 @@
   import { Stats, StatsDocument } from "../../../shared/api/data/types";
   import StatsField from "../atoms/StatsField.svelte";
   import {ApiClient} from "../../../shared/apiConnection";
+  import { _ } from "svelte-i18n";
 
   $: me;
   let isLoading: boolean = true;
@@ -53,7 +54,7 @@
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>Loading stats ...</div>
+          <div>{$_("dapps.o-stats.pages.home.loadingStats")}</div>
         </div>
       </div>
     </section>
@@ -62,7 +63,7 @@
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>An error occurred while loading the stats:</b>
+            <b>{$_("dapps.o-stats.pages.home.anErrorOccurred")}</b>
             <pre
               style="overflow: auto">
                             {JSON.stringify(error, null, 2)}
@@ -76,7 +77,7 @@
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-xs font-bold text-left  ">Global stats</div>
+        <div class="text-xs font-bold text-left  ">{$_("dapps.o-stats.pages.home.globalStats")}</div>
       </div>
     </section>
     <section class="flex items-center justify-center mb-2 ">
@@ -112,7 +113,7 @@
       <div
         class="flex flex-col w-full p-4 space-y-2 bg-white rounded-sm shadow"
       >
-        <div class="text-xs font-bold text-left  ">My stats</div>
+        <div class="text-xs font-bold text-left  ">{$_("dapps.o-stats.pages.home.myStats")}</div>
       </div>
     </section>
     <section class="flex items-center justify-center mb-2 ">
@@ -134,7 +135,7 @@
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>No stats</div>
+          <div>{$_("dapps.o-stats.pages.home.noStats")}</div>
         </div>
       </div>
     </section>

@@ -120,6 +120,7 @@ mutation sendMessage(
       }
       payload {
         ... on ChatMessage {
+          id
           from
           from_profile {
             id
@@ -137,102 +138,6 @@ mutation sendMessage(
             circlesAddress
           }
           text
-        }
-        ... on CrcHubTransfer {
-          from
-          from_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          to
-          to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          flow
-          transfers {
-            token
-            from
-            from_profile {
-              id
-              firstName
-              lastName
-              avatarUrl
-              circlesAddress
-            }
-            to
-            to_profile {
-              id
-              firstName
-              lastName
-              avatarUrl
-              circlesAddress
-            }
-            value
-          }
-        }
-        ... on EthTransfer {
-          from
-          from_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          to
-          to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          value
-        }
-        ... on GnosisSafeEthTransfer {
-          from
-          from_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          to
-          to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          value
-        }
-        ... on CrcTrust {
-          address
-          address_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          can_send_to
-          can_send_to_profile {
-            id
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-          }
-          limit
         }
       }
     }
@@ -257,17 +162,6 @@ mutation redeemClaimedInvitation {
     success
     error
     transactionHash
-  }
-}
-
-mutation createInvitations($for: [String!]!) {
-  createInvitations(for: $for) {
-    success
-    error
-    createdInviteEoas {
-      name
-      address
-    }
   }
 }
 
@@ -300,6 +194,7 @@ mutation upsertProfile(
   $id: Int
   $firstName: String!
   $lastName: String
+  $emailAddress: String
   $dream: String
   $country: String
   $avatarUrl: String
@@ -319,6 +214,7 @@ mutation upsertProfile(
       id: $id
       firstName: $firstName
       lastName: $lastName
+      emailAddress: $emailAddress
       dream: $dream
       country: $country
       avatarUrl: $avatarUrl
@@ -337,6 +233,7 @@ mutation upsertProfile(
     id
     firstName
     lastName
+    emailAddress
     dream
     country
     avatarUrl
@@ -437,6 +334,9 @@ mutation completePurchase($invoiceId: Int!, $revoke: Boolean) {
     buyerSignedDate
     sellerSignature
     sellerSignedDate
+    purchase {
+      id
+    }
     sellerProfile {
       type
       id
@@ -479,5 +379,13 @@ mutation verifySafe($safeAddress: String!) {
 mutation revokeSafeVerification($safeAddress: String!) {
   revokeSafeVerification(safeAddress: $safeAddress) {
     success
+  }
+}
+
+mutation announcePayment($invoiceId: Int!, $transactionHash: String!) {
+  announcePayment(invoiceId: $invoiceId, transactionHash: $transactionHash) {
+    transactionHash
+    invoiceId
+    pickupCode
   }
 }

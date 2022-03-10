@@ -65,14 +65,21 @@ onDestroy(() => {
   // clearTimeout(isScrollingTimer);
 });
 
+$: container = container;
+
 beforeUpdate(() => {
   if (items !== prev_items && items.length > 0) {
     if (selectedValue) {
       const _hoverItemIndex = items.findIndex(
         (item) => item[optionIdentifier] === selectedValue
       );
-      hoverItemIndex = _hoverItemIndex;
-      activeItemIndex = _hoverItemIndex;
+      if (_hoverItemIndex == -1) {
+        hoverItemIndex = items.length - 1;
+        activeItemIndex = items.length - 1;
+      } else {
+        hoverItemIndex = _hoverItemIndex;
+        activeItemIndex = _hoverItemIndex;
+      }
     } else {
       hoverItemIndex = items.length - 1;
       activeItemIndex = items.length - 1;
@@ -83,6 +90,7 @@ beforeUpdate(() => {
   prev_activeItemIndex = activeItemIndex;
   prev_selectedValue = selectedValue;
   window.o.publishEvent({ type: "shell.scrollToBottom" });
+  scrollToActiveItem("active");
 });
 
 function handleSelect(item) {
@@ -159,6 +167,7 @@ function handleKeyDown(e) {
       e.preventDefault();
       if (items.length === 0) break;
       const hoverItem = items[hoverItemIndex];
+
       if (
         selectedValue &&
         !isMulti &&
@@ -197,7 +206,6 @@ function scrollToActiveItem(className) {
   const focusedElemBounding = container.querySelector(
     `.listItem .${className}`
   );
-
   if (focusedElemBounding) {
     offsetBounding =
       container.getBoundingClientRect().bottom -
@@ -225,7 +233,7 @@ function isItemHover(hoverItemIndex, item, itemIndex, items) {
 <svelte:window on:keydown="{handleKeyDown}" />
 
 {#if isVirtualList}
-  <div class="listContainer virtualList" bind:this="{container}">
+  <div class="listContainer virtualList">
     <VirtualList items="{items}" itemHeight="{itemHeight}" let:item let:i>
       <div
         on:focus="{() => handleHover(i)}"
@@ -246,7 +254,7 @@ function isItemHover(hoverItemIndex, item, itemIndex, items) {
 {/if}
 
 {#if !isVirtualList}
-  <div data-simplebar class="listContainer" bind:this="{container}">
+  <div data-simplebar class="listContainer">
     {#each items as item, i}
       {#if item.isGroupHeader && !item.isSelectable}
         <div class="listGroupTitle">{getGroupHeaderLabel(item)}</div>

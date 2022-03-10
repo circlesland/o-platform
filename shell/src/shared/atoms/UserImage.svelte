@@ -21,13 +21,7 @@ function linkToProfile(event) {
 $: {
   if (profile) {
     if (profile.__typename == "Profile") {
-      if (profile.firstName) {
-        displayName = `${profile.firstName} ${
-          profile.lastName ? profile.lastName : ""
-        }`;
-      } else {
-        displayName = profile.circlesAddress;
-      }
+      displayName = profile.displayName;
     } else {
       displayName = profile.name ? profile.name : "";
     }

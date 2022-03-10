@@ -4,6 +4,7 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
+import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.svelte";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -12,7 +13,11 @@ import { promptChoice } from "./identify/prompts/promptChoice";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptCity } from "../../../shared/api/promptCity";
-import {City, DisplayCurrency, UpsertProfileDocument} from "../../../shared/api/data/types";
+import {
+  City,
+  DisplayCurrency,
+  UpsertProfileDocument,
+} from "../../../shared/api/data/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 
 export type UpsertIdentityContextData = {
@@ -24,6 +29,7 @@ export type UpsertIdentityContextData = {
   circlesSafeOwner?: string;
   firstName?: string;
   lastName?: string;
+  emailAddress?: string;
   country?: string;
   dream?: string;
   cityGeonameid?: number;
@@ -37,44 +43,97 @@ export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
   firstName: {
-    title: "What is your first name?",
-    description:
-      "Welcome, you are finally a citizen of CirclesLand. Glad to have you here.",
-    placeholder: "First name",
-    submitButtonText: "Save",
+    title: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"
+    ),
+    description: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"
+    ),
+    placeholder: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.firstName.placeholder"
+    ),
+    submitButtonText: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"
+    ),
   },
   lastName: {
-    title: "What is your last name?",
-    description:
-      "Display your full name in your profile to become more trust worthy.",
-    placeholder: "Last name",
-    submitButtonText: "Save",
+    title: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.lastName.title"
+    ),
+    description: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.lastName.description"
+    ),
+    placeholder: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.lastName.placeholder"
+    ),
+    submitButtonText: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.lastName.submitButtonText"
+    ),
+  },
+  emailAddress: {
+    title: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.title"
+    ),
+    description: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.description"
+    ),
+    placeholder: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.placeholder"
+    ),
+    submitButtonText: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.submitButtonText"
+    ),
   },
   dream: {
-    title: "Share your passion",
-    description:
-      "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
-    placeholder: "Your passion",
-    submitButtonText: "Start growing",
+    title: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.dream.title"
+    ),
+    description: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.dream.description"
+    ),
+    placeholder: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.dream.placeholder"
+    ),
+    submitButtonText: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.dream.submitButtonText"
+    ),
     maxLength: "150",
   },
   city: {
-    title: "Vote for your City",
-    description:
-      "Advance your city in the basic income ranking and push the political discourse in your area.",
-    placeholder: "Last name",
-    submitButtonText: "Submit vote",
+    title: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.city.title"
+    ),
+    description: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.city.description"
+    ),
+    placeholder: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.city.placeholder"
+    ),
+    submitButtonText: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.city.submitButtonText"
+    ),
   },
   imageView: {
-    title: "Profile Image",
-    description: "Show the World who you are",
-    placeholder: "Upload Image",
-    submitButtonText: "Upload Image",
+    title: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.imageView.title"
+    ),
+    description: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.imageView.description"
+    ),
+    placeholder: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.imageView.placeholder"
+    ),
+    submitButtonText: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.imageView.submitButtonText"
+    ),
   },
   newsletter: {
-    title: "Newsletter",
-    description:
-      "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
+    title: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.title"
+    ),
+    description: window.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.description"
+    ),
     placeholder: "",
     submitButtonText: "",
   },
@@ -95,7 +154,13 @@ const processDefinition = (processId: string) =>
         params: {
           view: editorContent.firstName,
         },
-        dataSchema: yup.string().required("Please enter your first name."),
+        dataSchema: yup
+          .string()
+          .required(
+            window.i18n(
+              "dapps.o-passport.processes.upsertIdentity.requiredName"
+            )
+          ),
         navigation: {
           next: "#lastName",
         },
@@ -107,9 +172,20 @@ const processDefinition = (processId: string) =>
           view: editorContent.lastName,
         },
         navigation: {
-          next: "#country",
+          next: "#emailAddress",
           previous: "#firstName",
           canSkip: () => true,
+        },
+      }),
+      emailAddress: prompt<UpsertIdentityContext, any>({
+        field: "emailAddress",
+        component: EmailAddressEditor,
+        params: {
+          view: editorContent.emailAddress,
+        },
+        navigation: {
+          next: "#country",
+          previous: "#lastName",
         },
       }),
       country: promptCity<UpsertIdentityContext, any>({
@@ -132,7 +208,12 @@ const processDefinition = (processId: string) =>
           .string()
           .nullable()
           .notRequired()
-          .max(150, "The maximum amount of characters allowed is 150."),
+          .max(
+            150,
+            window.i18n(
+              "dapps.o-passport.processes.upsertIdentity.maximumChars"
+            )
+          ),
         navigation: {
           next: "#avatarUrl",
           canSkip: () => true,
@@ -212,6 +293,7 @@ const processDefinition = (processId: string) =>
                 circlesSafeOwner: safeOwnerAddress.toLowerCase(),
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
+                emailAddress: context.data.emailAddress,
                 dream: context.data.dream,
                 newsletter: context.data.newsletter ?? false,
                 displayTimeCircles: context.data.displayTimeCircles ?? true,
@@ -220,7 +302,7 @@ const processDefinition = (processId: string) =>
                 avatarMimeType: context.data.avatarMimeType,
                 cityGeonameid: context.data.cityGeonameid,
                 status: "",
-                displayCurrency: context.data.displayCurrency
+                displayCurrency: context.data.displayCurrency,
               },
             });
             return result.data.upsertProfile;

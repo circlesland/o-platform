@@ -1,5 +1,9 @@
 subscription events {
   events {
     type
+    from
+    to
+    itemId
+    transaction_hash
   }
 }

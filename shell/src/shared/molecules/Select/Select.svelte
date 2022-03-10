@@ -18,6 +18,7 @@ import { isMobile } from "src/shared/functions/isMobile";
 import { Observable } from "rxjs";
 
 const dispatch = createEventDispatcher();
+
 export let container = undefined;
 export let input = undefined;
 export let Item = ItemComponent;
@@ -175,11 +176,7 @@ $: {
   // This is some Hardcoded shit to display the currently selected Value into the placeholder of the input.
   // Since we have different types of results, we need to call different keys..
   if (selectedValue && selectedValue.__typename == "Profile") {
-    displayableSelectedValue = selectedValue.firstName;
-    if (selectedValue.lastName) {
-      displayableSelectedValue =
-        displayableSelectedValue + " " + selectedValue.lastName;
-    }
+    displayableSelectedValue = selectedValue.displayName;
   } else if (selectedValue && selectedValue.__typename == "City") {
     displayableSelectedValue = selectedValue.name;
     if (selectedValue.country) {
@@ -637,6 +634,7 @@ async function loadList() {
     optionIdentifier,
     noOptionsMessage,
     hideEmptyState,
+    container,
     isVirtualList,
     selectedValue,
     isMulti,
@@ -725,6 +723,7 @@ async function loadList() {
 
 onMount(() => {
   if (isFocused) input.focus();
+
   if (listOpen) loadList();
 
   if (items && items.length > 0) {

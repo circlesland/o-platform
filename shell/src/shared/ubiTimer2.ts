@@ -5,6 +5,7 @@ import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 import {CirclesAccount} from "@o-platform/o-circles/dist/model/circlesAccount";
 import {me} from "./stores/me";
 import {ApiClient} from "./apiConnection";
+import {Environment} from "./environment";
 
 export type UbiTimerContext = {
   nextUbiAt: number|null
@@ -98,17 +99,17 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
       });
       unsub();
       if (!$me)
-        throw new Error(`Couldn't load your profile`);
+        throw new Error(window.i18n("shared.ubiTimer2.errors.couldNotLoadYourProfile"));
 
       const privateKey = sessionStorage.getItem("circlesKey");
       if (!privateKey)
-        throw new Error(`Your private key is locked.`);
+        throw new Error(window.i18n("shared.ubiTimer2.errors.yourPrivateKeyIsLocked"));
 
       if (!context.tokenAddress)
-        throw new Error(`Cannot get the ubi. The context.tokenAddress is empty.`);
+        throw new Error(window.i18n("shared.ubiTimer2.errors.cannotGetUbi"));
 
       const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress);
-      const circlesAccount = new CirclesAccount($me.circlesAddress, "__CIRCLES_HUB_ADDRESS__");
+      const circlesAccount = new CirclesAccount($me.circlesAddress, Environment.circlesHubAddress);
       const result = await circlesAccount.getUBI(privateKey, gnosisSafeProxy, context.tokenAddress);
       console.log(`Ubi request result (transactionHash):`, result.transactionHash);
       return result;

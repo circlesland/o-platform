@@ -5,11 +5,7 @@ import { me } from "../../../shared/stores/me";
 import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { showToast } from "../../../shared/toast";
-import {
-  Jumplist,
-  JumplistItem,
-} from "@o-platform/o-interfaces/dist/routables/jumplist";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+
 import {
   Capability,
   CapabilityType,
@@ -22,16 +18,19 @@ import {
   EventType,
   Profile,
   VerifySafeDocument,
-  RevokeSafeVerificationDocument,
+  RevokeSafeVerificationDocument, AggregateType, SessionInfo,
 } from "../../../shared/api/data/types";
 import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
 import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 import { isMobile } from "../../../shared/functions/isMobile";
+import { UserActions, UserActionItem } from "../../../shared/userActions";
+
+import { _ } from "svelte-i18n";
+
 
 export let id: string;
-export let jumplist: Jumplist<any, any> | undefined;
-export let runtimeDapp: RuntimeDapp<any>;
+
 export let capabilities: Capability[] | undefined;
 
 let error: string | undefined = undefined;
@@ -43,8 +42,7 @@ let commonTrusts: CommonTrust[] = [];
 let profile: Profile;
 let contact: Contact;
 
-let jumplistResult: JumplistItem[] = [];
-let originalJumplistResult: JumplistItem[] = [];
+let detailActions: UserActionItem[];
 
 $: {
   isLoading = true;
@@ -59,6 +57,7 @@ async function setProfile(id: string) {
 
   contact = c;
   profile = c.contactAddress_Profile;
+  detailActions = [];
 
   if ($me.circlesAddress !== contact.contactAddress) {
     commonTrusts = (
@@ -74,12 +73,7 @@ async function setProfile(id: string) {
     commonTrusts = [];
   }
 
-  displayName = contact.contactAddress_Profile.firstName
-    ? contact.contactAddress_Profile.firstName +
-      (contact.contactAddress_Profile.lastName
-        ? " " + contact.contactAddress_Profile.lastName
-        : "")
-    : contact.contactAddress;
+  displayName = contact.contactAddress_Profile.displayName;
 
   // displayName =
   //   displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
@@ -104,36 +98,39 @@ async function setProfile(id: string) {
     }
 
     if (trustIn > 0 && trustOut > 0) {
-      trustMessage = "mutual trust";
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.mutualTrust")}`;
     } else if (!trustIn && trustOut > 0) {
-      trustMessage = "trusted by you";
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.trustedByYou")}`;
     } else if (trustIn > 0 && !trustOut) {
-      trustMessage = "is trusting you";
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.isTrustingYou")}`;
     } else {
-      trustMessage = "not trusted";
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.notTrusted")}`;
     }
   }
 
   isMe = profile.id == ($me ? $me.id : 0);
+  isLoading = false;
 
-  originalJumplistResult = await jumplist.items({ id: id }, runtimeDapp);
-  jumplistResult = originalJumplistResult;
+  const detailActionsPromise = UserActions.getAvailableActions(profile);
+  const sessionInfoPromise = me.getSessionInfo();
+  const promiseResults = await Promise.all([detailActionsPromise, sessionInfoPromise]);
+  detailActions = <UserActionItem[]>promiseResults[0];
+  const sessionInfo = <SessionInfo>promiseResults[1];
 
   const verifyData = [
     {
       key: "verify",
       icon: "check",
-      title: "Verify",
+      title: `${$_("dapps.o-contacts.pages.profile.verify")}`,
       mutation: VerifySafeDocument,
     },
     {
       key: "revoke",
       icon: "trash",
-      title: "revoke Verification",
+      title: `${$_("dapps.o-contacts.pages.profile.revoke")}`,
       mutation: RevokeSafeVerificationDocument,
     },
   ];
-  const sessionInfo = await getSessionInfo();
   capabilities = sessionInfo.capabilities;
   const canVerify =
     capabilities &&
@@ -143,7 +140,7 @@ async function setProfile(id: string) {
   const verifyProfile = {
     key: "verify",
     icon: "check",
-    title: "Verify",
+    title: `${$_("dapps.o-contacts.pages.profile.verify")}`,
     action: async () => {
       const apiClient = await window.o.apiClient.client.subscribeToResult();
       await apiClient.mutate({
@@ -152,7 +149,10 @@ async function setProfile(id: string) {
           safeAddress: id,
         },
       });
-      showToast("success", "Account verified");
+      showToast(
+        "success",
+        `${$_("dapps.o-contacts.pages.profile.accountVeryfied")}`
+      );
 
       isLoading = true;
       setProfile(id).then(() => (isLoading = false));
@@ -163,7 +163,7 @@ async function setProfile(id: string) {
     key: "evoke",
     icon: "trash",
     colorClass: "",
-    title: "Verified. click to Revoke",
+    title: `${$_("dapps.o-contacts.pages.profile.verifiedClickToRevoke")}`,
     action: async () => {
       const apiClient = await window.o.apiClient.client.subscribeToResult();
       await apiClient.mutate({
@@ -173,17 +173,22 @@ async function setProfile(id: string) {
         },
       });
 
-      showToast("error", "Account verification revoked");
+      showToast(
+        "error",
+        `${$_("dapps.o-contacts.pages.profile.accountVerificationRevoked")}`
+      );
 
       isLoading = true;
       setProfile(id).then(() => (isLoading = false));
     },
   };
+  console.log("banni", unverifyProfile);
+
   const bannedProfile = {
     key: "banned",
     icon: "trash",
     colorClass: "text-alert-dark",
-    title: "REVOKED",
+    title: `${$_("dapps.o-contacts.pages.profile.revokedUppercase")}`,
     action: () => {},
   };
 
@@ -193,12 +198,12 @@ async function setProfile(id: string) {
       profile.verifications[0] &&
       profile.verifications[0].revokedAt
     ) {
-      jumplistResult.push(bannedProfile);
+      detailActions.push(bannedProfile);
     } else {
       if (profile.verifications.length) {
-        jumplistResult.push(unverifyProfile);
+        detailActions.push(unverifyProfile);
       } else {
-        jumplistResult.push(verifyProfile);
+        detailActions.push(verifyProfile);
       }
     }
   }
@@ -213,7 +218,9 @@ async function setProfile(id: string) {
   <div class="p-5 pb-0">
     <header class="grid overflow-hidden bg-white h-72 ">
       <div class="w-full text-center">
-        <h1 class="text-3xl uppercase font-heading">PROFILE</h1>
+        <h1 class="text-3xl uppercase font-heading">
+          {$_("dapps.o-contacts.pages.profile.profile")}
+        </h1>
       </div>
       <div
         class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
@@ -248,7 +255,9 @@ async function setProfile(id: string) {
             {#if trustMessage}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
-                  <div class="text-left text-2xs text-dark-lightest">Trust</div>
+                  <div class="text-left text-2xs text-dark-lightest">
+                    {$_("dapps.o-contacts.pages.profile.trust")}
+                  </div>
                   <div class="flex flex-wrap content-start">
                     {trustMessage}
                   </div>
@@ -258,7 +267,7 @@ async function setProfile(id: string) {
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="text-left text-2xs text-dark-lightest">
-                  Mutual Friends
+                  {$_("dapps.o-contacts.pages.profile.mutualFriends")}
                 </div>
                 <div class="flex flex-row flex-wrap mt-2 ">
                   {#if commonTrusts.length}
@@ -273,7 +282,7 @@ async function setProfile(id: string) {
                       {/if}
                     {/each}
                   {:else}
-                    No mutual friends
+                    {$_("dapps.o-contacts.pages.profile.noMutualFriends")}
                   {/if}
                 </div>
               </div>
@@ -282,7 +291,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    Member at
+                    {$_("dapps.o-contacts.pages.profile.memberAt")}
                   </div>
                   <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.memberships as membership}
@@ -303,7 +312,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    Verified by
+                    {$_("dapps.o-contacts.pages.profile.verifiedBy")}
                   </div>
                   <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.verifications as verification}
@@ -324,7 +333,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    Passion
+                    {$_("dapps.o-contacts.pages.profile.passion")}
                   </div>
 
                   <div class="flex items-center w-full text-lg">
@@ -339,7 +348,7 @@ async function setProfile(id: string) {
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
-                  Address
+                  {$_("dapps.o-contacts.pages.profile.address")}
                 </div>
                 <div class="flex items-center w-full text-2xs">
                   {contact.contactAddress}
@@ -350,9 +359,9 @@ async function setProfile(id: string) {
         </div>
       </div>
 
-      {#if profile && jumplistResult && !isMe}
+      {#if profile && detailActions && !isMe}
         <div class="sticky bottom-0 left-0 right-0 w-full pb-5 bg-white">
-          <DetailActionBar actions="{jumplistResult}" />
+          <DetailActionBar actions="{detailActions}" />
         </div>
       {/if}
     </div>

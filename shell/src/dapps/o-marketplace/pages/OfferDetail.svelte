@@ -8,6 +8,7 @@ import { cartContents } from "../stores/shoppingCartStore";
 import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { offers } from "../../../shared/stores/offers";
+import { _ } from "svelte-i18n";
 
 let isLoading: boolean;
 let error: Error;
@@ -59,7 +60,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>Loading offers...</div>
+          <div>{$_("dapps.o-marketplace.pages.offerDetail.loadingOffers")}</div>
         </div>
       </div>
     </section>
@@ -68,7 +69,7 @@ onMount(async () => {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>An error occurred while loading the recent activities:</b>
+            <b>{$_("dapps.o-marketplace.pages.offerDetail.error")}</b>
           </div>
         </div>
       </div>
@@ -91,6 +92,11 @@ onMount(async () => {
                 <span class="inline-block">{o.pricePerUnit}</span>
                 <span class="inline-block">€</span>
               </div>
+
+              <div
+                class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
+                {$_("dapps.o-marketplace.atoms.offerCard.pickUpOnly")}
+              </div>
             </div>
           </header>
           <div
@@ -102,8 +108,7 @@ onMount(async () => {
                 gradientRing="{false}" />
             </div>
             <div>
-              {o.createdByProfile.firstName}
-              {o.createdByProfile.lastName ? o.createdByProfile.lastName : ""}
+              {o.createdByProfile.displayName}
             </div>
           </div>
 
@@ -134,7 +139,11 @@ onMount(async () => {
             <!-- {#if o.deliveryTermsTag} -->
             <div class="flex flex-col space-y-1 text-right">
               <div class="pt-2 text-sm">
-                <span class="text-xs">Store Pick Up at:</span><br />
+                <span class="text-xs"
+                  >{$_(
+                    "dapps.o-marketplace.pages.offerDetail.storePickup"
+                  )}</span
+                ><br />
                 Basic Income Lab GmbH<br />
                 Reifenstuelstrasse 6<br />
                 80469 München<br />
@@ -145,7 +154,9 @@ onMount(async () => {
             <!-- {/if} -->
             {#if o.city}
               <div class="flex flex-col space-y-1">
-                <div class="text-2xs">Location</div>
+                <div class="text-2xs">
+                  {$_("dapps.o-marketplace.pages.offerDetail.location")}
+                </div>
                 <div class="text-sm text-dark-lightest">{o.city.name}</div>
               </div>
             {/if}
@@ -315,7 +326,7 @@ onMount(async () => {
               type="submit"
               class="relative btn btn-primary btn-block"
               on:click="{() => addToCart(o)}">
-              Add to Cart
+              {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
               <div class="absolute mr-1 right-2">
                 <Icons icon="cart" />
               </div>
@@ -328,7 +339,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>Not found</div>
+          <div>{$_("dapps.o-marketplace.pages.offerDetail.notFound")}</div>
         </div>
       </div>
     </section>

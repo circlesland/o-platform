@@ -25,7 +25,7 @@ function onkeydown(e: KeyboardEvent) {
 </script>
 
 <div>
-  <div class="flex flex-col w-full h-full">
+  <div class="flex flex-col w-full h-full pb-2">
     <button
       class="self-end text-primary"
       on:click="{() => {
@@ -47,6 +47,4 @@ function onkeydown(e: KeyboardEvent) {
       </div>
     </div>
   </div>
-
-  <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
 </div>

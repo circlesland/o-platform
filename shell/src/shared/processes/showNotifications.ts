@@ -18,24 +18,24 @@ export type ShowNotificationsContextData = {
 };
 
 const strings = {
-  CrcHubTransfer: "Received",
-  CrcTrust: "New trust",
-  crc_untrust: "Trust removed",
-  ChatMessage: "New Message",
-  CrcMinting: "Received new Basic Income",
-  MembershipOffer: "Invitation to Organisation",
+  CrcHubTransfer: window.i18n("shared.processes.showNotifications.strings.crcHubTransfer"),
+  CrcTrust: window.i18n("shared.processes.showNotifications.strings.crcTrust"),
+  crc_untrust: window.i18n("shared.processes.showNotifications.strings.crc_untrust"),
+  ChatMessage: window.i18n("shared.processes.showNotifications.strings.chatMessage"),
+  CrcMinting: window.i18n("shared.processes.showNotifications.strings.crcMinting"),
+  MembershipOffer: window.i18n("shared.processes.showNotifications.strings.membershipOffer"),
   InvitationCreated: "",
-  MembershipAccepted: "Invitation Accepted",
+  MembershipAccepted: window.i18n("shared.processes.showNotifications.strings.membershipAccepted"),
 };
 export type ShowNotificationsContext =
   ProcessContext<ShowNotificationsContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
   showNotifications: {
-    title: "What is your first name?",
+    title: window.i18n("shared.processes.showNotifications.editorContent.title"),
     description: "",
     placeholder: "",
-    submitButtonText: "OK",
+    submitButtonText: window.i18n("shared.processes.showNotifications.editorContent.submitButtonText"),
   },
 };
 
@@ -108,7 +108,7 @@ const processDefinition = (processId: string) =>
               titleClass: "",
               description: "",
               placeholder: "",
-              submitButtonText: "Got it",
+              submitButtonText: window.i18n("shared.processes.showNotifications.submitButtonText"),
             },
             push: (target) => push(target),
           };
@@ -140,7 +140,7 @@ const processDefinition = (processId: string) =>
         type: "final",
         id: "success",
         data: (context, event: PlatformEvent) => {
-          return "yeah!";
+          return window.i18n("shared.processes.showNotifications.yeah");
         },
       },
     },

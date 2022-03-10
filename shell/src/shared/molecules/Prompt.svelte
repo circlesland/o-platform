@@ -6,6 +6,7 @@ import { PromptField } from "@o-platform/o-process/dist/states/prompt";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import NavSteps from "./NavSteps.svelte";
+import { _ } from "svelte-i18n";
 
 export let process: Process;
 export let prompt: Prompt<ProcessContext<any>>;
@@ -95,7 +96,6 @@ const onBlur = () => window.o.publishEvent({ type: "shell.inputBlurred" });
   </slot> -->
   </section>
 {:else}
-  Hmm... Nothing to display here. Seems like the 'prompt' attribute of the
-  Prompt.svelte component is not set.
+  {$_("shared.molecules.prompt.nothingToDisplay")}
   <br />
 {/if}

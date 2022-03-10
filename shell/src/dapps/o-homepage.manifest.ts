@@ -1,5 +1,5 @@
 import Home from "./o-homepage/pages/Home.svelte";
-import Invite from "./o-homepage/pages/Invite.svelte";
+
 import Citizens from "./o-homepage/pages/Citizens.svelte";
 import Countries from "./o-homepage/pages/Countries.svelte";
 import Imprint from "./o-homepage/pages/Imprint.svelte";
@@ -66,7 +66,7 @@ const invite: Page<{ inviteCode: string }, DappState> = {
   isSystem: true,
   anonymous: true,
   routeParts: ["=invite", ":inviteCode"],
-  component: Invite,
+  component: Home,
   title: "Circles Land",
   type: "page",
 };

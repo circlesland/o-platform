@@ -18,9 +18,9 @@ import {
 } from "../api/data/types";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {me} from "./me";
-import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
 import {fSetTrust} from "../../dapps/o-banking/processes/setTrust";
 import {ApiClient} from "../apiConnection";
+import {Environment} from "../environment";
 
 let events: ProfileEvent[] = [];
 let following: boolean = false;
@@ -29,7 +29,7 @@ async function queryEvents(mySafeAddress: string) {
   // TODO: Get last acknowledged
   // TODO: Get my safe address
 
-  const sessionInfo = await getSessionInfo();
+  const sessionInfo = await me.getSessionInfo();
 
   let pagination: PaginationArgs = {
     order: SortOrder.Asc,
@@ -204,7 +204,7 @@ export async function followTrust(profile: Profile | Organisation) {
         data: {
           safeAddress: profile.circlesAddress,
           trustLimit: 0,
-          hubAddress: "__CIRCLES_HUB_ADDRESS__",
+          hubAddress: Environment.circlesHubAddress,
           trustReceiver: address,
           privateKey: sessionStorage.getItem("circlesKey")
         },
@@ -219,7 +219,7 @@ export async function followTrust(profile: Profile | Organisation) {
         data: {
           safeAddress: profile.circlesAddress,
           trustLimit: 100,
-          hubAddress: "__CIRCLES_HUB_ADDRESS__",
+          hubAddress: Environment.circlesHubAddress,
           trustReceiver: address,
           privateKey: sessionStorage.getItem("circlesKey")
         },

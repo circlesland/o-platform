@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { _ } from "svelte-i18n";
   export let data: {
     error: Error;
   };
@@ -52,7 +53,7 @@
         />
       </svg>
       <label for="input" class="break-all"
-        ><h4><strong>The process encountered an error</strong></h4>
+        ><h4><strong>{$_("shared.atoms.error.processEncounteredAnError")}</strong></h4>
         {#if error && error.message}
           {error.message}
         {/if}
@@ -69,14 +70,14 @@
       class="w-full mt-5 mb-5 overflow-y-scroll errormessage textarea textarea-bordered input-error max-h-72"
     />
   {:else}
-    No error details available. See the console for more details.
+    {$_("shared.atoms.error.noErrorDetailsAvailable")}
   {/if}
   <a href="https://discord.gg/SACzRXa35v">
-    Please try to reload the page or contact us on Discord <a
+    {$_("shared.atoms.error.pleaseTryToReload")}<a
       href="https://discord.gg/4DBbRCMnFZ"
       target="_blank"
       class="btn-link">https://discord.gg/4DBbRCMnFZ</a
-    > if the problem persists.
+    >{$_("shared.atoms.error.ifTheProblemPersists")}
   </a>
 </div>
 

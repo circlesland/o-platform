@@ -1,7 +1,7 @@
 <script lang="ts">
 import NotificationProfile from "./NotificationProfile.svelte";
-import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
 import { CrcTrust, ProfileEvent } from "../../api/data/types";
+import { _ } from "svelte-i18n";
 
 export let event: ProfileEvent;
 
@@ -17,15 +17,19 @@ let payload: CrcTrust = <CrcTrust>event.payload;
     <div class="text-center text-dark-lightest">
       {event.contact_address_profile
         ? event.contact_address_profile.firstName
-        : event.contact_address_profile.circlesAddress} has removed their trust to
-      you.
+        : event.contact_address_profile.circlesAddress}
+      {$_(
+        "shared.molecules.notificationViewer.molecules.notificationViewTrust.hasRemovedTheirTrustToYou"
+      )}
     </div>
   {:else}
     <div class="text-center text-dark-lightest">
       {event.contact_address_profile
         ? event.contact_address_profile.firstName
-        : event.contact_address_profile.circlesAddress} is trusting you now.
+        : event.contact_address_profile.circlesAddress}
+      {$_(
+        "shared.molecules.notificationViewer.molecules.notificationViewTrust.isTrustingYouNow"
+      )}
     </div>
   {/if}
 </div>
-<!-- <NotificationViewMutualFriends eventData="{eventData}" /> -->

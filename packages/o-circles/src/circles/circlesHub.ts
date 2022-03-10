@@ -1,11 +1,12 @@
 import Web3 from "web3";
-import type { AbiItem } from "web3-utils";
-import { CIRCLES_HUB_ABI,  ZERO_ADDRESS } from "../consts";
-import type { GnosisSafeProxy } from "../safe/gnosisSafeProxy";
-import { BN } from "ethereumjs-util";
-import { Web3Contract } from "../web3Contract";
-import { SafeOps } from "../model/safeOps";
-import type { TransactionReceipt } from "web3-core";
+import type {AbiItem} from "web3-utils";
+import {CIRCLES_HUB_ABI, ZERO_ADDRESS} from "../consts";
+import type {GnosisSafeProxy} from "../safe/gnosisSafeProxy";
+import {BN} from "ethereumjs-util";
+import {Web3Contract} from "../web3Contract";
+import {SafeOps} from "../model/safeOps";
+import type {TransactionReceipt} from "web3-core";
+import {RpcGateway} from "../rpcGateway";
 
 export class CirclesHub extends Web3Contract {
   constructor(web3: Web3, hubAddress: string) {
@@ -138,6 +139,54 @@ export class CirclesHub extends Web3Contract {
     return await a;
   }
 
+  async transferThroughTxData(
+      privateKey: string,
+      safeProxy: GnosisSafeProxy,
+      tokenOwners: string[],
+      sources: string[],
+      destinations: string[],
+      values: BN[]
+  ) : Promise<string> {
+    const transfer = {
+      tokenOwners: tokenOwners,
+      sources: sources,
+      destinations: destinations,
+      values: values,
+    };
+
+    const txData = await this.contract.methods
+        .transferThrough(
+            transfer.tokenOwners,
+            transfer.sources,
+            transfer.destinations,
+            transfer.values
+        )
+        .encodeABI();
+
+    return txData;
+  }
+
+  async transferTroughTxHash(
+      privateKey: string,
+      safeProxy: GnosisSafeProxy,
+      tokenOwners: string[],
+      sources: string[],
+      destinations: string[],
+      values: BN[]
+  ): Promise<string|null> {
+    const innerTxData = await this.transferThroughTxData(privateKey, safeProxy, tokenOwners, sources, destinations, values);
+    const outerTxData = await safeProxy.execTransactionTxData(privateKey, {
+      to: this.address,
+      data: innerTxData,
+      value: new BN("0"),
+      refundReceiver: ZERO_ADDRESS,
+      gasToken: ZERO_ADDRESS,
+      operation: SafeOps.CALL,
+    }, true);
+
+    return RpcGateway.get().utils.sha3(outerTxData);
+  }
+
   async transferTrough(
     privateKey: string,
     safeProxy: GnosisSafeProxy,
@@ -146,31 +195,7 @@ export class CirclesHub extends Web3Contract {
     destinations: string[],
     values: BN[]
   ): Promise<TransactionReceipt> {
-    const transfer = {
-      tokenOwners: tokenOwners,
-      sources: sources,
-      destinations: destinations,
-      values: values,
-    };
-
-    // TODO: Check the send limit for each edge with the hub contract
-    /*
-    const sendLimit = await this.contract.methods
-      .checkSendLimit(_safeProxy.address, _safeProxy.address, to)
-      .call();
-
-    if (new BN(sendLimit).lt(amount))
-      throw new Error("You cannot transfer " + amount.toString() + "units to " + to + " because the recipient doesn't trust your tokens.");
-    */
-
-    const txData = await this.contract.methods
-      .transferThrough(
-        transfer.tokenOwners,
-        transfer.sources,
-        transfer.destinations,
-        transfer.values
-      )
-      .encodeABI();
+    const txData = await this.transferThroughTxData(privateKey, safeProxy, tokenOwners, sources, destinations, values);
 
     return await safeProxy.execTransaction(privateKey, {
       to: this.address,

@@ -21,14 +21,14 @@ const { assign } = actions;
 
 const editorContent = {
   info: {
-    title: "Get invited",
-    description: "Find somebody who can give you an invite code to join.",
-    submitButtonText: "I have a code",
+    title: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.title"),
+    description: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.description"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.submitButtonText"),
   },
   checkInviteCode: {
-    title: "Enter invitation code",
-    description: "Please enter your invitation code below to get started.",
-    submitButtonText: "Verify",
+    title: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.title"),
+    description: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.description"),
+    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.submitButtonText"),
   },
 };
 const processDefinition = (processId: string) =>
@@ -104,7 +104,7 @@ const processDefinition = (processId: string) =>
         },
         dataSchema: yup
           .string()
-          .required("Please enter a valid invitation code to proceed."),
+          .required(window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.dataSchemaRequired")),
         navigation: {
           next: "#redeemCode",
         },
@@ -127,14 +127,14 @@ const processDefinition = (processId: string) =>
                 .map((o) => o.message)
                 .join(" \n");
               throw new Error(
-                `Couldn't claim an invitation: ${context.messages["inviteCode"]}`
+                window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.couldNotClaimInvitation", {values: {contextMessages: context.messages["inviteCode"]}})
               );
             }
             if (!claimResult.data.claimInvitation.success) {
               context.messages["inviteCode"] =
                 claimResult.data.claimInvitation.error;
               throw new Error(
-                `Couldn't claim an invitation: ${context.messages["inviteCode"]}`
+                window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.couldNotClaimInvitation", {values: {contextMessages: context.messages["inviteCode"]}})
               );
             }
           },
@@ -147,6 +147,7 @@ const processDefinition = (processId: string) =>
         id: "success",
         type: "final",
         entry: (context, event: PlatformEvent) => {
+          localStorage.removeItem("circlesInvite");
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }

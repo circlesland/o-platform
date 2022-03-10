@@ -23,61 +23,27 @@ export type CreateSafeContext = ProcessContext<CreateSafeContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  choiceConnect: "Connect",
-  choiceCreate: "Create",
-  labelExportSeedphrase: `Your Secret Recovery Code is the
-<span class="text-alert">only key</span>
-which can access your safe. It is your
-<span class="text-alert">full responsibility</span>
-to
-<span class="text-alert">protect</span>
-this code like a
-<span class="text-alert">password</span>
-.
-<br />
-<br />
-<span class="text-xs">
-  If you loose it or forget it, all your
-  <span class="text-alert">money is lost forever</span>
-  .
-</span>`,
-  buttonExportSeedphrase: "I stored it securely",
+  choiceConnect: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.choiceConnect"),
+  choiceCreate: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.choiceCreate"),
+  labelExportSeedphrase: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.labelExportSeedphrase"),
+  buttonExportSeedphrase: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.buttonExportSeedphrase"),
   // labelCheckSeedphrase: (context: CreateSafeContext) => `Please enter the ${context.data.checkWordIndex == 0 ? (context.data.checkWordIndex + 1).toString() + "st" : (context.data.checkWordIndex + 1).toString() + "nd"} word of your seedphrase:`,
-  labelCheckSeedphrase: `Keep in mind, everyone who knows your Secret Recovery Code can access all your funds! Did you store your Secret Recovery Code in a password manager or have you written it down on a paper, that you put into a secret place? <strong class='text-primary block mt-3'>Repeat your Secret Recovery Code</strong>`,
-  buttonCheckSeedphrase: "Really, I did it!",
+  labelCheckSeedphrase: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.labelCheckSeedphrase"),
+  buttonCheckSeedphrase: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.buttonCheckSeedphrase"),
 };
 
 const editorContent = {
   seedphrase: {
-    title: `READ CAREFULLY<br/>Secret Recovery Code`,
+    title: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.title"),
     titleClass: "text-alert",
-    description: `Your Secret Recovery Code is the
-<span class="text-alert">only key</span>
-which can access your safe. It is your
-<span class="text-alert">full responsibility</span>
-to
-<span class="text-alert">protect</span>
-this code like a
-<span class="text-alert">password</span>
-.
-<br />
-<br />
-<span class="text-xs">
-  If you loose it or forget it, all your
-  <span class="text-alert">money is lost forever</span>
-  .
-</span>`,
-    submitButtonText: "Next",
+    description: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.description"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.submitButtonText"),
   },
   seedphraseCheck: {
-    title: `SAFE Code SECURELY`,
+    title: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.title"),
     titleClass: "text-alert",
-    description: `
-    Keep in mind, <span class="text-alert">everyone who knows</span> your Secret Recovery Code can <span class="text-alert">access all you money</span>.
-    <br />
-    <br />
-    <span class="text-xs">Please save your Secret Recovery Code in your notes <span class="text-alert">(not secure)</span>, a password manager <span class="text-alert">(secure)</span> or write it down on a paper and put it in your safe <span class="text-alert">(most secure)</span>.`,
-    submitButtonText: "I stored my Code securly",
+    description: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.description"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.submitButtonText"),
   },
 };
 function randomIntFromInterval(min, max) {
@@ -141,7 +107,7 @@ const processDefinition = (processId: string) =>
         },
         dataSchema: yup
           .string()
-          .required("Please enter your Secret Recovery Code."),
+          .required(window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.pleaseEnterSecretCode")),
         navigation: {
           next: "#verifyCheckSeedPhrase",
           previous: "#backupSeedphrase",

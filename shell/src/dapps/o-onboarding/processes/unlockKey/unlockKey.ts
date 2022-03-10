@@ -55,17 +55,16 @@ const processDefinition = (processId: string) =>
           isSensitive: true,
           params: {
             view: {
-              title: "Please enter your pin",
-              description:
-                "The pin will be used to decrypt your private key on your device.",
-              placeholder: "Enter Pin",
-              submitButtonText: "Unlock",
+              title: window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.title"),
+              description: window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.description"),
+              placeholder: window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.placeholder"),
+              submitButtonText: window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.submitButtonText"),
             },
           },
           dataSchema: yup
             .string()
             .required(
-              "Please enter a encryptingPin to protect your private key."
+              window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.dataSchemaRequired")
             ),
           navigation: {
             next: "#execUnlockKey",
@@ -92,7 +91,7 @@ const processDefinition = (processId: string) =>
                 delete context.data.decryptionPin;
                 delete context.data.privateKey;
                 context.messages["decryptionPin"] =
-                  "Couldn't decrypt your key. Have you entered the correct pin?";
+                window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.couldNotDecrypt");
                 throw new Error(context.messages["decryptionPin"]);
               }
 

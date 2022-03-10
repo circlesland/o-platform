@@ -4,6 +4,7 @@
 	import TransfersFinder from './CirclesTransfersFinder.svelte';
 
 	import { formatValue } from './utility.js';
+	import { _ } from "svelte-i18n";
 
 	let maxValue = '0';
 	let transfers = [];
@@ -12,7 +13,7 @@
 <main>
 	<TransfersFinder bind:maxValue={maxValue} bind:transfers={transfers}></TransfersFinder>
 	<hr/>
-	<p>Visualizing flow of {formatValue(maxValue)}</p>
+	<p>{$_("shared.pathfinder.app.visualizingFlowOf", { values: { flow: formatValue(maxValue)}})}</p>
 	<TransferGraph transfers={transfers}></TransferGraph>
 	<AdjacencyGraph></AdjacencyGraph>
 	<hr/>

@@ -6,26 +6,28 @@ import Card from "../../../shared/atoms/Card.svelte";
 
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import { AssetBalance } from "../../../shared/api/data/types";
-import { assetsBalances } from "../../../shared/stores/assetsBalances";
+import {assetBalances} from "../../../shared/stores/assetsBalances";
+
+import { _ } from "svelte-i18n";
 
 let loading = true;
 let balances: AssetBalance[] = [];
 
 onMount(async () => {
-  balances = $assetsBalances.crcBalances;
+  balances = $assetBalances.crcBalances;
   loading = false;
 });
 </script>
 
 <div class="p-5">
   <div class="w-full mb-4 text-center">
-    <h1 class="uppercase font-heading">Individual Circles</h1>
+    <h1 class="uppercase font-heading">{$_("dapps.o-banking.pages.crcDetail.individualCircles")}</h1>
   </div>
   {#if loading}
     <section class="flex items-center justify-center mb-2 ">
       <Card>
         <div class="flex flex-col items-start">
-          <div>Loading Tokens...</div>
+          <div>{$_("dapps.o-banking.pages.crcDetail.loadingTokens")}</div>
         </div>
       </Card>
     </section>
@@ -41,13 +43,7 @@ onMount(async () => {
                 : {
                     circlesAddress: token.token_owner_address,
                   },
-              title: token.token_owner_profile
-                ? `${token.token_owner_profile.firstName} ${
-                    token.token_owner_profile.lastName
-                      ? token.token_owner_profile.lastName
-                      : ''
-                  }`
-                : token.token_owner_address,
+              title: token.token_owner_profile.displayName,
               subTitle: token.token_owner_profile
                 ? token.token_owner_address
                 : '',

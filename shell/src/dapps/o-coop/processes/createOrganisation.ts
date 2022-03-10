@@ -17,6 +17,7 @@ import {GnosisSafeProxyFactory} from "@o-platform/o-circles/dist/safe/gnosisSafe
 import {show} from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
 import {BN} from "ethereumjs-util";
+import {Environment} from "../../../shared/environment";
 
 export type CreateOrganisationContextData = {
   successAction: (data:CreateOrganisationContextData) => void,
@@ -45,13 +46,13 @@ async function sendFundsFromEoa(to:string, amount: BN)
   unsub();
 
   if (!$me)
-    throw new Error(`You're not logged on`);
+    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.notLoggedOn"));
   if (!$me.circlesSafeOwner)
-    throw new Error(`You have no eoa`);
+    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.noEoa"));
 
   const privateKey = sessionStorage.getItem("circlesKey");
   if (!privateKey) {
-    throw new Error(`The private key is not unlocked`);
+    throw new Error(window.i18n("dapps.o-coop.proxesses.createOrganisations.notUnlockedPrivateKey"));
   }
 
   const web3 = RpcGateway.get();
@@ -67,7 +68,7 @@ async function sendFundsFromEoa(to:string, amount: BN)
 
   const availableForTransfer = eoaBalance.sub(totalFee);
   if (availableForTransfer.lt(amount)) {
-    throw new Error(`You have not enough funds on '${$me.circlesSafeOwner}'. Max. transferable amount is ${web3.utils.fromWei(availableForTransfer, "ether")}`);
+    throw new Error(`You have not enough funds on '${$me.circlesSafeOwner}'. Max. transferable amount is ${web3.utils.fromWei(availableForTransfer, "ether")}`); //i18n skipped for now
   }
 
   const account = web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -81,7 +82,7 @@ async function sendFundsFromEoa(to:string, amount: BN)
   });
 
   if (!signedTx?.rawTransaction) {
-    throw new Error(`Couldn't send the invitation transaction`);
+    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.couldNotSend"));
   }
 
   const receipt = await web3.eth.sendSignedTransaction(
@@ -102,13 +103,13 @@ async function sendFundsFromSafe(to:string, amount: BN)
   unsub();
 
   if (!$me)
-    throw new Error(`You're not logged on`);
+    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.notLoggedOn"));
   if (!$me.circlesSafeOwner)
-    throw new Error(`You have no eoa`);
+    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.noEoa"));
 
   const privateKey = sessionStorage.getItem("circlesKey");
   if (!privateKey) {
-    throw new Error(`The private key is not unlocked`);
+    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.notUnlockedPrivateKey"));
   }
 
   const web3 = RpcGateway.get();
@@ -124,7 +125,7 @@ async function sendFundsFromSafe(to:string, amount: BN)
 
   const availableForTransfer = eoaBalance.sub(totalFee);
   if (availableForTransfer.lt(amount)) {
-    throw new Error(`You have not enough funds on '${$me.circlesAddress}'. Max. transferable amount is ${web3.utils.fromWei(availableForTransfer, "ether")}`);
+    throw new Error(`You have not enough funds on '${$me.circlesAddress}'. Max. transferable amount is ${web3.utils.fromWei(availableForTransfer, "ether")}`); //i18n skipped for now
   }
 
   const proxy = new GnosisSafeProxy(web3, $me.circlesAddress);
@@ -147,13 +148,13 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: "What is the name of your organisation?",
-            description: "DESCRIPTION",
-            placeholder: "Name",
-            submitButtonText: "Save",
+            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.title"),
+            description: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.description"),
+            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.placeholder"),
+            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.submitButtonText"),
           },
         },
-        dataSchema: yup.string().required("Please enter an organisation name."),
+        dataSchema: yup.string().required(window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.enterOrganisationName")),
         navigation: {
           next: "#country",
         },
@@ -163,10 +164,10 @@ const processDefinition = (processId: string) =>
         field: "cityGeonameid",
         params: {
           view: {
-            title: "Where is your organisation located?",
-            description: "DESCRIPTION",
-            placeholder: "City",
-            submitButtonText: "Save",
+            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.title"),
+            description: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.description"),
+            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.placeholder"),
+            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.submitButtonText"),
           }
         },
         navigation: {
@@ -180,17 +181,17 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         params: {
           view: {
-            title: "Describe your organisation in a few sentences?",
-            description: "DESCRIPTION",
-            placeholder: "Description",
-            submitButtonText: "Save",
+            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.title"),
+            description: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.description"),
+            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.placeholder"),
+            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.submitButtonText"),
           }
         },
         dataSchema: yup
           .string()
           .nullable()
           .notRequired()
-          .max(150, "The maximum amount of characters allowed is 150."),
+          .max(150, window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.maximumChars")),
         navigation: {
           next: "#avatarUrl",
           canSkip: () => true,
@@ -205,10 +206,10 @@ const processDefinition = (processId: string) =>
         },
         params: {
           view: {
-            title: "Profile Image",
-            description: "Show the World who you are",
-            placeholder: "Upload Image",
-            submitButtonText: "Upload Image",
+            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.title"),
+            description: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.description"),
+            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.placeholder"),
+            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.submitButtonText"),
           },
         },
         navigation: {
@@ -234,7 +235,7 @@ const processDefinition = (processId: string) =>
           src: async (context) => {
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(`The private key is not unlocked`);
+              throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.deployOrganisation.notUnlockedKey"));
             }
 
             let $me:Profile = null;
@@ -244,13 +245,13 @@ const processDefinition = (processId: string) =>
             unsub();
 
             if (!$me?.circlesAddress) {
-              throw new Error(`You need a fully set-up circles account to create an organisation.`)
+              throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.deployOrganisation.needFullAccountSetuo"))
             }
 
             const proxyFactory = new GnosisSafeProxyFactory(
               RpcGateway.get(),
-              "__SAFE_PROXY_FACTORY_ADDRESS__",
-              "__SAFE_ADDRESS__"
+              Environment.safeProxyFactoryAddress,
+              Environment.masterSafeAddress
             );
 
             context.data.organisationSafeProxy = await proxyFactory.deployNewSafeProxy(privateKey);
@@ -299,10 +300,10 @@ const processDefinition = (processId: string) =>
           src: async (context, event) => {
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(`The private key is not unlocked`);
+              throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.signupOrganisation.notUnlockedKey"));
             }
 
-            const hub = new CirclesHub(RpcGateway.get(), "__CIRCLES_HUB_ADDRESS__");
+            const hub = new CirclesHub(RpcGateway.get(), Environment.circlesHubAddress);
             const receipt = await hub.signupOrganisation(privateKey, context.data.organisationSafeProxy);
             console.log(receipt)
           },

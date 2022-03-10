@@ -9,6 +9,7 @@ import { me } from "../../../shared/stores/me";
 import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
 import Time from "svelte-time";
+import { _ } from "svelte-i18n";
 
 export let param: Offer = <any>{
   categoryTag: {
@@ -66,9 +67,7 @@ function dateOlderThanSevenDays(unixTime: number) {
   return sevendaysago > unixTime * 1000;
 }
 
-let displayName = `${offer.createdByProfile.firstName} ${
-  offer.createdByProfile.lastName ? offer.createdByProfile.lastName : ""
-}`;
+let displayName = `${offer.createdByProfile.displayName}`;
 
 displayName =
   displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
@@ -95,7 +94,7 @@ displayName =
 
         <div
           class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
-          Store Pick Up Only
+          {$_("dapps.o-marketplace.atoms.offerCard.pickUpOnly")}
         </div>
       </div>
     </header>
@@ -151,7 +150,7 @@ displayName =
             type="submit"
             class="relative btn btn-primary btn-block"
             on:click="{() => loadDetailPage()}">
-            Details
+            {$_("dapps.o-marketplace.atoms.offerCard.details")}
             <div class="absolute mr-1 right-2">
               <Icons icon="eye" />
             </div>

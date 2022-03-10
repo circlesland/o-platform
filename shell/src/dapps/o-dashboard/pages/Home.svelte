@@ -4,14 +4,11 @@ import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { Capability, CapabilityType } from "../../../shared/api/data/types";
-import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
+import {Capability, CapabilityType, StatsDocument} from "../../../shared/api/data/types";
 import DashboardHeader from "../atoms/DashboardHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import {
-  VerificationsCountDocument,
-  ProfilesCountDocument,
-} from "../../../shared/api/data/types";
+import { Environment } from "../../../shared/environment";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -28,12 +25,12 @@ const init = async () => {
   const pk = sessionStorage.getItem("circlesKey");
   disableBanking = !pk;
 
-  const sessionInfo = await getSessionInfo();
+  const sessionInfo = await me.getSessionInfo();
   capabilities = sessionInfo.capabilities;
   canVerify =
     capabilities &&
     capabilities.find((o) => o.type == CapabilityType.Verify) &&
-    "__ALLOW_VERIFY__" == "true";
+    Environment.allowVerify;
 };
 
 let showInviteButton = false;
@@ -48,34 +45,19 @@ function loadLink(link, external = false) {
   }
 }
 
-async function fetchVerificationsCount() {
+async function fetchStats() {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.query({
-    query: VerificationsCountDocument,
+    query: StatsDocument,
   });
   if (result.errors) {
     throw new Error(
-      `Couldn't load profilesCount': ${JSON.stringify(result.errors)}`
+      `Couldn't load stats': ${JSON.stringify(result.errors)}`
     );
   }
   return result;
 }
-let verificationPromise = fetchVerificationsCount();
-
-async function fetchProfilesCount() {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: ProfilesCountDocument,
-  });
-  if (result.errors) {
-    throw new Error(
-      `Couldn't load profilesCount': ${JSON.stringify(result.errors)}`
-    );
-  }
-  return result;
-}
-
-let profilesPromise = fetchProfilesCount();
+let statsPromise = fetchStats();
 </script>
 
 <DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -87,26 +69,28 @@ let profilesPromise = fetchProfilesCount();
       <div class="flex flex-row items-stretch w-full justify-items-center">
         <div class="flex flex-col flex-grow">
           <div class="text-6xl text-center font-heading text-primary">
-            {#await profilesPromise}
+            {#await statsPromise}
               ...
             {:then result}
-              {result.data.profilesCount ? result.data.profilesCount : "0"}
+              {result.data.stats.profilesCount ? result.data.stats.profilesCount : "0"}
             {/await}
           </div>
-          <div class="text-center font-primary text-dark">Total Citizens</div>
+          <div class="text-center font-primary text-dark">
+            {$_("dapps.o-dashboard.pages.home.totalCitizens")}
+          </div>
         </div>
         <div class="flex flex-col flex-grow">
           <div class="text-6xl text-center font-heading text-primary">
-            {#await verificationPromise}
+            {#await statsPromise}
               ...
             {:then result}
-              {result.data.verificationsCount
-                ? result.data.verificationsCount
+              {result.data.stats.verificationsCount
+                ? result.data.stats.verificationsCount
                 : "0"}
             {/await}
           </div>
           <div class="text-center font-primary text-dark">
-            Verified Citizens
+            {$_("dapps.o-dashboard.pages.home.verifiedCitizens")}
           </div>
         </div>
       </div>
@@ -121,7 +105,9 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashpassport" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">passport</div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.passport")}
+          </div>
         </div>
       </section>
       <section
@@ -132,7 +118,9 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashfriends" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">contacts</div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.contacts")}
+          </div>
         </div>
       </section>
       <section
@@ -143,7 +131,9 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashchat" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">chat</div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.chat")}
+          </div>
         </div>
       </section>
       <section
@@ -154,7 +144,9 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashbanking" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">banking</div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.banking")}
+          </div>
         </div>
       </section>
       <section
@@ -165,19 +157,23 @@ let profilesPromise = fetchProfilesCount();
           <div class="pt-2 text-primary">
             <Icons icon="dashmarket" />
           </div>
-          <div class="mt-4 text-3xl font-heading text-dark">market</div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.market")}
+          </div>
         </div>
       </section>
       {#if canVerify}
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-          on:click="{() => loadLink('/verification')}">
+          on:click="{() => loadLink('/verification/verifications')}">
           <div
             class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
               <Icons icon="check" size="{12}" />
             </div>
-            <div class="mt-4 text-3xl font-heading text-dark">verified</div>
+            <div class="mt-4 text-3xl font-heading text-dark">
+              {$_("dapps.o-dashboard.pages.home.verified")}
+            </div>
           </div>
         </section>
       {/if}

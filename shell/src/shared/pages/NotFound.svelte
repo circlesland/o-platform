@@ -2,6 +2,7 @@
 import TopNav from "src/shared/atoms/TopNav.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -19,23 +20,22 @@ export let routable: Routable;
           <header class="mb-6">
             <h2
               class="text-4xl font-bold leading-none text-gray-400 select-none lg:text-6xl">
-              404.
+              {$_("shared.pages.notFount.notfound")}
             </h2>
             <h3
               class="text-xl font-light leading-normal lg:text-3xl md:text-3xl">
-              Sorry, we couldn't find this page.
+              {$_("shared.pages.notFount.sorryCouldNotFindPage")}
             </h3>
           </header>
 
           <p class="max-w-sm mb-5 leading-5 md:leading-7">
-            Don't worry, sometimes even we make mistakes. You can find plenty of
-            other things on our homepage.
+            {$_("shared.pages.notFount.donNotWorry")}
           </p>
 
           <a
             href="#/home"
             class="inline px-4 py-2 text-sm font-medium leading-5 text-white uppercase transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg shadow focus:outline-none focus:shadow-outline-blue active:bg-blue-600 hover:bg-blue-700">
-            Back to Home
+            {$_("shared.pages.notFount.backToHome")}
           </a>
         </div>
 

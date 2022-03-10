@@ -12,6 +12,7 @@ import {EditorViewContext} from "@o-platform/o-editors/src/shared/editorViewCont
 import HtmlViewer from "@o-platform/o-editors/src//HtmlViewer.svelte";
 import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
 import type {TransactionReceipt} from "web3-core";
+import {Environment} from "../../../shared/environment";
 
 export type SetTrustContextData = {
   safeAddress: string;
@@ -35,30 +36,30 @@ export type SetTrustContext = ProcessContext<SetTrustContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
-    title: "Select the person you want to trust",
+    title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.title"),
     description: "",
-    placeholder: "Select",
-    submitButtonText: "Set trust",
+    placeholder: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.placeholder"),
+    submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.submitButtonText"),
   },
   limit: {
-    title: "Please enter the Amount",
+    title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.limit.title"),
     description: "",
-    submitButtonText: "Submit",
+    submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.limit.submitButtonText"),
   },
   message: {
-    title: "Transfer Message",
+    title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.message.title"),
     description: "",
-    submitButtonText: "Submit",
+    submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.message.submitButtonText"),
   },
   confirm: {
-    title: "Confirm",
+    title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.confirm.title"),
     description: "",
-    submitButtonText: "Confirm",
+    submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.confirm.submitButtonText"),
   },
   success: {
-    title: "Trust successful",
+    title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.success.title"),
     description: "",
-    submitButtonText: "Close",
+    submitButtonText: window.i18n("dapps.o-banking.processes.setTrust.editorContent.success.submitButtonText"),
   },
 };
 
@@ -70,7 +71,7 @@ export async function fSetTrust(context: ProcessContext<SetTrustContextData>) : 
 
   return await new CirclesHub(
     RpcGateway.get(),
-    "__CIRCLES_HUB_ADDRESS__"
+    Environment.circlesHubAddress
   ).setTrust(
     context.data.privateKey,
     gnosisSafeProxy,
@@ -121,7 +122,7 @@ const processDefinition = (processId: string) =>
               context.data.safeAddress.toLowerCase(),
             actions: (context) => {
               context.messages["trustReceiver"] =
-                '"As soon as you trust yourself, you will know how to live." --Johann Wolfgang von Goethe';
+                window.i18n("dapps.o-banking.processes.setTrust.checkTrustLimit.contectMessage");
             },
             target: "#trustReceiver",
           },
@@ -144,7 +145,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: `Updating trust ..`,
+            message: window.i18n("dapps.o-banking.processes.setTrust.setTrust.message"),
           });
         },
         invoke: {
@@ -161,7 +162,7 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: editorContent.success,
-          html: () => `<p>Trust changed</p>`,
+          html: () => window.i18n("dapps.o-banking.processes.setTrust.showSuccess.html")          ,
           submitButtonText: editorContent.success.submitButtonText,
           hideNav: false,
         },
@@ -176,7 +177,7 @@ const processDefinition = (processId: string) =>
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
-          return "yeah!";
+          return window.i18n("dapps.o-banking.proccesses.setTrust.success.return");
         },
       },
     },

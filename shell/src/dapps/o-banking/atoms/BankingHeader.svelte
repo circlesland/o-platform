@@ -7,7 +7,7 @@ import { me } from "../../../shared/stores/me";
 
 import { Currency } from "../../../shared/currency";
 import { BN } from "ethereumjs-util";
-import { assetsBalances } from "../../../shared/stores/assetsBalances";
+import { assetBalances } from "../../../shared/stores/assetsBalances";
 import Icons from "../../../shared/molecules/Icons.svelte";
 
 export let balanceEuro: string = "0";
@@ -16,7 +16,7 @@ export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
 $: {
-  const sum = $assetsBalances.crcBalances
+  const sum = $assetBalances.crcBalances
     .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
     .toString();
   balanceEuro = Currency.instance()
@@ -39,7 +39,8 @@ $: {
   </div>
   <div class="self-end m-auto mt-2 space-y-2 text-center max-w-max">
     {balanceTime}
-    <span class=" font-primary">{Currency.currencySymbol["TIME_CRC"]}</span>
+    <span class="font-primary"
+      ><img src="/logos/time.png" class="inline w-6 h-6" /></span>
     <!--
     {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ''}
       <small class="block whitespace-nowrap">

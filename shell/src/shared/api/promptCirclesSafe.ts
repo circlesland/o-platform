@@ -84,8 +84,7 @@ export function promptCirclesSafe<
       },
       keyProperty: "circlesAddress",
       itemTemplate: DropDownProfile,
-      getLabel: (profile) =>
-        `${profile.firstName} ${profile.lastName ? profile.lastName : ""}`,
+      getLabel: (profile) => profile.displayName,
       choices: {
         byKey: async (key: string) => {
           const profiles = await ApiClient.query<Profile[], ProfileBySafeAddressQueryVariables>(ProfileBySafeAddressDocument, {

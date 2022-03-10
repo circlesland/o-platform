@@ -41,22 +41,28 @@ async function loadBalances(safeAddress: string) {
   };
 }
 
-export const assetsBalances = readable<{
+
+let _set:(value:any) => void;
+
+async function _update(safeAddress:string) {
+  if (!_set)
+    return;
+  const balances = await loadBalances(safeAddress);
+  _set({
+    crcBalances: balances.crcBalances,
+    erc20Balances: balances.erc20Balances
+  });
+}
+
+const _assetsBalances = readable<{
   crcBalances: AssetBalance[],
   erc20Balances: AssetBalance[]
 }>({
   crcBalances: [],
   erc20Balances: []
 }, function start(set) {
+  _set = set;
   // Subscribe to $me and reload the store when the profile changes
-  async function update(safeAddress:string) {
-    const balances = await loadBalances(safeAddress);
-    set({
-      crcBalances: balances.crcBalances,
-      erc20Balances: balances.erc20Balances
-    });
-  }
-
   let shellEventSubscription: Subscription;
 
   const profileSubscription = me.subscribe(async $me => {
@@ -74,12 +80,12 @@ export const assetsBalances = readable<{
       return;
     }
     console.log(`assetBalances: Updating for ${$me.circlesAddress} ..`);
-    await update($me.circlesAddress);
+    await _update($me.circlesAddress);
 
     shellEventSubscription = window.o.events.subscribe(async event => {
       if (event.type == "blockchain_event") {
         console.log(`assetBalances: Updating because of blockchain event ..`);
-        await update($me.circlesAddress);
+        await _update($me.circlesAddress);
       }
     });
   });
@@ -93,3 +99,12 @@ export const assetsBalances = readable<{
     }
   };
 });
+
+export const assetBalances = {
+  subscribe: _assetsBalances.subscribe,
+  update: () => {
+    me.subscribe(async $me => {
+      _update($me.circlesAddress);
+    })();
+  }
+}

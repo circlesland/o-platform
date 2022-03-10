@@ -9,6 +9,9 @@ import {UpsertProfileDocument} from "../../../../shared/api/data/types";
 
 export type UpsertRegistrationContextData = {
   id?: number;
+  emailAddress: string;
+  firstName: string;
+  avatarUrl: string;
   newsletter?: boolean;
   successAction?: (data:UpsertRegistrationContextData) => void;
   errorAction?: (data:UpsertRegistrationContextData) => void;
@@ -18,9 +21,8 @@ export type UpsertRegistrationContext = ProcessContext<UpsertRegistrationContext
 
 const editorContent: { [x: string]: EditorViewContext } = {
   newsletter: {
-    title: "Newsletter",
-    description:
-      "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
+    title: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.title"),
+    description: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.description"),
     placeholder: "",
     submitButtonText: "",
   },
@@ -42,7 +44,7 @@ const processDefinition = (processId: string) =>
         options: [
           {
             key: "dontSubscribe",
-            label: "No thanks",
+            label: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.noThanks"),
             target: "#upsertRegistration",
             action: (context) => {
               context.data.newsletter = false;
@@ -50,7 +52,7 @@ const processDefinition = (processId: string) =>
           },
           {
             key: "subscribe",
-            label: "Yes please",
+            label: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.yesPlease"),
             target: "#upsertRegistration",
             action: (context) => {
               context.data.newsletter = true;
@@ -63,6 +65,9 @@ const processDefinition = (processId: string) =>
       }),
       upsertRegistration: {
         id: "upsertRegistration",
+        entry: (context) => {
+          console.log("upsertRegistration.entry:", context);
+        },
         invoke: {
           src: async (context) => {
             const apiClient =
@@ -72,7 +77,9 @@ const processDefinition = (processId: string) =>
               mutation: UpsertProfileDocument,
               variables: {
                 id: context.data.id,
-                firstName: "",
+                emailAddress: context.data.emailAddress,
+                firstName: context.data.firstName ?? "",
+                avatarUrl: context.data.avatarUrl,
                 newsletter: context.data.newsletter ?? false,
                 status: "registered",
               },

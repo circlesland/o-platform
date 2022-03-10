@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { inview } from "svelte-inview/dist/index";
+import { _ } from "svelte-i18n";
 
 export let listItemComponent;
 export let selector = "timestamp";
@@ -8,7 +9,7 @@ export const listItemType: any = undefined;
 export let fetchQuery: any;
 export let fetchQueryArguments;
 export let dataKey: string;
-export let sortOrder: 'ASC' | 'DESC' = 'DESC';
+export let sortOrder: "ASC" | "DESC" = "DESC";
 export let dataLimit: number = 50;
 
 let posts: typeof listItemType[] = [];
@@ -24,8 +25,8 @@ const fetchData = async (paginationArg) => {
     fetchQueryArguments.pagination = {
       order: "DESC",
       limit: dataLimit,
-      continueAt: new Date()
-    }
+      continueAt: new Date(),
+    };
   }
 
   const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -46,6 +47,7 @@ const fetchData = async (paginationArg) => {
 
     pagination = {
       order: sortOrder,
+      // continueAtId: newBatch[newBatch.length - 1][selector],
       continueAt: newBatch[newBatch.length - 1][selector],
       limit: dataLimit,
     };
@@ -59,8 +61,6 @@ const fetchData = async (paginationArg) => {
 };
 
 const handleChange = (e) => {
-  console.log("hasMore: ", hasMore);
-  console.log("e.detail.inView: ", e.detail.inView);
   if (e.detail.inView && hasMore) fetchData(pagination);
 };
 onMount(async () => {
@@ -81,7 +81,7 @@ const initBar = (bar) => {
     <div
       class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
       <div class="flex flex-col items-start text-center">
-        <div>Loading...</div>
+        <div>{$_("shared.molecules.lists.list.loading")}</div>
       </div>
     </div>
   </section>

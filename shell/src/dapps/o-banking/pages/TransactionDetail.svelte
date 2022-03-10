@@ -1,20 +1,26 @@
 <script lang="ts">
-import Time from "svelte-time";
-import { push } from "svelte-spa-router";
-import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-import { onMount } from "svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import { me } from "../../../shared/stores/me";
-import { Currency } from "../../../shared/currency";
-import {
-  CrcHubTransfer,
-  CrcMinting,
-  Erc20Transfer,
-  Profile,
-  ProfileEvent,
-} from "../../../shared/api/data/types";
-import { transactions } from "../../../shared/stores/transactions";
-export let transactionHash: string;
+  import Time from "svelte-time";
+  import {push} from "svelte-spa-router";
+  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+  import {onMount} from "svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import {me} from "../../../shared/stores/me";
+  import {Currency} from "../../../shared/currency";
+  import {
+    CrcHubTransfer,
+    CrcMinting,
+    Erc20Transfer,
+    EventType,
+    Profile,
+    ProfileEvent,
+  } from "../../../shared/api/data/types";
+
+  import {_} from "svelte-i18n";
+  import {myTransactions} from "../../../shared/stores/myTransactions";
+
+
+  export let transactionHash: string;
+
 let transfer: ProfileEvent;
 let classes: string;
 let path: any;
@@ -26,7 +32,13 @@ let error: string;
 let displayableName: string = "";
 
 onMount(async () => {
-  transfer = await transactions.findByHash(transactionHash);
+  transfer = await myTransactions.findByPrimaryKey(EventType.CrcHubTransfer, transactionHash);
+  if (!transfer) {
+    transfer = await myTransactions.findByPrimaryKey(EventType.CrcMinting, transactionHash);
+  }
+  if (!transfer) {
+      transfer = await myTransactions.findSingleItemFallback([EventType.CrcHubTransfer, EventType.CrcMinting], transactionHash);
+  }
   if (transfer && transfer.payload?.__typename == "CrcMinting") {
     const minting = transfer.payload as CrcMinting;
 
@@ -77,7 +89,7 @@ onMount(async () => {
 
     if (transfer.payload) {
       if (transfer.payload?.__typename == "CrcMinting") {
-        message = "Universal Basic Income";
+        message = window.i18n("dapps.o-banking.pages.transactionDetail.ubi");
       } else {
         message = transfer.payload.tags?.find(
           (o) => o.typeId === "o-banking:transfer:message:1"
@@ -85,9 +97,7 @@ onMount(async () => {
       }
     }
 
-    displayableName =
-      targetProfile.firstName +
-      (!targetProfile.lastName ? "" : " " + targetProfile.lastName);
+    displayableName = targetProfile.displayName;
   }
 });
 function openDetail(transfer: ProfileEvent) {
@@ -169,21 +179,23 @@ function openDetail(transfer: ProfileEvent) {
         }}">
         {#if transfer.direction === "in"}
           <span class="mt-4 text-xl break-words">
-            from {displayableName ? displayableName : ""}
+            {$_("dapps.o-banking.pages.transactionDetail.from")}
+            {displayableName ? displayableName : ""}
           </span>
         {:else}
           <span class="mt-4 text-xl break-words">
-            to {displayableName ? displayableName : ""}
+            {$_("dapps.o-banking.pages.transactionDetail.to")}
+            {displayableName ? displayableName : ""}
           </span>
         {/if}
       </div>
       <div class="text-dark-lightest">
         {message && message != undefined ? message : ""}
       </div>
-      {#if path && path.transfers}
+      <!-- {#if path && path.transfers}
         <div class="flex flex-col w-full space-y-1">
           <div class="mb-1 text-left text-2xs text-dark-lightest">
-            Payment Path
+            {$_("dapps.o-banking.pages.transactionDetail.paymentPath")}
           </div>
           <div class="flex items-center w-full">
             <CirclesTransferGraph
@@ -192,9 +204,11 @@ function openDetail(transfer: ProfileEvent) {
               onWhiteBackground="{true}" />
           </div>
         </div>
-      {/if}
+      {/if} -->
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">Date</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          {$_("common.date")}
+        </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
             <Time
@@ -205,7 +219,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          Full amount in CRC
+          {$_("dapps.o-banking.pages.transactionDetail.fullAmountCrc")}
         </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
@@ -226,7 +240,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <!-- <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          Amount Circles
+          {$_("dapps.o-banking.pages.transactionDetail.amountCircles")}
         </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
@@ -239,26 +253,32 @@ function openDetail(transfer: ProfileEvent) {
         </div>
       </div> -->
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">From</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          {$_("common.from")}
+        </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{fromProfile.circlesAddress}</div>
         </div>
       </div>
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">To</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          {$_("common.to")}
+        </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{toProfile.circlesAddress}</div>
         </div>
       </div>
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">Block</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          {$_("common.block")}
+        </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{transfer.block_number}</div>
         </div>
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          Transaction Hash
+          {$_("dapps.o-banking.pages.transactionDetail.transactionHash")}
         </div>
         <div class="flex items-center w-full text-primarydark">
           <div class="text-left break-all">

@@ -58,8 +58,7 @@ export function promptProfileId<
       },
       keyProperty: "id",
       itemTemplate: DropDownProfile,
-      getLabel: (profile) =>
-        `${profile.firstName} ${profile.lastName ? profile.lastName : ""}`,
+      getLabel: (profile) => profile.displayName,
       choices: {
         byKey: async (key: number) => {
           const result = await ApiClient.query<Profile[], ProfileByIdQueryVariables>(ProfileByIdDocument, {

@@ -59,7 +59,6 @@ cd ../../../../../..
 
 echo "Building 'shell' with dapps .."
 cd shell || exit
-npx devcert-cli generate localhost
 npm run build
 cd .. || exit
 
