@@ -1,5 +1,6 @@
 import Home from "./o-passport/pages/Home.svelte";
 import Account from "./o-passport/pages/Account.svelte";
+import VerifyEmail from "./o-passport/pages/VerifyEmail.svelte";
 
 import Settings from "./o-passport/pages/Settings.svelte";
 import Login from "./o-passport/pages/Login.svelte";
@@ -13,6 +14,16 @@ const index: Page<any, DappState> = {
   title: "Profile",
   type: "page",
 };
+
+const verifyEmail: Page<any, DappState> = {
+  isSystem: true,
+  anonymous: true,
+  routeParts: ["=verifyemail", ":status"],
+  component: VerifyEmail,
+  title: "Your Email address",
+  type: "page",
+};
+
 const profile: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["=profile", ":profileId"],
@@ -83,5 +94,5 @@ export const passport: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, profile, account, settings, login],
+  routables: [index, profile, account, settings, login, verifyEmail],
 };
