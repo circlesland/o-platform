@@ -194,9 +194,3 @@ function loadDetailPage(path) {
     </div>
   </ItemCard>
 </div>
-
-<style>
-.inline-icon {
-  margin-top: -0.12rem;
-}
-</style>

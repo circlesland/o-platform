@@ -61,9 +61,3 @@ $: {
     -->
   </div>
 </PageHeader>
-
-<style>
-.inline-icon {
-  margin-top: -0.12rem;
-}
-</style>

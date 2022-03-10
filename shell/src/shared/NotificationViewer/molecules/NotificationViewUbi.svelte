@@ -9,9 +9,22 @@ import { _ } from "svelte-i18n";
 export let event: ProfileEvent;
 
 let payload: CrcMinting = <CrcMinting>event.payload;
+
+let amountTime = Currency.instance()
+  .displayAmount(
+    payload && payload.value ? payload.value.toString() : "0",
+    event.timestamp,
+    "TIME_CRC",
+    null
+  )
+  .toString();
 </script>
 
-<div class="mt-1 text-sm text-center text-dark-lightest">{$_("shared.molecules.notificationViewer.molecules.notificationViewUbi.caChing")}</div>
+<div class="mt-1 text-sm text-center text-dark-lightest">
+  {$_(
+    "shared.molecules.notificationViewer.molecules.notificationViewUbi.caChing"
+  )}
+</div>
 
 <div class="self-center text-6xl text-center text-success font-heading">
   +{Currency.instance().displayAmount(
@@ -23,3 +36,11 @@ let payload: CrcMinting = <CrcMinting>event.payload;
   <span class=" font-primary"
     >{Currency.currencySymbol[$me.displayCurrency]}</span>
 </div>
+{#if amountTime}
+  <div class="self-center text-center">
+    <div class="justify-self-center text-dark-dark">
+      {amountTime}
+      <img src="/logos/time.png" class="inline w-4 h-4 inline-icon" />
+    </div>
+  </div>
+{/if}

@@ -435,3 +435,7 @@ button:focus {
 }
 
 @tailwind utilities;
+
+.inline-icon {
+  margin-top: -0.12rem;
+}
