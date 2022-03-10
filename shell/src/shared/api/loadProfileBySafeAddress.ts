@@ -21,6 +21,7 @@ export async function loadProfileBySafeAddress(safeAddress: string) : Promise<Pr
 
     return {
         id: 0,
+        askedForEmailAddress: false,
         circlesAddress: safeAddress,
         firstName: "",
     };

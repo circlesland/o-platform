@@ -538,6 +538,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
                 passion: profile.dream,
                 successorOfCirclesAddress: profile.successorOfCirclesAddress,
                 circlesSafeOwner: profile.circlesSafeOwner,
+                askedForEmailAddress: profile.askedForEmailAddress
               },
             });
           } else {
@@ -698,6 +699,14 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           emailAddress: context.openLoginUserInfo?.email,
           firstName: context.openLoginUserInfo?.name,
           avatarUrl: context.openLoginUserInfo?.profileImage,
+          successAction: (data) => {
+            (<any>window).runInitMachine(context);
+          },
+        });
+      },
+      _askForEmailAddressAndRestart: (context) => {
+        window.o.runProcess(upsertRegistration, {
+
           successAction: (data) => {
             (<any>window).runInitMachine(context);
           },

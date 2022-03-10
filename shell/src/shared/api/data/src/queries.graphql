@@ -17,6 +17,7 @@ query init {
             firstName
             lastName
             emailAddress
+            askedForEmailAddress
             dream
             country
             avatarUrl
@@ -181,6 +182,7 @@ query myProfile {
         firstName
         lastName
         emailAddress
+        askedForEmailAddress
         dream
         country
         avatarUrl

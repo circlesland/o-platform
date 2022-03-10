@@ -22,6 +22,7 @@ export type ProfileData = {
   circlesSafeOwner?: string;
   circlesAddress?: string;
   successorOfCirclesAddress?: string;
+  askedForEmailAddress: boolean
 }
 
 export type EoaData = {

@@ -40,6 +40,7 @@ import {myChats} from "../stores/myChat";
 import {myTransactions} from "../stores/myTransactions";
 import {assetBalances} from "../stores/assetsBalances";
 import {myPurchases} from "../stores/myPurchases";
+import {upsertIdentity} from "../../dapps/o-passport/processes/upsertIdentity";
 
 export let params: {
   dappId: string;
@@ -460,6 +461,9 @@ async function init() {
       await push("/");
       return;
     } else {
+      if (!session.profile.askedForEmailAddress) {
+        window.o.runProcess(upsertIdentity, $me, {}, ['emailAddress']);
+      }
       return;
     }
   }

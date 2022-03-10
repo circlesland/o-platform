@@ -294,6 +294,7 @@ const processDefinition = (processId: string) =>
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 emailAddress: context.data.emailAddress,
+                askedForEmailAddress: true,
                 dream: context.data.dream,
                 newsletter: context.data.newsletter ?? false,
                 displayTimeCircles: context.data.displayTimeCircles ?? true,
