@@ -39,7 +39,7 @@ const market: Page<any, DappState> = {
 const offerDetail: Page<any, DappState> = {
   isSystem: true,
   position: "modal",
-  routeParts: ["=offer", ":id", ":add"],
+  routeParts: ["=offer", ":id"],
   component: OfferDetail,
   title: "Offer detail",
   type: "page",
