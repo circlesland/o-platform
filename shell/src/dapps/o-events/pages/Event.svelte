@@ -17,7 +17,7 @@ function editProfileField(onlyThesePages: string[]) {
 </script>
 
 <div
-  class="h-screen px-4 text-white sm:px-8 event-background"
+  class="flex flex-col h-screen px-4 text-white sm:px-8 event-background"
   style="background-image: url('/images/events/event-background-2500.jpg')">
   <div
     class="text-center pt-14 text-7xl sm:text-11xl event-heading-1 lg:text-12xl font-omedium whitespace-nowrap">
@@ -28,7 +28,7 @@ function editProfileField(onlyThesePages: string[]) {
     NOW FOR REAL!
   </div>
 
-  <div class="flex flex-col justify-between">
+  <div class="flex flex-col justify-between mb-auto">
     <div
       class="invisible w-1/2 mt-12 text-xl leading-tight text-left break-words party-text sm:text-4xl lg:mt-40 md:text-4rem font-heading md:visible">
       Wir feiern <div class="visible sm:hidden"></div>
@@ -48,12 +48,12 @@ function editProfileField(onlyThesePages: string[]) {
       {/if}
     </div>
   </div>
-  <div class="absolute w-full pr-8 bottom-20 sm:bottom-4">
+  <div class="w-full pr-8 mt-auto bottom-20 sm:bottom-4">
     <div
       class="grid w-full grid-cols-2 place-items-stretch justify-items-stretch place-content-end">
       <div class="self-end">
         <div
-          class="visible w-1/2 mb-6 text-xl leading-tight text-left break-words party-text sm:text-4xl font-heading md:invisible">
+          class="block w-1/2 mb-6 text-xl leading-tight text-left break-words party-text sm:text-4xl font-heading md:hidden">
           Wir feiern <div class="visible sm:hidden"></div>
           <span class="whitespace-nowrap">dein erstes mal</span>
         </div>
