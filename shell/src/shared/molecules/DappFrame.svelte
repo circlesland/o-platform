@@ -40,6 +40,8 @@ import {myChats} from "../stores/myChat";
 import {myTransactions} from "../stores/myTransactions";
 import {assetBalances} from "../stores/assetsBalances";
 import {myPurchases} from "../stores/myPurchases";
+import {upsertIdentity} from "../../dapps/o-passport/processes/upsertIdentity";
+import {goToPreviouslyDesiredRouteIfExisting} from "../../dapps/o-onboarding/processes/init";
 
 export let params: {
   dappId: string;
@@ -367,12 +369,14 @@ function setNav(navArgs: GenerateNavManifestArgs) {
  */
 
 let shellEventSubscription: ZenObservable.Subscription;
-var blblblbl = new Audio("blblblbl.mp3");
-
+const blblblbl = new Audio("blblblbl.mp3");
+let sessionInfo:SessionInfo;
 function initSession(session: SessionInfo) {
+  sessionInfo = session;
   // console.log(`subscribeToApiEvents(). Session: `, session);
   capabilities = session.capabilities;
-  if (session.isLoggedOn && session.hasProfile && !shellEventSubscription) {
+  if (session.isLoggedOn && session.hasProfile && !shellEventSubscription)
+  {
     window.o.apiClient.client.subscribeToResult().then((apiClient) => {
       shellEventSubscription = apiClient
         .subscribe({
@@ -447,7 +451,6 @@ async function init() {
   if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
     // TODO: Stash the current URL away and redirect the user to it after authentication
     if (!routable.anonymous) {
-
       const path = Object.keys(params)
         .filter((o) => parseInt(o) != Number.NaN && parseInt(o) >= 0 && parseInt(o) <= 6)
         .map((o) => params[o])
@@ -1055,6 +1058,21 @@ async function handleUrlChanged() {
 
   if (!navigation && dapp.dappId != "events:1") {
     navigation = generateNavManifest(navArgs, null);
+  }
+
+  if (sessionInfo?.isLoggedOn
+    && sessionInfo?.hasProfile
+    && dapp?.dappId != "homepage:1"
+    && dapp?.dappId != "events:1"
+    && !$me?.askedForEmailAddress
+    && !sessionStorage.getItem("askedForEmailAddress")
+    && sessionStorage.getItem("circlesKey")) {
+    window.o.runProcess(upsertIdentity, $me, {
+      successAction: () => {
+        goToPreviouslyDesiredRouteIfExisting();
+      }
+    }, ['emailAddress']);
+    sessionStorage.setItem("askedForEmailAddress", "true");
   }
 
   if (firstUrlChangedCall) {

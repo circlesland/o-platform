@@ -9,10 +9,26 @@ import ScanPurchase from "./o-marketplace/pages/ScanPurchase.svelte";
 import MySales from "./o-marketplace/pages/MySales.svelte";
 import MySaleDetail from "./o-marketplace/pages/MySaleDetail.svelte";
 import MyPurchasesDetail from "./o-marketplace/pages/MyPurchasesDetail.svelte";
+import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
 // import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+
+const addToCart: Trigger<{ id: Number }, DappState> = {
+  isSystem: true,
+  routeParts: ["=actions", "=addToCart", ":id"],
+  title: "Add to Cart",
+  type: "trigger",
+  action: (params) => {
+    console.log("PARAPPA THE PARAMS", params);
+  },
+  eventFactory: (params) => {
+    // TODO: Implement payment smartlink
+    console.log("PARAPPA FACTORy THE PARAMS", params);
+    throw new Error(`Not implemented`);
+  },
+};
 
 const market: Page<any, DappState> = {
   routeParts: ["=market"],
@@ -147,6 +163,7 @@ export const marketplace: DappManifest<DappState> = {
   },
   routables: [
     market,
+    addToCart,
     // favorites,
     // myOffers,
     offerDetail,

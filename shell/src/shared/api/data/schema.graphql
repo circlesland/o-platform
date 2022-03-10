@@ -458,6 +458,7 @@ type OrganisationCreated implements IEventPayload {
 }
 
 type Profile {
+    askedForEmailAddress: Boolean!
     avatarCid: String
     avatarMimeType: String
     avatarUrl: String
@@ -975,6 +976,7 @@ input UpsertOrganisationInput {
 }
 
 input UpsertProfileInput {
+    askedForEmailAddress: Boolean
     avatarCid: String
     avatarMimeType: String
     avatarUrl: String

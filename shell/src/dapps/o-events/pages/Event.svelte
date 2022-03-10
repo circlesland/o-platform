@@ -11,13 +11,10 @@ function register() {
   window.runInitMachine();
 }
 
-function editProfileField(onlyThesePages: string[]) {
-  window.o.runProcess(upsertIdentity, $me, {}, onlyThesePages);
-}
 </script>
 
 <div
-  class="h-screen px-4 text-white sm:px-8 event-background"
+  class="flex flex-col h-screen px-4 text-white sm:px-8 event-background"
   style="background-image: url('/images/events/event-background-2500.jpg')">
   <div
     class="text-center pt-14 text-7xl sm:text-11xl event-heading-1 lg:text-12xl font-omedium whitespace-nowrap">
@@ -28,7 +25,7 @@ function editProfileField(onlyThesePages: string[]) {
     NOW FOR REAL!
   </div>
 
-  <div class="flex flex-col justify-between">
+  <div class="flex flex-col justify-between mb-auto">
     <div
       class="invisible w-1/2 mt-12 text-xl leading-tight text-left break-words party-text sm:text-4xl lg:mt-40 md:text-4rem font-heading md:visible">
       Wir feiern <div class="visible sm:hidden"></div>
@@ -36,24 +33,17 @@ function editProfileField(onlyThesePages: string[]) {
     </div>
 
     <div class="w-full text-center mt-36 sm:mt-60 md:mt-20 md:order-2">
-      {#if $me}
-        <button
-          class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
-          on:click="{() => editProfileField(['emailAddress'])}"
-          >REGISTER NOW</button>
-      {:else}
-        <button
-          class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
-          on:click="{() => register()}">REGISTER NOW</button>
-      {/if}
+      <button
+        class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
+        on:click="{() => register()}">REGISTER NOW</button>
     </div>
   </div>
-  <div class="absolute w-full pr-8 bottom-20 sm:bottom-4">
+  <div class="w-full pr-8 mt-auto bottom-20 sm:bottom-4">
     <div
       class="grid w-full grid-cols-2 place-items-stretch justify-items-stretch place-content-end">
       <div class="self-end">
         <div
-          class="visible w-1/2 mb-6 text-xl leading-tight text-left break-words party-text sm:text-4xl font-heading md:invisible">
+          class="block w-1/2 mb-6 text-xl leading-tight text-left break-words party-text sm:text-4xl font-heading md:hidden">
           Wir feiern <div class="visible sm:hidden"></div>
           <span class="whitespace-nowrap">dein erstes mal</span>
         </div>

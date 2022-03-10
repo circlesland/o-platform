@@ -31,6 +31,28 @@ import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
 import {me} from "../../../shared/stores/me";
 
+export function goToPreviouslyDesiredRouteIfExisting() {
+  try {
+    if (sessionStorage.getItem("desiredRoute")) {
+      const params = JSON.parse(sessionStorage.getItem("desiredRoute"));
+      const path = Object.keys(params)
+        .filter((o) => parseInt(o) != Number.NaN && parseInt(o) >= 0 && parseInt(o) <= 6)
+        .map((o) => params[o])
+        .filter((o) => !!o && o != "")
+        .reduce((p, c) => p + "/" + c, "");
+
+      if (path == "" || path == "#" || path == "#/" || path == "/#/") {
+        return;
+      }
+      //stack.pop();
+      push(`#/${params.dappId}${path}`);
+    }
+  } catch (e) {
+  } finally {
+    sessionStorage.removeItem("desiredRoute");
+  }
+}
+
 export const initMachine = createMachine<InitContext, InitEvent>(
   {
     id: `init`,
@@ -424,25 +446,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
             push("#/home").then(() => {
               setTimeout(() => {
                 if (sessionStorage.getItem("circlesKey")) {
-                  try {
-                    if (sessionStorage.getItem("desiredRoute")) {
-                      const params = JSON.parse(sessionStorage.getItem("desiredRoute"));
-                      const path = Object.keys(params)
-                        .filter((o) => parseInt(o) != Number.NaN && parseInt(o) >= 0 && parseInt(o) <= 6)
-                        .map((o) => params[o])
-                        .filter((o) => !!o && o != "")
-                        .reduce((p, c) => p + "/" + c, "");
-
-                      if (path == "" || path == "#" || path == "#/" || path == "/#/") {
-                        return;
-                      }
-                      //stack.pop();
-                      push(`#/${params.dappId}${path}`);
-                    }
-                  } catch (e) {
-                  } finally {
-                    sessionStorage.removeItem("desiredRoute");
-                  }
+                  goToPreviouslyDesiredRouteIfExisting();
                 }
               });
             });
@@ -538,6 +542,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
                 passion: profile.dream,
                 successorOfCirclesAddress: profile.successorOfCirclesAddress,
                 circlesSafeOwner: profile.circlesSafeOwner,
+                askedForEmailAddress: profile.askedForEmailAddress
               },
             });
           } else {
@@ -696,6 +701,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       upsertRegistrationAndRestart: (context) => {
         window.o.runProcess(upsertRegistration, {
           emailAddress: context.openLoginUserInfo?.email,
+          askedForEmailAddress: context.openLoginUserInfo?.email ?? false,
           firstName: context.openLoginUserInfo?.name,
           avatarUrl: context.openLoginUserInfo?.profileImage,
           successAction: (data) => {

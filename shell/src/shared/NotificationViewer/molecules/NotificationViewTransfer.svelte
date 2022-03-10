@@ -15,9 +15,17 @@ if (payload) {
     (o) => o.typeId === "o-banking:transfer:message:1"
   )?.value;
 }
+let amountTime = Currency.instance()
+  .displayAmount(
+    payload && payload.flow ? payload.flow.toString() : "0",
+    event.timestamp,
+    "TIME_CRC",
+    null
+  )
+  .toString();
 </script>
 
-<div class="flex flex-col space-y-4">
+<div class="flex flex-col">
   <div class="self-center text-6xl text-center text-success font-heading">
     +{Currency.instance().displayAmount(
       payload.flow,
@@ -28,7 +36,19 @@ if (payload) {
     <span class=" font-primary"
       >{Currency.currencySymbol[$me.displayCurrency]}</span>
   </div>
-  <div class="self-center pb-2 text-2xl text-center font-heading">{$_("shared.molecules.notificationViewer.molecules.notificationViewTransfer.from")}</div>
+  {#if amountTime}
+    <div class="self-center text-center">
+      <div class="justify-self-center text-dark-dark">
+        {amountTime}
+        <img src="/logos/time.png" class="inline w-4 h-4 inline-icon" />
+      </div>
+    </div>
+  {/if}
+  <div class="self-center pb-2 mt-4 text-2xl text-center font-heading">
+    {$_(
+      "shared.molecules.notificationViewer.molecules.notificationViewTransfer.from"
+    )}
+  </div>
   <div class="pb-4">
     <NotificationProfile profile="{payload.from_profile}" />
   </div>

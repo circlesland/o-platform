@@ -30,6 +30,7 @@ export type UpsertIdentityContextData = {
   firstName?: string;
   lastName?: string;
   emailAddress?: string;
+  askedForEmailAddress?: boolean;
   country?: string;
   dream?: string;
   cityGeonameid?: number;
@@ -294,6 +295,7 @@ const processDefinition = (processId: string) =>
                 firstName: context.data.firstName,
                 lastName: context.data.lastName,
                 emailAddress: context.data.emailAddress,
+                askedForEmailAddress: true,
                 dream: context.data.dream,
                 newsletter: context.data.newsletter ?? false,
                 displayTimeCircles: context.data.displayTimeCircles ?? true,
