@@ -25,7 +25,7 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
   },
   eventFactory: (params) => {
     // TODO: Implement payment smartlink
-
+    console.log("PARAPPA FACTORy THE PARAMS", params);
     throw new Error(`Not implemented`);
   },
 };
