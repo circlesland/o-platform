@@ -373,7 +373,12 @@ var blblblbl = new Audio("blblblbl.mp3");
 function initSession(session: SessionInfo) {
   // console.log(`subscribeToApiEvents(). Session: `, session);
   capabilities = session.capabilities;
-  if (session.isLoggedOn && session.hasProfile && !shellEventSubscription) {
+  if (session.isLoggedOn && session.hasProfile && !shellEventSubscription)
+  {
+    if ($me.askedForEmailAddress == false) {
+      window.o.runProcess(upsertIdentity, $me, {}, ['emailAddress']);
+    }
+
     window.o.apiClient.client.subscribeToResult().then((apiClient) => {
       shellEventSubscription = apiClient
         .subscribe({
@@ -461,9 +466,6 @@ async function init() {
       await push("/");
       return;
     } else {
-      if (!session.profile.askedForEmailAddress) {
-        window.o.runProcess(upsertIdentity, $me, {}, ['emailAddress']);
-      }
       return;
     }
   }
