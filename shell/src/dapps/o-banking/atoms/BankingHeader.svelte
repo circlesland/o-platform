@@ -40,7 +40,7 @@ $: {
   <div class="self-end m-auto mt-2 space-y-2 text-center max-w-max">
     {balanceTime}
     <span class="font-primary"
-      ><img src="/logos/time.png" class="inline w-6 h-6" /></span>
+      ><img src="/logos/time.png" class="inline w-6 h-6 inline-icon" /></span>
     <!--
     {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ''}
       <small class="block whitespace-nowrap">
@@ -61,3 +61,9 @@ $: {
     -->
   </div>
 </PageHeader>
+
+<style>
+.inline-icon {
+  margin-top: -0.12rem;
+}
+</style>

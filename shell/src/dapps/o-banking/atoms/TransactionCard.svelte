@@ -183,12 +183,20 @@ function loadDetailPage(path) {
     }}">
     <div slot="itemCardEndSmallElement">
       {#if amountTime}
-        <div class="pt-1">
-          <span class="pt-4">{amountTime}</span>
-          <span class="font-primary"
-            ><img src="/logos/time.png" class="inline w-4 h-4" /></span>
+        <div
+          class="flex flex-row items-center pt-1 space-x-1 justify-items-center">
+          <div class="justify-self-center">{amountTime}</div>
+          <div class="font-primary">
+            <img src="/logos/time.png" class="inline w-4 h-4 inline-icon" />
+          </div>
         </div>
       {/if}
     </div>
   </ItemCard>
 </div>
+
+<style>
+.inline-icon {
+  margin-top: -0.12rem;
+}
+</style>
