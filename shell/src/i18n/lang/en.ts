@@ -1299,7 +1299,7 @@ export const en = {
               emailAddress: {
                 title: "Enter your E-Mail Address",
                 description:
-                  "Don't worry, We will only send you important updates.",
+                  "Don't worry, we will only send you important updates.",
                 submitButtonText: "Save",
               },
               imageView: {

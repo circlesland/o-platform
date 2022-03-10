@@ -48,7 +48,7 @@ async function editProfile() {
       lastName: $me.lastName,
       country: $me.country,
       dream: $me.dream,
-      askedForEmailAddress: $me.askedForEmailAddress,
+      askedForEmailAddress: $me.askedForEmailAddress ?? false,
       newsletter: receiveNewsletter,
       emailAddress: emailAddress,
       displayCurrency: displayCurrency,

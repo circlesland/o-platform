@@ -11,9 +11,6 @@ function register() {
   window.runInitMachine();
 }
 
-function editProfileField(onlyThesePages: string[]) {
-  window.o.runProcess(upsertIdentity, $me, {}, onlyThesePages);
-}
 </script>
 
 <div
@@ -36,16 +33,9 @@ function editProfileField(onlyThesePages: string[]) {
     </div>
 
     <div class="w-full text-center mt-36 sm:mt-60 md:mt-20 md:order-2">
-      {#if $me}
-        <button
-          class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
-          on:click="{() => editProfileField(['emailAddress'])}"
-          >REGISTER NOW</button>
-      {:else}
-        <button
-          class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
-          on:click="{() => register()}">REGISTER NOW</button>
-      {/if}
+      <button
+        class="p-2 px-6 text-xl text-black bg-white sm:p-4 sm:px-10 sm:text-4xl font-heading"
+        on:click="{() => register()}">REGISTER NOW</button>
     </div>
   </div>
   <div class="w-full pr-8 mt-auto bottom-20 sm:bottom-4">

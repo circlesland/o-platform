@@ -10,6 +10,7 @@ import {UpsertProfileDocument} from "../../../../shared/api/data/types";
 export type UpsertRegistrationContextData = {
   id?: number;
   emailAddress: string;
+  askedForEmailAddress: string;
   firstName: string;
   avatarUrl: string;
   newsletter?: boolean;
@@ -78,6 +79,7 @@ const processDefinition = (processId: string) =>
               variables: {
                 id: context.data.id,
                 emailAddress: context.data.emailAddress,
+                askedForEmailAddress: context.data.askedForEmailAddress ?? false,
                 firstName: context.data.firstName ?? "",
                 avatarUrl: context.data.avatarUrl,
                 newsletter: context.data.newsletter ?? false,
