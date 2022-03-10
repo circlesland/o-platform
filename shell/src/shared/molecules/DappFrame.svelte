@@ -39,6 +39,7 @@ import {clearScrollPosition, popScrollPosition, pushScrollPosition, scrollToBott
 import {myChats} from "../stores/myChat";
 import {myTransactions} from "../stores/myTransactions";
 import {assetBalances} from "../stores/assetsBalances";
+import {myPurchases} from "../stores/myPurchases";
 
 export let params: {
   dappId: string;
@@ -416,6 +417,9 @@ function initSession(session: SessionInfo) {
               chatStore.refresh(true);
               playBlblblbl = true;
             }
+          } else if (event.type == EventType.Purchased) {
+              const contact = await myPurchases.findSingleItemFallback([EventType.Purchased], event.itemId.toString());
+              myPurchases.refresh();
           }
 
           inbox.reload().then(() => {

@@ -11,7 +11,7 @@ import {
   Offer,
   CreatePurchaseDocument,
   PurchaseLineInput,
-  Invoice, AnnouncePaymentDocument,
+  Invoice, AnnouncePaymentDocument, EventType,
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
@@ -29,6 +29,7 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { findDirectTransfers } from "../../o-banking/processes/transfer";
 import {Environment} from "../../../shared/environment";
 import {ApiClient} from "../../../shared/apiConnection";
+import {myPurchases} from "../../../shared/stores/myPurchases";
 
 export type PurchaseContextData = {
   items: Offer[];
@@ -123,6 +124,10 @@ const processDefinition = (processId: string) =>
             });
 
             context.data.invoices = <Invoice[]>result.data.purchase;
+            if (context.data.invoices.length > 0) {
+              await myPurchases.findSingleItemFallback([EventType.Purchased], context.data.invoices[0].purchaseId.toString());
+            }
+            myPurchases.refresh();
 
             console.log(result);
           },
@@ -254,6 +259,12 @@ const processDefinition = (processId: string) =>
 
             context.data.pickupCode = announceResult.data.announcePayment.pickupCode;
             console.log(`Your pickup code is: ${context.data.pickupCode}`)
+
+            context.data.invoices = <Invoice[]>context.data.invoices;
+            if (context.data.invoices.length > 0) {
+              await myPurchases.findSingleItemFallback([EventType.Purchased], context.data.invoices[0].purchaseId.toString());
+            }
+            myPurchases.refresh();
 
             const receipt = await fTransferCircles(
               currentInvoice.invoice.buyerAddress,
