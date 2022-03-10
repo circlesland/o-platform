@@ -1008,7 +1008,7 @@ async function handleUrlChanged() {
     );
   }
   if (findRouteResult.routable.type == "trigger") {
-    (<Trigger<any,any>>routable).action(findRouteResult.params, runtimeDapp);
+    (<Trigger<any,any>>findRouteResult.routable).action(findRouteResult.params, runtimeDapp);
     return;
   }
 
