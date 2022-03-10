@@ -42,6 +42,7 @@ import {assetBalances} from "../stores/assetsBalances";
 import {myPurchases} from "../stores/myPurchases";
 import {upsertIdentity} from "../../dapps/o-passport/processes/upsertIdentity";
 import {goToPreviouslyDesiredRouteIfExisting} from "../../dapps/o-onboarding/processes/init";
+import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
 
 export let params: {
   dappId: string;
@@ -1006,6 +1007,10 @@ async function handleUrlChanged() {
       })
     );
   }
+  if (findRouteResult.routable.type == "trigger") {
+    (<Trigger<any,any>>routable).action(findRouteResult.params, runtimeDapp);
+    return;
+  }
 
   routable = findRouteResult.routable;
   // log(
@@ -1013,7 +1018,6 @@ async function handleUrlChanged() {
   // );
 
   currentParams = JSON.parse(JSON.stringify(params));
-
   if (findRouteResult.routable.type === "page") {
     const page: Page<any, any> = <any>findRouteResult.routable;
     if (page.position === "modal") {
