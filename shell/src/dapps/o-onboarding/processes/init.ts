@@ -392,7 +392,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         },
       },
       ubi: {
-        entry: () => console.log("init.ubi"),
+        entry: () => {
+          console.log("init.ubi");
+        },
         invoke: { src: "loadUbi" },
         on: {
           NO_UBI: {
@@ -409,16 +411,12 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         },
       },
       signupForUbi: {
-        entry: [
-          () => console.log("init.signupForUbi"),
-          /*() => window.o.publishEvent({
+        entry: () => {
+          console.log("init.signupForUbi");
+          window.o.publishEvent({
             type: "shell.openModalProcess",
-          }),
-          () => window.o.publishEvent(<PlatformEvent>{
-            type: "shell.progress",
-            message: "Signing you up for your UBI ..",
-          })*/
-        ],
+          });
+        },
         invoke: {
           src: "signupForUbi",
           onDone: "success",
@@ -665,6 +663,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         }
       },
       signupForUbi: (ctx) => async (callback) => {
+        window.o.publishEvent(<any>{
+          type: "shell.progress",
+          message: "Retrieving your first UBI  ..",
+        });
         const hub = new CirclesHub(
           RpcGateway.get(),
           Environment.circlesHubAddress

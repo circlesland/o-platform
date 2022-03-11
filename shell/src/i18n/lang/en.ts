@@ -1305,7 +1305,7 @@ export const en = {
                 title: "Profile Image",
                 description: "Show the world who you are",
                 placeholder: "Upload image",
-                submitButtonText: "Upload image",
+                submitButtonText: "Save image",
               },
               newsletter: {
                 title: "Subscribe to newsletter?",
