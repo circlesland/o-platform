@@ -79,7 +79,7 @@ const processDefinition = (processId: string) =>
               variables: {
                 id: context.data.id,
                 emailAddress: context.data.emailAddress,
-                askedForEmailAddress: context.data.askedForEmailAddress ?? false,
+                askedForEmailAddress: false,
                 firstName: context.data.firstName ?? "",
                 avatarUrl: context.data.avatarUrl,
                 newsletter: context.data.newsletter ?? false,
