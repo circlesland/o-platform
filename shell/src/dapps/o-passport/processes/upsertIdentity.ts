@@ -145,12 +145,72 @@ const editorContent: { [x: string]: EditorViewContext } = {
 const processDefinition = (processId: string) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
-    initial: "firstName",
+    initial: "init",
 
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<UpsertIdentityContext, any>("error"),
+
+      init: {
+        always: [{
+          cond: (context) => !!context.data.emailAddress && context.data.emailAddress.trim() != "",
+          target: "#newsletter"
+        }, {
+          target: "emailAddress"
+        }]
+      },
+
+      emailAddress: prompt<UpsertIdentityContext, any>({
+        field: "emailAddress",
+        component: EmailAddressEditor,
+        params: {
+          view: editorContent.emailAddress,
+        },
+        navigation: {
+          canSkip: () => true,
+          canGoBack:() => false,
+          skip: "#firstName",
+          next: [{
+            cond: (context) => !!context.data.emailAddress && context.data.emailAddress.trim() != "",
+            target: "#newsletter"
+          }, {
+            target: "#firstName"
+          }]
+        },
+      }),
+
+      newsletter: promptChoice<UpsertRegistrationContext, any>({
+        id: "newsletter",
+        component: ChoiceSelector,
+        params: { view: editorContent.newsletter },
+        options: [
+          {
+            key: "dontSubscribe",
+            label: "No thanks",
+            target: "#firstName",
+            class: "btn btn-outline",
+            action: (context) => {
+              context.data.newsletter = false;
+            },
+          },
+          {
+            key: "subscribe",
+            label: "Yes please",
+            target: "#firstName",
+            class: "btn btn-outline",
+            action: (context) => {
+              context.data.newsletter = true;
+            },
+          }
+        ],
+        navigation: {
+          canGoBack: () => true,
+          previous: "#emailAddress",
+          canSkip: () => true,
+          skip: "#firstName"
+        },
+      }),
 
       firstName: prompt<UpsertIdentityContext, any>({
         field: "firstName",
@@ -166,6 +226,8 @@ const processDefinition = (processId: string) =>
             )
           ),
         navigation: {
+          canGoBack: () => true,
+          previous: "#newsletter",
           next: "#lastName",
         },
       }),
@@ -177,60 +239,9 @@ const processDefinition = (processId: string) =>
           view: editorContent.lastName,
         },
         navigation: {
-          next: "#emailAddress",
+          next: "#country",
           previous: "#firstName",
           canSkip: () => true,
-        },
-      }),
-
-      emailAddress: prompt<UpsertIdentityContext, any>({
-        field: "emailAddress",
-        component: EmailAddressEditor,
-        params: {
-          view: editorContent.emailAddress,
-        },
-        navigation: {
-          canSkip: () => true,
-          skip: "#country",
-          next: [{
-            cond: (context) => !!context.data.emailAddress && context.data.emailAddress.trim() != "",
-            target: "#newsletter"
-          }, {
-            target: "#country"
-          }],
-          previous: "#lastName",
-        },
-      }),
-
-      newsletter: promptChoice<UpsertRegistrationContext, any>({
-        id: "newsletter",
-        component: ButtonStackSelector,
-        params: { view: editorContent.newsletter },
-        options: [
-          {
-            key: "dontSubscribe",
-            label: "No thanks",
-            target: "#country",
-            class: "btn btn-outline",
-            action: (context) => {
-              context.data.newsletter = false;
-            },
-          },
-          {
-            key: "subscribe",
-            label: "Yes please",
-            target: "#country",
-            class: "btn btn-outline",
-            action: (context) => {
-              context.data.newsletter = true;
-            },
-          }
-        ],
-        navigation: {
-          canGoBack: () => true,
-          previous: "#emailAddress",
-          canSkip: () => true,
-          skip: "#country"
         },
       }),
 
@@ -246,6 +257,7 @@ const processDefinition = (processId: string) =>
           canSkip: () => true,
         },
       }),
+
       dream: prompt<UpsertIdentityContext, any>({
         field: "dream",
         component: TextareaEditor,
@@ -261,11 +273,15 @@ const processDefinition = (processId: string) =>
             )
           ),
         navigation: {
-          next: "#avatarUrl",
+          next: [{
+            target: "#avatarUrl"
+          }],
           canSkip: () => true,
+          skip: "#avatarUrl",
           previous: "#country",
         },
       }),
+
       avatarUrl: promptFile<UpsertIdentityContext, any>({
         field: "avatarUrl",
         uploaded: (context, event) => {

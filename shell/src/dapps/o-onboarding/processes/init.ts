@@ -721,6 +721,8 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       upsertIdentityAndRestart: (context) => {
         window.o.runProcess(upsertIdentity, {
           ...context.profile,
+          firstName: null,
+          lastName: null,
           successAction: (data) => {
             (<any>window).runInitMachine(context);
           },
