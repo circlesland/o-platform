@@ -1075,7 +1075,7 @@ async function handleUrlChanged() {
       successAction: () => {
         goToPreviouslyDesiredRouteIfExisting();
       }
-    }, ['emailAddress']);
+    }, ['emailAddress', 'newsletter']);
     sessionStorage.setItem("askedForEmailAddress", "true");
   }
 

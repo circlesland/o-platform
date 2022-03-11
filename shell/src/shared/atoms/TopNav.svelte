@@ -44,8 +44,7 @@ function profileSwitcher() {
       <img
         src="/logos/circles.png"
         class="w-8 h-8"
-        alt="Circles Land"
-        on:click="{() => push(`/`)}" />
+        alt="Circles Land" />
       <span class="ml-2 text-2xl uppercase font-heading text-light">
         {runtimeDapp ? runtimeDapp.title : "<<No dapp>>"}
       </span>
