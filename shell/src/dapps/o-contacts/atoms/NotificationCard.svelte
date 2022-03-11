@@ -92,6 +92,7 @@ onMount(async () => {
     userActions = Object.values(usableUserActions);
   }
   userActions = userActions;
+  console.log("EVENT", event.type);
 });
 
 function getEventView() {
