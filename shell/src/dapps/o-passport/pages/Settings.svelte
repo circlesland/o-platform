@@ -35,7 +35,8 @@ const delayedTrigger = new DelayedTrigger(200, async () => {
   const result = await apiClient.mutate({
     mutation: UpsertProfileDocument,
     variables: {
-      ...$me
+      ...$me,
+      status: ""
     },
   });
 
