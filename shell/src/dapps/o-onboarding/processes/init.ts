@@ -701,7 +701,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       upsertRegistrationAndRestart: (context) => {
         window.o.runProcess(upsertRegistration, {
           emailAddress: context.openLoginUserInfo?.email,
-          askedForEmailAddress: context.openLoginUserInfo?.email ?? false,
+          askedForEmailAddress: false,
           firstName: context.openLoginUserInfo?.name,
           avatarUrl: context.openLoginUserInfo?.profileImage,
           successAction: (data) => {
