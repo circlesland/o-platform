@@ -154,10 +154,10 @@ const processDefinition = (processId: string) =>
 
       init: {
         always: [{
-          cond: (context) => !!context.data.emailAddress && context.data.emailAddress.trim() != "",
+          cond: (context) => !context.dirtyFlags["emailAddress"] && !!context.data.emailAddress && context.data.emailAddress.trim() != "",
           target: "#newsletter"
         }, {
-          target: "emailAddress"
+          target: "#emailAddress"
         }]
       },
 
@@ -329,7 +329,7 @@ const processDefinition = (processId: string) =>
                 emailAddress: context.data.emailAddress,
                 askedForEmailAddress: true,
                 dream: context.data.dream,
-                newsletter: context.data.newsletter ?? false,
+                newsletter: context.data.newsletter,
                 displayTimeCircles: context.data.displayTimeCircles ?? true,
                 country: context.data.country,
                 avatarUrl: context.data.avatarUrl,
