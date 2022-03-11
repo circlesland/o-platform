@@ -125,7 +125,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
             actions: () => console.log(`!!context.safe?.address && !!context.ubi?.tokenAddress  -->  init.finalize`),
             target: "finalize"
           }, {
-            cond: context => !!context.safe?.address && !!context.profile?.firstName && context.profile?.firstName != "",
+            cond: context => false, // !!context.safe?.address && !!context.profile?.firstName && context.profile?.firstName != "",
             actions: () => console.log(`!!context.safe?.address && !!context.profile?.firstName && context.profile?.firstName != ""  -->  init.ubi`),
             target: "ubi"
           }, {
@@ -409,7 +409,16 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         },
       },
       signupForUbi: {
-        entry: () => console.log("init.signupForUbi"),
+        entry: [
+          () => console.log("init.signupForUbi"),
+          /*() => window.o.publishEvent({
+            type: "shell.openModalProcess",
+          }),
+          () => window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: "Signing you up for your UBI ..",
+          })*/
+        ],
         invoke: {
           src: "signupForUbi",
           onDone: "success",
@@ -530,20 +539,13 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       loadProfile: (ctx) => async (callback) => {
         try {
           const profile = await loadProfile();
-          if (profile.firstName.trim() !== "") {
+          if (profile.firstName.trim() !== "" && profile.askedForEmailAddress) {
             callback({
               type: "GOT_PROFILE",
               profile: {
-                id: profile.id,
-                avatarUrl: profile.avatarUrl,
-                lastName: profile.lastName,
-                firstName: profile.firstName,
-                cityId: profile.cityGeonameid,
-                passion: profile.dream,
-                successorOfCirclesAddress: profile.successorOfCirclesAddress,
-                circlesSafeOwner: profile.circlesSafeOwner,
-                askedForEmailAddress: profile.askedForEmailAddress
-              },
+                ...profile,
+                cityId: profile.city?.geonameid
+              }
             });
           } else {
             callback({ type: "NO_PROFILE" });
@@ -718,7 +720,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       },
       upsertIdentityAndRestart: (context) => {
         window.o.runProcess(upsertIdentity, {
-          id: context.registration.profileId,
+          ...context.profile,
           successAction: (data) => {
             (<any>window).runInitMachine(context);
           },

@@ -19,6 +19,8 @@ import {
   UpsertProfileDocument,
 } from "../../../shared/api/data/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import {UpsertRegistrationContext} from "../../o-onboarding/processes/registration/promptRegistration";
+import ButtonStackSelector from "../../../../../packages/o-editors/src/ButtonStackSelector.svelte";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -188,57 +190,28 @@ const processDefinition = (processId: string) =>
           view: editorContent.emailAddress,
         },
         navigation: {
-          next: "#newsletter",
+          canSkip: () => true,
+          skip: "#country",
+          next: [{
+            cond: (context) => !!context.data.emailAddress && context.data.emailAddress.trim() != "",
+            target: "#newsletter"
+          }, {
+            target: "#country"
+          }],
           previous: "#lastName",
         },
       }),
 
-      // newsletter: prompt<UpsertIdentityContext, any>({
-      //   field: "newsletter",
-      //   component: ChoiceSelector,
-      //   params: {
-      //     view: editorContent.newsletter,
-      //     choices: [
-      //       {
-      //         key: "dontSubscribe",
-      //         label: "No thanks",
-      //         context: "newsletter",
-      //         value: false,
-      //         target: "#upsertIdentity",
-      //         action: (context) => {
-      //           context.data.newsletter = false;
-      //         },
-      //       },
-      //       {
-      //         key: "subscribe",
-      //         label: "Yes please",
-      //         context: "newsletter",
-      //         value: true,
-      //         target: "#upsertIdentity",
-      //         action: (context) => {
-      //           context.data.newsletter = true;
-      //         },
-      //       },
-      //     ],
-      //   },
-
-      //   navigation: {
-      //     next: "#country",
-      //     previous: "#emailAddress",
-      //     canSkip: () => true,
-      //   },
-      // }),
-
-      newsletter: promptChoice<UpsertIdentityContext, any>({
+      newsletter: promptChoice<UpsertRegistrationContext, any>({
         id: "newsletter",
-
-        component: ChoiceSelector,
+        component: ButtonStackSelector,
         params: { view: editorContent.newsletter },
         options: [
           {
             key: "dontSubscribe",
             label: "No thanks",
-            target: "#upsertIdentity",
+            target: "#country",
+            class: "btn btn-outline",
             action: (context) => {
               context.data.newsletter = false;
             },
@@ -246,19 +219,21 @@ const processDefinition = (processId: string) =>
           {
             key: "subscribe",
             label: "Yes please",
-            target: "#upsertIdentity",
+            target: "#country",
+            class: "btn btn-outline",
             action: (context) => {
               context.data.newsletter = true;
             },
-          },
+          }
         ],
         navigation: {
-          next: "#country",
+          canGoBack: () => true,
           previous: "#emailAddress",
-
           canSkip: () => true,
+          skip: "#country"
         },
       }),
+
       country: promptCity<UpsertIdentityContext, any>({
         id: "country",
         field: "cityGeonameid",
@@ -379,5 +354,5 @@ export const upsertIdentity: ProcessDefinition<
   UpsertIdentityContextData
 > = {
   name: "upsertIdentity",
-  stateMachine: <any>processDefinition,
+  stateMachine: <any>processDefinition
 };

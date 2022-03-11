@@ -789,8 +789,8 @@ export const en = {
               processDefinition: {
                 connectOrCreate: {
                   options: {
-                    newSafe: "I'm new, create everything for me",
-                    importSafe: "I already have a safe",
+                    newSafe: "I'm new",
+                    importSafe: "I already have Circles",
                   },
                 },
                 newSafe: {
