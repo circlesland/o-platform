@@ -20,7 +20,9 @@ function handleClickOutside(event) {
 <div class="p-5">
   <header>
     <div class="w-full text-center">
-      <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-marketplace.pages.shoppingCart.cart")}</h1>
+      <h1 class="text-3xl uppercase font-heading">
+        {$_("dapps.o-marketplace.pages.shoppingCart.cart")}
+      </h1>
     </div>
   </header>
 
@@ -43,7 +45,10 @@ function handleClickOutside(event) {
                   <div class="flex-grow">
                     <button
                       class="h-auto btn-block btn btn-primary"
-                      on:click="{() => checkout()}">{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}</button>
+                      on:click="{() => checkout()}"
+                      >{$_(
+                        "dapps.o-marketplace.pages.shoppingCart.checkOut"
+                      )}</button>
                   </div>
                 </div>
               </div>
@@ -53,12 +58,16 @@ function handleClickOutside(event) {
       </div>
     </div>
   {:else}
-    <p class="mt-6 text-center">{$_("dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty")}</p>
+    <p class="mt-6 text-center">
+      {$_("dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty")}
+    </p>
     <div class="w-full mt-6">
       <button
         class="h-auto btn-block btn btn-light"
         on:click="{(event) => handleClickOutside(event)}"
-        >{$_("dapps.o-marketplace.pages.shoppingCart.continueShopping")}</button>
+        >{$_(
+          "dapps.o-marketplace.pages.shoppingCart.continueShopping"
+        )}</button>
     </div>
   {/if}
 </div>
