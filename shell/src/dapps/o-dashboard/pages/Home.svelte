@@ -4,7 +4,11 @@ import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import {Capability, CapabilityType, StatsDocument} from "../../../shared/api/data/types";
+import {
+  Capability,
+  CapabilityType,
+  StatsDocument,
+} from "../../../shared/api/data/types";
 import DashboardHeader from "../atoms/DashboardHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { Environment } from "../../../shared/environment";
@@ -51,9 +55,7 @@ async function fetchStats() {
     query: StatsDocument,
   });
   if (result.errors) {
-    throw new Error(
-      `Couldn't load stats': ${JSON.stringify(result.errors)}`
-    );
+    throw new Error(`Couldn't load stats': ${JSON.stringify(result.errors)}`);
   }
   return result;
 }
@@ -63,8 +65,7 @@ let statsPromise = fetchStats();
 <DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-40 -mt-4">
-    <section
-      class="p-4 mb-4 bg-white rounded-lg shadow-md cursor-pointer dashboard-card">
+    <section class="p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card">
       <div class="w-full text-3xl text-center font-heading">CIRCLESLAND</div>
       <div class="flex flex-row items-stretch w-full justify-items-center">
         <div class="flex flex-col flex-grow">
@@ -72,7 +73,9 @@ let statsPromise = fetchStats();
             {#await statsPromise}
               ...
             {:then result}
-              {result.data.stats.profilesCount ? result.data.stats.profilesCount : "0"}
+              {result.data.stats.profilesCount
+                ? result.data.stats.profilesCount
+                : "0"}
             {/await}
           </div>
           <div class="text-center font-primary text-dark">
