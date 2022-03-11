@@ -144,6 +144,7 @@ const processDefinition = (processId: string) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
     initial: "firstName",
+
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
@@ -166,6 +167,7 @@ const processDefinition = (processId: string) =>
           next: "#lastName",
         },
       }),
+
       lastName: prompt<UpsertIdentityContext, any>({
         field: "lastName",
         component: TextEditor,
@@ -178,6 +180,7 @@ const processDefinition = (processId: string) =>
           canSkip: () => true,
         },
       }),
+
       emailAddress: prompt<UpsertIdentityContext, any>({
         field: "emailAddress",
         component: EmailAddressEditor,
@@ -185,12 +188,50 @@ const processDefinition = (processId: string) =>
           view: editorContent.emailAddress,
         },
         navigation: {
-          next: "#country",
-          previous: "#newsletter",
+          next: "#newsletter",
+          previous: "#lastName",
         },
       }),
+
+      // newsletter: prompt<UpsertIdentityContext, any>({
+      //   field: "newsletter",
+      //   component: ChoiceSelector,
+      //   params: {
+      //     view: editorContent.newsletter,
+      //     choices: [
+      //       {
+      //         key: "dontSubscribe",
+      //         label: "No thanks",
+      //         context: "newsletter",
+      //         value: false,
+      //         target: "#upsertIdentity",
+      //         action: (context) => {
+      //           context.data.newsletter = false;
+      //         },
+      //       },
+      //       {
+      //         key: "subscribe",
+      //         label: "Yes please",
+      //         context: "newsletter",
+      //         value: true,
+      //         target: "#upsertIdentity",
+      //         action: (context) => {
+      //           context.data.newsletter = true;
+      //         },
+      //       },
+      //     ],
+      //   },
+
+      //   navigation: {
+      //     next: "#country",
+      //     previous: "#emailAddress",
+      //     canSkip: () => true,
+      //   },
+      // }),
+
       newsletter: promptChoice<UpsertIdentityContext, any>({
         id: "newsletter",
+
         component: ChoiceSelector,
         params: { view: editorContent.newsletter },
         options: [
@@ -212,9 +253,10 @@ const processDefinition = (processId: string) =>
           },
         ],
         navigation: {
-          canGoBack: () => true,
+          next: "#country",
           previous: "#emailAddress",
-          skip: "#lastName",
+
+          canSkip: () => true,
         },
       }),
       country: promptCity<UpsertIdentityContext, any>({
