@@ -186,7 +186,35 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#country",
-          previous: "#lastName",
+          previous: "#newsletter",
+        },
+      }),
+      newsletter: promptChoice<UpsertIdentityContext, any>({
+        id: "newsletter",
+        component: ChoiceSelector,
+        params: { view: editorContent.newsletter },
+        options: [
+          {
+            key: "dontSubscribe",
+            label: "No thanks",
+            target: "#upsertIdentity",
+            action: (context) => {
+              context.data.newsletter = false;
+            },
+          },
+          {
+            key: "subscribe",
+            label: "Yes please",
+            target: "#upsertIdentity",
+            action: (context) => {
+              context.data.newsletter = true;
+            },
+          },
+        ],
+        navigation: {
+          canGoBack: () => true,
+          previous: "#emailAddress",
+          skip: "#lastName",
         },
       }),
       country: promptCity<UpsertIdentityContext, any>({
@@ -236,36 +264,7 @@ const processDefinition = (processId: string) =>
           canSkip: () => true,
         },
       }),
-      /*
-      newsletter: promptChoice<UpsertIdentityContext, any>({
-        id: "newsletter",
-        component: ChoiceSelector,
-        params: { view: editorContent.newsletter },
-        options: [
-          {
-            key: "dontSubscribe",
-            label: "No thanks",
-            target: "#upsertIdentity",
-            action: (context) => {
-              context.data.newsletter = false;
-            },
-          },
-          {
-            key: "subscribe",
-            label: "Yes please",
-            target: "#upsertIdentity",
-            action: (context) => {
-              context.data.newsletter = true;
-            },
-          },
-        ],
-        navigation: {
-          canGoBack: () => true,
-          previous: "#avatarUrl",
-          skip: "#upsertIdentity",
-        },
-      }),
-       */
+
       upsertIdentity: {
         id: "upsertIdentity",
         invoke: {
