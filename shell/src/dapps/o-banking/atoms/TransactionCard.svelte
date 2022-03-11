@@ -6,6 +6,7 @@ import Date from "../../../shared/atoms/Date.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
 import { displayableName } from "../../../shared/functions/stringHelper";
+
 import {
   CrcHubTransfer,
   CrcMinting,
@@ -15,6 +16,7 @@ import {
   ProfileEvent,
 } from "../../../shared/api/data/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import Icons from "../../../shared/molecules/Icons.svelte";
 
 export let event: ProfileEvent;
 
@@ -186,8 +188,8 @@ function loadDetailPage(path) {
         <div
           class="flex flex-row items-center pt-1 space-x-1 justify-items-center">
           <div class="justify-self-center">{amountTime}</div>
-          <div class="font-primary">
-            <img src="/logos/time.png" class="inline w-4 h-4 inline-icon" />
+          <div class="">
+            <Icons icon="timeCircle" size="{3}" />
           </div>
         </div>
       {/if}
