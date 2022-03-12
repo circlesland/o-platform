@@ -782,15 +782,15 @@ export const en = {
                   submitButtonText: "Next",
                 },
                 connectOrCreate: {
-                  title: "Connect or create?",
-                  description: "Choose your scenario",
+                  title: "Setup your account",
+                  description: "Create new or import an existing Circles account?",
                 },
               },
               processDefinition: {
                 connectOrCreate: {
                   options: {
-                    newSafe: "I'm new, create everything for me",
-                    importSafe: "I already have a safe",
+                    newSafe: "Create new",
+                    importSafe: "Import existing",
                   },
                 },
                 newSafe: {
@@ -1269,9 +1269,9 @@ export const en = {
           upsertIdentity: {
             editorContent: {
               firstName: {
-                title: "What is your first name?",
+                title: "Welcome to CirclesLand!",
                 description:
-                  "Welcome, you are finally a citizen of CirclesLand. Glad to have you here.",
+                  "What is your first name?",
                 placeholder: "First Name",
                 submitButtonText: "Save",
               },
@@ -1283,16 +1283,15 @@ export const en = {
                 submitButtonText: "Save",
               },
               dream: {
-                title: "Share you passion",
-                description:
-                  "What will you do, create, build or offer to grow the basic income economy and accept Circles as payment for it?",
-                placeholder: "Your passion",
+                title: "Share your passion",
+                description: "What will you do different in your life with a monthly basic income?",
+                placeholder: "I will ...",
                 submitButtonText: "Start growing",
               },
               city: {
                 title: "Vote for your City",
                 description:
-                  "Advance your city in the basic income ranking and push the political discourse in your area.",
+                  "Advance your city in the basic income ranking",
                 placeholder: "Last name",
                 submitButtonText: "Submit vote",
               },
@@ -1304,14 +1303,14 @@ export const en = {
               },
               imageView: {
                 title: "Profile Image",
-                description: "Show the World who you are",
-                placeholder: "Upload Image",
-                submitButtonText: "Upload Image",
+                description: "Show the world who you are",
+                placeholder: "Upload image",
+                submitButtonText: "Save image",
               },
               newsletter: {
-                title: "Newsletter",
+                title: "Subscribe to newsletter?",
                 description:
-                  "Do you want to subscribe to our monthly newsletter to stay up to date with the developments around the basic income economy?",
+                  "Stay up to date with new places, events and products where you can spend your Circles?",
               },
             },
             requiredName: "Please enter your first name.",

@@ -37,10 +37,11 @@ $: {
     </span>
     <span class="text-7xl font-enso">{Currency.currencySymbol["EURS"]}</span>
   </div>
-  <div class="self-end m-auto mt-2 space-y-2 text-center max-w-max">
+  <div class="self-end m-auto mt-2 space-y-1 text-center max-w-max">
     {balanceTime}
-    <span class="font-primary"
-      ><img src="/logos/time.png" class="inline w-6 h-6 inline-icon" /></span>
+
+    <Icons icon="timeCircle" size="{4}" customClass="inline inline-icon" />
+
     <!--
     {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ''}
       <small class="block whitespace-nowrap">
@@ -48,11 +49,9 @@ $: {
         transactions
       </small>
     {/if}
-    -->
-    <small class="block whitespace-nowrap">
-      <!--{$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ''}-->
-    </small>
-    <!--
+      <small class="block whitespace-nowrap">
+        {$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ''}
+      </small>
     <progress
       class="progress progress-accent transaction-update-progress"
       value={$mySafe.ui.loadingPercent ? $mySafe.ui.loadingPercent : 0}

@@ -125,7 +125,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
             actions: () => console.log(`!!context.safe?.address && !!context.ubi?.tokenAddress  -->  init.finalize`),
             target: "finalize"
           }, {
-            cond: context => !!context.safe?.address && !!context.profile?.firstName && context.profile?.firstName != "",
+            cond: context => false, // !!context.safe?.address && !!context.profile?.firstName && context.profile?.firstName != "",
             actions: () => console.log(`!!context.safe?.address && !!context.profile?.firstName && context.profile?.firstName != ""  -->  init.ubi`),
             target: "ubi"
           }, {
@@ -392,7 +392,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         },
       },
       ubi: {
-        entry: () => console.log("init.ubi"),
+        entry: () => {
+          console.log("init.ubi");
+        },
         invoke: { src: "loadUbi" },
         on: {
           NO_UBI: {
@@ -409,7 +411,12 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         },
       },
       signupForUbi: {
-        entry: () => console.log("init.signupForUbi"),
+        entry: () => {
+          console.log("init.signupForUbi");
+          window.o.publishEvent({
+            type: "shell.openModalProcess",
+          });
+        },
         invoke: {
           src: "signupForUbi",
           onDone: "success",
@@ -530,20 +537,13 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       loadProfile: (ctx) => async (callback) => {
         try {
           const profile = await loadProfile();
-          if (profile.firstName.trim() !== "") {
+          if (profile.firstName.trim() !== "" && profile.askedForEmailAddress) {
             callback({
               type: "GOT_PROFILE",
               profile: {
-                id: profile.id,
-                avatarUrl: profile.avatarUrl,
-                lastName: profile.lastName,
-                firstName: profile.firstName,
-                cityId: profile.cityGeonameid,
-                passion: profile.dream,
-                successorOfCirclesAddress: profile.successorOfCirclesAddress,
-                circlesSafeOwner: profile.circlesSafeOwner,
-                askedForEmailAddress: profile.askedForEmailAddress
-              },
+                ...profile,
+                cityId: profile.city?.geonameid
+              }
             });
           } else {
             callback({ type: "NO_PROFILE" });
@@ -663,6 +663,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         }
       },
       signupForUbi: (ctx) => async (callback) => {
+        window.o.publishEvent(<any>{
+          type: "shell.progress",
+          message: "Retrieving your first UBI  ..",
+        });
         const hub = new CirclesHub(
           RpcGateway.get(),
           Environment.circlesHubAddress
@@ -701,7 +705,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       upsertRegistrationAndRestart: (context) => {
         window.o.runProcess(upsertRegistration, {
           emailAddress: context.openLoginUserInfo?.email,
-          askedForEmailAddress: context.openLoginUserInfo?.email ?? false,
+          askedForEmailAddress: false,
           firstName: context.openLoginUserInfo?.name,
           avatarUrl: context.openLoginUserInfo?.profileImage,
           successAction: (data) => {
@@ -718,7 +722,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       },
       upsertIdentityAndRestart: (context) => {
         window.o.runProcess(upsertIdentity, {
-          id: context.registration.profileId,
+          ...context.profile,
+          firstName: null,
+          lastName: null,
           successAction: (data) => {
             (<any>window).runInitMachine(context);
           },

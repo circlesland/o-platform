@@ -28,33 +28,18 @@ let choices = [
   { value: DisplayCurrency.TimeCrc, name: "Time Circles" },
 ];
 
-let receiveNewsletter: boolean = $me.newsletter;
-let emailAddress: string = $me.emailAddress;
-let displayCurrency: string = $me.displayCurrency;
-
-async function editProfile() {
+const delayedTrigger = new DelayedTrigger(200, async () => {
+  console.log("delayedTrigger")
   // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.mutate({
     mutation: UpsertProfileDocument,
     variables: {
-      id: $me.id,
-      circlesAddress: $me.circlesAddress,
-      circlesSafeOwner: $me.circlesSafeOwner,
-      avatarCid: $me.avatarCid,
-      avatarUrl: $me.avatarUrl,
-      avatarMimeType: $me.avatarMimeType,
-      firstName: $me.firstName,
-      lastName: $me.lastName,
-      country: $me.country,
-      dream: $me.dream,
-      askedForEmailAddress: $me.askedForEmailAddress ?? false,
-      newsletter: receiveNewsletter,
-      emailAddress: emailAddress,
-      displayCurrency: displayCurrency,
-      status: "",
+      ...$me,
+      status: ""
     },
   });
+
   if (result.errors) {
     return;
   }
@@ -65,27 +50,14 @@ async function editProfile() {
   });
 
   showToast(
-    "success",
-    `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
+          "success",
+          `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
   );
-}
-
-// let email: string = "unknown";
-
-// onMount(async () => {
-//   email = await ApiClient.query<string, WhoamiQueryVariables>(
-//     WhoamiDocument,
-//     {}
-//   );
-// });
-
-const delayedTrigger = new DelayedTrigger(200, async () => {
-  // TODO: Make call to upsertProfile shorter
-  await editProfile();
 });
 
-function editProfileField(onlyThesePages: string[]) {
-  window.o.runProcess(upsertIdentity, $me, {}, onlyThesePages);
+function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
+  console.log("editProfileField")
+  window.o.runProcess(upsertIdentity, $me, dirtyFlags, onlyThesePages);
 }
 </script>
 
@@ -121,8 +93,12 @@ function editProfileField(onlyThesePages: string[]) {
                     id="newsletter"
                     type="checkbox"
                     class="inline-block toggle toggle-primary"
-                    bind:checked="{receiveNewsletter}"
-                    on:change="{() => delayedTrigger.trigger()}" />
+                    bind:checked="{$me.newsletter}"
+                    on:change="{(e) => {
+                      delayedTrigger.trigger();
+                      e.preventDefault();
+                      return false;
+                    }}" />
 
                   <span class="toggle-mark"></span>
                 </div>
@@ -148,8 +124,8 @@ function editProfileField(onlyThesePages: string[]) {
             <label class="pl-0 label" for="newsletter">
               <div
                 class="w-full text-left cursor-pointer"
-                on:click="{() => editProfileField(['emailAddress'])}">
-                {emailAddress}
+                on:click="{() => editProfileField(['emailAddress', 'newsletter'], {emailAddress:true})}">
+                {$me.emailAddress}
                 <!-- <input
                     name="emailAddress"
                     id="emailAddress"

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Currency } from "../../../shared/currency";
 import { me } from "../../stores/me";
-
+import Icons from "../../../shared/molecules/Icons.svelte";
 import { CrcMinting, ProfileEvent } from "../../api/data/types";
 
 import { _ } from "svelte-i18n";
@@ -40,7 +40,8 @@ let amountTime = Currency.instance()
   <div class="self-center text-center">
     <div class="justify-self-center text-dark-dark">
       {amountTime}
-      <img src="/logos/time.png" class="inline w-4 h-4 inline-icon" />
+
+      <Icons icon="timeCircle" size="{4}" customClass="inline" />
     </div>
   </div>
 {/if}

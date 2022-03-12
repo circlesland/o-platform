@@ -19,6 +19,8 @@ import {
   UpsertProfileDocument,
 } from "../../../shared/api/data/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import {UpsertRegistrationContext} from "../../o-onboarding/processes/registration/promptRegistration";
+import ButtonStackSelector from "../../../../../packages/o-editors/src/ButtonStackSelector.svelte";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -143,11 +145,72 @@ const editorContent: { [x: string]: EditorViewContext } = {
 const processDefinition = (processId: string) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
-    initial: "firstName",
+    initial: "init",
+
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<UpsertIdentityContext, any>("error"),
+
+      init: {
+        always: [{
+          cond: (context) => !context.dirtyFlags["emailAddress"] && !!context.data.emailAddress && context.data.emailAddress.trim() != "",
+          target: "#newsletter"
+        }, {
+          target: "#emailAddress"
+        }]
+      },
+
+      emailAddress: prompt<UpsertIdentityContext, any>({
+        field: "emailAddress",
+        component: EmailAddressEditor,
+        params: {
+          view: editorContent.emailAddress,
+        },
+        navigation: {
+          canSkip: () => true,
+          canGoBack:() => false,
+          skip: "#firstName",
+          next: [{
+            cond: (context) => !!context.data.emailAddress && context.data.emailAddress.trim() != "",
+            target: "#newsletter"
+          }, {
+            target: "#firstName"
+          }]
+        },
+      }),
+
+      newsletter: promptChoice<UpsertRegistrationContext, any>({
+        id: "newsletter",
+        component: ChoiceSelector,
+        params: { view: editorContent.newsletter },
+        options: [
+          {
+            key: "dontSubscribe",
+            label: "No thanks",
+            target: "#firstName",
+            class: "btn btn-outline",
+            action: (context) => {
+              context.data.newsletter = false;
+            },
+          },
+          {
+            key: "subscribe",
+            label: "Yes please",
+            target: "#firstName",
+            class: "btn btn-outline",
+            action: (context) => {
+              context.data.newsletter = true;
+            },
+          }
+        ],
+        navigation: {
+          canGoBack: () => true,
+          previous: "#emailAddress",
+          canSkip: () => true,
+          skip: "#firstName"
+        },
+      }),
 
       firstName: prompt<UpsertIdentityContext, any>({
         field: "firstName",
@@ -163,9 +226,12 @@ const processDefinition = (processId: string) =>
             )
           ),
         navigation: {
+          canGoBack: () => true,
+          previous: "#newsletter",
           next: "#lastName",
         },
       }),
+
       lastName: prompt<UpsertIdentityContext, any>({
         field: "lastName",
         component: TextEditor,
@@ -173,22 +239,12 @@ const processDefinition = (processId: string) =>
           view: editorContent.lastName,
         },
         navigation: {
-          next: "#emailAddress",
+          next: "#country",
           previous: "#firstName",
           canSkip: () => true,
         },
       }),
-      emailAddress: prompt<UpsertIdentityContext, any>({
-        field: "emailAddress",
-        component: EmailAddressEditor,
-        params: {
-          view: editorContent.emailAddress,
-        },
-        navigation: {
-          next: "#country",
-          previous: "#lastName",
-        },
-      }),
+
       country: promptCity<UpsertIdentityContext, any>({
         id: "country",
         field: "cityGeonameid",
@@ -201,6 +257,7 @@ const processDefinition = (processId: string) =>
           canSkip: () => true,
         },
       }),
+
       dream: prompt<UpsertIdentityContext, any>({
         field: "dream",
         component: TextareaEditor,
@@ -216,11 +273,15 @@ const processDefinition = (processId: string) =>
             )
           ),
         navigation: {
-          next: "#avatarUrl",
+          next: [{
+            target: "#avatarUrl"
+          }],
           canSkip: () => true,
+          skip: "#avatarUrl",
           previous: "#country",
         },
       }),
+
       avatarUrl: promptFile<UpsertIdentityContext, any>({
         field: "avatarUrl",
         uploaded: (context, event) => {
@@ -236,36 +297,7 @@ const processDefinition = (processId: string) =>
           canSkip: () => true,
         },
       }),
-      /*
-      newsletter: promptChoice<UpsertIdentityContext, any>({
-        id: "newsletter",
-        component: ChoiceSelector,
-        params: { view: editorContent.newsletter },
-        options: [
-          {
-            key: "dontSubscribe",
-            label: "No thanks",
-            target: "#upsertIdentity",
-            action: (context) => {
-              context.data.newsletter = false;
-            },
-          },
-          {
-            key: "subscribe",
-            label: "Yes please",
-            target: "#upsertIdentity",
-            action: (context) => {
-              context.data.newsletter = true;
-            },
-          },
-        ],
-        navigation: {
-          canGoBack: () => true,
-          previous: "#avatarUrl",
-          skip: "#upsertIdentity",
-        },
-      }),
-       */
+
       upsertIdentity: {
         id: "upsertIdentity",
         invoke: {
@@ -297,7 +329,7 @@ const processDefinition = (processId: string) =>
                 emailAddress: context.data.emailAddress,
                 askedForEmailAddress: true,
                 dream: context.data.dream,
-                newsletter: context.data.newsletter ?? false,
+                newsletter: context.data.newsletter,
                 displayTimeCircles: context.data.displayTimeCircles ?? true,
                 country: context.data.country,
                 avatarUrl: context.data.avatarUrl,
@@ -338,5 +370,5 @@ export const upsertIdentity: ProcessDefinition<
   UpsertIdentityContextData
 > = {
   name: "upsertIdentity",
-  stateMachine: <any>processDefinition,
+  stateMachine: <any>processDefinition
 };

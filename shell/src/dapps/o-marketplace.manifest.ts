@@ -10,23 +10,57 @@ import MySales from "./o-marketplace/pages/MySales.svelte";
 import MySaleDetail from "./o-marketplace/pages/MySaleDetail.svelte";
 import MyPurchasesDetail from "./o-marketplace/pages/MyPurchasesDetail.svelte";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
+import PleaseSignIn from "./o-marketplace/pages/PleaseSignIn.svelte";
 import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
 // import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { cartContents } from "./o-marketplace/stores/shoppingCartStore";
+import { Offer } from "../shared/api/data/types";
+import { offers } from "../shared/stores/offers";
+import { push } from "svelte-spa-router";
+import { me } from "../shared/stores/me";
 
 const addToCart: Trigger<{ id: Number }, DappState> = {
   isSystem: true,
   routeParts: ["=actions", "=addToCart", ":id"],
   title: "Add to Cart",
   type: "trigger",
-  action: (params) => {
-    console.log("PARAPPA THE PARAMS", params);
-  },
-  eventFactory: (params) => {
-    // TODO: Implement payment smartlink
-    console.log("PARAPPA FACTORy THE PARAMS", params);
-    throw new Error(`Not implemented`);
+  action: async (params) => {
+    let offer: Offer;
+    let cart: Offer[] = [];
+    let authenticated: boolean = false;
+    if (!params.id) {
+      return;
+    }
+
+    const unsubMe = me.subscribe((o) => {
+      if (o) {
+        authenticated = true;
+      }
+    });
+    unsubMe();
+
+    if (authenticated) {
+      const o = await offers.findById(parseInt(params.id.toString()));
+
+      if (o) {
+        offer = o;
+
+        const unsubCart = cartContents.subscribe((o) => {
+          cart = o ? o : [];
+        });
+        unsubCart();
+
+        cartContents.update((o) => (cartContents ? [...cart, offer] : [offer]));
+        push(`#/marketplace/cart`);
+      } else {
+        console.log("offer broken");
+      }
+    } else {
+      console.log("not authenticated");
+      push(`#/marketplace/pleasesignin`);
+    }
   },
 };
 
@@ -34,6 +68,15 @@ const market: Page<any, DappState> = {
   routeParts: ["=market"],
   component: Home,
   title: "Market",
+  type: "page",
+};
+
+const pleaseSignIn: Page<any, DappState> = {
+  isSystem: true,
+  anonymous: true,
+  routeParts: ["=pleasesignin"],
+  component: PleaseSignIn,
+  title: "Please Sign In",
   type: "page",
 };
 const offerDetail: Page<any, DappState> = {
@@ -164,6 +207,7 @@ export const marketplace: DappManifest<DappState> = {
   routables: [
     market,
     addToCart,
+    pleaseSignIn,
     // favorites,
     // myOffers,
     offerDetail,
