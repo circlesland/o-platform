@@ -1071,11 +1071,12 @@ async function handleUrlChanged() {
     && !$me?.askedForEmailAddress
     && !sessionStorage.getItem("askedForEmailAddress")
     && sessionStorage.getItem("circlesKey")) {
-    window.o.runProcess(upsertIdentity, $me, {
+    window.o.runProcess(upsertIdentity, {
+      ...$me,
       successAction: () => {
         goToPreviouslyDesiredRouteIfExisting();
       }
-    }, ['emailAddress', 'newsletter']);
+    }, {emailAddress: true}, ['emailAddress', 'newsletter']);
     sessionStorage.setItem("askedForEmailAddress", "true");
   }
 
