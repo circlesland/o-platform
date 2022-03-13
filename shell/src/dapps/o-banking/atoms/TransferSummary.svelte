@@ -20,7 +20,7 @@ $: {
 }
 
 onMount(async () => {
-  profile = await loadProfile(context.data.recipientAddress, $me);
+  profile = (await loadProfile(context.data.recipientAddress, $me))?.profile;
   // console.log(
   //   "loadProfile2: ",
   //   (profile = await loadProfile(context.data.recipientAddress, $me))
@@ -44,7 +44,7 @@ let now = new Date();
       </div>
     </div>
 
-    <UserImage profile="{profile.profile}" size="{36}" gradientRing="{true}" />
+    <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />
 
     <div>
       <span class="mt-4 text-xl">
@@ -106,7 +106,7 @@ let now = new Date();
       </div>
 
       <div class="flex items-center w-full">
-        <div class="text-left break-all">{profile.profile.circlesAddress}</div>
+        <div class="text-left break-all">{profile.circlesAddress}</div>
       </div>
     </div>
 
