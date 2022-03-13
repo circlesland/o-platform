@@ -1,6 +1,6 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { UserActions, UserActionItem } from "../../userActions";
+import { UserActionItem } from "../../userActions";
 import Button from "../../atoms/button/Button.svelte";
 import ButtonGroupLayout from "./ButtonGroupLayout";
 import ButtonContext from "../../atoms/button/buttonContext";
