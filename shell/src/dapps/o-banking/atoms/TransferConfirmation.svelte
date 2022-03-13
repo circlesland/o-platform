@@ -8,7 +8,6 @@ import { me } from "../../../shared/stores/me";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { loadProfile } from "../../../shared/functions/loadProfile";
-import { displayableName } from "../../../shared/functions/stringHelper";
 import { Currency } from "../../../shared/currency";
 
 import { _ } from "svelte-i18n";
@@ -22,7 +21,7 @@ $: {
 }
 
 onMount(async () => {
-  profile = await loadProfile(context.data.recipientAddress, $me);
+  profile = (await loadProfile(context.data.recipientAddress, $me))?.profile;
 });
 
 let classes: string;
@@ -54,7 +53,7 @@ function onkeydown(e: KeyboardEvent) {
       </div>
     </div>
 
-    <UserImage profile="{profile.profile}" size="{36}" gradientRing="{true}" />
+    <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />
 
     <div>
       <span class="mt-4 text-xl">
@@ -113,7 +112,7 @@ function onkeydown(e: KeyboardEvent) {
       </div>
 
       <div class="flex items-center w-full">
-        <div class="text-left break-all">{profile.profile.circlesAddress}</div>
+        <div class="text-left break-all">{profile.circlesAddress}</div>
       </div>
     </div>
   </div>

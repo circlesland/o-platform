@@ -13,12 +13,9 @@ func buildActions(targetUser)
 
 */
 import {
-  AggregateType,
-  Contact,
   ContactDirection,
   EventType,
-  Profile, ProfileType,
-  VerifySafeDocument,
+  Profile, ProfileType
 } from "./api/data/types";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { contacts as contactStore } from "./stores/contacts";
@@ -26,6 +23,7 @@ import { me } from "./stores/me";
 import { push } from "svelte-spa-router";
 import { transfer } from "../dapps/o-banking/processes/transfer";
 import { setTrust } from "../dapps/o-banking/processes/setTrust";
+import {Environment} from "./environment";
 //
 
 export interface UserActionItem {
@@ -128,7 +126,7 @@ export class UserActions {
                       trustLimit: 0,
                       trustReceiver: recipientProfile.contactAddress,
                       safeAddress: $me.circlesAddress,
-                      hubAddress: "__CIRCLES_HUB_ADDRESS__",
+                      hubAddress: Environment.circlesHubAddress,
                       privateKey: sessionStorage.getItem("circlesKey"),
                     });
                   },
@@ -144,7 +142,7 @@ export class UserActions {
                       trustLimit: 100,
                       trustReceiver: recipientProfile.contactAddress,
                       safeAddress: $me.circlesAddress,
-                      hubAddress: "__CIRCLES_HUB_ADDRESS__",
+                      hubAddress: Environment.circlesHubAddress,
                       privateKey: sessionStorage.getItem("circlesKey"),
                     });
                   },

@@ -88,7 +88,7 @@ onMount(async () => {
   let dismissAction: UserActionItem = {
     key: "dismiss",
     title: window.i18n("shared.notificationViewer.ok"),
-    action: () => dispatch("submit"),
+    action: () => submit(),
   };
 
   let eventActions = await getEventActions();
@@ -131,7 +131,7 @@ function submit() {
     <div class="pt-4">
       <ButtonGroup
         actions="{userActions}"
-        layout="{{
+        layout={{
           orientation: 'inline',
           alignment: 'center',
           labels: {
@@ -151,8 +151,7 @@ function submit() {
             default: 'primary',
             overrides: (action) => (action.key == 'dismiss' ? 'light' : null),
           },
-        }}"
-        on:submit="{submit}" />
+        }} />
     </div>
   {/if}
 </div>
