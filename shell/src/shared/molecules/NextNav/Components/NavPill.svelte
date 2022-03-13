@@ -12,7 +12,11 @@ function clickHandler() {
       {
         events: $inbox.map((o) => o),
       },
-      {}
+      {
+        events: false,
+        currentEvent: false,
+        currentEventIndex: false
+      }
     );
   } else {
     if (props && props.left) {
