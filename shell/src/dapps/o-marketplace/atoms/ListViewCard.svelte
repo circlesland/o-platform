@@ -143,13 +143,13 @@ displayName =
             {/if}
           </div>
         </div>
-        <div class="flex flex-col self-start justify-end">
-          <button
+        <div class="flex flex-col self-start justify-end text-primary">
+          <!-- <button
             type="submit"
             class="relative btn btn-primary btn-square"
-            on:click="{() => addToCart(offer)}">
-            <Icons icon="cart" />
-          </button>
+            on:click="{() => addToCart(offer)}"> -->
+          <Icons icon="cart" on:click="{() => addToCart(offer)}" />
+          <!-- </button> -->
         </div>
 
         <!-- 

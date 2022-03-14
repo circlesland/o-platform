@@ -70,17 +70,30 @@ onMount(async () => {
     shellEventSubscription.unsubscribe();
   };
 });
-
-function loadCategoryPage(category: any) {
-  push("#/marketplace/categories/" + category.id + "/" + category.value);
-}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="px-4 mx-auto -mt-3 lg:w-4/5 ">
+<div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
-  <div class="flex flex-col mb-20 space-y-8 gap-x-4 sm:grid-cols-2 ">
+  <section class="flex items-start mb-4 cursor-pointer rounded-xl">
+    <div class="flex flex-col w-full">
+      <header class=" rounded-xl">
+        <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
+          <img
+            src="https://cantstoptherock.de/uttingsm.jpg"
+            alt="
+                "
+            class="w-full rounded-xl opacity-60 object-position: center center;  " />
+          <div
+            class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl rounded-l-full font-heading top-2 bg-light-lightest">
+            <span class="inline-block">Alte Utting</span>
+          </div>
+        </div>
+      </header>
+    </div>
+  </section>
+  <div class="flex flex-col mb-20 space-y-4 gap-x-4 sm:grid-cols-2 ">
     <!--
     <List
       listItemType="{Offer}"

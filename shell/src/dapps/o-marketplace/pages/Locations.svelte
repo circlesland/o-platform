@@ -9,8 +9,8 @@ import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
-function loadCategoryPage(category: number) {
-  return;
+function loadLocationPage() {
+  push("#/marketplace/list/");
 }
 </script>
 
@@ -22,7 +22,9 @@ function loadCategoryPage(category: number) {
       <h1>Welcome to the Market</h1>
       <span>Please choose your location</span>
     </section>
-    <section class="flex items-start m-4 cursor-pointer rounded-xl">
+    <section
+      class="flex items-start m-4 cursor-pointer rounded-xl"
+      on:click="{() => loadLocationPage()}">
       <div class="flex flex-col w-full ">
         <header class=" rounded-xl headerImageContainer">
           <div class="relative bg-white rounded-xl image-wrapper">
@@ -50,7 +52,9 @@ function loadCategoryPage(category: number) {
       </div>
     </section>
 
-    <section class="flex items-start m-4 cursor-pointer rounded-xl">
+    <section
+      class="flex items-start m-4 cursor-pointer rounded-xl"
+      on:click="{() => loadLocationPage()}">
       <div class="flex flex-col w-full ">
         <header class=" rounded-xl headerImageContainer">
           <div class="relative rounded-xl image-wrapper">
