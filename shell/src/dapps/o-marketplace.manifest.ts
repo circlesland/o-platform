@@ -1,4 +1,6 @@
 import Home from "./o-marketplace/pages/Home.svelte";
+import ListView from "./o-marketplace/pages/ListView.svelte";
+import Locations from "./o-marketplace/pages/Locations.svelte";
 import Categories from "./o-marketplace/pages/Categories.svelte";
 import OfferDetail from "./o-marketplace/pages/OfferDetail.svelte";
 import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
@@ -68,6 +70,22 @@ const market: Page<any, DappState> = {
   routeParts: ["=market"],
   component: Home,
   title: "Market",
+  type: "page",
+};
+
+const list: Page<any, DappState> = {
+  isSystem: true,
+  routeParts: ["=list"],
+  component: ListView,
+  title: "List",
+  type: "page",
+};
+
+const locations: Page<any, DappState> = {
+  isSystem: true,
+  routeParts: ["=locations"],
+  component: Locations,
+  title: "Locations",
   type: "page",
 };
 
@@ -206,6 +224,8 @@ export const marketplace: DappManifest<DappState> = {
   },
   routables: [
     market,
+    locations,
+    list,
     addToCart,
     pleaseSignIn,
     // favorites,
