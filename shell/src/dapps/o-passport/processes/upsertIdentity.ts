@@ -339,6 +339,7 @@ const processDefinition = (processId: string) =>
                 displayCurrency: context.data.displayCurrency,
               },
             });
+            sessionStorage.setItem("askedForEmailAddress", "true");
             return result.data.upsertProfile;
           },
           onDone: "#success",
