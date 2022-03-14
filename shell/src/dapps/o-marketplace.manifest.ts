@@ -82,7 +82,6 @@ const list: Page<any, DappState> = {
 };
 
 const locations: Page<any, DappState> = {
-  isSystem: true,
   routeParts: ["=locations"],
   component: Locations,
   title: "Locations",

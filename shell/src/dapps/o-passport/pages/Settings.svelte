@@ -29,14 +29,14 @@ let choices = [
 ];
 
 const delayedTrigger = new DelayedTrigger(200, async () => {
-  console.log("delayedTrigger")
+  console.log("delayedTrigger");
   // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.mutate({
     mutation: UpsertProfileDocument,
     variables: {
       ...$me,
-      status: ""
+      status: "",
     },
   });
 
@@ -50,13 +50,13 @@ const delayedTrigger = new DelayedTrigger(200, async () => {
   });
 
   showToast(
-          "success",
-          `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
+    "success",
+    `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
   );
 });
 
 function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
-  console.log("editProfileField")
+  console.log("editProfileField");
   window.o.runProcess(upsertIdentity, $me, dirtyFlags, onlyThesePages);
 }
 </script>
@@ -121,10 +121,11 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
         </div>
         <div class="">
           <div class="w-full form-control">
-            <label class="pl-0 label" for="newsletter">
+            <label class="pl-0 label" for="emailAddress">
               <div
                 class="w-full text-left cursor-pointer"
-                on:click="{() => editProfileField(['emailAddress', 'newsletter'], {emailAddress:true})}">
+                on:click="{() =>
+                  editProfileField(['emailAddress'], { emailAddress: true })}">
                 {$me.emailAddress}
                 <!-- <input
                     name="emailAddress"
