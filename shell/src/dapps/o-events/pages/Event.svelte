@@ -10,11 +10,10 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 function register() {
   window.runInitMachine();
 }
-
 </script>
 
 <div
-  class="flex flex-col h-screen px-4 text-white sm:px-8 event-background"
+  class="flex flex-col px-4 text-white sm:px-8 event-background"
   style="background-image: url('/images/events/event-background-2500.jpg')">
   <div
     class="text-center pt-14 text-7xl sm:text-11xl event-heading-1 lg:text-12xl font-omedium whitespace-nowrap">
@@ -27,7 +26,7 @@ function register() {
 
   <div class="flex flex-col justify-between mb-auto">
     <div
-      class="invisible w-1/2 mt-12 text-xl leading-tight text-left break-words party-text sm:text-4xl lg:mt-40 md:text-4rem font-heading md:visible">
+      class="invisible w-1/2 mt-12 text-xl leading-tight text-left break-words party-text sm:text-2xl lg:mt-6 md:text-4rem font-heading md:visible">
       Wir feiern <div class="visible sm:hidden"></div>
       <span class="whitespace-nowrap">dein erstes mal</span>
     </div>
@@ -38,7 +37,7 @@ function register() {
         on:click="{() => register()}">REGISTER NOW</button>
     </div>
   </div>
-  <div class="w-full pr-8 mt-auto bottom-20 sm:bottom-4">
+  <div class="w-full pr-8 mt-auto">
     <div
       class="grid w-full grid-cols-2 place-items-stretch justify-items-stretch place-content-end">
       <div class="self-end">
@@ -72,7 +71,8 @@ function register() {
   background-size: cover;
   background-position: bottom center;
   z-index: 1;
-  overflow: hidden;
+  overflow-x: hidden;
+  /* overflow-y: scroll; */
   position: relative;
 }
 
