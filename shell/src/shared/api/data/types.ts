@@ -698,6 +698,7 @@ export type Offer = {
   pictureMimeType: Scalars['String'];
   pictureUrl: Scalars['String'];
   pricePerUnit: Scalars['String'];
+  tags?: Maybe<Array<Tag>>;
   timeCirclesPriceShare: Scalars['Int'];
   title: Scalars['String'];
   version: Scalars['Int'];
@@ -927,6 +928,7 @@ export type Query = {
   myProfile?: Maybe<Profile>;
   organisations: Array<Organisation>;
   organisationsByAddress: Array<Organisation>;
+  organisationsWithOffers: Array<Organisation>;
   profilesById: Array<Profile>;
   profilesBySafeAddress: Array<Profile>;
   recentProfiles: Array<Profile>;
@@ -2473,6 +2475,10 @@ export type StreamQuery = (
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'pictureUrl' | 'title' | 'description' | 'pricePerUnit'>
+            & { tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
           )> }
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
@@ -2508,6 +2514,10 @@ export type StreamQuery = (
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'title' | 'pictureUrl'>
+            & { tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
           )> }
         )>> }
       )> }
@@ -2625,7 +2635,10 @@ export type AggregatesQuery = (
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
-        )> }
+        )>, tags?: Maybe<Array<(
+          { __typename?: 'Tag' }
+          & Pick<Tag, 'typeId' | 'value'>
+        )>> }
       )> }
     ) | (
       { __typename?: 'Purchases' }
@@ -2645,7 +2658,10 @@ export type AggregatesQuery = (
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
               & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
-            )> }
+            )>, tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
           )> }
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
@@ -2689,7 +2705,10 @@ export type AggregatesQuery = (
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
               & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
-            )> }
+            )>, tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
           ) }
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
@@ -4189,6 +4208,10 @@ export const StreamDocument = gql`
               id
               title
               pictureUrl
+              tags {
+                typeId
+                value
+              }
             }
           }
         }
@@ -4217,6 +4240,10 @@ export const StreamDocument = gql`
               title
               description
               pricePerUnit
+              tags {
+                typeId
+                value
+              }
             }
           }
           invoices {
@@ -4325,6 +4352,10 @@ export const AggregatesDocument = gql`
             avatarUrl
             circlesAddress
             displayCurrency
+          }
+          tags {
+            typeId
+            value
           }
           createdByAddress
           createdAt
@@ -4488,6 +4519,10 @@ export const AggregatesDocument = gql`
                 circlesAddress
                 displayCurrency
               }
+              tags {
+                typeId
+                value
+              }
             }
           }
           invoices {
@@ -4573,6 +4608,10 @@ export const AggregatesDocument = gql`
                 avatarUrl
                 circlesAddress
                 displayCurrency
+              }
+              tags {
+                typeId
+                value
               }
             }
           }

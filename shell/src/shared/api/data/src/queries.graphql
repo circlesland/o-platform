@@ -1048,6 +1048,10 @@ query stream(
                             id
                             title
                             pictureUrl
+                            tags {
+                                typeId
+                                value
+                            }
                         }
                     }
                 }
@@ -1076,6 +1080,10 @@ query stream(
                             title
                             description
                             pricePerUnit
+                            tags {
+                                typeId
+                                value
+                            }
                         }
                     }
                     invoices {
@@ -1187,6 +1195,10 @@ query aggregates(
                         avatarUrl
                         circlesAddress
                         displayCurrency
+                    }
+                    tags {
+                        typeId
+                        value
                     }
                     createdByAddress
                     createdAt
@@ -1350,6 +1362,10 @@ query aggregates(
                                 circlesAddress
                                 displayCurrency
                             }
+                            tags {
+                                typeId
+                                value
+                            }
                         }
                     }
                     invoices {
@@ -1435,6 +1451,10 @@ query aggregates(
                                 avatarUrl
                                 circlesAddress
                                 displayCurrency
+                            }
+                            tags {
+                                typeId
+                                value
                             }
                         }
                     }

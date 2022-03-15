@@ -29,11 +29,35 @@ let shellEventSubscription: Subscription;
 let offers: Offer[] = [];
 let store: any;
 
+type OffersByCategory = {
+  [category:string]: Offer[]
+}
+
+let offersByCategory:OffersByCategory = {};
+
 onMount(() => {
   store = storeOffers.getOffersFor(storeCirclesAddress);
   isLoading = true;
   return store.subscribe((data: any) => {
     offers = data;
+
+    offersByCategory = offers.reduce((p,c) => {
+      const cat = c.tags?.filter(o => o.typeId == "o-marketplace:offer:category:1") ?? [];
+      if (cat.length == 0) {
+        if (p[""])
+          p[""].push(c);
+        else
+          p[""] = [c];
+      } else {
+        if (p[cat[0].value])
+          p[cat[0].value].push(c);
+        else
+          p[cat[0].value] = [c];
+      }
+      return p;
+    }, offersByCategory);
+
+    console.log("offersByCategory", offersByCategory);
 
     isLoading = false;
   });
@@ -46,7 +70,7 @@ onMount(() => {
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   <section class="flex items-start mb-4 cursor-pointer rounded-xl">
     <div class="flex flex-col w-full">
-      <header class=" rounded-xl">
+      <header class="rounded-xl">
         <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
           <img
             src="/images/market/uttingsm.jpg"
@@ -70,9 +94,12 @@ onMount(() => {
       fetchQueryArguments="{listArguments}"
       dataKey="offers"
       dataLimit="{100}" />-->
-    {#if offers}
-      {#each offers as offer}
-        <ListViewCard param="{offer}" />
+    {#if offersByCategory}
+      {#each Object.keys(offersByCategory) as category}
+        <h1>{category}</h1>
+        {#each offersByCategory[category] as offer}
+          <ListViewCard param="{offer}" />
+        {/each}
       {/each}
     {/if}
   </div>
