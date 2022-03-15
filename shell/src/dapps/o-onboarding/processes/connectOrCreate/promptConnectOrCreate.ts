@@ -91,7 +91,7 @@ const processDefinition = (processId: string) =>
 
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.privatKeyNotUnlocked"));
+              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.privateKeyNotUnlocked"));
             }
 
             const proxyFactory = new GnosisSafeProxyFactory(
@@ -137,7 +137,7 @@ const processDefinition = (processId: string) =>
 
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinitionprivateKeyNotUnlocked"));
+              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.privateKeyNotUnlocked"));
             }
 
             const innerSuccessAction = context.data.successAction;

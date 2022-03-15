@@ -3,6 +3,7 @@
   import UAParser from "ua-parser-js";
   import Icons from "src/shared/molecules/Icons.svelte";
   import { _ } from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte"
 
   let parser = new UAParser();
   let player: any;
@@ -83,6 +84,7 @@
         <Icons icon="playbutton" />
       </div>
       <div class="pt-0 text-lg text-center text-white sm:pt-2">{$_("dapps.o-homepage.components.videoHeader.playVideo")}</div>
+      <div><Label/></div>
     </button>
   </div>
 </div>

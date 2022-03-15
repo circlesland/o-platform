@@ -69,6 +69,23 @@ mutation authenticateAt($appId: String!) {
   }
 }
 
+
+#const apiClient =
+#              await window.o.apiClient.client.subscribeToResult();
+#            const claimResult = await apiClient.mutate({
+#              mutation: UpdateValueDocument,
+#              variables: {
+#                lang: "de",
+#                key: "common.trusted",
+#                createdBy: "saveaddresse",
+#                value: "blabla"
+#              },
+#            });
+#
+#mutation updateValue($lang: String, $key: String, $createdBy: String, $value: String) {
+#  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value) 
+#}
+
 mutation claimInvitation($code: String!) {
   claimInvitation(code: $code) {
     success

@@ -1531,3 +1531,13 @@ query findInvitationCreator($code: String!) {
         avatarUrl
     }
 }
+
+query getStringsByMaxVersion($lang: String, $key: String) {
+    getStringsByMaxVersion(lang: $lang, key: $key) {
+        lang
+        key
+        createdBy
+        version
+        value
+    }
+}

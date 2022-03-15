@@ -218,6 +218,7 @@
   import { isLoading } from "svelte-i18n";
   import {InitContext} from "./dapps/o-onboarding/processes/initContext";
 
+
   let ubiMachineInterpreter: any;
 
   window.runInitMachine = (context?:InitContext) => {
