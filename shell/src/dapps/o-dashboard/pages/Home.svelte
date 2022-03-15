@@ -9,7 +9,7 @@ import {
   CapabilityType,
   StatsDocument,
 } from "../../../shared/api/data/types";
-import DashboardHeader from "../atoms/DashboardHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
@@ -62,39 +62,38 @@ async function fetchStats() {
 let statsPromise = fetchStats();
 </script>
 
-<DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
+<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  <div class="m-4 mb-40 -mt-4">
+  <div class="m-4 mb-40 -mt-2">
     <section class="p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card">
-      <div class="w-full text-3xl text-center font-heading">CIRCLESLAND</div>
-      <div class="flex flex-row items-stretch w-full justify-items-center">
-        <div class="flex flex-col flex-grow">
-          <div class="text-6xl text-center font-heading text-primary">
-            {#await statsPromise}
-              ...
-            {:then result}
-              {result.data.stats.profilesCount
-                ? result.data.stats.profilesCount
-                : "0"}
-            {/await}
+      <div class="w-full text-center">
+        <h1>WANT MORE PARTIES?</h1>
+        <span class="text-dark-lightest">Invite your friends.</span>
+      </div>
+      <div class="w-full">
+        <div class="z-50 w-full pt-1 bg-white progressnav ">
+          <div class="flex flex-row items-stretch w-full h-10 mb-6 bg-white">
+            <div
+              class="relative flex-grow h-2 mt-8 border-b-2 border-r-2 w-42 border-primary">
+              <span class="absolute text-sm tracking-wider -right-4 bottom-2"
+                >100 Citizens</span>
+            </div>
+            <div class="flex-grow h-2 mt-8 border-b-2 w-42 border-primary">
+            </div>
+            <div class="flex-grow h-2 mt-8 border-b-2 w-42 border-light">
+              <span class="relative w-2 h-2 dot right-1"></span>
+            </div>
+            <div
+              class="relative flex-grow h-2 mt-8 border-b-2 border-l-2 w-42 border-light">
+              <span
+                class="absolute text-sm tracking-wider text-light bottom-2 -left-4">
+                200 Citizens</span>
+            </div>
           </div>
-          <div class="text-center font-primary text-dark">
-            {$_("dapps.o-dashboard.pages.home.totalCitizens")}
-          </div>
-        </div>
-        <div class="flex flex-col flex-grow">
-          <div class="text-6xl text-center font-heading text-primary">
-            {#await statsPromise}
-              ...
-            {:then result}
-              {result.data.stats.verificationsCount
-                ? result.data.stats.verificationsCount
-                : "0"}
-            {/await}
-          </div>
-          <div class="text-center font-primary text-dark">
-            {$_("dapps.o-dashboard.pages.home.verifiedCitizens")}
-          </div>
+          <progress
+            class="w-full progress progress-primary"
+            value="107"
+            max="200"></progress>
         </div>
       </div>
     </section>

@@ -62,12 +62,15 @@ console.log(allowUtting);
     <section
       class="flex items-start m-4 rounded-xl"
       class:cursor-pointer="{allowUtting}"
-      on:click="{() => (allowUtting ? loadLocationPage('list') : null)}">
+      on:click="{() =>
+        allowUtting
+          ? loadLocationPage('list/0x29335ee3eee0eace4dbc3fc9e2b16be0261ce653')
+          : null}">
       <div class="flex flex-col w-full ">
         <header class=" rounded-xl headerImageContainer">
           <div class="relative bg-white rounded-xl image-wrapper">
             <img
-              src="https://cantstoptherock.de/utting2.jpg"
+              src="/images/market/utting.jpg"
               alt="
                 "
               class="w-full rounded-xl opacity-60"
@@ -95,12 +98,17 @@ console.log(allowUtting);
     <section
       class="flex items-start m-4 rounded-xl"
       class:cursor-pointer="{allowBasicIncome}"
-      on:click="{() => (allowBasicIncome ? loadLocationPage('market') : null)}">
+      on:click="{() =>
+        allowBasicIncome
+          ? loadLocationPage(
+              'market/0xc5a786eafefcf703c114558c443e4f17969d9573'
+            )
+          : null}">
       <div class="flex flex-col w-full ">
         <header class=" rounded-xl headerImageContainer">
           <div class="relative rounded-xl image-wrapper">
             <img
-              src="https://images.unsplash.com/photo-1571974448718-ac26a9af7d8b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=4169&q=80"
+              src="/images/market/circlesShop.jpg"
               alt="
                 "
               class="w-full rounded-xl"

@@ -9,19 +9,13 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-import {
-  Offer,
-  QueryTagsInput,
-  Tag,
-  TagsDocument,
-} from "../../../shared/api/data/types";
-import { me } from "../../../shared/stores/me";
-import { ApiClient } from "../../../shared/apiConnection";
+import { Offer } from "../../../shared/api/data/types";
 
-import { offers } from "../../../shared/stores/offers";
+import { storeOffers } from "../../../shared/stores/storeOffers";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+export let storeCirclesAddress: string;
 
 const listArguments = {};
 
@@ -32,43 +26,17 @@ let citites: {
 } = {};
 let categories: string[] = [];
 let shellEventSubscription: Subscription;
+let offers: Offer[] = [];
+let store: any;
 
-async function load() {
-  if (isLoading) return;
+onMount(() => {
+  store = storeOffers.getOffersFor(storeCirclesAddress);
+  isLoading = true;
+  return store.subscribe((data: any) => {
+    offers = data;
 
-  if (!$me.circlesAddress) {
     isLoading = false;
-    return;
-  }
-
-  const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(
-    TagsDocument,
-    {
-      typeId_in: ["o-marketplace:offer:category:1"],
-    }
-  );
-  categories = categoryResult.map((o) => o.value);
-  isLoading = false;
-}
-
-onMount(async () => {
-  await load();
-
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
-    }
-  );
-
-  return () => {
-    shellEventSubscription.unsubscribe();
-  };
+  });
 });
 </script>
 
@@ -81,12 +49,12 @@ onMount(async () => {
       <header class=" rounded-xl">
         <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
           <img
-            src="https://cantstoptherock.de/uttingsm.jpg"
+            src="/images/market/uttingsm.jpg"
             alt="
                 "
             class="w-full rounded-xl opacity-60 object-position: center center;  " />
           <div
-            class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl rounded-l-full font-heading top-2 bg-light-lightest">
+            class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2 bg-light-lightest">
             <span class="inline-block">Alte Utting</span>
           </div>
         </div>
@@ -102,8 +70,8 @@ onMount(async () => {
       fetchQueryArguments="{listArguments}"
       dataKey="offers"
       dataLimit="{100}" />-->
-    {#if $offers}
-      {#each $offers as offer}
+    {#if offers}
+      {#each offers as offer}
         <ListViewCard param="{offer}" />
       {/each}
     {/if}

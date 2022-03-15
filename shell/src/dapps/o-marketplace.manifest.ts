@@ -67,7 +67,8 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
 };
 
 const market: Page<any, DappState> = {
-  routeParts: ["=market"],
+  isSystem: true,
+  routeParts: ["=market", "storeCirclesAddress"],
   component: Home,
   title: "Market",
   type: "page",
@@ -75,7 +76,7 @@ const market: Page<any, DappState> = {
 
 const list: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["=list"],
+  routeParts: ["=list", "storeCirclesAddress"],
   component: ListView,
   title: "List",
   type: "page",
@@ -221,10 +222,11 @@ export const marketplace: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
+
   routables: [
     locations,
-    market,
     list,
+    market,
     addToCart,
     pleaseSignIn,
     // favorites,

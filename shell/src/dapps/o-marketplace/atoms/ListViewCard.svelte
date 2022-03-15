@@ -132,15 +132,15 @@ displayName =
             {offer.title}
           </div>
           <div>
-            {#if offer.description}
-              <div class="text-sm text-dark-lightest">
+            <div class="text-sm text-dark-lightest">
+              {#if offer.description}
                 {@html truncateString(offer.description, 40)}
                 -
-                <span class="inline-block text-dark-dark"
-                  >{offer.pricePerUnit}</span>
-                <span class="inline-block text-dark-dark">€</span>
-              </div>
-            {/if}
+              {/if}
+              <span class="inline-block text-dark-dark"
+                >{offer.pricePerUnit}</span>
+              <span class="inline-block text-dark-dark">€</span>
+            </div>
           </div>
         </div>
         <div class="flex flex-col self-start justify-end text-primary">
