@@ -154,7 +154,7 @@ let statsPromise = fetchStats();
       </section>
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click="{() => loadLink('/marketplace/market')}">
+        on:click="{() => loadLink('/marketplace/locations')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">

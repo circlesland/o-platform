@@ -20,7 +20,7 @@ const verifyEmail: Page<any, DappState> = {
   anonymous: true,
   routeParts: ["=verifyemail", ":status"],
   component: VerifyEmail,
-  title: "Your Email address",
+  title: "Email address",
   type: "page",
 };
 

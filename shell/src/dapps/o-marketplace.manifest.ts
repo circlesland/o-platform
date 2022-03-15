@@ -222,8 +222,8 @@ export const marketplace: DappManifest<DappState> = {
     };
   },
   routables: [
-    market,
     locations,
+    market,
     list,
     addToCart,
     pleaseSignIn,
