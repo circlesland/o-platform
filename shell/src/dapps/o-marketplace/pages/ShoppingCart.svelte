@@ -4,6 +4,10 @@ import CartItems from "../molecules/CartItems.svelte";
 import { push } from "svelte-spa-router";
 import { purchase } from "../processes/purchase";
 import { _ } from "svelte-i18n";
+import {assetBalances} from "../../../shared/stores/assetsBalances";
+import {BN} from "ethereumjs-util";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {convertCirclesToTimeCircles} from "../../../shared/functions/displayCirclesAmount";
 
 function checkout() {
   window.o.runProcess(purchase, cartContents);
@@ -15,6 +19,12 @@ function handleClickOutside(event) {
     type: "shell.requestCloseModal",
   });
 }
+
+let balance = new BN("0");
+$: {
+  balance = (convertCirclesToTimeCircles(parseFloat(RpcGateway.get().utils.fromWei($assetBalances.crcBalances.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")), "ether")), new Date().toJSON()) / 10).toFixed(2);
+}
+
 </script>
 
 <div class="p-5">
@@ -24,6 +34,7 @@ function handleClickOutside(event) {
         {$_("dapps.o-marketplace.pages.shoppingCart.cart")}
       </h1>
     </div>
+    <div>Your balance: {balance}</div>
   </header>
 
   {#if $cartContents && $cartContents.length > 0}
