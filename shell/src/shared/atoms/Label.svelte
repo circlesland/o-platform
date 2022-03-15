@@ -1,17 +1,21 @@
 <script lang="ts">
-import { GetStringsByMaxVersionDocument, I18n, QueryGetStringsByMaxVersionArgs } from "../api/data/types";
+import { GetStringByMaxVersionDocument, I18n, QueryGetStringByMaxVersionArgs } from "../api/data/types";
 import { ApiClient } from "../apiConnection";
 
-let key: string = "en";
-let lang: string = "common.trusted";
+export let key: string;
+export let lang: string;
 
+let value: string;
 
-const String = async () => {
-  const i18nresult = await ApiClient.query<I18n, QueryGetStringsByMaxVersionArgs>(GetStringsByMaxVersionDocument, {lang: "en", key: "common.trusted"});
-
-  return JSON.stringify(i18nresult.value);
+$: {
+  ApiClient.query<I18n, QueryGetStringByMaxVersionArgs>(GetStringByMaxVersionDocument, {
+    lang: lang,
+    key: key
+  })
+  .then(i18nResult => {
+    value = i18nResult.value;
+  });
 }
-
 </script>
 
 <style>
@@ -19,5 +23,4 @@ const String = async () => {
 </style>
 
 <!-- markup (zero or more items) goes here -->
-
-<p>{String()}</p>
+<p>{value}</p>

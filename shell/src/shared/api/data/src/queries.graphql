@@ -1532,8 +1532,8 @@ query findInvitationCreator($code: String!) {
     }
 }
 
-query getStringsByMaxVersion($lang: String, $key: String) {
-    getStringsByMaxVersion(lang: $lang, key: $key) {
+query getStringByMaxVersion($lang: String, $key: String) {
+    getStringByMaxVersion(lang: $lang, key: $key) {
         lang
         key
         createdBy

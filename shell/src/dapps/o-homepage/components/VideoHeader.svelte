@@ -84,7 +84,7 @@
         <Icons icon="playbutton" />
       </div>
       <div class="pt-0 text-lg text-center text-white sm:pt-2">{$_("dapps.o-homepage.components.videoHeader.playVideo")}</div>
-      <div><Label/></div>
+      <div><Label key="common.trusted" lang="en"/></div>
     </button>
   </div>
 </div>
