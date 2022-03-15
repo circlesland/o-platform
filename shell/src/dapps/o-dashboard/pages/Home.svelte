@@ -70,9 +70,9 @@ let statsPromise = fetchStats();
         <h1>WANT MORE PARTIES?</h1>
         <span class="text-dark-lightest">Invite your friends.</span>
       </div>
-      <div class="w-full">
-        <div class="z-50 w-full pt-1 bg-white progressnav ">
-          <div class="flex flex-row items-stretch w-full h-10 mb-6 bg-white">
+      <div class="w-full mt-4">
+        <!-- <div class="z-50 w-full pt-1 bg-white progressnav ">
+          <div class="flex flex-row items-stretch w-full h-10 mb-2 bg-white">
             <div
               class="relative flex-grow h-2 mt-8 border-b-2 border-r-2 w-42 border-primary">
               <span class="absolute text-sm tracking-wider -right-4 bottom-2"
@@ -90,10 +90,40 @@ let statsPromise = fetchStats();
                 200 Citizens</span>
             </div>
           </div>
+        </div> -->
+
+        <div class="flex flex-row items-stretch">
+          <div class="flex-grow text-sm whitespace-nowrap">100 Citizens</div>
+          <div class="text-sm text-light justify-self-end">200 Citizens</div>
+        </div>
+        {#await statsPromise}
           <progress
-            class="w-full progress progress-primary"
-            value="107"
+            class="relative w-full progress progress-primary"
+            value="0"
             max="200"></progress>
+        {:then result}
+          <progress
+            class="relative w-full progress progress-primary"
+            value="{result.data.stats.profilesCount
+              ? result.data.stats.profilesCount
+              : '0'}"
+            max="200"></progress>
+          <div
+            class="text-xs"
+            style="margin-left: {(result.data.stats.profilesCount / 200) * 100 -
+              4}%">
+            {result.data.stats.profilesCount
+              ? result.data.stats.profilesCount
+              : "0"} Citizens
+          </div>
+        {/await}
+
+        <!-- style="margin-left: {(70 / 200) * 100}%" -->
+        <div class="flex flex-row items-stretch">
+          <div class="flex-grow text-sm whitespace-nowrap">
+            Party: Alte Utting
+          </div>
+          <div class="text-sm text-light justify-self-end">Next Party</div>
         </div>
       </div>
     </section>
