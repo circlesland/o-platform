@@ -1,27 +1,28 @@
 <script lang="ts">
-import { cartContents, totalPrice } from "../stores/shoppingCartStore";
-import CartItems from "../molecules/CartItems.svelte";
-import { push } from "svelte-spa-router";
-import { purchase } from "../processes/purchase";
-import { _ } from "svelte-i18n";
+  import {cartContents, totalPrice} from "../stores/shoppingCartStore";
+  import CartItems from "../molecules/CartItems.svelte";
+  import {push} from "svelte-spa-router";
+  import {purchase} from "../processes/purchase";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-function checkout() {
-  window.o.runProcess(purchase, cartContents);
-}
+  function checkout() {
+    window.o.runProcess(purchase, cartContents);
+  }
 
-function handleClickOutside(event) {
-  event.preventDefault();
-  window.o.publishEvent({
-    type: "shell.requestCloseModal",
-  });
-}
+  function handleClickOutside(event) {
+    event.preventDefault();
+    window.o.publishEvent({
+      type: "shell.requestCloseModal",
+    });
+  }
 </script>
 
 <div class="p-5">
   <header>
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">
-        {$_("dapps.o-marketplace.pages.shoppingCart.cart")}
+        <Label key="dapps.o-marketplace.pages.shoppingCart.cart" />
       </h1>
     </div>
   </header>
@@ -35,7 +36,7 @@ function handleClickOutside(event) {
               <CartItems cartContents="{cartContents}" />
               <div class="flex items-center justify-end">
                 <span class="mr-2 text-sm font-medium text-gray-400"
-                  >{$_("dapps.o-marketplace.pages.shoppingCart.total")}</span
+                  ><Label key="dapps.o-marketplace.pages.shoppingCart.total" /></span
                 ><span class="text-lg font-bold"
                   >{$totalPrice.toFixed(2)}
                   <span class="font-enso">€</span></span>
@@ -59,7 +60,7 @@ function handleClickOutside(event) {
     </div>
   {:else}
     <p class="mt-6 text-center">
-      {$_("dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty")}
+      <Label key="dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty" />
     </p>
     <div class="w-full mt-6">
       <button

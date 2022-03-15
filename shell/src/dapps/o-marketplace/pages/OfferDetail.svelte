@@ -1,58 +1,59 @@
 <script lang="ts">
-import { Offer } from "../../../shared/api/data/types";
-import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import Icons from "../../../shared/molecules/Icons.svelte";
-import { cartContents } from "../stores/shoppingCartStore";
-import { push } from "svelte-spa-router";
-import UserImage from "../../../shared/atoms/UserImage.svelte";
-import { offers } from "../../../shared/stores/offers";
-import { _ } from "svelte-i18n";
+  import {Offer} from "../../../shared/api/data/types";
+  import {onMount} from "svelte";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
+  import Icons from "../../../shared/molecules/Icons.svelte";
+  import {cartContents} from "../stores/shoppingCartStore";
+  import {push} from "svelte-spa-router";
+  import UserImage from "../../../shared/atoms/UserImage.svelte";
+  import {offers} from "../../../shared/stores/offers";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-let isLoading: boolean;
-let error: Error;
-let offer: Offer[] = [];
-let shellEventSubscription: Subscription;
+  let isLoading: boolean;
+  let error: Error;
+  let offer: Offer[] = [];
+  let shellEventSubscription: Subscription;
 
-export let id: number;
+  export let id: number;
 
-async function load() {
-  if (!id) {
-    offer = [];
-    return;
+  async function load() {
+    if (!id) {
+      offer = [];
+      return;
+    }
+
+    const o = await offers.findById(parseInt(id.toString()));
+    offer = o ? [o] : [];
+    isLoading = false;
   }
 
-  const o = await offers.findById(parseInt(id.toString()));
-  offer = o ? [o] : [];
-  isLoading = false;
-}
+  function addToCart(item) {
+    $cartContents = $cartContents ? [...$cartContents, item] : [item];
+    push(`#/marketplace/cart`);
+  }
 
-function addToCart(item) {
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
-}
+  onMount(async () => {
+    isLoading = true;
+    await load();
 
-onMount(async () => {
-  isLoading = true;
-  await load();
+    shellEventSubscription = window.o.events.subscribe(
+            async (event: PlatformEvent) => {
+              if (
+                      event.type != "shell.refresh" ||
+                      (<any>event).dapp != "marketplace:1"
+              ) {
+                return;
+              }
+              await load();
+            }
+    );
 
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
-    }
-  );
-
-  return () => {
-    shellEventSubscription.unsubscribe();
-  };
-});
+    return () => {
+      shellEventSubscription.unsubscribe();
+    };
+  });
 </script>
 
 <div class="">
@@ -60,7 +61,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.offerDetail.loadingOffers")}</div>
+          <div><Label key="dapps.o-marketplace.pages.offerDetail.loadingOffers" /></div>
         </div>
       </div>
     </section>
@@ -69,7 +70,7 @@ onMount(async () => {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>{$_("dapps.o-marketplace.pages.offerDetail.error")}</b>
+            <b><Label key="dapps.o-marketplace.pages.offerDetail.error" /></b>
           </div>
         </div>
       </div>
@@ -95,7 +96,7 @@ onMount(async () => {
 
               <div
                 class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
-                {$_("dapps.o-marketplace.atoms.offerCard.pickUpOnly")}
+                <Label key="dapps.o-marketplace.atoms.offerCard.pickUpOnly" />
               </div>
             </div>
           </header>
@@ -155,7 +156,7 @@ onMount(async () => {
             {#if o.city}
               <div class="flex flex-col space-y-1">
                 <div class="text-2xs">
-                  {$_("dapps.o-marketplace.pages.offerDetail.location")}
+                  <Label key="dapps.o-marketplace.pages.offerDetail.location" />
                 </div>
                 <div class="text-sm text-dark-lightest">{o.city.name}</div>
               </div>
@@ -326,7 +327,7 @@ onMount(async () => {
               type="submit"
               class="relative btn btn-primary btn-block"
               on:click="{() => addToCart(o)}">
-              {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
+              <Label key="dapps.o-marketplace.pages.offerDetail.addToCart" />
               <div class="absolute mr-1 right-2">
                 <Icons icon="cart" />
               </div>
@@ -339,7 +340,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.offerDetail.notFound")}</div>
+          <div><Label key="dapps.o-marketplace.pages.offerDetail.notFound" /></div>
         </div>
       </div>
     </section>

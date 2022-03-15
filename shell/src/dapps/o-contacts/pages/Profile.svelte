@@ -1,213 +1,215 @@
 <script lang="ts">
-import { getCountryName } from "../../../shared/countries";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import { me } from "../../../shared/stores/me";
-import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import { showToast } from "../../../shared/toast";
+  import {getCountryName} from "../../../shared/countries";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import {me} from "../../../shared/stores/me";
+  import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
+  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+  import {showToast} from "../../../shared/toast";
 
-import {
-  Capability,
-  CapabilityType,
-  CommonTrust,
-  CommonTrustDocument,
-  CommonTrustQueryVariables,
-  Contact,
-  ContactDirection,
-  ContactPoint,
-  EventType,
-  Profile,
-  VerifySafeDocument,
-  RevokeSafeVerificationDocument, AggregateType, SessionInfo,
-} from "../../../shared/api/data/types";
-import { contacts } from "../../../shared/stores/contacts";
-import { ApiClient } from "../../../shared/apiConnection";
-import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
-import { isMobile } from "../../../shared/functions/isMobile";
-import { UserActions, UserActionItem } from "../../../shared/userActions";
+  import {
+    Capability,
+    CapabilityType,
+    CommonTrust,
+    CommonTrustDocument,
+    CommonTrustQueryVariables,
+    Contact,
+    ContactDirection,
+    ContactPoint,
+    EventType,
+    Profile,
+    VerifySafeDocument,
+    RevokeSafeVerificationDocument, AggregateType, SessionInfo,
+  } from "../../../shared/api/data/types";
+  import {contacts} from "../../../shared/stores/contacts";
+  import {ApiClient} from "../../../shared/apiConnection";
+  import {getSessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
+  import {isMobile} from "../../../shared/functions/isMobile";
+  import {UserActions, UserActionItem} from "../../../shared/userActions";
 
-import { _ } from "svelte-i18n";
-import {Environment} from "../../../shared/environment";
+  import {_} from "svelte-i18n";
+  import {Environment} from "../../../shared/environment";
+  import Label from "../../../shared/atoms/Label.svelte";
 
 
-export let id: string;
+  export let id: string;
 
-export let capabilities: Capability[] | undefined;
+  export let capabilities: Capability[] | undefined;
 
-let error: string | undefined = undefined;
-let displayName: string;
-let trustMessage: string;
-let isLoading: boolean = true;
-let isMe: boolean = false;
-let commonTrusts: CommonTrust[] = [];
-let profile: Profile;
-let contact: Contact;
+  let error: string | undefined = undefined;
+  let displayName: string;
+  let trustMessage: string;
+  let isLoading: boolean = true;
+  let isMe: boolean = false;
+  let commonTrusts: CommonTrust[] = [];
+  let profile: Profile;
+  let contact: Contact;
 
-let detailActions: UserActionItem[];
+  let detailActions: UserActionItem[];
 
-$: {
-  isLoading = true;
-  setProfile(id).then(() => (isLoading = false));
-}
-
-async function setProfile(id: string) {
-  const c = await contacts.findBySafeAddress(id);
-  if (!c) {
-    return;
+  $: {
+    isLoading = true;
+    setProfile(id).then(() => (isLoading = false));
   }
 
-  contact = c;
-  profile = c.contactAddress_Profile;
-  detailActions = [];
-
-  if ($me.circlesAddress !== contact.contactAddress) {
-    commonTrusts = (
-      await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(
-        CommonTrustDocument,
-        {
-          safeAddress1: $me.circlesAddress.toLowerCase(),
-          safeAddress2: contact.contactAddress.toLowerCase(),
-        }
-      )
-    ).filter((o) => o.profile);
-  } else {
-    commonTrusts = [];
-  }
-
-  displayName = contact.contactAddress_Profile.displayName;
-
-  // displayName =
-  //   displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
-
-  profile = contact.contactAddress_Profile;
-
-  if (contact.metadata) {
-    const trustMetadata: ContactPoint = contact.metadata.find(
-      (p) => p.name === EventType.CrcTrust
-    );
-    let trustIn = 0;
-    let trustOut = 0;
-
-    if (trustMetadata) {
-      trustMetadata.directions.forEach((d, i) => {
-        if (d == ContactDirection.In) {
-          trustIn = parseInt(trustMetadata.values[i]);
-        } else if (d == ContactDirection.Out) {
-          trustOut = parseInt(trustMetadata.values[i]);
-        }
-      });
+  async function setProfile(id: string) {
+    const c = await contacts.findBySafeAddress(id);
+    if (!c) {
+      return;
     }
 
-    if (trustIn > 0 && trustOut > 0) {
-      trustMessage = `${$_("dapps.o-contacts.pages.profile.mutualTrust")}`;
-    } else if (!trustIn && trustOut > 0) {
-      trustMessage = `${$_("dapps.o-contacts.pages.profile.trustedByYou")}`;
-    } else if (trustIn > 0 && !trustOut) {
-      trustMessage = `${$_("dapps.o-contacts.pages.profile.isTrustingYou")}`;
+    contact = c;
+    profile = c.contactAddress_Profile;
+    detailActions = [];
+
+    if ($me.circlesAddress !== contact.contactAddress) {
+      commonTrusts = (
+              await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(
+                      CommonTrustDocument,
+                      {
+                        safeAddress1: $me.circlesAddress.toLowerCase(),
+                        safeAddress2: contact.contactAddress.toLowerCase(),
+                      }
+              )
+      ).filter((o) => o.profile);
     } else {
-      trustMessage = `${$_("dapps.o-contacts.pages.profile.notTrusted")}`;
+      commonTrusts = [];
     }
-  }
 
-  isMe = profile.id == ($me ? $me.id : 0);
-  isLoading = false;
+    displayName = contact.contactAddress_Profile.displayName;
 
-  const detailActionsPromise = UserActions.getAvailableActions(profile);
-  const sessionInfoPromise = me.getSessionInfo();
-  const promiseResults = await Promise.all([detailActionsPromise, sessionInfoPromise]);
-  detailActions = <UserActionItem[]>promiseResults[0];
-  const sessionInfo = <SessionInfo>promiseResults[1];
+    // displayName =
+    //   displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 
-  const verifyData = [
-    {
+    profile = contact.contactAddress_Profile;
+
+    if (contact.metadata) {
+      const trustMetadata: ContactPoint = contact.metadata.find(
+              (p) => p.name === EventType.CrcTrust
+      );
+      let trustIn = 0;
+      let trustOut = 0;
+
+      if (trustMetadata) {
+        trustMetadata.directions.forEach((d, i) => {
+          if (d == ContactDirection.In) {
+            trustIn = parseInt(trustMetadata.values[i]);
+          } else if (d == ContactDirection.Out) {
+            trustOut = parseInt(trustMetadata.values[i]);
+          }
+        });
+      }
+
+      if (trustIn > 0 && trustOut > 0) {
+        trustMessage = `${$_("dapps.o-contacts.pages.profile.mutualTrust")}`;
+      } else if (!trustIn && trustOut > 0) {
+        trustMessage = `${$_("dapps.o-contacts.pages.profile.trustedByYou")}`;
+      } else if (trustIn > 0 && !trustOut) {
+        trustMessage = `${$_("dapps.o-contacts.pages.profile.isTrustingYou")}`;
+      } else {
+        trustMessage = `${$_("dapps.o-contacts.pages.profile.notTrusted")}`;
+      }
+    }
+
+    isMe = profile.id == ($me ? $me.id : 0);
+    isLoading = false;
+
+    const detailActionsPromise = UserActions.getAvailableActions(profile);
+    const sessionInfoPromise = me.getSessionInfo();
+    const promiseResults = await Promise.all([detailActionsPromise, sessionInfoPromise]);
+    detailActions = <UserActionItem[]>promiseResults[0];
+    const sessionInfo = <SessionInfo>promiseResults[1];
+
+    const verifyData = [
+      {
+        key: "verify",
+        icon: "check",
+        title: `${$_("dapps.o-contacts.pages.profile.verify")}`,
+        mutation: VerifySafeDocument,
+      },
+      {
+        key: "revoke",
+        icon: "trash",
+        title: `${$_("dapps.o-contacts.pages.profile.revoke")}`,
+        mutation: RevokeSafeVerificationDocument,
+      },
+    ];
+    capabilities = sessionInfo.capabilities;
+    const canVerify =
+            capabilities &&
+            capabilities.find((o) => o.type == CapabilityType.Verify) &&
+            Environment.allowVerify;
+
+    const verifyProfile = {
       key: "verify",
       icon: "check",
       title: `${$_("dapps.o-contacts.pages.profile.verify")}`,
-      mutation: VerifySafeDocument,
-    },
-    {
-      key: "revoke",
+      action: async () => {
+        const apiClient = await window.o.apiClient.client.subscribeToResult();
+        await apiClient.mutate({
+          mutation: VerifySafeDocument,
+          variables: {
+            safeAddress: id,
+          },
+        });
+        showToast(
+                "success",
+                `${$_("dapps.o-contacts.pages.profile.accountVeryfied")}`
+        );
+
+        isLoading = true;
+        setProfile(id).then(() => (isLoading = false));
+      },
+    };
+
+    const unverifyProfile = {
+      key: "evoke",
       icon: "trash",
-      title: `${$_("dapps.o-contacts.pages.profile.revoke")}`,
-      mutation: RevokeSafeVerificationDocument,
-    },
-  ];
-  capabilities = sessionInfo.capabilities;
-  const canVerify =
-    capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Verify) &&
-    Environment.allowVerify;
+      colorClass: "",
+      title: `${$_("dapps.o-contacts.pages.profile.verifiedClickToRevoke")}`,
+      action: async () => {
+        const apiClient = await window.o.apiClient.client.subscribeToResult();
+        await apiClient.mutate({
+          mutation: RevokeSafeVerificationDocument,
+          variables: {
+            safeAddress: id,
+          },
+        });
 
-  const verifyProfile = {
-    key: "verify",
-    icon: "check",
-    title: `${$_("dapps.o-contacts.pages.profile.verify")}`,
-    action: async () => {
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      await apiClient.mutate({
-        mutation: VerifySafeDocument,
-        variables: {
-          safeAddress: id,
-        },
-      });
-      showToast(
-        "success",
-        `${$_("dapps.o-contacts.pages.profile.accountVeryfied")}`
-      );
+        showToast(
+                "error",
+                `${$_("dapps.o-contacts.pages.profile.accountVerificationRevoked")}`
+        );
 
-      isLoading = true;
-      setProfile(id).then(() => (isLoading = false));
-    },
-  };
+        isLoading = true;
+        setProfile(id).then(() => (isLoading = false));
+      },
+    };
+    console.log("banni", unverifyProfile);
 
-  const unverifyProfile = {
-    key: "evoke",
-    icon: "trash",
-    colorClass: "",
-    title: `${$_("dapps.o-contacts.pages.profile.verifiedClickToRevoke")}`,
-    action: async () => {
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      await apiClient.mutate({
-        mutation: RevokeSafeVerificationDocument,
-        variables: {
-          safeAddress: id,
-        },
-      });
+    const bannedProfile = {
+      key: "banned",
+      icon: "trash",
+      colorClass: "text-alert-dark",
+      title: `${$_("dapps.o-contacts.pages.profile.revokedUppercase")}`,
+      action: () => {
+      },
+    };
 
-      showToast(
-        "error",
-        `${$_("dapps.o-contacts.pages.profile.accountVerificationRevoked")}`
-      );
-
-      isLoading = true;
-      setProfile(id).then(() => (isLoading = false));
-    },
-  };
-  console.log("banni", unverifyProfile);
-
-  const bannedProfile = {
-    key: "banned",
-    icon: "trash",
-    colorClass: "text-alert-dark",
-    title: `${$_("dapps.o-contacts.pages.profile.revokedUppercase")}`,
-    action: () => {},
-  };
-
-  if (canVerify) {
-    if (
-      profile.verifications?.length &&
-      profile.verifications[0].revokedAt
-    ) {
-      detailActions.push(bannedProfile);
-    } else {
-      if (profile.verifications?.length) {
-        detailActions.push(unverifyProfile);
+    if (canVerify) {
+      if (
+              profile.verifications?.length &&
+              profile.verifications[0].revokedAt
+      ) {
+        detailActions.push(bannedProfile);
       } else {
-        detailActions.push(verifyProfile);
+        if (profile.verifications?.length) {
+          detailActions.push(unverifyProfile);
+        } else {
+          detailActions.push(verifyProfile);
+        }
       }
     }
   }
-}
 </script>
 
 {#if isLoading}
@@ -219,7 +221,7 @@ async function setProfile(id: string) {
     <header class="grid overflow-hidden bg-white h-72 ">
       <div class="w-full text-center">
         <h1 class="text-3xl uppercase font-heading">
-          {$_("dapps.o-contacts.pages.profile.profile")}
+          <Label key="dapps.o-contacts.pages.profile.profile" />
         </h1>
       </div>
       <div
@@ -256,7 +258,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    {$_("dapps.o-contacts.pages.profile.trust")}
+                    <Label key="dapps.o-contacts.pages.profile.trust" />
                   </div>
                   <div class="flex flex-wrap content-start">
                     {trustMessage}
@@ -267,7 +269,7 @@ async function setProfile(id: string) {
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="text-left text-2xs text-dark-lightest">
-                  {$_("dapps.o-contacts.pages.profile.mutualFriends")}
+                  <Label key="dapps.o-contacts.pages.profile.mutualFriends" />
                 </div>
                 <div class="flex flex-row flex-wrap mt-2 ">
                   {#if commonTrusts.length}
@@ -282,7 +284,7 @@ async function setProfile(id: string) {
                       {/if}
                     {/each}
                   {:else}
-                    {$_("dapps.o-contacts.pages.profile.noMutualFriends")}
+                    <Label key="dapps.o-contacts.pages.profile.noMutualFriends" />
                   {/if}
                 </div>
               </div>
@@ -291,7 +293,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    {$_("dapps.o-contacts.pages.profile.memberAt")}
+                    <Label key="dapps.o-contacts.pages.profile.memberAt" />
                   </div>
                   <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.memberships as membership}
@@ -312,7 +314,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    {$_("dapps.o-contacts.pages.profile.verifiedBy")}
+                    <Label key="dapps.o-contacts.pages.profile.verifiedBy" />
                   </div>
                   <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.verifications as verification}
@@ -333,7 +335,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    {$_("dapps.o-contacts.pages.profile.passion")}
+                    <Label key="dapps.o-contacts.pages.profile.passion" />
                   </div>
 
                   <div class="flex items-center w-full text-lg">
@@ -348,7 +350,7 @@ async function setProfile(id: string) {
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
-                  {$_("dapps.o-contacts.pages.profile.address")}
+                  <Label key="dapps.o-contacts.pages.profile.address" />
                 </div>
                 <div class="flex items-center w-full text-2xs">
                   {contact.contactAddress}

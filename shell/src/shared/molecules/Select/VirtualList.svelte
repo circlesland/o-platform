@@ -1,6 +1,7 @@
 <script>
-	import { onMount, tick } from 'svelte';
-	import { _ } from "svelte-i18n";
+	import {onMount, tick} from 'svelte';
+	import {_} from "svelte-i18n";
+	import Label from "../../atoms/Label.svelte";
 
 	// props
 	export let items = undefined;
@@ -26,14 +27,14 @@
 	let average_height;
 
 	$: visible = items.slice(start, end).map((data, i) => {
-		return { index: i + start, data };
+		return {index: i + start, data};
 	});
 
 	// whenever `items` changes, invalidate the current heightmap
 	$: if (mounted) refresh(items, viewport_height, itemHeight);
 
 	async function refresh(items, viewport_height, itemHeight) {
-		const { scrollTop } = viewport;
+		const {scrollTop} = viewport;
 
 		await tick(); // wait until the DOM is up to date
 
@@ -66,7 +67,7 @@
 	}
 
 	async function handle_scroll() {
-		const { scrollTop } = viewport;
+		const {scrollTop} = viewport;
 
 		const old_start = start;
 
@@ -158,7 +159,7 @@
 	<svelte-virtual-list-contents bind:this={contents} style="padding-top: {top}px; padding-bottom: {bottom}px;">
 		{#each visible as row (row.index)}
 			<svelte-virtual-list-row>
-				<slot item={row.data} i={row.index} {hoverItemIndex}>{$_("shared.molecules.select.virtualList.missingTemplate")}</slot>
+				<slot item={row.data} i={row.index} {hoverItemIndex}><Label key="shared.molecules.select.virtualList.missingTemplate" /></slot>
 			</svelte-virtual-list-row>
 		{/each}
 	</svelte-virtual-list-contents>

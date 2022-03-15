@@ -1,73 +1,73 @@
 <script lang="ts">
-import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import Icons from "../../../shared/molecules/Icons.svelte";
-import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
-import { Capability, CapabilityType } from "../../../shared/api/data/types";
+  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import Icons from "../../../shared/molecules/Icons.svelte";
+  import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
+  import {Capability, CapabilityType} from "../../../shared/api/data/types";
 
-import {
-  CreatedInvitation,
-  MyInvitationsDocument,
-  MyInvitationsQueryVariables,
-} from "../../../shared/api/data/types";
-import { ApiClient } from "../../../shared/apiConnection";
-import { Environment } from "../../../shared/environment";
+  import {
+    CreatedInvitation,
+    MyInvitationsDocument,
+    MyInvitationsQueryVariables,
+  } from "../../../shared/api/data/types";
+  import {ApiClient} from "../../../shared/apiConnection";
+  import {Environment} from "../../../shared/environment";
 
-import { _ } from "svelte-i18n";
-import {me} from "../../../shared/stores/me";
+  import {_} from "svelte-i18n";
+  import {me} from "../../../shared/stores/me";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let capabilities: Capability[] | undefined = [];
+  export let capabilities: Capability[] | undefined = [];
 
-let myInvitations: CreatedInvitation[] = [];
-let canInvite = false;
+  let myInvitations: CreatedInvitation[] = [];
+  let canInvite = false;
 
-async function reload() {
-  const sessionInfo = await me.getSessionInfo();
-  capabilities = sessionInfo.capabilities;
-  canInvite =
-    capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Invite) &&
-    Environment.allowVerify;
+  async function reload() {
+    const sessionInfo = await me.getSessionInfo();
+    capabilities = sessionInfo.capabilities;
+    canInvite =
+            capabilities &&
+            capabilities.find((o) => o.type == CapabilityType.Invite) &&
+            Environment.allowVerify;
 
-  const invitations = await ApiClient.query<
-    CreatedInvitation[],
-    MyInvitationsQueryVariables
-  >(MyInvitationsDocument, {});
+    const invitations = await ApiClient.query<CreatedInvitation[],
+            MyInvitationsQueryVariables>(MyInvitationsDocument, {});
 
-  if (!invitations || !invitations.length) {
-    canInvite = false;
+    if (!invitations || !invitations.length) {
+      canInvite = false;
+    }
+    myInvitations = invitations ?? [];
   }
-  myInvitations = invitations ?? [];
-}
-reload();
 
-function sortAlphabetically(a, b) {
-  return a.name.localeCompare(b.name);
-}
+  reload();
+
+  function sortAlphabetically(a, b) {
+    return a.name.localeCompare(b.name);
+  }
 </script>
 
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <slot name="EditorTitle">
     <div class="w-full text-center">
-      <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-dashboard.pages.invites.invites")}</h1>
+      <h1 class="text-3xl uppercase font-heading"><Label key="dapps.o-dashboard.pages.invites.invites" /></h1>
     </div>
   </slot>
   <slot name="EditorDescription">
     <div class="w-full text-center">
       <span class="text-dark-lightest">
         {#if canInvite}
-          {$_("dapps.o-dashboard.pages.invites.canInvite")}<u
-            >{$_("dapps.o-dashboard.pages.invites.onlyOnce")}</u
+          <Label key="dapps.o-dashboard.pages.invites.canInvite" /><u
+            ><Label key="dapps.o-dashboard.pages.invites.onlyOnce" /></u
           >.
         {:else}
-          {$_("dapps.o-dashboard.pages.invites.canNotInvite1")}<br /><br />
-          {$_("dapps.o-dashboard.pages.invites.canNotInvite2")}<br /><br />
-          {$_("dapps.o-dashboard.pages.invites.canNotInvite3")}<br /><br />
-          {$_("dapps.o-dashboard.pages.invites.canNotInvite4")}
+          <Label key="dapps.o-dashboard.pages.invites.canNotInvite1" /><br /><br />
+          <Label key="dapps.o-dashboard.pages.invites.canNotInvite2" /><br /><br />
+          <Label key="dapps.o-dashboard.pages.invites.canNotInvite3" /><br /><br />
+          <Label key="dapps.o-dashboard.pages.invites.canNotInvite4" />
           <a
             href="https://discord.gg/UgCVqFnx"
             target="_blank"
-            class="link link-primary">{$_("dapps.o-dashboard.pages.invites.discord")}</a
+            class="link link-primary"><Label key="dapps.o-dashboard.pages.invites.discord" /></a
           >.
         {/if}
       </span>
@@ -93,7 +93,7 @@ function sortAlphabetically(a, b) {
                   <span
                     class="px-2 ml-12 text-xs bg-white rounded shadow-sm tooltip">
                     {#if !invitation.claimedBy}
-                      {$_("dapps.o-dashboard.pages.invites.invitationNotClaimed")}
+                      <Label key="dapps.o-dashboard.pages.invites.invitationNotClaimed" />
                     {/if}
                   </span>
                   {#if invitation.claimedBy && invitation.claimedBy.firstName}

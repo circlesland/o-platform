@@ -1,57 +1,59 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import { push } from "svelte-spa-router";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import {QueryTagsInput, Tag, TagsDocument} from "../../../shared/api/data/types";
-import {ApiClient} from "../../../shared/apiConnection";
-import { _ } from "svelte-i18n";
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+  import {onMount} from "svelte";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
+  import {push} from "svelte-spa-router";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+  import {QueryTagsInput, Tag, TagsDocument} from "../../../shared/api/data/types";
+  import {ApiClient} from "../../../shared/apiConnection";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-let isLoading: boolean;
-let error: Error;
-let categories: string[] = [];
-let shellEventSubscription: Subscription;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
-async function load() {
-  if (isLoading) return;
+  let isLoading: boolean;
+  let error: Error;
+  let categories: string[] = [];
+  let shellEventSubscription: Subscription;
 
-  isLoading = true;
-  const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(TagsDocument, {
-    typeId_in: ["o-marketplace:offer:category:1"]
+  async function load() {
+    if (isLoading) return;
+
+    isLoading = true;
+    const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(TagsDocument, {
+      typeId_in: ["o-marketplace:offer:category:1"]
+    });
+    categories = categoryResult.map(o => o.value);
+    isLoading = false;
+  }
+
+  onMount(async () => {
+    await load();
+
+    shellEventSubscription = window.o.events.subscribe(
+            async (event: PlatformEvent) => {
+              if (
+                      event.type != "shell.refresh" ||
+                      (<any>event).dapp != "marketplace:1"
+              ) {
+                return;
+              }
+              await load();
+            }
+    );
+
+    return () => {
+      shellEventSubscription.unsubscribe();
+    };
   });
-  categories = categoryResult.map(o => o.value);
-  isLoading = false;
-}
 
-onMount(async () => {
-  await load();
-
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
-    }
-  );
-
-  return () => {
-    shellEventSubscription.unsubscribe();
-  };
-});
-
-function loadCategoryPage(category: any) {
-  push("#/marketplace/categories/" + category.id + "/" + category.value);
-}
+  function loadCategoryPage(category: any) {
+    push("#/marketplace/categories/" + category.id + "/" + category.value);
+  }
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -61,7 +63,7 @@ function loadCategoryPage(category: any) {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.categories.loadingOffers")}</div>
+          <div><Label key="dapps.o-marketplace.pages.categories.loadingOffers" /></div>
         </div>
       </div>
     </section>
@@ -70,7 +72,7 @@ function loadCategoryPage(category: any) {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>{$_("dapps.o-marketplace.pages.categories.error")}</b>
+            <b><Label key="dapps.o-marketplace.pages.categories.error" /></b>
           </div>
         </div>
       </div>
@@ -99,7 +101,7 @@ function loadCategoryPage(category: any) {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.categories.noOffers")}</div>
+          <div><Label key="dapps.o-marketplace.pages.categories.noOffers" /></div>
         </div>
       </div>
     </section>

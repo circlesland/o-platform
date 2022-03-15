@@ -1,5 +1,6 @@
 <script>
-  import { _ } from "svelte-i18n";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 </script>
 
 <div class="w-full bg-white">
@@ -15,10 +16,10 @@
           <h2
             class="max-w-lg mb-6 text-3xl font-bold tracking-tight sm:text-4xl sm:leading-none"
           >
-            {$_("dapps.o-homepage.components.mission.yourPassionIsTheMotor")}
+            <Label key="dapps.o-homepage.components.mission.yourPassionIsTheMotor" />
           </h2>
           <p class="text-base text-gray-600 md:text-lg">
-            {$_("dapps.o-homepage.components.mission.byStarting")}
+            <Label key="dapps.o-homepage.components.mission.byStarting" />
           </p>
         </div>
       </div>

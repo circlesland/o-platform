@@ -1,23 +1,24 @@
 <script>
-import { slide } from "svelte/transition";
-import * as bip39 from "bip39";
-import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
-import { _ } from "svelte-i18n";
+  import {slide} from "svelte/transition";
+  import * as bip39 from "bip39";
+  import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let key;
-let isOpen = false;
-const toggle = () => (isOpen = !isOpen);
+  export let key;
+  let isOpen = false;
+  const toggle = () => (isOpen = !isOpen);
 
-/* we're currently ONLY showing the current key from localstorage! */
-let seedphrase =
-  sessionStorage.getItem("circlesKey") &&
-  sessionStorage.getItem("circlesKey") != "0x123"
-    ? bip39.entropyToMnemonic(
-        sessionStorage
-          .getItem("circlesKey")
-          .substr(2, sessionStorage.getItem("circlesKey").length - 2)
-      )
-    : "<no private key>";
+  /* we're currently ONLY showing the current key from localstorage! */
+  let seedphrase =
+          sessionStorage.getItem("circlesKey") &&
+          sessionStorage.getItem("circlesKey") != "0x123"
+                  ? bip39.entropyToMnemonic(
+                  sessionStorage
+                          .getItem("circlesKey")
+                          .substr(2, sessionStorage.getItem("circlesKey").length - 2)
+                  )
+                  : "<no private key>";
 </script>
 
 <section class="mb-3">
@@ -85,7 +86,7 @@ let seedphrase =
             class="flex flex-col w-full mt-4 space-y-1"
             transition:slide="{{ duration: 300 }}">
             <div class="mb-1 text-left text-2xs text-dark-lightest">
-              {$_("dapps.o-passport.atoms.accountCard.secretRecoveryCode")}
+              <Label key="dapps.o-passport.atoms.accountCard.secretRecoveryCode" />
             </div>
             <div class="flex items-center w-full">
               <div class="text-sm text-left break-all">

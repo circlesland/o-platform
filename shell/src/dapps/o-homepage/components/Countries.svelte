@@ -1,7 +1,8 @@
 <script>
-  import { _ } from "svelte-i18n";
-import { component_subscribe } from "svelte/internal";
-import { countries } from "../../../shared/countries";
+  import {_} from "svelte-i18n";
+  import {component_subscribe} from "svelte/internal";
+  import {countries} from "../../../shared/countries";
+  import Label from "../../../shared/atoms/Label.svelte";
 </script>
 
 <div class="py-16 mx-auto lg:max-w-xl sm:text-center">
@@ -86,7 +87,7 @@ import { countries } from "../../../shared/countries";
     aria-label=""
     class="text-xl font-semibold transition-colors duration-200 text-primary hover:"
   >
-      {$_("dapps.o-homepage.components.countries.showAllCountries")}
+      <Label key="dapps.o-homepage.components.countries.showAllCountries" />
     <svg class="inline-block w-3 ml-2" fill="currentColor" viewBox="0 0 12 12">
       <path
         d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z"

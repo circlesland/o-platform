@@ -1,51 +1,52 @@
 <script lang="ts">
-import UserImage from "src/shared/atoms/UserImage.svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
 
-// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
-import { Continue } from "@o-platform/o-process/dist/events/continue";
-import { Profile, Organisation } from "../../../shared/api/data/types";
-import Account from "../../o-passport/pages/Account.svelte";
-import { _ } from "svelte-i18n";
-import QrCode from "svelte-qrcode";
+  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+  import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
+  import {Continue} from "@o-platform/o-process/dist/events/continue";
+  import {Profile, Organisation} from "../../../shared/api/data/types";
+  import Account from "../../o-passport/pages/Account.svelte";
+  import {_} from "svelte-i18n";
+  import QrCode from "svelte-qrcode";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let context: any;
-let profile: Profile | Organisation;
-let groupedItems;
+  export let context: any;
+  let profile: Profile | Organisation;
+  let groupedItems;
 
-$: {
-  context = context;
+  $: {
+    context = context;
 
-  profile = context.data.sellerProfile;
+    profile = context.data.sellerProfile;
 
-  groupedItems = context.data ? orderItems(context.data.items) : {};
-}
-
-let classes: string;
-
-function submit() {
-  const answer = new Continue();
-  answer.data = context.data;
-  context.process.sendAnswer(answer);
-}
-
-function onkeydown(e: KeyboardEvent) {
-  if (e.key == "Enter") {
-    submit();
+    groupedItems = context.data ? orderItems(context.data.items) : {};
   }
-}
 
-function orderItems(items) {
-  const orderedCart = {};
-  items.forEach((item) => {
-    orderedCart[item.id] = {
-      item: item,
-      qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
-    };
-  });
+  let classes: string;
 
-  return Object.entries(orderedCart).map(([id, item]) => ({ id, item }));
-}
+  function submit() {
+    const answer = new Continue();
+    answer.data = context.data;
+    context.process.sendAnswer(answer);
+  }
+
+  function onkeydown(e: KeyboardEvent) {
+    if (e.key == "Enter") {
+      submit();
+    }
+  }
+
+  function orderItems(items) {
+    const orderedCart = {};
+    items.forEach((item) => {
+      orderedCart[item.id] = {
+        item: item,
+        qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
+      };
+    });
+
+    return Object.entries(orderedCart).map(([id, item]) => ({id, item}));
+  }
 </script>
 
 {#if context.data && profile && groupedItems}
@@ -114,13 +115,13 @@ function orderItems(items) {
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
         <h1 class="p-2 text-white uppercase bg-dark-dark">
           <div class="text-sm">
-            {$_("dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode")}
+            <Label key="dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode" />
           </div>
         </h1>
       </div>
 
       <div>
-        {$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1")}
+        <Label key="dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1" />
       </div>
 
       <div class="w-full mt-6 text-center">
@@ -131,19 +132,19 @@ function orderItems(items) {
         </div>
       </div>
       <div class="text-sm">
-        {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span
+        <Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1" /><span
           class="text-primary-dark"
           >{$_(
             "dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2"
           )}</span
-        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
+        ><Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3" />
         <a href="#/marketplace/my-purchases" alt="My Purchases" class="btn-link"
-          >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}</a
-        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
+          ><Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4" /></a
+        ><Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5" />
       </div>
 
       <div class="pt-2 text-sm">
-        {$_("dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation")}
+        <Label key="dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation" />
       </div>
       <div class="pt-2 text-sm">
         <span class="font-bold">Basic Income Lab GmbH</span><br />

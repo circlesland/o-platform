@@ -1,5 +1,6 @@
 <script>
-  import { _ } from "svelte-i18n";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 </script>
 
 <div class="w-full bg-white">
@@ -13,23 +14,23 @@
             <p
               class="inline-block py-px mb-4 text-xs font-semibold tracking-wider uppercase rounded-full text-primary bg-teal-accent-400"
             >
-              {$_("dapps.o-homepage.components.introAnimation.thisIsCirclesLand")}
+              <Label key="dapps.o-homepage.components.introAnimation.thisIsCirclesLand" />
             </p>
           </div>
           <h2
             class="max-w-lg mb-6 text-3xl font-bold tracking-tight   sm:text-4xl sm:leading-none"
           >
-            {$_("dapps.o-homepage.components.introAnimation.circlesLandUnlocks")}
+            <Label key="dapps.o-homepage.components.introAnimation.circlesLandUnlocks" />
           </h2>
           <p class="text-base text-gray-500 md:text-lg">
-            {$_("dapps.o-homepage.components.introAnimation.introducing")}
+            <Label key="dapps.o-homepage.components.introAnimation.introducing" />
           </p>
           <a
             href="https://blog.circles.land/whitepaper/"
             aria-label=""
             class="inline-flex items-center mt-6 font-semibold transition-colors duration-200 text-primary hover:"
           >
-            {$_("dapps.o-homepage.components.introAnimation.learnMore")}
+            <Label key="dapps.o-homepage.components.introAnimation.learnMore" />
             <svg
               class="inline-block w-3 ml-2"
               fill="currentColor"

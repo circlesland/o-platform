@@ -1,5 +1,6 @@
 <script>
-  import { _ } from "svelte-i18n";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 </script>
 <div class="w-full bg-dark">
   <div
@@ -11,7 +12,7 @@
       <div
         class="w-full px-6 pt-4 text-xl font-semibold text-center uppercase text-primary"
       >
-        {$_("dapps.o-homepage.components.citizens.totalCitizens")}
+        <Label key="dapps.o-homepage.components.citizens.totalCitizens" />
       </div>
     </div>
   </div>

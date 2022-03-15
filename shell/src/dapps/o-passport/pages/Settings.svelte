@@ -1,64 +1,65 @@
 <script lang="ts">
-import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 
-import { me } from "../../../shared/stores/me";
-import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
-import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { showToast } from "../../../shared/toast";
-import Svelecte, { addFormatter } from "svelecte";
-import {
-  UpsertProfileDocument,
-  DisplayCurrency,
-  WhoamiDocument,
-  WhoamiQueryVariables,
-} from "../../../shared/api/data/types";
-import { upsertIdentity } from "../processes/upsertIdentity";
-import { ApiClient } from "../../../shared/apiConnection";
-import { _ } from "svelte-i18n";
+  import {me} from "../../../shared/stores/me";
+  import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
+  import {onMount} from "svelte";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {showToast} from "../../../shared/toast";
+  import Svelecte, {addFormatter} from "svelecte";
+  import {
+    UpsertProfileDocument,
+    DisplayCurrency,
+    WhoamiDocument,
+    WhoamiQueryVariables,
+  } from "../../../shared/api/data/types";
+  import {upsertIdentity} from "../processes/upsertIdentity";
+  import {ApiClient} from "../../../shared/apiConnection";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
-let choices = [
-  { value: DisplayCurrency.Crc, name: "CRC" },
-  { value: DisplayCurrency.Eurs, name: "Euro" },
-  { value: DisplayCurrency.TimeCrc, name: "Time Circles" },
-];
+  let choices = [
+    {value: DisplayCurrency.Crc, name: "CRC"},
+    {value: DisplayCurrency.Eurs, name: "Euro"},
+    {value: DisplayCurrency.TimeCrc, name: "Time Circles"},
+  ];
 
-const delayedTrigger = new DelayedTrigger(200, async () => {
-  console.log("delayedTrigger")
-  // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.mutate({
-    mutation: UpsertProfileDocument,
-    variables: {
-      ...$me,
-      status: ""
-    },
+  const delayedTrigger = new DelayedTrigger(200, async () => {
+    console.log("delayedTrigger")
+    // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const result = await apiClient.mutate({
+      mutation: UpsertProfileDocument,
+      variables: {
+        ...$me,
+        status: ""
+      },
+    });
+
+    if (result.errors) {
+      return;
+    }
+
+    window.o.publishEvent(<PlatformEvent>{
+      type: "shell.authenticated",
+      profile: result.data.upsertProfile,
+    });
+
+    showToast(
+            "success",
+            `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
+    );
   });
 
-  if (result.errors) {
-    return;
+  function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
+    console.log("editProfileField")
+    window.o.runProcess(upsertIdentity, $me, dirtyFlags, onlyThesePages);
   }
-
-  window.o.publishEvent(<PlatformEvent>{
-    type: "shell.authenticated",
-    profile: result.data.upsertProfile,
-  });
-
-  showToast(
-          "success",
-          `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
-  );
-});
-
-function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
-  console.log("editProfileField")
-  window.o.runProcess(upsertIdentity, $me, dirtyFlags, onlyThesePages);
-}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -77,7 +78,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
       class="flex flex-col w-full px-3 py-2 space-x-2 bg-white rounded-lg shadow-md ">
       <div class="flex flex-col space-y-2">
         <div class="text-left">
-          {$_("dapps.o-passport.pages.settings.notifications")}
+          <Label key="dapps.o-passport.pages.settings.notifications" />
         </div>
         <div class="space-x-2 sm:space-x-6">
           <div class="w-full form-control">
@@ -85,7 +86,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
               <div
                 class="flex flex-row items-stretch w-full space-x-2 cursor-pointer justify-items-stretch">
                 <div class="self-center justify-self-center">
-                  {$_("common.no")}
+                  <Label key="common.no" />
                 </div>
                 <div class="self-center justify-self-center">
                   <input
@@ -103,7 +104,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
                   <span class="toggle-mark"></span>
                 </div>
                 <div class="self-center justify-self-center">
-                  {$_("common.yes")}
+                  <Label key="common.yes" />
                 </div>
               </div>
             </label>
@@ -117,7 +118,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
       class="flex flex-col w-full px-3 py-2 space-x-2 bg-white rounded-lg shadow-md ">
       <div class="flex flex-col space-y-2">
         <div class="text-left">
-          {$_("dapps.o-passport.pages.settings.emailAddress")}
+          <Label key="dapps.o-passport.pages.settings.emailAddress" />
         </div>
         <div class="">
           <div class="w-full form-control">
@@ -144,7 +145,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
   <!-- <section class="mx-4 mb-2">
     <Card>
       <div class="text-xs font-bold text-left text-primary whitespace-nowrap">
-        {$_("dapps.o-passport.pages.settings.currencyDisplay")}
+        <Label key="dapps.o-passport.pages.settings.currencyDisplay" />
       </div>
       <div class="w-full space-x-2 bg-white sm:space-x-6">
         <div class="w-full form-control">

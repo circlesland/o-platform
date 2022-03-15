@@ -1,58 +1,59 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import {
-  AggregateType,
-  Offer, Offers
-} from "../../../shared/api/data/types";
-import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {of, Subscription} from "rxjs";
-import { me } from "../../../shared/stores/me";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
-import {ApiClient} from "../../../shared/apiConnection";
-import { _ } from "svelte-i18n";
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+  import {
+    AggregateType,
+    Offer, Offers
+  } from "../../../shared/api/data/types";
+  import {onMount} from "svelte";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {of, Subscription} from "rxjs";
+  import {me} from "../../../shared/stores/me";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
+  import {ApiClient} from "../../../shared/apiConnection";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
-let isLoading: boolean;
-let error: Error;
-let offers: Offer[] = [];
-let shellEventSubscription: Subscription;
+  let isLoading: boolean;
+  let error: Error;
+  let offers: Offer[] = [];
+  let shellEventSubscription: Subscription;
 
-async function load() {
-  if (isLoading) return;
-  if (!$me.circlesAddress) {
-    isLoading = false;
-    offers = [];
-    return;
-  }
-  const result = await ApiClient.queryAggregate<Offers>(AggregateType.Offers, $me.circlesAddress);
-  offers = result.offers;
-  isLoading = false;
-}
-
-onMount(async () => {
-  await load();
-
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
+  async function load() {
+    if (isLoading) return;
+    if (!$me.circlesAddress) {
+      isLoading = false;
+      offers = [];
+      return;
     }
-  );
+    const result = await ApiClient.queryAggregate<Offers>(AggregateType.Offers, $me.circlesAddress);
+    offers = result.offers;
+    isLoading = false;
+  }
 
-  return () => {
-    shellEventSubscription.unsubscribe();
-  };
-});
+  onMount(async () => {
+    await load();
+
+    shellEventSubscription = window.o.events.subscribe(
+            async (event: PlatformEvent) => {
+              if (
+                      event.type != "shell.refresh" ||
+                      (<any>event).dapp != "marketplace:1"
+              ) {
+                return;
+              }
+              await load();
+            }
+    );
+
+    return () => {
+      shellEventSubscription.unsubscribe();
+    };
+  });
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -62,7 +63,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.myOffers.loadingOffers")}</div>
+          <div><Label key="dapps.o-marketplace.pages.myOffers.loadingOffers" /></div>
         </div>
       </div>
     </section>
@@ -71,7 +72,7 @@ onMount(async () => {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>{$_("dapps.o-marketplace.pages.myOffers.error")}</b>
+            <b><Label key="dapps.o-marketplace.pages.myOffers.error" /></b>
           </div>
         </div>
       </div>
@@ -84,7 +85,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.myOffers.noOffers")}</div>
+          <div><Label key="dapps.o-marketplace.pages.myOffers.noOffers" /></div>
         </div>
       </div>
     </section>

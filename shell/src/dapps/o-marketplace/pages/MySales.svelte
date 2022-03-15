@@ -1,16 +1,17 @@
 <script lang="ts">
-import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
-import dayjs from "dayjs";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { push } from "svelte-spa-router";
-import { displayableName } from "../../../shared/functions/stringHelper";
-import Icons from "../../../shared/molecules/Icons.svelte";
-import { sales } from "../../../shared/stores/sales";
-import { _ } from "svelte-i18n";
+  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+  import dayjs from "dayjs";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {push} from "svelte-spa-router";
+  import {displayableName} from "../../../shared/functions/stringHelper";
+  import Icons from "../../../shared/molecules/Icons.svelte";
+  import {sales} from "../../../shared/stores/sales";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -21,7 +22,7 @@ export let routable: Routable;
       <div
         class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow-md ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.mySales.loadingSales")}</div>
+          <div><Label key="dapps.o-marketplace.pages.mySales.loadingSales" /></div>
         </div>
       </div>
     </section>
@@ -30,7 +31,7 @@ export let routable: Routable;
       <div
         class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow-md ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.mySales.noSales")}</div>
+          <div><Label key="dapps.o-marketplace.pages.mySales.noSales" /></div>
         </div>
       </div>
     </section>
@@ -91,12 +92,12 @@ export let routable: Routable;
                 class:text-success="{sale.invoices[0].paymentTransactionHash}">
 
                 {#if sale.invoices[0].paymentTransactionHash}
-                  <span>{$_("dapps.o-marketplace.pages.mySales.paid")}</span>
+                  <span><Label key="dapps.o-marketplace.pages.mySales.paid" /></span>
                   <Icons icon="check" size="{4}" customClass="inline" />
                   {:else if sale.invoices[0].cancelledAt}
-                    <span>{$_("dapps.o-marketplace.pages.mySales.cancelled")}</span>
+                    <span><Label key="dapps.o-marketplace.pages.mySales.cancelled" /></span>
                   {:else}
-                    <span>{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
+                    <span><Label key="dapps.o-marketplace.pages.mySales.paymentPending" /></span>
                   {/if}
 
               </div>
@@ -104,7 +105,7 @@ export let routable: Routable;
                 class="inline-block text-xs "
                 class:text-inactive="{!sale.invoices[0].pickupCode}"
                 class:text-success="{sale.invoices[0].pickupCode}">
-                <span>{$_("dapps.o-marketplace.pages.mySales.pickupCode")}</span>
+                <span><Label key="dapps.o-marketplace.pages.mySales.pickupCode" /></span>
                 {#if sale.invoices[0].pickupCode}
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {/if}
@@ -114,7 +115,7 @@ export let routable: Routable;
 
                 class:text-inactive="{!sale.invoices[0].sellerSignature}"
                 class:text-success="{sale.invoices[0].sellerSignature}">
-              <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
+              <span><Label key="dapps.o-marketplace.pages.mySales.pickedUp" /></span>
                 {#if sale.invoices[0].sellerSignature}
                   <Icons icon="check" size="{4}" customClass="inline" />
                 {:else}

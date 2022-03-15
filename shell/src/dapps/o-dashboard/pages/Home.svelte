@@ -1,65 +1,67 @@
 <script lang="ts">
-import { me } from "../../../shared/stores/me";
-import { onMount } from "svelte";
-import { push } from "svelte-spa-router";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import {
-  Capability,
-  CapabilityType,
-  StatsDocument,
-} from "../../../shared/api/data/types";
-import DashboardHeader from "../atoms/DashboardHeader.svelte";
-import Icons from "../../../shared/molecules/Icons.svelte";
-import { Environment } from "../../../shared/environment";
-import { _ } from "svelte-i18n";
+  import {me} from "../../../shared/stores/me";
+  import {onMount} from "svelte";
+  import {push} from "svelte-spa-router";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {
+    Capability,
+    CapabilityType,
+    StatsDocument,
+  } from "../../../shared/api/data/types";
+  import DashboardHeader from "../atoms/DashboardHeader.svelte";
+  import Icons from "../../../shared/molecules/Icons.svelte";
+  import {Environment} from "../../../shared/environment";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
-export let capabilities: Capability[] | undefined = [];
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
+  export let capabilities: Capability[] | undefined = [];
 
-$: me;
+  $: me;
 
-let disableBanking: boolean = false;
-let canVerify: boolean = false;
+  let disableBanking: boolean = false;
+  let canVerify: boolean = false;
 
-let safeDeployThreshold: string = "200000000000000000";
+  let safeDeployThreshold: string = "200000000000000000";
 
-const init = async () => {
-  const pk = sessionStorage.getItem("circlesKey");
-  disableBanking = !pk;
+  const init = async () => {
+    const pk = sessionStorage.getItem("circlesKey");
+    disableBanking = !pk;
 
-  const sessionInfo = await me.getSessionInfo();
-  capabilities = sessionInfo.capabilities;
-  canVerify =
-    capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Verify) &&
-    Environment.allowVerify;
-};
+    const sessionInfo = await me.getSessionInfo();
+    capabilities = sessionInfo.capabilities;
+    canVerify =
+            capabilities &&
+            capabilities.find((o) => o.type == CapabilityType.Verify) &&
+            Environment.allowVerify;
+  };
 
-let showInviteButton = false;
+  let showInviteButton = false;
 
-onMount(init);
+  onMount(init);
 
-function loadLink(link, external = false) {
-  if (external) {
-    window.open(link, "_blank").focus();
-  } else {
-    push(link);
+  function loadLink(link, external = false) {
+    if (external) {
+      window.open(link, "_blank").focus();
+    } else {
+      push(link);
+    }
   }
-}
 
-async function fetchStats() {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: StatsDocument,
-  });
-  if (result.errors) {
-    throw new Error(`Couldn't load stats': ${JSON.stringify(result.errors)}`);
+  async function fetchStats() {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    const result = await apiClient.query({
+      query: StatsDocument,
+    });
+    if (result.errors) {
+      throw new Error(`Couldn't load stats': ${JSON.stringify(result.errors)}`);
+    }
+    return result;
   }
-  return result;
-}
-let statsPromise = fetchStats();
+
+  let statsPromise = fetchStats();
 </script>
 
 <DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -79,7 +81,7 @@ let statsPromise = fetchStats();
             {/await}
           </div>
           <div class="text-center font-primary text-dark">
-            {$_("dapps.o-dashboard.pages.home.totalCitizens")}
+            <Label key="dapps.o-dashboard.pages.home.totalCitizens" />
           </div>
         </div>
         <div class="flex flex-col flex-grow">
@@ -93,7 +95,7 @@ let statsPromise = fetchStats();
             {/await}
           </div>
           <div class="text-center font-primary text-dark">
-            {$_("dapps.o-dashboard.pages.home.verifiedCitizens")}
+            <Label key="dapps.o-dashboard.pages.home.verifiedCitizens" />
           </div>
         </div>
       </div>
@@ -109,7 +111,7 @@ let statsPromise = fetchStats();
             <Icons icon="dashpassport" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.passport")}
+            <Label key="dapps.o-dashboard.pages.home.passport" />
           </div>
         </div>
       </section>
@@ -122,7 +124,7 @@ let statsPromise = fetchStats();
             <Icons icon="dashfriends" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.contacts")}
+            <Label key="dapps.o-dashboard.pages.home.contacts" />
           </div>
         </div>
       </section>
@@ -135,7 +137,7 @@ let statsPromise = fetchStats();
             <Icons icon="dashchat" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.chat")}
+            <Label key="dapps.o-dashboard.pages.home.chat" />
           </div>
         </div>
       </section>
@@ -148,7 +150,7 @@ let statsPromise = fetchStats();
             <Icons icon="dashbanking" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.banking")}
+            <Label key="dapps.o-dashboard.pages.home.banking" />
           </div>
         </div>
       </section>
@@ -161,7 +163,7 @@ let statsPromise = fetchStats();
             <Icons icon="dashmarket" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.market")}
+            <Label key="dapps.o-dashboard.pages.home.market" />
           </div>
         </div>
       </section>
@@ -175,7 +177,7 @@ let statsPromise = fetchStats();
               <Icons icon="check" size="{12}" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
-              {$_("dapps.o-dashboard.pages.home.verified")}
+              <Label key="dapps.o-dashboard.pages.home.verified" />
             </div>
           </div>
         </section>

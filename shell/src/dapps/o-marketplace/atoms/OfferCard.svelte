@@ -1,76 +1,77 @@
 <script lang="ts">
-import { push } from "svelte-spa-router";
-import { Offer } from "../../../shared/api/data/types";
-import { purchase } from "../processes/purchase";
-import OfferCardField from "./OfferCardField.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import Icons from "../../../shared/molecules/Icons.svelte";
-import { me } from "../../../shared/stores/me";
-import { cartContents } from "../stores/shoppingCartStore";
-import { truncateString } from "../../../shared/functions/truncateString";
-import Time from "svelte-time";
-import { _ } from "svelte-i18n";
+  import {push} from "svelte-spa-router";
+  import {Offer} from "../../../shared/api/data/types";
+  import {purchase} from "../processes/purchase";
+  import OfferCardField from "./OfferCardField.svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import Icons from "../../../shared/molecules/Icons.svelte";
+  import {me} from "../../../shared/stores/me";
+  import {cartContents} from "../stores/shoppingCartStore";
+  import {truncateString} from "../../../shared/functions/truncateString";
+  import Time from "svelte-time";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let param: Offer = <any>{
-  categoryTag: {
-    value: "",
+  export let param: Offer = <any>{
+    categoryTag: {
+      value: "",
+      id: 0,
+    },
+    categoryTagId: 0,
+    deliveryTermsTag: {
+      value: "",
+      id: 0,
+    },
+    description: "",
+    unitTag: {
+      value: "",
+      id: 0,
+    },
+    pricePerUnit: "",
     id: 0,
-  },
-  categoryTagId: 0,
-  deliveryTermsTag: {
-    value: "",
-    id: 0,
-  },
-  description: "",
-  unitTag: {
-    value: "",
-    id: 0,
-  },
-  pricePerUnit: "",
-  id: 0,
-  title: "",
-  geonameid: 0,
-  createdBy: {},
-};
+    title: "",
+    geonameid: 0,
+    createdBy: {},
+  };
 
-let offer = param;
+  let offer = param;
 
-export let allowEdit: boolean = false;
+  export let allowEdit: boolean = false;
 
-let isEditable: boolean = false;
-$: {
-  isEditable = allowEdit && $me && offer && $me.id == offer.createdByProfileId;
-}
+  let isEditable: boolean = false;
+  $: {
+    isEditable = allowEdit && $me && offer && $me.id == offer.createdByProfileId;
+  }
 
-function edit(dirtyFlags: { [field: string]: boolean }) {
-  // console.log("edit: dirtyFlags:", dirtyFlags);
-  // window.o.runProcess(upsertOffer, offer, dirtyFlags, true);
-}
+  function edit(dirtyFlags: { [field: string]: boolean }) {
+    // console.log("edit: dirtyFlags:", dirtyFlags);
+    // window.o.runProcess(upsertOffer, offer, dirtyFlags, true);
+  }
 
-function loadDetailPage() {
-  push("#/marketplace/offer/" + offer.id);
-}
+  function loadDetailPage() {
+    push("#/marketplace/offer/" + offer.id);
+  }
 
-function buy() {
-  window.o.runProcess(purchase, {});
-}
+  function buy() {
+    window.o.runProcess(purchase, {});
+  }
 
-function addToCart(item) {
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
-}
+  function addToCart(item) {
+    $cartContents = $cartContents ? [...$cartContents, item] : [item];
+    push(`#/marketplace/cart`);
+  }
 
-let now = new Date();
-let sevendaysago = now.setDate(now.getDate() - 7);
+  let now = new Date();
+  let sevendaysago = now.setDate(now.getDate() - 7);
 
-function dateOlderThanSevenDays(unixTime: number) {
-  return sevendaysago > unixTime * 1000;
-}
+  function dateOlderThanSevenDays(unixTime: number) {
+    return sevendaysago > unixTime * 1000;
+  }
 
-let displayName = `${offer.createdByProfile.displayName}`;
+  let displayName = `${offer.createdByProfile.displayName}`;
 
-displayName =
-  displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
+  displayName =
+          displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
 <section class="flex items-start pb-2 bg-white shadow-md rounded-xl">
@@ -94,7 +95,7 @@ displayName =
 
         <div
           class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
-          {$_("dapps.o-marketplace.atoms.offerCard.pickUpOnly")}
+          <Label key="dapps.o-marketplace.atoms.offerCard.pickUpOnly" />
         </div>
       </div>
     </header>
@@ -150,7 +151,7 @@ displayName =
             type="submit"
             class="relative btn btn-primary btn-block"
             on:click="{() => loadDetailPage()}">
-            {$_("dapps.o-marketplace.atoms.offerCard.details")}
+            <Label key="dapps.o-marketplace.atoms.offerCard.details" />
             <div class="absolute mr-1 right-2">
               <Icons icon="eye" />
             </div>

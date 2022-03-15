@@ -1,60 +1,61 @@
 <script lang="ts">
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import {
-  CommonTrustDocument,
-  Organisation,
-} from "../../../shared/api/data/types";
-import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
-import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-import UserImage from "../../../shared/atoms/UserImage.svelte";
-import { me } from "../../../shared/stores/me";
-import { loadOrganisationsBySafeAddress } from "../../../shared/api/loadOrganisationsBySafeAddress";
-import { getCountryName } from "../../../shared/countries";
-import { onMount } from "svelte";
-import ContactCard from "../../o-contacts/atoms/ContactCard.svelte";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {
+    CommonTrustDocument,
+    Organisation,
+  } from "../../../shared/api/data/types";
+  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+  import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
+  import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
+  import UserImage from "../../../shared/atoms/UserImage.svelte";
+  import {me} from "../../../shared/stores/me";
+  import {loadOrganisationsBySafeAddress} from "../../../shared/api/loadOrganisationsBySafeAddress";
+  import {getCountryName} from "../../../shared/countries";
+  import {onMount} from "svelte";
+  import ContactCard from "../../o-contacts/atoms/ContactCard.svelte";
 
-import { _ } from "svelte-i18n";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let id: string;
-export let jumplist: Jumplist<any, any> | undefined;
-export let runtimeDapp: RuntimeDapp<any>;
+  export let id: string;
+  export let jumplist: Jumplist<any, any> | undefined;
+  export let runtimeDapp: RuntimeDapp<any>;
 
-let isLoading = true;
-let profile: Organisation;
-let isMe: boolean;
-let name: string;
-let isEditable: boolean = false;
+  let isLoading = true;
+  let profile: Organisation;
+  let isMe: boolean;
+  let name: string;
+  let isEditable: boolean = false;
 
-async function loadProfile() {
-  if (!id) {
-    console.warn(
-      `No organisation specified ('id' must contain the circlesAddress of an organisation)`
-    );
-    return;
+  async function loadProfile() {
+    if (!id) {
+      console.warn(
+              `No organisation specified ('id' must contain the circlesAddress of an organisation)`
+      );
+      return;
+    }
+
+    const organisations = await loadOrganisationsBySafeAddress([id]);
+    if (organisations.length == 1) {
+      await setOrganisation(organisations[0]);
+    } else {
+      console.warn(
+              `None or multiple organisations found for safe address '${id}'.`
+      );
+      return;
+    }
+
+    isMe = profile.id == ($me ? $me.id : 0);
+    isLoading = false;
+    name = profile.name ?? profile.circlesAddress;
   }
 
-  const organisations = await loadOrganisationsBySafeAddress([id]);
-  if (organisations.length == 1) {
-    await setOrganisation(organisations[0]);
-  } else {
-    console.warn(
-      `None or multiple organisations found for safe address '${id}'.`
-    );
-    return;
-  }
+  async function setOrganisation(apiProfile: Organisation) {
+    const trust = undefined;
+    // isEditable = $me && $me.id === apiProfile.id;
 
-  isMe = profile.id == ($me ? $me.id : 0);
-  isLoading = false;
-  name = profile.name ?? profile.circlesAddress;
-}
-
-async function setOrganisation(apiProfile: Organisation) {
-  const trust = undefined;
-  // isEditable = $me && $me.id === apiProfile.id;
-
-  if ($me.circlesAddress !== apiProfile.circlesAddress) {
-    /*
+    if ($me.circlesAddress !== apiProfile.circlesAddress) {
+      /*
       const apiClient = await window.o.apiClient.client.subscribeToResult();
       const result = await apiClient.query({
         query: CommonTrustDocument,
@@ -70,24 +71,25 @@ async function setOrganisation(apiProfile: Organisation) {
                 }': ${JSON.stringify(result.errors)}`
         );
       }*/
-    //commonTrusts = result.data.commonTrust.filter(o => o.profile);
-  } else {
-    //commonTrusts = [];
+      //commonTrusts = result.data.commonTrust.filter(o => o.profile);
+    } else {
+      //commonTrusts = [];
+    }
+
+    profile = apiProfile;
   }
 
-  profile = apiProfile;
-}
+  onMount(() => loadProfile());
 
-onMount(() => loadProfile());
+  function editProfile() {
+  }
 
-function editProfile() {}
+  async function getJumplist() {
+    const jumpListItems = await jumplist.items({id: id}, runtimeDapp);
+    return jumpListItems;
+  }
 
-async function getJumplist() {
-  const jumpListItems = await jumplist.items({ id: id }, runtimeDapp);
-  return jumpListItems;
-}
-
-let promise = getJumplist();
+  let promise = getJumplist();
 </script>
 
 {#if isLoading}
@@ -98,7 +100,7 @@ let promise = getJumplist();
   <div class="p-5">
     <header class="grid overflow-hidden bg-white h-72 ">
       <div class="w-full text-center">
-        <h1 class="text-3xl uppercase font-heading">{$_("dapps.o-coop.pages.organisationDetail.profile")}</h1>
+        <h1 class="text-3xl uppercase font-heading"><Label key="dapps.o-coop.pages.organisationDetail.profile" /></h1>
       </div>
       <div
         class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
@@ -131,10 +133,10 @@ let promise = getJumplist();
             {#if profile.trustsYou}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
-                  <div class="text-left text-2xs text-dark-lightest">{$_("dapps.o-coop.pages.organisationDetail.trust")}</div>
+                  <div class="text-left text-2xs text-dark-lightest"><Label key="dapps.o-coop.pages.organisationDetail.trust" /></div>
                   <div class="flex flex-wrap content-start">
                     {#if profile.trustsYou > 0}
-                    {$_("dapps.o-coop.pages.organisationDetail.isTrustingYou")}
+                    <Label key="dapps.o-coop.pages.organisationDetail.isTrustingYou" />
                     {/if}
                   </div>
                 </div>
@@ -144,7 +146,7 @@ let promise = getJumplist();
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="text-left text-2xs text-dark-lightest">
-                  {$_("dapps.o-coop.pages.organisationDetail.description")}
+                  <Label key="dapps.o-coop.pages.organisationDetail.description" />
                 </div>
 
                 <div class="flex items-center w-full text-lg">
@@ -215,7 +217,7 @@ let promise = getJumplist();
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
-                  {$_("dapps.o-coop.pages.organisationDetail.address")}
+                  <Label key="dapps.o-coop.pages.organisationDetail.address" />
                 </div>
 
                 <div class="flex items-center w-full text-2xs">
@@ -228,7 +230,7 @@ let promise = getJumplist();
           <section class="justify-center">
             <div class="flex flex-col w-full pt-2 space-y-1">
               <div class="mb-1 text-left text-2xs text-dark-lightest">
-                {$_("dapps.o-coop.pages.organisationDetail.members")}
+                <Label key="dapps.o-coop.pages.organisationDetail.members" />
               </div>
 
               <div class="flex items-center w-full text-2xs">
@@ -245,7 +247,7 @@ let promise = getJumplist();
         <div
           class="sticky bottom-0 left-0 right-0 w-full py-2 mt-2 bg-white rounded-xl">
           {#await promise}
-            <p>{$_("dapps.o-coop.pages.organisationDetail.loading")}</p>
+            <p><Label key="dapps.o-coop.pages.organisationDetail.loading" /></p>
           {:then jumpListItems}
             <DetailActionBar actions="{jumpListItems}" />
           {/await}

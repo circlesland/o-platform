@@ -5,6 +5,8 @@
   import {_} from "svelte-i18n";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
+  import Label from "../../../shared/atoms/Label.svelte";
+
   dayjs.extend(relativeTime)
 
   export let event: ProfileEvent;
@@ -76,19 +78,19 @@
                   .paymentTransactionHash &&
                   !purchased.purchase.invoices[0].cancelledAt}">
             {#if purchased.purchase.invoices[0].paymentTransactionHash}
-              <span>{$_("dapps.o-marketplace.pages.myPurchases.paid")}</span>
+              <span><Label key="dapps.o-marketplace.pages.myPurchases.paid" /></span>
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else if purchased.purchase.invoices[0].cancelledAt}
-              <span>{$_("dapps.o-marketplace.pages.myPurchases.cancelled")}</span>
+              <span><Label key="dapps.o-marketplace.pages.myPurchases.cancelled" /></span>
             {:else}
-              <span>{$_("dapps.o-marketplace.pages.myPurchases.paymentPending")}</span>
+              <span><Label key="dapps.o-marketplace.pages.myPurchases.paymentPending" /></span>
             {/if}
           </div>
           <div
                   class="inline-block text-xs "
                   class:text-inactive="{!purchased.purchase.invoices[0].pickupCode}"
                   class:text-success="{purchased.purchase.invoices[0].pickupCode}">
-            <span>{$_("dapps.o-marketplace.pages.myPurchases.pickupCode")}</span>
+            <span><Label key="dapps.o-marketplace.pages.myPurchases.pickupCode" /></span>
             {#if purchased.purchase.invoices[0].pickupCode}
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}
@@ -97,7 +99,7 @@
                   class="inline-block text-xs"
                   class:text-inactive="{!purchased.purchase.invoices[0].sellerSignature}"
                   class:text-success="{purchased.purchase.invoices[0].sellerSignature}">
-            <span>{$_("dapps.o-marketplace.pages.myPurchases.pickedUp")}</span>
+            <span><Label key="dapps.o-marketplace.pages.myPurchases.pickedUp" /></span>
             {#if purchased.purchase.invoices[0].sellerSignature}
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else}

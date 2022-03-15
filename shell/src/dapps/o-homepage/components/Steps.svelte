@@ -1,5 +1,6 @@
 <script>
-  import { _ } from "svelte-i18n";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 </script>
 
 <div class="bg-white">
@@ -11,7 +12,7 @@
         <p
           class="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider uppercase rounded-full text-primary"
         >
-          {$_("dapps.o-homepage.components.steps.howDoesItWork")}
+          <Label key="dapps.o-homepage.components.steps.howDoesItWork" />
         </p>
       </div>
       <h2
@@ -41,10 +42,10 @@
             />
           </svg>
         </span>
-          {$_("dapps.o-homepage.components.steps.becomeCitizen")}
+          <Label key="dapps.o-homepage.components.steps.becomeCitizen" />
       </h2>
       <p class="text-base text-gray-600 md:text-lg">
-        {$_("dapps.o-homepage.components.steps.introducing")}
+        <Label key="dapps.o-homepage.components.steps.introducing" />
       </p>
     </div>
     <div class="grid grid-cols-1 gap-8 row-gap-8 lg:grid-cols-3">
@@ -55,10 +56,10 @@
           <img src="/illustrations/passport.svg" alt="Passport" />
         </div>
         <h6 class="mt-8 mb-2 text-lg font-semibold leading-5 uppercase ">
-          {$_("dapps.o-homepage.components.steps.createPassport")}
+          <Label key="dapps.o-homepage.components.steps.createPassport" />
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          {$_("dapps.o-homepage.components.steps.createPassportDescription")}
+          <Label key="dapps.o-homepage.components.steps.createPassportDescription" />
         </p>
       </div>
       <div class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center ">
@@ -68,10 +69,10 @@
           <img src="/illustrations/invite.svg" alt="Invite" />
         </div>
         <h6 class="mb-2 text-lg font-semibold leading-5 uppercase ">
-          {$_("dapps.o-homepage.components.steps.getInvited")}
+          <Label key="dapps.o-homepage.components.steps.getInvited" />
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          {$_("dapps.o-homepage.components.steps.getInvitedDescription")}
+          <Label key="dapps.o-homepage.components.steps.getInvitedDescription" />
         </p>
       </div>
       <div class="p-4 bg-white border rounded-lg shadow-2xl sm:text-center ">
@@ -79,10 +80,10 @@
           <img src="/illustrations/ubi.svg" alt="Invite" />
         </div>
         <h6 class="mb-2 text-lg font-semibold leading-5 uppercase ">
-          {$_("dapps.o-homepage.components.steps.unlockUbi")}
+          <Label key="dapps.o-homepage.components.steps.unlockUbi" />
         </h6>
         <p class="max-w-md mb-3 text-sm text-gray-600 sm:mx-auto">
-          {$_("dapps.o-homepage.components.steps.unlockUbiDescription")}
+          <Label key="dapps.o-homepage.components.steps.unlockUbiDescription" />
         </p>
       </div>
     </div>

@@ -1,32 +1,33 @@
 <script lang="ts">
-import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
-import PassportHeader from "../atoms/PassportHeader.svelte";
-import { me } from "../../../shared/stores/me";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { Profile } from "../../../shared/api/data/types";
-import { upsertIdentity } from "../processes/upsertIdentity";
-import { _ } from "svelte-i18n"
+  import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
+  import PassportHeader from "../atoms/PassportHeader.svelte";
+  import {me} from "../../../shared/stores/me";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {Profile} from "../../../shared/api/data/types";
+  import {upsertIdentity} from "../processes/upsertIdentity";
+  import {_} from "svelte-i18n"
+  import Label from "../../../shared/atoms/Label.svelte";
 
-let name;
-let profile: Profile;
+  let name;
+  let profile: Profile;
 
-export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
 
-$: name = profile?.circlesAddress ? profile.circlesAddress : "";
+  $: name = profile?.circlesAddress ? profile.circlesAddress : "";
 
-$: {
-  if ($me) {
-    profile = $me;
-  } else {
-    profile = undefined;
+  $: {
+    if ($me) {
+      profile = $me;
+    } else {
+      profile = undefined;
+    }
   }
-}
 
-function editProfile(dirtyFlags: { [x: string]: boolean }) {
-  window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
-}
+  function editProfile(dirtyFlags: { [x: string]: boolean }) {
+    window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
+  }
 </script>
 
 <PassportHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -35,7 +36,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
   <div class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md">
     <section class="justify-center">
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("dapps.o-passport.pages.home.passion")}</div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest"><Label key="dapps.o-passport.pages.home.passion" /></div>
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div
@@ -43,7 +44,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
             on:click="{() => editProfile({ dream: true })}">
             {#if profile && profile.dream}
               {profile.dream}
-            {:else}{$_("dapps.o-passport.pages.home.noPassionSet")}{/if}
+            {:else}<Label key="dapps.o-passport.pages.home.noPassionSet" />{/if}
           </div>
         </div>
       </div>
@@ -51,7 +52,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
     {#if profile && profile.circlesAddress}
       <section class="justify-center">
         <div class="flex flex-col w-full space-y-1">
-          <div class="text-left text-2xs text-dark-lightest">{$_("dapps.o-passport.pages.home.address")}</div>
+          <div class="text-left text-2xs text-dark-lightest"><Label key="dapps.o-passport.pages.home.address" /></div>
 
           <div class="flex items-center w-full space-x-2 sm:space-x-4">
             <div class="text-left">

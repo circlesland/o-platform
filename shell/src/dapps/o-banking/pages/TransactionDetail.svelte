@@ -17,94 +17,96 @@
 
   import {_} from "svelte-i18n";
   import {myTransactions} from "../../../shared/stores/myTransactions";
+  import Label from "../../../shared/atoms/Label.svelte";
 
 
   export let transactionHash: string;
 
-let transfer: ProfileEvent;
-let classes: string;
-let path: any;
-let fromProfile: Profile;
-let toProfile: Profile;
-let targetProfile: Profile;
-let message: string = "";
-let error: string;
-let displayableName: string = "";
+  let transfer: ProfileEvent;
+  let classes: string;
+  let path: any;
+  let fromProfile: Profile;
+  let toProfile: Profile;
+  let targetProfile: Profile;
+  let message: string = "";
+  let error: string;
+  let displayableName: string = "";
 
-onMount(async () => {
-  transfer = await myTransactions.findByPrimaryKey(EventType.CrcHubTransfer, transactionHash);
-  if (!transfer) {
-    transfer = await myTransactions.findByPrimaryKey(EventType.CrcMinting, transactionHash);
-  }
-  if (!transfer) {
-      transfer = await myTransactions.findSingleItemFallback([EventType.CrcHubTransfer, EventType.CrcMinting], transactionHash);
-  }
-  if (transfer && transfer.payload?.__typename == "CrcMinting") {
-    const minting = transfer.payload as CrcMinting;
-
-    toProfile = minting.to_profile ?? {
-      id: 0,
-      firstName: minting.to,
-      lastName: "",
-      circlesAddress: minting.to,
-    };
-    fromProfile = toProfile;
-  }
-  if (transfer && transfer.payload?.__typename == "Erc20Transfer") {
-    const erc20Transfer = transfer.payload as Erc20Transfer;
-    fromProfile = erc20Transfer.from_profile ?? {
-      id: 0,
-      firstName: erc20Transfer.from,
-      lastName: "",
-      circlesAddress: erc20Transfer.from,
-    };
-    toProfile = erc20Transfer.to_profile ?? {
-      id: 0,
-      firstName: erc20Transfer.to,
-      lastName: "",
-      circlesAddress: erc20Transfer.to,
-    };
-  }
-  if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
-    const hubTransfer = transfer.payload as CrcHubTransfer;
-    fromProfile = hubTransfer.from_profile ?? {
-      id: 0,
-      firstName: hubTransfer.from,
-      lastName: "",
-      circlesAddress: hubTransfer.from,
-    };
-    toProfile = hubTransfer.to_profile ?? {
-      id: 0,
-      firstName: hubTransfer.to,
-      lastName: "",
-      circlesAddress: hubTransfer.to,
-    };
-    path = {
-      transfers: hubTransfer.transfers,
-    };
-  }
-  if (transfer) {
-    targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
-    classes = transfer.direction === "out" ? "text-alert" : "";
-
-    if (transfer.payload) {
-      if (transfer.payload?.__typename == "CrcMinting") {
-        message = window.i18n("dapps.o-banking.pages.transactionDetail.ubi");
-      } else {
-        message = transfer.payload.tags?.find(
-          (o) => o.typeId === "o-banking:transfer:message:1"
-        )?.value;
-      }
+  onMount(async () => {
+    transfer = await myTransactions.findByPrimaryKey(EventType.CrcHubTransfer, transactionHash);
+    if (!transfer) {
+      transfer = await myTransactions.findByPrimaryKey(EventType.CrcMinting, transactionHash);
     }
+    if (!transfer) {
+      transfer = await myTransactions.findSingleItemFallback([EventType.CrcHubTransfer, EventType.CrcMinting], transactionHash);
+    }
+    if (transfer && transfer.payload?.__typename == "CrcMinting") {
+      const minting = transfer.payload as CrcMinting;
 
-    displayableName = targetProfile.displayName;
+      toProfile = minting.to_profile ?? {
+        id: 0,
+        firstName: minting.to,
+        lastName: "",
+        circlesAddress: minting.to,
+      };
+      fromProfile = toProfile;
+    }
+    if (transfer && transfer.payload?.__typename == "Erc20Transfer") {
+      const erc20Transfer = transfer.payload as Erc20Transfer;
+      fromProfile = erc20Transfer.from_profile ?? {
+        id: 0,
+        firstName: erc20Transfer.from,
+        lastName: "",
+        circlesAddress: erc20Transfer.from,
+      };
+      toProfile = erc20Transfer.to_profile ?? {
+        id: 0,
+        firstName: erc20Transfer.to,
+        lastName: "",
+        circlesAddress: erc20Transfer.to,
+      };
+    }
+    if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
+      const hubTransfer = transfer.payload as CrcHubTransfer;
+      fromProfile = hubTransfer.from_profile ?? {
+        id: 0,
+        firstName: hubTransfer.from,
+        lastName: "",
+        circlesAddress: hubTransfer.from,
+      };
+      toProfile = hubTransfer.to_profile ?? {
+        id: 0,
+        firstName: hubTransfer.to,
+        lastName: "",
+        circlesAddress: hubTransfer.to,
+      };
+      path = {
+        transfers: hubTransfer.transfers,
+      };
+    }
+    if (transfer) {
+      targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
+      classes = transfer.direction === "out" ? "text-alert" : "";
+
+      if (transfer.payload) {
+        if (transfer.payload?.__typename == "CrcMinting") {
+          message = window.i18n("dapps.o-banking.pages.transactionDetail.ubi");
+        } else {
+          message = transfer.payload.tags?.find(
+                  (o) => o.typeId === "o-banking:transfer:message:1"
+          )?.value;
+        }
+      }
+
+      displayableName = targetProfile.displayName;
+    }
+  });
+
+  function openDetail(transfer: ProfileEvent) {
+    if (transfer.type == "CrcHubTransfer") {
+      push(`#/contacts/profile/${targetProfile.circlesAddress}`);
+    }
   }
-});
-function openDetail(transfer: ProfileEvent) {
-  if (transfer.type == "CrcHubTransfer") {
-    push(`#/contacts/profile/${targetProfile.circlesAddress}`);
-  }
-}
 </script>
 
 <div class="p-5">
@@ -179,12 +181,12 @@ function openDetail(transfer: ProfileEvent) {
         }}">
         {#if transfer.direction === "in"}
           <span class="mt-4 text-xl break-words">
-            {$_("dapps.o-banking.pages.transactionDetail.from")}
+            <Label key="dapps.o-banking.pages.transactionDetail.from" />
             {displayableName ? displayableName : ""}
           </span>
         {:else}
           <span class="mt-4 text-xl break-words">
-            {$_("dapps.o-banking.pages.transactionDetail.to")}
+            <Label key="dapps.o-banking.pages.transactionDetail.to" />
             {displayableName ? displayableName : ""}
           </span>
         {/if}
@@ -195,7 +197,7 @@ function openDetail(transfer: ProfileEvent) {
       <!-- {#if path && path.transfers}
         <div class="flex flex-col w-full space-y-1">
           <div class="mb-1 text-left text-2xs text-dark-lightest">
-            {$_("dapps.o-banking.pages.transactionDetail.paymentPath")}
+            <Label key="dapps.o-banking.pages.transactionDetail.paymentPath" />
           </div>
           <div class="flex items-center w-full">
             <CirclesTransferGraph
@@ -207,7 +209,7 @@ function openDetail(transfer: ProfileEvent) {
       {/if} -->
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("common.date")}
+          <Label key="common.date" />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
@@ -219,7 +221,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-banking.pages.transactionDetail.fullAmountCrc")}
+          <Label key="dapps.o-banking.pages.transactionDetail.fullAmountCrc" />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
@@ -240,7 +242,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <!-- <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-banking.pages.transactionDetail.amountCircles")}
+          <Label key="dapps.o-banking.pages.transactionDetail.amountCircles" />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
@@ -254,7 +256,7 @@ function openDetail(transfer: ProfileEvent) {
       </div> -->
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("common.from")}
+          <Label key="common.from" />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{fromProfile.circlesAddress}</div>
@@ -262,7 +264,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("common.to")}
+          <Label key="common.to" />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{toProfile.circlesAddress}</div>
@@ -270,7 +272,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("common.block")}
+          <Label key="common.block" />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{transfer.block_number}</div>
@@ -278,7 +280,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-banking.pages.transactionDetail.transactionHash")}
+          <Label key="dapps.o-banking.pages.transactionDetail.transactionHash" />
         </div>
         <div class="flex items-center w-full text-primarydark">
           <div class="text-left break-all">

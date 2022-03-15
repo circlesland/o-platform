@@ -1,27 +1,28 @@
 <script lang="ts">
-import { push } from "svelte-spa-router";
+  import {push} from "svelte-spa-router";
 
-import { Offer } from "../../../shared/api/data/types";
-import Icons from "../../../shared/molecules/Icons.svelte";
-import ItemCard from "src/shared/atoms/ItemCard.svelte";
+  import {Offer} from "../../../shared/api/data/types";
+  import Icons from "../../../shared/molecules/Icons.svelte";
+  import ItemCard from "src/shared/atoms/ItemCard.svelte";
 
-import { truncateString } from "../../../shared/functions/truncateString";
+  import {truncateString} from "../../../shared/functions/truncateString";
 
-import  { _ } from "svelte-i18n";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let offer: Offer;
+  export let offer: Offer;
 
-let params = {
-  imageUrl: offer.pictureUrl,
-  title: offer.title,
-  subTitle: truncateString(offer.description, 60),
-  truncateMain: true,
-  edgeless: true,
-};
+  let params = {
+    imageUrl: offer.pictureUrl,
+    title: offer.title,
+    subTitle: truncateString(offer.description, 60),
+    truncateMain: true,
+    edgeless: true,
+  };
 
-function loadDetailPage() {
-  push("#/marketplace/offer/" + offer.id);
-}
+  function loadDetailPage() {
+    push("#/marketplace/offer/" + offer.id);
+  }
 </script>
 
 <div on:click="{() => loadDetailPage()}">
@@ -43,7 +44,7 @@ function loadDetailPage() {
           <div class="px-2">
             <Icons icon="home" />
           </div>
-          <span class="block mt-1 text-3xs">{$_("dapps.o-marketplace.atoms.transactionItemCard.sending")}</span>
+          <span class="block mt-1 text-3xs"><Label key="dapps.o-marketplace.atoms.transactionItemCard.sending" /></span>
         </div>
       </div>
     </div>

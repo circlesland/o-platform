@@ -1,180 +1,181 @@
 <script lang="ts">
-import {
-  InvoiceDocument,
-  Profile,
-  QueryInvoiceArgs,
-  Sale,
-} from "../../../shared/api/data/types";
-import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import Icons from "../../../shared/molecules/Icons.svelte";
-import { push } from "svelte-spa-router";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import Date from "../../../shared/atoms/Date.svelte";
-import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import { displayableName } from "../../../shared/functions/stringHelper";
-import { saveBufferAs } from "../../../shared/saveBufferAs";
-import { ApiClient } from "../../../shared/apiConnection";
-import QrCode from "svelte-qrcode";
-import { sales } from "../../../shared/stores/sales";
-import { _ } from "svelte-i18n";
+  import {
+    InvoiceDocument,
+    Profile,
+    QueryInvoiceArgs,
+    Sale,
+  } from "../../../shared/api/data/types";
+  import {onMount} from "svelte";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
+  import Icons from "../../../shared/molecules/Icons.svelte";
+  import {push} from "svelte-spa-router";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import Date from "../../../shared/atoms/Date.svelte";
+  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+  import {displayableName} from "../../../shared/functions/stringHelper";
+  import {saveBufferAs} from "../../../shared/saveBufferAs";
+  import {ApiClient} from "../../../shared/apiConnection";
+  import QrCode from "svelte-qrcode";
+  import {sales} from "../../../shared/stores/sales";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let id: string;
+  export let id: string;
 
-let isLoading: boolean;
-let error: Error;
-let buyerProfile: Profile;
-let sale: Sale;
-let shellEventSubscription: Subscription;
-let groupedItems;
-let actions = [];
+  let isLoading: boolean;
+  let error: Error;
+  let buyerProfile: Profile;
+  let sale: Sale;
+  let shellEventSubscription: Subscription;
+  let groupedItems;
+  let actions = [];
 
-async function load() {
-  if (isLoading) return;
+  async function load() {
+    if (isLoading) return;
 
-  sale = await sales.findById(parseInt(id));
-  if (!sale) {
-    return;
-  }
-  isLoading = false;
-
-  actions = [
-    {
-      icon: "chat",
-      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.chat"),
-      action: () => push(`#/contacts/chat/${sale.buyerProfile.circlesAddress}`),
-    },
-  ];
-
-  if (sale.invoices && sale.invoices.length) {
-    const pickUpAction = {
-      icon: "transactions",
-      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
-      action: async () => {
-        const action = actions.find(
-          (o) =>
-            o.title ==
-            window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut")
-        );
-        actions = actions.splice(actions.indexOf(action) - 1, 1);
-        await sales.completeSale(sale.invoices[0].id);
-        actions.push(unPickUpAction);
-      },
-    };
-    const unPickUpAction = {
-      icon: "transactions",
-      title: window.i18n(
-        "dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"
-      ),
-      action: async () => {
-        const action = actions.find(
-          (o) =>
-            o.title ==
-            window.i18n(
-              "dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"
-            )
-        );
-        actions = actions.splice(actions.indexOf(action) - 1, 1);
-        await sales.revokeSale(sale.invoices[0].id);
-        actions.push(pickUpAction);
-      },
-    };
-    if (!sale.invoices[0].sellerSignature) {
-      actions.push(pickUpAction);
-    } else if (sale.invoices[0].sellerSignature) {
-      actions.push(unPickUpAction);
+    sale = await sales.findById(parseInt(id));
+    if (!sale) {
+      return;
     }
-    actions.push(
+    isLoading = false;
+
+    actions = [
       {
+        icon: "chat",
+        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.chat"),
+        action: () => push(`#/contacts/chat/${sale.buyerProfile.circlesAddress}`),
+      },
+    ];
+
+    if (sale.invoices && sale.invoices.length) {
+      const pickUpAction = {
+        icon: "transactions",
+        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
+        action: async () => {
+          const action = actions.find(
+                  (o) =>
+                          o.title ==
+                          window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut")
+          );
+          actions = actions.splice(actions.indexOf(action) - 1, 1);
+          await sales.completeSale(sale.invoices[0].id);
+          actions.push(unPickUpAction);
+        },
+      };
+      const unPickUpAction = {
         icon: "transactions",
         title: window.i18n(
-          "dapps.o-marketplace.pages.mySaleDetail.transaction"
-        ),
-        action: () =>
-          push(
-            `#/banking/transactions/${sale.invoices[0].paymentTransactionHash}`
-          ),
-      },
-      {
-        icon: "document",
-        title: window.i18n(
-          "dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"
+                "dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"
         ),
         action: async () => {
-          for (let invoice of sale.invoices) {
-            const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
-              InvoiceDocument,
-              {
-                invoiceId: invoice.id,
-              }
-            );
-
-            saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
-          }
+          const action = actions.find(
+                  (o) =>
+                          o.title ==
+                          window.i18n(
+                                  "dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"
+                          )
+          );
+          actions = actions.splice(actions.indexOf(action) - 1, 1);
+          await sales.revokeSale(sale.invoices[0].id);
+          actions.push(pickUpAction);
         },
+      };
+      if (!sale.invoices[0].sellerSignature) {
+        actions.push(pickUpAction);
+      } else if (sale.invoices[0].sellerSignature) {
+        actions.push(unPickUpAction);
       }
-    );
-  }
-}
+      actions.push(
+              {
+                icon: "transactions",
+                title: window.i18n(
+                        "dapps.o-marketplace.pages.mySaleDetail.transaction"
+                ),
+                action: () =>
+                        push(
+                                `#/banking/transactions/${sale.invoices[0].paymentTransactionHash}`
+                        ),
+              },
+              {
+                icon: "document",
+                title: window.i18n(
+                        "dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"
+                ),
+                action: async () => {
+                  for (let invoice of sale.invoices) {
+                    const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
+                            InvoiceDocument,
+                            {
+                              invoiceId: invoice.id,
+                            }
+                    );
 
-function orderItems(items) {
-  const orderedCart = {};
-  items.forEach((item) => {
-    orderedCart[item.id] = {
-      item: item,
-      qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
+                    saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
+                  }
+                },
+              }
+      );
+    }
+  }
+
+  function orderItems(items) {
+    const orderedCart = {};
+    items.forEach((item) => {
+      orderedCart[item.id] = {
+        item: item,
+        qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
+      };
+    });
+
+    return Object.entries(orderedCart).map(([id, item]) => ({id, item}));
+  }
+
+  function totalPrice(items) {
+    let pricePerUnit = 0;
+    if (items) {
+      items.forEach(
+              (e) => (pricePerUnit = pricePerUnit + parseFloat(e.pricePerUnit))
+      );
+    }
+    return pricePerUnit;
+  }
+
+  onMount(async () => {
+    await load();
+
+    groupedItems = sale ? orderItems(sale.lines) : {};
+    buyerProfile = sale?.buyerProfile;
+
+    shellEventSubscription = window.o.events.subscribe(
+            async (event: PlatformEvent) => {
+              if (
+                      event.type != "shell.refresh" ||
+                      (<any>event).dapp != "marketplace:1"
+              ) {
+                return;
+              }
+              await load();
+            }
+    );
+
+    return () => {
+      shellEventSubscription.unsubscribe();
     };
   });
-
-  return Object.entries(orderedCart).map(([id, item]) => ({ id, item }));
-}
-
-function totalPrice(items) {
-  let pricePerUnit = 0;
-  if (items) {
-    items.forEach(
-      (e) => (pricePerUnit = pricePerUnit + parseFloat(e.pricePerUnit))
-    );
-  }
-  return pricePerUnit;
-}
-
-onMount(async () => {
-  await load();
-
-  groupedItems = sale ? orderItems(sale.lines) : {};
-  buyerProfile = sale?.buyerProfile;
-
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
-    }
-  );
-
-  return () => {
-    shellEventSubscription.unsubscribe();
-  };
-});
 </script>
 
 <div class="p-5">
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">
-        {$_("dapps.o-marketplace.pages.mySaleDetail.saleDetails")}
+        <Label key="dapps.o-marketplace.pages.mySaleDetail.saleDetails" />
       </h1>
     </div>
     <div class="w-full text-center">
       {#if sale}
         <span class="text-dark-lightest"
-          >{$_("dapps.o-marketplace.pages.mySaleDetail.saleDate")}<Date
+          ><Label key="dapps.o-marketplace.pages.mySaleDetail.saleDate" /><Date
             time="{sale.createdAt}" /></span>
       {/if}
     </div>
@@ -186,13 +187,13 @@ onMount(async () => {
           class:text-alert-dark="{!sale.invoices[0].paymentTransactionHash}"
           class:text-success="{sale.invoices[0].paymentTransactionHash}">
           {#if sale.invoices[0].paymentTransactionHash}
-            <span>{$_("dapps.o-marketplace.pages.mySales.paid")}</span>
+            <span><Label key="dapps.o-marketplace.pages.mySales.paid" /></span>
             <Icons icon="check" size="{4}" customClass="inline" />
           {:else if sale.invoices[0].cancelledAt}
-            <span>{$_("dapps.o-marketplace.pages.mySales.cancelled")}</span>
+            <span><Label key="dapps.o-marketplace.pages.mySales.cancelled" /></span>
           {:else}
             <span
-              >{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
+              ><Label key="dapps.o-marketplace.pages.mySales.paymentPending" /></span>
           {/if}
         </div>
 
@@ -200,7 +201,7 @@ onMount(async () => {
           class="inline-block text-xs "
           class:text-inactive="{!sale.invoices[0].pickupCode}"
           class:text-success="{sale.invoices[0].pickupCode}">
-          <span>{$_("dapps.o-marketplace.pages.mySales.pickupCode")}</span>
+          <span><Label key="dapps.o-marketplace.pages.mySales.pickupCode" /></span>
           {#if sale.invoices[0].pickupCode}
             <Icons icon="check" size="{4}" customClass="inline" />
           {/if}
@@ -209,7 +210,7 @@ onMount(async () => {
           class="inline-block text-xs"
           class:text-inactive="{!sale.invoices[0].sellerSignature}"
           class:text-success="{sale.invoices[0].sellerSignature}">
-          <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
+          <span><Label key="dapps.o-marketplace.pages.mySales.pickedUp" /></span>
           {#if sale.invoices[0].sellerSignature}
             <Icons icon="check" size="{4}" customClass="inline" />
           {:else}
@@ -223,7 +224,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.mySaleDetail.loadingSales")}</div>
+          <div><Label key="dapps.o-marketplace.pages.mySaleDetail.loadingSales" /></div>
         </div>
       </div>
     </section>

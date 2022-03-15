@@ -1,36 +1,37 @@
 <script lang="ts">
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import { cartContents, totalPrice } from "../stores/shoppingCartStore";
-import CartItems from "../molecules/CartItems.svelte";
-// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
-import { Continue } from "@o-platform/o-process/dist/events/continue";
-import { Profile, Organisation } from "../../../shared/api/data/types";
-import { displayableName } from "../../../shared/functions/stringHelper";
-import { Currency } from "../../../shared/currency";
-import { _ } from "svelte-i18n";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import {cartContents, totalPrice} from "../stores/shoppingCartStore";
+  import CartItems from "../molecules/CartItems.svelte";
+  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+  import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
+  import {Continue} from "@o-platform/o-process/dist/events/continue";
+  import {Profile, Organisation} from "../../../shared/api/data/types";
+  import {displayableName} from "../../../shared/functions/stringHelper";
+  import {Currency} from "../../../shared/currency";
+  import {_} from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
-export let context: any;
-let profile: Profile | Organisation;
+  export let context: any;
+  let profile: Profile | Organisation;
 
-$: {
-  context = context;
-  profile = context.data.sellerProfile;
-}
-
-let classes: string;
-
-function submit() {
-  const answer = new Continue();
-  answer.data = context.data;
-  context.process.sendAnswer(answer);
-}
-
-function onkeydown(e: KeyboardEvent) {
-  if (e.key == "Enter") {
-    submit();
+  $: {
+    context = context;
+    profile = context.data.sellerProfile;
   }
-}
+
+  let classes: string;
+
+  function submit() {
+    const answer = new Continue();
+    answer.data = context.data;
+    context.process.sendAnswer(answer);
+  }
+
+  function onkeydown(e: KeyboardEvent) {
+    if (e.key == "Enter") {
+      submit();
+    }
+  }
 </script>
 
 {#if context.data && profile}
@@ -50,7 +51,7 @@ function onkeydown(e: KeyboardEvent) {
 
     <div>
       <span class="mt-4 text-xl">
-        {$_("dapps.o-marketplace.molecules.checkoutSummary.to")} {displayableName(profile.firstName, profile.lastName)}
+        <Label key="dapps.o-marketplace.molecules.checkoutSummary.to" /> {displayableName(profile.firstName, profile.lastName)}
       </span>
       <div class="mt-2 text-dark-lightest">
         Reifenstuelstrasse. 6, 80469 München
@@ -63,7 +64,7 @@ function onkeydown(e: KeyboardEvent) {
     {#if context.data && context.data.transitivePath}
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-marketplace.molecules.checkoutSummary.paymentPath")}
+          <Label key="dapps.o-marketplace.molecules.checkoutSummary.paymentPath" />
         </div>
         <div class="flex items-center w-full">
           <CirclesTransferGraph
@@ -80,7 +81,7 @@ function onkeydown(e: KeyboardEvent) {
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">
-          {$_("dapps.o-marketplace.molecules.checkoutSummary.total")}
+          <Label key="dapps.o-marketplace.molecules.checkoutSummary.total" />
         </span>
         <span class="w-20 text-lg font-bold text-right">
           {$totalPrice.toFixed(2)} €
@@ -88,7 +89,7 @@ function onkeydown(e: KeyboardEvent) {
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">
-          {$_("dapps.o-marketplace.molecules.checkoutSummary.tax")}
+          <Label key="dapps.o-marketplace.molecules.checkoutSummary.tax" />
         </span>
         <span class="w-20 text-lg text-right font-primary text-dark-lightest">
           {((19 / 100) * $totalPrice).toFixed(2)} €
