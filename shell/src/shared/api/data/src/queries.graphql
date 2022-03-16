@@ -1049,6 +1049,7 @@ query stream(
                             id
                             title
                             pictureUrl
+                            pricePerUnit
                             tags {
                                 typeId
                                 value

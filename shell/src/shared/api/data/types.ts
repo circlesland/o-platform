@@ -2518,7 +2518,7 @@ export type StreamQuery = (
           & Pick<InvoiceLine, 'amount'>
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'title' | 'pictureUrl'>
+            & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit'>
             & { tags?: Maybe<Array<(
               { __typename?: 'Tag' }
               & Pick<Tag, 'typeId' | 'value'>
@@ -4214,6 +4214,7 @@ export const StreamDocument = gql`
               id
               title
               pictureUrl
+              pricePerUnit
               tags {
                 typeId
                 value
