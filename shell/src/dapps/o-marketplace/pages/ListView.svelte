@@ -30,10 +30,10 @@ let offers: Offer[] = [];
 let store: any;
 
 type OffersByCategory = {
-  [category:string]: Offer[]
-}
+  [category: string]: Offer[];
+};
 
-let offersByCategory:OffersByCategory = {};
+let offersByCategory: OffersByCategory = {};
 
 onMount(() => {
   store = storeOffers.getOffersFor(storeCirclesAddress);
@@ -41,18 +41,16 @@ onMount(() => {
   return store.subscribe((data: any) => {
     offers = data;
 
-    offersByCategory = offers.reduce((p,c) => {
-      const cat = c.tags?.filter(o => o.typeId == "o-marketplace:offer:category:1") ?? [];
+    offersByCategory = offers.reduce((p, c) => {
+      const cat =
+        c.tags?.filter((o) => o.typeId == "o-marketplace:offer:category:1") ??
+        [];
       if (cat.length == 0) {
-        if (p[""])
-          p[""].push(c);
-        else
-          p[""] = [c];
+        if (p[""]) p[""].push(c);
+        else p[""] = [c];
       } else {
-        if (p[cat[0].value])
-          p[cat[0].value].push(c);
-        else
-          p[cat[0].value] = [c];
+        if (p[cat[0].value]) p[cat[0].value].push(c);
+        else p[cat[0].value] = [c];
       }
       return p;
     }, offersByCategory);
@@ -68,7 +66,7 @@ onMount(() => {
 
 <div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
-  <section class="flex items-start mb-4 cursor-pointer rounded-xl">
+  <section class="flex items-start mb-4 rounded-xl">
     <div class="flex flex-col w-full">
       <header class="rounded-xl">
         <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
@@ -104,27 +102,3 @@ onMount(() => {
     {/if}
   </div>
 </div>
-
-<style>
-.marketplace-grid {
-  grid-template-columns: repeat(1, minmax(8rem, 1fr));
-  grid-auto-rows: 1fr;
-}
-
-@media (min-width: 640px) {
-  .marketplace-grid {
-    grid-template-columns: repeat(2, minmax(8rem, 1fr));
-  }
-}
-
-@media (min-width: 1300px) {
-  .marketplace-grid {
-    grid-template-columns: repeat(3, minmax(8rem, 1fr));
-  }
-}
-
-:global(.marketplace-grid > *:first-child) {
-  grid-row: 1 / 1;
-  grid-column: 1 / 1;
-}
-</style>

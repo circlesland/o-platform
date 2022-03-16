@@ -1,58 +1,50 @@
 <script context="module" lang="ts">
-  let scrollContent;
-  export function scrollToBottom() {
-    
-    scrollToPosition(1000000000);
-    poppedScrollPosition = false;
+let scrollContent;
+export function scrollToBottom() {
+  scrollToPosition(1000000000);
+  poppedScrollPosition = false;
+}
+export function scrollToTop() {
+  scrollToPosition(0);
+  poppedScrollPosition = false;
+}
+export function scrollToPosition(position: number) {
+  if (!scrollContent) {
+    return;
   }
-  export function scrollToTop() {
-    
+  const scrollElement = scrollContent.getScrollElement();
+  scrollElement.scrollTo(0, position);
+}
 
-    scrollToPosition(0);
-    poppedScrollPosition = false;
-  }
-  export function scrollToPosition(position:number) {
-    
-    if (!scrollContent) {
-      return;
-    }
-    const scrollElement = scrollContent.getScrollElement();
-    scrollElement.scrollTo(0, position);
-  }
+let scrollPositionStack: number[] = [];
+export let poppedScrollPosition = false;
 
-  let scrollPositionStack:number[] = [];
-  export let poppedScrollPosition = false;
+export function scrollPositionStackPopulated(): boolean {
+  return scrollPositionStack.length > 0;
+}
 
-  export function scrollPositionStackPopulated() : boolean {
-    
-    return scrollPositionStack.length > 0;
-  }
+export function pushScrollPosition() {
+  poppedScrollPosition = false;
 
-  export function pushScrollPosition() {
-    poppedScrollPosition = false;
-    
-    if (scrollContent) {
-      const pos = scrollContent.getScrollElement().scrollTop;
-      scrollPositionStack.push(pos);
-      
-    }
+  if (scrollContent) {
+    const pos = scrollContent.getScrollElement().scrollTop;
+    scrollPositionStack.push(pos);
   }
-  export function popScrollPosition() {
-    poppedScrollPosition = true;
-    
-    if (scrollContent) {
-      const pos = scrollPositionStack.pop();
-      scrollToPosition(pos);
-      
-    }
-  }
-  export function clearScrollPosition() {
-    scrollPositionStack = [];
-    poppedScrollPosition = false;
-    
-  }
+}
+export function popScrollPosition() {
+  poppedScrollPosition = true;
 
+  if (scrollContent) {
+    const pos = scrollPositionStack.pop();
+    scrollToPosition(pos);
+  }
+}
+export function clearScrollPosition() {
+  scrollPositionStack = [];
+  poppedScrollPosition = false;
+}
 </script>
+
 <script lang="ts">
 import { createEventDispatcher, getContext } from "svelte";
 import { clickOutside } from "./../functions/clickOutside";

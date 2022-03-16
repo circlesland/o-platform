@@ -4,10 +4,11 @@ import CartItems from "../molecules/CartItems.svelte";
 import { push } from "svelte-spa-router";
 import { purchase } from "../processes/purchase";
 import { _ } from "svelte-i18n";
-import {assetBalances} from "../../../shared/stores/assetsBalances";
-import {BN} from "ethereumjs-util";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {convertCirclesToTimeCircles} from "../../../shared/functions/displayCirclesAmount";
+import { assetBalances } from "../../../shared/stores/assetsBalances";
+import { BN } from "ethereumjs-util";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { convertCirclesToTimeCircles } from "../../../shared/functions/displayCirclesAmount";
+import { Currency } from "../../../shared/currency";
 
 function checkout() {
   window.o.runProcess(purchase, cartContents);
@@ -20,11 +21,20 @@ function handleClickOutside(event) {
   });
 }
 
-let balance = new BN("0");
-$: {
-  balance = (convertCirclesToTimeCircles(parseFloat(RpcGateway.get().utils.fromWei($assetBalances.crcBalances.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")), "ether")), new Date().toJSON()) / 10).toFixed(2);
-}
+let balance: number = 0;
+let insufficientFunds: boolean = false;
 
+$: {
+  const sum = $assetBalances.crcBalances
+    .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
+    .toString();
+  balance = Currency.instance().displayAmount(sum, null, "EURS", null);
+
+  console.log("Bal:", balance);
+  console.log("Diff:", balance - parseInt($totalPrice.toFixed(2)));
+  insufficientFunds = balance - parseInt($totalPrice.toFixed(2)) <= 0;
+  // insufficientFunds = true;
+}
 </script>
 
 <div class="p-5">
@@ -34,7 +44,6 @@ $: {
         {$_("dapps.o-marketplace.pages.shoppingCart.cart")}
       </h1>
     </div>
-    <div>Your balance: {balance}</div>
   </header>
 
   {#if $cartContents && $cartContents.length > 0}
@@ -54,12 +63,24 @@ $: {
               <div class="flex items-center justify-center mt-6">
                 <div class="flex flex-row w-full space-x-4">
                   <div class="flex-grow">
-                    <button
-                      class="h-auto btn-block btn btn-primary"
-                      on:click="{() => checkout()}"
-                      >{$_(
-                        "dapps.o-marketplace.pages.shoppingCart.checkOut"
-                      )}</button>
+                    {#if insufficientFunds}
+                      <div class="w-full text-center text-alert">
+                        Oops, It looks like your balance of {balance} Eur is not
+                        enough to cover this order.
+                        <br />
+                        Try and remove some items or have a friend send you some
+                        circles :)
+                      </div>
+                      <!-- <button class="h-auto btn-block btn btn-error"
+                        >The total exceeds your balance</button> -->
+                    {:else}
+                      <button
+                        class="h-auto btn-block btn btn-primary"
+                        on:click="{() => checkout()}"
+                        >{$_(
+                          "dapps.o-marketplace.pages.shoppingCart.checkOut"
+                        )}</button>
+                    {/if}
                   </div>
                 </div>
               </div>

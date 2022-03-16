@@ -75,55 +75,8 @@ displayName =
 
 <section class="flex items-start bg-white shadow-md rounded-xl">
   <div class="flex flex-col w-full ">
-    <!-- <header
-      class="cursor-pointer rounded-t-xl headerImageContainer"
-      on:click="{() => loadDetailPage()}">
-      <div class="relative rounded-t-xl image-wrapper">
-        <img
-          src="{offer.pictureUrl
-            ? offer.pictureUrl
-            : '/images/market/circles-no-image.jpg'}"
-          alt="
-          "
-          class="rounded-t-xl" />
-        <div
-          class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
-          <span class="inline-block">{offer.pricePerUnit}</span>
-          <span class="inline-block">€</span>
-        </div>
-
-        <div
-          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
-          {$_("dapps.o-marketplace.atoms.offerCard.pickUpOnly")}
-        </div>
-      </div>
-    </header> -->
-    <!-- <div
-      class="relative flex flex-row items-center content-start p-2 space-x-4 text-base font-medium text-left bg-light-lighter">
-      <div class="inline-flex">
-        <UserImage
-          profile="{offer.createdByProfile}"
-          size="{10}"
-          gradientRing="{true}" />
-      </div>
-      <div>
-        {displayName}
-      </div>
-    </div> -->
     <div
       class="relative flex flex-col items-stretch w-full px-4 py-4 space-y-4 ">
-      <!--<<div class="flex flex-row flex-grow space-x-2">
-        div
-          class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
-         <a
-            href="#/marketplace/categories/{offer.categoryTagId}/{offer
-              .categoryTag.value}"
-            alt="{offer.categoryTag.value}">
-            {offer.categoryTag.value}
-          </a>
-        </div>
-      </div>-->
-
       <div class="flex flex-row space-x-2">
         <div class="flex-grow">
           <div
@@ -143,40 +96,12 @@ displayName =
             </div>
           </div>
         </div>
-        <div class="flex flex-col self-start justify-end text-primary">
-          <!-- <button
-            type="submit"
-            class="relative btn btn-primary btn-square"
-            on:click="{() => addToCart(offer)}"> -->
-          <Icons icon="cart" on:click="{() => addToCart(offer)}" />
-          <!-- </button> -->
+        <div
+          class="flex flex-col self-start justify-end cursor-pointer text-primary"
+          on:click="{() => addToCart(offer)}">
+          <Icons icon="cart" />
         </div>
-
-        <!-- 
-      <div class="flex flex-row space-x-4">
-        
-      </div> -->
       </div>
     </div>
   </div>
 </section>
-
-<style>
-/* Ensure image is always 16:9 Ratio */
-.headerImageContainer {
-  max-width: none;
-}
-
-.image-wrapper {
-  position: relative;
-  /* padding-bottom: 56.2%;b 16:9 */
-  padding-bottom: 75%; /* 4:3 */
-}
-
-.image-wrapper img {
-  position: absolute;
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
-</style>

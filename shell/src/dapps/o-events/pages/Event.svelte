@@ -47,7 +47,7 @@ function register() {
           <span class="whitespace-nowrap">dein erstes mal</span>
         </div>
         <div class="text-2xl leading-tight text-left sm:text-4rem font-omedium">
-          ALTE UTTING<br />19TH MARCH<br />START 2 PM
+          ALTE UTTING<br />19TH MARCH<br />START 3 PM
         </div>
       </div>
       <div
