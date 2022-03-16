@@ -254,6 +254,7 @@ export const inbox = {
     const orga = await ApiClient.query<Organisation[], OrganisationsByAddressQueryVariables>(OrganisationsByAddressDocument, {
       addresses: [profile.circlesAddress]
     });
+    /*
     if (orga && orga.length) {
       console.log("Reloading in 30 sec.")
       setInterval(() => {
@@ -262,7 +263,7 @@ export const inbox = {
         }
         window.location.reload();
       }, 30000);
-    }
+    }*/
   },
   acknowledge: async (event: ProfileEvent) => {
     const apiClient = await window.o.apiClient.client.subscribeToResult();
