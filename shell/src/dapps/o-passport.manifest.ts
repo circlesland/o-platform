@@ -7,6 +7,7 @@ import Login from "./o-passport/pages/Login.svelte";
 import { logout } from "./o-passport/processes/logout";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -54,6 +55,17 @@ const login: Page<any, DappState> = {
   type: "page",
 };
 
+const logmeout: Trigger<{}, DappState> = {
+  isSystem: true,
+  anonymous: true,
+  routeParts: ["=actions", "=logout"],
+  title: "Log Out",
+  type: "trigger",
+  action: async (params) => {
+    window.o.runProcess(logout, {});
+  },
+};
+
 export interface DappState {
   // put state here
 }
@@ -94,5 +106,5 @@ export const passport: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, profile, account, settings, login, verifyEmail],
+  routables: [index, profile, account, settings, login, verifyEmail, logmeout],
 };

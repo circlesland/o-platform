@@ -839,7 +839,7 @@ export const en = {
                 checkInviteCode: {
                   title: "Enter invitation code",
                   description:
-                    "Please enter you invitation code below to get started.",
+                    "Please enter you invitation code below to get started.<br/>If you get stuck here you can <a href='/#/passport/actions/logout' class='link link-primary'>Log out</a> and try again.",
                   submitButtonText: "Verify",
                 },
               },
