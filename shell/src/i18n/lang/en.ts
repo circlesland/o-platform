@@ -571,7 +571,8 @@ export const en = {
             toSeeCode3: " at any time after the purchase, go to ",
             toSeeCode4: "My purchases",
             toSeeCode5: " and click on the Purchase",
-            pickupLocation: "Pick-Up Location for this Order is:",
+            pickupLocation:
+              "You can now go to the counter and show your QR code to pick up your items.",
           },
           checkoutSummary: {
             to: "to",
@@ -625,7 +626,7 @@ export const en = {
             loadingPurchases: "Loading purchases...",
             yourPickupCode: "Your Pick-Up Code",
             showThisCode:
-              "show this code to the seller when you pick up your Order at the Store.",
+              "show this code to the seller when you pick up your Order.",
             noCode: "No pickup code yet ..",
             location: "Pick-Up Location for this Order is:",
           },
@@ -783,7 +784,8 @@ export const en = {
                 },
                 connectOrCreate: {
                   title: "Setup your account",
-                  description: "Create new or import an existing Circles account?",
+                  description:
+                    "Create new or import an existing Circles account?",
                 },
               },
               processDefinition: {
@@ -1270,8 +1272,7 @@ export const en = {
             editorContent: {
               firstName: {
                 title: "Welcome to CirclesLand!",
-                description:
-                  "What is your first name?",
+                description: "What is your first name?",
                 placeholder: "First Name",
                 submitButtonText: "Save",
               },
@@ -1284,14 +1285,14 @@ export const en = {
               },
               dream: {
                 title: "Share your passion",
-                description: "What will you do different in your life with a monthly basic income?",
+                description:
+                  "What will you do different in your life with a monthly basic income?",
                 placeholder: "I will ...",
                 submitButtonText: "Start growing",
               },
               city: {
                 title: "Vote for your City",
-                description:
-                  "Advance your city in the basic income ranking",
+                description: "Advance your city in the basic income ranking",
                 placeholder: "Last name",
                 submitButtonText: "Submit vote",
               },

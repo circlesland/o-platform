@@ -1,29 +1,28 @@
 <script lang="ts">
-  import {
-    EventType,
-    InvoiceDocument,
-    Profile,
-    Purchase,
-    Purchased,
-    QueryInvoiceArgs,
-  } from "../../../shared/api/data/types";
-  import {onMount} from "svelte";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {Subscription} from "rxjs";
-  import {me} from "../../../shared/stores/me";
+import {
+  EventType,
+  InvoiceDocument,
+  Profile,
+  Purchase,
+  Purchased,
+  QueryInvoiceArgs,
+} from "../../../shared/api/data/types";
+import { onMount } from "svelte";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { Subscription } from "rxjs";
+import { me } from "../../../shared/stores/me";
 
-  import {push} from "svelte-spa-router";
-  import {saveBufferAs} from "../../../shared/saveBufferAs";
-  import {ApiClient} from "../../../shared/apiConnection";
-  import QrCode from "svelte-qrcode";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import Date from "../../../shared/atoms/Date.svelte";
-  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import {_} from "svelte-i18n";
-  import {myPurchases} from "../../../shared/stores/myPurchases";
+import { push } from "svelte-spa-router";
+import { saveBufferAs } from "../../../shared/saveBufferAs";
+import { ApiClient } from "../../../shared/apiConnection";
+import QrCode from "svelte-qrcode";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import Date from "../../../shared/atoms/Date.svelte";
+import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+import { _ } from "svelte-i18n";
+import { myPurchases } from "../../../shared/stores/myPurchases";
 
-
-  export let id: string;
+export let id: string;
 
 let isLoading: boolean;
 let error: Error;
@@ -42,13 +41,19 @@ async function load() {
     return;
   }
 
-  const cachedEvent = await myPurchases.findByPrimaryKey(EventType.Purchased, parseInt(id).toString());
+  const cachedEvent = await myPurchases.findByPrimaryKey(
+    EventType.Purchased,
+    parseInt(id).toString()
+  );
   if (cachedEvent && cachedEvent.type == EventType.Purchased) {
     purchase = (<Purchased>cachedEvent.payload).purchase;
     sellerProfile = (<Purchased>cachedEvent.payload).seller_profile;
   }
   if (!purchase) {
-    const loadedEvent = await myPurchases.findSingleItemFallback([EventType.Purchased], parseInt(id).toString());
+    const loadedEvent = await myPurchases.findSingleItemFallback(
+      [EventType.Purchased],
+      parseInt(id).toString()
+    );
     if (loadedEvent && loadedEvent.type == EventType.Purchased) {
       purchase = (<Purchased>loadedEvent.payload).purchase;
       sellerProfile = (<Purchased>loadedEvent.payload).seller_profile;
@@ -293,7 +298,7 @@ onMount(async () => {
           {/if}
         </div>
 
-        <div class="pt-2 text-sm">
+        <!-- <div class="pt-2 text-sm">
           {$_("dapps.o-marketplace.pages.myPurchaseDetail.location")}
         </div>
         <div class="pt-2 text-sm">
@@ -302,7 +307,7 @@ onMount(async () => {
           80469 München<br />
           <span class="text-sm font-thin"
             >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
-        </div>
+        </div> -->
       </div>
     {/each}
     <DetailActionBar actions="{actions}" />

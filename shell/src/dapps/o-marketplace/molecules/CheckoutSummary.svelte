@@ -112,7 +112,7 @@ function onkeydown(e: KeyboardEvent) {
       </div> -->
     </div>
 
-    <div class="flex flex-col w-full space-y-2 text-left">
+    <!-- <div class="flex flex-col w-full space-y-2 text-left">
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
         <h1 class="p-2 text-white uppercase bg-dark-dark ">
           {$_(
@@ -127,7 +127,7 @@ function onkeydown(e: KeyboardEvent) {
           {@html $_("dapps.o-marketplace.molecules.checkoutSummary.storeHours")}
         </span>
       </div>
-    </div>
+    </div> -->
   </div>
   <ProcessNavigation
     on:buttonClick="{submit}"
