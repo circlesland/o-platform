@@ -1,15 +1,28 @@
 <script lang="ts">
-import { me } from "../../../shared/stores/me";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
 import { _ } from "svelte-i18n";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import { onMount } from "svelte";
+import { Environment } from "../../../shared/environment";
 
-export let status: string = undefined;
+export let secret: string = undefined;
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+
+function verify() {
+  if (secret) {
+    window.location.assign(
+      `${Environment.apiEndpointUrl}/trigger?hash=${secret}`
+    );
+  }
+}
+onMount(() => {
+  verify();
+});
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -28,7 +41,7 @@ export let routable: Routable;
       class="flex flex-col w-full px-3 py-2 space-x-2 bg-white rounded-lg shadow-md ">
       <div class="flex flex-col space-y-2">
         <div class="text-left">
-          {#if status && status == "success"}
+          {#if secret && secret == "success"}
             <h1>Thank you</h1>
             <p class="mt-4">
               Your Email address has been verified and changed.
@@ -37,7 +50,7 @@ export let routable: Routable;
               <a href="/#/home" class="link link-primary"
                 >Go to the dashboard</a>
             </p>
-          {:else if status && status == "failed"}
+          {:else if secret && secret == "failed"}
             <h1>Oops</h1>
             <p class="mt-4">Your Email address verification failed.</p>
             <p class="mt-4">
@@ -49,6 +62,24 @@ export let routable: Routable;
               Please <a href="/" class="link link-primary">Log in</a> and go to your
               Passport settings to enter your new Email address again to restart
               the verification process.
+            </p>
+          {:else}
+            <h1>Verify your Email address</h1>
+            <p class="mt-4">
+              Please use the button below to verify your Email address now.
+            </p>
+            <p class="mt-4">
+              <button
+                type="submit"
+                on:click="{() => {
+                  verify();
+                }}"
+                class="relative btn btn-primary "
+                ><span class="pr-4">Verify my Email Address</span>
+                <div class="absolute right-2">
+                  <Icons icon="buttonrightarrow" />
+                </div>
+              </button>
             </p>
           {/if}
         </div>

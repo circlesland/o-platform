@@ -79,10 +79,9 @@ displayName =
       class="relative flex flex-col items-stretch w-full px-4 py-4 space-y-4 ">
       <div class="flex flex-row space-x-2">
         <div class="flex-grow">
-          <div
-            class="text-lg leading-tight text-left uppercase cursor-pointer break-word"
-            on:click="{() => loadDetailPage()}">
-            {offer.title}
+          <div class="text-lg leading-tight text-left uppercase break-word">
+            <span on:click="{() => loadDetailPage()}" class="cursor-pointer"
+              >{offer.title}</span>
           </div>
           <div>
             <div class="text-sm text-dark-lightest">

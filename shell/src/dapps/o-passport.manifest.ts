@@ -19,7 +19,7 @@ const index: Page<any, DappState> = {
 const verifyEmail: Page<any, DappState> = {
   isSystem: true,
   anonymous: true,
-  routeParts: ["=verifyemail", ":status"],
+  routeParts: ["=verifyEmail", "verify", ":secret"],
   component: VerifyEmail,
   title: "Email address",
   type: "page",
