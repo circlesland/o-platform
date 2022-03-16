@@ -72,9 +72,10 @@ onMount(() => {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
+<div class="mb-20 -mt-3 ">
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
-  <section class="flex items-start mb-4 rounded-xl">
+  <section
+    class="flex items-start px-4 mx-auto mb-4 md:w-2/3 xl:w-1/2 rounded-xl">
     <div class="flex flex-col w-full">
       <header class="rounded-xl">
         <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
@@ -101,14 +102,16 @@ onMount(() => {
       dataKey="offers"
       dataLimit="{100}" />-->
     {#if offersByCategory}
-      <div class="flex flex-col space-y-8">
-        {#each Object.keys(offersByCategory).sort() as category}
-          <div>
-            <h1 class="mb-2 ml-2">{category}</h1>
-            <div class="flex flex-col space-y-4">
-              {#each offersByCategory[category].sort(compare) as offer}
-                <ListViewCard param="{offer}" />
-              {/each}
+      <div class="flex flex-col space-y-4">
+        {#each Object.keys(offersByCategory).sort() as category, i}
+          <div class="pt-4 pb-10" class:bg-gray-300="{i % 2 == 1}">
+            <div class="mx-auto space-y-4 xl:w-1/2 md:w-2/3">
+              <h1 class="px-4 mb-2 ml-2 ">{category}</h1>
+              <div class="flex flex-col px-4 space-y-4">
+                {#each offersByCategory[category].sort(compare) as offer}
+                  <ListViewCard param="{offer}" />
+                {/each}
+              </div>
             </div>
           </div>
         {/each}
