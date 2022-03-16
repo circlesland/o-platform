@@ -1,12 +1,15 @@
 <script type="ts">
-import { Sale } from "../../../shared/api/data/types";
+  import {ProfileEvent, Sale, SaleEvent} from "../../../shared/api/data/types";
 import QrScanner from "qr-scanner";
 import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { showToast } from "../../../shared/toast";
 import { _ } from "svelte-i18n";
+import {mySales} from "../../../shared/stores/mySales";
 
-let sale: Sale;
+let saleEvent: ProfileEvent;
+let sale: SaleEvent;
+
 let video: HTMLVideoElement;
 let scanner: QrScanner;
 let camQrResult: HTMLElement;
@@ -23,7 +26,13 @@ async function loadSale(id) {
   statusText = window.i18n(
     "dapps.o-marketplace.pages.scanPurchase.verifyingOrder"
   );
-  sale = await sales.findByPickupCode(id);
+
+  saleEvent = await mySales.findByPickupCode(id);
+  if (saleEvent) {
+    sale = <SaleEvent>saleEvent.payload;
+  } else {
+    sale = null;
+  }
 
   if (!sale) {
     statusText = window.i18n(
@@ -33,8 +42,8 @@ async function loadSale(id) {
     return;
   }
 
-  sales.completeSale(sale.invoices[0].id).then(function () {
-    push(`#/marketplace/my-sales/${sale.id}`);
+  mySales.completeSale(sale.invoice.id).then(function () {
+    push(`#/marketplace/my-sales/${sale.invoice.id}`);
     showToast(
       "success",
       window.i18n(
@@ -55,7 +64,7 @@ async function setResult(label, result) {
     100
   );
 
-  loadSale(result.data);
+  await loadSale(result.data);
 }
 
 function startScanner() {

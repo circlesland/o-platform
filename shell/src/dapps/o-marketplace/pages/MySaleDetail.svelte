@@ -9,8 +9,6 @@
     SaleEvent,
   } from "../../../shared/api/data/types";
   import {onMount} from "svelte";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {Subscription} from "rxjs";
   import Icons from "../../../shared/molecules/Icons.svelte";
   import {push} from "svelte-spa-router";
   import UserImage from "src/shared/atoms/UserImage.svelte";
@@ -20,14 +18,15 @@
   import {ApiClient} from "../../../shared/apiConnection";
   import {_} from "svelte-i18n";
   import {mySales} from "../../../shared/stores/mySales";
+  import {contacts} from "../../../shared/stores/contacts";
 
   export let id: string;
 
-let isLoading: boolean;
+  let isLoading: boolean;
+  let loadingRequested: boolean;
 let error: Error;
 let buyerProfile: Profile;
-//let sale: Sale;
-let shellEventSubscription: Subscription;
+
 let groupedItems;
 let actions = [];
 
@@ -36,7 +35,10 @@ let saleEvent: ProfileEvent;
 let invoice: Invoice;
 
 async function load() {
-  if (isLoading) return;
+  if (isLoading) {
+    loadingRequested = true;
+    return;
+  }
 
   saleEvent = await mySales.findByPrimaryKey(EventType.SaleEvent, id);
   if (!saleEvent) {
@@ -45,8 +47,6 @@ async function load() {
 
   invoice = (<SaleEvent>saleEvent.payload).invoice;
   buyerProfile = (<SaleEvent>saleEvent.payload).buyer_profile;
-
-  isLoading = false;
 
   actions = [
     {
@@ -125,6 +125,12 @@ async function load() {
       }
     );
   }
+  groupedItems = invoice ? orderItems(invoice.lines) : {};
+  isLoading = false;
+  if (loadingRequested) {
+    loadingRequested = false;
+    await load();
+  }
 }
 
 function orderItems(items) {
@@ -150,24 +156,16 @@ function totalPrice(items) {
 }
 
 onMount(async () => {
-  await load();
-
-  groupedItems = invoice ? orderItems(invoice.lines) : {};
-
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
-    }
-  );
+  const contactsSub = contacts.subscribe(next => {
+    load();
+  });
+  const mySalesSub = mySales.subscribe(next => {
+    load();
+  });
 
   return () => {
-    shellEventSubscription.unsubscribe();
+    contactsSub();
+    mySalesSub();
   };
 });
 </script>
@@ -235,13 +233,12 @@ onMount(async () => {
         </div>
       </div>
     </section>
-  {:else if groupedItems}
+  {:else if !isLoading && buyerProfile && groupedItems}
     <div class="mt-6">
       <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
         <div
           class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left cursor-pointer"
-          on:click="{() =>
-            push(`#/contacts/profile/${buyerProfile.circlesAddress}`)}">
+          on:click="{() => push(`#/contacts/profile/${buyerProfile.circlesAddress}`)}">
           <div class="inline-flex">
             <UserImage
               profile="{buyerProfile}"
