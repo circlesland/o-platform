@@ -1,25 +1,26 @@
 <script lang="ts">
-  import Time from "svelte-time";
-  import {push} from "svelte-spa-router";
-  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-  import {onMount} from "svelte";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import {me} from "../../../shared/stores/me";
-  import {Currency} from "../../../shared/currency";
-  import {
-    CrcHubTransfer,
-    CrcMinting,
-    Erc20Transfer,
-    EventType,
-    Profile,
-    ProfileEvent,
-  } from "../../../shared/api/data/types";
+import Time from "svelte-time";
+import { push } from "svelte-spa-router";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+import { onMount } from "svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { me } from "../../../shared/stores/me";
+import { Currency } from "../../../shared/currency";
 
-  import {_} from "svelte-i18n";
-  import {myTransactions} from "../../../shared/stores/myTransactions";
+import {
+  CrcHubTransfer,
+  CrcMinting,
+  Erc20Transfer,
+  EventType,
+  Profile,
+  ProfileEvent,
+} from "../../../shared/api/data/types";
 
+import { _ } from "svelte-i18n";
+import { myTransactions } from "../../../shared/stores/myTransactions";
+import Icons from "../../../shared/molecules/Icons.svelte";
 
-  export let transactionHash: string;
+export let transactionHash: string;
 
 let transfer: ProfileEvent;
 let classes: string;
@@ -32,12 +33,21 @@ let error: string;
 let displayableName: string = "";
 
 onMount(async () => {
-  transfer = await myTransactions.findByPrimaryKey(EventType.CrcHubTransfer, transactionHash);
+  transfer = await myTransactions.findByPrimaryKey(
+    EventType.CrcHubTransfer,
+    transactionHash
+  );
   if (!transfer) {
-    transfer = await myTransactions.findByPrimaryKey(EventType.CrcMinting, transactionHash);
+    transfer = await myTransactions.findByPrimaryKey(
+      EventType.CrcMinting,
+      transactionHash
+    );
   }
   if (!transfer) {
-      transfer = await myTransactions.findSingleItemFallback([EventType.CrcHubTransfer, EventType.CrcMinting], transactionHash);
+    transfer = await myTransactions.findSingleItemFallback(
+      [EventType.CrcHubTransfer, EventType.CrcMinting],
+      transactionHash
+    );
   }
   if (transfer && transfer.payload?.__typename == "CrcMinting") {
     const minting = transfer.payload as CrcMinting;
@@ -163,8 +173,7 @@ function openDetail(transfer: ProfileEvent) {
             "TIME_CRC",
             transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
           )}
-          <span class=" font-primary"
-            >{Currency.currencySymbol["TIME_CRC"]}</span>
+          <Icons icon="timeCircle" size="{4}" customClass="inline" />
 
           <small class="block whitespace-nowrap">
             <!--{$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ''}-->
