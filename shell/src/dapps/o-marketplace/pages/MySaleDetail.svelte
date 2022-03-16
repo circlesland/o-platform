@@ -14,13 +14,11 @@ import { push } from "svelte-spa-router";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Date from "../../../shared/atoms/Date.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import { displayableName } from "../../../shared/functions/stringHelper";
 import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
 import QrCode from "svelte-qrcode";
-import { sales } from "../../../shared/stores/sales";
 import { _ } from "svelte-i18n";
-  import {mySales} from "../../../shared/stores/mySales";
+import {mySales} from "../../../shared/stores/mySales";
 
 export let id: string;
 
@@ -74,7 +72,7 @@ async function load() {
             window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
-        await sales.completeSale(invoice.id);
+        await mySales.completeSale(invoice.id);
         actions.push(unPickUpAction);
       },
     };
@@ -92,7 +90,7 @@ async function load() {
             )
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
-        await sales.revokeSale(invoice.id);
+        await mySales.revokeSale(invoice.id);
         actions.push(pickUpAction);
       },
     };
@@ -137,9 +135,9 @@ async function load() {
 function orderItems(items) {
   const orderedCart = {};
   items.forEach((item) => {
-    orderedCart[item.id] = {
+    orderedCart[item.offer.id] = {
       item: item,
-      qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
+      qty: orderedCart[item.offer.id] ? orderedCart[item.offer.id].qty + 1 : 1,
     };
   });
 

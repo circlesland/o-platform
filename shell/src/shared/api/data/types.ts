@@ -1162,7 +1162,8 @@ export type SaleEvent = IEventPayload & {
 };
 
 export type SaleEventFilter = {
-  invoiceId: Scalars['Int'];
+  invoiceId?: Maybe<Scalars['Int']>;
+  pickupCode?: Maybe<Scalars['String']>;
 };
 
 export type Sales = IAggregatePayload & {

@@ -2,7 +2,6 @@
 import { Sale } from "../../../shared/api/data/types";
 import QrScanner from "qr-scanner";
 import { onMount } from "svelte";
-import { sales } from "../../../shared/stores/sales";
 import { push } from "svelte-spa-router";
 import { showToast } from "../../../shared/toast";
 import { _ } from "svelte-i18n";
