@@ -897,6 +897,7 @@ input ProfileEventFilter {
     direction: Direction
     from: String
     purchased: PurchasedEventFilter
+    sale: SaleEventFilter
     to: String
     transactionHash: String
     with: String
@@ -950,6 +951,10 @@ input QueryUniqueProfileInput {
 
 input RequestUpdateSafeInput {
     newSafeAddress: String!
+}
+
+input SaleEventFilter {
+    invoiceId: Int!
 }
 
 input SalesAggregateFilter {

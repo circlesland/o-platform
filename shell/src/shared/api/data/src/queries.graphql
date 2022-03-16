@@ -1042,6 +1042,7 @@ query stream(
                     sellerSignedDate
                     cancelledAt
                     cancelReason
+                    paymentTransactionHash
                     lines {
                         amount
                         offer {

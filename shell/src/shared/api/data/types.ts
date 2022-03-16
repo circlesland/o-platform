@@ -827,6 +827,7 @@ export type ProfileEventFilter = {
   direction?: Maybe<Direction>;
   from?: Maybe<Scalars['String']>;
   purchased?: Maybe<PurchasedEventFilter>;
+  sale?: Maybe<SaleEventFilter>;
   to?: Maybe<Scalars['String']>;
   transactionHash?: Maybe<Scalars['String']>;
   with?: Maybe<Scalars['String']>;
@@ -1158,6 +1159,10 @@ export type SaleEvent = IEventPayload & {
   buyer_profile?: Maybe<Profile>;
   invoice?: Maybe<Invoice>;
   transaction_hash?: Maybe<Scalars['String']>;
+};
+
+export type SaleEventFilter = {
+  invoiceId: Scalars['Int'];
 };
 
 export type Sales = IAggregatePayload & {
@@ -2507,7 +2512,7 @@ export type StreamQuery = (
         & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )>, invoice?: Maybe<(
         { __typename?: 'Invoice' }
-        & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'cancelReason'>
+        & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'cancelReason' | 'paymentTransactionHash'>
         & { lines?: Maybe<Array<(
           { __typename?: 'InvoiceLine' }
           & Pick<InvoiceLine, 'amount'>
@@ -4202,6 +4207,7 @@ export const StreamDocument = gql`
           sellerSignedDate
           cancelledAt
           cancelReason
+          paymentTransactionHash
           lines {
             amount
             offer {
