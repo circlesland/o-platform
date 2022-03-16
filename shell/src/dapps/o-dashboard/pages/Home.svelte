@@ -23,7 +23,11 @@ $: me;
 let disableBanking: boolean = false;
 let canVerify: boolean = false;
 
-let safeDeployThreshold: string = "200000000000000000";
+let showInviteButton = false;
+let progressTarget: number = 89;
+let progressTargetDisplay: number = 232;
+let profilesCount: number;
+let statsResult: any;
 
 const init = async () => {
   const pk = sessionStorage.getItem("circlesKey");
@@ -35,9 +39,11 @@ const init = async () => {
     capabilities &&
     capabilities.find((o) => o.type == CapabilityType.Verify) &&
     Environment.allowVerify;
-};
 
-let showInviteButton = false;
+  statsResult = await fetchStats();
+  profilesCount = statsResult.data.stats.profilesCount;
+  profilesCount -= 143;
+};
 
 onMount(init);
 
@@ -57,9 +63,9 @@ async function fetchStats() {
   if (result.errors) {
     throw new Error(`Couldn't load stats': ${JSON.stringify(result.errors)}`);
   }
+
   return result;
 }
-let statsPromise = fetchStats();
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -92,41 +98,43 @@ let statsPromise = fetchStats();
           </div>
         </div> -->
 
-        <div class="flex flex-row items-stretch">
-          <div class="flex-grow text-sm whitespace-nowrap">100 Citizens</div>
-          <div class="text-sm text-light-dark justify-self-end">
-            200 Citizens
+        {#if profilesCount}
+          <div class="flex flex-row items-stretch">
+            <div class="flex-grow text-sm whitespace-nowrap text-primary">
+              143 Citizens
+            </div>
+            <div
+              class="text-sm text-light-dark justify-self-end"
+              class:text-light-dark="{profilesCount < progressTarget}"
+              class:text-primary="{profilesCount >= progressTarget}">
+              {progressTargetDisplay} Citizens
+            </div>
           </div>
-        </div>
-        {#await statsPromise}
+
           <progress
             class="relative w-full progress progress-primary"
-            value="0"
-            max="200"></progress>
-        {:then result}
-          <progress
-            class="relative w-full progress progress-primary"
-            value="{result.data.stats.profilesCount
-              ? result.data.stats.profilesCount
-              : '0'}"
-            max="200"></progress>
+            value="{profilesCount ? profilesCount : '0'}"
+            max="{progressTarget}"></progress>
           <div
             class="text-xs"
-            style="margin-left: {(result.data.stats.profilesCount / 200) * 100 -
-              4}%">
-            {result.data.stats.profilesCount
-              ? result.data.stats.profilesCount
-              : "0"} Citizens
+            class:hidden="{profilesCount >= progressTarget}"
+            style="margin-left: {(profilesCount / progressTarget) * 100 - 5}%">
+            {profilesCount ? profilesCount + 143 : "0"}
           </div>
-        {/await}
 
-        <!-- style="margin-left: {(70 / 200) * 100}%" -->
-        <div class="flex flex-row items-stretch">
-          <div class="flex-grow text-sm whitespace-nowrap">
-            Party: Alte Utting
+          <!-- style="margin-left: {(70 / 200) * 100}%" -->
+          <div class="flex flex-row items-stretch">
+            <div class="flex-grow text-sm whitespace-nowrap text-primary">
+              Party: Alte Utting
+            </div>
+            <div
+              class="text-sm justify-self-end"
+              class:text-light-dark="{profilesCount < progressTarget}"
+              class:text-primary="{profilesCount >= progressTarget}">
+              Next Party
+            </div>
           </div>
-          <div class="text-sm text-light-dark justify-self-end">Next Party</div>
-        </div>
+        {/if}
       </div>
     </section>
     <div
