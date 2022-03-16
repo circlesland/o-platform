@@ -212,6 +212,11 @@ body {
   @apply border-dark-lightest;
 }
 
+.input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .textarea {
   @apply border-dark-lightest;
 }
