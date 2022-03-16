@@ -35,6 +35,16 @@ type OffersByCategory = {
 
 let offersByCategory: OffersByCategory = {};
 
+function compare(a, b) {
+  if (a.createdAt < b.createdAt) {
+    return -1;
+  }
+  if (a.createdAt > b.createdAt) {
+    return 1;
+  }
+  return 0;
+}
+
 onMount(() => {
   store = storeOffers.getOffersFor(storeCirclesAddress);
   isLoading = true;
@@ -54,8 +64,6 @@ onMount(() => {
       }
       return p;
     }, offersByCategory);
-
-    console.log("offersByCategory", offersByCategory);
 
     isLoading = false;
   });
@@ -93,12 +101,18 @@ onMount(() => {
       dataKey="offers"
       dataLimit="{100}" />-->
     {#if offersByCategory}
-      {#each Object.keys(offersByCategory) as category}
-        <h1>{category}</h1>
-        {#each offersByCategory[category] as offer}
-          <ListViewCard param="{offer}" />
+      <div class="flex flex-col space-y-8">
+        {#each Object.keys(offersByCategory).sort() as category}
+          <div>
+            <h1 class="mb-2 ml-2">{category}</h1>
+            <div class="flex flex-col space-y-4">
+              {#each offersByCategory[category].sort(compare) as offer}
+                <ListViewCard param="{offer}" />
+              {/each}
+            </div>
+          </div>
         {/each}
-      {/each}
+      </div>
     {/if}
   </div>
 </div>
