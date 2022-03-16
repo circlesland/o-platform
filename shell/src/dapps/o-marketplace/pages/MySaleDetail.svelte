@@ -1,26 +1,27 @@
 <script lang="ts">
   import {
-    EventType, Invoice,
+    EventType,
+    Invoice,
     InvoiceDocument,
-    Profile, ProfileEvent,
+    Profile,
+    ProfileEvent,
     QueryInvoiceArgs,
-    Sale, SaleEvent,
+    SaleEvent,
   } from "../../../shared/api/data/types";
-import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Subscription } from "rxjs";
-import Icons from "../../../shared/molecules/Icons.svelte";
-import { push } from "svelte-spa-router";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import Date from "../../../shared/atoms/Date.svelte";
-import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import { saveBufferAs } from "../../../shared/saveBufferAs";
-import { ApiClient } from "../../../shared/apiConnection";
-import QrCode from "svelte-qrcode";
-import { _ } from "svelte-i18n";
-import {mySales} from "../../../shared/stores/mySales";
+  import {onMount} from "svelte";
+  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+  import {Subscription} from "rxjs";
+  import Icons from "../../../shared/molecules/Icons.svelte";
+  import {push} from "svelte-spa-router";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import Date from "../../../shared/atoms/Date.svelte";
+  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+  import {saveBufferAs} from "../../../shared/saveBufferAs";
+  import {ApiClient} from "../../../shared/apiConnection";
+  import {_} from "svelte-i18n";
+  import {mySales} from "../../../shared/stores/mySales";
 
-export let id: string;
+  export let id: string;
 
 let isLoading: boolean;
 let error: Error;
@@ -37,20 +38,14 @@ let invoice: Invoice;
 async function load() {
   if (isLoading) return;
 
-  //saleEvent =
-  saleEvent = await mySales.findSingleItemFallback([EventType.SaleEvent], id);
+  saleEvent = await mySales.findByPrimaryKey(EventType.SaleEvent, id);
   if (!saleEvent) {
     return;
   }
 
   invoice = (<SaleEvent>saleEvent.payload).invoice;
   buyerProfile = (<SaleEvent>saleEvent.payload).buyer_profile;
-/*
-  sale = await sales.findById(parseInt(id));
-  if (!sale) {
-    return;
-  }
- */
+
   isLoading = false;
 
   actions = [
