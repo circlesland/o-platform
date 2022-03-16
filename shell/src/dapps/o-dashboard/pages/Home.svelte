@@ -94,7 +94,9 @@ let statsPromise = fetchStats();
 
         <div class="flex flex-row items-stretch">
           <div class="flex-grow text-sm whitespace-nowrap">100 Citizens</div>
-          <div class="text-sm text-light justify-self-end">200 Citizens</div>
+          <div class="text-sm text-light-dark justify-self-end">
+            200 Citizens
+          </div>
         </div>
         {#await statsPromise}
           <progress
@@ -123,7 +125,7 @@ let statsPromise = fetchStats();
           <div class="flex-grow text-sm whitespace-nowrap">
             Party: Alte Utting
           </div>
-          <div class="text-sm text-light justify-self-end">Next Party</div>
+          <div class="text-sm text-light-dark justify-self-end">Next Party</div>
         </div>
       </div>
     </section>
