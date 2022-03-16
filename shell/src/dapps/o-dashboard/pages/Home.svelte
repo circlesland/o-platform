@@ -76,7 +76,7 @@ async function fetchStats() {
         <h1>WANT MORE PARTIES?</h1>
         <span class="text-dark-lightest">Invite your friends.</span>
       </div>
-      <div class="w-full mt-4">
+      <div class="w-full m-auto mt-4 xl:w-2/3">
         <!-- <div class="z-50 w-full pt-1 bg-white progressnav ">
           <div class="flex flex-row items-stretch w-full h-10 mb-2 bg-white">
             <div
