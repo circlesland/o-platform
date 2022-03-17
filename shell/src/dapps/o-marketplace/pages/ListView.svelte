@@ -115,6 +115,10 @@ onMount(() => {
             </div>
           </div>
         {/each}
+        <div class="p-6 text-center text-2xs">
+          Informationen über Zusatzstoffe und Allergene können auf der Physische
+          Karte der Alten Utting eingesehen werden.
+        </div>
       </div>
     {/if}
   </div>
