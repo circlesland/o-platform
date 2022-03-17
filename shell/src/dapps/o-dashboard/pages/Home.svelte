@@ -43,6 +43,7 @@ const init = async () => {
   statsResult = await fetchStats();
   profilesCount = statsResult.data.stats.profilesCount;
   profilesCount -= 143;
+  console.log("profilesCount", profilesCount);
 };
 
 onMount(init);
@@ -98,43 +99,43 @@ async function fetchStats() {
           </div>
         </div> -->
 
-        {#if profilesCount}
-          <div class="flex flex-row items-stretch">
-            <div class="flex-grow text-sm whitespace-nowrap text-primary">
-              143 Citizens
-            </div>
-            <div
-              class="text-sm text-light-dark justify-self-end"
-              class:text-light-dark="{profilesCount < progressTarget}"
-              class:text-primary="{profilesCount >= progressTarget}">
-              {progressTargetDisplay} Citizens
-            </div>
+        <div class="flex flex-row items-stretch">
+          <div class="flex-grow text-sm whitespace-nowrap text-primary">
+            143 Citizens
           </div>
+          <div
+            class="text-sm text-light-dark justify-self-end"
+            class:text-light-dark="{profilesCount < progressTarget}"
+            class:text-primary="{profilesCount >= progressTarget}">
+            {progressTargetDisplay} Citizens
+          </div>
+        </div>
 
-          <progress
-            class="relative w-full progress progress-primary"
-            value="{profilesCount ? profilesCount : '0'}"
-            max="{progressTarget}"></progress>
+        <progress
+          class="relative w-full progress progress-primary"
+          value="{profilesCount ? profilesCount : '0'}"
+          max="{progressTarget}"></progress>
+        {#if profilesCount > 0}
           <div
             class="text-xs"
             class:hidden="{profilesCount >= progressTarget}"
             style="margin-left: {(profilesCount / progressTarget) * 100 - 5}%">
-            {profilesCount ? profilesCount + 143 : "0"}
-          </div>
-
-          <!-- style="margin-left: {(70 / 200) * 100}%" -->
-          <div class="flex flex-row items-stretch">
-            <div class="flex-grow text-sm whitespace-nowrap text-primary">
-              Party: Alte Utting
-            </div>
-            <div
-              class="text-sm justify-self-end"
-              class:text-light-dark="{profilesCount < progressTarget}"
-              class:text-primary="{profilesCount >= progressTarget}">
-              Next Party
-            </div>
+            {profilesCount ? profilesCount + 143 : ""}
           </div>
         {/if}
+
+        <!-- style="margin-left: {(70 / 200) * 100}%" -->
+        <div class="flex flex-row items-stretch">
+          <div class="flex-grow text-sm whitespace-nowrap text-primary">
+            Party: Alte Utting
+          </div>
+          <div
+            class="text-sm justify-self-end"
+            class:text-light-dark="{profilesCount < progressTarget}"
+            class:text-primary="{profilesCount >= progressTarget}">
+            Next Party
+          </div>
+        </div>
       </div>
     </section>
     <div
