@@ -126,7 +126,9 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
                 class="w-full text-left cursor-pointer"
                 on:click="{() =>
                   editProfileField(['emailAddress'], { emailAddress: true })}">
-                {$me.emailAddress}
+                {$me.emailAddress
+                  ? $me.emailAddress
+                  : "click to enter your email address"}
                 <!-- <input
                     name="emailAddress"
                     id="emailAddress"

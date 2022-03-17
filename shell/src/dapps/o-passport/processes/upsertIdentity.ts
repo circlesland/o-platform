@@ -164,20 +164,20 @@ const processDefinition = (processId: string) =>
       // TODO: Check if this works as intended
       ...fatalError<UpsertIdentityContext, any>("error"),
 
-      init: {
-        always: [
-          {
-            cond: (context) =>
-              !context.dirtyFlags["emailAddress"] &&
-              !!context.data.emailAddress &&
-              context.data.emailAddress.trim() != "",
-            target: "#newsletter",
-          },
-          {
-            target: "#info",
-          },
-        ],
-      },
+      // init: {
+      //   always: [
+      //     {
+      //       cond: (context) =>
+      //         !context.dirtyFlags["emailAddress"] &&
+      //         !!context.data.emailAddress &&
+      //         context.data.emailAddress.trim() != "",
+      //       target: "#newsletter",
+      //     },
+      //     {
+      //       target: "#info",
+      //     },
+      //   ],
+      // },
 
       info: prompt({
         id: "info",

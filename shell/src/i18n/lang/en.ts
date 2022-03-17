@@ -1305,6 +1305,7 @@ export const en = {
                 title: "how can we reach you?",
                 description:
                   "You will only receive love letters and other unimportant stuff from us!",
+                placeholder: "your@emailaddress.net",
                 submitButtonText: "Beam me up!",
               },
               imageView: {
