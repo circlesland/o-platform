@@ -424,6 +424,7 @@ type Offer {
     pictureMimeType: String!
     pictureUrl: String!
     pricePerUnit: String!
+    tags: [Tag!]
     timeCirclesPriceShare: Int!
     title: String!
     version: Int!
@@ -580,6 +581,7 @@ type Query {
     myProfile: Profile
     organisations(pagination: PaginationArgs): [Organisation!]!
     organisationsByAddress(addresses: [String!]!): [Organisation!]!
+    organisationsWithOffers: [Organisation!]!
     profilesById(ids: [Int!]!): [Profile!]!
     profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
     recentProfiles(pagination: PaginationArgs): [Profile!]!
@@ -895,6 +897,7 @@ input ProfileEventFilter {
     direction: Direction
     from: String
     purchased: PurchasedEventFilter
+    sale: SaleEventFilter
     to: String
     transactionHash: String
     with: String
@@ -948,6 +951,11 @@ input QueryUniqueProfileInput {
 
 input RequestUpdateSafeInput {
     newSafeAddress: String!
+}
+
+input SaleEventFilter {
+    invoiceId: Int
+    pickupCode: String
 }
 
 input SalesAggregateFilter {

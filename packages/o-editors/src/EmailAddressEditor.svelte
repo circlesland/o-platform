@@ -49,7 +49,7 @@ function onkeydown(e: KeyboardEvent) {
       name="email"
       id="{context.field}"
       type="email"
-      placeholder="{context.params.placeholder}"
+      placeholder="{context.params.view.placeholder}"
       class="input input-lg input-bordered"
       class:input-error="{context.messages[context.field]}"
       bind:value="{_context.data[context.field]}"

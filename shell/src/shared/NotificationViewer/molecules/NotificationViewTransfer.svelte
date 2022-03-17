@@ -41,7 +41,10 @@ let amountTime = Currency.instance()
     <div class="self-center text-center">
       <div class="justify-self-center text-dark-dark">
         {amountTime}
-        <img src="/logos/time.png" class="inline w-4 h-4 inline-icon" />
+        <img
+          alt="timecircles"
+          src="/logos/time.png"
+          class="inline w-4 h-4 inline-icon" />
       </div>
     </div>
   {/if}

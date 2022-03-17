@@ -55,10 +55,18 @@ export const { subscribe } = readable<Contact[]>([], function start(set) {
     await update($me.circlesAddress);
 
     shellEventSubscription = window.o.events.subscribe(async (event) => {
-      if (event.type == "blockchain_event") {
-        console.log(`contacts: Updating because of blockchain event ..`);
+      const isRelevantEvent = [
+        <string>EventType.CrcHubTransfer,
+        <string>EventType.CrcTrust,
+        <string>EventType.CrcSignup,
+        <string>EventType.CrcMinting,
+        <string>EventType.Purchased
+      ].indexOf(event.type) > -1;
+
+      if (isRelevantEvent) {
         await update($me.circlesAddress);
       }
+
       if ((<any>event).type == "new_message") {
         console.log(`contacts: Updating because of chat message ..`);
         await update($me.circlesAddress);

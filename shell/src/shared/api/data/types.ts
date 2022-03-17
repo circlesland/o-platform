@@ -698,6 +698,7 @@ export type Offer = {
   pictureMimeType: Scalars['String'];
   pictureUrl: Scalars['String'];
   pricePerUnit: Scalars['String'];
+  tags?: Maybe<Array<Tag>>;
   timeCirclesPriceShare: Scalars['Int'];
   title: Scalars['String'];
   version: Scalars['Int'];
@@ -826,6 +827,7 @@ export type ProfileEventFilter = {
   direction?: Maybe<Direction>;
   from?: Maybe<Scalars['String']>;
   purchased?: Maybe<PurchasedEventFilter>;
+  sale?: Maybe<SaleEventFilter>;
   to?: Maybe<Scalars['String']>;
   transactionHash?: Maybe<Scalars['String']>;
   with?: Maybe<Scalars['String']>;
@@ -927,6 +929,7 @@ export type Query = {
   myProfile?: Maybe<Profile>;
   organisations: Array<Organisation>;
   organisationsByAddress: Array<Organisation>;
+  organisationsWithOffers: Array<Organisation>;
   profilesById: Array<Profile>;
   profilesBySafeAddress: Array<Profile>;
   recentProfiles: Array<Profile>;
@@ -1156,6 +1159,11 @@ export type SaleEvent = IEventPayload & {
   buyer_profile?: Maybe<Profile>;
   invoice?: Maybe<Invoice>;
   transaction_hash?: Maybe<Scalars['String']>;
+};
+
+export type SaleEventFilter = {
+  invoiceId?: Maybe<Scalars['Int']>;
+  pickupCode?: Maybe<Scalars['String']>;
 };
 
 export type Sales = IAggregatePayload & {
@@ -2473,6 +2481,10 @@ export type StreamQuery = (
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'pictureUrl' | 'title' | 'description' | 'pricePerUnit'>
+            & { tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
           )> }
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
@@ -2501,13 +2513,17 @@ export type StreamQuery = (
         & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )>, invoice?: Maybe<(
         { __typename?: 'Invoice' }
-        & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'cancelReason'>
+        & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'cancelledAt' | 'cancelReason' | 'paymentTransactionHash'>
         & { lines?: Maybe<Array<(
           { __typename?: 'InvoiceLine' }
           & Pick<InvoiceLine, 'amount'>
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'title' | 'pictureUrl'>
+            & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit'>
+            & { tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
           )> }
         )>> }
       )> }
@@ -2625,7 +2641,10 @@ export type AggregatesQuery = (
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
-        )> }
+        )>, tags?: Maybe<Array<(
+          { __typename?: 'Tag' }
+          & Pick<Tag, 'typeId' | 'value'>
+        )>> }
       )> }
     ) | (
       { __typename?: 'Purchases' }
@@ -2645,7 +2664,10 @@ export type AggregatesQuery = (
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
               & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
-            )> }
+            )>, tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
           )> }
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
@@ -2689,7 +2711,10 @@ export type AggregatesQuery = (
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
               & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
-            )> }
+            )>, tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
           ) }
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
@@ -4183,12 +4208,18 @@ export const StreamDocument = gql`
           sellerSignedDate
           cancelledAt
           cancelReason
+          paymentTransactionHash
           lines {
             amount
             offer {
               id
               title
               pictureUrl
+              pricePerUnit
+              tags {
+                typeId
+                value
+              }
             }
           }
         }
@@ -4217,6 +4248,10 @@ export const StreamDocument = gql`
               title
               description
               pricePerUnit
+              tags {
+                typeId
+                value
+              }
             }
           }
           invoices {
@@ -4325,6 +4360,10 @@ export const AggregatesDocument = gql`
             avatarUrl
             circlesAddress
             displayCurrency
+          }
+          tags {
+            typeId
+            value
           }
           createdByAddress
           createdAt
@@ -4488,6 +4527,10 @@ export const AggregatesDocument = gql`
                 circlesAddress
                 displayCurrency
               }
+              tags {
+                typeId
+                value
+              }
             }
           }
           invoices {
@@ -4573,6 +4616,10 @@ export const AggregatesDocument = gql`
                 avatarUrl
                 circlesAddress
                 displayCurrency
+              }
+              tags {
+                typeId
+                value
               }
             }
           }

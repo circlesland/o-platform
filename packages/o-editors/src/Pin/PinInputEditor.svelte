@@ -4,8 +4,8 @@ import ProcessNavigation from "./../ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { logout } from "@o-platform/shell/src/dapps/o-passport/processes/logout";
 import { identify } from "@o-platform/shell/src/dapps/o-passport/processes/identify/identify2";
-import Pin from "./PinInput.svelte";
-import { onMount } from "svelte";
+// import Pin from "./PinInput.svelte";
+// import { onMount } from "svelte";
 
 export let context: EditorContext;
 
@@ -54,10 +54,19 @@ function onkeydown(e: KeyboardEvent) {
   {/if}
 
   <div class="m-auto w-min">
-    <Pin
+    <input
+      type="password"
+      autofocus
+      maxlength="6"
+      bind:value="{_context.data[context.field]}"
+      on:keydown="{onkeydown}"
+      class="simpleinput input input-lg input-bordered"
+      inputmode="numeric"
+      pattern="[0-9]{6}" />
+    <!-- <Pin
       size="{6}"
       bind:pin="{_context.data[context.field]}"
-      on:finished="{submitHandler}" />
+      on:finished="{submitHandler}" /> -->
 
     <div class="mt-2 text-right">
       <span
@@ -73,3 +82,12 @@ function onkeydown(e: KeyboardEvent) {
 
   <ProcessNavigation on:buttonClick="{submitHandler}" context="{context}" />
 </div>
+
+<style>
+.simpleinput {
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 1rem;
+  width: 14rem;
+}
+</style>

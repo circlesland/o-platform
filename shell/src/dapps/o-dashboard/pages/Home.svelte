@@ -9,7 +9,7 @@ import {
   CapabilityType,
   StatsDocument,
 } from "../../../shared/api/data/types";
-import DashboardHeader from "../atoms/DashboardHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
@@ -23,7 +23,11 @@ $: me;
 let disableBanking: boolean = false;
 let canVerify: boolean = false;
 
-let safeDeployThreshold: string = "200000000000000000";
+let showInviteButton = false;
+let progressTarget: number = 89;
+let progressTargetDisplay: number = 232;
+let profilesCount: number;
+let statsResult: any;
 
 const init = async () => {
   const pk = sessionStorage.getItem("circlesKey");
@@ -35,9 +39,12 @@ const init = async () => {
     capabilities &&
     capabilities.find((o) => o.type == CapabilityType.Verify) &&
     Environment.allowVerify;
-};
 
-let showInviteButton = false;
+  statsResult = await fetchStats();
+  profilesCount = statsResult.data.stats.profilesCount;
+  profilesCount -= 143;
+  console.log("profilesCount", profilesCount);
+};
 
 onMount(init);
 
@@ -57,43 +64,76 @@ async function fetchStats() {
   if (result.errors) {
     throw new Error(`Couldn't load stats': ${JSON.stringify(result.errors)}`);
   }
+
   return result;
 }
-let statsPromise = fetchStats();
 </script>
 
-<DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
+<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  <div class="m-4 mb-40 -mt-4">
+  <div class="m-4 mb-40 -mt-2">
     <section class="p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card">
-      <div class="w-full text-3xl text-center font-heading">CIRCLESLAND</div>
-      <div class="flex flex-row items-stretch w-full justify-items-center">
-        <div class="flex flex-col flex-grow">
-          <div class="text-6xl text-center font-heading text-primary">
-            {#await statsPromise}
-              ...
-            {:then result}
-              {result.data.stats.profilesCount
-                ? result.data.stats.profilesCount
-                : "0"}
-            {/await}
+      <div class="w-full text-center">
+        <h1>WANT MORE PARTIES?</h1>
+        <span class="text-dark-lightest">Invite your friends.</span>
+      </div>
+      <div class="w-full m-auto mt-4 xl:w-2/3">
+        <!-- <div class="z-50 w-full pt-1 bg-white progressnav ">
+          <div class="flex flex-row items-stretch w-full h-10 mb-2 bg-white">
+            <div
+              class="relative flex-grow h-2 mt-8 border-b-2 border-r-2 w-42 border-primary">
+              <span class="absolute text-sm tracking-wider -right-4 bottom-2"
+                >100 Citizens</span>
+            </div>
+            <div class="flex-grow h-2 mt-8 border-b-2 w-42 border-primary">
+            </div>
+            <div class="flex-grow h-2 mt-8 border-b-2 w-42 border-light">
+              <span class="relative w-2 h-2 dot right-1"></span>
+            </div>
+            <div
+              class="relative flex-grow h-2 mt-8 border-b-2 border-l-2 w-42 border-light">
+              <span
+                class="absolute text-sm tracking-wider text-light bottom-2 -left-4">
+                200 Citizens</span>
+            </div>
           </div>
-          <div class="text-center font-primary text-dark">
-            {$_("dapps.o-dashboard.pages.home.totalCitizens")}
+        </div> -->
+
+        <div class="flex flex-row items-stretch">
+          <div class="flex-grow text-sm whitespace-nowrap text-primary">
+            143 Citizens
+          </div>
+          <div
+            class="text-sm text-light-dark justify-self-end"
+            class:text-light-dark="{profilesCount < progressTarget}"
+            class:text-primary="{profilesCount >= progressTarget}">
+            {progressTargetDisplay} Citizens
           </div>
         </div>
-        <div class="flex flex-col flex-grow">
-          <div class="text-6xl text-center font-heading text-primary">
-            {#await statsPromise}
-              ...
-            {:then result}
-              {result.data.stats.verificationsCount
-                ? result.data.stats.verificationsCount
-                : "0"}
-            {/await}
+
+        <progress
+          class="relative w-full progress progress-primary"
+          value="{profilesCount ? profilesCount : '0'}"
+          max="{progressTarget}"></progress>
+        {#if profilesCount > 0}
+          <div
+            class="text-xs"
+            class:hidden="{profilesCount >= progressTarget}"
+            style="margin-left: {(profilesCount / progressTarget) * 100 - 5}%">
+            {profilesCount ? profilesCount + 143 : ""}
           </div>
-          <div class="text-center font-primary text-dark">
-            {$_("dapps.o-dashboard.pages.home.verifiedCitizens")}
+        {/if}
+
+        <!-- style="margin-left: {(70 / 200) * 100}%" -->
+        <div class="flex flex-row items-stretch">
+          <div class="flex-grow text-sm whitespace-nowrap text-primary">
+            Party: Alte Utting
+          </div>
+          <div
+            class="text-sm justify-self-end"
+            class:text-light-dark="{profilesCount < progressTarget}"
+            class:text-primary="{profilesCount >= progressTarget}">
+            Next Party
           </div>
         </div>
       </div>
@@ -154,7 +194,7 @@ let statsPromise = fetchStats();
       </section>
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click="{() => loadLink('/marketplace/market')}">
+        on:click="{() => loadLink('/marketplace/locations')}">
         <div
           class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">

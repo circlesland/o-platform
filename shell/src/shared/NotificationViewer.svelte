@@ -29,7 +29,12 @@ const components = [
   {
     type: EventType.ChatMessage,
     component: NotificationViewChatMessage,
-    actions: [{ action: "chat", label: window.i18n("shared.notificationViewer.answer") }],
+    actions: [
+      {
+        action: "chat",
+        label: window.i18n("shared.notificationViewer.answer"),
+      },
+    ],
   },
   {
     type: EventType.CrcMinting,
@@ -47,7 +52,12 @@ const components = [
   {
     type: EventType.CrcHubTransfer,
     component: NotificationViewTransfer,
-    actions: [{ action: "chat", label: window.i18n("shared.notificationViewer.sayThanks") }],
+    actions: [
+      {
+        action: "chat",
+        label: window.i18n("shared.notificationViewer.sayThanks"),
+      },
+    ],
   },
   {
     type: EventType.MembershipOffer,
@@ -63,7 +73,9 @@ const components = [
     actions: [
       {
         action: "setTrust",
-        label: window.i18n("shared.notificationViewer.trust", { values: { profile: data.contact_address_profile.firstName}}),
+        label: window.i18n("shared.notificationViewer.trust", {
+          values: { profile: data.contact_address_profile.firstName },
+        }),
       },
     ],
   },
@@ -131,17 +143,16 @@ function submit() {
     <div class="pt-4">
       <ButtonGroup
         actions="{userActions}"
-        layout={{
+        layout="{{
           orientation: 'inline',
           alignment: 'center',
           labels: {
-            setTrust: (action) =>
-              `${action.title} ${data.contact_address_profile.firstName}`,
+            setTrust: (action) => `${action.title}`,
             chat: (action) => {
               if (data.type == EventType.CrcHubTransfer) {
-                return window.i18n("shared.notificationViewer.sayThanks");
+                return window.i18n('shared.notificationViewer.sayThanks');
               } else if (data.type == EventType.ChatMessage) {
-                return window.i18n("shared.notificationViewer.answer");
+                return window.i18n('shared.notificationViewer.answer');
               } else {
                 return null;
               }
@@ -151,7 +162,7 @@ function submit() {
             default: 'primary',
             overrides: (action) => (action.key == 'dismiss' ? 'light' : null),
           },
-        }} />
+        }}" />
     </div>
   {/if}
 </div>

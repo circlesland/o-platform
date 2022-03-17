@@ -18,7 +18,9 @@ import {
   EventType,
   Profile,
   VerifySafeDocument,
-  RevokeSafeVerificationDocument, AggregateType, SessionInfo,
+  RevokeSafeVerificationDocument,
+  AggregateType,
+  SessionInfo,
 } from "../../../shared/api/data/types";
 import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
@@ -27,8 +29,7 @@ import { isMobile } from "../../../shared/functions/isMobile";
 import { UserActions, UserActionItem } from "../../../shared/userActions";
 
 import { _ } from "svelte-i18n";
-import {Environment} from "../../../shared/environment";
-
+import { Environment } from "../../../shared/environment";
 
 export let id: string;
 
@@ -114,7 +115,10 @@ async function setProfile(id: string) {
 
   const detailActionsPromise = UserActions.getAvailableActions(profile);
   const sessionInfoPromise = me.getSessionInfo();
-  const promiseResults = await Promise.all([detailActionsPromise, sessionInfoPromise]);
+  const promiseResults = await Promise.all([
+    detailActionsPromise,
+    sessionInfoPromise,
+  ]);
   detailActions = <UserActionItem[]>promiseResults[0];
   const sessionInfo = <SessionInfo>promiseResults[1];
 
@@ -194,10 +198,7 @@ async function setProfile(id: string) {
   };
 
   if (canVerify) {
-    if (
-      profile.verifications?.length &&
-      profile.verifications[0].revokedAt
-    ) {
+    if (profile.verifications?.length && profile.verifications[0].revokedAt) {
       detailActions.push(bannedProfile);
     } else {
       if (profile.verifications?.length) {
@@ -329,7 +330,7 @@ async function setProfile(id: string) {
                 </div>
               </section>
             {/if}
-            {#if profile && profile.dream}
+            <!-- {#if profile && profile.dream}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
@@ -341,7 +342,7 @@ async function setProfile(id: string) {
                   </div>
                 </div>
               </section>
-            {/if}
+            {/if} -->
           {/if}
 
           {#if !isMe && contact && contact.contactAddress}

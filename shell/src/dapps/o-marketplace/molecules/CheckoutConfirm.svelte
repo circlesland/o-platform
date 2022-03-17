@@ -142,16 +142,16 @@ function orderItems(items) {
         >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
       </div>
 
-      <div class="pt-2 text-sm">
+      <div class="pt-2 text-sm font-bold">
         {$_("dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation")}
       </div>
-      <div class="pt-2 text-sm">
+      <!-- <div class="pt-2 text-sm">
         <span class="font-bold">Basic Income Lab GmbH</span><br />
         Reifenstuelstrasse 6<br />
         80469 München<br />
         <span class="text-sm font-thin"
           >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
-      </div>
+      </div> -->
     </div>
   </div>
   <ProcessNavigation

@@ -1,4 +1,6 @@
 import Home from "./o-marketplace/pages/Home.svelte";
+import ListView from "./o-marketplace/pages/ListView.svelte";
+import Locations from "./o-marketplace/pages/Locations.svelte";
 import Categories from "./o-marketplace/pages/Categories.svelte";
 import OfferDetail from "./o-marketplace/pages/OfferDetail.svelte";
 import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
@@ -65,9 +67,25 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
 };
 
 const market: Page<any, DappState> = {
-  routeParts: ["=market"],
+  isSystem: true,
+  routeParts: ["=market", ":storeCirclesAddress"],
   component: Home,
   title: "Market",
+  type: "page",
+};
+
+const list: Page<any, DappState> = {
+  isSystem: true,
+  routeParts: ["=list", ":storeCirclesAddress"],
+  component: ListView,
+  title: "List",
+  type: "page",
+};
+
+const locations: Page<any, DappState> = {
+  routeParts: ["=locations"],
+  component: Locations,
+  title: "Locations",
   type: "page",
 };
 
@@ -180,7 +198,7 @@ export const marketplace: DappManifest<DappState> = {
   icon: "marketplace",
   title: "Market",
   routeParts: ["=marketplace"],
-  defaultRoute: ["market"],
+  defaultRoute: ["locations"],
   tag: Promise.resolve("alpha"),
   // jumplist: {
   //   type: "jumplist",
@@ -204,7 +222,10 @@ export const marketplace: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
+
   routables: [
+    locations,
+    list,
     market,
     addToCart,
     pleaseSignIn,

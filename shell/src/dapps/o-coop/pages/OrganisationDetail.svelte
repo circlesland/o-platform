@@ -233,7 +233,10 @@ let promise = getJumplist();
 
               <div class="flex items-center w-full text-2xs">
                 {#each profile.members as member}
-                  <ContactCard contact="{{ contactAddressProfile: member }}" />
+                  <ContactCard contact="{{
+                    contactAddress: member.circlesAddress,
+                    contactAddress_Profile: member,
+                    metadata: [] }}" />
                 {/each}
               </div>
             </div>

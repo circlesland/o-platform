@@ -177,7 +177,7 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
     });
   }
 
-  subscribe(run: Subscriber<any>) {
+  subscribe(run: (next:ProfileEvent[]) => void) {
     return this._subscribe(run);
   }
 

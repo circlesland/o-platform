@@ -571,7 +571,8 @@ export const en = {
             toSeeCode3: " at any time after the purchase, go to ",
             toSeeCode4: "My purchases",
             toSeeCode5: " and click on the Purchase",
-            pickupLocation: "Pick-Up Location for this Order is:",
+            pickupLocation:
+              "You can now go to the counter and show your QR code to pick up your items.",
           },
           checkoutSummary: {
             to: "to",
@@ -625,7 +626,7 @@ export const en = {
             loadingPurchases: "Loading purchases...",
             yourPickupCode: "Your Pick-Up Code",
             showThisCode:
-              "show this code to the seller when you pick up your Order at the Store.",
+              "show this code to the seller when you pick up your Order.",
             noCode: "No pickup code yet ..",
             location: "Pick-Up Location for this Order is:",
           },
@@ -783,7 +784,8 @@ export const en = {
                 },
                 connectOrCreate: {
                   title: "Setup your account",
-                  description: "Create new or import an existing Circles account?",
+                  description:
+                    "Create new or import an existing Circles account?",
                 },
               },
               processDefinition: {
@@ -837,7 +839,7 @@ export const en = {
                 checkInviteCode: {
                   title: "Enter invitation code",
                   description:
-                    "Please enter you invitation code below to get started.",
+                    "Please enter you invitation code below to get started.<br/>If you get stuck here you can <a href='/#/passport/actions/logout' class='link link-primary'>Log out</a> and try again.",
                   submitButtonText: "Verify",
                 },
               },
@@ -1268,38 +1270,43 @@ export const en = {
           },
           upsertIdentity: {
             editorContent: {
-              firstName: {
-                title: "Welcome to CirclesLand!",
+              info: {
+                title: "your lifetime is precious",
                 description:
-                  "What is your first name?",
+                  "So we make it count! Your passionate heart generates 24 Circles a day. Welcome to a world where your life time buys goods and services! Enjoy your freedom to spend your time however you want!",
+                submitButtonText: "Be free!",
+              },
+              firstName: {
+                title: "What is your first name?",
+                description: "Hello you beautiful creature!",
                 placeholder: "First Name",
                 submitButtonText: "Save",
               },
               lastName: {
                 title: "What is your last name?",
-                description:
-                  "Display your full name in your profile to become more trust worthy.",
+                description: "And may I change it to mine?",
                 placeholder: "Last name",
                 submitButtonText: "Save",
               },
               dream: {
                 title: "Share your passion",
-                description: "What will you do different in your life with a monthly basic income?",
+                description:
+                  "What will you do different in your life with a monthly basic income?",
                 placeholder: "I will ...",
-                submitButtonText: "Start growing",
+                submitButtonText: "Save",
               },
               city: {
-                title: "Vote for your City",
-                description:
-                  "Advance your city in the basic income ranking",
+                title: "Where do you live?",
+                description: "You are adding splendor to your city!",
                 placeholder: "Last name",
-                submitButtonText: "Submit vote",
+                submitButtonText: "Save",
               },
               emailAddress: {
-                title: "Enter your E-Mail Address",
+                title: "how can we reach you?",
                 description:
-                  "Don't worry, we will only send you important updates.",
-                submitButtonText: "Save",
+                  "You will only receive love letters and other unimportant stuff from us!",
+                placeholder: "your@emailaddress.net",
+                submitButtonText: "Beam me up!",
               },
               imageView: {
                 title: "Profile Image",
@@ -1308,9 +1315,9 @@ export const en = {
                 submitButtonText: "Save image",
               },
               newsletter: {
-                title: "Subscribe to newsletter?",
+                title: "Subscribe to news?",
                 description:
-                  "Stay up to date with new places, events and products where you can spend your Circles?",
+                  "We are spilling the tea about wild parties and hot new products, interested?",
               },
             },
             requiredName: "Please enter your first name.",
