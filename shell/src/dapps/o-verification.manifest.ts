@@ -2,6 +2,7 @@ import Verifications from "./o-verification/pages/Verifications.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import RecentProfiles from "./o-verification/pages/RecentProfiles.svelte";
+import TrustToDo from "./o-verification/pages/TrustToDo.svelte";
 import { ContactsDappState } from "./o-contacts.manifest";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { UniquenessCheck } from "../shared/facetec/uniquenessCheck";
@@ -19,6 +20,13 @@ const recentProfiles: Page<any, ContactsDappState> = {
   routeParts: ["=recentProfiles"],
   component: RecentProfiles,
   title: "Recent Profiles",
+  type: "page",
+};
+
+const trustToDo: Page<any, ContactsDappState> = {
+  routeParts: ["=trustToDo"],
+  component: TrustToDo,
+  title: "Trust Todo",
   type: "page",
 };
 
@@ -82,5 +90,5 @@ export const verification: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [verifications, recentProfiles],
+  routables: [verifications, recentProfiles, trustToDo],
 };
