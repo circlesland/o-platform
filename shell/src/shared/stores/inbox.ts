@@ -249,7 +249,7 @@ export const inbox = {
     events = await queryEvents(profile?.circlesAddress);
     set(events);
 
-    await followTrust(profile);
+    // await followTrust(profile);
 
     const orga = await ApiClient.query<Organisation[], OrganisationsByAddressQueryVariables>(OrganisationsByAddressDocument, {
       addresses: [profile.circlesAddress]
