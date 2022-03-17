@@ -9,9 +9,10 @@ import { onMount } from "svelte";
 import { Environment } from "../../../shared/environment";
 
 export let secret: string = undefined;
-
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+
+let showButton: boolean = false;
 
 function verify() {
   if (secret) {
@@ -22,6 +23,9 @@ function verify() {
 }
 onMount(() => {
   verify();
+  setTimeout(() => {
+    showButton = true;
+  }, 800);
 });
 </script>
 
@@ -63,7 +67,7 @@ onMount(() => {
               Passport settings to enter your new Email address again to restart
               the verification process.
             </p>
-          {:else}
+          {:else if showButton}
             <h1>Verify your Email address</h1>
             <p class="mt-4">
               Please use the button below to verify your Email address now.
