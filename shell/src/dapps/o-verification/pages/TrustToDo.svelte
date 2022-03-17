@@ -27,8 +27,6 @@
   let untrustedProfiles:Profile[] = [];
 
   async function load() {
-    console.log("Address of deine mudda: ", $me.circlesAddress);
-
     const invitedPeople = await ApiClient.query<ProfileEvent, QueryEventsArgs>(StreamDocument, {
       safeAddress: $me.circlesAddress,
       types: [EventType.InvitationRedeemed],

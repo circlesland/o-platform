@@ -35,7 +35,7 @@ import {
   Capability,
   EventsDocument,
   EventType,
-  NotificationEvent,
+  NotificationEvent, Purchase, Purchased,
   SessionInfo,
 } from "../api/data/types";
 import { log } from "../logUiEvent";
@@ -54,6 +54,7 @@ import { myPurchases } from "../stores/myPurchases";
 import { upsertIdentity } from "../../dapps/o-passport/processes/upsertIdentity";
 import { goToPreviouslyDesiredRouteIfExisting } from "../../dapps/o-onboarding/processes/init";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
+import {mySales} from "../stores/mySales";
 
 export let params: {
   dappId: string;
@@ -451,11 +452,26 @@ function initSession(session: SessionInfo) {
               playBlblblbl = true;
             }
           } else if (event.type == EventType.Purchased) {
-            const contact = await myPurchases.findSingleItemFallback(
+            const purchase = await myPurchases.findSingleItemFallback(
               [EventType.Purchased],
               event.itemId.toString()
             );
             myPurchases.refresh();
+
+            const invoices = (<Purchased>purchase.payload).purchase?.invoices ?? [];
+            await Promise.all(invoices.map(async o => {
+              const sale = await mySales.findSingleItemFallback(
+                [EventType.SaleEvent],
+                o.id.toString()
+              );
+            }));
+            mySales.refresh();
+          } else if (event.type == EventType.SaleEvent) {
+            const sale = await mySales.findSingleItemFallback(
+              [EventType.SaleEvent],
+              event.itemId.toString()
+            );
+            mySales.refresh();
           }
 
           inbox.reload().then(() => {
