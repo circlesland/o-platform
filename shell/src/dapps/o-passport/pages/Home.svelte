@@ -25,7 +25,7 @@ $: {
 }
 
 function editProfile(dirtyFlags: { [x: string]: boolean }) {
-  window.o.runProcess(upsertIdentity, profile, {});
+  window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
 }
 </script>
 
