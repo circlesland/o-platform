@@ -157,7 +157,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
 const processDefinition = (processId: string) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
-    initial: "init",
+    initial: "info",
 
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
@@ -225,7 +225,7 @@ const processDefinition = (processId: string) =>
           {
             key: "dontSubscribe",
             label: "No thanks",
-            target: "#info",
+            target: "#firstName",
             class: "btn btn-outline",
             action: (context) => {
               context.data.newsletter = false;
@@ -234,7 +234,7 @@ const processDefinition = (processId: string) =>
           {
             key: "subscribe",
             label: "Yes please",
-            target: "#info",
+            target: "#firstName",
             class: "btn btn-outline",
             action: (context) => {
               context.data.newsletter = true;
@@ -245,7 +245,7 @@ const processDefinition = (processId: string) =>
           canGoBack: () => true,
           previous: "#emailAddress",
           canSkip: () => true,
-          skip: "#info",
+          skip: "#firstName",
         },
       }),
 
