@@ -61,14 +61,22 @@ function editProfileField(onlyThesePages: string[]) {
       </h2>
     </div>
   </div>
-  {#if profile && profile.city}
-    <div
-      class="mt-1 text-sm text-center cursor-pointer"
-      on:click="{() => editProfileField(['cityGeonameid'])}">
-      {profile.city ? profile.city.name : ""}
-      {profile.city
-        ? ", " + profile.city.country
-        : ", " + getCountryName(profile)}
-    </div>
+  {#if profile}
+    {#if profile.city}
+      <div
+        class="mt-1 text-sm text-center cursor-pointer"
+        on:click="{() => editProfileField(['cityGeonameid'])}">
+        {profile.city ? profile.city.name : ""}
+        {profile.city
+          ? ", " + profile.city.country
+          : ", " + getCountryName(profile)}
+      </div>
+    {:else}
+      <div
+        class="mt-1 text-sm text-center cursor-pointer"
+        on:click="{() => editProfileField(['cityGeonameid'])}">
+        Where do you live?
+      </div>
+    {/if}
   {/if}
 </PageHeader>
