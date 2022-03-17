@@ -25,7 +25,7 @@ $: {
 }
 
 function editProfile(dirtyFlags: { [x: string]: boolean }) {
-  window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
+  window.o.runProcess(upsertIdentity, profile, {});
 }
 </script>
 
@@ -33,7 +33,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
 
 <div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
   <div class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md">
-    <section class="justify-center">
+    <!-- <section class="justify-center">
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
           {$_("dapps.o-passport.pages.home.passion")}
@@ -49,7 +49,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
     {#if profile && profile.circlesAddress}
       <section class="justify-center">
         <div class="flex flex-col w-full space-y-1">
