@@ -137,7 +137,7 @@ onMount(async () => {
               </div>
             {/if}
             <!-- {#if o.deliveryTermsTag} -->
-            <div class="flex flex-col space-y-1 text-right">
+            <!-- <div class="flex flex-col space-y-1 text-right">
               <div class="pt-2 text-sm">
                 <span class="text-xs"
                   >{$_(
@@ -150,16 +150,16 @@ onMount(async () => {
                 <span class="text-sm font-thin"
                   >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
               </div>
-            </div>
+            </div> -->
             <!-- {/if} -->
-            {#if o.city}
+            <!-- {#if o.city}
               <div class="flex flex-col space-y-1">
                 <div class="text-2xs">
                   {$_("dapps.o-marketplace.pages.offerDetail.location")}
                 </div>
                 <div class="text-sm text-dark-lightest">{o.city.name}</div>
               </div>
-            {/if}
+            {/if} -->
           </div>
 
           <!-- <div class="relative flex-grow text-left">

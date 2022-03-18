@@ -78,27 +78,6 @@ async function fetchStats() {
         <span class="text-dark-lightest">Invite your friends.</span>
       </div>
       <div class="w-full m-auto mt-4 xl:w-2/3">
-        <!-- <div class="z-50 w-full pt-1 bg-white progressnav ">
-          <div class="flex flex-row items-stretch w-full h-10 mb-2 bg-white">
-            <div
-              class="relative flex-grow h-2 mt-8 border-b-2 border-r-2 w-42 border-primary">
-              <span class="absolute text-sm tracking-wider -right-4 bottom-2"
-                >100 Citizens</span>
-            </div>
-            <div class="flex-grow h-2 mt-8 border-b-2 w-42 border-primary">
-            </div>
-            <div class="flex-grow h-2 mt-8 border-b-2 w-42 border-light">
-              <span class="relative w-2 h-2 dot right-1"></span>
-            </div>
-            <div
-              class="relative flex-grow h-2 mt-8 border-b-2 border-l-2 w-42 border-light">
-              <span
-                class="absolute text-sm tracking-wider text-light bottom-2 -left-4">
-                200 Citizens</span>
-            </div>
-          </div>
-        </div> -->
-
         <div class="flex flex-row items-stretch">
           <div class="flex-grow text-sm whitespace-nowrap text-primary">
             143 Citizens
@@ -136,6 +115,10 @@ async function fetchStats() {
             Next Party
           </div>
         </div>
+      </div>
+      <div class="mt-4 mb-1 text-center">
+        <button class="btn btn-primary" on:click="{() => push('/home/invites')}"
+          >My Invites</button>
       </div>
     </section>
     <div

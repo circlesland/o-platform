@@ -82,7 +82,7 @@ export const verification: DappManifest<DappState> = {
   defaultRoute: ["verifications"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
-  jumplist: verificationJumplist,
+  // jumplist: verificationJumplist,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
     return {

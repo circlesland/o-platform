@@ -5,19 +5,42 @@ import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { logout } from "@o-platform/shell/src/dapps/o-passport/processes/logout";
 import { identify } from "@o-platform/shell/src/dapps/o-passport/processes/identify/identify2";
 // import Pin from "./PinInput.svelte";
-// import { onMount } from "svelte";
+import { onMount } from "svelte";
+import PincodeInput from "pincode-input";
+import "pincode-input/dist/pincode-input.min.css";
 
 export let context: EditorContext;
-
 let _context: EditorContext;
+
 $: {
   _context = context;
 }
 
-let inputField: any;
-let fieldId = context.isSensitive
-  ? Math.random().toString().replace(".", "")
-  : context.field;
+onMount(() => {
+  new PincodeInput(".pincode-input-container", {
+    onInput: (value) => {
+      _context.data[context.field] = value;
+      console.log("VALUE", value);
+      if (value.length == 6) {
+        submitHandler();
+      }
+    },
+    count: 6,
+    secure: true,
+    numeric: true,
+    previewDuration: 300,
+  });
+
+  let inputFields = document.getElementsByClassName("pincode-input");
+  if (inputFields) {
+    inputFields[0].focus();
+  }
+});
+
+// let inputField: any;
+// let fieldId = context.isSensitive
+//   ? Math.random().toString().replace(".", "")
+//   : context.field;
 
 const submitHandler = () => {
   const answer = new Continue();
@@ -25,11 +48,11 @@ const submitHandler = () => {
   context.process.sendAnswer(answer);
 };
 
-function onkeydown(e: KeyboardEvent) {
-  if (e.key == "Enter") {
-    submitHandler();
-  }
-}
+// function onkeydown(e: KeyboardEvent) {
+//   if (e.key == "Enter") {
+//     submitHandler();
+//   }
+// }
 </script>
 
 <div class="form-control justify-self-center">
@@ -53,8 +76,10 @@ function onkeydown(e: KeyboardEvent) {
     </div>
   {/if}
 
-  <div class="m-auto w-min">
-    <input
+  <div class="flex flex-col w-full m-auto">
+    <div class="self-center mt-2 pincode-input-container whitespace-nowrap">
+    </div>
+    <!-- <input
       type="password"
       autofocus
       maxlength="6"
@@ -62,7 +87,7 @@ function onkeydown(e: KeyboardEvent) {
       on:keydown="{onkeydown}"
       class="simpleinput input input-lg input-bordered"
       inputmode="numeric"
-      pattern="[0-9]{6}" />
+      pattern="[0-9]{6}" /> -->
     <!-- <Pin
       size="{6}"
       bind:pin="{_context.data[context.field]}"
@@ -84,10 +109,23 @@ function onkeydown(e: KeyboardEvent) {
 </div>
 
 <style>
-.simpleinput {
-  text-align: center;
-  font-size: 2rem;
-  letter-spacing: 1rem;
-  width: 14rem;
+:global(.pincode-input.pincode-input--filled) {
+  border-color: #41c7f1;
+}
+
+@media (max-width: 640px) {
+  :global(.pincode-input:not(:last-child)) {
+    margin-right: 0.25rem;
+  }
+  :global(.pincode-input) {
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    border-radius: 3px;
+    border: 2px solid gray;
+    text-align: center;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+  }
 }
 </style>
