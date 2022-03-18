@@ -151,6 +151,7 @@ async function updateHoverItem(increment) {
 
   await tick();
   scrollToActiveItem("active");
+  console.log("selectedValue", selectedValue);
 }
 
 function handleKeyDown(e) {
