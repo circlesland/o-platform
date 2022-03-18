@@ -575,7 +575,7 @@ type Query {
     findInvitationCreator(code: String!): Profile
     findSafesByOwner(owner: String!): [SafeInfo!]!
     getStringByMaxVersion(key: String, lang: String): i18n
-    getStringsByLanguage(lang: String): [i18n!]
+    getStringByLanguage(lang: String): i18n
     hubSignupTransaction: ProfileEvent
     init: SessionInfo!
     invitationTransaction: ProfileEvent

@@ -936,7 +936,7 @@ export type Query = {
   findInvitationCreator?: Maybe<Profile>;
   findSafesByOwner: Array<SafeInfo>;
   getStringByMaxVersion?: Maybe<I18n>;
-  getStringsByLanguage?: Maybe<Array<I18n>>;
+  getStringByLanguage?: Maybe<I18n>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
   init: SessionInfo;
   invitationTransaction?: Maybe<ProfileEvent>;
@@ -1010,7 +1010,7 @@ export type QueryGetStringByMaxVersionArgs = {
 };
 
 
-export type QueryGetStringsByLanguageArgs = {
+export type QueryGetStringByLanguageArgs = {
   lang?: Maybe<Scalars['String']>;
 };
 
@@ -1465,6 +1465,30 @@ export type AuthenticateAtMutation = (
     { __typename?: 'DelegateAuthInit' }
     & Pick<DelegateAuthInit, 'appId' | 'success' | 'errorMessage' | 'challengeType' | 'delegateAuthCode' | 'validTo'>
   ) }
+);
+
+export type AddNewLangMutationVariables = Exact<{
+  langToCreate?: Maybe<Scalars['String']>;
+  langToCopyFrom?: Maybe<Scalars['String']>;
+}>;
+
+
+export type AddNewLangMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addNewLang'>
+);
+
+export type UpdateValueMutationVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpdateValueMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateValue'>
 );
 
 export type ClaimInvitationMutationVariables = Exact<{
@@ -2831,6 +2855,19 @@ export type GetStringByMaxVersionQuery = (
   )> }
 );
 
+export type GetStringByLanguageQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetStringByLanguageQuery = (
+  { __typename?: 'Query' }
+  & { getStringByLanguage?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )> }
+);
+
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2917,6 +2954,16 @@ export const AuthenticateAtDocument = gql`
     delegateAuthCode
     validTo
   }
+}
+    `;
+export const AddNewLangDocument = gql`
+    mutation addNewLang($langToCreate: String, $langToCopyFrom: String) {
+  addNewLang(langToCreate: $langToCreate, langToCopyFrom: $langToCopyFrom)
+}
+    `;
+export const UpdateValueDocument = gql`
+    mutation updateValue($lang: String, $key: String, $createdBy: String, $value: String) {
+  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value)
 }
     `;
 export const ClaimInvitationDocument = gql`
@@ -4737,6 +4784,17 @@ export const GetStringByMaxVersionDocument = gql`
   }
 }
     `;
+export const GetStringByLanguageDocument = gql`
+    query getStringByLanguage($lang: String) {
+  getStringByLanguage(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -4769,6 +4827,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     authenticateAt(variables: AuthenticateAtMutationVariables): Promise<AuthenticateAtMutation> {
       return withWrapper(() => client.request<AuthenticateAtMutation>(print(AuthenticateAtDocument), variables));
+    },
+    addNewLang(variables?: AddNewLangMutationVariables): Promise<AddNewLangMutation> {
+      return withWrapper(() => client.request<AddNewLangMutation>(print(AddNewLangDocument), variables));
+    },
+    updateValue(variables?: UpdateValueMutationVariables): Promise<UpdateValueMutation> {
+      return withWrapper(() => client.request<UpdateValueMutation>(print(UpdateValueDocument), variables));
     },
     claimInvitation(variables: ClaimInvitationMutationVariables): Promise<ClaimInvitationMutation> {
       return withWrapper(() => client.request<ClaimInvitationMutation>(print(ClaimInvitationDocument), variables));
@@ -4922,6 +4986,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getStringByMaxVersion(variables?: GetStringByMaxVersionQueryVariables): Promise<GetStringByMaxVersionQuery> {
       return withWrapper(() => client.request<GetStringByMaxVersionQuery>(print(GetStringByMaxVersionDocument), variables));
+    },
+    getStringByLanguage(variables?: GetStringByLanguageQueryVariables): Promise<GetStringByLanguageQuery> {
+      return withWrapper(() => client.request<GetStringByLanguageQuery>(print(GetStringByLanguageDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

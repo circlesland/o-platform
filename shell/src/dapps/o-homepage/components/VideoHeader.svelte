@@ -61,6 +61,8 @@
       player.play();
     }, 300);
   }
+
+  
 </script>
 
 <div
@@ -84,7 +86,6 @@
         <Icons icon="playbutton" />
       </div>
       <div class="pt-0 text-lg text-center text-white sm:pt-2"><Label key="dapps.o-homepage.components.videoHeader.playVideo" /></div>
-      <div><Label key="common.trusted" lang="en"/></div>
     </button>
   </div>
 </div>

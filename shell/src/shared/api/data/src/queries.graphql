@@ -1541,3 +1541,13 @@ query getStringByMaxVersion($lang: String, $key: String) {
         value
     }
 }
+
+query getStringByLanguage($lang: String) {
+    getStringByLanguage(lang: $lang) {
+        lang
+        key
+        createdBy
+        version
+        value
+    }
+}
