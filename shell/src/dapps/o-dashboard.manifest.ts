@@ -81,20 +81,20 @@ export const home: DappManifest<DappState> = {
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
-  featuredAction: async () => {
-    let $me: Profile = null;
-    me.subscribe((e) => ($me = e))();
+  // featuredAction: async () => {
+  //   let $me: Profile = null;
+  //   me.subscribe((e) => ($me = e))();
 
-    if ($me.__typename == "Profile") {
-      return {
-        text: "My Invites",
-        icon: "",
-        action: () => {
-          push("/home/invites");
-        },
-      };
-    }
-  },
+  //   if ($me.__typename == "Profile") {
+  //     return {
+  //       text: "My Invites",
+  //       icon: "",
+  //       action: () => {
+  //         push("/home/invites");
+  //       },
+  //     };
+  //   }
+  // },
 
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here

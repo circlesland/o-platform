@@ -632,8 +632,8 @@ export const en = {
           },
           mySaleDetail: {
             chat: "Chat",
-            iHandedOut: "I handed out the order",
-            iHaventHandedOut: "I haven't handed out the order yet",
+            iHandedOut: "Confirm Order picked up.",
+            iHaventHandedOut: "Order Picked up, click to revert.",
             transaction: "Transaction",
             downloadInvoice: "Download Invoice",
             saleDetails: "Sale Details",
