@@ -20,6 +20,7 @@ onMount(() => {
   new PincodeInput(".pincode-input-container", {
     onInput: (value) => {
       _context.data[context.field] = value;
+      console.log("VALUE", value);
       if (value.length == 6) {
         submitHandler();
       }
@@ -29,6 +30,11 @@ onMount(() => {
     numeric: true,
     previewDuration: 300,
   });
+
+  let inputFields = document.getElementsByClassName("pincode-input");
+  if (inputFields) {
+    inputFields[0].focus();
+  }
 });
 
 // let inputField: any;
