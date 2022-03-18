@@ -77,7 +77,8 @@ const submitHandler = () => {
   {/if}
 
   <div class="flex flex-col w-full m-auto">
-    <div class="self-center mt-2 pincode-input-container"></div>
+    <div class="self-center mt-2 pincode-input-container whitespace-nowrap">
+    </div>
     <!-- <input
       type="password"
       autofocus
@@ -108,13 +109,23 @@ const submitHandler = () => {
 </div>
 
 <style>
-/* .simpleinput {
-  text-align: center;
-  font-size: 2rem;
-  letter-spacing: 1rem;
-  width: 14rem;
-} */
 :global(.pincode-input.pincode-input--filled) {
   border-color: #41c7f1;
+}
+
+@media (max-width: 640px) {
+  :global(.pincode-input:not(:last-child)) {
+    margin-right: 0.25rem;
+  }
+  :global(.pincode-input) {
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    border-radius: 3px;
+    border: 2px solid gray;
+    text-align: center;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+  }
 }
 </style>
