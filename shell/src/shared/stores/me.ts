@@ -22,8 +22,33 @@ const _me = readable<Profile|null>(null, function start(set) {
     sessionInfo: SessionInfo|undefined
   }) => {
     if (event.type == "shell.loggedOut") {
-      localStorage.removeItem("me");
-      set(null);
+      const notMe = <Profile>{
+        "id": 0,
+        "circlesAddress": "",
+        "displayCurrency": "EURS",
+        "circlesSafeOwner": "",
+        "successorOfCirclesAddress": null,
+        "displayName": "",
+        "firstName": "",
+        "lastName": "",
+        "emailAddress": "",
+        "askedForEmailAddress": true,
+        "dream": null,
+        "country": null,
+        "avatarUrl": "",
+        "avatarCid": null,
+        "avatarMimeType": "image/jpeg",
+        "newsletter": true,
+        "displayTimeCircles": true,
+        "cityGeonameid": null,
+        "city": null,
+        "memberships": [],
+        "verifications": [],
+        "circlesTokenAddress": "",
+        "__typename": "Profile"
+      };
+      localStorage.setItem("me", JSON.stringify(notMe));
+      set(notMe);
       return;
     }
     if (event.type == "shell.authenticated" && event.profile) {

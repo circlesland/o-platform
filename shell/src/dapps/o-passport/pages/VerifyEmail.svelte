@@ -15,7 +15,7 @@ export let routable: Routable;
 let showButton: boolean = false;
 
 function verify() {
-  if (secret) {
+  if (secret && secret != "failed" && secret != "success") {
     window.location.assign(
       `${Environment.apiEndpointUrl}/trigger?hash=${secret}`
     );
@@ -24,7 +24,9 @@ function verify() {
 onMount(() => {
   verify();
   setTimeout(() => {
-    showButton = true;
+    if (secret && secret != "failed" && secret != "success") {
+      showButton = true;
+    }
   }, 800);
 });
 </script>

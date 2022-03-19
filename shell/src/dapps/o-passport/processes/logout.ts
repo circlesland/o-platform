@@ -46,7 +46,31 @@ const processDefinition = (processId: string) =>
             sessionStorage.removeItem("circlesKey");
             sessionStorage.removeItem("keyCache");
             localStorage.removeItem("circlesKeys");
-            localStorage.removeItem("me");
+            localStorage.setItem("me", JSON.stringify({
+              "id": 0,
+              "circlesAddress": "",
+              "displayCurrency": "",
+              "circlesSafeOwner": "",
+              "successorOfCirclesAddress": null,
+              "displayName": "",
+              "firstName": "",
+              "lastName": "",
+              "emailAddress": "",
+              "askedForEmailAddress": true,
+              "dream": null,
+              "country": null,
+              "avatarUrl": "",
+              "avatarCid": null,
+              "avatarMimeType": "image/jpeg",
+              "newsletter": true,
+              "displayTimeCircles": true,
+              "cityGeonameid": null,
+              "city": null,
+              "memberships": [],
+              "verifications": [],
+              "circlesTokenAddress": "",
+              "__typename": "Profile"
+            }));
 
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();
