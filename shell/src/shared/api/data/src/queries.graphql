@@ -1,1537 +1,843 @@
 query init {
-    init {
-        isLoggedOn
-        hasProfile
-        profileId
-        lastAcknowledgedAt
-        capabilities {
-            type
-        }
-        profile {
-            id
-            circlesAddress
-            displayCurrency
-            circlesSafeOwner
-            successorOfCirclesAddress
-            displayName
-            firstName
-            lastName
-            emailAddress
-            askedForEmailAddress
-            dream
-            country
-            avatarUrl
-            avatarCid
-            avatarMimeType
-            newsletter
-            displayTimeCircles
-            displayCurrency
-            cityGeonameid
-            city {
-                geonameid
-                name
-                country
-            }
-            memberships {
-                isAdmin
-                organisation {
-                    id
-                    circlesAddress
-                    name
-                    description
-                    avatarUrl
-                }
-            }
-            verifications {
-                createdAt
-                revokedAt
-                verifierSafeAddress
-                verifierProfile {
-                    circlesAddress
-                    avatarUrl
-                    name
-                }
-            }
-            # init.invitation
-            claimedInvitation {
-                claimedAt
-            }
-            # init.eoaInvitationTransaction
-            invitationTransaction {
-                timestamp
-                transaction_hash
-            }
-            # init.ubi
-            circlesTokenAddress
-        }
+  init {
+    isLoggedOn
+    hasProfile
+    profileId
+    lastAcknowledgedAt
+    capabilities {
+      type
     }
-}
-
-query sessionInfo {
-    sessionInfo {
-        isLoggedOn
-        hasProfile
-        profileId
-        lastAcknowledgedAt
-        capabilities {
-            type
-        }
-    }
-}
-
-query claimedInvitation {
-    claimedInvitation {
-        createdAt
-        createdByProfileId
-        claimedAt
-        claimedByProfileId
-    }
-}
-
-query invitationTransaction {
-    invitationTransaction {
-        transaction_hash
-    }
-}
-
-query hubSignupTransaction {
-    hubSignupTransaction {
-        transaction_hash
-        payload {
-            ... on CrcSignup {
-                token
-            }
-        }
-    }
-}
-
-query safeInfo {
-    safeInfo {
-        lastUbiAt
-        safeAddress
-        tokenAddress
-        randomValue
-    }
-}
-
-query stats {
-    stats {
-        profilesCount
-        verificationsCount
-    }
-}
-
-query findSafesByOwner($owner: String!) {
-    findSafesByOwner(owner: $owner) {
-        type
-        safeAddress
-        lastUbiAt
-        randomValue
-        tokenAddress
-        safeProfile {
-            id
-            circlesAddress
-            displayCurrency
-            circlesSafeOwner
-            displayName
-            firstName
-            lastName
-            dream
-            avatarUrl
-            cityGeonameid
-            city {
-                geonameid
-                name
-                country
-                latitude
-                longitude
-                population
-            }
-        }
-    }
-}
-
-query myInvitations {
-    myInvitations {
-        createdAt
-        claimedAt
-        claimedBy {
-            circlesAddress
-            displayCurrency
-            circlesSafeOwner
-            displayName
-            firstName
-            lastName
-            avatarUrl
-        }
-        name
-        address
-        balance
-        code
-    }
-}
-
-query myProfile {
-    myProfile {
-        id
-        circlesAddress
-        displayCurrency
-        circlesSafeOwner
-        successorOfCirclesAddress
-        displayName
-        firstName
-        lastName
-        emailAddress
-        askedForEmailAddress
-        dream
-        country
-        avatarUrl
-        avatarCid
-        avatarMimeType
-        newsletter
-        displayTimeCircles
-        displayCurrency
-        cityGeonameid
-        city {
-            geonameid
-            name
-            country
-            latitude
-            longitude
-            population
-        }
-        memberships {
-            isAdmin
-            organisation {
-                id
-                circlesAddress
-                displayCurrency
-                circlesSafeOwner
-                name
-                description
-                avatarUrl
-            }
-        }
-        verifications {
-            createdAt
-            revokedAt
-            verifierSafeAddress
-            verifierProfile {
-                circlesAddress
-                displayCurrency
-                avatarUrl
-                name
-            }
-        }
-    }
-}
-
-query profiles($id: [Int!]!) {
-    profilesById(ids: $id) {
-        id
-        circlesAddress
-        displayCurrency
-        circlesSafeOwner
-        successorOfCirclesAddress
-        displayName
-        firstName
-        lastName
-        dream
-        avatarUrl
-        displayCurrency
-        city {
-            geonameid
-            name
-            country
-        }
-        memberships {
-            isAdmin
-            organisation {
-                id
-                circlesAddress
-                displayCurrency
-                circlesSafeOwner
-                name
-                description
-                avatarUrl
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-        }
-        verifications {
-            createdAt
-            revokedAt
-            verifierSafeAddress
-            verifierProfile {
-                circlesAddress
-                displayCurrency
-                avatarUrl
-                name
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-        }
-    }
-}
-
-query citiesByName($name: String!, $languageCode: String) {
-    cities(query: { byName: { name_like: $name, languageCode: $languageCode } }) {
+    profile {
+      id
+      circlesAddress
+      displayCurrency
+      circlesSafeOwner
+      successorOfCirclesAddress
+      displayName
+      firstName
+      lastName
+      emailAddress
+      askedForEmailAddress
+      dream
+      country
+      avatarUrl
+      avatarCid
+      avatarMimeType
+      newsletter
+      displayTimeCircles
+      displayCurrency
+      cityGeonameid
+      city {
         geonameid
         name
         country
-        population
-        latitude
-        longitude
-        feature_code
-    }
-}
-
-query citiesById($ids: [Int!]!) {
-    cities(query: { byId: { geonameid: $ids } }) {
-        geonameid
-        name
-        country
-        population
-        latitude
-        longitude
-        feature_code
-    }
-}
-
-query profilesByName($searchString: String!) {
-    search(query: { searchString: $searchString }) {
-        id
-        origin
-        circlesSafeOwner
-        circlesAddress
-        displayCurrency
-        successorOfCirclesAddress
-        avatarUrl
-        displayName
-        firstName
-        lastName
-        dream
-        country
-        displayCurrency
-        city {
-            geonameid
-            name
-            country
+      }
+      memberships {
+        isAdmin
+        organisation {
+          id
+          circlesAddress
+          name
+          description
+          avatarUrl
         }
-        verifications {
-            createdAt
-            revokedAt
-            verifierSafeAddress
-            verifierProfile {
-                circlesAddress
-                displayCurrency
-                avatarUrl
-                name
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-        }
-    }
-}
-
-query getRecentProfiles($pagination: PaginationArgs) {
-    recentProfiles(pagination: $pagination) {
-        id
-        circlesAddress
-        displayCurrency
-        origin
-        successorOfCirclesAddress
-        displayName
-        firstName
-        lastName
-        dream
-        country
-        avatarUrl
-        city {
-            geonameid
-            name
-            country
-        }
-        verifications {
-            createdAt
-            revokedAt
-            verifierSafeAddress
-            verifierProfile {
-                circlesAddress
-                displayCurrency
-                avatarUrl
-                name
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-        }
-    }
-}
-
-query profilesByCirclesAddress($circlesAddresses: [String!]!) {
-    profilesBySafeAddress(safeAddresses: $circlesAddresses) {
-        id
-        circlesAddress
-        displayCurrency
-        origin
-        successorOfCirclesAddress
-        displayName
-        firstName
-        lastName
-        dream
-        avatarUrl
-        city {
-            geonameid
-            name
-            country
-        }
-        memberships {
-            isAdmin
-            organisation {
-                id
-                circlesAddress
-                displayCurrency
-                circlesSafeOwner
-                name
-                description
-                avatarUrl
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-        }
-        verifications {
-            createdAt
-            revokedAt
-            verifierSafeAddress
-            verifierProfile {
-                circlesAddress
-                displayCurrency
-                avatarUrl
-                name
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-        }
-    }
-}
-
-query profilesByIds($id: [Int!]!) {
-    profilesById(ids: $id) {
-        id
-        circlesAddress
-        displayCurrency
-        origin
-        successorOfCirclesAddress
-        displayName
-        firstName
-        lastName
-        dream
-        avatarUrl
-        city {
-            geonameid
-            name
-            country
-        }
-        verifications {
-            createdAt
-            revokedAt
-            verifierSafeAddress
-            verifierProfile {
-                circlesAddress
-                displayCurrency
-                avatarUrl
-                name
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-        }
-    }
-}
-
-query trustRelations($safeAddress: String!) {
-    trustRelations(safeAddress: $safeAddress) {
-        safeAddress
-        safeAddressProfile {
-            id
-            displayName
-            firstName
-            lastName
-            origin
-            avatarUrl
-            successorOfCirclesAddress
-            circlesAddress
-            displayCurrency
-        }
-        direction
-        otherSafeAddress
-        otherSafeAddressProfile {
-            id
-            displayName
-            firstName
-            lastName
-            avatarUrl
-            successorOfCirclesAddress
-            circlesAddress
-            displayCurrency
-            verifications {
-                createdAt
-                revokedAt
-                verifierSafeAddress
-                verifierProfile {
-                    circlesAddress
-                    displayCurrency
-                    avatarUrl
-                    name
-                    city {
-                        geonameid
-                        name
-                        country
-                    }
-                }
-            }
-        }
-    }
-}
-
-query profileById($id: Int!) {
-    profilesById(ids: [$id]) {
-        id
-        successorOfCirclesAddress
-        circlesSafeOwner
-        circlesAddress
-        displayCurrency
-        avatarUrl
-        displayName
-        firstName
-        lastName
-        dream
-        city {
-            geonameid
-            country
-            name
-        }
-        verifications {
-            createdAt
-            revokedAt
-            verifierSafeAddress
-            verifierProfile {
-                circlesAddress
-                displayCurrency
-                avatarUrl
-                name
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-        }
-    }
-}
-
-query profileBySafeAddress($safeAddress: String!) {
-    profilesBySafeAddress(safeAddresses: [$safeAddress]) {
-        id
-        successorOfCirclesAddress
-        circlesSafeOwner
-        circlesAddress
-        displayCurrency
-        avatarUrl
-        displayName
-        firstName
-        lastName
-        dream
-        city {
-            geonameid
-            country
-            name
-        }
-        memberships {
-            isAdmin
-            organisation {
-                id
-                circlesAddress
-                displayCurrency
-                circlesSafeOwner
-                name
-                description
-                avatarUrl
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-        }
-        verifications {
-            createdAt
-            revokedAt
-            verifierSafeAddress
-            verifierProfile {
-                circlesAddress
-                displayCurrency
-                avatarUrl
-                name
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-        }
-    }
-}
-
-query tags($typeId_in: [String!]!, $value_like: String) {
-    tags(query: { typeId_in: $typeId_in, value_like: $value_like }) {
-        typeId
-        id
-        value
-    }
-}
-
-query citiesByName($name: String!, $languageCode: String) {
-    cities(query: { byName: { name_like: $name, languageCode: $languageCode } }) {
-        geonameid
-        name
-        country
-        population
-        latitude
-        longitude
-        feature_code
-    }
-}
-
-query citiesById($ids: [Int!]!) {
-    cities(query: { byId: { geonameid: $ids } }) {
-        geonameid
-        name
-        country
-        population
-        latitude
-        longitude
-        feature_code
-    }
-}
-
-query organisations($pagination: PaginationArgs) {
-    organisations(pagination: $pagination) {
-        id
-        circlesAddress
-        displayCurrency
-        createdAt
-        name
-        avatarUrl
-        city {
-            geonameid
-            name
-            country
-        }
-    }
-}
-
-query regions {
-    regions {
-        id
-        circlesAddress
-        displayCurrency
-        createdAt
-        name
-        avatarUrl
-        city {
-            geonameid
-            name
-            country
-        }
-    }
-}
-
-query organisationsByAddress($addresses: [String!]!) {
-    organisationsByAddress(addresses: $addresses) {
-        id
-        circlesAddress
-        displayCurrency
-        createdAt
-        name
-        avatarUrl
-        city {
-            geonameid
-            name
-            country
-        }
-        members {
-            ... on Organisation {
-                id
-                circlesAddress
-                displayCurrency
-                createdAt
-                name
-                avatarUrl
-                city {
-                    geonameid
-                    name
-                    country
-                }
-            }
-            ... on Profile {
-                id
-                successorOfCirclesAddress
-                circlesSafeOwner
-                circlesAddress
-                displayCurrency
-                avatarUrl
-                displayName
-                firstName
-                lastName
-                dream
-                city {
-                    geonameid
-                    country
-                    name
-                }
-                verifications {
-                    createdAt
-                    revokedAt
-                    verifierSafeAddress
-                    verifierProfile {
-                        circlesAddress
-                        displayCurrency
-                        avatarUrl
-                        name
-                        city {
-                            geonameid
-                            name
-                            country
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
-    commonTrust(safeAddress1: $safeAddress1, safeAddress2: $safeAddress2) {
-        type
-        safeAddress1
-        safeAddress2
-        profile {
-            id
-            displayName
-            firstName
-            lastName
-            avatarUrl
-            successorOfCirclesAddress
-            circlesAddress
-            displayCurrency
-        }
-    }
-}
-
-query tagById($id: Int!) {
-    tagById(id: $id) {
-        id
-        typeId
-        value
-    }
-}
-
-query citiesByName($name: String!, $languageCode: String) {
-    cities(query: { byName: { name_like: $name, languageCode: $languageCode } }) {
-        geonameid
-        name
-        country
-        population
-        latitude
-        longitude
-        feature_code
-    }
-}
-
-query citiesById($ids: [Int!]!) {
-    cities(query: { byId: { geonameid: $ids } }) {
-        geonameid
-        name
-        country
-        population
-        latitude
-        longitude
-        feature_code
-    }
-}
-
-query stream(
-    $types: [EventType!]!
-    $safeAddress: String!
-    $pagination: PaginationArgs!
-    $filter: ProfileEventFilter
-) {
-    events(
-        types: $types
-        safeAddress: $safeAddress
-        pagination: $pagination
-        filter: $filter
-    ) {
-        timestamp
-        transaction_hash
-        block_number
-        safe_address
-        contact_address
-        contact_address_profile {
-            type
-            successorOfCirclesAddress
-            circlesAddress
-            displayCurrency
-            displayName
-            firstName
-            lastName
-            avatarUrl
-        }
-        direction
-        type
-        payload {
-            ... on CrcHubTransfer {
-                transaction_hash
-                from
-                from_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                to
-                to_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                flow
-                transfers {
-                    token
-                    from
-                    from_profile {
-                        id
-                        displayName
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                        displayCurrency
-                    }
-                    to
-                    to_profile {
-                        id
-                        displayName
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                        displayCurrency
-                    }
-                    value
-                }
-                tags {
-                    id
-                    typeId
-                    value
-                }
-            }
-            ... on CrcTrust {
-                transaction_hash
-                address
-                can_send_to
-                limit
-            }
-            ... on CrcSignup {
-                transaction_hash
-                user
-                token
-            }
-            ... on CrcMinting {
-                transaction_hash
-                token
-                from
-                from_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                to
-                to_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                value
-            }
-            ... on EthTransfer {
-                transaction_hash
-                from
-                to
-                value
-            }
-            ... on Erc20Transfer {
-                transaction_hash
-                from
-                from_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                to
-                to_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                value
-            }
-            ... on GnosisSafeEthTransfer {
-                transaction_hash
-                initiator
-                from
-                to
-                value
-            }
-            ... on ChatMessage {
-                id
-                from
-                from_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                to
-                to_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                text
-            }
-            ... on MembershipOffer {
-                createdBy
-                organisation
-                organisation_profile {
-                    name
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                isAdmin
-            }
-            ... on MembershipAccepted {
-                createdBy
-                member
-                organisation
-                organisation_profile {
-                    name
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-            }
-            ... on MembershipRejected {
-                member
-                organisation
-                organisation_profile {
-                    name
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-            }
-            ... on WelcomeMessage {
-                invitedBy
-                invitedBy_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-            }
-            ... on InvitationCreated {
-                name
-                code
-            }
-            ... on InvitationRedeemed {
-                name
-                code
-                redeemedBy
-                redeemedBy_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-            }
-            ... on SaleEvent {
-                buyer
-                buyer_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                invoice {
-                    id
-                    buyerSignature
-                    buyerSignedDate
-                    sellerSignature
-                    sellerSignedDate
-                    cancelledAt
-                    cancelReason
-                    paymentTransactionHash
-                    lines {
-                        amount
-                        offer {
-                            id
-                            title
-                            pictureUrl
-                            pricePerUnit
-                            tags {
-                                typeId
-                                value
-                            }
-                        }
-                    }
-                }
-            }
-            ... on Purchased {
-                seller_profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-                purchase {
-                    id
-                    createdAt
-                    createdByAddress
-                    total
-                    lines {
-                        id
-                        amount
-                        offer {
-                            id
-                            pictureUrl
-                            title
-                            description
-                            pricePerUnit
-                            tags {
-                                typeId
-                                value
-                            }
-                        }
-                    }
-                    invoices {
-                        id
-                        pickupCode
-                        buyerProfile {
-                            id
-                            displayName
-                            firstName
-                            lastName
-                            avatarUrl
-                            circlesAddress
-                            displayCurrency
-                        }
-                        sellerProfile {
-                            id
-                            displayName
-                            firstName
-                            lastName
-                            avatarUrl
-                            circlesAddress
-                            displayCurrency
-                        }
-                        paymentTransactionHash
-                        cancelledAt
-                        invoiceNo
-                        sellerSignature
-                        buyerSignature
-                    }
-                }
-            }
-            ... on OrganisationCreated {
-                organisation
-                organisation_profile {
-                    name
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                    displayCurrency
-                }
-            }
-            ... on MemberAdded {
-                createdBy
-                isAdmin
-                member
-                organisation
-                organisation_profile {
-                    name
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                    displayCurrency
-                }
-            }
-            ... on SafeVerified {
-                safe_address
-                organisation_profile {
-                    name
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                    displayCurrency
-                }
-            }
-            ... on NewUser {
-                profile {
-                    id
-                    displayName
-                    firstName
-                    lastName
-                    dream
-                    avatarUrl
-                    circlesAddress
-                    displayCurrency
-                }
-            }
-        }
-    }
-}
-
-query aggregates(
-    $types: [AggregateType!]!
-    $safeAddress: String!
-    $filter: ProfileAggregateFilter
-) {
-    aggregates(types: $types, safeAddress: $safeAddress, filter: $filter) {
-        type
-        safe_address
-        safe_address_profile {
-            id
-            displayName
-            firstName
-            lastName
-            avatarUrl
-            circlesAddress
-            displayCurrency
-        }
-        payload {
-            ... on Offers {
-                lastUpdatedAt
-                offers {
-                    id
-                    version
-                    createdByProfile {
-                        id
-                        displayName
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                        displayCurrency
-                    }
-                    tags {
-                        typeId
-                        value
-                    }
-                    createdByAddress
-                    createdAt
-                    title
-                    pictureUrl
-                    pictureMimeType
-                    description
-                    pricePerUnit
-                    timeCirclesPriceShare
-                }
-            }
-            ... on CrcBalances {
-                lastUpdatedAt
-                balances {
-                    token_address
-                    token_owner_address
-                    token_owner_profile {
-                        id
-                        displayName
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                        displayCurrency
-                    }
-                    token_balance
-                }
-            }
-            ... on Erc20Balances {
-                lastUpdatedAt
-                balances {
-                    token_address
-                    token_owner_address
-                    token_owner_profile {
-                        id
-                        displayName
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                        displayCurrency
-                    }
-                    token_balance
-                }
-            }
-            ... on Contacts {
-                lastUpdatedAt
-                contacts {
-                    metadata {
-                        name
-                        directions
-                        values
-                        timestamps
-                    }
-                    lastContactAt
-                    contactAddress
-                    contactAddress_Profile {
-                        type
-                        id
-                        displayName
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                        displayCurrency
-                        city {
-                            geonameid
-                            name
-                            country
-                        }
-                        memberships {
-                            isAdmin
-                            organisation {
-                                id
-                                circlesAddress
-                                displayCurrency
-                                circlesSafeOwner
-                                name
-                                description
-                                avatarUrl
-                                city {
-                                    geonameid
-                                    name
-                                    country
-                                }
-                            }
-                        }
-                        verifications {
-                            createdAt
-                            revokedAt
-                            verifierSafeAddress
-                            verifierProfile {
-                                circlesAddress
-                                displayCurrency
-                                avatarUrl
-                                name
-                                city {
-                                    geonameid
-                                    name
-                                    country
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            ... on Members {
-                lastUpdatedAt
-                members {
-                    ... on Profile {
-                        successorOfCirclesAddress
-                        circlesAddress
-                        displayCurrency
-                    }
-                    ... on Organisation {
-                        circlesAddress
-                        displayCurrency
-                    }
-                }
-            }
-            ... on Memberships {
-                lastUpdatedAt
-                organisations {
-                    circlesAddress
-                    displayCurrency
-                }
-            }
-            ... on Purchases {
-                lastUpdatedAt
-                purchases {
-                    id
-                    createdAt
-                    createdByAddress
-                    createdByProfile {
-                        id
-                        displayName
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                        displayCurrency
-                    }
-                    total
-                    lines {
-                        id
-                        amount
-                        offer {
-                            id
-                            version
-                            title
-                            description
-                            pictureUrl
-                            pricePerUnit
-                            timeCirclesPriceShare
-                            createdByProfile {
-                                id
-                                displayName
-                                firstName
-                                lastName
-                                avatarUrl
-                                circlesAddress
-                                displayCurrency
-                            }
-                            tags {
-                                typeId
-                                value
-                            }
-                        }
-                    }
-                    invoices {
-                        id
-                        sellerAddress
-                        paymentTransactionHash
-                        buyerAddress
-                        pickupCode
-                        buyerSignature
-                        buyerSignedDate
-                        sellerSignature
-                        sellerSignedDate
-                        cancelledAt
-                        cancelReason
-                        sellerProfile {
-                            id
-                            displayName
-                            firstName
-                            lastName
-                            avatarUrl
-                            circlesAddress
-                            displayCurrency
-                        }
-                    }
-                }
-            }
-            ... on Sales {
-                lastUpdatedAt
-                sales {
-                    id
-                    createdAt
-                    sellerProfile {
-                        id
-                        displayName
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                        displayCurrency
-                    }
-                    buyerProfile {
-                        id
-                        displayName
-                        firstName
-                        lastName
-                        avatarUrl
-                        circlesAddress
-                        displayCurrency
-                        verifications {
-                            createdAt
-                            revokedAt
-                            verifierSafeAddress
-                            verifierProfile {
-                                circlesAddress
-                                displayCurrency
-                                avatarUrl
-                                name
-                                city {
-                                    geonameid
-                                    name
-                                    country
-                                }
-                            }
-                        }
-                    }
-                    total
-                    lines {
-                        id
-                        amount
-                        offer {
-                            id
-                            version
-                            title
-                            description
-                            pictureUrl
-                            pricePerUnit
-                            timeCirclesPriceShare
-                            createdByProfile {
-                                id
-                                displayName
-                                firstName
-                                lastName
-                                avatarUrl
-                                circlesAddress
-                                displayCurrency
-                            }
-                            tags {
-                                typeId
-                                value
-                            }
-                        }
-                    }
-                    invoices {
-                        id
-                        sellerAddress
-                        paymentTransactionHash
-                        buyerAddress
-                        pickupCode
-                        buyerSignature
-                        buyerSignedDate
-                        sellerSignature
-                        sellerSignedDate
-                        cancelledAt
-                        cancelReason
-                        buyerProfile {
-                            id
-                            displayName
-                            firstName
-                            lastName
-                            avatarUrl
-                            circlesAddress
-                            displayCurrency
-                            verifications {
-                                createdAt
-                                revokedAt
-                                verifierSafeAddress
-                                verifierProfile {
-                                    circlesAddress
-                                    displayCurrency
-                                    avatarUrl
-                                    name
-                                    city {
-                                        geonameid
-                                        name
-                                        country
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-query directPath($from: String!, $to: String!, $amount: String!) {
-    directPath(from: $from, to: $to, amount: $amount) {
-        flow
-        transfers {
-            from
-            to
-            token
-            tokenOwner
-            value
-        }
-    }
-}
-
-query invoice($invoiceId: Int!) {
-    invoice(invoiceId: $invoiceId)
-}
-
-query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
-    verifications(pagination: $pagination, filter: $filter) {
+      }
+      verifications {
         createdAt
         revokedAt
         verifierSafeAddress
         verifierProfile {
+          circlesAddress
+          avatarUrl
+          name
+        }
+      }
+      # init.invitation
+      claimedInvitation {
+        claimedAt
+      }
+      # init.eoaInvitationTransaction
+      invitationTransaction {
+        timestamp
+        transaction_hash
+      }
+      # init.ubi
+      circlesTokenAddress
+    }
+  }
+}
+
+query sessionInfo {
+  sessionInfo {
+    isLoggedOn
+    hasProfile
+    profileId
+    lastAcknowledgedAt
+    capabilities {
+      type
+    }
+  }
+}
+
+query claimedInvitation {
+  claimedInvitation {
+    createdAt
+    createdByProfileId
+    claimedAt
+    claimedByProfileId
+  }
+}
+
+query invitationTransaction {
+  invitationTransaction {
+    transaction_hash
+  }
+}
+
+query hubSignupTransaction {
+  hubSignupTransaction {
+    transaction_hash
+    payload {
+      ... on CrcSignup {
+        token
+      }
+    }
+  }
+}
+
+query safeInfo {
+  safeInfo {
+    lastUbiAt
+    safeAddress
+    tokenAddress
+    randomValue
+  }
+}
+
+query stats {
+  stats {
+    profilesCount
+    verificationsCount
+  }
+}
+
+query findSafesByOwner($owner: String!) {
+  findSafesByOwner(owner: $owner) {
+    type
+    safeAddress
+    lastUbiAt
+    randomValue
+    tokenAddress
+    safeProfile {
+      id
+      circlesAddress
+      displayCurrency
+      circlesSafeOwner
+      displayName
+      firstName
+      lastName
+      dream
+      avatarUrl
+      cityGeonameid
+      city {
+        geonameid
+        name
+        country
+        latitude
+        longitude
+        population
+      }
+    }
+  }
+}
+
+query myInvitations {
+  myInvitations {
+    createdAt
+    claimedAt
+    claimedBy {
+      circlesAddress
+      displayCurrency
+      circlesSafeOwner
+      displayName
+      firstName
+      lastName
+      avatarUrl
+    }
+    name
+    address
+    balance
+    code
+  }
+}
+
+query myProfile {
+  myProfile {
+    id
+    circlesAddress
+    displayCurrency
+    circlesSafeOwner
+    successorOfCirclesAddress
+    displayName
+    firstName
+    lastName
+    emailAddress
+    askedForEmailAddress
+    dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    newsletter
+    displayTimeCircles
+    displayCurrency
+    cityGeonameid
+    city {
+      geonameid
+      name
+      country
+      latitude
+      longitude
+      population
+    }
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        displayCurrency
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+      }
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        name
+      }
+    }
+  }
+}
+
+query profiles($id: [Int!]!) {
+  profilesById(ids: $id) {
+    id
+    circlesAddress
+    displayCurrency
+    circlesSafeOwner
+    successorOfCirclesAddress
+    displayName
+    firstName
+    lastName
+    dream
+    avatarUrl
+    displayCurrency
+    city {
+      geonameid
+      name
+      country
+    }
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        displayCurrency
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
+  }
+}
+
+query citiesByName($name: String!, $languageCode: String) {
+  cities(query: { byName: { name_like: $name, languageCode: $languageCode } }) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+
+query citiesById($ids: [Int!]!) {
+  cities(query: { byId: { geonameid: $ids } }) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+
+query profilesByName($searchString: String!) {
+  search(query: { searchString: $searchString }) {
+    id
+    origin
+    circlesSafeOwner
+    circlesAddress
+    displayCurrency
+    successorOfCirclesAddress
+    avatarUrl
+    displayName
+    firstName
+    lastName
+    dream
+    country
+    displayCurrency
+    city {
+      geonameid
+      name
+      country
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
+  }
+}
+
+query getRecentProfiles($pagination: PaginationArgs) {
+  recentProfiles(pagination: $pagination) {
+    id
+    circlesAddress
+    displayCurrency
+    origin
+    successorOfCirclesAddress
+    displayName
+    firstName
+    lastName
+    dream
+    country
+    avatarUrl
+    city {
+      geonameid
+      name
+      country
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
+  }
+}
+
+query profilesByCirclesAddress($circlesAddresses: [String!]!) {
+  profilesBySafeAddress(safeAddresses: $circlesAddresses) {
+    id
+    circlesAddress
+    displayCurrency
+    origin
+    successorOfCirclesAddress
+    displayName
+    firstName
+    lastName
+    dream
+    avatarUrl
+    city {
+      geonameid
+      name
+      country
+    }
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        displayCurrency
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
+  }
+}
+
+query profilesByIds($id: [Int!]!) {
+  profilesById(ids: $id) {
+    id
+    circlesAddress
+    displayCurrency
+    origin
+    successorOfCirclesAddress
+    displayName
+    firstName
+    lastName
+    dream
+    avatarUrl
+    city {
+      geonameid
+      name
+      country
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
+  }
+}
+
+query trustRelations($safeAddress: String!) {
+  trustRelations(safeAddress: $safeAddress) {
+    safeAddress
+    safeAddressProfile {
+      id
+      displayName
+      firstName
+      lastName
+      origin
+      avatarUrl
+      successorOfCirclesAddress
+      circlesAddress
+      displayCurrency
+    }
+    direction
+    otherSafeAddress
+    otherSafeAddressProfile {
+      id
+      displayName
+      firstName
+      lastName
+      avatarUrl
+      successorOfCirclesAddress
+      circlesAddress
+      displayCurrency
+      verifications {
+        createdAt
+        revokedAt
+        verifierSafeAddress
+        verifierProfile {
+          circlesAddress
+          displayCurrency
+          avatarUrl
+          name
+          city {
+            geonameid
+            name
+            country
+          }
+        }
+      }
+    }
+  }
+}
+
+query profileById($id: Int!) {
+  profilesById(ids: [$id]) {
+    id
+    successorOfCirclesAddress
+    circlesSafeOwner
+    circlesAddress
+    displayCurrency
+    avatarUrl
+    displayName
+    firstName
+    lastName
+    dream
+    city {
+      geonameid
+      country
+      name
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
+  }
+}
+
+query profileBySafeAddress($safeAddress: String!) {
+  profilesBySafeAddress(safeAddresses: [$safeAddress]) {
+    id
+    successorOfCirclesAddress
+    circlesSafeOwner
+    circlesAddress
+    displayCurrency
+    avatarUrl
+    displayName
+    firstName
+    lastName
+    dream
+    city {
+      geonameid
+      country
+      name
+    }
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        displayCurrency
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
+  }
+}
+
+query tags($typeId_in: [String!]!, $value_like: String) {
+  tags(query: { typeId_in: $typeId_in, value_like: $value_like }) {
+    typeId
+    id
+    value
+  }
+}
+
+query citiesByName($name: String!, $languageCode: String) {
+  cities(query: { byName: { name_like: $name, languageCode: $languageCode } }) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+
+query citiesById($ids: [Int!]!) {
+  cities(query: { byId: { geonameid: $ids } }) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+
+query organisations($pagination: PaginationArgs) {
+  organisations(pagination: $pagination) {
+    id
+    circlesAddress
+    displayCurrency
+    createdAt
+    name
+    avatarUrl
+    city {
+      geonameid
+      name
+      country
+    }
+  }
+}
+
+query regions {
+  regions {
+    id
+    circlesAddress
+    displayCurrency
+    createdAt
+    name
+    avatarUrl
+    city {
+      geonameid
+      name
+      country
+    }
+  }
+}
+
+query organisationsByAddress($addresses: [String!]!) {
+  organisationsByAddress(addresses: $addresses) {
+    id
+    circlesAddress
+    displayCurrency
+    createdAt
+    name
+    avatarUrl
+    city {
+      geonameid
+      name
+      country
+    }
+    members {
+      ... on Organisation {
+        id
+        circlesAddress
+        displayCurrency
+        createdAt
+        name
+        avatarUrl
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+      ... on Profile {
+        id
+        successorOfCirclesAddress
+        circlesSafeOwner
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        displayName
+        firstName
+        lastName
+        dream
+        city {
+          geonameid
+          country
+          name
+        }
+        verifications {
+          createdAt
+          revokedAt
+          verifierSafeAddress
+          verifierProfile {
+            circlesAddress
+            displayCurrency
             avatarUrl
             name
+            city {
+              geonameid
+              name
+              country
+            }
+          }
         }
-        verifiedSafeAddress
-        verifiedProfile {
+      }
+    }
+  }
+}
+
+query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
+  commonTrust(safeAddress1: $safeAddress1, safeAddress2: $safeAddress2) {
+    type
+    safeAddress1
+    safeAddress2
+    profile {
+      id
+      displayName
+      firstName
+      lastName
+      avatarUrl
+      successorOfCirclesAddress
+      circlesAddress
+      displayCurrency
+    }
+  }
+}
+
+query tagById($id: Int!) {
+  tagById(id: $id) {
+    id
+    typeId
+    value
+  }
+}
+
+query citiesByName($name: String!, $languageCode: String) {
+  cities(query: { byName: { name_like: $name, languageCode: $languageCode } }) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+
+query citiesById($ids: [Int!]!) {
+  cities(query: { byId: { geonameid: $ids } }) {
+    geonameid
+    name
+    country
+    population
+    latitude
+    longitude
+    feature_code
+  }
+}
+
+query stream(
+  $types: [EventType!]!
+  $safeAddress: String!
+  $pagination: PaginationArgs!
+  $filter: ProfileEventFilter
+) {
+  events(
+    types: $types
+    safeAddress: $safeAddress
+    pagination: $pagination
+    filter: $filter
+  ) {
+    timestamp
+    transaction_hash
+    block_number
+    safe_address
+    contact_address
+    contact_address_profile {
+      type
+      successorOfCirclesAddress
+      circlesAddress
+      displayCurrency
+      displayName
+      firstName
+      lastName
+      avatarUrl
+    }
+    direction
+    type
+    payload {
+      ... on CrcHubTransfer {
+        transaction_hash
+        from
+        from_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        to
+        to_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        flow
+        transfers {
+          token
+          from
+          from_profile {
             id
             displayName
             firstName
@@ -1539,17 +845,715 @@ query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
             avatarUrl
             circlesAddress
             displayCurrency
+          }
+          to
+          to_profile {
+            id
+            displayName
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+            displayCurrency
+          }
+          value
         }
+        tags {
+          id
+          typeId
+          value
+        }
+      }
+      ... on CrcTrust {
+        transaction_hash
+        address
+        can_send_to
+        limit
+      }
+      ... on CrcSignup {
+        transaction_hash
+        user
+        token
+      }
+      ... on CrcMinting {
+        transaction_hash
+        token
+        from
+        from_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        to
+        to_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        value
+      }
+      ... on EthTransfer {
+        transaction_hash
+        from
+        to
+        value
+      }
+      ... on Erc20Transfer {
+        transaction_hash
+        from
+        from_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        to
+        to_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        value
+      }
+      ... on GnosisSafeEthTransfer {
+        transaction_hash
+        initiator
+        from
+        to
+        value
+      }
+      ... on ChatMessage {
+        id
+        from
+        from_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        to
+        to_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        text
+      }
+      ... on MembershipOffer {
+        createdBy
+        organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        isAdmin
+      }
+      ... on MembershipAccepted {
+        createdBy
+        member
+        organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+      }
+      ... on MembershipRejected {
+        member
+        organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+      }
+      ... on WelcomeMessage {
+        invitedBy
+        invitedBy_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+      }
+      ... on InvitationCreated {
+        name
+        code
+      }
+      ... on InvitationRedeemed {
+        name
+        code
+        redeemedBy
+        redeemedBy_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+      }
+      ... on SaleEvent {
+        buyer
+        buyer_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        invoice {
+          id
+          buyerSignature
+          buyerSignedDate
+          sellerSignature
+          sellerSignedDate
+          createdAt
+          cancelledAt
+          cancelReason
+          paymentTransactionHash
+          lines {
+            amount
+            offer {
+              id
+              title
+              pictureUrl
+              pricePerUnit
+              tags {
+                typeId
+                value
+              }
+            }
+          }
+        }
+      }
+      ... on Purchased {
+        seller_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+        purchase {
+          id
+          createdAt
+          createdByAddress
+          total
+          lines {
+            id
+            amount
+            offer {
+              id
+              pictureUrl
+              title
+              description
+              pricePerUnit
+              tags {
+                typeId
+                value
+              }
+            }
+          }
+          invoices {
+            id
+            pickupCode
+            buyerProfile {
+              id
+              displayName
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+              displayCurrency
+            }
+            sellerProfile {
+              id
+              displayName
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+              displayCurrency
+            }
+            paymentTransactionHash
+            createdAt
+            cancelledAt
+            invoiceNo
+            sellerSignature
+            buyerSignature
+          }
+        }
+      }
+      ... on OrganisationCreated {
+        organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+          displayCurrency
+          displayCurrency
+        }
+      }
+      ... on MemberAdded {
+        createdBy
+        isAdmin
+        member
+        organisation
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+          displayCurrency
+          displayCurrency
+        }
+      }
+      ... on SafeVerified {
+        safe_address
+        organisation_profile {
+          name
+          avatarUrl
+          circlesAddress
+          displayCurrency
+          displayCurrency
+        }
+      }
+      ... on NewUser {
+        profile {
+          id
+          displayName
+          firstName
+          lastName
+          dream
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
+      }
     }
+  }
+}
+
+query aggregates(
+  $types: [AggregateType!]!
+  $safeAddress: String!
+  $filter: ProfileAggregateFilter
+) {
+  aggregates(types: $types, safeAddress: $safeAddress, filter: $filter) {
+    type
+    safe_address
+    safe_address_profile {
+      id
+      displayName
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+      displayCurrency
+    }
+    payload {
+      ... on Offers {
+        lastUpdatedAt
+        offers {
+          id
+          version
+          createdByProfile {
+            id
+            displayName
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+            displayCurrency
+          }
+          tags {
+            typeId
+            value
+          }
+          createdByAddress
+          createdAt
+          title
+          pictureUrl
+          pictureMimeType
+          description
+          pricePerUnit
+          timeCirclesPriceShare
+        }
+      }
+      ... on CrcBalances {
+        lastUpdatedAt
+        balances {
+          token_address
+          token_owner_address
+          token_owner_profile {
+            id
+            displayName
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+            displayCurrency
+          }
+          token_balance
+        }
+      }
+      ... on Erc20Balances {
+        lastUpdatedAt
+        balances {
+          token_address
+          token_owner_address
+          token_owner_profile {
+            id
+            displayName
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+            displayCurrency
+          }
+          token_balance
+        }
+      }
+      ... on Contacts {
+        lastUpdatedAt
+        contacts {
+          metadata {
+            name
+            directions
+            values
+            timestamps
+          }
+          lastContactAt
+          contactAddress
+          contactAddress_Profile {
+            type
+            id
+            displayName
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+            displayCurrency
+            city {
+              geonameid
+              name
+              country
+            }
+            memberships {
+              isAdmin
+              organisation {
+                id
+                circlesAddress
+                displayCurrency
+                circlesSafeOwner
+                name
+                description
+                avatarUrl
+                city {
+                  geonameid
+                  name
+                  country
+                }
+              }
+            }
+            verifications {
+              createdAt
+              revokedAt
+              verifierSafeAddress
+              verifierProfile {
+                circlesAddress
+                displayCurrency
+                avatarUrl
+                name
+                city {
+                  geonameid
+                  name
+                  country
+                }
+              }
+            }
+          }
+        }
+      }
+      ... on Members {
+        lastUpdatedAt
+        members {
+          ... on Profile {
+            successorOfCirclesAddress
+            circlesAddress
+            displayCurrency
+          }
+          ... on Organisation {
+            circlesAddress
+            displayCurrency
+          }
+        }
+      }
+      ... on Memberships {
+        lastUpdatedAt
+        organisations {
+          circlesAddress
+          displayCurrency
+        }
+      }
+      ... on Purchases {
+        lastUpdatedAt
+        purchases {
+          id
+          createdAt
+          createdByAddress
+          createdByProfile {
+            id
+            displayName
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+            displayCurrency
+          }
+          total
+          lines {
+            id
+            amount
+            offer {
+              id
+              version
+              title
+              description
+              pictureUrl
+              pricePerUnit
+              timeCirclesPriceShare
+              createdByProfile {
+                id
+                displayName
+                firstName
+                lastName
+                avatarUrl
+                circlesAddress
+                displayCurrency
+              }
+              tags {
+                typeId
+                value
+              }
+            }
+          }
+          invoices {
+            id
+            sellerAddress
+            paymentTransactionHash
+            buyerAddress
+            pickupCode
+            buyerSignature
+            buyerSignedDate
+            sellerSignature
+            sellerSignedDate
+            createdAt
+            cancelledAt
+            cancelReason
+            sellerProfile {
+              id
+              displayName
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+              displayCurrency
+            }
+          }
+        }
+      }
+      ... on Sales {
+        lastUpdatedAt
+        sales {
+          id
+          createdAt
+          sellerProfile {
+            id
+            displayName
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+            displayCurrency
+          }
+          buyerProfile {
+            id
+            displayName
+            firstName
+            lastName
+            avatarUrl
+            circlesAddress
+            displayCurrency
+            verifications {
+              createdAt
+              revokedAt
+              verifierSafeAddress
+              verifierProfile {
+                circlesAddress
+                displayCurrency
+                avatarUrl
+                name
+                city {
+                  geonameid
+                  name
+                  country
+                }
+              }
+            }
+          }
+          total
+          lines {
+            id
+            amount
+            offer {
+              id
+              version
+              title
+              description
+              pictureUrl
+              pricePerUnit
+              timeCirclesPriceShare
+              createdByProfile {
+                id
+                displayName
+                firstName
+                lastName
+                avatarUrl
+                circlesAddress
+                displayCurrency
+              }
+              tags {
+                typeId
+                value
+              }
+            }
+          }
+          invoices {
+            id
+            sellerAddress
+            paymentTransactionHash
+            buyerAddress
+            pickupCode
+            buyerSignature
+            buyerSignedDate
+            sellerSignature
+            sellerSignedDate
+            createdAt
+            cancelledAt
+            cancelReason
+            buyerProfile {
+              id
+              displayName
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+              displayCurrency
+              verifications {
+                createdAt
+                revokedAt
+                verifierSafeAddress
+                verifierProfile {
+                  circlesAddress
+                  displayCurrency
+                  avatarUrl
+                  name
+                  city {
+                    geonameid
+                    name
+                    country
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query directPath($from: String!, $to: String!, $amount: String!) {
+  directPath(from: $from, to: $to, amount: $amount) {
+    flow
+    transfers {
+      from
+      to
+      token
+      tokenOwner
+      value
+    }
+  }
+}
+
+query invoice($invoiceId: Int!) {
+  invoice(invoiceId: $invoiceId)
+}
+
+query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
+  verifications(pagination: $pagination, filter: $filter) {
+    createdAt
+    revokedAt
+    verifierSafeAddress
+    verifierProfile {
+      avatarUrl
+      name
+    }
+    verifiedSafeAddress
+    verifiedProfile {
+      id
+      displayName
+      firstName
+      lastName
+      avatarUrl
+      circlesAddress
+      displayCurrency
+    }
+  }
 }
 
 query findInvitationCreator($code: String!) {
-    findInvitationCreator(code: $code) {
-        circlesAddress
-        displayCurrency
-        displayName
-        firstName
-        lastName
-        avatarUrl
-    }
+  findInvitationCreator(code: $code) {
+    circlesAddress
+    displayCurrency
+    displayName
+    firstName
+    lastName
+    avatarUrl
+  }
 }

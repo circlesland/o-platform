@@ -4,7 +4,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 export default function relativeTimeString(
   time: string,
-  relativeDaysBase: number
+  relativeDaysBase: number,
+  showHours: boolean = false
 ) {
   if (!time) {
     return null;
@@ -15,7 +16,11 @@ export default function relativeTimeString(
   let relativeDaysAgo = now.setDate(now.getDate() - relativeDaysBase);
 
   if (relativeDaysAgo > convertedTime.getTime()) {
-    return dayjs(convertedTime).format("D. MM. YYYY");
+    if (showHours) {
+      return dayjs(convertedTime).format("D.MM. YYYY HH:mm");
+    } else {
+      return dayjs(convertedTime).format("D.MM. YYYY");
+    }
   } else {
     return dayjs().to(dayjs(convertedTime));
   }
