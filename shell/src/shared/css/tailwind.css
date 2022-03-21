@@ -444,3 +444,15 @@ button:focus {
 .inline-icon {
   margin-top: -0.12rem;
 }
+
+.ugly-color-gradient {
+  background: rgb(77, 8, 148);
+  background: linear-gradient(
+    90deg,
+    rgba(77, 8, 148, 1) 0%,
+    rgba(162, 47, 118, 1) 25%,
+    rgba(217, 79, 96, 1) 50%,
+    rgba(230, 129, 99, 1) 75%,
+    rgba(235, 210, 92, 1) 100%
+  );
+}
