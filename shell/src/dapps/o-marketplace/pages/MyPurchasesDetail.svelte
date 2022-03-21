@@ -17,10 +17,11 @@ import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
 import QrCode from "svelte-qrcode";
 import UserImage from "src/shared/atoms/UserImage.svelte";
-import Date from "../../../shared/atoms/Date.svelte";
+
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { _ } from "svelte-i18n";
 import { myPurchases } from "../../../shared/stores/myPurchases";
+import relativeTimeString from "../../../shared/functions/relativeTimeString";
 
 export let id: string;
 
@@ -192,8 +193,8 @@ onMount(async () => {
     <div class="w-full text-center">
       {#if purchase}
         <span class="text-dark-lightest"
-          >{$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDate")}<Date
-            time="{purchase.createdAt}" /></span>
+          >{$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDate")}
+          {relativeTimeString(purchase.createdAt, 1, true)}</span>
       {/if}
     </div>
   </header>
