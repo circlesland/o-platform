@@ -59,7 +59,7 @@ console.log(allowUtting);
       <h1>Welcome to the Market</h1>
       <span>Please choose your location</span>
     </section>
-    <section
+    <!-- <section
       class="flex items-start m-4 rounded-xl"
       class:cursor-pointer="{allowUtting}"
       on:click="{() =>
@@ -93,7 +93,7 @@ console.log(allowUtting);
           </div>
         </header>
       </div>
-    </section>
+    </section> -->
 
     <section
       class="flex items-start m-4 rounded-xl"
