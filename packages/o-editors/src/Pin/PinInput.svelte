@@ -35,10 +35,12 @@ const isKeyDelete = (key) => {
     key === KEYBOARD.ANDROID_BACKSPACE;
   return result;
 };
+
 const deleteCurrentPin = (i) => {
   pins[i] = "";
   pin = calcPin(pins);
 };
+
 const changeHandler = function (e, i) {
   const current = document.activeElement;
   const items = [...document.getElementsByClassName("pin-item")];
