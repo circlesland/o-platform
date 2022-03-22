@@ -142,6 +142,18 @@ body {
   @apply text-dark;
 }
 
+.btn-primary-lighter {
+  @apply bg-primary-lighter;
+  @apply border-0;
+  @apply text-dark;
+  @apply normal-case;
+}
+
+.btn-primary-lighter:hover {
+  @apply bg-primary-light;
+  @apply text-dark;
+}
+
 .btn-secondary {
   @apply bg-secondary-lightest;
   @apply border-0;
@@ -177,6 +189,51 @@ body {
 .btn-outline:hover {
   @apply bg-light-lighter;
   @apply text-dark;
+}
+
+.btn-outline.btn-success,
+.btn-outline.btn-success:active,
+.btn-outline.btn-success:focus {
+  @apply border;
+  @apply bg-white;
+  @apply text-success;
+  @apply border-success;
+}
+.btn-outline.btn-success:hover {
+  @apply border;
+  @apply bg-success-lightest;
+  @apply text-success;
+  @apply border-success;
+}
+
+.btn-outline.btn-secondary,
+.btn-outline.btn-secondary:active,
+.btn-outline.btn-secondary:focus {
+  @apply border;
+  @apply bg-white;
+  @apply text-secondary-light;
+  @apply border-secondary-light;
+}
+.btn-outline.btn-secondary:hover {
+  @apply border;
+  @apply bg-secondary-lightest;
+  @apply text-secondary-light;
+  @apply border-secondary-light;
+}
+
+.btn-outline.btn-primary-lighter,
+.btn-outline.btn-primary-lighter:active,
+.btn-outline.btn-primary-lighter:focus {
+  @apply border;
+  @apply bg-white;
+  @apply text-primary-lighter;
+  @apply border-primary-lighter;
+}
+.btn-outline.btn-primary-lighter:hover {
+  @apply border;
+  @apply bg-primary-lighter;
+  @apply text-primary-light;
+  @apply border-primary-light;
 }
 
 .circles-button {

@@ -29,7 +29,7 @@ $: {
 
   const pickUpAction = {
     icon: "check",
-    color: "success",
+    color: "primary-lighter",
     title: "Mark as served",
     action: async () => {
       await mySales.completeSale(invoice.id);
@@ -38,7 +38,7 @@ $: {
   };
   const unPickUpAction = {
     icon: "cancel",
-    color: "secondary",
+    color: "outline btn-success",
     title: "Not served",
     action: async () => {
       await mySales.revokeSale(invoice.id);
@@ -147,7 +147,7 @@ $: {
 
           <div
             class="inline-block mb-2 text-xs"
-            class:text-inactive="{!sale.invoice.sellerSignature}"
+            class:text-primary-lighter="{!sale.invoice.sellerSignature}"
             class:text-success="{sale.invoice.sellerSignature}">
             {#if !sale.invoice.sellerSignature}
               <span>{$_("dapps.o-marketplace.pages.mySales.notPickedUp")}</span>
