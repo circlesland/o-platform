@@ -649,7 +649,8 @@ export const en = {
             cancelled: "cancelled",
             paymentPending: "payment pending",
             pickupCode: "pick-up code",
-            pickedUp: " picked up ",
+            pickedUp: "picked up ",
+            notPickedUp: "not picked up ",
           },
           offerDetail: {
             loadingOffers: "Loading offers...",

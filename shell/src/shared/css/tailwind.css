@@ -130,6 +130,41 @@ body {
   @apply border-dark;
 }
 
+.btn-success {
+  @apply bg-success;
+  @apply border-0;
+  @apply text-dark;
+  @apply normal-case;
+}
+
+.btn-success:hover {
+  @apply bg-success-light;
+  @apply text-dark;
+}
+
+.btn-secondary {
+  @apply bg-secondary-lightest;
+  @apply border-0;
+  @apply text-dark;
+  @apply normal-case;
+}
+
+.btn-secondary:hover {
+  @apply bg-secondary-light;
+  @apply text-white;
+}
+
+.btn-alert {
+  @apply bg-alert;
+  @apply border-0;
+  @apply text-white;
+  @apply normal-case;
+}
+
+.btn-alert:hover {
+  @apply bg-alert-light;
+  @apply text-white;
+}
 .btn-error {
   @apply bg-alert-dark;
   @apply text-white;
@@ -443,6 +478,10 @@ button:focus {
 
 .inline-icon {
   margin-top: -0.12rem;
+}
+
+.cardborder {
+  border: 1px solid #d9e2ee;
 }
 
 .ugly-color-gradient {

@@ -3,6 +3,7 @@ import { fly } from "svelte/transition";
 import { quintInOut } from "svelte/easing";
 import ButtonContext from "./buttonContext";
 import { createEventDispatcher } from "svelte";
+import Icons from "../../molecules/Icons.svelte";
 
 export let context: ButtonContext;
 
@@ -25,13 +26,20 @@ let iconClass =
 </script>
 
 <button
-  class="btn transition-all overflow-hidden transform relative px-8 btn-{context.color}
+  class="btn transition-all overflow-hidden transform relative  btn-{context.color}
   "
+  class:btn-square="{context.style && context.style == 'square'}"
+  class:px-8="{context.style != 'square'}"
   on:click="{() => handleClick(context.action)}">
   <!-- <slot /> -->
-  {context.label}
-
-  {#if context.loading}
+  {context.label ? context.label : ""}
+  {#if context.icon}
+    <span
+      in:fly|local="{{ duration: 600, y: 30, easing: quintInOut }}"
+      out:fly|local="{{ duration: 300, y: 30 }}">
+      <Icons icon="{context.icon}" />
+    </span>
+  {:else if context.loading}
     <span
       in:fly|local="{{ duration: 600, y: 30, easing: quintInOut }}"
       out:fly|local="{{ duration: 300, y: 30 }}"
