@@ -1,35 +1,35 @@
 <script lang="ts">
-  import {
-    EventType,
-    Invoice,
-    InvoiceDocument,
-    Profile,
-    ProfileEvent,
-    QueryInvoiceArgs,
-    SaleEvent,
-  } from "../../../shared/api/data/types";
-  import {onMount} from "svelte";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import {push} from "svelte-spa-router";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import Date from "../../../shared/atoms/Date.svelte";
-  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import {saveBufferAs} from "../../../shared/saveBufferAs";
-  import {ApiClient} from "../../../shared/apiConnection";
-  import {_} from "svelte-i18n";
-  import {mySales} from "../../../shared/stores/mySales";
-  import {contacts} from "../../../shared/stores/contacts";
+import {
+  EventType,
+  Invoice,
+  InvoiceDocument,
+  Profile,
+  ProfileEvent,
+  QueryInvoiceArgs,
+  SaleEvent,
+} from "../../../shared/api/data/types";
+import { onMount } from "svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import { push } from "svelte-spa-router";
+import UserImage from "src/shared/atoms/UserImage.svelte";
 
-  export let id: string;
+import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+import { saveBufferAs } from "../../../shared/saveBufferAs";
+import { ApiClient } from "../../../shared/apiConnection";
+import { _ } from "svelte-i18n";
+import { mySales } from "../../../shared/stores/mySales";
+import { contacts } from "../../../shared/stores/contacts";
+import relativeTimeString from "../../../shared/functions/relativeTimeString";
 
-  let isLoading: boolean;
-  let loadingRequested: boolean;
+export let id: string;
+
+let isLoading: boolean;
+let loadingRequested: boolean;
 let error: Error;
 let buyerProfile: Profile;
 
 let groupedItems;
 let actions = [];
-
 
 let saleEvent: ProfileEvent;
 let invoice: Invoice;
@@ -101,9 +101,7 @@ async function load() {
           "dapps.o-marketplace.pages.mySaleDetail.transaction"
         ),
         action: () =>
-          push(
-            `#/banking/transactions/${invoice.paymentTransactionHash}`
-          ),
+          push(`#/banking/transactions/${invoice.paymentTransactionHash}`),
       },
       {
         icon: "document",
@@ -112,14 +110,14 @@ async function load() {
         ),
         action: async () => {
           //for (let invoice of invoice) {
-            const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
-              InvoiceDocument,
-              {
-                invoiceId: invoice.id,
-              }
-            );
+          const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
+            InvoiceDocument,
+            {
+              invoiceId: invoice.id,
+            }
+          );
 
-            saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
+          saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
           //}
         },
       }
@@ -156,10 +154,10 @@ function totalPrice(items) {
 }
 
 onMount(async () => {
-  const contactsSub = contacts.subscribe(next => {
+  const contactsSub = contacts.subscribe((next) => {
     load();
   });
-  const mySalesSub = mySales.subscribe(next => {
+  const mySalesSub = mySales.subscribe((next) => {
     load();
   });
 
@@ -180,8 +178,8 @@ onMount(async () => {
     <div class="w-full text-center">
       {#if invoice}
         <span class="text-dark-lightest"
-          >{$_("dapps.o-marketplace.pages.mySaleDetail.saleDate")}<Date
-            time="{invoice.createdAt}" /></span>
+          >{$_("dapps.o-marketplace.pages.mySaleDetail.saleDate")}
+          {relativeTimeString(invoice.createdAt, 1, true)}</span>
       {/if}
     </div>
     {#if invoice}
@@ -238,7 +236,8 @@ onMount(async () => {
       <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
         <div
           class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left cursor-pointer"
-          on:click="{() => push(`#/contacts/profile/${buyerProfile.circlesAddress}`)}">
+          on:click="{() =>
+            push(`#/contacts/profile/${buyerProfile.circlesAddress}`)}">
           <div class="inline-flex">
             <UserImage
               profile="{buyerProfile}"

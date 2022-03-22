@@ -130,6 +130,53 @@ body {
   @apply border-dark;
 }
 
+.btn-success {
+  @apply bg-success;
+  @apply border-0;
+  @apply text-dark;
+  @apply normal-case;
+}
+
+.btn-success:hover {
+  @apply bg-success-light;
+  @apply text-dark;
+}
+
+.btn-primary-lighter {
+  @apply bg-primary-lighter;
+  @apply border-0;
+  @apply text-dark;
+  @apply normal-case;
+}
+
+.btn-primary-lighter:hover {
+  @apply bg-primary-light;
+  @apply text-dark;
+}
+
+.btn-secondary {
+  @apply bg-secondary-lightest;
+  @apply border-0;
+  @apply text-dark;
+  @apply normal-case;
+}
+
+.btn-secondary:hover {
+  @apply bg-secondary-light;
+  @apply text-white;
+}
+
+.btn-alert {
+  @apply bg-alert;
+  @apply border-0;
+  @apply text-white;
+  @apply normal-case;
+}
+
+.btn-alert:hover {
+  @apply bg-alert-light;
+  @apply text-white;
+}
 .btn-error {
   @apply bg-alert-dark;
   @apply text-white;
@@ -142,6 +189,51 @@ body {
 .btn-outline:hover {
   @apply bg-light-lighter;
   @apply text-dark;
+}
+
+.btn-outline.btn-success,
+.btn-outline.btn-success:active,
+.btn-outline.btn-success:focus {
+  @apply border;
+  @apply bg-white;
+  @apply text-success;
+  @apply border-success;
+}
+.btn-outline.btn-success:hover {
+  @apply border;
+  @apply bg-success-lightest;
+  @apply text-success;
+  @apply border-success;
+}
+
+.btn-outline.btn-secondary,
+.btn-outline.btn-secondary:active,
+.btn-outline.btn-secondary:focus {
+  @apply border;
+  @apply bg-white;
+  @apply text-secondary-light;
+  @apply border-secondary-light;
+}
+.btn-outline.btn-secondary:hover {
+  @apply border;
+  @apply bg-secondary-lightest;
+  @apply text-secondary-light;
+  @apply border-secondary-light;
+}
+
+.btn-outline.btn-primary-lighter,
+.btn-outline.btn-primary-lighter:active,
+.btn-outline.btn-primary-lighter:focus {
+  @apply border;
+  @apply bg-white;
+  @apply text-primary-lighter;
+  @apply border-primary-lighter;
+}
+.btn-outline.btn-primary-lighter:hover {
+  @apply border;
+  @apply bg-primary-lighter;
+  @apply text-primary-light;
+  @apply border-primary-light;
 }
 
 .circles-button {
@@ -269,8 +361,8 @@ body {
   @apply text-dark;
   /* margin-left: 0.15rem;
   margin-top: 0.15rem; */
-  @apply w-5;
-  @apply h-5;
+  @apply w-7;
+  @apply h-7;
 }
 
 .processPill .navbuttonicon {
@@ -443,4 +535,20 @@ button:focus {
 
 .inline-icon {
   margin-top: -0.12rem;
+}
+
+.cardborder {
+  border: 1px solid #d9e2ee;
+}
+
+.ugly-color-gradient {
+  background: rgb(77, 8, 148);
+  background: linear-gradient(
+    90deg,
+    rgba(77, 8, 148, 1) 0%,
+    rgba(162, 47, 118, 1) 25%,
+    rgba(217, 79, 96, 1) 50%,
+    rgba(230, 129, 99, 1) 75%,
+    rgba(235, 210, 92, 1) 100%
+  );
 }

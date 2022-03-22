@@ -30,6 +30,7 @@ module.exports = {
         "10xl": "9rem",
         "11xl": "10rem",
         "12xl": "14rem",
+        "13xl": "15rem",
       },
       borderColor: ["dark-lightest"],
       typography: {
