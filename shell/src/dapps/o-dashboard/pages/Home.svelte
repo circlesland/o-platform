@@ -13,6 +13,7 @@ import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
+import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -24,8 +25,7 @@ let disableBanking: boolean = false;
 let canVerify: boolean = false;
 
 let showInviteButton = false;
-let progressTarget: number = 89;
-let progressTargetDisplay: number = 232;
+
 let profilesCount: number;
 let statsResult: any;
 
@@ -42,8 +42,6 @@ const init = async () => {
 
   statsResult = await fetchStats();
   profilesCount = statsResult.data.stats.profilesCount;
-  profilesCount -= 143;
-  console.log("profilesCount", profilesCount);
 };
 
 onMount(init);
@@ -77,45 +75,10 @@ async function fetchStats() {
         <h1>WANT MORE PARTIES?</h1>
         <span class="text-dark-lightest">Invite your friends.</span>
       </div>
-      <div class="w-full m-auto mt-4 xl:w-2/3">
-        <div class="flex flex-row items-stretch">
-          <div class="flex-grow text-sm whitespace-nowrap text-primary">
-            143 Citizens
-          </div>
-          <div
-            class="text-sm text-light-dark justify-self-end"
-            class:text-light-dark="{profilesCount < progressTarget}"
-            class:text-primary="{profilesCount >= progressTarget}">
-            {progressTargetDisplay} Citizens
-          </div>
-        </div>
-
-        <progress
-          class="relative w-full progress progress-primary"
-          value="{profilesCount ? profilesCount : '0'}"
-          max="{progressTarget}"></progress>
-        {#if profilesCount > 0}
-          <div
-            class="text-xs"
-            class:hidden="{profilesCount >= progressTarget}"
-            style="margin-left: {(profilesCount / progressTarget) * 100 - 5}%">
-            {profilesCount ? profilesCount + 143 : ""}
-          </div>
-        {/if}
-
-        <!-- style="margin-left: {(70 / 200) * 100}%" -->
-        <div class="flex flex-row items-stretch">
-          <div class="flex-grow text-sm whitespace-nowrap text-primary">
-            Party: Alte Utting
-          </div>
-          <div
-            class="text-sm justify-self-end"
-            class:text-light-dark="{profilesCount < progressTarget}"
-            class:text-primary="{profilesCount >= progressTarget}">
-            Next Party
-          </div>
-        </div>
-      </div>
+      <CitizensProgressBar
+        profilesCount="{profilesCount}"
+        previousTarget="{233}"
+        progressTarget="{377}" />
       <div class="mt-4 mb-1 text-center">
         <button class="btn btn-primary" on:click="{() => push('/home/invites')}"
           >My Invites</button>
