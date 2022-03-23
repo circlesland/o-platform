@@ -576,6 +576,7 @@ type Query {
     findSafesByOwner(owner: String!): [SafeInfo!]!
     getStringByMaxVersion(key: String, lang: String): i18n
     getStringByLanguage(lang: String): i18n
+    getAvailableLanguages: [i18n]
     hubSignupTransaction: ProfileEvent
     init: SessionInfo!
     invitationTransaction: ProfileEvent

@@ -21,11 +21,7 @@ import {
 export let key: string;
 export let lang: string = "en";
 
-let langFallback: string = "en";
-let createdBy: string;
 let value: string;
-
-let safeAdress = $me.circlesAddress;
 
 function getValue() {
     ApiClient.query < I18n, QueryGetStringByMaxVersionArgs > (GetStringByMaxVersionDocument, {
@@ -66,7 +62,6 @@ function writeValueToDb() {
     ApiClient.query < I18n, MutationUpdateValueArgs > (UpdateValueDocument, {
         lang: lang,
         key: key,
-        createdBy: safeAdress,
         value: value,
     })
 }
@@ -79,24 +74,24 @@ function labelClicked(e: MouseEvent) {
                 key: key
             })
             .then(i18nResult => {
+                lang = langToCreatePrompt;
                 if (i18nResult == null) {
                     ApiClient.query < I18n, MutationAddNewLangArgs > (AddNewLangDocument, {
                         langToCopyFrom: "en",
                         langToCreate: langToCreatePrompt
                     });
-                    ApiClient.query < I18n, MutationUpdateValueArgs > (UpdateValueDocument, {
-                        lang: lang,
-                        key: key,
-                        createdBy: safeAdress,
-                        value: prompt(value),
-                    })
+                    alert(`created language-Database and switched to ${langToCreatePrompt}`);
+                    (function() {
+                        value = prompt(value);
+                        writeValueToDb();
+                        window.alert(`You saved '${value}'`);
+                    })();
                 } else {
                     alert(`switched to language ${langToCreatePrompt}`);
                     (function() {
-                        createdBy = safeAdress;
                         value = prompt(value);
                         writeValueToDb();
-                        window.alert(`${createdBy} has saved '${value}'`);
+                        window.alert(`You saved '${value}'`);
                     })();
                 }
             });

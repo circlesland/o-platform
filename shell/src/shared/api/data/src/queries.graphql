@@ -1551,3 +1551,9 @@ query getStringByLanguage($lang: String) {
         value
     }
 }
+
+query getAvailableLanguages {
+    getAvailableLanguages {
+        lang
+    }
+}

@@ -937,6 +937,7 @@ export type Query = {
   findSafesByOwner: Array<SafeInfo>;
   getStringByMaxVersion?: Maybe<I18n>;
   getStringByLanguage?: Maybe<I18n>;
+  getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
   init: SessionInfo;
   invitationTransaction?: Maybe<ProfileEvent>;
@@ -2868,6 +2869,17 @@ export type GetStringByLanguageQuery = (
   )> }
 );
 
+export type GetAvailableLanguagesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAvailableLanguagesQuery = (
+  { __typename?: 'Query' }
+  & { getAvailableLanguages?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang'>
+  )>>> }
+);
+
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4795,6 +4807,13 @@ export const GetStringByLanguageDocument = gql`
   }
 }
     `;
+export const GetAvailableLanguagesDocument = gql`
+    query getAvailableLanguages {
+  getAvailableLanguages {
+    lang
+  }
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -4989,6 +5008,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getStringByLanguage(variables?: GetStringByLanguageQueryVariables): Promise<GetStringByLanguageQuery> {
       return withWrapper(() => client.request<GetStringByLanguageQuery>(print(GetStringByLanguageDocument), variables));
+    },
+    getAvailableLanguages(variables?: GetAvailableLanguagesQueryVariables): Promise<GetAvailableLanguagesQuery> {
+      return withWrapper(() => client.request<GetAvailableLanguagesQuery>(print(GetAvailableLanguagesDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));
