@@ -3,7 +3,7 @@ query init {
     isLoggedOn
     hasProfile
     profileId
-    lastAcknowledgedAt
+    # lastAcknowledgedAt
     capabilities {
       type
     }
@@ -67,12 +67,16 @@ query init {
   }
 }
 
+query lastAcknowledgedAt($safeAddress: String!) {
+  lastAcknowledgedAt(safeAddress: $safeAddress)
+}
+
 query sessionInfo {
   sessionInfo {
     isLoggedOn
     hasProfile
     profileId
-    lastAcknowledgedAt
+    # lastAcknowledgedAt
     capabilities {
       type
     }

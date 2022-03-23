@@ -2,7 +2,7 @@ import {writable} from "svelte/store";
 import {
   AcknowledgeDocument,
   Direction,
-  EventType,
+  EventType, LastAcknowledgedAtDocument, LastAcknowledgedAtQueryVariables,
   Organisation,
   OrganisationsByAddressDocument,
   OrganisationsByAddressQueryVariables,
@@ -34,7 +34,7 @@ async function queryEvents(mySafeAddress: string) {
   let pagination: PaginationArgs = {
     order: SortOrder.Asc,
     limit: 100,
-    continueAt: sessionInfo.lastAcknowledgedAt ?? new Date(0).toJSON(),
+    continueAt: lastAcknowledgedAt ?? new Date(0).toJSON(),
   };
 
   return await ApiClient.query<ProfileEvent[], StreamQueryVariables>(
