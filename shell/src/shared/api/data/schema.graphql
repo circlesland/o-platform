@@ -297,6 +297,7 @@ type Invoice {
     sellerProfile: Profile
     sellerSignature: Boolean
     sellerSignedDate: String
+    simplePickupCode: String
 }
 
 type InvoiceLine {

@@ -1109,6 +1109,7 @@ query stream(
           invoices {
             id
             pickupCode
+            simplePickupCode
             buyerProfile {
               id
               displayName
@@ -1395,6 +1396,7 @@ query aggregates(
             paymentTransactionHash
             buyerAddress
             pickupCode
+            simplePickupCode
             buyerSignature
             buyerSignedDate
             sellerSignature
@@ -1486,6 +1488,7 @@ query aggregates(
             paymentTransactionHash
             buyerAddress
             pickupCode
+            simplePickupCode
             buyerSignature
             buyerSignedDate
             sellerSignature

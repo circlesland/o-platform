@@ -292,6 +292,11 @@ onMount(async () => {
             </h1>
           {:else}
             <div class="container">
+              {#if invoice.simplePickupCode}
+              <center>
+                <h1>{invoice.simplePickupCode}</h1>
+              </center>
+              {/if}
               <center>
                 <QrCode value="{invoice.pickupCode}" color="#081B4A" />
               </center>
