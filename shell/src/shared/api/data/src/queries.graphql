@@ -212,6 +212,7 @@ query myProfile {
         displayCurrency
         circlesSafeOwner
         name
+        displayName
         description
         avatarUrl
       }
@@ -225,6 +226,7 @@ query myProfile {
         displayCurrency
         avatarUrl
         name
+        displayName
       }
     }
   }
@@ -256,6 +258,7 @@ query profiles($id: [Int!]!) {
         displayCurrency
         circlesSafeOwner
         name
+        displayName
         description
         avatarUrl
         city {
@@ -274,6 +277,7 @@ query profiles($id: [Int!]!) {
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -337,6 +341,7 @@ query profilesByName($searchString: String!) {
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -374,6 +379,7 @@ query getRecentProfiles($pagination: PaginationArgs) {
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -409,6 +415,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
         displayCurrency
         circlesSafeOwner
         name
+        displayName
         description
         avatarUrl
         city {
@@ -427,6 +434,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -463,6 +471,7 @@ query profilesByIds($id: [Int!]!) {
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -544,6 +553,7 @@ query profileById($id: Int!) {
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -579,6 +589,7 @@ query profileBySafeAddress($safeAddress: String!) {
         displayCurrency
         circlesSafeOwner
         name
+        displayName
         description
         avatarUrl
         city {
@@ -597,6 +608,7 @@ query profileBySafeAddress($safeAddress: String!) {
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -691,6 +703,7 @@ query organisationsByAddress($addresses: [String!]!) {
         displayCurrency
         createdAt
         name
+        displayName
         avatarUrl
         city {
           geonameid
