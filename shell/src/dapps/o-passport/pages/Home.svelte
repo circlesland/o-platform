@@ -8,11 +8,18 @@ import { Profile } from "../../../shared/api/data/types";
 import { upsertIdentity } from "../processes/upsertIdentity";
 import { _ } from "svelte-i18n";
 
+import { Environment } from "../../../shared/environment";
+import QRCodeStyling from "qr-code-styling";
+import { AvataarGenerator } from "../../../shared/avataarGenerator";
+
 let name;
 let profile: Profile;
+let profileQrcode;
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+
+const options = {};
 
 $: name = profile?.circlesAddress ? profile.circlesAddress : "";
 
@@ -22,6 +29,51 @@ $: {
   } else {
     profile = undefined;
   }
+
+  const qrCode = new QRCodeStyling({
+    width: 300,
+    height: 300,
+    type: "svg",
+    data: `${Environment.externalUrl}/#/contacts/profile/${profile.circlesAddress}`,
+
+    margin: 10,
+    qrOptions: {
+      typeNumber: 0,
+      mode: "Byte",
+      errorCorrectionLevel: "Q",
+    },
+    imageOptions: {
+      hideBackgroundDots: true,
+      imageSize: 0.7,
+      margin: 6,
+      crossOrigin: "anonymous",
+    },
+    dotsOptions: {
+      // color: "#081B4A",
+      gradient: {
+        type: "linear", // 'radial'
+        rotation: 0,
+        colorStops: [
+          { offset: 0, color: "#20d9a2" },
+          { offset: 1, color: "#003399" },
+        ],
+      },
+      type: "dots",
+    },
+    backgroundOptions: {
+      color: "#ffffff",
+    },
+    cornersSquareOptions: {
+      color: "#35495E",
+      type: "extra-rounded",
+    },
+    cornersDotOptions: {
+      color: "#35495E",
+      type: "dot",
+    },
+    image: "/logos/circles.png",
+  });
+  qrCode.append(profileQrcode);
 }
 
 function editProfile(dirtyFlags: { [x: string]: boolean }) {
@@ -31,8 +83,9 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
 
 <PassportHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
-  <div class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md">
+<div class="flex flex-col px-4 mx-auto mb-20 -mt-3 space-y-6 md:w-2/3 xl:w-1/2">
+  <div
+    class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md cardborder">
     <!-- <section class="justify-center">
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
@@ -87,5 +140,20 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
         </div>
       </section>
     {/if}
+  </div>
+  <div
+    class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md cardborder">
+    <section class="justify-center">
+      <div class="flex flex-col w-full space-y-2">
+        <div class="text-left text-2xs text-dark-lightest">
+          {$_("dapps.o-passport.pages.home.qrcode")}
+        </div>
+        <div class="container">
+          <center>
+            <div bind:this="{profileQrcode}"></div>
+          </center>
+        </div>
+      </div>
+    </section>
   </div>
 </div>

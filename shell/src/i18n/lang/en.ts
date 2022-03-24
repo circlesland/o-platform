@@ -1041,6 +1041,7 @@ export const en = {
             passion: "Passion",
             noPassionSet: "No passion set.",
             address: "Address",
+            qrcode: "Show QR Code to others to get directly to your profile",
           },
           settings: {
             notifications: "Would you like to receive our Newsletter?",
