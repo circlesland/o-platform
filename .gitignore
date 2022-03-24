@@ -8,4 +8,5 @@ packages/o-process/dist/
 packages/o-utils/dist/
 shell/public/bundle.css
 shell/public/bundle.js
+shell/public/index.html
 shell/public/bundle.js.LICENSE.txt
