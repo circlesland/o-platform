@@ -14,6 +14,7 @@ let categories = [
         action: () => {},
       },
     ],
+    component: null,
   },
 ];
 

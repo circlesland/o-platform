@@ -263,7 +263,7 @@ export const en = {
             verify: "Verify",
             revoke: "Revoke verification",
             accountVerified: "Account verified",
-            verifiedClickToRevoke: "Verified. click to Revoke",
+            verifiedClickToRevoke: "Unverify",
             accountVerificationRevoked: "Account verification revoked",
             revokedUppercase: "REVOKED",
             trust: "Trust",
