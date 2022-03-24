@@ -3,8 +3,10 @@
  * Edge Case: if the very first items are both super long, it will break into a new line even before clicking on 'more'
  */
 import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
+import { Profile } from "../api/data/types";
 export let actions: {
-  icon: string;
+  icon?: string;
+  avatar?: Profile;
   title: string;
   colorClass: string;
   action: () => void;
@@ -34,6 +36,7 @@ $: {
     {#each actions as action}
       <ActionListItem
         icon="{action.icon}"
+        avatar="{action.avatar}"
         title="{action.title}"
         colorClass="{action.colorClass}"
         on:click="{() => handleClick(action)}" />

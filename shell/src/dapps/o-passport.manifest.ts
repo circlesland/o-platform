@@ -8,6 +8,9 @@ import { logout } from "./o-passport/processes/logout";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
+import { loadProfile } from "./o-passport/processes/identify/services/loadProfile";
+import { ContactsDappState } from "./o-contacts.manifest";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -86,7 +89,7 @@ export const passport: DappManifest<DappState> = {
     isSystem: false,
     routeParts: ["=actions"],
     items: async () => {
-      return [
+      let items = [
         {
           key: "logout",
           title: "Logout",
@@ -96,6 +99,42 @@ export const passport: DappManifest<DappState> = {
           },
         },
       ];
+
+      const myProfile = await loadProfile();
+      let organisations: any;
+
+      const switcherMyProfile = {
+        key: "logout",
+        title: myProfile.displayName,
+        avatar: myProfile,
+        action: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.authenticated",
+            profile: myProfile,
+          });
+        },
+      };
+
+      if (myProfile.memberships && myProfile.memberships.length > 0) {
+        const myMemberships = myProfile.memberships
+          //.filter((o) => o.isAdmin)
+          .map((o) => o.organisation);
+        organisations = <any>[switcherMyProfile, ...myMemberships].map((o) => {
+          return {
+            key: "orga",
+            title: o.displayName,
+            avatar: o,
+            action: () => {
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.authenticated",
+                profile: o,
+              });
+            },
+          };
+        });
+      }
+
+      return [items, ...organisations];
     },
   },
   isEnabled: true,
