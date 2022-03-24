@@ -110,7 +110,13 @@ const submitHandler = () => {
 
 <style>
 :global(.pincode-input.pincode-input--filled) {
+  border-color: #0be09d;
+}
+:global(.pincode-input.pincode-input--focused) {
   border-color: #41c7f1;
+}
+:global(.pincode-input) {
+  border: 1px solid #d6d6d6;
 }
 
 @media (max-width: 640px) {
@@ -122,7 +128,7 @@ const submitHandler = () => {
     height: 45px;
     line-height: 45px;
     border-radius: 3px;
-    border: 2px solid gray;
+    border: 1px solid #d6d6d6;
     text-align: center;
     font-size: 1.5rem;
     text-transform: uppercase;
