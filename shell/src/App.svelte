@@ -22,7 +22,6 @@
   import {GraphQLClient} from "graphql-request";
   import {me} from "./shared/stores/me"
   import {Environment} from "./shared/environment";
-
   const runningProcesses: {
     [id: string]: Process;
   } = {};
@@ -212,7 +211,6 @@
   import {interpret} from "xstate";
   import {initMachine} from "./dapps/o-onboarding/processes/init";
   import {ubiMachine} from "./shared/ubiTimer2";
-  import * as bip39 from "bip39";
 
   import {performOauth} from "./dapps/o-humanode/processes/performOauth";
   import { isLoading } from "svelte-i18n";

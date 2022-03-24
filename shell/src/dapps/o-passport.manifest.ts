@@ -10,6 +10,8 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { loadProfile } from "./o-passport/processes/identify/services/loadProfile";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import {AvataarGenerator} from "../shared/avataarGenerator";
+import {JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -89,8 +91,9 @@ export const passport: DappManifest<DappState> = {
     routeParts: ["=actions"],
     items: async () => {
       let jumplistitems = [
-        {
+        <JumplistItem>{
           key: "logout",
+          type: "action",
           title: "Logout",
           icon: "logout",
           action: () => {
@@ -107,11 +110,13 @@ export const passport: DappManifest<DappState> = {
         const myMemberships = myProfile.memberships
           //.filter((o) => o.isAdmin)
           .map((o) => o.organisation);
+
         organisations = <any>[myProfile, ...myMemberships].map((o) => {
-          return {
+          return <JumplistItem>{
             key: o.circlesAddress,
             title: o.displayName,
-            icon: o.avatarUrl,
+            type: "profile",
+            icon: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.circlesAddress),
             action: () => {
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.authenticated",
@@ -122,7 +127,7 @@ export const passport: DappManifest<DappState> = {
         });
       }
 
-      return [jumplistitems, ...organisations];
+      return [...jumplistitems, ...organisations];
     },
   },
   isEnabled: true,

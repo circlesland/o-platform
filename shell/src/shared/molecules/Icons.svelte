@@ -517,6 +517,17 @@ const icons = {
 export let icon: string = null;
 </script>
 
-{#if icon}
+{#if icon && !icon.startsWith("http") && !icon.startsWith("data:")}
   {@html icons[icon]}
+{:else}
+  <div
+          class="self-center text-center rounded-full justify-self-center"
+          style="padding: {size >= 20 ? `4px` : `1px`}">
+    <div
+            class="w-{size} h-{size} m-auto rounded-full bg-white">
+      <img
+              class="rounded-full w-{size} h-{size}"
+              src="{icon}" />
+    </div>
+  </div>
 {/if}

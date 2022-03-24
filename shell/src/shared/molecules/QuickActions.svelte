@@ -1,66 +1,63 @@
-<script>
-import { clickOutside } from "src/shared/functions/clickOutside.ts";
-import { createEventDispatcher, onMount } from "svelte";
+<script lang="ts">
+  import {clickOutside} from "src/shared/functions/clickOutside.ts";
+  import {createEventDispatcher, onMount} from "svelte";
 
-import { dapps } from "src/loader";
-import DetailActionBar from "./DetailActionBar.svelte";
+  import {dapps} from "src/loader";
+  import DetailActionBar from "./DetailActionBar.svelte";
+  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
+  import {string} from "yup";
+  import {me} from "../stores/me";
+  import ProfileSwitcherBar from "./ProfileSwitcherBar.svelte";
 
-let categories = [
-  {
-    title: "",
-    items: [
-      {
-        title: "",
-        action: () => {},
-      },
-    ],
-    component: null,
-  },
-];
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: RuntimeDapp<any>;
 
-const components = [
-  {
+
+  let categories: {
+    manifest: DappManifest<any>,
+    items: {
+      ["action"]: JumplistItem[],
+      ["profile"]: JumplistItem[],
+    }
+  }[] = [];
+
+  const components = [
+    /*{
     type: "profile",
     component: NotificationViewChatMessage,
-  },
-  {
-    type: "action",
-    component: DetailActionBar,
-  },
-];
+  },*/
+    {
+      type: "action",
+      component: DetailActionBar,
+    },
+  ];
 
-onMount(async () => {
-  categories = await Promise.all(
-    dapps
-      .filter((o) => o.jumplist)
-      .map(async (o) => {
-        let items = await o.jumplist.items({}, o, o);
-        return {
-          title: o.title,
-          actionItems: items
-            .filter((o) => o.type == "action")
-            .map((p) => {
-              return {
-                title: p.title,
-                icon: p.icon,
-                action: p.action,
-              };
-            }),
-          profileItems: items
-            .filter((o) => o.type == "profile")
-            .map((p) => {
-              return {
-                title: p.title,
-                icon: p.icon,
-                action: p.action,
-              };
-            }),
-        };
-      })
-  );
-});
+  type JumplistItemsByDappAndType = {
+    [dappId: string]: {
+      type: string,
+      items: JumplistItem[]
+    }[]
+  };
+  onMount(async () => {
+    const manifestsWithJumplist = dapps.filter((o) => o.jumplist);
+    categories = await Promise.all(manifestsWithJumplist.map(async o => {
+      const jumplistItems = await o.jumplist.items({}, runtimeDapp);
+      return <{ manifest: DappManifest<any>, items: { ["action"]: JumplistItem[], ["profile"]: JumplistItem[] } }>{
+        manifest: o,
+        items: jumplistItems.reduce((p, c) => {
+          if (!p[c.type ?? "action"]) {
+            p[c.type ?? "action"] = [];
+          }
+          p[c.type ?? "action"].push(c);
+          return p;
+        }, {})
+      };
+    }));
+  });
 
-const eventDispatcher = createEventDispatcher();
+  const eventDispatcher = createEventDispatcher();
 </script>
 
 <div
@@ -70,10 +67,18 @@ const eventDispatcher = createEventDispatcher();
   <div class="relative flex-shrink-0 w-full p-6 space-y-2">
     {#each categories as category}
       <div class="text-dark-lightest text-3xs sm:text-sm">
-        {category.title}
+        {category.manifest.title}
       </div>
       <div class="">
-        <DetailActionBar actions="{category.items}" />
+        <DetailActionBar actions="{category.items['action'] ? category.items['action'] : []}" />
+      </div>
+    {/each}
+  </div>
+  <hr/>
+  <div class="relative flex-shrink-0 w-full p-6 space-y-2">
+    {#each categories.filter(o => o.items['profile']) as category}
+      <div class="">
+        <ProfileSwitcherBar actions="{category.items['profile'] ? category.items['profile'] : []}" />
       </div>
     {/each}
   </div>
