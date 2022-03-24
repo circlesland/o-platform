@@ -122,6 +122,9 @@ export const passport: DappManifest<DappState> = {
                 type: "shell.authenticated",
                 profile: o,
               });
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.closeModal"
+              });
             },
           };
         });
