@@ -18,6 +18,17 @@ let categories = [
   },
 ];
 
+const components = [
+  {
+    type: "profile",
+    component: NotificationViewChatMessage,
+  },
+  {
+    type: "action",
+    component: DetailActionBar,
+  },
+];
+
 onMount(async () => {
   categories = await Promise.all(
     dapps
@@ -26,13 +37,24 @@ onMount(async () => {
         let items = await o.jumplist.items({}, o, o);
         return {
           title: o.title,
-          items: items.map((p) => {
-            return {
-              title: p.title,
-              icon: p.icon,
-              action: p.action,
-            };
-          }),
+          actionItems: items
+            .filter((o) => o.type == "action")
+            .map((p) => {
+              return {
+                title: p.title,
+                icon: p.icon,
+                action: p.action,
+              };
+            }),
+          profileItems: items
+            .filter((o) => o.type == "profile")
+            .map((p) => {
+              return {
+                title: p.title,
+                icon: p.icon,
+                action: p.action,
+              };
+            }),
         };
       })
   );

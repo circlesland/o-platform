@@ -44,57 +44,49 @@ export const coop: DappManifest<DappState> = {
   defaultRoute: ["organisations"],
   tag: Promise.resolve("alpha"),
   // jumplist: {
-  jumplist: {
-    type: "jumplist",
-    title: "Actions",
-    isSystem: false,
-    routeParts: ["=actions"],
-    lists: async (params, runtimeDapp) => {
-      return [
-        {
-          component: OrganisationDetail,
-          title: "Orga Admin",
-          items: async (params, runtimeDapp) => {
-            return [
-              {
-                key: "createOrganisation",
-                icon: "add",
-                title: "Create new organisation",
-                action: async () => {
-                  //alert("Do it!");//
-                  window.o.runProcess(createOrganisation, {}, {});
-                },
-              },
-              {
-                key: "createRegion",
-                icon: "add",
-                title: "Create new region",
-                action: async () => {
-                  //alert("Do it!");//
-                  window.o.runProcess(createRegion, {}, {});
-                },
-              },
-              {
-                key: "addMember",
-                icon: "add",
-                title: "Add a member",
-                action: async () => {
-                  //alert("Do it!");//
-                  window.o.runProcess(
-                    addMember,
-                    {
-                      groupId: params.id,
-                    },
-                    {}
-                  );
-                },
-              },
-            ];
-          },
-        },
-      ];
-    }[],
-  },
+  // jumplist: {
+  //   type: "jumplist",
+  //   title: "Actions",
+  //   isSystem: false,
+  //   routeParts: ["=actions"],
+  //   items: async (params, runtimeDapp) => {
+  //     return [
+  //       {
+  //         key: "createOrganisation",
+  //         icon: "add",
+  //         title: "Create new organisation",
+  //         action: async () => {
+  //           //alert("Do it!");//
+  //           window.o.runProcess(createOrganisation, {}, {});
+  //         },
+  //       },
+  //       {
+  //         key: "createRegion",
+  //         icon: "add",
+  //         title: "Create new region",
+  //         action: async () => {
+  //           //alert("Do it!");//
+  //           window.o.runProcess(createRegion, {}, {});
+  //         },
+  //       },
+  //       {
+  //         key: "addMember",
+  //         icon: "add",
+  //         title: "Add a member",
+  //         action: async () => {
+  //           //alert("Do it!");//
+  //           window.o.runProcess(
+  //             addMember,
+  //             {
+  //               groupId: params.id,
+  //             },
+  //             {}
+  //           );
+  //         },
+  //       },
+  //     ];
+  //   },
+  // },
   isEnabled: true,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here

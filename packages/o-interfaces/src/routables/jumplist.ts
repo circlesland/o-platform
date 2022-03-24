@@ -9,26 +9,18 @@ export interface Jumplist<
   TDappState extends { [x: string]: any }
 > extends Routable {
   type: "jumplist";
-  lists: (
+  items: (
     params: TParams,
     runtimeDapp: RuntimeDapp<TDappState>
-  ) => Promise<JumplistListItem<TParams, TDappState>>;
+  ) => Promise<JumplistItem[]>;
 }
 
 export interface JumplistItem {
   key: string;
+  type?: "action" | "profile";
   icon?: string;
   title: string;
   event?: PlatformEvent;
   colorClass?: string;
   action?: () => void;
-}
-
-export interface JumplistListItem<TParams, TDappState> {
-  component: any;
-  title: string;
-  items: (
-    params: TParams,
-    runtimeDapp: RuntimeDapp<TDappState>
-  ) => Promise<JumplistItem>;
 }

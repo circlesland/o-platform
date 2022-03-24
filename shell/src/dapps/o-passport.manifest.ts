@@ -9,7 +9,6 @@ import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { loadProfile } from "./o-passport/processes/identify/services/loadProfile";
-import { ContactsDappState } from "./o-contacts.manifest";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 
 const index: Page<any, DappState> = {
@@ -89,7 +88,7 @@ export const passport: DappManifest<DappState> = {
     isSystem: false,
     routeParts: ["=actions"],
     items: async () => {
-      let items = [
+      let jumplistitems = [
         {
           key: "logout",
           title: "Logout",
@@ -101,29 +100,18 @@ export const passport: DappManifest<DappState> = {
       ];
 
       const myProfile = await loadProfile();
-      let organisations: any;
 
-      const switcherMyProfile = {
-        key: "logout",
-        title: myProfile.displayName,
-        avatar: myProfile,
-        action: () => {
-          window.o.publishEvent(<PlatformEvent>{
-            type: "shell.authenticated",
-            profile: myProfile,
-          });
-        },
-      };
+      let organisations: any;
 
       if (myProfile.memberships && myProfile.memberships.length > 0) {
         const myMemberships = myProfile.memberships
           //.filter((o) => o.isAdmin)
           .map((o) => o.organisation);
-        organisations = <any>[switcherMyProfile, ...myMemberships].map((o) => {
+        organisations = <any>[myProfile, ...myMemberships].map((o) => {
           return {
-            key: "orga",
+            key: o.circlesAddress,
             title: o.displayName,
-            avatar: o,
+            icon: o.avatarUrl,
             action: () => {
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.authenticated",
@@ -134,7 +122,7 @@ export const passport: DappManifest<DappState> = {
         });
       }
 
-      return [items, ...organisations];
+      return [jumplistitems, ...organisations];
     },
   },
   isEnabled: true,
