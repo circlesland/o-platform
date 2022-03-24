@@ -72,7 +72,7 @@ function profileSwitcher() {
           <Icons icon="cart" size="{6}" />
         </div>
       {/if}
-
+<!--
       {#if profile}
         {#if profile.__typename === "Organisation"}
           <div
@@ -92,6 +92,7 @@ function profileSwitcher() {
             on:click_outside="{() => (showSwitcher = !showSwitcher)}" />
         {/if}
       {/if}
+-->
     </div>
   </div>
 </div>

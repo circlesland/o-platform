@@ -12,6 +12,7 @@ import { loadProfile } from "./o-passport/processes/identify/services/loadProfil
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import {AvataarGenerator} from "../shared/avataarGenerator";
 import {JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
+import {Profile} from "../shared/api/data/types";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -74,6 +75,8 @@ export interface DappState {
   // put state here
 }
 
+let myProfile:Profile = null;
+
 export const passport: DappManifest<DappState> = {
   type: "dapp",
   dappId: "passport:1",
@@ -102,35 +105,38 @@ export const passport: DappManifest<DappState> = {
         },
       ];
 
-      const myProfile = await loadProfile();
-
-      let organisations: any;
-
-      if (myProfile.memberships && myProfile.memberships.length > 0) {
-        const myMemberships = myProfile.memberships
-          //.filter((o) => o.isAdmin)
-          .map((o) => o.organisation);
-
-        organisations = <any>[myProfile, ...myMemberships].map((o) => {
-          return <JumplistItem>{
-            key: o.circlesAddress,
-            title: o.displayName,
-            type: "profile",
-            icon: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.circlesAddress),
-            action: () => {
-              window.o.publishEvent(<PlatformEvent>{
-                type: "shell.authenticated",
-                profile: o,
-              });
-              window.o.publishEvent(<PlatformEvent>{
-                type: "shell.closeModal"
-              });
-            },
-          };
-        });
+      if (!myProfile) {
+        myProfile = await loadProfile();
       }
 
-      return [...jumplistitems, ...organisations];
+      const myMemberships = myProfile.memberships && myProfile.memberships.length > 0
+      ? myProfile.memberships.map((o) => o.organisation)
+      : [];
+
+      const profileItems = <any>[myProfile, ...myMemberships].map((o) => {
+        return <JumplistItem>{
+          key: o.circlesAddress,
+          title: o.displayName,
+          type: "profile",
+          icon: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.circlesAddress),
+          action: () => {
+            window.o.publishEvent(<PlatformEvent>{
+              type: "shell.loggedOut"
+            });
+            window.o.publishEvent(<PlatformEvent>{
+              type: "shell.authenticated",
+              profile: o,
+            });
+
+            location.reload();
+            /*window.o.publishEvent(<PlatformEvent>{
+              type: "shell.closeModal"
+            });*/
+          },
+        };
+      });
+
+      return [...jumplistitems, ...profileItems];
     },
   },
   isEnabled: true,
