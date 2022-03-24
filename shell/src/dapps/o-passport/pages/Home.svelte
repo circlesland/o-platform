@@ -11,6 +11,7 @@ import { _ } from "svelte-i18n";
 import { Environment } from "../../../shared/environment";
 import QRCodeStyling from "qr-code-styling";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
+import {onMount} from "svelte";
 
 let name;
 let profile: Profile;
@@ -23,7 +24,8 @@ const options = {};
 
 $: name = profile?.circlesAddress ? profile.circlesAddress : "";
 
-$: {
+onMount(() => {
+
   if ($me) {
     profile = $me;
   } else {
@@ -74,7 +76,7 @@ $: {
     image: "/logos/circles.png",
   });
   qrCode.append(profileQrcode);
-}
+});
 
 function editProfile(dirtyFlags: { [x: string]: boolean }) {
   window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
