@@ -219,7 +219,7 @@ const processDefinition = (processId: string) =>
           params: {
             view: editorContent.addOwnerInfo,
             html: () =>
-              window.i18n("dapps.o-onboarding.processes.connectSafe.addOwnerInfo"),
+              "", //window.i18n("dapps.o-onboarding.processes.connectSafe.addOwnerInfo"),
             hideNav: false,
           },
           navigation: {
@@ -359,6 +359,7 @@ const processDefinition = (processId: string) =>
                     ? context.data.selectedSafe.safeAddress?.toLowerCase()
                     : undefined,
                   circlesSafeOwner: $me.circlesSafeOwner,
+                  askedForEmailAddress: false,
                   circlesAddress: context.data.selectedSafe.isAlive
                     ? context.data.selectedSafe.safeAddress.toLowerCase()
                     : undefined,
