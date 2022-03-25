@@ -198,7 +198,7 @@ const processDefinition = (processId: string) =>
               const privateKey = await openLogin.login({
                 loginProvider: "google",
                 extraLoginOptions: {
-                  prompt: "consent",
+                  prompt: "select_account",
                   display: "touch",
                 },
               });
