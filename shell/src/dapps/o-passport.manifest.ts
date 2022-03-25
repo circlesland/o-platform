@@ -13,6 +13,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import {AvataarGenerator} from "../shared/avataarGenerator";
 import {JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
 import {Profile} from "../shared/api/data/types";
+import {push} from "svelte-spa-router";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -95,6 +96,19 @@ export const passport: DappManifest<DappState> = {
     items: async () => {
       let jumplistitems = [
         <JumplistItem>{
+          key: "lock",
+          type: "action",
+          title: "Lock",
+          icon: "logout",
+          action: () => {
+            sessionStorage.removeItem("circlesKey");
+            sessionStorage.removeItem("keyCache");
+            push("/").then(() => {
+              location.reload();
+            });
+          },
+        },
+        <JumplistItem>{
           key: "logout",
           type: "action",
           title: "Logout",
@@ -102,7 +116,7 @@ export const passport: DappManifest<DappState> = {
           action: () => {
             window.o.runProcess(logout, {});
           },
-        },
+        }
       ];
 
       if (!myProfile) {

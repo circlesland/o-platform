@@ -20,6 +20,8 @@
     }
   }[] = [];
 
+  let profiles: JumplistItem[] = [];
+
   onMount(async () => {
     const manifestsWithJumplist = dapps.filter((o) => o.jumplist);
     categories = await Promise.all(manifestsWithJumplist.map(async o => {
@@ -29,6 +31,8 @@
         items: jumplistItems.groupBy(c => c.type ?? "action")
       };
     }));
+
+    profiles = categories.filter(o => o.items['profile']).flatMap(o => o.items['profile']);
   });
 
   const eventDispatcher = createEventDispatcher();
@@ -49,10 +53,8 @@
     </div>
     <hr/>
     <div class="relative flex-shrink-0 w-full p-6 space-y-2">
-        {#each categories.filter(o => o.items['profile']) as category}
-            <div class="">
-                <ProfileSwitcherBar actions="{category.items['profile'] ? category.items['profile'] : []}"/>
-            </div>
-        {/each}
+        <div class="">
+            <ProfileSwitcherBar actions="{profiles}"/>
+        </div>
     </div>
 </div>
