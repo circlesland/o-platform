@@ -37,9 +37,19 @@ query init {
         organisation {
           id
           circlesAddress
+          displayCurrency
+          displayName
+          circlesSafeOwner
           name
           description
           avatarUrl
+          cityGeonameid
+          city {
+            geonameid
+            country
+            name
+            population
+          }
         }
       }
       verifications {
@@ -210,11 +220,18 @@ query myProfile {
         id
         circlesAddress
         displayCurrency
+        displayName
         circlesSafeOwner
         name
-        displayName
         description
         avatarUrl
+        cityGeonameid
+        city {
+          geonameid
+          country
+          name
+          population
+        }
       }
     }
     verifications {
@@ -256,15 +273,17 @@ query profiles($id: [Int!]!) {
         id
         circlesAddress
         displayCurrency
+        displayName
         circlesSafeOwner
         name
-        displayName
         description
         avatarUrl
+        cityGeonameid
         city {
           geonameid
-          name
           country
+          name
+          population
         }
       }
     }
@@ -413,15 +432,17 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
         id
         circlesAddress
         displayCurrency
+        displayName
         circlesSafeOwner
         name
-        displayName
         description
         avatarUrl
+        cityGeonameid
         city {
           geonameid
-          name
           country
+          name
+          population
         }
       }
     }
@@ -587,15 +608,17 @@ query profileBySafeAddress($safeAddress: String!) {
         id
         circlesAddress
         displayCurrency
+        displayName
         circlesSafeOwner
         name
-        displayName
         description
         avatarUrl
+        cityGeonameid
         city {
           geonameid
-          name
           country
+          name
+          population
         }
       }
     }
@@ -1297,14 +1320,17 @@ query aggregates(
                 id
                 circlesAddress
                 displayCurrency
+                displayName
                 circlesSafeOwner
                 name
                 description
                 avatarUrl
+                cityGeonameid
                 city {
                   geonameid
-                  name
                   country
+                  name
+                  population
                 }
               }
             }
@@ -1344,8 +1370,21 @@ query aggregates(
       ... on Memberships {
         lastUpdatedAt
         organisations {
+          id
           circlesAddress
           displayCurrency
+          displayName
+          circlesSafeOwner
+          name
+          description
+          avatarUrl
+          cityGeonameid
+          city {
+            geonameid
+            country
+            name
+            population
+          }
         }
       }
       ... on Purchases {
