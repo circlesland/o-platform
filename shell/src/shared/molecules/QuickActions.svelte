@@ -20,6 +20,7 @@
     }
   }[] = [];
 
+  let actions: { [category:string]: JumplistItem[] } = {};
   let profiles: JumplistItem[] = [];
 
   onMount(async () => {
@@ -32,6 +33,7 @@
       };
     }));
 
+    actions = categories.filter(o => o.items['action']).flatMap(o => o.items['action']).groupBy(o => o.category);
     profiles = categories.filter(o => o.items['profile']).flatMap(o => o.items['profile']);
   });
 
@@ -42,12 +44,12 @@
      use:clickOutside
      on:click_outside="{() => eventDispatcher('clickedOutside')}">
     <div class="relative flex-shrink-0 w-full p-6 space-y-2">
-        {#each categories.filter(o => o.items['action']) as category}
+        {#each Object.keys(actions) as category}
             <div class="text-dark-lightest text-3xs sm:text-sm">
-                {category.manifest.title}
+                {category}
             </div>
             <div class="">
-                <DetailActionBar actions="{category.items['action'] ? category.items['action'] : []}"/>
+                <DetailActionBar actions="{actions[category]}"/>
             </div>
         {/each}
     </div>

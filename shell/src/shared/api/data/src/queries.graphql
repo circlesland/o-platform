@@ -57,9 +57,16 @@ query init {
         revokedAt
         verifierSafeAddress
         verifierProfile {
+          id
           circlesAddress
+          displayCurrency
           avatarUrl
           name
+          city {
+            geonameid
+            name
+            country
+          }
         }
       }
       # init.invitation
@@ -239,11 +246,16 @@ query myProfile {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
         name
-        displayName
+        city {
+          geonameid
+          name
+          country
+        }
       }
     }
   }
@@ -292,6 +304,7 @@ query profiles($id: [Int!]!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
@@ -356,6 +369,7 @@ query profilesByName($searchString: String!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
@@ -394,6 +408,7 @@ query getRecentProfiles($pagination: PaginationArgs) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
@@ -451,6 +466,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
@@ -488,6 +504,7 @@ query profilesByIds($id: [Int!]!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
@@ -533,6 +550,7 @@ query trustRelations($safeAddress: String!) {
         revokedAt
         verifierSafeAddress
         verifierProfile {
+          id
           circlesAddress
           displayCurrency
           avatarUrl
@@ -570,6 +588,7 @@ query profileById($id: Int!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
@@ -627,6 +646,7 @@ query profileBySafeAddress($safeAddress: String!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
@@ -755,6 +775,7 @@ query organisationsByAddress($addresses: [String!]!) {
           revokedAt
           verifierSafeAddress
           verifierProfile {
+            id
             circlesAddress
             displayCurrency
             avatarUrl
@@ -1003,6 +1024,15 @@ query stream(
       }
       ... on MembershipOffer {
         createdBy
+        createdBy_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         organisation
         organisation_profile {
           name
@@ -1334,11 +1364,27 @@ query aggregates(
                 }
               }
             }
+            members {
+              type
+              id
+              displayName
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+              displayCurrency
+              city {
+                geonameid
+                name
+                country
+              }
+            }
             verifications {
               createdAt
               revokedAt
               verifierSafeAddress
               verifierProfile {
+                id
                 circlesAddress
                 displayCurrency
                 avatarUrl
@@ -1482,6 +1528,7 @@ query aggregates(
               revokedAt
               verifierSafeAddress
               verifierProfile {
+                id
                 circlesAddress
                 displayCurrency
                 avatarUrl
@@ -1548,6 +1595,7 @@ query aggregates(
                 revokedAt
                 verifierSafeAddress
                 verifierProfile {
+                  id
                   circlesAddress
                   displayCurrency
                   avatarUrl
@@ -1590,8 +1638,16 @@ query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
     revokedAt
     verifierSafeAddress
     verifierProfile {
+      id
+      circlesAddress
+      displayCurrency
       avatarUrl
       name
+      city {
+        geonameid
+        name
+        country
+      }
     }
     verifiedSafeAddress
     verifiedProfile {

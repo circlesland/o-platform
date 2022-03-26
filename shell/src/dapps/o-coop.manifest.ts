@@ -42,7 +42,7 @@ export const coop: DappManifest<DappState> = {
   type: "dapp",
   dappId: "coops:1",
   isSingleton: true,
-  isHidden: false,
+  isHidden: true,
   icon: "passport",
   title: "Coops",
   routeParts: ["=coops"],
@@ -55,17 +55,19 @@ export const coop: DappManifest<DappState> = {
     isSystem: true,
     routeParts: [],
     items: async (params, runtimeDapp) => {
-      return [
+      let $me:Profile = null;
+      me.subscribe(me => $me = me)();
+
+      const list = [
         <JumplistItem>{
           key: "createOrganisation",
           type: "profile",
           icon: "add",
+          category: "Coops",
           title: "Create organization",
           action: async () => {
             window.o.runProcess(createOrganisation, {
               successAction:async (data) => {
-                let $me:Profile = null;
-                me.subscribe(me => $me = me)();
                 const createdOrga = await loadProfile(data.circlesAddress, $me);
                 window.o.publishEvent(<PlatformEvent>{
                   type: "shell.loggedOut"
@@ -79,7 +81,31 @@ export const coop: DappManifest<DappState> = {
             }, {});
           }
         }
-      ]
+      ];
+
+      if ((<string>$me.__typename) === "Organisation") {
+        list.push(<JumplistItem>{
+          category: $me.displayName,
+          key: "addMember",
+          type: "action",
+          icon: "add",
+          title: "Add member",
+          action: async () => {
+            window.o.runProcess(
+              addMember,
+              {
+                groupId: $me.circlesAddress,
+                successAction: (data:any) => {
+
+                }
+              },
+              {}
+            );
+          }
+        })
+      }
+
+      return list;
     }
   },
   // jumplist: {

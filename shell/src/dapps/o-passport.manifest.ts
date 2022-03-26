@@ -96,6 +96,7 @@ export const passport: DappManifest<DappState> = {
     items: async () => {
       let jumplistitems = [
         <JumplistItem>{
+          category: "Passport",
           key: "lock",
           type: "action",
           title: "Lock",
@@ -109,6 +110,7 @@ export const passport: DappManifest<DappState> = {
           },
         },
         <JumplistItem>{
+          category: "Passport",
           key: "logout",
           type: "action",
           title: "Logout",
@@ -129,6 +131,7 @@ export const passport: DappManifest<DappState> = {
 
       const profileItems = <any>[myProfile, ...myMemberships].map((o) => {
         return <JumplistItem>{
+          category: "Passport",
           key: o.circlesAddress,
           title: o.displayName,
           type: "profile",

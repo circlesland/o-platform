@@ -20,6 +20,7 @@ export interface JumplistItem {
   type?: "action" | "profile";
   icon?: string;
   title: string;
+  category?: string;
   event?: PlatformEvent;
   colorClass?: string;
   action?: () => void;

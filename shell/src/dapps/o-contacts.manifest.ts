@@ -51,7 +51,8 @@ export class ContactsDappState {
 }
 
 async function chatAction(circlesAddress: string): Promise<JumplistItem> {
-  return {
+  return <JumplistItem>{
+    category: "Chat",
     key: "chat",
     icon: "chat",
     title: "Chat",
@@ -143,6 +144,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       if (recipientProfile?.contactAddress) {
         actions = actions.concat([
           {
+            category: "Chat",
             key: "chat",
             icon: "chat",
             title: "Chat",
@@ -159,6 +161,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             trustsYou
               ? [
                   {
+                    category: "Banking",
                     key: "transfer",
                     icon: "sendmoney",
                     title: "Send Money",
@@ -175,6 +178,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             youTrust
               ? [
                   {
+                    category: "Contacts",
                     key: "setTrust",
                     icon: "untrust",
                     title: "Untrust",
@@ -192,6 +196,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                 ]
               : [
                   {
+                    category: "Contacts",
                     key: "setTrust",
                     icon: "trust",
                     title: "Trust",
@@ -212,6 +217,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
 
       if (!recipientProfile) {
         actions = actions.concat({
+          category: "Contacts",
           key: "setTrust",
           icon: "trust",
           title: "Trust",
@@ -227,6 +233,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       }
     } else {
       actions = actions.concat({
+        category: "Contacts",
         key: "setTrust",
         icon: "trust",
         title: "Trust new friend",
@@ -240,6 +247,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         },
       });
       actions = actions.concat({
+        category: "Contacts",
         key: "setTrust",
         icon: "qrcode",
         title: "Scan to trust",

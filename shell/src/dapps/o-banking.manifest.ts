@@ -68,6 +68,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
         key: "transfer",
         icon: "sendmoney",
         title: "Send Money",
+        category: "Banking",
         action: async () => {
           window.o.runProcess(transfer, {
             safeAddress: circlesAddress,

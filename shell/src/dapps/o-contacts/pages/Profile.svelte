@@ -299,11 +299,30 @@ async function setProfile(id: string) {
                       {#if membership.organisation}
                         <div class="mt-2 mr-2">
                           <UserImage
-                            profile="{membership.organisation}"
-                            tooltip="{true}"
-                            gradientRing="{true}" />
+                                  profile="{membership.organisation}"
+                                  tooltip="{true}"
+                                  gradientRing="{true}" />
                         </div>
                       {/if}
+                    {/each}
+                  </div>
+                </div>
+              </section>
+            {/if}
+            {#if profile.members && profile.members.length}
+              <section class="justify-center mb-2 ">
+                <div class="flex flex-col w-full pt-2 space-y-1">
+                  <div class="text-left text-2xs text-dark-lightest">
+                    {$_("dapps.o-contacts.pages.profile.members")}
+                  </div>
+                  <div class="flex flex-row flex-wrap mt-2 ">
+                    {#each profile.members as memberProfile}
+                        <div class="mt-2 mr-2">
+                          <UserImage
+                                  profile="{memberProfile}"
+                                  tooltip="{true}"
+                                  gradientRing="{true}" />
+                        </div>
                     {/each}
                   </div>
                 </div>

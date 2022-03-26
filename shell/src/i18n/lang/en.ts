@@ -270,6 +270,7 @@ export const en = {
             mutualFriends: "Mutual friends",
             noMutualFriends: "No mutual friends",
             memberAt: "Member at",
+            members: "Members",
             verifiedBy: "Verified by",
             passion: "Passion",
             address: "Address",

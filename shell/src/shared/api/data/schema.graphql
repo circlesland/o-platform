@@ -484,6 +484,7 @@ type Profile {
     id: Int!
     invitationTransaction: ProfileEvent
     lastName: String
+    members: [Profile!]
     memberships: [Membership!]
     newsletter: Boolean
     offers: [Offer!]

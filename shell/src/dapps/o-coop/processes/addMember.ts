@@ -56,7 +56,7 @@ const processDefinition = (processId: string) =>
               },
             });
           },
-          onDone: "success",
+          onDone: "#success",
           onError: {
             actions: (context, event) => {
               window.o.lastError = event.data;
