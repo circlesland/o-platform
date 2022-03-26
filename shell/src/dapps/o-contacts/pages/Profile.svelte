@@ -393,14 +393,14 @@ async function setProfile(id: string) {
             {/if} -->
           {/if}
 
-          {#if !isMe && contact && contact.contactAddress}
+          {#if profile && profile.circlesAddress}
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
                   {$_("dapps.o-contacts.pages.profile.address")}
                 </div>
                 <div class="flex items-center w-full text-2xs">
-                  {contact.contactAddress}
+                  {profile.circlesAddress}
                 </div>
               </div>
             </section>
