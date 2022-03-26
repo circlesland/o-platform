@@ -12,6 +12,7 @@ import { Environment } from "../../../shared/environment";
 import QRCodeStyling from "qr-code-styling";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import {onMount} from "svelte";
+import {upsertOrganisation} from "../../o-coop/processes/upsertOrganisation";
 
 let name;
 let profile: Profile;
@@ -79,7 +80,11 @@ onMount(() => {
 });
 
 function editProfile(dirtyFlags: { [x: string]: boolean }) {
-  window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
+  if (profile.__typename == "Organisation") {
+    window.o.runProcess(upsertOrganisation, profile, {}, Object.keys(dirtyFlags));
+  } else {
+    window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
+  }
 }
 </script>
 

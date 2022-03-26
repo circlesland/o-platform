@@ -394,7 +394,6 @@ const processDefinition = (processId: string) =>
           }
         },
         data: (context, event: any) => {
-          //console.log(`enter: upsertIdentity.success`, context.data);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.authenticated",
             profile: event.data,

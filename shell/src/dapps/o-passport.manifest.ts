@@ -141,7 +141,6 @@ export const passport: DappManifest<DappState> = {
               type: "shell.authenticated",
               profile: o,
             });
-
             location.reload();
             /*window.o.publishEvent(<PlatformEvent>{
               type: "shell.closeModal"

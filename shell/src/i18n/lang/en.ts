@@ -346,6 +346,9 @@ export const en = {
                 notUnlockedKey: "The private key is not unlocked",
               },
             },
+            deployOrganisation: {
+              progress: "Deploying your organisation.. This can take a moment."
+            }
           },
           createRegions: {
             notLoggedOn: "You're not logged on",

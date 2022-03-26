@@ -18,6 +18,7 @@ import {show} from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
 import {BN} from "ethereumjs-util";
 import {Environment} from "../../../shared/environment";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type CreateOrganisationContextData = {
   successAction: (data:CreateOrganisationContextData) => void,
@@ -230,7 +231,13 @@ const processDefinition = (processId: string) =>
       },
       deployOrganisation: {
         id: "deployOrganisation",
-        entry: () => console.log(`deployOrganisation ...`),
+        entry: () => {
+          console.log(`deployOrganisation ...`);
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: window.i18n("dapps.o-coop.processes.createOrganisations.deployOrganisation.progress"),
+          });
+        },
         invoke: {
           src: async (context) => {
             const privateKey = sessionStorage.getItem("circlesKey");
@@ -258,31 +265,6 @@ const processDefinition = (processId: string) =>
             context.data.circlesAddress = context.data.organisationSafeProxy.address;
 
             console.log(context.data.organisationSafeProxy);
-          },
-          onDone: "#fundOrganisation",
-          onError: {
-            actions: (context, event) => {
-              window.o.lastError = event.data;
-            },
-            target: "#showError",
-          },
-        }
-      },
-      fundOrganisation: {
-        id: "fundOrganisation",
-        entry: () => console.log(`fundOrganisation ...`),
-        invoke: {
-          src: async (context, event) => {
-            let $me:Profile = null;
-            const unsub = me.subscribe(current => {
-              $me = current;
-            });
-            unsub();
-
-            await sendFundsFromSafe(
-              context.data.organisationSafeProxy.address,
-              new BN(RpcGateway.get().utils.toWei("0.01", "ether"))
-            );
           },
           onDone: "#signupOrganisation",
           onError: {
@@ -365,13 +347,11 @@ const processDefinition = (processId: string) =>
       success: {
         type: "final",
         id: "success",
-        /*
         entry: (context) => {
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
         }
-         */
       },
     },
   });

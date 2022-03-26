@@ -266,31 +266,6 @@ const processDefinition = (processId: string) =>
 
             console.log(context.data.organisationSafeProxy);
           },
-          onDone: "#fundOrganisation",
-          onError: {
-            actions: (context, event) => {
-              window.o.lastError = event.data;
-            },
-            target: "#showError",
-          },
-        },
-      },
-      fundOrganisation: {
-        id: "fundOrganisation",
-        entry: () => console.log(`fundOrganisation ...`),
-        invoke: {
-          src: async (context, event) => {
-            let $me: Profile = null;
-            const unsub = me.subscribe((current) => {
-              $me = current;
-            });
-            unsub();
-
-            await sendFundsFromSafe(
-              context.data.organisationSafeProxy.address,
-              new BN(RpcGateway.get().utils.toWei("0.01", "ether"))
-            );
-          },
           onDone: "#signupOrganisation",
           onError: {
             actions: (context, event) => {

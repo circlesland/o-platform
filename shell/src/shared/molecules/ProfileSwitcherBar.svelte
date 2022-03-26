@@ -1,51 +1,69 @@
 <script lang="ts">
-/*
- * Edge Case: if the very first items are both super long, it will break into a new line even before clicking on 'more'
- */
-import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
-import {me} from "../stores/me";
+  import {me} from "../stores/me";
+  import Icons from "./Icons.svelte";
 
-export let actions: {
-  icon: string;
-  title: string;
-  colorClass: string;
-  action: () => void;
-}[];
+  export let actions: {
+    icon: string;
+    title: string;
+    colorClass: string;
+    action: () => void;
+  }[];
 
-// let showMore = false;
-// let moreItems = undefined;
-
-function handleClick(action) {
-  if (action.event) {
-    window.o.publishEvent(action.event);
+  function handleClick(action) {
+    if (action.event) {
+      window.o.publishEvent(action.event);
+    }
+    if (action.action) {
+      action.action();
+    }
   }
-  if (action.action) {
-    action.action();
-  }
-}
-
-$: {
-  // moreItems = actions && actions.length > 2 ? actions.splice(2) : undefined;
-}
 </script>
 
 {#if actions}
-  <div
-    class="flex flex-row flex-wrap items-stretch justify-around mt-2 -mr-2 text-dark">
-    {#each actions as action}
-      {#if action.key === $me.circlesAddress}
-        [<ActionListItem
-          icon="{action.icon}"
-          title="{action.title}"
-          colorClass="{action.colorClass}"
-          on:click="{() => handleClick(action)}" />]
-        {:else}
-        <ActionListItem
-                icon="{action.icon}"
-                title="{action.title}"
-                colorClass="{action.colorClass}"
-                on:click="{() => handleClick(action)}" />
-      {/if}
-    {/each}
-  </div>
+    <div class="flex flex-row flex-wrap items-stretch justify-around mt-2 -mr-2 text-dark">
+        {#each actions as action}
+            {#if action.key === $me.circlesAddress}
+                <div class="text-center align-top list-none cursor-pointer inline-table"
+                     on:click={() => window.o.publishEvent({type: "shell.closeModal"})}>
+                    <span>
+                        <span class="table-cell w-12 h-12 align-middle rounded-full  inline bg-light-light">
+                            <div class="self-center text-center rounded-full justify-self-center rounded-corners-gradient-borders" style="padding: 1px;">
+                                <div class="w-12 h-12 m-auto rounded-full bg-white">
+                                    <img class="rounded-full w-12 h-12"
+                                         src="{action.icon}"
+                                         alt="{action.title}">
+                                </div>
+                            </div>
+                        </span>
+                        <span class="block w-24 text-xs sm:text-sm mt-1 text-center break-normal ">
+                            {action.title}
+                        </span>
+                    </span>
+                </div>
+            {:else}
+                <div class="text-center align-top list-none cursor-pointer inline-table"
+                     on:click="{() => handleClick(action)}">
+                    <span>
+                        {#if action.icon.startsWith('http') || action.icon.startsWith('data:')}
+                            <span class="table-cell w-12 h-12 align-middle rounded-full  inline bg-light-light">
+                                <div class="self-center text-center rounded-full justify-self-center" style="padding: 1px;">
+                                    <div class="w-12 h-12 m-auto rounded-full bg-white">
+                                            <img class="rounded-full w-12 h-12"
+                                                 src="{action.icon}">
+                                    </div>
+                                </div>
+                            </span>
+                        {:else}
+                            <span class="table-cell w-12 h-12 align-middle rounded-full bg-light-light">
+                              <Icons icon="{action.icon}" size="{6}" customClass="inline"/>
+                            </span>
+                        {/if}
+                        <span class="block w-24 text-xs sm:text-sm mt-1 text-center break-normal ">
+                            {action.title}
+                        </span>
+                    </span>
+                </div>
+            {/if}
+        {/each}
+    </div>
 {/if}

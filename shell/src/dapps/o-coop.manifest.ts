@@ -7,6 +7,11 @@ import { ContactsDappState } from "./o-contacts.manifest";
 import OrganisationDetail from "./o-coop/pages/OrganisationDetail.svelte";
 import { addMember } from "./o-coop/processes/addMember";
 import { createRegion } from "./o-coop/processes/createRegion";
+import {JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {loadProfile} from "../shared/functions/loadProfile";
+import {Profile} from "../shared/api/data/types";
+import {me} from "../shared/stores/me";
 
 const index: Page<any, ContactsDappState> = {
   routeParts: ["=organisations"],
@@ -43,6 +48,40 @@ export const coop: DappManifest<DappState> = {
   routeParts: ["=coops"],
   defaultRoute: ["organisations"],
   tag: Promise.resolve("alpha"),
+  jumplist: {
+    type: "jumplist",
+    title: "Coops",
+    icon: "organization",
+    isSystem: true,
+    routeParts: [],
+    items: async (params, runtimeDapp) => {
+      return [
+        <JumplistItem>{
+          key: "createOrganisation",
+          type: "profile",
+          icon: "add",
+          title: "Create organization",
+          action: async () => {
+            window.o.runProcess(createOrganisation, {
+              successAction:async (data) => {
+                let $me:Profile = null;
+                me.subscribe(me => $me = me)();
+                const createdOrga = await loadProfile(data.circlesAddress, $me);
+                window.o.publishEvent(<PlatformEvent>{
+                  type: "shell.loggedOut"
+                });
+                window.o.publishEvent(<PlatformEvent>{
+                  type: "shell.authenticated",
+                  profile: createdOrga.profile,
+                });
+                location.reload();
+              }
+            }, {});
+          }
+        }
+      ]
+    }
+  },
   // jumplist: {
   // jumplist: {
   //   type: "jumplist",
