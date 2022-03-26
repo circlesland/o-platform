@@ -91,6 +91,10 @@ const handleChange = async (e) => {
     {:else}
       <GenericEventCard event="{event}" />
     {/if}
+
+    {#if store && !reverse && i > events.length - 50}
+      <div use:inview="{{}}" on:change="{handleChange}"></div>
+    {/if}
   {/each}
   <div bind:this={lastElement}></div>
 {:else}
@@ -102,7 +106,4 @@ const handleChange = async (e) => {
       </div>
     </div>
   </section>
-{/if}
-{#if store && !reverse}
-  <div use:inview="{{}}" on:change="{handleChange}"></div>
 {/if}
