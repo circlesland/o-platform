@@ -13,6 +13,7 @@
   import {TransitivePath} from "../../o-banking/processes/transferCircles";
   import {DirectPathDocument, Profile, QueryDirectPathArgs} from "../../../shared/api/data/types";
   import {me} from "../../../shared/stores/me";
+  import {onMount} from "svelte";
 
   function checkout() {
     window.o.runProcess(purchase, cartContents);
@@ -25,10 +26,10 @@
     });
   }
 
+  let checked: boolean = false;
   let balance: number = 0;
   let invoiceAmount: number = 0;
 
-  let checked: boolean = false;
   let insufficientFunds: boolean = false;
   let insufficientTrust: { sellerProfile: Profile, maxFlow: string, invoiceAmount: string } | undefined = undefined;
 
@@ -65,7 +66,6 @@
 
     const sellerProfiles = $cartContents.toLookup(o => o.createdByProfile.circlesAddress, o => o.createdByProfile);
     checkMaxTransferableAmount(sumsBySeller).then(maxAmountBySeller => {
-      checked = true;
       const payableBySeller = maxAmountBySeller.map(maxAmount => {
         return {
           sellerProfile: sellerProfiles[maxAmount.sellerAddress],
@@ -82,40 +82,29 @@
         };
       }
       // console.log(`Max transferable amount per seller:`, o);
+      checked = true;
     });
   }
 
+  onMount(() => {
+    console.log($assetBalances);
+  });
 
   $: {
+    checked = false;
     insufficientTrust = undefined;
-    const sum = $assetBalances.crcBalances
-      .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
-      .toString();
 
-    const newBalance = Currency.instance().displayAmount(sum, null, "EURS", null);
-    const newInvoiceAmount = $totalPrice;
+    if ($assetBalances.crcBalances.length > 0) {
+      const totalCrcBalance = $assetBalances.crcBalances
+        .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
+        .toString();
 
-    let changed = false;
-    if (newInvoiceAmount != invoiceAmount) {
-      invoiceAmount = newInvoiceAmount;
-      changed = true;
-    }
-
-    if (newBalance && parseFloat(newBalance.toString()) != balance) {
-      balance = parseFloat(newBalance.toString());
-      changed = true;
-    }
-
-    if (changed) {
+      balance = Currency.instance().displayAmount(totalCrcBalance, null, "EURS", null);
       insufficientFunds = balance - parseFloat($totalPrice.toFixed(2)) <= 0;
-      if (sum && sum != "0") {
-        checked = insufficientFunds;
-      }
 
-      if (sum && sum != "0" && !checked && !insufficientFunds) {
-        checkFlow().then(() => {
-          checked = true;
-        });
+      checked = insufficientFunds;
+      if (!insufficientFunds) {
+        checkFlow()
         console.log("Bal:", balance);
         console.log("Diff:", balance - parseFloat($totalPrice.toFixed(2)));
       }
