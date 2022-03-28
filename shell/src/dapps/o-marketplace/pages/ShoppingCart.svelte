@@ -47,7 +47,7 @@
 
             return {
               sellerAddress: sellerAddress,
-              maxFlow: new Currency().displayAmount(flow.flow, null, "EURS")
+              maxFlow: new Currency().displayAmount(flow.flow == "" ? "0" : flow.flow, null, "EURS")
             };
           }
         )
