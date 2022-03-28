@@ -1,5 +1,6 @@
 import ContactsView from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
+import ScanToTrust from "./o-contacts/pages/ScanToTrust.svelte";
 import Chat from "./o-contacts/pages/Chat.svelte";
 import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
@@ -252,12 +253,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         icon: "qrcode",
         title: "Scan to trust",
         action: async () => {
-          window.o.runProcess(setTrust, {
-            trustLimit: 100,
-            safeAddress: $me.circlesAddress,
-            hubAddress: Environment.circlesHubAddress,
-            privateKey: sessionStorage.getItem("circlesKey"),
-          });
+          push("#/contacts/scanToTrust/");
         },
       });
     }
@@ -281,6 +277,15 @@ const graph: Page<any, ContactsDappState> = {
   title: "Network",
   icon: "network",
   type: "page",
+};
+
+export const scanToTrust: Page<any, ContactsDappState> = {
+  type: "page",
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=scanToTrust"],
+  title: "Scan to trust",
+  component: ScanToTrust,
 };
 
 export const chatdetail: Page<any, ContactsDappState> = {
@@ -331,5 +336,5 @@ export const contacts: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, profile, chat, chatdetail],
+  routables: [index, profile, chat, chatdetail, scanToTrust],
 };

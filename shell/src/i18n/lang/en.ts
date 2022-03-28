@@ -348,8 +348,8 @@ export const en = {
               },
             },
             deployOrganisation: {
-              progress: "Deploying your organisation.. This can take a moment."
-            }
+              progress: "Deploying your organisation.. This can take a moment.",
+            },
           },
           createRegions: {
             notLoggedOn: "You're not logged on",
@@ -1045,7 +1045,7 @@ export const en = {
             passion: "Passion",
             noPassionSet: "No passion set.",
             address: "Address",
-            qrcode: "Show QR Code to others to get directly to your profile",
+            qrcode: "Show QR Code to others to be scanned with 'Scan to trust'",
           },
           settings: {
             notifications: "Would you like to receive our Newsletter?",
@@ -1584,8 +1584,7 @@ export const en = {
             "The query definition contains none or more than one selection. Only 1 selection is supported.",
           selectionHasNoName:
             "The selection doesn't have a name. Cannot find the data-holding property of the graphql response.",
-          someThingWentWrong:
-            "Something went wrong while querying the api: {error}",
+          someThingWentWrong: "{error}",
           returnedFragmentDefinitionNode:
             "A FragmentDefinitionNode was returned when a OperationDefinitionNode was expected.",
         },

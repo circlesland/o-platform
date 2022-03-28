@@ -521,13 +521,13 @@ export let icon: string = null;
   {@html icons[icon]}
 {:else}
   <div
-          class="self-center text-center rounded-full justify-self-center"
-          style="padding: {size >= 20 ? `4px` : `1px`}">
-    <div
-            class="w-{size} h-{size} m-auto rounded-full bg-white">
+    class="self-center text-center rounded-full justify-self-center"
+    style="padding: {size >= 20 ? `4px` : `1px`}">
+    <div class="w-{size} h-{size} m-auto rounded-full bg-white">
       <img
-              class="rounded-full w-{size} h-{size}"
-              src="{icon}" />
+        alt="User Image"
+        class="rounded-full w-{size} h-{size}"
+        src="{icon}" />
     </div>
   </div>
 {/if}

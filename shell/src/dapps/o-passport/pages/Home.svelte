@@ -11,8 +11,8 @@ import { _ } from "svelte-i18n";
 import { Environment } from "../../../shared/environment";
 import QRCodeStyling from "qr-code-styling";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
-import {onMount} from "svelte";
-import {upsertOrganisation} from "../../o-coop/processes/upsertOrganisation";
+import { onMount } from "svelte";
+import { upsertOrganisation } from "../../o-coop/processes/upsertOrganisation";
 
 let name;
 let profile: Profile;
@@ -26,7 +26,6 @@ const options = {};
 $: name = profile?.circlesAddress ? profile.circlesAddress : "";
 
 onMount(() => {
-
   if ($me) {
     profile = $me;
   } else {
@@ -37,7 +36,7 @@ onMount(() => {
     width: 300,
     height: 300,
     type: "svg",
-    data: `${Environment.externalUrl}/#/contacts/profile/${profile.circlesAddress}`,
+    data: profile.circlesAddress,
 
     margin: 10,
     qrOptions: {
@@ -81,7 +80,12 @@ onMount(() => {
 
 function editProfile(dirtyFlags: { [x: string]: boolean }) {
   if (profile.__typename == "Organisation") {
-    window.o.runProcess(upsertOrganisation, profile, {}, Object.keys(dirtyFlags));
+    window.o.runProcess(
+      upsertOrganisation,
+      profile,
+      {},
+      Object.keys(dirtyFlags)
+    );
   } else {
     window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
   }
