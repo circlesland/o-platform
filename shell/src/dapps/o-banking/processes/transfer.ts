@@ -33,6 +33,7 @@ import TransferSummary from "../atoms/TransferSummary.svelte";
 import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Currency } from "../../../shared/currency";
+import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 
 
 export type TransferContextData = {
@@ -192,7 +193,94 @@ const processDefinition = (processId: string) =>
           submitButtonText: window.i18n("dapps.o-banking.processes.transfer.recipientAddress.submitButtonText"),
         },
         navigation: {
-          next: "#tokens",
+          next: "#loadRecipientProfile",
+        },
+      }),
+      loadRecipientProfile: {
+        id: "loadRecipientProfile",
+        invoke: {
+          src: async (context) => {
+            if (context.data.recipientProfileId) {
+              // Use the profile id to get the profile but send to the context.data.recipientAddress
+              context.data.recipientProfile = await loadProfileByProfileId(
+                context.data.recipientProfileId
+              );
+            } else if (context.data.recipientAddress) {
+              context.data.recipientProfile = await loadProfileBySafeAddress(
+                context.data.recipientAddress
+              );
+            } else {
+              // No profile found
+            }
+          },
+          onDone: [
+            {
+              cond: (context) => !!context.data.recipientProfile,
+              target: "#getMaxFlow",
+            },
+            {
+              target: "#getMaxFlow",
+            },
+          ],
+          onError: "#error",
+        },
+      },
+      getMaxFlow: {
+        id: "getMaxFlow",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: window.i18n("dapps.o-banking.processes.transfer.findTransferPath.entry.message"),
+          });
+        },
+        invoke: {
+          id: "getMaxFlow",
+          src: async (context) => {
+            const flow = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(
+              DirectPathDocument,
+              {
+                from: context.data.safeAddress,
+                to: context.data.recipientAddress,
+                amount: "9999999999999999999999999999999999"
+              }
+            );
+
+            if (!context.data.maxFlows) {
+              context.data.maxFlows = {};
+            }
+            context.data.maxFlows["crc"] = flow.flow;
+          },
+          onDone: [{
+            cond: (context) => {
+              console.log("context.data.maxFlows[\"crc\"] == \"0\"", context.data.maxFlows["crc"])
+              return context.data.maxFlows["crc"] == "";
+            },
+            target: "#noTrust"
+          }, {
+            target: "#tokens"
+          }],
+          onError: "#error"
+        }
+      },
+      noTrust: prompt<TransferContext, any>({
+        id: "noTrust",
+        field: "__",
+        component: HtmlViewer,
+        params: (context) => {
+          return {
+            view: {
+              title: "Not trusted",
+              description: `${context.data.recipientProfile.displayName} isn't trusting you.`,
+              submitButtonText: "Go back"
+            },
+            html: () => "",
+            hideNav: false
+          }
+        },
+        navigation: {
+          next: "#recipientAddress",
+          canGoBack: () => false,
+          canSkip: () => false,
         },
       }),
       tokens: prompt<TransferContext, any>({
@@ -223,36 +311,26 @@ const processDefinition = (processId: string) =>
           currency: yup.string().required(window.i18n("dapps.o-banking.processes.transfer.tokens.currency")),
         }),
         navigation: {
-          next: "#findMaxFlow",
+          next: "#findTransferPath",
           previous: "#recipientAddress",
         },
       }),
-      findMaxFlow: {
-        id: "findMaxFlow",
+      findTransferPath: {
+        id: "findTransferPath",
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-banking.processes.transfer.findMaxFlow.entry.message"),
+            message: window.i18n("dapps.o-banking.processes.transfer.findTransferPath.entry.message"),
           });
         },
         invoke: {
-          id: "findMaxFlow",
+          id: "findTransferPath",
           src: async (context) => {
             if (!context.data.recipientAddress) {
-              throw new Error(window.i18n("dapps.o-banking.processes.transfer.findMaxFlow.invoke"));
+              throw new Error(window.i18n("dapps.o-banking.processes.transfer.findTransferPath.invoke"));
             }
-            context.data.maxFlows = {};
-            context.data.maxFlows["xdai"] = await RpcGateway.get().eth.getBalance(context.data.safeAddress);
-
-            /*
-            const amount =
-              context.data.tokens.currency == "crc"
-                ? convertTimeCirclesToCircles(
-                Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
-                null
-                ).toString()
-                : context.data.tokens.amount;
-            */
+            // context.data.maxFlows = {};
+            // context.data.maxFlows["xdai"] = await RpcGateway.get().eth.getBalance(context.data.safeAddress);
 
             const amount = new Currency().convertTimeCirclesToCircles(Number.parseFloat(context.data.tokens.amount) * 10, null);
 
@@ -269,9 +347,7 @@ const processDefinition = (processId: string) =>
               }
             );
 
-            console.log(flow);
-
-            context.data.maxFlows["crc"] = flow.flow;
+            // context.data.maxFlows["crc"] = flow.flow;
             context.data.transitivePath = flow;
           },
           onDone: "#checkAmount",
@@ -312,7 +388,7 @@ const processDefinition = (processId: string) =>
 
               return maxFlowInWei.gte(circlesValueInWei) && context.data.transitivePath.transfers.length != 0;
             },
-            target: "#loadRecipientProfile",
+            target: "#message",
           },
           {
             actions: (context) => {
@@ -330,6 +406,7 @@ const processDefinition = (processId: string) =>
                   null,
                   "EURS").toString())).toFixed(0) + ".00";
               }
+
               context.messages[
                 "tokens"
               ] = window.i18n("dapps.o-banking.processes.transfer.checkAmount.contextMessages", { values: { formattedMax: formattedMax}});
@@ -337,35 +414,6 @@ const processDefinition = (processId: string) =>
             target: "#tokens",
           },
         ],
-      },
-      loadRecipientProfile: {
-        id: "loadRecipientProfile",
-        invoke: {
-          src: async (context) => {
-            if (context.data.recipientProfileId) {
-              // Use the profile id to get the profile but send to the context.data.recipientAddress
-              context.data.recipientProfile = await loadProfileByProfileId(
-                context.data.recipientProfileId
-              );
-            } else if (context.data.recipientAddress) {
-              context.data.recipientProfile = await loadProfileBySafeAddress(
-                context.data.recipientAddress
-              );
-            } else {
-              // No profile found
-            }
-          },
-          onDone: [
-            {
-              cond: (context) => !!context.data.recipientProfile,
-              target: "#message",
-            },
-            {
-              target: "#acceptSummary",
-            },
-          ],
-          onError: "#error",
-        },
       },
       message: prompt<TransferContext, any>({
         field: "message",
@@ -380,7 +428,6 @@ const processDefinition = (processId: string) =>
           canSkip: () => true,
         },
       }),
-
       acceptSummary: prompt<TransferContext, any>({
         field: "acceptSummary",
         component: TransferConfirmation,

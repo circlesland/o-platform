@@ -123,6 +123,10 @@
         initialized = true;
       }
     });
+    return () => {
+      sub1();
+      sub2();
+    }
   });
 </script>
 
@@ -162,7 +166,7 @@
                                         {:else}
                                             {#if insufficientFunds}
                                                 <div class="w-full text-center text-alert">
-                                                    Oops, it looks like your balance of {balance} Eur is not
+                                                    Oops, it looks like your balance of {balance} € is not
                                                     enough to cover this order.
                                                     <br/>
                                                     Try to remove some items or have a friend send you some
@@ -172,7 +176,7 @@
                                                 <div class="w-full text-center text-alert">
                                                     Oops, it looks like {insufficientTrust.sellerProfile.displayName}
                                                     only
-                                                    accepts {insufficientTrust.maxFlow} of your Circles.
+                                                    accepts {insufficientTrust.maxFlow} € of your Circles.
                                                     <br/>
                                                     Try to remove some items.
                                                 </div>
