@@ -11,7 +11,7 @@ import {
   EventType,
 } from "../../../shared/api/data/types";
 import QrScanner from "qr-scanner";
-import { onMount } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { showToast } from "../../../shared/toast";
 import { _ } from "svelte-i18n";
@@ -44,6 +44,10 @@ enum ScanStatus {
 $: {
   camQrResult = camQrResult;
 }
+
+onDestroy(() => {
+  scanner.stop();
+});
 
 async function tryTrust(id) {
   scanner.stop();

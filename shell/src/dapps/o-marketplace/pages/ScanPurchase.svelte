@@ -1,11 +1,11 @@
 <script type="ts">
-  import {ProfileEvent, Sale, SaleEvent} from "../../../shared/api/data/types";
+import { ProfileEvent, Sale, SaleEvent } from "../../../shared/api/data/types";
 import QrScanner from "qr-scanner";
-import { onMount } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { showToast } from "../../../shared/toast";
 import { _ } from "svelte-i18n";
-import {mySales} from "../../../shared/stores/mySales";
+import { mySales } from "../../../shared/stores/mySales";
 
 let saleEvent: ProfileEvent;
 let sale: SaleEvent;
@@ -20,6 +20,10 @@ let statusText: string = "";
 $: {
   camQrResult = camQrResult;
 }
+
+onDestroy(() => {
+  scanner.stop();
+});
 
 async function loadSale(id) {
   scanner.stop();
