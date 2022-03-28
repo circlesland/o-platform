@@ -68,8 +68,6 @@ export async function findDirectTransfers(
       amount: amount,
     }
   );
-  console.log("Direct path: ", result);
-
   return result;
 }
 
@@ -262,11 +260,16 @@ const processDefinition = (processId: string) =>
               .utils.toWei(amount.toString() ?? "0", "ether")
               .toString();
 
-            const flow = await findDirectTransfers(
-              context.data.safeAddress,
-              context.data.recipientAddress,
-              circlesValueInWei
+            const flow = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(
+              DirectPathDocument,
+              {
+                from: context.data.safeAddress,
+                to: context.data.recipientAddress,
+                amount: circlesValueInWei
+              }
             );
+
+            console.log(flow);
 
             context.data.maxFlows["crc"] = flow.flow;
             context.data.transitivePath = flow;
