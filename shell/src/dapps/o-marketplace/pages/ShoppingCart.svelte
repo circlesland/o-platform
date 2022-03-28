@@ -80,36 +80,50 @@
           maxFlow: notPayable.maxAmount,
           sellerProfile: notPayable.sellerProfile
         };
+      } else {
+        insufficientTrust = undefined;
       }
       // console.log(`Max transferable amount per seller:`, o);
       checked = true;
     });
   }
 
-  onMount(() => {
-    console.log($assetBalances);
-  });
-
-  $: {
-    checked = false;
-    insufficientTrust = undefined;
-
-    if ($assetBalances.crcBalances.length > 0) {
+  function refresh() {
+    if ($assetBalances.crcBalances.length > 0 && $totalPrice && $totalPrice > 0) {
       const totalCrcBalance = $assetBalances.crcBalances
         .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
         .toString();
 
       balance = Currency.instance().displayAmount(totalCrcBalance, null, "EURS", null);
       insufficientFunds = balance - parseFloat($totalPrice.toFixed(2)) <= 0;
-
       checked = insufficientFunds;
+
       if (!insufficientFunds) {
         checkFlow()
         console.log("Bal:", balance);
         console.log("Diff:", balance - parseFloat($totalPrice.toFixed(2)));
+      } else {
+        insufficientTrust = undefined;
       }
     }
   }
+
+
+  let initialized = false;
+
+  onMount(() => {
+    const sub1 = totalPrice.subscribe($totalPrice => {
+      if (!initialized)
+        return;
+      refresh();
+    });
+    const sub2 = assetBalances.subscribe($assetBalances => {
+      if ($assetBalances.crcBalances.length > 0 && !initialized) {
+        refresh();
+        initialized = true;
+      }
+    });
+  });
 </script>
 
 <div class="p-5">
