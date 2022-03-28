@@ -26,6 +26,7 @@
   }
 
   let balance: number = 0;
+  let invoiceAmount: number = 0;
 
   let checked: boolean = false;
   let insufficientFunds: boolean = false;
@@ -54,52 +55,71 @@
     return maxTransferableAmounts;
   }
 
+  async function checkFlow() {
+    const itemsBySeller = $cartContents.groupBy(o => o.createdByProfile.circlesAddress);
+    const sumsBySeller: { [sellerAddress: string]: number } = {};
+    Object.keys(itemsBySeller).map(sellerAddress => {
+      const items = itemsBySeller[sellerAddress];
+      sumsBySeller[sellerAddress] = items.reduce((p, c) => p + parseFloat(c.pricePerUnit), 0);
+    });
+
+    const sellerProfiles = $cartContents.toLookup(o => o.createdByProfile.circlesAddress, o => o.createdByProfile);
+    checkMaxTransferableAmount(sumsBySeller).then(maxAmountBySeller => {
+      checked = true;
+      const payableBySeller = maxAmountBySeller.map(maxAmount => {
+        return {
+          sellerProfile: sellerProfiles[maxAmount.sellerAddress],
+          payable: parseFloat(maxAmount.maxFlow.toString()) >= sumsBySeller[maxAmount.sellerAddress],
+          maxAmount: maxAmount.maxFlow
+        }
+      });
+      const notPayable = payableBySeller.find(o => !o.payable);
+      if (notPayable && notPayable?.sellerProfile?.circlesAddress) {
+        insufficientTrust = <{ sellerProfile: Profile, maxFlow: string, invoiceAmount: string }>{
+          invoiceAmount: sumsBySeller[notPayable.sellerProfile.circlesAddress],
+          maxFlow: notPayable.maxAmount,
+          sellerProfile: notPayable.sellerProfile
+        };
+      }
+      // console.log(`Max transferable amount per seller:`, o);
+    });
+  }
+
+
   $: {
     insufficientTrust = undefined;
-    checked = false;
-
     const sum = $assetBalances.crcBalances
       .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
       .toString();
 
-    balance = Currency.instance().displayAmount(sum, null, "EURS", null);
-    insufficientFunds = balance - parseFloat($totalPrice.toFixed(2)) <= 0;
-    if (sum != "0") {
-      checked = insufficientFunds;
+    const newBalance = Currency.instance().displayAmount(sum, null, "EURS", null);
+    const newInvoiceAmount = $totalPrice;
+
+    let changed = false;
+    if (newInvoiceAmount != invoiceAmount) {
+      invoiceAmount = newInvoiceAmount;
+      changed = true;
     }
 
-    if (!insufficientFunds) {
-      const itemsBySeller = $cartContents.groupBy(o => o.createdByProfile.circlesAddress);
-      const sumsBySeller: { [sellerAddress: string]: number } = {};
-      Object.keys(itemsBySeller).map(sellerAddress => {
-        const items = itemsBySeller[sellerAddress];
-        sumsBySeller[sellerAddress] = items.reduce((p, c) => p + parseFloat(c.pricePerUnit), 0);
-      });
+    if (newBalance && parseFloat(newBalance.toString()) != balance) {
+      balance = parseFloat(newBalance.toString());
+      changed = true;
+    }
 
-      const sellerProfiles = $cartContents.toLookup(o => o.createdByProfile.circlesAddress, o => o.createdByProfile);
-      checkMaxTransferableAmount(sumsBySeller).then(maxAmountBySeller => {
-        checked = true;
-        const payableBySeller = maxAmountBySeller.map(maxAmount => {
-          return {
-            sellerProfile: sellerProfiles[maxAmount.sellerAddress],
-            payable: parseFloat(maxAmount.maxFlow.toString()) >= sumsBySeller[maxAmount.sellerAddress],
-            maxAmount: maxAmount.maxFlow
-          }
+    if (changed) {
+      insufficientFunds = balance - parseFloat($totalPrice.toFixed(2)) <= 0;
+      if (sum && sum != "0") {
+        checked = insufficientFunds;
+      }
+
+      if (sum && sum != "0" && !checked && !insufficientFunds) {
+        checkFlow().then(() => {
+          checked = true;
         });
-        const notPayable = payableBySeller.find(o => !o.payable);
-        if (notPayable && notPayable?.sellerProfile?.circlesAddress) {
-          insufficientTrust = <{ sellerProfile: Profile, maxFlow: string, invoiceAmount: string }>{
-            invoiceAmount: sumsBySeller[notPayable.sellerProfile.circlesAddress],
-            maxFlow: notPayable.maxAmount,
-            sellerProfile: notPayable.sellerProfile
-          };
-        }
-        // console.log(`Max transferable amount per seller:`, o);
-      });
+        console.log("Bal:", balance);
+        console.log("Diff:", balance - parseFloat($totalPrice.toFixed(2)));
+      }
     }
-
-    console.log("Bal:", balance);
-    console.log("Diff:", balance - parseFloat($totalPrice.toFixed(2)));
   }
 </script>
 
@@ -147,7 +167,8 @@
                                                 </div>
                                             {:else if insufficientTrust}
                                                 <div class="w-full text-center text-alert">
-                                                    Oops, it looks like {insufficientTrust.sellerProfile.displayName} only
+                                                    Oops, it looks like {insufficientTrust.sellerProfile.displayName}
+                                                    only
                                                     accepts {insufficientTrust.maxFlow} of your Circles.
                                                     <br/>
                                                     Try to remove some items.
