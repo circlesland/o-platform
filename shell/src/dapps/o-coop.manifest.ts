@@ -7,11 +7,11 @@ import { ContactsDappState } from "./o-contacts.manifest";
 import OrganisationDetail from "./o-coop/pages/OrganisationDetail.svelte";
 import { addMember } from "./o-coop/processes/addMember";
 import { createRegion } from "./o-coop/processes/createRegion";
-import {JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {loadProfile} from "../shared/functions/loadProfile";
-import {Profile} from "../shared/api/data/types";
-import {me} from "../shared/stores/me";
+import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { loadProfile } from "../shared/functions/loadProfile";
+import { Profile } from "../shared/api/data/types";
+import { me } from "../shared/stores/me";
 
 const index: Page<any, ContactsDappState> = {
   routeParts: ["=organisations"],
@@ -55,35 +55,35 @@ export const coop: DappManifest<DappState> = {
     isSystem: true,
     routeParts: [],
     items: async (params, runtimeDapp) => {
-      let $me:Profile = null;
-      me.subscribe(me => $me = me)();
+      let $me: Profile = null;
+      me.subscribe((me) => ($me = me))();
 
       const list = [
-        <JumplistItem>{
-          key: "createOrganisation",
-          type: "profile",
-          icon: "add",
-          category: "Coops",
-          title: "Create organization",
-          action: async () => {
-            window.o.runProcess(createOrganisation, {
-              successAction:async (data) => {
-                const createdOrga = await loadProfile(data.circlesAddress, $me);
-                window.o.publishEvent(<PlatformEvent>{
-                  type: "shell.loggedOut"
-                });
-                window.o.publishEvent(<PlatformEvent>{
-                  type: "shell.authenticated",
-                  profile: createdOrga.profile,
-                });
-                location.reload();
-              }
-            }, {});
-          }
-        }
+        // <JumplistItem>{
+        //   key: "createOrganisation",
+        //   type: "profile",
+        //   icon: "add",
+        //   category: "Coops",
+        //   title: "Create organization",
+        //   action: async () => {
+        //     window.o.runProcess(createOrganisation, {
+        //       successAction:async (data) => {
+        //         const createdOrga = await loadProfile(data.circlesAddress, $me);
+        //         window.o.publishEvent(<PlatformEvent>{
+        //           type: "shell.loggedOut"
+        //         });
+        //         window.o.publishEvent(<PlatformEvent>{
+        //           type: "shell.authenticated",
+        //           profile: createdOrga.profile,
+        //         });
+        //         location.reload();
+        //       }
+        //     }, {});
+        //   }
+        // }
       ];
 
-      if ((<string>$me.__typename) === "Organisation") {
+      if (<string>$me.__typename === "Organisation") {
         list.push(<JumplistItem>{
           category: $me.displayName,
           key: "addMember",
@@ -95,18 +95,16 @@ export const coop: DappManifest<DappState> = {
               addMember,
               {
                 groupId: $me.circlesAddress,
-                successAction: (data:any) => {
-
-                }
+                successAction: (data: any) => {},
               },
               {}
             );
-          }
-        })
+          },
+        });
       }
 
       return list;
-    }
+    },
   },
   // jumplist: {
   // jumplist: {

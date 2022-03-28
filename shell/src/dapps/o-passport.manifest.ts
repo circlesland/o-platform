@@ -10,10 +10,10 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { loadProfile } from "./o-passport/processes/identify/services/loadProfile";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {AvataarGenerator} from "../shared/avataarGenerator";
-import {JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
-import {Profile} from "../shared/api/data/types";
-import {push} from "svelte-spa-router";
+import { AvataarGenerator } from "../shared/avataarGenerator";
+import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { Profile } from "../shared/api/data/types";
+import { push } from "svelte-spa-router";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -76,7 +76,7 @@ export interface DappState {
   // put state here
 }
 
-let myProfile:Profile = null;
+let myProfile: Profile = null;
 
 export const passport: DappManifest<DappState> = {
   type: "dapp",
@@ -95,39 +95,40 @@ export const passport: DappManifest<DappState> = {
     routeParts: ["=actions"],
     items: async () => {
       let jumplistitems = [
-        <JumplistItem>{
-          category: "Passport",
-          key: "lock",
-          type: "action",
-          title: "Lock",
-          icon: "logout",
-          action: () => {
-            sessionStorage.removeItem("circlesKey");
-            sessionStorage.removeItem("keyCache");
-            push("/").then(() => {
-              location.reload();
-            });
-          },
-        },
+        // <JumplistItem>{
+        //   category: "Passport",
+        //   key: "lock",
+        //   type: "action",
+        //   title: "Lock",
+        //   icon: "logout",
+        //   action: () => {
+        //     sessionStorage.removeItem("circlesKey");
+        //     sessionStorage.removeItem("keyCache");
+        //     push("/").then(() => {
+        //       location.reload();
+        //     });
+        //   },
+        // },
         <JumplistItem>{
           category: "Passport",
           key: "logout",
-          type: "action",
+          type: "profile",
           title: "Logout",
           icon: "logout",
           action: () => {
             window.o.runProcess(logout, {});
           },
-        }
+        },
       ];
 
       if (!myProfile) {
         myProfile = await loadProfile();
       }
 
-      const myMemberships = myProfile.memberships && myProfile.memberships.length > 0
-      ? myProfile.memberships.map((o) => o.organisation)
-      : [];
+      const myMemberships =
+        myProfile.memberships && myProfile.memberships.length > 0
+          ? myProfile.memberships.map((o) => o.organisation)
+          : [];
 
       const profileItems = <any>[myProfile, ...myMemberships].map((o) => {
         return <JumplistItem>{
@@ -135,10 +136,12 @@ export const passport: DappManifest<DappState> = {
           key: o.circlesAddress,
           title: o.displayName,
           type: "profile",
-          icon: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.circlesAddress),
+          icon: o.avatarUrl
+            ? o.avatarUrl
+            : AvataarGenerator.generate(o.circlesAddress),
           action: () => {
             window.o.publishEvent(<PlatformEvent>{
-              type: "shell.loggedOut"
+              type: "shell.loggedOut",
             });
             window.o.publishEvent(<PlatformEvent>{
               type: "shell.authenticated",
