@@ -328,7 +328,7 @@ const processDefinition = (processId: string) =>
                 formattedMax = (parseFloat(new Currency().displayAmount(
                   context.data.maxFlows[context.data.tokens.currency.toLowerCase()].toString(),
                   null,
-                  "EURS").toString()) - 1).toFixed(0) + ".00";
+                  "EURS").toString())).toFixed(0) + ".00";
               }
               context.messages[
                 "tokens"

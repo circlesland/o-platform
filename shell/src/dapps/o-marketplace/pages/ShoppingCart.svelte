@@ -61,7 +61,7 @@
     const sumsBySeller: { [sellerAddress: string]: number } = {};
     Object.keys(itemsBySeller).map(sellerAddress => {
       const items = itemsBySeller[sellerAddress];
-      sumsBySeller[sellerAddress] = items.reduce((p, c) => p + parseFloat(c.pricePerUnit), 0);
+      sumsBySeller[sellerAddress] = items.reduce((p, c) => p + parseFloat(c.pricePerUnit), 0).toFixed(2);
     });
 
     const sellerProfiles = $cartContents.toLookup(o => o.createdByProfile.circlesAddress, o => o.createdByProfile);
