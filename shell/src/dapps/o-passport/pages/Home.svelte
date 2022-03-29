@@ -38,7 +38,7 @@ onMount(() => {
     type: "svg",
     data: profile.circlesAddress,
 
-    margin: 10,
+    margin: 0,
     qrOptions: {
       typeNumber: 0,
       mode: "Byte",
@@ -46,7 +46,7 @@ onMount(() => {
     },
     imageOptions: {
       hideBackgroundDots: true,
-      imageSize: 0.7,
+      imageSize: 0.2,
       margin: 6,
       crossOrigin: "anonymous",
     },
@@ -67,7 +67,7 @@ onMount(() => {
     },
     cornersSquareOptions: {
       color: "#0A2262",
-      type: "extra-rounded",
+      type: "dot",
     },
     cornersDotOptions: {
       color: "#0A2262",
