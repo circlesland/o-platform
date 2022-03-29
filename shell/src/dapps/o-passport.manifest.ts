@@ -155,7 +155,7 @@ export const passport: DappManifest<DappState> = {
         };
       });
 
-      return [...jumplistitems, ...profileItems];
+      return [...profileItems, ...jumplistitems];
     },
   },
   isEnabled: true,
