@@ -66,7 +66,7 @@ export const en = {
                 submitButtonText: "Confirm",
               },
               success: {
-                title: "Trust successful",
+                title: "It's Done",
                 submitButtonText: "Close",
               },
             },
