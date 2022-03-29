@@ -10,7 +10,6 @@ import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import ProfileSwitcherBar from "./ProfileSwitcherBar.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
-export let routable: RuntimeDapp<any>;
 
 let categories: {
   manifest: DappManifest<any>;

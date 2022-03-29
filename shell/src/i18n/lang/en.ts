@@ -629,6 +629,7 @@ export const en = {
             purchaseDate: "Purchase Date: ",
             loadingPurchases: "Loading purchases...",
             yourPickupCode: "Your Pick-Up Code",
+            yourPickupNumber: "Your Order-Number:",
             showThisCode:
               "show this code to the seller when you pick up your Order.",
             noCode: "No pickup code yet ..",

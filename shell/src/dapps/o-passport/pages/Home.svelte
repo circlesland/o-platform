@@ -9,14 +9,14 @@ import { upsertIdentity } from "../processes/upsertIdentity";
 import { _ } from "svelte-i18n";
 
 import { Environment } from "../../../shared/environment";
-import QRCodeStyling from "qr-code-styling";
+
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import { onMount } from "svelte";
 import { upsertOrganisation } from "../../o-coop/processes/upsertOrganisation";
+import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
 
 let name;
 let profile: Profile;
-let profileQrcode;
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -31,51 +31,6 @@ onMount(() => {
   } else {
     profile = undefined;
   }
-
-  const qrCode = new QRCodeStyling({
-    width: 300,
-    height: 300,
-    type: "svg",
-    data: profile.circlesAddress,
-
-    margin: 0,
-    qrOptions: {
-      typeNumber: 0,
-      mode: "Byte",
-      errorCorrectionLevel: "Q",
-    },
-    imageOptions: {
-      hideBackgroundDots: true,
-      imageSize: 0.2,
-      margin: 6,
-      crossOrigin: "anonymous",
-    },
-    dotsOptions: {
-      // color: "#081B4A",
-      gradient: {
-        type: "linear", // 'radial'
-        rotation: 0,
-        colorStops: [
-          { offset: 0, color: "#20d9a2" },
-          { offset: 1, color: "#003399" },
-        ],
-      },
-      type: "dots",
-    },
-    backgroundOptions: {
-      color: "#ffffff",
-    },
-    cornersSquareOptions: {
-      color: "#0A2262",
-      type: "dot",
-    },
-    cornersDotOptions: {
-      color: "#0A2262",
-      type: "dot",
-    },
-    image: "/logos/circles.png",
-  });
-  qrCode.append(profileQrcode);
 });
 
 function editProfile(dirtyFlags: { [x: string]: boolean }) {
@@ -104,7 +59,9 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
         </div>
         <div class="container">
           <center>
-            <div bind:this="{profileQrcode}"></div>
+            {#if profile}
+              <QrCode value="{profile.circlesAddress}" />
+            {/if}
           </center>
         </div>
       </div>

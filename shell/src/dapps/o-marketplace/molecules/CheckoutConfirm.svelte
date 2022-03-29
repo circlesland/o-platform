@@ -7,7 +7,7 @@ import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";
 import Account from "../../o-passport/pages/Account.svelte";
 import { _ } from "svelte-i18n";
-import QrCode from "svelte-qrcode";
+import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
 
 export let context: any;
 let profile: Profile | Organisation;
@@ -126,7 +126,7 @@ function orderItems(items) {
       <div class="w-full mt-6 text-center">
         <div class="container">
           <center>
-            <QrCode value="{context.params.pickupCode}" color="#081B4A" />
+            <QrCode value="{context.params.pickupCode}" />
           </center>
         </div>
       </div>
