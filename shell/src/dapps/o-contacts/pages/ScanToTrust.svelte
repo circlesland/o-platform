@@ -115,7 +115,7 @@ async function setProfile(id: string) {
         return err("You are already trusting this user.");
       } else {
         window.o.runProcess(setTrust, {
-          trustLimit: 0,
+          trustLimit: 100,
           trustReceiver: id,
           safeAddress: $me.circlesAddress,
           hubAddress: Environment.circlesHubAddress,

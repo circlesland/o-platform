@@ -66,11 +66,11 @@ onMount(() => {
       color: "#ffffff",
     },
     cornersSquareOptions: {
-      color: "#35495E",
+      color: "#0A2262",
       type: "extra-rounded",
     },
     cornersDotOptions: {
-      color: "#35495E",
+      color: "#0A2262",
       type: "dot",
     },
     image: "/logos/circles.png",
