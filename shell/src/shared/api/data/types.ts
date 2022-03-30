@@ -69,6 +69,7 @@ export type Capability = {
 
 export enum CapabilityType {
   Invite = 'Invite',
+  PreviewFeatures = 'PreviewFeatures',
   Translate = 'Translate',
   Verify = 'Verify'
 }

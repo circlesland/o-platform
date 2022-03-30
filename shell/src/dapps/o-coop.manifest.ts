@@ -10,8 +10,9 @@ import { createRegion } from "./o-coop/processes/createRegion";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { loadProfile } from "../shared/functions/loadProfile";
-import { Profile } from "../shared/api/data/types";
+import {CapabilityType, Profile} from "../shared/api/data/types";
 import { me } from "../shared/stores/me";
+import {getSessionInfo} from "./o-passport/processes/identify/services/getSessionInfo";
 
 const index: Page<any, ContactsDappState> = {
   routeParts: ["=organisations"],
@@ -58,98 +59,58 @@ export const coop: DappManifest<DappState> = {
       let $me: Profile = null;
       me.subscribe((me) => ($me = me))();
 
-      const list = [
-        // <JumplistItem>{
-        //   key: "createOrganisation",
-        //   type: "profile",
-        //   icon: "add",
-        //   category: "Coops",
-        //   title: "Create organization",
-        //   action: async () => {
-        //     window.o.runProcess(createOrganisation, {
-        //       successAction:async (data) => {
-        //         const createdOrga = await loadProfile(data.circlesAddress, $me);
-        //         window.o.publishEvent(<PlatformEvent>{
-        //           type: "shell.loggedOut"
-        //         });
-        //         window.o.publishEvent(<PlatformEvent>{
-        //           type: "shell.authenticated",
-        //           profile: createdOrga.profile,
-        //         });
-        //         location.reload();
-        //       }
-        //     }, {});
-        //   }
-        // }
-      ];
+      const list = [];
+      const sessionInfo = await getSessionInfo();
 
-      if (<string>$me.__typename === "Organisation") {
+      if (sessionInfo.capabilities.find(o => o.type == CapabilityType.PreviewFeatures)) {
         list.push(<JumplistItem>{
-          category: $me.displayName,
-          key: "addMember",
-          type: "action",
+          key: "createOrganisation",
+          type: "profile",
           icon: "add",
-          title: "Add member",
+          category: "Coops",
+          title: "Create organization",
           action: async () => {
-            window.o.runProcess(
-              addMember,
-              {
-                groupId: $me.circlesAddress,
-                successAction: (data: any) => {},
-              },
-              {}
-            );
-          },
+            window.o.runProcess(createOrganisation, {
+              successAction: async (data) => {
+                const createdOrga = await loadProfile(data.circlesAddress, $me);
+                window.o.publishEvent(<PlatformEvent>{
+                  type: "shell.loggedOut"
+                });
+                window.o.publishEvent(<PlatformEvent>{
+                  type: "shell.authenticated",
+                  profile: createdOrga.profile,
+                });
+                location.reload();
+              }
+            }, {});
+          }
         });
+
+        if (<string>$me.__typename === "Organisation") {
+          list.push(<JumplistItem>{
+            category: $me.displayName,
+            key: "addMember",
+            type: "action",
+            icon: "add",
+            title: "Add member",
+            action: async () => {
+              window.o.runProcess(
+                addMember,
+                {
+                  groupId: $me.circlesAddress,
+                  successAction: (data: any) => {
+                  },
+                },
+                {}
+              );
+            },
+          });
+        }
       }
 
       return list;
     },
   },
-  // jumplist: {
-  // jumplist: {
-  //   type: "jumplist",
-  //   title: "Actions",
-  //   isSystem: false,
-  //   routeParts: ["=actions"],
-  //   items: async (params, runtimeDapp) => {
-  //     return [
-  //       {
-  //         key: "createOrganisation",
-  //         icon: "add",
-  //         title: "Create new organisation",
-  //         action: async () => {
-  //           //alert("Do it!");//
-  //           window.o.runProcess(createOrganisation, {}, {});
-  //         },
-  //       },
-  //       {
-  //         key: "createRegion",
-  //         icon: "add",
-  //         title: "Create new region",
-  //         action: async () => {
-  //           //alert("Do it!");//
-  //           window.o.runProcess(createRegion, {}, {});
-  //         },
-  //       },
-  //       {
-  //         key: "addMember",
-  //         icon: "add",
-  //         title: "Add a member",
-  //         action: async () => {
-  //           //alert("Do it!");//
-  //           window.o.runProcess(
-  //             addMember,
-  //             {
-  //               groupId: params.id,
-  //             },
-  //             {}
-  //           );
-  //         },
-  //       },
-  //     ];
-  //   },
-  // },
   isEnabled: true,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here

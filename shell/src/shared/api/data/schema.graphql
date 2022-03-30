@@ -796,6 +796,7 @@ enum AggregateType {
 
 enum CapabilityType {
     Invite
+    PreviewFeatures
     Translate
     Verify
 }
