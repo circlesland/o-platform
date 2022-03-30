@@ -1,34 +1,22 @@
 <script lang="ts">
-import { me } from "../../../shared/stores/me";
-import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { StatsDocument } from "../../../shared/api/data/types";
-
-import { _ } from "svelte-i18n";
 import TopNav from "../../../shared/atoms/TopNav.svelte";
 import PageHeader from "../../../shared/atoms/PageHeader.svelte";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
+import {stats} from "../../../shared/stores/stats";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
-let statsResult: any;
-let leaderboard: any[];
 let first: any;
 
-const init = async () => {
-  const pk = sessionStorage.getItem("circlesKey");
-
-  const sessionInfo = await me.getSessionInfo();
-
-  statsResult = await fetchStats();
-  leaderboard = statsResult.data.stats.leaderboard;
-  first = leaderboard.shift();
-};
-
-onMount(init);
+$:{
+  if ($stats) {
+    first = $stats.leaderboard[0];
+  }
+}
 
 function loadLink(link, external = false) {
   if (external) {
@@ -37,25 +25,13 @@ function loadLink(link, external = false) {
     push(link);
   }
 }
-
-async function fetchStats() {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.query({
-    query: StatsDocument,
-  });
-  if (result.errors) {
-    throw new Error(`Couldn't load stats': ${JSON.stringify(result.errors)}`);
-  }
-
-  return result;
-}
 </script>
 
 <TopNav
   runtimeDapp="{runtimeDapp}"
   routable="{routable}"
   headerString="Leaderboard" />
-{#if leaderboard && first}
+{#if first}
   <PageHeader heightClass="h-72">
     <div class="self-center block mt-2 text-center">
       <div class="relative mb-2">
@@ -87,9 +63,9 @@ async function fetchStats() {
   </PageHeader>
 {/if}
 <div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
-  {#if leaderboard}
+  {#if $stats}
     <div class="flex flex-col space-y-4">
-      {#each leaderboard as entry, i}
+      {#each $stats.leaderboard.skip(1) as entry, i}
         <section class="cursor-pointer ">
           <div
             class="flex items-center w-full pb-2 space-x-2 bg-white rounded-lg shadow-md cardborder">
@@ -109,13 +85,6 @@ async function fetchStats() {
                       profile="{entry.createdByProfile}"
                       size="{20}"
                       gradientRing="{false}" />
-                    <!-- <div
-                      class="absolute flex items-center content-center w-8 h-8 bg-white rounded-full shadow-sm -top-1 -left-2 cardborder ">
-                      <div
-                        class="self-center w-full -mb-1 -ml-1 text-xl text-center text-dark font-enso">
-                        <span class="text-xs">#</span>{i + 2}
-                      </div>
-                    </div> -->
                   </div>
                   <div class="flex flex-col self-center justify-items-start">
                     <h2

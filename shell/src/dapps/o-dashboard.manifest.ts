@@ -1,5 +1,4 @@
 import Home from "./o-dashboard/pages/Home.svelte";
-import Invites from "./o-dashboard/pages/Invites.svelte";
 import InviteLeaderboard from "./o-dashboard/pages/InviteLeaderboard.svelte";
 import RedeemedInvitations from "./o-dashboard/pages/RedeemedInvitations.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
@@ -18,7 +17,7 @@ const invites: Page<any, DappState> = {
   routeParts: ["=invites"],
   component: RedeemedInvitations,
   isSystem: false,
-  title: "Invites",
+  title: "You invited",
   position: "main",
   type: "page",
 };

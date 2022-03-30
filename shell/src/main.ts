@@ -20,6 +20,7 @@ declare global {
 declare global {
   interface Array<T> {
     groupBy(groupSelector: (item: T) => string|number|null|undefined): { [group: string]: T[] };
+    skip(number:number): T[];
     toLookup(keySelector: (item: T) => string): { [key: string]: boolean };
     toLookup<TValue>(keySelector: (item: T) => string|number|null|undefined, valueSelector?: (item: T) => TValue): { [key: string]: TValue };
   }
@@ -37,6 +38,10 @@ Array.prototype.groupBy = function groupBy<T>(groupSelector: (item: T) => string
     p[group].push(c);
     return p;
   }, <{ [group: string]: T[] }>{});
+}
+
+Array.prototype.skip = function skip<T>(number:number): T[] {
+  return (<T[]>this).slice(number);
 }
 
 Array.prototype.toLookup = function toLookup<T, TValue>(keySelector: (item: T) => string, valueSelector?: (item: T) => TValue): { [key: string]: TValue } {

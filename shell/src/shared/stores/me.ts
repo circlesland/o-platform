@@ -75,25 +75,7 @@ const _me = readable<Profile|null>(null, function start(set) {
       localStorage.removeItem("me");
       localStorage.removeItem("safe");
     }
-
-    /*
-    let $me:Profile;
-    me.subscribe(me => {
-      $me = me;
-    })();
-    */
   }
-
-  /*
-  setInterval(() => {
-    const cachedProfile = localStorage.getItem("me");
-    if (!cachedProfile)
-      return;
-
-    const p:Profile = JSON.parse(cachedProfile);
-    set(p);
-  }, 10000);
-   */
 
   return function stop() {
     subscription.unsubscribe();
