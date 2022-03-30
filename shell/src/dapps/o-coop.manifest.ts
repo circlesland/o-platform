@@ -13,6 +13,7 @@ import { loadProfile } from "../shared/functions/loadProfile";
 import {CapabilityType, Profile} from "../shared/api/data/types";
 import { me } from "../shared/stores/me";
 import {getSessionInfo} from "./o-passport/processes/identify/services/getSessionInfo";
+import {addOwner} from "./o-coop/processes/addOwner";
 
 const index: Page<any, ContactsDappState> = {
   routeParts: ["=organisations"],
@@ -96,6 +97,24 @@ export const coop: DappManifest<DappState> = {
             action: async () => {
               window.o.runProcess(
                 addMember,
+                {
+                  groupId: $me.circlesAddress,
+                  successAction: (data: any) => {
+                  },
+                },
+                {}
+              );
+            },
+          });
+          list.push(<JumplistItem>{
+            category: $me.displayName,
+            key: "addOwner",
+            type: "action",
+            icon: "add",
+            title: "Add owner",
+            action: async () => {
+              window.o.runProcess(
+                addOwner,
                 {
                   groupId: $me.circlesAddress,
                   successAction: (data: any) => {
