@@ -69,6 +69,7 @@ export type Capability = {
 
 export enum CapabilityType {
   Invite = 'Invite',
+  Translate = 'Translate',
   Verify = 'Verify'
 }
 
@@ -430,6 +431,13 @@ export type InvoiceLine = {
   amount: Scalars['Int'];
   id: Scalars['Int'];
   offer?: Maybe<Offer>;
+};
+
+export type LeaderboardEntry = {
+  __typename?: 'LeaderboardEntry';
+  createdByCirclesAddress: Scalars['String'];
+  createdByProfile?: Maybe<Profile>;
+  inviteCount: Scalars['Int'];
 };
 
 export type LogoutResponse = {
@@ -1231,6 +1239,7 @@ export enum SortOrder {
 
 export type Stats = {
   __typename?: 'Stats';
+  leaderboard?: Maybe<Array<LeaderboardEntry>>;
   profilesCount: Scalars['Int'];
   verificationsCount: Scalars['Int'];
 };
@@ -1892,6 +1901,18 @@ export type StatsQuery = (
   & { stats: (
     { __typename?: 'Stats' }
     & Pick<Stats, 'profilesCount' | 'verificationsCount'>
+    & { leaderboard?: Maybe<Array<(
+      { __typename?: 'LeaderboardEntry' }
+      & Pick<LeaderboardEntry, 'createdByCirclesAddress' | 'inviteCount'>
+      & { createdByProfile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'cityGeonameid'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      )> }
+    )>> }
   ) }
 );
 
@@ -3395,6 +3416,30 @@ export const StatsDocument = gql`
   stats {
     profilesCount
     verificationsCount
+    leaderboard {
+      createdByCirclesAddress
+      inviteCount
+      createdByProfile {
+        id
+        circlesAddress
+        displayCurrency
+        circlesSafeOwner
+        displayName
+        firstName
+        lastName
+        dream
+        avatarUrl
+        cityGeonameid
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
     `;

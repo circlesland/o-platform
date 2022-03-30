@@ -139,6 +139,30 @@ query stats {
   stats {
     profilesCount
     verificationsCount
+    leaderboard {
+      createdByCirclesAddress
+      inviteCount
+      createdByProfile {
+        id
+        circlesAddress
+        displayCurrency
+        circlesSafeOwner
+        displayName
+        firstName
+        lastName
+        dream
+        avatarUrl
+        cityGeonameid
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
 

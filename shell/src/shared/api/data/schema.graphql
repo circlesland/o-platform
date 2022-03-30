@@ -306,6 +306,12 @@ type InvoiceLine {
     offer: Offer
 }
 
+type LeaderboardEntry {
+    createdByCirclesAddress: String!
+    createdByProfile: Profile
+    inviteCount: Int!
+}
+
 type LogoutResponse {
     errorMessage: String
     success: Boolean!
@@ -695,6 +701,7 @@ type SessionInfo {
 }
 
 type Stats {
+    leaderboard: [LeaderboardEntry!]
     profilesCount: Int!
     verificationsCount: Int!
 }
@@ -789,6 +796,7 @@ enum AggregateType {
 
 enum CapabilityType {
     Invite
+    Translate
     Verify
 }
 
