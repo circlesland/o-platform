@@ -8,26 +8,30 @@ import {AddMemberDocument} from "../../../shared/api/data/types";
 import {promptProfileId} from "../../../shared/api/promptProfileId";
 import {loadProfileByProfileId} from "../../../shared/api/loadProfileByProfileId";
 import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
+import {loadProfileBySafeAddress} from "../../../shared/api/loadProfileBySafeAddress";
+import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
+import {prompt} from "@o-platform/o-process/dist/states/prompt";
+import TrustChangeConfirmation from "../../o-banking/molecules/TrustChangeConfirmation.svelte";
+import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
-export type AddMemberContextData = {
-  successAction: (data:AddMemberContextData) => void,
+export type AddOwnerContextData = {
+  successAction: (data:AddOwnerContextData) => void,
   groupId?: number;
   memberAddress?: string;
 };
 
-export type AddMemberContext = ProcessContext<AddMemberContextData>;
+export type AddOwnerContext = ProcessContext<AddOwnerContextData>;
 
 const processDefinition = (processId: string) =>
-  createMachine<AddMemberContext, any>({
-    id: `${processId}:addMember`,
+  createMachine<AddOwnerContext, any>({
+    id: `${processId}:addOwner`,
     initial: "memberAddress",
     states: {
-      // Include a default 'error' state that propagates the error by re-throwing it in an action.
-      // TODO: Check if this works as intended
-      ...fatalError<AddMemberContext, any>("error"),
+      ...fatalError<AddOwnerContext, any>("error"),
 
-      memberAddress: promptCirclesSafe<AddMemberContext, any>({
+      memberAddress: promptCirclesSafe<AddOwnerContext, any>({
         field: "memberAddress",
         onlyWhenDirty: false,
         params: {
@@ -48,6 +52,19 @@ const processDefinition = (processId: string) =>
         id: "addMember",
         invoke: {
           src: async (context) => {
+            const memberProfile = await loadProfileBySafeAddress(context.data.memberAddress);
+            if (!memberProfile) {
+              throw new Error(`Couldn't load a profile for safe address ${context.data.memberAddress}`);
+            }
+
+            if (!memberProfile.circlesSafeOwner) {
+              throw new Error(`The owner eoa address for safe ${context.data.memberAddress} is not known.`);
+            }
+
+            const safeProxy = new  GnosisSafeProxy(RpcGateway.get(), context.data.groupId.toString());
+            const addOwnerResult = await safeProxy.addOwnerWithThreshold(sessionStorage.getItem("circlesKey"), memberProfile.circlesSafeOwner, 1);
+            console.log(addOwnerResult);
+
             const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: AddMemberDocument,
@@ -57,7 +74,7 @@ const processDefinition = (processId: string) =>
               },
             });
           },
-          onDone: "#success",
+          onDone: "#showSuccess",
           onError: {
             actions: (context, event) => {
               window.o.lastError = event.data;
@@ -78,6 +95,20 @@ const processDefinition = (processId: string) =>
           },
         }),
       },
+      showSuccess: prompt({
+        id: "showSuccess",
+        field: "__",
+        component: HtmlViewer,
+        params: {
+          view: "",
+          html: () =>
+            "A new owner was successfully added.",
+          hideNav: false,
+        },
+        navigation: {
+          next: "#success",
+        },
+      }),
       success: {
         type: "final",
         id: "success",
@@ -90,10 +121,10 @@ const processDefinition = (processId: string) =>
           return context.data;
         },
       }
-    },
+    }
   });
 
-export const addMember: ProcessDefinition<void, AddMemberContext> = {
-  name: "addMember",
+export const addOwner: ProcessDefinition<void, AddOwnerContext> = {
+  name: "addOwner",
   stateMachine: <any>processDefinition,
 };
