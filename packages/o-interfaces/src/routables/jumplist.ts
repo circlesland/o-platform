@@ -15,10 +15,14 @@ export interface Jumplist<
   ) => Promise<JumplistItem[]>;
 }
 
+export type JumplistItemHint =
+  "encouraged" | "discouraged"
+
 export interface JumplistItem {
   key: string;
   type?: "action" | "profile";
   icon?: string;
+  displayHint?: JumplistItemHint;
   title: string;
   category?: string;
   event?: PlatformEvent;
