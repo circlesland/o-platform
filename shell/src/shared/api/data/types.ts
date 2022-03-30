@@ -356,6 +356,13 @@ export type ExchangeTokenResponse = {
   success: Scalars['Boolean'];
 };
 
+export type FibonacciGoals = {
+  __typename?: 'FibonacciGoals';
+  currentValue: Scalars['Int'];
+  lastGoal: Scalars['Int'];
+  nextGoal: Scalars['Int'];
+};
+
 export type GnosisSafeEthTransfer = IEventPayload & {
   __typename?: 'GnosisSafeEthTransfer';
   from: Scalars['String'];
@@ -1251,7 +1258,8 @@ export enum SortOrder {
 
 export type Stats = {
   __typename?: 'Stats';
-  leaderboard?: Maybe<Array<LeaderboardEntry>>;
+  goals: FibonacciGoals;
+  leaderboard: Array<LeaderboardEntry>;
   profilesCount: Scalars['Int'];
   verificationsCount: Scalars['Int'];
 };
@@ -1916,7 +1924,10 @@ export type StatsQuery = (
   & { stats: (
     { __typename?: 'Stats' }
     & Pick<Stats, 'profilesCount' | 'verificationsCount'>
-    & { leaderboard?: Maybe<Array<(
+    & { goals: (
+      { __typename?: 'FibonacciGoals' }
+      & Pick<FibonacciGoals, 'lastGoal' | 'currentValue' | 'nextGoal'>
+    ), leaderboard: Array<(
       { __typename?: 'LeaderboardEntry' }
       & Pick<LeaderboardEntry, 'createdByCirclesAddress' | 'inviteCount'>
       & { createdByProfile?: Maybe<(
@@ -1927,7 +1938,7 @@ export type StatsQuery = (
           & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
         )> }
       )> }
-    )>> }
+    )> }
   ) }
 );
 
@@ -3442,6 +3453,11 @@ export const StatsDocument = gql`
   stats {
     profilesCount
     verificationsCount
+    goals {
+      lastGoal
+      currentValue
+      nextGoal
+    }
     leaderboard {
       createdByCirclesAddress
       inviteCount

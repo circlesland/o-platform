@@ -139,6 +139,11 @@ query stats {
   stats {
     profilesCount
     verificationsCount
+    goals {
+      lastGoal
+      currentValue
+      nextGoal
+    }
     leaderboard {
       createdByCirclesAddress
       inviteCount
