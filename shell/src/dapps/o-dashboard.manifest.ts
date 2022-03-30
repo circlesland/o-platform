@@ -1,14 +1,13 @@
 import Home from "./o-dashboard/pages/Home.svelte";
 import Invites from "./o-dashboard/pages/Invites.svelte";
+import InviteLeaderboard from "./o-dashboard/pages/InviteLeaderboard.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
-import { push } from "svelte-spa-router";
+
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { me } from "../shared/stores/me";
-import { Profile } from "../shared/api/data/types";
 
 const index: Page<any, DappState> = {
-  isSystem: true,
+  isSystem: false,
   routeParts: [],
   component: Home,
   title: "Home",
@@ -17,9 +16,17 @@ const index: Page<any, DappState> = {
 const invites: Page<any, DappState> = {
   routeParts: ["=invites"],
   component: Invites,
-  isSystem: true,
+  isSystem: false,
   title: "Invites",
   position: "modal",
+  type: "page",
+};
+
+const inviteLeaderboard: Page<any, DappState> = {
+  routeParts: ["=leaderboard"],
+  component: InviteLeaderboard,
+  isSystem: false,
+  title: "Invite Leaderboard",
   type: "page",
 };
 
@@ -76,8 +83,8 @@ export const home: DappManifest<DappState> = {
   isHidden: true,
   icon: "dashboard",
   title: "Home",
-  routeParts: [],
-  defaultRoute: [],
+  routeParts: ["home"],
+  defaultRoute: ["home"],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
@@ -103,5 +110,5 @@ export const home: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, invites, externalChat, externalForum],
+  routables: [index, invites, inviteLeaderboard, externalChat, externalForum],
 };

@@ -14,6 +14,7 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
 import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
+import DashboardEventsWidget from "../molecules/DashboardEventsWidget.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -42,6 +43,8 @@ const init = async () => {
 
   statsResult = await fetchStats();
   profilesCount = statsResult.data.stats.profilesCount;
+
+  console.log("STATS", statsResult.data);
 };
 
 onMount(init);
@@ -70,20 +73,7 @@ async function fetchStats() {
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-40 -mt-2">
-    <section class="p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card">
-      <div class="w-full text-center">
-        <h1>WANT MORE PARTIES?</h1>
-        <span class="text-dark-lightest">Invite your friends.</span>
-      </div>
-      <CitizensProgressBar
-        profilesCount="{profilesCount}"
-        previousTarget="{233}"
-        progressTarget="{377}" />
-      <div class="mt-4 mb-1 text-center">
-        <button class="btn btn-primary" on:click="{() => push('/home/invites')}"
-          >My Invites</button>
-      </div>
-    </section>
+    <DashboardEventsWidget profilesCount="{profilesCount}" />
     <div
       class="grid grid-cols-2 gap-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
       <section
