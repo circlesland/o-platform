@@ -2,7 +2,7 @@ import {writable} from "svelte/store";
 import {
   AcknowledgeDocument,
   Direction,
-  EventType,
+  EventType, LastAcknowledgedAtDocument, LastAcknowledgedAtQueryVariables,
   Organisation,
   OrganisationsByAddressDocument,
   OrganisationsByAddressQueryVariables,
@@ -26,15 +26,22 @@ let events: ProfileEvent[] = [];
 let following: boolean = false;
 
 async function queryEvents(mySafeAddress: string) {
-  // TODO: Get last acknowledged
-  // TODO: Get my safe address
+  // const sessionInfo = await me.getSessionInfo(true);
+  let $me:Profile = null;
+  me.subscribe(me => $me = me)();
+  const safeAddress = $me.circlesAddress;
 
-  const sessionInfo = await me.getSessionInfo();
+  const lastAcknowledgedAt = await ApiClient.query<string, LastAcknowledgedAtQueryVariables>(
+    LastAcknowledgedAtDocument,
+    {
+      safeAddress: $me.circlesAddress
+    }
+  );
 
   let pagination: PaginationArgs = {
     order: SortOrder.Asc,
     limit: 100,
-    continueAt: sessionInfo.lastAcknowledgedAt ?? new Date(0).toJSON(),
+    continueAt: lastAcknowledgedAt ?? new Date(0).toJSON(),
   };
 
   return await ApiClient.query<ProfileEvent[], StreamQueryVariables>(
@@ -267,10 +274,13 @@ export const inbox = {
     }*/
   },
   acknowledge: async (event: ProfileEvent) => {
+    let $me:Profile;
+    me.subscribe(me => $me = me)();
     const apiClient = await window.o.apiClient.client.subscribeToResult();
     await apiClient.mutate({
       mutation: AcknowledgeDocument,
       variables: {
+        safeAddress: $me.circlesAddress,
         until: new Date(event.timestamp).toJSON(),
       },
     });

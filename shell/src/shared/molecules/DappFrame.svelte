@@ -579,9 +579,9 @@ function onOpenModal() {
     runtimeDapp,
     <Page<any, any>>{
       position: "modal",
-      component: QuickActions,
+      component: QuickActions
     },
-    {}
+    { }
   );
   setNav({
     leftIsOpen: false,

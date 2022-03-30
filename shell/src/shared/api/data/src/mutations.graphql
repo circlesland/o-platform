@@ -81,8 +81,8 @@ mutation claimInvitation($code: String!) {
   }
 }
 
-mutation acknowledge($until: String!) {
-  acknowledge(until: $until)
+mutation acknowledge($until: Date! $safeAddress: String) {
+  acknowledge(until: $until safeAddress: $safeAddress)
 }
 
 mutation sendMessage(

@@ -30,6 +30,7 @@ import { UserActions, UserActionItem } from "../../../shared/userActions";
 
 import { _ } from "svelte-i18n";
 import { Environment } from "../../../shared/environment";
+import {param} from "../atoms/ChatListCard.svelte";
 
 export let id: string;
 
@@ -72,7 +73,31 @@ async function setProfile(id: string) {
       )
     ).filter((o) => o.profile);
   } else {
-    commonTrusts = [];
+    profile = <any>$me;
+
+    $contacts.forEach((contact: Contact) => {
+      const trustMetadata: ContactPoint = contact.metadata.find(
+              (p) => p.name === "CrcTrust"
+      );
+      let trustIn = 0;
+      let trustOut = 0;
+      if (trustMetadata) {
+        trustMetadata.directions.forEach((d, i) => {
+          if (d == ContactDirection.In) {
+            trustIn = parseInt(trustMetadata.values[i]);
+          } else if (d == ContactDirection.Out) {
+            trustOut = parseInt(trustMetadata.values[i]);
+          }
+        });
+      }
+      if (trustIn > 0 && trustOut > 0) {
+        commonTrusts.push(<CommonTrust>{
+          safeAddress1: $me.circlesAddress,
+          safeAddress2: contact.contactAddress,
+          profile: contact.contactAddress_Profile,
+        });
+      }
+    });
   }
 
   displayName = contact.contactAddress_Profile.displayName;
@@ -220,7 +245,11 @@ async function setProfile(id: string) {
     <header class="grid overflow-hidden bg-white h-72 ">
       <div class="w-full text-center">
         <h1 class="text-3xl uppercase font-heading">
-          {$_("dapps.o-contacts.pages.profile.profile")}
+          {#if profile.circlesAddress === $me.circlesAddress}
+            You
+          {:else}
+            {$_("dapps.o-contacts.pages.profile.profile")}
+          {/if}
         </h1>
       </div>
       <div
@@ -253,7 +282,7 @@ async function setProfile(id: string) {
       <div class="mt-4">
         <div class="">
           {#if profile}
-            {#if trustMessage}
+            {#if trustMessage && profile.circlesAddress !== $me.circlesAddress}
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
@@ -299,11 +328,30 @@ async function setProfile(id: string) {
                       {#if membership.organisation}
                         <div class="mt-2 mr-2">
                           <UserImage
-                            profile="{membership.organisation}"
-                            tooltip="{true}"
-                            gradientRing="{true}" />
+                                  profile="{membership.organisation}"
+                                  tooltip="{true}"
+                                  gradientRing="{true}" />
                         </div>
                       {/if}
+                    {/each}
+                  </div>
+                </div>
+              </section>
+            {/if}
+            {#if profile.members && profile.members.length}
+              <section class="justify-center mb-2 ">
+                <div class="flex flex-col w-full pt-2 space-y-1">
+                  <div class="text-left text-2xs text-dark-lightest">
+                    {$_("dapps.o-contacts.pages.profile.members")}
+                  </div>
+                  <div class="flex flex-row flex-wrap mt-2 ">
+                    {#each profile.members as memberProfile}
+                        <div class="mt-2 mr-2">
+                          <UserImage
+                                  profile="{memberProfile}"
+                                  tooltip="{true}"
+                                  gradientRing="{true}" />
+                        </div>
                     {/each}
                   </div>
                 </div>
@@ -345,14 +393,14 @@ async function setProfile(id: string) {
             {/if} -->
           {/if}
 
-          {#if !isMe && contact && contact.contactAddress}
+          {#if profile && profile.circlesAddress}
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
                   {$_("dapps.o-contacts.pages.profile.address")}
                 </div>
                 <div class="flex items-center w-full text-2xs">
-                  {contact.contactAddress}
+                  {profile.circlesAddress}
                 </div>
               </div>
             </section>

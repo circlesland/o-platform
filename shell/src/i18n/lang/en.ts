@@ -66,7 +66,7 @@ export const en = {
                 submitButtonText: "Confirm",
               },
               success: {
-                title: "Trust successful",
+                title: "It's Done",
                 submitButtonText: "Close",
               },
             },
@@ -263,13 +263,14 @@ export const en = {
             verify: "Verify",
             revoke: "Revoke verification",
             accountVerified: "Account verified",
-            verifiedClickToRevoke: "Verified. click to Revoke",
+            verifiedClickToRevoke: "Unverify",
             accountVerificationRevoked: "Account verification revoked",
             revokedUppercase: "REVOKED",
             trust: "Trust",
             mutualFriends: "Mutual friends",
             noMutualFriends: "No mutual friends",
             memberAt: "Member at",
+            members: "Members",
             verifiedBy: "Verified by",
             passion: "Passion",
             address: "Address",
@@ -345,6 +346,9 @@ export const en = {
               signupOrganisation: {
                 notUnlockedKey: "The private key is not unlocked",
               },
+            },
+            deployOrganisation: {
+              progress: "Deploying your organisation.. This can take a moment.",
             },
           },
           createRegions: {
@@ -625,6 +629,7 @@ export const en = {
             purchaseDate: "Purchase Date: ",
             loadingPurchases: "Loading purchases...",
             yourPickupCode: "Your Pick-Up Code",
+            yourPickupNumber: "Your Order-Number:",
             showThisCode:
               "show this code to the seller when you pick up your Order.",
             noCode: "No pickup code yet ..",
@@ -1041,6 +1046,7 @@ export const en = {
             passion: "Passion",
             noPassionSet: "No passion set.",
             address: "Address",
+            qrcode: "Show QR Code to others to be scanned with 'Scan to trust'",
           },
           settings: {
             notifications: "Would you like to receive our Newsletter?",
@@ -1579,8 +1585,7 @@ export const en = {
             "The query definition contains none or more than one selection. Only 1 selection is supported.",
           selectionHasNoName:
             "The selection doesn't have a name. Cannot find the data-holding property of the graphql response.",
-          someThingWentWrong:
-            "Something went wrong while querying the api: {error}",
+          someThingWentWrong: "{error}",
           returnedFragmentDefinitionNode:
             "A FragmentDefinitionNode was returned when a OperationDefinitionNode was expected.",
         },

@@ -160,7 +160,12 @@ function submit() {
           },
           colors: {
             default: 'primary',
-            overrides: (action) => (action.key == 'dismiss' ? 'light' : null),
+            overrides: (action) =>
+              action.key == 'dismiss'
+                ? 'light'
+                : null || action.icon == 'untrust'
+                ? 'light'
+                : null,
           },
         }}" />
     </div>

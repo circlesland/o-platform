@@ -3,7 +3,7 @@ query init {
     isLoggedOn
     hasProfile
     profileId
-    lastAcknowledgedAt
+    # lastAcknowledgedAt
     capabilities {
       type
     }
@@ -37,9 +37,19 @@ query init {
         organisation {
           id
           circlesAddress
+          displayCurrency
+          displayName
+          circlesSafeOwner
           name
           description
           avatarUrl
+          cityGeonameid
+          city {
+            geonameid
+            country
+            name
+            population
+          }
         }
       }
       verifications {
@@ -47,9 +57,16 @@ query init {
         revokedAt
         verifierSafeAddress
         verifierProfile {
+          id
           circlesAddress
+          displayCurrency
           avatarUrl
           name
+          city {
+            geonameid
+            name
+            country
+          }
         }
       }
       # init.invitation
@@ -67,12 +84,16 @@ query init {
   }
 }
 
+query lastAcknowledgedAt($safeAddress: String!) {
+  lastAcknowledgedAt(safeAddress: $safeAddress)
+}
+
 query sessionInfo {
   sessionInfo {
     isLoggedOn
     hasProfile
     profileId
-    lastAcknowledgedAt
+    # lastAcknowledgedAt
     capabilities {
       type
     }
@@ -118,6 +139,30 @@ query stats {
   stats {
     profilesCount
     verificationsCount
+    leaderboard {
+      createdByCirclesAddress
+      inviteCount
+      createdByProfile {
+        id
+        circlesAddress
+        displayCurrency
+        circlesSafeOwner
+        displayName
+        firstName
+        lastName
+        dream
+        avatarUrl
+        cityGeonameid
+        city {
+          geonameid
+          name
+          country
+          latitude
+          longitude
+          population
+        }
+      }
+    }
   }
 }
 
@@ -206,10 +251,18 @@ query myProfile {
         id
         circlesAddress
         displayCurrency
+        displayName
         circlesSafeOwner
         name
         description
         avatarUrl
+        cityGeonameid
+        city {
+          geonameid
+          country
+          name
+          population
+        }
       }
     }
     verifications {
@@ -217,10 +270,16 @@ query myProfile {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
         name
+        city {
+          geonameid
+          name
+          country
+        }
       }
     }
   }
@@ -250,14 +309,17 @@ query profiles($id: [Int!]!) {
         id
         circlesAddress
         displayCurrency
+        displayName
         circlesSafeOwner
         name
         description
         avatarUrl
+        cityGeonameid
         city {
           geonameid
-          name
           country
+          name
+          population
         }
       }
     }
@@ -266,10 +328,12 @@ query profiles($id: [Int!]!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -329,10 +393,12 @@ query profilesByName($searchString: String!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -366,10 +432,12 @@ query getRecentProfiles($pagination: PaginationArgs) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -403,14 +471,17 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
         id
         circlesAddress
         displayCurrency
+        displayName
         circlesSafeOwner
         name
         description
         avatarUrl
+        cityGeonameid
         city {
           geonameid
-          name
           country
+          name
+          population
         }
       }
     }
@@ -419,10 +490,12 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -455,10 +528,12 @@ query profilesByIds($id: [Int!]!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -499,6 +574,7 @@ query trustRelations($safeAddress: String!) {
         revokedAt
         verifierSafeAddress
         verifierProfile {
+          id
           circlesAddress
           displayCurrency
           avatarUrl
@@ -536,10 +612,12 @@ query profileById($id: Int!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -573,14 +651,17 @@ query profileBySafeAddress($safeAddress: String!) {
         id
         circlesAddress
         displayCurrency
+        displayName
         circlesSafeOwner
         name
         description
         avatarUrl
+        cityGeonameid
         city {
           geonameid
-          name
           country
+          name
+          population
         }
       }
     }
@@ -589,10 +670,12 @@ query profileBySafeAddress($safeAddress: String!) {
       revokedAt
       verifierSafeAddress
       verifierProfile {
+        id
         circlesAddress
         displayCurrency
         avatarUrl
         name
+        displayName
         city {
           geonameid
           name
@@ -687,6 +770,7 @@ query organisationsByAddress($addresses: [String!]!) {
         displayCurrency
         createdAt
         name
+        displayName
         avatarUrl
         city {
           geonameid
@@ -715,6 +799,7 @@ query organisationsByAddress($addresses: [String!]!) {
           revokedAt
           verifierSafeAddress
           verifierProfile {
+            id
             circlesAddress
             displayCurrency
             avatarUrl
@@ -963,6 +1048,15 @@ query stream(
       }
       ... on MembershipOffer {
         createdBy
+        createdBy_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         organisation
         organisation_profile {
           name
@@ -1092,6 +1186,7 @@ query stream(
           invoices {
             id
             pickupCode
+            simplePickupCode
             buyerProfile {
               id
               displayName
@@ -1279,15 +1374,33 @@ query aggregates(
                 id
                 circlesAddress
                 displayCurrency
+                displayName
                 circlesSafeOwner
                 name
                 description
                 avatarUrl
+                cityGeonameid
                 city {
                   geonameid
-                  name
                   country
+                  name
+                  population
                 }
+              }
+            }
+            members {
+              type
+              id
+              displayName
+              firstName
+              lastName
+              avatarUrl
+              circlesAddress
+              displayCurrency
+              city {
+                geonameid
+                name
+                country
               }
             }
             verifications {
@@ -1295,6 +1408,7 @@ query aggregates(
               revokedAt
               verifierSafeAddress
               verifierProfile {
+                id
                 circlesAddress
                 displayCurrency
                 avatarUrl
@@ -1326,8 +1440,21 @@ query aggregates(
       ... on Memberships {
         lastUpdatedAt
         organisations {
+          id
           circlesAddress
           displayCurrency
+          displayName
+          circlesSafeOwner
+          name
+          description
+          avatarUrl
+          cityGeonameid
+          city {
+            geonameid
+            country
+            name
+            population
+          }
         }
       }
       ... on Purchases {
@@ -1378,6 +1505,7 @@ query aggregates(
             paymentTransactionHash
             buyerAddress
             pickupCode
+            simplePickupCode
             buyerSignature
             buyerSignedDate
             sellerSignature
@@ -1424,6 +1552,7 @@ query aggregates(
               revokedAt
               verifierSafeAddress
               verifierProfile {
+                id
                 circlesAddress
                 displayCurrency
                 avatarUrl
@@ -1469,6 +1598,7 @@ query aggregates(
             paymentTransactionHash
             buyerAddress
             pickupCode
+            simplePickupCode
             buyerSignature
             buyerSignedDate
             sellerSignature
@@ -1489,6 +1619,7 @@ query aggregates(
                 revokedAt
                 verifierSafeAddress
                 verifierProfile {
+                  id
                   circlesAddress
                   displayCurrency
                   avatarUrl
@@ -1531,8 +1662,16 @@ query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
     revokedAt
     verifierSafeAddress
     verifierProfile {
+      id
+      circlesAddress
+      displayCurrency
       avatarUrl
       name
+      city {
+        geonameid
+        name
+        country
+      }
     }
     verifiedSafeAddress
     verifiedProfile {

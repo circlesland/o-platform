@@ -28,23 +28,13 @@ $: {
     profile = undefined;
   }
 }
-
-function profileSwitcher() {
-  // if (profile.memberships && profile.memberships.length > 0) {
-
-  showSwitcher = !showSwitcher;
-  // }
-}
 </script>
 
 <div class="fixed top-0 left-0 z-50 w-full">
   <div
     class="grid w-full grid-cols-3 p-2 mx-auto text-white navbar bg-dark-dark justify-items-stretch">
     <div class="justify-self-start whitespace-nowrap">
-      <img
-        src="/logos/circles.png"
-        class="w-8 h-8"
-        alt="Circles Land" />
+      <img src="/logos/circles.png" class="w-8 h-8" alt="Circles Land" />
       <span class="ml-2 text-2xl uppercase font-heading text-light">
         {runtimeDapp ? runtimeDapp.title : "<<No dapp>>"}
       </span>
@@ -72,7 +62,16 @@ function profileSwitcher() {
           <Icons icon="cart" size="{6}" />
         </div>
       {/if}
-
+      {#if profile}
+        {#if profile.__typename === "Organisation"}
+          <div
+            class="mr-4 text-white cursor-pointer"
+            on:click="{() => push(`#/marketplace/scan-purchase`)}">
+            <Icons icon="qrcode" size="{6}" />
+          </div>
+        {/if}
+      {/if}
+      <!--
       {#if profile}
         {#if profile.__typename === "Organisation"}
           <div
@@ -92,6 +91,7 @@ function profileSwitcher() {
             on:click_outside="{() => (showSwitcher = !showSwitcher)}" />
         {/if}
       {/if}
+-->
     </div>
   </div>
 </div>

@@ -15,13 +15,14 @@ import { me } from "../../../shared/stores/me";
 import { push } from "svelte-spa-router";
 import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
-import QrCode from "svelte-qrcode";
+
 import UserImage from "src/shared/atoms/UserImage.svelte";
 
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { _ } from "svelte-i18n";
 import { myPurchases } from "../../../shared/stores/myPurchases";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
+import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
 
 export let id: string;
 
@@ -278,10 +279,12 @@ onMount(async () => {
       <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
         <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
           <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
-            {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupCode")}
-            <div class="text-sm text-center">
-              {$_("dapps.o-marketplace.pages.myPurchaseDetail.showThisCode")}
-            </div>
+            {#if invoice.simplePickupCode}
+              {$_(
+                "dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber"
+              )}
+              {invoice.simplePickupCode}
+            {/if}
           </h1>
         </div>
 
@@ -291,9 +294,9 @@ onMount(async () => {
               {$_("dapps.o-marketplace.pages.myPurchaseDetail.noCode")}
             </h1>
           {:else}
-            <div class="container">
+            <div class="container mt-6">
               <center>
-                <QrCode value="{invoice.pickupCode}" color="#081B4A" />
+                <QrCode value="{invoice.pickupCode}" size="{250}" />
               </center>
             </div>
           {/if}

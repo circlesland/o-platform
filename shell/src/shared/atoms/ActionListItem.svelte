@@ -3,20 +3,20 @@ import Icons from "../molecules/Icons.svelte";
 
 export let title: string = null;
 export let icon: string = null;
-export let colorClass: string = null;
+export let size: number = 6;
+export let colorClass: string = '';
+export let customClass: string = 'inline';
 </script>
 
 <div
-  on:click
-  class="flex space-x-2 flex-grow p-3 px-4 text-xs rounded-lg h-11
-  cursor-pointer {colorClass} bg-light-light mt-2 mr-2 justify-center items-center">
-  {#if icon && icon !== "undefined"}
-    <div class="">
-      <Icons icon="{icon}" size="{4}" />
-    </div>
-  {/if}
-  {#if title}
-    <span class="block text-xs sm:text-sm {colorClass} self-center"
-      >{title}</span>
-  {/if}
+  class="text-center align-top list-none cursor-pointer inline-table"
+  on:click>
+  <span>
+    <span class="table-cell w-12 h-12 align-middle rounded-full {colorClass} {customClass} bg-light-light">
+      <Icons icon="{icon}" size="{size}" customClass="inline" />
+    </span>
+    <span class="block w-24 text-xs sm:text-sm mt-1 text-center break-normal {colorClass}">
+      {title}
+    </span>
+  </span>
 </div>

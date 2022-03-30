@@ -11,10 +11,8 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import * as yup from "yup";
-import { requestPathToRecipient } from "../services/requestPathToRecipient";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { BN } from "ethereumjs-util";
-import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 import { SetTrustContext } from "./setTrust";
 import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfileId";
@@ -23,9 +21,7 @@ import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeA
 import { me } from "../../../shared/stores/me";
 import {
   DirectPathDocument,
-  DirectPathQuery,
   Profile,
-  ProfileBySafeAddressDocument,
   QueryDirectPathArgs,
 } from "../../../shared/api/data/types";
 import {
@@ -37,8 +33,7 @@ import TransferSummary from "../atoms/TransferSummary.svelte";
 import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Currency } from "../../../shared/currency";
-import {get} from "svelte/store";
-import {format} from "svelte-i18n";
+import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 
 
 export type TransferContextData = {
@@ -74,16 +69,9 @@ export async function findDirectTransfers(
       amount: amount,
     }
   );
-  console.log("Direct path: ", result);
-
   return result;
 }
 
-/**
- * This is the context on which the process will work.
- * The actual fields are defined above in the 'AuthenticateContextData' type.
- * The 'AuthenticateContextData' type is also the return value of the process (see bottom for the signature).
- */
 export type TransferContext = ProcessContext<TransferContextData>;
 
 /**
@@ -98,7 +86,6 @@ const strings = {
   messageLabel: window.i18n("dapps.o-banking.processes.transfer.strings.messageLabel")
 
 };
-
 
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
@@ -129,6 +116,11 @@ const editorContent: { [x: string]: EditorViewContext } = {
     submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.submitButtonText"),
   },
   success: {
+    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
+    description: "",
+    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
+  },
+  noPath: {
     title: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
     description: "",
     submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
@@ -201,7 +193,94 @@ const processDefinition = (processId: string) =>
           submitButtonText: window.i18n("dapps.o-banking.processes.transfer.recipientAddress.submitButtonText"),
         },
         navigation: {
-          next: "#tokens",
+          next: "#loadRecipientProfile",
+        },
+      }),
+      loadRecipientProfile: {
+        id: "loadRecipientProfile",
+        invoke: {
+          src: async (context) => {
+            if (context.data.recipientProfileId) {
+              // Use the profile id to get the profile but send to the context.data.recipientAddress
+              context.data.recipientProfile = await loadProfileByProfileId(
+                context.data.recipientProfileId
+              );
+            } else if (context.data.recipientAddress) {
+              context.data.recipientProfile = await loadProfileBySafeAddress(
+                context.data.recipientAddress
+              );
+            } else {
+              // No profile found
+            }
+          },
+          onDone: [
+            {
+              cond: (context) => !!context.data.recipientProfile,
+              target: "#getMaxFlow",
+            },
+            {
+              target: "#getMaxFlow",
+            },
+          ],
+          onError: "#error",
+        },
+      },
+      getMaxFlow: {
+        id: "getMaxFlow",
+        entry: () => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.progress",
+            message: window.i18n("dapps.o-banking.processes.transfer.findTransferPath.entry.message"),
+          });
+        },
+        invoke: {
+          id: "getMaxFlow",
+          src: async (context) => {
+            const flow = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(
+              DirectPathDocument,
+              {
+                from: context.data.safeAddress,
+                to: context.data.recipientAddress,
+                amount: "9999999999999999999999999999999999"
+              }
+            );
+
+            if (!context.data.maxFlows) {
+              context.data.maxFlows = {};
+            }
+            context.data.maxFlows["crc"] = flow.flow;
+          },
+          onDone: [{
+            cond: (context) => {
+              console.log("context.data.maxFlows[\"crc\"] == \"0\"", context.data.maxFlows["crc"])
+              return context.data.maxFlows["crc"] == "";
+            },
+            target: "#noTrust"
+          }, {
+            target: "#tokens"
+          }],
+          onError: "#error"
+        }
+      },
+      noTrust: prompt<TransferContext, any>({
+        id: "noTrust",
+        field: "__",
+        component: HtmlViewer,
+        params: (context) => {
+          return {
+            view: {
+              title: "Not trusted",
+              description: `${context.data.recipientProfile.displayName} isn't trusting you.`,
+              submitButtonText: "Go back"
+            },
+            html: () => "",
+            hideNav: false
+          }
+        },
+        navigation: {
+          next: "#recipientAddress",
+          canGoBack: () => false,
+          canSkip: () => false,
         },
       }),
       tokens: prompt<TransferContext, any>({
@@ -232,69 +311,44 @@ const processDefinition = (processId: string) =>
           currency: yup.string().required(window.i18n("dapps.o-banking.processes.transfer.tokens.currency")),
         }),
         navigation: {
-          next: "#findMaxFlow",
+          next: "#findTransferPath",
           previous: "#recipientAddress",
         },
       }),
-      findMaxFlow: {
-        id: "findMaxFlow",
+      findTransferPath: {
+        id: "findTransferPath",
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-banking.processes.transfer.findMaxFlow.entry.message"),
+            message: window.i18n("dapps.o-banking.processes.transfer.findTransferPath.entry.message"),
           });
         },
         invoke: {
-          id: "findMaxFlow",
+          id: "findTransferPath",
           src: async (context) => {
             if (!context.data.recipientAddress) {
-              throw new Error(window.i18n("dapps.o-banking.processes.transfer.findMaxFlow.invoke"));
+              throw new Error(window.i18n("dapps.o-banking.processes.transfer.findTransferPath.invoke"));
             }
-            context.data.maxFlows = {};
-            console.log("CONEXT DATA", context.data);
-            const p1 = new Promise<void>(async (resolve) => {
-              const amount =
-                context.data.tokens.currency == "crc"
-                  ? convertTimeCirclesToCircles(
-                      Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
-                      null
-                    ).toString()
-                  : context.data.tokens.amount;
+            // context.data.maxFlows = {};
+            // context.data.maxFlows["xdai"] = await RpcGateway.get().eth.getBalance(context.data.safeAddress);
 
-              const circlesValueInWei = RpcGateway.get()
-                .utils.toWei(amount.toString() ?? "0", "ether")
-                .toString();
+            const amount = new Currency().convertTimeCirclesToCircles(Number.parseFloat(context.data.tokens.amount) * 10, null);
 
-              const flow = await findDirectTransfers(
-                context.data.safeAddress,
-                context.data.recipientAddress,
-                circlesValueInWei
-              );
+            const circlesValueInWei = RpcGateway.get()
+              .utils.toWei(amount.toString() ?? "0", "ether")
+              .toString();
 
-              // TODO: Re-implement pathfinder when available again
-              /*
+            const flow = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(
+              DirectPathDocument,
+              {
+                from: context.data.safeAddress,
+                to: context.data.recipientAddress,
+                amount: circlesValueInWei
+              }
+            );
 
-              const flow = await requestPathToRecipient({
-                data: {
-                  recipientAddress: context.data.recipientAddress,
-                  amount:
-                    context.data.tokens.currency == "crc"
-                      ? convertTimeCirclesToCircles(
-                          Number.parseFloat(context.data.tokens.amount),
-                          null
-                        ).toString()
-                      : context.data.tokens.amount,
-                  safeAddress: context.data.safeAddress,
-                },
-              });
- */
-              context.data.maxFlows["crc"] = flow.flow;
-              context.data.transitivePath = flow;
-              resolve();
-            });
-            context.data.maxFlows["xdai"] =
-              await RpcGateway.get().eth.getBalance(context.data.safeAddress);
-            await p1;
+            // context.data.maxFlows["crc"] = flow.flow;
+            context.data.transitivePath = flow;
           },
           onDone: "#checkAmount",
           onError: "#error",
@@ -305,19 +359,11 @@ const processDefinition = (processId: string) =>
         always: [
           {
             cond: (context, event) => {
+              if (context.data.maxFlows[context.data.tokens.currency.toLowerCase()] == "")
+                return false;
+
               const maxFlowInWei = new BN(
-                context.data.maxFlows[
-                  context.data.tokens.currency.toLowerCase()
-                ]
-              );
-              const amountInWei = new BN(
-                RpcGateway.get().utils.toWei(
-                  convertTimeCirclesToCircles(
-                    Number.parseFloat(context.data.tokens.amount),
-                    null
-                  ).toString(),
-                  "ether"
-                )
+                context.data.maxFlows[context.data.tokens.currency.toLowerCase()]
               );
 
               const amount =
@@ -334,78 +380,40 @@ const processDefinition = (processId: string) =>
                   .toString()
               );
 
-              if (maxFlowInWei.lt(circlesValueInWei)) {
+              if (maxFlowInWei.lt(circlesValueInWei) || context.data.transitivePath.transfers.length == 0) {
                 console.log(
                   `The max flow is smaller than the entered value (${circlesValueInWei}). Max flow: ${maxFlowInWei}`
                 );
               }
 
-              return maxFlowInWei.gte(circlesValueInWei);
+              return maxFlowInWei.gte(circlesValueInWei) && context.data.transitivePath.transfers.length != 0;
             },
-            target: "#loadRecipientProfile",
+            target: "#message",
           },
           {
             actions: (context) => {
               let displayTimeCircles = true;
-              const unsubscribeMe = me.subscribe(($me) => {
+              me.subscribe(($me) => {
                 displayTimeCircles =
                   $me.displayTimeCircles ||
                   $me.displayTimeCircles === undefined;
-              });
-              unsubscribeMe();
+              })();
 
-              const formattedAmount = parseFloat(
-                displayCirclesAmount(
-                  context.data.tokens.amount.toString(),
+              let formattedMax:string = "0.00";
+              if (context.data.maxFlows[context.data.tokens.currency.toLowerCase()] != "")  {
+                formattedMax = (parseFloat(new Currency().displayAmount(
+                  context.data.maxFlows[context.data.tokens.currency.toLowerCase()].toString(),
                   null,
-                  displayTimeCircles
-                ).toString()
-              );
-              const formattedMax = parseFloat(
-                RpcGateway.get().utils.fromWei(
-                  context.data.maxFlows[
-                    context.data.tokens.currency.toLowerCase()
-                  ].toString(),
-                  "ether"
-                )
-              ).toFixed(2);
+                  "EURS").toString())).toFixed(0) + ".00";
+              }
+
               context.messages[
                 "tokens"
               ] = window.i18n("dapps.o-banking.processes.transfer.checkAmount.contextMessages", { values: { formattedMax: formattedMax}});
-
             },
             target: "#tokens",
           },
         ],
-      },
-      loadRecipientProfile: {
-        id: "loadRecipientProfile",
-        invoke: {
-          src: async (context) => {
-            if (context.data.recipientProfileId) {
-              // Use the profile id to get the profile but send to the context.data.recipientAddress
-              context.data.recipientProfile = await loadProfileByProfileId(
-                context.data.recipientProfileId
-              );
-            } else if (context.data.recipientAddress) {
-              context.data.recipientProfile = await loadProfileBySafeAddress(
-                context.data.recipientAddress
-              );
-            } else {
-              // No profile found
-            }
-          },
-          onDone: [
-            {
-              cond: (context) => !!context.data.recipientProfile,
-              target: "#message",
-            },
-            {
-              target: "#acceptSummary",
-            },
-          ],
-          onError: "#error",
-        },
       },
       message: prompt<TransferContext, any>({
         field: "message",
@@ -420,7 +428,6 @@ const processDefinition = (processId: string) =>
           canSkip: () => true,
         },
       }),
-
       acceptSummary: prompt<TransferContext, any>({
         field: "acceptSummary",
         component: TransferConfirmation,
@@ -448,7 +455,7 @@ const processDefinition = (processId: string) =>
               return context.data.tokens.currency.toLowerCase() == "xdai";
             },
             target: "callXdaiTransfer",
-          },
+          }
         ],
       },
       callCirclesTransfer: {

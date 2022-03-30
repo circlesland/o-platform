@@ -1,14 +1,27 @@
 <script type="ts">
-import { ProfileEvent, Sale, SaleEvent } from "../../../shared/api/data/types";
+import {
+  ProfileEvent,
+  Profile,
+  Contact,
+  CommonTrust,
+  CommonTrustQueryVariables,
+  CommonTrustDocument,
+  ContactPoint,
+  ContactDirection,
+  EventType,
+} from "../../../shared/api/data/types";
 import QrScanner from "qr-scanner";
 import { onDestroy, onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { showToast } from "../../../shared/toast";
 import { _ } from "svelte-i18n";
 import { mySales } from "../../../shared/stores/mySales";
-
-let saleEvent: ProfileEvent;
-let sale: SaleEvent;
+import { contacts } from "../../../shared/stores/contacts";
+import { me } from "../../../shared/stores/me";
+import { ApiClient } from "../../../shared/apiConnection";
+import { setTrust } from "../../../dapps/o-banking/processes/setTrust";
+import { Environment } from "../../../shared/environment";
+import { ok, err, Result } from "neverthrow";
 
 let video: HTMLVideoElement;
 let scanner: QrScanner;
@@ -16,6 +29,17 @@ let camQrResult: HTMLElement;
 let camList: HTMLElement;
 let camHasCamera: HTMLElement;
 let statusText: string = "";
+let isMe: boolean = false;
+let commonTrusts: CommonTrust[] = [];
+let profile: Profile;
+let contact: Contact;
+
+enum ScanStatus {
+  ErrorOwnProfile = 1,
+  ErrorAlreadyTrusted,
+  ErrorUnknown,
+  Success,
+}
 
 $: {
   camQrResult = camQrResult;
@@ -25,37 +49,84 @@ onDestroy(() => {
   scanner.stop();
 });
 
-async function loadSale(id) {
+async function tryTrust(id) {
   scanner.stop();
-  statusText = window.i18n(
-    "dapps.o-marketplace.pages.scanPurchase.verifyingOrder"
-  );
 
-  saleEvent = await mySales.findByPickupCode(id);
-  if (saleEvent) {
-    sale = <SaleEvent>saleEvent.payload;
-  } else {
-    sale = null;
+  setTimeout(async () => {
+    let trustCheck = await setProfile(id);
+
+    if (trustCheck.isErr()) {
+      trustCheck.mapErr((errorMessage) => {
+        statusText = errorMessage;
+      });
+      startScanner();
+      return;
+    }
+    if (trustCheck.isOk()) {
+      console.log("Cool");
+    }
+  }, 500);
+}
+
+async function setProfile(id: string) {
+  try {
+    const c = await contacts.findBySafeAddress(id);
+    if (!c) {
+      return;
+    }
+
+    contact = c;
+    profile = c.contactAddress_Profile;
+
+    if ($me.circlesAddress !== contact.contactAddress) {
+      commonTrusts = (
+        await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(
+          CommonTrustDocument,
+          {
+            safeAddress1: $me.circlesAddress.toLowerCase(),
+            safeAddress2: contact.contactAddress.toLowerCase(),
+          }
+        )
+      ).filter((o) => o.profile);
+    } else {
+      return err("You can't trust yourself, or do you? ;)");
+    }
+
+    profile = contact.contactAddress_Profile;
+
+    if (contact.metadata) {
+      const trustMetadata: ContactPoint = contact.metadata.find(
+        (p) => p.name === EventType.CrcTrust
+      );
+      let trustIn = 0;
+      let trustOut = 0;
+
+      if (trustMetadata) {
+        trustMetadata.directions.forEach((d, i) => {
+          if (d == ContactDirection.In) {
+            trustIn = parseInt(trustMetadata.values[i]);
+          } else if (d == ContactDirection.Out) {
+            trustOut = parseInt(trustMetadata.values[i]);
+          }
+        });
+      }
+
+      if (trustOut) {
+        return err("You are already trusting this user.");
+      } else {
+        window.o.runProcess(setTrust, {
+          trustLimit: 100,
+          trustReceiver: id,
+          safeAddress: $me.circlesAddress,
+          hubAddress: Environment.circlesHubAddress,
+          privateKey: sessionStorage.getItem("circlesKey"),
+        });
+        return ok({ codeValid: true });
+      }
+    }
+  } catch (error) {
+    return err(error);
   }
-
-  if (!sale) {
-    statusText = window.i18n(
-      "dapps.o-marketplace.pages.scanPurchase.invalidOrderCode"
-    );
-    startScanner();
-    return;
-  }
-
-  mySales.completeSale(sale.invoice.id).then(function () {
-    push(`#/marketplace/my-sales/${sale.invoice.id}`);
-    showToast(
-      "success",
-      window.i18n(
-        "dapps.o-marketplace.pages.scanPurchase.purchaseMarkedAsDelivered"
-      )
-    );
-    return sale;
-  });
 }
 
 async function setResult(label, result) {
@@ -68,7 +139,7 @@ async function setResult(label, result) {
     100
   );
 
-  await loadSale(result.data);
+  await tryTrust(result.data);
 }
 
 function startScanner() {
@@ -114,11 +185,11 @@ onMount(() => {
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <div class="w-full text-center">
     <h1 class="text-3xl uppercase font-heading">
-      {$_("dapps.o-marketplace.pages.scanPurchase.scanToHandOut")}
+      Scan Profile QR Code to Instant-Trust
     </h1>
   </div>
   <div class="w-full text-center">
-    <span class="text-dark-lightest">{statusText}</span>
+    <span class="break-all text-alert-dark">{statusText}</span>
   </div>
 
   <div class="w-full">
