@@ -10,6 +10,7 @@ import {
 } from "../../../shared/api/data/types";
 import {onMount} from "svelte";
 import {trustFromContactMetadata} from "../../../shared/functions/trustFromContactMetadata";
+import {inbox} from "../../../shared/stores/inbox";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -20,7 +21,13 @@ function loadLocationPage(route: string) {
 
 let orgas: { orga: Organisation, enabled: boolean }[] = [];
 
-onMount(async () => {
+$: {
+  if ($inbox.length) {
+    load();
+  }
+}
+
+async function load() {
   const allOrgasWithProducts = await ApiClient.query<Organisation[], OrganisationsWithOffersQueryVariables>(
           OrganisationsWithOffersDocument, {}
   );
@@ -32,7 +39,9 @@ onMount(async () => {
       enabled: trustIn > 0
     };
   }));
-});
+}
+
+onMount(async () => await load());
 
 </script>
 
