@@ -100,7 +100,7 @@ async function fetchStats() {
                   push(`#/contacts/${entry.createdByProfile.circlesAddress}`)}">
                 <div class="flex flex-row flex-grow min-w-0 mt-2 space-x-2">
                   <div
-                    class="self-center px-2 pt-2 text-5xl text-center w-14 text-dark font-enso"
+                    class="self-center pt-2 pl-2 text-5xl text-center w-14 text-dark font-enso"
                     class:pl-0="{i + 2 >= 10}">
                     <span class="text-sm">#</span>{i + 2}
                   </div>
