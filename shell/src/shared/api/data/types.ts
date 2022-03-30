@@ -743,9 +743,12 @@ export type Organisation = {
   displayCurrency?: Maybe<DisplayCurrency>;
   displayName?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
+  largeBannerUrl?: Maybe<Scalars['String']>;
   members?: Maybe<Array<ProfileOrOrganisation>>;
   name: Scalars['String'];
   offers?: Maybe<Array<Offer>>;
+  productListingType?: Maybe<ProductListingType>;
+  smallBannerUrl?: Maybe<Scalars['String']>;
   trustsYou?: Maybe<Scalars['Int']>;
 };
 
@@ -762,6 +765,11 @@ export type PaginationArgs = {
   limit: Scalars['Int'];
   order: SortOrder;
 };
+
+export enum ProductListingType {
+  List = 'LIST',
+  Tiles = 'TILES'
+}
 
 export type Profile = {
   __typename?: 'Profile';
@@ -786,14 +794,17 @@ export type Profile = {
   firstName: Scalars['String'];
   id: Scalars['Int'];
   invitationTransaction?: Maybe<ProfileEvent>;
+  largeBannerUrl?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
   members?: Maybe<Array<Profile>>;
   memberships?: Maybe<Array<Membership>>;
   newsletter?: Maybe<Scalars['Boolean']>;
   offers?: Maybe<Array<Offer>>;
   origin?: Maybe<ProfileOrigin>;
+  productListingType?: Maybe<ProductListingType>;
   purchases?: Maybe<Array<Purchase>>;
   sales?: Maybe<Array<Sale>>;
+  smallBannerUrl?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
   successorOfCirclesAddress?: Maybe<Scalars['String']>;
   type?: Maybe<ProfileType>;
@@ -1314,7 +1325,10 @@ export type UpsertOrganisationInput = {
   description?: Maybe<Scalars['String']>;
   displayCurrency?: Maybe<DisplayCurrency>;
   id?: Maybe<Scalars['Int']>;
+  largeBannerUrl?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  productListingType?: Maybe<ProductListingType>;
+  smallBannerUrl?: Maybe<Scalars['String']>;
 };
 
 export type UpsertProfileInput = {
@@ -2881,6 +2895,17 @@ export type FindInvitationCreatorQuery = (
   & { findInvitationCreator?: Maybe<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
+  )> }
+);
+
+export type OrganisationsWithOffersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OrganisationsWithOffersQuery = (
+  { __typename?: 'Query' }
+  & { organisationsWithOffers: Array<(
+    { __typename?: 'Organisation' }
+    & Pick<Organisation, 'name' | 'circlesAddress' | 'avatarUrl' | 'smallBannerUrl' | 'largeBannerUrl'>
   )> }
 );
 
@@ -4943,6 +4968,17 @@ export const FindInvitationCreatorDocument = gql`
   }
 }
     `;
+export const OrganisationsWithOffersDocument = gql`
+    query organisationsWithOffers {
+  organisationsWithOffers {
+    name
+    circlesAddress
+    avatarUrl
+    smallBannerUrl
+    largeBannerUrl
+  }
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -5128,6 +5164,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     findInvitationCreator(variables: FindInvitationCreatorQueryVariables): Promise<FindInvitationCreatorQuery> {
       return withWrapper(() => client.request<FindInvitationCreatorQuery>(print(FindInvitationCreatorDocument), variables));
+    },
+    organisationsWithOffers(variables?: OrganisationsWithOffersQueryVariables): Promise<OrganisationsWithOffersQuery> {
+      return withWrapper(() => client.request<OrganisationsWithOffersQuery>(print(OrganisationsWithOffersDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

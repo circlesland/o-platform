@@ -455,9 +455,12 @@ type Organisation {
     displayCurrency: DisplayCurrency
     displayName: String
     id: Int!
+    largeBannerUrl: String
     members: [ProfileOrOrganisation!]
     name: String!
     offers: [Offer!]
+    productListingType: ProductListingType
+    smallBannerUrl: String
     trustsYou: Int
 }
 
@@ -489,14 +492,17 @@ type Profile {
     firstName: String!
     id: Int!
     invitationTransaction: ProfileEvent
+    largeBannerUrl: String
     lastName: String
     members: [Profile!]
     memberships: [Membership!]
     newsletter: Boolean
     offers: [Offer!]
     origin: ProfileOrigin
+    productListingType: ProductListingType
     purchases: [Purchase!]
     sales: [Sale!]
+    smallBannerUrl: String
     status: String
     successorOfCirclesAddress: String
     type: ProfileType
@@ -841,6 +847,11 @@ enum EventType {
     WelcomeMessage
 }
 
+enum ProductListingType {
+    LIST
+    TILES
+}
+
 enum ProfileOrigin {
     CirclesGarden
     CirclesLand
@@ -996,7 +1007,10 @@ input UpsertOrganisationInput {
     description: String
     displayCurrency: DisplayCurrency
     id: Int
+    largeBannerUrl: String
     name: String!
+    productListingType: ProductListingType
+    smallBannerUrl: String
 }
 
 input UpsertProfileInput {
