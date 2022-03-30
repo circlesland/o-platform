@@ -165,6 +165,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     category: "Banking",
                     key: "transfer",
                     icon: "sendmoney",
+                    displayHint: "encouraged",
                     title: "Send Money",
                     action: async () => {
                       window.o.runProcess(transfer, {
@@ -183,6 +184,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     key: "setTrust",
                     icon: "untrust",
                     title: "Untrust",
+                    displayHint: "discouraged",
                     colorClass: "text-alert",
                     action: async () => {
                       window.o.runProcess(setTrust, {
@@ -201,6 +203,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     key: "setTrust",
                     icon: "trust",
                     title: "Trust",
+                    displayHint: "encouraged",
                     action: async () => {
                       window.o.runProcess(setTrust, {
                         trustLimit: 100,
@@ -222,6 +225,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           key: "setTrust",
           icon: "trust",
           title: "Trust",
+          displayHint: "encouraged",
           action: async () => {
             window.o.runProcess(setTrust, {
               trustLimit: 100,
@@ -237,6 +241,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         category: "Contacts",
         key: "setTrust",
         icon: "trust",
+        displayHint: "encouraged",
         title: "Trust new friend",
         action: async () => {
           window.o.runProcess(setTrust, {

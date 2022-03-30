@@ -68,6 +68,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
         key: "transfer",
         icon: "sendmoney",
         title: "Send Money",
+        displayHint: "encouraged",
         category: "Banking",
         action: async () => {
           window.o.runProcess(transfer, {
