@@ -2905,7 +2905,7 @@ export type OrganisationsWithOffersQuery = (
   { __typename?: 'Query' }
   & { organisationsWithOffers: Array<(
     { __typename?: 'Organisation' }
-    & Pick<Organisation, 'name' | 'circlesAddress' | 'avatarUrl' | 'smallBannerUrl' | 'largeBannerUrl'>
+    & Pick<Organisation, 'name' | 'displayName' | 'circlesAddress' | 'avatarUrl' | 'smallBannerUrl' | 'largeBannerUrl'>
   )> }
 );
 
@@ -4972,6 +4972,7 @@ export const OrganisationsWithOffersDocument = gql`
     query organisationsWithOffers {
   organisationsWithOffers {
     name
+    displayName
     circlesAddress
     avatarUrl
     smallBannerUrl

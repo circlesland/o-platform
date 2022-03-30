@@ -2,6 +2,7 @@
 import { push } from "svelte-spa-router";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {
+  Contact,
   ContactDirection,
   ContactPoint,
   ContactPointSource,
@@ -9,8 +10,9 @@ import {
 import { onMount } from "svelte";
 
 import { _ } from "svelte-i18n";
+import {trustFromContactMetadata} from "../../../shared/functions/trustFromContactMetadata";
 
-export let contact: ContactPoint;
+export let contact: Contact;
 export let hideUntrusted: boolean = false;
 
 let displayName: string;
@@ -23,21 +25,7 @@ onMount(() => {
   safeAddress = contact.contactAddress;
   message = "";
 
-  const trustMetadata: ContactPointSource = contact.metadata.find(
-    (p) => p.name === "CrcTrust"
-  );
-  let trustIn = 0;
-  let trustOut = 0;
-
-  if (trustMetadata) {
-    trustMetadata.directions.forEach((d, i) => {
-      if (d == ContactDirection.In) {
-        trustIn = parseInt(trustMetadata.values[i]);
-      } else if (d == ContactDirection.Out) {
-        trustOut = parseInt(trustMetadata.values[i]);
-      }
-    });
-  }
+  const {trustIn, trustOut} = trustFromContactMetadata(contact);
 
   if (trustIn > 0 && trustOut > 0) {
     message += `${$_("dapps.o-contacts.atoms.contactCard.mutualTrust")}`;

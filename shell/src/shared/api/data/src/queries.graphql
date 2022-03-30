@@ -1700,6 +1700,7 @@ query findInvitationCreator($code: String!) {
 query organisationsWithOffers {
   organisationsWithOffers {
     name
+    displayName
     circlesAddress
     avatarUrl
     smallBannerUrl
