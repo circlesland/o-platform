@@ -115,7 +115,7 @@ console.log(allowUtting);
               class:opacity-60="{!allowBasicIncome}" />
             <div
               class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl rounded-l-full font-heading top-2 bg-light-lightest">
-              <span class="inline-block">Circles.Land Shop</span>
+              <span class="inline-block">COMING SOON: Circles.Land Shop</span>
             </div>
             <div
               class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full cursor-pointer bottom-4 bg-alert-lightest has-tooltip"
