@@ -1,6 +1,7 @@
 import Home from "./o-dashboard/pages/Home.svelte";
 import Invites from "./o-dashboard/pages/Invites.svelte";
 import InviteLeaderboard from "./o-dashboard/pages/InviteLeaderboard.svelte";
+import RedeemedInvitations from "./o-dashboard/pages/RedeemedInvitations.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 
@@ -15,10 +16,10 @@ const index: Page<any, DappState> = {
 };
 const invites: Page<any, DappState> = {
   routeParts: ["=invites"],
-  component: Invites,
+  component: RedeemedInvitations,
   isSystem: false,
   title: "Invites",
-  position: "modal",
+  position: "main",
   type: "page",
 };
 
