@@ -161,9 +161,9 @@ const processDefinition = (processId: string) =>
                     )
               );
               const hasAmount = amount.gt(new BN("0"));
-              const isXdai = context.data.tokens?.currency == "xdai";
+              //const isXdai = context.data.tokens?.currency == "xdai";
 
-              return hasSender && hasRecipient && hasAmount && isXdai;
+              return hasSender && hasRecipient && hasAmount/* && isXdai*/;
             },
             target: "#loadRecipientProfile",
           },
@@ -177,7 +177,7 @@ const processDefinition = (processId: string) =>
         always: [
           {
             cond: (context) => !!context.data.recipientAddress,
-            target: "#tokens",
+            target: "#loadRecipientProfile",
           },
           {
             target: "#recipientAddress",
