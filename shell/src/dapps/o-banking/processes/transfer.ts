@@ -156,14 +156,14 @@ const processDefinition = (processId: string) =>
                 !context.data.tokens?.amount
                   ? "0"
                   : web3.utils.toWei(
-                      context.data.tokens?.amount?.toString(),
-                      "ether"
-                    )
+                  context.data.tokens?.amount?.toString(),
+                  "ether"
+                  )
               );
               const hasAmount = amount.gt(new BN("0"));
-              const isXdai = context.data.tokens?.currency == "xdai";
+              //const isXdai = context.data.tokens?.currency == "xdai";
 
-              return hasSender && hasRecipient && hasAmount && isXdai;
+              return hasSender && hasRecipient && hasAmount/* && isXdai*/;
             },
             target: "#loadRecipientProfile",
           },
@@ -177,7 +177,7 @@ const processDefinition = (processId: string) =>
         always: [
           {
             cond: (context) => !!context.data.recipientAddress,
-            target: "#tokens",
+            target: "#loadRecipientProfile",
           },
           {
             target: "#recipientAddress",
@@ -369,9 +369,9 @@ const processDefinition = (processId: string) =>
               const amount =
                 context.data.tokens.currency == "crc"
                   ? convertTimeCirclesToCircles(
-                      Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
-                      null
-                    ).toString()
+                  Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
+                  null
+                  ).toString()
                   : context.data.tokens.amount;
 
               const circlesValueInWei = new BN(
@@ -409,7 +409,7 @@ const processDefinition = (processId: string) =>
 
               context.messages[
                 "tokens"
-              ] = window.i18n("dapps.o-banking.processes.transfer.checkAmount.contextMessages", { values: { formattedMax: formattedMax}});
+                ] = window.i18n("dapps.o-banking.processes.transfer.checkAmount.contextMessages", { values: { formattedMax: formattedMax}});
             },
             target: "#tokens",
           },
