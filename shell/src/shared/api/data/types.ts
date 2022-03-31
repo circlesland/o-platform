@@ -695,6 +695,12 @@ export type MutationVerifySessionChallengeArgs = {
   signature: Scalars['String'];
 };
 
+export type MyInviteRank = {
+  __typename?: 'MyInviteRank';
+  rank: Scalars['Int'];
+  redeemedInvitationsCount: Scalars['Int'];
+};
+
 export type NewUser = IEventPayload & {
   __typename?: 'NewUser';
   profile: Profile;
@@ -1260,6 +1266,7 @@ export type Stats = {
   __typename?: 'Stats';
   goals: FibonacciGoals;
   leaderboard: Array<LeaderboardEntry>;
+  myRank: MyInviteRank;
   profilesCount: Scalars['Int'];
   verificationsCount: Scalars['Int'];
 };
@@ -1927,6 +1934,9 @@ export type StatsQuery = (
     & { goals: (
       { __typename?: 'FibonacciGoals' }
       & Pick<FibonacciGoals, 'lastGoal' | 'currentValue' | 'nextGoal'>
+    ), myRank: (
+      { __typename?: 'MyInviteRank' }
+      & Pick<MyInviteRank, 'rank' | 'redeemedInvitationsCount'>
     ), leaderboard: Array<(
       { __typename?: 'LeaderboardEntry' }
       & Pick<LeaderboardEntry, 'createdByCirclesAddress' | 'inviteCount'>
@@ -2487,6 +2497,10 @@ export type StreamQuery = (
     ) | { __typename?: 'CrcTokenTransfer' } | (
       { __typename?: 'CrcTrust' }
       & Pick<CrcTrust, 'transaction_hash' | 'address' | 'can_send_to' | 'limit'>
+      & { can_send_to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )> }
     ) | (
       { __typename?: 'Erc20Transfer' }
       & Pick<Erc20Transfer, 'transaction_hash' | 'from' | 'to' | 'value'>
@@ -2523,7 +2537,10 @@ export type StreamQuery = (
     ) | (
       { __typename?: 'MembershipAccepted' }
       & Pick<MembershipAccepted, 'createdBy' | 'member' | 'organisation'>
-      & { organisation_profile?: Maybe<(
+      & { member_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )>, organisation_profile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
@@ -2540,7 +2557,10 @@ export type StreamQuery = (
     ) | (
       { __typename?: 'MembershipRejected' }
       & Pick<MembershipRejected, 'member' | 'organisation'>
-      & { organisation_profile?: Maybe<(
+      & { member_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )>, organisation_profile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
@@ -3458,6 +3478,10 @@ export const StatsDocument = gql`
       currentValue
       nextGoal
     }
+    myRank {
+      rank
+      redeemedInvitationsCount
+    }
     leaderboard {
       createdByCirclesAddress
       inviteCount
@@ -4239,6 +4263,15 @@ export const StreamDocument = gql`
         transaction_hash
         address
         can_send_to
+        can_send_to_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         limit
       }
       ... on CrcSignup {
@@ -4355,6 +4388,15 @@ export const StreamDocument = gql`
       ... on MembershipAccepted {
         createdBy
         member
+        member_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         organisation
         organisation_profile {
           name
@@ -4365,6 +4407,15 @@ export const StreamDocument = gql`
       }
       ... on MembershipRejected {
         member
+        member_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         organisation
         organisation_profile {
           name

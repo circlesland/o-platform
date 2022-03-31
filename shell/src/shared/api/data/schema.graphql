@@ -416,6 +416,11 @@ type Mutation {
     verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
 }
 
+type MyInviteRank {
+    rank: Int!
+    redeemedInvitationsCount: Int!
+}
+
 type NewUser implements IEventPayload {
     profile: Profile!
     transaction_hash: String
@@ -715,6 +720,7 @@ type SessionInfo {
 type Stats {
     goals: FibonacciGoals!
     leaderboard: [LeaderboardEntry!]!
+    myRank: MyInviteRank!
     profilesCount: Int!
     verificationsCount: Int!
 }

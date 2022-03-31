@@ -144,6 +144,10 @@ query stats {
       currentValue
       nextGoal
     }
+    myRank {
+      rank
+      redeemedInvitationsCount
+    }
     leaderboard {
       createdByCirclesAddress
       inviteCount
@@ -958,6 +962,15 @@ query stream(
         transaction_hash
         address
         can_send_to
+        can_send_to_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         limit
       }
       ... on CrcSignup {
@@ -1074,6 +1087,15 @@ query stream(
       ... on MembershipAccepted {
         createdBy
         member
+        member_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         organisation
         organisation_profile {
           name
@@ -1084,6 +1106,15 @@ query stream(
       }
       ... on MembershipRejected {
         member
+        member_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         organisation
         organisation_profile {
           name
