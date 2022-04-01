@@ -4,11 +4,7 @@ import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import {
-  Capability,
-  CapabilityType,
-  StatsDocument,
-} from "../../../shared/api/data/types";
+import { Capability, CapabilityType, StatsDocument } from "../../../shared/api/data/types";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { Environment } from "../../../shared/environment";
@@ -16,6 +12,7 @@ import { _ } from "svelte-i18n";
 import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
 import DashboardEventsWidget from "../molecules/DashboardEventsWidget.svelte";
 import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
+import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -37,10 +34,7 @@ const init = async () => {
 
   const sessionInfo = await me.getSessionInfo();
   capabilities = sessionInfo.capabilities;
-  canVerify =
-    capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Verify) &&
-    Environment.allowVerify;
+  canVerify = capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
 
   statsResult = await fetchStats();
   profilesCount = statsResult.data.stats.profilesCount;
@@ -76,15 +70,14 @@ async function fetchStats() {
   <div class="m-4 mb-40 ">
     <DashboardInvitesWidget stats="{statsResult}" />
     <!-- <DashboardEventsWidget profilesCount="{profilesCount}" /> -->
-    <div
-      class="grid grid-cols-2 gap-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
+    <div class="grid grid-cols-2 gap-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/passport/profile')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashpassport" />
+            <!-- <Icons icon="dashpassport" /> -->
+            <Icon name="identification" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             {$_("dapps.o-dashboard.pages.home.passport")}
@@ -94,10 +87,9 @@ async function fetchStats() {
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/contacts')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashfriends" />
+            <Icon name="users" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             {$_("dapps.o-dashboard.pages.home.contacts")}
@@ -107,10 +99,9 @@ async function fetchStats() {
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/contacts/chat')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashchat" />
+            <Icon name="chat" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             {$_("dapps.o-dashboard.pages.home.chat")}
@@ -120,10 +111,9 @@ async function fetchStats() {
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/banking/transactions')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashbanking" />
+            <Icon name="cash" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             {$_("dapps.o-dashboard.pages.home.banking")}
@@ -133,10 +123,9 @@ async function fetchStats() {
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/marketplace/locations')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashmarket" />
+            <Icon name="shopping-cart" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             {$_("dapps.o-dashboard.pages.home.market")}
@@ -147,10 +136,9 @@ async function fetchStats() {
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
           on:click="{() => loadLink('/verification/verifications')}">
-          <div
-            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
-              <Icons icon="check" size="{12}" />
+              <Icon name="badge-check" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               {$_("dapps.o-dashboard.pages.home.verified")}

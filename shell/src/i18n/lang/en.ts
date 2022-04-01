@@ -101,8 +101,7 @@ export const en = {
           },
           transfer: {
             strings: {
-              labelRecipientAddress:
-                "Select the recipient you want to send money to",
+              labelRecipientAddress: "Select the recipient you want to send money to",
               tokensLabel: "Please enter the amount",
               currencyCircles: "CRC",
               currencyXdai: "xDai",
@@ -117,8 +116,7 @@ export const en = {
               },
               recipientSafeAddress: {
                 title: "Enter the recipients safe address",
-                description:
-                  "Here you can enter the recipients safe address directly.",
+                description: "Here you can enter the recipients safe address directly.",
                 placeholder: "Safe Address",
                 submitButtonText: "Next",
               },
@@ -160,8 +158,7 @@ export const en = {
               },
             },
             checkAmount: {
-              contextMessages:
-                "The chosen amount exceeds the maximum transferable amount of ({formattedMax}).",
+              contextMessages: "The chosen amount exceeds the maximum transferable amount of ({formattedMax}).",
             },
           },
           transferXdai: {
@@ -176,7 +173,7 @@ export const en = {
           chatListItems: {
             crcHubTransfer: {
               getValues: {
-                icon: "sendmoney",
+                icon: "cash",
                 ifIn: "Sent you",
                 ifOut: {
                   youSent: "You sent",
@@ -186,7 +183,7 @@ export const en = {
             },
             crcTrust: {
               getValues: {
-                icon: "trust",
+                icon: "shield-check",
                 untrustedYou: "untrusted you",
                 trustedYou: "trusted you",
                 youUntrusted: "You untrusted",
@@ -195,7 +192,7 @@ export const en = {
             },
             erc20Transfer: {
               getValues: {
-                icon: "sendmoney",
+                icon: "cash",
                 ifIn: {
                   title: {
                     sentYou: "sent you",
@@ -210,7 +207,7 @@ export const en = {
             },
             invitationRedeemed: {
               getValues: {
-                icon: "trust",
+                icon: "shield-check",
                 invitationRedeemed: {
                   title: "redeemed your invitation.",
                 },
@@ -329,8 +326,7 @@ export const en = {
                 description: "DESCRIPTION",
                 placeholder: "Description",
                 submitButtonText: "Save",
-                maximumChars:
-                  "The maximum amount of characters allowed is 150.",
+                maximumChars: "The maximum amount of characters allowed is 150.",
               },
               avatar: {
                 title: "Profile Image",
@@ -340,8 +336,7 @@ export const en = {
               },
               deployOrganisation: {
                 notUnlockedKey: "The private key is not unlocked",
-                needFullAccountSetup:
-                  "You need a fully set-up circles account to create an organisation.",
+                needFullAccountSetup: "You need a fully set-up circles account to create an organisation.",
               },
               signupOrganisation: {
                 notUnlockedKey: "The private key is not unlocked",
@@ -387,8 +382,7 @@ export const en = {
               },
               deployOrganisation: {
                 notUnlockedKey: "The private key is not unlocked",
-                needFullAccountSetup:
-                  "You need a fully set-up circles account to create an organisation.",
+                needFullAccountSetup: "You need a fully set-up circles account to create an organisation.",
               },
             },
           },
@@ -415,12 +409,9 @@ export const en = {
             invites: "Invites",
             canInvite: "Here are your Codes to invite other people. ",
             onlyOnce: "Can only be claimed once",
-            canNotInvite1:
-              "In order to be able to invite others, you'll have to get verified.",
-            canNotInvite2:
-              "Once this has been done, you will receive 9 Invites.",
-            canNotInvite3:
-              "As we are currently still in a testing phase, we are verifying new citizens manually.",
+            canNotInvite1: "In order to be able to invite others, you'll have to get verified.",
+            canNotInvite2: "Once this has been done, you will receive 9 Invites.",
+            canNotInvite3: "As we are currently still in a testing phase, we are verifying new citizens manually.",
             canNotInvite4: "You can request to be verified in our",
             discord: "Discord Channel",
             invitationNotClaimed: "Invitation has not yet been claimed",
@@ -452,8 +443,7 @@ export const en = {
             citizen: "citizen",
             from: "from",
             passion1: "my passion is ...",
-            passion2:
-              "... and i will accept every month 240 Circles pursuing it",
+            passion2: "... and i will accept every month 240 Circles pursuing it",
           },
           citizens: {
             totalCitizens: "total citizens",
@@ -494,8 +484,7 @@ export const en = {
           },
           introAnimation: {
             thisIsCirclesLand: "This is CirclesLand",
-            circlesLandUnlocks:
-              "CirclesLand is here to unlock all our potential",
+            circlesLandUnlocks: "CirclesLand is here to unlock all our potential",
             introducing:
               "Introducing the next generation of a fully opensource, digital and borderless country-as-a-service platform, starting with Circles a new universal basic income currency to secure our most basic needs.",
             learnMore: "Learn more",
@@ -507,8 +496,7 @@ export const en = {
             showAllMilestones: "show all milestones",
           },
           mission: {
-            yourPassionIsTheMotor:
-              "Your passion is the motor into a thriving new economy empowering all",
+            yourPassionIsTheMotor: "Your passion is the motor into a thriving new economy empowering all",
             byStarting:
               "By starting to follow your passion and accepting Circles as payment for it, you create your own joyful space towards an eventful, manifold and fulfilled life for everyone.",
           },
@@ -521,8 +509,7 @@ export const en = {
             introducing:
               "Introducing the next generation of your 100% opensource, digital and borderless country-as-a-service platform, unlocking your new Circles universal basic income to secure the most basic needs for all of us.",
             createPassport: "1. Create Passport",
-            createPassportDescription:
-              "While signing up you create a self-sovereign and portable identity passport.",
+            createPassportDescription: "While signing up you create a self-sovereign and portable identity passport.",
             getInvited: "2. Get invited",
             getInvitedDescription:
               "To receive your very first personalized Circles you need to get invited by another citizen.",
@@ -532,8 +519,7 @@ export const en = {
           },
           videoHeader: {
             beFree: "BE FREE",
-            togetherWeBuild:
-              "Together we build the universal basic income economy today",
+            togetherWeBuild: "Together we build the universal basic income economy today",
             playVideo: "play video",
           },
         },
@@ -567,16 +553,14 @@ export const en = {
         molecules: {
           checkoutConfirm: {
             yourPickupCode: "Your Pick-Up Code",
-            howToPickup1:
-              "This is your PickUp Code. Show it to the lovely person at our shop to receive your items.",
+            howToPickup1: "This is your PickUp Code. Show it to the lovely person at our shop to receive your items.",
 
             toSeeCode1: "To see your ",
             toSeeCode2: "PickUp Code",
             toSeeCode3: " at any time after the purchase, go to ",
             toSeeCode4: "My purchases",
             toSeeCode5: " and click on the Purchase",
-            pickupLocation:
-              "You can now go to the counter and show your QR code to pick up your items.",
+            pickupLocation: "You can now go to the counter and show your QR code to pick up your items.",
           },
           checkoutSummary: {
             to: "to",
@@ -584,8 +568,7 @@ export const en = {
             total: "Total:",
             tax: "19% Sales Tax included:",
             storePickupLocation: "Store Pick Up Location:",
-            storeAddress:
-              "Basic Income Lab GmbH<br/>Reifenstuelstrasse. 6<br/>80469 München",
+            storeAddress: "Basic Income Lab GmbH<br/>Reifenstuelstrasse. 6<br/>80469 München",
             storeHours: "Shop hours: Mo - Fr   14:00 - 20:00",
             toSeeCode1: "To see your ",
             toSeeCode2: "PickUp Code",
@@ -630,8 +613,7 @@ export const en = {
             loadingPurchases: "Loading purchases...",
             yourPickupCode: "Your Pick-Up Code",
             yourPickupNumber: "Your Order-Number:",
-            showThisCode:
-              "show this code to the seller when you pick up your Order.",
+            showThisCode: "show this code to the seller when you pick up your Order.",
             noCode: "No pickup code yet ..",
             location: "Pick-Up Location for this Order is:",
           },
@@ -702,8 +684,7 @@ export const en = {
             },
             calculatePaths: {
               message: "Checking transferable circle amount ..",
-              errorMessage:
-                "Your don't have enough trust paths to the following sellers: ",
+              errorMessage: "Your don't have enough trust paths to the following sellers: ",
             },
             pay: {
               message: "Sending Circles ..",
@@ -714,8 +695,7 @@ export const en = {
             editorContent: {
               title: {
                 title: "Title",
-                description:
-                  "Enter the title of what you are selling. keep it short & sweet.",
+                description: "Enter the title of what you are selling. keep it short & sweet.",
                 placeholder: "Title",
                 submitButtonText: "Next",
               },
@@ -728,49 +708,42 @@ export const en = {
               },
               offerLocation: {
                 title: "Item location",
-                description:
-                  "Select the City from which this item is being sold.",
+                description: "Select the City from which this item is being sold.",
                 placeholder: "City",
                 submitButtonText: "Next",
               },
               offerCategory: {
                 title: "Select a Category",
-                description:
-                  "Choose a category for your listing so it's easier to find.",
+                description: "Choose a category for your listing so it's easier to find.",
                 placeholder: "Category",
                 submitButtonText: "Next",
               },
               offerUnit: {
                 title: "Select a Unit",
-                description:
-                  "Choose a unit for your listing so it's easy to understand the amount.",
+                description: "Choose a unit for your listing so it's easy to understand the amount.",
                 placeholder: "Unit",
                 submitButtonText: "Next",
               },
               offerPrice: {
                 title: "Price",
-                description:
-                  "Please enter the amount of circles your want for your item.",
+                description: "Please enter the amount of circles your want for your item.",
                 placeholder: "Price",
                 submitButtonText: "Next",
               },
               offerUnitAmount: {
                 title: "Amount",
-                description:
-                  "Please enter how many of these items you are selling.",
+                description: "Please enter how many of these items you are selling.",
                 placeholder: "e.g. 1",
                 submitButtonText: "Next",
               },
               offerDelivery: {
                 title: "Delivery",
-                description:
-                  "Please choose the delivery method for your offer.",
+                description: "Please choose the delivery method for your offer.",
                 submitButtonText: "Next",
               },
               offerImage: {
                 title: "Add a Picture",
-                description:
-                  "Adding a Picture to your offer increases the change of being sold by 90%",
+                description: "Adding a Picture to your offer increases the change of being sold by 90%",
                 submitButtonText: "Publish Offer",
               },
             },
@@ -784,14 +757,12 @@ export const en = {
               editorContent: {
                 info: {
                   title: "Create Safe",
-                  description:
-                    "In the next steps you can create your account on the blockchain ..",
+                  description: "In the next steps you can create your account on the blockchain ..",
                   submitButtonText: "Next",
                 },
                 connectOrCreate: {
                   title: "Setup your account",
-                  description:
-                    "Create new or import an existing Circles account?",
+                  description: "Create new or import an existing Circles account?",
                 },
               },
               processDefinition: {
@@ -802,14 +773,11 @@ export const en = {
                   },
                 },
                 newSafe: {
-                  message:
-                    "Please wait while we create your Safe on the Blockchain.",
+                  message: "Please wait while we create your Safe on the Blockchain.",
                 },
                 privateKeyNotUnlocked: "The private key is not unlocked",
-                couldNotUpdate:
-                  "Couldn't update the profile with the generated eoa: ${result}",
-                errorWhileDeploying:
-                  "An error occurred while deploying your safe:",
+                couldNotUpdate: "Couldn't update the profile with the generated eoa: ${result}",
+                errorWhileDeploying: "An error occurred while deploying your safe:",
               },
             },
           },
@@ -818,28 +786,23 @@ export const en = {
               editorContent: {
                 info: {
                   title: "Get invited",
-                  description:
-                    "Find somebody who can give you an invite code to join.",
+                  description: "Find somebody who can give you an invite code to join.",
                   submitButtonText: "I have a code",
                 },
                 checkInviteCode: {
                   title: "Enter invitation code",
-                  description:
-                    "Please enter you invitation code below to get started.",
+                  description: "Please enter you invitation code below to get started.",
                   submitButtonText: "Verify",
                 },
-                dataSchemaRequired:
-                  "Please enter a valid invitation code to proceed",
-                couldNotClaimInvitation:
-                  "Couldn't claim an invitation: {contextMessages}",
+                dataSchemaRequired: "Please enter a valid invitation code to proceed",
+                couldNotClaimInvitation: "Couldn't claim an invitation: {contextMessages}",
               },
             },
             promptGetInvited: {
               editorContent: {
                 info: {
                   title: "Get Invited",
-                  description:
-                    "find somebody who can give you an invite code to join.",
+                  description: "find somebody who can give you an invite code to join.",
                   submitButtonText: "I have a code",
                 },
                 checkInviteCode: {
@@ -849,17 +812,14 @@ export const en = {
                   submitButtonText: "Verify",
                 },
               },
-              dataSchemaRequired:
-                "Please enter a valid invitation code to proceed.",
-              couldNotClaimInvitation:
-                "Couldn't claim an invitation: {contextMessages}",
+              dataSchemaRequired: "Please enter a valid invitation code to proceed.",
+              couldNotClaimInvitation: "Couldn't claim an invitation: {contextMessages}",
             },
             promptRedeemInvitation: {
               editorContent: {
                 info: {
                   title: "Redeem your invitation",
-                  description:
-                    "We will now redeem your invitation. This could take a while...",
+                  description: "We will now redeem your invitation. This could take a while...",
                   submitButtonText: "Next",
                 },
                 waitUntilRedeemed: {
@@ -872,8 +832,7 @@ export const en = {
               redeemInvitation: {
                 message: "Please wait, redeeming your Invitation...",
                 error: "Couldn't redeem an invitation: {contextMessages}",
-                onError:
-                  "The following error occurred while redeeming you claimed invitation:",
+                onError: "The following error occurred while redeeming you claimed invitation:",
               },
               checkIfRedeemed: {
                 notYetRedeemed: "Invitation is not yet redeemed.",
@@ -897,15 +856,12 @@ export const en = {
             unlockKey: {
               enterDecryptionPinParams: {
                 title: "Please enter your pin",
-                description:
-                  "The pin will be used to decrypt your private key on your device.",
+                description: "The pin will be used to decrypt your private key on your device.",
                 placeholder: "Enter Pin",
                 submitButtonText: "Unlock",
               },
-              dataSchemaRequired:
-                "Please enter a encryptingPin to protect your private key.",
-              couldNotDecrypt:
-                "Couldn't decrypt your key. Have you entered the correct pin?",
+              dataSchemaRequired: "Please enter a encryptingPin to protect your private key.",
+              couldNotDecrypt: "Couldn't decrypt your key. Have you entered the correct pin?",
             },
           },
           connectSafe: {
@@ -931,19 +887,15 @@ export const en = {
               },
             },
             safeInfoFromSeedphrase: {
-              seedphraseError:
-                "The seedphrase cannot be converted to a private key. Please double check it.",
-              foundNoSafes:
-                "Found no safes with a positive CRC balance that are owned by ",
+              seedphraseError: "The seedphrase cannot be converted to a private key. Please double check it.",
+              foundNoSafes: "Found no safes with a positive CRC balance that are owned by ",
             },
             selectSafe: {
               title: "We found multiple safes for your key",
-              description:
-                "Please select the one you want to connect with your circles.land profile",
+              description: "Please select the one you want to connect with your circles.land profile",
               submitButtonText: "Connect",
             },
-            addNewOwnerInfo:
-              "We will add a new owner to your safe. No worries we keep your old key as owner too.",
+            addNewOwnerInfo: "We will add a new owner to your safe. No worries we keep your old key as owner too.",
             addNewOwner: "Adding new owner ..",
             updateRegistration: {
               importingYourOrganisations: "Importing your organisations ..",
@@ -963,21 +915,17 @@ export const en = {
                   "The seedphrase cannot be converted to a private key. Please double check it.",
                 cannotConvertToEthereum:
                   "The key that was generated from the seedphrase cannot be converted to an ethereum account.",
-                errorWhileTryingToFindSafe:
-                  "An error occurred while we tried to find your safe: {error}",
-                couldNotFindSafe:
-                  "We couldn't find a safe for your account {accountAddress}",
+                errorWhileTryingToFindSafe: "An error occurred while we tried to find your safe: {error}",
+                couldNotFindSafe: "We couldn't find a safe for your account {accountAddress}",
               },
             },
             chooseSafeAddress: {
-              label:
-                "We found multiple safes for your account. Please select the one you want to connect.",
+              label: "We found multiple safes for your account. Please select the one you want to connect.",
               placeholder: "Click to select a safe",
               submitButtonText: "Connect",
             },
             checkSafeAddress: {
-              error:
-                "Couldn't determine the owner of safe {addressToCheck}. Is the address right?",
+              error: "Couldn't determine the owner of safe {addressToCheck}. Is the address right?",
             },
           },
           loginWithTorus: {
@@ -998,8 +946,7 @@ export const en = {
             showInviteMessage: {
               title: "Welcome",
               submitButtonText: "Next",
-              htmlContext:
-                "</b> invited you to CirclesLand.<br/><br/>Click 'Next' to Login",
+              htmlContext: "</b> invited you to CirclesLand.<br/><br/>Click 'Next' to Login",
               loginButton: "Login",
             },
             chooseFlowParams: {
@@ -1018,12 +965,10 @@ export const en = {
             },
             enterDecryptionPinParams: {
               title: "Please enter your pin",
-              description:
-                "The pin will be used to decrypt your private key on your device.",
+              description: "The pin will be used to decrypt your private key on your device.",
               placeholder: "Enter Pin",
               submitButtonText: "Unlock",
-              stringRequired:
-                "Please enter a encryptingPin to protect your private key",
+              stringRequired: "Please enter a encryptingPin to protect your private key",
             },
             invalidPin: "Invalid Pin",
           },
@@ -1071,8 +1016,7 @@ export const en = {
                   editorContent: {
                     email: {
                       title: "Welcome to CirclesLand",
-                      description:
-                        "A pleasure you found your way here. Please provide your email address to Sign-In.",
+                      description: "A pleasure you found your way here. Please provide your email address to Sign-In.",
                       placeholder: "Email address",
                       submitButtonText: "Let me in",
                     },
@@ -1084,8 +1028,7 @@ export const en = {
                     },
                     verification: {
                       title: "Welcome to CirclesLand",
-                      description:
-                        "A pleasure you found your way here. Please provide your email address to Sign-In",
+                      description: "A pleasure you found your way here. Please provide your email address to Sign-In",
                       placeholder: "Email address",
                       submitButtonText: "Let me in",
                     },
@@ -1103,13 +1046,11 @@ export const en = {
                       contextsPropertyNotSet:
                         "The context's 'eoaAddress' property is not set but required by this step",
                       privateKeyNotUnlocked: "The private key is not unlocked",
-                      couldNotGetSession:
-                        "Couldn't get a session using a signed challenge.",
+                      couldNotGetSession: "Couldn't get a session using a signed challenge.",
                     },
                   },
                   errorRequestingChallenge: {
-                    error:
-                      "An error occurred while requesting an auth-challenge.",
+                    error: "An error occurred while requesting an auth-challenge.",
                     submitButtonText: "Try again",
                   },
                 },
@@ -1118,15 +1059,12 @@ export const en = {
                 acquireSession: {
                   message: "Starting the session ..",
                   error: {
-                    contextsPropertyNotSet:
-                      "The context's 'eoaAddress' property is not set but required by this step",
+                    contextsPropertyNotSet: "The context's 'eoaAddress' property is not set but required by this step",
                     privateKeyNotUnlocked: "The private key is not unlocked",
-                    couldNotGetSession:
-                      "Couldn't get a session using a signed challenge.",
+                    couldNotGetSession: "Couldn't get a session using a signed challenge.",
                   },
                   errorRequestingChallenge: {
-                    error:
-                      "An error occurred while requesting an auth-challenge.",
+                    error: "An error occurred while requesting an auth-challenge.",
                     submitButtonText: "Try again",
                   },
                 },
@@ -1154,8 +1092,7 @@ export const en = {
                   },
                   selectExistingKey: {
                     title: "PLEASE CHOOSE A KEY",
-                    description:
-                      "We found the some keys on your device. Please select the one you want to use:",
+                    description: "We found the some keys on your device. Please select the one you want to use:",
                     placeholder: "Recovery Code",
                     submitButtonText: "Use Key",
                   },
@@ -1178,18 +1115,14 @@ export const en = {
                   },
                 },
                 checkSeedphrase: {
-                  contextMessage1:
-                    "The seedphrase cannot be converted to a private key. Please double check it.",
+                  contextMessage1: "The seedphrase cannot be converted to a private key. Please double check it.",
                   contextMessage2:
                     "The key that was generated from the seedphrase cannot be converted to an ethereum account.",
-                  contextMessage3:
-                    "An error occurred while we tried to find your safe: {error}",
-                  contextMessage4:
-                    "We couldn't find a safe for your account {accountAddress}",
+                  contextMessage3: "An error occurred while we tried to find your safe: {error}",
+                  contextMessage4: "We couldn't find a safe for your account {accountAddress}",
                 },
                 safeAddress: {
-                  label:
-                    "We found multiple safes for your account. Please select the one you want to connect.",
+                  label: "We found multiple safes for your account. Please select the one you want to connect.",
                   placeholder: "Click to select safe",
                   submitButtonText: "Connect",
                 },
@@ -1225,8 +1158,7 @@ export const en = {
                     submitButtonText: "I stored my Code securely",
                   },
                 },
-                pleaseEnterSecretCode:
-                  "Please enter your Secret Recovery Code.",
+                pleaseEnterSecretCode: "Please enter your Secret Recovery Code.",
               },
             },
             identify2: {
@@ -1236,8 +1168,7 @@ export const en = {
               },
               editorContent: {
                 title: "Connect or Create?",
-                description:
-                  "Do you already have a circles Safe address or would you like to create one?",
+                description: "Do you already have a circles Safe address or would you like to create one?",
               },
               getInvite: {
                 htmlContext:
@@ -1261,10 +1192,8 @@ export const en = {
             },
           },
           authenticateSso: {
-            couldNotRequestAuthCode:
-              "Couldn't request a delegate authentication code from the api: {error}",
-            couldNotRequestChallenge:
-              "Couldn't request a challenge from the auth-server: {error}",
+            couldNotRequestAuthCode: "Couldn't request a delegate authentication code from the api: {error}",
+            couldNotRequestChallenge: "Couldn't request a challenge from the auth-server: {error}",
             authCodeAlreadyExpired: "The {context} is already expired.",
           },
           logout: {
@@ -1297,8 +1226,7 @@ export const en = {
               },
               dream: {
                 title: "Share your passion",
-                description:
-                  "What will you do different in your life with a monthly basic income?",
+                description: "What will you do different in your life with a monthly basic income?",
                 placeholder: "I will ...",
                 submitButtonText: "Save",
               },
@@ -1310,8 +1238,7 @@ export const en = {
               },
               emailAddress: {
                 title: "how can we reach you?",
-                description:
-                  "You will only receive love letters and other unimportant stuff from us!",
+                description: "You will only receive love letters and other unimportant stuff from us!",
                 placeholder: "your@emailaddress.net",
                 submitButtonText: "Beam me up!",
               },
@@ -1323,8 +1250,7 @@ export const en = {
               },
               newsletter: {
                 title: "Subscribe to news?",
-                description:
-                  "We are spilling the tea about wild parties and hot new products, interested?",
+                description: "We are spilling the tea about wild parties and hot new products, interested?",
               },
             },
             requiredName: "Please enter your first name.",
@@ -1383,8 +1309,7 @@ export const en = {
           tryAgain: "Try again",
         },
         uploadFile: {
-          noOkStatusFromFileServer:
-            "Got a not-ok status from the file server: {status}",
+          noOkStatusFromFileServer: "Got a not-ok status from the file server: {status}",
           couldNotUpload: "Couldn't upload the file",
         },
       },
@@ -1394,16 +1319,13 @@ export const en = {
         },
         error: {
           processEncounteredAnError: "The Process encountered an error",
-          noErrorDetailsAvailable:
-            " No error details available. See the console for more details.",
-          pleaseTryToReload:
-            "Please try to reload the page or contact us on Discord ",
+          noErrorDetailsAvailable: " No error details available. See the console for more details.",
+          pleaseTryToReload: "Please try to reload the page or contact us on Discord ",
           ifTheProblemPersists: " if the problem persists",
         },
         facetec: {
           enrollmentProcess: {
-            sessionWasNotCompleted:
-              "Session was not completed successfully, cancelling.  Session Status: ",
+            sessionWasNotCompleted: "Session was not completed successfully, cancelling.  Session Status: ",
             noSessionId: "No sessionId",
             unexpectedApiResponse: "Unexpected API response, cancelling out.",
             noSessionResult: "No _sessionResult.",
@@ -1433,13 +1355,10 @@ export const en = {
         },
         dappFrame: {
           errors: {
-            pageFromBackStackNotFound:
-              "The page from the back stack couldn't be found: {error}",
-            pageFromBackStackIsNoPage:
-              "The page from the back stack is not a page: {error}",
+            pageFromBackStackNotFound: "The page from the back stack couldn't be found: {error}",
+            pageFromBackStackIsNoPage: "The page from the back stack is not a page: {error}",
             couldNotFindRoot: "Couldn't find the root. Stack item was: {item}",
-            couldNotFindParams:
-              "Couldn't find a routable for params: \\n{params}",
+            couldNotFindParams: "Couldn't find a routable for params: \\n{params}",
           },
         },
         filterList: {
@@ -1452,8 +1371,7 @@ export const en = {
           },
           yes: "Yes",
           no: "No",
-          error:
-            "Can only sink evens in response to a previously bubbled event.",
+          error: "Can only sink evens in response to a previously bubbled event.",
           cancel: "Cancel",
         },
         processNav: {
@@ -1469,8 +1387,7 @@ export const en = {
         notificationViewer: {
           molecules: {
             genericEventCard: {
-              title:
-                "Error: Couldn't find a view for event type '{eventType}'.",
+              title: "Error: Couldn't find a view for event type '{eventType}'.",
               subTitle: "...but look on the bright side: we're all healthy :)",
             },
             notificationProfile: {
@@ -1480,8 +1397,7 @@ export const en = {
               from: "from",
             },
             notificationViewInvitationRedeemed: {
-              acceptedYourInvitation:
-                "Accepted your invitation to Circles.Land",
+              acceptedYourInvitation: "Accepted your invitation to Circles.Land",
             },
             notificationViewMembershipAccepted: {
               acceptedYourInvitation: "Accepted your invitation to",
@@ -1569,8 +1485,7 @@ export const en = {
         },
         transactions: {
           errors: {
-            couldNotLoadData:
-              "Couldn't load data for the following reasons: {error}",
+            couldNotLoadData: "Couldn't load data for the following reasons: {error}",
           },
         },
       },
@@ -1579,8 +1494,7 @@ export const en = {
           couldNotFindType: "Couldn't fine the {type} in the query result.",
           noOrMoreThanOneDefinitions:
             "The query contains none or more than one definition. Only 1 definition per query is supported.",
-          noSelectionSet:
-            "The query definition doesn't contain a 'selectionSet'.",
+          noSelectionSet: "The query definition doesn't contain a 'selectionSet'.",
           noOrMoreThanOneSelection:
             "The query definition contains none or more than one selection. Only 1 selection is supported.",
           selectionHasNoName:
@@ -1605,8 +1519,7 @@ export const en = {
         errors: {
           couldNotLoadYourProfile: "Couldn't load your profile",
           yourPrivateKeyIsLocked: "Your private key is locked.",
-          cannotGetUbi:
-            "Cannot get the ubi. The context.tokenAddress is empty.",
+          cannotGetUbi: "Cannot get the ubi. The context.tokenAddress is empty.",
         },
       },
       userActions: {

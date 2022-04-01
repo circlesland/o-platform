@@ -277,11 +277,7 @@ body {
   @apply top-0;
   @apply z-10;
   /* background: linear-gradient(transparent 150px, #ffcc33); */
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.001) 80%,
-    #fff 100%
-  );
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.001) 80%, #fff 100%);
 
   /* background: #ffcc33; */
 }
@@ -474,22 +470,8 @@ button:focus {
   padding: 4px;
   border: 1px solid transparent;
   border-radius: 180px;
-  background-image: linear-gradient(
-    to bottom,
-    #20d9a2 0%,
-    #2be0dc 25%,
-    #2cb1eb 52%,
-    #1472bb 77%,
-    #003399 99%
-  );
-  background: -moz-linear-gradient(
-    top,
-    #20d9a2 0%,
-    #2be0dc 25%,
-    #2cb1eb 52%,
-    #1472bb 77%,
-    #003399 99%
-  ); /* FF3.6-15 */
+  background-image: linear-gradient(to bottom, #20d9a2 0%, #2be0dc 25%, #2cb1eb 52%, #1472bb 77%, #003399 99%);
+  background: -moz-linear-gradient(top, #20d9a2 0%, #2be0dc 25%, #2cb1eb 52%, #1472bb 77%, #003399 99%); /* FF3.6-15 */
   background: -webkit-linear-gradient(
     top,
     #20d9a2 0%,
@@ -551,4 +533,11 @@ button:focus {
     rgba(230, 129, 99, 1) 75%,
     rgba(235, 210, 92, 1) 100%
   );
+}
+
+svg.heroicon path {
+  stroke-width: 0.5;
+}
+svg.heroicon.smallicon path {
+  stroke-width: 1.5;
 }

@@ -8,18 +8,8 @@ import { me } from "../shared/stores/me";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { init } from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
-import {
-  Jumplist,
-  JumplistItem,
-} from "@o-platform/o-interfaces/dist/routables/jumplist";
-import {
-  Contact,
-  ContactDirection,
-  EventType,
-  Profile,
-  ProfileOrigin,
-  ProfileType,
-} from "../shared/api/data/types";
+import { Jumplist, JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { Contact, ContactDirection, EventType, Profile, ProfileOrigin, ProfileType } from "../shared/api/data/types";
 import { transfer } from "./o-banking/processes/transfer";
 import { push } from "svelte-spa-router";
 import { setTrust } from "./o-banking/processes/setTrust";
@@ -64,36 +54,22 @@ async function chatAction(circlesAddress: string): Promise<JumplistItem> {
 }
 
 async function findContactActions(circlesAddress: string) {
-  const recipientProfile: Contact = await contactStore.findBySafeAddress(
-    circlesAddress
-  );
+  const recipientProfile: Contact = await contactStore.findBySafeAddress(circlesAddress);
   if (!recipientProfile) {
     return [];
   }
 
-  const trustMetadata = recipientProfile.metadata.find(
-    (o) => o.name == EventType.CrcTrust
-  );
-  if (
-    !trustMetadata &&
-    recipientProfile.contactAddress_Profile.origin ==
-      ProfileOrigin.CirclesGarden
-  ) {
+  const trustMetadata = recipientProfile.metadata.find((o) => o.name == EventType.CrcTrust);
+  if (!trustMetadata && recipientProfile.contactAddress_Profile.origin == ProfileOrigin.CirclesGarden) {
     // No trust relation but a circles land profile
     return [await chatAction(circlesAddress)];
   }
 
   const inTrustIndex = trustMetadata.directions.indexOf(ContactDirection.In);
-  const trustsYou =
-    inTrustIndex > -1
-      ? parseInt(trustMetadata.values[inTrustIndex]) > 0
-      : false;
+  const trustsYou = inTrustIndex > -1 ? parseInt(trustMetadata.values[inTrustIndex]) > 0 : false;
 
   const outTrustIndex = trustMetadata.directions.indexOf(ContactDirection.Out);
-  const youTrust =
-    outTrustIndex > -1
-      ? parseInt(trustMetadata.values[outTrustIndex]) > 0
-      : false;
+  const youTrust = outTrustIndex > -1 ? parseInt(trustMetadata.values[outTrustIndex]) > 0 : false;
 
   const availableActions: JumplistItem[] = [];
 
@@ -120,12 +96,8 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
     let actions = [];
 
     if (params.id) {
-      const recipientProfile: Contact = await contactStore.findBySafeAddress(
-        params.id ?? $me.circlesAddress
-      );
-      const trustMetadata =
-        recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??
-        undefined;
+      const recipientProfile: Contact = await contactStore.findBySafeAddress(params.id ?? $me.circlesAddress);
+      const trustMetadata = recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ?? undefined;
       let trustsYou = false;
       let youTrust = false;
 
@@ -164,7 +136,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                   {
                     category: "Banking",
                     key: "transfer",
-                    icon: "sendmoney",
+                    icon: "cash",
                     displayHint: "encouraged",
                     title: "Send Money",
                     action: async () => {
@@ -182,7 +154,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                   {
                     category: "Contacts",
                     key: "setTrust",
-                    icon: "untrust",
+                    icon: "minus-circle",
                     title: "Untrust",
                     displayHint: "discouraged",
                     colorClass: "text-alert",
@@ -201,7 +173,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                   {
                     category: "Contacts",
                     key: "setTrust",
-                    icon: "trust",
+                    icon: "shield-check",
                     title: "Trust",
                     displayHint: "encouraged",
                     action: async () => {
@@ -223,7 +195,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         actions = actions.concat({
           category: "Contacts",
           key: "setTrust",
-          icon: "trust",
+          icon: "shield-check",
           title: "Trust",
           displayHint: "encouraged",
           action: async () => {
@@ -240,7 +212,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       actions = actions.concat({
         category: "Contacts",
         key: "setTrust",
-        icon: "trust",
+        icon: "shield-check",
         displayHint: "encouraged",
         title: "Trust new friend",
         action: async () => {

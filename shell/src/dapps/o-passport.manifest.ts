@@ -114,7 +114,7 @@ export const passport: DappManifest<DappState> = {
           key: "logout",
           type: "profile",
           title: "Logout",
-          icon: "logout",
+          icon: "lock-closed",
           action: () => {
             window.o.runProcess(logout, {});
           },
@@ -136,9 +136,7 @@ export const passport: DappManifest<DappState> = {
           key: o.circlesAddress,
           title: o.displayName,
           type: "profile",
-          icon: o.avatarUrl
-            ? o.avatarUrl
-            : AvataarGenerator.generate(o.circlesAddress),
+          icon: o.avatarUrl ? o.avatarUrl : AvataarGenerator.generate(o.circlesAddress),
           action: () => {
             window.o.publishEvent(<PlatformEvent>{
               type: "shell.loggedOut",

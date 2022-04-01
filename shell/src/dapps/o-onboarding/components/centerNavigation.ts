@@ -32,10 +32,7 @@ export type CenterNavigationEvent =
       type: "VISIBLE";
     };
 
-export const navigationCenterNavigation = createMachine<
-  CenterNavigationContext,
-  CenterNavigationEvent
->(
+export const navigationCenterNavigation = createMachine<CenterNavigationContext, CenterNavigationEvent>(
   {
     context: {
       position: null,
@@ -43,12 +40,12 @@ export const navigationCenterNavigation = createMachine<
       element: {
         component: LinkComponent,
         props: {
-          icon: "list",
+          icon: "menu",
         },
       },
       icons: {
         on: "buttonleftarrow",
-        off: "list",
+        off: "menu",
       },
     },
     on: {

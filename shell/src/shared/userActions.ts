@@ -94,7 +94,7 @@ export class UserActions {
             ? [
                 {
                   key: "transfer",
-                  icon: "sendmoney",
+                  icon: "cash",
                   title: window.i18n("shared.userActions.sendMoney"),
                   action: async () => {
                     window.o.runProcess(transfer, {
@@ -110,7 +110,7 @@ export class UserActions {
             ? [
                 {
                   key: "setTrust",
-                  icon: "untrust",
+                  icon: "minus-circle",
                   title: window.i18n("shared.userActions.untrust"),
                   colorClass: "text-alert",
                   action: async () => {
@@ -127,7 +127,7 @@ export class UserActions {
             : [
                 {
                   key: "setTrust",
-                  icon: "trust",
+                  icon: "shield-check",
                   title: window.i18n("shared.userActions.trust"),
                   action: async () => {
                     window.o.runProcess(setTrust, {

@@ -1878,6 +1878,13 @@
   resolved "https://registry.npmjs.org/@juggle/resize-observer/-/resize-observer-3.3.1.tgz"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
+"@krowten/svelte-heroicons@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/@krowten/svelte-heroicons/-/svelte-heroicons-0.0.3.tgz"
+  integrity sha512-e9uiANxK0zrUuuqMfKmiu9qZZbfRbtEa1DZ1TGVqXzn8uI0ZX9bQob7qhxOyGprT3rQHfb2cDtiEUdo6aqUuZA==
+  dependencies:
+    heroicons "^1.0.5"
+
 "@lerna/add@4.0.0":
   version "4.0.0"
   resolved "https://registry.npmjs.org/@lerna/add/-/add-4.0.0.tgz"
@@ -8042,6 +8049,11 @@ header-case@^2.0.4:
   dependencies:
     capital-case "^1.0.4"
     tslib "^2.0.3"
+
+heroicons@^1.0.5:
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/heroicons/-/heroicons-1.0.6.tgz"
+  integrity sha512-5bxTsG2hyNBF0l+BrFlZlR5YngQNMfl0ggJjIRkMSADBQbaZMoTg47OIQzq6f1mpEZ85HEIgSC4wt5AeFM9J2Q==
 
 hex-color-regex@^1.1.0:
   version "1.1.0"
