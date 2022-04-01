@@ -24,8 +24,7 @@ let leaderboardButton: ButtonContext = {
 };
 </script>
 
-<section
-  class="relative p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card ">
+<section class="relative p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card ">
   {#if $stats}
     <div class="absolute top-0 left-0 w-full text-center">
       <progress
@@ -39,9 +38,8 @@ let leaderboardButton: ButtonContext = {
           {Math.floor((100 * $stats.profilesCount) / $stats.goals.nextGoal)}%
         </div>
         <div class="-ml-2 text-sm text-right whitespace-nowrap">
-          +{$stats.goals.nextGoal - $stats.profilesCount > 0
-            ? $stats.goals.nextGoal - $stats.profilesCount
-            : 0} till next party
+          +{$stats.goals.nextGoal - $stats.profilesCount > 0 ? $stats.goals.nextGoal - $stats.profilesCount : 0} till next
+          party
         </div>
       </div>
     </div>

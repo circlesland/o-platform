@@ -28,12 +28,8 @@ import { onMount } from "svelte";
  * }
  */
 
-export function showToast(
-  type: String,
-  message: String,
-  dismissable: Boolean = true
-) {
-    // console.log(type);
+export function showToast(type: String, message: String, dismissable: Boolean = true, duration: number = 4000) {
+  // console.log(type);
   if (type && type == "success") {
     toast.push(
       `<div class="flex flex-row"><div class="justify-center text-success"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-2 stroke-current self-center " fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -43,6 +39,7 @@ export function showToast(
         `</div></div>`,
       {
         dismissable: dismissable,
+        duration: duration,
         initial: dismissable ? 1 : 0,
         theme: {
           "--toastBackground": "#E5F4F3",
@@ -60,6 +57,7 @@ export function showToast(
         `</div></div>`,
       {
         dismissable: dismissable,
+        duration: duration,
         initial: dismissable ? 1 : 0,
         theme: {
           "--toastBackground": "#FFEEE9",
@@ -77,6 +75,7 @@ export function showToast(
         `</div></div>`,
       {
         dismissable: dismissable,
+        duration: duration,
         initial: dismissable ? 1 : 0,
         theme: {
           "--toastBackground": "#FFF5E5",
@@ -94,6 +93,7 @@ export function showToast(
         `</div></div>`,
       {
         dismissable: dismissable,
+        duration: duration,
         initial: dismissable ? 1 : 0,
         theme: {
           "--toastBackground": "#E8F4FE",

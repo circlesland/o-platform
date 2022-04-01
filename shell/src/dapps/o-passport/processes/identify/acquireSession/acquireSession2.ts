@@ -2,23 +2,21 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import {ipc} from "@o-platform/o-process/dist/triggers/ipc";
-import {AuthenticateContext} from "./authenticate/authenticate2";
-import {
-  RequestSessionChallengeDocument,
-  VerifySessionChallengeDocument
-} from "../../../../../shared/api/data/types";
-import {loginWithTorus} from "../../../../o-onboarding/processes/loginWithTorus";
-import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-import {prompt} from "@o-platform/o-process/dist/states/prompt";
+import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
+import { AuthenticateContext } from "./authenticate/authenticate2";
+import { RequestSessionChallengeDocument, VerifySessionChallengeDocument } from "../../../../../shared/api/data/types";
+import { loginWithTorus } from "../../../../o-onboarding/processes/loginWithTorus";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import HtmlViewer from "../../../../../../../packages/o-editors/src/HtmlViewer.svelte";
+import ErrorPage from "../../../../../shared/atoms/Error.svelte";
 
 export type AcquireSessionContextData = {
   appId?: string;
   eoaAddress?: string;
   userInfo?: any;
-  successAction?: (data:AcquireSessionContextData) => void;
+  successAction?: (data: AcquireSessionContextData) => void;
 };
 
 export type AcquireSessionContext = ProcessContext<AcquireSessionContextData>;
@@ -35,50 +33,55 @@ const processDefinition = (processId: string) =>
 
       loginWithTorus: {
         on: {
-          ...<any>ipc(`loginWithTorus`)
+          ...(<any>ipc(`loginWithTorus`)),
         },
         invoke: {
           id: "loginWithTorus",
           src: loginWithTorus.stateMachine(`loginWithTorus`),
           data: {
             data: {},
-            dirtyFlags:{},
-            messages:{},
+            dirtyFlags: {},
+            messages: {},
           },
           onDone: {
-            actions:(context, event) => {
-              const data:{
+            actions: (context, event) => {
+              const data: {
                 accountAddress: string;
-                userInfo: any
+                userInfo: any;
               } = event.data;
               context.data.eoaAddress = data.accountAddress;
               context.data.userInfo = data.userInfo;
             },
-            target:"#acquireSession"
+            target: "#acquireSession",
           },
-          onError: "#error"
-        }
+          onError: "#error",
+        },
       },
       acquireSession: {
         id: "acquireSession",
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.message"),
+            message: window.i18n(
+              "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.message"
+            ),
           });
         },
         invoke: {
           src: async (context) => {
             if (!context.data.eoaAddress) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.contextsPropertyNotSet"));
+              throw new Error(
+                window.i18n(
+                  "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.contextsPropertyNotSet"
+                )
+              );
             }
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: RequestSessionChallengeDocument,
               variables: {
-                address: context.data.eoaAddress
-              }
+                address: context.data.eoaAddress,
+              },
             });
 
             if (result.errors && result.errors.length) {
@@ -89,16 +92,20 @@ const processDefinition = (processId: string) =>
             const challenge = result.data.requestSessionChallenge;
             const pk = sessionStorage.getItem("circlesKey");
             if (!pk) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.privatKeyNotUnlocked"))
+              throw new Error(
+                window.i18n(
+                  "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.privatKeyNotUnlocked"
+                )
+              );
             }
             const acc = RpcGateway.get().eth.accounts.privateKeyToAccount(pk);
-            const {message, signature} = acc.sign(challenge);
+            const { message, signature } = acc.sign(challenge);
 
             const sessionResult = await apiClient.mutate({
               mutation: VerifySessionChallengeDocument,
               variables: {
                 challenge: message,
-                signature: signature
+                signature: signature,
               },
             });
 
@@ -107,23 +114,45 @@ const processDefinition = (processId: string) =>
               throw new Error(JSON.stringify(sessionResult.data.errors));
             }
             if (!sessionResult.data.verifySessionChallenge?.success) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.couldNotGetSession"))
+              throw new Error(
+                window.i18n(
+                  "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.couldNotGetSession"
+                )
+              );
             }
           },
           onDone: "#success",
-          onError: "#errorRequestingChallenge",
+          onError: "#error",
         },
       },
+      error: prompt({
+        id: "error",
+        field: "__",
+        component: ErrorPage,
+        params: {
+          view: {
+            error: {
+              title: "OOps! Something went wrong",
+            },
+          },
+          hideNav: false,
+        },
+      }),
+
       // Wait for the user to enter the code he received in the login-email
       errorRequestingChallenge: prompt<AuthenticateContext, any>({
         field: "errorRequestingChallenge",
         entry: (context) => {
-          context.data.errorRequestingChallenge = window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.errorRequestingChallenge.error");
+          context.data.errorRequestingChallenge = window.i18n(
+            "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.errorRequestingChallenge.error"
+          );
         },
         component: HtmlViewer,
         isSensitive: true,
         params: {
-          submitButtonText: window.i18n("dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.errorRequestingChallenge.submitButtonText"),
+          submitButtonText: window.i18n(
+            "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.errorRequestingChallenge.submitButtonText"
+          ),
           html: (context) => context.data.errorSendingAuthMail,
         },
         navigation: {
@@ -144,11 +173,10 @@ const processDefinition = (processId: string) =>
             context.data.successAction(context.data);
           }
         },
-        type: "final"
+        type: "final",
       },
     },
   });
-
 
 export const acquireSession: ProcessDefinition<void, void> = {
   name: "acquireSession",
