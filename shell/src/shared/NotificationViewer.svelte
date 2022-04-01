@@ -163,7 +163,7 @@ function submit() {
             overrides: (action) =>
               action.key == 'dismiss'
                 ? 'light'
-                : null || action.icon == 'untrust'
+                : null || action.displayHint == 'discouraged'
                 ? 'light'
                 : null,
           },

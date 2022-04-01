@@ -15,6 +15,7 @@ import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
 import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
 import DashboardEventsWidget from "../molecules/DashboardEventsWidget.svelte";
+import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -72,8 +73,9 @@ async function fetchStats() {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  <div class="m-4 mb-40 -mt-2">
-    <DashboardEventsWidget profilesCount="{profilesCount}" />
+  <div class="m-4 mb-40 ">
+    <DashboardInvitesWidget stats="{statsResult}" />
+    <!-- <DashboardEventsWidget profilesCount="{profilesCount}" /> -->
     <div
       class="grid grid-cols-2 gap-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
       <section

@@ -124,9 +124,9 @@ body {
 }
 
 .btn-light:hover {
-  @apply bg-white;
+  @apply bg-light-dark;
   @apply text-dark;
-  border: 1px solid;
+  border: none;
   @apply border-dark;
 }
 

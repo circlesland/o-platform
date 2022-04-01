@@ -9,27 +9,23 @@ func buildActions(targetUser)
   if targetUser trustYou && youTrust -> add action send money
   if $me is in Orga && targetUser is NOT in Orga -> add action invite to Orga
   if $me is in Orga && targetUser is in orga -> add action kick from Orga
-
-
 */
-import {
-  ContactDirection,
-  EventType,
-  Profile, ProfileType
-} from "./api/data/types";
+
+import { ContactDirection, EventType, Profile, ProfileType } from "./api/data/types";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { contacts as contactStore } from "./stores/contacts";
 import { me } from "./stores/me";
 import { push } from "svelte-spa-router";
 import { transfer } from "../dapps/o-banking/processes/transfer";
 import { setTrust } from "../dapps/o-banking/processes/setTrust";
-import {Environment} from "./environment";
-//
+import { Environment } from "./environment";
+import { JumplistItemHint } from "@o-platform/o-interfaces/src/routables/jumplist";
 
 export interface UserActionItem {
   key: string;
   icon?: string;
   title: string;
+  displayHint?: JumplistItemHint;
   event?: PlatformEvent;
   colorClass?: string;
   action?: () => void;
@@ -58,13 +54,9 @@ export class UserActions {
     unsub();
     if (!$me) throw new Error(window.i18n("shared.userActions.errors.couldNotLoadYourProfile"));
 
-    let recipientProfile = await contactStore.findBySafeAddress(
-      targetUser.circlesAddress ?? $me.circlesAddress
-    );
+    let recipientProfile = await contactStore.findBySafeAddress(targetUser.circlesAddress ?? $me.circlesAddress);
 
-    const trustMetadata =
-      recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??
-      undefined;
+    const trustMetadata = recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ?? undefined;
     let trustsYou = false;
     let youTrust = false;
 

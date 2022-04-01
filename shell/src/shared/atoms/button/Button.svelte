@@ -29,7 +29,8 @@ let iconClass =
   class="btn transition-all overflow-hidden transform relative  btn-{context.color}
   "
   class:btn-square="{context.style && context.style == 'square'}"
-  class:px-8="{context.style != 'square'}"
+  class:px-8="{context.style != 'square' && context.style != 'small'}"
+  class:px-4="{context.style == 'small'}"
   on:click="{() => handleClick(context.action)}">
   <!-- <slot /> -->
   {context.label ? context.label : ""}
