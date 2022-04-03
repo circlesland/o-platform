@@ -1,0 +1,7 @@
+1. [>> Introduction message](docs/testing/activities/introductionMessage.md)
+2. [>> How can we reach you?](docs/testing/activities/editEmailAddress.md)
+3. [>> Subscribe to news](docs/testing/activities/subscribeToNewsletter.md)
+4. [>> What is your first name?](docs/testing/activities/editFirstName.md)
+5. [>> What is your last name?](docs/testing/activities/editLastName.md)
+6. [>> Where do you live?](docs/testing/activities/editHomeCity.md)
+7. [>> Upload an avatar](docs/testing/activities/editProfileImage.md)
