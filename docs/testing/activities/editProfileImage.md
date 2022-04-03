@@ -13,3 +13,5 @@ Requirements:
 * The layout of the upload-preview and the preview of an existing file should be the same
 * The "Clear" buttons/links should have the same text
 * The selected crop area should be reflected in the uploaded image
+* [Validation: jpg | jpeg | png](docs/testing/input-validations/compareFileExtension.md)
+* [Validation: Original file is <= 10 MB](docs/testing/input-validations/compareFileSize.md) 
