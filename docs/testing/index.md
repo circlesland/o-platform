@@ -6,4 +6,4 @@
 * [todo: how many?] Prepare a few test logins (oauth or e-mail)
   
 ## Modules:
-* [Signup](docs/testing/modules/signup.md)
+* [Signup](modules/signup.md)

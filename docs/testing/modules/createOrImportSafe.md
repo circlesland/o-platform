@@ -1,7 +1,7 @@
 a) Create new
-   1. [>> Create new safe](docs/testing/activities/createNewSafe.md)
+   1. [>> Create new safe](../activities/createNewSafe.md)
 
 b) Import existing
-   1. [>> Enter seedphrase](docs/testing/activities/enterSeedphrase.md)
+   1. [>> Enter seedphrase](../activities/enterSeedphrase.md)
 
-[Create profile >>](docs/testing/modules/createProfile.md)
+[Create profile >>](createProfile.md)
