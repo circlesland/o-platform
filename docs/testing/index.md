@@ -6,4 +6,7 @@
 * [todo: how many?] Prepare a few test logins (oauth or e-mail)
   
 ## Modules:
-* [Signup](modules/signup.md)
+* [Signup with invitation code](flows/signupWithInvitationCode.md)
+* [Signup with invitation link](flows/signupWithInvitationLink.md)
+* [Login on same browser](flows/loginOnSameDevice.md)
+* [Login on different browser](flows/loginOnNewDevice.md)
