@@ -17,7 +17,9 @@ export type Eoa = {
   source: "torus" | "imported" | "local" | null
 }
 
-export type AddressEoaMap = {[address:string]:Eoa}
+export type AddressEoaMap = {
+  [address:string]:Eoa
+}
 
 export class KeyManager {
   public get eoas() {

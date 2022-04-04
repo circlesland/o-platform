@@ -58,6 +58,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
     id: `init`,
     initial: "prepare",
     context: {
+      localStorageSchemaVersion: 1,
       session: null,
       openLoginUserInfo: null,
       registration: null,
@@ -73,10 +74,16 @@ export const initMachine = createMachine<InitContext, InitEvent>(
     },
     states: {
       prepare: {
-        entry:() => {
+        entry:(context) => {
           window.o.publishEvent({
             type: "shell.openModalProcess",
           });
+
+          const currentLocalStorageSchema = localStorage.getItem("localStorageSchemaVersion");
+          if (!currentLocalStorageSchema || parseInt(currentLocalStorageSchema) < context.localStorageSchemaVersion) {
+            localStorage.clear();
+            localStorage.setItem("localStorageSchemaVersion", context.localStorageSchemaVersion.toString());
+          }
         },
         invoke: {
           src: async(context) => {
