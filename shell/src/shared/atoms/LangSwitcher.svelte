@@ -25,12 +25,10 @@ onMount(async () => {
         GetAvailableLanguagesQuery > (GetAvailableLanguagesDocument, {});
     availableLanguages = i18nResult;
     availableLanguages.sort((a, b) => {
-        let langA = a.lang;
-        let langB = b.lang;
-        if (langA < langB) {
+        if (a.lang < b.lang) {
             return -1;
         }
-        if (langA > langB) {
+        if (a.lang > b.lang) {
             return 1
         }
         return 0;
