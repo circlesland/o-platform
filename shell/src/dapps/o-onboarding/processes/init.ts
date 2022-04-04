@@ -74,16 +74,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
     },
     states: {
       prepare: {
-        entry:(context) => {
+        entry:() => {
           window.o.publishEvent({
             type: "shell.openModalProcess",
           });
-
-          const currentLocalStorageSchema = localStorage.getItem("localStorageSchemaVersion");
-          if (!currentLocalStorageSchema || parseInt(currentLocalStorageSchema) < context.localStorageSchemaVersion) {
-            localStorage.clear();
-            localStorage.setItem("localStorageSchemaVersion", context.localStorageSchemaVersion.toString());
-          }
         },
         invoke: {
           src: async(context) => {

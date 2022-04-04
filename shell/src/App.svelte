@@ -199,6 +199,8 @@ import { isLoading } from "svelte-i18n";
 import { InitContext } from "./dapps/o-onboarding/processes/initContext";
 import { onMount } from "svelte";
 import { showToast } from "./shared/toast";
+import {getSessionInfo} from "./dapps/o-passport/processes/identify/services/getSessionInfo";
+import {LogoutDocument} from "./shared/api/data/types";
 
 let ubiMachineInterpreter: any;
 // let errorMessage: string;
@@ -221,6 +223,21 @@ let ubiMachineInterpreter: any;
 //     }
 //   };
 // });
+
+const v = 1;
+const currentLocalStorageSchemaVersion = localStorage.getItem("localStorageSchemaVersion");
+if (!currentLocalStorageSchemaVersion || parseInt(currentLocalStorageSchemaVersion) < v) {
+  localStorage.clear();
+  sessionStorage.clear();
+  localStorage.setItem("localStorageSchemaVersion", v.toString());
+
+  window.o.apiClient.client.subscribeToResult()
+  .then(apiClient => {
+    apiClient.mutate({
+      mutation: LogoutDocument,
+    });
+  });
+}
 
 window.runInitMachine = (context?: InitContext) => {
   if (context) {
