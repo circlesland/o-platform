@@ -76,4 +76,14 @@ export class Environment {
   public static get openLoginClientId(): string {
     return "__OPENLOGIN_CLIENT_ID__";
   }
+  public static get userLanguage(): string {
+    if (localStorage.getItem("userLanguage")) {
+      return localStorage.getItem("userLanguage");
+    } else {
+      return navigator.language.toLowerCase();
+    }
+  }
+  public static set userLanguage(value:string) {
+    localStorage.setItem("userLanguage", value);
+  }
 }

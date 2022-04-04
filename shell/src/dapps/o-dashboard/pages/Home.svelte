@@ -14,6 +14,7 @@
   import {Environment} from "../../../shared/environment";
   import {_} from "svelte-i18n";
   import Label from "../../../shared/atoms/Label.svelte";
+  import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -69,6 +70,7 @@
   <div class="m-4 mb-40 -mt-4">
     <section class="p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card">
       <div class="w-full text-3xl text-center font-heading">CIRCLESLAND</div>
+      <LangSwitcher />
       <div class="flex flex-row items-stretch w-full justify-items-center">
         <div class="flex flex-col flex-grow">
           <div class="text-6xl text-center font-heading text-primary">

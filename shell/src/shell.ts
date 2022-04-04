@@ -15,7 +15,7 @@ const i18n = (id: string, options?: any) => {
 
   init({
     fallbackLocale: "en",
-    initialLocale: "en",
+    initialLocale: "de",
   });
 
   return get(format)(id, options);

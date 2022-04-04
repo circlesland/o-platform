@@ -1,9 +1,5 @@
 <script lang="ts">
 import {
-    me
-} from "../stores/me";
-
-import {
     GetStringByMaxVersionDocument,
     GetStringByLanguageDocument,
     I18n,
@@ -17,9 +13,36 @@ import {
 import {
     ApiClient
 } from "../apiConnection";
+import {
+    Environment
+} from "../environment";
+
+
+const languageFallback = function() {
+    if (Environment.userLanguage.startsWith("en") ||
+        Environment.userLanguage == "us") {
+            Environment.userLanguage = "en";
+        };
+    if (Environment.userLanguage.startsWith("de")) {
+            Environment.userLanguage = "de";
+        };
+    if (Environment.userLanguage.startsWith("fr")) {
+            Environment.userLanguage = "fr";
+        };
+    if (Environment.userLanguage.startsWith("pt")) {
+            Environment.userLanguage = "pt";
+    };
+    if (Environment.userLanguage == "id" ||
+        Environment.userLanguage == "in") {
+            Environment.userLanguage = "in";
+    };
+}
+languageFallback();
+
 
 export let key: string;
-export let lang: string = "en";
+export let lang: string = Environment.userLanguage;
+
 
 let value: string;
 
@@ -46,56 +69,19 @@ getValue();
 //        });
 //}
 
-function switchLanguage() {
-    lang = prompt("Which language do you want to translate?");
-    ApiClient.query < I18n[], QueryGetStringByLanguageArgs > (GetStringByLanguageDocument, {
-            lang: lang,
-        })
-        .then((i18nResult: I18n[]) => {
-            if (i18nResult.length === 0)
-                alert("not supported")
-            return;
-        });
-}
-
-function writeValueToDb() {
+function writeValueToDb(value: string) {
     ApiClient.query < I18n, MutationUpdateValueArgs > (UpdateValueDocument, {
         lang: lang,
         key: key,
         value: value,
     })
+    window.alert(`You saved '${value}'`);
 }
 
 function labelClicked(e: MouseEvent) {
     if (e.shiftKey) {
-        let langToCreatePrompt = prompt("which language do you want to translate?");
-        ApiClient.query < I18n, QueryGetStringByMaxVersionArgs > (GetStringByMaxVersionDocument, {
-                lang: langToCreatePrompt,
-                key: key
-            })
-            .then(i18nResult => {
-                lang = langToCreatePrompt;
-                if (i18nResult == null) {
-                    ApiClient.query < I18n, MutationAddNewLangArgs > (AddNewLangDocument, {
-                        langToCopyFrom: "en",
-                        langToCreate: langToCreatePrompt
-                    });
-                    alert(`created language-Database and switched to ${langToCreatePrompt}`);
-                    (function() {
-                        value = prompt(value);
-                        writeValueToDb();
-                        window.alert(`You saved '${value}'`);
-                    })();
-                } else {
-                    alert(`switched to language ${langToCreatePrompt}`);
-                    (function() {
-                        value = prompt(value);
-                        writeValueToDb();
-                        window.alert(`You saved '${value}'`);
-                    })();
-                }
-            });
-
+        console.log(e.cancelable)
+        writeValueToDb(prompt(value));
     }
 }
 </script>
