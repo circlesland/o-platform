@@ -36,6 +36,9 @@ const languageFallback = function() {
         Environment.userLanguage == "in") {
             Environment.userLanguage = "in";
     };
+    if (Environment.userLanguage.startsWith("es")) {
+        Environment.userLanguage == "es";
+    }
 }
 languageFallback();
 

@@ -29,7 +29,7 @@ onMount(async () => {
             return -1;
         }
         if (a.lang > b.lang) {
-            return 1
+            return 1;
         }
         return 0;
     });
