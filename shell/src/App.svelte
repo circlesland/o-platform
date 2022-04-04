@@ -201,26 +201,26 @@ import { onMount } from "svelte";
 import { showToast } from "./shared/toast";
 
 let ubiMachineInterpreter: any;
-let errorMessage: string;
-let houstonWeHaveAnError: Boolean = false;
+// let errorMessage: string;
+// let houstonWeHaveAnError: Boolean = false;
 
-onMount(() => {
-  window.onunhandledrejection = (e) => {
-    if (!houstonWeHaveAnError) {
-      console.log("we got exception, but the app has crashed", e);
-      if (e.reason.message == "Failed to fetch") {
-        errorMessage = "No connection to API. maybe check your internet connection?";
-      }
-      showToast(
-        "error",
-        `Oops, something went Wrong: <span class="text-alert-dark">${errorMessage}</span> <a href="/"><button class="text-right link link-primary">Reload Page</button></a>`,
-        true,
-        9000
-      );
-      houstonWeHaveAnError = true;
-    }
-  };
-});
+// onMount(() => {
+//   window.onunhandledrejection = (e) => {
+//     if (!houstonWeHaveAnError) {
+//       console.log("we got exception, but the app has crashed", e);
+//       if (e.reason.message == "Failed to fetch") {
+//         errorMessage = "No connection to API. maybe check your internet connection?";
+//       }
+//       showToast(
+//         "error",
+//         `Oops, something went Wrong: <span class="text-alert-dark">${errorMessage}</span> <a href="/"><button class="text-right link link-primary">Reload Page</button></a>`,
+//         true,
+//         9000
+//       );
+//       houstonWeHaveAnError = true;
+//     }
+//   };
+// });
 
 window.runInitMachine = (context?: InitContext) => {
   if (context) {
