@@ -35,15 +35,17 @@ async function load() {
     {}
   );
   orgas = await Promise.all(
-    allOrgasWithProducts.map(async (o) => {
-      const contact = await contacts.findBySafeAddress(o.circlesAddress);
-      const { trustIn, trustOut } = trustFromContactMetadata(contact);
-      return {
-        orga: o,
-        enabled: trustIn > 0,
-        productListingType: o.productListingType == "LIST" ? "list" : "market",
-      };
-    })
+    allOrgasWithProducts
+      .map(async (o) => {
+        const contact = await contacts.findBySafeAddress(o.circlesAddress);
+        const { trustIn, trustOut } = trustFromContactMetadata(contact);
+        return {
+          orga: o,
+          enabled: trustIn > 0,
+          productListingType: o.productListingType == "LIST" ? "list" : "market",
+        };
+      })
+      .reverse()
   );
 }
 
