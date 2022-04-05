@@ -38,11 +38,12 @@ $: {
     </div>
 
     <div class="justify-self-center">
-      {#if headerString}
-        <span class="text-md">{headerString}</span>
+      <!-- {#if headerString}
+      <span class="text-md">{headerString}</span>
       {:else if (routable ? routable.title : "<<No dapp>>") != (runtimeDapp ? runtimeDapp.title : "<<No dapp>>")}
         <span class="text-md">{routable.title}</span>
-      {/if}
+      {/if} -->
+      <span class="text-md text-primary">Public Beta</span>
     </div>
 
     <div class="col-start-3 pr-1 place-self-center justify-self-end">
