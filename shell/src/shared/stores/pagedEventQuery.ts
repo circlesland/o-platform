@@ -62,17 +62,21 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
       [], (set) => {
         if (!this._isInitialized) {
           this._profileChangedSubscription = me.subscribe(async $me => {
-            this.reset();
-            await this.next();
+            if (this._isInitialized) {
+              this.reset();
+              await this.next();
+            }
           });
+
           this.next().then(result => {
             if (result) {
               console.log(`Initial loading complete. More data available.`)
             } else {
               console.log(`Initial loading complete. All loaded.`)
             }
+            this._isInitialized = true;
+            this.refresh();
           });
-          this._isInitialized = true;
         }
 
         return () => {
