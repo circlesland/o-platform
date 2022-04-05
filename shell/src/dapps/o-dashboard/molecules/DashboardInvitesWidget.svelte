@@ -5,6 +5,7 @@ import ButtonGroup from "../../../shared/molecules/ButtonGroup/ButtonGroup.svelt
 import { stats } from "../../../shared/stores/stats";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import Button from "../../../shared/atoms/button/Button.svelte";
+import { me } from "../../../shared/stores/me";
 
 let leaderboardButton: ButtonContext = {
   label: "leaderboard",
@@ -43,26 +44,29 @@ let shareButton: ButtonContext = {
         </div>
       </div>
     </div>
-
-    <div class="flex flex-row justify-around mt-10">
-      <div class="flex flex-col self-center space-y-2 justify-items-center">
-        <div class="self-center text-6xl font-heading">
-          {$stats.myRank.rank}
+    {#if $me && $me.__typename == "Profile"}
+      <div class="flex flex-row justify-around mt-10">
+        <div class="flex flex-col self-center space-y-2 justify-items-center">
+          <div class="self-center text-6xl font-heading">
+            {$stats.myRank.rank}
+          </div>
+          <div class="text-sm text-dark-lightest">My leaderrank</div>
         </div>
-        <div class="text-sm text-dark-lightest">My leaderrank</div>
-      </div>
-      <div class="flex flex-col self-center space-y-2 justify-items-center">
-        <div class="self-center text-6xl cursor-pointer font-heading" on:click="{() => push('#/home/invites')}">
-          {$stats.myRank.redeemedInvitationsCount}
+        <div class="flex flex-col self-center space-y-2 justify-items-center">
+          <div class="self-center text-6xl cursor-pointer font-heading" on:click="{() => push('#/home/invites')}">
+            {$stats.myRank.redeemedInvitationsCount}
+          </div>
+          <div class="text-sm text-dark-lightest">My invites</div>
         </div>
-        <div class="text-sm text-dark-lightest">My invites</div>
       </div>
+    {/if}
+  {/if}
+  {#if $me && $me.__typename == "Profile"}
+    <div class="flex flex-row justify-around mt-4 mb-1 text-center">
+      <Button context="{leaderboardButton}" />
+      <Button context="{shareButton}" />
     </div>
   {/if}
-  <div class="flex flex-row justify-around mt-4 mb-1 text-center">
-    <Button context="{leaderboardButton}" />
-    <Button context="{shareButton}" />
-  </div>
 </section>
 
 <style>
