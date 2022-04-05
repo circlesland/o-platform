@@ -1,5 +1,6 @@
 import Home from "./o-dashboard/pages/Home.svelte";
 import InviteLeaderboard from "./o-dashboard/pages/InviteLeaderboard.svelte";
+import SharePersonalInvite from "./o-dashboard/pages/SharePersonalInvite.svelte";
 import RedeemedInvitations from "./o-dashboard/pages/RedeemedInvitations.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
@@ -20,6 +21,15 @@ const invites: Page<any, DappState> = {
   title: "You invited",
   position: "main",
   type: "page",
+};
+
+const sharePersonalInvite: Page<any, DappState> = {
+  type: "page",
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=share"],
+  title: "Share Profile",
+  component: SharePersonalInvite,
 };
 
 const inviteLeaderboard: Page<any, DappState> = {
@@ -110,5 +120,5 @@ export const home: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, invites, inviteLeaderboard, externalChat, externalForum],
+  routables: [index, invites, inviteLeaderboard, sharePersonalInvite, externalChat, externalForum],
 };

@@ -6,7 +6,7 @@ import { stats } from "../../../shared/stores/stats";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import Button from "../../../shared/atoms/button/Button.svelte";
 
-let rankButton: ButtonContext = {
+let leaderboardButton: ButtonContext = {
   label: "leaderboard",
   color: "light",
   style: "small",
@@ -14,12 +14,12 @@ let rankButton: ButtonContext = {
     push("#/home/leaderboard");
   },
 };
-let leaderboardButton: ButtonContext = {
+let shareButton: ButtonContext = {
   label: "share invite link",
   color: "primary",
   style: "small",
   action: async () => {
-    push("#/home/invites");
+    push("#/home/share");
   },
 };
 </script>
@@ -60,8 +60,8 @@ let leaderboardButton: ButtonContext = {
     </div>
   {/if}
   <div class="flex flex-row justify-around mt-4 mb-1 text-center">
-    <Button context="{rankButton}" />
     <Button context="{leaderboardButton}" />
+    <Button context="{shareButton}" />
   </div>
 </section>
 
