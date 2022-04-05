@@ -4,13 +4,16 @@ import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
 import { me } from "../../../shared/stores/me";
+
+let foo = false;
 </script>
 
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <div class="w-full text-center">
     <h1 class="text-3xl uppercase font-heading undefined">Share an invite to circlesland</h1>
   </div>
-  {#if $me}
+
+  {#if $me && $me.invitationLink}
     <div class="w-full text-center">
       <span class="text-dark-lightest">Show this QR Code or choose a way to share an invite link below</span>
     </div>
@@ -53,6 +56,11 @@ import { me } from "../../../shared/stores/me";
           <Icons icon="telegram" customClass="inline" size="{11}" />
         </a>
       </div>
+    </div>
+  {:else}
+    <div class="w-full text-center">
+      <span class="text-alert"
+        >You can't invite others just yet. you have to get verified first.<br />We're working on it :)</span>
     </div>
   {/if}
 </section>
