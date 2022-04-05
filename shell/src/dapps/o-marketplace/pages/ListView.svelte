@@ -49,7 +49,9 @@ function compare(a, b) {
 onMount(() => {
   store = storeOffers.getOffersFor(storeCirclesAddress);
   isLoading = true;
+
   return store.subscribe((data: any) => {
+    offersByCategory = {}; // If i don't do this here, we sometimes get the offers twice...
     offers = data;
     offersByCategory = offers.reduce((p, c) => {
       orga = c.createdByProfile;
@@ -63,8 +65,6 @@ onMount(() => {
       }
       return p;
     }, offersByCategory);
-
-    console.log("OFFAS", orga);
 
     isLoading = false;
   });
