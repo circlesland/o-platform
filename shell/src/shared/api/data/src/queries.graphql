@@ -875,18 +875,8 @@ query citiesById($ids: [Int!]!) {
   }
 }
 
-query stream(
-  $types: [EventType!]!
-  $safeAddress: String!
-  $pagination: PaginationArgs!
-  $filter: ProfileEventFilter
-) {
-  events(
-    types: $types
-    safeAddress: $safeAddress
-    pagination: $pagination
-    filter: $filter
-  ) {
+query stream($types: [EventType!]!, $safeAddress: String!, $pagination: PaginationArgs!, $filter: ProfileEventFilter) {
+  events(types: $types, safeAddress: $safeAddress, pagination: $pagination, filter: $filter) {
     timestamp
     transaction_hash
     block_number
@@ -1299,11 +1289,7 @@ query stream(
   }
 }
 
-query aggregates(
-  $types: [AggregateType!]!
-  $safeAddress: String!
-  $filter: ProfileAggregateFilter
-) {
+query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: ProfileAggregateFilter) {
   aggregates(types: $types, safeAddress: $safeAddress, filter: $filter) {
     type
     safe_address
@@ -1330,6 +1316,7 @@ query aggregates(
             avatarUrl
             circlesAddress
             displayCurrency
+            smallBannerUrl
           }
           tags {
             typeId
@@ -1507,6 +1494,7 @@ query aggregates(
             avatarUrl
             circlesAddress
             displayCurrency
+            smallBannerUrl
           }
           total
           lines {
@@ -1528,6 +1516,7 @@ query aggregates(
                 avatarUrl
                 circlesAddress
                 displayCurrency
+                smallBannerUrl
               }
               tags {
                 typeId
@@ -1741,5 +1730,6 @@ query organisationsWithOffers {
     avatarUrl
     smallBannerUrl
     largeBannerUrl
+    productListingType
   }
 }

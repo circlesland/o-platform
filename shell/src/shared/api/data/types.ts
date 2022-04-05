@@ -1434,7 +1434,7 @@ export type CreatePurchaseMutation = (
         & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'pricePerUnit' | 'title' | 'description'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+          & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl' | 'smallBannerUrl'>
         )> }
       )> }
     )>> }
@@ -2761,7 +2761,7 @@ export type AggregatesQuery = (
         & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit' | 'timeCirclesPriceShare'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'smallBannerUrl'>
         )>, tags?: Maybe<Array<(
           { __typename?: 'Tag' }
           & Pick<Tag, 'typeId' | 'value'>
@@ -2775,7 +2775,7 @@ export type AggregatesQuery = (
         & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress' | 'total'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'smallBannerUrl'>
         )>, lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount'>
@@ -2784,7 +2784,7 @@ export type AggregatesQuery = (
             & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
-              & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+              & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'smallBannerUrl'>
             )>, tags?: Maybe<Array<(
               { __typename?: 'Tag' }
               & Pick<Tag, 'typeId' | 'value'>
@@ -2936,7 +2936,7 @@ export type OrganisationsWithOffersQuery = (
   { __typename?: 'Query' }
   & { organisationsWithOffers: Array<(
     { __typename?: 'Organisation' }
-    & Pick<Organisation, 'name' | 'displayName' | 'circlesAddress' | 'avatarUrl' | 'smallBannerUrl' | 'largeBannerUrl'>
+    & Pick<Organisation, 'name' | 'displayName' | 'circlesAddress' | 'avatarUrl' | 'smallBannerUrl' | 'largeBannerUrl' | 'productListingType'>
   )> }
 );
 
@@ -2986,6 +2986,7 @@ export const CreatePurchaseDocument = gql`
           firstName
           lastName
           avatarUrl
+          smallBannerUrl
         }
         pricePerUnit
         title
@@ -4628,6 +4629,7 @@ export const AggregatesDocument = gql`
             avatarUrl
             circlesAddress
             displayCurrency
+            smallBannerUrl
           }
           tags {
             typeId
@@ -4805,6 +4807,7 @@ export const AggregatesDocument = gql`
             avatarUrl
             circlesAddress
             displayCurrency
+            smallBannerUrl
           }
           total
           lines {
@@ -4826,6 +4829,7 @@ export const AggregatesDocument = gql`
                 avatarUrl
                 circlesAddress
                 displayCurrency
+                smallBannerUrl
               }
               tags {
                 typeId
@@ -5044,6 +5048,7 @@ export const OrganisationsWithOffersDocument = gql`
     avatarUrl
     smallBannerUrl
     largeBannerUrl
+    productListingType
   }
 }
     `;
