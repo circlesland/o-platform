@@ -112,6 +112,11 @@ module.exports = {
         gradient4: "#004e92",
         // gradient1: "#003399",
         // gradient2: "#1ED6A4",
+        orgagradient1: "#4D0894",
+        orgagradient2: "#A22F76",
+        orgagradient3: "#D94F60",
+        orgagradient4: "#E68163",
+        orgagradient5: "#EBD25C",
 
         transactionpositive: "#0BE09D",
         transactionnegative: "#F14E47",
