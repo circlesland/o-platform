@@ -113,6 +113,7 @@ export class UserActions {
                   icon: "minus-circle",
                   title: window.i18n("shared.userActions.untrust"),
                   colorClass: "text-alert",
+                  displayHint: "discouraged",
                   action: async () => {
                     window.o.runProcess(setTrust, {
                       trustLimit: 0,
@@ -129,6 +130,7 @@ export class UserActions {
                   key: "setTrust",
                   icon: "shield-check",
                   title: window.i18n("shared.userActions.trust"),
+                  displayHint: "encouraged",
                   action: async () => {
                     window.o.runProcess(setTrust, {
                       trustLimit: 100,
