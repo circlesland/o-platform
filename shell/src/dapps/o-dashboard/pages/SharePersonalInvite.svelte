@@ -12,7 +12,7 @@ export let inviteUrl: string = "https://circles.land/invites/Thorsten";
     <h1 class="text-3xl uppercase font-heading undefined">Share an invite to circlesland</h1>
   </div>
   <div class="w-full text-center">
-    <span class="text-dark-lightest">Show this QR Code or choose ways to share an invite link</span>
+    <span class="text-dark-lightest">Show this QR Code or choose a way to share an invite link below</span>
   </div>
   <div class="w-full">
     <center>
