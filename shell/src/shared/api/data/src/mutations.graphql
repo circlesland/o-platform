@@ -31,7 +31,6 @@ mutation createPurchase($lines: [PurchaseLineInput!]!) {
           firstName
           lastName
           avatarUrl
-          smallBannerUrl
         }
         pricePerUnit
         title
