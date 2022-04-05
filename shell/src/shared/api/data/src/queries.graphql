@@ -12,6 +12,7 @@ query init {
       circlesAddress
       displayCurrency
       circlesSafeOwner
+      invitationLink
       successorOfCirclesAddress
       displayName
       firstName
@@ -231,6 +232,7 @@ query myProfile {
     circlesAddress
     displayCurrency
     circlesSafeOwner
+    invitationLink
     successorOfCirclesAddress
     displayName
     firstName

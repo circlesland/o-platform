@@ -502,6 +502,7 @@ type Profile {
     emailAddress: String
     firstName: String!
     id: Int!
+    invitationLink: String
     invitationTransaction: ProfileEvent
     largeBannerUrl: String
     lastName: String

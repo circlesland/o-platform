@@ -806,6 +806,7 @@ export type Profile = {
   emailAddress?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['Int'];
+  invitationLink?: Maybe<Scalars['String']>;
   invitationTransaction?: Maybe<ProfileEvent>;
   largeBannerUrl?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
@@ -1813,7 +1814,7 @@ export type InitQuery = (
       & Pick<Capability, 'type'>
     )>, profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'circlesTokenAddress'>
+      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'circlesTokenAddress'>
       & { city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -1995,7 +1996,7 @@ export type MyProfileQuery = (
   { __typename?: 'Query' }
   & { myProfile?: Maybe<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
@@ -3343,6 +3344,7 @@ export const InitDocument = gql`
       circlesAddress
       displayCurrency
       circlesSafeOwner
+      invitationLink
       successorOfCirclesAddress
       displayName
       firstName
@@ -3568,6 +3570,7 @@ export const MyProfileDocument = gql`
     circlesAddress
     displayCurrency
     circlesSafeOwner
+    invitationLink
     successorOfCirclesAddress
     displayName
     firstName
