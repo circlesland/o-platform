@@ -32,18 +32,24 @@ export let inviteUrl: string = "https://circles.land/invites/Thorsten";
     </div>
     <div class="w-12 h-12 text-center align-top list-none cursor-pointer copylink inline-table">
       <span class="inline table-cell w-12 h-12 align-middle rounded-full bg-light-light">
-        <a href="mailto:?subject=Invitation%20to%20Circlesland&body={inviteUrl}" target="_blank">
+        <a
+          href="mailto:?subject=Invitation%20to%20Circlesland&body=Hey, i'd like to invite you to circlesland. Check it out: {inviteUrl}"
+          target="_blank">
           <Icon name="mail" class="inline w-6 h-6 heroicon smallicon" />
         </a>
       </span>
     </div>
     <div class="-mt-1 text-center align-top list-none cursor-pointer whatsapp inline-table">
-      <a href="whatsapp://send?text={inviteUrl}" target="_blank">
+      <a
+        href="whatsapp://send?text=Hey, i'd like to invite you to circlesland. Check it out: {inviteUrl}"
+        target="_blank">
         <Icons icon="whatsapp" customClass="inline" size="{14}" />
       </a>
     </div>
     <div class="text-center align-top list-none cursor-pointer telegram inline-table">
-      <a href="https://telegram.me/share/url?url={inviteUrl}&text=Invitation to circlesland" target="_blank">
+      <a
+        href="https://telegram.me/share/url?url={inviteUrl}&text=Hey, i'd like to invite you to circlesland. Check it out!"
+        target="_blank">
         <Icons icon="telegram" customClass="inline" size="{11}" />
       </a>
     </div>
