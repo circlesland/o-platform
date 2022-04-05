@@ -43,19 +43,13 @@ async function load() {
     return;
   }
 
-  const cachedEvent = await myPurchases.findByPrimaryKey(
-    EventType.Purchased,
-    parseInt(id).toString()
-  );
+  const cachedEvent = await myPurchases.findByPrimaryKey(EventType.Purchased, parseInt(id).toString());
   if (cachedEvent && cachedEvent.type == EventType.Purchased) {
     purchase = (<Purchased>cachedEvent.payload).purchase;
     sellerProfile = (<Purchased>cachedEvent.payload).seller_profile;
   }
   if (!purchase) {
-    const loadedEvent = await myPurchases.findSingleItemFallback(
-      [EventType.Purchased],
-      parseInt(id).toString()
-    );
+    const loadedEvent = await myPurchases.findSingleItemFallback([EventType.Purchased], parseInt(id).toString());
     if (loadedEvent && loadedEvent.type == EventType.Purchased) {
       purchase = (<Purchased>loadedEvent.payload).purchase;
       sellerProfile = (<Purchased>loadedEvent.payload).seller_profile;
@@ -69,7 +63,6 @@ async function load() {
 function orderItems(items) {
   const orderedCart = {};
   items.forEach((item) => {
-    console.log("ITI: ", item);
     orderedCart[item.offer.id] = {
       item: item,
       qty: orderedCart[item.offer.id] ? orderedCart[item.offer.id].qty + 1 : 1,
@@ -82,9 +75,7 @@ function orderItems(items) {
 function totalPrice(items) {
   let pricePerUnit = 0;
   if (items) {
-    items.forEach(
-      (e) => (pricePerUnit = pricePerUnit + parseFloat(e.pricePerUnit))
-    );
+    items.forEach((e) => (pricePerUnit = pricePerUnit + parseFloat(e.pricePerUnit)));
   }
   return pricePerUnit;
 }
@@ -101,15 +92,11 @@ onMount(async () => {
 
   if (purchase.invoices && purchase.invoices.length) {
     const pickUpAction = {
-      icon: "transactions",
-      title: window.i18n(
-        "dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp"
-      ),
+      icon: "cash",
+      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp"),
       action: async () => {
         const action = actions.find(
-          (o) =>
-            o.title ==
-            window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp")
+          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await myPurchases.completePurchase(purchase.invoices[0].id);
@@ -117,17 +104,11 @@ onMount(async () => {
       },
     };
     const unPickUpAction = {
-      icon: "transactions",
-      title: window.i18n(
-        "dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"
-      ),
+      icon: "cash",
+      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"),
       action: async () => {
         const action = actions.find(
-          (o) =>
-            o.title ==
-            window.i18n(
-              "dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"
-            )
+          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await myPurchases.revokeCompletionStatus(purchase.invoices[0].id);
@@ -137,14 +118,9 @@ onMount(async () => {
 
     actions.push(
       {
-        icon: "transactions",
-        title: window.i18n(
-          "dapps.o-marketplace.pages.myPurchaseDetail.transaction"
-        ),
-        action: () =>
-          push(
-            `#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`
-          ),
+        icon: "cash",
+        title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
+        action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
       }
       // {
       //   icon: "document",
@@ -166,17 +142,12 @@ onMount(async () => {
     );
   }
 
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
+  shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent) => {
+    if (event.type != "shell.refresh" || (<any>event).dapp != "marketplace:1") {
+      return;
     }
-  );
+    await load();
+  });
 
   return () => {
     shellEventSubscription.unsubscribe();
@@ -217,13 +188,9 @@ onMount(async () => {
       <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
         <div
           class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left cursor-pointer"
-          on:click="{() =>
-            push(`#/contacts/profile/${sellerProfile.circlesAddress}`)}">
+          on:click="{() => push(`#/contacts/profile/${sellerProfile.circlesAddress}`)}">
           <div class="inline-flex">
-            <UserImage
-              profile="{sellerProfile}"
-              size="{5}"
-              gradientRing="{false}" />
+            <UserImage profile="{sellerProfile}" size="{5}" gradientRing="{false}" />
           </div>
 
           <div>
@@ -232,8 +199,7 @@ onMount(async () => {
         </div>
       </div>
       {#each groupedItems as groupPurchase, i}
-        <div
-          class="flex items-center justify-between w-full pb-6 mb-6 border-b">
+        <div class="flex items-center justify-between w-full pb-6 mb-6 border-b">
           <div class="flex items-center w-full">
             <img
               src="{groupPurchase.item.item.offer.pictureUrl}"
@@ -243,8 +209,7 @@ onMount(async () => {
               <div class="flex flex-row justify-between w-full">
                 <div class="md:text-md">
                   <a
-                    href="#/marketplace/offer/{groupPurchase.item.item.offer
-                      .id}"
+                    href="#/marketplace/offer/{groupPurchase.item.item.offer.id}"
                     alt="{groupPurchase.item.item.offer.title}">
                     {groupPurchase.item.item.offer.title}
                   </a>
@@ -252,9 +217,7 @@ onMount(async () => {
               </div>
               <div class="flex items-center justify-end w-full">
                 <div class="flex-grow text-sm text-left text-dark-lightest">
-                  1 {groupPurchase.item.item.offer.unitTag
-                    ? groupPurchase.item.item.offer.unitTag.value
-                    : "item"}
+                  1 {groupPurchase.item.item.offer.unitTag ? groupPurchase.item.item.offer.unitTag.value : "item"}
                 </div>
 
                 <div class="flex pr-8">
@@ -280,9 +243,7 @@ onMount(async () => {
         <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
           <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
             {#if invoice.simplePickupCode}
-              {$_(
-                "dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber"
-              )}
+              {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber")}
               {invoice.simplePickupCode}
             {/if}
           </h1>
