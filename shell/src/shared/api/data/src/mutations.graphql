@@ -225,6 +225,12 @@ mutation upsertProfile(
     }
   ) {
     id
+    circlesAddress
+    displayCurrency
+    circlesSafeOwner
+    invitationLink
+    successorOfCirclesAddress
+    displayName
     firstName
     lastName
     emailAddress
@@ -234,23 +240,55 @@ mutation upsertProfile(
     avatarUrl
     avatarCid
     avatarMimeType
-    circlesAddress
-    circlesSafeOwner
     newsletter
-    displayCurrency
     displayTimeCircles
-    successorOfCirclesAddress
+    displayCurrency
     cityGeonameid
     city {
       geonameid
-      country
       name
+      country
       latitude
       longitude
       population
-      feature_code
     }
-    status
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        displayCurrency
+        displayName
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        cityGeonameid
+        city {
+          geonameid
+          country
+          name
+          population
+        }
+      }
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        id
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
   }
 }
 

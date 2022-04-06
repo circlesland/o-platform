@@ -322,16 +322,20 @@ const processDefinition = (processId: string) =>
       success: {
         type: "final",
         id: "success",
-        entry: (context) => {
+        entry: (context, event) => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.authenticated",
+            profile: event.data
+          });
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
         },
         data: (context, event: any) => {
-          window.o.publishEvent(<PlatformEvent>{
+          /*window.o.publishEvent(<PlatformEvent>{
             type: "shell.authenticated",
             profile: event.data,
-          });
+          });*/
           return event.data;
         },
       },
