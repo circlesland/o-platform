@@ -251,6 +251,12 @@ type ExchangeTokenResponse {
     success: Boolean!
 }
 
+type FibonacciGoals {
+    currentValue: Int!
+    lastGoal: Int!
+    nextGoal: Int!
+}
+
 type GnosisSafeEthTransfer implements IEventPayload {
     from: String!
     from_profile: Profile
@@ -410,6 +416,11 @@ type Mutation {
     verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
 }
 
+type MyInviteRank {
+    rank: Int!
+    redeemedInvitationsCount: Int!
+}
+
 type NewUser implements IEventPayload {
     profile: Profile!
     transaction_hash: String
@@ -455,9 +466,12 @@ type Organisation {
     displayCurrency: DisplayCurrency
     displayName: String
     id: Int!
+    largeBannerUrl: String
     members: [ProfileOrOrganisation!]
     name: String!
     offers: [Offer!]
+    productListingType: ProductListingType
+    smallBannerUrl: String
     trustsYou: Int
 }
 
@@ -488,15 +502,19 @@ type Profile {
     emailAddress: String
     firstName: String!
     id: Int!
+    invitationLink: String
     invitationTransaction: ProfileEvent
+    largeBannerUrl: String
     lastName: String
     members: [Profile!]
     memberships: [Membership!]
     newsletter: Boolean
     offers: [Offer!]
     origin: ProfileOrigin
+    productListingType: ProductListingType
     purchases: [Purchase!]
     sales: [Sale!]
+    smallBannerUrl: String
     status: String
     successorOfCirclesAddress: String
     type: ProfileType
@@ -701,7 +719,9 @@ type SessionInfo {
 }
 
 type Stats {
-    leaderboard: [LeaderboardEntry!]
+    goals: FibonacciGoals!
+    leaderboard: [LeaderboardEntry!]!
+    myRank: MyInviteRank!
     profilesCount: Int!
     verificationsCount: Int!
 }
@@ -839,6 +859,11 @@ enum EventType {
     SafeVerified
     SaleEvent
     WelcomeMessage
+}
+
+enum ProductListingType {
+    LIST
+    TILES
 }
 
 enum ProfileOrigin {
@@ -996,7 +1021,10 @@ input UpsertOrganisationInput {
     description: String
     displayCurrency: DisplayCurrency
     id: Int
+    largeBannerUrl: String
     name: String!
+    productListingType: ProductListingType
+    smallBannerUrl: String
 }
 
 input UpsertProfileInput {

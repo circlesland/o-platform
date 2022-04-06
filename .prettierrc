@@ -10,5 +10,6 @@
   "svelteStrictMode": true,
   "svelteBracketNewLine": false,
   "svelteAllowShorthand": false,
-  "svelteIndentScriptAndStyle": false
+  "svelteIndentScriptAndStyle": false,
+  "printWidth": 120
 }

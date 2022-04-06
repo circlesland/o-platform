@@ -10,10 +10,10 @@ import { createRegion } from "./o-coop/processes/createRegion";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { loadProfile } from "../shared/functions/loadProfile";
-import {CapabilityType, Profile} from "../shared/api/data/types";
+import { CapabilityType, Profile } from "../shared/api/data/types";
 import { me } from "../shared/stores/me";
-import {getSessionInfo} from "./o-passport/processes/identify/services/getSessionInfo";
-import {addOwner} from "./o-coop/processes/addOwner";
+import { getSessionInfo } from "./o-passport/processes/identify/services/getSessionInfo";
+import { addOwner } from "./o-coop/processes/addOwner";
 
 const index: Page<any, ContactsDappState> = {
   routeParts: ["=organisations"],
@@ -63,28 +63,32 @@ export const coop: DappManifest<DappState> = {
       const list = [];
       const sessionInfo = await getSessionInfo();
 
-      if (sessionInfo.capabilities.find(o => o.type == CapabilityType.PreviewFeatures)) {
+      if (sessionInfo.capabilities.find((o) => o.type == CapabilityType.PreviewFeatures)) {
         list.push(<JumplistItem>{
           key: "createOrganisation",
           type: "profile",
-          icon: "add",
+          icon: "plus",
           category: "Coops",
           title: "Create organization",
           action: async () => {
-            window.o.runProcess(createOrganisation, {
-              successAction: async (data) => {
-                const createdOrga = await loadProfile(data.circlesAddress, $me);
-                window.o.publishEvent(<PlatformEvent>{
-                  type: "shell.loggedOut"
-                });
-                window.o.publishEvent(<PlatformEvent>{
-                  type: "shell.authenticated",
-                  profile: createdOrga.profile,
-                });
-                location.reload();
-              }
-            }, {});
-          }
+            window.o.runProcess(
+              createOrganisation,
+              {
+                successAction: async (data) => {
+                  const createdOrga = await loadProfile(data.circlesAddress, $me);
+                  window.o.publishEvent(<PlatformEvent>{
+                    type: "shell.loggedOut",
+                  });
+                  window.o.publishEvent(<PlatformEvent>{
+                    type: "shell.authenticated",
+                    profile: createdOrga.profile,
+                  });
+                  location.reload();
+                },
+              },
+              {}
+            );
+          },
         });
 
         if (<string>$me.__typename === "Organisation") {
@@ -92,15 +96,14 @@ export const coop: DappManifest<DappState> = {
             category: $me.displayName,
             key: "addMember",
             type: "action",
-            icon: "add",
+            icon: "plus",
             title: "Add member",
             action: async () => {
               window.o.runProcess(
                 addMember,
                 {
                   groupId: $me.circlesAddress,
-                  successAction: (data: any) => {
-                  },
+                  successAction: (data: any) => {},
                 },
                 {}
               );
@@ -110,15 +113,14 @@ export const coop: DappManifest<DappState> = {
             category: $me.displayName,
             key: "addOwner",
             type: "action",
-            icon: "add",
+            icon: "plus",
             title: "Add owner",
             action: async () => {
               window.o.runProcess(
                 addOwner,
                 {
                   groupId: $me.circlesAddress,
-                  successAction: (data: any) => {
-                  },
+                  successAction: (data: any) => {},
                 },
                 {}
               );

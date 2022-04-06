@@ -58,6 +58,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
     id: `init`,
     initial: "prepare",
     context: {
+      localStorageSchemaVersion: 1,
       session: null,
       openLoginUserInfo: null,
       registration: null,

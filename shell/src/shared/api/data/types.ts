@@ -356,6 +356,13 @@ export type ExchangeTokenResponse = {
   success: Scalars['Boolean'];
 };
 
+export type FibonacciGoals = {
+  __typename?: 'FibonacciGoals';
+  currentValue: Scalars['Int'];
+  lastGoal: Scalars['Int'];
+  nextGoal: Scalars['Int'];
+};
+
 export type GnosisSafeEthTransfer = IEventPayload & {
   __typename?: 'GnosisSafeEthTransfer';
   from: Scalars['String'];
@@ -688,6 +695,12 @@ export type MutationVerifySessionChallengeArgs = {
   signature: Scalars['String'];
 };
 
+export type MyInviteRank = {
+  __typename?: 'MyInviteRank';
+  rank: Scalars['Int'];
+  redeemedInvitationsCount: Scalars['Int'];
+};
+
 export type NewUser = IEventPayload & {
   __typename?: 'NewUser';
   profile: Profile;
@@ -743,9 +756,12 @@ export type Organisation = {
   displayCurrency?: Maybe<DisplayCurrency>;
   displayName?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
+  largeBannerUrl?: Maybe<Scalars['String']>;
   members?: Maybe<Array<ProfileOrOrganisation>>;
   name: Scalars['String'];
   offers?: Maybe<Array<Offer>>;
+  productListingType?: Maybe<ProductListingType>;
+  smallBannerUrl?: Maybe<Scalars['String']>;
   trustsYou?: Maybe<Scalars['Int']>;
 };
 
@@ -762,6 +778,11 @@ export type PaginationArgs = {
   limit: Scalars['Int'];
   order: SortOrder;
 };
+
+export enum ProductListingType {
+  List = 'LIST',
+  Tiles = 'TILES'
+}
 
 export type Profile = {
   __typename?: 'Profile';
@@ -785,15 +806,19 @@ export type Profile = {
   emailAddress?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['Int'];
+  invitationLink?: Maybe<Scalars['String']>;
   invitationTransaction?: Maybe<ProfileEvent>;
+  largeBannerUrl?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
   members?: Maybe<Array<Profile>>;
   memberships?: Maybe<Array<Membership>>;
   newsletter?: Maybe<Scalars['Boolean']>;
   offers?: Maybe<Array<Offer>>;
   origin?: Maybe<ProfileOrigin>;
+  productListingType?: Maybe<ProductListingType>;
   purchases?: Maybe<Array<Purchase>>;
   sales?: Maybe<Array<Sale>>;
+  smallBannerUrl?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
   successorOfCirclesAddress?: Maybe<Scalars['String']>;
   type?: Maybe<ProfileType>;
@@ -1240,7 +1265,9 @@ export enum SortOrder {
 
 export type Stats = {
   __typename?: 'Stats';
-  leaderboard?: Maybe<Array<LeaderboardEntry>>;
+  goals: FibonacciGoals;
+  leaderboard: Array<LeaderboardEntry>;
+  myRank: MyInviteRank;
   profilesCount: Scalars['Int'];
   verificationsCount: Scalars['Int'];
 };
@@ -1314,7 +1341,10 @@ export type UpsertOrganisationInput = {
   description?: Maybe<Scalars['String']>;
   displayCurrency?: Maybe<DisplayCurrency>;
   id?: Maybe<Scalars['Int']>;
+  largeBannerUrl?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  productListingType?: Maybe<ProductListingType>;
+  smallBannerUrl?: Maybe<Scalars['String']>;
 };
 
 export type UpsertProfileInput = {
@@ -1784,7 +1814,7 @@ export type InitQuery = (
       & Pick<Capability, 'type'>
     )>, profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'circlesTokenAddress'>
+      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'circlesTokenAddress'>
       & { city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'name' | 'country'>
@@ -1902,7 +1932,13 @@ export type StatsQuery = (
   & { stats: (
     { __typename?: 'Stats' }
     & Pick<Stats, 'profilesCount' | 'verificationsCount'>
-    & { leaderboard?: Maybe<Array<(
+    & { goals: (
+      { __typename?: 'FibonacciGoals' }
+      & Pick<FibonacciGoals, 'lastGoal' | 'currentValue' | 'nextGoal'>
+    ), myRank: (
+      { __typename?: 'MyInviteRank' }
+      & Pick<MyInviteRank, 'rank' | 'redeemedInvitationsCount'>
+    ), leaderboard: Array<(
       { __typename?: 'LeaderboardEntry' }
       & Pick<LeaderboardEntry, 'createdByCirclesAddress' | 'inviteCount'>
       & { createdByProfile?: Maybe<(
@@ -1913,7 +1949,7 @@ export type StatsQuery = (
           & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
         )> }
       )> }
-    )>> }
+    )> }
   ) }
 );
 
@@ -1960,7 +1996,7 @@ export type MyProfileQuery = (
   { __typename?: 'Query' }
   & { myProfile?: Maybe<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
@@ -2462,6 +2498,10 @@ export type StreamQuery = (
     ) | { __typename?: 'CrcTokenTransfer' } | (
       { __typename?: 'CrcTrust' }
       & Pick<CrcTrust, 'transaction_hash' | 'address' | 'can_send_to' | 'limit'>
+      & { can_send_to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )> }
     ) | (
       { __typename?: 'Erc20Transfer' }
       & Pick<Erc20Transfer, 'transaction_hash' | 'from' | 'to' | 'value'>
@@ -2498,7 +2538,10 @@ export type StreamQuery = (
     ) | (
       { __typename?: 'MembershipAccepted' }
       & Pick<MembershipAccepted, 'createdBy' | 'member' | 'organisation'>
-      & { organisation_profile?: Maybe<(
+      & { member_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )>, organisation_profile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
@@ -2515,7 +2558,10 @@ export type StreamQuery = (
     ) | (
       { __typename?: 'MembershipRejected' }
       & Pick<MembershipRejected, 'member' | 'organisation'>
-      & { organisation_profile?: Maybe<(
+      & { member_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )>, organisation_profile?: Maybe<(
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
       )> }
@@ -2716,7 +2762,7 @@ export type AggregatesQuery = (
         & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit' | 'timeCirclesPriceShare'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
-          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'smallBannerUrl'>
         )>, tags?: Maybe<Array<(
           { __typename?: 'Tag' }
           & Pick<Tag, 'typeId' | 'value'>
@@ -2881,6 +2927,17 @@ export type FindInvitationCreatorQuery = (
   & { findInvitationCreator?: Maybe<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
+  )> }
+);
+
+export type OrganisationsWithOffersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OrganisationsWithOffersQuery = (
+  { __typename?: 'Query' }
+  & { organisationsWithOffers: Array<(
+    { __typename?: 'Organisation' }
+    & Pick<Organisation, 'name' | 'displayName' | 'circlesAddress' | 'avatarUrl' | 'smallBannerUrl' | 'largeBannerUrl' | 'productListingType'>
   )> }
 );
 
@@ -3287,6 +3344,7 @@ export const InitDocument = gql`
       circlesAddress
       displayCurrency
       circlesSafeOwner
+      invitationLink
       successorOfCirclesAddress
       displayName
       firstName
@@ -3417,6 +3475,15 @@ export const StatsDocument = gql`
   stats {
     profilesCount
     verificationsCount
+    goals {
+      lastGoal
+      currentValue
+      nextGoal
+    }
+    myRank {
+      rank
+      redeemedInvitationsCount
+    }
     leaderboard {
       createdByCirclesAddress
       inviteCount
@@ -3503,6 +3570,7 @@ export const MyProfileDocument = gql`
     circlesAddress
     displayCurrency
     circlesSafeOwner
+    invitationLink
     successorOfCirclesAddress
     displayName
     firstName
@@ -4198,6 +4266,15 @@ export const StreamDocument = gql`
         transaction_hash
         address
         can_send_to
+        can_send_to_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         limit
       }
       ... on CrcSignup {
@@ -4314,6 +4391,15 @@ export const StreamDocument = gql`
       ... on MembershipAccepted {
         createdBy
         member
+        member_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         organisation
         organisation_profile {
           name
@@ -4324,6 +4410,15 @@ export const StreamDocument = gql`
       }
       ... on MembershipRejected {
         member
+        member_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         organisation
         organisation_profile {
           name
@@ -4536,6 +4631,7 @@ export const AggregatesDocument = gql`
             avatarUrl
             circlesAddress
             displayCurrency
+            smallBannerUrl
           }
           tags {
             typeId
@@ -4943,6 +5039,19 @@ export const FindInvitationCreatorDocument = gql`
   }
 }
     `;
+export const OrganisationsWithOffersDocument = gql`
+    query organisationsWithOffers {
+  organisationsWithOffers {
+    name
+    displayName
+    circlesAddress
+    avatarUrl
+    smallBannerUrl
+    largeBannerUrl
+    productListingType
+  }
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -5128,6 +5237,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     findInvitationCreator(variables: FindInvitationCreatorQueryVariables): Promise<FindInvitationCreatorQuery> {
       return withWrapper(() => client.request<FindInvitationCreatorQuery>(print(FindInvitationCreatorDocument), variables));
+    },
+    organisationsWithOffers(variables?: OrganisationsWithOffersQueryVariables): Promise<OrganisationsWithOffersQuery> {
+      return withWrapper(() => client.request<OrganisationsWithOffersQuery>(print(OrganisationsWithOffersDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

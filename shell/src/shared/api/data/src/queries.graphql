@@ -12,6 +12,7 @@ query init {
       circlesAddress
       displayCurrency
       circlesSafeOwner
+      invitationLink
       successorOfCirclesAddress
       displayName
       firstName
@@ -139,6 +140,15 @@ query stats {
   stats {
     profilesCount
     verificationsCount
+    goals {
+      lastGoal
+      currentValue
+      nextGoal
+    }
+    myRank {
+      rank
+      redeemedInvitationsCount
+    }
     leaderboard {
       createdByCirclesAddress
       inviteCount
@@ -222,6 +232,7 @@ query myProfile {
     circlesAddress
     displayCurrency
     circlesSafeOwner
+    invitationLink
     successorOfCirclesAddress
     displayName
     firstName
@@ -866,18 +877,8 @@ query citiesById($ids: [Int!]!) {
   }
 }
 
-query stream(
-  $types: [EventType!]!
-  $safeAddress: String!
-  $pagination: PaginationArgs!
-  $filter: ProfileEventFilter
-) {
-  events(
-    types: $types
-    safeAddress: $safeAddress
-    pagination: $pagination
-    filter: $filter
-  ) {
+query stream($types: [EventType!]!, $safeAddress: String!, $pagination: PaginationArgs!, $filter: ProfileEventFilter) {
+  events(types: $types, safeAddress: $safeAddress, pagination: $pagination, filter: $filter) {
     timestamp
     transaction_hash
     block_number
@@ -953,6 +954,15 @@ query stream(
         transaction_hash
         address
         can_send_to
+        can_send_to_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         limit
       }
       ... on CrcSignup {
@@ -1069,6 +1079,15 @@ query stream(
       ... on MembershipAccepted {
         createdBy
         member
+        member_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         organisation
         organisation_profile {
           name
@@ -1079,6 +1098,15 @@ query stream(
       }
       ... on MembershipRejected {
         member
+        member_profile {
+          id
+          displayName
+          firstName
+          lastName
+          avatarUrl
+          circlesAddress
+          displayCurrency
+        }
         organisation
         organisation_profile {
           name
@@ -1263,11 +1291,7 @@ query stream(
   }
 }
 
-query aggregates(
-  $types: [AggregateType!]!
-  $safeAddress: String!
-  $filter: ProfileAggregateFilter
-) {
+query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: ProfileAggregateFilter) {
   aggregates(types: $types, safeAddress: $safeAddress, filter: $filter) {
     type
     safe_address
@@ -1294,6 +1318,7 @@ query aggregates(
             avatarUrl
             circlesAddress
             displayCurrency
+            smallBannerUrl
           }
           tags {
             typeId
@@ -1694,5 +1719,17 @@ query findInvitationCreator($code: String!) {
     firstName
     lastName
     avatarUrl
+  }
+}
+
+query organisationsWithOffers {
+  organisationsWithOffers {
+    name
+    displayName
+    circlesAddress
+    avatarUrl
+    smallBannerUrl
+    largeBannerUrl
+    productListingType
   }
 }

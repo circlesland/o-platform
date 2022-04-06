@@ -58,35 +58,23 @@ async function load() {
 
   if (invoice) {
     const pickUpAction = {
-      icon: "transactions",
+      icon: "cash",
       title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
       action: async () => {
-        const action = actions.find(
-          (o) =>
-            o.title ==
-            window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut")
-        );
+        const action = actions.find((o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"));
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await mySales.completeSale(invoice.id);
-        actions.push(unPickUpAction);
       },
     };
     const unPickUpAction = {
-      icon: "transactions",
-      title: window.i18n(
-        "dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"
-      ),
+      icon: "cash",
+      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"),
       action: async () => {
         const action = actions.find(
-          (o) =>
-            o.title ==
-            window.i18n(
-              "dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"
-            )
+          (o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await mySales.revokeSale(invoice.id);
-        actions.push(pickUpAction);
       },
     };
     if (!invoice.sellerSignature) {
@@ -96,31 +84,23 @@ async function load() {
     }
     actions.push(
       {
-        icon: "transactions",
-        title: window.i18n(
-          "dapps.o-marketplace.pages.mySaleDetail.transaction"
-        ),
-        action: () =>
-          push(`#/banking/transactions/${invoice.paymentTransactionHash}`),
-      },
-      {
-        icon: "document",
-        title: window.i18n(
-          "dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"
-        ),
-        action: async () => {
-          //for (let invoice of invoice) {
-          const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
-            InvoiceDocument,
-            {
-              invoiceId: invoice.id,
-            }
-          );
-
-          saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
-          //}
-        },
+        icon: "cash",
+        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.transaction"),
+        action: () => push(`#/banking/transactions/${invoice.paymentTransactionHash}`),
       }
+      // {
+      //   icon: "document-text",
+      //   title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"),
+      //   action: async () => {
+      //     //for (let invoice of invoice) {
+      //     const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(InvoiceDocument, {
+      //       invoiceId: invoice.id,
+      //     });
+
+      //     saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
+      //     //}
+      //   },
+      // }
     );
   }
   groupedItems = invoice ? orderItems(invoice.lines) : {};
@@ -146,9 +126,7 @@ function orderItems(items) {
 function totalPrice(items) {
   let pricePerUnit = 0;
   if (items) {
-    items.forEach(
-      (e) => (pricePerUnit = pricePerUnit + parseFloat(e.pricePerUnit))
-    );
+    items.forEach((e) => (pricePerUnit = pricePerUnit + parseFloat(e.pricePerUnit)));
   }
   return pricePerUnit;
 }
@@ -183,8 +161,7 @@ onMount(async () => {
       {/if}
     </div>
     {#if invoice}
-      <div
-        class="flex flex-row items-center justify-between px-3 mt-2 text-left">
+      <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">
         <div
           class="inline-block text-xs "
           class:text-alert-dark="{!invoice.paymentTransactionHash}"
@@ -195,8 +172,7 @@ onMount(async () => {
           {:else if invoice.cancelledAt}
             <span>{$_("dapps.o-marketplace.pages.mySales.cancelled")}</span>
           {:else}
-            <span
-              >{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
+            <span>{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
           {/if}
         </div>
 
@@ -236,13 +212,9 @@ onMount(async () => {
       <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
         <div
           class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left cursor-pointer"
-          on:click="{() =>
-            push(`#/contacts/profile/${buyerProfile.circlesAddress}`)}">
+          on:click="{() => push(`#/contacts/profile/${buyerProfile.circlesAddress}`)}">
           <div class="inline-flex">
-            <UserImage
-              profile="{buyerProfile}"
-              size="{5}"
-              gradientRing="{false}" />
+            <UserImage profile="{buyerProfile}" size="{5}" gradientRing="{false}" />
           </div>
 
           <div>
@@ -251,8 +223,7 @@ onMount(async () => {
         </div>
       </div>
       {#each groupedItems as groupSale, i}
-        <div
-          class="flex items-center justify-between w-full pb-6 mb-6 border-b">
+        <div class="flex items-center justify-between w-full pb-6 mb-6 border-b">
           <div class="flex items-center w-full">
             <img
               src="{groupSale.item.item.offer.pictureUrl}"
@@ -261,18 +232,14 @@ onMount(async () => {
             <div class="flex flex-col items-start w-full ml-2 space-y-2">
               <div class="flex flex-row justify-between w-full">
                 <div class="md:text-md">
-                  <a
-                    href="#/marketplace/offer/{groupSale.item.item.offer.id}"
-                    alt="{groupSale.item.item.offer.title}">
+                  <a href="#/marketplace/offer/{groupSale.item.item.offer.id}" alt="{groupSale.item.item.offer.title}">
                     {groupSale.item.item.offer.title}
                   </a>
                 </div>
               </div>
               <div class="flex items-center justify-end w-full">
                 <div class="flex-grow text-sm text-left text-dark-lightest">
-                  1 {groupSale.item.item.offer.unitTag
-                    ? groupSale.item.item.offer.unitTag.value
-                    : "item"}
+                  1 {groupSale.item.item.offer.unitTag ? groupSale.item.item.offer.unitTag.value : "item"}
                 </div>
 
                 <div class="flex pr-8">

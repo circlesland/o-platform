@@ -35,7 +35,7 @@ onMount(() => {
       setTimeout(() => reverse ? scrollToBottom() : scrollToTop());
     }
 
-    isLoading = false;
+    isLoading = !(<any>store)._isInitialized;
   });
 });
 
@@ -97,12 +97,23 @@ const handleChange = async (e) => {
     {/if}
   {/each}
   <div bind:this={lastElement}></div>
-{:else}
+{/if}
+{#if isLoading}
   <section class="flex items-center justify-center mb-2 ">
     <div
-      class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
+            class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
       <div class="flex flex-col items-start text-center">
         <div>{$_("shared.molecules.lists.eventList.loading")}</div>
+      </div>
+    </div>
+  </section>
+{/if}
+{#if events && events.length === 0 && !isLoading}
+  <section class="flex items-center justify-center mb-2 ">
+    <div
+            class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
+      <div class="flex flex-col items-start text-center">
+        <div>No entries</div>
       </div>
     </div>
   </section>

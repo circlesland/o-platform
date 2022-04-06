@@ -28,7 +28,7 @@ const transactions: Page<any, BankingDappState> = {
     leftSlot: {
       component: ListComponent,
       props: {
-        icon: "list",
+        icon: "menu",
         // action: () => processNavigation.back(),
       },
     },
@@ -53,9 +53,7 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
       return undefined;
     };
 
-    const recipientSafeAddress = params.id
-      ? await getRecipientAddress()
-      : undefined;
+    const recipientSafeAddress = params.id ? await getRecipientAddress() : undefined;
 
     let circlesAddress;
     const unsub = me.subscribe((o) => {
@@ -66,8 +64,9 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
     return [
       {
         key: "transfer",
-        icon: "sendmoney",
+        icon: "cash",
         title: "Send Money",
+        displayHint: "encouraged",
         category: "Banking",
         action: async () => {
           window.o.runProcess(transfer, {
@@ -90,10 +89,7 @@ const transactionDetail: Page<{ transactionHash: string }, BankingDappState> = {
   component: TransactionDetailPage,
   jumplist: profileJumplist,
 };
-const transactionSend: Trigger<
-  { to: string; amount: string; message: string },
-  BankingDappState
-> = {
+const transactionSend: Trigger<{ to: string; amount: string; message: string }, BankingDappState> = {
   isSystem: true,
   routeParts: ["=transactions", "=send", ":to", ":amount", ":message"],
   title: "Transactions",
@@ -177,12 +173,5 @@ export const banking: DappManifest<BankingDappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [
-    transactions,
-    transactionDetail,
-    transactionSend,
-    assets,
-    crcDetail,
-    xdaiDetail,
-  ],
+  routables: [transactions, transactionDetail, transactionSend, assets, crcDetail, xdaiDetail],
 };

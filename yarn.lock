@@ -1878,6 +1878,13 @@
   resolved "https://registry.npmjs.org/@juggle/resize-observer/-/resize-observer-3.3.1.tgz"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
+"@krowten/svelte-heroicons@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/@krowten/svelte-heroicons/-/svelte-heroicons-0.0.3.tgz"
+  integrity sha512-e9uiANxK0zrUuuqMfKmiu9qZZbfRbtEa1DZ1TGVqXzn8uI0ZX9bQob7qhxOyGprT3rQHfb2cDtiEUdo6aqUuZA==
+  dependencies:
+    heroicons "^1.0.5"
+
 "@lerna/add@4.0.0":
   version "4.0.0"
   resolved "https://registry.npmjs.org/@lerna/add/-/add-4.0.0.tgz"
@@ -7487,7 +7494,7 @@ fs.realpath@^1.0.0:
 
 fsevents@^1.2.7:
   version "1.2.13"
-  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-1.2.13.tgz#f325cb0455592428bcf11b383370ef70e3bfcc38"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz"
   integrity sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==
   dependencies:
     bindings "^1.5.0"
@@ -7495,7 +7502,7 @@ fsevents@^1.2.7:
 
 fsevents@^2.3.2, fsevents@~2.3.2:
   version "2.3.2"
-  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
 
 function-bind@^1.1.1:
@@ -8042,6 +8049,11 @@ header-case@^2.0.4:
   dependencies:
     capital-case "^1.0.4"
     tslib "^2.0.3"
+
+heroicons@^1.0.5:
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/heroicons/-/heroicons-1.0.6.tgz"
+  integrity sha512-5bxTsG2hyNBF0l+BrFlZlR5YngQNMfl0ggJjIRkMSADBQbaZMoTg47OIQzq6f1mpEZ85HEIgSC4wt5AeFM9J2Q==
 
 hex-color-regex@^1.1.0:
   version "1.1.0"
@@ -14616,11 +14628,11 @@ supports-hyperlinks@^2.0.0:
     supports-color "^7.0.0"
 
 svelecte@^3.2.1:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/svelecte/-/svelecte-3.6.0.tgz#f7598036751500d57a5dba6ee2d35f1e5ff6c652"
-  integrity sha512-l/c194+B7U8N+nFiaX1y9wZDrU/lTzfEz4rM8Ldcw5JDxWwIENCD+Ma/khd8xY44XdoB1FO9ojchVM1PWgFbNA==
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/svelecte/-/svelecte-3.7.0.tgz#eafa81ab67c3b34c8a6237080a933003e60f5942"
+  integrity sha512-2VeRG1T8QgK+VVC3qCG8pGUTfxyVkj+Sj8HmJrywW81TfucU/wAUhwL+IQZ/CR0pSV5QKQrNtZYOPL0Myen4Qw==
   dependencies:
-    svelte-tiny-virtual-list "^1.1.7"
+    svelte-tiny-virtual-list "^2.0.0"
 
 svelte-apollo@^0.4.0:
   version "0.4.0"
@@ -14741,10 +14753,10 @@ svelte-time@^0.6.0:
   dependencies:
     dayjs "^1.10.7"
 
-svelte-tiny-virtual-list@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.npmjs.org/svelte-tiny-virtual-list/-/svelte-tiny-virtual-list-1.1.7.tgz"
-  integrity sha512-8314cmLXOVqIQwSc3NFu8yGU7BdHEJeixrwFirmnMoWl6YNcCq5jVjCKjE3tDNJfUenz1LN5M5YshPt6GcPuww==
+svelte-tiny-virtual-list@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/svelte-tiny-virtual-list/-/svelte-tiny-virtual-list-2.0.1.tgz#a73c4c36c6519c3a5124a38525bfa2ff4146bead"
+  integrity sha512-0X6k5cZxF9yRLfVJ1bfwQmfEMbd3OSNNM/tI9y44jYbsB/FkI2GEIKpeV5J8AQy87qFU9xnPLxxo3erQFfdC2A==
 
 svelte-typeahead@^4.1.0:
   version "4.1.0"

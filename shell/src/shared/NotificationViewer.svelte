@@ -106,9 +106,7 @@ onMount(async () => {
   let eventActions = await getEventActions();
 
   if (eventActions) {
-    userActions = await UserActions.getAvailableActions(
-      data.contact_address_profile
-    );
+    userActions = await UserActions.getAvailableActions(data.contact_address_profile);
 
     let usableUserActions = {};
 
@@ -133,11 +131,7 @@ function submit() {
 </script>
 
 <div>
-  <svelte:component
-    this="{getEventView()}"
-    event="{data}"
-    context="{context}"
-    on:submit="{submit}" />
+  <svelte:component this="{getEventView()}" event="{data}" context="{context}" on:submit="{submit}" />
 
   {#if userActions}
     <div class="pt-4">
@@ -160,12 +154,7 @@ function submit() {
           },
           colors: {
             default: 'primary',
-            overrides: (action) =>
-              action.key == 'dismiss'
-                ? 'light'
-                : null || action.icon == 'untrust'
-                ? 'light'
-                : null,
+            overrides: (action) => (action.displayHint == 'discouraged' ? 'light' : null),
           },
         }}" />
     </div>

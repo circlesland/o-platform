@@ -9,7 +9,7 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-import { Offer } from "../../../shared/api/data/types";
+import { Offer, Organisation, Profile } from "../../../shared/api/data/types";
 
 import { storeOffers } from "../../../shared/stores/storeOffers";
 
@@ -28,6 +28,7 @@ let categories: string[] = [];
 let shellEventSubscription: Subscription;
 let offers: Offer[] = [];
 let store: any;
+let orga: Organisation | Profile;
 
 type OffersByCategory = {
   [category: string]: Offer[];
@@ -48,13 +49,13 @@ function compare(a, b) {
 onMount(() => {
   store = storeOffers.getOffersFor(storeCirclesAddress);
   isLoading = true;
-  return store.subscribe((data: any) => {
-    offers = data;
 
+  return store.subscribe((data: any) => {
+    offersByCategory = {}; // If i don't do this here, we sometimes get the offers twice...
+    offers = data;
     offersByCategory = offers.reduce((p, c) => {
-      const cat =
-        c.tags?.filter((o) => o.typeId == "o-marketplace:offer:category:1") ??
-        [];
+      orga = c.createdByProfile;
+      const cat = c.tags?.filter((o) => o.typeId == "o-marketplace:offer:category:1") ?? [];
       if (cat.length == 0) {
         if (p[""]) p[""].push(c);
         else p[""] = [c];
@@ -74,24 +75,24 @@ onMount(() => {
 
 <div class="mb-20 -mt-3 ">
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
-  <section
-    class="flex items-start px-4 mx-auto mb-4 md:w-2/3 xl:w-1/2 rounded-xl">
-    <div class="flex flex-col w-full">
-      <header class="rounded-xl">
-        <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
-          <img
-            src="/images/market/uttingsm.jpg"
-            alt="
-                "
-            class="w-full rounded-xl opacity-60 object-position: center center;  " />
-          <div
-            class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2 bg-light-lightest">
-            <span class="inline-block">Alte Utting</span>
+  {#if orga}
+    <section class="flex items-start px-4 mx-auto mb-4 md:w-2/3 xl:w-1/2 rounded-xl">
+      <div class="flex flex-col w-full">
+        <header class="rounded-xl">
+          <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
+            <img
+              src="{orga.smallBannerUrl}"
+              alt="{orga.displayName}"
+              class="w-full rounded-xl opacity-60 object-position: center center;  " />
+            <div
+              class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2 bg-light-lightest">
+              <span class="inline-block">{orga.displayName}</span>
+            </div>
           </div>
-        </div>
-      </header>
-    </div>
-  </section>
+        </header>
+      </div>
+    </section>
+  {/if}
   <div class="flex flex-col mb-20 space-y-4 gap-x-4 sm:grid-cols-2 ">
     <!--
     <List
@@ -115,10 +116,12 @@ onMount(() => {
             </div>
           </div>
         {/each}
-        <div class="p-6 text-center text-2xs">
-          Informationen über Zusatzstoffe und Allergene können auf der Physische
-          Karte der Alten Utting eingesehen werden.
-        </div>
+        {#if orga}
+          <div class="p-6 text-center text-2xs">
+            Informationen über Zusatzstoffe und Allergene können auf der Physische Karte der {orga.displayName} eingesehen
+            werden.
+          </div>
+        {/if}
       </div>
     {/if}
   </div>
