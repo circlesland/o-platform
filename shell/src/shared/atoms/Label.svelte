@@ -1,4 +1,6 @@
 <script lang="ts">
+import { onMount } from "svelte";
+
 import {
     GetStringByMaxVersionDocument,
     GetStringByLanguageDocument,
@@ -9,6 +11,8 @@ import {
     UpdateValueDocument,
     MutationAddNewLangArgs,
     AddNewLangDocument,
+GetAvailableLanguagesQuery,
+GetAvailableLanguagesDocument,
 } from "../api/data/types";
 import {
     ApiClient
@@ -18,33 +22,34 @@ import {
 } from "../environment";
 
 
-const languageFallback = function() {
-    if (Environment.userLanguage.startsWith("en") ||
-        Environment.userLanguage == "us") {
-            Environment.userLanguage = "en";
-        };
-    if (Environment.userLanguage.startsWith("de")) {
-            Environment.userLanguage = "de";
-        };
-    if (Environment.userLanguage.startsWith("fr")) {
-            Environment.userLanguage = "fr";
-        };
-    if (Environment.userLanguage.startsWith("pt")) {
-            Environment.userLanguage = "pt";
-    };
-    if (Environment.userLanguage == "id" ||
-        Environment.userLanguage == "in") {
-            Environment.userLanguage = "in";
-    };
-    if (Environment.userLanguage.startsWith("es")) {
-        Environment.userLanguage == "es";
+["c", "a", "b"].sort(function(a, b) {
+  return a.length - b.length || // sort by length, if equal then
+         a.localeCompare(b);    // sort by dictionary order
+});
+
+
+onMount(async ()=> {
+    const currentLanguage = Environment.userLanguage;
+    const i18nResult = await ApiClient.query < I18n[],
+        GetAvailableLanguagesQuery > (GetAvailableLanguagesDocument, {});
+    const availableLanguages = i18nResult;
+    availableLanguages.sort((a, b) => {
+        return b.lang.length - a.lang.length;
+    });
+
+    for (const element of availableLanguages) {
+        if(currentLanguage.startsWith(element.lang)) {
+            lang = element.lang;
+            break;
+        }
     }
-}
-languageFallback();
+    getValue();
+})
+
 
 
 export let key: string;
-export let lang: string = Environment.userLanguage;
+export let lang: string;
 
 
 let value: string;
@@ -59,7 +64,7 @@ function getValue() {
             key = i18nResult.key;
         });
 }
-getValue();
+
 
 //function getValueByLang() {
 //    ApiClient.query < I18n, QueryGetStringByLanguageArgs > (GetStringByLanguageDocument, {

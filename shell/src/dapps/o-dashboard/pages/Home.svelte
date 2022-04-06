@@ -183,6 +183,19 @@
             </div>
           </div>
         </section>
+        <section
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        on:click="{() => loadLink('/translations')}">
+        <div
+          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          <div class="pt-2 text-primary">
+            <Icons icon="check" size="{12}" />
+          </div>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            <Label key="dapps.o-dashboard.pages.home.verified" />
+          </div>
+        </div>
+      </section>
       {/if}
     </div>
   </div>
