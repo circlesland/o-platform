@@ -702,6 +702,7 @@ query tags($typeId_in: [String!]!, $value_like: String) {
     typeId
     id
     value
+    order
   }
 }
 
@@ -1323,6 +1324,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           tags {
             typeId
             value
+            order
           }
           createdByAddress
           createdAt

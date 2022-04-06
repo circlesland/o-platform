@@ -29,9 +29,10 @@ let shellEventSubscription: Subscription;
 let offers: Offer[] = [];
 let store: any;
 let orga: Organisation | Profile;
+const sortedOffersByCategory = {};
 
 type OffersByCategory = {
-  [category: string]: Offer[];
+  [category: string]: { order: Number; offers: Offer[] };
 };
 
 let offersByCategory: OffersByCategory = {};
@@ -46,6 +47,16 @@ function compare(a, b) {
   return 0;
 }
 
+function sortOrder(a, b) {
+  if (a[1].order < b[1].order) {
+    return -1;
+  }
+  if (a[1].order > b[1].order) {
+    return 1;
+  }
+  return 0;
+}
+
 onMount(() => {
   store = storeOffers.getOffersFor(storeCirclesAddress);
   isLoading = true;
@@ -53,18 +64,25 @@ onMount(() => {
   return store.subscribe((data: any) => {
     offersByCategory = {}; // If i don't do this here, we sometimes get the offers twice...
     offers = data;
-    offersByCategory = offers.reduce((p, c) => {
-      orga = c.createdByProfile;
-      const cat = c.tags?.filter((o) => o.typeId == "o-marketplace:offer:category:1") ?? [];
-      if (cat.length == 0) {
-        if (p[""]) p[""].push(c);
-        else p[""] = [c];
-      } else {
-        if (p[cat[0].value]) p[cat[0].value].push(c);
-        else p[cat[0].value] = [c];
+
+    offers.forEach((offer) => {
+      if (offer.tags[0]) {
+        let setOffers = [];
+        if (offersByCategory[offer.tags[0].value]) {
+          setOffers = offersByCategory[offer.tags[0].value].offers;
+        }
+        setOffers.push(offer);
+
+        offersByCategory[offer.tags[0].value] = { order: offer.tags[0].order, offers: setOffers };
       }
-      return p;
-    }, offersByCategory);
+    });
+
+    Object.entries(offersByCategory)
+      .sort(sortOrder)
+      .forEach((i) => {
+        const entry = i[1];
+        sortedOffersByCategory[i[0]] = entry;
+      });
 
     isLoading = false;
   });
@@ -94,22 +112,14 @@ onMount(() => {
     </section>
   {/if}
   <div class="flex flex-col mb-20 space-y-4 gap-x-4 sm:grid-cols-2 ">
-    <!--
-    <List
-      listItemType="{Offer}"
-      listItemComponent="{ListViewCard}"
-      fetchQuery="{OffersDocument}"
-      fetchQueryArguments="{listArguments}"
-      dataKey="offers"
-      dataLimit="{100}" />-->
-    {#if offersByCategory}
+    {#if sortedOffersByCategory}
       <div class="flex flex-col space-y-4">
-        {#each Object.keys(offersByCategory).sort() as category, i}
+        {#each Object.keys(sortedOffersByCategory) as category, i}
           <div class="pt-4 pb-10" class:bg-gray-300="{i % 2 == 1}">
             <div class="mx-auto space-y-4 xl:w-1/2 md:w-2/3">
               <h1 class="px-4 mb-2 ml-2 ">{category}</h1>
               <div class="flex flex-col px-4 space-y-4">
-                {#each offersByCategory[category].sort(compare) as offer}
+                {#each sortedOffersByCategory[category].offers.sort(compare) as offer}
                   <ListViewCard param="{offer}" />
                 {/each}
               </div>
