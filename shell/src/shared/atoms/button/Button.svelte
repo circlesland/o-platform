@@ -11,11 +11,15 @@ const dispatch = createEventDispatcher();
 
 function handleClick(action) {
   if (action.event) {
-    // context.loading = true;
+    if (!context.disableLoading) {
+      context.loading = true;
+    }
     window.o.publishEvent(action.event);
   }
   if (action) {
-    // context.loading = true;
+    if (!context.disableLoading) {
+      context.loading = true;
+    }
     action();
   }
   dispatch("submit");
