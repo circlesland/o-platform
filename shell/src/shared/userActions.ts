@@ -145,6 +145,25 @@ export class UserActions {
         );
       }
       /* ORGA */
+    } else if (
+      recipientProfile.contactAddress_Profile.type == ProfileType.Person.toString()
+    ) {
+      // Trust should be always allowed (except for orga targets)
+      actions.push({
+        key: "setTrust",
+        icon: "shield-check",
+        title: window.i18n("shared.userActions.trust"),
+        displayHint: "encouraged",
+        action: async () => {
+          window.o.runProcess(setTrust, {
+            trustLimit: 100,
+            trustReceiver: recipientProfile.contactAddress,
+            safeAddress: $me.circlesAddress,
+            hubAddress: Environment.circlesHubAddress,
+            privateKey: sessionStorage.getItem("circlesKey"),
+          });
+        },
+      });
     }
     return actions;
   }

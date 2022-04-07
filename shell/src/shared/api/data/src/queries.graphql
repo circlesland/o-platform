@@ -1168,6 +1168,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           cancelReason
           simplePickupCode
           paymentTransactionHash
+          simplePickupCode
           lines {
             amount
             offer {
