@@ -46,7 +46,6 @@ const processDefinition = (processId: string) =>
             sessionStorage.removeItem("circlesKey");
             sessionStorage.removeItem("keyCache");
             localStorage.removeItem("circlesKeys");
-            localStorage.removeItem("openlogin_store");
 
             localStorage.setItem("me", JSON.stringify({
               "id": 0,
