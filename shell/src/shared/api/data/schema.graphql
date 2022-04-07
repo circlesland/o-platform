@@ -574,6 +574,7 @@ type Query {
     events(filter: ProfileEventFilter, pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
     findInvitationCreator(code: String!): Profile
     findSafesByOwner(owner: String!): [SafeInfo!]!
+    getAllStrings: i18n
     getStringByMaxVersion(key: String, lang: String): i18n
     getStringByLanguage(lang: String): i18n
     getAvailableLanguages: [i18n]

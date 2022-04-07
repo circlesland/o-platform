@@ -935,6 +935,7 @@ export type Query = {
   events: Array<ProfileEvent>;
   findInvitationCreator?: Maybe<Profile>;
   findSafesByOwner: Array<SafeInfo>;
+  getAllStrings?: Maybe<I18n>;
   getStringByMaxVersion?: Maybe<I18n>;
   getStringByLanguage?: Maybe<I18n>;
   getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
@@ -2839,6 +2840,17 @@ export type FindInvitationCreatorQuery = (
   & { findInvitationCreator?: Maybe<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
+  )> }
+);
+
+export type GetAllStringsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllStringsQuery = (
+  { __typename?: 'Query' }
+  & { getAllStrings?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'version' | 'value'>
   )> }
 );
 
@@ -4785,6 +4797,16 @@ export const FindInvitationCreatorDocument = gql`
   }
 }
     `;
+export const GetAllStringsDocument = gql`
+    query getAllStrings {
+  getAllStrings {
+    lang
+    key
+    version
+    value
+  }
+}
+    `;
 export const GetStringByMaxVersionDocument = gql`
     query getStringByMaxVersion($lang: String, $key: String) {
   getStringByMaxVersion(lang: $lang, key: $key) {
@@ -5002,6 +5024,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     findInvitationCreator(variables: FindInvitationCreatorQueryVariables): Promise<FindInvitationCreatorQuery> {
       return withWrapper(() => client.request<FindInvitationCreatorQuery>(print(FindInvitationCreatorDocument), variables));
+    },
+    getAllStrings(variables?: GetAllStringsQueryVariables): Promise<GetAllStringsQuery> {
+      return withWrapper(() => client.request<GetAllStringsQuery>(print(GetAllStringsDocument), variables));
     },
     getStringByMaxVersion(variables?: GetStringByMaxVersionQueryVariables): Promise<GetStringByMaxVersionQuery> {
       return withWrapper(() => client.request<GetStringByMaxVersionQuery>(print(GetStringByMaxVersionDocument), variables));

@@ -16,10 +16,10 @@ const listArguments = {};
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <section class="flex flex-row items-center justify-center p-6">
-  <div class="w-1/3" style="background-color: aquamarine;">
+  <div style="background-color: aquamarine;">
     <TreeNav />
   </div>
-  <div class="w-full" style="background-color: blue;">
+  <div class="w-2/3" style="background-color: blue;">
     <EditorView />
   </div>
 </section>

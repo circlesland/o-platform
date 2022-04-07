@@ -14594,11 +14594,11 @@ supports-hyperlinks@^2.0.0:
     supports-color "^7.0.0"
 
 svelecte@^3.2.1:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/svelecte/-/svelecte-3.6.0.tgz#f7598036751500d57a5dba6ee2d35f1e5ff6c652"
-  integrity sha512-l/c194+B7U8N+nFiaX1y9wZDrU/lTzfEz4rM8Ldcw5JDxWwIENCD+Ma/khd8xY44XdoB1FO9ojchVM1PWgFbNA==
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/svelecte/-/svelecte-3.7.0.tgz#eafa81ab67c3b34c8a6237080a933003e60f5942"
+  integrity sha512-2VeRG1T8QgK+VVC3qCG8pGUTfxyVkj+Sj8HmJrywW81TfucU/wAUhwL+IQZ/CR0pSV5QKQrNtZYOPL0Myen4Qw==
   dependencies:
-    svelte-tiny-virtual-list "^1.1.7"
+    svelte-tiny-virtual-list "^2.0.0"
 
 svelte-apollo@^0.4.0:
   version "0.4.0"
@@ -14719,10 +14719,10 @@ svelte-time@^0.6.0:
   dependencies:
     dayjs "^1.10.7"
 
-svelte-tiny-virtual-list@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.npmjs.org/svelte-tiny-virtual-list/-/svelte-tiny-virtual-list-1.1.7.tgz"
-  integrity sha512-8314cmLXOVqIQwSc3NFu8yGU7BdHEJeixrwFirmnMoWl6YNcCq5jVjCKjE3tDNJfUenz1LN5M5YshPt6GcPuww==
+svelte-tiny-virtual-list@^2.0.0:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/svelte-tiny-virtual-list/-/svelte-tiny-virtual-list-2.0.3.tgz#e28c203bfe5f74608697fbeb541dc0868c160edf"
+  integrity sha512-f2V8xlB+5bnsQ2w02MqQvD/vTUrVr1QLacbDU8DNVNby/YMKX8b8IOft//eJId9Wv3ATaiIpnFpRD5ojt9MYtw==
 
 svelte-typeahead@^4.1.0:
   version "4.1.0"
