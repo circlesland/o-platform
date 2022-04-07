@@ -147,20 +147,6 @@ async function setProfile(id: string) {
   detailActions = <UserActionItem[]>promiseResults[0];
   const sessionInfo = <SessionInfo>promiseResults[1];
 
-  const verifyData = [
-    {
-      key: "verify",
-      icon: "check",
-      title: `${$_("dapps.o-contacts.pages.profile.verify")}`,
-      mutation: VerifySafeDocument,
-    },
-    {
-      key: "revoke",
-      icon: "trash",
-      title: `${$_("dapps.o-contacts.pages.profile.revoke")}`,
-      mutation: RevokeSafeVerificationDocument,
-    },
-  ];
   capabilities = sessionInfo.capabilities;
   const canVerify =
     capabilities &&

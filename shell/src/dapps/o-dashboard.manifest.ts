@@ -94,7 +94,7 @@ export const home: DappManifest<DappState> = {
   icon: "dashboard",
   title: "Home",
   routeParts: ["home"],
-  defaultRoute: ["home"],
+  defaultRoute: [""],
   tag: Promise.resolve("alpha"),
   isEnabled: true,
   hideFooter: true,
