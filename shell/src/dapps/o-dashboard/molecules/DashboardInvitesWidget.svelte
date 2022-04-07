@@ -11,6 +11,7 @@ let leaderboardButton: ButtonContext = {
   label: "leaderboard",
   color: "light",
   style: "small",
+  disableLoading: true,
   action: async () => {
     push("#/home/leaderboard");
   },
@@ -19,6 +20,7 @@ let shareButton: ButtonContext = {
   label: "share invite link",
   color: "primary",
   style: "small",
+  disableLoading: true,
   action: async () => {
     push("#/home/share");
   },
