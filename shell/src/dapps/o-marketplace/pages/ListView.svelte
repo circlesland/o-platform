@@ -74,6 +74,7 @@ onMount(() => {
         setOffers.push(offer);
 
         offersByCategory[offer.tags[0].value] = { order: offer.tags[0].order, offers: setOffers };
+        orga = offer.createdByProfile;
       }
     });
 
