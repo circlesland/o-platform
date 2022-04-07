@@ -61,7 +61,7 @@ function loadLink(link, external = false) {
             <div class="flex-col flex-grow">
               <div
                 class="flex flex-row items-center justify-between px-3 text-left"
-                on:click="{() => push(`#/contacts/${entry.createdByProfile.circlesAddress}`)}">
+                on:click="{() => push(`#/contacts/profile/${entry.createdByProfile.circlesAddress}`)}">
                 <div class="flex flex-row flex-grow min-w-0 mt-2 space-x-2">
                   <div
                     class="self-center pt-2 pl-2 text-5xl text-center w-14 text-dark font-enso"
