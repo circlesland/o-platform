@@ -35,7 +35,7 @@ let iconClass = "button-icon absolute right-2 top-2/4	transform -translate-y-2/4
   class:px-8="{context.style != 'square' && context.style != 'small'}"
   class:px-4="{context.style == 'small'}"
   on:click="{() => handleClick(context.action)}">
-  <!-- <slot /> -->
+  <slot />
   {context.label ? context.label : ""}
   {#if context.icon}
     <span in:fly|local="{{ duration: 600, y: 30, easing: quintInOut }}" out:fly|local="{{ duration: 300, y: 30 }}">

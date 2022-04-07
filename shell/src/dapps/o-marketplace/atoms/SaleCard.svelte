@@ -2,11 +2,7 @@
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { push } from "svelte-spa-router";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
-import {
-  Invoice,
-  ProfileEvent,
-  SaleEvent,
-} from "../../../shared/api/data/types";
+import { Invoice, ProfileEvent, SaleEvent } from "../../../shared/api/data/types";
 import { _ } from "svelte-i18n";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Button from "../../../shared/atoms/button/Button.svelte";
@@ -28,7 +24,7 @@ $: {
   }
 
   const pickUpAction = {
-    icon: "check",
+    icon: "",
     color: "primary-lighter",
     title: "Mark as served",
     action: async () => {
@@ -37,7 +33,7 @@ $: {
     },
   };
   const unPickUpAction = {
-    icon: "cancel",
+    icon: "check",
     color: "outline btn-success",
     title: "Not served",
     action: async () => {
@@ -65,8 +61,7 @@ $: {
 
 {#if sale}
   <section class="mb-3 cursor-pointer">
-    <div
-      class="relative flex items-center w-full space-x-2 bg-white rounded-lg shadow-md cardborder ">
+    <div class="relative flex items-center w-full space-x-2 bg-white rounded-lg shadow-md cardborder ">
       <div
         class="absolute top-0 left-0 w-2 h-full rounded-tl-lg rounded-bl-lg bg-primary-lighter"
         class:bg-white="{!sale.invoice.sellerSignature}"
@@ -80,29 +75,20 @@ $: {
           on:click="{() => push(`#/marketplace/my-sales/${sale.invoice.id}`)}">
           <div class="flex flex-row flex-grow min-w-0 mt-2 space-x-2">
             <div class="inline-flex self-center">
-              <UserImage
-                profile="{sale.buyer_profile}"
-                size="{5}"
-                gradientRing="{false}" />
+              <UserImage profile="{sale.buyer_profile}" size="{5}" gradientRing="{false}" />
             </div>
-            <h2
-              class="self-center inline overflow-hidden text-base text-lg overflow-ellipsis">
+            <h2 class="self-center inline overflow-hidden text-base text-lg overflow-ellipsis">
               {sale.buyer_profile.displayName}
             </h2>
           </div>
-          <div
-            class="text-xs text-right text-dark-light whitespace-nowrap leading-non">
+          <div class="text-xs text-right text-dark-light whitespace-nowrap leading-non">
             <span class="inline-block">
               {relativeTimeString(sale.invoice.createdAt, 1, true)}
             </span>
           </div>
         </div>
-        <div
-          class="flex flex-row items-center justify-between px-3 mt-2 text-left">
-          <div
-            class="flex-grow leading-none"
-            on:click="{() =>
-              push(`#/marketplace/my-sales/${sale.invoice.id}`)}">
+        <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">
+          <div class="flex-grow leading-none" on:click="{() => push(`#/marketplace/my-sales/${sale.invoice.id}`)}">
             <table>
               {#each sale.invoice.lines as item}
                 <tr>
@@ -123,7 +109,17 @@ $: {
           </div>
           <div>
             {#if !sale.invoice.cancelledAt}
-              <Button context="{buttonContext}" />
+              {#if !invoice.sellerSignature}
+                {#if sale.invoice.simplePickupCode}
+                  <Button context="{buttonContext}">
+                    {sale.invoice.simplePickupCode}
+                  </Button>
+                {:else}
+                  <Button context="{buttonContext}" />
+                {/if}
+              {:else}
+                <Button context="{buttonContext}" />
+              {/if}
             {/if}
           </div>
         </div>
@@ -140,8 +136,7 @@ $: {
             {:else if sale.invoice.cancelledAt}
               <span>{$_("dapps.o-marketplace.pages.mySales.cancelled")}</span>
             {:else}
-              <span
-                >{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
+              <span>{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
             {/if}
           </div>
 
