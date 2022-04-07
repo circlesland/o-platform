@@ -125,6 +125,7 @@ function orderItems(items) {
 
       <div class="w-full mt-6 text-center">
         <div class="container">
+          <center>{context.params.simplePickupCode}</center>
           <center>
             <QrCode value="{context.params.pickupCode}" />
           </center>
