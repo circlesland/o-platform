@@ -78,18 +78,14 @@ function orderItems(items) {
           <div class="flex flex-col items-start w-full ml-2 space-y-2">
             <div class="flex flex-row justify-between w-full">
               <div class="md:text-md">
-                <a
-                  href="#/marketplace//{groupPurchase.item.item.id}"
-                  alt="{groupPurchase.item.item.title}">
+                <a href="#/marketplace//{groupPurchase.item.item.id}" alt="{groupPurchase.item.item.title}">
                   {groupPurchase.item.item.title}
                 </a>
               </div>
             </div>
             <div class="flex items-center justify-end w-full">
               <div class="flex-grow text-sm text-left text-dark-lightest">
-                1 {groupPurchase.item.item.unitTag
-                  ? groupPurchase.item.item.unitTag.value
-                  : "item"}
+                1 {groupPurchase.item.item.unitTag ? groupPurchase.item.item.unitTag.value : "item"}
               </div>
 
               <div class="flex pr-8">
@@ -114,7 +110,8 @@ function orderItems(items) {
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
         <h1 class="p-2 text-white uppercase bg-dark-dark">
           <div class="text-sm">
-            {$_("dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode")}
+            {$_("dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode")}: &nbsp;{context.params
+              .simplePickupCode}
           </div>
         </h1>
       </div>
@@ -131,11 +128,8 @@ function orderItems(items) {
         </div>
       </div>
       <div class="text-sm">
-        {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span
-          class="text-primary-dark"
-          >{$_(
-            "dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2"
-          )}</span
+        {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span class="text-primary-dark"
+          >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2")}</span
         >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
         <a href="#/marketplace/my-purchases" alt="My Purchases" class="btn-link"
           >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}</a
@@ -154,8 +148,5 @@ function orderItems(items) {
       </div> -->
     </div>
   </div>
-  <ProcessNavigation
-    on:buttonClick="{submit}"
-    context="{context}"
-    noSticky="{true}" />
+  <ProcessNavigation on:buttonClick="{submit}" context="{context}" noSticky="{true}" />
 {/if}

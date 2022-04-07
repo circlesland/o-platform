@@ -45,6 +45,8 @@ onMount(() => {
       </svg>
       <label for="input" class="pt-3 break-all"
         ><h4><strong>{$_("shared.atoms.error.processEncounteredAnError")}</strong></h4>
+        <br />
+        <span>{error.message}</span>
       </label>
       <br />
     </div>
