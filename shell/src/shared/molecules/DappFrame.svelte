@@ -1102,6 +1102,7 @@ async function handleUrlChanged() {
     sessionInfo?.hasProfile &&
     dapp?.dappId != "homepage:1" &&
     dapp?.dappId != "events:1" &&
+    $me?.__typename == "Person" &&
     !$me?.askedForEmailAddress &&
     !sessionStorage.getItem("askedForEmailAddress") &&
     sessionStorage.getItem("circlesKey")
