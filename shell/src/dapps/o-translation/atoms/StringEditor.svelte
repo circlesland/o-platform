@@ -1,7 +1,4 @@
 <script lang="ts">
-import { entropyToMnemonic } from "bip39";
-import Account from "../../o-passport/pages/Account.svelte";
-
 export let data = [];
 
 $: {
