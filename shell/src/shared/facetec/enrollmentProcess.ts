@@ -39,12 +39,12 @@ export class EnrollmentProcess implements FaceTecFaceScanProcessor {
     try {
       if (sessionResult.status !== FaceTecSDK.FaceTecSessionStatus.SessionCompletedSuccessfully) {
         faceScanResultCallback.cancel();
-        this._onError(new Error(window.i18n("shared.atoms.factec.enrollmentProcess.sessionWasNotCompleted") + FaceTecSDK.FaceTecSessionStatus[sessionResult.status]));
+        this._onError(new Error(window.i18n("shared.atoms.facetec.enrollmentProcess.sessionWasNotCompleted") + FaceTecSDK.FaceTecSessionStatus[sessionResult.status]));
         return;
       }
 
       if (!sessionResult.sessionId) {
-        this._onError(new Error(window.i18n("shared.atoms.factec.enrollmentProcess.noSessionId")));
+        this._onError(new Error(window.i18n("shared.atoms.facetec.enrollmentProcess.noSessionId")));
         return;
       }
 
@@ -61,7 +61,7 @@ export class EnrollmentProcess implements FaceTecFaceScanProcessor {
         faceScanResultCallback.proceedToNextStep(resultJson.scanResultBlob);
       } else {
         faceScanResultCallback.cancel();
-        this._onError(new Error(window.i18n("shared.atoms.factec.enrollmentProcess.unexpectedApiResponse")));
+        this._onError(new Error(window.i18n("shared.atoms.facetec.enrollmentProcess.unexpectedApiResponse")));
       }
     } catch (e) {
       this._onError(e);
@@ -70,7 +70,7 @@ export class EnrollmentProcess implements FaceTecFaceScanProcessor {
 
   public onFaceTecSDKCompletelyDone = () => {
     if (!this._sessionResult) {
-      this._onError(new Error(window.i18n("shared.atoms.factec.enrollmentProcess.noSessionResult")));
+      this._onError(new Error(window.i18n("shared.atoms.facetec.enrollmentProcess.noSessionResult")));
       return;
     }
 

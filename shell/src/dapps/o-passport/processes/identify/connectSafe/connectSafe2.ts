@@ -125,7 +125,7 @@ const processDefinition = (processId: string) =>
             const key = Object.values(context.data.availableKeys).filter(
               (o) => o.isOwner && o.encryptedPrivateKey
             )[0];
-            if (!key) throw new Error(window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKey.error.wtf"));
+            if (!key) throw new Error(window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKey.errors.wtf"));
 
             const km = new KeyManager(context.data.safeAddress);
             await km.load();
@@ -135,7 +135,7 @@ const processDefinition = (processId: string) =>
             );
 
             if (!decryptedKey) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKey.error.wrongPin"));
+              throw new Error(window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKey.errors.wrongPin"));
             }
 
             sessionStorage.setItem("circlesKey", decryptedKey);

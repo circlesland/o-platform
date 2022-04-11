@@ -167,7 +167,7 @@ async function setProfile(id: string) {
       });
       showToast(
         "success",
-        `${$_("dapps.o-contacts.pages.profile.accountVeryfied")}`
+        `${$_("dapps.o-contacts.pages.profile.accountVerified")}`
       );
 
       isLoading = true;
