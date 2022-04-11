@@ -28,7 +28,7 @@ import {
 });
 
 
-onMount(async ()=> {
+onMount(async () => {
     const currentLanguage = Environment.userLanguage;
     const i18nResult = await ApiClient.query < I18n[],
         GetAvailableLanguagesQuery > (GetAvailableLanguagesDocument, {});
