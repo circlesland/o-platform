@@ -345,47 +345,7 @@ export const en = {
             deployOrganisation: {
               progress: "Deploying your organisation.. This can take a moment.",
             },
-          },
-          createRegions: {
-            notLoggedOn: "You're not logged on",
-            noEoa: "Your have no eoa",
-            notUnlockedKey: "The privat key is not unlocked",
-            notEnoughPart1: "You have not enough funds on ",
-            notEnoughPart2: ". Max. transferable amount is ",
-            couldNotSendInvitation: "Couldn't send the invitation transaction",
-            createRegionContext: {
-              name: {
-                title: "What is the name of you organisation?",
-                description: "DESCRIPTION",
-                placeholder: "Name",
-                SubmitButtonText: "Save",
-                enterOrganisationName: "Please enter an organisation name",
-              },
-              country: {
-                title: "Where is your organisation located?",
-                description: "DESCRIPTION",
-                placeholder: "City",
-                submitButtonText: "Save",
-              },
-              description: {
-                title: "Describe your organisation in a few sentences?",
-                description: "DESCRIPTION",
-                placeholder: "Description",
-                submitButtonText: "Save",
-                maxChars: "The maximum amount of characters allowed is 150.",
-              },
-              avatar: {
-                title: "Profile Image",
-                description: "Show the World who you are",
-                placeholder: "Upload Image",
-                submitButtonText: "Upload Image",
-              },
-              deployOrganisation: {
-                notUnlockedKey: "The private key is not unlocked",
-                needFullAccountSetup: "You need a fully set-up circles account to create an organisation.",
-              },
-            },
-          },
+          }
         },
       },
       "o-dashboard": {

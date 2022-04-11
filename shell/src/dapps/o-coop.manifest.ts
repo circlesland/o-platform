@@ -6,7 +6,6 @@ import { createOrganisation } from "./o-coop/processes/createOrganisation";
 import { ContactsDappState } from "./o-contacts.manifest";
 import OrganisationDetail from "./o-coop/pages/OrganisationDetail.svelte";
 import { addMember } from "./o-coop/processes/addMember";
-import { createRegion } from "./o-coop/processes/createRegion";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { loadProfile } from "../shared/functions/loadProfile";
