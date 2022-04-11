@@ -7,21 +7,21 @@ $: {
 
 
 </script>
-
-<table class="table-fixed" style="width: 100%">
-    <tr>
-        <th>String</th>
-        <th>Key</th>
-        <th>Language</th>
-        <th>Input</th>
-    </tr>
+<div class="table">
+    <div class="table-header-group">
+        <div class="table-cell">String</div>
+        <div class="table-cell">Key</div>
+        <div class="table-cell">Language</div>
+        <div class="table-cell">Input</div>
+    </div>
     {#each data as entry}
-    <tr>
-        <td>{entry.value}</td>
-        <td class="break-all">{entry.key}</td>
-        <td>{entry.lang}</td>
-        <td><input type="text" placeholder={entry.value}></td>
+    <div class="table-row-group">
+        <div class="table-cell break-all w-64 p-1">{entry.value}</div>
+        <div class="table-cell break-all">{entry.key}</div>
+        <div class="table-cell">{entry.lang}</div>
+        <div class="table-cell"><input type="text" placeholder={entry.value}></div>
         <button>Save</button>
-    </tr>
+    </div>
     {/each}
-</table>
+</div>
+
