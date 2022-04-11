@@ -5,7 +5,7 @@ $: {
     data;
 }
 
-console.log(data)
+
 </script>
 
 <table class="table-fixed" style="width: 100%">
@@ -16,11 +16,11 @@ console.log(data)
         <th>Input</th>
     </tr>
     {#each data as entry}
-    <tr class="m-1">
+    <tr>
         <td>{entry.value}</td>
         <td class="break-all">{entry.key}</td>
         <td>{entry.lang}</td>
-        <td><input type="text"></td>
+        <td><input type="text" placeholder={entry.value}></td>
         <button>Save</button>
     </tr>
     {/each}

@@ -2,7 +2,6 @@
 import {
     onMount
 } from "svelte";
-import { data } from "vis-network";
 
 import {
     GetAllStringsDocument,
@@ -25,6 +24,16 @@ onMount(
     async () => {
         i18nData = await ApiClient.query < I18n[], GetAllStringsQuery > (GetAllStringsDocument, {});
         console.log(i18nData)
+
+        i18nData.sort((a, b) => {
+    if (a.value < b.value) {
+        return -1;
+    }
+    if (a.value > b.value) {
+        return 1;
+    }
+    return 0;
+})
     }
 )
 
@@ -43,7 +52,7 @@ const keySubmitHandler = (event) => {
 </script>
 
 <section class="flex flex-col items-center justify-center p-6">
-    <div class="w-full flex flex-row flex-wrap items-stretch" style="background-color: blue;">
+    <div class="w-full flex flex-row flex-wrap items-stretch">
 
         <form on:change={keySubmitHandler}  class="">
             <input bind:value={key} class="m-1" type="text" placeholder="dapps.o-banking...">
@@ -54,7 +63,7 @@ const keySubmitHandler = (event) => {
 
     </div>
 
-    <div class="w-full text-center" style="background-color: blue;">
+    <div class="w-full text-center">
         <StringEditor data={i18nData}/>
     </div>
 </section>
