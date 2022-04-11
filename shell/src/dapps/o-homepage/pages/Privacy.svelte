@@ -9,7 +9,7 @@
   <Header />
   <main class="z-30 flex-1 overflow-y-visible">
     <div class="flex flex-col text-center justify-items-center pt-11">
-      <h1 class="font-bold ">{$_("dapps.o-homepage.pages.privacy.youGotus")}</h1>
+      <h1 class="font-bold ">{$_("dapps.o-homepage.pages.privacy.youGotUs")}</h1>
       <h2 class="font-thin  pt-11">
         {$_("dapps.o-homepage.pages.privacy.excuse1")}<br />{$_("dapps.o-homepage.pages.privacy.excuse2")}
       </h2>

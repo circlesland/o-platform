@@ -27,10 +27,10 @@ export type AuthenticateContext = ProcessContext<AuthenticateContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelLoginEmail: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.srtings.labelLoginEmail"),
+  labelLoginEmail: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.labelLoginEmail"),
   labelVerificationCode: (email: string) =>
   window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.srtings.labeVerificationCode"),
-  placeholder: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.srtings.placeholder"),
+  placeholder: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.placeholder"),
 };
 
 const editorContent = {

@@ -252,7 +252,7 @@ const processDefinition = (processId: string) =>
             unsub();
 
             if (!$me?.circlesAddress) {
-              throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.deployOrganisation.needFullAccountSetuo"))
+              throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.deployOrganisation.needFullAccountSetup"))
             }
 
             const proxyFactory = new GnosisSafeProxyFactory(

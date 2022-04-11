@@ -21,7 +21,7 @@ function handleClickOutside(event) {
     <a
       href="/"
       class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-      >{$_("dapps.o-hompage.atoms.sidebar.home")}</a>
+      >{$_("dapps.o-homepage.atoms.sidebar.home")}</a>
 
     <a
       href="https://discord.gg/CS6xq7jECR"
@@ -29,7 +29,7 @@ function handleClickOutside(event) {
       aria-label="Our product"
       title="Our product"
       class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-      >{$_("dapps.o-hompage.atoms.sidebar.chat")}</a>
+      >{$_("dapps.o-homepage.atoms.sidebar.chat")}</a>
 
     <a
       href="https://aboutcircles.com"
@@ -37,7 +37,7 @@ function handleClickOutside(event) {
       aria-label="Our product"
       title="Our product"
       class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-      >{$_("dapps.o-hompage.atoms.sidebar.forum")}</a>
+      >{$_("dapps.o-homepage.atoms.sidebar.forum")}</a>
 
     <a
       href="https://blog.circles.land/"
@@ -45,7 +45,7 @@ function handleClickOutside(event) {
       aria-label="About us"
       title="About us"
       class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-      >{$_("dapps.o-hompage.atoms.sidebar.blog")}</a>
+      >{$_("dapps.o-homepage.atoms.sidebar.blog")}</a>
 
     <a
       href="https://blog.circles.land/whitepaper/"
@@ -53,7 +53,7 @@ function handleClickOutside(event) {
       aria-label="Sign in"
       title="Sign in"
       class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-      >{$_("dapps.o-hompage.atoms.sidebar.whitepaper")}</a>
+      >{$_("dapps.o-homepage.atoms.sidebar.whitepaper")}</a>
 
     <!-- <a
       href="/#/citizens"

@@ -67,12 +67,12 @@ const processDefinition = (processId: string) =>
           },
           {
             key: "5",
-            label: window.i18n("dapps.o-passport.processes.invite.invite.promptChoice.labelFiveInvite"),
+            label: window.i18n("dapps.o-passport.processes.invite.invite.promptChoice.labelFiveInvites"),
             target: "#transfer",
           },
           {
             key: "25",
-            label: window.i18n("dapps.o-passport.processes.invite.invite.promptChoice.labelTwentyfiveInvite"),
+            label: window.i18n("dapps.o-passport.processes.invite.invite.promptChoice.labelTwentyFiveInvites"),
             target: "#transfer",
           },
         ],

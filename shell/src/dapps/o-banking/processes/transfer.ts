@@ -307,7 +307,7 @@ const processDefinition = (processId: string) =>
             .min(0.1, window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.min"))
             .typeError(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.typeError"))
             .required(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.required"))
-            .positive(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.positiv")),
+            .positive(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.positive")),
           currency: yup.string().required(window.i18n("dapps.o-banking.processes.transfer.tokens.currency")),
         }),
         navigation: {

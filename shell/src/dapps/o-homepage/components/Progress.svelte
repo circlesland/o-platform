@@ -79,7 +79,7 @@ async function login() {
         fill="white"></path>
       <ellipse cx="118.979" cy="118.739" rx="26.5727" ry="26.3333" fill="white"
       ></ellipse>
-    </svg> {$_("dapps.o-homepage.components.progress,joinNow")}
+    </svg> {$_("dapps.o-homepage.components.progress.joinNow")}
   </button>
   <div class="flex overflow-hidden text-xs bg-gray-300 h-11">
     <div
