@@ -14628,9 +14628,9 @@ supports-hyperlinks@^2.0.0:
     supports-color "^7.0.0"
 
 svelecte@^3.2.1:
-  version "3.7.1"
-  resolved "https://registry.yarnpkg.com/svelecte/-/svelecte-3.7.1.tgz#58cbbfdff6aa34064297feec0e8865a7d3c62d1f"
-  integrity sha512-W40G3Bwtoh1VD+C1Zs8EAQGEZ4RWj9R4L2dZC2fv9tRfuog03jIL0s3G7JtGuVjRIfGXbv/LZGhUVvdWQPUbUg==
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/svelecte/-/svelecte-3.7.3.tgz#c70b798b481329d93a36ca6018b943bd4642c22d"
+  integrity sha512-dH9KK3KkzKvOe9t3KUfcXb9I7xg+2USG6Ial13fxS7UboJj5Ic2imMZOuUWq76KtDiiB6UYYVB3qJf0ngqEzTQ==
   dependencies:
     svelte-tiny-virtual-list "^2.0.0"
 
