@@ -18,22 +18,20 @@ let key: string;
 let value: string;
 let i18nData: I18n[];
 
-
-
 onMount(
     async () => {
         i18nData = await ApiClient.query < I18n[], GetAllStringsQuery > (GetAllStringsDocument, {});
         console.log(i18nData)
 
         i18nData.sort((a, b) => {
-    if (a.value < b.value) {
-        return -1;
-    }
-    if (a.value > b.value) {
-        return 1;
-    }
-    return 0;
-})
+            if (a.key < b.key) {
+                return -1;
+            }
+            if (a.key > b.key) {
+                return 1;
+            }
+            return 0;
+        })
     }
 )
 
@@ -42,7 +40,6 @@ const stringSubmitHandler = (event) => {
     i18nData = i18nData.filter(item => item.value.indexOf(value) !== -1)
     console.log(i18nData)
 }
-
 
 const keySubmitHandler = (event) => {
     event.preventDefault();
@@ -65,5 +62,5 @@ const keySubmitHandler = (event) => {
 
     <div class="w-full text-center">
         <StringEditor data={i18nData}/>
-    </div>
-</section>
+            </div>
+            </section>
