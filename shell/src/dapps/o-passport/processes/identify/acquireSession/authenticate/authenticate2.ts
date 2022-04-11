@@ -29,7 +29,7 @@ export type AuthenticateContext = ProcessContext<AuthenticateContextData>;
 const strings = {
   labelLoginEmail: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.labelLoginEmail"),
   labelVerificationCode: (email: string) =>
-  window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.srtings.labeVerificationCode"),
+  window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.labelVerificationCode"),
   placeholder: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.placeholder"),
 };
 

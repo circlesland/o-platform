@@ -219,7 +219,7 @@ const processDefinition = (processId: string) =>
           params: {
             view: editorContent.addOwnerInfo,
             html: () =>
-              "", //window.i18n("dapps.o-onboarding.processes.connectSafe.addOwnerInfo"),
+              "", //window.i18n("dapps.o-onboarding.processes.connectSafe.addNewOwnerInfo"),
             hideNav: false,
           },
           navigation: {
