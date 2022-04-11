@@ -1,62 +1,43 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
-import { Generate } from "@o-platform/o-utils/dist/generate";
-import { shellProcess } from "../processes/shellProcess";
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-import Layout from "../../shared/layouts/Layout.svelte";
-import ProcessContainer from "../../shared/molecules/ProcessContainer.svelte";
-import { RuntimeLayout } from "../layouts/layout";
-import QuickActions from "../../shared/molecules/QuickActions.svelte";
-import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
-import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { findDappById } from "../functions/findDappById";
-import { RuntimeDapps } from "../../runtimeDapps";
-import {
-  findRoutableByParams,
-  FindRouteResult,
-} from "../functions/findRoutableByParams";
-import { push } from "svelte-spa-router";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import {
-  generateNavManifest,
-  GenerateNavManifestArgs,
-} from "../functions/generateNavManifest";
-import { inbox } from "../stores/inbox";
-import NavigationList from "../../shared/molecules/NavigationList.svelte";
-import { Process } from "@o-platform/o-process/dist/interfaces/process";
-import { isMobile } from "../functions/isMobile";
-import { media } from "../stores/media";
-import { me } from "../stores/me";
-import {
-  Capability,
-  EventsDocument,
-  EventType,
-  NotificationEvent, Purchase, Purchased,
-  SessionInfo,
-} from "../api/data/types";
-import { log } from "../logUiEvent";
-import { contacts } from "../stores/contacts";
-import { performOauth } from "../../dapps/o-humanode/processes/performOauth";
-import {
-  clearScrollPosition,
-  popScrollPosition,
-  pushScrollPosition,
-  scrollToBottom,
-} from "../layouts/Center.svelte";
-import { myChats } from "../stores/myChat";
-import { myTransactions } from "../stores/myTransactions";
-import { assetBalances } from "../stores/assetsBalances";
-import { myPurchases } from "../stores/myPurchases";
-import { upsertIdentity } from "../../dapps/o-passport/processes/upsertIdentity";
-import { goToPreviouslyDesiredRouteIfExisting } from "../../dapps/o-onboarding/processes/init";
-import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
-import {mySales} from "../stores/mySales";
+  import {onMount} from "svelte";
+  import {ProcessStarted} from "@o-platform/o-process/dist/events/processStarted";
+  import {Generate} from "@o-platform/o-utils/dist/generate";
+  import {shellProcess} from "../processes/shellProcess";
+  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+  import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
+  import Layout from "../../shared/layouts/Layout.svelte";
+  import ProcessContainer from "../../shared/molecules/ProcessContainer.svelte";
+  import {RuntimeLayout} from "../layouts/layout";
+  import QuickActions from "../../shared/molecules/QuickActions.svelte";
+  import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
+  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {findDappById} from "../functions/findDappById";
+  import {RuntimeDapps} from "../../runtimeDapps";
+  import {findRoutableByParams, FindRouteResult,} from "../functions/findRoutableByParams";
+  import {push} from "svelte-spa-router";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+  import {generateNavManifest, GenerateNavManifestArgs,} from "../functions/generateNavManifest";
+  import {inbox} from "../stores/inbox";
+  import NavigationList from "../../shared/molecules/NavigationList.svelte";
+  import {Process} from "@o-platform/o-process/dist/interfaces/process";
+  import {media} from "../stores/media";
+  import {me} from "../stores/me";
+  import {Capability, EventsDocument, EventType, NotificationEvent, Purchased, SessionInfo,} from "../api/data/types";
+  import {contacts} from "../stores/contacts";
+  import {performOauth} from "../../dapps/o-humanode/processes/performOauth";
+  import {clearScrollPosition, popScrollPosition, pushScrollPosition,} from "../layouts/Center.svelte";
+  import {myChats} from "../stores/myChat";
+  import {myTransactions} from "../stores/myTransactions";
+  import {assetBalances} from "../stores/assetsBalances";
+  import {myPurchases} from "../stores/myPurchases";
+  import {upsertIdentity} from "../../dapps/o-passport/processes/upsertIdentity";
+  import {goToPreviouslyDesiredRouteIfExisting} from "../../dapps/o-onboarding/processes/init";
+  import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
+  import {mySales} from "../stores/mySales";
 
-export let params: {
+  export let params: {
   dappId: string;
   "1": string | null;
   "2": string | null;
@@ -407,7 +388,7 @@ function initSession(session: SessionInfo) {
             chatStore.refresh(true);
             await contacts.findBySafeAddress(event.from, true);
             playBlblblbl = true;
-          } else if (event.type == EventType.CrcHubTransfer) {
+          } else if (event.type == EventType.CrcHubTransfer || event.type == EventType.CrcMinting) {
             const transaction = await myTransactions.findSingleItemFallback(
               myTransactions.eventTypes,
               event.transaction_hash
@@ -419,7 +400,7 @@ function initSession(session: SessionInfo) {
               await contacts.findBySafeAddress(event.to, true);
               const chatStore = myChats.with(event.to);
               const message = await chatStore.findSingleItemFallback(
-                [EventType.CrcHubTransfer],
+                [EventType.CrcHubTransfer, EventType.CrcMinting],
                 event.transaction_hash
               );
               chatStore.refresh(true);
@@ -427,7 +408,7 @@ function initSession(session: SessionInfo) {
               await contacts.findBySafeAddress(event.from, true);
               const chatStore = myChats.with(event.from);
               const message = await chatStore.findSingleItemFallback(
-                [EventType.CrcHubTransfer],
+                [EventType.CrcHubTransfer, EventType.CrcMinting],
                 event.transaction_hash
               );
               chatStore.refresh(true);
