@@ -25,7 +25,7 @@ export type LogoutContext = ProcessContext<LogoutContextData>;
 const editorContent = {
   logout: {
     title: window.i18n("dapps.o-passport.processes.logout.editorContent.title"),
-    description: window.i18n("dapps.o-passport.processes.logout.editorContent.description"), 
+    description: window.i18n("dapps.o-passport.processes.logout.editorContent.description"),
     submitButtonText: window.i18n("dapps.o-passport.processes.logout.editorContent.submitButtonText"),
   },
 };
@@ -47,34 +47,36 @@ const processDefinition = (processId: string) =>
             sessionStorage.removeItem("keyCache");
             localStorage.removeItem("circlesKeys");
 
-            localStorage.setItem("me", JSON.stringify({
-              "id": 0,
-              "circlesAddress": "",
-              "displayCurrency": "",
-              "circlesSafeOwner": "",
-              "successorOfCirclesAddress": null,
-              "displayName": "",
-              "firstName": "",
-              "lastName": "",
-              "emailAddress": "",
-              "askedForEmailAddress": true,
-              "dream": null,
-              "country": null,
-              "avatarUrl": "",
-              "avatarCid": null,
-              "avatarMimeType": "image/jpeg",
-              "newsletter": true,
-              "displayTimeCircles": true,
-              "cityGeonameid": null,
-              "city": null,
-              "memberships": [],
-              "verifications": [],
-              "circlesTokenAddress": "",
-              "__typename": "Profile"
-            }));
+            localStorage.setItem(
+              "me",
+              JSON.stringify({
+                id: 0,
+                circlesAddress: "",
+                displayCurrency: "",
+                circlesSafeOwner: "",
+                successorOfCirclesAddress: null,
+                displayName: "",
+                firstName: "",
+                lastName: "",
+                emailAddress: "",
+                askedForEmailAddress: true,
+                dream: null,
+                country: null,
+                avatarUrl: "",
+                avatarCid: null,
+                avatarMimeType: "image/jpeg",
+                newsletter: true,
+                displayTimeCircles: true,
+                cityGeonameid: null,
+                city: null,
+                memberships: [],
+                verifications: [],
+                circlesTokenAddress: "",
+                __typename: "Profile",
+              })
+            );
 
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: LogoutDocument,
             });
@@ -99,7 +101,7 @@ const processDefinition = (processId: string) =>
             type: "shell.loggedOut",
           });
           push("/");
-          return event.data; // TODO: fix any
+          return event.data;
         },
       },
     },

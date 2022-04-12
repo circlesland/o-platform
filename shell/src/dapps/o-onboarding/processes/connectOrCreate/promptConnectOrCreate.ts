@@ -1,8 +1,8 @@
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext"
+import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import {DisplayCurrency, UpsertProfileDocument} from "../../../../shared/api/data/types";
+import { DisplayCurrency, UpsertProfileDocument } from "../../../../shared/api/data/types";
 import { promptChoice } from "../../../o-passport/processes/identify/prompts/promptChoice";
 import ButtonStackSelector from "@o-platform/o-editors/src/ButtonStackSelector.svelte";
 import { UpsertRegistrationContext } from "../registration/promptRegistration";
@@ -11,7 +11,7 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { GnosisSafeProxyFactory } from "@o-platform/o-circles/dist/safe/gnosisSafeProxyFactory";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { connectSafe } from "../connectSafe";
-import {Environment} from "../../../../shared/environment";
+import { Environment } from "../../../../shared/environment";
 
 export type PromptConnectOrCreateContextData = {
   forceCreate?: boolean;
@@ -19,18 +19,25 @@ export type PromptConnectOrCreateContextData = {
   successAction?: (data: PromptConnectOrCreateContextData) => void;
 };
 
-export type PromptConnectOrCreateContext =
-  ProcessContext<PromptConnectOrCreateContextData>;
+export type PromptConnectOrCreateContext = ProcessContext<PromptConnectOrCreateContextData>;
 
 const editorContent = {
   info: {
     title: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.title"),
-    description: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.description"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.submitButtonText"),
+    description: window.i18n(
+      "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.description"
+    ),
+    submitButtonText: window.i18n(
+      "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.submitButtonText"
+    ),
   },
   connectOrCreate: {
-    title: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.title"),
-    description: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.description"),
+    title: window.i18n(
+      "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.title"
+    ),
+    description: window.i18n(
+      "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.description"
+    ),
     placeholder: "",
     submitButtonText: "",
   },
@@ -45,12 +52,15 @@ const processDefinition = (processId: string) =>
       ...fatalError<PromptConnectOrCreateContext, any>("error"),
 
       init: {
-        always:[{
-          cond: context => context.data.forceCreate,
-          target: "#newSafe"
-        }, {
-          target: "#connectOrCreate"
-        }]
+        always: [
+          {
+            cond: (context) => context.data.forceCreate,
+            target: "#newSafe",
+          },
+          {
+            target: "#connectOrCreate",
+          },
+        ],
       },
 
       connectOrCreate: promptChoice<UpsertRegistrationContext, any>({
@@ -60,18 +70,22 @@ const processDefinition = (processId: string) =>
         options: [
           {
             key: "newSafe",
-            label: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.connectOrCreate.options.newSafe"),
+            label: window.i18n(
+              "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.connectOrCreate.options.newSafe"
+            ),
             target: "#newSafe",
             class: "btn btn-outline",
             action: (context) => {},
           },
           {
             key: "importSafe",
-            label: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.connectOrCreate.options.importSafe"),
+            label: window.i18n(
+              "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.connectOrCreate.options.importSafe"
+            ),
             target: "#importSafe",
             class: "btn btn-outline",
             action: (context) => {},
-          }
+          },
         ],
         navigation: {
           canGoBack: () => false,
@@ -82,7 +96,9 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.newSafe.message"),
+            message: window.i18n(
+              "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.newSafe.message"
+            ),
           });
         },
         invoke: {
@@ -91,7 +107,11 @@ const processDefinition = (processId: string) =>
 
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.privateKeyNotUnlocked"));
+              throw new Error(
+                window.i18n(
+                  "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.privateKeyNotUnlocked"
+                )
+              );
             }
 
             const proxyFactory = new GnosisSafeProxyFactory(
@@ -101,43 +121,54 @@ const processDefinition = (processId: string) =>
             );
             const safeProxy = await proxyFactory.deployNewSafeProxy(privateKey);
 
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: UpsertProfileDocument,
               variables: {
                 ...myProfile,
                 status: "eoa",
                 circlesAddress: safeProxy.address,
-                displayCurrency: DisplayCurrency.Eurs
+                displayCurrency: DisplayCurrency.Eurs,
               },
             });
 
             if (result.errors) {
               throw new Error(
-                window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.couldNotUpdate", {values: {result: JSON.stringify(result.errors)}})
+                window.i18n(
+                  "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.couldNotUpdate",
+                  { values: { result: JSON.stringify(result.errors) } }
+                )
               );
             }
           },
           onDone: "success",
           onError: {
             actions: (context, event) => {
-              console.error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.errorWhileDeploying"), event);
+              console.error(
+                window.i18n(
+                  "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.errorWhileDeploying"
+                ),
+                event
+              );
               throw new Error(event.data);
             },
-            target: "success"
-          }
+            target: "success",
+          },
         },
       },
       importSafe: {
         id: "importSafe",
         invoke: {
           src: async (context) => {
-//            const myProfile = await loadProfile();
+            //            const myProfile = await loadProfile();
 
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
-              throw new Error(window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.privateKeyNotUnlocked"));
+              throw new Error(
+                window.i18n(
+                  "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.privateKeyNotUnlocked"
+                )
+              );
             }
 
             const innerSuccessAction = context.data.successAction;
@@ -156,14 +187,12 @@ const processDefinition = (processId: string) =>
             context.data.successAction(context.data);
           }
         },
+        data: () => true,
       },
     },
   });
 
-export const promptConnectOrCreate: ProcessDefinition<
-  void,
-  PromptConnectOrCreateContext
-> = {
+export const promptConnectOrCreate: ProcessDefinition<void, PromptConnectOrCreateContext> = {
   name: "promptConnectOrCreate",
   stateMachine: <any>processDefinition,
 };

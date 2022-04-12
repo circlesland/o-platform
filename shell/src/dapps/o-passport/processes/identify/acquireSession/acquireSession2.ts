@@ -174,7 +174,7 @@ const processDefinition = (processId: string) =>
           }
         },
         data: (context) => {
-          return "if you don't return this, everything will break!";
+          return "if you don't always return something, everything will break!";
         },
         type: "final",
       },

@@ -19,22 +19,14 @@ import { loadProfileByProfileId } from "../../../shared/api/loadProfileByProfile
 import { loadProfileBySafeAddress } from "../../../shared/api/loadProfileBySafeAddress";
 
 import { me } from "../../../shared/stores/me";
-import {
-  DirectPathDocument,
-  Profile,
-  QueryDirectPathArgs,
-} from "../../../shared/api/data/types";
-import {
-  convertTimeCirclesToCircles,
-  displayCirclesAmount,
-} from "../../../shared/functions/displayCirclesAmount";
+import { DirectPathDocument, Profile, QueryDirectPathArgs } from "../../../shared/api/data/types";
+import { convertTimeCirclesToCircles, displayCirclesAmount } from "../../../shared/functions/displayCirclesAmount";
 import { TransactionReceipt } from "web3-core";
 import TransferSummary from "../atoms/TransferSummary.svelte";
 import TransferConfirmation from "../atoms/TransferConfirmation.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Currency } from "../../../shared/currency";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
-
 
 export type TransferContextData = {
   safeAddress: string;
@@ -55,20 +47,13 @@ export type TransferContextData = {
   acceptSummary?: boolean;
 };
 
-export async function findDirectTransfers(
-  from: string,
-  to: string,
-  amount: string
-) {
+export async function findDirectTransfers(from: string, to: string, amount: string) {
   // Find all tokens which are trusted by "to"
-  const result = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(
-    DirectPathDocument,
-    {
-      from: from,
-      to: to,
-      amount: amount,
-    }
-  );
+  const result = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(DirectPathDocument, {
+    from: from,
+    to: to,
+    amount: amount,
+  });
   return result;
 }
 
@@ -79,12 +64,11 @@ export type TransferContext = ProcessContext<TransferContextData>;
  */
 const strings = {
   labelRecipientAddress: window.i18n("dapps.o-banking.processes.transfer.strings.labelRecipientAddress"),
-  tokensLabel: window.i18n( "dapps.o-banking.processes.transfer.strings.tokensLabel"),
+  tokensLabel: window.i18n("dapps.o-banking.processes.transfer.strings.tokensLabel"),
   currencyCircles: window.i18n("dapps.o-banking.processes.transfer.strings.currencyCircles"),
   currencyXdai: window.i18n("dapps.o-banking.processes.transfer.strings.currencyXdai"),
   summaryLabel: window.i18n("dapps.o-banking.processes.transfer.strings.summaryLabel"),
-  messageLabel: window.i18n("dapps.o-banking.processes.transfer.strings.messageLabel")
-
+  messageLabel: window.i18n("dapps.o-banking.processes.transfer.strings.messageLabel"),
 };
 
 const editorContent: { [x: string]: EditorViewContext } = {
@@ -98,7 +82,9 @@ const editorContent: { [x: string]: EditorViewContext } = {
     title: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.title"),
     description: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.description"),
     placeholder: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.placeholder"),
-    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.submitButtonText"),
+    submitButtonText: window.i18n(
+      "dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.submitButtonText"
+    ),
   },
   currency: {
     title: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.title"),
@@ -149,21 +135,14 @@ const processDefinition = (processId: string) =>
               const web3 = RpcGateway.get();
 
               const hasSender = web3.utils.isAddress(context.data.safeAddress);
-              const hasRecipient = web3.utils.isAddress(
-                context.data.recipientAddress
-              );
+              const hasRecipient = web3.utils.isAddress(context.data.recipientAddress);
               const amount = new BN(
-                !context.data.tokens?.amount
-                  ? "0"
-                  : web3.utils.toWei(
-                  context.data.tokens?.amount?.toString(),
-                  "ether"
-                  )
+                !context.data.tokens?.amount ? "0" : web3.utils.toWei(context.data.tokens?.amount?.toString(), "ether")
               );
               const hasAmount = amount.gt(new BN("0"));
               //const isXdai = context.data.tokens?.currency == "xdai";
 
-              return hasSender && hasRecipient && hasAmount/* && isXdai*/;
+              return hasSender && hasRecipient && hasAmount /* && isXdai*/;
             },
             target: "#loadRecipientProfile",
           },
@@ -202,13 +181,9 @@ const processDefinition = (processId: string) =>
           src: async (context) => {
             if (context.data.recipientProfileId) {
               // Use the profile id to get the profile but send to the context.data.recipientAddress
-              context.data.recipientProfile = await loadProfileByProfileId(
-                context.data.recipientProfileId
-              );
+              context.data.recipientProfile = await loadProfileByProfileId(context.data.recipientProfileId);
             } else if (context.data.recipientAddress) {
-              context.data.recipientProfile = await loadProfileBySafeAddress(
-                context.data.recipientAddress
-              );
+              context.data.recipientProfile = await loadProfileBySafeAddress(context.data.recipientAddress);
             } else {
               // No profile found
             }
@@ -236,31 +211,31 @@ const processDefinition = (processId: string) =>
         invoke: {
           id: "getMaxFlow",
           src: async (context) => {
-            const flow = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(
-              DirectPathDocument,
-              {
-                from: context.data.safeAddress,
-                to: context.data.recipientAddress,
-                amount: "9999999999999999999999999999999999"
-              }
-            );
+            const flow = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(DirectPathDocument, {
+              from: context.data.safeAddress,
+              to: context.data.recipientAddress,
+              amount: "9999999999999999999999999999999999",
+            });
 
             if (!context.data.maxFlows) {
               context.data.maxFlows = {};
             }
             context.data.maxFlows["crc"] = flow.flow;
           },
-          onDone: [{
-            cond: (context) => {
-              console.log("context.data.maxFlows[\"crc\"] == \"0\"", context.data.maxFlows["crc"])
-              return context.data.maxFlows["crc"] == "";
+          onDone: [
+            {
+              cond: (context) => {
+                console.log('context.data.maxFlows["crc"] == "0"', context.data.maxFlows["crc"]);
+                return context.data.maxFlows["crc"] == "";
+              },
+              target: "#noTrust",
             },
-            target: "#noTrust"
-          }, {
-            target: "#tokens"
-          }],
-          onError: "#error"
-        }
+            {
+              target: "#tokens",
+            },
+          ],
+          onError: "#error",
+        },
       },
       noTrust: prompt<TransferContext, any>({
         id: "noTrust",
@@ -271,11 +246,11 @@ const processDefinition = (processId: string) =>
             view: {
               title: "Not trusted",
               description: `${context.data.recipientProfile.displayName} isn't trusting you.`,
-              submitButtonText: "Go back"
+              submitButtonText: "Go back",
             },
             html: () => "",
-            hideNav: false
-          }
+            hideNav: false,
+          };
         },
         navigation: {
           next: "#recipientAddress",
@@ -332,20 +307,20 @@ const processDefinition = (processId: string) =>
             // context.data.maxFlows = {};
             // context.data.maxFlows["xdai"] = await RpcGateway.get().eth.getBalance(context.data.safeAddress);
 
-            const amount = new Currency().convertTimeCirclesToCircles(Number.parseFloat(context.data.tokens.amount) * 10, null);
+            const amount = new Currency().convertTimeCirclesToCircles(
+              Number.parseFloat(context.data.tokens.amount) * 10,
+              null
+            );
 
             const circlesValueInWei = RpcGateway.get()
               .utils.toWei(amount.toString() ?? "0", "ether")
               .toString();
 
-            const flow = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(
-              DirectPathDocument,
-              {
-                from: context.data.safeAddress,
-                to: context.data.recipientAddress,
-                amount: circlesValueInWei
-              }
-            );
+            const flow = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(DirectPathDocument, {
+              from: context.data.safeAddress,
+              to: context.data.recipientAddress,
+              amount: circlesValueInWei,
+            });
 
             // context.data.maxFlows["crc"] = flow.flow;
             context.data.transitivePath = flow;
@@ -359,19 +334,16 @@ const processDefinition = (processId: string) =>
         always: [
           {
             cond: (context, event) => {
-              if (context.data.maxFlows[context.data.tokens.currency.toLowerCase()] == "")
-                return false;
+              if (context.data.maxFlows[context.data.tokens.currency.toLowerCase()] == "") return false;
 
-              const maxFlowInWei = new BN(
-                context.data.maxFlows[context.data.tokens.currency.toLowerCase()]
-              );
+              const maxFlowInWei = new BN(context.data.maxFlows[context.data.tokens.currency.toLowerCase()]);
 
               const amount =
                 context.data.tokens.currency == "crc"
                   ? convertTimeCirclesToCircles(
-                  Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
-                  null
-                  ).toString()
+                      Number.parseFloat(context.data.tokens.amount) * 10, // HARDCODED TO 10* for now
+                      null
+                    ).toString()
                   : context.data.tokens.amount;
 
               const circlesValueInWei = new BN(
@@ -394,22 +366,27 @@ const processDefinition = (processId: string) =>
             actions: (context) => {
               let displayTimeCircles = true;
               me.subscribe(($me) => {
-                displayTimeCircles =
-                  $me.displayTimeCircles ||
-                  $me.displayTimeCircles === undefined;
+                displayTimeCircles = $me.displayTimeCircles || $me.displayTimeCircles === undefined;
               })();
 
-              let formattedMax:string = "0.00";
-              if (context.data.maxFlows[context.data.tokens.currency.toLowerCase()] != "")  {
-                formattedMax = (parseFloat(new Currency().displayAmount(
-                  context.data.maxFlows[context.data.tokens.currency.toLowerCase()].toString(),
-                  null,
-                  "EURS").toString())).toFixed(0) + ".00";
+              let formattedMax: string = "0.00";
+              if (context.data.maxFlows[context.data.tokens.currency.toLowerCase()] != "") {
+                formattedMax =
+                  parseFloat(
+                    new Currency()
+                      .displayAmount(
+                        context.data.maxFlows[context.data.tokens.currency.toLowerCase()].toString(),
+                        null,
+                        "EURS"
+                      )
+                      .toString()
+                  ).toFixed(0) + ".00";
               }
 
-              context.messages[
-                "tokens"
-                ] = window.i18n("dapps.o-banking.processes.transfer.checkAmount.contextMessages", { values: { formattedMax: formattedMax}});
+              context.messages["tokens"] = window.i18n(
+                "dapps.o-banking.processes.transfer.checkAmount.contextMessages",
+                { values: { formattedMax: formattedMax } }
+              );
             },
             target: "#tokens",
           },
@@ -455,7 +432,7 @@ const processDefinition = (processId: string) =>
               return context.data.tokens.currency.toLowerCase() == "xdai";
             },
             target: "callXdaiTransfer",
-          }
+          },
         ],
       },
       callCirclesTransfer: {
@@ -470,18 +447,13 @@ const processDefinition = (processId: string) =>
           });
         },
         invoke: {
-          src: transferCircles.stateMachine(
-            `${processId}:transfer:transferCircles`
-          ),
+          src: transferCircles.stateMachine(`${processId}:transfer:transferCircles`),
           data: {
             data: (context, event) => {
               return {
                 safeAddress: context.data.safeAddress,
                 recipientAddress: context.data.recipientAddress,
-                amount: convertTimeCirclesToCircles(
-                  Number.parseFloat(context.data.tokens.amount),
-                  null
-                ),
+                amount: convertTimeCirclesToCircles(Number.parseFloat(context.data.tokens.amount), null),
                 privateKey: sessionStorage.getItem("circlesKey"),
                 message: context.data.message,
                 transitivePath: context.data.transitivePath,
