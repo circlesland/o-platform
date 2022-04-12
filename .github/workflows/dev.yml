@@ -5,12 +5,14 @@ on:
   pull_request:
     branches: [ dev ]
 jobs:
-  build-docker-image:
+  check-svelte-i18n-keys:
     runs-on: ubuntu-latest
     steps:
+    - name: checkout
+      uses: actions/checkout@v1
     - name: Check svelte-i18n-keys
       uses: circlesland/CheckI18NKeys@v0.1.3-dev
       with:
-        master_json: 'shell/src/i18n/lang/en.json'
+        master_json: './shell/src/i18n/lang/en.json'
         file_types: 'ts,svelte'
         default_language_prefix: 'en.'
