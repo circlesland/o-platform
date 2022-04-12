@@ -1,7 +1,10 @@
 <script lang="ts">
+import { isRequiredArgument } from "graphql";
+
 import {
     onMount
 } from "svelte";
+
 
 import {
     GetAllStringsDocument,
@@ -35,6 +38,7 @@ onMount(
     }
 )
 
+
 const stringSubmitHandler = (event) => {
     event.preventDefault();
     i18nData = i18nData.filter(item => item.value.indexOf(value) !== -1)
@@ -43,7 +47,7 @@ const stringSubmitHandler = (event) => {
 
 const keySubmitHandler = (event) => {
     event.preventDefault();
-    i18nData = i18nData.filter(item => item.key.indexOf(key) !== -1)
+    i18nData = i18nData.filter(item => item.key.startsWith(key))
     console.log(i18nData)
 }
 </script>
@@ -52,15 +56,15 @@ const keySubmitHandler = (event) => {
     <div class="w-full flex flex-row flex-wrap items-stretch">
 
         <form on:change={keySubmitHandler}  class="">
-            <input bind:value={key} class="m-1" type="text" placeholder="dapps.o-banking...">
+            <input bind:value={key} class="m-1 input" type="text" placeholder="dapps.o-banking...">
         </form>
         <form on:change={stringSubmitHandler} action="">
-            <input bind:value={value} class="m-1" type="text" placeholder="String">
+            <input bind:value={value} class="m-1 input" type="text" placeholder="String">
         </form>
 
     </div>
 
     <div class="w-full text-center">
         <StringEditor data={i18nData}/>
-            </div>
-            </section>
+    </div>
+</section>
