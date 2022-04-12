@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check svelte-i18n-keys
-      uses: circlesland/CheckI18NKeys@v0.1.1-dev-1
+      uses: circlesland/CheckI18NKeys@v0.1.2-dev
       with:
-        master_json: 'shell/src/i18n/en.json'
+        master_json: '/shell/src/i18n/en.json'
         file_types: 'ts,svelte'
         default_language_prefix: 'en.'
