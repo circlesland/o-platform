@@ -1,0 +1,17 @@
+name: deploy dev
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check svelte-i18n-keys
+      uses: circlesland/CheckI18NKeys@v0.1.1-dev-1
+      with:
+        args:
+          'shell/src/i18n/en.json'
+          'ts,svelte'
+          'en.'

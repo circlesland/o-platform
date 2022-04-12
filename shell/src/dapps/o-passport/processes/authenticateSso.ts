@@ -78,7 +78,7 @@ createMachine<AuthenticateSsoContext, any>({
       invoke: {
         src: async (context) => {
           if(new Date(context.data.delegateAuthCodeValidTo) < new Date()){
-            throw new Error(window.i18n("dapps.o-passport.processes.athenticateSso.authCodeAlreadyExpired", { values: { context: context.data.delegateAuthCode}}));
+            throw new Error(window.i18n("dapps.o-passport.processes.authenticateSso.authCodeAlreadyExpired", { values: { context: context.data.delegateAuthCode}}));
           }
 
           const apiClient = await window.o.apiClient.client.subscribeToResult();
