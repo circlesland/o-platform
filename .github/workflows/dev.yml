@@ -11,6 +11,6 @@ jobs:
     - name: Check svelte-i18n-keys
       uses: circlesland/CheckI18NKeys@v0.1.2-dev
       with:
-        master_json: '/shell/src/i18n/lang/en.json'
+        master_json: '/o-platform/shell/src/i18n/lang/en.json'
         file_types: 'ts,svelte'
         default_language_prefix: 'en.'
