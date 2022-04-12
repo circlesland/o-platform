@@ -173,6 +173,9 @@ const processDefinition = (processId: string) =>
             context.data.successAction(context.data);
           }
         },
+        data: (context) => {
+          return "if you don't return this, everything will break!";
+        },
         type: "final",
       },
     },
