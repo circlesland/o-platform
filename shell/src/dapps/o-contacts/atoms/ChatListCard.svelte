@@ -20,6 +20,8 @@ export let param: Contact;
 let displayName: string;
 let message: string;
 let contactProfile: Profile;
+let jsonTimestamp: string;
+
 $: {
   // God Help us all...
   if (param.contactAddress_Profile) {
@@ -32,9 +34,10 @@ $: {
     };
   }
 
-  displayName = contactProfile.displayName.length >= 28
-          ? contactProfile.displayName.substr(0, 28) + "..."
-          : contactProfile.displayName;
+  displayName =
+    contactProfile.displayName.length >= 28
+      ? contactProfile.displayName.substr(0, 28) + "..."
+      : contactProfile.displayName;
 
   const trustMetadata: ContactPoint = param.metadata.find(
     (p) => p.name === "CrcTrust"
@@ -62,14 +65,15 @@ $: {
   }
 
   const unixTimestamp = parseInt(param.lastContactAt);
-  const jsonTimestamp = new Date(unixTimestamp).toJSON();
+  jsonTimestamp = new Date(unixTimestamp).toJSON();
   const mostRecentContactPoint: ContactPoint = param.metadata.find(
     (o: ContactPoint) => o.timestamps.find((o) => o == param.lastContactAt)
   );
   const mostRecentIndex = mostRecentContactPoint.timestamps.indexOf(
     param.lastContactAt
   );
-  const mostRecentDirection = mostRecentContactPoint.directions[mostRecentIndex];
+  const mostRecentDirection =
+    mostRecentContactPoint.directions[mostRecentIndex];
   const mostRecentValue = mostRecentContactPoint.values[mostRecentIndex];
 
   const mostRecentDisplayEvent = {
@@ -82,42 +86,58 @@ $: {
     switch (mostRecentDisplayEvent.type) {
       case EventType.CrcTrust:
         message = `${displayName} ${
-          mostRecentDisplayEvent.value > 0 ? `${$_("dapps.o-contacts.atoms.chatListCard.trusted")}` : `${$_("dapps.o-contacts.atoms.chatListCard.untrusted")}`
+          mostRecentDisplayEvent.value > 0
+            ? `${$_("dapps.o-contacts.atoms.chatListCard.trusted")}`
+            : `${$_("dapps.o-contacts.atoms.chatListCard.untrusted")}`
         } ${$_("dapps.o-contacts.atoms.chatListCard.you")}`;
         break;
       case EventType.CrcHubTransfer:
-        message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.sentYou")} ${Currency.instance().displayAmount(
+        message = `${displayName} ${$_(
+          "dapps.o-contacts.atoms.chatListCard.sentYou"
+        )} ${Currency.instance().displayAmount(
           mostRecentDisplayEvent.value,
           null,
           "EURS"
         )} ${Currency.currencySymbol[$me.displayCurrency]}`;
         break;
       case EventType.Erc20Transfer:
-        message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.sentYou")} ${displayCirclesAmount(
+        message = `${displayName} ${$_(
+          "dapps.o-contacts.atoms.chatListCard.sentYou"
+        )} ${displayCirclesAmount(
           mostRecentDisplayEvent.value,
           null,
           false
         )} ${$_("dapps.o-contacts.atoms.chatListCard.tokens")}`;
         break;
       case EventType.ChatMessage:
-        message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.wrote")} ${mostRecentDisplayEvent.value}`;
+        message = `${displayName} ${$_(
+          "dapps.o-contacts.atoms.chatListCard.wrote"
+        )} ${mostRecentDisplayEvent.value}`;
         break;
       case EventType.InvitationRedeemed:
-        message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.redeemedYourInvitation")}`;
+        message = `${displayName} ${$_(
+          "dapps.o-contacts.atoms.chatListCard.redeemedYourInvitation"
+        )}`;
         break;
       case EventType.MembershipOffer:
-        message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.invitedYouTo")} ${mostRecentDisplayEvent.value}`;
+        message = `${displayName} ${$_(
+          "dapps.o-contacts.atoms.chatListCard.invitedYouTo"
+        )} ${mostRecentDisplayEvent.value}`;
         break;
     }
   } else {
     switch (mostRecentDisplayEvent.type) {
       case EventType.CrcTrust:
         message = `${$_("dapps.o-contacts.atoms.chatListCard.You")} ${
-          mostRecentDisplayEvent.value > 0 ? `${$_("dapps.o-contacts.atoms.chatListCard.trusted")}` : `${$_("dapps.o-contacts.atoms.chatListCard.untrusted")}`
+          mostRecentDisplayEvent.value > 0
+            ? `${$_("dapps.o-contacts.atoms.chatListCard.trusted")}`
+            : `${$_("dapps.o-contacts.atoms.chatListCard.untrusted")}`
         } ${displayName}`;
         break;
       case EventType.CrcHubTransfer:
-        message = `${$_("dapps.o-contacts.atoms.chatListCard.youSent")} ${displayName}
+        message = `${$_(
+          "dapps.o-contacts.atoms.chatListCard.youSent"
+        )} ${displayName}
         ${Currency.instance().displayAmount(
           mostRecentDisplayEvent.value,
           null,
@@ -125,7 +145,9 @@ $: {
         )} €`;
         break;
       case EventType.Erc20Transfer:
-        message = `${$_("dapps.o-contacts.atoms.chatListCard.youSent")} ${displayName}
+        message = `${$_(
+          "dapps.o-contacts.atoms.chatListCard.youSent"
+        )} ${displayName}
         ${displayCirclesAmount(
           mostRecentDisplayEvent.value,
           null,
@@ -134,13 +156,21 @@ $: {
         )} ${$_("dapps.o-contacts.atoms.chatListCard.token")}`;
         break;
       case EventType.ChatMessage:
-        message = `${$_("dapps.o-contacts.atoms.chatListCard.youWrote")} ${mostRecentDisplayEvent.value}`;
+        message = `${$_("dapps.o-contacts.atoms.chatListCard.youWrote")} ${
+          mostRecentDisplayEvent.value
+        }`;
         break;
       case EventType.InvitationRedeemed:
-        message = `${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.invitedYouToCirclesLand")}`;
+        message = `${displayName} ${$_(
+          "dapps.o-contacts.atoms.chatListCard.invitedYouToCirclesLand"
+        )}`;
         break;
       case EventType.MembershipOffer:
-        message = `${$_("dapps.o-contacts.atoms.chatListCard.youInvited")} ${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.to")} ${mostRecentDisplayEvent.value}`;
+        message = `${$_(
+          "dapps.o-contacts.atoms.chatListCard.youInvited"
+        )} ${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.to")} ${
+          mostRecentDisplayEvent.value
+        }`;
         break;
     }
   }

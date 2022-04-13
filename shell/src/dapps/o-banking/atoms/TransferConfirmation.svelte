@@ -1,44 +1,44 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import Time from "svelte-time";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import {me} from "../../../shared/stores/me";
+import { onMount } from "svelte";
+import Time from "svelte-time";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { me } from "../../../shared/stores/me";
 
-  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-  import {Continue} from "@o-platform/o-process/dist/events/continue";
-  import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
-  import {loadProfile} from "../../../shared/functions/loadProfile";
-  import {Currency} from "../../../shared/currency";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+import { Continue } from "@o-platform/o-process/dist/events/continue";
+import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
+import { loadProfile } from "../../../shared/functions/loadProfile";
+import { Currency } from "../../../shared/currency";
 
   import {_} from "svelte-i18n";
   import Label from "../../../shared/atoms/Label.svelte";
 
-  export let context: any;
-  let _context: any;
-  let profile: any;
+export let context: any;
+let _context: any;
+let profile: any;
 
-  $: {
-    _context = context;
+$: {
+  _context = context;
+}
+
+onMount(async () => {
+  profile = (await loadProfile(context.data.recipientAddress, $me))?.profile;
+});
+
+let classes: string;
+let now = new Date();
+
+function submit() {
+  const answer = new Continue();
+  answer.data = context.data;
+  context.process.sendAnswer(answer);
+}
+
+function onkeydown(e: KeyboardEvent) {
+  if (e.key == "Enter") {
+    submit();
   }
-
-  onMount(async () => {
-    profile = (await loadProfile(context.data.recipientAddress, $me))?.profile;
-  });
-
-  let classes: string;
-  let now = new Date();
-
-  function submit() {
-    const answer = new Continue();
-    answer.data = context.data;
-    context.process.sendAnswer(answer);
-  }
-
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Enter") {
-      submit();
-    }
-  }
+}
 </script>
 
 {#if _context.data && profile}

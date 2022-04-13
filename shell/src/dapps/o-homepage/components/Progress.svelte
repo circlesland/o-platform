@@ -1,26 +1,25 @@
 <script lang="ts">
-  import {identify} from "../../o-passport/processes/identify/identify2";
-  import {me} from "../../../shared/stores/me";
-  import {onMount} from "svelte";
-  import {location} from "svelte-spa-router";
-  import {_} from "svelte-i18n";
-  import Label from "../../../shared/atoms/Label.svelte";
+import { identify } from "../../o-passport/processes/identify/identify2";
+import { me } from "../../../shared/stores/me";
+import { onMount } from "svelte";
+import { location } from "svelte-spa-router";
+import Label from "../../../shared/atoms/Label.svelte";
 
-  $: {
-    console.log($me); // TODO: This is just to init the store. There could be a better solution to do this :)
+$: {
+  console.log($me); // TODO: This is just to init the store. There could be a better solution to do this :)
+}
+
+$: me;
+
+onMount(() => {
+  if ($location === "/login") {
+    login();
   }
+});
 
-  $: me;
-
-  onMount(() => {
-    if ($location === "/login") {
-      login();
-    }
-  });
-
-  async function login() {
-    window.o.runProcess(identify, {redirectTo: "/home"});
-  }
+async function login() {
+  window.o.runProcess(identify, { redirectTo: "/home" });
+}
 </script>
 
 <div

@@ -1,112 +1,121 @@
 <script lang="ts">
-  import Time from "svelte-time";
-  import {push} from "svelte-spa-router";
-  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-  import {onMount} from "svelte";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import {me} from "../../../shared/stores/me";
-  import {Currency} from "../../../shared/currency";
-  import {
-    CrcHubTransfer,
-    CrcMinting,
-    Erc20Transfer,
-    EventType,
-    Profile,
-    ProfileEvent,
-  } from "../../../shared/api/data/types";
+import Time from "svelte-time";
+import { push } from "svelte-spa-router";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+import { onMount } from "svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { me } from "../../../shared/stores/me";
+import { Currency } from "../../../shared/currency";
+
+import {
+  CrcHubTransfer,
+  CrcMinting,
+  Erc20Transfer,
+  EventType,
+  Profile,
+  ProfileEvent,
+} from "../../../shared/api/data/types";
 
   import {_} from "svelte-i18n";
   import {myTransactions} from "../../../shared/stores/myTransactions";
   import Label from "../../../shared/atoms/Label.svelte";
 
 
-  export let transactionHash: string;
+export let transactionHash: string;
 
-  let transfer: ProfileEvent;
-  let classes: string;
-  let path: any;
-  let fromProfile: Profile;
-  let toProfile: Profile;
-  let targetProfile: Profile;
-  let message: string = "";
-  let error: string;
-  let displayableName: string = "";
+let transfer: ProfileEvent;
+let classes: string;
+let path: any;
+let fromProfile: Profile;
+let toProfile: Profile;
+let targetProfile: Profile;
+let message: string = "";
+let error: string;
+let displayableName: string = "";
 
-  onMount(async () => {
-    transfer = await myTransactions.findByPrimaryKey(EventType.CrcHubTransfer, transactionHash);
-    if (!transfer) {
-      transfer = await myTransactions.findByPrimaryKey(EventType.CrcMinting, transactionHash);
-    }
-    if (!transfer) {
-      transfer = await myTransactions.findSingleItemFallback([EventType.CrcHubTransfer, EventType.CrcMinting], transactionHash);
-    }
-    if (transfer && transfer.payload?.__typename == "CrcMinting") {
-      const minting = transfer.payload as CrcMinting;
-
-      toProfile = minting.to_profile ?? {
-        id: 0,
-        firstName: minting.to,
-        lastName: "",
-        circlesAddress: minting.to,
-      };
-      fromProfile = toProfile;
-    }
-    if (transfer && transfer.payload?.__typename == "Erc20Transfer") {
-      const erc20Transfer = transfer.payload as Erc20Transfer;
-      fromProfile = erc20Transfer.from_profile ?? {
-        id: 0,
-        firstName: erc20Transfer.from,
-        lastName: "",
-        circlesAddress: erc20Transfer.from,
-      };
-      toProfile = erc20Transfer.to_profile ?? {
-        id: 0,
-        firstName: erc20Transfer.to,
-        lastName: "",
-        circlesAddress: erc20Transfer.to,
-      };
-    }
-    if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
-      const hubTransfer = transfer.payload as CrcHubTransfer;
-      fromProfile = hubTransfer.from_profile ?? {
-        id: 0,
-        firstName: hubTransfer.from,
-        lastName: "",
-        circlesAddress: hubTransfer.from,
-      };
-      toProfile = hubTransfer.to_profile ?? {
-        id: 0,
-        firstName: hubTransfer.to,
-        lastName: "",
-        circlesAddress: hubTransfer.to,
-      };
-      path = {
-        transfers: hubTransfer.transfers,
-      };
-    }
-    if (transfer) {
-      targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
-      classes = transfer.direction === "out" ? "text-alert" : "";
-
-      if (transfer.payload) {
-        if (transfer.payload?.__typename == "CrcMinting") {
-          message = window.i18n("dapps.o-banking.pages.transactionDetail.ubi");
-        } else {
-          message = transfer.payload.tags?.find(
-                  (o) => o.typeId === "o-banking:transfer:message:1"
-          )?.value;
-        }
-      }
-
-      displayableName = targetProfile.displayName;
-    }
-  });
-
-  function openDetail(transfer: ProfileEvent) {
-    if (transfer.type == "CrcHubTransfer") {
-      push(`#/contacts/profile/${targetProfile.circlesAddress}`);
-    }
+onMount(async () => {
+  transfer = await myTransactions.findByPrimaryKey(
+    EventType.CrcHubTransfer,
+    transactionHash
+  );
+  if (!transfer) {
+    transfer = await myTransactions.findByPrimaryKey(
+      EventType.CrcMinting,
+      transactionHash
+    );
   }
+  if (!transfer) {
+    transfer = await myTransactions.findSingleItemFallback(
+      [EventType.CrcHubTransfer, EventType.CrcMinting],
+      transactionHash
+    );
+  }
+  if (transfer && transfer.payload?.__typename == "CrcMinting") {
+    const minting = transfer.payload as CrcMinting;
+
+    toProfile = minting.to_profile ?? {
+      id: 0,
+      firstName: minting.to,
+      lastName: "",
+      circlesAddress: minting.to,
+    };
+    fromProfile = toProfile;
+  }
+  if (transfer && transfer.payload?.__typename == "Erc20Transfer") {
+    const erc20Transfer = transfer.payload as Erc20Transfer;
+    fromProfile = erc20Transfer.from_profile ?? {
+      id: 0,
+      firstName: erc20Transfer.from,
+      lastName: "",
+      circlesAddress: erc20Transfer.from,
+    };
+    toProfile = erc20Transfer.to_profile ?? {
+      id: 0,
+      firstName: erc20Transfer.to,
+      lastName: "",
+      circlesAddress: erc20Transfer.to,
+    };
+  }
+  if (transfer && transfer.payload?.__typename == "CrcHubTransfer") {
+    const hubTransfer = transfer.payload as CrcHubTransfer;
+    fromProfile = hubTransfer.from_profile ?? {
+      id: 0,
+      firstName: hubTransfer.from,
+      lastName: "",
+      circlesAddress: hubTransfer.from,
+    };
+    toProfile = hubTransfer.to_profile ?? {
+      id: 0,
+      firstName: hubTransfer.to,
+      lastName: "",
+      circlesAddress: hubTransfer.to,
+    };
+    path = {
+      transfers: hubTransfer.transfers,
+    };
+  }
+  if (transfer) {
+    targetProfile = transfer.direction === "in" ? fromProfile : toProfile;
+    classes = transfer.direction === "out" ? "text-alert" : "";
+
+    if (transfer.payload) {
+      if (transfer.payload?.__typename == "CrcMinting") {
+        message = window.i18n("dapps.o-banking.pages.transactionDetail.ubi");
+      } else {
+        message = transfer.payload.tags?.find(
+          (o) => o.typeId === "o-banking:transfer:message:1"
+        )?.value;
+      }
+    }
+
+    displayableName = targetProfile.displayName;
+  }
+});
+function openDetail(transfer: ProfileEvent) {
+  if (transfer.type == "CrcHubTransfer") {
+    push(`#/contacts/profile/${targetProfile.circlesAddress}`);
+  }
+}
 </script>
 
 <div class="p-5">
@@ -165,8 +174,7 @@
             "TIME_CRC",
             transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
           )}
-          <span class=" font-primary"
-            >{Currency.currencySymbol["TIME_CRC"]}</span>
+          <Icons icon="timeCircle" size="{4}" customClass="inline" />
 
           <small class="block whitespace-nowrap">
             <!--{$mySafe.ui.loadingPercent ? $mySafe.ui.loadingText : ''}-->

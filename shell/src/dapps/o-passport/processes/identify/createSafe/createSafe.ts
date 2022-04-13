@@ -14,7 +14,7 @@ export type CreateSafeContextData = {
   seedPhrase?: string;
   checkSeedPhrase?: string;
   checkWordIndex?: number;
-  successAction:(data:CreateSafeContextData) => void
+  successAction: (data: CreateSafeContextData) => void;
 };
 
 export type CreateSafeContext = ProcessContext<CreateSafeContextData>;
@@ -25,25 +25,41 @@ export type CreateSafeContext = ProcessContext<CreateSafeContextData>;
 const strings = {
   choiceConnect: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.choiceConnect"),
   choiceCreate: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.choiceCreate"),
-  labelExportSeedphrase: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.labelExportSeedphrase"),
-  buttonExportSeedphrase: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.buttonExportSeedphrase"),
+  labelExportSeedphrase: window.i18n(
+    "dapps.o-passport.processes.identify.createSafe.createSafe.strings.labelExportSeedphrase"
+  ),
+  buttonExportSeedphrase: window.i18n(
+    "dapps.o-passport.processes.identify.createSafe.createSafe.strings.buttonExportSeedphrase"
+  ),
   // labelCheckSeedphrase: (context: CreateSafeContext) => `Please enter the ${context.data.checkWordIndex == 0 ? (context.data.checkWordIndex + 1).toString() + "st" : (context.data.checkWordIndex + 1).toString() + "nd"} word of your seedphrase:`,
-  labelCheckSeedphrase: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.labelCheckSeedphrase"),
-  buttonCheckSeedphrase: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.buttonCheckSeedphrase"),
+  labelCheckSeedphrase: window.i18n(
+    "dapps.o-passport.processes.identify.createSafe.createSafe.strings.labelCheckSeedphrase"
+  ),
+  buttonCheckSeedphrase: window.i18n(
+    "dapps.o-passport.processes.identify.createSafe.createSafe.strings.buttonCheckSeedphrase"
+  ),
 };
 
 const editorContent = {
   seedphrase: {
     title: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.title"),
     titleClass: "text-alert",
-    description: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.description"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.submitButtonText"),
+    description: window.i18n(
+      "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.description"
+    ),
+    submitButtonText: window.i18n(
+      "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.submitButtonText"
+    ),
   },
   seedphraseCheck: {
     title: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.title"),
     titleClass: "text-alert",
-    description: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.description"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.submitButtonText"),
+    description: window.i18n(
+      "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.description"
+    ),
+    submitButtonText: window.i18n(
+      "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.submitButtonText"
+    ),
   },
 };
 function randomIntFromInterval(min, max) {
@@ -64,16 +80,10 @@ const processDefinition = (processId: string) =>
         id: "generateSeedPhrase",
         invoke: {
           src: async (context) => {
-            context.data.privateKey =
-              RpcGateway.get().eth.accounts.create().privateKey;
-            context.data.seedPhrase = bip39.entropyToMnemonic(
-              context.data.privateKey.replace("0x", "")
-            );
+            context.data.privateKey = RpcGateway.get().eth.accounts.create().privateKey;
+            context.data.seedPhrase = bip39.entropyToMnemonic(context.data.privateKey.replace("0x", ""));
             const wordCount = context.data.seedPhrase.split(" ").length;
-            context.data.checkWordIndex = randomIntFromInterval(
-              0,
-              wordCount - 1
-            );
+            context.data.checkWordIndex = randomIntFromInterval(0, wordCount - 1);
           },
           onDone: "backupSeedphrase",
           onError: "#error",
@@ -120,9 +130,7 @@ const processDefinition = (processId: string) =>
           {
             cond: (context) => {
               //const checkWord = context.data.seedPhrase.split(" ")[context.data.checkWordIndex];
-              return (
-                context.data.checkSeedPhrase.trim() === context.data.seedPhrase
-              );
+              return context.data.checkSeedPhrase.trim() === context.data.seedPhrase;
             },
             target: "#storeSeedPhrase",
           },
@@ -144,9 +152,10 @@ const processDefinition = (processId: string) =>
         type: "final",
         entry: (context) => {
           if (context.data.successAction) {
-            context.data.successAction(context.data)
+            context.data.successAction(context.data);
           }
-        }
+        },
+        data: () => true,
       },
     },
   });

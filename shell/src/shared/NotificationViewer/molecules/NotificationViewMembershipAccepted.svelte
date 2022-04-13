@@ -1,14 +1,13 @@
 <script lang="ts">
-  import NotificationProfile from "./NotificationProfile.svelte";
+import NotificationProfile from "./NotificationProfile.svelte";
 
-  import {MembershipAccepted, ProfileEvent} from "../../api/data/types";
+import { MembershipAccepted, ProfileEvent } from "../../api/data/types";
 
-  import {_} from "svelte-i18n";
-  import Label from "../../atoms/Label.svelte";
+import Label from "../../atoms/Label.svelte";
 
-  export let event: ProfileEvent;
+export let event: ProfileEvent;
 
-  let payload: MembershipAccepted = <MembershipAccepted>event.payload;
+let payload: MembershipAccepted = <MembershipAccepted>event.payload;
 </script>
 
 <div class="flex flex-col items-center space-y-4">

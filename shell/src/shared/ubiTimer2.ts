@@ -47,7 +47,8 @@ export const ubiMachine = createMachine<UbiTimerContext, UbiEvents>({
     },
     checkLastPayout: {
       invoke: {
-        src: "getUbiInfo"
+        src: "getUbiInfo",
+        onError: "waitFor5Seconds"
       },
       on: {
         GOT_PREVIOUS_PAYOUT: [{

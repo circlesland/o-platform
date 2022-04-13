@@ -1,37 +1,36 @@
 <script lang="ts">
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import {cartContents, totalPrice} from "../stores/shoppingCartStore";
-  import CartItems from "../molecules/CartItems.svelte";
-  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-  import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
-  import {Continue} from "@o-platform/o-process/dist/events/continue";
-  import {Profile, Organisation} from "../../../shared/api/data/types";
-  import {displayableName} from "../../../shared/functions/stringHelper";
-  import {Currency} from "../../../shared/currency";
-  import {_} from "svelte-i18n";
-  import Label from "../../../shared/atoms/Label.svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { cartContents, totalPrice } from "../stores/shoppingCartStore";
+import CartItems from "../molecules/CartItems.svelte";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
+import { Continue } from "@o-platform/o-process/dist/events/continue";
+import { Profile, Organisation } from "../../../shared/api/data/types";
+import { displayableName } from "../../../shared/functions/stringHelper";
+import { Currency } from "../../../shared/currency";
+import Label from "../../../shared/atoms/Label.svelte";
 
-  export let context: any;
-  let profile: Profile | Organisation;
+export let context: any;
+let profile: Profile | Organisation;
 
-  $: {
-    context = context;
-    profile = context.data.sellerProfile;
+$: {
+  context = context;
+  profile = context.data.sellerProfile;
+}
+
+let classes: string;
+
+function submit() {
+  const answer = new Continue();
+  answer.data = context.data;
+  context.process.sendAnswer(answer);
+}
+
+function onkeydown(e: KeyboardEvent) {
+  if (e.key == "Enter") {
+    submit();
   }
-
-  let classes: string;
-
-  function submit() {
-    const answer = new Continue();
-    answer.data = context.data;
-    context.process.sendAnswer(answer);
-  }
-
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Enter") {
-      submit();
-    }
-  }
+}
 </script>
 
 {#if context.data && profile}
@@ -113,7 +112,7 @@
       </div> -->
     </div>
 
-    <div class="flex flex-col w-full space-y-2 text-left">
+    <!-- <div class="flex flex-col w-full space-y-2 text-left">
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
         <h1 class="p-2 text-white uppercase bg-dark-dark ">
           {$_(
@@ -128,7 +127,7 @@
           {@html $_("dapps.o-marketplace.molecules.checkoutSummary.storeHours")}
         </span>
       </div>
-    </div>
+    </div> -->
   </div>
   <ProcessNavigation
     on:buttonClick="{submit}"

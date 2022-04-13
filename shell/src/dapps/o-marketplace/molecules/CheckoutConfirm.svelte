@@ -1,52 +1,52 @@
 <script lang="ts">
-  import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
 
-  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-  import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
-  import {Continue} from "@o-platform/o-process/dist/events/continue";
-  import {Profile, Organisation} from "../../../shared/api/data/types";
-  import Account from "../../o-passport/pages/Account.svelte";
-  import {_} from "svelte-i18n";
-  import QrCode from "svelte-qrcode";
-  import Label from "../../../shared/atoms/Label.svelte";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
+import { Continue } from "@o-platform/o-process/dist/events/continue";
+import { Profile, Organisation } from "../../../shared/api/data/types";
+import Account from "../../o-passport/pages/Account.svelte";
+import Label from "../../../shared/atoms/Label.svelte";
+import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
+import {_} from "svelte-i18n";
 
-  export let context: any;
-  let profile: Profile | Organisation;
-  let groupedItems;
+export let context: any;
+let profile: Profile | Organisation;
+let groupedItems;
 
-  $: {
-    context = context;
+$: {
+  context = context;
 
-    profile = context.data.sellerProfile;
+  profile = context.data.sellerProfile;
 
-    groupedItems = context.data ? orderItems(context.data.items) : {};
+  groupedItems = context.data ? orderItems(context.data.items) : {};
+}
+
+let classes: string;
+
+function submit() {
+  const answer = new Continue();
+  answer.data = context.data;
+  context.process.sendAnswer(answer);
+}
+
+function onkeydown(e: KeyboardEvent) {
+  if (e.key == "Enter") {
+    submit();
   }
+}
 
-  let classes: string;
+function orderItems(items) {
+  const orderedCart = {};
+  items.forEach((item) => {
+    orderedCart[item.id] = {
+      item: item,
+      qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
+    };
+  });
 
-  function submit() {
-    const answer = new Continue();
-    answer.data = context.data;
-    context.process.sendAnswer(answer);
-  }
-
-  function onkeydown(e: KeyboardEvent) {
-    if (e.key == "Enter") {
-      submit();
-    }
-  }
-
-  function orderItems(items) {
-    const orderedCart = {};
-    items.forEach((item) => {
-      orderedCart[item.id] = {
-        item: item,
-        qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
-      };
-    });
-
-    return Object.entries(orderedCart).map(([id, item]) => ({id, item}));
-  }
+  return Object.entries(orderedCart).map(([id, item]) => ({ id, item }));
+}
 </script>
 
 {#if context.data && profile && groupedItems}
@@ -79,18 +79,14 @@
           <div class="flex flex-col items-start w-full ml-2 space-y-2">
             <div class="flex flex-row justify-between w-full">
               <div class="md:text-md">
-                <a
-                  href="#/marketplace//{groupPurchase.item.item.id}"
-                  alt="{groupPurchase.item.item.title}">
+                <a href="#/marketplace//{groupPurchase.item.item.id}" alt="{groupPurchase.item.item.title}">
                   {groupPurchase.item.item.title}
                 </a>
               </div>
             </div>
             <div class="flex items-center justify-end w-full">
               <div class="flex-grow text-sm text-left text-dark-lightest">
-                1 {groupPurchase.item.item.unitTag
-                  ? groupPurchase.item.item.unitTag.value
-                  : "item"}
+                1 {groupPurchase.item.item.unitTag ? groupPurchase.item.item.unitTag.value : "item"}
               </div>
 
               <div class="flex pr-8">
@@ -115,7 +111,9 @@
       <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
         <h1 class="p-2 text-white uppercase bg-dark-dark">
           <div class="text-sm">
-            <Label key="dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode" />
+            <!--<Label key="dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode" />-->
+            {$_("dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode")}: &nbsp;{context.params
+                  .simplePickupCode}
           </div>
         </h1>
       </div>
@@ -127,7 +125,7 @@
       <div class="w-full mt-6 text-center">
         <div class="container">
           <center>
-            <QrCode value="{context.params.pickupCode}" color="#081B4A" />
+            <QrCode value="{context.params.pickupCode}" />
           </center>
         </div>
       </div>
@@ -143,20 +141,17 @@
         ><Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5" />
       </div>
 
-      <div class="pt-2 text-sm">
+      <div class="pt-2 text-sm font-bold">
         <Label key="dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation" />
       </div>
-      <div class="pt-2 text-sm">
+      <!-- <div class="pt-2 text-sm">
         <span class="font-bold">Basic Income Lab GmbH</span><br />
         Reifenstuelstrasse 6<br />
         80469 München<br />
         <span class="text-sm font-thin"
           >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
-      </div>
+      </div> -->
     </div>
   </div>
-  <ProcessNavigation
-    on:buttonClick="{submit}"
-    context="{context}"
-    noSticky="{true}" />
+  <ProcessNavigation on:buttonClick="{submit}" context="{context}" noSticky="{true}" />
 {/if}

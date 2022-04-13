@@ -36,6 +36,7 @@ export type PurchaseContextData = {
   sellerProfile?: Profile;
   invoices: Invoice[];
   pickupCode: string;
+  simplePickupCode: string;
   payableInvoices: {
     invoice: Invoice;
     path: TransitivePath;
@@ -258,7 +259,8 @@ const processDefinition = (processId: string) =>
             });
 
             context.data.pickupCode = announceResult.data.announcePayment.pickupCode;
-            console.log(`Your pickup code is: ${context.data.pickupCode}`)
+            context.data.simplePickupCode = announceResult.data.announcePayment.simplePickupCode;
+            console.log(`Your pickup code is: ${context.data.pickupCode}. Short pickup code is: ${context.data.simplePickupCode}`);
 
             context.data.invoices = <Invoice[]>context.data.invoices;
             if (context.data.invoices.length > 0) {
@@ -321,6 +323,7 @@ const processDefinition = (processId: string) =>
               submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
             },
             html: ``,
+            simplePickupCode: context.data.simplePickupCode,
             pickupCode: context.data.pickupCode,
             submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
             hideNav: false

@@ -1,10 +1,7 @@
 import LinkComponent from "../molecules/NextNav/Components/Link.svelte";
 import ListComponent from "../molecules/NextNav/Components/List.svelte";
 import ActionButtonComponent from "../molecules/NextNav/Components/ActionButton.svelte";
-import {
-  NavigationElement,
-  NavigationManifest,
-} from "@o-platform/o-interfaces/dist/navigationManifest";
+import { NavigationElement, NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
 import { Prompt } from "@o-platform/o-process/dist/events/prompt";
 import { isMobile } from "./isMobile";
 import { media } from "../stores/media";
@@ -26,7 +23,7 @@ const homeNavManifest = () => {
       component: LinkComponent,
 
       props: {
-        icon: "list",
+        icon: "menu",
         action: () =>
           window.o.publishEvent({
             type: "shell.openNavigation",
@@ -52,7 +49,7 @@ const defaultNavManifest: () => NavigationManifest = () => {
     leftSlot: {
       component: LinkComponent,
       props: {
-        icon: "list",
+        icon: "menu",
         action: () =>
           window.o.publishEvent({
             type: "shell.openNavigation",
@@ -95,9 +92,7 @@ const defaultNavManifest: () => NavigationManifest = () => {
   };
 };
 
-function generateCloseButton(
-  centerContainsProcess: boolean
-): NavigationElement {
+function generateCloseButton(centerContainsProcess: boolean): NavigationElement {
   if (centerContainsProcess) {
     return {
       component: ActionButtonComponent,
@@ -123,10 +118,7 @@ function generateCloseButton(
   }
 }
 
-export function generateNavManifest(
-  args: GenerateNavManifestArgs,
-  prompt: Prompt<any>
-) {
+export function generateNavManifest(args: GenerateNavManifestArgs, prompt: Prompt<any>) {
   let newManifest: NavigationManifest;
   let small: string | boolean = false;
   const unsub = media.subscribe(($media) => {
@@ -148,9 +140,8 @@ export function generateNavManifest(
     if (args.leftIsOpen) {
       // Remove right too
       delete newManifest.rightSlot;
-      newManifest.leftSlot.props.icon = "listopen";
-      newManifest.leftSlot.props.action = () =>
-        window.o.publishEvent({ type: "shell.closeNavigation" });
+      newManifest.leftSlot.props.icon = "menu-alt-1";
+      newManifest.leftSlot.props.action = () => window.o.publishEvent({ type: "shell.closeNavigation" });
       // if (small) {
       //   // Remove the left button on mobile, as we have a special button for closing.
       //   delete newManifest.leftSlot;
@@ -159,8 +150,7 @@ export function generateNavManifest(
       // Remove left too
       delete newManifest.leftSlot;
       newManifest.rightSlot.props.icon = "simplearrowright";
-      newManifest.leftSlot.props.action = () =>
-        window.o.publishEvent({ type: "shell.closeFilters" });
+      newManifest.leftSlot.props.action = () => window.o.publishEvent({ type: "shell.closeFilters" });
     }
   }
 
@@ -208,9 +198,7 @@ export function generateNavManifest(
           text: window.i18n("shared.functions.generateNavManifest.skip"),
           action: () =>
             window.o.publishEvent({
-              type: args.centerContainsProcess
-                ? "process.skip"
-                : "shell.forward",
+              type: args.centerContainsProcess ? "process.skip" : "shell.forward",
             }),
         },
       };

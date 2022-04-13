@@ -1,5 +1,4 @@
 <script lang="ts">
-import DetailActionBar from "../../../../shared/molecules/DetailActionBar.svelte";
 import Icons from "../../../../shared/molecules/Icons.svelte";
 import { Erc20Transfer, ProfileEvent } from "../../../../shared/api/data/types";
 import { displayCirclesAmount } from "../../../../shared/functions/displayCirclesAmount";

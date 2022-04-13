@@ -1,14 +1,13 @@
 <script lang="ts">
-  import NotificationProfile from "./NotificationProfile.svelte";
-  import NotificationCard from "src/dapps/o-contacts/atoms/NotificationCard.svelte";
-  import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
-  import {ChatMessage, ProfileEvent} from "../../api/data/types";
-  import {_} from "svelte-i18n";
-  import Label from "../../atoms/Label.svelte";
+import NotificationProfile from "./NotificationProfile.svelte";
+import NotificationCard from "src/dapps/o-contacts/atoms/NotificationCard.svelte";
+import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
+import { ChatMessage, ProfileEvent } from "../../api/data/types";
+import Label from "../../atoms/Label.svelte";
 
-  export let event: ProfileEvent;
+export let event: ProfileEvent;
 
-  let payload: ChatMessage = <ChatMessage>event.payload;
+let payload: ChatMessage = <ChatMessage>event.payload;
 </script>
 
 <div class="flex flex-col space-y-4">

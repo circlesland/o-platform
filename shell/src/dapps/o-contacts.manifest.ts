@@ -1,19 +1,20 @@
 import ContactsView from "./o-contacts/pages/Contacts.svelte";
 import ProfilePage from "./o-contacts/pages/Profile.svelte";
+import ScanToTrust from "./o-contacts/pages/ScanToTrust.svelte";
 import Chat from "./o-contacts/pages/Chat.svelte";
 import ChatDetail from "./o-contacts/pages/ChatDetail.svelte";
-import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-import {me} from "../shared/stores/me";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-import {init} from "./o-banking/init";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { me } from "../shared/stores/me";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { init } from "./o-banking/init";
 import Graph from "./o-contacts/pages/Graph.svelte";
-import {Jumplist, JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
-import {Contact, ContactDirection, EventType, Profile, ProfileOrigin, ProfileType,} from "../shared/api/data/types";
-import {transfer} from "./o-banking/processes/transfer";
-import {push} from "svelte-spa-router";
-import {setTrust} from "./o-banking/processes/setTrust";
-import {contacts as contactStore} from "../shared/stores/contacts";
-import {Environment} from "../shared/environment";
+import { Jumplist, JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { Contact, ContactDirection, EventType, Profile, ProfileOrigin, ProfileType } from "../shared/api/data/types";
+import { transfer } from "./o-banking/processes/transfer";
+import { push } from "svelte-spa-router";
+import { setTrust } from "./o-banking/processes/setTrust";
+import { contacts as contactStore } from "../shared/stores/contacts";
+import { Environment } from "../shared/environment";
 
 export interface DappState {
   // put state here
@@ -41,7 +42,8 @@ export class ContactsDappState {
 }
 
 async function chatAction(circlesAddress: string): Promise<JumplistItem> {
-  return {
+  return <JumplistItem>{
+    category: "Chat",
     key: "chat",
     icon: "chat",
     title: "Chat",
@@ -60,20 +62,14 @@ async function findContactActions(circlesAddress: string) {
   const trustMetadata = recipientProfile.metadata.find((o) => o.name == EventType.CrcTrust);
   if (!trustMetadata && recipientProfile.contactAddress_Profile.origin == ProfileOrigin.CirclesGarden) {
     // No trust relation but a circles land profile
-    return [
-      await chatAction(circlesAddress)
-    ];
+    return [await chatAction(circlesAddress)];
   }
 
   const inTrustIndex = trustMetadata.directions.indexOf(ContactDirection.In);
-  const trustsYou = inTrustIndex > -1
-    ? parseInt(trustMetadata.values[inTrustIndex]) > 0
-    : false;
+  const trustsYou = inTrustIndex > -1 ? parseInt(trustMetadata.values[inTrustIndex]) > 0 : false;
 
   const outTrustIndex = trustMetadata.directions.indexOf(ContactDirection.Out);
-  const youTrust = outTrustIndex > -1
-    ? parseInt(trustMetadata.values[outTrustIndex]) > 0
-    : false;
+  const youTrust = outTrustIndex > -1 ? parseInt(trustMetadata.values[outTrustIndex]) > 0 : false;
 
   const availableActions: JumplistItem[] = [];
 
@@ -83,7 +79,7 @@ async function findContactActions(circlesAddress: string) {
       key: "sendCircles",
       title: "Send money",
       icon: "",
-      action: () => {}
+      action: () => {},
     });
   }
 }
@@ -100,12 +96,8 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
     let actions = [];
 
     if (params.id) {
-      const recipientProfile: Contact = await contactStore.findBySafeAddress(
-        params.id ?? $me.circlesAddress
-      );
-      const trustMetadata =
-        recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ??
-        undefined;
+      const recipientProfile: Contact = await contactStore.findBySafeAddress(params.id ?? $me.circlesAddress);
+      const trustMetadata = recipientProfile?.metadata.find((o) => o.name == EventType.CrcTrust) ?? undefined;
       let trustsYou = false;
       let youTrust = false;
 
@@ -125,6 +117,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       if (recipientProfile?.contactAddress) {
         actions = actions.concat([
           {
+            category: "Chat",
             key: "chat",
             icon: "chat",
             title: "Chat",
@@ -140,63 +133,71 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           actions = actions.concat(
             trustsYou
               ? [
-                {
-                  key: "transfer",
-                  icon: "sendmoney",
-                  title: "Send Money",
-                  action: async () => {
-                    window.o.runProcess(transfer, {
-                      safeAddress: $me.circlesAddress,
-                      recipientAddress: recipientProfile.contactAddress,
-                      privateKey: sessionStorage.getItem("circlesKey"),
-                    });
+                  {
+                    category: "Banking",
+                    key: "transfer",
+                    icon: "cash",
+                    displayHint: "encouraged",
+                    title: "Send Money",
+                    action: async () => {
+                      window.o.runProcess(transfer, {
+                        safeAddress: $me.circlesAddress,
+                        recipientAddress: recipientProfile.contactAddress,
+                        privateKey: sessionStorage.getItem("circlesKey"),
+                      });
+                    },
                   },
-                },
-              ]
+                ]
               : [],
             youTrust
               ? [
-                {
-                  key: "setTrust",
-                  icon: "untrust",
-                  title: "Untrust",
-                  colorClass: "text-alert",
-                  action: async () => {
-                    window.o.runProcess(setTrust, {
-                      trustLimit: 0,
-                      trustReceiver: recipientProfile.contactAddress,
-                      safeAddress: $me.circlesAddress,
-                      hubAddress: Environment.circlesHubAddress,
-                      privateKey: sessionStorage.getItem("circlesKey"),
-                    });
+                  {
+                    category: "Contacts",
+                    key: "setTrust",
+                    icon: "minus-circle",
+                    title: "Untrust",
+                    displayHint: "discouraged",
+                    colorClass: "text-alert",
+                    action: async () => {
+                      window.o.runProcess(setTrust, {
+                        trustLimit: 0,
+                        trustReceiver: recipientProfile.contactAddress,
+                        safeAddress: $me.circlesAddress,
+                        hubAddress: Environment.circlesHubAddress,
+                        privateKey: sessionStorage.getItem("circlesKey"),
+                      });
+                    },
                   },
-                },
-              ]
+                ]
               : [
-                {
-                  key: "setTrust",
-                  icon: "trust",
-                  title: "Trust",
-                  action: async () => {
-                    window.o.runProcess(setTrust, {
-                      trustLimit: 100,
-                      trustReceiver: recipientProfile.contactAddress,
-                      safeAddress: $me.circlesAddress,
-                      hubAddress: Environment.circlesHubAddress,
-                      privateKey: sessionStorage.getItem("circlesKey"),
-                    });
+                  {
+                    category: "Contacts",
+                    key: "setTrust",
+                    icon: "shield-check",
+                    title: "Trust",
+                    displayHint: "encouraged",
+                    action: async () => {
+                      window.o.runProcess(setTrust, {
+                        trustLimit: 100,
+                        trustReceiver: recipientProfile.contactAddress,
+                        safeAddress: $me.circlesAddress,
+                        hubAddress: Environment.circlesHubAddress,
+                        privateKey: sessionStorage.getItem("circlesKey"),
+                      });
+                    },
                   },
-                },
-              ]
+                ]
           );
         }
       }
 
       if (!recipientProfile) {
         actions = actions.concat({
+          category: "Contacts",
           key: "setTrust",
-          icon: "trust",
+          icon: "shield-check",
           title: "Trust",
+          displayHint: "encouraged",
           action: async () => {
             window.o.runProcess(setTrust, {
               trustLimit: 100,
@@ -209,8 +210,10 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       }
     } else {
       actions = actions.concat({
+        category: "Contacts",
         key: "setTrust",
-        icon: "trust",
+        icon: "shield-check",
+        displayHint: "encouraged",
         title: "Trust new friend",
         action: async () => {
           window.o.runProcess(setTrust, {
@@ -219,6 +222,15 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             hubAddress: Environment.circlesHubAddress,
             privateKey: sessionStorage.getItem("circlesKey"),
           });
+        },
+      });
+      actions = actions.concat({
+        category: "Contacts",
+        key: "setTrust",
+        icon: "qrcode",
+        title: "Scan to trust",
+        action: async () => {
+          push("#/contacts/scanToTrust/");
         },
       });
     }
@@ -242,6 +254,15 @@ const graph: Page<any, ContactsDappState> = {
   title: "Network",
   icon: "network",
   type: "page",
+};
+
+export const scanToTrust: Page<any, ContactsDappState> = {
+  type: "page",
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=scanToTrust"],
+  title: "Scan to trust",
+  component: ScanToTrust,
 };
 
 export const chatdetail: Page<any, ContactsDappState> = {
@@ -292,5 +313,5 @@ export const contacts: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, profile, chat, chatdetail],
+  routables: [index, profile, chat, chatdetail, scanToTrust],
 };

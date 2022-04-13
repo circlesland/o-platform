@@ -1,50 +1,43 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
-import { Generate } from "@o-platform/o-utils/dist/generate";
-import { shellProcess } from "../processes/shellProcess";
-import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
-import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-import Layout from "../../shared/layouts/Layout.svelte";
-import ProcessContainer from "../../shared/molecules/ProcessContainer.svelte";
-import { RuntimeLayout } from "../layouts/layout";
-import QuickActions from "../../shared/molecules/QuickActions.svelte";
-import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
-import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { findDappById } from "../functions/findDappById";
-import { RuntimeDapps } from "../../runtimeDapps";
-import {
-  findRoutableByParams,
-  FindRouteResult,
-} from "../functions/findRoutableByParams";
-import { push } from "svelte-spa-router";
-import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import {
-  generateNavManifest,
-  GenerateNavManifestArgs,
-} from "../functions/generateNavManifest";
-import { inbox } from "../stores/inbox";
-import NavigationList from "../../shared/molecules/NavigationList.svelte";
-import { Process } from "@o-platform/o-process/dist/interfaces/process";
-import { isMobile } from "../functions/isMobile";
-import { media } from "../stores/media";
-import { me } from "../stores/me";
-import {Capability, EventsDocument, EventType, NotificationEvent, SessionInfo} from "../api/data/types";
-import { log } from "../logUiEvent";
-import { contacts } from "../stores/contacts";
-import { performOauth } from "../../dapps/o-humanode/processes/performOauth";
-import {clearScrollPosition, popScrollPosition, pushScrollPosition, scrollToBottom} from "../layouts/Center.svelte";
-import {myChats} from "../stores/myChat";
-import {myTransactions} from "../stores/myTransactions";
-import {assetBalances} from "../stores/assetsBalances";
-import {myPurchases} from "../stores/myPurchases";
-import {upsertIdentity} from "../../dapps/o-passport/processes/upsertIdentity";
-import {goToPreviouslyDesiredRouteIfExisting} from "../../dapps/o-onboarding/processes/init";
-import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
+  import {onMount} from "svelte";
+  import {ProcessStarted} from "@o-platform/o-process/dist/events/processStarted";
+  import {Generate} from "@o-platform/o-utils/dist/generate";
+  import {shellProcess} from "../processes/shellProcess";
+  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
+  import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
+  import Layout from "../../shared/layouts/Layout.svelte";
+  import ProcessContainer from "../../shared/molecules/ProcessContainer.svelte";
+  import {RuntimeLayout} from "../layouts/layout";
+  import QuickActions from "../../shared/molecules/QuickActions.svelte";
+  import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
+  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {findDappById} from "../functions/findDappById";
+  import {RuntimeDapps} from "../../runtimeDapps";
+  import {findRoutableByParams, FindRouteResult,} from "../functions/findRoutableByParams";
+  import {push} from "svelte-spa-router";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+  import {generateNavManifest, GenerateNavManifestArgs,} from "../functions/generateNavManifest";
+  import {inbox} from "../stores/inbox";
+  import NavigationList from "../../shared/molecules/NavigationList.svelte";
+  import {Process} from "@o-platform/o-process/dist/interfaces/process";
+  import {media} from "../stores/media";
+  import {me} from "../stores/me";
+  import {Capability, EventsDocument, EventType, NotificationEvent, Purchased, SessionInfo,} from "../api/data/types";
+  import {contacts} from "../stores/contacts";
+  import {performOauth} from "../../dapps/o-humanode/processes/performOauth";
+  import {clearScrollPosition, popScrollPosition, pushScrollPosition,} from "../layouts/Center.svelte";
+  import {myChats} from "../stores/myChat";
+  import {myTransactions} from "../stores/myTransactions";
+  import {assetBalances} from "../stores/assetsBalances";
+  import {myPurchases} from "../stores/myPurchases";
+  import {upsertIdentity} from "../../dapps/o-passport/processes/upsertIdentity";
+  import {goToPreviouslyDesiredRouteIfExisting} from "../../dapps/o-onboarding/processes/init";
+  import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
+  import {mySales} from "../stores/mySales";
 
-export let params: {
+  export let params: {
   dappId: string;
   "1": string | null;
   "2": string | null;
@@ -371,42 +364,53 @@ function setNav(navArgs: GenerateNavManifestArgs) {
 
 let shellEventSubscription: ZenObservable.Subscription;
 const blblblbl = new Audio("blblblbl.mp3");
-let sessionInfo:SessionInfo;
+let sessionInfo: SessionInfo;
 function initSession(session: SessionInfo) {
   sessionInfo = session;
   // console.log(`subscribeToApiEvents(). Session: `, session);
   capabilities = session.capabilities;
-  if (session.isLoggedOn && session.hasProfile && !shellEventSubscription)
-  {
+  if (session.isLoggedOn && session.hasProfile && !shellEventSubscription) {
     window.o.apiClient.client.subscribeToResult().then((apiClient) => {
       shellEventSubscription = apiClient
         .subscribe({
           query: EventsDocument,
         })
         .subscribe(async (next) => {
-          const event:NotificationEvent = next.data.events;
+          const event: NotificationEvent = next.data.events;
           let playBlblblbl = false;
 
           if (event.type == "new_message") {
             const chatStore = myChats.with(event.from);
-            const message = await chatStore.findSingleItemFallback([EventType.ChatMessage], event.itemId.toString());
+            const message = await chatStore.findSingleItemFallback(
+              [EventType.ChatMessage],
+              event.itemId.toString()
+            );
             chatStore.refresh(true);
             await contacts.findBySafeAddress(event.from, true);
             playBlblblbl = true;
-          } else if (event.type == EventType.CrcHubTransfer) {
-            const transaction = await myTransactions.findSingleItemFallback(myTransactions.eventTypes, event.transaction_hash);
+          } else if (event.type == EventType.CrcHubTransfer || event.type == EventType.CrcMinting) {
+            const transaction = await myTransactions.findSingleItemFallback(
+              myTransactions.eventTypes,
+              event.transaction_hash
+            );
             myTransactions.refresh(true);
             assetBalances.update();
 
             if (event.from == $me.circlesAddress) {
               await contacts.findBySafeAddress(event.to, true);
               const chatStore = myChats.with(event.to);
-              const message = await chatStore.findSingleItemFallback([EventType.CrcHubTransfer], event.transaction_hash);
+              const message = await chatStore.findSingleItemFallback(
+                [EventType.CrcHubTransfer, EventType.CrcMinting],
+                event.transaction_hash
+              );
               chatStore.refresh(true);
             } else {
               await contacts.findBySafeAddress(event.from, true);
               const chatStore = myChats.with(event.from);
-              const message = await chatStore.findSingleItemFallback([EventType.CrcHubTransfer], event.transaction_hash);
+              const message = await chatStore.findSingleItemFallback(
+                [EventType.CrcHubTransfer, EventType.CrcMinting],
+                event.transaction_hash
+              );
               chatStore.refresh(true);
               playBlblblbl = true;
             }
@@ -415,21 +419,44 @@ function initSession(session: SessionInfo) {
               const contact = await contacts.findBySafeAddress(event.to, true);
               console.log("CrcTrust update to:", contact);
             } else {
-              const contact = await contacts.findBySafeAddress(event.from, true);
+              const contact = await contacts.findBySafeAddress(
+                event.from,
+                true
+              );
               console.log("CrcTrust update from:", contact);
               const chatStore = myChats.with(contact.contactAddress);
-              const message = await chatStore.findSingleItemFallback([EventType.CrcTrust], event.transaction_hash);
+              const message = await chatStore.findSingleItemFallback(
+                [EventType.CrcTrust],
+                event.transaction_hash
+              );
               chatStore.refresh(true);
               playBlblblbl = true;
             }
           } else if (event.type == EventType.Purchased) {
-              const contact = await myPurchases.findSingleItemFallback([EventType.Purchased], event.itemId.toString());
-              myPurchases.refresh();
+            const purchase = await myPurchases.findSingleItemFallback(
+              [EventType.Purchased],
+              event.itemId.toString()
+            );
+            myPurchases.refresh();
+
+            const invoices = (<Purchased>purchase.payload).purchase?.invoices ?? [];
+            await Promise.all(invoices.map(async o => {
+              const sale = await mySales.findSingleItemFallback(
+                [EventType.SaleEvent],
+                o.id.toString()
+              );
+            }));
+            mySales.refresh();
+          } else if (event.type == EventType.SaleEvent) {
+            const sale = await mySales.findSingleItemFallback(
+              [EventType.SaleEvent],
+              event.itemId.toString()
+            );
+            mySales.refresh();
           }
 
           inbox.reload().then(() => {
-            if (!playBlblblbl)
-              return;
+            if (!playBlblblbl) return;
 
             blblblbl.play();
           });
@@ -453,7 +480,10 @@ async function init() {
     // TODO: Stash the current URL away and redirect the user to it after authentication
     if (!routable.anonymous) {
       const path = Object.keys(params)
-        .filter((o) => parseInt(o) != Number.NaN && parseInt(o) >= 0 && parseInt(o) <= 6)
+        .filter(
+          (o) =>
+            parseInt(o) != Number.NaN && parseInt(o) >= 0 && parseInt(o) <= 6
+        )
         .map((o) => params[o])
         .filter((o) => !!o && o != "")
         .reduce((p, c) => p + "/" + c, "");
@@ -530,9 +560,9 @@ function onOpenModal() {
     runtimeDapp,
     <Page<any, any>>{
       position: "modal",
-      component: QuickActions,
+      component: QuickActions
     },
-    {}
+    { }
   );
   setNav({
     leftIsOpen: false,
@@ -1008,7 +1038,10 @@ async function handleUrlChanged() {
     );
   }
   if (findRouteResult.routable.type == "trigger") {
-    (<Trigger<any,any>>findRouteResult.routable).action(findRouteResult.params, runtimeDapp);
+    (<Trigger<any, any>>findRouteResult.routable).action(
+      findRouteResult.params,
+      runtimeDapp
+    );
     return;
   }
 
@@ -1064,19 +1097,27 @@ async function handleUrlChanged() {
     navigation = generateNavManifest(navArgs, null);
   }
 
-  if (sessionInfo?.isLoggedOn
-    && sessionInfo?.hasProfile
-    && dapp?.dappId != "homepage:1"
-    && dapp?.dappId != "events:1"
-    && !$me?.askedForEmailAddress
-    && !sessionStorage.getItem("askedForEmailAddress")
-    && sessionStorage.getItem("circlesKey")) {
-    window.o.runProcess(upsertIdentity, {
-      ...$me,
-      successAction: () => {
-        goToPreviouslyDesiredRouteIfExisting();
-      }
-    }, {emailAddress: true}, ['emailAddress', 'newsletter']);
+  if (
+    sessionInfo?.isLoggedOn &&
+    sessionInfo?.hasProfile &&
+    dapp?.dappId != "homepage:1" &&
+    dapp?.dappId != "events:1" &&
+    $me?.__typename == "Person" &&
+    !$me?.askedForEmailAddress &&
+    !sessionStorage.getItem("askedForEmailAddress") &&
+    sessionStorage.getItem("circlesKey")
+  ) {
+    window.o.runProcess(
+      upsertIdentity,
+      {
+        ...$me,
+        successAction: () => {
+          goToPreviouslyDesiredRouteIfExisting();
+        },
+      },
+      { emailAddress: true },
+      ["emailAddress", "newsletter"]
+    );
     sessionStorage.setItem("askedForEmailAddress", "true");
   }
 

@@ -106,7 +106,7 @@ let prev_filterText;
 let prev_isFocused;
 let prev_filteredItems;
 let displayableSelectedValue = null;
-
+let buttonDisabled = "disabled";
 async function resetFilter() {
   await tick();
   filterText = "";
@@ -137,6 +137,7 @@ export const getItems = debounce(async () => {
       isWaiting = false;
       isFocused = true;
       listOpen = true;
+      buttonDisabled = "disabled";
     }
   } else if (evaluatedLoadOptions.subscribe) {
     return new Promise((resolve) => {
@@ -580,6 +581,7 @@ function handleFocus() {
 }
 function handleBlur() {
   isFocused = false;
+
   // if (isMobile()) {
   //   document.body.classList.remove("keyboard-open");
   // }
@@ -691,6 +693,7 @@ async function loadList() {
 
         setTimeout(() => {
           listOpen = false;
+          buttonDisabled = "";
           activeSelectedValue = undefined;
         });
       }
@@ -801,6 +804,7 @@ onDestroy(() => {
         <div>
           <button
             type="submit"
+            disabled="{buttonDisabled}"
             on:click="{() => {
               dispatch('buttonClick');
             }}"

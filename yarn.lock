@@ -1878,6 +1878,13 @@
   resolved "https://registry.npmjs.org/@juggle/resize-observer/-/resize-observer-3.3.1.tgz"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
+"@krowten/svelte-heroicons@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/@krowten/svelte-heroicons/-/svelte-heroicons-0.0.3.tgz"
+  integrity sha512-e9uiANxK0zrUuuqMfKmiu9qZZbfRbtEa1DZ1TGVqXzn8uI0ZX9bQob7qhxOyGprT3rQHfb2cDtiEUdo6aqUuZA==
+  dependencies:
+    heroicons "^1.0.5"
+
 "@lerna/add@4.0.0":
   version "4.0.0"
   resolved "https://registry.npmjs.org/@lerna/add/-/add-4.0.0.tgz"
@@ -8043,6 +8050,11 @@ header-case@^2.0.4:
     capital-case "^1.0.4"
     tslib "^2.0.3"
 
+heroicons@^1.0.5:
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/heroicons/-/heroicons-1.0.6.tgz"
+  integrity sha512-5bxTsG2hyNBF0l+BrFlZlR5YngQNMfl0ggJjIRkMSADBQbaZMoTg47OIQzq6f1mpEZ85HEIgSC4wt5AeFM9J2Q==
+
 hex-color-regex@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/hex-color-regex/-/hex-color-regex-1.1.0.tgz"
@@ -10818,6 +10830,11 @@ neo-async@^2.5.0, neo-async@^2.6.0, neo-async@^2.6.1:
   resolved "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+neverthrow@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.npmjs.org/neverthrow/-/neverthrow-4.3.1.tgz"
+  integrity sha512-+vxjSaiDWjAj6kR6KKW0YDuV6O4UCNWGAO8m8ITjFKPWcTmU1GVnL+J5TAUTKpPnUAHCKDxXpOHVaERid223Ww==
+
 next-tick@~1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/next-tick/-/next-tick-1.0.0.tgz"
@@ -11807,6 +11824,11 @@ pify@^5.0.0:
   version "5.0.0"
   resolved "https://registry.npmjs.org/pify/-/pify-5.0.0.tgz"
   integrity sha512-eW/gHNMlxdSP6dmG6uJip6FXN0EQBwm2clYYd8Wul42Cwu/DK8HEftzsapcNdYe2MfLiIwZqsDk2RDEsTE79hA==
+
+pincode-input@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.npmjs.org/pincode-input/-/pincode-input-0.4.3.tgz"
+  integrity sha512-Nctu0vYf1dqzizoIjvWOVC292/5Zk7svr81loAXh6xXD+uKP8n/9rE7MnH5Qg19vS5oRXoDF0CCWJF6m3yQCfg==
 
 pinkie-promise@^2.0.0:
   version "2.0.1"
@@ -12864,12 +12886,24 @@ q@^1.1.2, q@^1.5.1:
   resolved "https://registry.npmjs.org/q/-/q-1.5.1.tgz"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
+qr-code-styling@^1.6.0-rc.1:
+  version "1.6.0-rc.1"
+  resolved "https://registry.npmjs.org/qr-code-styling/-/qr-code-styling-1.6.0-rc.1.tgz"
+  integrity sha512-ModRIiW6oUnsP18QzrRYZSc/CFKFKIdj7pUs57AEVH20ajlglRpN3HukjHk0UbNMTlKGuaYl7Gt6/O5Gg2NU2Q==
+  dependencies:
+    qrcode-generator "^1.4.3"
+
 qr-scanner@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/qr-scanner/-/qr-scanner-1.4.0.tgz"
   integrity sha512-/WGS0Vf39G/AEKslmE4EGevoYhhbX2iX4tsFp9dT0wtHJgKlCPk2vCXOJr8HnCICyj4TJS6GRmUUGjBf8AUEHA==
   dependencies:
     "@types/offscreencanvas" "^2019.6.4"
+
+qrcode-generator@^1.4.3:
+  version "1.4.4"
+  resolved "https://registry.npmjs.org/qrcode-generator/-/qrcode-generator-1.4.4.tgz"
+  integrity sha512-HM7yY8O2ilqhmULxGMpcHSF1EhJJ9yBj8gvDEuZ6M+KGJ0YY2hKpnXvRD+hZPLrDVck3ExIGhmPtSdcjC+guuw==
 
 qs@6.7.0:
   version "6.7.0"
@@ -14594,9 +14628,9 @@ supports-hyperlinks@^2.0.0:
     supports-color "^7.0.0"
 
 svelecte@^3.2.1:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/svelecte/-/svelecte-3.7.0.tgz#eafa81ab67c3b34c8a6237080a933003e60f5942"
-  integrity sha512-2VeRG1T8QgK+VVC3qCG8pGUTfxyVkj+Sj8HmJrywW81TfucU/wAUhwL+IQZ/CR0pSV5QKQrNtZYOPL0Myen4Qw==
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/svelecte/-/svelecte-3.7.4.tgz#ceba584cfe84fd6047241ab9072af261bc6a86bc"
+  integrity sha512-i19DV9jv3WqMMyLuinPQkqInZNqjocJ4LhlS+3Qaq3oiQurf/CKlp7q2Ulvd4AOJGW1FAsPRECwOxXXHZJ6stA==
   dependencies:
     svelte-tiny-virtual-list "^2.0.0"
 

@@ -87,7 +87,7 @@ async function submit() {
     bytes: croppedImage,
   };
   context.process.sendAnswer(answer);
-  console.log("SOLLTE EIGENTLICH WAS MACHEN...");
+  // console.log("SOLLTE EIGENTLICH WAS MACHEN...");
 }
 </script>
 

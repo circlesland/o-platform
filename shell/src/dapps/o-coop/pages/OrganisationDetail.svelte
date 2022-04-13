@@ -1,61 +1,61 @@
 <script lang="ts">
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {
-    CommonTrustDocument,
-    Organisation,
-  } from "../../../shared/api/data/types";
-  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
-  import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-  import UserImage from "../../../shared/atoms/UserImage.svelte";
-  import {me} from "../../../shared/stores/me";
-  import {loadOrganisationsBySafeAddress} from "../../../shared/api/loadOrganisationsBySafeAddress";
-  import {getCountryName} from "../../../shared/countries";
-  import {onMount} from "svelte";
-  import ContactCard from "../../o-contacts/atoms/ContactCard.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import {
+  CommonTrustDocument,
+  Organisation,
+} from "../../../shared/api/data/types";
+import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
+import { me } from "../../../shared/stores/me";
+import { loadOrganisationsBySafeAddress } from "../../../shared/api/loadOrganisationsBySafeAddress";
+import { getCountryName } from "../../../shared/countries";
+import { onMount } from "svelte";
+import ContactCard from "../../o-contacts/atoms/ContactCard.svelte";
 
   import {_} from "svelte-i18n";
   import Label from "../../../shared/atoms/Label.svelte";
 
-  export let id: string;
-  export let jumplist: Jumplist<any, any> | undefined;
-  export let runtimeDapp: RuntimeDapp<any>;
+export let id: string;
+export let jumplist: Jumplist<any, any> | undefined;
+export let runtimeDapp: RuntimeDapp<any>;
 
-  let isLoading = true;
-  let profile: Organisation;
-  let isMe: boolean;
-  let name: string;
-  let isEditable: boolean = false;
+let isLoading = true;
+let profile: Organisation;
+let isMe: boolean;
+let name: string;
+let isEditable: boolean = false;
 
-  async function loadProfile() {
-    if (!id) {
-      console.warn(
-              `No organisation specified ('id' must contain the circlesAddress of an organisation)`
-      );
-      return;
-    }
-
-    const organisations = await loadOrganisationsBySafeAddress([id]);
-    if (organisations.length == 1) {
-      await setOrganisation(organisations[0]);
-    } else {
-      console.warn(
-              `None or multiple organisations found for safe address '${id}'.`
-      );
-      return;
-    }
-
-    isMe = profile.id == ($me ? $me.id : 0);
-    isLoading = false;
-    name = profile.name ?? profile.circlesAddress;
+async function loadProfile() {
+  if (!id) {
+    console.warn(
+      `No organisation specified ('id' must contain the circlesAddress of an organisation)`
+    );
+    return;
   }
 
-  async function setOrganisation(apiProfile: Organisation) {
-    const trust = undefined;
-    // isEditable = $me && $me.id === apiProfile.id;
+  const organisations = await loadOrganisationsBySafeAddress([id]);
+  if (organisations.length == 1) {
+    await setOrganisation(organisations[0]);
+  } else {
+    console.warn(
+      `None or multiple organisations found for safe address '${id}'.`
+    );
+    return;
+  }
 
-    if ($me.circlesAddress !== apiProfile.circlesAddress) {
-      /*
+  isMe = profile.id == ($me ? $me.id : 0);
+  isLoading = false;
+  name = profile.name ?? profile.circlesAddress;
+}
+
+async function setOrganisation(apiProfile: Organisation) {
+  const trust = undefined;
+  // isEditable = $me && $me.id === apiProfile.id;
+
+  if ($me.circlesAddress !== apiProfile.circlesAddress) {
+    /*
       const apiClient = await window.o.apiClient.client.subscribeToResult();
       const result = await apiClient.query({
         query: CommonTrustDocument,
@@ -71,25 +71,24 @@
                 }': ${JSON.stringify(result.errors)}`
         );
       }*/
-      //commonTrusts = result.data.commonTrust.filter(o => o.profile);
-    } else {
-      //commonTrusts = [];
-    }
-
-    profile = apiProfile;
+    //commonTrusts = result.data.commonTrust.filter(o => o.profile);
+  } else {
+    //commonTrusts = [];
   }
 
-  onMount(() => loadProfile());
+  profile = apiProfile;
+}
 
-  function editProfile() {
-  }
+onMount(() => loadProfile());
 
-  async function getJumplist() {
-    const jumpListItems = await jumplist.items({id: id}, runtimeDapp);
-    return jumpListItems;
-  }
+function editProfile() {}
 
-  let promise = getJumplist();
+async function getJumplist() {
+  const jumpListItems = await jumplist.items({ id: id }, runtimeDapp);
+  return jumpListItems;
+}
+
+let promise = getJumplist();
 </script>
 
 {#if isLoading}
@@ -235,7 +234,10 @@
 
               <div class="flex items-center w-full text-2xs">
                 {#each profile.members as member}
-                  <ContactCard contact="{{ contactAddressProfile: member }}" />
+                  <ContactCard contact="{{
+                    contactAddress: member.circlesAddress,
+                    contactAddress_Profile: member,
+                    metadata: [] }}" />
                 {/each}
               </div>
             </div>

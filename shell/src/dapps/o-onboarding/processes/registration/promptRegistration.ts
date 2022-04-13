@@ -4,8 +4,8 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
-import {promptChoice} from "../../../o-passport/processes/identify/prompts/promptChoice";
-import {UpsertProfileDocument} from "../../../../shared/api/data/types";
+import { promptChoice } from "../../../o-passport/processes/identify/prompts/promptChoice";
+import { UpsertProfileDocument } from "../../../../shared/api/data/types";
 
 export type UpsertRegistrationContextData = {
   id?: number;
@@ -14,8 +14,8 @@ export type UpsertRegistrationContextData = {
   firstName: string;
   avatarUrl: string;
   newsletter?: boolean;
-  successAction?: (data:UpsertRegistrationContextData) => void;
-  errorAction?: (data:UpsertRegistrationContextData) => void;
+  successAction?: (data: UpsertRegistrationContextData) => void;
+  errorAction?: (data: UpsertRegistrationContextData) => void;
 };
 
 export type UpsertRegistrationContext = ProcessContext<UpsertRegistrationContextData>;
@@ -23,7 +23,9 @@ export type UpsertRegistrationContext = ProcessContext<UpsertRegistrationContext
 const editorContent: { [x: string]: EditorViewContext } = {
   newsletter: {
     title: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.title"),
-    description: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.description"),
+    description: window.i18n(
+      "dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.description"
+    ),
     placeholder: "",
     submitButtonText: "",
   },
@@ -61,7 +63,7 @@ const processDefinition = (processId: string) =>
           },
         ],
         navigation: {
-          canGoBack: () => false
+          canGoBack: () => false,
         },
       }),
       upsertRegistration: {
@@ -71,8 +73,7 @@ const processDefinition = (processId: string) =>
         },
         invoke: {
           src: async (context) => {
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
 
             const result = await apiClient.mutate({
               mutation: UpsertProfileDocument,
@@ -99,15 +100,13 @@ const processDefinition = (processId: string) =>
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
-        }
+        },
+        data: () => true,
       },
     },
   });
 
-export const upsertRegistration: ProcessDefinition<
-  void,
-  UpsertRegistrationContextData
-  > = {
+export const upsertRegistration: ProcessDefinition<void, UpsertRegistrationContextData> = {
   name: "upsertRegistration",
   stateMachine: <any>processDefinition,
 };
@@ -115,6 +114,5 @@ export const upsertRegistration: ProcessDefinition<
 export const upsertRegistrationOnlyWhereDirty = {
   id: upsertRegistration.id,
   name: upsertRegistration.name,
-  stateMachine: (processId?: string) =>
-    (<any>upsertRegistration).stateMachine(processId, true),
+  stateMachine: (processId?: string) => (<any>upsertRegistration).stateMachine(processId, true),
 };

@@ -92,7 +92,6 @@ onMount(async () => {
     userActions = Object.values(usableUserActions);
   }
   userActions = userActions;
-  console.log("EVENT", event.type);
 });
 
 function getEventView() {
@@ -119,7 +118,8 @@ if (event.type == EventType.Purchased) {
     <div
       class="flex flex-col flex-grow space-y-1 rounded-xl"
       class:bg-gray-100="{event.type != EventType.ChatMessage &&
-        event.type != EventType.Purchased}">
+        event.type != EventType.Purchased &&
+        event.type != EventType.CrcHubTransfer}">
       <div
         class="relative w-full text-xs sm:text-sm message chatText"
         class:p-4="{event.type != EventType.ChatMessage}">

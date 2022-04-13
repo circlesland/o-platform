@@ -44,7 +44,7 @@ function cardAction() {
   class:mb-3="{!params.inline}"
   class="{params.class ? params.class : ''}">
   <div
-    class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-md"
+    class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-md cardborder"
     class:p-3="{!params.edgeless}">
     <slot name="itemCardStart">
       <div class="">

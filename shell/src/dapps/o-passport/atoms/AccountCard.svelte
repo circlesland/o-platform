@@ -1,24 +1,23 @@
 <script>
-  import {slide} from "svelte/transition";
-  import * as bip39 from "bip39";
-  import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
-  import {_} from "svelte-i18n";
-  import Label from "../../../shared/atoms/Label.svelte";
+import { slide } from "svelte/transition";
+import * as bip39 from "bip39";
+import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
+import Label from "../../../shared/atoms/Label.svelte";
 
-  export let key;
-  let isOpen = false;
-  const toggle = () => (isOpen = !isOpen);
+export let key;
+let isOpen = false;
+const toggle = () => (isOpen = !isOpen);
 
-  /* we're currently ONLY showing the current key from localstorage! */
-  let seedphrase =
-          sessionStorage.getItem("circlesKey") &&
-          sessionStorage.getItem("circlesKey") != "0x123"
-                  ? bip39.entropyToMnemonic(
-                  sessionStorage
-                          .getItem("circlesKey")
-                          .substr(2, sessionStorage.getItem("circlesKey").length - 2)
-                  )
-                  : "<no private key>";
+/* we're currently ONLY showing the current key from localstorage! */
+let seedphrase =
+  sessionStorage.getItem("circlesKey") &&
+  sessionStorage.getItem("circlesKey") != "0x123"
+    ? bip39.entropyToMnemonic(
+        sessionStorage
+          .getItem("circlesKey")
+          .substr(2, sessionStorage.getItem("circlesKey").length - 2)
+      )
+    : "<no private key>";
 </script>
 
 <section class="mb-3">

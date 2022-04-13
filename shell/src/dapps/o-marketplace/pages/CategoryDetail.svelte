@@ -1,33 +1,32 @@
 <script lang="ts">
-  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-  import {
-    Offer
-  } from "../../../shared/api/data/types";
-  import OfferCard from "../atoms/OfferCard.svelte";
-  import {onMount} from "svelte";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {Subscription} from "rxjs";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {_} from "svelte-i18n";
-  import Label from "../../../shared/atoms/Label.svelte";
+import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import {
+  Offer
+} from "../../../shared/api/data/types";
+import OfferCard from "../atoms/OfferCard.svelte";
+import { onMount } from "svelte";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { Subscription } from "rxjs";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import Label from "../../../shared/atoms/Label.svelte";
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  export let category: number;
-  export let categoryName: string;
+export let category: number;
+export let categoryName: string;
 
-  let isLoading: boolean;
-  let error: Error;
-  let offers: Offer[] = [];
-  let shellEventSubscription: Subscription;
+let isLoading: boolean;
+let error: Error;
+let offers: Offer[] = [];
+let shellEventSubscription: Subscription;
 
-  async function load() {
-    if (isLoading || !category) return;
+async function load() {
+  if (isLoading || !category) return;
 
-    isLoading = true;
-    /*
+  isLoading = true;
+  /*
 
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.query({
@@ -48,27 +47,27 @@
   offers = result.data.offers;
 
    */
-  }
+}
 
-  onMount(async () => {
-    await load();
+onMount(async () => {
+  await load();
 
-    shellEventSubscription = window.o.events.subscribe(
-            async (event: PlatformEvent) => {
-              if (
-                      event.type != "shell.refresh" ||
-                      (<any>event).dapp != "marketplace:1"
-              ) {
-                return;
-              }
-              await load();
-            }
-    );
+  shellEventSubscription = window.o.events.subscribe(
+    async (event: PlatformEvent) => {
+      if (
+        event.type != "shell.refresh" ||
+        (<any>event).dapp != "marketplace:1"
+      ) {
+        return;
+      }
+      await load();
+    }
+  );
 
-    return () => {
-      shellEventSubscription.unsubscribe();
-    };
-  });
+  return () => {
+    shellEventSubscription.unsubscribe();
+  };
+});
 </script>
 
 <SimpleHeader

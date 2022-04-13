@@ -5,13 +5,10 @@ import { onMount } from "svelte";
 
 export let context: ChoiceSelectorContext;
 
-onMount(() => {
+function submit(selected: { key: string; label: string }) {
   if (!context.editorDirtyFlags) {
     context.editorDirtyFlags = {};
   }
-});
-
-function submit(selected: { key: string; label: string }) {
   const event = new Continue();
   event.data = {};
   event.data[context.field] = selected;

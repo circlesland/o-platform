@@ -1,28 +1,28 @@
 <script lang="ts">
-  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-  import {onMount} from "svelte";
-  import {me} from "../../../shared/stores/me";
-  import Card from "../../../shared/atoms/Card.svelte";
+import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+import { onMount } from "svelte";
+import { me } from "../../../shared/stores/me";
+import Card from "../../../shared/atoms/Card.svelte";
 
-  import {displayCirclesAmount} from "src/shared/functions/displayCirclesAmount";
-  import {AssetBalance} from "../../../shared/api/data/types";
-  import {assetBalances} from "../../../shared/stores/assetsBalances";
+import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { AssetBalance } from "../../../shared/api/data/types";
+import {assetBalances} from "../../../shared/stores/assetsBalances";
 
   import {_} from "svelte-i18n";
   import Label from "../../../shared/atoms/Label.svelte";
 
-  let loading = true;
-  let balances: AssetBalance[] = [];
+let loading = true;
+let balances: AssetBalance[] = [];
 
-  onMount(async () => {
-    balances = $assetBalances.crcBalances;
-    loading = false;
-  });
+onMount(async () => {
+  balances = $assetBalances.crcBalances;
+  loading = false;
+});
 </script>
 
 <div class="p-5">
   <div class="w-full mb-4 text-center">
-    <h1 class="uppercase font-heading"><Label key="dapps.o-banking.pages.crcDetail.individualCircles" /></h1>
+    <h1 class="uppercase font-heading">{$_("dapps.o-banking.pages.crcDetail.individualCircles")}</h1>
   </div>
   {#if loading}
     <section class="flex items-center justify-center mb-2 ">

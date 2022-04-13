@@ -1,6 +1,5 @@
 <script>
 	import {onMount, tick} from 'svelte';
-	import {_} from "svelte-i18n";
 	import Label from "../../atoms/Label.svelte";
 
 	// props
@@ -27,14 +26,14 @@
 	let average_height;
 
 	$: visible = items.slice(start, end).map((data, i) => {
-		return {index: i + start, data};
+		return { index: i + start, data };
 	});
 
 	// whenever `items` changes, invalidate the current heightmap
 	$: if (mounted) refresh(items, viewport_height, itemHeight);
 
 	async function refresh(items, viewport_height, itemHeight) {
-		const {scrollTop} = viewport;
+		const { scrollTop } = viewport;
 
 		await tick(); // wait until the DOM is up to date
 
@@ -67,7 +66,7 @@
 	}
 
 	async function handle_scroll() {
-		const {scrollTop} = viewport;
+		const { scrollTop } = viewport;
 
 		const old_start = start;
 

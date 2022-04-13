@@ -6,12 +6,8 @@ import {
   Purchase,
   Purchased,
 } from "../../../../shared/api/data/types";
-import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
-import { onMount } from "svelte";
-
 import dayjs from "dayjs";
 
-import { _ } from "svelte-i18n";
 
 export let event: ProfileEvent;
 

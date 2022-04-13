@@ -1,59 +1,53 @@
 <script lang="ts">
-  import {Offer} from "../../../shared/api/data/types";
-  import {onMount} from "svelte";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {Subscription} from "rxjs";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import {cartContents} from "../stores/shoppingCartStore";
-  import {push} from "svelte-spa-router";
-  import UserImage from "../../../shared/atoms/UserImage.svelte";
-  import {offers} from "../../../shared/stores/offers";
-  import {_} from "svelte-i18n";
-  import Label from "../../../shared/atoms/Label.svelte";
+import { Offer } from "../../../shared/api/data/types";
+import { onMount } from "svelte";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { Subscription } from "rxjs";
+import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import { cartContents } from "../stores/shoppingCartStore";
+import { push } from "svelte-spa-router";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
+import { offers } from "../../../shared/stores/offers";
+import Label from "../../../shared/atoms/Label.svelte";
 
-  let isLoading: boolean;
-  let error: Error;
-  let offer: Offer[] = [];
-  let shellEventSubscription: Subscription;
+let isLoading: boolean;
+let error: Error;
+let offer: Offer[] = [];
+let shellEventSubscription: Subscription;
 
-  export let id: number;
+export let id: number;
 
-  async function load() {
-    if (!id) {
-      offer = [];
+async function load() {
+  if (!id) {
+    offer = [];
+    return;
+  }
+
+  const o = await offers.findById(parseInt(id.toString()));
+  offer = o ? [o] : [];
+  isLoading = false;
+}
+
+function addToCart(item) {
+  $cartContents = $cartContents ? [...$cartContents, item] : [item];
+  push(`#/marketplace/cart`);
+}
+
+onMount(async () => {
+  isLoading = true;
+  await load();
+
+  shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent) => {
+    if (event.type != "shell.refresh" || (<any>event).dapp != "marketplace:1") {
       return;
     }
-
-    const o = await offers.findById(parseInt(id.toString()));
-    offer = o ? [o] : [];
-    isLoading = false;
-  }
-
-  function addToCart(item) {
-    $cartContents = $cartContents ? [...$cartContents, item] : [item];
-    push(`#/marketplace/cart`);
-  }
-
-  onMount(async () => {
-    isLoading = true;
     await load();
-
-    shellEventSubscription = window.o.events.subscribe(
-            async (event: PlatformEvent) => {
-              if (
-                      event.type != "shell.refresh" ||
-                      (<any>event).dapp != "marketplace:1"
-              ) {
-                return;
-              }
-              await load();
-            }
-    );
-
-    return () => {
-      shellEventSubscription.unsubscribe();
-    };
   });
+
+  return () => {
+    shellEventSubscription.unsubscribe();
+  };
+});
 </script>
 
 <div class="">
@@ -82,9 +76,7 @@
           <header class=" rounded-t-xl headerImageContainer">
             <div class="relative rounded-t-xl image-wrapper">
               <img
-                src="{o.pictureUrl
-                  ? o.pictureUrl
-                  : '/images/market/circles-no-image.jpg'}"
+                src="{o.pictureUrl ? o.pictureUrl : '/images/market/circles-no-image.jpg'}"
                 alt="
                 "
                 class="w-full rounded-t-xl" />
@@ -94,8 +86,7 @@
                 <span class="inline-block">€</span>
               </div>
 
-              <div
-                class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
+              <div class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
                 <Label key="dapps.o-marketplace.atoms.offerCard.pickUpOnly" />
               </div>
             </div>
@@ -103,10 +94,7 @@
           <div
             class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
             <div class="inline-flex">
-              <UserImage
-                profile="{o.createdByProfile}"
-                size="{10}"
-                gradientRing="{false}" />
+              <UserImage profile="{o.createdByProfile}" size="{10}" gradientRing="{false}" />
             </div>
             <div>
               {o.createdByProfile.displayName}
@@ -138,7 +126,7 @@
               </div>
             {/if}
             <!-- {#if o.deliveryTermsTag} -->
-            <div class="flex flex-col space-y-1 text-right">
+            <!-- <div class="flex flex-col space-y-1 text-right">
               <div class="pt-2 text-sm">
                 <span class="text-xs"
                   >{$_(
@@ -151,16 +139,16 @@
                 <span class="text-sm font-thin"
                   >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
               </div>
-            </div>
+            </div> -->
             <!-- {/if} -->
-            {#if o.city}
+            <!-- {#if o.city}
               <div class="flex flex-col space-y-1">
                 <div class="text-2xs">
-                  <Label key="dapps.o-marketplace.pages.offerDetail.location" />
+                  {$_("dapps.o-marketplace.pages.offerDetail.location")}
                 </div>
                 <div class="text-sm text-dark-lightest">{o.city.name}</div>
               </div>
-            {/if}
+            {/if} -->
           </div>
 
           <!-- <div class="relative flex-grow text-left">
@@ -311,25 +299,20 @@
       <!-- 
       <CreatorCard profile={o.createdBy} />
       <OfferCard {o} allowEdit={true} /> -->
-      <div
-        class="sticky bottom-0 left-0 right-0 w-full px-4 pb-4 mt-4 bg-white rounded-xl">
+      <div class="sticky bottom-0 left-0 right-0 w-full px-4 pb-4 mt-4 bg-white rounded-xl">
         <div class="flex flex-row space-x-4">
           <div>
             <button
               class="btn btn-square btn-light"
-              on:click="{() =>
-                push(`#/contacts/chat/${o.createdByProfile.circlesAddress}`)}">
-              <Icons icon="chat" />
+              on:click="{() => push(`#/contacts/chat/${o.createdByProfile.circlesAddress}`)}">
+              <Icon name="chat" class="w-6 h-6 heroicon smallicon" />
             </button>
           </div>
           <div class="flex-grow">
-            <button
-              type="submit"
-              class="relative btn btn-primary btn-block"
-              on:click="{() => addToCart(o)}">
+            <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => addToCart(o)}">
               <Label key="dapps.o-marketplace.pages.offerDetail.addToCart" />
               <div class="absolute mr-1 right-2">
-                <Icons icon="cart" />
+                <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
               </div>
             </button>
           </div>

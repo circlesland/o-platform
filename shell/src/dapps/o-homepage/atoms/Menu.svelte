@@ -3,9 +3,9 @@
   import {_} from "svelte-i18n";
   import Label from "../../../shared/atoms/Label.svelte";
 
-  async function login() {
-    window.o.runProcess(identify, {redirectTo: "/home"});
-  }
+async function login() {
+  window.o.runProcess(identify, { redirectTo: "/home" });
+}
 </script>
 
 <nav class="relative flex items-center justify-center w-full lg:space-x-16">

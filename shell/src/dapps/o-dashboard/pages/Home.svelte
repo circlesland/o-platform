@@ -4,15 +4,16 @@
   import {push} from "svelte-spa-router";
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {
-    Capability,
-    CapabilityType,
-    StatsDocument,
-  } from "../../../shared/api/data/types";
-  import DashboardHeader from "../atoms/DashboardHeader.svelte";
+  import {Capability, CapabilityType, StatsDocument} from "../../../shared/api/data/types";
+  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
   import Icons from "../../../shared/molecules/Icons.svelte";
   import {Environment} from "../../../shared/environment";
   import {_} from "svelte-i18n";
+  import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
+  import DashboardEventsWidget from "../molecules/DashboardEventsWidget.svelte";
+  import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
+  import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+
   import Label from "../../../shared/atoms/Label.svelte";
   import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
 
@@ -25,7 +26,10 @@
   let disableBanking: boolean = false;
   let canVerify: boolean = false;
 
-  let safeDeployThreshold: string = "200000000000000000";
+  let showInviteButton = false;
+
+  let profilesCount: number;
+  let statsResult: any;
 
   const init = async () => {
     const pk = sessionStorage.getItem("circlesKey");
@@ -33,13 +37,13 @@
 
     const sessionInfo = await me.getSessionInfo();
     capabilities = sessionInfo.capabilities;
-    canVerify =
-            capabilities &&
-            capabilities.find((o) => o.type == CapabilityType.Verify) &&
-            Environment.allowVerify;
-  };
+    canVerify = capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
 
-  let showInviteButton = false;
+    statsResult = await fetchStats();
+    profilesCount = statsResult.data.stats.profilesCount;
+
+    console.log("STATS", statsResult.data);
+  };
 
   onMount(init);
 
@@ -59,58 +63,35 @@
     if (result.errors) {
       throw new Error(`Couldn't load stats': ${JSON.stringify(result.errors)}`);
     }
+
     return result;
   }
-
-  let statsPromise = fetchStats();
 </script>
 
-<DashboardHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
+<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  <div class="m-4 mb-40 -mt-4">
-    <section class="p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card">
-      <div class="w-full text-3xl text-center font-heading">CIRCLESLAND</div>
-      <LangSwitcher />
-      <div class="flex flex-row items-stretch w-full justify-items-center">
-        <div class="flex flex-col flex-grow">
-          <div class="text-6xl text-center font-heading text-primary">
-            {#await statsPromise}
-              ...
-            {:then result}
-              {result.data.stats.profilesCount
-                ? result.data.stats.profilesCount
-                : "0"}
-            {/await}
+  <div class="m-4 mb-40 ">
+    <DashboardInvitesWidget stats="{statsResult}" />
+    <!-- <DashboardEventsWidget profilesCount="{profilesCount}" /> -->
+    <div class="grid grid-cols-2 gap-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
+      <section class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          <div class="pt-2 text-primary">
+            <!-- <Icons icon="dashpassport" /> -->
+            <Icon name="identification" class="w-20 h-20 heroicon" />
           </div>
-          <div class="text-center font-primary text-dark">
-            <Label key="dapps.o-dashboard.pages.home.totalCitizens" />
+          <div class="mt-4 text-3xl font-heading text-dark">
+            <LangSwitcher />
           </div>
         </div>
-        <div class="flex flex-col flex-grow">
-          <div class="text-6xl text-center font-heading text-primary">
-            {#await statsPromise}
-              ...
-            {:then result}
-              {result.data.stats.verificationsCount
-                ? result.data.stats.verificationsCount
-                : "0"}
-            {/await}
-          </div>
-          <div class="text-center font-primary text-dark">
-            <Label key="dapps.o-dashboard.pages.home.verifiedCitizens" />
-          </div>
-        </div>
-      </div>
-    </section>
-    <div
-      class="grid grid-cols-2 gap-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
+      </section>
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/passport/profile')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashpassport" />
+            <!-- <Icons icon="dashpassport" /> -->
+            <Icon name="identification" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             <Label key="dapps.o-dashboard.pages.home.passport" />
@@ -120,10 +101,9 @@
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/contacts')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashfriends" />
+            <Icon name="users" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             <Label key="dapps.o-dashboard.pages.home.contacts" />
@@ -133,10 +113,9 @@
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/contacts/chat')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashchat" />
+            <Icon name="chat" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             <Label key="dapps.o-dashboard.pages.home.chat" />
@@ -146,10 +125,9 @@
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/banking/transactions')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashbanking" />
+            <Icon name="cash" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             <Label key="dapps.o-dashboard.pages.home.banking" />
@@ -158,11 +136,10 @@
       </section>
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click="{() => loadLink('/marketplace/market')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+        on:click="{() => loadLink('/marketplace/locations')}">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icons icon="dashmarket" />
+            <Icon name="shopping-cart" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             <Label key="dapps.o-dashboard.pages.home.market" />
@@ -173,29 +150,15 @@
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
           on:click="{() => loadLink('/verification/verifications')}">
-          <div
-            class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
-              <Icons icon="check" size="{12}" />
+              <Icon name="badge-check" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               <Label key="dapps.o-dashboard.pages.home.verified" />
             </div>
           </div>
         </section>
-        <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click="{() => loadLink('/translations')}">
-        <div
-          class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-          <div class="pt-2 text-primary">
-            <Icons icon="check" size="{12}" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.verified" />
-          </div>
-        </div>
-      </section>
       {/if}
     </div>
   </div>

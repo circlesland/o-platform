@@ -1,6 +1,5 @@
 <script>
-  import {toAddress, computeFlow} from "./utility";
-  import {_} from "svelte-i18n";
+  import { toAddress, computeFlow } from "./utility";
   import Label from "../atoms/Label.svelte";
 
   let transferFrom;
@@ -10,7 +9,7 @@
   export let transfers = [];
   export let maxValue = 0;
 
-  let compute = async function () {
+  let compute = async function() {
     let flow = await computeFlow(
             await toAddress(transferFrom),
             await toAddress(transferTo),

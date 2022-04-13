@@ -40,13 +40,6 @@ mutation createPurchase($lines: [PurchaseLineInput!]!) {
   }
 }
 
-mutation exchangeToken {
-  exchangeToken {
-    success
-    errorMessage
-  }
-}
-
 mutation requestSessionChallenge($address: String!) {
   requestSessionChallenge(address: $address)
 }
@@ -58,25 +51,12 @@ mutation verifySessionChallenge($challenge: String!, $signature: String!) {
   }
 }
 
-mutation authenticateAt($appId: String!) {
-  authenticateAt(appId: $appId) {
-    appId
-    success
-    errorMessage
-    challengeType
-    delegateAuthCode
-    validTo
-  }
-}
-
-
-
 mutation addNewLang($langToCreate: String, $langToCopyFrom: String) {
   addNewLang(langToCreate: $langToCreate, langToCopyFrom: $langToCopyFrom )
 }
 
 mutation updateValue($lang: String, $key: String, $createdBy: String, $value: String) {
-  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value) 
+  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value)
 }
 
 mutation claimInvitation($code: String!) {
@@ -91,20 +71,12 @@ mutation claimInvitation($code: String!) {
   }
 }
 
-mutation acknowledge($until: String!) {
-  acknowledge(until: $until)
+mutation acknowledge($until: Date!, $safeAddress: String) {
+  acknowledge(until: $until, safeAddress: $safeAddress)
 }
 
-mutation sendMessage(
-  $fromSafeAddress: String
-  $toSafeAddress: String!
-  $content: String!
-) {
-  sendMessage(
-    fromSafeAddress: $fromSafeAddress
-    toSafeAddress: $toSafeAddress
-    content: $content
-  ) {
+mutation sendMessage($fromSafeAddress: String, $toSafeAddress: String!, $content: String!) {
+  sendMessage(fromSafeAddress: $fromSafeAddress, toSafeAddress: $toSafeAddress, content: $content) {
     success
     error
     event {
@@ -175,13 +147,6 @@ mutation redeemClaimedInvitation {
   }
 }
 
-mutation consumeDepositedChallenge($delegateAuthCode: String!) {
-  consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
-    success
-    challenge
-  }
-}
-
 mutation logout {
   logout {
     success
@@ -243,6 +208,12 @@ mutation upsertProfile(
     }
   ) {
     id
+    circlesAddress
+    displayCurrency
+    circlesSafeOwner
+    invitationLink
+    successorOfCirclesAddress
+    displayName
     firstName
     lastName
     emailAddress
@@ -252,23 +223,55 @@ mutation upsertProfile(
     avatarUrl
     avatarCid
     avatarMimeType
-    circlesAddress
-    circlesSafeOwner
     newsletter
-    displayCurrency
     displayTimeCircles
-    successorOfCirclesAddress
+    displayCurrency
     cityGeonameid
     city {
       geonameid
-      country
       name
+      country
       latitude
       longitude
       population
-      feature_code
     }
-    status
+    memberships {
+      isAdmin
+      organisation {
+        id
+        circlesAddress
+        displayCurrency
+        displayName
+        circlesSafeOwner
+        name
+        description
+        avatarUrl
+        cityGeonameid
+        city {
+          geonameid
+          country
+          name
+          population
+        }
+      }
+    }
+    verifications {
+      createdAt
+      revokedAt
+      verifierSafeAddress
+      verifierProfile {
+        id
+        circlesAddress
+        displayCurrency
+        avatarUrl
+        name
+        city {
+          geonameid
+          name
+          country
+        }
+      }
+    }
   }
 }
 
@@ -400,5 +403,63 @@ mutation announcePayment($invoiceId: Int!, $transactionHash: String!) {
     transactionHash
     invoiceId
     pickupCode
+    simplePickupCode
+  }
+}
+
+mutation upsertShop($shop:ShopInput!) {
+  upsertShop(shop: $shop) {
+    id
+    name
+    description
+    smallBannerUrl
+    largeBannerUrl
+    openingHours
+    private
+    productListingStyle
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    categories {
+      id
+      name
+      description
+      sortOrder
+      entries {
+        id
+        sortOrder
+        product {
+          id
+          version
+          title
+          description
+          pictureUrl
+          pricePerUnit
+          createdByProfile {
+            id
+            displayName
+            avatarUrl
+            circlesAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation upsertShopCategories($shopCategories:[ShopCategoryInput!]!) {
+  upsertShopCategories(shopCategories: $shopCategories) {
+    inserted
+    updated
+  }
+}
+
+mutation upsertShopCategoryEntries($shopCategoryEntries:[ShopCategoryEntryInput!]!) {
+  upsertShopCategoryEntries(shopCategoryEntries: $shopCategoryEntries) {
+    inserted
+    updated
   }
 }

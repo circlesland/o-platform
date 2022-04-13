@@ -1,42 +1,77 @@
 <script lang="ts">
-  import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
-  import PassportHeader from "../atoms/PassportHeader.svelte";
-  import {me} from "../../../shared/stores/me";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {Profile} from "../../../shared/api/data/types";
-  import {upsertIdentity} from "../processes/upsertIdentity";
-  import {_} from "svelte-i18n"
-  import Label from "../../../shared/atoms/Label.svelte";
+import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
+import PassportHeader from "../atoms/PassportHeader.svelte";
+import { me } from "../../../shared/stores/me";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { Profile } from "../../../shared/api/data/types";
+import { upsertIdentity } from "../processes/upsertIdentity";
+import Label from "../../../shared/atoms/Label.svelte";
+import {_} from "svelte-i18n";
 
-  let name;
-  let profile: Profile;
+import { onMount } from "svelte";
+import { upsertOrganisation } from "../../o-coop/processes/upsertOrganisation";
+import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+let name;
+let profile: Profile;
 
-  $: name = profile?.circlesAddress ? profile.circlesAddress : "";
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  $: {
-    if ($me) {
-      profile = $me;
-    } else {
-      profile = undefined;
-    }
+const options = {};
+
+$: name = profile?.circlesAddress ? profile.circlesAddress : "";
+
+onMount(() => {
+  if ($me) {
+    profile = $me;
+  } else {
+    profile = undefined;
   }
+});
 
-  function editProfile(dirtyFlags: { [x: string]: boolean }) {
+function editProfile(dirtyFlags: { [x: string]: boolean }) {
+  if (profile.__typename == "Organisation") {
+    window.o.runProcess(
+      upsertOrganisation,
+      profile,
+      {},
+      Object.keys(dirtyFlags)
+    );
+  } else {
     window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
   }
+}
 </script>
 
 <PassportHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
-  <div class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md">
+<div class="flex flex-col px-4 mx-auto mb-20 -mt-3 space-y-6 md:w-2/3 xl:w-1/2">
+  <div
+    class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md cardborder">
     <section class="justify-center">
+      <div class="flex flex-col w-full space-y-2">
+        <div class="text-left text-2xs text-dark-lightest">
+          {$_("dapps.o-passport.pages.home.qrcode")}
+        </div>
+        <div class="container">
+          <center>
+            {#if profile}
+              <QrCode value="{profile.circlesAddress}" />
+            {/if}
+          </center>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div
+    class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md cardborder">
+    <!-- <section class="justify-center">
       <div class="flex flex-col w-full space-y-1">
-        <div class="mb-1 text-left text-2xs text-dark-lightest"><Label key="dapps.o-passport.pages.home.passion" /></div>
+        <div class="mb-1 text-left text-2xs text-dark-lightest">
+          {$_("dapps.o-passport.pages.home.passion")}
+        </div>
 
         <div class="flex items-center w-full space-x-2 sm:space-x-4">
           <div
@@ -44,15 +79,17 @@
             on:click="{() => editProfile({ dream: true })}">
             {#if profile && profile.dream}
               {profile.dream}
-            {:else}<Label key="dapps.o-passport.pages.home.noPassionSet" />{/if}
+            {:else}{$_("dapps.o-passport.pages.home.noPassionSet")}{/if}
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
     {#if profile && profile.circlesAddress}
       <section class="justify-center">
         <div class="flex flex-col w-full space-y-1">
-          <div class="text-left text-2xs text-dark-lightest"><Label key="dapps.o-passport.pages.home.address" /></div>
+          <div class="text-left text-2xs text-dark-lightest">
+            <Label key="dapps.o-passport.pages.home.address" />
+          </div>
 
           <div class="flex items-center w-full space-x-2 sm:space-x-4">
             <div class="text-left">

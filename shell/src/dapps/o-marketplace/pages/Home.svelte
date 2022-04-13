@@ -2,83 +2,67 @@
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import OfferCard from "../atoms/OfferCard.svelte";
 import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
+import { offers } from "../../../shared/stores/offers";
+
 import {
   Offer,
-  QueryTagsInput,
-  Tag,
-  TagsDocument,
+  Shop,
+  ShopDocument, ShopQueryVariables,
 } from "../../../shared/api/data/types";
-import { me } from "../../../shared/stores/me";
-import { ApiClient } from "../../../shared/apiConnection";
 
-import { offers } from "../../../shared/stores/offers";
+import {ApiClient} from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+export let storeId:number;
 
-const listArguments = {};
-
-let isLoading: boolean;
-let error: Error;
-let citites: {
-  [name: string]: Offer[];
-} = {};
-let categories: string[] = [];
+let shop: Shop|null = null;
+let offers: Offer[] = [];
 let shellEventSubscription: Subscription;
 
-async function load() {
-  if (isLoading) return;
+onMount(async () => {
+  shop = await ApiClient.query<Shop, ShopQueryVariables>(
+          ShopDocument,
+          {
+            id: parseInt(storeId.toString())
+          }
+  );
 
-  if (!$me.circlesAddress) {
-    isLoading = false;
+  if (!shop || !shop.categories){
+    await push("/not-found");
     return;
   }
 
-  const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(
-    TagsDocument,
-    {
-      typeId_in: ["o-marketplace:offer:category:1"],
-    }
-  );
-  categories = categoryResult.map((o) => o.value);
-  isLoading = false;
-}
-
-onMount(async () => {
-  await load();
-
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
-    }
-  );
-
-  return () => {
-    shellEventSubscription.unsubscribe();
-  };
+  offers = shop.categories.flatMap(o => o.entries.flatMap(o => o.product));
 });
-
-function loadCategoryPage(category: any) {
-  push("#/marketplace/categories/" + category.id + "/" + category.value);
-}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="px-4 mx-auto -mt-3 lg:w-4/5 ">
+  <section class="flex items-start mb-4 cursor-pointer rounded-xl">
+    <div class="flex flex-col w-full">
+      <header class=" rounded-xl">
+        <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
+          <img
+            src="/images/market/circlesShopsm.jpg"
+            alt="
+                "
+            class="w-full rounded-xl opacity-60 object-position: center center;  " />
+          <div
+            class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2 bg-light-lightest">
+            <span class="inline-block">CIRCLES.LAND SHOP</span>
+          </div>
+        </div>
+      </header>
+    </div>
+  </section>
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   <div
     class="grid grid-cols-1 mb-20 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
@@ -90,8 +74,8 @@ function loadCategoryPage(category: any) {
       fetchQueryArguments="{listArguments}"
       dataKey="offers"
       dataLimit="{100}" />-->
-    {#if $offers}
-      {#each $offers as offer}
+    {#if offers}
+      {#each offers as offer}
         <OfferCard param="{offer}" />
       {/each}
     {/if}

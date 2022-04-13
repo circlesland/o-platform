@@ -21,6 +21,7 @@ $: {
       action: async () => action.action(),
     });
   });
+  console.log("ACTIONS", actions);
 
   actions.forEach((action, i) => {
     if (layout.colors.overrides) {

@@ -1,7 +1,5 @@
 <script>
   import {_} from "svelte-i18n";
-  import {component_subscribe} from "svelte/internal";
-  import {countries} from "../../../shared/countries";
   import Label from "../../../shared/atoms/Label.svelte";
 </script>
 
@@ -14,10 +12,10 @@
   <h2
     class="max-w-lg mb-6 text-3xl font-bold tracking-tight text-center   sm:text-4xl sm:leading-none"
   >
-    {$_("dapps.o-homepage.components.countries.allOverTheWorld")}
+    <Label key="dapps.o-homepage.components.countries.allOverTheWorld" />
   </h2>
   <p class="text-base text-gray-700 md:text-lg">
-    {$_("dapps.o-homepage.components.countries.seeAdvancedCountries")}
+    <Label key="dapps.o-homepage.components.countries.seeAdvancedCountries" />
   </p>
 </div>
 
@@ -29,10 +27,10 @@
       <thead class="bg-gray-50">
         <tr class="text-left text-gray-600">
           <th class="px-6 py-4 text-sm font-semibold text-left uppercase">
-            {$_("dapps.o-homepage.components.countries.country")}
+            <Label key="dapps.o-homepage.components.countries.country" />
           </th>
           <th class="px-6 py-4 text-sm font-semibold text-right uppercase">
-            {$_("dapps.o-homepage.components.countries.citizens")}
+            <Label key="dapps.o-homepage.components.countries.citizens" />
           </th>
         </tr>
       </thead>

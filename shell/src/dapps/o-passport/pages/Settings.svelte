@@ -1,65 +1,61 @@
 <script lang="ts">
-  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 
-  import {me} from "../../../shared/stores/me";
-  import {DelayedTrigger} from "@o-platform/o-utils/dist/delayedTrigger";
-  import {onMount} from "svelte";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {showToast} from "../../../shared/toast";
-  import Svelecte, {addFormatter} from "svelecte";
-  import {
-    UpsertProfileDocument,
-    DisplayCurrency,
-    WhoamiDocument,
-    WhoamiQueryVariables,
-  } from "../../../shared/api/data/types";
-  import {upsertIdentity} from "../processes/upsertIdentity";
-  import {ApiClient} from "../../../shared/apiConnection";
-  import {_} from "svelte-i18n";
-  import Label from "../../../shared/atoms/Label.svelte";
+import { me } from "../../../shared/stores/me";
+import { DelayedTrigger } from "@o-platform/o-utils/dist/delayedTrigger";
+import { onMount } from "svelte";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { showToast } from "../../../shared/toast";
+import {_} from "svelte-i18n";
+import {
+  UpsertProfileDocument,
+  DisplayCurrency,
+} from "../../../shared/api/data/types";
+import { upsertIdentity } from "../processes/upsertIdentity";
+import Label from "../../../shared/atoms/Label.svelte";
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  let choices = [
-    {value: DisplayCurrency.Crc, name: "CRC"},
-    {value: DisplayCurrency.Eurs, name: "Euro"},
-    {value: DisplayCurrency.TimeCrc, name: "Time Circles"},
-  ];
+let choices = [
+  { value: DisplayCurrency.Crc, name: "CRC" },
+  { value: DisplayCurrency.Eurs, name: "Euro" },
+  { value: DisplayCurrency.TimeCrc, name: "Time Circles" },
+];
 
-  const delayedTrigger = new DelayedTrigger(200, async () => {
-    console.log("delayedTrigger")
-    // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.mutate({
-      mutation: UpsertProfileDocument,
-      variables: {
-        ...$me,
-        status: ""
-      },
-    });
-
-    if (result.errors) {
-      return;
-    }
-
-    window.o.publishEvent(<PlatformEvent>{
-      type: "shell.authenticated",
-      profile: result.data.upsertProfile,
-    });
-
-    showToast(
-            "success",
-            `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
-    );
+const delayedTrigger = new DelayedTrigger(200, async () => {
+  console.log("delayedTrigger");
+  // TODO: Use process instead of direct api call. (would currently cause flicker in this scenario)
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const result = await apiClient.mutate({
+    mutation: UpsertProfileDocument,
+    variables: {
+      ...$me,
+      status: "",
+    },
   });
 
-  function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
-    console.log("editProfileField")
-    window.o.runProcess(upsertIdentity, $me, dirtyFlags, onlyThesePages);
+  if (result.errors) {
+    return;
   }
+
+  window.o.publishEvent(<PlatformEvent>{
+    type: "shell.authenticated",
+    profile: result.data.upsertProfile,
+  });
+
+  showToast(
+    "success",
+    `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
+  );
+});
+
+function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
+  console.log("editProfileField");
+  window.o.runProcess(upsertIdentity, $me, dirtyFlags, onlyThesePages);
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -125,8 +121,11 @@
             <label class="pl-0 label" for="newsletter">
               <div
                 class="w-full text-left cursor-pointer"
-                on:click="{() => editProfileField(['emailAddress', 'newsletter'], {emailAddress:true})}">
-                {$me.emailAddress}
+                on:click="{() =>
+                  editProfileField(['emailAddress'], { emailAddress: true })}">
+                {$me.emailAddress
+                  ? $me.emailAddress
+                  : "click to enter your email address"}
                 <!-- <input
                     name="emailAddress"
                     id="emailAddress"

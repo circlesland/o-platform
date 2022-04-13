@@ -2,13 +2,15 @@
 import { upsertIdentity } from "../processes/upsertIdentity";
 import { me } from "../../../shared/stores/me";
 import { loadProfile } from "../processes/identify/services/loadProfile";
-import TopNav from "src/shared/atoms/TopNav.svelte";
-import PageHeader from "src/shared/atoms/PageHeader.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import TopNav from "../../../shared/atoms/TopNav.svelte";
+import PageHeader from "../../../shared/atoms/PageHeader.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { getCountryName } from "../../../shared/countries";
 import { Profile, Organisation } from "../../../shared/api/data/types";
+import { upsertOrganisation } from "../../o-coop/processes/upsertOrganisation";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -33,15 +35,28 @@ $: {
     profile = $me;
   }
 
-  if (profile.__typename == "Profile") {
-    displayName = profile.displayName;
-  } else {
-    displayName = profile.name ? " " + profile.name : "";
-  }
+  displayName = profile.displayName;
 }
 
 function editProfileField(onlyThesePages: string[]) {
-  window.o.runProcess(upsertIdentity, profile, {}, onlyThesePages);
+  if (profile.__typename == "Organisation") {
+    window.o.runProcess(
+      upsertOrganisation,
+      {
+        ...profile,
+        successAction: (data) => {
+          window.o.publishEvent(<PlatformEvent>{
+            type: "shell.authenticated",
+            profile: data,
+          });
+        },
+      },
+      {},
+      onlyThesePages
+    );
+  } else {
+    window.o.runProcess(upsertIdentity, profile, {}, onlyThesePages);
+  }
 }
 </script>
 
@@ -55,20 +70,32 @@ function editProfileField(onlyThesePages: string[]) {
       <UserImage profile="{profile}" size="{36}" profileLink="{false}" />
     </div>
 
-    <div on:click="{() => editProfileField(['firstName', 'lastName'])}">
+    <div
+      on:click="{() =>
+        profile.__typename === 'Organisation'
+          ? editProfileField(['name'])
+          : editProfileField(['firstName', 'lastName'])}">
       <h2 class="text-4xl cursor-pointer font-heading">
         {displayName}
       </h2>
     </div>
   </div>
-  {#if profile && profile.city}
-    <div
-      class="mt-1 text-sm text-center cursor-pointer"
-      on:click="{() => editProfileField(['cityGeonameid'])}">
-      {profile.city ? profile.city.name : ""}
-      {profile.city
-        ? ", " + profile.city.country
-        : ", " + getCountryName(profile)}
-    </div>
+  {#if profile}
+    {#if profile.city}
+      <div
+        class="mt-1 text-sm text-center cursor-pointer"
+        on:click="{() => editProfileField(['cityGeonameid'])}">
+        {profile.city ? profile.city.name : ""}
+        {profile.city
+          ? ", " + profile.city.country
+          : ", " + getCountryName(profile)}
+      </div>
+    {:else}
+      <div
+        class="mt-1 text-sm text-center cursor-pointer"
+        on:click="{() => editProfileField(['cityGeonameid'])}">
+        Where do you live?
+      </div>
+    {/if}
   {/if}
 </PageHeader>

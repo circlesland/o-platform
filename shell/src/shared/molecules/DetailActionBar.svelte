@@ -10,8 +10,8 @@ export let actions: {
   action: () => void;
 }[];
 
-let showMore = false;
-let moreItems = undefined;
+// let showMore = false;
+// let moreItems = undefined;
 
 function handleClick(action) {
   if (action.event) {
@@ -23,12 +23,26 @@ function handleClick(action) {
 }
 
 $: {
-  moreItems = actions && actions.length > 2 ? actions.splice(2) : undefined;
-  console.log("actions", actions);
+  // moreItems = actions && actions.length > 2 ? actions.splice(2) : undefined;
 }
 </script>
 
 {#if actions}
+  <div
+    class="flex flex-row flex-wrap items-stretch justify-around mt-2 -mr-2 text-dark">
+    <!-- <ul class="inline-block space-x-8 align-top list-none"> -->
+    {#each actions as action}
+      <ActionListItem
+        icon="{action.icon}"
+        title="{action.title}"
+        colorClass="{action.colorClass}"
+        on:click="{() => handleClick(action)}" />
+    {/each}
+    <!-- </ul> -->
+  </div>
+{/if}
+
+<!-- {#if actions}
   <div class="flex flex-row flex-wrap items-stretch mt-2 -mr-2 text-dark">
     {#if showMore}
       {#each moreItems as action}
@@ -55,4 +69,4 @@ $: {
         on:click="{() => handleClick(action)}" />
     {/each}
   </div>
-{/if}
+{/if} -->

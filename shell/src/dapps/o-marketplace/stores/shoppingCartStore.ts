@@ -1,4 +1,4 @@
-import { writable, readable, derived } from "svelte/store";
+import { writable, derived } from "svelte/store";
 
 export const cartContents = writable(
   JSON.parse(localStorage.getItem("cartContents"))

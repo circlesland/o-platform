@@ -1,68 +1,67 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {loadProfile} from "../../o-passport/processes/identify/services/loadProfile";
-  import {me} from "../../../shared/stores/me";
-  import {Profile, Organisation} from "../../../shared/api/data/types";
-  import UserImage from "../../../shared/atoms/UserImage.svelte";
-  import {clickOutside} from "../../../shared/functions/clickOutside";
-  import {createEventDispatcher} from "svelte";
-  import {displayableName} from "../../../shared/functions/stringHelper";
+import { onMount } from "svelte";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import { loadProfile } from "../../o-passport/processes/identify/services/loadProfile";
+import { me } from "../../../shared/stores/me";
+import { Profile, Organisation } from "../../../shared/api/data/types";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
+import { clickOutside } from "../../../shared/functions/clickOutside";
+import { createEventDispatcher } from "svelte";
+import { displayableName } from "../../../shared/functions/stringHelper";
 
   import {_} from "svelte-i18n";
   import Label from "../../../shared/atoms/Label.svelte";
 
-  let myProfile: Profile;
-  let organisations: [] = [];
-  let profile: Profile;
+let myProfile: Profile;
+let organisations: [] = [];
+let profile: Profile;
 
-  $: name = profile?.circlesAddress ? profile.circlesAddress : "";
+$: name = profile?.circlesAddress ? profile.circlesAddress : "";
 
-  $: {
-    if ($me) {
-      profile = $me;
-    } else {
-      profile = undefined;
-    }
+$: {
+  if ($me) {
+    profile = $me;
+  } else {
+    profile = undefined;
   }
-  onMount(async () => {
-    myProfile = await loadProfile();
-    if (myProfile.memberships && myProfile.memberships.length > 0) {
-      const myMemberships = myProfile.memberships
-              //.filter((o) => o.isAdmin)
-              .map((o) => o.organisation);
-      organisations = <any>[myProfile, ...myMemberships].map((o) => {
-        const displayName = displayableName(
-                (<any>o).firstName ? (<any>o).firstName : (<any>o).name,
-                (<any>o).lastName ? (<any>o).lastName : ""
-        );
+}
+onMount(async () => {
+  myProfile = await loadProfile();
+  if (myProfile.memberships && myProfile.memberships.length > 0) {
+    const myMemberships = myProfile.memberships
+      //.filter((o) => o.isAdmin)
+      .map((o) => o.organisation);
+    organisations = <any>[myProfile, ...myMemberships].map((o) => {
+      const displayName = displayableName(
+        (<any>o).firstName ? (<any>o).firstName : (<any>o).name,
+        (<any>o).lastName ? (<any>o).lastName : ""
+      );
 
-        return {
-          value: o,
-          label: displayName,
-        };
-      });
-    }
+      return {
+        value: o,
+        label: displayName,
+      };
+    });
+  }
+});
+
+const dispatch = createEventDispatcher();
+function clickedOutside() {
+  dispatch("click_outside");
+}
+
+function switchProfile(profile: Profile | Organisation) {
+  clickedOutside();
+  window.o.publishEvent(<PlatformEvent>{
+    type: "shell.loggedOut",
   });
 
-  const dispatch = createEventDispatcher();
-
-  function clickedOutside() {
-    dispatch("click_outside");
-  }
-
-  function switchProfile(profile: Profile | Organisation) {
-    clickedOutside();
-    window.o.publishEvent(<PlatformEvent>{
-      type: "shell.loggedOut",
-    });
-
-    window.o.publishEvent(<PlatformEvent>{
-      type: "shell.authenticated",
-      profile: profile,
-    });
-    location.reload();
-  }
+  window.o.publishEvent(<PlatformEvent>{
+    type: "shell.authenticated",
+    profile: profile,
+  });
+  location.reload();
+}
 </script>
 
 <div class="cls" on:click="{() => clickedOutside()}" use:clickOutside>

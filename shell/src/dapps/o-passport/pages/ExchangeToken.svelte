@@ -1,29 +1,29 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import {push} from "svelte-spa-router";
-  import {ExchangeTokenDocument} from "../../../shared/api/data/types";
-  import {_} from "svelte-i18n";
-  import Label from "../../../shared/atoms/Label.svelte";
+import { onMount } from "svelte";
+import { push } from "svelte-spa-router";
+import { ExchangeTokenDocument } from "../../../shared/api/data/types";
+import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
-  export let params: {
-    jwt?: string;
-  } = {};
+export let params: {
+  jwt?: string;
+} = {};
 
-  onMount(async () => {
-    if (params.jwt) {
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      await apiClient.mutate({
-        mutation: ExchangeTokenDocument,
-      });
+onMount(async () => {
+  if (params.jwt) {
+    const apiClient = await window.o.apiClient.client.subscribeToResult();
+    await apiClient.mutate({
+      mutation: ExchangeTokenDocument,
+    });
 
-      push("/#/home");
-    } else {
-      console.error(
-              "Cannot navigate to ExchangeToken.svelte without 'params.jwt' set. Going back to previous page."
-      );
-      history.back();
-    }
-  });
+    push("/#/home");
+  } else {
+    console.error(
+      "Cannot navigate to ExchangeToken.svelte without 'params.jwt' set. Going back to previous page."
+    );
+    history.back();
+  }
+});
 </script>
 
 <div class="grid grid-cols-1 p-2">

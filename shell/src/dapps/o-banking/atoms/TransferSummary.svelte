@@ -1,35 +1,35 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import Time from "svelte-time";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import {me} from "../../../shared/stores/me";
-  import {Currency} from "../../../shared/currency";
-  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-  import {Profile} from "../../../shared/api/data/types";
-  import {loadProfile} from "../../../shared/functions/loadProfile";
-  import {displayableName} from "../../../shared/functions/stringHelper";
+import { onMount } from "svelte";
+import Time from "svelte-time";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import { me } from "../../../shared/stores/me";
+import { Currency } from "../../../shared/currency";
+// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+import { Profile } from "../../../shared/api/data/types";
+import { loadProfile } from "../../../shared/functions/loadProfile";
+import { displayableName } from "../../../shared/functions/stringHelper";
 
   import {_} from "svelte-i18n";
   import Label from "../../../shared/atoms/Label.svelte";
 
-  export let context: any;
-  let _context: any;
-  let profile: any;
+export let context: any;
+let _context: any;
+let profile: any;
 
-  $: {
-    _context = context;
-  }
+$: {
+  _context = context;
+}
 
-  onMount(async () => {
-    profile = (await loadProfile(context.data.recipientAddress, $me))?.profile;
-    // console.log(
-    //   "loadProfile2: ",
-    //   (profile = await loadProfile(context.data.recipientAddress, $me))
-    // );
-  });
+onMount(async () => {
+  profile = (await loadProfile(context.data.recipientAddress, $me))?.profile;
+  // console.log(
+  //   "loadProfile2: ",
+  //   (profile = await loadProfile(context.data.recipientAddress, $me))
+  // );
+});
 
-  let classes: string;
-  let now = new Date();
+let classes: string;
+let now = new Date();
 </script>
 
 {#if _context.data && profile}

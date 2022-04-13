@@ -1,100 +1,92 @@
 <script lang="ts">
-  import {push} from "svelte-spa-router";
-  import {Offer} from "../../../shared/api/data/types";
-  import {purchase} from "../processes/purchase";
-  import OfferCardField from "./OfferCardField.svelte";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import {me} from "../../../shared/stores/me";
-  import {cartContents} from "../stores/shoppingCartStore";
-  import {truncateString} from "../../../shared/functions/truncateString";
-  import Time from "svelte-time";
-  import {_} from "svelte-i18n";
-  import Label from "../../../shared/atoms/Label.svelte";
+import { push } from "svelte-spa-router";
+import { Offer } from "../../../shared/api/data/types";
+import { purchase } from "../processes/purchase";
+import OfferCardField from "./OfferCardField.svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import { me } from "../../../shared/stores/me";
+import { cartContents } from "../stores/shoppingCartStore";
+import { truncateString } from "../../../shared/functions/truncateString";
+import Time from "svelte-time";
+import Label from "../../../shared/atoms/Label.svelte";
 
-  export let param: Offer = <any>{
-    categoryTag: {
-      value: "",
-      id: 0,
-    },
-    categoryTagId: 0,
-    deliveryTermsTag: {
-      value: "",
-      id: 0,
-    },
-    description: "",
-    unitTag: {
-      value: "",
-      id: 0,
-    },
-    pricePerUnit: "",
+export let param: Offer = <any>{
+  categoryTag: {
+    value: "",
     id: 0,
-    title: "",
-    geonameid: 0,
-    createdBy: {},
-  };
+  },
+  categoryTagId: 0,
+  deliveryTermsTag: {
+    value: "",
+    id: 0,
+  },
+  description: "",
+  unitTag: {
+    value: "",
+    id: 0,
+  },
+  pricePerUnit: "",
+  id: 0,
+  title: "",
+  geonameid: 0,
+  createdBy: {},
+};
 
-  let offer = param;
+let offer = param;
 
-  export let allowEdit: boolean = false;
+export let allowEdit: boolean = false;
 
-  let isEditable: boolean = false;
-  $: {
-    isEditable = allowEdit && $me && offer && $me.id == offer.createdByProfileId;
-  }
+let isEditable: boolean = false;
+$: {
+  isEditable = allowEdit && $me && offer && $me.id == offer.createdByProfileId;
+}
 
-  function edit(dirtyFlags: { [field: string]: boolean }) {
-    // console.log("edit: dirtyFlags:", dirtyFlags);
-    // window.o.runProcess(upsertOffer, offer, dirtyFlags, true);
-  }
+function edit(dirtyFlags: { [field: string]: boolean }) {
+  // console.log("edit: dirtyFlags:", dirtyFlags);
+  // window.o.runProcess(upsertOffer, offer, dirtyFlags, true);
+}
 
-  function loadDetailPage() {
-    push("#/marketplace/offer/" + offer.id);
-  }
+function loadDetailPage() {
+  push("#/marketplace/offer/" + offer.id);
+}
 
-  function buy() {
-    window.o.runProcess(purchase, {});
-  }
+function buy() {
+  window.o.runProcess(purchase, {});
+}
 
-  function addToCart(item) {
-    $cartContents = $cartContents ? [...$cartContents, item] : [item];
-    push(`#/marketplace/cart`);
-  }
+function addToCart(item) {
+  $cartContents = $cartContents ? [...$cartContents, item] : [item];
+  push(`#/marketplace/cart`);
+}
 
-  let now = new Date();
-  let sevendaysago = now.setDate(now.getDate() - 7);
+let now = new Date();
+let sevendaysago = now.setDate(now.getDate() - 7);
 
-  function dateOlderThanSevenDays(unixTime: number) {
-    return sevendaysago > unixTime * 1000;
-  }
+function dateOlderThanSevenDays(unixTime: number) {
+  return sevendaysago > unixTime * 1000;
+}
 
-  let displayName = `${offer.createdByProfile.displayName}`;
+let displayName = `${offer.createdByProfile.displayName}`;
 
-  displayName =
-          displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
+displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
 <section class="flex items-start pb-2 bg-white shadow-md rounded-xl">
   <div class="flex flex-col w-full ">
-    <header
-      class="cursor-pointer rounded-t-xl headerImageContainer"
-      on:click="{() => loadDetailPage()}">
+    <header class="cursor-pointer rounded-t-xl headerImageContainer" on:click="{() => loadDetailPage()}">
       <div class="relative rounded-t-xl image-wrapper">
         <img
-          src="{offer.pictureUrl
-            ? offer.pictureUrl
-            : '/images/market/circles-no-image.jpg'}"
+          src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
           alt="
           "
           class="rounded-t-xl" />
-        <div
-          class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
+        <div class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
           <span class="inline-block">{offer.pricePerUnit}</span>
           <span class="inline-block">€</span>
         </div>
 
-        <div
-          class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
+        <div class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
           <Label key="dapps.o-marketplace.atoms.offerCard.pickUpOnly" />
         </div>
       </div>
@@ -102,10 +94,7 @@
     <div
       class="relative flex flex-row items-center content-start p-2 space-x-4 text-base font-medium text-left bg-light-lighter">
       <div class="inline-flex">
-        <UserImage
-          profile="{offer.createdByProfile}"
-          size="{10}"
-          gradientRing="{true}" />
+        <UserImage profile="{offer.createdByProfile}" size="{10}" gradientRing="{true}" />
       </div>
       <div>
         {displayName}
@@ -125,8 +114,7 @@
       </div>-->
 
       <div class="h-32">
-        <div
-          class="text-4xl leading-tight text-left uppercase break-word font-heading">
+        <div class="text-4xl leading-tight text-left uppercase break-word font-heading">
           {offer.title}
         </div>
 
@@ -139,21 +127,15 @@
 
       <div class="flex flex-row space-x-4">
         <div class="">
-          <button
-            type="submit"
-            class="relative btn btn-primary btn-square"
-            on:click="{() => addToCart(offer)}">
-            <Icons icon="cart" />
+          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => addToCart(offer)}">
+            <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
           </button>
         </div>
         <div class="flex-grow">
-          <button
-            type="submit"
-            class="relative btn btn-primary btn-block"
-            on:click="{() => loadDetailPage()}">
+          <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => loadDetailPage()}">
             <Label key="dapps.o-marketplace.atoms.offerCard.details" />
             <div class="absolute mr-1 right-2">
-              <Icons icon="eye" />
+              <Icon name="eye" class="w-6 h-6 heroicon smallicon" />
             </div>
           </button>
         </div>

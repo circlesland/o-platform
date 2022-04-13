@@ -39,13 +39,13 @@ export function goToPreviouslyDesiredRouteIfExisting() {
         .filter((o) => parseInt(o) != Number.NaN && parseInt(o) >= 0 && parseInt(o) <= 6)
         .map((o) => params[o])
         .filter((o) => !!o && o != "")
-        .reduce((p, c) => p + "/" + c, "");
+        .reduce((p, c) => p + "/" + encodeURIComponent(c), "");
 
       if (path == "" || path == "#" || path == "#/" || path == "/#/") {
         return;
       }
       //stack.pop();
-      push(`#/${params.dappId}${path}`);
+      location.assign(`#/${params.dappId}${path}`);
     }
   } catch (e) {
   } finally {
@@ -58,6 +58,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
     id: `init`,
     initial: "prepare",
     context: {
+      localStorageSchemaVersion: 1,
       session: null,
       openLoginUserInfo: null,
       registration: null,

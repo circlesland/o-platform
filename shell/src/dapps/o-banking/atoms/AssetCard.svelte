@@ -11,6 +11,7 @@ export let balance: string;
 export let variety: number;
 export let description: string;
 
+console.log("SUM ", symbol);
 let pictureUrl: string;
 let varietyDetail;
 

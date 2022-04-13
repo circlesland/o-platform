@@ -4,7 +4,8 @@ import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 
 export type EncryptedKey = {
   iv:  string,
-  base64CypherText: string
+  base64CypherText: string,
+  privateKeyHash: null
 };
 
 export type Eoa = {
@@ -16,7 +17,9 @@ export type Eoa = {
   source: "torus" | "imported" | "local" | null
 }
 
-export type AddressEoaMap = {[address:string]:Eoa}
+export type AddressEoaMap = {
+  [address:string]:Eoa
+}
 
 export class KeyManager {
   public get eoas() {
@@ -157,10 +160,7 @@ export class KeyManager {
       ["encrypt", "decrypt"]);
   }
 
-  async encryptWithPassphrase(passphrase:string, clearTextHexKey:string) : Promise<{
-    iv:  string,
-    base64CypherText: string
-  }> {
+  async encryptWithPassphrase(passphrase:string, clearTextHexKey:string) : Promise<EncryptedKey> {
     const subtleKey = await this.keyFromPassphrase(passphrase);
     const keyBytes = Buffer.from(clearTextHexKey.replace("0x", ""), "hex");
     const iv = crypto.getRandomValues(new Uint8Array(16));
@@ -169,15 +169,20 @@ export class KeyManager {
       subtleKey,
       keyBytes);
 
-    return {
+    const digest = await crypto.subtle.digest("SHA-256", Buffer.from(clearTextHexKey));
+    const verifyHash = Buffer.from(digest).toString("hex");
+
+    return <EncryptedKey>{
       iv: Buffer.from(iv).toString("base64"),
-      base64CypherText: Buffer.from(cypherText).toString("base64")
+      base64CypherText: Buffer.from(cypherText).toString("base64"),
+      privateKeyHash: verifyHash
     };
   }
 
   async decryptWithPassphrase(passphrase: string, base64CypherText:{
     iv: string,
-    base64CypherText: string
+    base64CypherText: string,
+    privateKeyHash: null
   }) : Promise<string> {
     const subtleKey = await this.keyFromPassphrase(passphrase);
     const base64CypherTextBytes = Buffer.from(base64CypherText.base64CypherText, "base64");
@@ -186,6 +191,13 @@ export class KeyManager {
       {name: "AES-CBC", iv: ivBytes},
       subtleKey,
       base64CypherTextBytes);
-    return "0x" + Buffer.from(clearTextBytes).toString("hex");
+    const decryptedKey = "0x" + Buffer.from(clearTextBytes).toString("hex");
+    const digest = await crypto.subtle.digest("SHA-256", Buffer.from(decryptedKey));
+    const verifyHash = Buffer.from(digest).toString("hex");
+    if (verifyHash != base64CypherText.privateKeyHash) {
+      throw new Error(`Invalid pin`);
+    }
+
+    return decryptedKey;
   }
 }

@@ -1,6 +1,5 @@
 <script lang="ts">
 
-import DetailActionBar from "../../../../shared/molecules/DetailActionBar.svelte";
 import Icons from "../../../../shared/molecules/Icons.svelte";
 import {
   InvitationRedeemed,

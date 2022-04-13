@@ -8,6 +8,7 @@ import {AddMemberDocument} from "../../../shared/api/data/types";
 import {promptProfileId} from "../../../shared/api/promptProfileId";
 import {loadProfileByProfileId} from "../../../shared/api/loadProfileByProfileId";
 import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 
 export type AddMemberContextData = {
   successAction: (data:AddMemberContextData) => void,
@@ -56,7 +57,7 @@ const processDefinition = (processId: string) =>
               },
             });
           },
-          onDone: "success",
+          onDone: "#success",
           onError: {
             actions: (context, event) => {
               window.o.lastError = event.data;
@@ -84,8 +85,11 @@ const processDefinition = (processId: string) =>
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
-        }
-      },
+        },
+        data: (context, event: PlatformEvent) => {
+          return context.data;
+        },
+      }
     },
   });
 

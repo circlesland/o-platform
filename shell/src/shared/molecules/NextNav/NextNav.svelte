@@ -34,6 +34,9 @@ export let width: string = "w-full";
       }}"
       props="{navigation.loginPill}" />
   {/if}
+  <div class="absolute bottom-0 right-0">
+    <a href="/" class="w-2 h-2">&nbsp;</a>
+  </div>
 </footer>
 
 <style>

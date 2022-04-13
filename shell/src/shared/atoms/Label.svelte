@@ -2,17 +2,12 @@
 import { onMount } from "svelte";
 
 import {
-    GetStringByMaxVersionDocument,
-    GetStringByLanguageDocument,
-    I18n,
-    MutationUpdateValueArgs,
-    QueryGetStringByMaxVersionArgs,
-    QueryGetStringByLanguageArgs,
-    UpdateValueDocument,
-    MutationAddNewLangArgs,
-    AddNewLangDocument,
-GetAvailableLanguagesQuery,
-GetAvailableLanguagesDocument,
+  I18n,
+  MutationUpdateValueArgs,
+  QueryGetStringByMaxVersionArgs,
+  UpdateValueDocument,
+  GetAvailableLanguagesQuery,
+  GetAvailableLanguagesDocument, GetStringByMaxVersionDocument,
 } from "../api/data/types";
 import {
     ApiClient

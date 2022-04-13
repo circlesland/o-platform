@@ -1,168 +1,146 @@
 <script lang="ts">
-  import {
-    InvoiceDocument,
-    Profile,
-    QueryInvoiceArgs,
-    Sale,
-  } from "../../../shared/api/data/types";
-  import {onMount} from "svelte";
-  import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-  import {Subscription} from "rxjs";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import {push} from "svelte-spa-router";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import Date from "../../../shared/atoms/Date.svelte";
-  import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-  import {displayableName} from "../../../shared/functions/stringHelper";
-  import {saveBufferAs} from "../../../shared/saveBufferAs";
-  import {ApiClient} from "../../../shared/apiConnection";
-  import QrCode from "svelte-qrcode";
-  import {sales} from "../../../shared/stores/sales";
-  import {_} from "svelte-i18n";
-  import Label from "../../../shared/atoms/Label.svelte";
+import {
+  EventType,
+  Invoice,
+  Profile,
+  ProfileEvent,
+  SaleEvent,
+} from "../../../shared/api/data/types";
+import { onMount } from "svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import { push } from "svelte-spa-router";
+import UserImage from "src/shared/atoms/UserImage.svelte";
 
-  export let id: string;
+import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
+import Label from "../../../shared/atoms/Label.svelte";
+import {_} from "svelte-i18n";
+import { mySales } from "../../../shared/stores/mySales";
+import { contacts } from "../../../shared/stores/contacts";
+import relativeTimeString from "../../../shared/functions/relativeTimeString";
 
-  let isLoading: boolean;
-  let error: Error;
-  let buyerProfile: Profile;
-  let sale: Sale;
-  let shellEventSubscription: Subscription;
-  let groupedItems;
-  let actions = [];
+export let id: string;
 
-  async function load() {
-    if (isLoading) return;
+let isLoading: boolean;
+let loadingRequested: boolean;
+let error: Error;
+let buyerProfile: Profile;
 
-    sale = await sales.findById(parseInt(id));
-    if (!sale) {
-      return;
-    }
-    isLoading = false;
+let groupedItems;
+let actions = [];
 
-    actions = [
-      {
-        icon: "chat",
-        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.chat"),
-        action: () => push(`#/contacts/chat/${sale.buyerProfile.circlesAddress}`),
+let saleEvent: ProfileEvent;
+let invoice: Invoice;
+
+async function load() {
+  if (isLoading) {
+    loadingRequested = true;
+    return;
+  }
+
+  saleEvent = await mySales.findByPrimaryKey(EventType.SaleEvent, id);
+  if (!saleEvent) {
+    return;
+  }
+
+  invoice = (<SaleEvent>saleEvent.payload).invoice;
+  buyerProfile = (<SaleEvent>saleEvent.payload).buyer_profile;
+
+  actions = [
+    {
+      icon: "chat",
+      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.chat"),
+      action: () => push(`#/contacts/chat/${buyerProfile.circlesAddress}`),
+    },
+  ];
+
+  if (invoice) {
+    const pickUpAction = {
+      icon: "cash",
+      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
+      action: async () => {
+        const action = actions.find((o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"));
+        actions = actions.splice(actions.indexOf(action) - 1, 1);
+        await mySales.completeSale(invoice.id);
       },
-    ];
-
-    if (sale.invoices && sale.invoices.length) {
-      const pickUpAction = {
-        icon: "transactions",
-        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
-        action: async () => {
-          const action = actions.find(
-                  (o) =>
-                          o.title ==
-                          window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut")
-          );
-          actions = actions.splice(actions.indexOf(action) - 1, 1);
-          await sales.completeSale(sale.invoices[0].id);
-          actions.push(unPickUpAction);
-        },
-      };
-      const unPickUpAction = {
-        icon: "transactions",
-        title: window.i18n(
-                "dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"
-        ),
-        action: async () => {
-          const action = actions.find(
-                  (o) =>
-                          o.title ==
-                          window.i18n(
-                                  "dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"
-                          )
-          );
-          actions = actions.splice(actions.indexOf(action) - 1, 1);
-          await sales.revokeSale(sale.invoices[0].id);
-          actions.push(pickUpAction);
-        },
-      };
-      if (!sale.invoices[0].sellerSignature) {
-        actions.push(pickUpAction);
-      } else if (sale.invoices[0].sellerSignature) {
-        actions.push(unPickUpAction);
+    };
+    const unPickUpAction = {
+      icon: "cash",
+      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"),
+      action: async () => {
+        const action = actions.find(
+          (o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut")
+        );
+        actions = actions.splice(actions.indexOf(action) - 1, 1);
+        await mySales.revokeSale(invoice.id);
+      },
+    };
+    if (!invoice.sellerSignature) {
+      actions.push(pickUpAction);
+    } else if (invoice.sellerSignature) {
+      actions.push(unPickUpAction);
+    }
+    actions.push(
+      {
+        icon: "cash",
+        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.transaction"),
+        action: () => push(`#/banking/transactions/${invoice.paymentTransactionHash}`),
       }
-      actions.push(
-              {
-                icon: "transactions",
-                title: window.i18n(
-                        "dapps.o-marketplace.pages.mySaleDetail.transaction"
-                ),
-                action: () =>
-                        push(
-                                `#/banking/transactions/${sale.invoices[0].paymentTransactionHash}`
-                        ),
-              },
-              {
-                icon: "document",
-                title: window.i18n(
-                        "dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"
-                ),
-                action: async () => {
-                  for (let invoice of sale.invoices) {
-                    const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
-                            InvoiceDocument,
-                            {
-                              invoiceId: invoice.id,
-                            }
-                    );
+      // {
+      //   icon: "document-text",
+      //   title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"),
+      //   action: async () => {
+      //     //for (let invoice of invoice) {
+      //     const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(InvoiceDocument, {
+      //       invoiceId: invoice.id,
+      //     });
 
-                    saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
-                  }
-                },
-              }
-      );
-    }
-  }
-
-  function orderItems(items) {
-    const orderedCart = {};
-    items.forEach((item) => {
-      orderedCart[item.id] = {
-        item: item,
-        qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
-      };
-    });
-
-    return Object.entries(orderedCart).map(([id, item]) => ({id, item}));
-  }
-
-  function totalPrice(items) {
-    let pricePerUnit = 0;
-    if (items) {
-      items.forEach(
-              (e) => (pricePerUnit = pricePerUnit + parseFloat(e.pricePerUnit))
-      );
-    }
-    return pricePerUnit;
-  }
-
-  onMount(async () => {
-    await load();
-
-    groupedItems = sale ? orderItems(sale.lines) : {};
-    buyerProfile = sale?.buyerProfile;
-
-    shellEventSubscription = window.o.events.subscribe(
-            async (event: PlatformEvent) => {
-              if (
-                      event.type != "shell.refresh" ||
-                      (<any>event).dapp != "marketplace:1"
-              ) {
-                return;
-              }
-              await load();
-            }
+      //     saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
+      //     //}
+      //   },
+      // }
     );
+  }
+  groupedItems = invoice ? orderItems(invoice.lines) : {};
+  isLoading = false;
+  if (loadingRequested) {
+    loadingRequested = false;
+    await load();
+  }
+}
 
-    return () => {
-      shellEventSubscription.unsubscribe();
+function orderItems(items) {
+  const orderedCart = {};
+  items.forEach((item) => {
+    orderedCart[item.offer.id] = {
+      item: item,
+      qty: orderedCart[item.offer.id] ? orderedCart[item.offer.id].qty + 1 : 1,
     };
   });
+
+  return Object.entries(orderedCart).map(([id, item]) => ({ id, item }));
+}
+
+function totalPrice(items) {
+  let pricePerUnit = 0;
+  if (items) {
+    items.forEach((e) => (pricePerUnit = pricePerUnit + parseFloat(e.pricePerUnit)));
+  }
+  return pricePerUnit;
+}
+
+onMount(async () => {
+  const contactsSub = contacts.subscribe((next) => {
+    load();
+  });
+  const mySalesSub = mySales.subscribe((next) => {
+    load();
+  });
+
+  return () => {
+    contactsSub();
+    mySalesSub();
+  };
+});
 </script>
 
 <div class="p-5">
@@ -173,45 +151,43 @@
       </h1>
     </div>
     <div class="w-full text-center">
-      {#if sale}
+      {#if invoice}
         <span class="text-dark-lightest"
-          ><Label key="dapps.o-marketplace.pages.mySaleDetail.saleDate" /><Date
-            time="{sale.createdAt}" /></span>
+          ><Label key="dapps.o-marketplace.pages.mySaleDetail.saleDate" />
+          {relativeTimeString(invoice.createdAt, 1, true)}</span>
       {/if}
     </div>
-    {#if sale && sale.invoices}
-      <div
-        class="flex flex-row items-center justify-between px-3 mt-2 text-left">
+    {#if invoice}
+      <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">
         <div
           class="inline-block text-xs "
-          class:text-alert-dark="{!sale.invoices[0].paymentTransactionHash}"
-          class:text-success="{sale.invoices[0].paymentTransactionHash}">
-          {#if sale.invoices[0].paymentTransactionHash}
-            <span><Label key="dapps.o-marketplace.pages.mySales.paid" /></span>
+          class:text-alert-dark="{!invoice.paymentTransactionHash}"
+          class:text-success="{invoice.paymentTransactionHash}">
+          {#if invoice.paymentTransactionHash}
+            <span>{$_("dapps.o-marketplace.pages.mySales.paid")}</span>
             <Icons icon="check" size="{4}" customClass="inline" />
-          {:else if sale.invoices[0].cancelledAt}
+          {:else if invoice.cancelledAt}
             <span><Label key="dapps.o-marketplace.pages.mySales.cancelled" /></span>
           {:else}
-            <span
-              ><Label key="dapps.o-marketplace.pages.mySales.paymentPending" /></span>
+            <span><Label key="dapps.o-marketplace.pages.mySales.paymentPending" /></span>
           {/if}
         </div>
 
         <div
           class="inline-block text-xs "
-          class:text-inactive="{!sale.invoices[0].pickupCode}"
-          class:text-success="{sale.invoices[0].pickupCode}">
+          class:text-inactive="{!invoice.pickupCode}"
+          class:text-success="{invoice.pickupCode}">
           <span><Label key="dapps.o-marketplace.pages.mySales.pickupCode" /></span>
-          {#if sale.invoices[0].pickupCode}
+          {#if invoice.pickupCode}
             <Icons icon="check" size="{4}" customClass="inline" />
           {/if}
         </div>
         <div
           class="inline-block text-xs"
-          class:text-inactive="{!sale.invoices[0].sellerSignature}"
-          class:text-success="{sale.invoices[0].sellerSignature}">
+          class:text-inactive="{!invoice.sellerSignature}"
+          class:text-success="{invoice.sellerSignature}">
           <span><Label key="dapps.o-marketplace.pages.mySales.pickedUp" /></span>
-          {#if sale.invoices[0].sellerSignature}
+          {#if invoice.sellerSignature}
             <Icons icon="check" size="{4}" customClass="inline" />
           {:else}
             <Icons icon="closex" size="{2}" customClass="inline" />
@@ -228,18 +204,14 @@
         </div>
       </div>
     </section>
-  {:else if groupedItems}
+  {:else if !isLoading && buyerProfile && groupedItems}
     <div class="mt-6">
       <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
         <div
           class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left cursor-pointer"
-          on:click="{() =>
-            push(`#/contacts/profile/${buyerProfile.circlesAddress}`)}">
+          on:click="{() => push(`#/contacts/profile/${buyerProfile.circlesAddress}`)}">
           <div class="inline-flex">
-            <UserImage
-              profile="{buyerProfile}"
-              size="{5}"
-              gradientRing="{false}" />
+            <UserImage profile="{buyerProfile}" size="{5}" gradientRing="{false}" />
           </div>
 
           <div>
@@ -248,8 +220,7 @@
         </div>
       </div>
       {#each groupedItems as groupSale, i}
-        <div
-          class="flex items-center justify-between w-full pb-6 mb-6 border-b">
+        <div class="flex items-center justify-between w-full pb-6 mb-6 border-b">
           <div class="flex items-center w-full">
             <img
               src="{groupSale.item.item.offer.pictureUrl}"
@@ -258,18 +229,14 @@
             <div class="flex flex-col items-start w-full ml-2 space-y-2">
               <div class="flex flex-row justify-between w-full">
                 <div class="md:text-md">
-                  <a
-                    href="#/marketplace/offer/{groupSale.item.item.offer.id}"
-                    alt="{groupSale.item.item.offer.title}">
+                  <a href="#/marketplace/offer/{groupSale.item.item.offer.id}" alt="{groupSale.item.item.offer.title}">
                     {groupSale.item.item.offer.title}
                   </a>
                 </div>
               </div>
               <div class="flex items-center justify-end w-full">
                 <div class="flex-grow text-sm text-left text-dark-lightest">
-                  1 {groupSale.item.item.offer.unitTag
-                    ? groupSale.item.item.offer.unitTag.value
-                    : "item"}
+                  1 {groupSale.item.item.offer.unitTag ? groupSale.item.item.offer.unitTag.value : "item"}
                 </div>
 
                 <div class="flex pr-8">

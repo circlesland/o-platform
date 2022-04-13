@@ -6,9 +6,9 @@
 
   export let open = false;
 
-  function handleClickOutside(event) {
-    open = false;
-  }
+function handleClickOutside(event) {
+  open = false;
+}
 </script>
 
 <aside

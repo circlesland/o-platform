@@ -6,7 +6,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
 import { _ } from "svelte-i18n";
 
-export let status: string = undefined;
+export const status: string = undefined;
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;

@@ -2,13 +2,10 @@
   import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
   import {Routable} from "@o-platform/o-interfaces/dist/routable";
   import {Subscription} from "rxjs";
-  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-  import ChatListCard from "../atoms/ChatListCard.svelte";
   import {contacts} from "../../../shared/stores/contacts";
 
-  import {_} from "svelte-i18n";
+  import { _ } from "svelte-i18n";
   import {Contact} from "../../../shared/api/data/types";
-  import Label from "../../../shared/atoms/Label.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -16,7 +13,7 @@
   let error: string | undefined = undefined;
   let shellEventSubscription: Subscription;
 
-  let _contacts: Contact[] = [];
+  let _contacts:Contact[] = [];
   contacts.subscribe(c => {
     console.log("Contacts changed.")
     _contacts = c;

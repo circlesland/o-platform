@@ -1,27 +1,27 @@
 <script lang="ts">
-  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import ContactCard from "../atoms/ContactCard.svelte";
-  import {contacts} from "../../../shared/stores/contacts";
+import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import ContactCard from "../atoms/ContactCard.svelte";
+import { contacts } from "../../../shared/stores/contacts";
 
   import {_} from "svelte-i18n";
   import Label from "../../../shared/atoms/Label.svelte";
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 
-  function sortAlphabetically(a, b) {
-    if (a.contactAddress_Profile.firstName.startsWith("0x")) {
-      return 1;
-    }
-    if (b.contactAddress_Profile.firstName.startsWith("0x")) {
-      return -1;
-    }
-    return a.contactAddress_Profile.firstName.localeCompare(
-            b.contactAddress_Profile.firstName
-    );
+function sortAlphabetically(a, b) {
+  if (a.contactAddress_Profile.firstName.startsWith("0x")) {
+    return 1;
   }
+  if (b.contactAddress_Profile.firstName.startsWith("0x")) {
+    return -1;
+  }
+  return a.contactAddress_Profile.firstName.localeCompare(
+    b.contactAddress_Profile.firstName
+  );
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />

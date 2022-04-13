@@ -1,49 +1,49 @@
 <script lang="ts">
-  import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-  import UserImage from "src/shared/atoms/UserImage.svelte";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
-  import {Capability, CapabilityType} from "../../../shared/api/data/types";
+import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+import UserImage from "src/shared/atoms/UserImage.svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
+import { Capability, CapabilityType } from "../../../shared/api/data/types";
 
-  import {
-    CreatedInvitation,
-    MyInvitationsDocument,
-    MyInvitationsQueryVariables,
-  } from "../../../shared/api/data/types";
-  import {ApiClient} from "../../../shared/apiConnection";
-  import {Environment} from "../../../shared/environment";
+import {
+  CreatedInvitation,
+  MyInvitationsDocument,
+  MyInvitationsQueryVariables,
+} from "../../../shared/api/data/types";
+import { ApiClient } from "../../../shared/apiConnection";
+import { Environment } from "../../../shared/environment";
 
-  import {_} from "svelte-i18n";
-  import {me} from "../../../shared/stores/me";
   import Label from "../../../shared/atoms/Label.svelte";
+import {me} from "../../../shared/stores/me";
 
-  export let capabilities: Capability[] | undefined = [];
+export let capabilities: Capability[] | undefined = [];
 
-  let myInvitations: CreatedInvitation[] = [];
-  let canInvite = false;
+let myInvitations: CreatedInvitation[] = [];
+let canInvite = false;
 
-  async function reload() {
-    const sessionInfo = await me.getSessionInfo();
-    capabilities = sessionInfo.capabilities;
-    canInvite =
-            capabilities &&
-            capabilities.find((o) => o.type == CapabilityType.Invite) &&
-            Environment.allowVerify;
+async function reload() {
+  const sessionInfo = await me.getSessionInfo();
+  capabilities = sessionInfo.capabilities;
+  canInvite =
+    capabilities &&
+    capabilities.find((o) => o.type == CapabilityType.Invite) &&
+    Environment.allowVerify;
 
-    const invitations = await ApiClient.query<CreatedInvitation[],
-            MyInvitationsQueryVariables>(MyInvitationsDocument, {});
+  const invitations = await ApiClient.query<
+    CreatedInvitation[],
+    MyInvitationsQueryVariables
+  >(MyInvitationsDocument, {});
 
-    if (!invitations || !invitations.length) {
-      canInvite = false;
-    }
-    myInvitations = invitations ?? [];
+  if (!invitations || !invitations.length) {
+    canInvite = false;
   }
+  myInvitations = invitations ?? [];
+}
+reload();
 
-  reload();
-
-  function sortAlphabetically(a, b) {
-    return a.name.localeCompare(b.name);
-  }
+function sortAlphabetically(a, b) {
+  return a.name.localeCompare(b.name);
+}
 </script>
 
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
