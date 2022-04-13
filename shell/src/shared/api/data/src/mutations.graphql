@@ -40,13 +40,6 @@ mutation createPurchase($lines: [PurchaseLineInput!]!) {
   }
 }
 
-mutation exchangeToken {
-  exchangeToken {
-    success
-    errorMessage
-  }
-}
-
 mutation requestSessionChallenge($address: String!) {
   requestSessionChallenge(address: $address)
 }

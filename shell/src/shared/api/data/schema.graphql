@@ -100,11 +100,6 @@ type CommonTrust {
     type: String!
 }
 
-type ConsumeDepositedChallengeResponse {
-    challenge: String
-    success: Boolean!
-}
-
 type Contact {
     contactAddress: String!
     contactAddress_Profile: Profile
@@ -206,20 +201,6 @@ type CreatedInviteEoa {
     address: String!
     fee: String!
     for: String!
-}
-
-type DelegateAuthInit {
-    appId: String!
-    challengeType: String
-    delegateAuthCode: String
-    errorMessage: String
-    success: Boolean!
-    validTo: String
-}
-
-type DepositChallengeResponse {
-    errorMessage: String
-    success: Boolean!
 }
 
 type Erc20Balances implements IAggregatePayload {
@@ -388,14 +369,10 @@ type Mutation {
     acknowledge(safeAddress: String, until: Date!): Boolean!
     addMember(groupId: String!, memberAddress: String!): AddMemberResult
     announcePayment(invoiceId: Int!, transactionHash: String!): AnnouncePaymentResult!
-    authenticateAt(appId: String!): DelegateAuthInit!
     claimInvitation(code: String!): ClaimInvitationResult!
     completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
     completeSale(invoiceId: Int!, revoke: Boolean): Invoice!
-    consumeDepositedChallenge(delegateAuthCode: String!): ConsumeDepositedChallengeResponse!
     createTestInvitation: CreateInvitationResult!
-    depositChallenge(jwt: String!): DepositChallengeResponse!
-    exchangeToken: ExchangeTokenResponse!
     importOrganisationsOfAccount: [Organisation!]!
     logout: LogoutResponse!
     purchase(lines: [PurchaseLineInput!]!): [Invoice!]!
@@ -910,10 +887,6 @@ input CrcBalanceAggregateFilter {
 input CreateTagInput {
     typeId: String!
     value: String
-}
-
-input DepositChallenge {
-    jwt: String!
 }
 
 input OffersAggregateFilter {
