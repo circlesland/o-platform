@@ -17,7 +17,7 @@ async function login() {
         aria-label="Our product"
         title="Our product"
         class="font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-        ><Label key="dapps.o-hompage.atoms.menu.chat" /></a>
+        ><Label key="dapps.o-homepage.atoms.menu.chat" /></a>
     </li>
     <li>
       <a
@@ -26,7 +26,7 @@ async function login() {
         aria-label="Our product"
         title="Our product"
         class="font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-        ><Label key="dapps.o-hompage.atoms.menu.forum" /></a>
+        ><Label key="dapps.o-homepage.atoms.menu.forum" /></a>
     </li>
   </ul>
   <a
@@ -44,7 +44,7 @@ async function login() {
         aria-label="About us"
         title="About us"
         class="font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-        ><Label key="dapps.o-hompage.atoms.menu.blog" /></a>
+        ><Label key="dapps.o-homepage.atoms.menu.blog" /></a>
     </li>
     <li>
       <a
@@ -53,11 +53,11 @@ async function login() {
         aria-label="Sign in"
         title="Sign in"
         class="font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-        ><Label key="dapps.o-hompage.atoms.menu.whitepaper" /></a>
+        ><Label key="dapps.o-homepage.atoms.menu.whitepaper" /></a>
     </li>
   </ul>
   <div class="absolute right-0 self-center w-12 justify-self-end">
-    <button class="btn-link" on:click="{login}"><Label key="dapps.o-hompage.atoms.menu.logIn" /></button>
+    <button class="btn-link" on:click="{login}"><Label key="dapps.o-homepage.atoms.menu.logIn" /></button>
   </div>
   <!-- Mobile menu -->
 </nav>
