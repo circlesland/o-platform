@@ -45,6 +45,7 @@ export type TransferContextData = {
   };
   summaryHtml?: string;
   acceptSummary?: boolean;
+  successAction: (data:TransferContextData) => void
 };
 
 export async function findDirectTransfers(from: string, to: string, amount: string) {
@@ -507,6 +508,9 @@ const processDefinition = (processId: string) =>
         field: "__",
         entry: (context) => {
           context.dirtyFlags = {};
+          if (context.data.successAction) {
+            context.data.successAction(context.data);
+          }
         },
         component: TransferSummary,
         params: {
@@ -523,7 +527,7 @@ const processDefinition = (processId: string) =>
         type: "final",
         data: (context, event: PlatformEvent) => {
           return "yeah!";
-        },
+        }
       },
     },
   });

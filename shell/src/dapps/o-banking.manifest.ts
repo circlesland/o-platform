@@ -18,7 +18,6 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
 import { Profile } from "../shared/api/data/types";
 import {push} from "svelte-spa-router";
-import {goToPreviouslyDesiredRouteIfExisting} from "./o-onboarding/processes/init";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
@@ -103,22 +102,7 @@ const assets: Page<any, BankingDappState> = {
 const transferTrigger: Trigger<any, BankingDappState> = {
   routeParts: ["=send", ":amount", ":to"],
   action: async (params:any, runtimeDapp: DappManifest<any>) => {
-    let $me:Profile;
-    me.subscribe(me => $me = me)();
-    console.log(params);
-    if (!RpcGateway.get().utils.isAddress(params.to)) {
-      return;
-    }
-    if (!sessionStorage.getItem("circlesKey")) {
-      sessionStorage.setItem("desiredRoute", JSON.stringify({
-        dappId: "banking",
-        "1": "send",
-        "2": params.amount,
-        "3": params.to
-      }));
-      push("/");
-      return;
-    }
+    const $me = handleTransferTrigger(params);
     window.o.runProcess(transfer, <TransferContextData>{
       safeAddress: $me.circlesAddress,
       recipientAddress: params.to,
@@ -132,6 +116,48 @@ const transferTrigger: Trigger<any, BankingDappState> = {
   icon: "cash",
   type: "trigger",
 };
+
+const transferTriggerRedirect: Trigger<any, BankingDappState> = {
+  routeParts: ["=send", ":amount", ":to", ":redirectUrl"],
+  action: async (params:any, runtimeDapp: DappManifest<any>) => {
+    const $me = handleTransferTrigger(params);
+    window.o.runProcess(transfer, <TransferContextData>{
+      safeAddress: $me.circlesAddress,
+      recipientAddress: params.to,
+      tokens: {
+        currency: "crc",
+        amount: params.amount
+      },
+      successAction:(context) => {
+        window.location = params.redirectUrl;
+      }
+    });
+  },
+  title: "Send money",
+  icon: "cash",
+  type: "trigger",
+};
+
+function handleTransferTrigger(params) {
+  let $me:Profile;
+  me.subscribe(me => $me = me)();
+  console.log(params);
+  if (!RpcGateway.get().utils.isAddress(params.to)) {
+    return $me;
+  }
+  if (!sessionStorage.getItem("circlesKey")) {
+    sessionStorage.setItem("desiredRoute", JSON.stringify({
+      dappId: "banking",
+      "1": "send",
+      "2": params.amount,
+      "3": params.to,
+      "4": params.redirectUrl ? encodeURI(params.redirectUrl) : undefined
+    }));
+    push("/");
+    return $me;
+  }
+  return $me;
+}
 
 const crcDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
@@ -200,5 +226,5 @@ export const banking: DappManifest<BankingDappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [transactions, transactionDetail, assets, crcDetail, xdaiDetail, transferTrigger],
+  routables: [transactions, transactionDetail, assets, crcDetail, xdaiDetail, transferTrigger, transferTriggerRedirect],
 };
