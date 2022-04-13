@@ -5,7 +5,7 @@ import XDaiDetail from "./o-banking/pages/XDaiDetail.svelte";
 
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
 
-import { transfer } from "./o-banking/processes/transfer";
+import {transfer, TransferContextData} from "./o-banking/processes/transfer";
 import { init } from "./o-banking/init";
 import { me } from "../shared/stores/me";
 
@@ -89,22 +89,35 @@ const transactionDetail: Page<{ transactionHash: string }, BankingDappState> = {
   component: TransactionDetailPage,
   jumplist: profileJumplist,
 };
-const transactionSend: Trigger<{ to: string; amount: string; message: string }, BankingDappState> = {
-  isSystem: true,
-  routeParts: ["=transactions", "=send", ":to", ":amount", ":message"],
-  title: "Transactions",
-  type: "trigger",
-  eventFactory: (params) => {
-    // TODO: Implement payment smartlink
-    throw new Error(`Not implemented`);
-  },
-};
+
 const assets: Page<any, BankingDappState> = {
   routeParts: ["=assets"],
   component: Assets,
   title: "Assets",
   icon: "assets",
   type: "page",
+};
+const transferTrigger: Trigger<any, BankingDappState> = {
+  routeParts: ["=send", ":amount", ":to"],
+  action: (params:any, runtimeDapp: DappManifest<any>) => {
+    let $me:Profile;
+    me.subscribe(me => $me = me)();
+    console.log(params);
+    if (!RpcGateway.get().utils.isAddress(params.to)) {
+      return;
+    }
+    window.o.runProcess(transfer, <TransferContextData>{
+      safeAddress: $me.circlesAddress,
+      recipientAddress: params.to,
+      tokens: {
+        currency: "crc",
+        amount: params.amount
+      }
+    })
+  },
+  title: "Send money",
+  icon: "cash",
+  type: "trigger",
 };
 const crcDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
@@ -173,5 +186,5 @@ export const banking: DappManifest<BankingDappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [transactions, transactionDetail, transactionSend, assets, crcDetail, xdaiDetail],
+  routables: [transactions, transactionDetail, assets, crcDetail, xdaiDetail, transferTrigger],
 };
