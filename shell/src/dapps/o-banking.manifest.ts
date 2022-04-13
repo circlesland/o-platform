@@ -151,7 +151,7 @@ function handleTransferTrigger(params) {
       "1": "send",
       "2": params.amount,
       "3": params.to,
-      "4": params.redirectUrl ? encodeURI(params.redirectUrl) : undefined
+      "4": params.redirectUrl
     }));
     push("/");
     return $me;
