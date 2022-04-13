@@ -157,13 +157,6 @@ mutation redeemClaimedInvitation {
   }
 }
 
-mutation consumeDepositedChallenge($delegateAuthCode: String!) {
-  consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
-    success
-    challenge
-  }
-}
-
 mutation logout {
   logout {
     success
