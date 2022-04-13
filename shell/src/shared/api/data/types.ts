@@ -521,6 +521,9 @@ export type Mutation = {
   upsertOrganisation: CreateOrganisationResult;
   upsertProfile: Profile;
   upsertRegion: CreateOrganisationResult;
+  upsertShop: Shop;
+  upsertShopCategories: UpsertShopCategoriesResult;
+  upsertShopCategoryEntries: UpsertShopCategoryEntriesResult;
   upsertTag: Tag;
   verifySafe: VerifySafeResult;
   verifySessionChallenge?: Maybe<ExchangeTokenResponse>;
@@ -633,6 +636,21 @@ export type MutationUpsertProfileArgs = {
 
 export type MutationUpsertRegionArgs = {
   organisation: UpsertOrganisationInput;
+};
+
+
+export type MutationUpsertShopArgs = {
+  shop: ShopInput;
+};
+
+
+export type MutationUpsertShopCategoriesArgs = {
+  shopCategories: Array<ShopCategoryInput>;
+};
+
+
+export type MutationUpsertShopCategoryEntriesArgs = {
+  shopCategoryEntries: Array<ShopCategoryEntryInput>;
 };
 
 
@@ -1280,6 +1298,43 @@ export type ShopCategoryEntry = {
   sortOrder?: Maybe<Scalars['Int']>;
 };
 
+export type ShopCategoryEntryInput = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  private?: Maybe<Scalars['Boolean']>;
+  productId: Scalars['Int'];
+  productVersion: Scalars['Int'];
+  shopCategoryId: Scalars['Int'];
+  sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export type ShopCategoryInput = {
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  largeBannerUrl?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  private?: Maybe<Scalars['Boolean']>;
+  productListingStyle?: Maybe<ProductListingType>;
+  shopId: Scalars['Int'];
+  smallBannerUrl?: Maybe<Scalars['String']>;
+  sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export type ShopInput = {
+  description: Scalars['String'];
+  enabled: Scalars['Boolean'];
+  id?: Maybe<Scalars['Int']>;
+  largeBannerUrl: Scalars['String'];
+  name: Scalars['String'];
+  openingHours?: Maybe<Scalars['String']>;
+  ownerId: Scalars['Int'];
+  private?: Maybe<Scalars['Boolean']>;
+  productListingStyle: ProductListingType;
+  shopListingStyle: ShopListingStyle;
+  smallBannerUrl: Scalars['String'];
+  sortOrder?: Maybe<Scalars['Int']>;
+};
+
 export enum ShopListingStyle {
   Featured = 'FEATURED',
   Regular = 'REGULAR'
@@ -1395,6 +1450,18 @@ export type UpsertProfileInput = {
   newsletter?: Maybe<Scalars['Boolean']>;
   status: Scalars['String'];
   successorOfCirclesAddress?: Maybe<Scalars['String']>;
+};
+
+export type UpsertShopCategoriesResult = {
+  __typename?: 'UpsertShopCategoriesResult';
+  inserted: Scalars['Int'];
+  updated: Scalars['Int'];
+};
+
+export type UpsertShopCategoryEntriesResult = {
+  __typename?: 'UpsertShopCategoryEntriesResult';
+  inserted: Scalars['Int'];
+  updated: Scalars['Int'];
 };
 
 export type UpsertTagInput = {
@@ -1811,6 +1878,64 @@ export type AnnouncePaymentMutation = (
   & { announcePayment: (
     { __typename?: 'AnnouncePaymentResult' }
     & Pick<AnnouncePaymentResult, 'transactionHash' | 'invoiceId' | 'pickupCode' | 'simplePickupCode'>
+  ) }
+);
+
+export type UpsertShopMutationVariables = Exact<{
+  shop: ShopInput;
+}>;
+
+
+export type UpsertShopMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertShop: (
+    { __typename?: 'Shop' }
+    & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'productListingStyle'>
+    & { owner: (
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+    ), categories?: Maybe<Array<(
+      { __typename?: 'ShopCategory' }
+      & Pick<ShopCategory, 'id' | 'name' | 'description' | 'sortOrder'>
+      & { entries?: Maybe<Array<(
+        { __typename?: 'ShopCategoryEntry' }
+        & Pick<ShopCategoryEntry, 'id' | 'sortOrder'>
+        & { product?: Maybe<(
+          { __typename?: 'Offer' }
+          & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+          & { createdByProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'displayName' | 'avatarUrl' | 'circlesAddress'>
+          )> }
+        )> }
+      )>> }
+    )>> }
+  ) }
+);
+
+export type UpsertShopCategoriesMutationVariables = Exact<{
+  shopCategories: Array<ShopCategoryInput> | ShopCategoryInput;
+}>;
+
+
+export type UpsertShopCategoriesMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertShopCategories: (
+    { __typename?: 'UpsertShopCategoriesResult' }
+    & Pick<UpsertShopCategoriesResult, 'inserted' | 'updated'>
+  ) }
+);
+
+export type UpsertShopCategoryEntriesMutationVariables = Exact<{
+  shopCategoryEntries: Array<ShopCategoryEntryInput> | ShopCategoryEntryInput;
+}>;
+
+
+export type UpsertShopCategoryEntriesMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertShopCategoryEntries: (
+    { __typename?: 'UpsertShopCategoryEntriesResult' }
+    & Pick<UpsertShopCategoryEntriesResult, 'inserted' | 'updated'>
   ) }
 );
 
@@ -3394,6 +3519,66 @@ export const AnnouncePaymentDocument = gql`
     invoiceId
     pickupCode
     simplePickupCode
+  }
+}
+    `;
+export const UpsertShopDocument = gql`
+    mutation upsertShop($shop: ShopInput!) {
+  upsertShop(shop: $shop) {
+    id
+    name
+    description
+    smallBannerUrl
+    largeBannerUrl
+    openingHours
+    private
+    productListingStyle
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    categories {
+      id
+      name
+      description
+      sortOrder
+      entries {
+        id
+        sortOrder
+        product {
+          id
+          version
+          title
+          description
+          pictureUrl
+          pricePerUnit
+          createdByProfile {
+            id
+            displayName
+            avatarUrl
+            circlesAddress
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const UpsertShopCategoriesDocument = gql`
+    mutation upsertShopCategories($shopCategories: [ShopCategoryInput!]!) {
+  upsertShopCategories(shopCategories: $shopCategories) {
+    inserted
+    updated
+  }
+}
+    `;
+export const UpsertShopCategoryEntriesDocument = gql`
+    mutation upsertShopCategoryEntries($shopCategoryEntries: [ShopCategoryEntryInput!]!) {
+  upsertShopCategoryEntries(shopCategoryEntries: $shopCategoryEntries) {
+    inserted
+    updated
   }
 }
     `;
@@ -5265,6 +5450,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     announcePayment(variables: AnnouncePaymentMutationVariables): Promise<AnnouncePaymentMutation> {
       return withWrapper(() => client.request<AnnouncePaymentMutation>(print(AnnouncePaymentDocument), variables));
+    },
+    upsertShop(variables: UpsertShopMutationVariables): Promise<UpsertShopMutation> {
+      return withWrapper(() => client.request<UpsertShopMutation>(print(UpsertShopDocument), variables));
+    },
+    upsertShopCategories(variables: UpsertShopCategoriesMutationVariables): Promise<UpsertShopCategoriesMutation> {
+      return withWrapper(() => client.request<UpsertShopCategoriesMutation>(print(UpsertShopCategoriesDocument), variables));
+    },
+    upsertShopCategoryEntries(variables: UpsertShopCategoryEntriesMutationVariables): Promise<UpsertShopCategoryEntriesMutation> {
+      return withWrapper(() => client.request<UpsertShopCategoryEntriesMutation>(print(UpsertShopCategoryEntriesDocument), variables));
     },
     init(variables?: InitQueryVariables): Promise<InitQuery> {
       return withWrapper(() => client.request<InitQuery>(print(InitDocument), variables));

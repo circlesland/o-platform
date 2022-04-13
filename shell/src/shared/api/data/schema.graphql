@@ -389,6 +389,9 @@ type Mutation {
     upsertOrganisation(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
     upsertProfile(data: UpsertProfileInput!): Profile!
     upsertRegion(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
+    upsertShop(shop: ShopInput!): Shop!
+    upsertShopCategories(shopCategories: [ShopCategoryInput!]!): UpsertShopCategoriesResult!
+    upsertShopCategoryEntries(shopCategoryEntries: [ShopCategoryEntryInput!]!): UpsertShopCategoryEntriesResult!
     upsertTag(data: UpsertTagInput!): Tag!
     verifySafe(safeAddress: String!): VerifySafeResult!
     verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
@@ -806,6 +809,16 @@ type UpdateSafeResponse {
     success: Boolean!
 }
 
+type UpsertShopCategoriesResult {
+    inserted: Int!
+    updated: Int!
+}
+
+type UpsertShopCategoryEntriesResult {
+    inserted: Int!
+    updated: Int!
+}
+
 type Verification {
     createdAt: String!
     revokedAt: String
@@ -1044,6 +1057,43 @@ input SalesAggregateFilter {
 
 input SearchInput {
     searchString: String!
+}
+
+input ShopCategoryEntryInput {
+    id: Int
+    name: String
+    private: Boolean
+    productId: Int!
+    productVersion: Int!
+    shopCategoryId: Int!
+    sortOrder: Int
+}
+
+input ShopCategoryInput {
+    description: String
+    id: Int
+    largeBannerUrl: String
+    name: String!
+    private: Boolean
+    productListingStyle: ProductListingType
+    shopId: Int!
+    smallBannerUrl: String
+    sortOrder: Int
+}
+
+input ShopInput {
+    description: String!
+    enabled: Boolean!
+    id: Int
+    largeBannerUrl: String!
+    name: String!
+    openingHours: String
+    ownerId: Int!
+    private: Boolean
+    productListingStyle: ProductListingType!
+    shopListingStyle: ShopListingStyle!
+    smallBannerUrl: String!
+    sortOrder: Int
 }
 
 input UpdateSafeInput {
