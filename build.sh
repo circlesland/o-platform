@@ -35,7 +35,7 @@ npx --no-install  graphql-codegen
 echo "* api"
 npx --no-install  graphql-codegen
 
-cd ../../../../../..
+cd ../../../../..
 
 echo "Building 'shell' with dapps .."
 cd shell || exit
