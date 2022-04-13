@@ -24,7 +24,6 @@ if (event && event.payload.__typename == "Purchased") {
 }
 </script>
 
-SHOOOOOOOOOOOPPPPIINNGGG
 {#if purchase}
   <section
     on:click="{() => push(`#/marketplace/my-purchases/${purchase.id}`)}"
