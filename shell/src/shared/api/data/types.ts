@@ -1480,19 +1480,6 @@ export type VerifySessionChallengeMutation = (
   )> }
 );
 
-export type AuthenticateAtMutationVariables = Exact<{
-  appId: Scalars['String'];
-}>;
-
-
-export type AuthenticateAtMutation = (
-  { __typename?: 'Mutation' }
-  & { authenticateAt: (
-    { __typename?: 'DelegateAuthInit' }
-    & Pick<DelegateAuthInit, 'appId' | 'success' | 'errorMessage' | 'challengeType' | 'delegateAuthCode' | 'validTo'>
-  ) }
-);
-
 export type ClaimInvitationMutationVariables = Exact<{
   code: Scalars['String'];
 }>;
@@ -3026,18 +3013,6 @@ export const VerifySessionChallengeDocument = gql`
   verifySessionChallenge(challenge: $challenge, signature: $signature) {
     success
     errorMessage
-  }
-}
-    `;
-export const AuthenticateAtDocument = gql`
-    mutation authenticateAt($appId: String!) {
-  authenticateAt(appId: $appId) {
-    appId
-    success
-    errorMessage
-    challengeType
-    delegateAuthCode
-    validTo
   }
 }
     `;
@@ -5128,9 +5103,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     verifySessionChallenge(variables: VerifySessionChallengeMutationVariables): Promise<VerifySessionChallengeMutation> {
       return withWrapper(() => client.request<VerifySessionChallengeMutation>(print(VerifySessionChallengeDocument), variables));
-    },
-    authenticateAt(variables: AuthenticateAtMutationVariables): Promise<AuthenticateAtMutation> {
-      return withWrapper(() => client.request<AuthenticateAtMutation>(print(AuthenticateAtDocument), variables));
     },
     claimInvitation(variables: ClaimInvitationMutationVariables): Promise<ClaimInvitationMutation> {
       return withWrapper(() => client.request<ClaimInvitationMutation>(print(ClaimInvitationDocument), variables));
