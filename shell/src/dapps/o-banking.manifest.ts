@@ -17,6 +17,8 @@ import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
 import { Profile } from "../shared/api/data/types";
+import {push} from "svelte-spa-router";
+import {goToPreviouslyDesiredRouteIfExisting} from "./o-onboarding/processes/init";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
@@ -97,13 +99,24 @@ const assets: Page<any, BankingDappState> = {
   icon: "assets",
   type: "page",
 };
+
 const transferTrigger: Trigger<any, BankingDappState> = {
   routeParts: ["=send", ":amount", ":to"],
-  action: (params:any, runtimeDapp: DappManifest<any>) => {
+  action: async (params:any, runtimeDapp: DappManifest<any>) => {
     let $me:Profile;
     me.subscribe(me => $me = me)();
     console.log(params);
     if (!RpcGateway.get().utils.isAddress(params.to)) {
+      return;
+    }
+    if (!sessionStorage.getItem("circlesKey")) {
+      sessionStorage.setItem("desiredRoute", JSON.stringify({
+        dappId: "banking",
+        "1": "send",
+        "2": params.amount,
+        "3": params.to
+      }));
+      push("/");
       return;
     }
     window.o.runProcess(transfer, <TransferContextData>{
@@ -113,12 +126,13 @@ const transferTrigger: Trigger<any, BankingDappState> = {
         currency: "crc",
         amount: params.amount
       }
-    })
+    });
   },
   title: "Send money",
   icon: "cash",
   type: "trigger",
 };
+
 const crcDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
   position: "modal",
