@@ -1,7 +1,0 @@
-query tos($appId:String!) {
-    tos(appId:$appId) {
-        found
-        version
-        url
-    }
-}

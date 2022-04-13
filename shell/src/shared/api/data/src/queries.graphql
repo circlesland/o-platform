@@ -1726,14 +1726,78 @@ query findInvitationCreator($code: String!) {
   }
 }
 
-query organisationsWithOffers {
-  organisationsWithOffers {
+query shop($id:Int!) {
+  shop(id:$id) {
+    id
     name
-    displayName
-    circlesAddress
-    avatarUrl
+    description
     smallBannerUrl
     largeBannerUrl
-    productListingType
+    openingHours
+    private
+    productListingStyle
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    categories {
+      id
+      name
+      description
+      sortOrder
+      entries {
+        id
+        sortOrder
+        product {
+          id
+          version
+          title
+          description
+          pictureUrl
+          pricePerUnit
+          createdByProfile {
+            id
+            displayName
+            avatarUrl
+            circlesAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+query shops {
+  shops {
+    id
+    createdAt
+    name
+    description
+    smallBannerUrl
+    largeBannerUrl
+    openingHours
+    private
+    shopListingStyle
+    productListingStyle
+    sortOrder
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    pickupAddress {
+      name
+      street
+      house
+      city {
+        name
+        country
+      }
+      zip
+      state
+    }
   }
 }

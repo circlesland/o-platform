@@ -68,7 +68,7 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
 
 const market: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["=market", ":storeCirclesAddress"],
+  routeParts: ["=market", ":storeId"],
   component: Home,
   title: "Market",
   type: "page",
@@ -76,7 +76,7 @@ const market: Page<any, DappState> = {
 
 const list: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["=list", ":storeCirclesAddress"],
+  routeParts: ["=list", ":storeId"],
   component: ListView,
   title: "List",
   type: "page",

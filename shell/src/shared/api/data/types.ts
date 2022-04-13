@@ -736,6 +736,18 @@ export type PaginationArgs = {
   order: SortOrder;
 };
 
+export type PostAddress = {
+  __typename?: 'PostAddress';
+  city?: Maybe<City>;
+  cityGeonameid: Scalars['Int'];
+  house: Scalars['String'];
+  id: Scalars['Int'];
+  name?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  street: Scalars['String'];
+  zip: Scalars['String'];
+};
+
 export enum ProductListingType {
   List = 'LIST',
   Tiles = 'TILES'
@@ -929,7 +941,6 @@ export type Query = {
   myProfile?: Maybe<Profile>;
   organisations: Array<Organisation>;
   organisationsByAddress: Array<Organisation>;
-  organisationsWithOffers: Array<Organisation>;
   profilesById: Array<Profile>;
   profilesBySafeAddress: Array<Profile>;
   recentProfiles: Array<Profile>;
@@ -937,6 +948,8 @@ export type Query = {
   safeInfo?: Maybe<SafeInfo>;
   search: Array<Profile>;
   sessionInfo: SessionInfo;
+  shop?: Maybe<Shop>;
+  shops: Array<Shop>;
   stats: Stats;
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
@@ -1036,6 +1049,11 @@ export type QuerySafeInfoArgs = {
 
 export type QuerySearchArgs = {
   query: SearchInput;
+};
+
+
+export type QueryShopArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -1214,6 +1232,58 @@ export type SessionInfo = {
   profile?: Maybe<Profile>;
   profileId?: Maybe<Scalars['Int']>;
 };
+
+export type Shop = {
+  __typename?: 'Shop';
+  categories?: Maybe<Array<ShopCategory>>;
+  createdAt: Scalars['Date'];
+  description: Scalars['String'];
+  id: Scalars['Int'];
+  largeBannerUrl: Scalars['String'];
+  name: Scalars['String'];
+  openingHours?: Maybe<Scalars['String']>;
+  owner: Organisation;
+  pickupAddress?: Maybe<PostAddress>;
+  private?: Maybe<Scalars['Boolean']>;
+  productListingStyle: ProductListingType;
+  shopListingStyle: ShopListingStyle;
+  smallBannerUrl: Scalars['String'];
+  sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export type ShopCategory = {
+  __typename?: 'ShopCategory';
+  createdAt?: Maybe<Scalars['Date']>;
+  description?: Maybe<Scalars['String']>;
+  entries?: Maybe<Array<ShopCategoryEntry>>;
+  id: Scalars['Int'];
+  largeBannerUrl?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  private?: Maybe<Scalars['Boolean']>;
+  productListingStyle?: Maybe<ProductListingType>;
+  shop?: Maybe<Shop>;
+  shopId: Scalars['Int'];
+  smallBannerUrl?: Maybe<Scalars['String']>;
+  sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export type ShopCategoryEntry = {
+  __typename?: 'ShopCategoryEntry';
+  createdAt: Scalars['Date'];
+  id: Scalars['Int'];
+  private?: Maybe<Scalars['Boolean']>;
+  product?: Maybe<Offer>;
+  productId: Scalars['Int'];
+  productVersion: Scalars['Int'];
+  shopCategory?: Maybe<ShopCategory>;
+  shopCategoryId: Scalars['Int'];
+  sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export enum ShopListingStyle {
+  Featured = 'FEATURED',
+  Regular = 'REGULAR'
+}
 
 export enum SortOrder {
   Asc = 'ASC',
@@ -2873,14 +2943,57 @@ export type FindInvitationCreatorQuery = (
   )> }
 );
 
-export type OrganisationsWithOffersQueryVariables = Exact<{ [key: string]: never; }>;
+export type ShopQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
 
 
-export type OrganisationsWithOffersQuery = (
+export type ShopQuery = (
   { __typename?: 'Query' }
-  & { organisationsWithOffers: Array<(
-    { __typename?: 'Organisation' }
-    & Pick<Organisation, 'name' | 'displayName' | 'circlesAddress' | 'avatarUrl' | 'smallBannerUrl' | 'largeBannerUrl' | 'productListingType'>
+  & { shop?: Maybe<(
+    { __typename?: 'Shop' }
+    & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'productListingStyle'>
+    & { owner: (
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+    ), categories?: Maybe<Array<(
+      { __typename?: 'ShopCategory' }
+      & Pick<ShopCategory, 'id' | 'name' | 'description' | 'sortOrder'>
+      & { entries?: Maybe<Array<(
+        { __typename?: 'ShopCategoryEntry' }
+        & Pick<ShopCategoryEntry, 'id' | 'sortOrder'>
+        & { product?: Maybe<(
+          { __typename?: 'Offer' }
+          & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+          & { createdByProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'displayName' | 'avatarUrl' | 'circlesAddress'>
+          )> }
+        )> }
+      )>> }
+    )>> }
+  )> }
+);
+
+export type ShopsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ShopsQuery = (
+  { __typename?: 'Query' }
+  & { shops: Array<(
+    { __typename?: 'Shop' }
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'shopListingStyle' | 'productListingStyle'>
+    & { owner: (
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+    ), pickupAddress?: Maybe<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'name' | 'street' | 'house' | 'zip' | 'state'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'name' | 'country'>
+      )> }
+    )> }
   )> }
 );
 
@@ -4997,16 +5110,80 @@ export const FindInvitationCreatorDocument = gql`
   }
 }
     `;
-export const OrganisationsWithOffersDocument = gql`
-    query organisationsWithOffers {
-  organisationsWithOffers {
+export const ShopDocument = gql`
+    query shop($id: Int!) {
+  shop(id: $id) {
+    id
     name
-    displayName
-    circlesAddress
-    avatarUrl
+    description
     smallBannerUrl
     largeBannerUrl
-    productListingType
+    openingHours
+    private
+    productListingStyle
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    categories {
+      id
+      name
+      description
+      sortOrder
+      entries {
+        id
+        sortOrder
+        product {
+          id
+          version
+          title
+          description
+          pictureUrl
+          pricePerUnit
+          createdByProfile {
+            id
+            displayName
+            avatarUrl
+            circlesAddress
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const ShopsDocument = gql`
+    query shops {
+  shops {
+    id
+    createdAt
+    name
+    description
+    smallBannerUrl
+    largeBannerUrl
+    openingHours
+    private
+    shopListingStyle
+    productListingStyle
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    pickupAddress {
+      name
+      street
+      house
+      city {
+        name
+        country
+      }
+      zip
+      state
+    }
   }
 }
     `;
@@ -5187,8 +5364,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     findInvitationCreator(variables: FindInvitationCreatorQueryVariables): Promise<FindInvitationCreatorQuery> {
       return withWrapper(() => client.request<FindInvitationCreatorQuery>(print(FindInvitationCreatorDocument), variables));
     },
-    organisationsWithOffers(variables?: OrganisationsWithOffersQueryVariables): Promise<OrganisationsWithOffersQuery> {
-      return withWrapper(() => client.request<OrganisationsWithOffersQuery>(print(OrganisationsWithOffersDocument), variables));
+    shop(variables: ShopQueryVariables): Promise<ShopQuery> {
+      return withWrapper(() => client.request<ShopQuery>(print(ShopDocument), variables));
+    },
+    shops(variables?: ShopsQueryVariables): Promise<ShopsQuery> {
+      return withWrapper(() => client.request<ShopsQuery>(print(ShopsDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

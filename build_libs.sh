@@ -35,20 +35,4 @@ npx --no-install  graphql-codegen
 echo "* api"
 npx --no-install  graphql-codegen
 
-cd ../../../../..
-echo "Generating graphql types for dapps/o-passport"
-#echo "* api"
-#cd shell/src/dapps/o-passport/data/api
-#npx graphql-codegen
-echo "* auth"
-cd shell/src/dapps/o-passport/data/auth
-npx --no-install  graphql-codegen
-
-# cd ../../../../../..
-# echo "Generating graphql types for dapps/o-contacts"
-# echo "* api"
-# cd shell/src/dapps/o-contacts/data/api
-# npx graphql-codegen
-
-
 cd ../../../../../..

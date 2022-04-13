@@ -6,9 +6,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
 import {
-  Organisation,
-  OrganisationsWithOffersQueryVariables,
-  OrganisationsWithOffersDocument,
+  Organisation, Shop, ShopsDocument, ShopsQueryVariables
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { trustFromContactMetadata } from "../../../shared/functions/trustFromContactMetadata";
@@ -21,7 +19,7 @@ function loadLocationPage(route: string) {
   push(`#/marketplace/${route}`);
 }
 
-let orgas: { orga: Organisation; enabled: boolean; productListingType: string }[] = [];
+let orgas: { shopId: number, orga: Organisation; enabled: boolean; productListingType: string }[] = [];
 
 $: {
   if ($inbox.length) {
@@ -30,22 +28,26 @@ $: {
 }
 
 async function load() {
-  const allOrgasWithProducts = await ApiClient.query<Organisation[], OrganisationsWithOffersQueryVariables>(
-    OrganisationsWithOffersDocument,
+  const allShops = await ApiClient.query<Shop[], ShopsQueryVariables>(
+    ShopsDocument,
     {}
   );
   orgas = await Promise.all(
-    allOrgasWithProducts
+    allShops
       .map(async (o) => {
-        const contact = await contacts.findBySafeAddress(o.circlesAddress);
+        const contact = await contacts.findBySafeAddress(o.owner.circlesAddress);
         const { trustIn, trustOut } = trustFromContactMetadata(contact);
         return {
-          orga: o,
+          shopId: o.id,
+          orga: {
+            ...o.owner,
+            largeBannerUrl: o.largeBannerUrl,
+            smallBannerUrl: o.smallBannerUrl
+          },
           enabled: trustIn > 0,
-          productListingType: o.productListingType == "LIST" ? "list" : "market",
+          productListingType: o.productListingStyle == "LIST" ? "list" : "market",
         };
       })
-      .reverse()
   );
 }
 
@@ -66,7 +68,7 @@ onMount(async () => await load());
         class="flex items-start m-4 rounded-xl"
         class:cursor-pointer="{orga.enabled}"
         on:click="{() =>
-          orga.enabled ? loadLocationPage(`${orga.productListingType}/${orga.orga.circlesAddress}`) : null}">
+          orga.enabled ? loadLocationPage(`${orga.productListingType}/${orga.shopId}`) : null}">
         <div class="flex flex-col w-full ">
           <header class=" rounded-xl headerImageContainer">
             <div class="relative rounded-xl image-wrapper">
@@ -77,7 +79,7 @@ onMount(async () => await load());
                 class:opacity-60="{!orga.enabled}" />
               <div
                 class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl rounded-l-full font-heading top-2 bg-light-lightest">
-                <span class="inline-block">{orga.orga.displayName}</span>
+                <span class="inline-block">{orga.orga.name}</span>
               </div>
               <div
                 class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full cursor-pointer bottom-4 bg-alert-lightest has-tooltip"
