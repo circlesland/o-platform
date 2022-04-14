@@ -157,6 +157,12 @@ export const en = {
                 error: "No recipient address on context",
               },
             },
+            findTransferPath: {
+              entry: {
+                message: "Finding your paths to the payment receiver .."
+              },
+              invoke: "Finding your paths to the payment receiver ..",
+            },
             checkAmount: {
               contextMessages: "The chosen amount exceeds the maximum transferable amount of ({formattedMax}).",
             },

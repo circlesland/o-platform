@@ -79,7 +79,7 @@ const processDefinition = (processId: string) =>
         params: {
           view: editorContent.checkInviteCode,
         },
-        dataSchema: yup.string().required(window.i18n("dapps.o-onboarding.processes.invitation")),
+        dataSchema: yup.string().required(window.i18n("dapps.o-onboarding.processes.invitation.buyInvitation.dataSchemaRequired")),
         navigation: {
           next: "#redeemCode",
         },
