@@ -34,11 +34,11 @@ const processDefinition = (processId: string) =>
           view: {
             title: window.i18n("dapps.o-coop.processes.addMembers.memberAddress.title"),
             description: "",
-            placeholder: window.i18n("dapps.o-coop.addMembers.memberAddress.placeholder"),
-            submitButtonText: window.i18n("dapps.o-coop.addMembers.memberAddress.submitButtonText"),
+            placeholder: window.i18n("dapps.o-coop.processes.addMembers.memberAddress.placeholder"),
+            submitButtonText: window.i18n("dapps.o-coop.processes.addMembers.memberAddress.submitButtonText"),
           },
-          placeholder: window.i18n("dapps.o-coop.addMembers.memberAddress.placeholder"),
-          submitButtonText: window.i18n("dapps.o-coop.addMembers.memberAddress.submitButtonText"),
+          placeholder: window.i18n("dapps.o-coop.processes.addMembers.memberAddress.placeholder"),
+          submitButtonText: window.i18n("dapps.o-coop.processes.addMembers.memberAddress.submitButtonText"),
         },
         navigation: {
           next: "#addMember",

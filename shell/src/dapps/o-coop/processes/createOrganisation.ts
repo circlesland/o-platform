@@ -49,7 +49,7 @@ async function sendFundsFromEoa(to: string, amount: BN) {
 
   const privateKey = sessionStorage.getItem("circlesKey");
   if (!privateKey) {
-    throw new Error(window.i18n("dapps.o-coop.proxesses.createOrganisations.notUnlockedPrivateKey"));
+    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.notUnlockedPrivateKey"));
   }
 
   const web3 = RpcGateway.get();

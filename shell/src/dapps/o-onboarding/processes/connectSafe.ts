@@ -174,12 +174,12 @@ const processDefinition = (processId: string) =>
         component: SimpleDropDownEditor,
         params: <DropdownSelectorParams<PromptConnectOrCreateContext, SafeInfo, string>>{
           view: {
-            title: window.i18n("dapps.o-onboarding.processes.selectSafe.title"),
-            description: window.i18n("dapps.o-onboarding.processes.selectSafe.description"),
-            submitButtonText: window.i18n("dapps.o-onboarding.processes.selectSafe.submitButtonText"),
+            title: window.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.title"),
+            description: window.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.description"),
+            submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.submitButtonText"),
           },
           placeholder: "",
-          submitButtonText: window.i18n("dapps.o-onboarding.processes.selectSafe.submitButtonText"),
+          submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.submitButtonText"),
           itemTemplate: DropDownCandidateSafe, // TODO: This is not used by the SimpleDropDownEditor
           getKey: (o) => o.safeAddress,
           getLabel: (o) => (o.safeProfile ? o.safeProfile.displayName : o.safeAddress),

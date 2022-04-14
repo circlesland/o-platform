@@ -35,7 +35,7 @@ const processDefinition = (processId: string) =>
             submitButtonText: window.i18n("dapps.o-verification.processes.verify.submitButtonText"),
           },
           placeholder: window.i18n("dapps.o-verification.processes.verify.placeholder"),
-          submitButtonText: window.i18n("dapps.o-verification.processes.verify.submitButtontext"),
+          submitButtonText: window.i18n("dapps.o-verification.processes.verify.submitButtonText"),
         },
         navigation: {
           next: "#addMember",
