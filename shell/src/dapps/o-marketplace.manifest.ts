@@ -6,6 +6,7 @@ import OfferDetail from "./o-marketplace/pages/OfferDetail.svelte";
 import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
+import MyCategories from "./o-marketplace/pages/MyCategories.svelte";
 import MyPurchases from "./o-marketplace/pages/MyPurchases.svelte";
 import ScanPurchase from "./o-marketplace/pages/ScanPurchase.svelte";
 import MySales from "./o-marketplace/pages/MySales.svelte";
@@ -136,7 +137,13 @@ const favorites: Page<any, DappState> = {
 const myOffers: Page<any, DappState> = {
   routeParts: ["=my-offers"],
   component: MyOffers,
-  title: "My offers",
+  title: "My Offers",
+  type: "page",
+};
+const myCategories: Page<any, DappState> = {
+  routeParts: ["=my-categories"],
+  component: MyCategories,
+  title: "My Categories",
   type: "page",
 };
 const myOffersDetail: Page<any, DappState> = {
@@ -230,7 +237,8 @@ export const marketplace: DappManifest<DappState> = {
     addToCart,
     pleaseSignIn,
     // favorites,
-    // myOffers,
+    myOffers,
+    myCategories,
     offerDetail,
     // myOffersDetail,
     shoppingCart,

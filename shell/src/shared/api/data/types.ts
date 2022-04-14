@@ -1313,6 +1313,7 @@ export type ShopCategoryInput = {
   id?: Maybe<Scalars['Int']>;
   shopId: Scalars['Int'];
   private?: Maybe<Scalars['Boolean']>;
+  enabled?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   largeBannerUrl?: Maybe<Scalars['String']>;
@@ -3084,7 +3085,7 @@ export type ShopQuery = (
       & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
     ), categories?: Maybe<Array<(
       { __typename?: 'ShopCategory' }
-      & Pick<ShopCategory, 'id' | 'name' | 'description' | 'sortOrder' | 'smallBannerUrl' | 'largeBannerUrl' | 'private' | 'enabled' | 'createdAt' | 'productListingStyle'>
+      & Pick<ShopCategory, 'id' | 'name' | 'description' | 'sortOrder' | 'shopId' | 'smallBannerUrl' | 'largeBannerUrl' | 'private' | 'enabled' | 'createdAt' | 'productListingStyle'>
       & { entries?: Maybe<Array<(
         { __typename?: 'ShopCategoryEntry' }
         & Pick<ShopCategoryEntry, 'id' | 'sortOrder'>
@@ -5324,6 +5325,7 @@ export const ShopDocument = gql`
       name
       description
       sortOrder
+      shopId
       smallBannerUrl
       largeBannerUrl
       private

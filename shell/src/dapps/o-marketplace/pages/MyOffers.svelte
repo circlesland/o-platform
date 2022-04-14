@@ -1,17 +1,13 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import {
-  AggregateType,
-  Offer, Offers
-} from "../../../shared/api/data/types";
+
 import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {of, Subscription} from "rxjs";
+
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import TransactionItemCard from "../atoms/TransactionItemCard.svelte";
-import {ApiClient} from "../../../shared/apiConnection";
+import { Offer, Organisation, Profile } from "../../../shared/api/data/types";
+import { storeOffers } from "../../../shared/stores/storeOffers";
 import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -20,38 +16,16 @@ export let routable: Routable;
 let isLoading: boolean;
 let error: Error;
 let offers: Offer[] = [];
-let shellEventSubscription: Subscription;
+let store: any;
 
-async function load() {
-  if (isLoading) return;
-  if (!$me.circlesAddress) {
+onMount(() => {
+  store = storeOffers.getOffersFor($me.circlesAddress);
+  isLoading = true;
+
+  return store.subscribe((data: any) => {
+    offers = data;
     isLoading = false;
-    offers = [];
-    return;
-  }
-  const result = await ApiClient.queryAggregate<Offers>(AggregateType.Offers, $me.circlesAddress);
-  offers = result.offers;
-  isLoading = false;
-}
-
-onMount(async () => {
-  await load();
-
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
-    }
-  );
-
-  return () => {
-    shellEventSubscription.unsubscribe();
-  };
+  });
 });
 </script>
 
@@ -77,9 +51,73 @@ onMount(async () => {
       </div>
     </section>
   {:else if offers.length}
-    {#each offers as offer}
-      <TransactionItemCard offer="{offer}" />
-    {/each}
+    <div class="table">
+      <div class="table-header-group">
+        <div class="table-cell">Title</div>
+        <div class="table-cell">Description</div>
+        <div class="table-cell">Picture Url</div>
+        <div class="table-cell">Picture Mime Type</div>
+        <div class="table-cell">Price per Unit</div>
+        <div class="table-cell">Category</div>
+      </div>
+      <div class="table-row-group">
+        <div class="table-cell w-64 p-1 break-all">
+          <input type="text" class="input" placeholder="Title" value="" />
+        </div>
+        <div class="table-cell p-1 break-all">
+          <input type="text" class="input" placeholder="Description" value="" />
+        </div>
+        <div class="table-cell p-1 ">
+          <input type="text" class="input" placeholder="upload picture" value="" />
+        </div>
+        <div class="table-cell p-1 ">
+          <input type="text" class="input" placeholder="mime" value="" />
+        </div>
+        <div class="table-cell p-1 ">
+          <input type="text" class="input" placeholder="Price per Unit" value="" />
+        </div>
+        <div class="table-cell p-1 ">
+          <select class="select">
+            <option>cat 1</option>
+            <option>category</option>
+            <option>kickeriiki</option>
+          </select>
+        </div>
+
+        <div class="p1">
+          <button class="btn btn-success">Create</button>
+        </div>
+      </div>
+      {#each offers as offer}
+        <div class="table-row-group">
+          <div class="table-cell w-64 p-1 break-all">
+            <input type="text" class="input" placeholder="{offer.title}" value="{offer.title}" />
+          </div>
+          <div class="table-cell p-1 break-all">
+            <input type="text" class="input" placeholder="{offer.description}" value="{offer.description}" />
+          </div>
+          <div class="table-cell p-1 ">
+            <input type="text" class="input" placeholder="{offer.pictureUrl}" value="{offer.pictureUrl}" />
+          </div>
+          <div class="table-cell p-1 ">
+            <input type="text" class="input" placeholder="{offer.pictureMimeType}" value="{offer.pictureMimeType}" />
+          </div>
+          <div class="table-cell p-1 ">
+            <input type="text" class="input" placeholder="{offer.pricePerUnit}" value="{offer.pricePerUnit}" />
+          </div>
+          <div class="table-cell p-1 ">
+            <select class="select">
+              <option>cat 1</option>
+              <option>category</option>
+              <option>kickeriiki</option>
+            </select>
+          </div>
+          <div class="p1">
+            <button class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      {/each}
+    </div>
   {:else}
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
