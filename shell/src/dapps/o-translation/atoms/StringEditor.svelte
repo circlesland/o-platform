@@ -9,12 +9,6 @@ export let dataVersion: number;
 
 let inputValue: string;
 
-$: {
-  dataKey;
-  dataLang;
-  dataString;
-  dataVersion;
-}
 
 async function writeValueToDb(value: string, lang: string, key: string) {
   await ApiClient.query<I18n, MutationUpdateValueArgs>(UpdateValueDocument, {
