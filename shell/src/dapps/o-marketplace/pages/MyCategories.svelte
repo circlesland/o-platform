@@ -17,7 +17,7 @@ import {
   ShopQueryVariables,
   UpsertShopCategoriesDocument,
   ShopCategoryInput,
-  ShopInput,
+  ShopInput, UpsertShopCategoriesResult, UpsertShopCategoriesMutationVariables,
 } from "../../../shared/api/data/types";
 
 import Date from "../../../shared/atoms/Date.svelte";
@@ -25,6 +25,7 @@ import { ok, err, Result } from "neverthrow";
 import { ApiClient } from "../../../shared/apiConnection";
 import Center from "../../../shared/layouts/Center.svelte";
 import { Environment } from "../../../shared/environment";
+import {Readable} from "svelte/store";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -40,6 +41,8 @@ let category: ShopCategory;
 let categoryInput: ShopCategoryInput[];
 let shellEventSubscription: Subscription;
 
+let _state:Readable<any>;
+
 onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
     id: parseInt(storeId.toString()),
@@ -53,6 +56,7 @@ onMount(async () => {
   categories = shop.categories;
   console.log("categories", categories);
 
+  categories[0].description = "Go West!";
   delete categories[0].createdAt;
   delete categories[0].entries;
   delete categories[0].__typename;
@@ -85,22 +89,26 @@ function handleImageUpload(event) {
   const { service, state, send } = useMachine(machine, machineOptions);
   service.start();
 
+  _state = state;
+
   service.onTransition((state1, event) => {
     console.log("DATA: ", state1.context.data);
   });
-  console.log("MACHINE STATE: ", $state);
+
+}
+
+$: {
+  if (_state) {
+    console.log($_state.context);
+  }
 }
 
 async function updateCategory() {
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-  const result = await apiClient.mutate({
-    mutation: UpsertShopCategoriesDocument,
-    variables: { shopCategories: categoryInput },
-  });
+  const result = await ApiClient.mutate<UpsertShopCategoriesResult, UpsertShopCategoriesMutationVariables>(
+      UpsertShopCategoriesDocument,
+      { shopCategories: categoryInput }
+  );
 
-  if (result.errors) {
-    return err("You can't trust yourself, or do you? ;)");
-  }
   console.log("OK");
   return ok(result);
 }
@@ -113,6 +121,9 @@ function handleClickOutside(event) {
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
+  {#if _state}
+    {JSON.stringify($_state.context, null, 2)}
+  {/if}
   {#if categories.length > 0}
     <div class="table">
       <div class="table-header-group">
