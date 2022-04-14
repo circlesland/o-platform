@@ -9,7 +9,7 @@ import { Environment } from "../../../shared/environment";
 
 let key: string;
 let value: string;
-let i18nData: I18n[];
+let i18nData: I18n[] = [];
 let allLanguages: string[] = [];
 let selectedLanguage: string = Environment.userLanguage;
 
@@ -89,7 +89,22 @@ const keySubmitHandler = (event) => {
     </form>
   </div>
 
-  <div class="w-full text-center">
-    <StringEditor data="{i18nData}" />
+  <div class="table">
+    <div class="table-header-group">
+      <div class="table-cell p-1">String</div>
+      <div class="table-cell p-1">Key</div>
+      <div class="table-cell p-1">Language</div>
+      <div class="table-cell p-1">Version</div>
+      <div class="table-cell p-1">Input</div>
+    </div>
+    {#each i18nData as data}
+      <div class="w-full table-row-group">
+        <StringEditor 
+          dataString="{data.value}"
+          dataKey="{data.key}"
+          dataLang="{data.lang}"
+          dataVersion="{data.version}" />
+      </div>
+    {/each}
   </div>
 </section>
