@@ -25,7 +25,7 @@ import { ok, err, Result } from "neverthrow";
 import { ApiClient } from "../../../shared/apiConnection";
 import Center from "../../../shared/layouts/Center.svelte";
 import { Environment } from "../../../shared/environment";
-import {Readable} from "svelte/store";
+import { Readable } from "svelte/store";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -34,12 +34,13 @@ export let storeId: number;
 storeId = 5;
 
 let shop: Shop | null = null;
-
+let _state: Readable<any>;
 let showModal: Boolean = false;
 let categories: ShopCategory[] = [];
 let category: ShopCategory;
 let categoryInput: ShopCategoryInput[];
 let shellEventSubscription: Subscription;
+let currentCategoryId: any;
 
 let _state:Readable<any>;
 
@@ -67,13 +68,12 @@ async function submit() {
   // await updateCategory();
 }
 
-function imageEditor() {
+function imageEditor(id) {
+  currentCategoryId = id;
   showModal = true;
 }
 
 function handleImageUpload(event) {
-  console.log("BYTES: ", event.detail.croppedImage);
-  console.log("uploading image...");
   const machine = (<any>uploadFile).stateMachine("123");
   const machineOptions = {
     context: {
@@ -88,13 +88,13 @@ function handleImageUpload(event) {
 
   const { service, state, send } = useMachine(machine, machineOptions);
   service.start();
-
   _state = state;
-
-  service.onTransition((state1, event) => {
-    console.log("DATA: ", state1.context.data);
-  });
-
+}
+$: {
+  if (_state) {
+    console.log("STATE", $_state.context);
+    categories[currentCategoryId].largeBannerUrl = $_state.context.data.url;
+  }
 }
 
 $: {
@@ -192,7 +192,7 @@ function handleClickOutside(event) {
               class="input"
               placeholder="{category.largeBannerUrl}"
               value="{category.largeBannerUrl}"
-              on:click="{imageEditor}" />
+              on:click="{() => imageEditor(i)}" />
           </div>
 
           <div class="table-cell p-1 ">
