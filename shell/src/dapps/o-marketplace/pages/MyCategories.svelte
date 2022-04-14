@@ -3,11 +3,13 @@ import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import ListViewCard from "../atoms/ListViewCard.svelte";
 import { onMount } from "svelte";
 import { Subscription } from "rxjs";
-
+import { uploadFile, UploadFileContextData } from "../../../shared/api/uploadFile";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-
+import ImageUpload from "../../../shared/molecules/ImageUpload/ImageUpload.svelte";
+import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
+import { useMachine } from "xstate-svelte";
 import {
   Shop,
   ShopCategory,
@@ -21,6 +23,8 @@ import {
 import Date from "../../../shared/atoms/Date.svelte";
 import { ok, err, Result } from "neverthrow";
 import { ApiClient } from "../../../shared/apiConnection";
+import Center from "../../../shared/layouts/Center.svelte";
+import { Environment } from "../../../shared/environment";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -30,6 +34,7 @@ storeId = 5;
 
 let shop: Shop | null = null;
 
+let showModal: Boolean = false;
 let categories: ShopCategory[] = [];
 let category: ShopCategory;
 let categoryInput: ShopCategoryInput[];
@@ -48,14 +53,43 @@ onMount(async () => {
   categories = shop.categories;
   console.log("categories", categories);
 
-  categories[0].description = "Go West!";
   delete categories[0].createdAt;
   delete categories[0].entries;
   delete categories[0].__typename;
   categoryInput = [categories[0]];
-
-  // updateCategory();
 });
+
+async function submit() {
+  // await updateCategory();
+}
+
+function imageEditor() {
+  showModal = true;
+}
+
+function handleImageUpload(event) {
+  console.log("BYTES: ", event.detail.croppedImage);
+  console.log("uploading image...");
+  const machine = (<any>uploadFile).stateMachine("123");
+  const machineOptions = {
+    context: {
+      data: {
+        appId: Environment.filesAppId,
+        fileName: `${shop.id}/yomama.jpg`,
+        mimeType: "image/jpeg",
+        bytes: event.detail.croppedImage,
+      },
+    },
+  };
+
+  const { service, state, send } = useMachine(machine, machineOptions);
+  service.start();
+
+  service.onTransition((state1, event) => {
+    console.log("DATA: ", state1.context.data);
+  });
+  console.log("MACHINE STATE: ", $state);
+}
 
 async function updateCategory() {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
@@ -69,6 +103,10 @@ async function updateCategory() {
   }
   console.log("OK");
   return ok(result);
+}
+
+function handleClickOutside(event) {
+  showModal = false;
 }
 </script>
 
@@ -134,7 +172,7 @@ async function updateCategory() {
           </div>
 
           <div class="table-cell p-1 break-all">
-            <input type="text" class="input" placeholder="{category.description}" value="{category.description}" />
+            <input type="text" class="input" placeholder="{category.description}" bind:value="{category.description}" />
           </div>
 
           <div class="table-cell p-1 ">
@@ -142,7 +180,8 @@ async function updateCategory() {
               type="text"
               class="input"
               placeholder="{category.largeBannerUrl}"
-              value="{category.largeBannerUrl}" />
+              value="{category.largeBannerUrl}"
+              on:click="{imageEditor}" />
           </div>
 
           <div class="table-cell p-1 ">
@@ -175,8 +214,13 @@ async function updateCategory() {
         </div>
       {/each}
       <div class="p1">
-        <button class="btn btn-primary">Save</button>
+        <button class="btn btn-primary" on:click="{submit}">Save</button>
       </div>
+      {#if showModal}
+        <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+          <ImageUpload on:submit="{handleImageUpload}" />
+        </Center>
+      {/if}
     </div>
   {/if}
 </div>
