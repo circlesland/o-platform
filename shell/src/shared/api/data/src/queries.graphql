@@ -1726,8 +1726,8 @@ query findInvitationCreator($code: String!) {
   }
 }
 
-query shop($id:Int!) {
-  shop(id:$id) {
+query shop($id: Int!) {
+  shop(id: $id) {
     id
     name
     description
@@ -1747,6 +1747,12 @@ query shop($id:Int!) {
       name
       description
       sortOrder
+      smallBannerUrl
+      largeBannerUrl
+      private
+      enabled
+      createdAt
+      productListingStyle
       entries {
         id
         sortOrder

@@ -399,7 +399,7 @@ mutation announcePayment($invoiceId: Int!, $transactionHash: String!) {
   }
 }
 
-mutation upsertShop($shop:ShopInput!) {
+mutation upsertShop($shop: ShopInput!) {
   upsertShop(shop: $shop) {
     id
     name
@@ -420,6 +420,12 @@ mutation upsertShop($shop:ShopInput!) {
       name
       description
       sortOrder
+      enabled
+      private
+      largeBannerUrl
+      smallBannerUrl
+      productListingStyle
+      createdAt
       entries {
         id
         sortOrder
@@ -442,14 +448,14 @@ mutation upsertShop($shop:ShopInput!) {
   }
 }
 
-mutation upsertShopCategories($shopCategories:[ShopCategoryInput!]!) {
+mutation upsertShopCategories($shopCategories: [ShopCategoryInput!]!) {
   upsertShopCategories(shopCategories: $shopCategories) {
     inserted
     updated
   }
 }
 
-mutation upsertShopCategoryEntries($shopCategoryEntries:[ShopCategoryEntryInput!]!) {
+mutation upsertShopCategoryEntries($shopCategoryEntries: [ShopCategoryEntryInput!]!) {
   upsertShopCategoryEntries(shopCategoryEntries: $shopCategoryEntries) {
     inserted
     updated
