@@ -136,6 +136,12 @@ export const en = {
                 title: "Transfer successful",
                 submitButtonText: "Close",
               },
+              findTransferPath: {
+                entry: {
+                  message: "Finding your paths to the payment receiver .."
+                },
+                invoke: "Finding your paths to the payment receiver ..",
+              },
             },
             recipientAddress: {
               submitButtonText: "Check send limit",
@@ -156,12 +162,6 @@ export const en = {
               invoke: {
                 error: "No recipient address on context",
               },
-            },
-            findTransferPath: {
-              entry: {
-                message: "Finding your paths to the payment receiver .."
-              },
-              invoke: "Finding your paths to the payment receiver ..",
             },
             checkAmount: {
               contextMessages: "The chosen amount exceeds the maximum transferable amount of ({formattedMax}).",
