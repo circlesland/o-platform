@@ -1,15 +1,16 @@
 <script lang="ts">
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import ListViewCard from "../atoms/ListViewCard.svelte";
 import { onMount } from "svelte";
-import { Subscription } from "rxjs";
-import { uploadFile, UploadFileContextData } from "../../../shared/api/uploadFile";
+import { uploadFile } from "../../../shared/api/uploadFile";
+import { showToast } from "../../../shared/toast";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import ImageUpload from "../../../shared/molecules/ImageUpload/ImageUpload.svelte";
-import PicturePreview from "@o-platform/o-editors/src/PicturePreview.svelte";
 import { useMachine } from "xstate-svelte";
+import { flip } from "svelte/animate";
+import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+
 import {
   Shop,
   ShopCategory,
@@ -17,10 +18,10 @@ import {
   ShopQueryVariables,
   UpsertShopCategoriesDocument,
   ShopCategoryInput,
-  ShopInput, UpsertShopCategoriesResult, UpsertShopCategoriesMutationVariables,
+  UpsertShopCategoriesResult,
+  UpsertShopCategoriesMutationVariables,
 } from "../../../shared/api/data/types";
 
-import Date from "../../../shared/atoms/Date.svelte";
 import { ok, err, Result } from "neverthrow";
 import { ApiClient } from "../../../shared/apiConnection";
 import Center from "../../../shared/layouts/Center.svelte";
@@ -36,13 +37,12 @@ storeId = 5;
 let shop: Shop | null = null;
 let _state: Readable<any>;
 let showModal: Boolean = false;
+let editImage: Boolean = false;
+let editType: string = "";
+let currentImage: string = null;
 let categories: ShopCategory[] = [];
-let category: ShopCategory;
 let categoryInput: ShopCategoryInput[];
-let shellEventSubscription: Subscription;
 let currentCategoryId: any;
-
-let _state:Readable<any>;
 
 onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
@@ -55,22 +55,63 @@ onMount(async () => {
   }
 
   categories = shop.categories;
-  console.log("categories", categories);
 
-  categories[0].description = "Go West!";
-  delete categories[0].createdAt;
-  delete categories[0].entries;
-  delete categories[0].__typename;
-  categoryInput = [categories[0]];
+  categories.forEach((element, index) => {
+    delete categories[index].createdAt;
+    delete categories[index].entries;
+    delete categories[index].__typename;
+  });
+  categoryInput = categories;
 });
 
+let hovering = false;
+
+const dragstart = (event, i) => {
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.dropEffect = "move";
+  const start = i;
+  event.dataTransfer.setData("text/plain", start);
+};
+
+const drop = (event, target) => {
+  event.dataTransfer.dropEffect = "move";
+  const start = parseInt(event.dataTransfer.getData("text/plain"));
+  const newTracklist = categories;
+
+  if (start < target) {
+    newTracklist.splice(target + 1, 0, newTracklist[start]);
+    newTracklist.splice(start, 1);
+  } else {
+    newTracklist.splice(target, 0, newTracklist[start]);
+    newTracklist.splice(start + 1, 1);
+  }
+  categories = newTracklist;
+  hovering = null;
+
+  categories.forEach((element, index) => {
+    element.sortOrder = index;
+  });
+};
+
 async function submit() {
-  // await updateCategory();
+  await updateCategory();
+  showToast("success", "Categories successfully updated");
 }
 
-function imageEditor(id) {
+function imageEditor(id, type, edit) {
   currentCategoryId = id;
   showModal = true;
+  editImage = false;
+  if (edit) {
+    editImage = true;
+  }
+  editType = type;
+  if (type == "largeBannerUrl") {
+    currentImage = categories[currentCategoryId].largeBannerUrl;
+  }
+  if (type == "smallBannerUrl") {
+    currentImage = categories[currentCategoryId].smallBannerUrl;
+  }
 }
 
 function handleImageUpload(event) {
@@ -89,27 +130,25 @@ function handleImageUpload(event) {
   const { service, state, send } = useMachine(machine, machineOptions);
   service.start();
   _state = state;
+  showModal = false;
 }
 $: {
   if (_state) {
-    console.log("STATE", $_state.context);
-    categories[currentCategoryId].largeBannerUrl = $_state.context.data.url;
-  }
-}
-
-$: {
-  if (_state) {
-    console.log($_state.context);
+    if (editType == "largeBannerUrl") {
+      categories[currentCategoryId].largeBannerUrl = $_state.context.data.url;
+    }
+    if (editType == "smallBannerUrl") {
+      categories[currentCategoryId].smallBannerUrl = $_state.context.data.url;
+    }
   }
 }
 
 async function updateCategory() {
   const result = await ApiClient.mutate<UpsertShopCategoriesResult, UpsertShopCategoriesMutationVariables>(
-      UpsertShopCategoriesDocument,
-      { shopCategories: categoryInput }
+    UpsertShopCategoriesDocument,
+    { shopCategories: categoryInput }
   );
 
-  console.log("OK");
   return ok(result);
 }
 
@@ -120,25 +159,22 @@ function handleClickOutside(event) {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
-  {#if _state}
-    {JSON.stringify($_state.context, null, 2)}
-  {/if}
-  {#if categories.length > 0}
-    <div class="table">
-      <div class="table-header-group">
-        <div class="table-cell">Sort order</div>
-        <div class="table-cell">Id</div>
-        <div class="table-cell">Created At</div>
-        <div class="table-cell">Title</div>
-        <div class="table-cell">Description</div>
-        <div class="table-cell">Large Banner</div>
-        <div class="table-cell">Small Banner</div>
-        <div class="table-cell">Listing Style</div>
-        <div class="table-cell">Private</div>
-        <div class="table-cell">Enabled</div>
-      </div>
-      <!-- <div class="table-row-group">
+<div class="w-2/3 px-4 mx-auto -mt-3">
+  <div class="items-center w-full p-4 bg-white rounded-lg shadow-md cardborder">
+    {#if categories.length > 0}
+      <div class="table">
+        <div class="table-header-group">
+          <div class="table-cell">Order</div>
+
+          <div class="table-cell">Title</div>
+          <div class="table-cell">Description</div>
+          <div class="table-cell">Large Banner</div>
+          <div class="table-cell">Small Banner</div>
+          <div class="table-cell">Listing Style</div>
+          <div class="table-cell">Private</div>
+          <div class="table-cell">Enabled</div>
+        </div>
+        <!-- <div class="table-row-group">
         <div class="table-cell w-64 p-1 break-all">
           <input type="text" class="input" placeholder="Title" value="" />
         </div>
@@ -166,72 +202,130 @@ function handleClickOutside(event) {
           <button class="btn btn-success">Create</button>
         </div>
       </div> -->
-      {#each categories as category, i}
-        <div class="table-row-group">
-          <div class="table-cell w-10 p-1">{category.sortOrder}</div>
 
-          <div class="table-cell w-10 p-1">
-            {category.id}
-          </div>
+        {#each categories as category, index (category.name)}
+          <div
+            class="table-row-group"
+            animate:flip
+            draggable="{true}"
+            on:dragstart="{(event) => dragstart(event, index)}"
+            on:drop|preventDefault="{(event) => drop(event, index)}"
+            ondragover="return false"
+            on:dragenter="{() => (hovering = index)}"
+            class:is-active="{hovering === index}">
+            <div class="table-cell w-10 p-1 cursor-move">
+              <Icon name="menu" class="inline w-10 h-10 heroicon" />
+            </div>
 
-          <div class="table-cell w-64 p-1">
-            <Date time="{category.createdAt}" />
-          </div>
+            <div class="table-cell w-64 p-1 break-all">
+              <input type="text" class="input" placeholder="{category.name}" value="{category.name}" />
+            </div>
 
-          <div class="table-cell w-64 p-1 break-all">
-            <input type="text" class="input" placeholder="{category.name}" value="{category.name}" />
-          </div>
+            <div class="table-cell p-1 break-all">
+              <input
+                type="text"
+                class="input"
+                placeholder="{category.description}"
+                bind:value="{category.description}" />
+            </div>
 
-          <div class="table-cell p-1 break-all">
-            <input type="text" class="input" placeholder="{category.description}" bind:value="{category.description}" />
-          </div>
-
-          <div class="table-cell p-1 ">
-            <input
+            <div class="table-cell w-64 h-10 p-1 overflow-hidden ">
+              <div class="w-64 h-12 ">
+                {#if category.largeBannerUrl}
+                  <img
+                    src="{category.largeBannerUrl}"
+                    alt="large Banner Url"
+                    on:click="{() => imageEditor(index, 'largeBannerUrl', false)}" />
+                {:else}
+                  <div on:click="{() => imageEditor(index, 'largeBannerUrl', true)}" class="link link-primary">
+                    Upload image
+                  </div>
+                {/if}
+              </div>
+              <!-- <input
               type="text"
               class="input"
               placeholder="{category.largeBannerUrl}"
               value="{category.largeBannerUrl}"
-              on:click="{() => imageEditor(i)}" />
-          </div>
+               /> -->
+            </div>
 
-          <div class="table-cell p-1 ">
-            <input
-              type="text"
-              class="input"
-              placeholder="{category.smallBannerUrl}"
-              value="{category.smallBannerUrl}" />
+            <div class="table-cell w-64 h-10 p-1 overflow-hidden ">
+              <div class="w-64 h-12 ">
+                {#if category.smallBannerUrl}
+                  <img
+                    src="{category.smallBannerUrl}"
+                    alt="small Banner Url"
+                    on:click="{() => imageEditor(index, 'smallBannerUrl', false)}" />
+                {:else}
+                  <div on:click="{() => imageEditor(index, 'smallBannerUrl', true)}" class="link link-primary">
+                    Upload image
+                  </div>
+                {/if}
+              </div>
+            </div>
+            <div class="table-cell p-1 ">
+              <select class="select" bind:value="{category.productListingStyle}">
+                <option value="LIST">List</option>
+                <option value="TILES">Tiles</option>
+              </select>
+            </div>
+            <div class="table-cell p-1 ">
+              <input
+                type="checkbox"
+                class="inline-block toggle toggle-primary"
+                value="{category.private}"
+                bind:checked="{category.private}" />
+            </div>
+            <div class="table-cell p-1 ">
+              <input
+                type="checkbox"
+                class="inline-block toggle toggle-primary"
+                value="{category.enabled}"
+                bind:checked="{category.enabled}" />
+            </div>
           </div>
-          <div class="table-cell p-1 ">
-            <select class="select" bind:value="{category.productListingStyle}">
-              <option value="LIST">List</option>
-              <option value="TILES">Tiles</option>
-            </select>
-          </div>
-          <div class="table-cell p-1 ">
-            <input
-              type="checkbox"
-              class="inline-block toggle toggle-primary"
-              value="{category.private}"
-              bind:checked="{category.private}" />
-          </div>
-          <div class="table-cell p-1 ">
-            <input
-              type="checkbox"
-              class="inline-block toggle toggle-primary"
-              value="{category.enabled}"
-              bind:checked="{category.enabled}" />
-          </div>
+        {/each}
+
+        <div class="p1">
+          <button class="btn btn-primary" on:click="{submit}">Save</button>
         </div>
-      {/each}
-      <div class="p1">
-        <button class="btn btn-primary" on:click="{submit}">Save</button>
+        {#if showModal}
+          <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+            {#if editImage}
+              <ImageUpload on:submit="{handleImageUpload}" />
+            {:else}
+              <div class="flex flex-col w-full h-full p-4">
+                <button
+                  class="self-center mb-4 btn btn-primary btn-sm"
+                  on:click="{() => {
+                    editImage = true;
+                  }}">Remove Image</button>
+                <div class="text-center">
+                  <div class="inline-flex">
+                    <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+                  </div>
+                </div>
+              </div>
+            {/if}
+          </Center>
+        {/if}
       </div>
-      {#if showModal}
-        <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-          <ImageUpload on:submit="{handleImageUpload}" />
-        </Center>
-      {/if}
-    </div>
-  {/if}
+    {/if}
+  </div>
 </div>
+
+<style>
+/* .list-item {
+  display: block;
+  padding: 0.5em 1em;
+}
+
+.list-item:not(:last-child) {
+  border-bottom: 1px solid #dbdbdb;
+} */
+
+.table-row-group.is-active {
+  @apply bg-primary;
+}
+</style>
