@@ -40,9 +40,12 @@ let showModal: Boolean = false;
 let editImage: Boolean = false;
 let editType: string = "";
 let currentImage: string = null;
+let newCategory: ShopCategory;
 let categories: ShopCategory[] = [];
 let categoryInput: ShopCategoryInput[];
 let currentCategoryId: any;
+
+$: categories = categories;
 
 onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
@@ -55,13 +58,6 @@ onMount(async () => {
   }
 
   categories = shop.categories;
-
-  categories.forEach((element, index) => {
-    delete categories[index].createdAt;
-    delete categories[index].entries;
-    delete categories[index].__typename;
-  });
-  categoryInput = categories;
 });
 
 let hovering = false;
@@ -93,7 +89,18 @@ const drop = (event, target) => {
   });
 };
 
+$: if (categories.length) {
+  console.log("cool");
+}
+
 async function submit() {
+  categories.forEach((element, index) => {
+    delete categories[index].createdAt;
+    delete categories[index].entries;
+    delete categories[index].__typename;
+  });
+  categoryInput = categories;
+
   await updateCategory();
   showToast("success", "Categories successfully updated");
 }
@@ -155,55 +162,33 @@ async function updateCategory() {
 function handleClickOutside(event) {
   showModal = false;
 }
+
+function addCategory() {
+  newCategory = {
+    description: null,
+    enabled: true,
+    id: null,
+    largeBannerUrl: null,
+    name: null,
+    private: null,
+    productListingStyle: null,
+    shopId: 5,
+    smallBannerUrl: null,
+    sortOrder: categories.length,
+  };
+  categories = [...categories, newCategory];
+
+  console.log(categories);
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="w-2/3 px-4 mx-auto -mt-3">
-  <div class="items-center w-full p-4 bg-white rounded-lg shadow-md cardborder">
+  <div class="items-center w-full p-4 ">
     {#if categories.length > 0}
       <div class="table">
-        <div class="table-header-group">
-          <div class="table-cell">Order</div>
-
-          <div class="table-cell">Title</div>
-          <div class="table-cell">Description</div>
-          <div class="table-cell">Large Banner</div>
-          <div class="table-cell">Small Banner</div>
-          <div class="table-cell">Listing Style</div>
-          <div class="table-cell">Private</div>
-          <div class="table-cell">Enabled</div>
-        </div>
-        <!-- <div class="table-row-group">
-        <div class="table-cell w-64 p-1 break-all">
-          <input type="text" class="input" placeholder="Title" value="" />
-        </div>
-        <div class="table-cell p-1 break-all">
-          <input type="text" class="input" placeholder="Description" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <input type="text" class="input" placeholder="upload picture" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <input type="text" class="input" placeholder="mime" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <input type="text" class="input" placeholder="Price per Unit" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <select class="select">
-            <option>cat 1</option>
-            <option>category</option>
-            <option>kickeriiki</option>
-          </select>
-        </div>
-
-        <div class="p1">
-          <button class="btn btn-success">Create</button>
-        </div>
-      </div> -->
-
-        {#each categories as category, index (category.name)}
+        {#each categories as category, index (category.id)}
           <div
             class="table-row-group"
             animate:flip
@@ -218,7 +203,7 @@ function handleClickOutside(event) {
             </div>
 
             <div class="table-cell w-64 p-1 break-all">
-              <input type="text" class="input" placeholder="{category.name}" value="{category.name}" />
+              <input type="text" class="input" placeholder="{category.name}" bind:value="{category.name}" />
             </div>
 
             <div class="table-cell p-1 break-all">
@@ -286,31 +271,31 @@ function handleClickOutside(event) {
             </div>
           </div>
         {/each}
-
-        <div class="p1">
-          <button class="btn btn-primary" on:click="{submit}">Save</button>
-        </div>
-        {#if showModal}
-          <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-            {#if editImage}
-              <ImageUpload on:submit="{handleImageUpload}" />
-            {:else}
-              <div class="flex flex-col w-full h-full p-4">
-                <button
-                  class="self-center mb-4 btn btn-primary btn-sm"
-                  on:click="{() => {
-                    editImage = true;
-                  }}">Remove Image</button>
-                <div class="text-center">
-                  <div class="inline-flex">
-                    <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
-                  </div>
+      </div>
+      <div class="flex justify-between w-full">
+        <button class="btn btn-primary" on:click="{submit}">Save</button>
+        <button class="btn btn-success" on:click="{() => addCategory()}">Create new Category</button>
+      </div>
+      {#if showModal}
+        <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+          {#if editImage}
+            <ImageUpload on:submit="{handleImageUpload}" />
+          {:else}
+            <div class="flex flex-col w-full h-full p-4">
+              <button
+                class="self-center mb-4 btn btn-primary btn-sm"
+                on:click="{() => {
+                  editImage = true;
+                }}">Remove Image</button>
+              <div class="text-center">
+                <div class="inline-flex">
+                  <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
                 </div>
               </div>
-            {/if}
-          </Center>
-        {/if}
-      </div>
+            </div>
+          {/if}
+        </Center>
+      {/if}
     {/if}
   </div>
 </div>
