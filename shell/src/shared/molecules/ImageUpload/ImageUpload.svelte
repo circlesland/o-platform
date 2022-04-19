@@ -123,9 +123,7 @@ async function submit() {
       <div style="position: relative; width: 100%; height: 300px;">
         <Cropper image="{image}" bind:crop bind:zoom bind:aspect bind:cropShape on:cropcomplete="{previewCrop}" />
       </div>
-      <div class="" style="mt-2">
-        <span on:click="{() => reset()}" class="float-right cursor-pointer"> clear image </span>
-      </div>
+
       <!-- we need this, otherwise the zoom doesnt work. though it needs to stay hidden. -->
       <div class="hidden prof-pic-wrapper">
         <img bind:this="{profilePicture}" class="prof-pic" src="{image}" alt="Profile example" style="{style}" />
@@ -134,8 +132,11 @@ async function submit() {
   </div>
 
   {#if fileSelected}
-    <br />
-    <button class="btn btn-primary" on:click="{submit}">Save Image</button>
+    <div class="flex justify-between w-full p-4">
+      <button class="btn btn-light" on:click="{() => reset()}">Remove Image</button>
+      <button class="btn btn-primary" on:click="{submit}">Save Image</button>
+    </div>
+
     <!-- <ProcessNavigation on:buttonClick="{submit}" context="{context}" /> -->
   {/if}
 </div>

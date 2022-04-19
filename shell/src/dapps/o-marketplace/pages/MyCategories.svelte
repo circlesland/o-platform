@@ -121,6 +121,15 @@ function imageEditor(id, type, edit) {
   }
 }
 
+function removeImage() {
+  if (editType == "largeBannerUrl") {
+    categories[currentCategoryId].largeBannerUrl = "";
+  }
+  if (editType == "smallBannerUrl") {
+    categories[currentCategoryId].smallBannerUrl = "";
+  }
+  showModal = false;
+}
 function handleImageUpload(event) {
   const machine = (<any>uploadFile).stateMachine("123");
   const machineOptions = {
@@ -227,12 +236,6 @@ function addCategory() {
                   </div>
                 {/if}
               </div>
-              <!-- <input
-              type="text"
-              class="input"
-              placeholder="{category.largeBannerUrl}"
-              value="{category.largeBannerUrl}"
-               /> -->
             </div>
 
             <div class="table-cell w-64 h-10 p-1 overflow-hidden ">
@@ -272,13 +275,18 @@ function addCategory() {
           </div>
         {/each}
       </div>
-      <div class="flex justify-between w-full">
-        <button class="btn btn-primary" on:click="{submit}">Save</button>
+      <div class="flex justify-between w-full pt-2">
         <button class="btn btn-success" on:click="{() => addCategory()}">Create new Category</button>
+        <button class="btn btn-primary" on:click="{submit}">Save</button>
       </div>
       {#if showModal}
         <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
           {#if editImage}
+            <div class="p4">
+              <center>
+                <button class="self-center m-4 btn btn-primary btn-sm" on:click="{removeImage}">No Image</button>
+              </center>
+            </div>
             <ImageUpload on:submit="{handleImageUpload}" />
           {:else}
             <div class="flex flex-col w-full h-full p-4">
