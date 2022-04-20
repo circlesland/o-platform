@@ -41,18 +41,9 @@ const verificationJumplist: Jumplist<any, ContactsDappState> = {
           key: "verify-self",
           icon: "check",
           title: "Verify yourself",
-          action: async () => {
-            //const isUnique = await new UniquenessCheck().isFaceUniqueInGroup("f398jpwoef23rwfß3fiocöafawkpwf")
-            //console.log("IsUnique:", isUnique);
+          action: () => {
             window.o.runProcess(performOauth, {
               origin: "dashboard",
-              oauthRequest: {
-                clientId: "circles-ubi-jwks",
-                redirectUri: "http://localhost:5000/",
-                scope: "openid",
-                responseType: "code",
-                prompt: "consent",
-              },
               successAction: () => {},
             });
           },

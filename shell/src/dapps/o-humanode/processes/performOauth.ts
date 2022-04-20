@@ -2,7 +2,7 @@ import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processMa
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 import {prompt} from "@o-platform/o-process/dist/states/prompt";
 import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
-import {createMachine} from "xstate";
+import {assign, createMachine} from "xstate";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import {Generate} from "@o-platform/o-utils/dist/generate";
@@ -22,7 +22,7 @@ export type PerformOauthContextData = {
     responseType: "code",
     prompt: "consent"
   },
-  oauthResponse: {
+  authorizationResponse: {
     state?: string,
     code?: string,
     scope?: string
@@ -41,14 +41,33 @@ const processDefinition = (processId: string) =>
       ...fatalError<PerformOauthContext, any>("error"),
 
       init: {
+        entry: assign({
+          data: (context) => {
+            return {
+              ...context.data,
+              oauthRequest: {
+                ...context.data.oauthRequest,
+                clientId: "circles-ubi-jwks",
+                redirectUri: "http://localhost:5000/",
+                scope: "openid",
+                responseType: "code",
+                prompt: "consent",
+                accessType: "offline",
+              },
+              authorizationResponse: {
+                ...context.data.authorizationResponse,
+              }
+            }
+          }
+        }),
         always: [{
-          cond: (context) => !context.data.oauthResponse,
+          cond: (context) => !context.data.authorizationResponse,
           target: "#info"
         }, {
-          cond: (context) => !!context.data.oauthResponse && !!context.data.oauthResponse.error,
+          cond: (context) => !!context.data.authorizationResponse && !!context.data.authorizationResponse.error,
           target: "#cancelled"
         }, {
-          cond: (context) => !!context.data.oauthResponse && !context.data.oauthResponse.error,
+          cond: (context) => !!context.data.authorizationResponse && !context.data.authorizationResponse.error,
           target: "#callback"
         }]
       },
@@ -115,8 +134,29 @@ const processDefinition = (processId: string) =>
       }),
       callback: {
         id: "callback",
-        entry: () => {
+        entry: (context) => {
+          console.log("Callback:", context.data);
           // find out where the user wants to be redirected (from state)
+        },
+        invoke: {
+          src: async context => {
+            console.log("Exchange token:", context.data);
+            const response = await fetch("https://auth.staging.oauth2.humanode.io/oauth2/token",
+            {
+              method: "POST",
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+              },
+              body: new URLSearchParams({
+                client_id: context.data.oauthRequest.clientId,
+                grant_type: "authorization_code",
+                code: context.data.authorizationResponse.code,
+                redirect_uri: "http://localhost:5000/"
+              })
+            });
+            console.log("Code exchange response:", await response.json());
+          },
+          onDone: "success"
         }
       },
       success: {

@@ -775,27 +775,19 @@ function armOauthListener() {
         // possibly valid
         // TODO: allow app-id + routeParts in the second part of the 'state'
         if (splittedState[1] == "dashboard") {
-          push("/home").then(() => {
-            setTimeout(() => {
-              window.o.runProcess(performOauth, {
-                origin: "dashboard",
-                oauthRequest: {
-                  clientId:
-                    "1087329459459-3t3i510j124ni65r96g4fjoflnelnj3v.apps.googleusercontent.com",
-                  redirectUri: "https://localhost:5000/",
-                  scope: "https://www.googleapis.com/auth/drive",
-                  accessType: "offline",
-                  responseType: "code",
-                  prompt: "consent",
-                },
-                oauthResponse: {
-                  error: paramsMap?.error,
-                  state: paramsMap?.state,
-                },
-                successAction: () => {},
-              });
+          setTimeout(() => {
+            window.o.runProcess(performOauth, {
+              origin: "dashboard",
+              authorizationResponse: {
+                error: paramsMap?.error,
+                state: paramsMap?.state,
+                code: paramsMap?.code,
+              },
+              successAction: () => {
+                push("#/dashboard");
+              },
             });
-          });
+          }, 1000);
         } else {
           alert("Couldn't parse the 'state' from the oauth response");
           // invalid
