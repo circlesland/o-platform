@@ -1,17 +1,20 @@
-import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { prompt } from "@o-platform/o-process/dist/states/prompt";
-import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
-import { createMachine } from "xstate";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
+import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
+import {prompt} from "@o-platform/o-process/dist/states/prompt";
+import {fatalError} from "@o-platform/o-process/dist/states/fatalError";
+import {createMachine} from "xstate";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import {Generate} from "@o-platform/o-utils/dist/generate";
+import {ApiClient} from "../../../shared/apiConnection";
+import {ClientAssertionJwtDocument, ClientAssertionJwtQueryVariables} from "../../../shared/api/data/types";
 
 export type PerformOauthContextData = {
   nonce: string, // A random string
   origin: string, // The source page from which this flow was started.
   // nonce + origin will be packed together in the 'state' field
   oauthRequest: {
+    clientAssertion: string;
     clientId: string,
     redirectUri: string,
     scope: string,
@@ -66,16 +69,26 @@ const processDefinition = (processId: string) =>
           next: "#redirect",
         },
       }),
+      getClientAssertion: {
+        invoke: {
+          src: async context => {
+            context.data.oauthRequest.clientAssertion =
+              await ApiClient.query<string, ClientAssertionJwtQueryVariables>(ClientAssertionJwtDocument, {});
+          },
+          onDone: "redirect"
+        }
+      },
       redirect: {
         id: "redirect",
         entry: (context) => {
           const state = Generate.randomHexString(8) + "-" + context.data.origin ?? "";
-
-          let url = `https://accounts.google.com/o/oauth2/v2/auth`
+          let url = `https://auth.staging.oauth2.humanode.io/oauth2/auth`
               url += `?client_id=${context.data.oauthRequest.clientId}`
               url += `&redirect_uri=${context.data.oauthRequest.redirectUri}`
               url += `&scope=${context.data.oauthRequest.scope}`
               url += `&access_type=${context.data.oauthRequest.accessType}`
+              url += `&client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer`
+              url += `&client_assertion=${context.data.oauthRequest.clientAssertion}`
               url += `&response_type=${context.data.oauthRequest.responseType}`
               url += `&state=${state}`
               url += `&prompt=${context.data.oauthRequest.prompt}`;

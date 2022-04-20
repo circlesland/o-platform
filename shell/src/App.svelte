@@ -18,8 +18,6 @@ import { shellEvents } from "./shared/shellEvents";
 import { ApiConnection } from "./shared/apiConnection";
 import { getProcessContext } from "./main";
 import { Stopped } from "@o-platform/o-process/dist/events/stopped";
-import { getSdk } from "./shared/api/data/types";
-import { GraphQLClient } from "graphql-request";
 import { me } from "./shared/stores/me";
 import { Environment } from "./shared/environment";
 const runningProcesses: {
@@ -85,7 +83,7 @@ const shell: IShell = {
         return (event as ProcessEvent).currentState !== null;
       }
 
-      const process: Process = {
+      const process = <Process>{
         id: processId,
         events: outEvents,
         inEvents: inEvents,
@@ -186,44 +184,17 @@ window.o = shell;
 <script lang="ts">
 import "./shared/css/tailwind.css";
 
-import Router, { push } from "svelte-spa-router";
+import Router from "svelte-spa-router";
 import { SvelteToast } from "./shared/molecules/Toast";
 import DappFrame from "src/shared/molecules/DappFrame.svelte";
 import NotFound from "src/shared/pages/NotFound.svelte";
 import { interpret } from "xstate";
 import { initMachine } from "./dapps/o-onboarding/processes/init";
 import { ubiMachine } from "./shared/ubiTimer2";
-
-import { performOauth } from "./dapps/o-humanode/processes/performOauth";
-import { isLoading } from "svelte-i18n";
 import { InitContext } from "./dapps/o-onboarding/processes/initContext";
-import { onMount } from "svelte";
-import { showToast } from "./shared/toast";
-import {getSessionInfo} from "./dapps/o-passport/processes/identify/services/getSessionInfo";
 import {LogoutDocument} from "./shared/api/data/types";
 
 let ubiMachineInterpreter: any;
-// let errorMessage: string;
-// let houstonWeHaveAnError: Boolean = false;
-
-// onMount(() => {
-//   window.onunhandledrejection = (e) => {
-//     if (!houstonWeHaveAnError) {
-//       console.log("we got exception, but the app has crashed", e);
-//       if (e.reason.message == "Failed to fetch") {
-//         errorMessage = "No connection to API. maybe check your internet connection?";
-//       }
-//       showToast(
-//         "error",
-//         `Oops, something went Wrong: <span class="text-alert-dark">${errorMessage}</span> <a href="/"><button class="text-right link link-primary">Reload Page</button></a>`,
-//         true,
-//         9000
-//       );
-//       houstonWeHaveAnError = true;
-//     }
-//   };
-// });
-
 const v = 1;
 const currentLocalStorageSchemaVersion = localStorage.getItem("localStorageSchemaVersion");
 if (!currentLocalStorageSchemaVersion || parseInt(currentLocalStorageSchemaVersion) < v) {

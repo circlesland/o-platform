@@ -3160,6 +3160,14 @@ export type ShopsQuery = (
   )> }
 );
 
+export type ClientAssertionJwtQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ClientAssertionJwtQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'clientAssertionJwt'>
+);
+
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -5442,6 +5450,11 @@ export const ShopsDocument = gql`
   }
 }
     `;
+export const ClientAssertionJwtDocument = gql`
+    query clientAssertionJwt {
+  clientAssertionJwt
+}
+    `;
 export const EventsDocument = gql`
     subscription events {
   events {
@@ -5636,6 +5649,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     shops(variables?: ShopsQueryVariables): Promise<ShopsQuery> {
       return withWrapper(() => client.request<ShopsQuery>(print(ShopsDocument), variables));
+    },
+    clientAssertionJwt(variables?: ClientAssertionJwtQueryVariables): Promise<ClientAssertionJwtQuery> {
+      return withWrapper(() => client.request<ClientAssertionJwtQuery>(print(ClientAssertionJwtDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

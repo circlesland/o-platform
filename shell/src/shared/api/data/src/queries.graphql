@@ -1808,3 +1808,7 @@ query shops {
     }
   }
 }
+
+query clientAssertionJwt {
+  clientAssertionJwt
+}
