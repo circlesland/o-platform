@@ -21,7 +21,6 @@ let selectedLanguage: string = Environment.userLanguage;
 let languageList: string[] = [];
 
 function sortByKey(dataToSort: I18n[]) {
-  i18nData = dataToSort;
   i18nData = dataToSort.sort((a, b) => {
     if (a.key < b.key) {
       return -1;
