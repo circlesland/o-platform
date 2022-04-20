@@ -49,7 +49,6 @@ $: {
 }
 
 onMount(async () => {
-  //reload(selectedLanguage);
   languageList.push(selectedLanguage);
 
   console.log("languagelist", languageList);
@@ -61,7 +60,6 @@ onMount(async () => {
       }
     );
     console.log(queryResult);
-    //i18nData.push(queryResult);
 
     sortByKey(queryResult);
   }
@@ -90,9 +88,6 @@ const keySubmitHandler = (event) => {
 };
 
 const clickHandler = async (data: string) => {
-  //console.log(data);
-  //selectedLanguage = data;
-  //reload(selectedLanguage);
   if (languageList.includes(data)) {
     const index = languageList.indexOf(data);
     if (index > -1) {
@@ -102,7 +97,6 @@ const clickHandler = async (data: string) => {
   } else {
     languageList.push(data);
   }
-  //console.log(languageList);
   i18nData = [];
   for (let language of languageList) {
     const queryResult = await ApiClient.query<I18n[], QueryGetAllStringsByLanguageArgs>(
