@@ -461,3 +461,20 @@ mutation upsertShopCategoryEntries($shopCategoryEntries: [ShopCategoryEntryInput
     updated
   }
 }
+
+mutation upsertOffer($offer: OfferInput!) {
+  upsertOffer(offer: $offer) {
+    id
+    version
+    createdAt
+    createdByAddress
+    title
+    pictureUrl
+    pricePerUnit
+    timeCirclesPriceShare
+    tags {
+      typeId
+      value
+    }
+  }
+}
