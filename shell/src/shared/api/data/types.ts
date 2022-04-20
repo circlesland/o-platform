@@ -967,6 +967,7 @@ export type Query = {
   findInvitationCreator?: Maybe<Profile>;
   findSafesByOwner: Array<SafeInfo>;
   getAllStrings?: Maybe<I18n>;
+  getAllStringsByLanguage?: Maybe<I18n>;
   getStringByMaxVersion?: Maybe<I18n>;
   getStringByLanguage?: Maybe<I18n>;
   getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
@@ -1037,6 +1038,11 @@ export type QueryFindInvitationCreatorArgs = {
 
 export type QueryFindSafesByOwnerArgs = {
   owner: Scalars['String'];
+};
+
+
+export type QueryGetAllStringsByLanguageArgs = {
+  lang?: Maybe<Scalars['String']>;
 };
 
 
@@ -3140,6 +3146,19 @@ export type GetAllStringsQuery = (
   & { getAllStrings?: Maybe<(
     { __typename?: 'i18n' }
     & Pick<I18n, 'lang' | 'key' | 'version' | 'value'>
+  )> }
+);
+
+export type GetAllStringsByLanguageQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetAllStringsByLanguageQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByLanguage?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
   )> }
 );
 
@@ -5428,6 +5447,17 @@ export const GetAllStringsDocument = gql`
   }
 }
     `;
+export const GetAllStringsByLanguageDocument = gql`
+    query getAllStringsByLanguage($lang: String) {
+  getAllStringsByLanguage(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
 export const GetStringByMaxVersionDocument = gql`
     query getStringByMaxVersion($lang: String, $key: String) {
   getStringByMaxVersion(lang: $lang, key: $key) {
@@ -5729,6 +5759,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getAllStrings(variables?: GetAllStringsQueryVariables): Promise<GetAllStringsQuery> {
       return withWrapper(() => client.request<GetAllStringsQuery>(print(GetAllStringsDocument), variables));
+    },
+    getAllStringsByLanguage(variables?: GetAllStringsByLanguageQueryVariables): Promise<GetAllStringsByLanguageQuery> {
+      return withWrapper(() => client.request<GetAllStringsByLanguageQuery>(print(GetAllStringsByLanguageDocument), variables));
     },
     getStringByMaxVersion(variables?: GetStringByMaxVersionQueryVariables): Promise<GetStringByMaxVersionQuery> {
       return withWrapper(() => client.request<GetStringByMaxVersionQuery>(print(GetStringByMaxVersionDocument), variables));
