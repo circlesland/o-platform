@@ -3,14 +3,10 @@ import { onMount } from "svelte";
 
 import {
   GetAllStringsByLanguageDocument,
-  GetAllStringsByLanguageQuery,
   GetAllStringsDocument,
   GetAllStringsQuery,
-  GetStringByLanguageDocument,
-  GetStringByLanguageQuery,
   I18n,
   QueryGetAllStringsByLanguageArgs,
-  QueryGetStringByLanguageArgs,
 } from "../../../shared/api/data/types";
 
 import { ApiClient } from "../../../shared/apiConnection";
@@ -24,22 +20,28 @@ let allLanguages: string[] = [];
 let selectedLanguage: string = Environment.userLanguage;
 let languageList: string[] = [];
 
+function sortByKey(dataToSort: I18n[]) {
+  i18nData = dataToSort;
+  i18nData = dataToSort.sort((a, b) => {
+    if (a.key < b.key) {
+      return -1;
+    }
+    if (a.key > b.key) {
+      return 1;
+    }
+    return 0;
+  });
+  return i18nData;
+}
+
 async function reload(selectedLanguage: string) {
   const queryResult = await ApiClient.query<I18n[], GetAllStringsQuery>(GetAllStringsDocument, {});
   const allLanguageKeysInQueryResult = queryResult.toLookup((o) => o.lang);
   allLanguages = Object.keys(allLanguageKeysInQueryResult);
-  
-  i18nData = queryResult
-    .filter((o) => o.lang == selectedLanguage)
-    .sort((a, b) => {
-      if (a.key < b.key) {
-        return -1;
-      }
-      if (a.key > b.key) {
-        return 1;
-      }
-      return 0;
-    });
+
+  i18nData = queryResult.filter((o) => o.lang == selectedLanguage);
+
+  sortByKey(i18nData);
 }
 
 $: {
@@ -51,24 +53,18 @@ onMount(async () => {
   //reload(selectedLanguage);
   languageList.push(selectedLanguage);
 
-
   console.log("languagelist", languageList);
   for (let language of languageList) {
-    const queryResult = await ApiClient.query<I18n[], QueryGetAllStringsByLanguageArgs>(GetAllStringsByLanguageDocument, {
-      lang: language,
-    });
+    const queryResult = await ApiClient.query<I18n[], QueryGetAllStringsByLanguageArgs>(
+      GetAllStringsByLanguageDocument,
+      {
+        lang: language,
+      }
+    );
     console.log(queryResult);
     //i18nData.push(queryResult);
 
-    i18nData = queryResult.sort((a, b) => {
-      if (a.key < b.key) {
-        return -1;
-      }
-      if (a.key > b.key) {
-        return 1;
-      }
-      return 0;
-    });
+    sortByKey(queryResult);
   }
 
   //reload(selectedLanguage);
@@ -96,7 +92,7 @@ const keySubmitHandler = (event) => {
 
 const clickHandler = async (data: string) => {
   //console.log(data);
-  selectedLanguage = data;
+  //selectedLanguage = data;
   //reload(selectedLanguage);
   if (languageList.includes(data)) {
     const index = languageList.indexOf(data);
@@ -104,18 +100,25 @@ const clickHandler = async (data: string) => {
       languageList.splice(index, 1);
     }
     console.log(languageList);
-    return;
+  } else {
+    languageList.push(data);
   }
-  languageList.push(data);
   //console.log(languageList);
+  i18nData = [];
   for (let language of languageList) {
-    const queryResult = await ApiClient.query<I18n[], QueryGetAllStringsByLanguageArgs>(GetAllStringsByLanguageDocument, {
-      lang: language,
-    });
+    const queryResult = await ApiClient.query<I18n[], QueryGetAllStringsByLanguageArgs>(
+      GetAllStringsByLanguageDocument,
+      {
+        lang: language,
+      }
+    );
     console.log(queryResult);
     i18nData.push(...queryResult);
   }
-  console.log("newi18nData", i18nData)
+
+  sortByKey(i18nData);
+
+  console.log("newi18nData", i18nData);
 };
 </script>
 
@@ -127,9 +130,12 @@ const clickHandler = async (data: string) => {
     <form on:submit="{keySubmitHandler}" class="">
       <input bind:value="{key}" class="m-1" type="text" placeholder="dapps.o-banking..." />
     </form>
-    {#each allLanguages as data}
-      <button on:click="{() => clickHandler(data)}" class="p-1 m-1 bg-blue-200 hover:bg-blue-500">
-        {data}
+    {#each allLanguages as languageCode}
+      <button
+        on:click="{() => clickHandler(languageCode)}"
+        class="p-1 m-1 bg-blue-200 hover:bg-blue-500"
+        class:bg-red-200="{true}">
+        {languageCode}
       </button>
     {/each}
 
