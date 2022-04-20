@@ -61,7 +61,7 @@ let categoryInput: ShopCategoryInput[];
 let offerInput: OfferInput;
 let changeList: { id: number; entry: ShopCategoryEntry }[] = [];
 let currentCategoryId: any;
-let hovering = false;
+let hovering: number = null;
 
 onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
@@ -224,6 +224,20 @@ function hasChanges(entryId) {
     return true;
   }
 }
+
+async function changeCategory(entryIndex, categoryIndex, categoryId) {
+  // let cat =  categories.find(({ id }) => id === categoryId);
+  // let entry = cat.entries.find(({ id }) => id === entryId)
+  // delete cat.entries[entry.key];
+
+  console.log("TARGET:", categoryId);
+  categories[categoryIndex].entries[entryIndex].shopCategoryId = categoryId;
+  console.log("TEST", categories[categoryIndex].entries[entryIndex]);
+  await updateCategoryEntries(categories[categoryIndex].entries);
+  console.log("CATENTRIES NOW", categories[categoryIndex].entries);
+  // categories = categories;
+  // console.log("categp", categories);
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -261,8 +275,8 @@ function hasChanges(entryId) {
                 on:dragstart="{(event) => dragstart(event, index)}"
                 on:drop|preventDefault="{(event) => drop(event, index, catindex)}"
                 ondragover="return false"
-                on:dragenter="{() => (hovering = index + catindex)}"
-                class:is-active="{hovering === index + catindex}">
+                on:dragenter="{() => (hovering = entry.id)}"
+                class:is-active="{hovering === entry.id}">
                 <div class="table-cell w-10 p-1 text-gray-400 cursor-move">
                   <Icon name="menu" class="inline w-10 h-10 heroicon" />
                 </div>
@@ -313,14 +327,18 @@ function hasChanges(entryId) {
                     on:input="{() => changeEntry(entry.id, entry)}" />
                 </div>
                 <div class="table-cell p-1 ">
-                  <select class="select" bind:value="{category.id}" on:input="{() => changeEntry(entry.id, entry)}">
+                  <select
+                    class="select"
+                    bind:value="{category.id}"
+                    on:change="{() => changeCategory(index, catindex, category.id)}">
                     {#each categories as listcategory, index (listcategory.name)}
                       <option value="{listcategory.id}">{listcategory.name}</option>
                     {/each}
                   </select>
                 </div>
                 <div class="table-cell w-16 p-1 text-center break-all">
-                  {entry.product.version}
+                  <!-- {entry.product.version} -->
+                  {entry.id}
                 </div>
                 <div class="table-cell p-1 whitespace-nowrap">
                   {#if changeList.find(({ id }) => id === entry.id)}
