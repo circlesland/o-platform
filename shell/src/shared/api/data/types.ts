@@ -3124,7 +3124,7 @@ export type ShopQuery = (
       & Pick<ShopCategory, 'id' | 'name' | 'description' | 'sortOrder' | 'shopId' | 'smallBannerUrl' | 'largeBannerUrl' | 'private' | 'enabled' | 'createdAt' | 'productListingStyle'>
       & { entries?: Maybe<Array<(
         { __typename?: 'ShopCategoryEntry' }
-        & Pick<ShopCategoryEntry, 'id' | 'sortOrder'>
+        & Pick<ShopCategoryEntry, 'id' | 'sortOrder' | 'private' | 'productId' | 'productVersion' | 'shopCategoryId'>
         & { product?: Maybe<(
           { __typename?: 'Offer' }
           & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
@@ -5397,6 +5397,10 @@ export const ShopDocument = gql`
       entries {
         id
         sortOrder
+        private
+        productId
+        productVersion
+        shopCategoryId
         product {
           id
           version

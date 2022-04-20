@@ -12,10 +12,19 @@ import {
   ShopCategory,
   ShopDocument,
   ShopQueryVariables,
+  UpsertOfferDocument,
+  UpsertOfferMutationVariables,
+  OfferInput,
+  MutationUpsertOfferArgs,
+  UpsertShopCategoryEntriesResult,
   UpsertShopCategoriesDocument,
   ShopCategoryInput,
   UpsertShopCategoriesResult,
   UpsertShopCategoriesMutationVariables,
+  UpsertShopCategoryEntriesDocument,
+  UpsertShopCategoryEntriesMutationVariables,
+  MutationUpsertShopCategoryEntriesArgs,
+  ShopCategoryEntry,
 } from "../../../shared/api/data/types";
 import { storeOffers } from "../../../shared/stores/storeOffers";
 import { _ } from "svelte-i18n";
@@ -49,18 +58,10 @@ let editType: string = "";
 let currentImage: string = null;
 let categories: ShopCategory[] = [];
 let categoryInput: ShopCategoryInput[];
+let offerInput: OfferInput;
+let changeList: { id: number; entry: ShopCategoryEntry }[] = [];
 let currentCategoryId: any;
-// onMount(() => {
-//   store = storeOffers.getOffersFor($me.circlesAddress);
-//   isLoading = true;
-
-//   return store.subscribe((data: any) => {
-//     offers = data;
-//     isLoading = false;
-//     console.log("OFFERS", offers);
-//     console.log("STERO", store);
-//   });
-// });
+let hovering = false;
 
 onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
@@ -73,19 +74,56 @@ onMount(async () => {
   }
 
   categories = shop.categories;
-
-  // categories.forEach((element, index) => {
-  //   delete categories[index].createdAt;
-  //   delete categories[index].entries;
-  //   delete categories[index].__typename;
-  // });
   categoryInput = categories;
-
   console.log("CATA", categories);
 });
 
-let hovering = false;
+async function updateOffer(entry) {
+  try {
+    delete entry.product.__typename;
+    delete entry.product.createdByProfile;
+    delete entry.product.version;
+    offerInput = entry.product;
+    offerInput.createdByProfileId = $me.id;
+    offerInput.pictureMimeType = "image/jpeg";
+    offerInput.timeCirclesPriceShare = 100;
 
+    const result = await ApiClient.mutate<Offer, UpsertOfferMutationVariables>(UpsertOfferDocument, {
+      offer: offerInput,
+    });
+    showToast("success", "Product was updated");
+
+    changeList.splice(
+      changeList.findIndex((v) => v.id === entry.id),
+      1
+    );
+    changeList = changeList;
+    return;
+
+    return ok(result);
+  } catch (error) {
+    showToast("error", "Categories not updated");
+  }
+}
+
+async function updateCategoryEntries(entries) {
+  try {
+    let myEntries = JSON.parse(JSON.stringify(entries)); // Sometimes js is weird.
+
+    myEntries.forEach((element, index) => {
+      delete element.product;
+      delete element.__typename;
+    });
+    const result = await ApiClient.mutate<UpsertShopCategoryEntriesResult, UpsertShopCategoryEntriesMutationVariables>(
+      UpsertShopCategoryEntriesDocument,
+      { shopCategoryEntries: myEntries }
+    );
+    showToast("success", "Category Entries updated");
+    // return ok(result);
+  } catch (error) {
+    showToast("error", "Category Entries not updated");
+  }
+}
 const dragstart = (event, i) => {
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.dropEffect = "move";
@@ -93,10 +131,12 @@ const dragstart = (event, i) => {
   event.dataTransfer.setData("text/plain", start);
 };
 
-const drop = (event, target) => {
+async function drop(event, target, catIndex) {
+  console.log("CACACAC:", categories[catIndex].entries);
+
   event.dataTransfer.dropEffect = "move";
   const start = parseInt(event.dataTransfer.getData("text/plain"));
-  const newTracklist = categories;
+  const newTracklist = categories[catIndex].entries;
 
   if (start < target) {
     newTracklist.splice(target + 1, 0, newTracklist[start]);
@@ -105,16 +145,18 @@ const drop = (event, target) => {
     newTracklist.splice(target, 0, newTracklist[start]);
     newTracklist.splice(start + 1, 1);
   }
-  categories = newTracklist;
+  categories[catIndex].entries = newTracklist;
   hovering = null;
 
-  categories.forEach((element, index) => {
+  categories[catIndex].entries.forEach((element, index) => {
     element.sortOrder = index;
   });
-};
+  await updateCategoryEntries(categories[catIndex].entries);
+  console.log("CATENTRIES NOW", categories[catIndex].entries);
+}
 
 async function submit() {
-  await updateCategory();
+  // await updateCategory();
   showToast("success", "Categories successfully updated");
 }
 
@@ -153,6 +195,7 @@ function handleImageUpload(event) {
   showModal = false;
 }
 $: {
+  changeList = changeList;
   if (_state) {
     if (editType == "largeBannerUrl") {
       categories[currentCategoryId].largeBannerUrl = $_state.context.data.url;
@@ -163,162 +206,152 @@ $: {
   }
 }
 
-async function updateCategory() {
-  const result = await ApiClient.mutate<UpsertShopCategoriesResult, UpsertShopCategoriesMutationVariables>(
-    UpsertShopCategoriesDocument,
-    { shopCategories: categoryInput }
-  );
-
-  return ok(result);
-}
-
 function handleClickOutside(event) {
   showModal = false;
+}
+
+function changeEntry(entryId: number, entry: ShopCategoryEntry) {
+  if (changeList.find(({ id }) => id === entryId)) {
+    return;
+  } else {
+    changeList = [...changeList, { id: entryId, entry: entry }];
+  }
+  console.log("CHAGNELISGT", changeList);
+}
+
+function hasChanges(entryId) {
+  if (changeList.find(({ id }) => id === entryId)) {
+    return true;
+  }
 }
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="w-2/3 px-4 mx-auto -mt-3">
-  <div class="items-center w-full p-4 bg-white rounded-lg shadow-md cardborder">
+<div class="w-5/6 px-4 mx-auto -mt-3">
+  <div class="items-center w-full p-4 ">
     {#if categories.length > 0}
-      {#each categories as category, index (category.name)}
-        <h1>{category.name}</h1>
-        <div class="table mb-10">
-          <div class="table-header-group">
-            <div class="table-cell">Order</div>
-
-            <div class="table-cell">Title</div>
-            <div class="table-cell">Description</div>
-            <div class="table-cell">Image</div>
-
-            <div class="table-cell">Price per Unit</div>
-            <div class="table-cell">Category</div>
-            <div class="table-cell">Version</div>
+      {#each categories as category, catindex (category.name)}
+        {#if category.entries}
+          <div class="w-full p-2 ">
+            <h1>{category.name}</h1>
           </div>
-          <!-- <div class="table-row-group">
-        <div class="table-cell w-64 p-1 break-all">
-          <input type="text" class="input" placeholder="Title" value="" />
-        </div>
-        <div class="table-cell p-1 break-all">
-          <input type="text" class="input" placeholder="Description" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <input type="text" class="input" placeholder="upload picture" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <input type="text" class="input" placeholder="mime" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <input type="text" class="input" placeholder="Price per Unit" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <select class="select">
-            <option>cat 1</option>
-            <option>category</option>
-            <option>kickeriiki</option>
-          </select>
-        </div>
 
-        <div class="p1">
-          <button class="btn btn-success">Create</button>
-        </div>
-      </div> -->
-
-          {#each category.entries as entry, index (entry.id)}
-            <div
-              class="table-row-group"
-              animate:flip
-              draggable="{true}"
-              on:dragstart="{(event) => dragstart(event, index)}"
-              on:drop|preventDefault="{(event) => drop(event, index)}"
-              ondragover="return false"
-              on:dragenter="{() => (hovering = index)}"
-              class:is-active="{hovering === index}">
-              <div class="table-cell w-10 p-1 cursor-move">
-                <Icon name="menu" class="inline w-10 h-10 heroicon" />
-              </div>
-
-              <div class="table-cell w-64 p-1 break-all">
-                <input type="text" class="input" placeholder="{entry.product.title}" value="{entry.product.title}" />
-              </div>
-
-              <div class="table-cell p-1 break-all">
-                <input
-                  type="text"
-                  class="input"
-                  placeholder="{entry.product.description}"
-                  bind:value="{entry.product.description}" />
-              </div>
-
-              <div class="table-cell p-1 overflow-hidden ">
-                <div class="w-12 h-12 ">
-                  {#if entry.product.pictureUrl}
-                    <img
-                      class="w-12 h-12"
-                      src="{entry.product.pictureUrl}"
-                      alt="large Banner Url"
-                      on:click="{() => imageEditor(index, 'pictureUrl', false)}" />
-                  {:else}
-                    <div on:click="{() => imageEditor(index, 'largeBannerUrl', true)}" class="link link-primary">
-                      Upload image
-                    </div>
-                  {/if}
+          <div class="table mb-10">
+            <div class="table-header-group p-4 mb-10">
+              <div class="table-row ">
+                <div class="table-cell pl-2 ">
+                  <Icon name="switch-vertical" class="inline w-6 h-6 heroicon smallicon" />
                 </div>
-                <!-- <input
-              type="text"
-              class="input"
-              placeholder="{category.largeBannerUrl}"
-              value="{category.largeBannerUrl}"
-               /> -->
-              </div>
-              <div class="table-cell p-1 break-all">
-                <input
-                  type="text"
-                  class="input"
-                  placeholder="{entry.product.pricePerUnit}"
-                  bind:value="{entry.product.pricePerUnit}" />
-              </div>
-              <div class="table-cell p-1 ">
-                <select class="select">
-                  <option value="LIST">List</option>
-                  <option value="TILES">Tiles</option>
-                </select>
-              </div>
-              <div class="table-cell w-10 p-1 break-all">
-                <input
-                  type="text"
-                  class="input"
-                  placeholder="{entry.product.version}"
-                  bind:value="{entry.product.version}" />
+                <div class="table-cell pl-2">Image</div>
+                <div class="table-cell pl-2">Title</div>
+                <div class="table-cell pl-2">Description</div>
+
+                <div class="table-cell pl-2">Price</div>
+                <div class="table-cell pl-2">Category</div>
+                <div class="table-cell pl-2 pr-2">Version</div>
               </div>
             </div>
-          {/each}
 
-          <div class="p1">
-            <button class="btn btn-primary" on:click="{submit}">Save</button>
-          </div>
-          {#if showModal}
-            <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-              {#if editImage}
-                <ImageUpload on:submit="{handleImageUpload}" />
-              {:else}
-                <div class="flex flex-col w-full h-full p-4">
-                  <button
-                    class="self-center mb-4 btn btn-primary btn-sm"
-                    on:click="{() => {
-                      editImage = true;
-                    }}">Remove Image</button>
-                  <div class="text-center">
-                    <div class="inline-flex">
-                      <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
-                    </div>
+            {#each category.entries as entry, index (entry.id)}
+              <div
+                class="table-row-group"
+                animate:flip
+                draggable="{true}"
+                on:dragstart="{(event) => dragstart(event, index)}"
+                on:drop|preventDefault="{(event) => drop(event, index, catindex)}"
+                ondragover="return false"
+                on:dragenter="{() => (hovering = index + catindex)}"
+                class:is-active="{hovering === index + catindex}">
+                <div class="table-cell w-10 p-1 text-gray-400 cursor-move">
+                  <Icon name="menu" class="inline w-10 h-10 heroicon" />
+                </div>
+                <div class="relative table-cell w-12 p-1 overflow-hidden">
+                  <div class="absolute w-12 h-12 bottom-2">
+                    {#if entry.product.pictureUrl}
+                      <img
+                        class="w-12 h-12"
+                        src="{entry.product.pictureUrl}"
+                        alt="large Banner Url"
+                        on:click="{() => imageEditor(index, 'pictureUrl', false)}"
+                        on:change="{() => changeEntry(entry.id, entry)}" />
+                    {:else}
+                      <div
+                        on:click="{() => imageEditor(index, 'pictureUrl', true)}"
+                        class="link link-primary"
+                        on:change="{() => changeEntry(entry.id, entry)}">
+                        Upload image
+                      </div>
+                    {/if}
                   </div>
                 </div>
-              {/if}
-            </Center>
-          {/if}
-        </div>
+                <div class="table-cell p-1 break-all">
+                  <input
+                    type="text"
+                    class="input"
+                    placeholder="{entry.product.title}"
+                    bind:value="{entry.product.title}"
+                    on:input="{() => changeEntry(entry.id, entry)}" />
+                </div>
+
+                <div class="table-cell p-1 break-all">
+                  <input
+                    type="text"
+                    size="50"
+                    class="input"
+                    placeholder="{entry.product.description}"
+                    bind:value="{entry.product.description}"
+                    on:input="{() => changeEntry(entry.id, entry)}" />
+                </div>
+
+                <div class="table-cell w-20 p-1 break-all">
+                  <input
+                    type="text"
+                    class="w-20 input"
+                    placeholder="{entry.product.pricePerUnit}"
+                    bind:value="{entry.product.pricePerUnit}"
+                    on:input="{() => changeEntry(entry.id, entry)}" />
+                </div>
+                <div class="table-cell p-1 ">
+                  <select class="select" bind:value="{category.id}" on:input="{() => changeEntry(entry.id, entry)}">
+                    {#each categories as listcategory, index (listcategory.name)}
+                      <option value="{listcategory.id}">{listcategory.name}</option>
+                    {/each}
+                  </select>
+                </div>
+                <div class="table-cell w-16 p-1 text-center break-all">
+                  {entry.product.version}
+                </div>
+                <div class="table-cell p-1 whitespace-nowrap">
+                  {#if changeList.find(({ id }) => id === entry.id)}
+                    <button class="btn btn-primary" on:click="{updateOffer(entry)}">Save</button>
+                  {/if}
+                </div>
+              </div>
+            {/each}
+
+            {#if showModal}
+              <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+                {#if editImage}
+                  <ImageUpload on:submit="{handleImageUpload}" />
+                {:else}
+                  <div class="flex flex-col w-full h-full p-4">
+                    <button
+                      class="self-center mb-4 btn btn-primary btn-sm"
+                      on:click="{() => {
+                        editImage = true;
+                      }}">Remove Image</button>
+                    <div class="text-center">
+                      <div class="inline-flex">
+                        <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+                      </div>
+                    </div>
+                  </div>
+                {/if}
+              </Center>
+            {/if}
+          </div>
+        {/if}
       {/each}
     {/if}
   </div>
