@@ -101,8 +101,12 @@ async function submit() {
   });
   categoryInput = categories;
 
-  await updateCategory();
-  showToast("success", "Categories successfully updated");
+  try {
+    await updateCategory();
+    showToast("success", "Categories successfully updated");
+  } catch {
+    showToast("error", "Categories not updated");
+  }
 }
 
 function imageEditor(id, type, edit) {
@@ -189,6 +193,11 @@ function addCategory() {
 
   console.log(categories);
 }
+
+function removeLast() {
+  categories.pop();
+  categories = categories;
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -197,6 +206,19 @@ function addCategory() {
   <div class="items-center w-full p-4 ">
     {#if categories.length > 0}
       <div class="table">
+        <div class="table-header-group">
+          <div class="table-cell">Order</div>
+
+          <div class="table-cell">Title</div>
+          <div class="table-cell">Description</div>
+          <div class="table-cell">Large Banner</div>
+
+          <div class="table-cell">Small Banner</div>
+
+          <div class="table-cell">Listing Style</div>
+          <div class="table-cell">Private</div>
+          <div class="table-cell">Enabled</div>
+        </div>
         {#each categories as category, index (category.id)}
           <div
             class="table-row-group"
@@ -272,12 +294,17 @@ function addCategory() {
                 value="{category.enabled}"
                 bind:checked="{category.enabled}" />
             </div>
+            <div class="table-cell p-1 ">
+              {#if !category.id}
+                <button class="btn btn-primary btn-sm" on:click="{() => removeLast()}">Remove</button>
+              {/if}
+            </div>
           </div>
         {/each}
       </div>
-      <div class="flex justify-between w-full pt-2">
+      <div class="flex justify-start w-full pt-2 space-x-4">
         <button class="btn btn-success" on:click="{() => addCategory()}">Create new Category</button>
-        <button class="btn btn-primary" on:click="{submit}">Save</button>
+        <button class="btn btn-primary" on:click="{submit}">Save Categories</button>
       </div>
       {#if showModal}
         <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
