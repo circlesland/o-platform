@@ -25,6 +25,9 @@ $: {
   if (cropShape && cropShape == "rect") {
     aspect = 4 / 3;
   }
+  if (cropShape && cropShape == "square") {
+    aspect = 1 / 1;
+  }
 }
 
 function handleFilesSelect(e) {

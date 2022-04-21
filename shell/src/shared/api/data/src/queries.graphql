@@ -1761,6 +1761,7 @@ query shop($id: Int!) {
         productId
         productVersion
         shopCategoryId
+        enabled
         product {
           id
           version

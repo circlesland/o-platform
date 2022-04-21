@@ -61,6 +61,7 @@ let categoryInput: ShopCategoryInput[];
 let offerInput: OfferInput;
 let changeList: { id: number; entry: ShopCategoryEntry }[] = [];
 let currentCategoryId: any;
+let currentEntry: ShopCategoryEntry;
 let hovering: number = null;
 
 onMount(async () => {
@@ -132,8 +133,6 @@ const dragstart = (event, i) => {
 };
 
 async function drop(event, target, catIndex) {
-  console.log("CACACAC:", categories[catIndex].entries);
-
   event.dataTransfer.dropEffect = "move";
   const start = parseInt(event.dataTransfer.getData("text/plain"));
   const newTracklist = categories[catIndex].entries;
@@ -152,7 +151,6 @@ async function drop(event, target, catIndex) {
     element.sortOrder = index;
   });
   await updateCategoryEntries(categories[catIndex].entries);
-  console.log("CATENTRIES NOW", categories[catIndex].entries);
 }
 
 async function submit() {
@@ -160,20 +158,17 @@ async function submit() {
   // showToast("success", "Categories successfully updated");
 }
 
-function imageEditor(id, type, edit) {
-  currentCategoryId = id;
+function imageEditor(categoryId, entryId, edit) {
+  let sourceCategory: ShopCategory = categories.find((o) => o.id === categoryId);
+  let entry: ShopCategoryEntry = sourceCategory.entries.find((o) => o.id === entryId);
+
   showModal = true;
   editImage = false;
   if (edit) {
     editImage = true;
   }
-  editType = type;
-  if (type == "largeBannerUrl") {
-    currentImage = categories[currentCategoryId].largeBannerUrl;
-  }
-  if (type == "smallBannerUrl") {
-    currentImage = categories[currentCategoryId].smallBannerUrl;
-  }
+  currentImage = entry.product.pictureUrl;
+  currentEntry = entry;
 }
 
 function handleImageUpload(event) {
@@ -182,7 +177,7 @@ function handleImageUpload(event) {
     context: {
       data: {
         appId: Environment.filesAppId,
-        fileName: `${shop.id}/yomama.jpg`,
+        fileName: `${shop.id}/yomama.jpg`, // errr....
         mimeType: "image/jpeg",
         bytes: event.detail.croppedImage,
       },
@@ -197,12 +192,8 @@ function handleImageUpload(event) {
 $: {
   changeList = changeList;
   if (_state) {
-    if (editType == "largeBannerUrl") {
-      categories[currentCategoryId].largeBannerUrl = $_state.context.data.url;
-    }
-    if (editType == "smallBannerUrl") {
-      categories[currentCategoryId].smallBannerUrl = $_state.context.data.url;
-    }
+    currentEntry.product.pictureUrl = $_state.context.data.url;
+    changeEntry(currentEntry.id, currentEntry);
   }
 }
 
@@ -262,6 +253,7 @@ async function changeCategory(e, entryId, entryIndex, categoryIndex, categoryId)
 
                 <div class="table-cell pl-2">Price</div>
                 <div class="table-cell pl-2">Category</div>
+                <div class="table-cell pl-2">Enabled</div>
                 <div class="table-cell pl-2 pr-2">Version</div>
               </div>
             </div>
@@ -286,11 +278,11 @@ async function changeCategory(e, entryId, entryIndex, categoryIndex, categoryId)
                         class="w-12 h-12"
                         src="{entry.product.pictureUrl}"
                         alt="large Banner Url"
-                        on:click="{() => imageEditor(index, 'pictureUrl', false)}"
+                        on:click="{() => imageEditor(category.id, entry.id, false)}"
                         on:change="{() => changeEntry(entry.id, entry)}" />
                     {:else}
                       <div
-                        on:click="{() => imageEditor(index, 'pictureUrl', true)}"
+                        on:click="{() => imageEditor(category.id, entry.id, true)}"
                         class="link link-primary"
                         on:change="{() => changeEntry(entry.id, entry)}">
                         Upload image
@@ -335,10 +327,18 @@ async function changeCategory(e, entryId, entryIndex, categoryIndex, categoryId)
                     {/each}
                   </select>
                 </div>
-                <div class="table-cell w-16 p-1 text-center break-all">
-                  {entry.product.version}
+                <div class="table-cell p-1 ">
+                  <input
+                    type="checkbox"
+                    class="inline-block toggle toggle-primary"
+                    value="{entry.enabled}"
+                    bind:checked="{entry.enabled}"
+                    on:change="{() => updateCategoryEntries(category.entries)}" />
                 </div>
-                <div class="table-cell p-1 whitespace-nowrap">
+                <div class="table-cell w-16 p-1 text-center break-all">
+                  {entry.productVersion}
+                </div>
+                <div class="table-cell w-10 p-1 whitespace-nowrap">
                   {#if changeList.find(({ id }) => id === entry.id)}
                     <button class="btn btn-primary" on:click="{updateOffer(entry)}">Save</button>
                   {/if}
@@ -349,7 +349,7 @@ async function changeCategory(e, entryId, entryIndex, categoryIndex, categoryId)
             {#if showModal}
               <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
                 {#if editImage}
-                  <ImageUpload on:submit="{handleImageUpload}" />
+                  <ImageUpload on:submit="{handleImageUpload}" cropShape="square" />
                 {:else}
                   <div class="flex flex-col w-full h-full p-4">
                     <button
