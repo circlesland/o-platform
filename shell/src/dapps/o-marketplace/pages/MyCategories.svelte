@@ -202,7 +202,7 @@ function removeLast() {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="w-2/3 px-4 mx-auto -mt-3">
+<div class="w-5/6 px-4 mx-auto -mt-3">
   <div class="items-center w-full p-4 ">
     {#if categories.length > 0}
       <div class="table">

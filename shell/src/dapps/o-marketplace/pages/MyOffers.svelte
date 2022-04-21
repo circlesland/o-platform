@@ -56,6 +56,7 @@ let showModal: Boolean = false;
 let editImage: Boolean = false;
 let editType: string = "";
 let currentImage: string = null;
+let newOffer: OfferInput = null;
 let categories: ShopCategory[] = [];
 let categoryInput: ShopCategoryInput[];
 let offerInput: OfferInput;
@@ -99,8 +100,18 @@ async function updateOffer(entry) {
       1
     );
     changeList = changeList;
-    return;
 
+    // This happens for when we add a new product:
+    if (newOffer) {
+      // Okay Problem: we need the entry id somehow back in order to set it here correctly
+
+      entry.productId = result.id;
+      entry.productVersion = result.version;
+      let entryresult = await updateCategoryEntries([entry]);
+      console.log("ENTRY:", entry);
+      newOffer = null;
+      hovering = null;
+    }
     return ok(result);
   } catch (error) {
     showToast("error", "Categories not updated");
@@ -125,6 +136,8 @@ async function updateCategoryEntries(entries) {
     showToast("error", "Category Entries not updated");
   }
 }
+
+// Drag & Drop stuff START
 const dragstart = (event, i) => {
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.dropEffect = "move";
@@ -152,6 +165,7 @@ async function drop(event, target, catIndex) {
   });
   await updateCategoryEntries(categories[catIndex].entries);
 }
+// Drag & Drop stuff END
 
 async function submit() {
   // await updateCategory();
@@ -189,7 +203,9 @@ function handleImageUpload(event) {
   _state = state;
   showModal = false;
 }
+
 $: {
+  hovering = hovering;
   changeList = changeList;
   if (_state) {
     currentEntry.product.pictureUrl = $_state.context.data.url;
@@ -201,6 +217,7 @@ function handleClickOutside(event) {
   showModal = false;
 }
 
+// This is to keep track of the changes per offer, so we can show the 'save' button...
 function changeEntry(entryId: number, entry: ShopCategoryEntry) {
   if (changeList.find(({ id }) => id === entryId)) {
     return;
@@ -228,6 +245,39 @@ async function changeCategory(e, entryId, entryIndex, categoryIndex, categoryId)
 
   categories = [...categories];
 }
+
+function addProduct(categoryId) {
+  newOffer = {
+    description: null,
+    id: null,
+    pictureUrl: "",
+    title: null,
+    createdByProfileId: $me.id,
+
+    timeCirclesPriceShare: 100,
+
+    pictureMimeType: "image/jpeg",
+  };
+  let targetCategory: ShopCategory = categories.find((o) => o.id === categoryId);
+  let entry: ShopCategoryEntry = {
+    private: false,
+    enabled: true,
+    product: newOffer,
+    productId: null,
+    productVersion: null,
+    sortOrder: null,
+    shopCategoryId: categoryId,
+  };
+  if (targetCategory.entries) {
+    targetCategory.entries.push(entry);
+  } else {
+    targetCategory.entries = [entry];
+  }
+
+  categories = [...categories];
+
+  console.log(categories);
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -236,28 +286,27 @@ async function changeCategory(e, entryId, entryIndex, categoryIndex, categoryId)
   <div class="items-center w-full p-4 ">
     {#if categories.length > 0}
       {#each categories as category, catindex (category.name)}
-        {#if category.entries}
-          <div class="w-full p-2 ">
-            <h1>{category.name}</h1>
-          </div>
+        <div class="w-full p-2 ">
+          <h1>{category.name}</h1>
+        </div>
 
-          <div class="table mb-10">
-            <div class="table-header-group p-4 mb-10">
-              <div class="table-row ">
-                <div class="table-cell pl-2 ">
-                  <Icon name="switch-vertical" class="inline w-6 h-6 heroicon smallicon" />
-                </div>
-                <div class="table-cell pl-2">Image</div>
-                <div class="table-cell pl-2">Title</div>
-                <div class="table-cell pl-2">Description</div>
-
-                <div class="table-cell pl-2">Price</div>
-                <div class="table-cell pl-2">Category</div>
-                <div class="table-cell pl-2">Enabled</div>
-                <div class="table-cell pl-2 pr-2">Version</div>
+        <div class="table mb-10">
+          <div class="table-header-group p-4 mb-10">
+            <div class="table-row ">
+              <div class="table-cell pl-2 ">
+                <Icon name="switch-vertical" class="inline w-6 h-6 heroicon smallicon" />
               </div>
-            </div>
+              <div class="table-cell pl-2">Image</div>
+              <div class="table-cell pl-2">Title</div>
+              <div class="table-cell pl-2">Description</div>
 
+              <div class="table-cell pl-2">Price</div>
+              <div class="table-cell pl-2">Category</div>
+              <div class="table-cell pl-2">Enabled</div>
+              <div class="table-cell pl-2 pr-2">Version</div>
+            </div>
+          </div>
+          {#if category.entries}
             {#each category.entries as entry, index (entry.id)}
               <div
                 class="table-row-group"
@@ -345,29 +394,33 @@ async function changeCategory(e, entryId, entryIndex, categoryIndex, categoryId)
                 </div>
               </div>
             {/each}
+          {/if}
+          <div class="flex justify-start w-full pt-2 space-x-4">
+            <button class="btn btn-primary btn-sm" on:click="{() => addProduct(category.id)}"
+              >Add new Product to {category.name}</button>
+          </div>
 
-            {#if showModal}
-              <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-                {#if editImage}
-                  <ImageUpload on:submit="{handleImageUpload}" cropShape="square" />
-                {:else}
-                  <div class="flex flex-col w-full h-full p-4">
-                    <button
-                      class="self-center mb-4 btn btn-primary btn-sm"
-                      on:click="{() => {
-                        editImage = true;
-                      }}">Remove Image</button>
-                    <div class="text-center">
-                      <div class="inline-flex">
-                        <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
-                      </div>
+          {#if showModal}
+            <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+              {#if editImage}
+                <ImageUpload on:submit="{handleImageUpload}" cropShape="square" />
+              {:else}
+                <div class="flex flex-col w-full h-full p-4">
+                  <button
+                    class="self-center mb-4 btn btn-primary btn-sm"
+                    on:click="{() => {
+                      editImage = true;
+                    }}">Remove Image</button>
+                  <div class="text-center">
+                    <div class="inline-flex">
+                      <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
                     </div>
                   </div>
-                {/if}
-              </Center>
-            {/if}
-          </div>
-        {/if}
+                </div>
+              {/if}
+            </Center>
+          {/if}
+        </div>
       {/each}
     {/if}
   </div>
