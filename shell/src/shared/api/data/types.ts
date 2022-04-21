@@ -1970,7 +1970,7 @@ export type UpsertOfferMutation = (
   { __typename?: 'Mutation' }
   & { upsertOffer: (
     { __typename?: 'Offer' }
-    & Pick<Offer, 'id' | 'version' | 'createdAt' | 'createdByAddress' | 'title' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
+    & Pick<Offer, 'id' | 'version' | 'createdAt' | 'createdByAddress' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
     & { tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'typeId' | 'value'>
@@ -3643,6 +3643,7 @@ export const UpsertOfferDocument = gql`
     createdAt
     createdByAddress
     title
+    description
     pictureUrl
     pricePerUnit
     timeCirclesPriceShare

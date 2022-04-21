@@ -11,6 +11,8 @@ import {
   Offer,
   ShopCategory,
   ShopDocument,
+  ShopsDocument,
+  ShopsQueryVariables,
   ShopQueryVariables,
   UpsertOfferDocument,
   UpsertOfferMutationVariables,
@@ -50,6 +52,7 @@ storeId = 5;
 let isLoading: boolean;
 let error: Error;
 let offers: Offer[] = [];
+let shops: Shop[] | null = null;
 let shop: Shop | null = null;
 let _state: Readable<any>;
 let showModal: Boolean = false;
@@ -66,6 +69,15 @@ let currentEntry: ShopCategoryEntry;
 let hovering: number = null;
 
 onMount(async () => {
+  // shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {});
+
+  // console.log(
+  //   "MEINE: ",
+  //   shops.find(({ owner }) => owner.circlesAddress === $me.circlesAddress)
+  // );
+
+  // console.log("SHOPS", shops);
+
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
     id: parseInt(storeId.toString()),
   });
@@ -82,9 +94,14 @@ onMount(async () => {
 
 async function updateOffer(entry) {
   try {
+    const entryId = JSON.parse(JSON.stringify(entry.id));
     delete entry.product.__typename;
     delete entry.product.createdByProfile;
     delete entry.product.version;
+    delete entry.product.createdAt;
+    delete entry.product.createdByAddress;
+    delete entry.product.tags;
+
     offerInput = entry.product;
     offerInput.createdByProfileId = $me.id;
     offerInput.pictureMimeType = "image/jpeg";
@@ -94,26 +111,27 @@ async function updateOffer(entry) {
       offer: offerInput,
     });
     showToast("success", "Product was updated");
+    console.log("DER RESULT", result);
 
     changeList.splice(
-      changeList.findIndex((v) => v.id === entry.id),
+      changeList.findIndex((v) => v.id === entryId),
       1
     );
-    changeList = changeList;
+    console.log("CHANGELIST: ", changeList);
 
     entry.product = result;
+    entry.productVersion = result.version;
 
     // This happens for when we add a new product:
     if (newOffer) {
-      // Okay Problem: we need the entry id somehow back in order to set it here correctly
-
       entry.productId = result.id;
-      entry.productVersion = result.version;
-      let entryresult = await updateCategoryEntries([entry]);
-      console.log("ENTRY:", entry);
+
       newOffer = null;
       hovering = null;
     }
+    let entryresult = await updateCategoryEntries([entry]);
+    categories = categories;
+    changeList = changeList;
     return ok(result);
   } catch (error) {
     showToast("error", "Categories not updated");
@@ -222,7 +240,7 @@ function handleClickOutside(event) {
 // This is to keep track of the changes per offer, so we can show the 'save' button...
 function changeEntry(entryId: number, entry: ShopCategoryEntry) {
   if (changeList.find(({ id }) => id === entryId)) {
-    return;
+    return true;
   } else {
     changeList = [...changeList, { id: entryId, entry: entry }];
   }
@@ -391,7 +409,8 @@ function addProduct(categoryId) {
                   {entry.productVersion}
                 </div>
                 <div class="table-cell w-10 p-1 whitespace-nowrap">
-                  {#if changeList.find(({ id }) => id === entry.id)}
+                  {#if changeList.length && changeList.find(({ id }) => id === entry.id)}
+                    {entry.id}
                     <button class="btn btn-primary" on:click="{updateOffer(entry)}">Save</button>
                   {/if}
                 </div>

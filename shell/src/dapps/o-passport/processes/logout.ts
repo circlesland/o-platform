@@ -100,7 +100,8 @@ const processDefinition = (processId: string) =>
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut",
           });
-          push("/");
+          // push("/");
+          document.location.href = "/";
           return event.data;
         },
       },

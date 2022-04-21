@@ -469,6 +469,7 @@ mutation upsertOffer($offer: OfferInput!) {
     createdAt
     createdByAddress
     title
+    description
     pictureUrl
     pricePerUnit
     timeCirclesPriceShare
