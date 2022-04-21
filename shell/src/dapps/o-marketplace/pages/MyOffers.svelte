@@ -396,29 +396,28 @@ function addProduct(categoryId) {
               </div>
             {/each}
           {/if}
-
-          {#if showModal}
-            <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-              {#if editImage}
-                <ImageUpload on:submit="{handleImageUpload}" cropShape="square" />
-              {:else}
-                <div class="flex flex-col w-full h-full p-4">
-                  <button
-                    class="self-center mb-4 btn btn-primary btn-sm"
-                    on:click="{() => {
-                      editImage = true;
-                    }}">Remove Image</button>
-                  <div class="text-center">
-                    <div class="inline-flex">
-                      <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
-                    </div>
-                  </div>
-                </div>
-              {/if}
-            </Center>
-          {/if}
         </div>
       {/each}
+      {#if showModal}
+        <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+          {#if editImage}
+            <ImageUpload on:submit="{handleImageUpload}" cropShape="square" />
+          {:else}
+            <div class="flex flex-col w-full h-full p-4">
+              <button
+                class="self-center mb-4 btn btn-primary btn-sm"
+                on:click="{() => {
+                  editImage = true;
+                }}">Remove Image</button>
+              <div class="text-center">
+                <div class="inline-flex">
+                  <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+                </div>
+              </div>
+            </div>
+          {/if}
+        </Center>
+      {/if}
     {/if}
   </div>
 </div>
