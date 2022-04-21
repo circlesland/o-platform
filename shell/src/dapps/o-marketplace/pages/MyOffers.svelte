@@ -336,8 +336,7 @@ async function changeCategory(e, entryId, entryIndex, categoryIndex, categoryId)
                   </select>
                 </div>
                 <div class="table-cell w-16 p-1 text-center break-all">
-                  <!-- {entry.product.version} -->
-                  {entry.id}
+                  {entry.product.version}
                 </div>
                 <div class="table-cell p-1 whitespace-nowrap">
                   {#if changeList.find(({ id }) => id === entry.id)}
