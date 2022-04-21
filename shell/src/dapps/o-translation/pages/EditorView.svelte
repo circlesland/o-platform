@@ -85,11 +85,13 @@ onMount(async () => {
 
 
 const filterByStringValue = () => {
-  paginatedItems = i18nData.filter((item) => item.value.toLowerCase().startsWith(value.toLocaleLowerCase()));
+  items = i18nData.filter((item) => item.value.toLowerCase().startsWith(value.toLocaleLowerCase()));
+  paginate({ items, pageSize, currentPage })
 };
 
 const filterByKey = () => {
-  paginatedItems = i18nData.filter((item) => item.key.startsWith(key));
+  items = i18nData.filter((item) => item.key.startsWith(key));
+  paginate({ items, pageSize, currentPage })
 };
 
 const clickHandler = async (data: string) => {
