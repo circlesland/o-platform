@@ -101,6 +101,8 @@ async function updateOffer(entry) {
     );
     changeList = changeList;
 
+    entry.product = result;
+
     // This happens for when we add a new product:
     if (newOffer) {
       // Okay Problem: we need the entry id somehow back in order to set it here correctly
