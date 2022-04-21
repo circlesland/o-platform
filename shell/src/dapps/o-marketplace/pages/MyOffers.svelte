@@ -119,7 +119,7 @@ async function updateCategoryEntries(entries) {
       { shopCategoryEntries: myEntries }
     );
     showToast("success", "Category Entries updated");
-    // return ok(result);
+    return ok(result);
   } catch (error) {
     showToast("error", "Category Entries not updated");
   }
@@ -157,7 +157,7 @@ async function drop(event, target, catIndex) {
 
 async function submit() {
   // await updateCategory();
-  showToast("success", "Categories successfully updated");
+  // showToast("success", "Categories successfully updated");
 }
 
 function imageEditor(id, type, edit) {
@@ -216,27 +216,26 @@ function changeEntry(entryId: number, entry: ShopCategoryEntry) {
   } else {
     changeList = [...changeList, { id: entryId, entry: entry }];
   }
-  console.log("CHAGNELISGT", changeList);
 }
 
-function hasChanges(entryId) {
-  if (changeList.find(({ id }) => id === entryId)) {
-    return true;
-  }
-}
+async function changeCategory(e, entryId, entryIndex, categoryIndex, categoryId) {
+  // intricate function that removes a entry from one category and moves it into another.
+  const target: any = e.target;
+  const targetCategoryId: number = target.querySelector("option:checked")?.__value;
 
-async function changeCategory(entryIndex, categoryIndex, categoryId) {
-  // let cat =  categories.find(({ id }) => id === categoryId);
-  // let entry = cat.entries.find(({ id }) => id === entryId)
-  // delete cat.entries[entry.key];
+  let targetCategory: ShopCategory = categories.find((o) => o.id === targetCategoryId);
+  let sourceCategory: ShopCategory = categories.find((o) => o.id === categoryId);
+  let entry: ShopCategoryEntry = sourceCategory.entries.find((o) => o.id === entryId);
 
-  console.log("TARGET:", categoryId);
-  categories[categoryIndex].entries[entryIndex].shopCategoryId = categoryId;
-  console.log("TEST", categories[categoryIndex].entries[entryIndex]);
-  await updateCategoryEntries(categories[categoryIndex].entries);
-  console.log("CATENTRIES NOW", categories[categoryIndex].entries);
-  // categories = categories;
-  // console.log("categp", categories);
+  entry.shopCategoryId = targetCategoryId;
+
+  targetCategory.entries.push(entry);
+
+  sourceCategory.entries.splice(entryIndex, 1);
+
+  await updateCategoryEntries(targetCategory.entries);
+
+  categories = [...categories];
 }
 </script>
 
@@ -329,9 +328,9 @@ async function changeCategory(entryIndex, categoryIndex, categoryId) {
                 <div class="table-cell p-1 ">
                   <select
                     class="select"
-                    bind:value="{category.id}"
-                    on:change="{() => changeCategory(index, catindex, category.id)}">
-                    {#each categories as listcategory, index (listcategory.name)}
+                    value="{category.id}"
+                    on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
+                    {#each categories as listcategory}
                       <option value="{listcategory.id}">{listcategory.name}</option>
                     {/each}
                   </select>
@@ -375,114 +374,7 @@ async function changeCategory(entryIndex, categoryIndex, categoryId) {
   </div>
 </div>
 
-<!-- 
-<div class="px-4 mx-auto -mt-3 md:w-2/3 xl:w-1/2">
-  {#if isLoading}
-    <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-        <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.myOffers.loadingOffers")}</div>
-        </div>
-      </div>
-    </section>
-  {:else if error}
-    <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-        <div class="flex flex-col items-start">
-          <div>
-            <b>{$_("dapps.o-marketplace.pages.myOffers.error")}</b>
-          </div>
-        </div>
-      </div>
-    </section>
-  {:else if offers.length}
-    <div class="table">
-      <div class="table-header-group">
-        <div class="table-cell">Title</div>
-        <div class="table-cell">Description</div>
-        <div class="table-cell">Picture Url</div>
-        <div class="table-cell">Picture Mime Type</div>
-        <div class="table-cell">Price per Unit</div>
-        <div class="table-cell">Category</div>
-      </div>
-      <div class="table-row-group">
-        <div class="table-cell w-64 p-1 break-all">
-          <input type="text" class="input" placeholder="Title" value="" />
-        </div>
-        <div class="table-cell p-1 break-all">
-          <input type="text" class="input" placeholder="Description" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <input type="text" class="input" placeholder="upload picture" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <input type="text" class="input" placeholder="mime" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <input type="text" class="input" placeholder="Price per Unit" value="" />
-        </div>
-        <div class="table-cell p-1 ">
-          <select class="select">
-            <option>cat 1</option>
-            <option>category</option>
-            <option>kickeriiki</option>
-          </select>
-        </div>
-
-        <div class="p1">
-          <button class="btn btn-success">Create</button>
-        </div>
-      </div>
-      {#each offers as offer}
-        <div class="table-row-group">
-          <div class="table-cell w-64 p-1 break-all">
-            <input type="text" class="input" placeholder="{offer.title}" value="{offer.title}" />
-          </div>
-          <div class="table-cell p-1 break-all">
-            <input type="text" class="input" placeholder="{offer.description}" value="{offer.description}" />
-          </div>
-          <div class="table-cell p-1 ">
-            <input type="text" class="input" placeholder="{offer.pictureUrl}" value="{offer.pictureUrl}" />
-          </div>
-          <div class="table-cell p-1 ">
-            <input type="text" class="input" placeholder="{offer.pictureMimeType}" value="{offer.pictureMimeType}" />
-          </div>
-          <div class="table-cell p-1 ">
-            <input type="text" class="input" placeholder="{offer.pricePerUnit}" value="{offer.pricePerUnit}" />
-          </div>
-          <div class="table-cell p-1 ">
-            <select class="select">
-              <option>cat 1</option>
-              <option>category</option>
-              <option>kickeriiki</option>
-            </select>
-          </div>
-          <div class="p1">
-            <button class="btn btn-primary">Save</button>
-          </div>
-        </div>
-      {/each}
-    </div>
-  {:else}
-    <section class="flex items-center justify-center mb-2 ">
-      <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
-        <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.myOffers.noOffers")}</div>
-        </div>
-      </div>
-    </section>
-  {/if}
-</div> -->
 <style>
-/* .list-item {
-  display: block;
-  padding: 0.5em 1em;
-}
-
-.list-item:not(:last-child) {
-  border-bottom: 1px solid #dbdbdb;
-} */
-
 .table-row-group.is-active {
   @apply bg-primary;
 }
