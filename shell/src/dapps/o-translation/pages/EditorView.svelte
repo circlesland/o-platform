@@ -9,6 +9,8 @@ import {
   QueryGetAllStringsByLanguageArgs,
 } from "../../../shared/api/data/types";
 
+import { paginate, PaginationNav } from "svelte-paginate";
+
 import { ApiClient } from "../../../shared/apiConnection";
 import StringEditor from "../atoms/StringEditor.svelte";
 import { Environment } from "../../../shared/environment";
@@ -19,6 +21,11 @@ let i18nData: I18n[] = [];
 let allLanguages: string[] = [];
 let selectedLanguage: string = Environment.userLanguage;
 let languageList: string[] = [];
+
+let items = i18nData;
+let currentPage = 1;
+let pageSize = 5;
+$: paginatedItems = paginate({ items, pageSize, currentPage });
 
 function sortByKey(dataToSort: I18n[]) {
   i18nData = dataToSort.sort((a, b) => {
@@ -59,12 +66,10 @@ onMount(async () => {
         lang: language,
       }
     );
-    console.log(queryResult);
-
     sortByKey(queryResult);
   }
 
-  //reload(selectedLanguage);
+  reload(selectedLanguage);
   const queryResult = await ApiClient.query<I18n[], GetAllStringsQuery>(GetAllStringsDocument, {});
 
   const allLanguageKeysInQueryResult = queryResult.toLookup((o) => o.lang);
@@ -73,6 +78,7 @@ onMount(async () => {
   console.log("i18nData", i18nData);
   console.log("allLanguages", allLanguages);
   console.log("languageList", languageList);
+  items = i18nData;
 });
 
 const stringSubmitHandler = (event) => {
@@ -116,6 +122,16 @@ const clickHandler = async (data: string) => {
 </script>
 
 <section class="flex flex-col items-center justify-center p-6">
+  <div class="pagiNav">
+    <PaginationNav
+      totalItems="{items.length}"
+      pageSize="{pageSize}"
+      currentPage="{currentPage}"
+      limit="{1}"
+      showStepOptions="{true}"
+      on:setPage="{(e) => (currentPage = e.detail.page)}" />
+  </div>
+
   <div class="w-full flex flex-row flex-wrap items-stretch">
     <form on:submit="{stringSubmitHandler}">
       <input bind:value class="m-1" type="text" placeholder="String" />
@@ -149,7 +165,7 @@ const clickHandler = async (data: string) => {
       <div class="table-cell p-1">Version</div>
       <div class="table-cell p-1">Input</div>
     </div>
-    {#each i18nData as data}
+    {#each paginatedItems as data}
       <div class="w-full table-row-group">
         <StringEditor
           dataString="{data.value}"
@@ -160,3 +176,23 @@ const clickHandler = async (data: string) => {
     {/each}
   </div>
 </section>
+
+<style>
+.pagiNav :global(.pagination-nav) {
+  display: flex;
+}
+
+.pagiNav :global(.option) {
+  background-color: rgba(12, 238, 238, 0.082);
+  cursor: pointer;
+  padding: 1rem;
+}
+
+.pagiNav :global(.option):hover {
+  background-color: rgba(255, 255, 255, 0.062);
+}
+
+.pagiNav :global(.option.active) {
+  color: green;
+}
+</style>
