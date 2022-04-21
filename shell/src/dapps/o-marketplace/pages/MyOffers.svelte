@@ -269,7 +269,7 @@ function addProduct(categoryId) {
     shopCategoryId: categoryId,
   };
   if (targetCategory.entries) {
-    targetCategory.entries.push(entry);
+    targetCategory.entries.unshift(entry);
   } else {
     targetCategory.entries = [entry];
   }
@@ -286,11 +286,12 @@ function addProduct(categoryId) {
   <div class="items-center w-full p-4 ">
     {#if categories.length > 0}
       {#each categories as category, catindex (category.name)}
-        <div class="w-full p-2 ">
-          <h1>{category.name}</h1>
+        <div class="p-2 w-min whitespace-nowrap rounded-t-md" class:bg-gray-300="{catindex % 2 == 1}">
+          <h1 class="inline pr-4 h1">{category.name}</h1>
+          <button class="inline btn btn-primary btn-square btn-sm" on:click="{() => addProduct(category.id)}">+</button>
         </div>
 
-        <div class="table mb-10">
+        <div class="table p-2 mb-10 rounded-tr-md rounded-b-md" class:bg-gray-300="{catindex % 2 == 1}">
           <div class="table-header-group p-4 mb-10">
             <div class="table-row ">
               <div class="table-cell pl-2 ">
@@ -395,10 +396,6 @@ function addProduct(categoryId) {
               </div>
             {/each}
           {/if}
-          <div class="flex justify-start w-full pt-2 space-x-4">
-            <button class="btn btn-primary btn-sm" on:click="{() => addProduct(category.id)}"
-              >Add new Product to {category.name}</button>
-          </div>
 
           {#if showModal}
             <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
