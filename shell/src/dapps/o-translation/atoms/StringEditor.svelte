@@ -21,7 +21,7 @@ async function writeValueToDb(value: string, lang: string, key: string) {
 </script>
 
 <div class="table-cell break-all w-64 p-1">{dataString}</div>
-<div class="table-cell break-all p-1">{dataKey}</div>
+<div class="table-cell break-all w-64 p-1">{dataKey}</div>
 <div class="table-cell p-1">{dataLang}</div>
 <div class="table-cell p-1">{dataVersion}</div>
 <form action="" on:submit="{() => writeValueToDb(inputValue, dataLang, dataKey)}">

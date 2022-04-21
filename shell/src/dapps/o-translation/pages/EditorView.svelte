@@ -22,9 +22,9 @@ let allLanguages: string[] = [];
 let selectedLanguage: string = Environment.userLanguage;
 let languageList: string[] = [];
 
-let items = i18nData;
-let currentPage = 1;
-let pageSize = 5;
+let items: I18n[] = i18nData;
+let currentPage: number = 1;
+let pageSize: number = 7;
 $: paginatedItems = paginate({ items, pageSize, currentPage });
 
 function sortByKey(dataToSort: I18n[]) {
@@ -53,6 +53,7 @@ async function reload(selectedLanguage: string) {
 $: {
   reload(selectedLanguage);
   languageList;
+  paginatedItems;
 }
 
 onMount(async () => {
@@ -81,16 +82,14 @@ onMount(async () => {
   items = i18nData;
 });
 
-const stringSubmitHandler = (event) => {
-  event.preventDefault();
-  i18nData = i18nData.filter((item) => item.value.startsWith(value));
-  console.log(i18nData);
+
+
+const filterByStringValue = () => {
+  paginatedItems = i18nData.filter((item) => item.value.toLowerCase().startsWith(value.toLocaleLowerCase()));
 };
 
-const keySubmitHandler = (event) => {
-  event.preventDefault();
-  i18nData = i18nData.filter((item) => item.key.startsWith(key));
-  console.log(i18nData);
+const filterByKey = () => {
+  paginatedItems = i18nData.filter((item) => item.key.startsWith(key));
 };
 
 const clickHandler = async (data: string) => {
@@ -113,7 +112,6 @@ const clickHandler = async (data: string) => {
     );
     console.log(queryResult);
     i18nData.push(...queryResult);
-
   }
   items = i18nData;
   sortByKey(i18nData);
@@ -133,11 +131,11 @@ const clickHandler = async (data: string) => {
       on:setPage="{(e) => (currentPage = e.detail.page)}" />
   </div>
 
-  <div class="w-full flex flex-row flex-wrap items-stretch">
-    <form on:submit="{stringSubmitHandler}">
+  <div class="w-full flex flex-row flex-wrap items-stretch justify-center">
+    <form on:input="{() => filterByStringValue()}">
       <input bind:value class="m-1" type="text" placeholder="String" />
     </form>
-    <form on:submit="{keySubmitHandler}" class="">
+    <form on:input="{() => filterByKey()}" class="">
       <input bind:value="{key}" class="m-1" type="text" placeholder="dapps.o-banking..." />
     </form>
     {#each allLanguages as languageCode}
@@ -187,5 +185,6 @@ const clickHandler = async (data: string) => {
 
 .pagiNav :global(.option.active) {
   color: green;
+  background-color: rgba(255, 255, 255, 0.062);
 }
 </style>
