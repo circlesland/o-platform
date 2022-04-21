@@ -85,11 +85,13 @@ onMount(async () => {
 
 
 const filterByStringValue = () => {
+  currentPage = 1;
   items = i18nData.filter((item) => item.value.toLowerCase().startsWith(value.toLocaleLowerCase()));
   paginate({ items, pageSize, currentPage })
 };
 
 const filterByKey = () => {
+  currentPage = 1;
   items = i18nData.filter((item) => item.key.startsWith(key));
   paginate({ items, pageSize, currentPage })
 };
