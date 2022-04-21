@@ -148,14 +148,6 @@ const clickHandler = async (data: string) => {
         {languageCode}
       </button>
     {/each}
-
-    <form on:change="{stringSubmitHandler}">
-      <select bind:value="{selectedLanguage}" class="m-1">
-        {#each allLanguages as lang}
-          <option>{lang}</option>
-        {/each}
-      </select>
-    </form>
   </div>
 
   <div class="table">
