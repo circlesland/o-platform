@@ -113,8 +113,9 @@ const clickHandler = async (data: string) => {
     );
     console.log(queryResult);
     i18nData.push(...queryResult);
-  }
 
+  }
+  items = i18nData;
   sortByKey(i18nData);
 
   console.log("newi18nData", i18nData);
