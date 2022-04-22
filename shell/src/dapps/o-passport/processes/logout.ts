@@ -89,7 +89,7 @@ const processDefinition = (processId: string) =>
             return "you're not serious?";
           },
           onDone: "#success",
-          onError: "#error",
+          onError: "#success",
         },
       },
       error: {
