@@ -85,25 +85,18 @@ const processDefinition = (processId: string) =>
 
             return result.data.logout.success;
           },
-          onDone: "#success",
-          onError: "#error",
+          onDone: {
+            target: "success",
+          },
+          onError: {
+            target: "success",
+          }, // Yes, well.... we'll have to dig into this again some time.
           data: (context, event: any) => {
             return "you're not serious?";
           },
         },
       },
-      // error: {
-      //   id: "error",
-      //   entry: show({
-      //     component: ErrorView,
-      //     params: {},
-      //     field: {
-      //       name: "",
-      //       get: () => undefined,
-      //       set: (o: any) => {},
-      //     },
-      //   }),
-      // },
+
       success: {
         type: "final",
         id: "success",
@@ -111,14 +104,10 @@ const processDefinition = (processId: string) =>
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
-        },
-        data: (context, event: any) => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut",
           });
-          // push("/");
-          document.location.href = "/";
-          return "yeah";
+          push("/");
         },
       },
     },
