@@ -1,5 +1,5 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { onMount } from "svelte";
 import { uploadFile } from "../../../shared/api/uploadFile";
 import { showToast } from "../../../shared/toast";
@@ -7,7 +7,7 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import ImageUpload from "../../../shared/molecules/ImageUpload/ImageUpload.svelte";
-import { useMachine } from "xstate-svelte";
+import { useMachine } from "@xstate/svelte";
 import { flip } from "svelte/animate";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 

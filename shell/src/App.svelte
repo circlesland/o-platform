@@ -6,7 +6,7 @@ import { Generate } from "@o-platform/o-utils/dist/generate";
 import LoadingIndicator from "./shared/atoms/LoadingIndicator.svelte";
 import Success from "./shared/atoms/Success.svelte";
 import ErrorIndicator from "./shared/atoms/Error.svelte";
-import { useMachine } from "xstate-svelte";
+import { useMachine } from "@xstate/svelte";
 import { Subject, Subscription } from "rxjs";
 import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
 import { AnyEventObject } from "xstate";
@@ -192,7 +192,7 @@ import { interpret } from "xstate";
 import { initMachine } from "./dapps/o-onboarding/processes/init";
 import { ubiMachine } from "./shared/ubiTimer2";
 import { InitContext } from "./dapps/o-onboarding/processes/initContext";
-import {LogoutDocument} from "./shared/api/data/types";
+import { LogoutDocument } from "./shared/api/data/types";
 
 let ubiMachineInterpreter: any;
 const v = 1;
@@ -202,8 +202,7 @@ if (!currentLocalStorageSchemaVersion || parseInt(currentLocalStorageSchemaVersi
   sessionStorage.clear();
   localStorage.setItem("localStorageSchemaVersion", v.toString());
 
-  window.o.apiClient.client.subscribeToResult()
-  .then(apiClient => {
+  window.o.apiClient.client.subscribeToResult().then((apiClient) => {
     apiClient.mutate({
       mutation: LogoutDocument,
     });

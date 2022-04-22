@@ -40,7 +40,7 @@ import { uploadFile } from "../../../shared/api/uploadFile";
 import { showToast } from "../../../shared/toast";
 
 import ImageUpload from "../../../shared/molecules/ImageUpload/ImageUpload.svelte";
-import { useMachine } from "xstate-svelte";
+import { useMachine } from "@xstate/svelte";
 import { flip } from "svelte/animate";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 export let runtimeDapp: RuntimeDapp<any>;

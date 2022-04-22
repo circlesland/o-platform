@@ -3485,10 +3485,15 @@
   dependencies:
     tslib "^2.3.0"
 
-"@xstate/fsm@^1.5.2", "@xstate/fsm@^1.6.1":
-  version "1.6.2"
-  resolved "https://registry.npmjs.org/@xstate/fsm/-/fsm-1.6.2.tgz"
-  integrity sha512-vOfiFVQu9mQceA8oJ3PcA4vwhtyo/j/mbVDVIlHDOh3iuiTqMnp805zZ3QsouRdO2Ie3B7n3jMw8BntI74fZxg==
+"@xstate/fsm@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/@xstate/fsm/-/fsm-2.0.0.tgz"
+  integrity sha512-p/zcvBMoU2ap5byMefLkR+AM+Eh99CU/SDEQeccgKlmFNOMDwphaRGqdk+emvel/SaGZ7Rf9sDvzAplLzLdEVQ==
+
+"@xstate/svelte@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@xstate/svelte/-/svelte-1.0.0.tgz"
+  integrity sha512-IXrqWEIbvSw9TIN0g2eAbiBhvjC6scjekDD39f7ihLqTowXITQmrXCrqsq3CF9/f9WJbmU2OLbsydyqIJQbQNQ==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -16807,17 +16812,10 @@ xmlchars@^2.2.0:
   resolved "https://registry.npmjs.org/xmlchars/-/xmlchars-2.2.0.tgz"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
 
-xstate-svelte@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/xstate-svelte/-/xstate-svelte-1.0.1.tgz"
-  integrity sha512-vp5NgOBDSa0XBP/EiIZsIlb/Ca5DxcVfUK8f49v+oWKvehOMmwDzvGVcJZBZgFC9F97Ji1eLCo8lvvj2pRqTvw==
-  dependencies:
-    tslib "^2.0.3"
-
-xstate@^4.16.0, xstate@^4.20.0, xstate@^4.7.0-rc6:
-  version "4.25.0"
-  resolved "https://registry.npmjs.org/xstate/-/xstate-4.25.0.tgz"
-  integrity sha512-qP7lc/ypOuuWME4ArOBnzaCa90TfHkjiqYDmxpiCjPy6FcXstInA2vH6qRVAHbPXRK4KQIYfIEOk1X38P+TldQ==
+xstate@^4.31.0:
+  version "4.31.0"
+  resolved "https://registry.npmjs.org/xstate/-/xstate-4.31.0.tgz"
+  integrity sha512-UK5m6OqUsTlPuKWkfRR5cR9/Yt7sysFyEg+PVIbEH9mwHSf9zuCvWO7rRvhBq7T+3pEXLKTEMfaqmLxl9Ob1pw==
 
 xtend@^4.0.0, xtend@^4.0.2, xtend@~4.0.1:
   version "4.0.2"
