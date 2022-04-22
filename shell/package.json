@@ -12,6 +12,7 @@
     "docker": "SAFE_ADDRESS=0x5528544b97869ce105be00fccf250f659e787034 SAFE_PROXY_FACTORY_ADDRESS=0xdd227f14669e47fe72748a16adb0b26cc2afaa1d CIRCLES_HUB_BLOCK=2 CIRCLES_HUB_ADDRESS=0x59beaa0ced9a35d21d2fc94cacfcb54695e27304 RPC_ENDPOINT=http://localhost:8545 DEPLOY_ENVIRONMENT=docker webpack-dev-server --config webpack.config.js --mode=development",
     "mock": "DEPLOY_ENVIRONMENT=ultralocal ALLOW_VERIFY=true USE_MOCKS=true webpack-dev-server --config webpack.config.js --mode=development",
     "build": "cross-env NODE_ENV=production webpack",
+    "build:libs": "cd ../ && sh build_graphql.sh",
     "deploy": "npm run clean && npm i && npm run build && fission app publish --verbose",
     "validate": "svelte-check",
     "test": "jest src",

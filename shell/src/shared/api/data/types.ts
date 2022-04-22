@@ -754,6 +754,7 @@ export type Organisation = {
   members?: Maybe<Array<ProfileOrOrganisation>>;
   shopEnabled?: Maybe<Scalars['Boolean']>;
   trustsYou?: Maybe<Scalars['Int']>;
+  shops?: Maybe<Array<Shop>>;
 };
 
 export type OrganisationCreated = IEventPayload & {
@@ -826,6 +827,7 @@ export type Profile = {
   sales?: Maybe<Array<Sale>>;
   balances?: Maybe<ProfileBalances>;
   contacts?: Maybe<Array<Contact>>;
+  shops?: Maybe<Array<Shop>>;
 };
 
 export type ProfileAggregate = {
@@ -2174,7 +2176,10 @@ export type MyProfileQuery = (
   & { myProfile?: Maybe<(
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid'>
-    & { city?: Maybe<(
+    & { shops?: Maybe<Array<(
+      { __typename?: 'Shop' }
+      & Pick<Shop, 'id'>
+    )>>, city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
     )>, memberships?: Maybe<Array<(
@@ -3910,6 +3915,9 @@ export const MyProfileDocument = gql`
     displayTimeCircles
     displayCurrency
     cityGeonameid
+    shops {
+      id
+    }
     city {
       geonameid
       name

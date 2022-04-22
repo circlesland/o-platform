@@ -65,6 +65,7 @@ type Profile {
   sales: [Sale!]
   balances: ProfileBalances
   contacts: [Contact!]
+  shops: [Shop!]
 }
 
 type City implements ICity {
@@ -181,6 +182,24 @@ type Contact {
   contactAddress_Profile: Profile
 }
 
+type Shop {
+  id: Int!
+  createdAt: Date!
+  private: Boolean
+  enabled: Boolean
+  name: String!
+  description: String!
+  largeBannerUrl: String!
+  smallBannerUrl: String!
+  shopListingStyle: ShopListingStyle!
+  sortOrder: Int
+  productListingStyle: ProductListingType!
+  owner: Organisation!
+  openingHours: String
+  pickupAddress: PostAddress
+  categories: [ShopCategory!]
+}
+
 type CrcBalances implements IAggregatePayload {
   lastUpdatedAt: String!
   total: String
@@ -212,6 +231,7 @@ type Organisation {
   members: [ProfileOrOrganisation!]
   shopEnabled: Boolean
   trustsYou: Int
+  shops: [Shop!]
 }
 
 union ProfileOrOrganisation = Profile | Organisation
@@ -1020,24 +1040,6 @@ input ShopInput {
   productListingStyle: ProductListingType!
   ownerId: Int!
   openingHours: String
-}
-
-type Shop {
-  id: Int!
-  createdAt: Date!
-  private: Boolean
-  enabled: Boolean
-  name: String!
-  description: String!
-  largeBannerUrl: String!
-  smallBannerUrl: String!
-  shopListingStyle: ShopListingStyle!
-  sortOrder: Int
-  productListingStyle: ProductListingType!
-  owner: Organisation!
-  openingHours: String
-  pickupAddress: PostAddress
-  categories: [ShopCategory!]
 }
 
 type ShopCategory {
