@@ -3,10 +3,11 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-
+import { show } from "@o-platform/o-process/dist/actions/show";
 import { push } from "svelte-spa-router";
 import { LogoutDocument } from "../../../shared/api/data/types";
 import { getOpenLogin } from "../../../shared/openLogin";
+import ErrorView from "../../../shared/atoms/Error.svelte";
 
 export type LogoutContextData = {
   successAction: (data: LogoutContextData) => void;
@@ -90,6 +91,18 @@ const processDefinition = (processId: string) =>
           onDone: "#success",
           onError: "#error",
         },
+      },
+      error: {
+        id: "error",
+        entry: show({
+          component: ErrorView,
+          params: {},
+          field: {
+            name: "",
+            get: () => undefined,
+            set: (o: any) => {},
+          },
+        }),
       },
       success: {
         type: "final",
