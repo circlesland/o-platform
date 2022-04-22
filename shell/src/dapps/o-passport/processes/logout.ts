@@ -102,7 +102,7 @@ const processDefinition = (processId: string) =>
           });
           // push("/");
           document.location.href = "/";
-          return event.data;
+          return "yeah";
         },
       },
     },
