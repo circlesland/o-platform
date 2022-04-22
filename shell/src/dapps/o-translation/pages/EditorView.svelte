@@ -15,20 +15,22 @@ import { ApiClient } from "../../../shared/apiConnection";
 import StringEditor from "../atoms/StringEditor.svelte";
 import { Environment } from "../../../shared/environment";
 
-let key: string;
-let value: string;
-let i18nData: I18n[] = [];
+let keyFilter: string = "";
+let valueFilter: string = "";
 let allLanguages: string[] = [];
-let selectedLanguage: string = Environment.userLanguage;
 let languageList: string[] = [];
 
-let items: I18n[] = i18nData;
+let items: I18n[] = [];
 let currentPage: number = 1;
 let pageSize: number = 7;
 $: paginatedItems = paginate({ items, pageSize, currentPage });
 
+function isSelected(languageCode: string) {
+  return languageList.indexOf(languageCode) > -1;
+}
+
 function sortByKey(dataToSort: I18n[]) {
-  i18nData = dataToSort.sort((a, b) => {
+  dataToSort.sort((a, b) => {
     if (a.key < b.key) {
       return -1;
     }
@@ -37,90 +39,45 @@ function sortByKey(dataToSort: I18n[]) {
     }
     return 0;
   });
-  return i18nData;
+  return dataToSort;
 }
 
-async function reload(selectedLanguage: string) {
+async function reload() {
   const queryResult = await ApiClient.query<I18n[], GetAllStringsQuery>(GetAllStringsDocument, {});
   const allLanguageKeysInQueryResult = queryResult.toLookup((o) => o.lang);
   allLanguages = Object.keys(allLanguageKeysInQueryResult);
-
-  i18nData = queryResult.filter((o) => o.lang == selectedLanguage);
-
-  sortByKey(i18nData);
+  const filteredQueryResult = queryResult.filter((o) => isSelected(o.lang));
+  sortByKey(filteredQueryResult);
+  items = filteredQueryResult;
 }
 
 $: {
-  reload(selectedLanguage);
-  languageList;
-  paginatedItems;
+  reload();
 }
 
 onMount(async () => {
-  languageList.push(selectedLanguage);
-
-  console.log("languagelist", languageList);
-  for (let language of languageList) {
-    const queryResult = await ApiClient.query<I18n[], QueryGetAllStringsByLanguageArgs>(
-      GetAllStringsByLanguageDocument,
-      {
-        lang: language,
-      }
-    );
-    sortByKey(queryResult);
-  }
-
-  reload(selectedLanguage);
-  const queryResult = await ApiClient.query<I18n[], GetAllStringsQuery>(GetAllStringsDocument, {});
-
-  const allLanguageKeysInQueryResult = queryResult.toLookup((o) => o.lang);
-  allLanguages = Object.keys(allLanguageKeysInQueryResult);
-
-  console.log("i18nData", i18nData);
-  console.log("allLanguages", allLanguages);
-  console.log("languageList", languageList);
-  items = i18nData;
+  languageList.push(Environment.userLanguage);
+  reload();
 });
 
-
-
-const filterByStringValue = () => {
+function filterItems(keyFilter: string, valueFilter: string) {
+  const filteredByKey = items.filter((item) => item.key.startsWith(keyFilter));
+  const filteredByValue = filteredByKey.filter((item) =>
+    item.value.toLowerCase().startsWith(valueFilter.toLocaleLowerCase())
+  );
   currentPage = 1;
-  items = i18nData.filter((item) => item.value.toLowerCase().startsWith(value.toLocaleLowerCase()));
-  paginate({ items, pageSize, currentPage })
-};
+  paginatedItems = paginate({ items: filteredByValue, pageSize, currentPage });
+}
 
-const filterByKey = () => {
-  currentPage = 1;
-  items = i18nData.filter((item) => item.key.startsWith(key));
-  paginate({ items, pageSize, currentPage })
-};
-
-const clickHandler = async (data: string) => {
+const toggleLanguage = async (data: string) => {
   if (languageList.includes(data)) {
     const index = languageList.indexOf(data);
     if (index > -1) {
       languageList.splice(index, 1);
     }
-    console.log(languageList);
   } else {
     languageList.push(data);
   }
-  i18nData = [];
-  for (let language of languageList) {
-    const queryResult = await ApiClient.query<I18n[], QueryGetAllStringsByLanguageArgs>(
-      GetAllStringsByLanguageDocument,
-      {
-        lang: language,
-      }
-    );
-    console.log(queryResult);
-    i18nData.push(...queryResult);
-  }
-  items = i18nData;
-  sortByKey(i18nData);
-
-  console.log("newi18nData", i18nData);
 };
 </script>
 
@@ -136,17 +93,20 @@ const clickHandler = async (data: string) => {
   </div>
 
   <div class="w-full flex flex-row flex-wrap items-stretch justify-center">
-    <form on:input="{() => filterByStringValue()}">
-      <input bind:value class="m-1" type="text" placeholder="String" />
+    <form on:input="{() => filterItems(keyFilter, valueFilter)}" class="">
+      <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
     </form>
-    <form on:input="{() => filterByKey()}" class="">
-      <input bind:value="{key}" class="m-1" type="text" placeholder="dapps.o-banking..." />
+    <form on:input="{() => filterItems(keyFilter, valueFilter)}">
+      <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
     </form>
     {#each allLanguages as languageCode}
       <button
-        on:click="{() => clickHandler(languageCode)}"
+        on:click="{() => {
+          toggleLanguage(languageCode);
+          reload();
+        }}"
         class="p-1 m-1 bg-blue-200 hover:bg-blue-500"
-        class:bg-red-200="{true}">
+        class:bg-red-200="{isSelected(languageCode)}">
         {languageCode}
       </button>
     {/each}
