@@ -84,6 +84,9 @@ const processDefinition = (processId: string) =>
 
             return result.data.logout.success;
           },
+          data: (context, event: any) => {
+            return "you're not serious?";
+          },
           onDone: "#success",
           onError: "#error",
         },
