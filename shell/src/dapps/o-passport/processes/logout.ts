@@ -85,25 +85,25 @@ const processDefinition = (processId: string) =>
 
             return result.data.logout.success;
           },
+          onDone: "#success",
+          onError: "#error",
           data: (context, event: any) => {
             return "you're not serious?";
           },
-          onDone: "#success",
-          onError: "#success",
         },
       },
-      error: {
-        id: "error",
-        entry: show({
-          component: ErrorView,
-          params: {},
-          field: {
-            name: "",
-            get: () => undefined,
-            set: (o: any) => {},
-          },
-        }),
-      },
+      // error: {
+      //   id: "error",
+      //   entry: show({
+      //     component: ErrorView,
+      //     params: {},
+      //     field: {
+      //       name: "",
+      //       get: () => undefined,
+      //       set: (o: any) => {},
+      //     },
+      //   }),
+      // },
       success: {
         type: "final",
         id: "success",
