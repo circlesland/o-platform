@@ -28,6 +28,9 @@ query init {
       displayTimeCircles
       displayCurrency
       cityGeonameid
+      shops {
+        id
+      }
       city {
         geonameid
         name
@@ -271,6 +274,9 @@ query myProfile {
         description
         avatarUrl
         cityGeonameid
+        shops {
+          id
+        }
         city {
           geonameid
           country

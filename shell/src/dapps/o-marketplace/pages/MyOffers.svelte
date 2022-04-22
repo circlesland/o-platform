@@ -1,5 +1,5 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 
 import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
@@ -47,8 +47,6 @@ export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 export let storeId: number;
 
-storeId = 5;
-
 let isLoading: boolean;
 let error: Error;
 let offers: Offer[] = [];
@@ -69,15 +67,9 @@ let currentEntry: ShopCategoryEntry;
 let hovering: number = null;
 
 onMount(async () => {
-  // shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {});
-
-  // console.log(
-  //   "MEINE: ",
-  //   shops.find(({ owner }) => owner.circlesAddress === $me.circlesAddress)
-  // );
-
-  // console.log("SHOPS", shops);
-
+  if ($me.shops.length) {
+    storeId = $me.shops[0].id;
+  }
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
     id: parseInt(storeId.toString()),
   });
@@ -89,7 +81,6 @@ onMount(async () => {
 
   categories = shop.categories;
   categoryInput = categories;
-  console.log("CATA", categories);
 });
 
 async function updateOffer(entry) {
@@ -111,13 +102,11 @@ async function updateOffer(entry) {
       offer: offerInput,
     });
     showToast("success", "Product was updated");
-    console.log("DER RESULT", result);
 
     changeList.splice(
       changeList.findIndex((v) => v.id === entryId),
       1
     );
-    console.log("CHANGELIST: ", changeList);
 
     entry.product = result;
     entry.productVersion = result.version;
@@ -295,8 +284,6 @@ function addProduct(categoryId) {
   }
 
   categories = [...categories];
-
-  console.log(categories);
 }
 </script>
 
@@ -304,141 +291,146 @@ function addProduct(categoryId) {
 
 <div class="w-5/6 px-4 mx-auto -mt-3">
   <div class="items-center w-full p-4 ">
-    {#if categories.length > 0}
-      {#each categories as category, catindex (category.name)}
-        <div class="p-2 w-min whitespace-nowrap rounded-t-md" class:bg-gray-300="{catindex % 2 == 1}">
-          <h1 class="inline pr-4 h1">{category.name}</h1>
-          <button class="inline btn btn-primary btn-square btn-sm" on:click="{() => addProduct(category.id)}">+</button>
-        </div>
-
-        <div class="table p-2 mb-10 rounded-tr-md rounded-b-md" class:bg-gray-300="{catindex % 2 == 1}">
-          <div class="table-header-group p-4 mb-10">
-            <div class="table-row ">
-              <div class="table-cell pl-2 ">
-                <Icon name="switch-vertical" class="inline w-6 h-6 heroicon smallicon" />
-              </div>
-              <div class="table-cell pl-2">Image</div>
-              <div class="table-cell pl-2">Title</div>
-              <div class="table-cell pl-2">Description</div>
-
-              <div class="table-cell pl-2">Price</div>
-              <div class="table-cell pl-2">Category</div>
-              <div class="table-cell pl-2">Enabled</div>
-              <div class="table-cell pl-2 pr-2">Version</div>
-            </div>
+    {#if storeId}
+      {#if categories.length > 0}
+        {#each categories as category, catindex (category.name)}
+          <div class="p-2 w-min whitespace-nowrap rounded-t-md" class:bg-gray-300="{catindex % 2 == 1}">
+            <h1 class="inline pr-4 h1">{category.name}</h1>
+            <button class="inline btn btn-primary btn-square btn-sm" on:click="{() => addProduct(category.id)}"
+              >+</button>
           </div>
-          {#if category.entries}
-            {#each category.entries as entry, index (entry.id)}
-              <div
-                class="table-row-group"
-                animate:flip
-                draggable="{true}"
-                on:dragstart="{(event) => dragstart(event, index)}"
-                on:drop|preventDefault="{(event) => drop(event, index, catindex)}"
-                ondragover="return false"
-                on:dragenter="{() => (hovering = entry.id)}"
-                class:is-active="{hovering === entry.id}">
-                <div class="table-cell w-10 p-1 text-gray-400 cursor-move">
-                  <Icon name="menu" class="inline w-10 h-10 heroicon" />
+
+          <div class="table p-2 mb-10 rounded-tr-md rounded-b-md" class:bg-gray-300="{catindex % 2 == 1}">
+            <div class="table-header-group p-4 mb-10">
+              <div class="table-row ">
+                <div class="table-cell pl-2 ">
+                  <Icon name="switch-vertical" class="inline w-6 h-6 heroicon smallicon" />
                 </div>
-                <div class="relative table-cell w-12 p-1 overflow-hidden">
-                  <div class="absolute w-12 h-12 bottom-2">
-                    {#if entry.product.pictureUrl}
-                      <img
-                        class="w-12 h-12"
-                        src="{entry.product.pictureUrl}"
-                        alt="large Banner Url"
-                        on:click="{() => imageEditor(category.id, entry.id, false)}"
-                        on:change="{() => changeEntry(entry.id, entry)}" />
-                    {:else}
-                      <div
-                        on:click="{() => imageEditor(category.id, entry.id, true)}"
-                        class="link link-primary"
-                        on:change="{() => changeEntry(entry.id, entry)}">
-                        Upload image
-                      </div>
+                <div class="table-cell pl-2">Image</div>
+                <div class="table-cell pl-2">Title</div>
+                <div class="table-cell pl-2">Description</div>
+
+                <div class="table-cell pl-2">Price</div>
+                <div class="table-cell pl-2">Category</div>
+                <div class="table-cell pl-2">Enabled</div>
+                <div class="table-cell pl-2 pr-2">Version</div>
+              </div>
+            </div>
+            {#if category.entries}
+              {#each category.entries as entry, index (entry.id)}
+                <div
+                  class="table-row-group"
+                  animate:flip
+                  draggable="{true}"
+                  on:dragstart="{(event) => dragstart(event, index)}"
+                  on:drop|preventDefault="{(event) => drop(event, index, catindex)}"
+                  ondragover="return false"
+                  on:dragenter="{() => (hovering = entry.id)}"
+                  class:is-active="{hovering === entry.id}">
+                  <div class="table-cell w-10 p-1 text-gray-400 cursor-move">
+                    <Icon name="menu" class="inline w-10 h-10 heroicon" />
+                  </div>
+                  <div class="relative table-cell w-12 p-1 overflow-hidden">
+                    <div class="absolute w-12 h-12 bottom-2">
+                      {#if entry.product.pictureUrl}
+                        <img
+                          class="w-12 h-12"
+                          src="{entry.product.pictureUrl}"
+                          alt="large Banner Url"
+                          on:click="{() => imageEditor(category.id, entry.id, false)}"
+                          on:change="{() => changeEntry(entry.id, entry)}" />
+                      {:else}
+                        <div
+                          on:click="{() => imageEditor(category.id, entry.id, true)}"
+                          class="link link-primary"
+                          on:change="{() => changeEntry(entry.id, entry)}">
+                          Upload image
+                        </div>
+                      {/if}
+                    </div>
+                  </div>
+                  <div class="table-cell p-1 break-all">
+                    <input
+                      type="text"
+                      class="input"
+                      placeholder="{entry.product.title}"
+                      bind:value="{entry.product.title}"
+                      on:input="{() => changeEntry(entry.id, entry)}" />
+                  </div>
+
+                  <div class="table-cell p-1 break-all">
+                    <input
+                      type="text"
+                      size="50"
+                      class="input"
+                      placeholder="{entry.product.description}"
+                      bind:value="{entry.product.description}"
+                      on:input="{() => changeEntry(entry.id, entry)}" />
+                  </div>
+
+                  <div class="table-cell w-20 p-1 break-all">
+                    <input
+                      type="text"
+                      class="w-20 input"
+                      placeholder="{entry.product.pricePerUnit}"
+                      bind:value="{entry.product.pricePerUnit}"
+                      on:input="{() => changeEntry(entry.id, entry)}" />
+                  </div>
+                  <div class="table-cell p-1 ">
+                    <select
+                      class="select"
+                      value="{category.id}"
+                      on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
+                      {#each categories as listcategory}
+                        <option value="{listcategory.id}">{listcategory.name}</option>
+                      {/each}
+                    </select>
+                  </div>
+                  <div class="table-cell p-1 ">
+                    <input
+                      type="checkbox"
+                      class="inline-block toggle toggle-primary"
+                      value="{entry.enabled}"
+                      bind:checked="{entry.enabled}"
+                      on:change="{() => updateCategoryEntries(category.entries)}" />
+                  </div>
+                  <div class="table-cell w-16 p-1 text-center break-all">
+                    {entry.productVersion}
+                  </div>
+                  <div class="table-cell w-10 p-1 whitespace-nowrap">
+                    {#if changeList.length && changeList.find(({ id }) => id === entry.id)}
+                      {entry.id}
+                      <button class="btn btn-primary" on:click="{updateOffer(entry)}">Save</button>
                     {/if}
                   </div>
                 </div>
-                <div class="table-cell p-1 break-all">
-                  <input
-                    type="text"
-                    class="input"
-                    placeholder="{entry.product.title}"
-                    bind:value="{entry.product.title}"
-                    on:input="{() => changeEntry(entry.id, entry)}" />
-                </div>
-
-                <div class="table-cell p-1 break-all">
-                  <input
-                    type="text"
-                    size="50"
-                    class="input"
-                    placeholder="{entry.product.description}"
-                    bind:value="{entry.product.description}"
-                    on:input="{() => changeEntry(entry.id, entry)}" />
-                </div>
-
-                <div class="table-cell w-20 p-1 break-all">
-                  <input
-                    type="text"
-                    class="w-20 input"
-                    placeholder="{entry.product.pricePerUnit}"
-                    bind:value="{entry.product.pricePerUnit}"
-                    on:input="{() => changeEntry(entry.id, entry)}" />
-                </div>
-                <div class="table-cell p-1 ">
-                  <select
-                    class="select"
-                    value="{category.id}"
-                    on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
-                    {#each categories as listcategory}
-                      <option value="{listcategory.id}">{listcategory.name}</option>
-                    {/each}
-                  </select>
-                </div>
-                <div class="table-cell p-1 ">
-                  <input
-                    type="checkbox"
-                    class="inline-block toggle toggle-primary"
-                    value="{entry.enabled}"
-                    bind:checked="{entry.enabled}"
-                    on:change="{() => updateCategoryEntries(category.entries)}" />
-                </div>
-                <div class="table-cell w-16 p-1 text-center break-all">
-                  {entry.productVersion}
-                </div>
-                <div class="table-cell w-10 p-1 whitespace-nowrap">
-                  {#if changeList.length && changeList.find(({ id }) => id === entry.id)}
-                    {entry.id}
-                    <button class="btn btn-primary" on:click="{updateOffer(entry)}">Save</button>
-                  {/if}
+              {/each}
+            {/if}
+          </div>
+        {/each}
+        {#if showModal}
+          <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+            {#if editImage}
+              <ImageUpload on:submit="{handleImageUpload}" cropShape="square" />
+            {:else}
+              <div class="flex flex-col w-full h-full p-4">
+                <button
+                  class="self-center mb-4 btn btn-primary btn-sm"
+                  on:click="{() => {
+                    editImage = true;
+                  }}">Remove Image</button>
+                <div class="text-center">
+                  <div class="inline-flex">
+                    <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+                  </div>
                 </div>
               </div>
-            {/each}
-          {/if}
-        </div>
-      {/each}
-      {#if showModal}
-        <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-          {#if editImage}
-            <ImageUpload on:submit="{handleImageUpload}" cropShape="square" />
-          {:else}
-            <div class="flex flex-col w-full h-full p-4">
-              <button
-                class="self-center mb-4 btn btn-primary btn-sm"
-                on:click="{() => {
-                  editImage = true;
-                }}">Remove Image</button>
-              <div class="text-center">
-                <div class="inline-flex">
-                  <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
-                </div>
-              </div>
-            </div>
-          {/if}
-        </Center>
+            {/if}
+          </Center>
+        {/if}
       {/if}
+    {:else}
+      <h2>sorry, you don't have any stores. are you logged in as the right Organization?</h2>
     {/if}
   </div>
 </div>

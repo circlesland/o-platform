@@ -1994,7 +1994,10 @@ export type InitQuery = (
     )>, profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'circlesTokenAddress'>
-      & { city?: Maybe<(
+      & { shops?: Maybe<Array<(
+        { __typename?: 'Shop' }
+        & Pick<Shop, 'id'>
+      )>>, city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'name' | 'country'>
       )>, memberships?: Maybe<Array<(
@@ -2188,7 +2191,10 @@ export type MyProfileQuery = (
       & { organisation: (
         { __typename?: 'Organisation' }
         & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'cityGeonameid'>
-        & { city?: Maybe<(
+        & { shops?: Maybe<Array<(
+          { __typename?: 'Shop' }
+          & Pick<Shop, 'id'>
+        )>>, city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'country' | 'name' | 'population'>
         )> }
@@ -3689,6 +3695,9 @@ export const InitDocument = gql`
       displayTimeCircles
       displayCurrency
       cityGeonameid
+      shops {
+        id
+      }
       city {
         geonameid
         name
@@ -3938,6 +3947,9 @@ export const MyProfileDocument = gql`
         description
         avatarUrl
         cityGeonameid
+        shops {
+          id
+        }
         city {
           geonameid
           country
