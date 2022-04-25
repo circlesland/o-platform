@@ -10,6 +10,26 @@ export class Environment {
     return "__API_ENDPOINT__";
   }
 
+  public static get humanodeAuthUrl(): string {
+    return "__HUMANODE_AUTH_URL__";
+  }
+
+  public static get humanodeTokenUrl(): string {
+    return "__HUMANODE_TOKEN_URL__";
+  }
+
+  public static get humanodeRedirectUrl(): string {
+    return "__HUMANODE_REDIRECT_URL__";
+  }
+
+  public static get humanodeClientId(): string {
+    return "__HUMANODE_CLIENT_ID__";
+  }
+
+  public static get humanodeScope(): string {
+    return "__HUMANODE_SCOPE__";
+  }
+
   public static get appId(): string {
     return "__APP_ID__";
   }
