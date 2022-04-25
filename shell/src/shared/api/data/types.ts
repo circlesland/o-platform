@@ -925,6 +925,7 @@ export type Purchase = {
 export type PurchaseLine = {
   __typename?: 'PurchaseLine';
   id: Scalars['Int'];
+  metadata?: Maybe<Scalars['String']>;
   amount: Scalars['Int'];
   offer?: Maybe<Offer>;
 };
@@ -932,6 +933,7 @@ export type PurchaseLine = {
 export type PurchaseLineInput = {
   offerId: Scalars['Int'];
   amount: Scalars['Int'];
+  metadata?: Maybe<Scalars['String']>;
 };
 
 export type Purchased = IEventPayload & {
@@ -1241,6 +1243,7 @@ export type SalesAggregateFilter = {
 export type SalesLine = {
   __typename?: 'SalesLine';
   id: Scalars['Int'];
+  metadata?: Maybe<Scalars['String']>;
   amount: Scalars['Int'];
   offer: Offer;
 };
@@ -2799,7 +2802,7 @@ export type StreamQuery = (
         & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress' | 'total'>
         & { lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
-          & Pick<PurchaseLine, 'id' | 'amount'>
+          & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'pictureUrl' | 'title' | 'description' | 'pricePerUnit'>
@@ -2982,7 +2985,7 @@ export type AggregatesQuery = (
           )>> }
         )>, lines?: Maybe<Array<(
           { __typename?: 'SalesLine' }
-          & Pick<SalesLine, 'id' | 'amount'>
+          & Pick<SalesLine, 'id' | 'amount' | 'metadata'>
           & { offer: (
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
@@ -3026,7 +3029,7 @@ export type AggregatesQuery = (
           & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
         )>, lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
-          & Pick<PurchaseLine, 'id' | 'amount'>
+          & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
@@ -4858,6 +4861,7 @@ export const StreamDocument = gql`
           lines {
             id
             amount
+            metadata
             offer {
               id
               pictureUrl
@@ -5162,6 +5166,7 @@ export const AggregatesDocument = gql`
           lines {
             id
             amount
+            metadata
             offer {
               id
               version
@@ -5255,6 +5260,7 @@ export const AggregatesDocument = gql`
           lines {
             id
             amount
+            metadata
             offer {
               id
               version

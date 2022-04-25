@@ -24,15 +24,10 @@ function loadDetailPage(path) {
 </script>
 
 <div on:click="{() => loadDetailPage(purchased.purchase.id)}">
-  <section
-    on:click="{() =>
-      push(`#/marketplace/my-purchases/${purchased.purchase.id}`)}"
-    class="mb-3 cursor-pointer">
-    <div
-      class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-md">
+  <section on:click="{() => push(`#/marketplace/my-purchases/${purchased.purchase.id}`)}" class="mb-3 cursor-pointer">
+    <div class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-md">
       <div>
-        <div
-          class="relative w-20 h-20 overflow-hidden rounded-l-lg image-wrapper">
+        <div class="relative w-20 h-20 overflow-hidden rounded-l-lg image-wrapper">
           <img
             src="{purchased.purchase.lines[0].offer.pictureUrl}"
             alt="{purchased.purchase.lines[0].offer.title}"
@@ -47,10 +42,14 @@ function loadDetailPage(path) {
               {purchased.seller_profile.displayName}
             </h2>
           </div>
-          <div
-            class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
-            <span class="inline-block">
-              {relativeTimeString(purchased.purchase.createdAt, 1, true)}</span>
+          <div class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
+            <span class="inline-block"> {relativeTimeString(purchased.purchase.createdAt, 1, true)}</span>
+            {#if purchased.purchase.lines[0].metadata}
+              <br />
+
+              {Object.keys(JSON.parse(purchased.purchase.lines[0].metadata))}:
+              {Object.values(JSON.parse(purchased.purchase.lines[0].metadata))}
+            {/if}
           </div>
         </div>
         <div class="flex flex-row items-center justify-between px-3 text-left">
@@ -64,46 +63,36 @@ function loadDetailPage(path) {
             </h2>
           </div>
         </div>
-        <div
-          class="flex flex-row items-center justify-between px-3 mt-2 text-left">
+        <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">
           <div
             class="inline-block text-xs"
             class:text-alert-dark="{purchased.purchase.invoices[0].cancelledAt}"
-            class:text-success="{purchased.purchase.invoices[0]
-              .paymentTransactionHash &&
+            class:text-success="{purchased.purchase.invoices[0].paymentTransactionHash &&
               !purchased.purchase.invoices[0].cancelledAt}"
-            class:text-info="{!purchased.purchase.invoices[0]
-              .paymentTransactionHash &&
+            class:text-info="{!purchased.purchase.invoices[0].paymentTransactionHash &&
               !purchased.purchase.invoices[0].cancelledAt}">
             {#if purchased.purchase.invoices[0].paymentTransactionHash}
               <span>{$_("dapps.o-marketplace.pages.myPurchases.paid")}</span>
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else if purchased.purchase.invoices[0].cancelledAt}
-              <span
-                >{$_("dapps.o-marketplace.pages.myPurchases.cancelled")}</span>
+              <span>{$_("dapps.o-marketplace.pages.myPurchases.cancelled")}</span>
             {:else}
-              <span
-                >{$_(
-                  "dapps.o-marketplace.pages.myPurchases.paymentPending"
-                )}</span>
+              <span>{$_("dapps.o-marketplace.pages.myPurchases.paymentPending")}</span>
             {/if}
           </div>
           <div
             class="inline-block text-xs "
             class:text-inactive="{!purchased.purchase.invoices[0].pickupCode}"
             class:text-success="{purchased.purchase.invoices[0].pickupCode}">
-            <span
-              >{$_("dapps.o-marketplace.pages.myPurchases.pickupCode")}</span>
+            <span>{$_("dapps.o-marketplace.pages.myPurchases.pickupCode")}</span>
             {#if purchased.purchase.invoices[0].pickupCode}
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}
           </div>
           <div
             class="inline-block text-xs"
-            class:text-inactive="{!purchased.purchase.invoices[0]
-              .sellerSignature}"
-            class:text-success="{purchased.purchase.invoices[0]
-              .sellerSignature}">
+            class:text-inactive="{!purchased.purchase.invoices[0].sellerSignature}"
+            class:text-success="{purchased.purchase.invoices[0].sellerSignature}">
             <span>{$_("dapps.o-marketplace.pages.myPurchases.pickedUp")}</span>
             {#if purchased.purchase.invoices[0].sellerSignature}
               <Icons icon="check" size="{4}" customClass="inline" />

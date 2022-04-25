@@ -1211,6 +1211,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           lines {
             id
             amount
+            metadata
             offer {
               id
               pictureUrl
@@ -1514,6 +1515,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           lines {
             id
             amount
+            metadata
             offer {
               id
               version
@@ -1607,6 +1609,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           lines {
             id
             amount
+            metadata
             offer {
               id
               version

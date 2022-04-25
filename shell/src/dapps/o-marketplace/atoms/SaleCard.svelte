@@ -21,6 +21,7 @@ $: {
     const saleEvent = event.payload as SaleEvent;
     sale = saleEvent;
     invoice = sale.invoice;
+    console.log("SALE EVENT: ", sale);
   }
 
   const pickUpAction = {
@@ -90,6 +91,14 @@ $: {
         <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">
           <div class="flex-grow leading-none" on:click="{() => push(`#/marketplace/my-sales/${sale.invoice.id}`)}">
             <table>
+              {#if sale.metadata}
+                {console.log(JSON.parse(sale.metadata))}
+                <tr>
+                  <td>
+                    <div class="mb-2 text-center ">{sale.metadata}</div>
+                  </td>
+                </tr>
+              {/if}
               {#each sale.invoice.lines as item}
                 <tr>
                   <td>
