@@ -400,15 +400,15 @@ function initSession(session: SessionInfo) {
               await contacts.findBySafeAddress(event.to, true);
               const chatStore = myChats.with(event.to);
               const message = await chatStore.findSingleItemFallback(
-                [EventType.CrcHubTransfer, EventType.CrcMinting],
+                [EventType.CrcHubTransfer],
                 event.transaction_hash
               );
               chatStore.refresh(true);
-            } else {
+            } else if (event.type != EventType.CrcMinting) {
               await contacts.findBySafeAddress(event.from, true);
               const chatStore = myChats.with(event.from);
               const message = await chatStore.findSingleItemFallback(
-                [EventType.CrcHubTransfer, EventType.CrcMinting],
+                [EventType.CrcHubTransfer],
                 event.transaction_hash
               );
               chatStore.refresh(true);
