@@ -2,11 +2,9 @@
 import { onMount } from "svelte";
 
 import {
-  GetAllStringsByLanguageDocument,
-  GetAllStringsDocument,
-  GetAllStringsQuery,
+  GetAllStringsByMaxVersionDocument,
+  GetAllStringsByMaxVersionQuery,
   I18n,
-  QueryGetAllStringsByLanguageArgs,
 } from "../../../shared/api/data/types";
 
 import { paginate, PaginationNav } from "svelte-paginate";
@@ -43,16 +41,28 @@ function sortByKey(dataToSort: I18n[]) {
 }
 
 async function reload() {
-  const queryResult = await ApiClient.query<I18n[], GetAllStringsQuery>(GetAllStringsDocument, {});
+  const queryResult = await ApiClient.query<I18n[], GetAllStringsByMaxVersionQuery>(
+    GetAllStringsByMaxVersionDocument,
+    {}
+  );
   const allLanguageKeysInQueryResult = queryResult.toLookup((o) => o.lang);
   allLanguages = Object.keys(allLanguageKeysInQueryResult);
+  allLanguages.sort((a, b) => {
+    if (a < b) {
+      return -1;
+    }
+    if (a > b) {
+      return 1;
+    }
+    return 0;
+  });
   const filteredQueryResult = queryResult.filter((o) => isSelected(o.lang));
   sortByKey(filteredQueryResult);
   items = filteredQueryResult;
 }
 
 $: {
-  reload();
+  reload()
 }
 
 onMount(async () => {
@@ -120,7 +130,7 @@ const toggleLanguage = async (data: string) => {
       <div class="table-cell p-1">Version</div>
       <div class="table-cell p-1">Input</div>
     </div>
-    {#each paginatedItems as data}
+    {#each paginatedItems as data(data.key + data.lang)}
       <div class="w-full table-row-group">
         <StringEditor
           dataString="{data.value}"

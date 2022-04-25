@@ -1745,8 +1745,8 @@ query getAllStringsByLanguage($lang: String) {
   }
 }
 
-query getAllStringsByMaxVersionAndLang($lang: String) {
-  getAllStringsByMaxVersionAndLang(lang: $lang) {
+query getAllStringsByMaxVersion {
+  getAllStringsByMaxVersion {
     lang
     key
     createdBy
@@ -1757,6 +1757,16 @@ query getAllStringsByMaxVersionAndLang($lang: String) {
 
 query getStringByMaxVersion($lang: String, $key: String) {
   getStringByMaxVersion(lang: $lang, key: $key) {
+    lang
+    key
+    createdBy
+    version  
+    value
+  }
+}
+
+query getOlderVersionsByKeyAndLang($key: String, $lang: String) {
+  getOlderVersionsByKeyAndLang(lang: $lang, key: $key) {
     lang
     key
     createdBy
